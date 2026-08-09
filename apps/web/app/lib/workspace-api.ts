@@ -50,6 +50,12 @@ export type WorkspaceSelectionKind =
   | "XRD_MATCH"
   | "TRAJECTORY_ATOM"
   | "TRAJECTORY_FRAME"
+  | "TRAJECTORY_RDF_PAIR"
+  | "TRAJECTORY_RDF_BIN"
+  | "TRAJECTORY_MSD_SPECIES"
+  | "TRAJECTORY_MSD_LAG"
+  | "TRAJECTORY_DIFFUSION_WINDOW"
+  | "TRAJECTORY_DIFFUSION_DIAGNOSTIC"
   | "PHONON_Q_POINT"
   | "PHONON_BRANCH"
   | "RECIPROCAL_POINT"
@@ -135,6 +141,12 @@ export type WorkspaceSelectionRef = {
   trajectoryId: string | null;
   atomId: string | null;
   frameId: string | null;
+  speciesPairId: string | null;
+  rdfBinId: string | null;
+  msdSeriesId: string | null;
+  msdLagId: string | null;
+  diffusionWindowId: string | null;
+  diffusionDiagnosticId: string | null;
   phononArtifactId: string | null;
   qPointId: string | null;
   branchId: string | null;

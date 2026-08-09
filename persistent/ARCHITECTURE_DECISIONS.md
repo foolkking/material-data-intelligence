@@ -4463,3 +4463,10 @@ authorized.
   definitive phase identification.
 - DataProfile 2.2 and Selection 1.0 evolve additively through existing generic
   persistence. No migration, API family, dependency or frontend science is added.
+## 2026-08-09 Phase 10N-4 ADR - Persisted Trajectory Analytics Authority
+
+- `phase10g.trajectory.v1` remains the trajectory identity, frame, atom, coordinate, cell/PBC and time authority.
+- Trajectory RDF, MSD, and diffusion are three distinct Tools and Artifact families; static `structure.rdf` remains independent.
+- MSD uses server-side fixed-cell unwrapping and multiple time origins. Wrapped browser coordinates have no scientific authority.
+- Diffusion consumes only exact persisted MSD through AnalysisPlan 0.2, requires an explicit fit window, and emits a qualified estimate only when frozen R-squared, alpha, duration, point and origin diagnostics pass.
+- DataProfile 2.3 is additive JSON readiness. No migration, API family, dependency, lockfile, arbitrary execution, automatic fit-window selection, variable-cell MSD, or N5 task is authorized.

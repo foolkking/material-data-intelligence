@@ -1,5 +1,17 @@
 # TASK_BOARD
 
+## 2026-08-09 Phase 10N-4 Trajectory RDF / MSD / Diffusion
+
+- [x] Verify N3 implementation/completion/archive authority and clean Registry-57 entry.
+- [x] Admit exactly one N4 task and reconcile N4-A01 through N4-A10.
+- [x] Freeze trajectory identity/time/cell/PBC, RDF, unwrapping, MSD, diffusion, tolerance and cap contracts.
+- [x] Implement three exact Registry Tools, DataProfile 2.3, Plan 0.2 dependency, Runtime and Artifacts.
+- [x] Add Workspace tables, exact N4 selection, bounded interpretation, Report/Recipe and service evidence.
+- [x] Pass local full regression: backend 1221, frontend 438, typecheck/build, browser matrix, lock and evidence integrity.
+- [ ] Pass implementation exact-SHA CI, including 46 zero-skip service-backed tests.
+- [ ] Append completion record and archive the task only after their exact-SHA CI gates pass.
+- [x] Keep Phase 10N-5 reviewer-gated and absent from the executable queue.
+
 ## 2026-08-06 Phase 10N-0 Complete, Reviewer Approval Required
 
 - [x] Verify corrected M7 archive and clean zero-task entry.

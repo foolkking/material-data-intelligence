@@ -31,6 +31,7 @@ const WorkspaceGenericPlot = lazy(() => import("./WorkspaceGenericPlot").then((m
 const CoordinationResultPanel = lazy(() => import("./CoordinationResultPanel").then((module) => ({ default: module.CoordinationResultPanel })));
 const LocalEnvironmentPolyhedraPanel = lazy(() => import("./LocalEnvironmentPolyhedraPanel").then((module) => ({ default: module.LocalEnvironmentPolyhedraPanel })));
 const ExperimentalXrdComparisonPanel = lazy(() => import("./ExperimentalXrdComparisonPanel").then((module) => ({ default: module.ExperimentalXrdComparisonPanel })));
+const TrajectoryAnalyticsPanel = lazy(() => import("./TrajectoryAnalyticsPanel").then((module) => ({ default: module.TrajectoryAnalyticsPanel })));
 
 export const MAX_METADATA_ARTIFACTS = 256;
 const MAX_JSON_PREVIEW_CHARS = 80_000;
@@ -215,6 +216,7 @@ function WorkspaceArtifactRenderer({ selected, artifacts, workspace, delivery, o
     case "COORDINATION": return <LazyBoundary><CoordinationResultPanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={onSelection} /></LazyBoundary>;
     case "LOCAL_ENVIRONMENT": return <LazyBoundary><LocalEnvironmentPolyhedraPanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={onSelection} /></LazyBoundary>;
     case "EXPERIMENTAL_XRD": return <LazyBoundary><ExperimentalXrdComparisonPanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={onSelection} /></LazyBoundary>;
+    case "TRAJECTORY_ANALYTICS": return <LazyBoundary><TrajectoryAnalyticsPanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={onSelection} /></LazyBoundary>;
     case "TEXT": return <TextFallback content={loadedSelected.content} />;
     case "GENERIC_TABLE": return <TableFallback content={loadedSelected.content} descriptor={descriptor} />;
     case "GENERIC_PLOT": return <PlotFallback content={loadedSelected.content} descriptor={descriptor} />;

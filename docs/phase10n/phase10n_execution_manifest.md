@@ -127,3 +127,17 @@ Manifest status: `N0 COMPLETE / REVIEWER_APPROVAL_REQUIRED`; N1 is not executabl
 | N3-A08 | projector/report | facts/exports | report journey | lineage | false-claim audit | delivery PASS |
 | N3-A09 | caps/security | full regression | a11y/lifecycle | zero skipped | secret scan | evidence PASS |
 | N3-A10 | lifecycle | lifecycle assertions | CI replay | CI services | N4 absent | archive PASS |
+# Phase 10N-4 Traceability
+
+| Acceptance | Owner |
+| --- | --- |
+| N4-A01 | entry gate, R0 closure, queue structure |
+| N4-A02 | trajectory identity and unwrapping contracts/tests |
+| N4-A03 | trajectory RDF adapter/schema/references |
+| N4-A04 | trajectory MSD adapter/schema/references |
+| N4-A05 | diffusion adapter/schema/diagnostics/references |
+| N4-A06 | Profile/Eligibility/Planner/PlanValidator/Runtime/service evidence |
+| N4-A07 | Workspace/selection/Inspector/browser evidence |
+| N4-A08 | interpretation/Report/Recipe evidence |
+| N4-A09 | reference/tolerance/performance/accessibility/security manifest |
+| N4-A10 | three exact-SHA CI lifecycle records and N5 gate |

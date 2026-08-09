@@ -100,6 +100,9 @@ ARTIFACT_PROJECTOR_CONTRACTS: Mapping[tuple[str, str], ArtifactProjectorContract
             "phase10n3.experimental_xrd_comparison",
             ("phase10n3.experimental_xrd_comparison.v1",),
         ),
+        ArtifactProjectorContract("trajectory.rdf", "table_json", "phase10n4.trajectory_rdf", ("phase10n4.trajectory_rdf.v1",)),
+        ArtifactProjectorContract("trajectory.msd", "table_json", "phase10n4.trajectory_msd", ("phase10n4.trajectory_msd.v1",)),
+        ArtifactProjectorContract("trajectory.diffusion", "table_json", "phase10n4.trajectory_diffusion", ("phase10n4.trajectory_diffusion.v1",)),
         ArtifactProjectorContract("phonon.band", "phonon_band_json", "phase10h.phonon", (PHONON_BAND_SCHEMA_VERSION,)),
         ArtifactProjectorContract("phonon.band", "phonon_summary_json", "phase10h.phonon", (PHONON_SUMMARY_SCHEMA_VERSION,)),
         ArtifactProjectorContract("phonon.dos", "phonon_dos_json", "phase10h.phonon", (PHONON_DOS_SCHEMA_VERSION,)),
@@ -353,6 +356,8 @@ def project_artifact(source: InterpretationSource, candidate: ArtifactProjection
         return _project_local_environment_summary(source, candidate)
     if artifact_type == "table_json" and tool_id == "structure.experimental_xrd_comparison":
         return _project_experimental_xrd_summary(source, candidate)
+    if artifact_type == "table_json" and tool_id in {"trajectory.rdf", "trajectory.msd", "trajectory.diffusion"}:
+        return _project_trajectory_analytics(source, candidate)
     if artifact_type in {"phonon_band_json", "phonon_dos_json", "phonon_band_dos_json", "phonon_summary_json"} and tool_id in {"phonon.band", "phonon.dos", "phonon.band_dos"}:
         return _project_phonon_summary(source, candidate)
     if artifact_type == "volumetric_field_json" and tool_id == "structure.volumetric_data":
@@ -1156,6 +1161,61 @@ def _project_experimental_xrd_summary(source: InterpretationSource, candidate: A
             if not _finite(value) or value < 0:
                 raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Experimental XRD residual statistics are invalid.")
             items.append(_item(source, candidate, f"xrd.residual.{role}", EvidenceKind.scalar, subject, role, value, unit="degree", field=f"residualSummary.{field}", entity=subject))
+    return items
+
+
+def _project_trajectory_analytics(source: InterpretationSource, candidate: ArtifactProjectionInput) -> list[ScientificEvidenceItem]:
+    payload = candidate.payload
+    schema = payload.get("schema_version")
+    trajectory = payload.get("trajectory")
+    coverage = payload.get("coverage")
+    if not isinstance(trajectory, dict) or not isinstance(coverage, dict):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Trajectory analytics identity or coverage is invalid.")
+    trajectory_hash = trajectory.get("trajectoryHash")
+    if not isinstance(trajectory_hash, str) or not trajectory_hash.startswith("sha256:"):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Trajectory analytics source hash is invalid.")
+    subject = f"trajectory:{trajectory_hash}"
+    items: list[ScientificEvidenceItem] = []
+    if schema == "phase10n4.trajectory_rdf.v1":
+        for field, role in (("includedFrames", "included_frames"), ("pairSamples", "pair_samples")):
+            if not _nonnegative_int(coverage.get(field)):
+                raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Trajectory RDF coverage is invalid.")
+            items.append(_item(source, candidate, f"trajectory.rdf.{role}", EvidenceKind.count, subject, "count", coverage[field], field=f"coverage.{field}", entity=trajectory_hash))
+        pair = payload.get("speciesPair")
+        if isinstance(pair, dict):
+            label = f"{pair.get('speciesA')}-{pair.get('speciesB')}"
+            items.append(_item(source, candidate, "trajectory.rdf.species_pair", EvidenceKind.category, subject, "category", label, field="speciesPair", entity=trajectory_hash))
+    elif schema == "phase10n4.trajectory_msd.v1":
+        lag = payload.get("lagTimesPs")
+        total = payload.get("totalMsdAngstrom2")
+        if not isinstance(lag, list) or not isinstance(total, list) or len(lag) != len(total) or not lag or not all(_finite(value) for value in lag + total):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Trajectory MSD arrays are invalid.")
+        items.extend([
+            _item(source, candidate, "trajectory.msd.valid_lags", EvidenceKind.count, subject, "count", len(lag), field="coverage.validLags", entity=trajectory_hash),
+            _item(source, candidate, "trajectory.msd.last_lag", EvidenceKind.scalar, subject, "lag_time", lag[-1], unit="picosecond", field=f"lagTimesPs.{len(lag)-1}", entity=trajectory_hash),
+            _item(source, candidate, "trajectory.msd.last_total", EvidenceKind.scalar, subject, "msd", total[-1], unit="angstrom^2", field=f"totalMsdAngstrom2.{len(total)-1}", entity=trajectory_hash),
+        ])
+    elif schema == "phase10n4.trajectory_diffusion.v1":
+        diagnostic = payload.get("regimeDiagnostic")
+        estimate = payload.get("diffusionEstimate")
+        fit = payload.get("fit")
+        if not isinstance(diagnostic, dict) or not isinstance(estimate, dict) or not isinstance(fit, dict) or not isinstance(diagnostic.get("status"), str):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Trajectory diffusion diagnostics are invalid.")
+        items.append(_item(source, candidate, "trajectory.diffusion.status", EvidenceKind.category, subject, "category", diagnostic["status"], field="regimeDiagnostic.status", entity=trajectory_hash))
+        if estimate.get("available") is True:
+            value = estimate.get("value")
+            if not _finite(value) or value < 0:
+                raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Qualified diffusion estimate is invalid.")
+            items.append(_item(source, candidate, "trajectory.diffusion.estimate", EvidenceKind.scalar, subject, "diffusion_estimate", value, unit="angstrom^2/picosecond", field="diffusionEstimate.value", entity=trajectory_hash))
+        for field, role in (("rSquared", "r_squared"),):
+            value = fit.get(field)
+            if value is not None and _finite(value):
+                items.append(_item(source, candidate, f"trajectory.diffusion.{role}", EvidenceKind.scalar, subject, role, value, field=f"fit.{field}", entity=trajectory_hash))
+        alpha = diagnostic.get("alpha")
+        if alpha is not None and _finite(alpha):
+            items.append(_item(source, candidate, "trajectory.diffusion.alpha", EvidenceKind.scalar, subject, "regime_exponent", alpha, field="regimeDiagnostic.alpha", entity=trajectory_hash))
+    else:
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Trajectory analytics contract is unsupported.")
     return items
 
 

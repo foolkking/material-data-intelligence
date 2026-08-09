@@ -356,3 +356,45 @@ tools:
       - table_json
       - summary_md
       - recipe_json
+
+  - tool_id: trajectory.rdf
+    source_package: mdi_adapters
+    source_function: TrajectoryRdfAdapter
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: TrajectoryRdfAdapter
+    display_target: trajectory
+    artifact_types:
+      - table_json
+      - plotly_json
+      - summary_md
+      - recipe_json
+    notes: Bounded trajectory-frame averaged RDF with exact windows, unordered species pairs, safe periodic radius and persisted normalization; static structure.rdf remains independent.
+
+  - tool_id: trajectory.msd
+    source_package: mdi_adapters
+    source_function: TrajectoryMsdAdapter
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: TrajectoryMsdAdapter
+    display_target: trajectory
+    artifact_types:
+      - table_json
+      - plotly_json
+      - summary_md
+      - recipe_json
+    notes: Server-side fixed-cell periodic unwrapping and bounded multiple-time-origin total, species and Cartesian directional MSD; physical time is required.
+
+  - tool_id: trajectory.diffusion
+    source_package: mdi_adapters
+    source_function: TrajectoryDiffusionAdapter
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: TrajectoryDiffusionAdapter
+    display_target: trajectory
+    artifact_types:
+      - table_json
+      - plotly_json
+      - summary_md
+      - recipe_json
+    notes: Explicit-window diffusion diagnostics consuming only an exact persisted trajectory.msd Artifact; no raw trajectory read, MSD recomputation or automatic fit-window selection.

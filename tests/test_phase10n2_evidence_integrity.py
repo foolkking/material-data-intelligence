@@ -49,4 +49,5 @@ def test_n2_ci_requires_browser_and_zero_skip_service_closure() -> None:
     assert "--n2-local-environment-only" in workflow
     assert "test_phase10n2_local_environment_service_backed.py" in workflow
     assert "test_phase10n2_postgres_redis_minio_exact_n1_dependency_closure" in workflow
-    assert 'if [ "${PASSED:-0}" -lt 45 ]; then' in workflow
+    threshold = re.search(r'if \[ "\$\{PASSED:-0\}" -lt (\d+) \]; then', workflow)
+    assert threshold and int(threshold.group(1)) >= 45

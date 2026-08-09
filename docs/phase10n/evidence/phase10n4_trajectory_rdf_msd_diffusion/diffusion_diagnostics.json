@@ -1,0 +1,11 @@
+{
+  "alpha": 1.0,
+  "alphaRange": [
+    0.8,
+    1.2
+  ],
+  "diagnosticId": "diffusion-diagnostic:9606482e903e2464da69acfd25fb9b3c8daa122e37602b398d2a95f218a29475",
+  "minimumR2": 0.9,
+  "originCoverage": 0.65,
+  "status": "DIFFUSIVE_WINDOW_ACCEPTED"
+}

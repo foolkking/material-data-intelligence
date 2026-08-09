@@ -60,17 +60,20 @@ def test_n3_ci_registers_browser_and_zero_skip_service_closure() -> None:
     assert "--n3-experimental-xrd-only" in workflow
     assert "test_phase10n3_experimental_xrd_service_backed.py" in workflow
     assert "test_phase10n3_postgres_redis_minio_theoretical_xrd_comparison_closure" in workflow
-    assert 'if [ "${PASSED:-0}" -lt 45 ]; then' in workflow
+    threshold = re.search(r'if \[ "\$\{PASSED:-0\}" -lt (\d+) \]; then', workflow)
+    assert threshold and int(threshold.group(1)) >= 45
 
 
 def test_n3_task_and_n4_gate_are_exact() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
-    if task_count:
+    if task_count and "Task: Phase 10N-4" not in tasks:
         assert task_count == 1
         assert "Phase 10N-3 Experimental XRD Comparison + Peak Matching" in tasks
     else:
         assert "Phase 10N-3:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks
-    assert "Phase 10N-4:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks
-    assert "Phase 10N-4 Trajectory" not in tasks
+    if task_count:
+        assert "Task: Phase 10N-4 Trajectory RDF / MSD / Diffusion" in tasks
+    else:
+        assert "Phase 10N-4:\nREVIEWER_GATE / AWAITING REVIEWER PROMPT" in tasks or "Phase 10N-4:\nPASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT" in tasks

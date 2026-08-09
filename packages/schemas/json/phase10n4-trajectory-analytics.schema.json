@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdi.local/schemas/phase10n4-trajectory-analytics.schema.json",
+  "title": "Phase 10N-4 trajectory analytics Artifacts",
+  "oneOf": [
+    { "$ref": "#/$defs/rdf" },
+    { "$ref": "#/$defs/msd" },
+    { "$ref": "#/$defs/diffusion" }
+  ],
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^(?:sha256:)?[0-9a-f]{64}$" },
+    "trajectory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resourceId", "trajectoryHash", "contractVersion", "frameCount", "atomCount"],
+      "properties": {
+        "resourceId": { "type": "string" },
+        "trajectoryHash": { "$ref": "#/$defs/hash" },
+        "contractVersion": { "const": "phase10g.trajectory.v1" },
+        "frameCount": { "type": "integer", "minimum": 1, "maximum": 10000 },
+        "atomCount": { "type": "integer", "minimum": 1, "maximum": 4096 }
+      }
+    },
+    "common": {
+      "type": "object",
+      "required": ["artifactType", "schema_version", "tool", "scope", "trajectory", "resolvedParameters", "parameterHash", "warnings", "limitations", "security"],
+      "properties": {
+        "artifactType": { "enum": ["trajectory.rdf", "trajectory.msd", "trajectory.diffusion"] },
+        "schema_version": { "enum": ["phase10n4.trajectory_rdf.v1", "phase10n4.trajectory_msd.v1", "phase10n4.trajectory_diffusion.v1"] },
+        "tool": { "type": "object" }, "scope": { "type": "object" }, "trajectory": { "$ref": "#/$defs/trajectory" },
+        "resolvedParameters": { "type": "object" }, "parameterHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "warnings": { "type": "array", "items": { "type": "string" } }, "limitations": { "type": "array", "items": { "type": "string" } }, "security": { "type": "object" }
+      }
+    },
+    "rdf": {
+      "allOf": [
+        { "$ref": "#/$defs/common" },
+        { "type": "object", "required": ["algorithm", "speciesPair", "window", "binEdgesAngstrom", "binCentersAngstrom", "gR", "coverage"], "properties": { "artifactType": { "const": "trajectory.rdf" }, "schema_version": { "const": "phase10n4.trajectory_rdf.v1" }, "binEdgesAngstrom": { "type": "array", "items": { "type": "number" } }, "binCentersAngstrom": { "type": "array", "items": { "type": "number" } }, "gR": { "type": "array", "items": { "type": "number" } } } }
+      ]
+    },
+    "msd": {
+      "allOf": [
+        { "$ref": "#/$defs/common" },
+        { "type": "object", "required": ["algorithm", "unwrapping", "lagTimesPs", "totalMsdAngstrom2", "directionalMsdAngstrom2", "originCounts", "coverage"], "properties": { "artifactType": { "const": "trajectory.msd" }, "schema_version": { "const": "phase10n4.trajectory_msd.v1" }, "lagTimesPs": { "type": "array", "items": { "type": "number" } }, "totalMsdAngstrom2": { "type": "array", "items": { "type": "number" } }, "originCounts": { "type": "array", "items": { "type": "integer" } } } }
+      ]
+    },
+    "diffusion": {
+      "allOf": [
+        { "$ref": "#/$defs/common" },
+        { "type": "object", "required": ["sourceMsd", "algorithm", "fitWindow", "fit", "regimeDiagnostic", "diffusionEstimate", "coverage"], "properties": { "artifactType": { "const": "trajectory.diffusion" }, "schema_version": { "const": "phase10n4.trajectory_diffusion.v1" }, "sourceMsd": { "type": "object" }, "diffusionEstimate": { "type": "object" } } }
+      ]
+    }
+  }
+}

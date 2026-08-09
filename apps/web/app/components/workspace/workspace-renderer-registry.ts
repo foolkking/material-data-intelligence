@@ -28,7 +28,7 @@ export type RendererComponent =
   | "GENERIC_PLOT" | "GENERIC_TABLE" | "TEXT" | "JSON" | "STATIC_METADATA"
   | "DATASET" | "ML" | "COMPOSITION" | "STRUCTURE" | "TRAJECTORY"
   | "PHONON_BAND" | "PHONON_DOS" | "PHONON_COMBINED" | "PHONON_ANIMATION"
-  | "BRILLOUIN_ZONE" | "VOLUMETRIC" | "COORDINATION" | "DOWNLOAD_ONLY" | "LOCAL_ENVIRONMENT" | "EXPERIMENTAL_XRD";
+  | "BRILLOUIN_ZONE" | "VOLUMETRIC" | "COORDINATION" | "DOWNLOAD_ONLY" | "LOCAL_ENVIRONMENT" | "EXPERIMENTAL_XRD" | "TRAJECTORY_ANALYTICS";
 export type RendererPayloadMode = "JSON" | "TEXT" | "BUNDLE" | "METADATA_ONLY" | "DOWNLOAD_ONLY";
 
 export type WorkspaceRendererDescriptor = Readonly<{
@@ -180,6 +180,9 @@ const PRODUCT_RENDERERS = new Map<string, Partial<WorkspaceRendererDescriptor>>(
   ["phase10n1.voronoinn_coordination.v1\u0000structure.coordination_voronoinn", { component: "COORDINATION", rendererContract: "workspace.coordination", selectionInputs: ["PERIODIC_SITE", "ARTIFACT"], selectionOutputs: ["PERIODIC_SITE", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 50_000 }],
   ["phase10n2.local_environment_polyhedra.v1\u0000structure.local_environment_polyhedra", { component: "LOCAL_ENVIRONMENT", rendererContract: "workspace.local-environment-polyhedra", selectionInputs: ["PERIODIC_SITE", "LOCAL_ENVIRONMENT", "COORDINATION_POLYHEDRON", "POLYHEDRON_VERTEX", "POLYHEDRON_FACE", "ARTIFACT"], selectionOutputs: ["PERIODIC_SITE", "LOCAL_ENVIRONMENT", "COORDINATION_POLYHEDRON", "POLYHEDRON_VERTEX", "POLYHEDRON_FACE", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 5_000 }],
   ["phase10n3.experimental_xrd_comparison.v1\u0000structure.experimental_xrd_comparison", { component: "EXPERIMENTAL_XRD", rendererContract: "workspace.experimental-xrd-comparison", selectionInputs: ["EXPERIMENTAL_XRD_PEAK", "THEORETICAL_XRD_PEAK", "XRD_MATCH", "ARTIFACT"], selectionOutputs: ["EXPERIMENTAL_XRD_PEAK", "THEORETICAL_XRD_PEAK", "XRD_MATCH", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 20_000, maximumPoints: 50_000, maximumPayloadBytes: 33_554_432 }],
+  ["phase10n4.trajectory_rdf.v1\u0000trajectory.rdf", { component: "TRAJECTORY_ANALYTICS", rendererContract: "workspace.trajectory-analytics", selectionInputs: ["TRAJECTORY_FRAME", "TRAJECTORY_ATOM", "TRAJECTORY_RDF_PAIR", "TRAJECTORY_RDF_BIN", "ARTIFACT"], selectionOutputs: ["TRAJECTORY_RDF_PAIR", "TRAJECTORY_RDF_BIN", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 2_048, maximumPoints: 2_048, maximumPayloadBytes: 33_554_432 }],
+  ["phase10n4.trajectory_msd.v1\u0000trajectory.msd", { component: "TRAJECTORY_ANALYTICS", rendererContract: "workspace.trajectory-analytics", selectionInputs: ["TRAJECTORY_FRAME", "TRAJECTORY_ATOM", "TRAJECTORY_MSD_SPECIES", "TRAJECTORY_MSD_LAG", "ARTIFACT"], selectionOutputs: ["TRAJECTORY_MSD_SPECIES", "TRAJECTORY_MSD_LAG", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 2_048, maximumPoints: 8_192, maximumPayloadBytes: 33_554_432 }],
+  ["phase10n4.trajectory_diffusion.v1\u0000trajectory.diffusion", { component: "TRAJECTORY_ANALYTICS", rendererContract: "workspace.trajectory-analytics", selectionInputs: ["TRAJECTORY_DIFFUSION_WINDOW", "TRAJECTORY_DIFFUSION_DIAGNOSTIC", "ARTIFACT"], selectionOutputs: ["TRAJECTORY_DIFFUSION_WINDOW", "TRAJECTORY_DIFFUSION_DIAGNOSTIC", "ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 4_096, maximumPoints: 8_192, maximumPayloadBytes: 33_554_432 }],
 ]);
 
 export function artifactIdentity(artifact: Artifact): string | null { return artifact.artifactId ?? artifact.id ?? null; }

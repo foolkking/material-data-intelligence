@@ -996,7 +996,7 @@ export type DataProfile = {
   trajectorySummary?: Record<string, unknown>;
   qualityIssues: Array<Record<string, unknown>>;
   recommendedTasks: Array<Record<string, unknown>>;
-  profileContractVersion?: "2.0" | "2.1" | "2.2";
+  profileContractVersion?: "2.0" | "2.1" | "2.2" | "2.3";
   semanticRulesVersion?: string;
   semanticHash?: string;
   semanticColumns?: DataProfileSemanticColumn[];
@@ -1007,6 +1007,7 @@ export type DataProfile = {
   profileCoverage?: DataProfileCoverage;
   coordinationReadiness?: DataProfileCoordinationReadiness;
   experimentalXrdReadiness?: DataProfileExperimentalXrdReadiness;
+  trajectoryReadiness?: DataProfileTrajectoryReadiness;
   createdAt: string;
 };
 
@@ -1053,6 +1054,37 @@ export type DataProfileExperimentalXrdReadiness = {
   experimentalXrdPresent: boolean;
   eligibleResourceCount: number;
   resources: DataProfileExperimentalXrdResourceReadiness[];
+  status: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
+  reasons: string[];
+};
+
+export type DataProfileTrajectoryResourceReadiness = {
+  objectId: string;
+  objectHash: string;
+  trajectoryId: string;
+  trajectoryHash: string;
+  frameCount: number;
+  atomCount: number;
+  stableAtomIdentity: boolean;
+  speciesStable: boolean;
+  coordinateRepresentation: "fractional" | "cartesian" | "unknown";
+  coordinateUnit: "fractional" | "angstrom" | "unknown";
+  pbcAxes: [boolean, boolean, boolean];
+  cellMode: "fixed" | "variable" | "missing" | "invalid";
+  timePresent: boolean;
+  timeSource: "per_frame" | "constant_dt" | "missing" | "unknown";
+  timeUnit: "femtosecond" | "picosecond" | "unknown";
+  timeMonotonic: boolean;
+  constantTimestep: boolean;
+  trajectoryInputStatus: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
+  reasons: string[];
+};
+
+export type DataProfileTrajectoryReadiness = {
+  contractVersion: "1.0";
+  trajectoryPresent: boolean;
+  eligibleResourceCount: number;
+  resources: DataProfileTrajectoryResourceReadiness[];
   status: "READY" | "MISSING_REQUIRED_DATA" | "AMBIGUOUS" | "UNSUPPORTED_DATA_KIND";
   reasons: string[];
 };
@@ -1423,6 +1455,12 @@ export const WORKSPACE_SELECTION_KIND_VALUES = [
   "POLYHEDRON_FACE",
   "TRAJECTORY_ATOM",
   "TRAJECTORY_FRAME",
+  "TRAJECTORY_RDF_PAIR",
+  "TRAJECTORY_RDF_BIN",
+  "TRAJECTORY_MSD_SPECIES",
+  "TRAJECTORY_MSD_LAG",
+  "TRAJECTORY_DIFFUSION_WINDOW",
+  "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
   "PHONON_Q_POINT",
   "PHONON_BRANCH",
   "RECIPROCAL_POINT",
@@ -1539,6 +1577,12 @@ type WorkspaceSelectionValueFields = {
   trajectoryId: string | null;
   atomId: string | null;
   frameId: string | null;
+  speciesPairId: string | null;
+  rdfBinId: string | null;
+  msdSeriesId: string | null;
+  msdLagId: string | null;
+  diffusionWindowId: string | null;
+  diffusionDiagnosticId: string | null;
   phononArtifactId: string | null;
   qPointId: string | null;
   branchId: string | null;
@@ -1669,6 +1713,28 @@ export type WorkspaceTrajectoryFrameSelectionRef = WorkspaceSelectionRefFor<
   "datasetId" | "datasetVersion" | "trajectoryId" | "frameId" | "artifactId" | "artifactChecksum"
 >;
 
+type WorkspaceN4CommonFields =
+  | "datasetId" | "datasetVersion" | "jobId" | "trajectoryId" | "artifactId" | "artifactChecksum";
+
+export type WorkspaceTrajectoryRdfPairSelectionRef = WorkspaceSelectionRefFor<
+  "TRAJECTORY_RDF_PAIR", WorkspaceN4CommonFields | "speciesPairId", WorkspaceN4CommonFields | "speciesPairId"
+>;
+export type WorkspaceTrajectoryRdfBinSelectionRef = WorkspaceSelectionRefFor<
+  "TRAJECTORY_RDF_BIN", WorkspaceN4CommonFields | "speciesPairId" | "rdfBinId", WorkspaceN4CommonFields | "speciesPairId" | "rdfBinId"
+>;
+export type WorkspaceTrajectoryMsdSpeciesSelectionRef = WorkspaceSelectionRefFor<
+  "TRAJECTORY_MSD_SPECIES", WorkspaceN4CommonFields | "msdSeriesId", WorkspaceN4CommonFields | "msdSeriesId"
+>;
+export type WorkspaceTrajectoryMsdLagSelectionRef = WorkspaceSelectionRefFor<
+  "TRAJECTORY_MSD_LAG", WorkspaceN4CommonFields | "msdSeriesId" | "msdLagId", WorkspaceN4CommonFields | "msdSeriesId" | "msdLagId"
+>;
+export type WorkspaceTrajectoryDiffusionWindowSelectionRef = WorkspaceSelectionRefFor<
+  "TRAJECTORY_DIFFUSION_WINDOW", WorkspaceN4CommonFields | "diffusionWindowId", WorkspaceN4CommonFields | "diffusionWindowId"
+>;
+export type WorkspaceTrajectoryDiffusionDiagnosticSelectionRef = WorkspaceSelectionRefFor<
+  "TRAJECTORY_DIFFUSION_DIAGNOSTIC", WorkspaceN4CommonFields | "diffusionWindowId" | "diffusionDiagnosticId", WorkspaceN4CommonFields | "diffusionWindowId" | "diffusionDiagnosticId"
+>;
+
 export type WorkspacePhononQPointSelectionRef = WorkspaceSelectionRefFor<
   "PHONON_Q_POINT",
   "datasetId" | "datasetVersion" | "phononArtifactId" | "artifactChecksum" | "qPointId",
@@ -1730,6 +1796,12 @@ export type WorkspaceSelectionRef =
   | WorkspaceXrdMatchSelectionRef
   | WorkspaceTrajectoryAtomSelectionRef
   | WorkspaceTrajectoryFrameSelectionRef
+  | WorkspaceTrajectoryRdfPairSelectionRef
+  | WorkspaceTrajectoryRdfBinSelectionRef
+  | WorkspaceTrajectoryMsdSpeciesSelectionRef
+  | WorkspaceTrajectoryMsdLagSelectionRef
+  | WorkspaceTrajectoryDiffusionWindowSelectionRef
+  | WorkspaceTrajectoryDiffusionDiagnosticSelectionRef
   | WorkspacePhononQPointSelectionRef
   | WorkspacePhononBranchSelectionRef
   | WorkspaceReciprocalPointSelectionRef

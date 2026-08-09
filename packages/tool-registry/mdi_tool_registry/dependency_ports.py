@@ -37,6 +37,10 @@ _N2_MAX_BYTES = 16_777_216
 _THEORETICAL_XRD_CONTRACT = "phase10e4.xrd_pattern.v1"
 _N3_CONTRACT = "phase10n3.experimental_xrd_comparison.v1"
 _N3_MAX_BYTES = 33_554_432
+_N4_RDF_CONTRACT = "phase10n4.trajectory_rdf.v1"
+_N4_MSD_CONTRACT = "phase10n4.trajectory_msd.v1"
+_N4_DIFFUSION_CONTRACT = "phase10n4.trajectory_diffusion.v1"
+_N4_MAX_BYTES = 33_554_432
 
 
 def build_tool_artifact_port_metadata(tool: Any) -> ToolArtifactPortMetadata:
@@ -172,6 +176,13 @@ def build_tool_artifact_port_metadata(tool: Any) -> ToolArtifactPortMetadata:
                 requiredProvenanceFields=["schemaVersion", "sourceArtifactChecksum", "sourceArtifactId", "toolCallId", "toolId"],
             )
         ]
+    elif tool.toolId == "trajectory.rdf":
+        output_ports = [ArtifactOutputPort(portId="trajectory-rdf", artifactKind=ArtifactType.table_json, contractFamily="phase10n4.trajectory_rdf", contractVersions=[_N4_RDF_CONTRACT], mediaTypes=_JSON_MEDIA, maxBytes=_N4_MAX_BYTES, requiredProvenanceFields=["schemaVersion", "toolCallId", "toolId", "trajectoryHash"])]
+    elif tool.toolId == "trajectory.msd":
+        output_ports = [ArtifactOutputPort(portId="trajectory-msd", artifactKind=ArtifactType.table_json, contractFamily="phase10n4.trajectory_msd", contractVersions=[_N4_MSD_CONTRACT], mediaTypes=_JSON_MEDIA, maxBytes=_N4_MAX_BYTES, requiredProvenanceFields=["schemaVersion", "toolCallId", "toolId", "trajectoryHash"])]
+    elif tool.toolId == "trajectory.diffusion":
+        input_ports = [ArtifactInputPort(portId="msd", acceptedArtifactKinds=[ArtifactType.table_json], acceptedContractVersions=[_N4_MSD_CONTRACT], mediaTypes=_JSON_MEDIA, maxBytes=_N4_MAX_BYTES, requiredSemanticRoles=["trajectory_msd"], inputFieldRole="msd_artifact", inputObjectType="Trajectory")]
+        output_ports = [ArtifactOutputPort(portId="trajectory-diffusion", artifactKind=ArtifactType.table_json, contractFamily="phase10n4.trajectory_diffusion", contractVersions=[_N4_DIFFUSION_CONTRACT], mediaTypes=_JSON_MEDIA, maxBytes=_N4_MAX_BYTES, requiredProvenanceFields=["schemaVersion", "sourceMsdArtifactChecksum", "toolCallId", "toolId"])]
     return ToolArtifactPortMetadata(
         toolId=tool.toolId,
         toolVersion=tool.version,

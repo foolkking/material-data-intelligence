@@ -1492,3 +1492,16 @@ Data Detection -> Data Quality -> Plan Generated -> Tool Started -> Artifact Rea
   bounded summary and declarative Recipe are secondary inert products.
 - Adapter: `ExperimentalXrdComparisonAdapter`; detector/matcher are internal
   components and are not Registry tools.
+
+## Phase 10N-4 Trajectory RDF / MSD / Diffusion
+
+- Registry count is 60 after exactly three additions:
+  `trajectory.rdf@0.1.0`, `trajectory.msd@0.1.0`, and
+  `trajectory.diffusion@0.1.0`.
+- RDF and MSD consume one exact `phase10g.trajectory.v1` resource. Diffusion
+  accepts only `phase10n4.trajectory_msd.v1` through the exact `msd` input port.
+- Artifact contracts are `phase10n4.trajectory_rdf.v1`,
+  `phase10n4.trajectory_msd.v1`, and `phase10n4.trajectory_diffusion.v1`.
+- Unwrapping, species/window behavior, directional MSD and OLS fitting are
+  internal bounded components, not additional Tools. Static `structure.rdf`
+  remains unchanged. N5 remains reviewer-gated.

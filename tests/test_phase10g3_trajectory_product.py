@@ -21,7 +21,7 @@ from mdi_artifact_core import (
     validate_trajectory_manifest,
     validate_trajectory_summary,
 )
-from mdi_llm import MockLLMProvider, PlannerRequest
+from mdi_llm import LLMProviderError, MockLLMProvider, PlannerRequest
 from mdi_material_parsers import parse_file
 from mdi_schemas import DataProfile, MaterialObjectType, ToolExecutionRequest
 from mdi_tool_registry import load_manifests
@@ -178,7 +178,14 @@ def test_mock_planner_routes_viewer_intent_to_formal_tool(prompt: str) -> None:
     ),
 )
 def test_mock_planner_does_not_route_unsupported_analysis_or_editing(prompt: str) -> None:
-    assert _planner_plan(prompt)["steps"][0]["toolId"] != TRAJECTORY_VIEWER_TOOL_ID
+    try:
+        plan = _planner_plan(prompt)
+    except LLMProviderError:
+        # N4 diffusion requests without an explicit physical-time fit window
+        # now follow the planner's clarification contract.
+        assert "diffusion" in prompt.casefold()
+        return
+    assert plan["steps"][0]["toolId"] != TRAJECTORY_VIEWER_TOOL_ID
 
 
 def test_static_structure_viewer_and_trajectory_viewer_remain_separate() -> None:

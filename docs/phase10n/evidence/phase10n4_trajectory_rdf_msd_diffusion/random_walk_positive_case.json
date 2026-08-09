@@ -1,0 +1,6 @@
+{
+  "actualD": 0.1,
+  "diagnostic": "DIFFUSIVE_WINDOW_ACCEPTED",
+  "expectedD": 0.1,
+  "syntheticMeanMsdSlopeAngstrom2PerPs": 0.6
+}

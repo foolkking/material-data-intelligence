@@ -319,6 +319,11 @@ def test_structure_trajectory_phonon_and_volumetric_resource_bridges(repo_root, 
     capabilities = {capability for resource in profile.resourceSemantics for capability in resource.capabilities}
     assert capabilities >= {"composition", "structure", "trajectory", "phonon", "volumetric"}
     assert profile.trajectorySummary["frameCount"] > 1
+    assert profile.profileContractVersion == "2.3"
+    assert profile.trajectoryReadiness is not None
+    assert profile.trajectoryReadiness.status == "READY"
+    assert profile.trajectoryReadiness.resources[0].stableAtomIdentity is True
+    assert profile.trajectoryReadiness.resources[0].timeMonotonic is True
     assert profile.phononSummary["resourceKinds"] == ["PhononBand"]
     assert _readiness(profile, "trajectory_visualization").dataStatus == "READY"
     assert _readiness(profile, "phonon_visualization").dataStatus == "READY"

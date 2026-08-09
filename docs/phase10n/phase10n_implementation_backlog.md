@@ -89,3 +89,6 @@ The registry below is the only canonical N3 definition in this document; other r
 10. `N3-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N4_REVIEWER_GATE` - exact lifecycle, Registry 57 and N4 reviewer gate.
 
 N3 adds exactly one Tool, `structure.experimental_xrd_comparison@0.1.0`; detector and matcher are internal Adapter components. Existing `structure.xrd` / `phase10e4.xrd_pattern.v1` is the sole theoretical authority. N3 does not refine, shift, identify phases, or create an N4 task.
+# Phase 10N-4 Authorized Implementation
+
+N4 is admitted as one task. It adds exactly `trajectory.rdf@0.1.0`, `trajectory.msd@0.1.0`, and `trajectory.diffusion@0.1.0` (Registry 57 to 60) and is governed by N4-A01 through N4-A10 in `phase10n_acceptance_and_test_plan.md`. Diffusion consumes only an exact persisted MSD Artifact. N5 is reviewer-gated, not queued, and not executable.

@@ -1158,3 +1158,7 @@ unless also listed in Active Questions. Future-only topics are governed by
 - Zero-shift fitting, smoothing, background fitting, Rietveld refinement and
   phase identification remain explicitly outside N3.
 - Phase 10N-4 remains a reviewer gate; no executable N4 task exists.
+## Phase 10N-4 Closure
+
+- No implementation-critical N4 question remains after R0. Variable-cell MSD, irregular-time diffusion, COM drift correction, automatic fit-window selection, VACF/Green-Kubo, Arrhenius analysis and reactive trajectories are explicitly deferred.
+- Completion-record and queue-archive exact-SHA CI remain lifecycle work after implementation CI. Phase 10N-5 remains reviewer-gated and absent from `TASKS.md`.

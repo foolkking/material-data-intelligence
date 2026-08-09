@@ -1,0 +1,10 @@
+{
+  "BALLISTIC_FIXTURE_DIFFUSION_ACCEPTED": false,
+  "diffusionEstimate": {
+    "available": false,
+    "qualifiedOverSelectedWindow": false,
+    "unit": "angstrom^2/picosecond",
+    "value": null
+  },
+  "status": "BALLISTIC_LIKE_WINDOW"
+}

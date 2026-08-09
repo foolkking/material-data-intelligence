@@ -142,6 +142,8 @@ class MockLLMProvider:
             plan = _mock_phonon_dos_plan(request)
         elif _should_generate_phonon_band(request, tools, data_profile):
             plan = _mock_phonon_band_plan(request)
+        elif trajectory_analytics_tools := _select_trajectory_analytics_tools(request, tools, data_profile):
+            plan = _mock_trajectory_analytics_plan(request, trajectory_analytics_tools)
         elif _should_generate_trajectory_viewer(request, tools, data_profile):
             plan = _mock_trajectory_viewer_plan(request)
         elif _should_generate_volumetric_data(request, tools, data_profile):
@@ -1431,6 +1433,74 @@ def _select_experimental_xrd_tools(
         return []
     selected = ["structure.xrd", "structure.experimental_xrd_comparison"]
     return selected if all(_has_tool(tools, tool_id) for tool_id in selected) else []
+
+
+def _select_trajectory_analytics_tools(
+    request: PlannerRequest,
+    tools: list[RegisteredTool],
+    data_profile: DataProfile,
+) -> list[str]:
+    if not _has_trajectory_input(data_profile):
+        return []
+    prompt = request.user_prompt.casefold()
+    if any(marker in prompt for marker in ("diffusion", "diffusivity")):
+        selected = ["trajectory.msd", "trajectory.diffusion"]
+    elif any(marker in prompt for marker in ("mean squared displacement", "directional msd", " msd")):
+        selected = ["trajectory.msd"]
+    elif any(marker in prompt for marker in ("trajectory rdf", "radial distribution", "pair distribution", " rdf")):
+        selected = ["trajectory.rdf"]
+    else:
+        return []
+    return selected if all(_has_tool(tools, tool_id) for tool_id in selected) else []
+
+
+def _mock_trajectory_analytics_plan(request: PlannerRequest, tool_ids: list[str]) -> dict[str, Any]:
+    prompt = request.user_prompt.casefold()
+    steps: list[dict[str, Any]] = []
+    expected: list[dict[str, str]] = []
+    if tool_ids == ["trajectory.rdf"]:
+        params: dict[str, Any] = {"r_min_angstrom": 0.0, "r_max_angstrom": 2.0, "bin_count": 200, "window_mode": "whole", "frame_start": 0, "frame_end": 10000, "time_start_ps": 0.0, "time_end_ps": 1e12, "max_pair_evaluations": 2_000_000}
+        species = re.search(r"\b([A-Z][a-z]?)\s*[-/]\s*([A-Z][a-z]?)\b", request.user_prompt)
+        if species:
+            params.update({"species_a": species.group(1), "species_b": species.group(2)})
+        steps.append(_trajectory_analytics_step("step_001", "trajectory.rdf", params, "Compute a bounded trajectory-frame-averaged RDF."))
+        expected.extend(_trajectory_expected("step_001", "trajectory_rdf"))
+    else:
+        msd_params: dict[str, Any] = {"max_lag_count": 512, "origin_stride": 1, "max_origins_per_lag": 4096, "drift_correction": "none"}
+        species = re.search(r"(?:for|of)\s+([A-Z][a-z]?)\b", request.user_prompt)
+        if species:
+            msd_params["species"] = species.group(1)
+        steps.append(_trajectory_analytics_step("step_001", "trajectory.msd", msd_params, "Unwrap the exact trajectory server-side and compute bounded multiple-time-origin MSD."))
+        if "trajectory.diffusion" in tool_ids:
+            expected.append({"name": "trajectory_msd.json", "type": "table_json", "fromStepId": "step_001"})
+            window = re.search(r"(?:from|between)\s+([0-9]+(?:\.[0-9]+)?)\s*ps\s+(?:to|and)\s+([0-9]+(?:\.[0-9]+)?)\s*ps", prompt)
+            if window is None:
+                raise LLMProviderError("Diffusion estimation requires an explicit fit start and end time in ps.")
+            diffusion_params = {"fit_start_time_ps": float(window.group(1)), "fit_end_time_ps": float(window.group(2)), "direction": "total", "minimum_fit_points": 5, "minimum_fit_duration_ps": 1.0, "minimum_origin_coverage": 0.2, "minimum_r_squared": 0.9, "alpha_min": 0.8, "alpha_max": 1.2}
+            steps.append(_trajectory_analytics_step("step_002", "trajectory.diffusion", diffusion_params, "Fit the exact persisted MSD Artifact over the explicitly selected window."))
+            expected.extend(_trajectory_expected("step_002", "trajectory_diffusion"))
+        else:
+            expected.extend(_trajectory_expected("step_001", "trajectory_msd"))
+    return {
+        "schemaVersion": "0.1", "goal": request.user_prompt, "datasetId": request.dataset_id,
+        "profileId": request.profile_id, "toolRegistryVersion": request.tool_registry_version,
+        "assumptions": ["Trajectory identity, physical time, cell, PBC, and coordinate semantics are explicit."],
+        "warnings": ["Diffusion is qualified only over an explicit fit window under persisted diagnostics."],
+        "steps": steps, "expectedArtifacts": expected,
+    }
+
+
+def _trajectory_analytics_step(step_id: str, tool_id: str, params: dict[str, Any], purpose: str) -> dict[str, Any]:
+    return {"stepId": step_id, "toolId": tool_id, "purpose": purpose, "reason": "The request and exact trajectory resource satisfy the bounded N4 contract.", "inputRefs": [{"refType": "normalized_object", "ref": "trajectory", "objectType": "Trajectory"}], "params": params, "output": {"artifactTypes": ["table_json", "plotly_json", "summary_md", "recipe_json"]}}
+
+
+def _trajectory_expected(step_id: str, stem: str) -> list[dict[str, str]]:
+    return [
+        {"name": f"{stem}.json", "type": "table_json", "fromStepId": step_id},
+        {"name": f"{stem}_plot.json", "type": "plotly_json", "fromStepId": step_id},
+        {"name": "summary.md", "type": "summary_md", "fromStepId": step_id},
+        {"name": "recipe.json", "type": "recipe_json", "fromStepId": step_id},
+    ]
 
 
 def _mock_experimental_xrd_plan(

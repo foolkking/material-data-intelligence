@@ -2062,3 +2062,10 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   / CI `31288217113` remains immutable history; corrected completion
   `c7547903faef191c97f35ca0ae2ad1ad1678193f` / CI `31288792343` passed.
 - The N3 queue block is removed by the archive candidate; N4 remains reviewer-gated.
+## 2026-08-09 Phase 10N-4 Trajectory RDF / MSD / Diffusion
+
+- Verified N3 archive `0a33d84e` and admitted one N4 task.
+- Closed N4-R0 with exact trajectory identity, time/cell/PBC, ASE geometric RDF minimum images, NumPy unwrapping/MSD/OLS algorithms, diagnostic thresholds, Artifact schemas, errors, tolerances and caps.
+- Implemented three exact Tools, DataProfile 2.3, Eligibility/Planner metadata, typed MSD dependency, Runtime Adapters, Workspace/Selection, interpretation, Report/Recipe and evidence.
+- Registry is 60; migration remains 0007; dependency and lockfiles are unchanged; N5 is not queued.
+- Local closure passed backend `1221 passed`, frontend `438 passed`, typecheck, production build, Chromium/Firefox/WebKit/390x844 browser evidence, lock, evidence manifest and secret scan. Docker is unavailable locally; exact-SHA CI owns the required 46/46 PostgreSQL/Redis/MinIO result. The configured npm audit mirror remains unavailable with `404_NOT_IMPLEMENTED`.

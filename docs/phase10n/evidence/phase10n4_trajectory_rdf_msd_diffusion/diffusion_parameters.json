@@ -1,0 +1,11 @@
+{
+  "alpha_max": 1.2,
+  "alpha_min": 0.8,
+  "direction": "total",
+  "fit_end_time_ps": 8.0,
+  "fit_start_time_ps": 1.0,
+  "minimum_fit_duration_ps": 1.0,
+  "minimum_fit_points": 5,
+  "minimum_origin_coverage": 0.2,
+  "minimum_r_squared": 0.9
+}

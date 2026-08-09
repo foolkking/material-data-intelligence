@@ -105,6 +105,12 @@
           "XRD_MATCH",
           "TRAJECTORY_ATOM",
           "TRAJECTORY_FRAME",
+          "TRAJECTORY_RDF_PAIR",
+          "TRAJECTORY_RDF_BIN",
+          "TRAJECTORY_MSD_SPECIES",
+          "TRAJECTORY_MSD_LAG",
+          "TRAJECTORY_DIFFUSION_WINDOW",
+          "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
           "PHONON_Q_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
@@ -384,6 +390,84 @@
             ],
             "default": null,
             "title": "Frameid"
+          },
+          "speciesPairId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Speciespairid"
+          },
+          "rdfBinId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Rdfbinid"
+          },
+          "msdSeriesId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Msdseriesid"
+          },
+          "msdLagId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Msdlagid"
+          },
+          "diffusionWindowId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Diffusionwindowid"
+          },
+          "diffusionDiagnosticId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Diffusiondiagnosticid"
           },
           "phononArtifactId": {
             "anyOf": [
@@ -1280,6 +1364,12 @@
           "XRD_MATCH",
           "TRAJECTORY_ATOM",
           "TRAJECTORY_FRAME",
+          "TRAJECTORY_RDF_PAIR",
+          "TRAJECTORY_RDF_BIN",
+          "TRAJECTORY_MSD_SPECIES",
+          "TRAJECTORY_MSD_LAG",
+          "TRAJECTORY_DIFFUSION_WINDOW",
+          "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
           "PHONON_Q_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
@@ -1559,6 +1649,84 @@
             ],
             "default": null,
             "title": "Frameid"
+          },
+          "speciesPairId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Speciespairid"
+          },
+          "rdfBinId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Rdfbinid"
+          },
+          "msdSeriesId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Msdseriesid"
+          },
+          "msdLagId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Msdlagid"
+          },
+          "diffusionWindowId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Diffusionwindowid"
+          },
+          "diffusionDiagnosticId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Diffusiondiagnosticid"
           },
           "phononArtifactId": {
             "anyOf": [
@@ -2146,6 +2314,12 @@
           "XRD_MATCH",
           "TRAJECTORY_ATOM",
           "TRAJECTORY_FRAME",
+          "TRAJECTORY_RDF_PAIR",
+          "TRAJECTORY_RDF_BIN",
+          "TRAJECTORY_MSD_SPECIES",
+          "TRAJECTORY_MSD_LAG",
+          "TRAJECTORY_DIFFUSION_WINDOW",
+          "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
           "PHONON_Q_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
@@ -2577,6 +2751,12 @@
           "XRD_MATCH",
           "TRAJECTORY_ATOM",
           "TRAJECTORY_FRAME",
+          "TRAJECTORY_RDF_PAIR",
+          "TRAJECTORY_RDF_BIN",
+          "TRAJECTORY_MSD_SPECIES",
+          "TRAJECTORY_MSD_LAG",
+          "TRAJECTORY_DIFFUSION_WINDOW",
+          "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
           "PHONON_Q_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
@@ -2856,6 +3036,84 @@
             ],
             "default": null,
             "title": "Frameid"
+          },
+          "speciesPairId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Speciespairid"
+          },
+          "rdfBinId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Rdfbinid"
+          },
+          "msdSeriesId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Msdseriesid"
+          },
+          "msdLagId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Msdlagid"
+          },
+          "diffusionWindowId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Diffusionwindowid"
+          },
+          "diffusionDiagnosticId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Diffusiondiagnosticid"
           },
           "phononArtifactId": {
             "anyOf": [
@@ -3226,6 +3484,12 @@
           "XRD_MATCH",
           "TRAJECTORY_ATOM",
           "TRAJECTORY_FRAME",
+          "TRAJECTORY_RDF_PAIR",
+          "TRAJECTORY_RDF_BIN",
+          "TRAJECTORY_MSD_SPECIES",
+          "TRAJECTORY_MSD_LAG",
+          "TRAJECTORY_DIFFUSION_WINDOW",
+          "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
           "PHONON_Q_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
@@ -3505,6 +3769,84 @@
         ],
         "default": null,
         "title": "Frameid"
+      },
+      "speciesPairId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Speciespairid"
+      },
+      "rdfBinId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Rdfbinid"
+      },
+      "msdSeriesId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Msdseriesid"
+      },
+      "msdLagId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Msdlagid"
+      },
+      "diffusionWindowId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Diffusionwindowid"
+      },
+      "diffusionDiagnosticId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Diffusiondiagnosticid"
       },
       "phononArtifactId": {
         "anyOf": [

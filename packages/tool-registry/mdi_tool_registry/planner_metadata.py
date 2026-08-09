@@ -82,6 +82,8 @@ def _intents(tool_id: str) -> list[ScientificIntent]:
         return [ScientificIntent.reciprocal_space_analysis, ScientificIntent.visualization]
     if tool_id in {"structure.trajectory_viewer", "structure.trajectory_import", "trajectory.viewer"}:
         return [ScientificIntent.trajectory_analysis, ScientificIntent.visualization]
+    if tool_id in {"trajectory.rdf", "trajectory.msd", "trajectory.diffusion"}:
+        return [ScientificIntent.trajectory_analysis, ScientificIntent.comparison, ScientificIntent.visualization]
     if tool_id == "structure.volumetric_data":
         return [ScientificIntent.volumetric_analysis, ScientificIntent.visualization]
     if tool_id.startswith("phonon."):
@@ -125,6 +127,8 @@ def _needs(tool_id: str) -> list[CapabilityNeed]:
     if tool_id == "structure.brillouin_zone":
         return [CapabilityNeed.structure_resource, CapabilityNeed.reciprocal_space_resource]
     if tool_id in {"structure.trajectory_viewer", "structure.trajectory_import", "trajectory.viewer"}:
+        return [CapabilityNeed.trajectory_resource]
+    if tool_id in {"trajectory.rdf", "trajectory.msd", "trajectory.diffusion"}:
         return [CapabilityNeed.trajectory_resource]
     if tool_id == "structure.volumetric_data":
         return [CapabilityNeed.volumetric_resource]

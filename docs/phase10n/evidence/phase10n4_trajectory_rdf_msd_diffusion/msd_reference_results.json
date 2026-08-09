@@ -1,0 +1,42 @@
+{
+  "checksum": "374ce681f2e1e22a49c8f3ea5c360f3659046ff5f95ae4c68549ac3fdb7fd82e",
+  "directional": {
+    "x": [
+      0.0625,
+      0.25,
+      0.5625
+    ],
+    "y": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "z": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "lagIds": [
+    "msd-lag:627744f3cc487b274fae8304dd30a1d43f5f0fd308e0420275bf38d5a5a1d63e",
+    "msd-lag:93fe5867561c300ac2c7266963949aa4301d400d9eb5e072a2a98091cd5294bf",
+    "msd-lag:98e1536b9bf679a8881df3c6515e9332a17cae745db632ae292eb1e63799bc0c"
+  ],
+  "lagTimesPs": [
+    0.002,
+    0.004,
+    0.006
+  ],
+  "originCounts": [
+    3,
+    2,
+    1
+  ],
+  "seriesId": "msd-series:24aada652006e7a9a3bbe01bc219d1f8d1ef2ddcfa66233da187e46dc6747b1f",
+  "status": "SYNTHETIC_CONTROLLED",
+  "total": [
+    0.0625,
+    0.25,
+    0.5625
+  ]
+}

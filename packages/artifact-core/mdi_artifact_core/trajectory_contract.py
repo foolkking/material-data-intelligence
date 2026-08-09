@@ -126,7 +126,11 @@ def validate_trajectory(payload: Any, *, raw_size_bytes: int | None = None) -> T
         errors.add("TRAJECTORY_LATTICE_MODE_INVALID")
     if payload.get("atom_identity_mode") != "stable_index":
         errors.add("TRAJECTORY_ATOM_IDENTITY_MODE_INVALID")
-    if payload.get("periodic_boundary") not in ([True, True, True], [False, False, False]):
+    if not (
+        isinstance(payload.get("periodic_boundary"), list)
+        and len(payload["periodic_boundary"]) == 3
+        and all(isinstance(item, bool) for item in payload["periodic_boundary"])
+    ):
         errors.add("TRAJECTORY_PERIODIC_BOUNDARY_INVALID")
 
     if raw_size_bytes is None:

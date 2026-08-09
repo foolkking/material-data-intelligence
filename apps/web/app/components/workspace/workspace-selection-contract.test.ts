@@ -104,6 +104,7 @@ function selection(kind: WorkspaceSelectionKind): WorkspaceSelectionRef {
     "fieldLocator", "interpretationId", "interpretationHash", "claimId",
     "environmentId", "polyhedronId", "vertexId", "faceId", "geometryReferenceId",
     "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId",
+    "speciesPairId", "rdfBinId", "msdSeriesId", "msdLagId", "diffusionWindowId", "diffusionDiagnosticId",
   ].map((field) => [field, null]));
   Object.assign(values, {
     DATASET_SAMPLE: { datasetId: "dataset_1", datasetVersion: "v1", objectId: "object_1", sampleRef: "sample_1" },
@@ -119,6 +120,12 @@ function selection(kind: WorkspaceSelectionKind): WorkspaceSelectionRef {
     XRD_MATCH: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_n3", artifactChecksum: HASH, experimentalResourceId: "experimental_xrd_1", theoreticalArtifactId: "artifact_xrd", matchId: "xrd-match:1" },
     TRAJECTORY_ATOM: { datasetId: "dataset_1", datasetVersion: "v1", trajectoryId: "trajectory_1", atomId: "atom_1" },
     TRAJECTORY_FRAME: { datasetId: "dataset_1", datasetVersion: "v1", trajectoryId: "trajectory_1", frameId: "frame_1" },
+    TRAJECTORY_RDF_PAIR: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", trajectoryId: "trajectory_1", artifactId: "artifact_rdf", artifactChecksum: HASH, speciesPairId: "pair_Li-O" },
+    TRAJECTORY_RDF_BIN: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", trajectoryId: "trajectory_1", artifactId: "artifact_rdf", artifactChecksum: HASH, speciesPairId: "pair_Li-O", rdfBinId: "bin_12" },
+    TRAJECTORY_MSD_SPECIES: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", trajectoryId: "trajectory_1", artifactId: "artifact_msd", artifactChecksum: HASH, msdSeriesId: "species_Li" },
+    TRAJECTORY_MSD_LAG: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", trajectoryId: "trajectory_1", artifactId: "artifact_msd", artifactChecksum: HASH, msdSeriesId: "species_Li", msdLagId: "lag_12" },
+    TRAJECTORY_DIFFUSION_WINDOW: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", trajectoryId: "trajectory_1", artifactId: "artifact_diffusion", artifactChecksum: HASH, diffusionWindowId: "window_2-8ps" },
+    TRAJECTORY_DIFFUSION_DIAGNOSTIC: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", trajectoryId: "trajectory_1", artifactId: "artifact_diffusion", artifactChecksum: HASH, diffusionWindowId: "window_2-8ps", diffusionDiagnosticId: "DIFFUSIVE_WINDOW_ACCEPTED" },
     PHONON_Q_POINT: { datasetId: "dataset_1", datasetVersion: "v1", phononArtifactId: "artifact_phonon", artifactChecksum: HASH, qPointId: "qpoint_1" },
     PHONON_BRANCH: { datasetId: "dataset_1", datasetVersion: "v1", phononArtifactId: "artifact_phonon", artifactChecksum: HASH, branchId: "branch_1" },
     RECIPROCAL_POINT: { datasetId: "dataset_1", datasetVersion: "v1", reciprocalArtifactId: "artifact_bz", artifactChecksum: HASH, reciprocalPointId: "point_gamma" },

@@ -1,0 +1,7 @@
+{
+  "drift_correction": "none",
+  "max_lag_count": 3,
+  "max_origins_per_lag": 4096,
+  "origin_stride": 1,
+  "species": null
+}

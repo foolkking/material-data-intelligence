@@ -22,6 +22,12 @@ export const WORKSPACE_SELECTION_KINDS = [
   "XRD_MATCH",
   "TRAJECTORY_ATOM",
   "TRAJECTORY_FRAME",
+  "TRAJECTORY_RDF_PAIR",
+  "TRAJECTORY_RDF_BIN",
+  "TRAJECTORY_MSD_SPECIES",
+  "TRAJECTORY_MSD_LAG",
+  "TRAJECTORY_DIFFUSION_WINDOW",
+  "TRAJECTORY_DIFFUSION_DIAGNOSTIC",
   "PHONON_Q_POINT",
   "PHONON_BRANCH",
   "RECIPROCAL_POINT",
@@ -48,6 +54,7 @@ const VALUE_FIELDS = [
   "claimId",
   "environmentId", "polyhedronId", "vertexId", "faceId", "geometryReferenceId",
   "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId",
+  "speciesPairId", "rdfBinId", "msdSeriesId", "msdLagId", "diffusionWindowId", "diffusionDiagnosticId",
 ] as const;
 
 type SelectionValueField = (typeof VALUE_FIELDS)[number];
@@ -66,6 +73,12 @@ const REQUIRED: Record<WorkspaceSelectionKind, readonly SelectionValueField[]> =
   XRD_MATCH: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "matchId"],
   TRAJECTORY_ATOM: ["datasetId", "datasetVersion", "trajectoryId", "atomId"],
   TRAJECTORY_FRAME: ["datasetId", "datasetVersion", "trajectoryId", "frameId"],
+  TRAJECTORY_RDF_PAIR: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "speciesPairId"],
+  TRAJECTORY_RDF_BIN: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "speciesPairId", "rdfBinId"],
+  TRAJECTORY_MSD_SPECIES: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "msdSeriesId"],
+  TRAJECTORY_MSD_LAG: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "msdSeriesId", "msdLagId"],
+  TRAJECTORY_DIFFUSION_WINDOW: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId"],
+  TRAJECTORY_DIFFUSION_DIAGNOSTIC: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId", "diffusionDiagnosticId"],
   PHONON_Q_POINT: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId"],
   PHONON_BRANCH: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "branchId"],
   RECIPROCAL_POINT: ["datasetId", "datasetVersion", "reciprocalArtifactId", "artifactChecksum", "reciprocalPointId"],
@@ -89,6 +102,12 @@ const ALLOWED: Record<WorkspaceSelectionKind, readonly SelectionValueField[]> = 
   XRD_MATCH: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId"],
   TRAJECTORY_ATOM: ["datasetId", "datasetVersion", "trajectoryId", "atomId", "artifactId", "artifactChecksum"],
   TRAJECTORY_FRAME: ["datasetId", "datasetVersion", "trajectoryId", "frameId", "artifactId", "artifactChecksum"],
+  TRAJECTORY_RDF_PAIR: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "speciesPairId"],
+  TRAJECTORY_RDF_BIN: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "speciesPairId", "rdfBinId"],
+  TRAJECTORY_MSD_SPECIES: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "msdSeriesId"],
+  TRAJECTORY_MSD_LAG: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "msdSeriesId", "msdLagId"],
+  TRAJECTORY_DIFFUSION_WINDOW: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId"],
+  TRAJECTORY_DIFFUSION_DIAGNOSTIC: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId", "diffusionDiagnosticId"],
   PHONON_Q_POINT: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId", "branchId"],
   PHONON_BRANCH: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "branchId", "qPointId"],
   RECIPROCAL_POINT: ["datasetId", "datasetVersion", "reciprocalArtifactId", "artifactChecksum", "reciprocalPointId", "segmentId"],
@@ -105,6 +124,7 @@ const ID_FIELDS = new Set<SelectionValueField>([
   "bundleId", "evidenceItemId", "sourceArtifactId", "interpretationId", "claimId",
   "environmentId", "polyhedronId", "geometryReferenceId",
   "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId",
+  "speciesPairId", "rdfBinId", "msdSeriesId", "msdLagId", "diffusionWindowId", "diffusionDiagnosticId",
 ]);
 const N2_ID_FIELDS = new Set<SelectionValueField>(["vertexId", "faceId"]);
 const HASH_FIELDS = new Set<SelectionValueField>([

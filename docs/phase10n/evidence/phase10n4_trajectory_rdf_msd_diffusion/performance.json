@@ -1,0 +1,22 @@
+{
+  "caps": {
+    "artifactBytes": 33554432,
+    "atoms": 5000,
+    "bins": 2048,
+    "fitPoints": 10000,
+    "frames": 200,
+    "lags": 2048,
+    "originsPerLag": 4096,
+    "pairEvaluations": 2000000
+  },
+  "developmentMeasurementNotCapacityGuarantee": true,
+  "fixture": {
+    "atoms": 2,
+    "frames": 4
+  },
+  "seconds": {
+    "diffusion": 0.013955000031273812,
+    "msd": 0.013561900006607175,
+    "rdf": 0.023070800001733005
+  }
+}

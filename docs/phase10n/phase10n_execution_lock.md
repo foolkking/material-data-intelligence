@@ -100,3 +100,6 @@ Detection uses locked SciPy 1.17.1 `find_peaks` with bounded parameters and no m
 feedback. Matching is deterministic, position-only, one-to-one and tolerance bounded.
 Zero matches are valid. No pattern shift, refinement, phase identification, migration,
 database/API family, dependency, lockfile, LLM or N4 executable task is allowed.
+# Phase 10N-4 Execution Lock
+
+Authorized phase: Phase 10N-4 only. Tool inventory is exactly `trajectory.rdf@0.1.0`, `trajectory.msd@0.1.0`, and `trajectory.diffusion@0.1.0`; expected Registry count is 60. Canonical acceptance is N4-A01 through N4-A10. Database schema, migration head, public API family, dependencies and lockfile remain unchanged. Wrapped coordinates are never MSD authority; Diffusion never reads trajectory coordinates or recomputes MSD; fit windows are explicit; N5 remains `REVIEWER_GATE / NOT QUEUED / NOT EXECUTABLE`.

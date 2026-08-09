@@ -2069,3 +2069,22 @@ Workspace Selection 1.0 additively accepts `EXPERIMENTAL_XRD_PEAK`,
 `THEORETICAL_XRD_PEAK` and `XRD_MATCH`. No migration, public API family,
 dependency, lockfile, scientific frontend authority or Recipe execution
 authority changes.
+
+## Phase 10N-4 Trajectory Analytics Contracts
+
+DataProfile 2.3 additively exposes exact trajectory readiness: immutable
+resource/hash, frame and atom counts, stable atom/species identity,
+coordinate/wrapping/unit, PBC/cell mode, and time source/unit/monotonicity.
+Historical profiles remain readable and no database migration is required.
+
+The Tool contracts are `trajectory.rdf@0.1.0`, `trajectory.msd@0.1.0`, and
+`trajectory.diffusion@0.1.0`. Their strict table Artifact contracts are
+`phase10n4.trajectory_rdf.v1`, `phase10n4.trajectory_msd.v1`, and
+`phase10n4.trajectory_diffusion.v1`. AnalysisPlan 0.2 binds the MSD output to
+the diffusion `msd` input by Artifact ID/checksum/contract and blocks the
+consumer when the producer fails.
+
+Workspace Selection 1.0 additively supports exact trajectory RDF pair/bin,
+MSD species/lag, and diffusion fit-window/diagnostic identities. Each binds
+dataset version, Job, trajectory hash, Artifact ID/checksum, and persisted
+sub-result identity; chart pixels and table rows are never persisted authority.

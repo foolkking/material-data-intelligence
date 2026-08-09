@@ -53,6 +53,7 @@ from .trajectory import (
     TrajectoryImportAdapter,
     TrajectoryViewerAdapter,
 )
+from .trajectory_analytics import TrajectoryDiffusionAdapter, TrajectoryMsdAdapter, TrajectoryRdfAdapter
 from .volumetric import (
     VOLUMETRIC_ADAPTER_VERSION,
     VOLUMETRIC_ARTIFACT_TYPES,
@@ -100,6 +101,9 @@ __all__ = [
     "TRAJECTORY_VIEWER_CAPABILITIES",
     "TRAJECTORY_VIEWER_TOOL_ID",
     "TrajectoryViewerAdapter",
+    "TrajectoryRdfAdapter",
+    "TrajectoryMsdAdapter",
+    "TrajectoryDiffusionAdapter",
     "UNCERTAINTY_SCHEMA_VERSION",
     "UNCERTAINTY_TOOL_ID",
     "UncertaintyEvaluationAdapter",

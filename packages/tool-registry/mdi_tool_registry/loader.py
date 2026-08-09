@@ -124,6 +124,19 @@ def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
 
 def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
     tool_id = entry["tool_id"]
+    if tool_id in {"trajectory.rdf", "trajectory.msd", "trajectory.diffusion"}:
+        return {
+            "maxFrames": 2000,
+            "maxAtoms": 2000,
+            "maxSpecies": 64,
+            "maxRdfPairs": 2_000_000,
+            "maxRdfBins": 2048,
+            "maxMsdLags": 2048,
+            "maxTimeOrigins": 4096,
+            "maxFitPoints": 4096,
+            "maxArtifactBytes": 33_554_432,
+            "timeoutSec": 120,
+        }
     if tool_id == "dataset.composition_space":
         return {
             "maxRows": 100000,
@@ -331,6 +344,10 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
 
 def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
     tool_id = entry["tool_id"]
+    if tool_id in {"trajectory.rdf", "trajectory.msd"}:
+        return ToolInputSchema(periodicity="any", inputOptions=[ToolInputOption(name="validated_trajectory", requiredObjectTypes=[MaterialObjectType.Trajectory], description="Use exactly one immutable phase10g trajectory resource." )])
+    if tool_id == "trajectory.diffusion":
+        return ToolInputSchema(periodicity="any", inputOptions=[ToolInputOption(name="persisted_msd_artifact", requiredObjectTypes=[MaterialObjectType.Trajectory], description="Use exactly one persisted phase10n4 trajectory MSD Artifact binding.")])
     if tool_id == "structure.experimental_xrd_comparison":
         return ToolInputSchema(
             periodicity="any",
@@ -579,6 +596,14 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
 
 def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
     tool_id = entry["tool_id"]
+    if tool_id == "trajectory.rdf":
+        return {"type": "object", "additionalProperties": False, "properties": {
+            "r_min_angstrom": {"type": "number", "minimum": 0, "maximum": 30, "default": 0}, "r_max_angstrom": {"type": "number", "minimum": 0.01, "maximum": 30, "default": 2}, "bin_count": {"type": "integer", "minimum": 1, "maximum": 2048, "default": 200}, "species_a": {"type": "string", "maxLength": 32}, "species_b": {"type": "string", "maxLength": 32}, "window_mode": {"enum": ["whole", "frame", "time"], "default": "whole"}, "frame_start": {"type": "integer", "minimum": 0, "maximum": 9999, "default": 0}, "frame_end": {"type": "integer", "minimum": 1, "maximum": 10000, "default": 10000}, "time_start_ps": {"type": "number", "minimum": 0, "maximum": 1e12, "default": 0}, "time_end_ps": {"type": "number", "minimum": 0, "maximum": 1e12, "default": 1e12}, "max_pair_evaluations": {"type": "integer", "minimum": 1, "maximum": 2000000, "default": 2000000}
+        }}
+    if tool_id == "trajectory.msd":
+        return {"type": "object", "additionalProperties": False, "properties": {"species": {"type": "string", "maxLength": 32}, "max_lag_count": {"type": "integer", "minimum": 1, "maximum": 2048, "default": 512}, "origin_stride": {"type": "integer", "minimum": 1, "maximum": 1000, "default": 1}, "max_origins_per_lag": {"type": "integer", "minimum": 1, "maximum": 4096, "default": 4096}, "drift_correction": {"enum": ["none"], "default": "none"}}}
+    if tool_id == "trajectory.diffusion":
+        return {"type": "object", "additionalProperties": False, "required": ["fit_start_time_ps", "fit_end_time_ps"], "properties": {"fit_start_time_ps": {"type": "number", "minimum": 0, "maximum": 1e12}, "fit_end_time_ps": {"type": "number", "minimum": 0, "maximum": 1e12}, "direction": {"enum": ["total", "x", "y", "z"], "default": "total"}, "minimum_fit_points": {"type": "integer", "minimum": 3, "maximum": 10000, "default": 5}, "minimum_fit_duration_ps": {"type": "number", "minimum": 0, "maximum": 1e9, "default": 1}, "minimum_origin_coverage": {"type": "number", "minimum": 0, "maximum": 1, "default": 0.2}, "minimum_r_squared": {"type": "number", "minimum": 0, "maximum": 1, "default": 0.9}, "alpha_min": {"type": "number", "minimum": 0.1, "maximum": 2, "default": 0.8}, "alpha_max": {"type": "number", "minimum": 0.1, "maximum": 3, "default": 1.2}}}
     common_coordination_limits = {
         "max_structures": {"type": "integer", "minimum": 1, "maximum": 32, "default": 32},
         "max_sites": {"type": "integer", "minimum": 1, "maximum": 5000, "default": 5000},

@@ -682,3 +682,17 @@ and
 | [`phase10h/phase10h4_security.md`](phase10h/phase10h4_security.md) | Numeric, artifact, cap, and execution security |
 | [`phase10h/phase10h4_readiness_matrix.md`](phase10h/phase10h4_readiness_matrix.md) | Phase 10H-4 readiness and deferred dynamic product |
 | [`phase10h/evidence/phase10h4_phonon_eigenvector_contract/`](phase10h/evidence/phase10h4_phonon_eigenvector_contract/) | Schemas, fixtures, references, cross-language, security, and hashes |
+| [`phase10n/phase10n4_trajectory_resource_and_identity_contract.md`](phase10n/phase10n4_trajectory_resource_and_identity_contract.md) | N4 immutable trajectory, frame, atom and species authority |
+| [`phase10n/phase10n4_time_cell_pbc_unwrapping_contract.md`](phase10n/phase10n4_time_cell_pbc_unwrapping_contract.md) | N4 time, fixed/variable cell, partial PBC and server unwrapping |
+| [`phase10n/phase10n4_rdf_contract.md`](phase10n/phase10n4_rdf_contract.md) | Trajectory RDF normalization, species pairs and windows |
+| [`phase10n/phase10n4_msd_contract.md`](phase10n/phase10n4_msd_contract.md) | Multiple-time-origin total/species/directional MSD |
+| [`phase10n/phase10n4_diffusion_fit_and_diagnostics_contract.md`](phase10n/phase10n4_diffusion_fit_and_diagnostics_contract.md) | Exact MSD dependency and explicit-window diffusion qualification |
+| [`phase10n/phase10n4_artifact_contracts.md`](phase10n/phase10n4_artifact_contracts.md) | Exact RDF, MSD and diffusion Artifact families and lineage |
+| [`phase10n/phase10n4_registry_profile_planner_integration.md`](phase10n/phase10n4_registry_profile_planner_integration.md) | Registry 60, DataProfile 2.3, eligibility, Planner and Plan 0.2 contracts |
+| [`phase10n/phase10n4_workspace_selection_interpretation.md`](phase10n/phase10n4_workspace_selection_interpretation.md) | Workspace, exact selection, Inspector, bounded interpretation and Report/Recipe |
+| [`phase10n/phase10n4_reference_tolerance_evidence.md`](phase10n/phase10n4_reference_tolerance_evidence.md) | Controlled references and quantity-specific tolerances |
+| [`phase10n/phase10n4_performance_security_accessibility.md`](phase10n/phase10n4_performance_security_accessibility.md) | Resource caps, lifecycle, accessibility and security boundaries |
+| [`phase10n/phase10n4_acceptance_evidence_map.md`](phase10n/phase10n4_acceptance_evidence_map.md) | N4-A01 through N4-A10 evidence ownership |
+| [`phase10n/phase10n4_completion.md`](phase10n/phase10n4_completion.md) | N4 implementation lifecycle state |
+| [`phase10n/phase10n5_next_scope.md`](phase10n/phase10n5_next_scope.md) | N5 reviewer gate only; not queued or executable |
+| [`phase10n/evidence/phase10n4_trajectory_rdf_msd_diffusion/`](phase10n/evidence/phase10n4_trajectory_rdf_msd_diffusion/) | N4 scientific, runtime, Workspace, browser, service and security evidence |

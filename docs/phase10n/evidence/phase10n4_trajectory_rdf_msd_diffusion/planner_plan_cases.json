@@ -1,0 +1,15 @@
+{
+  "dependencyContract": "phase10n4.trajectory_msd.v1",
+  "diffusion": [
+    "trajectory.msd",
+    "trajectory.diffusion"
+  ],
+  "missingFitWindow": "NEEDS_CLARIFICATION",
+  "msd": [
+    "trajectory.msd"
+  ],
+  "planVersion": "0.2",
+  "rdf": [
+    "trajectory.rdf"
+  ]
+}

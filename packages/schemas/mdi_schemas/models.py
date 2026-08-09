@@ -418,6 +418,37 @@ class DataProfileExperimentalXrdReadiness(BaseModel):
     reasons: list[str] = Field(default_factory=list)
 
 
+class DataProfileTrajectoryResourceReadiness(BaseModel):
+    objectId: str
+    objectHash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    trajectoryId: str
+    trajectoryHash: str
+    frameCount: int = Field(ge=0, le=10000)
+    atomCount: int = Field(ge=0, le=4096)
+    stableAtomIdentity: bool
+    speciesStable: bool
+    coordinateRepresentation: Literal["fractional", "cartesian", "unknown"]
+    coordinateUnit: Literal["fractional", "angstrom", "unknown"]
+    pbcAxes: list[bool] = Field(min_length=3, max_length=3)
+    cellMode: Literal["fixed", "variable", "missing", "invalid"]
+    timePresent: bool
+    timeSource: Literal["per_frame", "constant_dt", "missing", "unknown"]
+    timeUnit: Literal["femtosecond", "picosecond", "unknown"]
+    timeMonotonic: bool
+    constantTimestep: bool
+    trajectoryInputStatus: Literal["READY", "MISSING_REQUIRED_DATA", "AMBIGUOUS", "UNSUPPORTED_DATA_KIND"]
+    reasons: list[str] = Field(default_factory=list)
+
+
+class DataProfileTrajectoryReadiness(BaseModel):
+    contractVersion: Literal["1.0"] = "1.0"
+    trajectoryPresent: bool
+    eligibleResourceCount: int = Field(ge=0, le=32)
+    resources: list[DataProfileTrajectoryResourceReadiness] = Field(default_factory=list, max_length=32)
+    status: Literal["READY", "MISSING_REQUIRED_DATA", "AMBIGUOUS", "UNSUPPORTED_DATA_KIND"]
+    reasons: list[str] = Field(default_factory=list)
+
+
 class DataProfile(BaseModel):
     schemaVersion: Literal["0.1"] = "0.1"
     profileId: str
@@ -432,7 +463,7 @@ class DataProfile(BaseModel):
     trajectorySummary: dict[str, Any] | None = None
     qualityIssues: list[dict[str, Any]] = Field(default_factory=list)
     recommendedTasks: list[dict[str, Any]] = Field(default_factory=list)
-    profileContractVersion: Literal["2.0", "2.1", "2.2"] | None = None
+    profileContractVersion: Literal["2.0", "2.1", "2.2", "2.3"] | None = None
     semanticRulesVersion: str | None = None
     semanticHash: str | None = None
     semanticColumns: list[DataProfileSemanticColumn] = Field(default_factory=list)
@@ -443,6 +474,7 @@ class DataProfile(BaseModel):
     profileCoverage: DataProfileCoverage | None = None
     coordinationReadiness: DataProfileCoordinationReadiness | None = None
     experimentalXrdReadiness: DataProfileExperimentalXrdReadiness | None = None
+    trajectoryReadiness: DataProfileTrajectoryReadiness | None = None
     createdAt: str
 
 

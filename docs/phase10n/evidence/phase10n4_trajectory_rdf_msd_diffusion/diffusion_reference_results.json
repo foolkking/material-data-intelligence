@@ -1,0 +1,25 @@
+{
+  "actual": {
+    "available": true,
+    "qualifiedOverSelectedWindow": true,
+    "unit": "angstrom^2/picosecond",
+    "value": 0.1
+  },
+  "checksum": "aeb5decb41ae232f0a3289d5f397b64992f46112b55af54c574917bf1b1cc406",
+  "expectedD": 0.1,
+  "fit": {
+    "interceptAngstrom2": 0.0,
+    "rSquared": 1.0,
+    "rmseAngstrom2": 0.0,
+    "slopeAngstrom2PerPs": 0.6
+  },
+  "sourceMsd": {
+    "artifactChecksum": "3333333333333333333333333333333333333333333333333333333333333333",
+    "artifactId": "artifact_msd_control",
+    "contractVersion": "phase10n4.trajectory_msd.v1",
+    "parameterHash": "2222222222222222222222222222222222222222222222222222222222222222",
+    "toolId": "trajectory.msd",
+    "toolVersion": "0.1.0"
+  },
+  "status": "SYNTHETIC_CONTROLLED"
+}

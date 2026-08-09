@@ -1,5 +1,16 @@
 # PROJECT_BRIEF
 
+## 2026-08-09 Phase 10N-4 Implementation
+
+Phase 10N-4 is the sole active task. It adds exactly `trajectory.rdf@0.1.0`,
+`trajectory.msd@0.1.0`, and `trajectory.diffusion@0.1.0` (Registry 57 -> 60),
+additive DataProfile 2.3 trajectory readiness, server-side fixed-cell
+unwrapping, multiple-origin total/species/directional MSD, and explicit-window
+OLS Einstein diagnostics. Diffusion consumes only an exact persisted MSD
+Artifact. Database, migration head 0007, API families, dependencies, lockfiles,
+scientific authority, Workspace authority, and LLM call sites remain unchanged.
+N5 is reviewer-gated, not queued, and not executable.
+
 ## 2026-08-09 Phase 10N-3 Implementation
 
 Phase 10N-3 implements strict experimental XRD resources, additive DataProfile

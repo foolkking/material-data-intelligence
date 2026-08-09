@@ -182,6 +182,19 @@ jobs:
             --output-dir "${RUNNER_TEMP}/phase10n3-experimental-xrd-browser-replay"
         working-directory: apps/web
 
+      - name: Replay Phase 10N-4 trajectory analytics browser evidence
+        env:
+          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
+          MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
+          MDI_PHASE10M4_EVIDENCE_PORT: "3232"
+          MDI_PHASE10M4_HEADLESS: "false"
+        run: |
+          node test/workspace-artifact-gallery-browser-evidence.mjs --validate-fixtures --n4-trajectory-analytics-only
+          xvfb-run --auto-servernum node test/workspace-artifact-gallery-browser-evidence.mjs \
+            --n4-trajectory-analytics-only \
+            --output-dir "${RUNNER_TEMP}/phase10n4-trajectory-analytics-browser-replay"
+        working-directory: apps/web
+
       - name: Replay Phase 10M-5 Report and Recipe browser evidence
         env:
           DEEPSEEK_KEY: ""
@@ -415,7 +428,7 @@ jobs:
       - name: Run integration tests (capture output)
         run: |
           set +e
-          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py tests/integration/test_phase10l2_capability_planner_service_backed.py tests/integration/test_phase10l3_dependency_service_backed.py tests/integration/test_phase10l4_interpretation_service_backed.py tests/integration/test_phase10l5_natural_language_service_backed.py tests/integration/test_phase10m1_workspace_service_backed.py tests/integration/test_phase10m5_report_recipe_service_backed.py tests/integration/test_phase10m6_workspace_recovery_service_backed.py tests/integration/test_phase10m7_workspace_integration_service_backed.py tests/integration/test_phase10n1_coordination_service_backed.py tests/integration/test_phase10n2_local_environment_service_backed.py tests/integration/test_phase10n3_experimental_xrd_service_backed.py -vv -m integration \
+          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py tests/integration/test_phase10l2_capability_planner_service_backed.py tests/integration/test_phase10l3_dependency_service_backed.py tests/integration/test_phase10l4_interpretation_service_backed.py tests/integration/test_phase10l5_natural_language_service_backed.py tests/integration/test_phase10m1_workspace_service_backed.py tests/integration/test_phase10m5_report_recipe_service_backed.py tests/integration/test_phase10m6_workspace_recovery_service_backed.py tests/integration/test_phase10m7_workspace_integration_service_backed.py tests/integration/test_phase10n1_coordination_service_backed.py tests/integration/test_phase10n2_local_environment_service_backed.py tests/integration/test_phase10n3_experimental_xrd_service_backed.py tests/integration/test_phase10n4_trajectory_analytics_service_backed.py -vv -m integration \
             --tb=long --color=yes 2>&1 | tee integration.log
           PYTEST_EXIT=${PIPESTATUS[0]}
           set -e
@@ -463,10 +476,10 @@ jobs:
           fi
 
           # P0: every explicitly selected integration test must be collected and pass.
-          if [ "${PASSED:-0}" -lt 45 ]; then
+          if [ "${PASSED:-0}" -lt 46 ]; then
             echo ""
-            echo "ERROR: Only ${PASSED:-0}/45 integration tests passed."
-            echo "Expected: at least 45 passed (N2 baseline 44 plus N3 XRD comparison closure)."
+            echo "ERROR: Only ${PASSED:-0}/46 integration tests passed."
+            echo "Expected: at least 46 passed (N3 baseline 45 plus N4 trajectory analytics closure)."
             exit 1
           fi
 
@@ -483,6 +496,7 @@ jobs:
             test_phase10n1_postgres_redis_minio_coordination_artifact_closure \
             test_phase10n2_postgres_redis_minio_exact_n1_dependency_closure \
             test_phase10n3_postgres_redis_minio_theoretical_xrd_comparison_closure \
+            test_phase10n4_postgres_redis_minio_msd_diffusion_dependency_closure \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[dataset\]' \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[structure\]' \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[materials_ml\]' \

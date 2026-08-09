@@ -156,3 +156,21 @@ This is the only canonical N3 registry. References outside this section are info
 10. `N3-A10 THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N4_REVIEWER_GATE` - verify implementation, completion-record and queue-archive exact-SHA CI, Registry 57, task count zero and N4 remains a reviewer-only gate.
 
 N3 integrity target: `expected = 10`, `implemented = 10`, `missing = 0`, `extra = 0`, `duplicate registry entries = 0`, `conflicting definitions = 0`, `canonical registry shorthand entries = 0`. A duplicate is counted only when an ID is defined more than once inside this canonical section.
+## Canonical Phase 10N-4 Acceptance Registry
+
+This section is the sole canonical N4 registry. Full-text references outside this section are traceability references, not duplicate definitions.
+
+| ID | Exact title | Exact definition | Evidence owner |
+| --- | --- | --- | --- |
+| N4-A01 | BASELINE_TRAJECTORY_AUTHORITY_AND_EXACT_CONTRACT_CLOSURE | Verify N3 lifecycle, repository baseline, existing trajectory and static-RDF authorities, exact N4-R0 contracts, one active task, and the N5 reviewer gate. | entry/R0 evidence |
+| N4-A02 | TRAJECTORY_FRAME_ATOM_TIME_CELL_IDENTITY_VALIDITY_AND_UNWRAPPING | Verify immutable trajectory, frame and atom identity; species/time/cell/PBC validity; fixed-cell MSD policy; server-side deterministic unwrapping; and explicit ambiguity rejection. | contract/adapter tests |
+| N4-A03 | WHOLE_WINDOW_AND_SPECIES_PAIR_TRAJECTORY_RDF | Verify whole, frame-window, time-window and unordered species-pair trajectory RDF with exact bin edges, per-frame number-density normalization, safe radius, coverage and persisted authority. | RDF tests/evidence |
+| N4-A04 | TOTAL_SPECIES_AND_DIRECTIONAL_MSD | Verify multiple-time-origin total, species and Cartesian x/y/z MSD from validated unwrapped positions with exact lag times and origin coverage. | MSD tests/evidence |
+| N4-A05 | DIFFUSION_FIT_WINDOW_DIAGNOSTICS_AND_SCIENTIFIC_CLAIM_BOUNDARY | Verify exact persisted-MSD dependency, explicit fit window, bounded OLS, R2/alpha/coverage diagnostics, qualified estimates only for accepted diffusive windows, and honest non-qualification. | diffusion tests/evidence |
+| N4-A06 | PROFILE_ELIGIBILITY_PLANNER_PLANVALIDATOR_DEPENDENCY_RUNTIME_AND_PERSISTENCE | Verify additive DataProfile 2.3 readiness, eligibility, deterministic intent routing, AnalysisPlan 0.2 typed MSD dependency, validation, runtime isolation and generic persistence. | integration/service tests |
+| N4-A07 | WORKSPACE_TRAJECTORY_RDF_MSD_DIFFUSION_SELECTION_AND_INSPECTOR | Verify metadata-first Workspace views, tables/plots, exact selections, trajectory linkage, Inspector, mobile and lifecycle behavior without frontend recomputation. | frontend/browser evidence |
+| N4-A08 | GROUNDED_INTERPRETATION_REPORT_RECIPE_AND_PROVENANCE | Verify bounded projectors, qualified scientific wording, persisted-result Report composition, declarative non-executable Recipe and exact lineage. | interpretation/report evidence |
+| N4-A09 | REFERENCES_TOLERANCES_PERFORMANCE_ACCESSIBILITY_SECURITY_AND_SERVICE_EVIDENCE | Verify controlled references, quantity-specific tolerances, caps, accessibility, security, PostgreSQL/Redis/MinIO, browser matrix, evidence integrity and secret scan. | evidence manifest |
+| N4-A10 | THREE_COMMIT_EXACT_SHA_LIFECYCLE_AND_N5_REVIEWER_GATE | Verify implementation, completion and queue-archive exact-SHA CI; task count returns to zero; N5 remains reviewer-gated and absent from the executable queue. | lifecycle record |
+
+Integrity: expected = 10; implemented = 10; missing = 0; extra = 0; duplicate registry entries = 0; conflicting definitions = 0; canonical registry shorthand entries = 0.

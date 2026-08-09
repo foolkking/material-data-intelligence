@@ -113,6 +113,12 @@ class WorkspaceSelectionKind(StrEnum):
     XRD_MATCH = "XRD_MATCH"
     TRAJECTORY_ATOM = "TRAJECTORY_ATOM"
     TRAJECTORY_FRAME = "TRAJECTORY_FRAME"
+    TRAJECTORY_RDF_PAIR = "TRAJECTORY_RDF_PAIR"
+    TRAJECTORY_RDF_BIN = "TRAJECTORY_RDF_BIN"
+    TRAJECTORY_MSD_SPECIES = "TRAJECTORY_MSD_SPECIES"
+    TRAJECTORY_MSD_LAG = "TRAJECTORY_MSD_LAG"
+    TRAJECTORY_DIFFUSION_WINDOW = "TRAJECTORY_DIFFUSION_WINDOW"
+    TRAJECTORY_DIFFUSION_DIAGNOSTIC = "TRAJECTORY_DIFFUSION_DIAGNOSTIC"
     PHONON_Q_POINT = "PHONON_Q_POINT"
     PHONON_BRANCH = "PHONON_BRANCH"
     RECIPROCAL_POINT = "RECIPROCAL_POINT"
@@ -322,6 +328,12 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
     trajectoryId: str | None = Field(default=None, max_length=96)
     atomId: str | None = Field(default=None, max_length=96)
     frameId: str | None = Field(default=None, max_length=96)
+    speciesPairId: str | None = Field(default=None, max_length=96)
+    rdfBinId: str | None = Field(default=None, max_length=96)
+    msdSeriesId: str | None = Field(default=None, max_length=96)
+    msdLagId: str | None = Field(default=None, max_length=96)
+    diffusionWindowId: str | None = Field(default=None, max_length=96)
+    diffusionDiagnosticId: str | None = Field(default=None, max_length=96)
     phononArtifactId: str | None = Field(default=None, max_length=96)
     qPointId: str | None = Field(default=None, max_length=96)
     branchId: str | None = Field(default=None, max_length=96)
@@ -347,7 +359,8 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
 
     @field_validator(
         "projectId", "datasetId", "jobId", "objectId", "sampleRef", "structureId", "siteId",
-        "trajectoryId", "atomId", "frameId", "phononArtifactId", "qPointId", "branchId",
+        "trajectoryId", "atomId", "frameId", "speciesPairId", "rdfBinId", "msdSeriesId", "msdLagId",
+        "diffusionWindowId", "diffusionDiagnosticId", "phononArtifactId", "qPointId", "branchId",
         "reciprocalArtifactId", "reciprocalPointId", "segmentId", "fieldId", "regionId",
         "artifactId", "toolCallId", "bundleId", "evidenceItemId", "sourceArtifactId",
         "interpretationId", "claimId",
@@ -402,6 +415,12 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
             WorkspaceSelectionKind.XRD_MATCH: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "matchId"},
             WorkspaceSelectionKind.TRAJECTORY_ATOM: {"datasetId", "datasetVersion", "trajectoryId", "atomId"},
             WorkspaceSelectionKind.TRAJECTORY_FRAME: {"datasetId", "datasetVersion", "trajectoryId", "frameId"},
+            WorkspaceSelectionKind.TRAJECTORY_RDF_PAIR: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "speciesPairId"},
+            WorkspaceSelectionKind.TRAJECTORY_RDF_BIN: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "speciesPairId", "rdfBinId"},
+            WorkspaceSelectionKind.TRAJECTORY_MSD_SPECIES: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "msdSeriesId"},
+            WorkspaceSelectionKind.TRAJECTORY_MSD_LAG: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "msdSeriesId", "msdLagId"},
+            WorkspaceSelectionKind.TRAJECTORY_DIFFUSION_WINDOW: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId"},
+            WorkspaceSelectionKind.TRAJECTORY_DIFFUSION_DIAGNOSTIC: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId", "diffusionDiagnosticId"},
             WorkspaceSelectionKind.PHONON_Q_POINT: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId"},
             WorkspaceSelectionKind.PHONON_BRANCH: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "branchId"},
             WorkspaceSelectionKind.RECIPROCAL_POINT: {"datasetId", "datasetVersion", "reciprocalArtifactId", "artifactChecksum", "reciprocalPointId"},
@@ -428,6 +447,12 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
             WorkspaceSelectionKind.XRD_MATCH: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId"},
             WorkspaceSelectionKind.TRAJECTORY_ATOM: {"datasetId", "datasetVersion", "trajectoryId", "atomId", "artifactId", "artifactChecksum"},
             WorkspaceSelectionKind.TRAJECTORY_FRAME: {"datasetId", "datasetVersion", "trajectoryId", "frameId", "artifactId", "artifactChecksum"},
+            WorkspaceSelectionKind.TRAJECTORY_RDF_PAIR: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "speciesPairId"},
+            WorkspaceSelectionKind.TRAJECTORY_RDF_BIN: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "speciesPairId", "rdfBinId"},
+            WorkspaceSelectionKind.TRAJECTORY_MSD_SPECIES: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "msdSeriesId"},
+            WorkspaceSelectionKind.TRAJECTORY_MSD_LAG: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "msdSeriesId", "msdLagId"},
+            WorkspaceSelectionKind.TRAJECTORY_DIFFUSION_WINDOW: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId"},
+            WorkspaceSelectionKind.TRAJECTORY_DIFFUSION_DIAGNOSTIC: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "diffusionWindowId", "diffusionDiagnosticId"},
             WorkspaceSelectionKind.PHONON_Q_POINT: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId", "branchId"},
             WorkspaceSelectionKind.PHONON_BRANCH: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "branchId", "qPointId"},
             WorkspaceSelectionKind.RECIPROCAL_POINT: {"datasetId", "datasetVersion", "reciprocalArtifactId", "artifactChecksum", "reciprocalPointId", "segmentId"},

@@ -9,6 +9,7 @@ from statistics import median
 from typing import Any
 
 from mdi_schemas import DataProfile, MaterialObjectType
+from mdi_artifact_core import validate_trajectory
 from pymatgen.core import Structure
 
 from .models import NormalizedObjectDraft, ParseResult
@@ -59,7 +60,8 @@ def build_data_profile(
     identity = sample_identity(semantic_columns, profiled_dataframes)
     coordination_readiness = _coordination_readiness(profiled_objects)
     experimental_xrd_readiness = _experimental_xrd_readiness(profiled_objects)
-    profile_contract_version = "2.2" if experimental_xrd_readiness["resources"] else ("2.1" if coordination_readiness["structures"] else "2.0")
+    trajectory_readiness = _trajectory_readiness(profiled_objects)
+    profile_contract_version = "2.3" if trajectory_readiness["resources"] else ("2.2" if experimental_xrd_readiness["resources"] else ("2.1" if coordination_readiness["structures"] else "2.0"))
 
     semantic_payload = {
         "datasetId": dataset_id,
@@ -74,6 +76,7 @@ def build_data_profile(
         "profileCoverage": coverage,
         "coordinationReadiness": coordination_readiness,
         "experimentalXrdReadiness": experimental_xrd_readiness,
+        "trajectoryReadiness": trajectory_readiness,
     }
     semantic_hash = hashlib.sha256(
         json.dumps(semantic_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
@@ -103,9 +106,58 @@ def build_data_profile(
         sampleIdentity=identity,
         profileCoverage=coverage,
         coordinationReadiness=coordination_readiness if coordination_readiness["structures"] else None,
-        experimentalXrdReadiness=experimental_xrd_readiness if profile_contract_version == "2.2" else None,
+        experimentalXrdReadiness=experimental_xrd_readiness if experimental_xrd_readiness["resources"] else None,
+        trajectoryReadiness=trajectory_readiness if profile_contract_version == "2.3" else None,
         createdAt=datetime.now(timezone.utc).isoformat(),
     )
+
+
+def _trajectory_readiness(objects: list[NormalizedObjectDraft]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for obj in objects:
+        if obj.object_type != MaterialObjectType.Trajectory or not isinstance(obj.payload, dict):
+            continue
+        payload = obj.payload
+        validation = validate_trajectory(payload)
+        frames = payload.get("frames") if isinstance(payload.get("frames"), list) else []
+        times = [frame.get("time") for frame in frames if isinstance(frame, dict)]
+        finite_times = bool(times) and all(isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(float(value)) for value in times)
+        deltas = [float(times[index + 1]) - float(times[index]) for index in range(len(times) - 1)] if finite_times else []
+        monotonic = finite_times and all(delta > 0 for delta in deltas)
+        constant = monotonic and (len(deltas) <= 1 or all(math.isclose(delta, deltas[0], rel_tol=1e-9, abs_tol=1e-12) for delta in deltas[1:]))
+        reasons = list(validation.errors)
+        if payload.get("atom_identity_mode") != "stable_index":
+            reasons.append("TRAJECTORY_ATOM_IDENTITY_MISSING")
+        if not finite_times:
+            reasons.append("TRAJECTORY_TIME_MISSING")
+        elif not monotonic:
+            reasons.append("TRAJECTORY_TIME_NON_MONOTONIC")
+        coordinate_mode = payload.get("coordinate_mode") if payload.get("coordinate_mode") in {"fractional", "cartesian"} else "unknown"
+        cell_mode = payload.get("lattice_mode") if payload.get("lattice_mode") in {"fixed", "variable"} else "invalid"
+        status = "READY" if validation.valid else "AMBIGUOUS"
+        records.append({
+            "objectId": obj.id,
+            "objectHash": obj.hash,
+            "trajectoryId": str(payload.get("trajectory_id") or obj.id),
+            "trajectoryHash": str(payload.get("trajectory_id") or obj.hash),
+            "frameCount": min(len(frames), 10000),
+            "atomCount": min(int((payload.get("atoms") or {}).get("count") or 0), 4096),
+            "stableAtomIdentity": payload.get("atom_identity_mode") == "stable_index",
+            "speciesStable": payload.get("atom_identity_mode") == "stable_index" and validation.valid,
+            "coordinateRepresentation": coordinate_mode,
+            "coordinateUnit": "fractional" if coordinate_mode == "fractional" else ("angstrom" if coordinate_mode == "cartesian" else "unknown"),
+            "pbcAxes": list(payload.get("periodic_boundary")) if isinstance(payload.get("periodic_boundary"), list) and len(payload["periodic_boundary"]) == 3 else [False, False, False],
+            "cellMode": cell_mode,
+            "timePresent": finite_times,
+            "timeSource": "per_frame" if finite_times else "missing",
+            "timeUnit": (payload.get("time") or {}).get("unit") if (payload.get("time") or {}).get("unit") in {"femtosecond", "picosecond"} else "unknown",
+            "timeMonotonic": monotonic,
+            "constantTimestep": constant,
+            "trajectoryInputStatus": status,
+            "reasons": sorted(set(reasons)),
+        })
+    eligible = sum(item["trajectoryInputStatus"] == "READY" for item in records)
+    return {"contractVersion": "1.0", "trajectoryPresent": bool(records), "eligibleResourceCount": min(eligible, 32), "resources": records[:32], "status": "READY" if eligible else ("AMBIGUOUS" if records else "MISSING_REQUIRED_DATA"), "reasons": [] if eligible else sorted({reason for record in records for reason in record["reasons"]}) or ["TRAJECTORY_MISSING"]}
 
 
 def _coordination_readiness(objects: list[NormalizedObjectDraft]) -> dict[str, Any]:

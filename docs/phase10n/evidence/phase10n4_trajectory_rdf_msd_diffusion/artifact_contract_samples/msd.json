@@ -1,0 +1,144 @@
+{
+  "algorithm": {
+    "algorithmId": "mdi.multiple_time_origin_msd@1.0.0",
+    "atomAveraging": true,
+    "estimator": "multiple_time_origin",
+    "library": "numpy",
+    "libraryVersion": "2.4.6",
+    "version": "1.0.0"
+  },
+  "artifactType": "trajectory.msd",
+  "atomIds": [
+    0,
+    1
+  ],
+  "auditedLockedStack": {
+    "ase": "3.29.0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "cellPolicy": {
+    "mode": "fixed",
+    "pbcAxes": [
+      true,
+      true,
+      true
+    ],
+    "variableCellSupported": false
+  },
+  "coverage": {
+    "atoms": 2,
+    "frames": 4,
+    "minimumOriginCount": 1,
+    "validLags": 3
+  },
+  "directionalMsdAngstrom2": {
+    "x": [
+      0.0625,
+      0.25,
+      0.5625
+    ],
+    "y": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "z": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "lagIds": [
+    "msd-lag:627744f3cc487b274fae8304dd30a1d43f5f0fd308e0420275bf38d5a5a1d63e",
+    "msd-lag:93fe5867561c300ac2c7266963949aa4301d400d9eb5e072a2a98091cd5294bf",
+    "msd-lag:98e1536b9bf679a8881df3c6515e9332a17cae745db632ae292eb1e63799bc0c"
+  ],
+  "lagTimesPs": [
+    0.002,
+    0.004,
+    0.006
+  ],
+  "limitations": [
+    "MSD uses Cartesian x/y/z axes and is not automatically crystallographic a/b/c diffusion.",
+    "No center-of-mass drift correction is applied."
+  ],
+  "originCounts": [
+    3,
+    2,
+    1
+  ],
+  "parameterHash": "f8044b53f905b80286849e624fb8446d047f47b7a4db7c7e4b3f107d26b73ad8",
+  "resolvedParameters": {
+    "drift_correction": "none",
+    "max_lag_count": 3,
+    "max_origins_per_lag": 4096,
+    "origin_stride": 1,
+    "species": null
+  },
+  "runtimeDiagnostics": {
+    "frontendMsdRecomputation": false,
+    "frontendUnwrapping": false
+  },
+  "schema_version": "phase10n4.trajectory_msd.v1",
+  "scope": {
+    "datasetId": "dataset_n4",
+    "jobId": "job_n4_evidence",
+    "planId": "plan_n4",
+    "planVersion": "0.2",
+    "projectId": "project_n4",
+    "toolCallId": "call_trajectory_msd"
+  },
+  "security": {
+    "arbitraryCodeExecution": false,
+    "containsHtml": false,
+    "containsJavascript": false,
+    "externalUrls": []
+  },
+  "seriesId": "msd-series:24aada652006e7a9a3bbe01bc219d1f8d1ef2ddcfa66233da187e46dc6747b1f",
+  "species": "all",
+  "time": {
+    "canonicalUnit": "picosecond",
+    "constantTimestep": true,
+    "source": "trajectory_frame_time",
+    "sourceUnit": "femtosecond"
+  },
+  "tool": {
+    "adapterVersion": "0.1.0",
+    "toolId": "trajectory.msd",
+    "toolVersion": "0.1.0"
+  },
+  "totalMsdAngstrom2": [
+    0.0625,
+    0.25,
+    0.5625
+  ],
+  "trajectory": {
+    "atomCount": 2,
+    "contractVersion": "phase10g.trajectory.v1",
+    "frameCount": 4,
+    "resourceId": "sha256:c171f7deac025e44bfde381b0f46506b6c1efa6276beafca6206775012f90bdc",
+    "trajectoryHash": "sha256:c171f7deac025e44bfde381b0f46506b6c1efa6276beafca6206775012f90bdc"
+  },
+  "units": {
+    "lagTime": "picosecond",
+    "msd": "angstrom^2"
+  },
+  "unwrapping": {
+    "algorithmId": "mdi.fixed_cell_fractional_minimum_image@1.0.0",
+    "ambiguousSteps": 0,
+    "fractionalStepLimit": 0.49,
+    "inputRepresentation": "wrapped",
+    "library": "numpy",
+    "libraryVersion": "2.4.6",
+    "pbcAxes": [
+      true,
+      true,
+      true
+    ],
+    "serverSide": true,
+    "version": "1.0.0",
+    "wrappedCoordinateDirectUse": false
+  },
+  "warnings": []
+}
