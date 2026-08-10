@@ -8195,3 +8195,102 @@ PASS_DRIVEN_TOLERANCE_CHANGE = PROHIBITED
 ### Queue State
 
 Phase 11-3 is complete pending direct queue archive. Phase 11-4 remains reviewer-gated, not queued, and not executable. No Phase 12 or Phase 13 task was created.
+
+# Phase 11-4 Honest Tool / Input / Official-Example Coverage Matrix Result
+
+## 1. Conclusion
+
+Phase 11-4 completed the approved audit-only coverage reconciliation. The 62 live Registry Tools, 14
+existing input families, and 55 retained official/example records are classified with explicit limits.
+This is not Phase 11 closure; Phase 11-5 remains the reviewer-gated closure authority.
+
+## 2. Baseline and lifecycle
+
+Phase 11-3 verified archive authority was `70c2a46`. Implementation candidate `0d57a99` was retained as
+historical failed CI candidate after run `31347561130` failed only on a CRLF/LF evidence-hash assertion.
+Fix-forward implementation `09250b163cd3957815ce67238163225efc689d83` passed exact-SHA CI
+`31348272583`: Linux replay PASS, Windows replay PASS, Unit PASS, service-backed PASS, and frontend
+typecheck/build/browser PASS. No history was rewritten.
+
+Entry facts: Registry `62`, DataProfile `2.4`, migration `0007_phase10m1_workspace_domain`, and no
+production scientific source change. Local verification was `1282 passed, 50 skipped, 63 warnings`;
+frontend was `449 passed`; typecheck, build, lock check, focused coverage tests (`4 passed`), and
+queue-compatibility tests (`63 passed`) passed. The first local `uv run pytest` invocation had an existing
+Windows import-collection issue; the canonical `uv run python -m pytest -q` command passed.
+
+## 3. Coverage governance
+
+The authoritative coverage taxonomy is `DIRECT_VERIFIED`, `OFFICIAL_DERIVED_VERIFIED`,
+`REFERENCE_VERIFIED`, `MAPPING_ONLY`, `EXTRACTION_REQUIRED`, `FUTURE_SCOPE`, and `UNSUPPORTED`.
+Coverage is separate from validation level, input support, browser status, service status, and
+reproducibility. Browser screenshots, service persistence, fixtures, internal regression, and mapping are
+not independent scientific numeric references. Self-reference is not independent cross-library evidence.
+
+## 4. Reconciled inventory
+
+- Tool matrix: 62 unique live Registry rows, all versions `0.1.0`, all classified `MAPPING_ONLY` for this
+  coverage axis; no validation-level promotion and no V4 row.
+- Input matrix: 14 rows; support verdicts unchanged. Ten input paths are `DIRECT_VERIFIED` on the
+  input-path axis, one is `MAPPING_ONLY`, and three are `UNSUPPORTED`.
+- Official/example matrix: 55 retained rows, all `MAPPING_ONLY`; no official-derived or independent
+  scientific reference claim was added.
+- Phase 11-2 reconciliation: 12 records, 8 `PASS_INVARIANT`, 4 `NOT_APPLICABLE`, 0 failures.
+- Phase 11-3 reconciliation: 8 admitted cases, Linux/Windows invariant replay PASS, numeric cross-platform
+  status `NOT_APPLICABLE`, V4 promotion `0`.
+- Existing N1-N5 and earlier initial-release scientific capability coverage remains bounded by inherited
+  Tool contracts, input support, validation level, references, tolerances, fixtures, and gap records.
+
+## 5. Public claims and limitations
+
+Allowed wording is limited to coverage classified from retained evidence and facts derived under the
+stated contract. Do not claim all Tools are independently scientifically validated, all formats are
+directly supported, all platforms have numeric reproducibility, or that mapping/fixtures/screenshots prove
+scientific correctness. The complete public claim matrix, known limitations, support matrix, and remaining
+gaps are in `docs/phase11/` and the Phase 11-4 evidence directory.
+
+## 6. Handoff and freeze
+
+The exact machine-readable handoff is
+`docs/phase11/evidence/phase11_4_honest_tool_input_example_coverage/phase11_5_closure_input_manifest.json`.
+It records zero P0 gaps, zero numeric cross-platform claims, zero V4 promotions, no reference/fixture/
+expected-value/tolerance mutation, and no production authority change. Phase 11-1 through 11-5 scope,
+Future Scope, Not Planned boundaries, security, LLM, dependency, migration, and lockfile policies remain
+unchanged.
+
+## 7. Mandatory markers
+
+```text
+PHASE11_4_NEW_SCIENTIFIC_TOOLS = 0
+PHASE11_4_NEW_SCIENTIFIC_ALGORITHMS = 0
+PHASE11_4_NEW_ARTIFACT_FAMILIES = 0
+PHASE11_4_NEW_DATAPROFILE_VERSION = 0
+PHASE11_4_NEW_ANALYSISPLAN_VERSION = 0
+PHASE11_4_NEW_DATABASE_MIGRATIONS = 0
+PHASE11_4_NEW_PUBLIC_API_FAMILIES = 0
+PHASE11_4_NEW_DEPENDENCIES = 0
+PHASE11_4_NEW_LLM_CALL_SITES = 0
+PHASE11_4_REAL_LLM_CALLS = 0
+PHASE11_4_EXTERNAL_REFERENCE_DOWNLOADS = 0
+PHASE11_4_EXTERNAL_SCIENTIFIC_API_CALLS = 0
+PHASE11_4_NEW_SCIENTIFIC_BENCHMARKS = 0
+PHASE11_4_VALIDATION_LEVEL_PROMOTIONS = 0
+PHASE11_4_VALIDATION_LEVEL_DEMOTIONS = 0
+PHASE11_4_REFERENCE_MUTATIONS = 0
+PHASE11_4_FIXTURE_MUTATIONS = 0
+PHASE11_4_EXPECTED_VALUE_MUTATIONS = 0
+PHASE11_4_TOLERANCE_CHANGES = 0
+REGISTRY_BEFORE_11_4 = 62
+REGISTRY_AFTER_11_4 = 62
+DATAPROFILE_BEFORE_11_4 = 2.4
+DATAPROFILE_AFTER_11_4 = 2.4
+MIGRATION_AFTER_11_4 = 0007_phase10m1_workspace_domain
+SCREENSHOT_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+PASS_DRIVEN_TOLERANCE_CHANGE = PROHIBITED
+```
+
+## 8. Queue state
+
+Phase 11-4 is `PASS / HONEST_COVERAGE_SEALED / QUEUE_ARCHIVED` after the direct completion and archive
+commits. Phase 11 remains `IN_PROGRESS / SCIENTIFIC_VALIDATION_AND_COVERAGE_COMPLETE / AWAITING_FINAL_CLOSURE`.
+Phase 11-5 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; Phase 12 and Phase 13 are approved, not queued,
+and not executable. No automatic Phase 14 exists.
