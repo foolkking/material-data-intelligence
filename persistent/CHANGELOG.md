@@ -2556,3 +2556,9 @@ directly afterward. Phase 12-2 remains reviewer-gated.
 - Completed implementation `9b38a753bda134e9c27425e1193d2980a0790731` with
   exact-SHA CI `31370240101`; closed UX-002/UX-003 and retained Phase 12-4 as
   reviewer-gated.
+## 2026-08-10 - Phase 12-4 completion
+
+- Verified implementation `9fac62bbb2cc9069da62370ee9d02cf3150e987a`
+  with exact-SHA CI `31379672528`.
+- Closed `UX-004` through an exact Finding/Evidence/Artifact trust path and a
+  three-layer Inspector without changing scientific authority.

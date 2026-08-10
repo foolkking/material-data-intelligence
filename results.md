@@ -9198,3 +9198,227 @@ required CI confirmation. Only the Phase 12-3 task is then removed in a direct
 queue-archive commit, without waiting for another CI. Phase 12-4 remains
 `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; Phase 13 is approved but not queued
 or executable.
+
+# Phase 12-4 Findings / Evidence / Inspector / Provenance Experience Result
+
+## 1. Conclusion
+
+Phase 12-4 passes. Persisted Findings now lead through exact Evidence membership
+to source Artifacts, Tool/version, Plan/Job, inputs and lineage. The Inspector is
+layered as Summary, Scientific details and Provenance; developer details remain
+available but subordinate.
+
+## 2-8. Baseline, Entry And Ownership
+
+2. Phase 12-3 baseline: implementation `9b38a753bda134e9c27425e1193d2980a0790731`, CI `31370240101` PASS.
+3. Entry gate: master, clean entry worktree, HEAD/origin aligned, Phase 12-3 ancestry verified.
+4. Repository state: Registry 62, DataProfile 2.4, migration `0007_phase10m1_workspace_domain`.
+5. Design System authority: DS2 presentation primitives reused.
+6. Phase 11 authority: read-only; no coverage or validation promotion.
+7. Phase 12-4 handoff: canonical matrices and exact eight acceptance IDs resolved.
+8. UX ownership: `UX-004` was the sole 12-4-owned P1 and is `FIXED_WITH_EVIDENCE`.
+
+## 9-12. Authority Contracts
+
+9. Production behavior changes: presentation and exact navigation only.
+10. Interpretation authority: persisted `GroundedScientificInterpretation 1.0` only.
+11. Claim contract: `ScientificClaim 1.0` unchanged.
+12. Evidence bundle/item contracts: unchanged; exact bundle membership is validated.
+
+## 13-23. Finding Semantics
+
+13. Finding hierarchy: meaning, qualifier, evidence roles and exact action.
+14. Claim types: Observation, Comparison, Anomaly, Warning, Scientific limitation, Recommendation and No supported conclusion remain text-qualified.
+15. Qualification: DIRECT/QUALIFIED/LIMITED are labels, not fabricated probabilities.
+16. Observation/comparison: rendered from persisted claim text only.
+17. Warning: persistent near the affected interpretation/evidence.
+18. Limitation: persistent first-class disclosure, not an ephemeral toast.
+19. Recommendation: advisory and explicitly non-executable.
+20. No supported conclusion: honest empty scientific outcome.
+21. Partial interpretation: successful evidence scope remains visible and bounded.
+22. No supported evidence: no claim is synthesized.
+23. Source integrity failure: exact typed rejection; no fallback or nearest match.
+
+## 24-36. Exact Trust Path
+
+24. Finding to Evidence: persisted supporting/limiting/contradicting IDs only.
+25. Evidence membership: bundle identity and item fields are exact-validated.
+26. Supporting evidence: text role plus exact evidence selection.
+27. Limiting evidence: independently visible and selectable.
+28. Contradicting evidence: independently visible and selectable.
+29. Evidence facts: semantic role, persisted display value and source field.
+30. Numeric/unit presentation: values and units are displayed without recomputation.
+31. Evidence source Artifact: exact ID/checksum/contract/version selection.
+32. Source result navigation: existing Workspace panels and Selection 1.0.
+33. Selection integration: `EXACT_COMPATIBLE_ONLY`.
+34. Finding identity: persisted interpretation/claim IDs.
+35. Evidence identity: persisted bundle/evidence item IDs.
+36. Cross-panel navigation: no label, array-position, fuzzy or latest authority.
+
+## 37-41. Inspector
+
+37. Architecture: three progressive-disclosure layers.
+38. Summary: human-readable selected-object meaning and safe actions.
+39. Scientific details: exact typed facts and compatible panels.
+40. Provenance: project, source scope and active panel source records.
+41. Developer details: exact inert JSON remains available but collapsed by default.
+
+## 42-55. Provenance And Compatibility
+
+42. Provenance IA: Finding → Evidence → Artifact → Tool/version → Plan/Job → input.
+43. Data source provenance: dataset/version/source scope retained.
+44. Analysis context: exact Plan and Job retained.
+45. Tool/version: read from persisted Evidence item.
+46. Parameters: retained in existing Artifact/Inspector authority; not inferred.
+47. Execution: Job/ToolCall lineage unchanged.
+48. Artifact: ID, checksum and contract/version retained.
+49. Evidence/claim: exact bundle, item, interpretation and claim identities retained.
+50. Lineage: existing persisted references only.
+51. AnalysisPlan 0.1: legacy independent/sequential semantics identified honestly.
+52. AnalysisPlan 0.2: typed Artifact dependency semantics identified honestly.
+53. Historical compatibility: retained tests pass.
+54. Stale/missing source: explicit unavailable/error state.
+55. Cross-scope rejection: project/job/bundle/item mismatch is rejected.
+
+## 56-63. Boundaries And States
+
+56. Wording audit: no unqualified scientific certainty or fabricated confidence.
+57. Phase 11 presentation: support, validation, reproducibility and presentation remain separate.
+58. Report boundary: authority/workflow unchanged; owned by 12-5.
+59. Recipe boundary: non-executable authority unchanged.
+60. Workspace boundary: one Workspace per Job and server/URL/memory authority unchanged.
+61. Viewer boundary: no scientific viewer computation or series mapping change.
+62. Loading UX: persisted reference loading has bounded status.
+63. Error/recovery: failed exact source validation preserves context and does not substitute.
+
+## 64-73. Responsive And Browser Evidence
+
+64. Desktop 1440x900: PASS.
+65. Desktop 1280x720: PASS.
+66. Mobile 390x844: PASS with Context drawer and one active panel authority.
+67. 200% zoom: shared trust-path matrix PASS.
+68. Keyboard/focus: Finding, Evidence and Inspector paths PASS; focus restore PASS.
+69. Reduced motion: PASS.
+70. Accessibility foundation: non-color roles/status and 44px mobile actions PASS.
+71. Browser matrix: Chromium, Firefox and WebKit PASS; console/page/external request errors 0.
+72. Trust-path replay: Findings, Evidence, Inspector and Provenance screenshots retained.
+73. Interaction comparison: no new execution action or route/API family.
+
+## 74-84. Non-Change, Security And Handoff
+
+74. Scientific payload semantic diff: 0.
+75. Interpretation contract semantic diff: 0.
+76. Reinterpretation: 0; production consumes persisted claims/evidence.
+77. Execution growth: 0; no plan/job/queue action added.
+78. Security: inert text, no Artifact HTML/JS/iframe/external URL execution; secret scan PASS.
+79. LLM/DeepSeek: new call sites 0, real calls 0, provider policy unchanged.
+80. Database/API/dependencies: no schema, migration, public API, dependency or lock change.
+81. Registry/DataProfile: 62 and 2.4 before/after.
+82. Problem closure: `UX-004` 1/1 closed; new P0/P1 0.
+83. Deferred: `UX-005`→12-5, `UX-006`/`UX-009`→12-6, `UX-010`→12-7 remain typed/open.
+84. Phase 12-5 handoff: exact Report/Recipe source and warning-preservation constraints recorded; task not created by 12-4.
+
+## 85-93. Verification And Evidence
+
+85. Backend: `1301 passed` locally; exact-SHA CI PASS.
+86. Frontend: `453 passed`.
+87. Typecheck: PASS.
+88. Production build: PASS.
+89. Service-backed: `48 passed`, `0 skipped`, `0 failed`, `0 errors`.
+90. Linux/Windows sealed invariant replay: PASS.
+91. npm audit: `UNAVAILABLE` under configured mirror policy; lock/dependency/security checks PASS.
+92. Evidence inventory: 74 normalized files including desktop/mobile browser captures.
+93. Manifest: missing 0, extra 0, hash mismatch 0, secret-bearing evidence 0.
+
+## 94-103. Lifecycle And Final State
+
+94. Files changed: Workspace presentation/selection, focused tests, browser harness, Phase 12 docs/evidence, persistent state and queue validators.
+95. Acceptance registry: `P12X4-A01` through `P12X4-A08`, 8/8.
+96. Implementation commit: `9fac62bbb2cc9069da62370ee9d02cf3150e987a`.
+97. Implementation CI: `31379672528` PASS.
+98. Failed implementation candidates: none.
+99. Completion record: committed directly after the single required CI confirmation.
+100. Queue archive: follows as a direct commit without a second CI wait.
+101. Queue state at completion record: 12-4 retained as complete pending archive; 12-5/12-6 remain pending.
+102. Phase 12-5 gate: reviewer prompt exists as a pending task; 12-4 does not execute it.
+103. Final repository state is recorded after queue archive.
+
+## Mandatory Markers
+
+```text
+PHASE12_4_PRODUCTION_UI_CHANGES = YES_FINDINGS_EVIDENCE_INSPECTOR_PROVENANCE_PRESENTATION
+PHASE12_4_BACKEND_BEHAVIOR_CHANGES = 0
+PHASE12_4_SCIENTIFIC_BEHAVIOR_CHANGES = 0
+PHASE12_4_INTERPRETATION_SEMANTIC_CHANGES = 0
+PHASE12_4_SCIENTIFIC_CLAIM_CONTRACT_CHANGES = 0
+PHASE12_4_EVIDENCE_CONTRACT_CHANGES = 0
+PHASE12_4_GROUNDING_VALIDATOR_CHANGES = 0
+PHASE12_4_ARTIFACT_CONTRACT_CHANGES = 0
+PHASE12_4_WORKSPACE_AUTHORITY_CHANGES = 0
+PHASE12_4_SELECTION_CONTRACT_CHANGES = 0
+PHASE12_4_REPORT_AUTHORITY_CHANGES = 0
+PHASE12_4_RECIPE_AUTHORITY_CHANGES = 0
+PHASE12_4_NEW_SCIENTIFIC_TOOLS = 0
+PHASE12_4_NEW_SCIENTIFIC_ALGORITHMS = 0
+PHASE12_4_NEW_ARTIFACT_FAMILIES = 0
+PHASE12_4_NEW_DATAPROFILE_VERSION = 0
+PHASE12_4_NEW_ANALYSISPLAN_VERSION = 0
+PHASE12_4_NEW_DATABASE_MIGRATIONS = 0
+PHASE12_4_NEW_PUBLIC_API_FAMILIES = 0
+PHASE12_4_NEW_DEPENDENCIES = 0
+PHASE12_4_LOCKFILE_CHANGES = 0
+PHASE12_4_NEW_LLM_CALL_SITES = 0
+PHASE12_4_REAL_LLM_CALLS = 0
+PHASE12_4_FRONTEND_SCIENTIFIC_RECOMPUTATION = 0
+FINDING_TO_EVIDENCE_EXACT_LINKING = PASS
+EVIDENCE_TO_ARTIFACT_EXACT_LINKING = PASS
+ARTIFACT_TO_TOOL_VERSION_TRACEABILITY = PASS
+INPUT_IDENTITY_TRACEABILITY = PASS
+PROVENANCE_TRACEABILITY = PASS
+FUZZY_FINDING_EVIDENCE_LINKING = 0
+DISPLAY_LABEL_PROVENANCE_AUTHORITY = 0
+ARRAY_POSITION_PROVENANCE_AUTHORITY = 0
+INSPECTOR_SUMMARY_LAYER = PASS
+INSPECTOR_SCIENTIFIC_DETAILS_LAYER = PASS
+INSPECTOR_PROVENANCE_LAYER = PASS
+DEVELOPER_DETAILS_AVAILABLE = YES
+RAW_JSON_DEFAULT_PRIMARY_LAYER = NO
+INSPECTOR_SCIENTIFIC_RECOMPUTATION = 0
+SUPPORTED_EQUALS_VALIDATED = NO
+MAPPING_ONLY_VISUAL_UPGRADE = 0
+NOT_APPLICABLE_VISUAL_UPGRADE = 0
+V4_VISUAL_FABRICATION = 0
+BROWSER_PASS_EQUALS_SCIENTIFIC_PASS = NO
+SERVICE_PASS_EQUALS_SCIENTIFIC_PASS = NO
+SCREENSHOT_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+FRONTEND_SCIENTIFIC_AUTHORITY = NONE
+RECOMMENDATION_EXECUTION_AUTHORITY = NONE
+RECOMMENDATION_AUTO_PLAN = 0
+RECOMMENDATION_AUTO_JOB = 0
+RECOMMENDATION_AUTO_QUEUE = 0
+REGISTRY_BEFORE_12_4 = 62
+REGISTRY_AFTER_12_4 = 62
+DATAPROFILE_BEFORE_12_4 = 2.4
+DATAPROFILE_AFTER_12_4 = 2.4
+MIGRATION_BEFORE_12_4 = 0007_phase10m1_workspace_domain
+MIGRATION_AFTER_12_4 = 0007_phase10m1_workspace_domain
+PHASE12_4_OWNED_PROBLEMS = UX-004
+PHASE12_4_OWNED_PROBLEM_COUNT = 1
+PHASE12_4_OWNED_PROBLEMS_CLOSED = 1
+PHASE12_4_OWNED_PROBLEMS_OPEN = 0
+NEW_P0_INTRODUCED_BY_12_4 = 0
+NEW_P1_INTRODUCED_BY_12_4 = 0
+P12X4_ACCEPTANCE = 8/8
+FINDINGS_KEYBOARD = PASS
+EVIDENCE_KEYBOARD = PASS
+INSPECTOR_KEYBOARD = PASS
+INSPECTOR_FOCUS_RESTORE = PASS
+FINDING_STATUS_NON_COLOR = PASS
+EVIDENCE_ROLE_NON_COLOR = PASS
+MOBILE_TOUCH_TARGETS = PASS
+REDUCED_MOTION = PASS
+FULL_PRODUCT_ACCESSIBILITY_COMPLETE = NO
+IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI = PASS
+COMPLETION_RECORDED = YES
+QUEUE_ARCHIVED = PENDING_ARCHIVE_COMMIT
+```

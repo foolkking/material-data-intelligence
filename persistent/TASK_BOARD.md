@@ -1,10 +1,10 @@
 # TASK_BOARD
 
-## Active: Phase 12-4
+## Completed: Phase 12-4
 
-- Status: implementation complete locally, awaiting implementation exact-SHA CI.
+- Status: implementation `9fac62bbb2cc9069da62370ee9d02cf3150e987a` verified by exact-SHA CI `31379672528`; completion recorded.
 - Owned problem: `UX-004` only; fixed with trust-path and Inspector evidence.
-- Acceptance: `P12X4-A01` through `P12X4-A08` implemented locally.
+- Acceptance: `P12X4-A01` through `P12X4-A08` PASS.
 - Frozen: Registry 62, DataProfile 2.4, migration 0007, scientific and runtime authority.
 - Next phase: Phase 12-5 remains reviewer-gated and is not executed by 12-4.
 
@@ -2498,3 +2498,12 @@ current board above.
 
 - Implementation `9b38a753bda134e9c27425e1193d2980a0790731` passed exact-SHA
   CI `31370240101`. Phase 12-4 remains reviewer-gated and unqueued.
+
+## Phase 12-4
+
+- [x] Implement persisted Finding to exact Evidence, source Artifact and
+  Tool/version trust paths plus the three-layer Inspector.
+- [x] Preserve interpretation, evidence, Artifact, Workspace, Selection,
+  Report/Recipe and scientific authorities; close only `UX-004`.
+- Implementation `9fac62bbb2cc9069da62370ee9d02cf3150e987a` passed exact-SHA
+  CI `31379672528`. Phase 12-5 remains reviewer-gated and unqueued.

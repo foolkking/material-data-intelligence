@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
 
 # Phase 12-4 Reviewer Prompt
 
@@ -5362,6 +5362,15 @@ Phase 12-5 handoff state
 ```
 
 然后等待 reviewer。
+
+
+完成时间：2026-08-10 18:48:27 +08:00
+
+修改文件：`apps/web/app/components/workspace/ScientificWorkspaceShell.tsx`、`workspace-selection-runtime.ts`、相关测试与浏览器证据脚本、`docs/phase12/`、`persistent/`、阶段治理测试和 `results.md`。
+
+修改摘要：完成 persisted Finding 到 exact Evidence、source Artifact、Tool/version、Plan/Job 和输入 identity 的可信路径；实现 Summary / Scientific details / Provenance 三层 Inspector；保持推荐不可执行、科学 authority 和 contracts 不变；关闭 `UX-004`，验收 `P12X4-A01` 至 `P12X4-A08`。
+
+测试结果：后端 `1301 passed`；前端 `453 passed`；typecheck、production build、`uv lock --check`、`git diff --check`、62 项阶段治理/证据测试、Chromium/Firefox/WebKit/390x844、48 项 PostgreSQL/Redis/MinIO（0 skipped/failed/errors）均通过。Implementation `9fac62bbb2cc9069da62370ee9d02cf3150e987a` 经 exact-SHA CI `31379672528` 验证成功。
 
 
 ---END---

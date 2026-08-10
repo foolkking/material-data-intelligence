@@ -9,7 +9,7 @@
 - [x] Implement Summary / Scientific details / Provenance Inspector layers.
 - [x] Keep recommendations non-executable and limitations first-class.
 - [x] Generate deterministic evidence and close `UX-004` without new P0/P1.
-- [ ] Verify the implementation exact SHA in CI before completion recording.
+- [x] Verify implementation `9fac62bbb2cc9069da62370ee9d02cf3150e987a` in exact-SHA CI `31379672528` and record completion.
 
 ## 2026-08-09 Phase 11-0 Validation Baseline Reconciliation
 
@@ -2182,3 +2182,9 @@ authority.
 Phase 12-3 is complete. Implementation `9b38a753bda134e9c27425e1193d2980a0790731`
 passed exact-SHA CI `31370240101`; result-first hierarchy and shared viewer
 chrome are sealed, with UX-002/UX-003 closed and Phase 12-4 reviewer-gated.
+
+Phase 12-4 is complete. Implementation
+`9fac62bbb2cc9069da62370ee9d02cf3150e987a` passed exact-SHA CI
+`31379672528`; persisted Findings now expose exact supporting, limiting and
+contradicting Evidence, source Artifact and provenance paths, the Inspector uses
+Summary / Scientific details / Provenance layers, and `UX-004` is closed.

@@ -2,13 +2,13 @@
 
 ## 2026-08-10 Phase 12-4 Findings and Evidence Experience
 
-Phase 12-4 is the sole active implementation. It presents persisted claims,
+Phase 12-4 is complete at implementation `9fac62bbb2cc9069da62370ee9d02cf3150e987a`,
+verified by CI `31379672528`. It presents persisted claims,
 exact supporting/limiting/contradicting evidence, source Artifacts, Tool/version
 and provenance through a visible trust path and three-layer Inspector. It does
 not generate interpretations, alter evidence membership, call an LLM or change
 scientific, Workspace, Artifact, Selection, API, database or Registry authority.
-`UX-004` is the only owned issue. Phase 12-5 remains reviewer-gated during this
-phase.
+`UX-004` is closed. Phase 12-5 remains pending and is not executed by 12-4.
 
 ## 2026-08-09 Phase 11-0 Validation Governance
 

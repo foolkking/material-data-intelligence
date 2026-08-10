@@ -2,7 +2,7 @@
 
 ## Phase 12-4
 
-No implementation-critical question remains. Phase 12-5 owns Report/Recipe UX;
+Phase 12-4 is complete and no implementation-critical question remains. Phase 12-5 owns Report/Recipe UX;
 Phase 12-6 owns full responsive/accessibility closure. Numeric scientific
 validation and Phase 11 limitations remain unchanged and cannot be upgraded by
 the trust-path presentation.
