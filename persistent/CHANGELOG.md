@@ -2532,3 +2532,9 @@ directly afterward. Phase 12-2 remains reviewer-gated.
 - Started the single authorized Phase 12-2 task after Phase 12-1 completion and
   archive. The scope is presentation, hierarchy, progressive disclosure and
   recovery UX only; no scientific or runtime authority is changed.
+
+- Completed global navigation actions bound to existing authorities, Planner
+  stage/progress presentation, human-readable plan summary and recovery
+  explanation. `UX-001` and `UX-008` are closed with deterministic evidence.
+  Implementation `d046acfcb7ea7741d7cc3567565c2cce9bcb6722` passed exact-SHA
+  CI `31365743510`; Phase 12-3 remains reviewer-gated.

@@ -472,7 +472,9 @@ Phase 11 validation authority remain unchanged. Implementation
 `60269556f70f07014224a801150f214887a56ee5` passed exact-SHA CI
 `31358512349`; Phase 12-2 remains reviewer-gated and is not queued.
 
-Phase 12-2 is now the sole active task under the approved Global Navigation and
-Planner / Agent Experience scope. It may change presentation, hierarchy,
-progressive disclosure and recovery UX only; scientific, runtime, API, schema,
-Workspace and selection authority remain frozen. Phase 12-3 is not queued.
+Phase 12-2 is complete under the approved Global Navigation and Planner / Agent
+Experience scope. It changed presentation, hierarchy, progressive disclosure
+and recovery UX only; scientific, runtime, API, schema, Workspace and selection
+authority remain frozen. Implementation `d046acfcb7ea7741d7cc3567565c2cce9bcb6722`
+passed exact-SHA CI `31365743510`. Phase 12-3 is reviewer-gated and is not
+executable.

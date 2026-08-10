@@ -2157,7 +2157,8 @@ shared presentation only. Implementation `60269556f70f07014224a801150f214887a56e
 passed exact-SHA CI `31358512349`. Planner flow, navigation, Workspace/viewer IA
 and scientific semantics remain owned by later reviewer-gated phases.
 
-Phase 12-2 is active. Its implementation adds global navigation actions bound to
+Phase 12-2 is complete. Its implementation adds global navigation actions bound to
 existing routes/dialogs/tabs/history, a human-readable Planner stage rail,
 progressive plan summary and context-preserving error recovery. UX-001 and UX-008
-are its only owned closure targets; Phase 12-3 remains reviewer-gated.
+are closed with evidence; implementation `d046acfcb7ea7741d7cc3567565c2cce9bcb6722`
+passed exact-SHA CI `31365743510`. Phase 12-3 remains reviewer-gated.

@@ -2473,7 +2473,11 @@ current board above.
 
 ## Phase 12-2
 
-- [ ] Implement the sealed Global Navigation and Planner / Agent presentation scope.
-- [ ] Preserve existing route, AnalysisIntent, Eligibility, AnalysisPlan,
+- [x] Implement the sealed Global Navigation and Planner / Agent presentation scope.
+- [x] Preserve existing route, AnalysisIntent, Eligibility, AnalysisPlan,
   Runtime, Workspace, selection and provider authorities.
-- [ ] Close only `UX-001` and `UX-008`; keep Phase 12-3 through 12-7 tasks absent.
+- [x] Close only `UX-001` and `UX-008`; retain Phase 12-3 as the next reviewer-gated task.
+
+- Implementation `d046acfcb7ea7741d7cc3567565c2cce9bcb6722` passed exact-SHA CI
+  `31365743510`. Completion and Phase 12-2 queue archive follow without a
+  further CI wait.

@@ -1,5 +1,5 @@
 ---TASK---
-状态：处理中
+状态：已完成
  状态：待处理
 
 # Phase 12-2 Reviewer Prompt
@@ -5489,6 +5489,12 @@ Phase 12-3 handoff state
 
 然后等待 reviewer。
 
+状态：已完成
+完成时间：2026-08-10
+修改文件：PlannerWorkbench.tsx、globals.css、messages、Phase 12-2 docs/evidence、persistent state、queue governance tests
+修改摘要：完成全局导航、Planner stage rail、human-readable plan summary、错误恢复摘要和 Phase 12-3 handoff；保持既有路由、Workspace/科学 authority、backend/API/schema/依赖不变。
+测试结果：1296 passed, 50 skipped；frontend 450 passed；typecheck PASS；build PASS；uv lock --check PASS；Chromium/Firefox/WebKit/390x844 PASS；git diff --check PASS。
+提交/CI状态：实现提交 d046acfc，exact-SHA CI 31365743510 PASS。
 ---END---
 ---TASK---
  状态：待处理

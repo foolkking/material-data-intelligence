@@ -61,7 +61,7 @@ def test_n0_does_not_admit_an_executable_task() -> None:
     if not tasks.strip():
         return
     if "Phase 12-2 Reviewer Prompt" in tasks:
-        assert tasks.count("---TASK---") == 2 and "状态：处理中" in tasks
+        assert tasks.count("---TASK---") == 2 and ("状态：处理中" in tasks or "状态：已完成" in tasks)
         assert "Phase 12-3 Reviewer Prompt" in tasks
         return
     if "Phase 12-0 Current UX Reality Audit" in tasks or "Phase 12-1 Design System 2.0" in tasks:

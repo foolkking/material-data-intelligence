@@ -145,8 +145,9 @@ No Phase 14 is created.
 Phase 11 is `COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS`. Phase 12-0
 is `COMPLETE / PRODUCT_EXPERIENCE_AUDITED / REVIEWER_APPROVAL_REQUIRED`;
 Phase 12-1 is `COMPLETE / DESIGN_SYSTEM_2_0_IMPLEMENTED /
-VISUAL_LANGUAGE_FOUNDATION_SEALED`; Phase 12-2 is the current authorized task;
-Phase 12-3 remains reviewer-gated and has no executable task. The
+VISUAL_LANGUAGE_FOUNDATION_SEALED`; Phase 12-2 is `COMPLETE /
+GLOBAL_NAVIGATION_AND_PLANNER_EXPERIENCE_IMPLEMENTED`; Phase 12-3 remains
+reviewer-gated and has no executable task. The
 former Phase 12 final-closure numbering is superseded by the approved Phase 12
 UI/UX and Phase 13 final-closure split.
 

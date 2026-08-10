@@ -9043,3 +9043,53 @@ single CI confirmation, then only the Phase 12-1 task was archived directly;
 completion/archive CI was not awaited. `COMPLETION_RECORDED = YES` and
 `QUEUE_ARCHIVED = YES`. Phase 12-2 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`;
 Phase 13 is approved, not queued and not executable; Phase 14 was not created.
+
+# Phase 12-2 Global Navigation + Planner / Agent Experience Result
+
+## Conclusion
+PASS. The existing product shell now exposes the approved global IA and the
+Planner explains the current journey in user language while retaining exact
+developer/audit details. This is a presentation and interaction change only;
+Phase 12-3 remains reviewer-gated.
+
+## Baseline and Authority
+Phase 12-1 baseline: `60269556f70f07014224a801150f214887a56ee5`, CI
+`31358512349` PASS. Registry remains 62, DataProfile remains 2.4, and the
+migration head remains `0007_phase10m1_workspace_domain`. Existing routes `/`
+and `/workspaces/{workspaceId}` remain authoritative. Workspace, selection,
+scientific artifact, Report and Recipe authorities are unchanged.
+
+## Delivered
+- Global navigation: Home, Data, Analyses, Workspaces, Reports, Settings.
+- Planner stage rail: data context, intent, plan, execution, results.
+- Human-readable plan approach summary before exact AnalysisPlan details.
+- Four-question recovery summary: what happened, why, what can be done, and
+  what was preserved.
+- Deterministic route/navigation/planner/problem-closure evidence and browser
+  replay for Chromium, Firefox, WebKit and Chromium 390x844.
+- Legacy queue governance tests now recognize the active Phase 12-2 block and
+  preserve the pending Phase 12-3 block.
+
+## Ownership and Acceptance
+`UX-001` and `UX-008` are `FIXED_WITH_EVIDENCE`. UX-002/003 remain owned by
+12-3; UX-004 by 12-4; UX-005 by 12-5; UX-006/009 by 12-6; UX-010 by 12-7.
+`P12X2-A01` through `P12X2-A08` are implemented: `8/8`, missing `0`, extra
+`0`, duplicate `0`, conflicting `0`.
+
+## Verification
+`1296 passed, 50 skipped` backend tests; `450 passed` frontend tests;
+typecheck PASS; production build PASS; `uv lock --check` PASS; `git diff
+--check` PASS. Browser replay reports zero console errors, page errors,
+external requests and HTTP errors in all four required contexts. Scientific
+frontend recomputation is `0`; no new Tool, algorithm, Artifact family,
+DataProfile, API family, database migration, dependency or LLM call site was
+introduced.
+
+## Lifecycle
+Implementation commit: `d046acfcb7ea7741d7cc3567565c2cce9bcb6722`.
+Implementation exact-SHA CI: `31365743510` PASS.
+Completion record is committed directly after the single CI confirmation;
+queue archive is committed directly without another CI wait. Phase 12-2 is
+`PASS / GLOBAL_NAVIGATION_AND_PLANNER_EXPERIENCE_IMPLEMENTED / QUEUE_ARCHIVED`.
+Phase 12-3 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; Phase 13 is approved,
+not queued and not executable.
