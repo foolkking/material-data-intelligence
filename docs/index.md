@@ -753,3 +753,6 @@ and
 | [`phase10n/phase10n_final_summary.md`](phase10n/phase10n_final_summary.md) | Phase 10N Initial Release readiness with limits |
 | [`phase10n/phase11_next_scope.md`](phase10n/phase11_next_scope.md) | Phase 11 reviewer gate only |
 | [`phase10n/evidence/phase10n6_professional_capability_integration_closure/`](phase10n/evidence/phase10n6_professional_capability_integration_closure/) | N6 integration, browser, service and manifest evidence |
+| [`phase12/phase12_5_report_recipe_experience.md`](phase12/phase12_5_report_recipe_experience.md) | Phase 12-5 human-readable Report/Recipe experience and authority boundary |
+| [`phase12/phase12_5_acceptance_evidence_map.md`](phase12/phase12_5_acceptance_evidence_map.md) | P12X5-A01 through A08 evidence mapping |
+| [`phase12/evidence/phase12_5_report_recipe_experience/`](phase12/evidence/phase12_5_report_recipe_experience/) | Phase 12-5 source, preview, history, Recipe, browser, accessibility and security evidence |

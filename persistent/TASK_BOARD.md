@@ -1,5 +1,13 @@
 # TASK_BOARD
 
+## Active: Phase 12-5
+
+- Status: implementation complete locally; awaiting implementation commit and exact-SHA CI.
+- Owned problem: `UX-005` only.
+- Acceptance: `P12X5-A01` through `P12X5-A08`.
+- Frozen: Report/Recipe 1.0, Registry 62, DataProfile 2.4, migration 0007, scientific and runtime authority.
+- Next: Phase 12-6 remains pending until Phase 12-5 is completed and archived.
+
 ## Completed: Phase 12-4
 
 - Status: implementation `9fac62bbb2cc9069da62370ee9d02cf3150e987a` verified by exact-SHA CI `31379672528`; completion recorded.

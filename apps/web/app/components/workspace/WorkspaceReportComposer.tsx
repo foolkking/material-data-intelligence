@@ -45,6 +45,7 @@ export function WorkspaceReportComposer({ workspace, onDraftDirtyChange }: { wor
   const [detail, setDetail] = useState<ReportCompositionSnapshot | Record<string, unknown> | null>(null);
   const [recipe, setRecipe] = useState<RecipeReplayManifest | null>(null);
   const [activeReportId, setActiveReportId] = useState<string | null>(null);
+  const [finalizeConfirmationOpen, setFinalizeConfirmationOpen] = useState(false);
   const [mobileSourcesOpen, setMobileSourcesOpen] = useState(false);
   const [state, setState] = useState<"LOADING" | "READY" | "PREVIEWING" | "FINALIZING" | "FAILED">("LOADING");
   const [message, setMessage] = useState("Loading report source inventory");
@@ -155,6 +156,7 @@ export function WorkspaceReportComposer({ workspace, onDraftDirtyChange }: { wor
     setDetail(null);
     setRecipe(null);
     setActiveReportId(null);
+    setFinalizeConfirmationOpen(false);
     submissionSequence.current += 1;
   };
 
@@ -301,7 +303,7 @@ export function WorkspaceReportComposer({ workspace, onDraftDirtyChange }: { wor
         </div>
         <ul className="workspace-report-source-list">
           {visibleSources.map((source) => <li key={source.sourceId}>
-            <div><strong>{source.role.replace("REPORT_", "").replace("_SOURCE", "").replaceAll("_", " ")}</strong><span>{source.contract ? `${source.contract}@${source.contractVersion || "unknown"}` : source.sourceKind}</span><small>{source.fallback || source.reason || source.sourceId}</small></div>
+            <div><strong>{source.role.replace("REPORT_", "").replace("_SOURCE", "").replaceAll("_", " ")}</strong><span>{source.contract ? `${source.contract}@${source.contractVersion || "unknown"}` : source.sourceKind}</span><small>{source.fallback || source.reason || source.sourceId}</small><span className={`workspace-report-source-state state-${source.state.toLowerCase()}`}>{sourceEligibilityLabel(source)}</span></div>
             <button type="button" className="secondary" disabled={!isSelectable(source) || selectedIds.includes(source.sourceId)} onClick={() => addSource(source)} aria-label={`Add ${source.sourceId} to report`}>{selectedIds.includes(source.sourceId) ? "Added" : "Add"}</button>
           </li>)}
         </ul>
@@ -325,7 +327,7 @@ export function WorkspaceReportComposer({ workspace, onDraftDirtyChange }: { wor
 
     {view === "PREVIEW" ? <section className="workspace-report-preview" aria-labelledby="report-preview-title">
       <div className="workspace-report-section-heading"><h4 id="report-preview-title">Deterministic preview</h4><span>{preview?.predictedOutcome || "Not generated"}</span></div>
-      {preview ? <><p className="workspace-report-no-write" role="status">Preview is not persisted. Report writes 0; Recipe writes 0; Job creation 0.</p><ReportSections report={preview.report} /><RecipeSummary recipe={preview.recipe} /><div className="workspace-report-actions"><button type="button" onClick={() => void finalize()} disabled={workspace.readOnly || state === "FINALIZING"}>Finalize report</button></div></> : <p>Generate a preview from the current draft.</p>}
+      {preview ? <><p className="workspace-report-no-write" role="status">Preview is not persisted. Report writes 0; Recipe writes 0; Job creation 0.</p><ReportSections report={preview.report} /><RecipeSummary recipe={preview.recipe} /><div className="workspace-report-actions"><button type="button" onClick={() => setFinalizeConfirmationOpen(true)} disabled={workspace.readOnly || state === "FINALIZING"}>Finalize report</button></div>{finalizeConfirmationOpen ? <section className="workspace-report-finalize-confirmation" role="alertdialog" aria-labelledby="report-finalize-title" aria-describedby="report-finalize-description"><h5 id="report-finalize-title">Create an immutable Report and Recipe?</h5><p id="report-finalize-description">This saves the exact preview as a new immutable history entry. It does not run an analysis or execute the Recipe.</p><div className="workspace-report-actions"><button type="button" className="secondary" onClick={() => setFinalizeConfirmationOpen(false)}>Keep editing</button><button type="button" onClick={() => void finalize()} disabled={state === "FINALIZING"}>Confirm and finalize</button></div></section> : null}</> : <p>Generate a preview from the current draft.</p>}
     </section> : null}
 
     {view === "HISTORY" ? <section className="workspace-report-history" aria-labelledby="report-history-title">
@@ -341,7 +343,23 @@ function ReportSections({ report }: { report: ReportCompositionSnapshot }) {
 }
 
 function RecipeSummary({ recipe }: { recipe: RecipeReplayManifest }) {
-  return <details className="workspace-recipe-summary"><summary>Exact non-executable Recipe</summary><dl><div><dt>Plan</dt><dd>{recipe.analysisPlanId} / {recipe.planSchemaVersion}</dd></div><div><dt>Dependency model</dt><dd>{recipe.dependencyModel}</dd></div><div><dt>Steps</dt><dd>{recipe.steps.length}</dd></div><div><dt>Execution authorized</dt><dd>No</dd></div><div><dt>Automatic replay</dt><dd>No</dd></div><div><dt>Recipe hash</dt><dd>{recipe.recipeHash}</dd></div></dl></details>;
+  return <section className="workspace-recipe-summary" aria-labelledby={`recipe-summary-${recipe.recipeId}`}>
+    <header><div><span>Reproducibility record</span><h5 id={`recipe-summary-${recipe.recipeId}`}>How this result was produced</h5></div><strong>Non-executable</strong></header>
+    <p>This Recipe records the exact plan, tools, inputs, dependencies, and outputs used for this Report. It can be inspected and exported, but it cannot run work.</p>
+    <ol className="workspace-recipe-steps">{recipe.steps.map((step, index) => <li key={step.stepId}><span>{index + 1}</span><div><strong>{step.toolId}@{step.toolVersion || "unversioned"}</strong><small>{step.expectedOutputContracts.length ? `Produces ${step.expectedOutputContracts.join(", ")}` : "No declared output contract"}</small></div></li>)}</ol>
+    <dl><div><dt>Plan</dt><dd>{recipe.analysisPlanId} / {recipe.planSchemaVersion}</dd></div><div><dt>Dependency model</dt><dd>{recipe.dependencyModel}</dd></div><div><dt>Execution outcome</dt><dd>{recipe.executionOutcome}</dd></div><div><dt>Execution authorized</dt><dd>No</dd></div><div><dt>Automatic replay</dt><dd>No</dd></div><div><dt>Recipe hash</dt><dd>{recipe.recipeHash}</dd></div></dl>
+    {(recipe.warnings.length || recipe.limitations.length) ? <aside className="workspace-recipe-disclosures" aria-label="Recipe warnings and limitations"><h6>Warnings and limitations</h6><ul>{[...recipe.warnings, ...recipe.limitations].map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ul></aside> : null}
+    <details className="workspace-recipe-raw"><summary>Exact non-executable Recipe declaration</summary><pre>{JSON.stringify(recipe, null, 2)}</pre></details>
+  </section>;
+}
+
+function sourceEligibilityLabel(source: ReportSourceReference): string {
+  if (source.state === "ELIGIBLE") return "Eligible exact source";
+  if (source.state === "METADATA_ONLY") return "Metadata-only source";
+  if (source.state === "MANDATORY") return "Mandatory disclosure";
+  if (source.state === "STALE") return `Unavailable: ${source.reason || "source is stale"}`;
+  if (source.state === "SOURCE_INTEGRITY_FAILED") return `Unavailable: ${source.reason || "integrity check failed"}`;
+  return `Unavailable: ${source.reason || source.state.toLowerCase().replaceAll("_", " ")}`;
 }
 
 function isSelectable(source: ReportSourceReference): boolean {

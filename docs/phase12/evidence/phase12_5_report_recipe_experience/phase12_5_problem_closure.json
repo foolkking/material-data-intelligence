@@ -1,0 +1,13 @@
+{
+  "closed": [
+    {
+      "owner": "12-5",
+      "problemId": "UX-005",
+      "severity": "P2",
+      "status": "FIXED_WITH_EVIDENCE"
+    }
+  ],
+  "newP0": 0,
+  "newP1": 0,
+  "open": []
+}

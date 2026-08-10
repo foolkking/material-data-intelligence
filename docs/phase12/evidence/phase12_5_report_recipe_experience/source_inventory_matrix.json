@@ -1,0 +1,10 @@
+{
+  "heavyPayloadRequests": 0,
+  "metadataFirst": true,
+  "sourceKinds": [
+    "WORKSPACE_PANEL",
+    "ARTIFACT",
+    "SCIENTIFIC_CLAIM",
+    "EVIDENCE_ITEM"
+  ]
+}

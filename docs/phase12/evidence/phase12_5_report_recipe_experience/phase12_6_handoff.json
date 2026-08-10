@@ -1,0 +1,10 @@
+{
+  "executableTaskCreatedBy12_5": false,
+  "mobileAuthority": "UNCHANGED",
+  "owner": "12-6",
+  "problems": [
+    "UX-006",
+    "UX-009"
+  ],
+  "status": "REVIEWER_GATE"
+}

@@ -1,0 +1,5 @@
+{
+  "frontendAuthority": "NONE",
+  "recipeAuthority": "server persisted manifest",
+  "reportAuthority": "server persisted snapshot"
+}

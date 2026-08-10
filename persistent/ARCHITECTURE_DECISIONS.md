@@ -1,5 +1,12 @@
 # ARCHITECTURE_DECISIONS
 
+## ADR-P12-5: Human Recipe before exact inert declaration
+
+**Decision:** Report composition remains an exact server-authorized workflow,
+while Recipe presentation explains ordered production steps and limitations
+before exposing canonical JSON. Finalization requires explicit confirmation.
+Neither view can execute a Recipe or create analysis work.
+
 ## 2026-08-10 ADR: Exact Trust-Path Presentation
 
 Finding-to-Evidence relationships are rendered only from persisted supporting,

@@ -1,5 +1,14 @@
 # DESIGN_PROGRESS
 
+## 2026-08-10 Phase 12-5 Report/Recipe Implementation
+
+- [x] Verify Phase 12-4 implementation and exact-SHA CI.
+- [x] Preserve ReportComposition and RecipeReplayManifest 1.0 authority.
+- [x] Present source eligibility, session-only draft, no-write preview, and explicit immutable finalization.
+- [x] Present a human-readable non-executable Recipe before exact raw JSON.
+- [x] Close only `UX-005`; retain `UX-006`, `UX-009`, and `UX-010` ownership.
+- [ ] Verify the Phase 12-5 implementation commit in exact-SHA CI.
+
 ## 2026-08-10 Phase 12-4 Findings/Evidence Implementation
 
 - [x] Verify Phase 12-3 implementation `9b38a753` and CI `31370240101`.

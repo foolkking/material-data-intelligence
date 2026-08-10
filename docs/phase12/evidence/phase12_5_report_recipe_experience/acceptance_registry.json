@@ -1,0 +1,19 @@
+{
+  "conflicting": 0,
+  "duplicate": 0,
+  "entries": {
+    "P12X5-A01": "Exact Report source discovery, eligibility, and unavailable-source explanation",
+    "P12X5-A02": "Exact source selection, ordering, captions, and mandatory disclosure preservation",
+    "P12X5-A03": "Session-draft honesty and deterministic no-write preview",
+    "P12X5-A04": "Explicit atomic finalization and immutable history",
+    "P12X5-A05": "Human-readable Recipe before exact inert declaration",
+    "P12X5-A06": "Authorized export, recovery, legacy, and typed failure presentation",
+    "P12X5-A07": "Responsive, keyboard, accessibility, and secure inert rendering",
+    "P12X5-A08": "Authority non-change, browser, regression, evidence, and lifecycle closure"
+  },
+  "expected": 8,
+  "extra": 0,
+  "implemented": 8,
+  "missing": 0,
+  "shorthand": 0
+}

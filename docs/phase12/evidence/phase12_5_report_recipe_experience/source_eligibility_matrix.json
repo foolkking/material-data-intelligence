@@ -1,0 +1,13 @@
+{
+  "explanationVisible": true,
+  "frontendEligibilityInference": false,
+  "states": [
+    "ELIGIBLE",
+    "MANDATORY",
+    "METADATA_ONLY",
+    "UNAVAILABLE",
+    "STALE",
+    "UNSUPPORTED",
+    "SOURCE_INTEGRITY_FAILED"
+  ]
+}

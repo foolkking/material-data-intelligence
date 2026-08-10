@@ -1,5 +1,11 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-08-10 Phase 12-5
+
+Registry remains exactly 62. Report/Recipe presentation consumes existing
+persisted authority and does not add or modify a Tool, Adapter, algorithm,
+Artifact family, planner capability, or scientific metadata.
+
 ## 2026-08-10 Phase 12-4 Registry Freeze
 
 Phase 12-4 changes no Tool, Adapter, planner metadata, Artifact port or Registry

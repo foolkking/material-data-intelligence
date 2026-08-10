@@ -1,5 +1,13 @@
 # PROJECT_BRIEF
 
+## 2026-08-10 Phase 12-5 Report and Recipe Experience
+
+Phase 12-5 is the active implementation task. It adds exact source eligibility
+explanations, explicit immutable finalization confirmation, and a human-readable
+Recipe before the exact inert declaration. ReportComposition/Recipe 1.0,
+scientific, Workspace, API, database, Registry and execution authority remain
+unchanged; Recipe execution authority remains none.
+
 ## 2026-08-10 Phase 12-4 Findings and Evidence Experience
 
 Phase 12-4 is complete at implementation `9fac62bbb2cc9069da62370ee9d02cf3150e987a`,

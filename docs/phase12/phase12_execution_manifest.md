@@ -43,3 +43,12 @@ claim/evidence membership, Inspector layers, provenance presentation, typed
 negative states and authority non-change. It is deterministic, local and
 non-scientific: it performs no provider call, external network access, evidence
 projection, claim generation, Artifact mutation or runtime execution.
+
+## Phase 12-5
+
+Phase 12-5 executes `scripts/generate_phase12_5_report_recipe_evidence.py`,
+`tests/test_phase12_5_report_recipe_evidence.py`, component tests, and the
+existing Report/Recipe browser replay against the Phase 12-5 evidence root.
+The generator is deterministic and local. Browser replay uses local fixtures
+and three engines plus 390x844; neither path calls an LLM, external scientific
+API, Recipe executor, or scientific computation authority.

@@ -66,6 +66,9 @@ describe("Phase 10M-5 WorkspaceReportComposer", () => {
     expect(screen.getByText("Required partial execution disclosure.")).not.toBeNull();
     expect(screen.queryByRole("button", { name: /Remove disclosure/u })).toBeNull();
     expect(screen.getByRole("button", { name: "Add artifact_unsupported to report" })).toBeDisabled();
+    expect(screen.getByText("Eligible exact source")).not.toBeNull();
+    expect(screen.getByText("Metadata-only source")).not.toBeNull();
+    expect(screen.getByText(/Unavailable: Unknown Artifact contract/u)).not.toBeNull();
     expect(screen.getByText("Metadata only")).not.toBeNull();
   });
 
@@ -97,10 +100,15 @@ describe("Phase 10M-5 WorkspaceReportComposer", () => {
     await user.click(screen.getByRole("button", { name: "Add artifact_plot to report" }));
     await user.click(screen.getByRole("button", { name: "Preview report" }));
     await user.click(await screen.findByRole("button", { name: "Finalize report" }));
+    expect(finalizeMock).not.toHaveBeenCalled();
+    expect(screen.getByText(/does not run an analysis or execute the Recipe/u)).not.toBeNull();
+    await user.click(screen.getByRole("button", { name: "Confirm and finalize" }));
     await waitFor(() => expect(finalizeMock).toHaveBeenCalledTimes(1));
     expect(finalizeMock.mock.calls[0][2]).toMatch(/^m5-workspace_demo-1-\d+$/u);
     expect(await screen.findByRole("heading", { name: "Report detail" })).not.toBeNull();
-    expect(screen.getByText("Exact non-executable Recipe")).not.toBeNull();
+    expect(screen.getByRole("heading", { name: "How this result was produced" })).not.toBeNull();
+    expect(screen.getByText("Exact non-executable Recipe declaration")).not.toBeNull();
+    expect(screen.getByText("tool.demo@1.0")).not.toBeNull();
     expect(screen.getAllByText("No", { selector: "dd" })).toHaveLength(2);
     expect(reportMock).toHaveBeenCalledWith("workspace_demo", "report_saved", expect.any(AbortSignal));
     expect(recipeMock).toHaveBeenCalledWith("workspace_demo", "report_saved", expect.any(AbortSignal));

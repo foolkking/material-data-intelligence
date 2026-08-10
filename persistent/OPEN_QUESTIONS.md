@@ -1,5 +1,9 @@
 # OPEN_QUESTIONS
 
+## Phase 12-5
+
+- No implementation-critical open question. Phase 12-6 retains the approved responsive/accessibility closure scope for `UX-006` and `UX-009`.
+
 ## Phase 12-4
 
 Phase 12-4 is complete and no implementation-critical question remains. Phase 12-5 owns Report/Recipe UX;

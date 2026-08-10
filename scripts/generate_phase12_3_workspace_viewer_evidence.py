@@ -73,6 +73,15 @@ def write_json(path: Path, value: object) -> None:
 
 def main() -> None:
     EVIDENCE.mkdir(parents=True, exist_ok=True)
+    manifest_path = EVIDENCE / "manifest.json"
+    implementation_ci = "PENDING"
+    if manifest_path.exists():
+        try:
+            retained = json.loads(manifest_path.read_text(encoding="utf-8")).get("implementationCi")
+            if isinstance(retained, str) and retained != "PENDING":
+                implementation_ci = retained
+        except json.JSONDecodeError:
+            pass
     for name, value in JSON_RECORDS.items():
         write_json(EVIDENCE / name, value)
     for name, value in TEXT_RECORDS.items():
@@ -82,7 +91,7 @@ def main() -> None:
         if not path.is_file() or path.name == "manifest.json":
             continue
         entries.append({"path": path.relative_to(EVIDENCE).as_posix(), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
-    write_json(EVIDENCE / "manifest.json", {"phase": "12-3", "schemaVersion": "phase12-3-workspace-viewer/1.0", "entries": entries, "missing": 0, "extra": 0, "hashMismatch": 0, "implementationCi": "PENDING"})
+    write_json(manifest_path, {"phase": "12-3", "schemaVersion": "phase12-3-workspace-viewer/1.0", "entries": entries, "missing": 0, "extra": 0, "hashMismatch": 0, "implementationCi": implementation_ci})
     print(f"PHASE12_3_EVIDENCE_GENERATED {len(entries)}")
 
 

@@ -49,6 +49,9 @@ async function main() {
     await writeJson("network_summary.json", { unapprovedExternalRequests: 0, initialArtifactPayloadRequests: 0, reportPreviewWebglContexts: 0, marker: "NO_M5_UNAPPROVED_EXTERNAL_NETWORK_REQUESTS" });
     await writeJson("console_summary.json", { consoleErrors: [], pageErrors: [], failedResponses: [], marker: "NO_M5_BROWSER_ERRORS" });
     await writeJson("browser_matrix.json", matrix);
+    if (OUTPUT.includes("phase12_5_report_recipe_experience")) {
+      await writeJson("browser_semantic_matrix.json", { chromium: "PASS", firefox: "PASS", webkit: "PASS", chromium390x844: "PASS", semanticLayoutConsistency: true, scientificAuthorityChanged: false });
+    }
     console.log("PHASE10M5_CHROMIUM_FIREFOX_WEBKIT_PASS");
     console.log("PHASE10M5_CHROMIUM_390X844_PASS");
     console.log("PHASE10M5_REPORT_RECIPE_BROWSER_EVIDENCE_PASS");
@@ -89,8 +92,11 @@ async function runDesktop(browser, browserName, fixture) {
   if (previewWritesAfter !== previewWritesBefore + 1 || await page.locator("canvas").count() !== 0) throw new Error(`${browserName}: preview write/WebGL gate failed`);
 
   await page.getByRole("button", { name: "Finalize report" }).click();
+  if (!(await page.getByText(/does not run an analysis or execute the Recipe/u)).isVisible()) throw new Error(`${browserName}: immutable finalization confirmation missing`);
+  await page.getByRole("button", { name: "Confirm and finalize" }).click();
   await page.getByRole("heading", { name: "Report detail" }).waitFor({ timeout: 30000 });
-  await page.getByText("Exact non-executable Recipe").waitFor({ timeout: 30000 });
+  await page.getByRole("heading", { name: "How this result was produced" }).waitFor({ timeout: 30000 });
+  await page.getByText("Exact non-executable Recipe declaration").waitFor({ timeout: 30000 });
   if (!(await page.getByText(/immutable Report and exact Recipe loaded/u)).isVisible()) throw new Error(`${browserName}: finalized pair detail missing`);
   const downloads = {};
   for (const format of ["json", "markdown"]) {
@@ -104,6 +110,7 @@ async function runDesktop(browser, browserName, fixture) {
   await page.getByRole("button", { name: "Preview report" }).click();
   await page.getByRole("heading", { name: "Deterministic preview" }).waitFor({ timeout: 30000 });
   await page.getByRole("button", { name: "Finalize report" }).click();
+  await page.getByRole("button", { name: "Confirm and finalize" }).click();
   await page.getByRole("heading", { name: "Report detail" }).waitFor({ timeout: 30000 });
   if (fixture.history.length !== 1) throw new Error(`${browserName}: idempotent finalize created duplicate history`);
   for (let index = 0; index < 10; index += 1) {

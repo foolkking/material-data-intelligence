@@ -298,6 +298,20 @@ jobs:
             --output-dir "${RUNNER_TEMP}/phase10m5-browser-replay"
         working-directory: apps/web
 
+      - name: Phase 12-5 Report and Recipe experience evidence
+        env:
+          DEEPSEEK_KEY: ""
+          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
+          MDI_PHASE10M5_BROWSERS: chromium,firefox,webkit
+          MDI_PHASE10M5_EVIDENCE_PORT: "3239"
+        run: |
+          node test/workspace-report-recipe-browser-evidence.mjs --validate-fixtures
+          node test/workspace-report-recipe-browser-evidence.mjs \
+            --output-dir "${GITHUB_WORKSPACE}/docs/phase12/evidence/phase12_5_report_recipe_experience"
+          cd ../..
+          python scripts/generate_phase12_5_report_recipe_evidence.py
+          python -m pytest -q tests/test_phase12_5_report_recipe_evidence.py
+
       - name: Replay Phase 10M-6 Workspace recovery browser evidence
         env:
           DEEPSEEK_KEY: ""

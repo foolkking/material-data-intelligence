@@ -63,3 +63,14 @@ Forbidden: claim/evidence generation, confidence inference, scientific ranking,
 fuzzy identity, lineage mutation, new LLM calls, Report/Recipe redesign or
 backend/schema changes. Close only `UX-004`; later owners remain open.
 Acceptance is `P12X4-A01` through `P12X4-A08`.
+
+## 12-5 Execution Detail
+
+Sources: `WorkspaceReportComposer.tsx`, existing Report composition API client,
+ReportComposition/Recipe 1.0 contracts, Phase 12-4 trust-path handoff, and DS2.
+Allowed: typed source eligibility explanation, exact selection/order/captions,
+draft and preview hierarchy, explicit immutable finalization confirmation,
+history/export presentation, and a human-readable Recipe before exact inert
+JSON. Forbidden: Recipe execution, source inference, backend/API/schema changes,
+scientific recomputation, and Phase 12-6 ownership. Close only `UX-005`.
+Acceptance is `P12X5-A01` through `P12X5-A08`.

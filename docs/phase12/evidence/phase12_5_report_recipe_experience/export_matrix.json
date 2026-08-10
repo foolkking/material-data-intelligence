@@ -1,0 +1,8 @@
+{
+  "clientRegeneration": false,
+  "formats": [
+    "json",
+    "markdown"
+  ],
+  "source": "server-authorized immutable export"
+}

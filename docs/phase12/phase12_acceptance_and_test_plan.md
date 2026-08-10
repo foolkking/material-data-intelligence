@@ -65,3 +65,29 @@ implemented 12, with zero missing/extra/duplicate/conflicting/shorthand entries.
 | P12X4-A06 | Warnings, limitations, partial and no-supported-evidence honesty |
 | P12X4-A07 | Responsive, keyboard, accessibility and secure trust-path behavior |
 | P12X4-A08 | Scientific-authority non-change, browser, regression, evidence and lifecycle closure |
+
+## Phase 12-5 Acceptance
+
+| ID | Required closure |
+|---|---|
+| P12X5-A01 | Exact Report source discovery, eligibility, and unavailable-source explanation |
+| P12X5-A02 | Exact source selection, ordering, captions, and mandatory disclosure preservation |
+| P12X5-A03 | Session-draft honesty and deterministic no-write preview |
+| P12X5-A04 | Explicit atomic finalization and immutable history |
+| P12X5-A05 | Human-readable Recipe before exact inert declaration |
+| P12X5-A06 | Authorized export, recovery, legacy, and typed failure presentation |
+| P12X5-A07 | Responsive, keyboard, accessibility, and secure inert rendering |
+| P12X5-A08 | Authority non-change, browser, regression, evidence, and lifecycle closure |
+
+## Phase 12-6 Acceptance
+
+| ID | Required closure |
+|---|---|
+| P12X6-A01 | Responsive route and surface coverage at sealed viewports |
+| P12X6-A02 | Mobile Planner hierarchy, navigation, and input behavior |
+| P12X6-A03 | Mobile Workspace single-panel authority, switcher, drawer, and Inspector sheet |
+| P12X6-A04 | Scientific viewer, chart, table, and 3D responsive alternatives |
+| P12X6-A05 | Keyboard, focus, semantic, and screen-reader closure |
+| P12X6-A06 | Touch target, zoom, contrast, motion, and text expansion closure |
+| P12X6-A07 | Cross-browser desktop/mobile accessibility evidence and owned-problem closure |
+| P12X6-A08 | Authority non-change, regression, security, evidence, and lifecycle closure |
