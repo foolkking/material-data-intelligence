@@ -1,0 +1,128 @@
+{
+  "canonicalJourneyCount": 11,
+  "chromium": {
+    "consoleErrors": [],
+    "designSystem": {
+      "accent": "#08756c",
+      "denseControl": "30px",
+      "focusRing": "#0a8277",
+      "spacing": "12px",
+      "touchControl": "44px"
+    },
+    "externalRequests": [],
+    "failedResponses": [],
+    "headings": [
+      "\u6750\u6599\u6570\u636e\u667a\u80fd\u5206\u6790\u5de5\u4f5c\u53f0"
+    ],
+    "horizontalOverflow": false,
+    "keyboard": "PASS",
+    "pageErrors": [],
+    "status": "PASS",
+    "statusColorOnly": 0,
+    "undersized": [],
+    "viewport": "1440x900",
+    "visibleControls": 29
+  },
+  "chromium1280x720": {
+    "consoleErrors": [],
+    "designSystem": {
+      "accent": "#08756c",
+      "denseControl": "30px",
+      "focusRing": "#0a8277",
+      "spacing": "12px",
+      "touchControl": "44px"
+    },
+    "externalRequests": [],
+    "failedResponses": [],
+    "headings": [
+      "\u6750\u6599\u6570\u636e\u667a\u80fd\u5206\u6790\u5de5\u4f5c\u53f0"
+    ],
+    "horizontalOverflow": false,
+    "keyboard": "PASS",
+    "pageErrors": [],
+    "status": "PASS",
+    "statusColorOnly": 0,
+    "undersized": [],
+    "viewport": "1280x720",
+    "visibleControls": 29
+  },
+  "chromium390x844": {
+    "consoleErrors": [],
+    "designSystem": {
+      "accent": "#08756c",
+      "denseControl": "30px",
+      "focusRing": "#0a8277",
+      "spacing": "12px",
+      "touchControl": "44px"
+    },
+    "externalRequests": [],
+    "failedResponses": [],
+    "headings": [
+      "\u6750\u6599\u6570\u636e\u667a\u80fd\u5206\u6790\u5de5\u4f5c\u53f0"
+    ],
+    "horizontalOverflow": false,
+    "keyboard": "PASS",
+    "pageErrors": [],
+    "status": "PASS",
+    "statusColorOnly": 0,
+    "undersized": [],
+    "viewport": "390x844",
+    "visibleControls": 28
+  },
+  "firefox": {
+    "consoleErrors": [],
+    "designSystem": {
+      "accent": "#08756c",
+      "denseControl": "30px",
+      "focusRing": "#0a8277",
+      "spacing": "12px",
+      "touchControl": "44px"
+    },
+    "externalRequests": [],
+    "failedResponses": [],
+    "headings": [
+      "\u6750\u6599\u6570\u636e\u667a\u80fd\u5206\u6790\u5de5\u4f5c\u53f0"
+    ],
+    "horizontalOverflow": false,
+    "keyboard": "PASS",
+    "pageErrors": [],
+    "status": "PASS",
+    "statusColorOnly": 0,
+    "undersized": [],
+    "viewport": "1440x900",
+    "visibleControls": 29
+  },
+  "frontendScientificRecomputation": 0,
+  "retainedCrossProductEvidence": [
+    "phase12-2",
+    "phase12-3",
+    "phase12-4",
+    "phase12-5",
+    "phase12-6"
+  ],
+  "screenshotNumericScientificAuthority": "NONE",
+  "status": "PASS",
+  "webkit": {
+    "consoleErrors": [],
+    "designSystem": {
+      "accent": "#08756c",
+      "denseControl": "30px",
+      "focusRing": "#0a8277",
+      "spacing": "12px",
+      "touchControl": "44px"
+    },
+    "externalRequests": [],
+    "failedResponses": [],
+    "headings": [
+      "\u6750\u6599\u6570\u636e\u667a\u80fd\u5206\u6790\u5de5\u4f5c\u53f0"
+    ],
+    "horizontalOverflow": false,
+    "keyboard": "PASS",
+    "pageErrors": [],
+    "status": "PASS",
+    "statusColorOnly": 0,
+    "undersized": [],
+    "viewport": "1440x900",
+    "visibleControls": 29
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "changesIn12_7": 0,
+  "groups": [
+    "Home",
+    "Data",
+    "Analyses",
+    "Workspaces",
+    "Reports",
+    "Settings"
+  ],
+  "status": "PASS"
+}

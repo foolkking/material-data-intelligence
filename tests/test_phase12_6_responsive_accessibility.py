@@ -71,6 +71,9 @@ def test_queue_has_only_the_active_phase12_6_task() -> None:
         return
     blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
     assert len(blocks) == 1
+    if "Phase 12-7 Reviewer Prompt" in blocks[0]:
+        assert re.search(r"状态：(处理中|已完成)", blocks[0])
+        return
     assert "Phase 12-6 Reviewer Prompt" in blocks[0]
     assert re.search(r"状态：(处理中|已完成)", blocks[0])
     assert "Phase 12-7 Reviewer Prompt" not in tasks

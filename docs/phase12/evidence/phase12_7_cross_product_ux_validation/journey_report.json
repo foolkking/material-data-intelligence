@@ -1,0 +1,25 @@
+{
+  "evidenceRefs": [
+    "docs/phase12/evidence/phase12_5_report_recipe_experience",
+    "browser_matrix.json"
+  ],
+  "exactIdentityContinuity": "PASS",
+  "goal": "non-executable record available",
+  "journeyId": "E",
+  "keyboardBehavior": "PASS",
+  "name": "Report and Recipe",
+  "preconditions": "canonical local fixture and retained exact authority",
+  "primaryActionCount": 4,
+  "responsiveBehavior": "PASS",
+  "result": "PASS",
+  "routeTransitions": 0,
+  "startingSurface": "/workspaces/{workspaceId}",
+  "steps": [
+    "select source",
+    "compose",
+    "preview",
+    "export"
+  ],
+  "warningLimitationContinuity": "PASS",
+  "workspaceTransitions": 0
+}

@@ -1,0 +1,12 @@
+{
+  "exact": true,
+  "path": [
+    "Finding",
+    "Evidence",
+    "Artifact",
+    "Tool/version",
+    "input identity",
+    "provenance"
+  ],
+  "status": "PASS"
+}

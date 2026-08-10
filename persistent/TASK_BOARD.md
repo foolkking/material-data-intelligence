@@ -2529,3 +2529,12 @@ current board above.
 - [x] Verify implementation `e2beacb0d1e60e5bfccbcd07271f47f5736a221d`
   in exact-SHA CI `31393608850`; record completion and archive the sole task
   without creating Phase 12-7.
+
+## Phase 12-7
+
+- [x] Reconcile 20 decisions, 68 acceptance IDs and all 10 UX problems.
+- [x] Replay and index all 11 canonical product journeys.
+- [x] Close `UX-010` with cross-product density/toolbar consistency evidence.
+- [x] Generate the deterministic Phase 12 baseline and Phase 13 handoff.
+- [ ] Verify the implementation exact SHA in CI, then record completion and
+  archive only the Phase 12-7 queue block.

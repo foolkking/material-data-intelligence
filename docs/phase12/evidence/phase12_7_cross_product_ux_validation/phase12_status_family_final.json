@@ -1,0 +1,16 @@
+{
+  "colorOnly": 0,
+  "families": [
+    "neutral",
+    "informational",
+    "progress",
+    "success",
+    "partial",
+    "warning",
+    "danger",
+    "unsupported",
+    "stale",
+    "read-only"
+  ],
+  "unmapped": 0
+}

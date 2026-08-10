@@ -1,0 +1,14 @@
+{
+  "groups": [
+    "Overview",
+    "Data",
+    "Analysis",
+    "Results",
+    "Findings",
+    "Evidence",
+    "Report",
+    "Advanced"
+  ],
+  "singleActivePanel": true,
+  "status": "PASS"
+}

@@ -323,6 +323,17 @@ jobs:
           python scripts/generate_phase12_6_responsive_accessibility_evidence.py
         working-directory: apps/web
 
+      - name: Phase 12-7 cross-product UX validation evidence
+        env:
+          DEEPSEEK_KEY: ""
+          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
+          MDI_PHASE12_7_PORT: "3461"
+        run: |
+          node test/phase12-7-cross-product-browser-evidence.mjs
+          cd ../..
+          python scripts/generate_phase12_7_cross_product_evidence.py
+        working-directory: apps/web
+
       - name: Replay Phase 10M-6 Workspace recovery browser evidence
         env:
           DEEPSEEK_KEY: ""

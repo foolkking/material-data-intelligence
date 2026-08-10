@@ -761,3 +761,8 @@ and
 | [`phase12/phase12_6_scientific_visualization_accessibility.md`](phase12/phase12_6_scientific_visualization_accessibility.md) | Chart, table and 3D non-graphical access boundary |
 | [`phase12/phase12_7_cross_product_validation_handoff.md`](phase12/phase12_7_cross_product_validation_handoff.md) | Reviewer-gated Phase 12-7 handoff; not queued |
 | [`phase12/evidence/phase12_6_responsive_mobile_accessibility/`](phase12/evidence/phase12_6_responsive_mobile_accessibility/) | Phase 12-6 DOM, browser, responsive, terminology, security and authority evidence |
+| [`phase12/phase12_7_cross_product_ux_validation.md`](phase12/phase12_7_cross_product_ux_validation.md) | Phase 12-7 canonical journey and cross-product consistency validation |
+| [`phase12/phase12_final_product_experience_baseline.md`](phase12/phase12_final_product_experience_baseline.md) | Deterministic Phase 12 product experience baseline |
+| [`phase12/phase12_final_known_limitations.md`](phase12/phase12_final_known_limitations.md) | Final explicit UX and evidence limitations |
+| [`phase12/phase13_final_product_closure_handoff.md`](phase12/phase13_final_product_closure_handoff.md) | Reviewer-gated Phase 13 handoff without execution authority |
+| [`phase12/evidence/phase12_7_cross_product_ux_validation/`](phase12/evidence/phase12_7_cross_product_ux_validation/) | Final journey, consistency, accessibility, authority and baseline evidence |

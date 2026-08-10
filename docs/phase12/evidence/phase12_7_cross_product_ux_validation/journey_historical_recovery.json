@@ -1,0 +1,24 @@
+{
+  "evidenceRefs": [
+    "docs/phase12/evidence/phase12_3_scientific_workspace_viewers",
+    "browser_matrix.json"
+  ],
+  "exactIdentityContinuity": "PASS",
+  "goal": "context recovered",
+  "journeyId": "F",
+  "keyboardBehavior": "PASS",
+  "name": "Historical recovery",
+  "preconditions": "canonical local fixture and retained exact authority",
+  "primaryActionCount": 3,
+  "responsiveBehavior": "PASS",
+  "result": "PASS",
+  "routeTransitions": 0,
+  "startingSurface": "/workspaces/{workspaceId}",
+  "steps": [
+    "reopen",
+    "restore panel",
+    "inspect state"
+  ],
+  "warningLimitationContinuity": "PASS",
+  "workspaceTransitions": 0
+}

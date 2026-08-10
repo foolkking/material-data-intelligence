@@ -1582,3 +1582,7 @@ frontend recomputation remains prohibited.
 Phase 12-5 and Phase 12-6 preserve Registry 62. Report/Recipe presentation,
 responsive layout, accessibility semantics and bilingual terminology do not
 change Tool eligibility, Adapter dispatch, Artifact values or scientific claims.
+
+Phase 12-7 preserves Registry 62. Cross-product journey, browser and design
+evidence only validate presentation continuity; they do not upgrade Tool
+support, scientific validation, reproducibility or Artifact authority.

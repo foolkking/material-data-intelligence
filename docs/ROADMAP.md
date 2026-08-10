@@ -151,7 +151,9 @@ GLOBAL_NAVIGATION_AND_PLANNER_EXPERIENCE_IMPLEMENTED`; Phase 12-3 is
 12-4 is `COMPLETE / FINDINGS_EVIDENCE_TRUST_PATH_IMPLEMENTED /
 INSPECTOR_PROVENANCE_EXPERIENCE_UNIFIED`. Phase 12-5 is `COMPLETE /
 REPORT_RECIPE_EXPERIENCE_IMPLEMENTED`. Phase 12-6 is `COMPLETE /
-RESPONSIVE_MOBILE_ACCESSIBILITY_CLOSED`; Phase 12-7 remains reviewer-gated. Phase 12-6
+RESPONSIVE_MOBILE_ACCESSIBILITY_CLOSED`; Phase 12-7 is `VALIDATION_COMPLETE /
+AWAITING_IMPLEMENTATION_CI`. Phase 12 remains `IN_PROGRESS` until that exact-SHA
+CI passes and the direct completion/archive records are pushed. Phase 12-6
 changes responsive and accessibility presentation only; persisted
 claim/evidence, scientific and Workspace authority remain unchanged. The
 former Phase 12 final-closure numbering is superseded by the approved Phase 12

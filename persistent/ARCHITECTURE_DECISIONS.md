@@ -4576,3 +4576,12 @@ reduced motion and localized terminology are presentation concerns. They may
 improve access to exact scientific records but cannot create or modify
 scientific, selection, Workspace, Report or Recipe authority. DOM/ARIA replay is
 engineering evidence, not formal accessibility certification.
+
+## Phase 12 Product Experience Baseline
+
+The Phase 12 baseline is a deterministic presentation authority over DS2,
+experience decisions, IA, canonical journeys, UX problem dispositions and
+acceptance evidence. Its semantic hash excludes timestamps and CI state and
+must never participate in Plan, Artifact, Workspace, Selection or scientific
+identity. Phase 12-7 validates existing architecture and creates no new product
+or scientific authority.

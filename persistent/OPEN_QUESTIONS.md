@@ -1237,3 +1237,10 @@ is the only remaining work.
 - No implementation-critical question remains. Real assistive-technology user
   validation and final cross-product consistency stay explicitly with Phase
   12-7/reviewer scope; no certification is claimed by DOM/ARIA evidence.
+
+## Phase 12-7
+
+- No implementation-critical Phase 12 question remains. Formal accessibility
+  certification, real assistive-technology studies and human usability studies
+  are explicit non-blocking limitations, not claims made by this closure.
+- Phase 13 scope and execution remain subject to a new reviewer prompt.

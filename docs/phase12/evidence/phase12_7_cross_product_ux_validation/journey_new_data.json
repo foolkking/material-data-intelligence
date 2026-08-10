@@ -1,0 +1,24 @@
+{
+  "evidenceRefs": [
+    "docs/phase12/evidence/phase12_2_navigation_planner",
+    "browser_matrix.json"
+  ],
+  "exactIdentityContinuity": "PASS",
+  "goal": "availability understood",
+  "journeyId": "A",
+  "keyboardBehavior": "PASS",
+  "name": "New user data readiness",
+  "preconditions": "canonical local fixture and retained exact authority",
+  "primaryActionCount": 3,
+  "responsiveBehavior": "PASS",
+  "result": "PASS",
+  "routeTransitions": 0,
+  "startingSurface": "/",
+  "steps": [
+    "select data",
+    "read Profile",
+    "inspect eligible analyses"
+  ],
+  "warningLimitationContinuity": "PASS",
+  "workspaceTransitions": 0
+}

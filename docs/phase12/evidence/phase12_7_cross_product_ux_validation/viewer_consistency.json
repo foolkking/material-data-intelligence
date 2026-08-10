@@ -1,0 +1,13 @@
+{
+  "density": "DS2_DENSE",
+  "sharedChrome": [
+    "title",
+    "toolbar",
+    "status",
+    "warning",
+    "loading",
+    "table alternative"
+  ],
+  "specializedScientificControlsPreserved": true,
+  "status": "PASS"
+}

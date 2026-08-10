@@ -91,3 +91,16 @@ implemented 12, with zero missing/extra/duplicate/conflicting/shorthand entries.
 | P12X6-A06 | Touch target, zoom, contrast, motion, and text expansion closure |
 | P12X6-A07 | Cross-browser desktop/mobile accessibility evidence and owned-problem closure |
 | P12X6-A08 | Authority non-change, regression, security, evidence, and lifecycle closure |
+
+## Phase 12-7 Acceptance
+
+| ID | Required closure |
+|---|---|
+| P12X7-A01 | Cross-product canonical journey replay |
+| P12X7-A02 | Cross-surface design-system and terminology consistency |
+| P12X7-A03 | Loading, error, partial, stale, and unsupported state consistency |
+| P12X7-A04 | Desktop, mobile, keyboard, and accessibility cross-product validation |
+| P12X7-A05 | Scientific result, Finding, Evidence, Inspector, Report, and Recipe authority continuity |
+| P12X7-A06 | Final Phase 12 UX problem closure |
+| P12X7-A07 | Final design evidence, deterministic baseline, and known-limit closure |
+| P12X7-A08 | Regression, browser, service, security, lifecycle, and Phase 13 handoff closure |

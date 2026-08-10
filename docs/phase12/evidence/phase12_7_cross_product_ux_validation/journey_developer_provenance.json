@@ -1,0 +1,24 @@
+{
+  "evidenceRefs": [
+    "docs/phase12/evidence/phase12_4_findings_evidence_inspector_provenance",
+    "browser_matrix.json"
+  ],
+  "exactIdentityContinuity": "PASS",
+  "goal": "exact identity available",
+  "journeyId": "K",
+  "keyboardBehavior": "PASS",
+  "name": "Developer provenance audit",
+  "preconditions": "canonical local fixture and retained exact authority",
+  "primaryActionCount": 3,
+  "responsiveBehavior": "PASS",
+  "result": "PASS",
+  "routeTransitions": 0,
+  "startingSurface": "/workspaces/{workspaceId}",
+  "steps": [
+    "Inspector",
+    "Evidence",
+    "raw detail"
+  ],
+  "warningLimitationContinuity": "PASS",
+  "workspaceTransitions": 0
+}

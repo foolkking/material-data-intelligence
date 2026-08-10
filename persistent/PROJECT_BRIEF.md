@@ -512,3 +512,9 @@ Phase 12-6 is the sole active task and closes responsive/mobile/accessibility
 engineering plus bilingual terminology consistency. Registry 62, DataProfile
 2.4, migration 0007, scientific claims and runtime authority remain frozen;
 Phase 12-7 is not queued.
+
+Phase 12-7 is now the sole active reviewer-authorized task. Cross-product
+validation closes `UX-010` by evidence over the existing DS2/viewer density and
+toolbar system; no production, scientific, backend, API, schema, dependency or
+IA change is required. The candidate Phase 12 baseline binds 20 decisions, 11
+journeys, 10 closed UX problems and 68 acceptance IDs and awaits exact-SHA CI.

@@ -1,0 +1,25 @@
+{
+  "evidenceRefs": [
+    "docs/phase12/evidence/phase12_3_scientific_workspace_viewers",
+    "browser_matrix.json"
+  ],
+  "exactIdentityContinuity": "PASS",
+  "goal": "provenance inspected",
+  "journeyId": "C",
+  "keyboardBehavior": "PASS",
+  "name": "Professional scientific analysis",
+  "preconditions": "canonical local fixture and retained exact authority",
+  "primaryActionCount": 4,
+  "responsiveBehavior": "PASS",
+  "result": "PASS",
+  "routeTransitions": 0,
+  "startingSurface": "/workspaces/{workspaceId}",
+  "steps": [
+    "result",
+    "diagnostics",
+    "Inspector",
+    "Evidence"
+  ],
+  "warningLimitationContinuity": "PASS",
+  "workspaceTransitions": 0
+}

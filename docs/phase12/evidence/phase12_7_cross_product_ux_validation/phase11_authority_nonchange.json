@@ -1,0 +1,10 @@
+{
+  "analysisPlan": [
+    "0.1",
+    "0.2"
+  ],
+  "dataProfile": "2.4",
+  "migration": "0007_phase10m1_workspace_domain",
+  "mutations": 0,
+  "registry": 62
+}

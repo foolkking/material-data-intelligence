@@ -2584,3 +2584,12 @@ directly afterward. Phase 12-2 remains reviewer-gated.
   The evidence server is corrected forward to use the existing dev-server pattern.
 - Corrected implementation `e2beacb0d1e60e5bfccbcd07271f47f5736a221d`
   passed exact-SHA CI `31393608850`; completion and queue archive follow directly.
+
+## 2026-08-10 - Phase 12-7 validation candidate
+
+- Reconciled all Phase 12 decisions, acceptance IDs, UX problems and canonical
+  journeys into one deterministic final design evidence package.
+- Closed `UX-010` through cross-product consistency validation without a
+  production UI, IA, backend or scientific change.
+- Generated the candidate Phase 12 product experience baseline and reviewer-
+  gated Phase 13 handoff; implementation exact-SHA CI remains required.
