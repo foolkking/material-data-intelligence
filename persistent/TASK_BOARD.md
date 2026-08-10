@@ -2536,5 +2536,6 @@ current board above.
 - [x] Replay and index all 11 canonical product journeys.
 - [x] Close `UX-010` with cross-product density/toolbar consistency evidence.
 - [x] Generate the deterministic Phase 12 baseline and Phase 13 handoff.
-- [ ] Verify the implementation exact SHA in CI, then record completion and
-  archive only the Phase 12-7 queue block.
+- [x] Verify implementation `8fb5dcbe54fbbcd32677107abb5f4117bd04948d`
+  in exact-SHA CI `31397995499`; record completion and archive only the Phase
+  12-7 queue block without creating Phase 13.

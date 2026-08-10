@@ -1,7 +1,8 @@
 # Phase 12 Completion
 
-Phase 12 completion is an implementation-CI-gated candidate until the Phase
-12-7 exact-SHA CI succeeds. The completed scope comprises DS2 visual language,
+Phase 12 is `COMPLETE / PRODUCT_EXPERIENCE_REDESIGN_VALIDATED_AND_SEALED` after
+Phase 12-7 implementation `8fb5dcbe54fbbcd32677107abb5f4117bd04948d`
+passed exact-SHA CI `31397995499`. The completed scope comprises DS2 visual language,
 meaning-first Planner presentation, result-first Workspace/viewers, exact
 Finding/Evidence/Inspector provenance, human-readable Report/Recipe,
 responsive/mobile/accessibility closure, and cross-product validation.

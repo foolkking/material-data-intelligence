@@ -1244,3 +1244,5 @@ is the only remaining work.
   certification, real assistive-technology studies and human usability studies
   are explicit non-blocking limitations, not claims made by this closure.
 - Phase 13 scope and execution remain subject to a new reviewer prompt.
+- Phase 12 has no remaining implementation-critical UX question after CI
+  `31397995499`; all future product-closure decisions belong to Phase 13 review.

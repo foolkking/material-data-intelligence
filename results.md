@@ -9668,3 +9668,381 @@ COMPLETION_RECORDED
 PHASE_12_7_EXECUTABLE_TASK_CREATED = NO
 PHASE_13_EXECUTABLE_TASK_CREATED = NO
 ```
+
+# Phase 12-7 Cross-Product UX Validation + Design Evidence Closure Result
+
+## 1. Conclusion
+Phase 12-7 is `PASS / CROSS_PRODUCT_UX_VALIDATED / DESIGN_EVIDENCE_SEALED / IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI / COMPLETION_RECORDED`. Phase 12 is `COMPLETE / PRODUCT_EXPERIENCE_REDESIGN_VALIDATED_AND_SEALED` within explicit limits.
+
+## 2. Phase 12-6 Baseline
+Implementation `e2beacb0d1e60e5bfccbcd07271f47f5736a221d`, CI `31393608850`, completion `c861bd7`, and archive `7f47bbbcf494a4592f5c73f5471030cdae91c635` are verified.
+
+## 3. Entry Gate
+`PHASE_12_7_ENTRY_GATE = PASS`; the sole user-added queue block was admitted after the clean `7f47bbb` baseline.
+
+## 4. Repository State
+Entry branch was `master`, `HEAD == origin/master`, with only the authorized queue admission delta after task creation.
+
+## 5. Phase 12 Authority Chain
+Phase 12-0 decisions resolve through the retained 12-1 through 12-6 implementations and this final validation.
+
+## 6. Phase 11 Scientific Authority
+Registry 62, DataProfile 2.4, AnalysisPlan 0.1/0.2 and migration `0007_phase10m1_workspace_domain` remain read-only.
+
+## 7. Design System Authority
+DS2 version 2.0 remains presentation-only; no scientific identity binds to its semantic hash.
+
+## 8. Phase 12 Decision Registry
+`P12-D001` through `P12-D020`: 20 expected, 20 resolved, 0 violated.
+
+## 9. UX Problem Final Ownership
+All original owners and severities for `UX-001` through `UX-010` are retained.
+
+## 10. UX-010 / Final Problem Closure
+`UX-010` is `FIXED_WITH_EVIDENCE` through cross-product DS2 density, toolbar, status, terminology and viewport consistency validation.
+
+## 11. Full Phase 12 Problem Reconciliation
+Ten problems are closed; P0/P1/P2/P3 open counts are all zero and unassigned count is zero.
+
+## 12. Phase 12 Acceptance Reconciliation
+68 canonical IDs pass: 12 for 12-0 and 8 each for 12-1 through 12-7; missing/duplicate/conflicting counts are zero.
+
+## 13. P12X7 Acceptance
+`P12X7-A01` through `P12X7-A08` pass exactly: `P12X7_ACCEPTANCE = 8/8`.
+
+## 14. Canonical Journey Registry
+The eleven Phase 12-0 journeys A-K remain unchanged and authoritative.
+
+## 15. Journey 1 - New Data
+Data selection, Profile/readiness and eligible analysis discovery pass without inferred semantics.
+
+## 16. Journey 2 - Natural-Language Analysis
+Prompt, clarification, eligibility, human plan, execution and Workspace transition preserve context and non-ready blocking.
+
+## 17. Journey 3 - Professional Analysis
+Professional results retain dense presentation, limitations, diagnostics and exact provenance.
+
+## 18. Journey 4 - Result Understanding
+Result to Viewer to Finding/Evidence/Inspector/Provenance is meaning-first and exactly traceable.
+
+## 19. Journey 5 - Report / Recipe
+Source discovery, disclosures, preview/finalization and inert Recipe presentation pass with no generated science.
+
+## 20. Journey 6 - Historical Recovery
+Historical Workspace and records open by exact identity with no latest rebind.
+
+## 21. Journey 7 - Unsupported Input
+Typed unsupported status, explanation and supported recovery remain visible; readiness is not fabricated.
+
+## 22. Journey 8 - Partial Execution
+Successful, failed and blocked branches remain distinguishable and trustworthy disclosures persist.
+
+## 23. Journey 9 - Provider Setup
+Server-owned DeepSeek state is understandable; browser secret input and direct provider calls remain absent.
+
+## 24. Journey 10 - Mobile Inspection
+390x844 retains one active Workspace panel, context drawer, panel switcher and Inspector sheet authority.
+
+## 25. Journey 11 - Developer Provenance
+Exact identifiers and raw developer detail remain available but subordinate and inert.
+
+## 26. Journey Aggregate
+11 expected/replayed/passed; 0 failed, blocked or unaudited.
+
+## 27. Interaction Baseline Comparison
+Automation measurements remain interaction proxies; no human time-on-task or usability-study claim is made.
+
+## 28. Product Experience Principles
+All twelve sealed principles pass, including meaning before mechanism, result before Artifact and no UX-created science.
+
+## 29. Global IA Validation
+Home, Data, Analyses, Workspaces, Reports and Settings remain unchanged.
+
+## 30. Workspace IA Validation
+Overview, Data, Analysis, Results, Findings, Evidence, Report and Advanced remain unchanged with one active panel.
+
+## 31. Planner Consistency
+Human-readable stages, one primary action and context-preserving typed recovery pass.
+
+## 32. Workspace Consistency
+Server Workspace identity, URL panel/selection authority and transient memory boundaries remain exact.
+
+## 33. Viewer Consistency
+Shared title, toolbar, status, warning, loading and alternatives pass while specialized controls retain scientific semantics.
+
+## 34. Findings / Evidence Consistency
+Persisted claims and supporting/limiting/contradicting evidence retain exact membership.
+
+## 35. Inspector Consistency
+Summary, Scientific Details and Provenance remain the three layers.
+
+## 36. Provenance Consistency
+Artifact, Tool/version, input identity, lineage and hashes remain exact and subordinate.
+
+## 37. Report / Recipe Consistency
+Meaning-first report/recipe presentation retains mandatory disclosures and zero execution authority.
+
+## 38. Terminology Consistency
+18 canonical terms resolve in en-US and zh-CN with zero required inconsistency.
+
+## 39. Status Consistency
+Ten DS2 status families map with text; no color-only meaning or invented backend status exists.
+
+## 40. Warning / Limitation Consistency
+Scientific limitations remain persistent and are never reduced to dismissible toast feedback.
+
+## 41. Design System Consistency
+DS2 token, component migration and visual vocabulary audits remain complete with zero uncontrolled authority.
+
+## 42. UI Surface Final Coverage
+All Phase 12-0 surfaces retain a final disposition; `UI_SURFACE_UNCLASSIFIED = 0`.
+
+## 43. Component Final Coverage
+All components retain migration dispositions; `UI_COMPONENT_UNCLASSIFIED = 0`.
+
+## 44. Desktop 1440x900
+Chromium, Firefox and WebKit pass hierarchy, focus, wrapping, overflow and request checks.
+
+## 45. Desktop 1280x720
+Chromium passes with zero unexpected horizontal overflow.
+
+## 46. Mobile 390x844
+Chromium passes with zero required touch or overflow failures.
+
+## 47. Keyboard
+Core keyboard workflows and Planner resize Arrow/Home/End behavior pass.
+
+## 48. Focus / Restoration
+Visible focus and required restoration cases pass.
+
+## 49. Screen Reader Semantics
+Landmarks, headings, names and status semantics pass engineering checks; no formal certification is claimed.
+
+## 50. Touch Targets
+Required mobile controls meet 44x44 CSS px; failures = 0.
+
+## 51. Contrast
+Required WCAG-like AA engineering checks have zero failures; formal certification = no.
+
+## 52. Non-Color State
+`STATUS_COLOR_ONLY_MEANING = 0`.
+
+## 53. 200% Zoom
+Required action clipping and unrecoverable overflow failures = 0.
+
+## 54. Reflow
+Planner, Workspace and Report reflow; scientific tables use bounded scrolling.
+
+## 55. Reduced Motion
+All required cases pass and continuous decorative motion count is zero.
+
+## 56. Chart Accessibility
+Required chart data alternatives pass; Plotly numeric authority is none.
+
+## 57. 3D Accessibility
+Required structured alternatives pass; WebGL numeric authority is none.
+
+## 58. Heavy Viewer Lifecycle
+One active heavy viewer maximum, zero inactive requests and zero duplicate canvas/listener growth are retained.
+
+## 59. Loading / Empty / Error States
+Shared shells and context-preserving recovery remain consistent.
+
+## 60. Unsupported / Stale / Partial States
+All remain typed, text-bearing and distinct from disabled/loading states.
+
+## 61. Before / After Evidence
+Phase 12-0 is the before authority; 12-1 through 12-7 are indexed after evidence. Screenshots carry no numeric authority.
+
+## 62. Scientific Payload Non-Change
+Value, unit, claim and identity semantic differences are zero.
+
+## 63. Frontend No-Recomputation
+`PHASE12_7_FRONTEND_SCIENTIFIC_RECOMPUTATION = 0`.
+
+## 64. Workspace Authority Non-Change
+One Workspace per Job, persistence, revision, URL and local/session storage authority remain unchanged.
+
+## 65. Selection Authority Non-Change
+Exact selection identity is retained; latest, fuzzy, filename, label and array-position authority remain absent.
+
+## 66. Claim/Evidence Contract Non-Change
+Interpretation and claim/evidence contracts changed = 0.
+
+## 67. Report/Recipe Contract Non-Change
+Report and Recipe contracts changed = 0; Recipe execution authority = none.
+
+## 68. Phase 11 Authority Non-Change
+Tool/input coverage, validation levels, public claims and scientific limitations are unchanged.
+
+## 69. Accepted UX Limitations
+No formal accessibility certification, assistive-technology study, human study or browser pixel equality is claimed.
+
+## 70. Final Design Evidence Manifest
+63 deterministic members pass with missing/extra/hash-mismatch counts zero and implementation CI `31397995499`.
+
+## 71. Phase 12 Product Experience Baseline
+`PHASE12_PRODUCT_EXPERIENCE_BASELINE = SEALED`.
+
+## 72. Baseline Determinism
+`PHASE12_PRODUCT_EXPERIENCE_BASELINE_HASH = 29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4`; regeneration is stable.
+
+## 73. Phase 13 Handoff
+Seven roadmap demo families and the complete resource-to-Report/Recipe path are handed off without execution authority.
+
+## 74. Backend Regression
+Local backend: `1314 passed, 50 skipped`; the skipped service cases run separately in CI.
+
+## 75. Frontend Regression
+71 files and `455 passed`.
+
+## 76. Typecheck
+PASS.
+
+## 77. Build
+PASS; existing Plotly/glslify dynamic dependency warnings remain non-blocking.
+
+## 78. Lock
+`uv lock --check` PASS; lockfile changes = 0.
+
+## 79. Service Regression
+PostgreSQL, Redis and MinIO required integration passed with zero skipped in CI.
+
+## 80. Linux/Windows Replay
+Both sealed invariant replays pass; numeric cross-platform validation remains governed by Phase 11.
+
+## 81. Browser Matrix
+Chromium, Firefox, WebKit, Chromium 1280x720 and Chromium 390x844 pass with zero console/page/external-request errors.
+
+## 82. Security
+Arbitrary execution, active Artifact content, Recipe/recommendation execution, cross-scope leakage and secret disclosure gates pass.
+
+## 83. Secret Scan
+Secret-bearing evidence, credentials, private paths and real LLM calls = 0.
+
+## 84. Evidence Inventory
+Journey, consistency, accessibility, authority, baseline, handoff, browser and screenshot evidence is retained under the X7 evidence root.
+
+## 85. Files Changed
+Audit/evidence tooling, test-only browser replay, docs, evidence, persistent state and queue records only; production source changes = 0.
+
+## 86. Implementation Commit
+`8fb5dcbe54fbbcd32677107abb5f4117bd04948d`.
+
+## 87. Implementation Exact-SHA CI
+CI `31397995499` PASS across all required jobs.
+
+## 88. Failed Candidates
+Phase 12-7 failed candidates = none. The 12-6 historical failed candidate remains retained and non-authoritative.
+
+## 89. Completion Record
+This direct completion record follows successful implementation CI; no separate completion CI is awaited.
+
+## 90. Queue Archive
+The next direct commit removes only the completed Phase 12-7 task; no archive CI is awaited or claimed verified.
+
+## 91. Queue State
+Completion-record state retains one completed block pending immediate archive; final `TASK_BLOCK_COUNT = 0` after that direct commit.
+
+## 92. Phase 12 Final Status
+`COMPLETE / PRODUCT_EXPERIENCE_REDESIGN_VALIDATED_AND_SEALED`.
+
+## 93. Phase 13 Reviewer Gate
+`REVIEWER_GATE / AWAITING REVIEWER PROMPT`; executable task created = no.
+
+## 94. Final Repository State
+After the next direct archive push: `master`, `HEAD == origin/master`, clean worktree, Registry 62, DataProfile 2.4, migration 0007, empty queue.
+
+```text
+PHASE12_7_PRODUCTION_UI_CHANGES = NO
+PHASE12_7_BACKEND_BEHAVIOR_CHANGES = 0
+PHASE12_7_SCIENTIFIC_BEHAVIOR_CHANGES = 0
+PHASE12_7_GLOBAL_IA_CHANGES = 0
+PHASE12_7_WORKSPACE_IA_CHANGES = 0
+PHASE12_7_PLANNER_SEMANTIC_CHANGES = 0
+PHASE12_7_ARTIFACT_CONTRACT_CHANGES = 0
+PHASE12_7_SELECTION_SEMANTIC_CHANGES = 0
+PHASE12_7_INTERPRETATION_CONTRACT_CHANGES = 0
+PHASE12_7_REPORT_CONTRACT_CHANGES = 0
+PHASE12_7_RECIPE_CONTRACT_CHANGES = 0
+PHASE12_7_NEW_SCIENTIFIC_TOOLS = 0
+PHASE12_7_NEW_SCIENTIFIC_ALGORITHMS = 0
+PHASE12_7_NEW_ARTIFACT_FAMILIES = 0
+PHASE12_7_NEW_DATAPROFILE_VERSION = 0
+PHASE12_7_NEW_ANALYSISPLAN_VERSION = 0
+PHASE12_7_NEW_DATABASE_MIGRATIONS = 0
+PHASE12_7_NEW_PUBLIC_API_FAMILIES = 0
+PHASE12_7_NEW_DEPENDENCIES = 0
+PHASE12_7_LOCKFILE_CHANGES = 0
+PHASE12_7_NEW_LLM_CALL_SITES = 0
+PHASE12_7_REAL_LLM_CALLS = 0
+PHASE12_7_FRONTEND_SCIENTIFIC_RECOMPUTATION = 0
+UI_SURFACE_UNCLASSIFIED = 0
+UI_COMPONENT_UNCLASSIFIED = 0
+UX_PROBLEM_UNASSIGNED = 0
+PHASE12_ALL_OWNED_PROBLEMS_OPEN = 0
+CANONICAL_JOURNEYS_UNAUDITED = 0
+PHASE12_IMPLEMENTATION_CRITICAL_TBD = 0
+UNMAPPED_USER_VISIBLE_STATUS_FAMILIES = 0
+NEW_P0_INTRODUCED_BY_12_7 = 0
+NEW_P1_INTRODUCED_BY_12_7 = 0
+PHASE12_DESIGN_SYSTEM_VERSION = 2.0
+DESIGN_SYSTEM_TOKEN_REGISTRY_COMPLETE = YES
+UNCLASSIFIED_LEGACY_TOKENS = 0
+UNCONTROLLED_HARDCODED_DESIGN_VALUES = 0
+UI_COMPONENT_MIGRATION_UNCLASSIFIED = 0
+CANONICAL_JOURNEYS_EXPECTED = 11
+CANONICAL_JOURNEYS_PASS = 11
+CANONICAL_JOURNEYS_FAIL = 0
+CANONICAL_JOURNEYS_BLOCKED = 0
+MOBILE_CORE_WORKFLOWS_COMPLETE = YES
+CORE_KEYBOARD_WORKFLOWS = PASS
+VISIBLE_FOCUS_REQUIRED_CASES = PASS
+FOCUS_RESTORATION_REQUIRED_CASES = PASS
+ACCESSIBLE_NAME_REQUIRED_CASES = PASS
+STATUS_COLOR_ONLY_MEANING = 0
+REQUIRED_TOUCH_TARGET_FAILURES = 0
+CONTRAST_REQUIRED_FAILURES = 0
+ZOOM_200_REQUIRED_FAILURES = 0
+REFLOW_REQUIRED_FAILURES = 0
+UNEXPECTED_PAGE_HORIZONTAL_OVERFLOW = 0
+REDUCED_MOTION_REQUIRED_CASES = PASS
+ACCESSIBILITY_ENGINEERING_TARGET_MET = YES
+FORMAL_ACCESSIBILITY_CERTIFICATION = NO
+CHART_ACCESSIBLE_DATA_ALTERNATIVE_REQUIRED_CASES = PASS
+THREE_D_STRUCTURED_ALTERNATIVE_REQUIRED_CASES = PASS
+PLOTLY_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+WEBGL_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+SUPPORTED_EQUALS_VALIDATED = NO
+REPORT_INCLUDED_EQUALS_VALIDATED = NO
+RECIPE_EXISTS_EQUALS_REPRODUCIBILITY_VALIDATED = NO
+ACCESSIBILITY_PASS_EQUALS_SCIENTIFIC_PASS = NO
+BROWSER_PASS_EQUALS_SCIENTIFIC_PASS = NO
+SERVICE_PASS_EQUALS_SCIENTIFIC_PASS = NO
+MAPPING_ONLY_VISUAL_UPGRADE = 0
+NOT_APPLICABLE_VISUAL_UPGRADE = 0
+V4_VISUAL_FABRICATION = 0
+SCREENSHOT_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+FRONTEND_SCIENTIFIC_AUTHORITY = NONE
+REGISTRY_BEFORE_12_7 = 62
+REGISTRY_AFTER_12_7 = 62
+DATAPROFILE_BEFORE_12_7 = 2.4
+DATAPROFILE_AFTER_12_7 = 2.4
+MIGRATION_BEFORE_12_7 = 0007_phase10m1_workspace_domain
+MIGRATION_AFTER_12_7 = 0007_phase10m1_workspace_domain
+PHASE12_7_OWNED_PROBLEMS = UX-010
+PHASE12_7_OWNED_PROBLEM_COUNT = 1
+PHASE12_7_OWNED_PROBLEMS_CLOSED = 1
+PHASE12_7_OWNED_PROBLEMS_OPEN = 0
+P12X7_ACCEPTANCE = 8/8
+PHASE12_ALL_ACCEPTANCE = 68/68
+PHASE12_PRODUCT_EXPERIENCE_BASELINE = SEALED
+PHASE12_PRODUCT_EXPERIENCE_BASELINE_HASH = 29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4
+PHASE12_BASELINE_DETERMINISM = PASS
+PHASE12_FINAL_DESIGN_EVIDENCE_MANIFEST = PASS
+IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI
+COMPLETION_RECORDED
+PHASE13_EXECUTABLE_TASK_CREATED = NO
+PHASE14_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+```

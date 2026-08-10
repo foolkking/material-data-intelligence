@@ -518,3 +518,8 @@ validation closes `UX-010` by evidence over the existing DS2/viewer density and
 toolbar system; no production, scientific, backend, API, schema, dependency or
 IA change is required. The candidate Phase 12 baseline binds 20 decisions, 11
 journeys, 10 closed UX problems and 68 acceptance IDs and awaits exact-SHA CI.
+
+Phase 12 is complete and sealed. Phase 12-7 implementation
+`8fb5dcbe54fbbcd32677107abb5f4117bd04948d` passed CI `31397995499`;
+Phase 13 remains reviewer-gated, Initial Release is not complete, and no future
+executable task has been created.

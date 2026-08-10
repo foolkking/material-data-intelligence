@@ -1,6 +1,6 @@
 
 ---TASK---
- 状态：处理中
+ 状态：已完成
 
 # Phase 12-7 Reviewer Prompt
 
@@ -5112,5 +5112,15 @@ PHASE13_EXECUTABLE_TASK_CREATED = NO
 
 PHASE14_CREATED = NO
 ```
+
+完成时间：2026-08-10 22:40:45 +08:00
+
+修改文件：`.github/workflows/ci.yml`、`apps/web/test/phase12-7-cross-product-browser-evidence.mjs`、`scripts/generate_phase12_7_cross_product_evidence.py`、`tests/test_phase12_7_cross_product_evidence.py`、Phase 12 canonical docs/evidence、`persistent/`、`results.md`、`TASKS.md`。
+
+修改摘要：完成 Phase 12-7 跨产品 UX 验证与设计证据封板；对账 20 项决策、68 项验收、11 条 canonical journey 和 UX-001..UX-010；以验证证据关闭 UX-010；生成确定性 Phase 12 Product Experience Baseline 与 Phase 13 reviewer-gated handoff；生产 UI、后端和科学行为变更为 0。
+
+测试结果：backend `1314 passed, 50 skipped`（service-backed 在 CI 独立零 skipped）；frontend `455 passed`；Phase 12-7 focused `5 passed`；typecheck/build/`uv lock --check`/`git diff --check` PASS；Chromium/Firefox/WebKit/1280x720/390x844 PASS；implementation exact-SHA `8fb5dcbe54fbbcd32677107abb5f4117bd04948d` CI `31397995499` PASS。
+
+提交/CI 状态：IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI；completion record 将直接提交并推送，不等待文档 CI；随后仅归档本任务。
 
 ---END---
