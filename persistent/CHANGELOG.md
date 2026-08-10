@@ -6,6 +6,7 @@
 - Added human-readable Recipe steps and disclosures before the exact inert declaration.
 - Added deterministic Phase 12-5 evidence and tests; no backend, contract, science, API, migration, dependency, or lockfile change.
 - Retained failed candidate `f263d70` / CI `31382890102`; fixed forward the omitted CI step working directory without changing implementation semantics.
+- Retained failed candidate `11eb1b3` / CI `31383949826`; its new browser replay passed, then a redundant pytest invocation failed in the Node-only job. Python evidence validation remains in the successful Unit job.
 
 ## 2026-08-10 Phase 12-4 Implementation
 

@@ -310,7 +310,6 @@ jobs:
             --output-dir "${GITHUB_WORKSPACE}/docs/phase12/evidence/phase12_5_report_recipe_experience"
           cd ../..
           python scripts/generate_phase12_5_report_recipe_evidence.py
-          python -m pytest -q tests/test_phase12_5_report_recipe_evidence.py
         working-directory: apps/web
 
       - name: Replay Phase 10M-6 Workspace recovery browser evidence
