@@ -46,15 +46,15 @@
     },
     {
       "path": "desktop_chromium_accessibility.png",
-      "sha256": "b94f07d34f147aa8d3d71f2c2e6e6249fbd5a91c6d6b61d1d716cfedf59fb5ac"
+      "sha256": "1a577d7046b9fe0c1d7ac40738efae2a59155618e8dccae8752659e69d24fa64"
     },
     {
       "path": "desktop_firefox_accessibility.png",
-      "sha256": "6ce1ad3b295c5a262371792bb453e6756b9c0255585c69b6c95ca27dcc2aa116"
+      "sha256": "acf42ef4211390b82f5b24777a9bca84e0476c0f29e44138bd17280a4b099ca4"
     },
     {
       "path": "desktop_webkit_accessibility.png",
-      "sha256": "430cdbcc47eb6df369853d37d24cd8d08db2ddba10d395d2395f4d62b5e7f8e9"
+      "sha256": "ac258a181a0e865820ba27d79d0c7242d6ca0a1c3cc1238b027e743af71d66b1"
     },
     {
       "path": "dialog_focus_matrix.json",
@@ -102,7 +102,7 @@
     },
     {
       "path": "mobile_chromium_390x844.png",
-      "sha256": "f220505515cb2243239461263b7703abe26af2b0d11aae9bc22b7b596b000f9e"
+      "sha256": "2224ab0f32e60cd0b5bfc731164f291c3c7b72a7a5ed4fea61edf7d66f68e9e1"
     },
     {
       "path": "mobile_findings_evidence.json",

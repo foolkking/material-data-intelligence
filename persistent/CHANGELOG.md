@@ -2579,3 +2579,6 @@ directly afterward. Phase 12-2 remains reviewer-gated.
 - Phase 12-6 adds skip navigation, keyboard-operable resizing, mobile/reflow
   containment, forced-colors and reduced-motion foundations, and a bilingual
   canonical terminology set. Scientific and backend behavior remain unchanged.
+- Failed candidate `17450c3` / CI `31391903172` passed every non-new gate; its
+  12-6 browser server could not start after prior dev replays replaced `.next`.
+  The evidence server is corrected forward to use the existing dev-server pattern.

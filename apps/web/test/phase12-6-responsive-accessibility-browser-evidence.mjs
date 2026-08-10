@@ -12,7 +12,7 @@ const ORIGIN = `http://127.0.0.1:${PORT}`;
 const { chromium, firefox, webkit } = await import(pathToFileURL(PLAYWRIGHT).href);
 
 async function waitForServer() {
-  for (let attempt = 0; attempt < 120; attempt += 1) {
+  for (let attempt = 0; attempt < 240; attempt += 1) {
     try { if ((await fetch(ORIGIN)).ok) return; } catch {}
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
@@ -99,7 +99,7 @@ async function mobile() {
 
 await mkdir(OUT, { recursive: true });
 const command = process.platform === "win32" ? "cmd.exe" : "npm";
-const args = process.platform === "win32" ? ["/c", "npm", "--prefix", "apps/web", "run", "start", "--", "--hostname", "127.0.0.1", "--port", String(PORT)] : ["--prefix", "apps/web", "run", "start", "--", "--hostname", "127.0.0.1", "--port", String(PORT)];
+const args = process.platform === "win32" ? ["/c", "npm", "--prefix", "apps/web", "run", "dev", "--", "--hostname", "127.0.0.1", "--port", String(PORT)] : ["--prefix", "apps/web", "run", "dev", "--", "--hostname", "127.0.0.1", "--port", String(PORT)];
 const server = spawn(command, args, { cwd: ROOT, stdio: "ignore", windowsHide: true });
 try {
   await waitForServer();
