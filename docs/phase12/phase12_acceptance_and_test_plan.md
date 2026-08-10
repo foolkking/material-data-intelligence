@@ -26,3 +26,29 @@ implemented 12, with zero missing/extra/duplicate/conflicting/shorthand entries.
 | P12X1-A06 | Focus, keyboard, contrast, touch and responsive primitive foundation |
 | P12X1-A07 | Representative shared-surface migration without IA or scientific change |
 | P12X1-A08 | Evidence, browser/regression, security and lifecycle closure |
+
+## Phase 12-2 Acceptance
+
+| ID | Required closure |
+|---|---|
+| P12X2-A01 | Existing global shell and Planner-to-Workspace transition preserved |
+| P12X2-A02 | Human-readable Planner stages and plan approach presentation |
+| P12X2-A03 | Data/profile context and prompt composer presentation |
+| P12X2-A04 | Clarification, eligibility and capability availability presentation |
+| P12X2-A05 | Execution progress and partial/error recovery presentation |
+| P12X2-A06 | Provider/settings policy and developer-detail disclosure |
+| P12X2-A07 | Desktop/mobile browser and accessibility evidence |
+| P12X2-A08 | Regression, security, evidence and lifecycle closure |
+
+## Phase 12-3 Acceptance
+
+| ID | Required closure |
+|---|---|
+| P12X3-A01 | Workspace result-first information hierarchy using existing panel authority |
+| P12X3-A02 | Overview, Data, Analysis, Results, Findings, Evidence, Report and Advanced presentation |
+| P12X3-A03 | Artifact Gallery remains exact provenance authority with progressive disclosure |
+| P12X3-A04 | Unified scientific viewer chrome across chart and 3D presentation surfaces |
+| P12X3-A05 | Exact selection, URL restoration, source identity and Workspace authority preserved |
+| P12X3-A06 | Metadata-first loading, lazy heavy viewers, cancellation and cleanup evidence |
+| P12X3-A07 | Warnings, stale/missing/partial states and bounded table alternatives remain visible |
+| P12X3-A08 | Browser/mobile, accessibility, regression, security, evidence and lifecycle closure |

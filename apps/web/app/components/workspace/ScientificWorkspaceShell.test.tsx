@@ -58,6 +58,8 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     expect(screen.getByRole("heading", { name: "Loading Workspace" })).not.toBeNull();
     expect(await screen.findByTestId("scientific-workspace-shell")).not.toBeNull();
     expect(screen.getByRole("navigation", { name: "Workspace sections" })).not.toBeNull();
+    expect(screen.getByRole("heading", { name: "Analysis" })).not.toBeNull();
+    expect(screen.getByRole("heading", { name: "Advanced" })).not.toBeNull();
     expect(screen.getByRole("heading", { name: "Analysis overview" })).not.toBeNull();
     expect(screen.getAllByRole("button").filter((button) => button.getAttribute("aria-current") === "page")).toHaveLength(1);
     expect(getWorkspaceMock).toHaveBeenCalledWith("workspace_demo", expect.objectContaining({ signal: expect.any(AbortSignal) }));
@@ -155,6 +157,7 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     await user.click(screen.getByRole("button", { name: "Pin selection" }));
     await waitFor(() => expect(patchWorkspaceMock).toHaveBeenCalledWith("workspace_demo", "etag", expect.objectContaining({ pinnedSelection: expect.objectContaining({ primary: expect.objectContaining({ artifactId: "artifact_demo" }) }) })));
     expect(screen.getByText(/Pin state: SAVED/u)).not.toBeNull();
+    await user.click(screen.getByText("Scientific details"));
     expect(screen.getByRole("status", { name: "Panel selection compatibility" })).toHaveTextContent("EXACT");
   });
 
@@ -169,6 +172,20 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     expect(await screen.findByText(/bounded payload record/u)).not.toBeNull();
     expect(getContentMock).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("table")).toHaveTextContent("object_1");
+    expect(screen.getByTestId("workspace-scientific-viewer")).toHaveTextContent("Validated, exact-scope payload");
+  });
+
+  it("presents results before exact Artifact mechanics while retaining scientific details", async () => {
+    const user = userEvent.setup();
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    await user.click(await screen.findByRole("button", { name: /Results/ }));
+    expect(screen.getByRole("region", { name: "Scientific result summary" })).toHaveTextContent("Persisted result ready for inspection");
+    expect(await screen.findByTestId("workspace-artifact-gallery")).toHaveTextContent("Result gallery");
+    expect(screen.getByRole("status", { name: "Panel selection compatibility" }).closest("details")?.open).toBe(false);
+    await user.click(screen.getByText("Scientific details"));
+    expect(screen.getByRole("status", { name: "Panel selection compatibility" })).toHaveTextContent("NOT_APPLICABLE");
+    await user.click(screen.getByText("Developer details"));
+    expect(screen.getAllByText(/workspace\.artifact-metadata/u).length).toBeGreaterThan(0);
   });
 
   it("accepts the exact 256-record metadata cap and rejects record 257 without truncation", async () => {

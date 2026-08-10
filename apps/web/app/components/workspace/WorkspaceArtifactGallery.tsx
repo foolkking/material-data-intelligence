@@ -155,7 +155,7 @@ export function WorkspaceArtifactGallery({ workspace, panel, delivery, onSelecti
 
   return <section className="workspace-artifact-gallery" aria-labelledby="workspace-artifact-gallery-title" data-testid="workspace-artifact-gallery">
     <header className="workspace-gallery-heading">
-      <div><h3 id="workspace-artifact-gallery-title">Typed Artifact Gallery</h3><p>{metadataMessage}</p></div>
+      <div><span className="eyebrow">Persisted results</span><h3 id="workspace-artifact-gallery-title">Result gallery</h3><p>{metadataMessage}</p></div>
       <span className="workspace-gallery-count" aria-label={`${artifacts.length} Artifacts loaded`}>{artifacts.length} / {workspace.artifactCount}</span>
     </header>
     {metadataState === "LOADING" ? <GalleryState title="Loading metadata" message="Scientific payloads are not requested during initial Workspace loading." /> : null}
@@ -165,8 +165,8 @@ export function WorkspaceArtifactGallery({ workspace, panel, delivery, onSelecti
       <h4 id={`artifact-group-${slug(group)}`}>{group}</h4>
       <ul className="workspace-artifact-list">{items.map((artifact) => <ArtifactCard key={artifactIdentity(artifact)!} artifact={artifact} panelState={panel.state} active={artifactIdentity(artifact) === activeArtifactId} selected={delivery?.context?.primary?.artifactId === artifactIdentity(artifact)} onOpen={() => openArtifact(artifact)} onDownload={() => downloadArtifact(artifact)} onSelect={() => selectArtifact(artifact)} onEvidence={() => navigateArtifact(artifact, "EVIDENCE")} onLineage={() => navigateArtifact(artifact, "PROVENANCE")} />)}</ul>
     </section>)}</div> : null}
-    {activeArtifact ? <section className="workspace-active-artifact" aria-labelledby="workspace-active-artifact-title">
-      <header><div><span className="eyebrow">Calculated result</span><h4 id="workspace-active-artifact-title">{safeTitle(activeArtifact)}</h4></div><button type="button" className="secondary" onClick={() => { payloadRequestRef.current += 1; payloadControllerRef.current?.abort(); setActiveArtifactId(null); setLoadedArtifacts([]); setPayloadState("IDLE"); }}>Close viewer</button></header>
+    {activeArtifact ? <section className="workspace-active-artifact workspace-scientific-viewer" aria-labelledby="workspace-active-artifact-title" data-testid="workspace-scientific-viewer">
+      <header className="workspace-viewer-chrome"><div><span className="eyebrow">Scientific viewer</span><h4 id="workspace-active-artifact-title">{safeTitle(activeArtifact)}</h4><p>Validated, exact-scope payload. Viewer controls affect presentation only.</p></div><button type="button" className="secondary" onClick={() => { payloadRequestRef.current += 1; payloadControllerRef.current?.abort(); setActiveArtifactId(null); setLoadedArtifacts([]); setPayloadState("IDLE"); }}>Close viewer</button></header>
       <div role="status" className={`workspace-artifact-load-state tone-${payloadState === "FAILED" ? "danger" : payloadState === "READY" ? "success" : "muted"}`}>{payloadMessage}</div>
       {payloadState === "READY" ? <WorkspaceArtifactRenderer selected={activeArtifact} artifacts={loadedArtifacts} workspace={workspace} delivery={delivery} onSelection={onSelection} /> : null}
     </section> : null}

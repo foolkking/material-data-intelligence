@@ -37,3 +37,17 @@ Workspace IA redesign or Phase 12-3 viewer work. Close only `UX-001` and
 `UX-008`; retain all other owners. Acceptance is `P12X2-A01` through
 `P12X2-A08`; deterministic navigation/planner evidence, browser/mobile replay,
 accessibility and exact-SHA CI are required.
+
+## 12-3 Execution Detail
+
+Sources: `ScientificWorkspaceShell.tsx`, `WorkspaceArtifactGallery.tsx`, the
+existing renderer registry, selection runtime, DS2 handoff and Phase 12-0
+Workspace/viewer audit. Allowed: result-first presentation, presentation-only
+Workspace grouping, shared result/viewer chrome, warning placement, exact
+selection affordances, table alternatives and responsive viewer framing.
+Forbidden: changing Workspace/API/schema identity, panel contracts, URL
+selection semantics, renderer scientific values, lazy-loader authority,
+scientific series colors, or frontend recomputation. Close only `UX-002` and
+`UX-003`; all later-phase owners remain open. Acceptance is `P12X3-A01` through
+`P12X3-A08`; evidence must include representative dense, chart, 3D, trajectory,
+electronic, partial and failure states.

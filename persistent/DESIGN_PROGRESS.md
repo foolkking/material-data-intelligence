@@ -2162,3 +2162,8 @@ existing routes/dialogs/tabs/history, a human-readable Planner stage rail,
 progressive plan summary and context-preserving error recovery. UX-001 and UX-008
 are closed with evidence; implementation `d046acfcb7ea7741d7cc3567565c2cce9bcb6722`
 passed exact-SHA CI `31365743510`. Phase 12-3 remains reviewer-gated.
+Phase 12-3 implementation is active under reviewer authorization. The existing
+nine panel kinds are presentation-grouped as Overview, Data, Analysis, Results,
+Findings, Evidence, Report and Advanced/Provenance. Result summaries and shared
+viewer framing are being added without changing scientific or Workspace
+authority.

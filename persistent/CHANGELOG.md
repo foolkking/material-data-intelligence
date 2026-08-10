@@ -2538,3 +2538,8 @@ directly afterward. Phase 12-2 remains reviewer-gated.
   explanation. `UX-001` and `UX-008` are closed with deterministic evidence.
   Implementation `d046acfcb7ea7741d7cc3567565c2cce9bcb6722` passed exact-SHA
   CI `31365743510`; Phase 12-3 remains reviewer-gated.
+## 2026-08-10 - Phase 12-3 Scientific Workspace and Viewers
+
+- Started the single authorized Phase 12-3 task. Result-first Workspace
+  grouping and shared viewer chrome are presentation changes only; exact
+  selection, Artifact provenance and lazy payload loading remain unchanged.

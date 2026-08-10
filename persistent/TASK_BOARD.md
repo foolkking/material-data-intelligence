@@ -2481,3 +2481,9 @@ current board above.
 - Implementation `d046acfcb7ea7741d7cc3567565c2cce9bcb6722` passed exact-SHA CI
   `31365743510`. Completion and Phase 12-2 queue archive follow without a
   further CI wait.
+## Phase 12-3
+
+- [ ] Implement result-first Scientific Workspace presentation and shared
+  scientific viewer chrome.
+- [ ] Preserve exact panel URL, Artifact, Selection, Workspace and scientific
+  payload authorities; close only `UX-002` and `UX-003`.

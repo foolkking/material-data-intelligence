@@ -1218,3 +1218,5 @@ is the only remaining work.
   their original Phase 12 owners.
 - Closed by implementation `60269556f70f07014224a801150f214887a56ee5`; remaining
   issues retain their Phase 12-2 through 12-7 ownership.
+- Phase 12-3 implementation must close UX-002 and UX-003 without changing the
+  existing nine-panel Workspace contract or scientific renderer authority.

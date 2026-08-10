@@ -1,0 +1,6 @@
+{
+  "limitations": "not hidden in developer JSON",
+  "partial": "visible",
+  "stale": "typed state",
+  "unsupported": "typed alert"
+}

@@ -13,6 +13,14 @@ export type WorkspaceNavigationGroup = {
   panelKind: WorkspacePanelKind;
 };
 
+/** Presentation-only grouping. Persisted panel identity and URL state remain authoritative. */
+export type WorkspaceExperienceNavigationGroup = {
+  id: string;
+  label: string;
+  advanced?: boolean;
+  items: readonly WorkspaceNavigationGroup[];
+};
+
 export const WORKSPACE_NAVIGATION_GROUPS: readonly WorkspaceNavigationGroup[] = Object.freeze([
   { id: "overview", label: "Overview", panelKind: "OVERVIEW" },
   { id: "data", label: "Data", panelKind: "DATA" },
@@ -23,6 +31,17 @@ export const WORKSPACE_NAVIGATION_GROUPS: readonly WorkspaceNavigationGroup[] = 
   { id: "evidence", label: "Evidence", panelKind: "EVIDENCE" },
   { id: "provenance", label: "Provenance", panelKind: "PROVENANCE" },
   { id: "report", label: "Report", panelKind: "REPORT" },
+]);
+
+export const WORKSPACE_EXPERIENCE_NAVIGATION_GROUPS: readonly WorkspaceExperienceNavigationGroup[] = Object.freeze([
+  { id: "overview", label: "Overview", items: [{ id: "overview", label: "Overview", panelKind: "OVERVIEW" }] },
+  { id: "data", label: "Data", items: [{ id: "data", label: "Data", panelKind: "DATA" }] },
+  { id: "analysis", label: "Analysis", items: [{ id: "plan", label: "Plan", panelKind: "PLAN" }, { id: "execution", label: "Execution", panelKind: "EXECUTION" }] },
+  { id: "results", label: "Results", items: [{ id: "results", label: "Results", panelKind: "SCIENTIFIC_RESULT" }] },
+  { id: "findings", label: "Findings", items: [{ id: "findings", label: "Findings", panelKind: "FINDINGS" }] },
+  { id: "evidence", label: "Evidence", items: [{ id: "evidence", label: "Evidence", panelKind: "EVIDENCE" }] },
+  { id: "report", label: "Report", items: [{ id: "report", label: "Report", panelKind: "REPORT" }] },
+  { id: "advanced", label: "Advanced", advanced: true, items: [{ id: "provenance", label: "Provenance", panelKind: "PROVENANCE" }] },
 ]);
 
 const PANEL_STATE_COPY: Record<WorkspacePanelState, string> = {

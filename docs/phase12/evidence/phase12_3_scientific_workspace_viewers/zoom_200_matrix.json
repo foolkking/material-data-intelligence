@@ -1,0 +1,8 @@
+{
+  "scientificDetailsRemainAccessible": true,
+  "target": [
+    "Workspace",
+    "Results",
+    "Viewer"
+  ]
+}

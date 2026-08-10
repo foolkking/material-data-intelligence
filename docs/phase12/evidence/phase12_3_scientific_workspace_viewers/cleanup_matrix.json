@@ -1,0 +1,5 @@
+{
+  "abortControllers": true,
+  "duplicateCanvas": 0,
+  "rendererCleanup": "existing component lifecycle"
+}

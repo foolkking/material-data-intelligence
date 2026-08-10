@@ -17,7 +17,7 @@ import {
   type InterpretationEvidenceResponse,
 } from "../../lib/planner-api";
 import {
-  WORKSPACE_NAVIGATION_GROUPS,
+  WORKSPACE_EXPERIENCE_NAVIGATION_GROUPS,
   compactIdentity,
   firstPanelForKind,
   orderedVisiblePanels,
@@ -517,14 +517,15 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
         </aside>
 
         <nav className="workspace-navigation" aria-label="Workspace sections">
-          <h2>Workspace</h2>
-          <ul>
-            {WORKSPACE_NAVIGATION_GROUPS.map((group) => {
-              const panel = firstPanelForKind(snapshot, group.panelKind);
+          <div className="workspace-navigation-heading"><span className="eyebrow">Scientific result</span><h2>Workspace</h2><p>Read results first; inspect exact records when needed.</p></div>
+          {WORKSPACE_EXPERIENCE_NAVIGATION_GROUPS.map((group) => <section key={group.id} className={`workspace-navigation-group${group.advanced ? " advanced" : ""}`} aria-label={group.label}>
+            {group.items.length > 1 || group.advanced ? <h3>{group.label}</h3> : null}
+            <ul>{group.items.map((item) => {
+              const panel = firstPanelForKind(snapshot, item.panelKind);
               const current = panel?.panelId === activePanelId;
-              return <li key={group.id}><button type="button" className={current ? "active" : ""} disabled={!panel} aria-current={current ? "page" : undefined} onClick={() => panel && selectPanel(panel)}><span>{group.label}</span><small>{panel ? panel.state : "Unavailable"}</small></button></li>;
-            })}
-          </ul>
+              return <li key={item.id}><button type="button" className={current ? "active" : ""} disabled={!panel} aria-current={current ? "page" : undefined} onClick={() => panel && selectPanel(panel)}><span>{item.label}</span><small>{panel ? panel.state : "Unavailable"}</small></button></li>;
+            })}</ul>
+          </section>)}
         </nav>
 
         <section className="workspace-main-panel" aria-labelledby="workspace-active-panel-title">
@@ -566,18 +567,8 @@ function WorkspacePanelSurface({ panel, workspace, snapshot, delivery, onReportD
         <span className={`workspace-status tone-${panelStateTone(panel.state)}`}>{panel.state}</span>
       </header>
       <p className="workspace-panel-state-copy">{panelStateCopy(panel.state)}</p>
-      <div className={`workspace-selection-delivery tone-${delivery?.compatibility === "EXACT" ? "success" : "muted"}`} role="status" aria-label="Panel selection compatibility">
-        <strong>Selection compatibility</strong><span>{delivery ? `${delivery.compatibility}: ${delivery.reason}` : "NOT_APPLICABLE: no selection runtime delivery yet."}</span>
-      </div>
+      {panel.panelKind === "SCIENTIFIC_RESULT" ? <WorkspaceResultSummary panel={panel} workspace={workspace} delivery={delivery} /> : null}
       {panel.state === "PARTIAL" || panel.state === "BLOCKED_BY_DEPENDENCY" ? <div className="workspace-panel-warning" role="status">This panel reflects only successful source branches. Failed or blocked outputs are not presented as complete.</div> : null}
-      <dl className="workspace-metadata-grid">
-        <Metadata label="Renderer contract" value={panel.rendererContract} />
-        <Metadata label="Panel ID" value={compactIdentity(panel.panelId, 32)} />
-        <Metadata label="Source references" value={String(panel.sourceRefs.length)} />
-        <Metadata label="Evidence links" value={String(panel.evidenceRefs.length)} />
-        <Metadata label="Provenance links" value={String(panel.provenanceRefs.length)} />
-        <Metadata label="Plan schema" value={workspace.planSchemaVersion || "Legacy"} />
-      </dl>
       {panel.unsupportedReason ? <div className="workspace-panel-warning" role="alert"><strong>Unsupported source contract</strong><span>{panel.unsupportedReason}</span></div> : null}
       {panel.panelKind === "OVERVIEW" ? <WorkspaceOverview snapshot={snapshot} /> : null}
       {panel.panelKind === "PLAN" ? <WorkspacePlanSummary snapshot={snapshot} /> : null}
@@ -586,9 +577,24 @@ function WorkspacePanelSurface({ panel, workspace, snapshot, delivery, onReportD
       {panel.panelKind === "REPORT" ? <WorkspaceReportComposer workspace={workspace} onDraftDirtyChange={onReportDraftDirtyChange} /> : null}
       {panel.panelKind === "SCIENTIFIC_RESULT" ? <WorkspaceArtifactGallery workspace={workspace} panel={panel} delivery={delivery} onSelection={(selection) => onActivateSelection(selection, panel.panelId)} onNavigateReference={(selection, destination) => onNavigateArtifactReference(selection, destination, panel.panelId)} /> : null}
       {selectableArtifact ? <button type="button" className="secondary workspace-selection-command" onClick={() => onSelectArtifact(panel)} data-testid={`workspace-select-artifact-${panel.panelId}`}>Select exact artifact</button> : null}
-      <details className="workspace-audit-json"><summary>Audit JSON</summary><pre>{JSON.stringify({ panel, sourceSummary: snapshot.sourceSummary }, null, 2)}</pre></details>
+      <details className="workspace-scientific-details"><summary>Scientific details</summary><dl className="workspace-metadata-grid">
+        <Metadata label="Renderer contract" value={panel.rendererContract} />
+        <Metadata label="Panel ID" value={compactIdentity(panel.panelId, 32)} />
+        <Metadata label="Source references" value={String(panel.sourceRefs.length)} />
+        <Metadata label="Evidence links" value={String(panel.evidenceRefs.length)} />
+        <Metadata label="Provenance links" value={String(panel.provenanceRefs.length)} />
+        <Metadata label="Plan schema" value={workspace.planSchemaVersion || "Legacy"} />
+      </dl><div className={`workspace-selection-delivery tone-${delivery?.compatibility === "EXACT" ? "success" : "muted"}`} role="status" aria-label="Panel selection compatibility"><strong>Selection compatibility</strong><span>{delivery ? `${delivery.compatibility}: ${delivery.reason}` : "NOT_APPLICABLE: no selection runtime delivery yet."}</span></div></details>
+      <details className="workspace-audit-json"><summary>Developer details</summary><pre>{JSON.stringify({ panel, sourceSummary: snapshot.sourceSummary }, null, 2)}</pre></details>
     </article>
   );
+}
+
+function WorkspaceResultSummary({ panel, workspace, delivery }: { panel: WorkspacePanel; workspace: WorkspaceSnapshot["workspace"]; delivery: WorkspaceSelectionDelivery | null }) {
+  return <section className="workspace-result-summary" aria-label="Scientific result summary">
+    <div><span className="eyebrow">Scientific result</span><h3>Persisted result ready for inspection</h3><p>Choose a result to load its validated payload. Artifact identity, provenance and selection remain exact.</p></div>
+    <dl><Metadata label="Artifacts" value={String(workspace.artifactCount)} /><Metadata label="Source records" value={String(panel.sourceRefs.length)} /><Metadata label="Selection" value={delivery?.compatibility === "EXACT" ? "Exact compatible" : "Available when applicable"} /></dl>
+  </section>;
 }
 
 function WorkspaceOverview({ snapshot }: { snapshot: WorkspaceSnapshot }) {

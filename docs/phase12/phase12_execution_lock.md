@@ -8,8 +8,8 @@ Report/Recipe authority, scientific units/claims and Phase 11 coverage are locke
 
 Forbidden shortcuts: browser scientific recomputation, latest/nearest/label/filename
 identity, hiding limitations, unsupported-without-explanation, and recommendation
-as automatic execution. Phase 12-1 is complete; Phase 12-2 is the only active
-authorized task and Phase 12-3 remains reviewer-gated.
+as automatic execution. Phase 12-1 and Phase 12-2 are complete; Phase 12-3 is
+the only active authorized task and Phase 12-4 remains reviewer-gated.
 
 ## Phase 12-1 Design System Scope
 
@@ -27,3 +27,13 @@ typed error recovery. Existing routes and server authorities remain canonical.
 No new public API family, database migration, dependency, scientific Tool,
 AnalysisPlan semantics, queue behavior, Workspace identity or selection identity
 may be introduced.
+
+## Phase 12-3 Workspace and Viewer Scope
+
+Phase 12-3 may recompose Workspace navigation presentation around results and
+group Plan/Execution as Analysis. It may provide shared scientific viewer
+chrome, table alternatives, warning placement and responsive framing. It must
+preserve the nine persisted panel kinds, exact panel URLs, server Workspace
+identity, Artifact/renderer registry, exact Selection contract, lazy loading,
+scientific values, units, series colors and all backend behavior. Findings,
+Evidence, Inspector and Report workflow redesign remain owned by later phases.

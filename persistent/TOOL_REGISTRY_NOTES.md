@@ -1562,3 +1562,6 @@ eligibility, Runtime dispatch, Artifact identity or scientific validation status
 
 Phase 12-1 completion did not mutate Registry or scientific Tool metadata:
 `REGISTRY_BEFORE_12_1 = 62` and `REGISTRY_AFTER_12_1 = 62`.
+Phase 12-3 does not add or modify Registry tools. Scientific viewer chrome is a
+frontend presentation boundary over existing registered renderer contracts;
+frontend recomputation remains prohibited.

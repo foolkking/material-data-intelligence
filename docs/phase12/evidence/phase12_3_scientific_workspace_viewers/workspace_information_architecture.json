@@ -1,0 +1,17 @@
+{
+  "advanced": [
+    "Provenance",
+    "Developer details"
+  ],
+  "authority": "existing persisted panel IDs and URL state",
+  "contractMutation": 0,
+  "target": [
+    "Overview",
+    "Data",
+    "Analysis",
+    "Results",
+    "Findings",
+    "Evidence",
+    "Report"
+  ]
+}

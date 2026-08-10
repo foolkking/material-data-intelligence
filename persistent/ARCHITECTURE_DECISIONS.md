@@ -4545,3 +4545,10 @@ surface/elevation, focus and motion, but never participates in scientific
 Artifact/Plan/Workspace identity. Existing aliases are temporary compatibility
 mappings; scientific trace/category colors and specialized viewer semantics are
 frozen for later owning phases.
+## Phase 12-3 Workspace and Viewer Presentation
+
+Workspace navigation may group persisted Plan and Execution panels under the
+human concept Analysis and place Provenance under Advanced. Results lead with
+meaning before Artifact mechanics. This grouping is presentation-only; server
+Workspace identity, panel IDs, URL state, exact selection and Artifact
+provenance remain authoritative.

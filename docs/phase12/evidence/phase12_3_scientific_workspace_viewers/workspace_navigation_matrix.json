@@ -1,0 +1,14 @@
+{
+  "groups": [
+    "overview",
+    "data",
+    "analysis",
+    "results",
+    "findings",
+    "evidence",
+    "report",
+    "advanced"
+  ],
+  "panelKinds": 9,
+  "urlAuthority": "exact panel ID"
+}

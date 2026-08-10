@@ -51,6 +51,9 @@ def test_n5_queue_has_one_active_task_and_no_n6_task() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     if not tasks.strip():
         return
+    if "Phase 12-3 Reviewer Prompt" in tasks and "Phase 12-2 Reviewer Prompt" not in tasks:
+        assert tasks.count("---TASK---") == 1 and ("状态：处理中" in tasks or "状态：已完成" in tasks)
+        return
     if "Phase 12-2 Reviewer Prompt" in tasks:
         assert tasks.count("---TASK---") == 2 and ("状态：处理中" in tasks or "状态：已完成" in tasks)
         assert "Phase 12-3 Reviewer Prompt" in tasks

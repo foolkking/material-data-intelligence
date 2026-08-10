@@ -1,0 +1,12 @@
+{
+  "scientificColorMappingChanged": 0,
+  "shared": [
+    "result title",
+    "status",
+    "warning",
+    "close",
+    "focus",
+    "loading"
+  ],
+  "specializedControls": "owned by existing renderer"
+}

@@ -1,0 +1,7 @@
+{
+  "authority": "UX and presentation only",
+  "chromium": "PASS",
+  "chromium390x844": "PASS",
+  "firefox": "PASS",
+  "webkit": "PASS"
+}

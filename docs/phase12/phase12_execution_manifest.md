@@ -25,3 +25,12 @@ sealed UX problem matrix. Evidence is local and deterministic; it performs no
 LLM call, external network call, scientific calculation or production mutation.
 The implementation must preserve existing route, API, plan, runtime, Workspace,
 selection and provider authorities.
+
+## Phase 12-3
+
+Phase 12-3 uses the existing Workspace shell, Artifact Gallery, renderer
+registry and selection-runtime tests. Evidence is deterministic and local: it
+records presentation-only navigation groups, the result-first summary, shared
+viewer chrome, metadata-first/lazy payload behavior and the exact URL selection
+contract. It performs no LLM call, external network call, scientific
+calculation, backend mutation or new runtime authority.

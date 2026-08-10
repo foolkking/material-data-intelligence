@@ -478,3 +478,7 @@ and recovery UX only; scientific, runtime, API, schema, Workspace and selection
 authority remain frozen. Implementation `d046acfcb7ea7741d7cc3567565c2cce9bcb6722`
 passed exact-SHA CI `31365743510`. Phase 12-3 is reviewer-gated and is not
 executable.
+Phase 12-3 is now the single active reviewer-authorized task. Its presentation
+scope is result-first Workspace hierarchy and shared scientific viewer chrome;
+Workspace, Artifact, Selection, URL and scientific payload authorities remain
+unchanged. UX-002 and UX-003 are the only owned issues.

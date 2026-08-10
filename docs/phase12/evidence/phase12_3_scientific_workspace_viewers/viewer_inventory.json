@@ -1,0 +1,13 @@
+{
+  "families": [
+    "dense table",
+    "Plotly line/curve",
+    "linked selection",
+    "WebGL/3D",
+    "trajectory",
+    "electronic",
+    "partial",
+    "presentation failure"
+  ],
+  "scientificAuthority": "persisted Artifact only"
+}
