@@ -8,3 +8,7 @@ Implementation `953866ef524a7f60532d5d6326e2049b4e7d2bc0` passed exact-SHA CI
 `31351418205`. The implementation CI is the sole wait gate under the active
 queue policy; completion and queue-archive records are direct documentation
 commits.
+
+Completion record `5b5555de25e68780c8e0f696e12b604d0e633365` and queue archive
+`a15bf2b1913e001cc6ed7423c3f9cba295147395` were pushed directly under that
+policy. The executable queue is empty; Phase 12 remains reviewer-gated.
