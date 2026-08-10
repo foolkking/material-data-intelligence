@@ -2525,4 +2525,10 @@
 
 - Phase 12-1 implementation `60269556f70f07014224a801150f214887a56ee5` passed
   exact-SHA CI `31358512349`; completion was recorded and the queue was archived
-  directly afterward. Phase 12-2 remains reviewer-gated.
+directly afterward. Phase 12-2 remains reviewer-gated.
+
+## 2026-08-10 - Phase 12-2 Global Navigation and Planner
+
+- Started the single authorized Phase 12-2 task after Phase 12-1 completion and
+  archive. The scope is presentation, hierarchy, progressive disclosure and
+  recovery UX only; no scientific or runtime authority is changed.

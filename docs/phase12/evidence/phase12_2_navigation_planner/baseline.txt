@@ -1,0 +1,3 @@
+Phase 12-2 baseline: Phase 12-1 implementation 60269556f70f07014224a801150f214887a56ee5; CI 31358512349 success.
+Registry=62; DataProfile=2.4; migration=0007_phase10m1_workspace_domain.
+Production science/runtime/API/schema changes=0.

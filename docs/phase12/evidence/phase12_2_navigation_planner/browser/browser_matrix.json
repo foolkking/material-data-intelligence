@@ -1,0 +1,40 @@
+{
+  "browsers": {
+    "chromium": {
+      "navigation": "PASS",
+      "dataDialog": "PASS",
+      "resultsTab": "PASS",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "externalRequests": [],
+      "httpErrors": []
+    },
+    "firefox": {
+      "navigation": "PASS",
+      "dataDialog": "PASS",
+      "resultsTab": "PASS",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "externalRequests": [],
+      "httpErrors": []
+    },
+    "webkit": {
+      "navigation": "PASS",
+      "dataDialog": "PASS",
+      "resultsTab": "PASS",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "externalRequests": [],
+      "httpErrors": []
+    },
+    "mobile": {
+      "viewport": "390x844",
+      "horizontalOverflow": false,
+      "navigationTouchFoundation": "PASS",
+      "externalRequests": [],
+      "httpErrors": []
+    }
+  },
+  "noScientificRecomputation": 0,
+  "screenshotNumericAuthority": "NONE"
+}

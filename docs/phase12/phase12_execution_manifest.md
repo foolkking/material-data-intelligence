@@ -16,3 +16,12 @@ the sealed 12-0 evidence, `globals.css`, and the component inventory. It emits
 deterministic presentation-governance records only. The script does not call a
 provider, use a network, calculate scientific values, mutate production data, or
 become a runtime design-system authority.
+
+## Phase 12-2
+
+Phase 12-2 executes `scripts/generate_phase12_2_navigation_planner_evidence.py`
+against the existing route, Planner component, message catalogs, DS2 handoff and
+sealed UX problem matrix. Evidence is local and deterministic; it performs no
+LLM call, external network call, scientific calculation or production mutation.
+The implementation must preserve existing route, API, plan, runtime, Workspace,
+selection and provider authorities.

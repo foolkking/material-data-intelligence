@@ -8,7 +8,8 @@ Report/Recipe authority, scientific units/claims and Phase 11 coverage are locke
 
 Forbidden shortcuts: browser scientific recomputation, latest/nearest/label/filename
 identity, hiding limitations, unsupported-without-explanation, and recommendation
-as automatic execution. Phase 12-1 is reviewer-gated and no task is created.
+as automatic execution. Phase 12-1 is complete; Phase 12-2 is the only active
+authorized task and Phase 12-3 remains reviewer-gated.
 
 ## Phase 12-1 Design System Scope
 
@@ -17,3 +18,12 @@ controls and representative shared surfaces. It must not change route/IA
 ownership, Planner flow, Workspace grouping, viewer interaction, scientific
 visualization semantics, backend/API/database behavior, scientific identity,
 Phase 11 coverage or provider policy. Scientific series colors remain frozen.
+
+## Phase 12-2 Navigation and Planner Scope
+
+Phase 12-2 may change global navigation presentation, Planner information
+hierarchy, progressive disclosure, clarification context, execution feedback and
+typed error recovery. Existing routes and server authorities remain canonical.
+No new public API family, database migration, dependency, scientific Tool,
+AnalysisPlan semantics, queue behavior, Workspace identity or selection identity
+may be introduced.

@@ -57,6 +57,10 @@ def test_n5_queue_state_remains_compatible_through_n6_archive() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     if not tasks.strip():
         return
+    if "Phase 12-2 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 2 and "状态：处理中" in tasks
+        assert "Phase 12-3 Reviewer Prompt" in tasks
+        return
     if "Phase 12-0 Current UX Reality Audit" in tasks or "Phase 12-1 Design System 2.0" in tasks:
         assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
         return

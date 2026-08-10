@@ -796,6 +796,10 @@ describe("Phase 9C PlannerWorkbench", () => {
     render(<PlannerWorkbench />);
 
     expect(await screen.findByTestId("global-context-bar")).not.toBeNull();
+    expect(screen.getByTestId("global-primary-navigation")).not.toBeNull();
+    expect(within(screen.getByTestId("global-primary-navigation")).getByText("首页")).not.toBeNull();
+    expect(within(screen.getByTestId("global-primary-navigation")).getByText("工作区")).not.toBeNull();
+    expect(screen.getByTestId("planner-stage-rail")).not.toBeNull();
     expect(screen.getByTestId("data-context-viewer")).not.toBeNull();
     expect(screen.getByTestId("main-workspace")).not.toBeNull();
     expect(contextButton(0)).not.toBeNull();

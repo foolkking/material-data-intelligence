@@ -633,6 +633,8 @@ export function PlannerWorkbench() {
         onOpenDataset={() => setDatasetDialogOpen(true)}
         onOpenModel={() => setModelDialogOpen(true)}
         onOpenWorkspaceHistory={handleOpenWorkspaceHistory}
+        activeTab={activeMainTab}
+        onSelectTab={setActiveMainTab}
       />
 
       <section
@@ -674,6 +676,7 @@ export function PlannerWorkbench() {
               examples={examplePrompts}
               providerLabel={providerLabel}
               datasetLabel={selectedDataset?.name || datasetId || t("emptyDataset")}
+              dataReady={Boolean(datasetId && profileId)}
               submitting={submitting}
               onSubmit={handleSubmit}
               submitError={submitError}
@@ -796,6 +799,8 @@ function GlobalContextBar(props: {
   onOpenDataset: () => void;
   onOpenModel: () => void;
   onOpenWorkspaceHistory: () => void;
+  activeTab: MainWorkspaceTab;
+  onSelectTab: (tab: MainWorkspaceTab) => void;
 }) {
   const { t } = props;
   return (
@@ -804,6 +809,14 @@ function GlobalContextBar(props: {
         <span className="eyebrow">Material Data Intelligence</span>
         <h1>{t("title")}</h1>
       </div>
+      <GlobalPrimaryNavigation
+        t={t}
+        activeTab={props.activeTab}
+        onOpenDataset={props.onOpenDataset}
+        onOpenWorkspaceHistory={props.onOpenWorkspaceHistory}
+        onOpenModel={props.onOpenModel}
+        onSelectTab={props.onSelectTab}
+      />
       <button type="button" className="context-button" onClick={props.onOpenDataset}>
         <span>{t("currentDataset")}</span>
         <strong>{props.datasetLabel}</strong>
@@ -836,6 +849,38 @@ function GlobalContextBar(props: {
         </label>
       </div>
     </header>
+  );
+}
+
+function GlobalPrimaryNavigation(props: {
+  t: ReturnType<typeof createTranslator>;
+  activeTab: MainWorkspaceTab;
+  onOpenDataset: () => void;
+  onOpenWorkspaceHistory: () => void;
+  onOpenModel: () => void;
+  onSelectTab: (tab: MainWorkspaceTab) => void;
+}) {
+  return (
+    <nav className="global-primary-nav" aria-label={props.t("globalNavigation")} data-testid="global-primary-navigation">
+      <a className="active" href="/" aria-current="page">{props.t("homeNav")}</a>
+      <button type="button" onClick={props.onOpenDataset}>{props.t("dataNav")}</button>
+      <button
+        type="button"
+        className={props.activeTab === "conversation_plan" ? "active" : ""}
+        onClick={() => props.onSelectTab("conversation_plan")}
+      >
+        {props.t("analysesNav")}
+      </button>
+      <button type="button" onClick={props.onOpenWorkspaceHistory}>{props.t("workspacesNav")}</button>
+      <button
+        type="button"
+        className={props.activeTab === "results_export" ? "active" : ""}
+        onClick={() => props.onSelectTab("results_export")}
+      >
+        {props.t("reportsNav")}
+      </button>
+      <button type="button" onClick={props.onOpenModel}>{props.t("settingsNav")}</button>
+    </nav>
   );
 }
 
@@ -1249,6 +1294,7 @@ function ConversationPlanTab(props: {
   examples: string[];
   providerLabel: string;
   datasetLabel: string;
+  dataReady: boolean;
   submitting: boolean;
   onSubmit: () => Promise<void>;
   submitError: PlannerApiError | Error | null;
@@ -1273,6 +1319,14 @@ function ConversationPlanTab(props: {
   const { t } = props;
   return (
     <div className="conversation-plan-tab" data-testid="conversation-plan-tab">
+      <PlannerStageRail
+        t={t}
+        dataReady={props.dataReady}
+        intent={props.intent}
+        plan={props.plan}
+        jobId={props.jobId}
+        jobStatus={props.jobStatus}
+      />
       <section className="panel prompt-panel" data-testid="planner-form">
         <PanelHeading title={t("promptTitle")} badge={props.providerLabel} />
         <textarea aria-label={t("promptTitle")} value={props.prompt} onChange={(event) => props.setPrompt(event.target.value)} placeholder={t("promptPlaceholder")} />
@@ -1338,6 +1392,39 @@ function ConversationPlanTab(props: {
         )}
       />
     </div>
+  );
+}
+
+function PlannerStageRail(props: {
+  t: ReturnType<typeof createTranslator>;
+  dataReady: boolean;
+  intent: AnalysisIntent | null;
+  plan: AnalysisPlan | null;
+  jobId: string;
+  jobStatus: string;
+}) {
+  const stages = [
+    { id: "data", label: props.t("plannerStageData"), complete: props.dataReady },
+    { id: "intent", label: props.t("plannerStageIntent"), complete: Boolean(props.intent), active: Boolean(props.dataReady && !props.intent) },
+    { id: "plan", label: props.t("plannerStagePlan"), complete: Boolean(props.plan), active: Boolean(props.intent && !props.plan) },
+    { id: "execution", label: props.t("plannerStageExecution"), complete: Boolean(props.jobId && isTerminalPlannerJobStatus(props.jobStatus)), active: Boolean(props.jobId && !isTerminalPlannerJobStatus(props.jobStatus)) },
+    { id: "results", label: props.t("plannerStageResults"), complete: Boolean(props.jobId && isTerminalPlannerJobStatus(props.jobStatus)), active: Boolean(props.jobId && isTerminalPlannerJobStatus(props.jobStatus)) }
+  ];
+  return (
+    <section className="planner-stage-rail" data-testid="planner-stage-rail" aria-label={props.t("plannerProgress")}>
+      <div className="planner-stage-heading">
+        <span className="eyebrow">{props.t("plannerProgress")}</span>
+        <span className="subtle">{props.jobStatus ? statusLabel(props.jobStatus, props.t) : props.t("plannerReadyToStart")}</span>
+      </div>
+      <ol>
+        {stages.map((stage) => (
+          <li key={stage.id} className={stage.complete ? "complete" : stage.active ? "active" : ""}>
+            <span className="planner-stage-marker" aria-hidden="true">{stage.complete ? "OK" : stage.active ? "NOW" : "-"}</span>
+            <span>{stage.label}</span>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
@@ -1706,6 +1793,17 @@ function PlanPreviewPanel({ t, plan, planId, planHash, developerMode }: { t: Ret
   return (
     <section className="panel" data-testid="plan-preview-panel">
       <PanelHeading title={t("planPreview")} badge={steps.length ? `${steps.length} steps` : t("emptyPlan")} />
+      {plan ? (
+        <div className="human-plan-summary" data-testid="human-plan-summary">
+          <span className="eyebrow">{t("planApproach")}</span>
+          <h3>{plan.goal || t("planApproachFallback")}</h3>
+          <p>{t("planApproachHint")}</p>
+          <ol>
+            {steps.map((step, index) => <li key={step.stepId}>{t("step")} {index + 1}: {step.purpose || step.reason || t("planStepReady")}</li>)}
+          </ol>
+          <small>{t("developerDetailsAvailable")}</small>
+        </div>
+      ) : null}
       {plan ? <p><strong>AnalysisPlan {plan.schemaVersion || "0.1"}</strong>{plan.graphHash ? ` / graph ${compactIdentity(plan.graphHash)}` : " / independent steps"}</p> : null}
       {!steps.length ? <p className="empty-state">{t("emptyPlan")}</p> : null}
       <div className="step-list">
@@ -2422,8 +2520,14 @@ function ErrorExplainer({ t, error }: { t: ReturnType<typeof createTranslator>; 
   const apiError = error as PlannerApiError;
   const suggestions = apiError.suggestions?.length ? apiError.suggestions : [t("suggestionDataset"), t("suggestionDemo"), t("suggestionProfile"), t("suggestionProvider")];
   return (
-    <section className="error-explainer" data-testid="error-explainer">
-      <h2>{t("errorTitle")}</h2>
+    <section className="error-explainer" data-testid="error-explainer" aria-labelledby="planner-error-title">
+      <h2 id="planner-error-title">{t("errorTitle")}</h2>
+      <div className="error-recovery-summary" data-testid="error-recovery-summary">
+        <div><strong>{t("whatHappened")}</strong><span>{error.message}</span></div>
+        <div><strong>{t("whyItHappened")}</strong><span>{t("errorContextHint")}</span></div>
+        <div><strong>{t("whatCanDo")}</strong><span>{t("errorRecoveryHint")}</span></div>
+        <div><strong>{t("whatPreserved")}</strong><span>{t("errorPreservedHint")}</span></div>
+      </div>
       <div>
         <strong>{t("possibleReasons")}：</strong>
         <ol>

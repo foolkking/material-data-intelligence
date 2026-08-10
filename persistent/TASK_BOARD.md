@@ -2470,3 +2470,10 @@ current board above.
 - Completion record and queue archive are direct lifecycle commits after the
   single required implementation CI confirmation.
 - Phase 12-2 remains reviewer-gated; no Phase 12-2 or Phase 13 task exists.
+
+## Phase 12-2
+
+- [ ] Implement the sealed Global Navigation and Planner / Agent presentation scope.
+- [ ] Preserve existing route, AnalysisIntent, Eligibility, AnalysisPlan,
+  Runtime, Workspace, selection and provider authorities.
+- [ ] Close only `UX-001` and `UX-008`; keep Phase 12-3 through 12-7 tasks absent.

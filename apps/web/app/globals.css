@@ -1435,9 +1435,43 @@ small {
 
 .global-context-bar {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) minmax(220px, 1.1fr) minmax(220px, 1fr) minmax(180px, 0.8fr) auto;
+  grid-template-columns: minmax(200px, 1fr) minmax(260px, 1.25fr) minmax(180px, 1fr) minmax(180px, 1fr) minmax(160px, 0.8fr) auto;
   gap: 10px;
   align-items: stretch;
+}
+
+.global-primary-nav {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--ds-radius-lg);
+  background: var(--panel-soft);
+  padding: 4px;
+}
+
+.global-primary-nav a,
+.global-primary-nav button {
+  min-height: var(--ds-control-compact);
+  border-color: transparent;
+  background: transparent;
+  color: var(--color-text-secondary);
+  padding: 5px 8px;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.global-primary-nav a:hover,
+.global-primary-nav button:hover:not(:disabled),
+.global-primary-nav a.active,
+.global-primary-nav button.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .brand-block,
@@ -1619,6 +1653,117 @@ small {
   min-height: 0;
   overflow: auto;
   padding: 14px;
+}
+
+.planner-stage-rail {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--ds-radius-lg);
+  background: var(--color-surface-sunken);
+  padding: 10px 12px;
+}
+
+.planner-stage-heading {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.planner-stage-rail ol {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.planner-stage-rail li {
+  display: flex;
+  min-width: 0;
+  gap: 6px;
+  align-items: center;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.planner-stage-rail li.complete,
+.planner-stage-rail li.active {
+  color: var(--color-text-primary);
+}
+
+.planner-stage-marker {
+  display: inline-grid;
+  min-width: 30px;
+  min-height: 24px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--ds-radius-sm);
+  background: var(--panel);
+  color: var(--color-text-muted);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.planner-stage-rail li.complete .planner-stage-marker {
+  border-color: var(--color-status-success);
+  background: var(--ds-color-success-100);
+  color: var(--color-status-success);
+}
+
+.planner-stage-rail li.active .planner-stage-marker {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.human-plan-summary {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 12px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 10px 12px;
+}
+
+.human-plan-summary h3,
+.human-plan-summary p,
+.human-plan-summary ol {
+  margin: 0;
+}
+
+.human-plan-summary ol {
+  display: grid;
+  gap: 4px;
+  padding-left: 20px;
+}
+
+.error-recovery-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+
+.error-recovery-summary > div {
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--border);
+  background: var(--panel-soft);
+  padding: 9px;
+}
+
+.error-recovery-summary strong {
+  color: var(--color-text-primary);
+  font-size: 12px;
+}
+
+.error-recovery-summary span {
+  color: var(--color-text-secondary);
+  font-size: 12px;
 }
 
 .tab-grid,
@@ -3053,7 +3198,8 @@ pre {
   .agent-process-tab,
   .results-export-tab,
   .viewer-preview-grid,
-  .dialog-grid {
+  .dialog-grid,
+  .error-recovery-summary {
     grid-template-columns: 1fr;
   }
 

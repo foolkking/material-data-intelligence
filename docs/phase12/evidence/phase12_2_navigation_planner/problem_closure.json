@@ -1,0 +1,44 @@
+{
+  "closed": [
+    {
+      "evidence": "human-plan-summary and Planner stage rail",
+      "problemId": "UX-001",
+      "status": "FIXED_WITH_EVIDENCE"
+    },
+    {
+      "evidence": "four-question error recovery summary",
+      "problemId": "UX-008",
+      "status": "FIXED_WITH_EVIDENCE"
+    }
+  ],
+  "deferred": [
+    {
+      "owner": "12-3",
+      "problemId": "UX-002"
+    },
+    {
+      "owner": "12-3",
+      "problemId": "UX-003"
+    },
+    {
+      "owner": "12-4",
+      "problemId": "UX-004"
+    },
+    {
+      "owner": "12-5",
+      "problemId": "UX-005"
+    },
+    {
+      "owner": "12-6",
+      "problemId": "UX-006"
+    },
+    {
+      "owner": "12-6",
+      "problemId": "UX-009"
+    },
+    {
+      "owner": "12-7",
+      "problemId": "UX-010"
+    }
+  ]
+}

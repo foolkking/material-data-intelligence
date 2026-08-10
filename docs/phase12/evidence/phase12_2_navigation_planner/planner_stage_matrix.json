@@ -1,0 +1,12 @@
+{
+  "frontendRecomputation": 0,
+  "runtimeStatusMutation": 0,
+  "source": "persisted DataProfile, AnalysisIntent, AnalysisPlan and Job status",
+  "stages": [
+    "data_context",
+    "intent",
+    "plan",
+    "execution",
+    "results"
+  ]
+}

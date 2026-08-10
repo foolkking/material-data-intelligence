@@ -471,3 +471,8 @@ IA, scientific payloads, Registry 62, DataProfile 2.4, runtime, backend and
 Phase 11 validation authority remain unchanged. Implementation
 `60269556f70f07014224a801150f214887a56ee5` passed exact-SHA CI
 `31358512349`; Phase 12-2 remains reviewer-gated and is not queued.
+
+Phase 12-2 is now the sole active task under the approved Global Navigation and
+Planner / Agent Experience scope. It may change presentation, hierarchy,
+progressive disclosure and recovery UX only; scientific, runtime, API, schema,
+Workspace and selection authority remain frozen. Phase 12-3 is not queued.

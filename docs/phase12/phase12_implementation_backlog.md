@@ -24,3 +24,16 @@ scientific colors/payloads, backend/API/schema/Registry/Profile/dependency chang
 Acceptance is `P12X1-A01` through `P12X1-A08`; the evidence manifest, browser
 matrix, mobile/focus/contrast foundation and exact-SHA CI are required. 12-2 and
 12-3 consume handoffs only after reviewer authorization.
+
+## 12-2 Execution Detail
+
+Sources: `PlannerWorkbench.tsx`, existing planner API client, message catalogs,
+DS2 tokens and the Phase 12-1 navigation/Planner handoff. Allowed: global shell
+navigation presentation, existing route/dialog/tab destinations, human-readable
+Planner hierarchy, clarification context, execution stage feedback and typed
+error recovery. Forbidden: new backend/API/schema authority, scientific or
+runtime semantics, provider policy changes, browser scientific recomputation,
+Workspace IA redesign or Phase 12-3 viewer work. Close only `UX-001` and
+`UX-008`; retain all other owners. Acceptance is `P12X2-A01` through
+`P12X2-A08`; deterministic navigation/planner evidence, browser/mobile replay,
+accessibility and exact-SHA CI are required.
