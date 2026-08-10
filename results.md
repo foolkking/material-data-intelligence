@@ -8294,3 +8294,96 @@ Phase 11-4 is `PASS / HONEST_COVERAGE_SEALED / QUEUE_ARCHIVED` after the direct 
 commits. Phase 11 remains `IN_PROGRESS / SCIENTIFIC_VALIDATION_AND_COVERAGE_COMPLETE / AWAITING_FINAL_CLOSURE`.
 Phase 11-5 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; Phase 12 and Phase 13 are approved, not queued,
 and not executable. No automatic Phase 14 exists.
+
+# Phase 11-5 Scientific Validation Closure + Release Candidate Gate Result
+
+## Conclusion
+
+Phase 11 is `COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS` and
+`SCIENTIFIC_VALIDATION_RELEASE_CANDIDATE = PASS`. This is a sealed validation
+baseline, not an assertion that every scientific value is independently validated
+or that the final product is release-ready. `INITIAL_RELEASE_COMPLETE = NO` and
+`FINAL_PRODUCT_RELEASE_READY = NO`.
+
+## Closure
+
+- Reconciled Phase 11-0 governance, Phase 11-1 provenance/fixture records,
+  Phase 11-2 golden benchmarks, Phase 11-3 Linux/Windows replay, and Phase
+  11-4 honest coverage without creating a new scientific authority.
+- Preserved 62 Registry Tools, DataProfile 2.4, AnalysisPlan 0.1/0.2,
+  migration `0007_phase10m1_workspace_domain`, dependencies, lockfile, APIs,
+  scientific contracts, reference records, fixtures, expected values,
+  tolerances, and validation levels.
+- Sealed the final reference, fixture, golden benchmark, tolerance, variance,
+  reproducibility, limitation, evidence-index, and Phase 12 read-only handoff
+  packages under `docs/phase11/` and the Phase 11-5 evidence manifest.
+- Retained the bounded evidence verdicts: 12 golden records with 8 invariant
+  passes, 4 explicit reference-limited N/A cases, and 0 failures; eight
+  Linux/Windows invariant replays, numeric cross-platform `NOT_APPLICABLE`, and
+  V4 promotion 0; 62 Tool, 14 input, and 55 example coverage rows.
+
+## CI And Regression
+
+Implementation `953866ef524a7f60532d5d6326e2049b4e7d2bc0` passed exact-SHA CI
+`31351418205`: Unit, PostgreSQL/Redis/MinIO service integration, Linux and
+Windows replay, frontend typecheck/build, and the browser replay matrix all
+passed. The lifecycle regression fix explicitly allows an empty `TASKS.md` only
+after all task blocks are archived; tasks that remain still require `处理中`.
+
+Local verification: `uv lock --check`; `uv run python -m pytest -q`
+(`1287 passed, 50 skipped`); `npm --prefix apps/web test` (`449 passed`);
+`npm --prefix apps/web run typecheck`; `npm --prefix apps/web run build`; focused
+Phase 11-4/11-5 evidence tests (`9 passed`); generator, manifest, and
+`git diff --check` all passed. The existing Plotly/glslify build warnings remain
+non-fatal. `npm audit` remains unavailable because the configured mirror returns
+`404_NOT_IMPLEMENTED`.
+
+## Acceptance And Limits
+
+`P11V5-A01` through `P11V5-A12`: expected 12, implemented 12,
+missing/extra/duplicate/conflicting/shorthand 0. Reference-limited numeric cases
+remain N/A; mapping-only coverage remains disclosed; input-path support remains
+separate from numeric validation; screenshots, browser and service success are
+not numeric reference authority; universal cross-platform numeric equivalence is
+not claimed. Future Scope and Not Planned boundaries are unchanged.
+
+## Mandatory Markers
+
+```text
+PHASE11_5_NEW_SCIENTIFIC_TOOLS = 0
+PHASE11_5_NEW_SCIENTIFIC_ALGORITHMS = 0
+PHASE11_5_NEW_SCIENTIFIC_BENCHMARKS = 0
+PHASE11_5_NEW_REFERENCE_SOURCES = 0
+PHASE11_5_NEW_CROSS_PLATFORM_CASES = 0
+PHASE11_5_NEW_ARTIFACT_FAMILIES = 0
+PHASE11_5_NEW_DATAPROFILE_VERSION = 0
+PHASE11_5_NEW_ANALYSISPLAN_VERSION = 0
+PHASE11_5_NEW_DATABASE_MIGRATIONS = 0
+PHASE11_5_NEW_PUBLIC_API_FAMILIES = 0
+PHASE11_5_NEW_DEPENDENCIES = 0
+PHASE11_5_NEW_LLM_CALL_SITES = 0
+PHASE11_5_REAL_LLM_CALLS = 0
+PHASE11_5_EXTERNAL_REFERENCE_DOWNLOADS = 0
+PHASE11_5_EXTERNAL_SCIENTIFIC_API_CALLS = 0
+PHASE11_5_VALIDATION_LEVEL_CHANGES = 0
+PHASE11_5_TOOL_COVERAGE_CHANGES = 0
+PHASE11_5_INPUT_SUPPORT_CHANGES = 0
+PHASE11_5_EXAMPLE_COVERAGE_CHANGES = 0
+PHASE11_5_REFERENCE_MUTATIONS = 0
+REGISTRY_BEFORE_11_5 = 62
+REGISTRY_AFTER_11_5 = 62
+DATAPROFILE_BEFORE_11_5 = 2.4
+DATAPROFILE_AFTER_11_5 = 2.4
+MIGRATION_AFTER_11_5 = 0007_phase10m1_workspace_domain
+SCREENSHOT_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+BROWSER_PASS_EQUALS_NUMERIC_REFERENCE_PASS = NO
+SERVICE_PASS_EQUALS_NUMERIC_REFERENCE_PASS = NO
+PASS_DRIVEN_TOLERANCE_CHANGE = PROHIBITED
+```
+
+## Queue State
+
+Phase 11-5 is complete pending direct queue archive. Phase 11 is
+`COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS`. Phase 12 is
+`REVIEWER_GATE / AWAITING REVIEWER PROMPT`; Phase 13 is
+`ROADMAP_APPROVED / NOT_QUEUED / NOT_EXECUTABLE`; Phase 14 is not created.

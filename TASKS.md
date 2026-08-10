@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
 
 
 # Phase 11-5 Reviewer Prompt
@@ -4547,6 +4547,10 @@ Phase 12 reviewer-gate status
 然后等待 reviewer。
 
 
-
+完成时间：2026-08-10 11:16:02 +08:00
+修改文件：`scripts/generate_phase11_5_closure.py`、`tests/test_phase11_5_closure.py`、历史队列生命周期测试、`docs/phase11/`、`docs/ROADMAP.md`、`docs/index.md`、`persistent/`、`results.md`。
+修改摘要：封板 Phase 11 验证基线、最终证据 manifest、显式限制和 Phase 12 只读科学权威交接；修复归档后空 TASKS 队列导致的历史 CI 断言失败。
+测试结果：实现提交 `953866ef524a7f60532d5d6326e2049b4e7d2bc0` 的 CI `31351418205` 成功；本地后端 1287 passed/50 skipped，前端 449 passed，typecheck、build、lock 与 evidence checks 通过。
+提交/CI 状态：实现 CI 已成功；按当前队列策略，完成记录和归档提交不等待额外 CI。
 
 ---END---
