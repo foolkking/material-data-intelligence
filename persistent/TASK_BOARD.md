@@ -1,5 +1,13 @@
 # TASK_BOARD
 
+## Active: Phase 12-4
+
+- Status: implementation complete locally, awaiting implementation exact-SHA CI.
+- Owned problem: `UX-004` only; fixed with trust-path and Inspector evidence.
+- Acceptance: `P12X4-A01` through `P12X4-A08` implemented locally.
+- Frozen: Registry 62, DataProfile 2.4, migration 0007, scientific and runtime authority.
+- Next phase: Phase 12-5 remains reviewer-gated and is not executed by 12-4.
+
 ## Phase 11-3 Cross-Platform Reproducibility
 
 - [x] Admit eight sealed invariant cases and preserve four reference-limited exclusions.

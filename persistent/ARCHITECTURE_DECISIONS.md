@@ -1,5 +1,14 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-10 ADR: Exact Trust-Path Presentation
+
+Finding-to-Evidence relationships are rendered only from persisted supporting,
+limiting and contradicting evidence IDs. Evidence-to-Artifact navigation uses
+the persisted Artifact ID, checksum, contract and version. The Inspector uses
+Summary, Scientific details and Provenance layers, with raw developer metadata
+subordinate. No textual similarity, ranking, latest/nearest binding, claim
+generation, scientific recomputation or recommendation execution is allowed.
+
 ## 2026-08-09 ADR: Multi-Axis Validation Authority
 
 Validation status is multi-axis. Regression, browser, service-backed, Artifact,

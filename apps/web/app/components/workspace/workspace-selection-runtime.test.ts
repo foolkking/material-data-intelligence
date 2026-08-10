@@ -4,7 +4,7 @@ import type { Artifact } from "../../lib/planner-api";
 import type { WorkspacePanel } from "../../lib/workspace-api";
 import { workspaceSnapshotFixture } from "./workspace-test-fixture";
 import { validateWorkspaceSelectionContext } from "./workspace-selection-contract";
-import { artifactSelectionFromPanel, claimSelection, coordinationSiteSelection, datasetSampleSelection, evidenceItemSelection, resolvePanelSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
+import { artifactSelectionFromPanel, claimSelection, coordinationSiteSelection, datasetSampleSelection, evidenceItemSelection, evidenceSourceArtifactSelection, resolvePanelSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
 
 const HASH = "a".repeat(64);
 
@@ -100,6 +100,16 @@ describe("Phase 10M-3 exact selection runtime", () => {
     expect(selectedClaim.primary).toMatchObject({ kind: "CLAIM", interpretationId: "interpretation_demo", claimId: "claim_demo" });
     expect(resolvePanelSelection(snapshot.panels.find((panel) => panel.panelKind === "EVIDENCE")!, evidenceSelection, snapshot.workspace)).toMatchObject({ compatibility: "EXACT" });
     expect(() => evidenceItemSelection(snapshot.workspace, interpretation, { ...evidence, sourceArtifactIds: [] }, evidence.evidenceItems[0])).toThrowError("SELECTION_EVIDENCE_SCOPE_MISMATCH");
+    const sourceArtifact = evidenceSourceArtifactSelection(snapshot.workspace, interpretation, evidence, evidence.evidenceItems[0]);
+    expect(sourceArtifact.primary).toMatchObject({
+      kind: "ARTIFACT",
+      artifactId: evidence.evidenceItems[0].sourceArtifactId,
+      artifactChecksum: evidence.evidenceItems[0].sourceArtifactChecksum,
+      artifactContract: evidence.evidenceItems[0].artifactContract,
+      artifactVersion: evidence.evidenceItems[0].artifactContractVersion,
+    });
+    expect(() => evidenceSourceArtifactSelection(snapshot.workspace, interpretation, { ...evidence, sourceArtifactIds: [] }, evidence.evidenceItems[0])).toThrowError("SELECTION_EVIDENCE_SOURCE_SCOPE_MISMATCH");
+    expect(() => evidenceSourceArtifactSelection(snapshot.workspace, interpretation, evidence, { ...evidence.evidenceItems[0], evidenceItemId: "evidence_forged" })).toThrowError("SELECTION_EVIDENCE_SOURCE_SCOPE_MISMATCH");
   });
 
   it("bounds 32 subscribers, rapid changes, replay suppression, and cleanup", () => {

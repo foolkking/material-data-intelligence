@@ -1267,6 +1267,153 @@ button:disabled {
   gap: 12px;
 }
 
+.workspace-trust-path,
+.workspace-grounded-reference-list,
+.workspace-interpretation-disclosure,
+.workspace-finding-card,
+.workspace-evidence-card,
+.workspace-provenance-trust-path,
+.workspace-inspector-layer {
+  display: grid;
+  gap: var(--space-3, 12px);
+  min-width: 0;
+}
+
+.workspace-interpretation-disclosure {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  padding-block: var(--space-3, 12px);
+  border-block: 1px solid var(--color-border, var(--border));
+}
+
+.workspace-interpretation-disclosure > :not(.workspace-status) {
+  grid-column: 2;
+}
+
+.workspace-finding-card,
+.workspace-evidence-card {
+  padding: var(--space-4, 16px);
+  border: 1px solid var(--color-border, var(--border));
+  border-radius: var(--radius-md, 6px);
+  background: var(--color-surface, var(--panel));
+}
+
+.workspace-finding-card > header,
+.workspace-evidence-card > header,
+.workspace-reference-pagination {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3, 12px);
+}
+
+.workspace-finding-card h5,
+.workspace-evidence-card h5 {
+  margin: 4px 0 0;
+  font-size: var(--font-size-body, 14px);
+  line-height: 1.45;
+}
+
+.workspace-finding-type,
+.workspace-evidence-kind {
+  color: var(--color-text-secondary, var(--muted));
+  font-size: var(--font-size-metadata, 12px);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.workspace-finding-evidence {
+  padding: var(--space-3, 12px);
+  border-left: 3px solid var(--color-status-info-border, var(--accent));
+  background: var(--color-surface-sunken, var(--panel-soft));
+}
+
+.workspace-finding-evidence.role-limiting {
+  border-left-color: var(--color-status-warning-border, #a66a00);
+}
+
+.workspace-finding-evidence.role-contradicting {
+  border-left-color: var(--color-status-danger-border, var(--danger));
+}
+
+.workspace-finding-evidence ul,
+.workspace-qualifier-list,
+.workspace-trust-warning ul,
+.workspace-trust-limitation ul,
+.workspace-provenance-trust-path ol {
+  margin: var(--space-2, 8px) 0 0;
+  padding-left: 20px;
+}
+
+.workspace-finding-evidence button {
+  display: grid;
+  justify-items: start;
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-2, 8px);
+  text-align: left;
+}
+
+.workspace-trust-warning,
+.workspace-trust-limitation {
+  display: grid;
+  gap: var(--space-1, 4px);
+  padding: var(--space-3, 12px);
+  border-left: 4px solid var(--color-status-warning-border, #a66a00);
+  background: var(--color-status-warning-surface, #fff8e8);
+}
+
+.workspace-trust-limitation {
+  border-left-color: var(--color-status-danger-border, var(--danger));
+  background: var(--color-status-danger-surface, #fff4f3);
+}
+
+.workspace-evidence-value {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--font-size-section, 16px);
+  font-weight: 700;
+}
+
+.workspace-evidence-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1, 4px);
+}
+
+.workspace-evidence-roles span {
+  padding: 2px 6px;
+  border: 1px solid var(--color-border-strong, var(--border-strong));
+  border-radius: var(--radius-pill, 999px);
+  font-size: var(--font-size-metadata, 12px);
+  font-weight: 700;
+}
+
+.workspace-provenance-trust-path li {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-2, 8px) 0;
+  border-bottom: 1px solid var(--color-border, var(--border));
+  overflow-wrap: anywhere;
+}
+
+.workspace-inspector-layer {
+  padding-block: var(--space-3, 12px);
+  border-top: 1px solid var(--color-border, var(--border));
+}
+
+.workspace-inspector-layer summary {
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.workspace-inspector-layer pre {
+  max-width: 100%;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .workspace-selection-actions {
   display: flex;
   flex-wrap: wrap;
@@ -3209,6 +3356,20 @@ pre {
 }
 
 @media (max-width: 600px) {
+  .workspace-interpretation-disclosure {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace-interpretation-disclosure > :not(.workspace-status) {
+    grid-column: 1;
+  }
+
+  .workspace-finding-card > header,
+  .workspace-evidence-card > header,
+  .workspace-reference-pagination {
+    flex-direction: column;
+  }
+
   .dependency-card-list { grid-template-columns: 1fr; }
   .grounded-interpretation-panel .command-row,
   .interpretation-claim header {

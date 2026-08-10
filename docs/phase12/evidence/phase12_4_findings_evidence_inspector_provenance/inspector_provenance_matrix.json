@@ -1,0 +1,8 @@
+{
+  "collapsedByDefault": true,
+  "facts": [
+    "project",
+    "sourceScopeHash",
+    "panel source refs"
+  ]
+}

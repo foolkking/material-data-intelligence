@@ -1,0 +1,5 @@
+{
+  "evidenceToArtifact": "exact persisted ID/checksum/contract/version",
+  "selectionContract": "WorkspaceSelectionContext 1.0",
+  "urlAuthority": "UNCHANGED"
+}

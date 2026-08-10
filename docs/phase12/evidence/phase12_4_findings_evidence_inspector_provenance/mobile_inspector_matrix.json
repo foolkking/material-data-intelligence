@@ -1,0 +1,13 @@
+{
+  "focusTrap": true,
+  "layers": [
+    "Summary",
+    "Scientific details",
+    "Provenance"
+  ],
+  "mode": "bottom sheet",
+  "viewport": [
+    390,
+    844
+  ]
+}

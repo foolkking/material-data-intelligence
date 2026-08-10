@@ -1,0 +1,8 @@
+{
+  "explicitMessage": true,
+  "infrastructureFailure": false,
+  "states": [
+    "NO_SUPPORTED_EVIDENCE",
+    "NO_SUPPORTED_CONCLUSION"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "filenameAuthority": 0,
+  "latestBinding": 0,
+  "path": [
+    "Evidence",
+    "Artifact ID/checksum",
+    "Artifact contract/version",
+    "Tool/version"
+  ]
+}

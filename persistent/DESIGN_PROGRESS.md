@@ -1,5 +1,16 @@
 # DESIGN_PROGRESS
 
+## 2026-08-10 Phase 12-4 Findings/Evidence Implementation
+
+- [x] Verify Phase 12-3 implementation `9b38a753` and CI `31370240101`.
+- [x] Preserve ScientificEvidenceBundle/Item, ScientificClaim and interpretation 1.0 contracts.
+- [x] Implement persisted Finding hierarchy and exact evidence membership roles.
+- [x] Implement exact Evidence-to-Artifact source selection and provenance chain.
+- [x] Implement Summary / Scientific details / Provenance Inspector layers.
+- [x] Keep recommendations non-executable and limitations first-class.
+- [x] Generate deterministic evidence and close `UX-004` without new P0/P1.
+- [ ] Verify the implementation exact SHA in CI before completion recording.
+
 ## 2026-08-09 Phase 11-0 Validation Baseline Reconciliation
 
 - [x] Verify the N6 implementation/completion/archive authority and clean entry baseline.

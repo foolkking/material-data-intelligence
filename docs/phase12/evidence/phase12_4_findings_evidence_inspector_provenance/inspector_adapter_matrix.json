@@ -1,0 +1,9 @@
+{
+  "fallback": "typed no selection",
+  "rawPayloadExecution": false,
+  "selectionKinds": [
+    "ARTIFACT",
+    "EVIDENCE_ITEM",
+    "CLAIM"
+  ]
+}

@@ -8,8 +8,8 @@ Report/Recipe authority, scientific units/claims and Phase 11 coverage are locke
 
 Forbidden shortcuts: browser scientific recomputation, latest/nearest/label/filename
 identity, hiding limitations, unsupported-without-explanation, and recommendation
-as automatic execution. Phase 12-1 and Phase 12-2 are complete; Phase 12-3 is
-the only active authorized task and Phase 12-4 remains reviewer-gated.
+as automatic execution. Phase 12-1 through Phase 12-3 are complete; Phase 12-4
+is the only active authorized task and Phase 12-5 remains reviewer-gated.
 
 ## Phase 12-1 Design System Scope
 
@@ -37,3 +37,12 @@ preserve the nine persisted panel kinds, exact panel URLs, server Workspace
 identity, Artifact/renderer registry, exact Selection contract, lazy loading,
 scientific values, units, series colors and all backend behavior. Findings,
 Evidence, Inspector and Report workflow redesign remain owned by later phases.
+
+## Phase 12-4 Findings, Evidence and Provenance Scope
+
+Phase 12-4 may recompose persisted claims, exact evidence membership, Inspector
+layers and provenance presentation. It must consume `ScientificEvidenceBundle
+1.0`, `ScientificEvidenceItem 1.0`, `ScientificClaim 1.0` and
+`GroundedScientificInterpretation 1.0` unchanged. Claim generation, evidence
+projection, confidence fabrication, fuzzy membership, Artifact/lineage changes,
+recommendation execution, new LLM calls and Report/Recipe redesign are forbidden.

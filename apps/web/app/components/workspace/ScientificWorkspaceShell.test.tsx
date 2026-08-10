@@ -136,7 +136,7 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     expect(await screen.findByTestId("workspace-selection-status")).toHaveTextContent("Restored canonical selection");
     expect(screen.getByTestId("workspace-selection-status")).toHaveTextContent("DATASET_SAMPLE");
     await user.click(screen.getByRole("button", { name: "Inspector" }));
-    expect(screen.getByRole("heading", { name: "Canonical selection" })).not.toBeNull();
+    expect(screen.getByRole("heading", { name: "Summary" })).not.toBeNull();
     expect(screen.getAllByText("Exact kind and source scope match.").length).toBeGreaterThan(1);
     await user.click(screen.getByRole("button", { name: "Clear selection" }));
     expect(screen.getByTestId("workspace-selection-status")).toHaveTextContent("Canonical selection cleared");
@@ -157,7 +157,7 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     await user.click(screen.getByRole("button", { name: "Pin selection" }));
     await waitFor(() => expect(patchWorkspaceMock).toHaveBeenCalledWith("workspace_demo", "etag", expect.objectContaining({ pinnedSelection: expect.objectContaining({ primary: expect.objectContaining({ artifactId: "artifact_demo" }) }) })));
     expect(screen.getByText(/Pin state: SAVED/u)).not.toBeNull();
-    await user.click(screen.getByText("Scientific details"));
+    await user.click(within(screen.getByRole("dialog", { name: "Context inspector" })).getByText("Scientific details"));
     expect(screen.getByRole("status", { name: "Panel selection compatibility" })).toHaveTextContent("EXACT");
   });
 
@@ -210,13 +210,69 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     await user.click(screen.getByRole("button", { name: "Evidence" }));
     expect(await screen.findByRole("heading", { name: "Scientific evidence" })).not.toBeNull();
     expect(await screen.findByTestId("workspace-grounded-evidence")).toHaveTextContent("metrics.value");
-    await user.click(screen.getByRole("button", { name: "Select exact evidence" }));
+    await user.click(screen.getByRole("button", { name: "Inspect exact evidence" }));
     expect(screen.getByTestId("workspace-selection-status")).toHaveTextContent("EVIDENCE_ITEM");
     await user.click(screen.getByRole("button", { name: /Results/ }));
     await user.click(screen.getByRole("button", { name: "Lineage" }));
     expect(await screen.findByRole("heading", { name: "Provenance" })).not.toBeNull();
     expect(screen.getByTestId("workspace-artifact-lineage")).toHaveTextContent("artifact_demo");
     expect(window.location.search).toContain("panel=panel_provenance");
+  });
+
+  it("presents the exact Finding to Evidence to Artifact trust path without fabricating confidence", async () => {
+    const claim = {
+      schemaVersion: "1.0" as const, claimId: "claim_limited", claimType: "LIMITATION" as const,
+      subjectEvidenceIds: ["evidence_demo"], supportingEvidenceIds: ["evidence_demo"], limitingEvidenceIds: ["evidence_limit"], contradictingEvidenceIds: [],
+      semanticPredicate: "REPORTS_LIMITATION", qualifiers: ["Bounded to the supplied source"], renderedText: "The reported value is source-limited.", scope: "artifact",
+      confidenceClass: "LIMITED" as const, groundingStatus: "GROUNDED" as const, displayOrder: 0,
+    };
+    const interpretation = {
+      schemaVersion: "1.0" as const, interpretationId: "interpretation_demo", interpretationHash: HASH, sourceBundleId: "bundle_demo", sourceBundleHash: HASH,
+      sourceJobId: "job_demo", sourcePlanId: "plan_demo", sourcePlanHash: HASH, mode: "DETERMINISTIC" as const, provider: "deterministic", providerVersion: "1.0",
+      claims: [claim], globalWarnings: ["Source warning"], globalLimitations: ["Global limitation"], recommendations: [], completeness: "PARTIAL" as const,
+      partialResultState: true, repairCount: 0 as const, validationOutcome: "VALID", executionRecordId: "execution_demo",
+    };
+    const source = (await getArtifactsMock("job_demo"))[0];
+    const evidenceItems = [
+      { schemaVersion: "1.0" as const, evidenceItemId: "evidence_demo", semanticRole: "metric.value", evidenceKind: "SCALAR" as const, subjectId: "artifact_demo", displayValue: "2", unit: "eV", sourceArtifactId: "artifact_demo", sourceArtifactChecksum: source.sha256!, artifactContract: "platform.dataset.summary", artifactContractVersion: "1.0", sourceToolId: "tool.demo", sourceToolVersion: "1.0", fieldLocator: { fieldId: "metrics.value" }, warnings: [], limitations: [] },
+      { schemaVersion: "1.0" as const, evidenceItemId: "evidence_limit", semanticRole: "coverage.limit", evidenceKind: "LIMITATION" as const, subjectId: "artifact_demo", displayValue: "Supplied source only", unit: null, sourceArtifactId: "artifact_demo", sourceArtifactChecksum: source.sha256!, artifactContract: "platform.dataset.summary", artifactContractVersion: "1.0", sourceToolId: "tool.demo", sourceToolVersion: "1.0", fieldLocator: { fieldId: "coverage.limit" }, warnings: [], limitations: ["Not independently generated"] },
+    ];
+    getInterpretationsMock.mockResolvedValue({ jobId: "job_demo", interpretations: [interpretation], runs: [], count: 1, runCount: 0 });
+    getEvidenceMock.mockResolvedValue({ interpretationId: "interpretation_demo", bundleId: "bundle_demo", bundleHash: HASH, sourceArtifactIds: ["artifact_demo"], bundleWarnings: [], bundleLimitations: [], evidenceItems });
+    const user = userEvent.setup();
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    await user.click(await screen.findByRole("button", { name: /Findings/ }));
+    const findings = await screen.findByTestId("workspace-grounded-claims");
+    expect(findings).toHaveTextContent("Scientific limitation");
+    expect(findings).toHaveTextContent("Limited conclusion");
+    expect(findings).toHaveTextContent("Supporting evidence");
+    expect(findings).toHaveTextContent("Limiting evidence");
+    expect(findings).not.toHaveTextContent(/\d+% confidence/u);
+    await user.click(within(findings).getByRole("button", { name: /coverage\.limit/u }));
+    expect(screen.getByTestId("workspace-selection-status")).toHaveTextContent("EVIDENCE_ITEM");
+    await user.click(screen.getByRole("button", { name: /Evidence/ }));
+    const evidence = await screen.findByTestId("workspace-grounded-evidence");
+    expect(evidence).toHaveTextContent("LIMITING");
+    expect(evidence).toHaveTextContent("Not independently generated");
+    await user.click(within(evidence).getAllByRole("button", { name: "Select source Artifact" })[1]);
+    expect(screen.getByTestId("workspace-selection-status")).toHaveTextContent("ARTIFACT");
+    await user.click(screen.getByRole("button", { name: /Provenance/ }));
+    expect(await screen.findByTestId("workspace-artifact-lineage")).toHaveTextContent("artifact_demo");
+    expect(screen.getByTestId("workspace-artifact-lineage")).toHaveTextContent("Plan plan_demo (0.2)");
+  });
+
+  it("uses a three-layer Inspector and subordinates exact developer details", async () => {
+    const user = userEvent.setup();
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    await screen.findByTestId("scientific-workspace-shell");
+    await user.click(screen.getByRole("button", { name: "Inspector" }));
+    const dialog = screen.getByRole("dialog", { name: "Context inspector" });
+    expect(within(dialog).getByRole("heading", { name: "Summary" })).not.toBeNull();
+    expect(within(dialog).getByText("Scientific details", { selector: "summary" }).closest("details")?.open).toBe(false);
+    expect(within(dialog).getByText("Provenance", { selector: "summary" }).closest("details")?.open).toBe(false);
+    expect(within(dialog).getByText("Developer details", { selector: "summary" }).closest("details")?.open).toBe(false);
+    await user.click(within(dialog).getByText("Scientific details", { selector: "summary" }));
+    expect(within(dialog).getByRole("heading", { name: "Compatible panels" })).not.toBeNull();
   });
 
   it("does not request a stale panel payload and keeps the safe download action", async () => {

@@ -1,0 +1,12 @@
+{
+  "allExact": true,
+  "fields": [
+    "sourceArtifactId",
+    "sourceArtifactChecksum",
+    "artifactContract",
+    "artifactContractVersion",
+    "sourceToolId",
+    "sourceToolVersion",
+    "fieldLocator"
+  ]
+}

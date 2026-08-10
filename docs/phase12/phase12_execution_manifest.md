@@ -34,3 +34,12 @@ records presentation-only navigation groups, the result-first summary, shared
 viewer chrome, metadata-first/lazy payload behavior and the exact URL selection
 contract. It performs no LLM call, external network call, scientific
 calculation, backend mutation or new runtime authority.
+
+## Phase 12-4
+
+Phase 12-4 executes `scripts/generate_phase12_4_findings_evidence.py` and
+`tests/test_phase12_4_findings_evidence.py`. The generator records exact
+claim/evidence membership, Inspector layers, provenance presentation, typed
+negative states and authority non-change. It is deterministic, local and
+non-scientific: it performs no provider call, external network access, evidence
+projection, claim generation, Artifact mutation or runtime execution.

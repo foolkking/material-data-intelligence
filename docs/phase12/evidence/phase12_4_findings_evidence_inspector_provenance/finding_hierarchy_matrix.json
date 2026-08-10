@@ -1,0 +1,8 @@
+{
+  "frontendScientificRanking": false,
+  "ordering": [
+    "displayOrder",
+    "claimId tie-break"
+  ],
+  "resultGrouping": "persisted interpretation"
+}

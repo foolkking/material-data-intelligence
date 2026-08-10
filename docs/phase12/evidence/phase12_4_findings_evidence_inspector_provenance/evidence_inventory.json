@@ -1,0 +1,17 @@
+{
+  "bundle": "ScientificEvidenceBundle 1.0",
+  "contract": "ScientificEvidenceItem 1.0",
+  "kinds": [
+    "SCALAR",
+    "RANGE",
+    "CATEGORY",
+    "COUNT",
+    "BOOLEAN",
+    "ORDERED_SERIES_SUMMARY",
+    "TABLE_ROW",
+    "WARNING",
+    "LIMITATION",
+    "EXECUTION_STATE",
+    "PROVENANCE"
+  ]
+}

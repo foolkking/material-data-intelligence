@@ -15,6 +15,8 @@ import {
   getPlannerJobInterpretations,
   type GroundedScientificInterpretation,
   type InterpretationEvidenceResponse,
+  type ScientificClaim,
+  type ScientificEvidenceItem,
 } from "../../lib/planner-api";
 import {
   WORKSPACE_EXPERIENCE_NAVIGATION_GROUPS,
@@ -37,6 +39,7 @@ import {
   artifactSelectionFromPanel,
   claimSelection,
   evidenceItemSelection,
+  evidenceSourceArtifactSelection,
   resolvePanelSelection,
   type WorkspaceSelectionDelivery,
   WorkspaceSelectionStore,
@@ -548,9 +551,8 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
         <div className="workspace-inspector-backdrop" onMouseDown={(event) => event.currentTarget === event.target && setInspectorOpen(false)}>
           <aside className="workspace-inspector" role="dialog" aria-modal="true" aria-labelledby="workspace-inspector-title" onKeyDown={trapDialogFocus}>
             <div className="workspace-drawer-header"><h2 id="workspace-inspector-title">Context inspector</h2><button ref={inspectorCloseRef} type="button" className="workspace-icon-button" aria-label="Close inspector" onClick={() => { setInspectorOpen(false); inspectorTriggerRef.current?.focus(); }}>X</button></div>
-            <p className="subtle">Exact source metadata and canonical cross-panel selection state.</p>
-            <WorkspaceSelectionInspector selection={selection} originPanelId={selectionOriginPanelId} deliveries={deliveries} panels={visiblePanels} pinState={pinState} readOnly={workspace.readOnly} onClear={clearSelection} onCopy={copySelectionLink} onPin={pinSelection} onSelectPanel={selectPanel} />
-            {activePanel ? <WorkspaceSourceList panel={activePanel} /> : <p>No active panel.</p>}
+            <p className="subtle">Meaning first, with exact scientific identity and source records available below.</p>
+            <WorkspaceSelectionInspector selection={selection} originPanelId={selectionOriginPanelId} deliveries={deliveries} panels={visiblePanels} activePanel={activePanel} pinState={pinState} readOnly={workspace.readOnly} onClear={clearSelection} onCopy={copySelectionLink} onPin={pinSelection} onSelectPanel={selectPanel} />
           </aside>
         </div>
       ) : null}
@@ -615,7 +617,7 @@ function WorkspaceReferenceSummary({ panel, workspace, snapshot, delivery, onSel
   const [evidence, setEvidence] = useState<InterpretationEvidenceResponse | null>(null);
   const [loadState, setLoadState] = useState<"IDLE" | "LOADING" | "READY" | "EMPTY" | "FAILED">("IDLE");
   const [evidencePage, setEvidencePage] = useState(0);
-  const readsInterpretation = panel.panelKind === "FINDINGS" || panel.panelKind === "EVIDENCE";
+  const readsInterpretation = panel.panelKind === "FINDINGS" || panel.panelKind === "EVIDENCE" || panel.panelKind === "PROVENANCE";
 
   useEffect(() => {
     if (!readsInterpretation) return;
@@ -647,14 +649,98 @@ function WorkspaceReferenceSummary({ panel, workspace, snapshot, delivery, onSel
   const pageCount = Math.max(1, Math.ceil(evidenceItems.length / pageSize));
   const visibleEvidence = evidenceItems.slice(evidencePage * pageSize, (evidencePage + 1) * pageSize);
   const selected = delivery?.context?.primary;
-  return <section className="workspace-summary-band"><h3>{labels[panel.panelKind]}</h3><p>Exact references are available from {panel.sourceRefs.length} source record(s).</p><dl className="workspace-metadata-grid"><Metadata label="Interpretations" value={String(snapshot.sourceSummary.interpretationCount)} /><Metadata label="Reports" value={String(snapshot.sourceSummary.reportCount)} /><Metadata label="Recipes" value={String(snapshot.sourceSummary.recipeCount)} /><Metadata label="Metadata only" value="Yes" /></dl>
+  const selectedClaim = selected?.kind === "CLAIM" ? interpretation?.claims.find((claim) => claim.claimId === selected.claimId) : null;
+  const selectedEvidence = selected?.kind === "EVIDENCE_ITEM" ? evidenceItems.find((item) => item.evidenceItemId === selected.evidenceItemId) : null;
+  return <section className="workspace-summary-band workspace-trust-path"><h3>{labels[panel.panelKind]}</h3><p>Follow persisted claims to exact evidence, source Artifacts, Tool versions, inputs and lineage. Presentation does not generate or rank scientific conclusions.</p><dl className="workspace-metadata-grid"><Metadata label="Interpretations" value={String(snapshot.sourceSummary.interpretationCount)} /><Metadata label="Reports" value={String(snapshot.sourceSummary.reportCount)} /><Metadata label="Recipes" value={String(snapshot.sourceSummary.recipeCount)} /><Metadata label="Metadata only" value="Yes" /></dl>
     {readsInterpretation && loadState === "LOADING" ? <p role="status">Loading persisted grounded references.</p> : null}
     {readsInterpretation && loadState === "EMPTY" ? <p role="status">No persisted grounded interpretation is available.</p> : null}
     {readsInterpretation && loadState === "FAILED" ? <p role="alert">Grounded references are unavailable or failed exact source validation.</p> : null}
-    {panel.panelKind === "FINDINGS" && interpretation ? <div className="workspace-grounded-reference-list" data-testid="workspace-grounded-claims"><h4>Grounded claims</h4>{interpretation.claims.map((claim) => <article key={claim.claimId}><strong>{claim.claimType}</strong><p>{claim.renderedText}</p><small>{claim.confidenceClass} / {claim.groundingStatus}</small><button type="button" className="secondary" aria-pressed={selected?.kind === "CLAIM" && selected.claimId === claim.claimId} onClick={() => onSelection(claimSelection(workspace, interpretation, claim))}>Select exact claim</button></article>)}</div> : null}
-    {panel.panelKind === "EVIDENCE" && interpretation && evidence ? <div className="workspace-grounded-reference-list" data-testid="workspace-grounded-evidence"><div className="workspace-reference-pagination"><h4>Evidence items</h4><span>Showing {evidenceItems.length ? evidencePage * pageSize + 1 : 0}-{Math.min((evidencePage + 1) * pageSize, evidenceItems.length)} of {evidenceItems.length}</span></div>{visibleEvidence.map((item) => <article key={item.evidenceItemId}><strong>{item.semanticRole}</strong><p>{item.displayValue}{item.unit ? ` ${item.unit}` : ""}</p><small>{item.artifactContract}@{item.artifactContractVersion} / {item.fieldLocator.fieldId}</small><button type="button" className="secondary" aria-pressed={selected?.kind === "EVIDENCE_ITEM" && selected.evidenceItemId === item.evidenceItemId} onClick={() => onSelection(evidenceItemSelection(workspace, interpretation, evidence, item))}>Select exact evidence</button></article>)}{pageCount > 1 ? <div className="workspace-selection-actions"><button type="button" className="secondary" disabled={evidencePage === 0} onClick={() => setEvidencePage((value) => value - 1)}>Previous evidence</button><button type="button" className="secondary" disabled={evidencePage + 1 >= pageCount} onClick={() => setEvidencePage((value) => value + 1)}>Next evidence</button></div> : null}</div> : null}
-    {panel.panelKind === "PROVENANCE" && selected?.kind === "ARTIFACT" ? <dl className="workspace-metadata-grid" data-testid="workspace-artifact-lineage"><Metadata label="Artifact" value={selected.artifactId || "Unavailable"} /><Metadata label="Checksum" value={compactIdentity(selected.artifactChecksum, 24)} /><Metadata label="Contract" value={`${selected.artifactContract || "unknown"}@${selected.artifactVersion || "unknown"}`} /><Metadata label="ToolCall" value={selected.toolCallId || "Unavailable"} /></dl> : null}
+    {interpretation ? <InterpretationDisclosure interpretation={interpretation} evidence={evidence} /> : null}
+    {panel.panelKind === "FINDINGS" && interpretation && evidence ? <FindingTrustPath interpretation={interpretation} evidence={evidence} workspace={workspace} selected={selected} onSelection={onSelection} /> : null}
+    {panel.panelKind === "EVIDENCE" && interpretation && evidence ? <div className="workspace-grounded-reference-list" data-testid="workspace-grounded-evidence"><div className="workspace-reference-pagination"><h4>Evidence</h4><span>Showing {evidenceItems.length ? evidencePage * pageSize + 1 : 0}-{Math.min((evidencePage + 1) * pageSize, evidenceItems.length)} of {evidenceItems.length}</span></div>{visibleEvidence.map((item) => <EvidenceCard key={item.evidenceItemId} item={item} roles={evidenceRoles(interpretation.claims, item.evidenceItemId)} selected={selected?.kind === "EVIDENCE_ITEM" && selected.evidenceItemId === item.evidenceItemId} onSelect={() => onSelection(evidenceItemSelection(workspace, interpretation, evidence, item))} onSource={() => onSelection(evidenceSourceArtifactSelection(workspace, interpretation, evidence, item))} />)}{pageCount > 1 ? <div className="workspace-selection-actions"><button type="button" className="secondary" disabled={evidencePage === 0} onClick={() => setEvidencePage((value) => value - 1)}>Previous evidence</button><button type="button" className="secondary" disabled={evidencePage + 1 >= pageCount} onClick={() => setEvidencePage((value) => value + 1)}>Next evidence</button></div> : null}</div> : null}
+    {panel.panelKind === "PROVENANCE" && interpretation && evidence ? <ProvenanceTrustPath workspace={workspace} panel={panel} interpretation={interpretation} evidence={evidence} selected={selected} selectedClaim={selectedClaim || null} selectedEvidence={selectedEvidence || null} /> : null}
   </section>;
+}
+
+const CLAIM_LABELS: Record<ScientificClaim["claimType"], string> = {
+  OBSERVATION: "Observation", COMPARISON: "Comparison", ANOMALY: "Anomaly", WARNING: "Warning",
+  LIMITATION: "Scientific limitation", RECOMMENDATION: "Recommendation", NO_SUPPORTED_CONCLUSION: "No supported conclusion",
+};
+
+const QUALIFICATION_COPY: Record<ScientificClaim["confidenceClass"], string> = {
+  DIRECT: "Directly supported by the persisted evidence listed below.",
+  QUALIFIED: "Supported with stated qualifications; inspect limiting evidence before reuse.",
+  LIMITED: "Limited conclusion. The persisted limitations materially bound this statement.",
+};
+
+function InterpretationDisclosure({ interpretation, evidence }: { interpretation: GroundedScientificInterpretation; evidence: InterpretationEvidenceResponse | null }) {
+  const warnings = [...interpretation.globalWarnings, ...(evidence?.bundleWarnings ?? [])];
+  const limitations = [...interpretation.globalLimitations, ...(evidence?.bundleLimitations ?? [])];
+  return <div className="workspace-interpretation-disclosure" aria-label="Interpretation scope">
+    <span className={`workspace-status tone-${interpretation.completeness === "COMPLETE" ? "success" : interpretation.completeness === "PARTIAL" ? "warning" : "muted"}`}>{interpretation.completeness}</span>
+    <p>{interpretation.completeness === "COMPLETE" ? "Persisted grounded interpretation is complete for its supported evidence scope." : interpretation.completeness === "PARTIAL" ? "Only the successful persisted evidence scope supports these claims." : "No supported scientific conclusion is available from this evidence scope."}</p>
+    {warnings.length ? <div className="workspace-trust-warning" role="status"><strong>Warnings</strong><ul>{warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div> : null}
+    {limitations.length ? <div className="workspace-trust-limitation" role="note"><strong>Scientific limitations</strong><ul>{limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}</ul></div> : null}
+  </div>;
+}
+
+function FindingTrustPath({ interpretation, evidence, workspace, selected, onSelection }: { interpretation: GroundedScientificInterpretation; evidence: InterpretationEvidenceResponse; workspace: WorkspaceSnapshot["workspace"]; selected: WorkspaceSelectionContext["primary"] | undefined; onSelection: (selection: WorkspaceSelectionContext) => void }) {
+  const evidenceById = new Map(evidence.evidenceItems.map((item) => [item.evidenceItemId, item]));
+  const orderedClaims = [...interpretation.claims].sort((left, right) => left.displayOrder - right.displayOrder || left.claimId.localeCompare(right.claimId));
+  return <div className="workspace-grounded-reference-list" data-testid="workspace-grounded-claims"><div className="workspace-reference-pagination"><h4>Findings</h4><span>{orderedClaims.length} persisted claim(s)</span></div>
+    {orderedClaims.length === 0 ? <p role="status">No supported scientific conclusion was generated from the available persisted evidence.</p> : orderedClaims.map((claim) => <article className={`workspace-finding-card finding-${claim.claimType.toLowerCase()}`} key={claim.claimId}>
+      <header><div><span className="workspace-finding-type">{CLAIM_LABELS[claim.claimType]}</span><h5>{claim.renderedText}</h5></div><span className={`workspace-status tone-${claim.confidenceClass === "DIRECT" ? "success" : claim.confidenceClass === "QUALIFIED" ? "warning" : "danger"}`}>{claim.confidenceClass}</span></header>
+      <p>{QUALIFICATION_COPY[claim.confidenceClass]}</p>
+      {claim.qualifiers.length ? <ul className="workspace-qualifier-list">{claim.qualifiers.map((qualifier) => <li key={qualifier}>{qualifier}</li>)}</ul> : null}
+      <FindingEvidenceGroup role="Supporting" ids={claim.supportingEvidenceIds} evidenceById={evidenceById} onSelect={(item) => onSelection(evidenceItemSelection(workspace, interpretation, evidence, item))} />
+      <FindingEvidenceGroup role="Limiting" ids={claim.limitingEvidenceIds} evidenceById={evidenceById} onSelect={(item) => onSelection(evidenceItemSelection(workspace, interpretation, evidence, item))} />
+      <FindingEvidenceGroup role="Contradicting" ids={claim.contradictingEvidenceIds} evidenceById={evidenceById} onSelect={(item) => onSelection(evidenceItemSelection(workspace, interpretation, evidence, item))} />
+      <button type="button" className="secondary" aria-pressed={selected?.kind === "CLAIM" && selected.claimId === claim.claimId} onClick={() => onSelection(claimSelection(workspace, interpretation, claim))}>Inspect exact claim</button>
+    </article>)}
+    {interpretation.recommendations.length ? <section className="workspace-recommendation-list" aria-label="Non-executable recommendations"><h4>Recommendations</h4>{interpretation.recommendations.map((recommendation) => <article key={recommendation.recommendationId}><strong>{recommendation.suggestedGoalCategory}</strong><p>{recommendation.limitation}</p><small>Advisory only. No plan, job, queue or execution is authorized.</small></article>)}</section> : null}
+  </div>;
+}
+
+function FindingEvidenceGroup({ role, ids, evidenceById, onSelect }: { role: "Supporting" | "Limiting" | "Contradicting"; ids: string[]; evidenceById: Map<string, ScientificEvidenceItem>; onSelect: (item: ScientificEvidenceItem) => void }) {
+  if (!ids.length) return null;
+  return <section className={`workspace-finding-evidence role-${role.toLowerCase()}`} aria-label={`${role} evidence`}><strong>{role} evidence</strong><ul>{ids.map((id) => {
+    const item = evidenceById.get(id);
+    return <li key={id}>{item ? <button type="button" className="quiet" onClick={() => onSelect(item)}><span>{item.semanticRole}</span><small>{item.displayValue}{item.unit ? ` ${item.unit}` : ""}</small></button> : <span role="alert">Exact evidence {compactIdentity(id)} is unavailable.</span>}</li>;
+  })}</ul></section>;
+}
+
+function evidenceRoles(claims: ScientificClaim[], evidenceItemId: string): Array<"SUPPORTING" | "LIMITING" | "CONTRADICTING"> {
+  const roles = new Set<"SUPPORTING" | "LIMITING" | "CONTRADICTING">();
+  for (const claim of claims) {
+    if (claim.supportingEvidenceIds.includes(evidenceItemId)) roles.add("SUPPORTING");
+    if (claim.limitingEvidenceIds.includes(evidenceItemId)) roles.add("LIMITING");
+    if (claim.contradictingEvidenceIds.includes(evidenceItemId)) roles.add("CONTRADICTING");
+  }
+  return [...roles];
+}
+
+function EvidenceCard({ item, roles, selected, onSelect, onSource }: { item: ScientificEvidenceItem; roles: string[]; selected: boolean; onSelect: () => void; onSource: () => void }) {
+  return <article className="workspace-evidence-card"><header><div><span className="workspace-evidence-kind">{item.evidenceKind}</span><h5>{item.semanticRole}</h5></div><div className="workspace-evidence-roles">{roles.length ? roles.map((role) => <span key={role}>{role}</span>) : <span>SUBJECT</span>}</div></header>
+    <p className="workspace-evidence-value">{item.displayValue}{item.unit ? ` ${item.unit}` : ""}</p>
+    {item.warnings.length ? <div className="workspace-trust-warning"><strong>Warning</strong><span>{item.warnings.join("; ")}</span></div> : null}
+    {item.limitations.length ? <div className="workspace-trust-limitation"><strong>Limitation</strong><span>{item.limitations.join("; ")}</span></div> : null}
+    <p className="subtle">Persisted in {item.artifactContract}@{item.artifactContractVersion}; produced by {item.sourceToolId}@{item.sourceToolVersion}.</p>
+    <div className="workspace-selection-actions"><button type="button" className="secondary" aria-pressed={selected} onClick={onSelect}>Inspect exact evidence</button><button type="button" className="secondary" onClick={onSource}>Select source Artifact</button></div>
+    <details><summary>Scientific details</summary><dl className="workspace-metadata-grid"><Metadata label="Evidence ID" value={item.evidenceItemId} /><Metadata label="Artifact" value={item.sourceArtifactId} /><Metadata label="Checksum" value={compactIdentity(item.sourceArtifactChecksum, 32)} /><Metadata label="Field" value={item.fieldLocator.fieldId} /></dl></details>
+  </article>;
+}
+
+function ProvenanceTrustPath({ workspace, panel, interpretation, evidence, selected, selectedClaim, selectedEvidence }: { workspace: WorkspaceSnapshot["workspace"]; panel: WorkspacePanel; interpretation: GroundedScientificInterpretation; evidence: InterpretationEvidenceResponse; selected: WorkspaceSelectionContext["primary"] | undefined; selectedClaim: ScientificClaim | null; selectedEvidence: ScientificEvidenceItem | null }) {
+  const artifactId = selectedEvidence?.sourceArtifactId || (selected?.kind === "ARTIFACT" ? selected.artifactId : null);
+  const checksum = selectedEvidence?.sourceArtifactChecksum || (selected?.kind === "ARTIFACT" ? selected.artifactChecksum : null);
+  return <div className="workspace-provenance-trust-path" data-testid="workspace-artifact-lineage"><h4>Exact provenance chain</h4><ol>
+    <li><strong>Finding</strong><span>{selectedClaim ? `${CLAIM_LABELS[selectedClaim.claimType]} (${selectedClaim.claimId})` : selected?.kind === "CLAIM" ? selected.claimId : "Choose a persisted claim for claim-level traceability."}</span></li>
+    <li><strong>Evidence</strong><span>{selectedEvidence ? `${selectedEvidence.semanticRole} (${selectedEvidence.evidenceItemId})` : selected?.kind === "EVIDENCE_ITEM" ? selected.evidenceItemId : `${evidence.evidenceItems.length} item(s) in exact bundle`}</span></li>
+    <li><strong>Artifact</strong><span>{artifactId || evidence.sourceArtifactIds.join(", ") || "No supported source Artifact"}</span>{checksum ? <code>{checksum}</code> : null}</li>
+    <li><strong>Tool / version</strong><span>{selectedEvidence ? `${selectedEvidence.sourceToolId}@${selectedEvidence.sourceToolVersion}` : "Available after selecting exact evidence."}</span></li>
+    <li><strong>Plan / Job</strong><span>Plan {interpretation.sourcePlanId} ({workspace.planSchemaVersion || "legacy"}); Job {workspace.sourceJobId}</span></li>
+    <li><strong>Input identity</strong><span>Dataset {workspace.datasetId}@{workspace.datasetVersion || "unknown"}; source scope {compactIdentity(workspace.sourceReferenceHash, 28)}</span></li>
+  </ol><details><summary>Lineage and developer details</summary><dl className="workspace-metadata-grid"><Metadata label="Interpretation" value={interpretation.interpretationId} /><Metadata label="Interpretation hash" value={compactIdentity(interpretation.interpretationHash, 32)} /><Metadata label="Evidence bundle" value={evidence.bundleId} /><Metadata label="Bundle hash" value={compactIdentity(evidence.bundleHash, 32)} /><Metadata label="Plan hash" value={compactIdentity(interpretation.sourcePlanHash, 32)} /><Metadata label="Plan dependency semantics" value={workspace.planSchemaVersion === "0.2" ? "Typed Artifact dependency bindings" : "Independent/sequential 0.1 semantics"} /><Metadata label="Panel provenance refs" value={String(panel.provenanceRefs.length)} /></dl></details></div>;
 }
 
 function WorkspaceDataContext({ snapshot }: { snapshot: WorkspaceSnapshot }) {
@@ -667,21 +753,25 @@ function WorkspaceSourceList({ panel }: { panel: WorkspacePanel }) {
   return <ul className="workspace-source-list">{panel.sourceRefs.map((source) => <li key={`${source.kind}-${source.sourceId}`}><strong>{source.kind}</strong><span>{compactIdentity(source.sourceId, 36)}</span><small>{source.contract ? `${source.contract} ${source.contractVersion || ""}` : "Exact repository reference"}</small></li>)}</ul>;
 }
 
-function WorkspaceSelectionInspector({ selection, originPanelId, deliveries, panels, pinState, readOnly, onClear, onCopy, onPin, onSelectPanel }: { selection: WorkspaceSelectionContext | null; originPanelId: string | null; deliveries: Record<string, WorkspaceSelectionDelivery>; panels: WorkspacePanel[]; pinState: "IDLE" | "SAVING" | "SAVED" | "CONFLICT" | "ERROR"; readOnly: boolean; onClear: () => void; onCopy: () => void; onPin: () => void; onSelectPanel: (panel: WorkspacePanel) => void }) {
+function WorkspaceSelectionInspector({ selection, originPanelId, deliveries, panels, activePanel, pinState, readOnly, onClear, onCopy, onPin, onSelectPanel }: { selection: WorkspaceSelectionContext | null; originPanelId: string | null; deliveries: Record<string, WorkspaceSelectionDelivery>; panels: WorkspacePanel[]; activePanel: WorkspacePanel | null; pinState: "IDLE" | "SAVING" | "SAVED" | "CONFLICT" | "ERROR"; readOnly: boolean; onClear: () => void; onCopy: () => void; onPin: () => void; onSelectPanel: (panel: WorkspacePanel) => void }) {
   const primary = selection?.primary || null;
   const originPanel = panels.find((panel) => panel.panelId === originPanelId);
   const facts = primary ? Object.entries(primary).filter(([key, value]) => !["selectionSchemaVersion", "sourceScopeHash", "projectId", "kind"].includes(key) && value !== null) : [];
   return <section className="workspace-selection-inspector" aria-label="Canonical selection inspector">
-    <h3>Canonical selection</h3>
-    {primary ? <><dl className="workspace-metadata-grid"><Metadata label="Kind" value={primary.kind} /><Metadata label="Origin panel" value={originPanel ? `${originPanel.title} (${originPanel.panelId})` : "URL or explicitly pinned state"} /><Metadata label="Project" value={compactIdentity(primary.projectId, 28)} /><Metadata label="Source scope" value={compactIdentity(primary.sourceScopeHash, 24)} />{facts.map(([key, value]) => <Metadata key={key} label={key} value={String(value)} />)}</dl>
+    <section className="workspace-inspector-layer" aria-labelledby="inspector-summary-heading"><h3 id="inspector-summary-heading">Summary</h3>
+    {primary ? <><p><strong>{primary.kind.replaceAll("_", " ")}</strong> selected from {originPanel?.title || "an exact URL or pinned state"}.</p>
       <div className="workspace-selection-actions"><button type="button" className="secondary" onClick={onClear}>Clear selection</button><button type="button" className="secondary" onClick={onCopy}>Copy selection link</button><button type="button" onClick={onPin} disabled={readOnly || pinState === "SAVING"}>{pinState === "SAVING" ? "Pinning" : "Pin selection"}</button></div>
       <p className="subtle" role="status">Pin state: {pinState}. Pinning is explicit; it never executes a tool, plan, or job.</p>
     </> : <p className="empty-state">No canonical selection is active. Source metadata remains read-only.</p>}
-    <h3>Panel subscriptions</h3>
+    </section>
+    <details className="workspace-inspector-layer"><summary>Scientific details</summary>{primary ? <dl className="workspace-metadata-grid"><Metadata label="Kind" value={primary.kind} /><Metadata label="Origin panel" value={originPanel ? `${originPanel.title} (${originPanel.panelId})` : "URL or explicitly pinned state"} />{facts.map(([key, value]) => <Metadata key={key} label={key} value={String(value)} />)}</dl> : <p>No exact scientific object is selected.</p>}
+    <h4>Compatible panels</h4>
     <ul className="workspace-selection-subscriptions">{panels.map((panel) => {
       const delivery = deliveries[panel.panelId];
       return <li key={panel.panelId}><div><strong>{panel.title}</strong><span>{delivery?.compatibility || "NOT_APPLICABLE"}</span><small>{delivery?.reason || "Awaiting selection runtime."}</small></div>{delivery?.compatibility === "EXACT" ? <button type="button" className="secondary" onClick={() => onSelectPanel(panel)}>Open panel</button> : null}</li>;
-    })}</ul>
+    })}</ul></details>
+    <details className="workspace-inspector-layer"><summary>Provenance</summary>{primary ? <dl className="workspace-metadata-grid"><Metadata label="Project" value={compactIdentity(primary.projectId, 28)} /><Metadata label="Source scope" value={compactIdentity(primary.sourceScopeHash, 24)} /></dl> : null}{activePanel ? <WorkspaceSourceList panel={activePanel} /> : <p>No active panel.</p>}</details>
+    <details className="workspace-inspector-layer"><summary>Developer details</summary><pre>{JSON.stringify({ selection, activePanelId: activePanel?.panelId || null }, null, 2)}</pre></details>
   </section>;
 }
 

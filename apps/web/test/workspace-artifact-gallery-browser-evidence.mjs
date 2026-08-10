@@ -19,6 +19,7 @@ const N3_ONLY = process.argv.includes("--n3-experimental-xrd-only");
 const N4_ONLY = process.argv.includes("--n4-trajectory-analytics-only");
 const N5_ONLY = process.argv.includes("--n5-electronic-only");
 const N6_ONLY = process.argv.includes("--n6-professional-closure-only");
+const PHASE12_4_ONLY = OUTPUT.includes("phase12_4_findings_evidence_inspector_provenance");
 
 async function main() {
   const artifacts = await artifactFixtures();
@@ -179,9 +180,20 @@ async function exerciseExactReferenceNavigation(page, artifact, browserName) {
   await page.getByRole("heading", { name: "Scientific evidence", level: 2 }).waitFor({ timeout: 30000 });
   const evidence = page.getByTestId("workspace-grounded-evidence");
   await evidence.waitFor({ timeout: 30000 });
-  await evidence.getByRole("button", { name: "Select exact evidence" }).click();
+  if (PHASE12_4_ONLY) await page.screenshot({ path: path.join(OUTPUT, "screenshots", `${browserName}_evidence.png`), fullPage: true });
+  await evidence.getByRole("button", { name: "Inspect exact evidence" }).click();
   const selectionStatus = page.getByTestId("workspace-selection-status");
   if (!/EVIDENCE_ITEM/u.test(await selectionStatus.innerText())) throw new Error(`${browserName}: exact evidence selection was not propagated`);
+  if (PHASE12_4_ONLY) {
+    await page.getByRole("button", { name: "Inspector" }).click();
+    const inspector = page.getByRole("dialog", { name: "Context inspector" });
+    await inspector.waitFor();
+    await page.screenshot({ path: path.join(OUTPUT, "screenshots", `${browserName}_inspector.png`), fullPage: true });
+    await inspector.getByRole("button", { name: "Close inspector" }).click();
+    await page.getByRole("button", { name: /Findings/u }).click();
+    await page.getByTestId("workspace-grounded-claims").waitFor({ timeout: 30000 });
+    await page.screenshot({ path: path.join(OUTPUT, "screenshots", `${browserName}_findings.png`), fullPage: true });
+  }
   await page.getByRole("button", { name: /Results/u }).click();
   await page.getByTestId("workspace-artifact-gallery").waitFor();
   await page.locator(".workspace-artifact-card").filter({ hasText: "Dataset Explorer" }).getByRole("button", { name: "Lineage" }).click();
@@ -189,6 +201,7 @@ async function exerciseExactReferenceNavigation(page, artifact, browserName) {
   const lineage = page.getByTestId("workspace-artifact-lineage");
   await lineage.waitFor({ timeout: 30000 });
   if (!new RegExp(artifact.artifactId, "u").test(await lineage.innerText())) throw new Error(`${browserName}: exact Artifact lineage identity is absent`);
+  if (PHASE12_4_ONLY) await page.screenshot({ path: path.join(OUTPUT, "screenshots", `${browserName}_provenance.png`), fullPage: true });
   await page.getByRole("button", { name: /Results/u }).click();
   await page.getByTestId("workspace-artifact-gallery").waitFor();
   return { artifactId: artifact.artifactId, evidenceItemId: "evidence_dataset_count", canonicalSelection: "EVIDENCE_ITEM", lineagePanel: "PROVENANCE", exact: true };
@@ -309,11 +322,21 @@ async function runMobile(browser, artifacts) {
     if (mobileCase !== mobileCases.at(-1)) await page.getByRole("button", { name: "Close viewer" }).click({ force: true });
   }
   const activeCanvases = await page.locator(".workspace-active-artifact canvas").count();
+  if (PHASE12_4_ONLY) {
+    await page.getByRole("button", { name: "Close viewer" }).click({ force: true });
+    await page.getByRole("button", { name: "Open data context" }).click();
+    const contextDrawer = page.getByRole("dialog", { name: "Data context drawer" });
+    await contextDrawer.waitFor();
+    await contextDrawer.getByRole("button", { name: "Scientific evidence" }).click();
+    await page.getByTestId("workspace-grounded-evidence").waitFor({ timeout: 30000 });
+    await page.screenshot({ path: path.join(OUTPUT, "screenshots", "chromium_mobile_evidence.png"), fullPage: true });
+  }
   await page.getByRole("button", { name: "Inspector" }).click();
   const inspector = page.getByRole("dialog", { name: "Context inspector" });
   await inspector.waitFor();
   const focusedClose = await inspector.getByRole("button", { name: "Close inspector" }).evaluate((element) => element === document.activeElement);
   await page.screenshot({ path: path.join(OUTPUT, "screenshots", "chromium_mobile_gallery.png"), fullPage: true });
+  if (PHASE12_4_ONLY) await page.screenshot({ path: path.join(OUTPUT, "screenshots", "chromium_mobile_inspector.png"), fullPage: true });
   await page.keyboard.press("Escape");
   const focusRestored = await page.getByRole("button", { name: "Inspector" }).evaluate((element) => element === document.activeElement);
   const overflow = await page.evaluate(() => ({ body: document.body.scrollWidth - document.body.clientWidth, root: document.documentElement.scrollWidth - document.documentElement.clientWidth }));

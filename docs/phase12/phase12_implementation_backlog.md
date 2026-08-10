@@ -51,3 +51,15 @@ scientific series colors, or frontend recomputation. Close only `UX-002` and
 `UX-003`; all later-phase owners remain open. Acceptance is `P12X3-A01` through
 `P12X3-A08`; evidence must include representative dense, chart, 3D, trajectory,
 electronic, partial and failure states.
+
+## 12-4 Execution Detail
+
+Sources: `ScientificWorkspaceShell.tsx`, existing interpretation/evidence APIs,
+Workspace Selection 1.0, the Phase 12-3 handoff and sealed claim/evidence
+contracts. Allowed: persisted Finding hierarchy, exact evidence membership,
+Evidence-to-Artifact source presentation, three-layer Inspector, provenance
+chain presentation, warnings/limitations and responsive trust-path styling.
+Forbidden: claim/evidence generation, confidence inference, scientific ranking,
+fuzzy identity, lineage mutation, new LLM calls, Report/Recipe redesign or
+backend/schema changes. Close only `UX-004`; later owners remain open.
+Acceptance is `P12X4-A01` through `P12X4-A08`.

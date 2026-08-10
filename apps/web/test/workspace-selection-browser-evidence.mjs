@@ -70,7 +70,7 @@ async function runDesktop(browser, browserName) {
   if (!new URL(page.url()).searchParams.get("selection")) throw new Error(`${browserName}: exact Artifact selection did not update URL`);
   await page.getByRole("button", { name: "Inspector" }).click();
   const inspector = page.getByRole("dialog", { name: "Context inspector" });
-  await inspector.getByRole("heading", { name: "Canonical selection" }).waitFor();
+  await inspector.getByRole("heading", { name: "Summary" }).waitFor();
   if (!(await inspector.innerText()).includes("ARTIFACT")) throw new Error(`${browserName}: Inspector did not render exact Artifact identity`);
   await inspector.getByRole("button", { name: "Pin selection" }).click();
   await page.getByText("Pin state: SAVED.").waitFor();

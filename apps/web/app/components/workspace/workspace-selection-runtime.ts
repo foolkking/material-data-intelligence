@@ -318,6 +318,46 @@ export function evidenceItemSelection(
   });
 }
 
+export function evidenceSourceArtifactSelection(
+  workspace: ScientificWorkspace,
+  interpretation: GroundedScientificInterpretation,
+  evidence: InterpretationEvidenceResponse,
+  item: ScientificEvidenceItem,
+): WorkspaceSelectionContext {
+  const persistedItem = evidence.evidenceItems.find((candidate) => candidate.evidenceItemId === item.evidenceItemId);
+  if (
+    interpretation.sourceJobId !== workspace.sourceJobId
+    || interpretation.sourceBundleId !== evidence.bundleId
+    || interpretation.sourceBundleHash !== evidence.bundleHash
+    || evidence.interpretationId !== interpretation.interpretationId
+    || !persistedItem
+    || persistedItem.sourceArtifactId !== item.sourceArtifactId
+    || persistedItem.sourceArtifactChecksum !== item.sourceArtifactChecksum
+    || persistedItem.artifactContract !== item.artifactContract
+    || persistedItem.artifactContractVersion !== item.artifactContractVersion
+    || !evidence.sourceArtifactIds.includes(item.sourceArtifactId)
+  ) throw new Error("SELECTION_EVIDENCE_SOURCE_SCOPE_MISMATCH");
+  return validateWorkspaceSelectionContext({
+    schemaVersion: "1.0",
+    sourceScopeHash: workspace.sourceReferenceHash,
+    primary: {
+      selectionSchemaVersion: "1.0",
+      kind: "ARTIFACT",
+      sourceScopeHash: workspace.sourceReferenceHash,
+      projectId: workspace.projectId,
+      jobId: workspace.sourceJobId,
+      artifactId: item.sourceArtifactId,
+      artifactChecksum: item.sourceArtifactChecksum,
+      artifactContract: item.artifactContract,
+      artifactVersion: item.artifactContractVersion,
+    },
+    secondary: [],
+    propagation: "EXACT_COMPATIBLE_ONLY",
+    compatibility: "EXACT",
+    cleared: false,
+  });
+}
+
 export function claimSelection(
   workspace: ScientificWorkspace,
   interpretation: GroundedScientificInterpretation,

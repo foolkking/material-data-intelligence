@@ -1,5 +1,12 @@
 # OPEN_QUESTIONS
 
+## Phase 12-4
+
+No implementation-critical question remains. Phase 12-5 owns Report/Recipe UX;
+Phase 12-6 owns full responsive/accessibility closure. Numeric scientific
+validation and Phase 11 limitations remain unchanged and cannot be upgraded by
+the trust-path presentation.
+
 ## 2026-08-09 Phase 11 Validation Questions
 
 No Phase 11-0 implementation-critical question remains. The exact non-blocking

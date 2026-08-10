@@ -1,0 +1,9 @@
+{
+  "colorOnly": false,
+  "membershipExact": true,
+  "roles": [
+    "SUPPORTING",
+    "LIMITING",
+    "CONTRADICTING"
+  ]
+}

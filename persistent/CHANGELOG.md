@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-08-10 Phase 12-4 Implementation
+
+- Reworked persisted Findings into claim-type and qualification-aware cards.
+- Added exact supporting, limiting and contradicting Evidence membership views.
+- Added exact Evidence-to-Artifact selection and visible provenance chain.
+- Reorganized the Workspace Inspector into Summary, Scientific details,
+  Provenance and subordinate Developer details.
+- Added deterministic Phase 12-4 evidence and governance tests.
+- No backend, API, schema, migration, dependency, scientific or LLM change.
+
 ## 2026-08-09 - Phase 11-0 Validation Governance Audit
 
 - Reconciled the verified Phase 10N archive into an audit-only Phase 11 baseline.

@@ -1,5 +1,12 @@
 # TOOL_REGISTRY_NOTES
 
+## 2026-08-10 Phase 12-4 Registry Freeze
+
+Phase 12-4 changes no Tool, Adapter, planner metadata, Artifact port or Registry
+semantic. Registry remains 62. Tool/version values shown in Evidence and
+Provenance are exact persisted references and do not affect eligibility or
+Runtime dispatch.
+
 ## 2026-08-09 Phase 11-0 Registry Validation Inventory
 
 The live Registry remains exactly 62 Tools at DataProfile 2.4. Phase 11-0 adds no

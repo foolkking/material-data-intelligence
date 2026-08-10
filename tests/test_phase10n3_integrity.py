@@ -68,6 +68,21 @@ def test_n3_task_and_n4_gate_are_exact() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     if not tasks.strip():
         return
+    if "Phase 12-5 Reviewer Prompt" in tasks and "Phase 12-4 Reviewer Prompt" not in tasks:
+        assert tasks.count("---TASK---") == 2
+        assert tasks.count("---TASK---") == tasks.count("---END---")
+        first, second = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
+        assert "Phase 12-5 Reviewer Prompt" in first and re.search(r"状态：(待处理|处理中|已完成)", first)
+        assert "Phase 12-6 Reviewer Prompt" in second and "状态：待处理" in second
+        return
+    if "Phase 12-4 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 3
+        assert tasks.count("---TASK---") == tasks.count("---END---")
+        first, second, third = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
+        assert "Phase 12-4 Reviewer Prompt" in first and ("状态：处理中" in first or "状态：已完成" in first)
+        assert "Phase 12-5 Reviewer Prompt" in second and "状态：待处理" in second
+        assert "Phase 12-6 Reviewer Prompt" in third and "状态：待处理" in third
+        return
     if "Phase 12-3 Reviewer Prompt" in tasks and "Phase 12-2 Reviewer Prompt" not in tasks:
         assert tasks.count("---TASK---") == 1 and ("状态：处理中" in tasks or "状态：已完成" in tasks)
         return
