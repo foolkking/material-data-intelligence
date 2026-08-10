@@ -5,6 +5,7 @@
 - Added typed source eligibility explanations and explicit immutable finalization confirmation.
 - Added human-readable Recipe steps and disclosures before the exact inert declaration.
 - Added deterministic Phase 12-5 evidence and tests; no backend, contract, science, API, migration, dependency, or lockfile change.
+- Retained failed candidate `f263d70` / CI `31382890102`; fixed forward the omitted CI step working directory without changing implementation semantics.
 
 ## 2026-08-10 Phase 12-4 Implementation
 
