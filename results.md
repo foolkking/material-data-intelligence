@@ -8389,3 +8389,550 @@ Phase 11-5 is `PASS / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT` at
 `COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS`. Phase 12 is
 `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; Phase 13 is
 `ROADMAP_APPROVED / NOT_QUEUED / NOT_EXECUTABLE`; Phase 14 is not created.
+
+# Phase 12-0 Current UX Reality Audit + Product Experience Seal Result
+
+## 1. Conclusion
+
+Phase 12-0 is `PASS / PRODUCT_EXPERIENCE_AUDITED / EXPERIENCE_SEAL_PROPOSED`.
+The current product was inventoried and audited across routes, user-visible
+surfaces, components, journeys, scientific viewers, states, terminology,
+responsive behavior, accessibility, and evidence boundaries. This result does
+not mean the UI was redesigned or that the product is release-ready.
+
+## 2. Phase 11 Baseline
+
+Phase 11 is `COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS` and remains the
+read-only scientific authority. Its sealed baseline is `5273b5e...`; the Phase
+11-5 implementation `953866ef524a7f60532d5d6326e2049b4e7d2bc0` passed CI
+`31351418205`. Registry 62, DataProfile 2.4, AnalysisPlan 0.1/0.2, and migration
+`0007_phase10m1_workspace_domain` were preserved.
+
+## 3. Entry Gate
+
+Entry was verified at `8903e045cbad86ba0333ca4d009997e5132f73bc`, with matching
+`origin/master`, branch `master`, clean worktree, empty queue, no Phase 12-1 or
+Phase 13 task, and no production change authority. The Phase 11 authority handoff,
+coverage/limitations records, and browser/service evidence roots resolved.
+
+## 4. Repository State
+
+The implementation commit is `0ea893bb85d6abd90ab89bc81e1606b378ea1e7f`.
+The audit-only change set contains documentation, deterministic evidence tooling,
+tests, persistent state, and queue metadata. Production React, CSS, backend
+behavior, APIs, schemas, scientific contracts, Registry, Profile, dependencies
+and lockfile are unchanged.
+
+## 5. Production Behavior Changes
+
+None. `PHASE12_0_PRODUCTION_UI_CHANGES = 0`,
+`PHASE12_0_PRODUCTION_BEHAVIOR_CHANGES = 0`, and
+`PHASE12_0_SCIENTIFIC_BEHAVIOR_CHANGES = 0`.
+
+## 6. Scientific Authority Handoff
+
+Phase 11 coverage, public claims, limitations, validation levels and reference
+status are indexed read-only. UI labels, screenshots, service evidence and UX
+matrices cannot upgrade `MAPPING_ONLY`, `NOT_APPLICABLE`, or reference-limited
+records.
+
+## 7. Phase 11 Coverage/Limit Reconciliation
+
+The snapshot records 12 golden records, 8 invariant passes, 4 explicit N/A cases,
+0 scientific failures, Linux and Windows invariant replay PASS, numeric
+cross-platform validation NOT_APPLICABLE, and V4 promotions 0.
+
+## 8. Current Route Inventory
+
+The live source audit records `/`, `/workspaces/{workspaceId}`, loading and error
+boundaries, and route-derived navigation surfaces in
+`docs/phase12/evidence/phase12_0_current_ux_reality/route_inventory.json`.
+
+## 9. UI Surface Registry
+
+The surface registry contains 27 specialized surfaces plus route boundaries,
+including Planner, upload/setup, Profile, execution, Workspace, findings,
+evidence, Inspector, provenance, Report, Recipe, settings, and explicit loading,
+empty, unsupported, stale and error states. `UI_SURFACE_UNCLASSIFIED = 0`.
+
+## 10. Component Inventory
+
+Frontend source scanning classified navigation, shell, controls, tabs, panels,
+tables, charts, 3D, timeline, dialogs, drawers, status, Inspector, Evidence,
+Report, Recipe, Settings and developer/audit components. `UI_COMPONENT_UNCLASSIFIED = 0`.
+
+## 11. Current Design-System Audit
+
+The audit records the live stylesheet and component vocabulary, including CSS
+variables, hard-coded values, typography, spacing, borders, surfaces, focus,
+motion, breakpoints and density. It is a reality baseline for 12-1, not a token
+rewrite.
+
+## 12. Token/Visual Vocabulary Audit
+
+Token counts and duplicate visual patterns are captured in
+`design_token_inventory.json` and `component_consistency_matrix.json`. The
+result identifies uncontrolled vocabulary and duplicated viewer chrome without
+changing CSS.
+
+## 13. Information Hierarchy Audit
+
+The current hierarchy is artifact- and implementation-aware. The sealed target
+is result-first presentation with progressive disclosure: meaning and limitations
+first, then scientific details, then provenance/developer detail.
+
+## 14. Global Navigation Audit
+
+The audit covers current navigation entry/exit and records the candidate IA
+`Home / Data / Analyses / Workspaces / Reports / Settings` as ACCEPTED for 12-1
+implementation review, preserving the existing URL and server authority.
+
+## 15. Planner/Agent UX Audit
+
+Planner context, prompt, intent, clarification, eligibility, plan and execution
+surfaces are indexed. The primary friction is internal planning concepts exposed
+too early; the target is a human-readable plan before developer details.
+
+## 16. Data/Profile UX
+
+Data selection and Profile readiness are audited as context for analysis. Profile
+facts remain backend authority and are not recomputed or inferred by the UI.
+
+## 17. Prompt Composer UX
+
+Selection context, examples, input affordance, disabled/loading/error states and
+mobile input behavior are covered by the Planner audit and journey evidence.
+
+## 18. Clarification UX
+
+Clarification is audited for human-readable rationale, valid choices, context
+preservation, keyboard behavior, and leakage of raw schema/internal IDs.
+
+## 19. Eligibility UX
+
+Capability availability is audited as an Eligibility-derived state. Unsupported
+and mismatched capabilities remain explicit; the UI cannot select a Tool from
+keywords alone.
+
+## 20. Plan UX
+
+Plan presentation is classified into human approach first and developer detail
+second. Exact Tool, Artifact, dependency and contract information remains available
+through the audit/provenance layer.
+
+## 21. Execution/Timeline UX
+
+The audit maps existing runtime states to understandable progress language without
+inventing backend states: preparing, planning, validating, queued, running,
+producing results, interpreting, workspace construction, complete, partial and
+failed.
+
+## 22. Planner-to-Workspace Transition
+
+The transition preserves one Workspace per Job and exact URL/server authority;
+Phase 12-2 owns presentation improvements only.
+
+## 23. Workspace Shell UX
+
+Header, context rail, active panel, gallery, viewer, Inspector, findings, evidence,
+report, history, save and recovery are in `workspace_audit.json`.
+
+## 24. Workspace Navigation UX
+
+The target Workspace IA is ACCEPTED for reviewer-gated implementation:
+`Overview / Data / Analysis / Results / Findings / Evidence / Report`, with
+`Provenance / Developer Details` subordinate. One active panel remains the rule.
+
+## 25. Artifact Gallery UX
+
+Gallery and artifact-centric navigation are audited as provenance surfaces. The
+target is to present scientific result summaries first while retaining exact
+Artifact identity and checksum details.
+
+## 26. Scientific Result UX
+
+`RESULT_FIRST_UI = YES`. Result cards expose type, summary, status, warnings and
+next action; Artifact and ToolCall are deeper audit details, never removed.
+
+## 27. Viewer Inventory
+
+The viewer matrix covers Dataset Explorer, ML, Composition Space, Structure,
+Coordination, Local Environment, XRD, Trajectory, RDF/MSD/Diffusion, Phonon/BZ,
+Volumetric, Electronic Band and DOS surfaces.
+
+## 28. Chart Viewer UX
+
+Chart controls, legend, selection, tooltip, table alternative, export and loading
+states are inventoried. 12-3 owns unified chart chrome; plots remain presentation
+only.
+
+## 29. 3D Viewer UX
+
+Camera, cell, axes, labels, selection, fullscreen, snapshot and animation controls
+are inventoried. `WEBGL_PRESENTATION_ONLY = YES`; numeric values remain Artifact
+authority.
+
+## 30. Dataset Explorer UX
+
+Dataset context, loading, empty, ready and navigation states are included in the
+surface and journey registries.
+
+## 31. Materials ML UX
+
+Materials ML is included in the viewer and scientific-result audit; metric/table
+authority remains persisted output and the UI performs no PCA/KMeans recomputation.
+
+## 32. Composition Space UX
+
+Composition-space visualization and table alternatives are inventoried as data
+intelligence/presentation surfaces with exact source context retained.
+
+## 33. Structure UX
+
+Structure summary and 3D presentation are included, with site identity and
+geometry remaining backend/Artifact authority.
+
+## 34. Coordination UX
+
+CrystalNN and VoronoiNN are represented as separate result authorities; the audit
+does not merge or rank their scientific results.
+
+## 35. Local Environment/Polyhedra UX
+
+Local environment, polyhedron, periodic-site and selection presentation are
+covered; N1 dependency and exact identity remain unchanged.
+
+## 36. Experimental XRD UX
+
+Peak matching, residuals, matched/unmatched states, warnings and limitations are
+audited. Peak correspondence is not presented as phase confirmation.
+
+## 37. Trajectory UX
+
+Trajectory context, frame/atom/time/cell semantics, heavy payload loading and
+selection are included in the viewer matrix.
+
+## 38. RDF/MSD/Diffusion UX
+
+RDF, MSD and diffusion panels are audited for diagnostics, fit-window disclosure,
+ballistic rejection and missing-time limits. The UI never recomputes or silently
+fits scientific data.
+
+## 39. Phonon/BZ UX
+
+Phonon band/DOS combined and Brillouin Zone surfaces are inventoried with chart
+and 3D presentation boundaries.
+
+## 40. Volumetric UX
+
+Volumetric fields, slices, isosurfaces and volume-rendering surfaces are included;
+rendered views are not scientific numeric authority.
+
+## 41. Band Structure/DOS UX
+
+Band/DOS surfaces preserve supplied-data wording, gap/fermi/spin/projection
+limitations, numeric alternatives and compatibility boundaries.
+
+## 42. Findings UX
+
+Finding visibility, claim hierarchy, confidence semantics, warnings, limitations
+and result/evidence relationships are audited.
+
+## 43. Evidence UX
+
+The target trust path is `Finding -> Evidence -> Artifact -> Tool/version -> input
+identity -> provenance`; screenshots and browser results remain UX evidence only.
+
+## 44. Inspector UX
+
+The sealed target is a three-layer Inspector: Summary, Scientific Details,
+Provenance. Developer details remain accessible but subordinate.
+
+## 45. Provenance UX
+
+Source identity, hashes, Tool/version, parameters, units, coverage, limitations
+and lineage remain discoverable through provenance surfaces.
+
+## 46. Warning/Limitation UX
+
+Warnings and scientific limitations must be visible near results and understandable,
+not hidden in raw JSON. Phase 11 public claim/limitation records are the authority.
+
+## 47. Report UX
+
+Report source discovery, composition, ordering, captions, warnings, preview,
+finalization, history and export are inventoried; reports compose persisted facts.
+
+## 48. Recipe UX
+
+Recipe is targeted to a human-readable reproducibility explanation with exact raw
+declaration available. `RECIPE_EXECUTION_AUTHORITY = NONE` remains permanent.
+
+## 49. Save/Reload/Recovery UX
+
+Workspace history, save/reload, stale state, revision conflict, recovery and
+selection restoration are represented in the error/recovery and journey matrices.
+
+## 50. Error UX
+
+Validation, unsupported, mismatch, provider, plan, runtime, dependency, Artifact,
+Workspace, revision, Report and cross-project errors are covered with context-
+preserving recovery ownership.
+
+## 51. Empty-State UX
+
+No-data, no-analysis, no-Workspace, no-result, no-finding, no-evidence, no-report,
+unsupported, not-run and no-match states are classified for explanation and action.
+
+## 52. Loading UX
+
+Initial, Profile, planning, execution, Artifact, heavy viewer, interpretation and
+Report loading states are catalogued, including cancellation and progress needs.
+
+## 53. Status Vocabulary
+
+Current status strings are indexed for duplicate meanings, technical leakage,
+capitalization drift and bilingual consistency.
+
+## 54. Terminology/i18n
+
+The audit distinguishes fully localized, partial, English-only, developer-only,
+inconsistent and not-applicable vocabulary. No new i18n infrastructure was added.
+
+## 55. Provider/Settings UX
+
+Current provider and secret-handling policy was audited from repository authority;
+no frontend secret leakage or provider policy change is proposed.
+
+## 56. Accessibility
+
+Keyboard, focus, semantics, status announcements, table/chart/3D alternatives,
+reduced motion, contrast, zoom and touch targets are covered. The target is
+WCAG-like AA as an engineering goal, not certification.
+
+## 57. Responsive/Desktop
+
+Desktop and mobile evidence infrastructure is indexed for 1440x900, 1280x720 and
+390x844 where available. Mobile shares authority with desktop while changing layout.
+
+## 58. Mobile 390x844
+
+The canonical mobile audit preserves one active panel, context/navigation drawer,
+panel switcher and Inspector bottom-sheet patterns; it does not redesign production.
+
+## 59. 200% Zoom
+
+Planner, Workspace, Results, Findings and Report reflow/overflow checks are part of
+the accessibility backlog and evidence contract.
+
+## 60. Reduced Motion
+
+Reduced-motion behavior is inventoried as a Phase 12-6 requirement; no runtime
+animation behavior was changed by 12-0.
+
+## 61. Browser Matrix
+
+The implementation CI replayed Chromium, Firefox, WebKit and 390x844 coverage.
+Browser PASS is presentation/interaction evidence and not numeric science evidence.
+
+## 62. Canonical User Journeys
+
+Eleven journeys cover new data, natural-language analysis, professional analysis,
+result understanding, Report, historical recovery, unsupported input, partial
+execution, provider setup, mobile inspection and developer provenance.
+
+## 63. Interaction Baseline
+
+Route/panel transitions, click/keyboard proxies, scroll and internal-identifier
+visibility are recorded as automated interaction proxies, not human usability study
+claims.
+
+## 64. UX Problem Matrix
+
+Ten problems are captured with evidence, consequence, viewport/input scope,
+acceptance method and owner. `UX_PROBLEM_UNASSIGNED = 0`.
+
+## 65. P0/P1/P2/P3 Distribution
+
+Distribution is P0=0, P1=6, P2=4, P3=0. P1/P2 findings are backlog work, not
+12-0 blockers; no P0 scientific misrepresentation was found by this audit.
+
+## 66. Product Experience Principles
+
+Sealed principles are meaning before mechanism, result before Artifact, progressive
+disclosure, first-class limitations, one primary action, non-color state, exact
+identity availability, shared authority across viewports, lazy heavy viewers,
+context-preserving errors, subordinate developer detail and no UX-created science.
+
+## 67. Information Architecture Decision
+
+Global IA candidate `Home / Data / Analyses / Workspaces / Reports / Settings` and
+Workspace IA `Overview / Data / Analysis / Results / Findings / Evidence / Report`
+with `Provenance / Developer Details` were accepted as reviewer-gated targets.
+
+## 68. Experience Decision Registry
+
+P12-D001 through P12-D020 are recorded, including visual direction, disclosure,
+result-first hierarchy, limitations, IA, viewer chrome, Inspector, Recipe,
+terminology, accessibility, evidence methodology and phase ordering.
+
+## 69. Phase 12-1 Handoff
+
+12-1 receives the live token/component inventory, consistency gaps, accessibility
+gaps, semantic status requirements, scientific hierarchy rules, density rules and
+responsive constraints.
+
+## 70. Phase 12-1--12-7 Backlog
+
+The implementation backlog assigns goals, source areas, allowed/forbidden changes,
+acceptance IDs, browser/mobile/accessibility/scientific-authority/evidence gates
+and exit criteria to 12-1 through 12-7.
+
+## 71. Acceptance Plan
+
+P12X0-A01 through P12X0-A12 are implemented with no missing, extra, duplicate,
+conflicting or shorthand entries. Each future subphase has eight unique acceptance
+IDs, 56 total, consistently repeated in backlog, plan, lock and manifest.
+
+## 72. Execution Lock
+
+Phase 12 may redesign presentation, interaction, hierarchy and product experience
+only after reviewer approval. Registry, Profile, Intent, Eligibility, Plan,
+Validator, Runtime, Artifact, Workspace identity, Selection, Report/Recipe and
+Phase 11 scientific authority are locked.
+
+## 73. Evidence Inventory
+
+The evidence root contains deterministic route, surface, component, token,
+hierarchy, journey, viewer, state, browser, accessibility, security, Phase 11
+authority snapshot, decision registry, acceptance and manifest records.
+
+## 74. Security
+
+No arbitrary execution, external Artifact execution, frontend scientific
+recomputation, scientific authority change, real LLM, external scientific API or
+secret disclosure was added. Secret scan passed.
+
+## 75. LLM / DeepSeek
+
+`PHASE12_0_REQUIRES_LLM = NO`, `PHASE12_0_NEW_LLM_CALL_SITES = 0`, and
+`PHASE12_0_REAL_LLM_CALLS = 0`. Existing provider policy is read-only.
+
+## 76. Database/API/Dependency Freeze
+
+New tables, columns, migrations, public API families, Python/frontend dependencies,
+lockfile changes, Registry changes and DataProfile changes are all zero.
+
+## 77. Tests
+
+Local backend `1290 passed, 50 skipped`; frontend `449 passed`; typecheck, build,
+lock check, focused audit tests, queue lifecycle tests, evidence generator,
+manifest and diff checks passed. Existing build warnings are non-fatal Plotly/glslify
+dynamic-require warnings.
+
+## 78. Service-Backed Regression
+
+The implementation CI service job passed PostgreSQL, Redis and MinIO integration,
+including zero-skipped assertion. No service behavior was added.
+
+## 79. Browser Regression
+
+The implementation CI browser job passed the retained Chromium, Firefox, WebKit,
+390x844 and professional Phase 10 replay matrix with no audit-induced production
+change.
+
+## 80. npm Audit
+
+`npm audit = UNAVAILABLE`: the configured mirror returns `404_NOT_IMPLEMENTED`.
+Lock consistency, dependency installation, frontend tests, typecheck and build pass.
+
+## 81. Files Changed
+
+See commit `0ea893bb85d6abd90ab89bc81e1606b378ea1e7f` and the Phase 12 evidence
+manifest. Changes are limited to audit tooling/tests, docs, persistent state and
+queue lifecycle records.
+
+## 82. Acceptance Registry
+
+P12X0-A01..A12: expected 12, implemented 12, missing 0, extra 0, duplicate 0,
+conflicting 0, shorthand 0.
+
+## 83. Implementation Commit
+
+`0ea893bb85d6abd90ab89bc81e1606b378ea1e7f`.
+
+## 84. Implementation CI
+
+Exact-SHA CI `31354589883` completed successfully. This is the only CI result
+waited for in this phase.
+
+## 85. Failed Candidates
+
+No failed Phase 12-0 implementation candidate exists.
+
+## 86. Completion Record
+
+This result is the completion record. It is committed directly after implementation
+CI success under the authorized lifecycle policy.
+
+## 87. Queue Archive
+
+After this completion commit, only the completed Phase 12-0 task is removed from
+`TASKS.md`; no Phase 12-1 or Phase 13 task is created. The lifecycle wording is
+`IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI`, `COMPLETION_RECORDED`, `QUEUE_ARCHIVED`.
+
+## 88. Queue State
+
+Final state: Phase 12-0 `PASS / PRODUCT_EXPERIENCE_AUDITED /
+EXPERIENCE_SEAL_PROPOSED / QUEUE_ARCHIVED`; Phase 12 is
+`IN_PROGRESS / UX_REALITY_AUDITED / AWAITING_DESIGN_SYSTEM_IMPLEMENTATION_APPROVAL`;
+Phase 12-1 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; Phase 13 is approved,
+not queued and not executable; TASK_BLOCK_COUNT=0.
+
+## 89. Phase 12-1 Reviewer Gate
+
+Phase 12-1 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT` and
+`PHASE_12_1_EXECUTABLE_TASK_CREATED = NO`.
+
+## 90. Final Repository State
+
+Registry=62, DataProfile=2.4, migration=`0007_phase10m1_workspace_domain`,
+`PHASE14_CREATED = NO`, `PHASE12_0_FRONTEND_SCIENTIFIC_RECOMPUTATION = 0`,
+`UI_SURFACE_UNCLASSIFIED = 0`, `UI_COMPONENT_UNCLASSIFIED = 0`,
+`CANONICAL_JOURNEYS_UNAUDITED = 0`, `PHASE12_IMPLEMENTATION_CRITICAL_TBD = 0`.
+Phase 11 authority mutations are 0. The repository remains subject to the
+reviewer gate before any 12-1 production implementation.
+
+## Mandatory Markers
+
+```text
+PHASE12_0_PRODUCTION_UI_CHANGES = 0
+PHASE12_0_PRODUCTION_BEHAVIOR_CHANGES = 0
+PHASE12_0_SCIENTIFIC_BEHAVIOR_CHANGES = 0
+PHASE12_0_NEW_SCIENTIFIC_TOOLS = 0
+PHASE12_0_NEW_SCIENTIFIC_ALGORITHMS = 0
+PHASE12_0_NEW_ARTIFACT_FAMILIES = 0
+PHASE12_0_NEW_DATAPROFILE_VERSION = 0
+PHASE12_0_NEW_ANALYSISPLAN_VERSION = 0
+PHASE12_0_NEW_DATABASE_MIGRATIONS = 0
+PHASE12_0_NEW_PUBLIC_API_FAMILIES = 0
+PHASE12_0_NEW_DEPENDENCIES = 0
+PHASE12_0_NEW_LLM_CALL_SITES = 0
+PHASE12_0_REAL_LLM_CALLS = 0
+PHASE12_0_EXTERNAL_SCIENTIFIC_API_CALLS = 0
+PHASE12_0_FRONTEND_SCIENTIFIC_RECOMPUTATION = 0
+PHASE11_SCIENTIFIC_BASELINE_MUTATIONS = 0
+PHASE11_TOOL_COVERAGE_MUTATIONS = 0
+PHASE11_INPUT_SUPPORT_MUTATIONS = 0
+PHASE11_VALIDATION_LEVEL_MUTATIONS = 0
+PHASE11_LIMITATION_MUTATIONS = 0
+PHASE11_PUBLIC_CLAIM_MUTATIONS = 0
+UI_SURFACE_UNCLASSIFIED = 0
+UI_COMPONENT_UNCLASSIFIED = 0
+UX_PROBLEM_UNASSIGNED = 0
+CANONICAL_JOURNEYS_UNAUDITED = 0
+PHASE12_IMPLEMENTATION_CRITICAL_TBD = 0
+PHASE12_1_EXECUTABLE_TASK_CREATED = NO
+PHASE13_EXECUTABLE_TASK_CREATED = NO
+PHASE14_CREATED = NO
+```

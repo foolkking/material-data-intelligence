@@ -2511,3 +2511,8 @@
 - Started a documentation/evidence-only UX audit of current Planner, Workspace,
   scientific viewer, state, mobile and accessibility surfaces.
 - No production UI, scientific behavior, schema, dependency or API change is admitted.
+- Completed the route/surface/component/journey/viewer/state audit and sealed the
+  reviewer-gated Phase 12 experience principles, decisions, backlog, acceptance
+  plan and execution lock.
+- Implementation `0ea893bb85d6abd90ab89bc81e1606b378ea1e7f` passed exact-SHA
+  CI `31354589883`; production UI and Phase 11 scientific authority remain unchanged.

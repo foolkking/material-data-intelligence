@@ -1207,3 +1207,6 @@ is the only remaining work.
 
 - The audit must distinguish current UX debt from scientific contract defects;
   Phase 12 may not resolve a scientific semantics issue through presentation.
+- Phase 12-0 found no scientific contract defect requiring presentation-layer
+  resolution. The proposed experience decisions require reviewer approval before
+  Phase 12-1 implementation; no executable Phase 12-1 task exists.

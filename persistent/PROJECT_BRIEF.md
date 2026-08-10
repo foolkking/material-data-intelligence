@@ -459,3 +459,7 @@ Phase 14 is created.
 Phase 12-0 is the sole active audit/planning task. It inventories the existing
 product experience and seals reviewer-gated UX implementation direction without
 changing production presentation, scientific behavior or authority.
+
+Phase 12-0 completed its current-reality audit after implementation exact-SHA CI
+`31354589883`. The experience seal is proposed for reviewer approval; Phase 12-1
+remains reviewer-gated, and Phase 13 remains approved but not queued.

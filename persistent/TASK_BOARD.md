@@ -2450,6 +2450,8 @@ current board above.
 
 ## Phase 12-0
 
-- [ ] Inventory and audit current routes, surfaces, component vocabulary, journeys and scientific UX.
-- [ ] Seal experience principles, IA decisions, Phase 12 backlog and execution lock.
-- [ ] Preserve Registry 62, DataProfile 2.4 and all Phase 11 scientific authority.
+- [x] Inventory and audit current routes, surfaces, component vocabulary, journeys and scientific UX.
+- [x] Seal experience principles, IA decisions, Phase 12 backlog and execution lock.
+- [x] Preserve Registry 62, DataProfile 2.4 and all Phase 11 scientific authority.
+- [x] Verify implementation `0ea893bb85d6abd90ab89bc81e1606b378ea1e7f`
+  with exact-SHA CI `31354589883`; keep Phase 12-1 reviewer-gated.

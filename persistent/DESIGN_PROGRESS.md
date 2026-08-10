@@ -2145,3 +2145,8 @@ cross-platform claims remain explicitly disclosed.
 Phase 12-0 current UX reality audit is active. It classifies routes, surfaces,
 components, viewer/state journeys, accessibility and UX debt only; no production
 UI or scientific behavior is changed.
+
+Phase 12-0 audit implementation is verified by exact-SHA CI `31354589883`.
+All inventoried surfaces, components, canonical journeys and UX problems are
+classified; the result proposes a reviewer-gated experience seal and preserves
+all Phase 11 scientific authority.

@@ -4526,3 +4526,9 @@ completion wording.
 Phase 12 may change presentation and interaction only after reviewer approval
 of each subphase. It cannot change scientific authority, exact identities,
 selection, Runtime, Artifact semantics or Phase 11 coverage conclusions.
+
+Phase 12-0 seals the proposed product direction as `Scientific Instrument +
+Modern Data Workspace`, with meaning-before-mechanism, result-first hierarchy,
+progressive disclosure, visible limitations, unified viewer chrome, a three-layer
+Inspector, and separate support/validation/reproducibility/presentation axes.
+These are reviewer-gated UX decisions, not production scientific authority.

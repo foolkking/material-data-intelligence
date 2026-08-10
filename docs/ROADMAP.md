@@ -143,7 +143,8 @@ The former `Phase 12 - Final Product Closure` numbering is
 No Phase 14 is created.
 
 Phase 11 is `COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS`. Phase 12-0
-is the sole active audit/planning task; Phase 12-1 remains reviewer-gated. The
+is `COMPLETE / PRODUCT_EXPERIENCE_AUDITED / REVIEWER_APPROVAL_REQUIRED`;
+Phase 12-1 remains reviewer-gated and has no executable task. The
 former Phase 12 final-closure numbering is superseded by the approved Phase 12
 UI/UX and Phase 13 final-closure split.
 

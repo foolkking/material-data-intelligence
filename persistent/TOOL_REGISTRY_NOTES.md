@@ -1551,3 +1551,7 @@ it is not a new Registry source or scientific runtime authority.
 
 Phase 12-0 audits how Registry-derived capabilities are presented only. It does
 not add Tool metadata, change Tool availability or treat UI labels as authority.
+
+The completed Phase 12-0 audit preserved the exact 62-Tool Registry. Its surface,
+viewer and experience matrices are documentation/evidence artifacts and do not
+participate in Tool validation, planning, Runtime dispatch or Artifact production.
