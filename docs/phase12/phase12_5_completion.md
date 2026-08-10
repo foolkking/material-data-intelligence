@@ -9,4 +9,8 @@ second candidate `11eb1b3b3c43fbd95ca2e9ce49068275587c32a5` / CI
 generation, then failed only because the frontend Node job redundantly invoked
 pytest, which is installed and already passed in the Unit job. The duplicate
 invocation was removed; browser and Unit coverage remain unchanged. The
+third candidate `e535ecf2d38080e3922f94e1d75d477da62ad009` / CI
+`31385082975` passed the new Phase 12-5 replay, then exposed a retained M6
+recovery script that had not yet modeled the new explicit confirmation. The
+script now confirms finalization and retains all recovery assertions. The
 authoritative implementation SHA and CI are recorded only after verification.
