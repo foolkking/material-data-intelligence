@@ -1,8 +1,11 @@
 # Phase 12-6 Completion
 
-Implementation is complete locally and awaiting the single required exact-SHA
-implementation CI. Completion and queue archive records will be committed and
-pushed directly after that CI succeeds, without waiting for separate CI runs.
+Corrected implementation `e2beacb0d1e60e5bfccbcd07271f47f5736a221d`
+passed the single required exact-SHA CI `31393608850`, including Unit,
+PostgreSQL/Redis/MinIO, Windows/Linux replay, typecheck, build, retained browser
+replays, and the Phase 12-6 Chromium/Firefox/WebKit/390x844 audit. Completion
+and queue archive records are committed and pushed directly afterward without
+waiting for separate CI runs.
 
 Failed implementation candidate `17450c3f3704a55e4302eab9f72e66821076fa1b`
 is retained with CI `31391903172`. Unit, service-backed, typecheck, build and all

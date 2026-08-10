@@ -2203,3 +2203,7 @@ passed exact-SHA CI `31386432220`; completion and queue archive were recorded
 directly. Phase 12-6 now closes responsive, mobile, keyboard, focus, terminology,
 zoom, contrast and reduced-motion engineering for `UX-006` and `UX-009` without
 changing scientific authority.
+
+Phase 12-6 corrected implementation `e2beacb0d1e60e5bfccbcd07271f47f5736a221d`
+passed exact-SHA CI `31393608850`. Responsive/accessibility engineering is
+closed; Phase 12-7 remains reviewer-gated and unqueued.

@@ -9509,3 +9509,162 @@ IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI = PASS
 COMPLETION_RECORDED = YES
 QUEUE_ARCHIVED = PENDING_ARCHIVE_COMMIT
 ```
+# Phase 12-6 Responsive / Mobile / Accessibility Closure Result
+
+## 1-9. Conclusion, Baseline, Entry, Authority, and Ownership
+
+Phase 12-6 is `PASS / RESPONSIVE_MOBILE_ACCESSIBILITY_CLOSED /
+IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI / COMPLETION_RECORDED`. Phase 12-5
+implementation `d20d0a1437844a9a69e71fba52cdf57dfd5144db` / CI `31386432220`
+is the entry baseline. DS2 and Phase 11 remain read-only authorities. The sole
+owned problems `UX-006` (P1) and `UX-009` (P2) are closed; `UX-010` remains
+open with 12-7. Production changes are responsive/accessibility presentation
+only.
+
+## 10-26. Responsive and Mobile Surfaces
+
+All inventoried responsive surfaces are classified. Global shell, Data,
+Planner, clarification, Plan, execution, Workspace, Results, scientific
+viewers, Findings, Evidence, Inspector, Provenance, Report and Recipe retain
+their existing routes and authority. At `390x844`, the product uses one active
+Workspace panel, context drawer, panel switcher and Inspector bottom sheet.
+Touch controls are at least 44 CSS px; long labels and scientific identities
+wrap; dense tables use bounded horizontal scroll. Mobile journeys M1-M14 are
+audited with no unclassified or unaudited case.
+
+## 27-48. Keyboard, Semantics, Zoom, Contrast, and Motion
+
+Keyboard journeys K1-K10 pass. Skip navigation reaches the primary Planner or
+active Workspace result. The data-context separator supports Arrow Left/Right
+and Home/End. Dialogs, drawers and sheets trap focus, close with Escape and
+restore trigger focus. Landmarks, headings, accessible names, form labels and
+async live regions are present. State is not color-only. Required touch,
+contrast, 200% zoom, reflow and overflow failures are zero. Forced-colors and
+`prefers-reduced-motion` smoke tests pass. Screen-reader status is honestly
+`PASS_BY_DOM_ARIA_AND_BROWSER_EVIDENCE`; formal certification is not claimed.
+
+## 49-61. Scientific Visualization and State Accessibility
+
+Tables and charts retain numeric/text alternatives. Three-dimensional surfaces
+retain structured metadata, warnings, limitations and Inspector access.
+Tooltips have focus/persistent equivalents; required drag behavior has keyboard
+equivalence. Error, empty, loading, unsupported, stale and partial states retain
+typed text. Scientific warnings and support/validation qualifiers remain
+accessible. Security-tree evidence contains no secret or executable Artifact
+content.
+
+## 62-71. Non-Change, Closure, Limits, and Handoff
+
+Scientific payload, contract, Global IA, Workspace IA, Inspector architecture,
+Report and Recipe authority diffs are zero. Accepted limitations: no formal
+WCAG certification and no claim that every spatial 3D interaction has an
+identical screen-reader interaction. Phase 12-7 is `REVIEWER_GATE /
+AWAITING REVIEWER PROMPT`, owns `UX-010`, and has no executable task.
+
+## 72-87. Verification and Evidence
+
+- Browser matrix: Chromium PASS, Firefox PASS, WebKit PASS, Chromium 390x844 PASS.
+- Accessibility focused tests: 5 passed; component-focused suite: 60 passed.
+- Backend regression: 1309 passed, 50 skipped locally; CI service-backed tests passed with zero skips.
+- Frontend regression: 455 passed.
+- Typecheck, production build, `uv lock --check`, `git diff --check`: PASS.
+- PostgreSQL/Redis/MinIO: PASS in CI.
+- Linux/Windows invariant replay: PASS.
+- npm audit: UNAVAILABLE under configured mirror policy; lock and security tests PASS.
+- Evidence: 54 manifest entries, missing/extra/hash mismatch = 0.
+- Acceptance: `P12X6-A01` through `P12X6-A08`, 8/8.
+
+## 88-95. Lifecycle and Final State
+
+Failed implementation candidate `17450c3f3704a55e4302eab9f72e66821076fa1b`
+/ CI `31391903172` is historical only. All non-new gates passed; the new browser
+server timed out after prior dev replays replaced production `.next` output.
+Corrected implementation `e2beacb0d1e60e5bfccbcd07271f47f5736a221d`
+/ exact-SHA CI `31393608850` passed. This result is the direct completion record;
+the next direct commit removes only the completed 12-6 queue block. No separate
+completion/archive CI is awaited. Phase 12-7 and Phase 13 executable tasks are absent.
+
+Mandatory markers:
+
+```text
+PHASE12_6_PRODUCTION_UI_CHANGES = YES_RESPONSIVE_MOBILE_ACCESSIBILITY
+PHASE12_6_BACKEND_BEHAVIOR_CHANGES = 0
+PHASE12_6_SCIENTIFIC_BEHAVIOR_CHANGES = 0
+PHASE12_6_GLOBAL_IA_CHANGES = 0
+PHASE12_6_PLANNER_SEMANTIC_CHANGES = 0
+PHASE12_6_WORKSPACE_AUTHORITY_CHANGES = 0
+PHASE12_6_SELECTION_SEMANTIC_CHANGES = 0
+PHASE12_6_ARTIFACT_CONTRACT_CHANGES = 0
+PHASE12_6_INTERPRETATION_CONTRACT_CHANGES = 0
+PHASE12_6_REPORT_CONTRACT_CHANGES = 0
+PHASE12_6_RECIPE_CONTRACT_CHANGES = 0
+PHASE12_6_NEW_SCIENTIFIC_TOOLS = 0
+PHASE12_6_NEW_SCIENTIFIC_ALGORITHMS = 0
+PHASE12_6_NEW_ARTIFACT_FAMILIES = 0
+PHASE12_6_NEW_DATAPROFILE_VERSION = 0
+PHASE12_6_NEW_ANALYSISPLAN_VERSION = 0
+PHASE12_6_NEW_DATABASE_MIGRATIONS = 0
+PHASE12_6_NEW_PUBLIC_API_FAMILIES = 0
+PHASE12_6_NEW_DEPENDENCIES = 0
+PHASE12_6_LOCKFILE_CHANGES = 0
+PHASE12_6_NEW_LLM_CALL_SITES = 0
+PHASE12_6_REAL_LLM_CALLS = 0
+PHASE12_6_FRONTEND_SCIENTIFIC_RECOMPUTATION = 0
+RESPONSIVE_SURFACE_UNCLASSIFIED = 0
+MOBILE_CORE_WORKFLOWS_COMPLETE = YES
+UNEXPECTED_PAGE_HORIZONTAL_OVERFLOW = 0
+MOBILE_GLOBAL_NAVIGATION = PASS
+MOBILE_PLANNER = PASS
+MOBILE_WORKSPACE = PASS
+MOBILE_SCIENTIFIC_VIEWERS = PASS
+MOBILE_FINDINGS_EVIDENCE = PASS
+MOBILE_INSPECTOR = PASS
+MOBILE_REPORT_RECIPE = PASS
+CORE_KEYBOARD_WORKFLOWS = PASS
+VISIBLE_FOCUS_REQUIRED_CASES = PASS
+FOCUS_RESTORATION_REQUIRED_CASES = PASS
+ACCESSIBLE_NAME_REQUIRED_CASES = PASS
+FORM_LABEL_REQUIRED_CASES = PASS
+HEADING_LANDMARK_REQUIRED_CASES = PASS
+ASYNC_STATUS_ANNOUNCEMENTS = PASS
+STATUS_COLOR_ONLY_MEANING = 0
+REQUIRED_TOUCH_TARGET_FAILURES = 0
+CONTRAST_REQUIRED_FAILURES = 0
+ZOOM_200_REQUIRED_FAILURES = 0
+REFLOW_REQUIRED_FAILURES = 0
+REDUCED_MOTION_REQUIRED_CASES = PASS
+FULL_PRODUCT_ACCESSIBILITY_ENGINEERING_CLOSURE = YES
+FORMAL_ACCESSIBILITY_CERTIFICATION = NO
+CHART_ACCESSIBLE_DATA_ALTERNATIVE_REQUIRED_CASES = PASS
+THREE_D_STRUCTURED_ALTERNATIVE_REQUIRED_CASES = PASS
+PLOTLY_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+WEBGL_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+ACCESSIBLE_ALTERNATIVE_SCIENTIFIC_RECOMPUTATION = 0
+SCIENTIFIC_SERIES_COLOR_SEMANTIC_CHANGES = 0
+SUPPORTED_EQUALS_VALIDATED = NO
+MAPPING_ONLY_VISUAL_UPGRADE = 0
+NOT_APPLICABLE_VISUAL_UPGRADE = 0
+V4_VISUAL_FABRICATION = 0
+BROWSER_PASS_EQUALS_SCIENTIFIC_PASS = NO
+SERVICE_PASS_EQUALS_SCIENTIFIC_PASS = NO
+ACCESSIBILITY_PASS_EQUALS_SCIENTIFIC_PASS = NO
+SCREENSHOT_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+FRONTEND_SCIENTIFIC_AUTHORITY = NONE
+REGISTRY_BEFORE_12_6 = 62
+REGISTRY_AFTER_12_6 = 62
+DATAPROFILE_BEFORE_12_6 = 2.4
+DATAPROFILE_AFTER_12_6 = 2.4
+MIGRATION_BEFORE_12_6 = 0007_phase10m1_workspace_domain
+MIGRATION_AFTER_12_6 = 0007_phase10m1_workspace_domain
+PHASE12_6_OWNED_PROBLEMS = UX-006, UX-009
+PHASE12_6_OWNED_PROBLEM_COUNT = 2
+PHASE12_6_OWNED_PROBLEMS_CLOSED = 2
+PHASE12_6_OWNED_PROBLEMS_OPEN = 0
+NEW_P0_INTRODUCED_BY_12_6 = 0
+NEW_P1_INTRODUCED_BY_12_6 = 0
+P12X6_ACCEPTANCE = 8/8
+IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI
+COMPLETION_RECORDED
+PHASE_12_7_EXECUTABLE_TASK_CREATED = NO
+PHASE_13_EXECUTABLE_TASK_CREATED = NO
+```

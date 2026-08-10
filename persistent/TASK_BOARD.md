@@ -2526,5 +2526,6 @@ current board above.
 
 - [x] Implement responsive/mobile and primitive accessibility closure.
 - [x] Close only `UX-006` and `UX-009`; keep `UX-010` with Phase 12-7.
-- [ ] Verify the implementation exact SHA in CI, then record completion and
-  archive the sole task without creating Phase 12-7.
+- [x] Verify implementation `e2beacb0d1e60e5bfccbcd07271f47f5736a221d`
+  in exact-SHA CI `31393608850`; record completion and archive the sole task
+  without creating Phase 12-7.

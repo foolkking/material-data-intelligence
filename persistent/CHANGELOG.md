@@ -2582,3 +2582,5 @@ directly afterward. Phase 12-2 remains reviewer-gated.
 - Failed candidate `17450c3` / CI `31391903172` passed every non-new gate; its
   12-6 browser server could not start after prior dev replays replaced `.next`.
   The evidence server is corrected forward to use the existing dev-server pattern.
+- Corrected implementation `e2beacb0d1e60e5bfccbcd07271f47f5736a221d`
+  passed exact-SHA CI `31393608850`; completion and queue archive follow directly.
