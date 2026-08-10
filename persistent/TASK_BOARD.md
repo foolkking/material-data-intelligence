@@ -2515,3 +2515,16 @@ current board above.
   Report/Recipe and scientific authorities; close only `UX-004`.
 - Implementation `9fac62bbb2cc9069da62370ee9d02cf3150e987a` passed exact-SHA
   CI `31379672528`. Phase 12-5 remains reviewer-gated and unqueued.
+
+## Phase 12-5
+
+- [x] Implement Report/Recipe experience and close `UX-005`.
+- [x] Verify implementation `d20d0a1437844a9a69e71fba52cdf57dfd5144db`
+  with exact-SHA CI `31386432220`; archive directly afterward.
+
+## Phase 12-6
+
+- [x] Implement responsive/mobile and primitive accessibility closure.
+- [x] Close only `UX-006` and `UX-009`; keep `UX-010` with Phase 12-7.
+- [ ] Verify the implementation exact SHA in CI, then record completion and
+  archive the sole task without creating Phase 12-7.

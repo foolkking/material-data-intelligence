@@ -1,0 +1,13 @@
+{
+  "assertive": [
+    "blocking error"
+  ],
+  "polite": [
+    "intent",
+    "eligibility",
+    "execution",
+    "workspace save",
+    "selection"
+  ],
+  "status": "PASS"
+}

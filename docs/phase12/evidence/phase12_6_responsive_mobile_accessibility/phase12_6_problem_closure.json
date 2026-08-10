@@ -1,0 +1,15 @@
+{
+  "closed": [
+    {
+      "problemId": "UX-006",
+      "status": "FIXED_WITH_EVIDENCE"
+    },
+    {
+      "problemId": "UX-009",
+      "status": "FIXED_WITH_EVIDENCE"
+    }
+  ],
+  "newP0": 0,
+  "newP1": 0,
+  "open": []
+}

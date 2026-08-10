@@ -1578,3 +1578,7 @@ Phase 12-1 completion did not mutate Registry or scientific Tool metadata:
 Phase 12-3 does not add or modify Registry tools. Scientific viewer chrome is a
 frontend presentation boundary over existing registered renderer contracts;
 frontend recomputation remains prohibited.
+
+Phase 12-5 and Phase 12-6 preserve Registry 62. Report/Recipe presentation,
+responsive layout, accessibility semantics and bilingual terminology do not
+change Tool eligibility, Adapter dispatch, Artifact values or scientific claims.

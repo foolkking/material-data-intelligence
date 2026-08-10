@@ -60,6 +60,11 @@ def test_n0_does_not_admit_an_executable_task() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     if not tasks.strip():
         return
+    if "Phase 12-6 Reviewer Prompt" in tasks and "Phase 12-5 Reviewer Prompt" not in tasks:
+        assert tasks.count("---TASK---") == 1
+        assert tasks.count("---TASK---") == tasks.count("---END---")
+        assert re.search(r"状态：(待处理|处理中|已完成)", tasks)
+        return
     if "Phase 12-5 Reviewer Prompt" in tasks and "Phase 12-4 Reviewer Prompt" not in tasks:
         assert tasks.count("---TASK---") == 2
         assert tasks.count("---TASK---") == tasks.count("---END---")

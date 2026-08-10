@@ -52,3 +52,13 @@ existing Report/Recipe browser replay against the Phase 12-5 evidence root.
 The generator is deterministic and local. Browser replay uses local fixtures
 and three engines plus 390x844; neither path calls an LLM, external scientific
 API, Recipe executor, or scientific computation authority.
+
+## Phase 12-6
+
+Phase 12-6 executes
+`scripts/generate_phase12_6_responsive_accessibility_evidence.py`,
+`tests/test_phase12_6_responsive_accessibility.py`, focused component tests,
+the current Planner browser replay, and retained three-engine/mobile Workspace
+replays. Evidence is deterministic and local. It performs no real assistive
+technology claim, provider call, external network access, scientific
+calculation, backend mutation, or new runtime authority.

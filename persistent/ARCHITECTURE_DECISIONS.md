@@ -4568,3 +4568,11 @@ human concept Analysis and place Provenance under Advanced. Results lead with
 meaning before Artifact mechanics. This grouping is presentation-only; server
 Workspace identity, panel IDs, URL state, exact selection and Artifact
 provenance remain authoritative.
+
+## Phase 12-6 Responsive and Accessibility Authority
+
+Responsive layout, skip navigation, focus management, touch sizing, contrast,
+reduced motion and localized terminology are presentation concerns. They may
+improve access to exact scientific records but cannot create or modify
+scientific, selection, Workspace, Report or Recipe authority. DOM/ARIA replay is
+engineering evidence, not formal accessibility certification.

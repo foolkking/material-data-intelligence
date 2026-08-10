@@ -74,3 +74,14 @@ history/export presentation, and a human-readable Recipe before exact inert
 JSON. Forbidden: Recipe execution, source inference, backend/API/schema changes,
 scientific recomputation, and Phase 12-6 ownership. Close only `UX-005`.
 Acceptance is `P12X5-A01` through `P12X5-A08`.
+
+## 12-6 Execution Detail
+
+Sources: Planner and Workspace shells, existing DS2 tokens, viewer table/text
+alternatives, message catalogs, Phase 12-5 handoff and the sealed mobile
+authority. Allowed: responsive/reflow corrections, keyboard/focus semantics,
+skip navigation, dialog/drawer state, touch targets, contrast, forced colors,
+reduced motion and terminology consistency. Forbidden: route/IA changes,
+scientific recomputation, source/selection inference, backend/API/schema or
+dependency changes, and Phase 12-7 ownership. Close only `UX-006` and `UX-009`.
+Acceptance is `P12X6-A01` through `P12X6-A08`.

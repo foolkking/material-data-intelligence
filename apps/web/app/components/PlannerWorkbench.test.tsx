@@ -809,6 +809,8 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(screen.queryByTestId("agent-process-tab")).toBeNull();
     expect(screen.queryByTestId("results-export-tab")).toBeNull();
     expect(screen.getByTestId("conversation-plan-tab")).not.toBeNull();
+    expect(document.querySelector<HTMLAnchorElement>(".skip-link")?.getAttribute("href")).toBe("#planner-primary-content");
+    expect(document.getElementById("planner-primary-content")?.getAttribute("tabindex")).toBe("-1");
   });
 
   it("opens dataset dialog from the top bar, loads demo data, and updates the left data viewer", async () => {

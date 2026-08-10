@@ -1231,3 +1231,9 @@ is the only remaining work.
   issues retain their Phase 12-2 through 12-7 ownership.
 - Phase 12-3 implementation must close UX-002 and UX-003 without changing the
   existing nine-panel Workspace contract or scientific renderer authority.
+
+## Phase 12-6
+
+- No implementation-critical question remains. Real assistive-technology user
+  validation and final cross-product consistency stay explicitly with Phase
+  12-7/reviewer scope; no certification is claimed by DOM/ARIA evidence.

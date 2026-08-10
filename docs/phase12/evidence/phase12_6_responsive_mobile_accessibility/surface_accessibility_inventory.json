@@ -1,0 +1,11 @@
+{
+  "surfaces": [
+    "Planner",
+    "Workspace",
+    "scientific viewers",
+    "Findings and Evidence",
+    "Inspector",
+    "Report and Recipe"
+  ],
+  "unclassified": 0
+}

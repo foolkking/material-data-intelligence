@@ -172,6 +172,31 @@ button:disabled {
   color: var(--color-text-primary);
 }
 
+.skip-link {
+  position: fixed;
+  z-index: var(--ds-z-toast);
+  top: var(--ds-space-2);
+  left: var(--ds-space-2);
+  max-width: calc(100vw - var(--ds-space-4));
+  transform: translateY(calc(-100% - var(--ds-space-4)));
+  border: 2px solid var(--color-focus-ring);
+  border-radius: var(--ds-radius-sm);
+  background: var(--color-surface-raised);
+  padding: var(--ds-space-2) var(--ds-space-3);
+  color: var(--color-text-primary);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+#planner-primary-content:focus,
+#workspace-primary-content:focus {
+  outline: none;
+}
+
 .workspace-entry-command {
   display: flex;
   gap: 10px;
@@ -3955,6 +3980,35 @@ pre {
   :where(.icon-button, .collapse-button) {
     min-width: var(--ds-control-touch);
   }
+
+  :where(table) {
+    min-width: max-content;
+  }
+
+  :where(.table-scroll, .viewer-neighbor-table-scroll, .workspace-report-source-table-wrap, .workspace-report-history-table-wrap) {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  :where(button, a, input, select, textarea, code, pre, td, th) {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 800px), (min-resolution: 1.9dppx) {
+  .phase9c-body,
+  .workspace-layout,
+  .workspace-layout.data-rail-collapsed {
+    min-width: 0;
+  }
+
+  .global-context-bar,
+  .workspace-header,
+  .workspace-save-bar,
+  .workspace-panel-surface {
+    max-width: 100%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3965,6 +4019,17 @@ pre {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+@media (forced-colors: active) {
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline-color: Highlight;
+  }
+
+  :where(.ds-status, .workspace-status, .workspace-save-state, .warning, .warning-panel, .notice, .error-card) {
+    border: 1px solid CanvasText;
+    forced-color-adjust: auto;
   }
 }
 .band-bz-shared-inspector { border-top: 1px solid var(--border); padding-top: 12px; }
@@ -3981,4 +4046,38 @@ pre {
   .band-bz-panel, .band-bz-shared-inspector { width: 100%; }
   .band-bz-linked-view .mobile-hidden { display: none; }
   .band-bz-chart { min-height: 220px; }
+}
+
+/* Phase 12-6 closure: specialized styles cannot undercut mobile touch access. */
+@media (max-width: 640px) {
+  :where(button, input, select, textarea, a[href], [role="button"], [role="tab"]) {
+    min-height: var(--ds-control-touch) !important;
+  }
+
+  .planner-stage-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .planner-stage-rail ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .planner-stage-rail li {
+    min-height: var(--ds-control-touch);
+  }
+
+  .planner-stage-marker {
+    min-width: var(--ds-control-touch);
+    min-height: var(--ds-control-touch);
+  }
+
+  :where(a[href]) {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  :where(.icon-button, .collapse-button, .workspace-icon-button) {
+    min-width: var(--ds-control-touch) !important;
+  }
 }

@@ -312,6 +312,17 @@ jobs:
           python scripts/generate_phase12_5_report_recipe_evidence.py
         working-directory: apps/web
 
+      - name: Phase 12-6 responsive and accessibility evidence
+        env:
+          DEEPSEEK_KEY: ""
+          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
+          MDI_PHASE12_6_PORT: "3460"
+        run: |
+          node test/phase12-6-responsive-accessibility-browser-evidence.mjs
+          cd ../..
+          python scripts/generate_phase12_6_responsive_accessibility_evidence.py
+        working-directory: apps/web
+
       - name: Replay Phase 10M-6 Workspace recovery browser evidence
         env:
           DEEPSEEK_KEY: ""

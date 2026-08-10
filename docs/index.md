@@ -756,3 +756,8 @@ and
 | [`phase12/phase12_5_report_recipe_experience.md`](phase12/phase12_5_report_recipe_experience.md) | Phase 12-5 human-readable Report/Recipe experience and authority boundary |
 | [`phase12/phase12_5_acceptance_evidence_map.md`](phase12/phase12_5_acceptance_evidence_map.md) | P12X5-A01 through A08 evidence mapping |
 | [`phase12/evidence/phase12_5_report_recipe_experience/`](phase12/evidence/phase12_5_report_recipe_experience/) | Phase 12-5 source, preview, history, Recipe, browser, accessibility and security evidence |
+| [`phase12/phase12_6_responsive_mobile_accessibility.md`](phase12/phase12_6_responsive_mobile_accessibility.md) | Phase 12-6 responsive, mobile and accessibility engineering closure |
+| [`phase12/phase12_6_keyboard_focus_accessibility.md`](phase12/phase12_6_keyboard_focus_accessibility.md) | Keyboard, focus and dialog/drawer interaction closure |
+| [`phase12/phase12_6_scientific_visualization_accessibility.md`](phase12/phase12_6_scientific_visualization_accessibility.md) | Chart, table and 3D non-graphical access boundary |
+| [`phase12/phase12_7_cross_product_validation_handoff.md`](phase12/phase12_7_cross_product_validation_handoff.md) | Reviewer-gated Phase 12-7 handoff; not queued |
+| [`phase12/evidence/phase12_6_responsive_mobile_accessibility/`](phase12/evidence/phase12_6_responsive_mobile_accessibility/) | Phase 12-6 DOM, browser, responsive, terminology, security and authority evidence |

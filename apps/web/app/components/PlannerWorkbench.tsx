@@ -620,6 +620,7 @@ export function PlannerWorkbench() {
       aria-label="Analysis Planner workspace"
       data-phase1-shell-labels="Validated Plan Preview; Plan Provenance; Agent Timeline; Tool Calls; Artifact Gallery; Report / Recipe Summary; No deterministic fallback used"
     >
+      <a className="skip-link" href="#planner-primary-content">{t("skipToAnalysis")}</a>
       <GlobalContextBar
         t={t}
         locale={locale}
@@ -638,6 +639,8 @@ export function PlannerWorkbench() {
       />
 
       <section
+        id="planner-primary-content"
+        tabIndex={-1}
         className={`phase9c-body ${leftPanelCollapsed ? "left-collapsed" : ""}`}
         style={{ gridTemplateColumns: leftPanelCollapsed ? "44px minmax(0, 1fr)" : `${leftPanelWidth}px 8px minmax(0, 1fr)` }}
       >
@@ -652,7 +655,11 @@ export function PlannerWorkbench() {
           dataMessage={dataMessage}
           busy={dataBusy}
         />
-        {!leftPanelCollapsed ? <button type="button" className="resize-handle" aria-label={t("resizeDataContext")} onMouseDown={startResize} /> : null}
+        {!leftPanelCollapsed ? <button type="button" role="separator" aria-orientation="vertical" className="resize-handle" aria-label={t("resizeDataContext")} aria-valuemin={240} aria-valuemax={520} aria-valuenow={leftPanelWidth} onMouseDown={startResize} onKeyDown={(event) => {
+          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight" && event.key !== "Home" && event.key !== "End") return;
+          event.preventDefault();
+          setLeftPanelWidth((current) => event.key === "Home" ? 240 : event.key === "End" ? 520 : Math.min(520, Math.max(240, current + (event.key === "ArrowRight" ? 16 : -16))));
+        }} /> : null}
         <MainWorkspaceTabs
           t={t}
           activeTab={activeMainTab}

@@ -505,3 +505,10 @@ unchanged. UX-002 and UX-003 are the only owned issues.
 Phase 12-3 completed at implementation `9b38a753bda134e9c27425e1193d2980a0790731`
 with exact-SHA CI `31370240101`. Phase 12-4 is reviewer-gated; no future
 executable task has been created.
+
+Phase 12-5 is complete at implementation
+`d20d0a1437844a9a69e71fba52cdf57dfd5144db`, exact-SHA CI `31386432220`.
+Phase 12-6 is the sole active task and closes responsive/mobile/accessibility
+engineering plus bilingual terminology consistency. Registry 62, DataProfile
+2.4, migration 0007, scientific claims and runtime authority remain frozen;
+Phase 12-7 is not queued.

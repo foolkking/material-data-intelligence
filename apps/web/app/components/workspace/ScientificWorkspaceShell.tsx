@@ -446,6 +446,7 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
   const workspace = snapshot.workspace;
   return (
     <main className="scientific-workspace" data-testid="scientific-workspace-shell">
+      <a className="skip-link" href="#workspace-primary-content">Skip to active scientific result</a>
       <header className="workspace-header">
         <div className="workspace-header-title">
           <a className="workspace-back-link" href="/" aria-label="Back to PlannerWorkbench" onClick={(event) => {
@@ -461,8 +462,8 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
           <small>Plan {workspace.planSchemaVersion || "legacy"} · revision {workspace.revision}</small>
         </div>
         <div className="workspace-header-actions">
-          <button ref={contextTriggerRef} type="button" className="secondary workspace-mobile-only" onClick={() => setMobileContextOpen(true)} aria-label="Open data context">Context</button>
-          <button ref={inspectorTriggerRef} type="button" className="secondary" onClick={() => setInspectorOpen(true)} aria-haspopup="dialog">Inspector</button>
+          <button ref={contextTriggerRef} type="button" className="secondary workspace-mobile-only" onClick={() => setMobileContextOpen(true)} aria-label="Open data context" aria-haspopup="dialog" aria-expanded={mobileContextOpen}>Context</button>
+          <button ref={inspectorTriggerRef} type="button" className="secondary" onClick={() => setInspectorOpen(true)} aria-haspopup="dialog" aria-expanded={inspectorOpen}>Inspector</button>
         </div>
       </header>
 
@@ -531,7 +532,7 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
           </section>)}
         </nav>
 
-        <section className="workspace-main-panel" aria-labelledby="workspace-active-panel-title">
+        <section id="workspace-primary-content" tabIndex={-1} className="workspace-main-panel" aria-labelledby="workspace-active-panel-title">
           {activePanel ? <WorkspacePanelSurface panel={activePanel} workspace={workspace} snapshot={snapshot} delivery={deliveries[activePanel.panelId] || null} onReportDraftDirtyChange={setReportDraftDirty} onActivateSelection={(nextSelection, panelId) => activateSelection(nextSelection, panelId)} onNavigateArtifactReference={(nextSelection, destination, panelId) => navigateArtifactReference(nextSelection, destination, panelId)} onSelectArtifact={(panel) => {
             const nextSelection = artifactSelectionFromPanel(panel, workspace);
             if (nextSelection) activateSelection(nextSelection, panel.panelId);

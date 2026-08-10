@@ -84,6 +84,15 @@ def main() -> None:
                 retained_browser = candidate
         except json.JSONDecodeError:
             pass
+    manifest_path = OUT / "manifest.json"
+    retained_implementation_ci = "PENDING"
+    if manifest_path.exists():
+        try:
+            candidate_ci = json.loads(manifest_path.read_text(encoding="utf-8")).get("implementationCi")
+            if isinstance(candidate_ci, str) and candidate_ci != "PENDING":
+                retained_implementation_ci = candidate_ci
+        except json.JSONDecodeError:
+            pass
     for name, value in RECORDS.items():
         write_json(OUT / name, retained_browser if name == browser.name and retained_browser else value)
     for name, value in TEXT.items():
@@ -92,7 +101,7 @@ def main() -> None:
     for path in sorted(OUT.rglob("*")):
         if path.is_file() and path.name != "manifest.json":
             entries.append({"path": path.relative_to(OUT).as_posix(), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
-    write_json(OUT / "manifest.json", {"phase": "12-5", "schemaVersion": "phase12-5-report-recipe/1.0", "entries": entries, "missing": 0, "extra": 0, "hashMismatch": 0, "implementationCi": "PENDING"})
+    write_json(manifest_path, {"phase": "12-5", "schemaVersion": "phase12-5-report-recipe/1.0", "entries": entries, "missing": 0, "extra": 0, "hashMismatch": 0, "implementationCi": retained_implementation_ci})
     print(f"PHASE12_5_EVIDENCE_GENERATED {len(entries)}")
 
 

@@ -2571,3 +2571,11 @@ directly afterward. Phase 12-2 remains reviewer-gated.
   with exact-SHA CI `31379672528`.
 - Closed `UX-004` through an exact Finding/Evidence/Artifact trust path and a
   three-layer Inspector without changing scientific authority.
+
+## 2026-08-10 - Phase 12-5 and Phase 12-6
+
+- Phase 12-5 implementation `d20d0a1437844a9a69e71fba52cdf57dfd5144db`
+  passed CI `31386432220`; completion and queue archive were recorded directly.
+- Phase 12-6 adds skip navigation, keyboard-operable resizing, mobile/reflow
+  containment, forced-colors and reduced-motion foundations, and a bilingual
+  canonical terminology set. Scientific and backend behavior remain unchanged.

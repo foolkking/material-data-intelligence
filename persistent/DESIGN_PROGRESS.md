@@ -2197,3 +2197,9 @@ Phase 12-4 is complete. Implementation
 `31379672528`; persisted Findings now expose exact supporting, limiting and
 contradicting Evidence, source Artifact and provenance paths, the Inspector uses
 Summary / Scientific details / Provenance layers, and `UX-004` is closed.
+
+Phase 12-5 implementation `d20d0a1437844a9a69e71fba52cdf57dfd5144db`
+passed exact-SHA CI `31386432220`; completion and queue archive were recorded
+directly. Phase 12-6 now closes responsive, mobile, keyboard, focus, terminology,
+zoom, contrast and reduced-motion engineering for `UX-006` and `UX-009` without
+changing scientific authority.

@@ -8,8 +8,8 @@ Report/Recipe authority, scientific units/claims and Phase 11 coverage are locke
 
 Forbidden shortcuts: browser scientific recomputation, latest/nearest/label/filename
 identity, hiding limitations, unsupported-without-explanation, and recommendation
-as automatic execution. Phase 12-1 through Phase 12-4 are complete; Phase 12-5
-is the only active authorized task and Phase 12-6 remains pending.
+as automatic execution. Phase 12-1 through Phase 12-5 are complete; Phase 12-6
+is the only active authorized task and Phase 12-7 remains reviewer-gated.
 
 ## Phase 12-1 Design System Scope
 
@@ -55,3 +55,12 @@ Recipe presentation. It must consume ReportComposition/Recipe 1.0 unchanged.
 Recipe execution, frontend scientific recomputation, source eligibility
 inference, contract/API/database changes, new dependencies, and Phase 12-6
 responsive closure are forbidden.
+
+## Phase 12-6 Responsive and Accessibility Scope
+
+Phase 12-6 may change responsive presentation, skip navigation, keyboard and
+focus behavior, ARIA semantics, touch sizing, bounded table reflow, contrast,
+forced-colors, reduced motion, and bilingual component terminology. It must
+preserve routes, Global/Workspace IA, scientific payloads and identities,
+Workspace/Selection/Report/Recipe authority, backend/API/database contracts,
+dependencies, and Phase 11 claims. It closes only `UX-006` and `UX-009`.

@@ -1,0 +1,50 @@
+{
+  "chromium": {
+    "consoleErrors": [],
+    "externalRequests": [],
+    "failedResponses": [],
+    "forcedColors": "PASS",
+    "horizontalOverflow": false,
+    "keyboardResize": "PASS",
+    "pageErrors": [],
+    "reducedMotion": "PASS",
+    "skipNavigation": "PASS"
+  },
+  "chromium390x844": {
+    "consoleErrors": [],
+    "externalRequests": [],
+    "failedResponses": [],
+    "horizontalOverflow": false,
+    "pageErrors": [],
+    "reducedMotion": "PASS",
+    "touchTargets": "PASS",
+    "undersized": [],
+    "viewport": "390x844",
+    "visibleControls": 28
+  },
+  "firefox": {
+    "consoleErrors": [],
+    "externalRequests": [],
+    "failedResponses": [],
+    "forcedColors": "PASS",
+    "horizontalOverflow": false,
+    "keyboardResize": "PASS",
+    "pageErrors": [],
+    "reducedMotion": "PASS",
+    "skipNavigation": "PASS"
+  },
+  "frontendScientificRecomputation": 0,
+  "screenshotNumericScientificAuthority": "NONE",
+  "status": "PASS",
+  "webkit": {
+    "consoleErrors": [],
+    "externalRequests": [],
+    "failedResponses": [],
+    "forcedColors": "PASS",
+    "horizontalOverflow": false,
+    "keyboardResize": "PASS",
+    "pageErrors": [],
+    "reducedMotion": "PASS",
+    "skipNavigation": "PASS"
+  }
+}

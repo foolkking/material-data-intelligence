@@ -108,7 +108,10 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     const user = userEvent.setup();
     render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
     await screen.findByTestId("scientific-workspace-shell");
+    expect(document.querySelector<HTMLAnchorElement>(".skip-link")?.getAttribute("href")).toBe("#workspace-primary-content");
+    expect(screen.getByRole("button", { name: "Inspector" })).toHaveAttribute("aria-expanded", "false");
     await user.click(screen.getByRole("button", { name: "Inspector" }));
+    expect(screen.getByRole("button", { name: "Inspector" })).toHaveAttribute("aria-expanded", "true");
     const dialog = screen.getByRole("dialog", { name: "Context inspector" });
     const close = within(dialog).getByRole("button", { name: "Close inspector" });
     expect(close).toHaveFocus();
