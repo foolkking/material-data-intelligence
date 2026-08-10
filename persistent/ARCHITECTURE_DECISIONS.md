@@ -4533,6 +4533,10 @@ progressive disclosure, visible limitations, unified viewer chrome, a three-laye
 Inspector, and separate support/validation/reproducibility/presentation axes.
 These are reviewer-gated UX decisions, not production scientific authority.
 
+Phase 12-1 sealed the implementation without changing those boundaries. The
+Design System semantic hash is
+`2a87269216cddb1193af9a08ae7b136889ba43905532e508042b78369a68714d`.
+
 ## Phase 12-1 Design System 2.0
 
 Design System 2.0 is a frontend presentation identity only. Its semantic hash

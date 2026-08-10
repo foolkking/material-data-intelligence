@@ -2458,9 +2458,15 @@ current board above.
 
 ## Phase 12-1
 
-- [ ] Implement DS2 semantic tokens, typography, spacing/density, surfaces,
+- [x] Implement DS2 semantic tokens, typography, spacing/density, surfaces,
   status variants, focus and reduced-motion foundations.
-- [ ] Migrate shared product presentation without altering navigation, Workspace
+- [x] Migrate shared product presentation without altering navigation, Workspace
   IA, Planner flows, scientific values or backend behavior.
-- [ ] Close `UX-007` and retain all other Phase 12 owners; keep Phase 12-2 and
+- [x] Close `UX-007` and retain all other Phase 12 owners; keep Phase 12-2 and
   Phase 13 non-executable.
+
+- Implementation `60269556f70f07014224a801150f214887a56ee5` passed exact-SHA CI
+  `31358512349`.
+- Completion record and queue archive are direct lifecycle commits after the
+  single required implementation CI confirmation.
+- Phase 12-2 remains reviewer-gated; no Phase 12-2 or Phase 13 task exists.

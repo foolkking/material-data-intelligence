@@ -2151,7 +2151,8 @@ All inventoried surfaces, components, canonical journeys and UX problems are
 classified; the result proposes a reviewer-gated experience seal and preserves
 all Phase 11 scientific authority.
 
-Phase 12-1 is active under the approved Design System 2.0 scope. It consolidates
-the visual token/status/focus/density foundation and representative shared
-presentation only. Planner flow, navigation, Workspace/viewer IA and scientific
-semantics remain owned by later reviewer-gated phases.
+Phase 12-1 is complete under the approved Design System 2.0 scope. It
+consolidates the visual token/status/focus/density foundation and representative
+shared presentation only. Implementation `60269556f70f07014224a801150f214887a56ee5`
+passed exact-SHA CI `31358512349`. Planner flow, navigation, Workspace/viewer IA
+and scientific semantics remain owned by later reviewer-gated phases.

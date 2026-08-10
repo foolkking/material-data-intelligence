@@ -2522,3 +2522,7 @@
 - Started the authorized Design System 2.0 presentation-only implementation.
 - DS2 uses existing CSS and component infrastructure; no UI framework, font,
   external asset, scientific computation, backend/API/schema or dependency change is admitted.
+
+- Phase 12-1 implementation `60269556f70f07014224a801150f214887a56ee5` passed
+  exact-SHA CI `31358512349`; completion was recorded and the queue was archived
+  directly afterward. Phase 12-2 remains reviewer-gated.

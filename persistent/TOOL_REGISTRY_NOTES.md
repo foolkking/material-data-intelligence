@@ -1559,3 +1559,6 @@ participate in Tool validation, planning, Runtime dispatch or Artifact productio
 Phase 12-1 likewise changes only shared frontend presentation. Its Design System
 hash, tokens and status variants are not Registry metadata and cannot affect Tool
 eligibility, Runtime dispatch, Artifact identity or scientific validation status.
+
+Phase 12-1 completion did not mutate Registry or scientific Tool metadata:
+`REGISTRY_BEFORE_12_1 = 62` and `REGISTRY_AFTER_12_1 = 62`.

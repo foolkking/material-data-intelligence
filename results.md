@@ -8936,3 +8936,110 @@ PHASE12_1_EXECUTABLE_TASK_CREATED = NO
 PHASE13_EXECUTABLE_TASK_CREATED = NO
 PHASE14_CREATED = NO
 ```
+
+# Phase 12-1 Design System 2.0 + Visual Language Result
+
+## Conclusion
+`PASS / DESIGN_SYSTEM_2_0_IMPLEMENTED / VISUAL_LANGUAGE_FOUNDATION_SEALED / QUEUE_ARCHIVED`.
+This is presentation-only foundation work; Phase 12 and product release are not complete.
+
+## Baselines and Authority
+Phase 12-0 archive `d48ac5d28c53734d5f14f5e5728984f9ec4c2034` and implementation
+`0ea893bb85d6abd90ab89bc81e1606b378ea1e7f` / CI `31354589883` are verified
+ancestors. Entry was clean `master`, Registry 62, DataProfile 2.4, migration
+`0007_phase10m1_workspace_domain`. Phase 11 remains read-only scientific authority:
+12 golden records, 8 PASS_INVARIANT, 4 NOT_APPLICABLE, 0 scientific failures,
+Linux/Windows invariant replay PASS, numeric cross-platform validation N/A, V4=0.
+
+## Design System and UX Closure
+DS2 version is 2.0. The implementation adds primitive/semantic tokens,
+typography and density, surface/border/elevation, z-index, motion and reduced
+motion, focus-visible, form/button/table/dialog primitives, and presentation-only
+`StatusLabel`. Existing infrastructure was reused; no new route, framework, font,
+external asset or scientific viewer semantics were added. The deterministic
+evidence root is `docs/phase12/evidence/phase12_1_design_system_2_0/` and contains
+the token, component, status, accessibility, browser, handoff, security and
+no-change records. Semantic hash:
+`2a87269216cddb1193af9a08ae7b136889ba43905532e508042b78369a68714d`.
+
+`UX-007` is `FIXED_WITH_EVIDENCE`. Other owners remain open and visible:
+12-2=2, 12-3=2, 12-4=1, 12-5=1, 12-6=2, 12-7=1. No new P0/P1 was introduced.
+Global IA, Workspace IA, Planner workflow, scientific values, identity,
+selection, backend, API, schema, Registry and DataProfile are unchanged.
+
+## Acceptance and Verification
+P12X1-A01 through P12X1-A08 were preserved from the canonical plan and pass 8/8:
+tokens; typography/spacing/density; surfaces/elevation/motion; shared controls;
+status/warning/limitation mapping; accessibility/focus/contrast/touch;
+representative migration without IA/science change; and browser/evidence/
+regression/lifecycle closure.
+
+Local verification: backend `1293 passed, 50 skipped`, frontend `450 passed`,
+typecheck PASS, build PASS, `uv lock --check` PASS, `git diff --check` PASS.
+Chromium, Firefox, WebKit and Chromium 390x844 replay PASS with no console errors
+or unapproved external requests. CI `31358512349` passed all five jobs:
+Unit, frontend typecheck/build and retained browser replay, service-backed
+PostgreSQL/Redis/MinIO, and Linux/Windows replay. `npm audit = UNAVAILABLE`
+because the configured mirror returns `404_NOT_IMPLEMENTED`.
+
+## Required Markers
+```text
+PHASE12_1_DESIGN_SYSTEM_VERSION = 2.0
+PHASE12_1_PRODUCTION_UI_CHANGES = YES_PRESENTATION_ONLY
+PHASE12_1_BACKEND_BEHAVIOR_CHANGES = 0
+PHASE12_1_SCIENTIFIC_BEHAVIOR_CHANGES = 0
+PHASE12_1_GLOBAL_IA_CHANGES = 0
+PHASE12_1_WORKSPACE_IA_CHANGES = 0
+PHASE12_1_NEW_SCIENTIFIC_TOOLS = 0
+PHASE12_1_NEW_SCIENTIFIC_ALGORITHMS = 0
+PHASE12_1_NEW_ARTIFACT_FAMILIES = 0
+PHASE12_1_NEW_DATAPROFILE_VERSION = 0
+PHASE12_1_NEW_ANALYSISPLAN_VERSION = 0
+PHASE12_1_NEW_DATABASE_MIGRATIONS = 0
+PHASE12_1_NEW_PUBLIC_API_FAMILIES = 0
+PHASE12_1_NEW_PYTHON_DEPENDENCIES = 0
+PHASE12_1_NEW_FRONTEND_DEPENDENCIES = 0
+PHASE12_1_LOCKFILE_CHANGES = 0
+PHASE12_1_NEW_LLM_CALL_SITES = 0
+PHASE12_1_REAL_LLM_CALLS = 0
+PHASE12_1_FRONTEND_SCIENTIFIC_RECOMPUTATION = 0
+DESIGN_SYSTEM_TOKEN_REGISTRY_COMPLETE = YES
+UNCLASSIFIED_LEGACY_TOKENS = 0
+UNCONTROLLED_HARDCODED_DESIGN_VALUES = 0
+UI_COMPONENT_MIGRATION_UNCLASSIFIED = 0
+UNMAPPED_USER_VISIBLE_STATUS_FAMILIES = 0
+NEW_SHARED_CONTROLS_KEYBOARD_OPERABLE = PASS
+NEW_SHARED_CONTROLS_FOCUS_VISIBLE = PASS
+ICON_ONLY_CONTROLS_ACCESSIBLE_NAME = PASS
+STATUS_COLOR_ONLY_MEANING = 0
+REDUCED_MOTION_FOUNDATION = PASS
+MOBILE_TOUCH_TARGET_FOUNDATION = PASS
+CONTRAST_FOUNDATION = PASS
+FULL_PRODUCT_ACCESSIBILITY_COMPLETE = NO
+SUPPORTED_EQUALS_VALIDATED = NO
+MAPPING_ONLY_VISUAL_UPGRADE = 0
+NOT_APPLICABLE_VISUAL_UPGRADE = 0
+V4_VISUAL_FABRICATION = 0
+BROWSER_PASS_EQUALS_SCIENTIFIC_PASS = NO
+SCREENSHOT_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+FRONTEND_SCIENTIFIC_AUTHORITY = NONE
+REGISTRY_BEFORE_12_1 = 62
+REGISTRY_AFTER_12_1 = 62
+DATAPROFILE_BEFORE_12_1 = 2.4
+DATAPROFILE_AFTER_12_1 = 2.4
+MIGRATION_AFTER_12_1 = 0007_phase10m1_workspace_domain
+PHASE12_1_OWNED_PROBLEMS = UX-007
+PHASE12_1_OWNED_PROBLEM_COUNT = 1
+PHASE12_1_OWNED_PROBLEMS_CLOSED = 1
+PHASE12_1_OWNED_PROBLEMS_OPEN = 0
+NEW_P0_INTRODUCED_BY_12_1 = 0
+P12X1_ACCEPTANCE = 8/8
+```
+
+## Lifecycle, Handoffs and Final State
+Implementation commit `60269556f70f07014224a801150f214887a56ee5` was verified by
+exact-SHA CI `31358512349`. Completion record was committed directly after that
+single CI confirmation, then only the Phase 12-1 task was archived directly;
+completion/archive CI was not awaited. `COMPLETION_RECORDED = YES` and
+`QUEUE_ARCHIVED = YES`. Phase 12-2 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`;
+Phase 13 is approved, not queued and not executable; Phase 14 was not created.

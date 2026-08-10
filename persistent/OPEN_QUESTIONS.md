@@ -1216,3 +1216,5 @@ is the only remaining work.
 - Phase 12-1 may close only `UX-007` through shared visual-system consolidation.
   Navigation, viewer, trust-path, Recipe, mobile and cross-product issues retain
   their original Phase 12 owners.
+- Closed by implementation `60269556f70f07014224a801150f214887a56ee5`; remaining
+  issues retain their Phase 12-2 through 12-7 ownership.
