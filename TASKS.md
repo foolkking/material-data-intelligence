@@ -1,5 +1,5 @@
 ---TASK---
-状态：处理中
+状态：已完成
 
 # Phase 12-3 Reviewer Prompt
 
@@ -5200,5 +5200,10 @@ Phase 12-4 handoff state
 然后等待 reviewer。
 
 
+
+完成时间：2026-08-10 16:43 CST
+修改文件：Workspace shell/gallery/model/CSS、Phase 12 docs/evidence、persistent state、queue governance tests。
+修改摘要：完成结果优先 Workspace 层级、统一 scientific viewer chrome、精确选择与 Artifact authority 保留，并关闭 UX-002/UX-003。
+测试结果：backend 1298 passed/50 skipped；frontend 451 passed；typecheck/build/lock/diff PASS；Chromium/Firefox/WebKit/390x844 PASS；implementation CI 31370240101 PASS。
 
 ---END---

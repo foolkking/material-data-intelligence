@@ -2483,7 +2483,10 @@ current board above.
   further CI wait.
 ## Phase 12-3
 
-- [ ] Implement result-first Scientific Workspace presentation and shared
+- [x] Implement result-first Scientific Workspace presentation and shared
   scientific viewer chrome.
-- [ ] Preserve exact panel URL, Artifact, Selection, Workspace and scientific
+- [x] Preserve exact panel URL, Artifact, Selection, Workspace and scientific
   payload authorities; close only `UX-002` and `UX-003`.
+
+- Implementation `9b38a753bda134e9c27425e1193d2980a0790731` passed exact-SHA
+  CI `31370240101`. Phase 12-4 remains reviewer-gated and unqueued.

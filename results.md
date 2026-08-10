@@ -9093,3 +9093,108 @@ queue archive is committed directly without another CI wait. Phase 12-2 is
 `PASS / GLOBAL_NAVIGATION_AND_PLANNER_EXPERIENCE_IMPLEMENTED / QUEUE_ARCHIVED`.
 Phase 12-3 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; Phase 13 is approved,
 not queued and not executable.
+# Phase 12-3 Scientific Workspace + Scientific Viewer Experience Result
+
+## Conclusion
+PASS. Phase 12-3 implements a result-first Scientific Workspace and shared
+scientific-viewer chrome without changing scientific, Artifact, Selection,
+Workspace, backend or API authority. This does not complete Phase 12.
+
+## Baseline and Entry Gate
+Phase 12-2 implementation `d046acfcb7ea7741d7cc3567565c2cce9bcb6722`
+and CI `31365743510` are verified. Entry HEAD/origin was `b54e429`, branch
+`master`, clean worktree, one authorized Phase 12-3 task after admission,
+Registry 62, DataProfile 2.4 and migration
+`0007_phase10m1_workspace_domain`. DS2 and Phase 11 scientific authority were
+read-only dependencies.
+
+## Workspace, Results and Viewer Delivery
+- Existing persisted panels are presented as Overview, Data, Analysis
+  (Plan/Execution), Results, Findings, Evidence, Report and Advanced
+  (Provenance). All nine original panel kinds and exact panel URLs remain.
+- Results lead with persisted result meaning, state, counts and selection
+  availability before Artifact mechanics. Scientific and Developer details
+  retain renderer contracts, panel IDs, compatibility and audit JSON.
+- The Artifact Gallery remains metadata-first and exact. Payloads load only on
+  explicit Open through scope/contract/length/checksum validation.
+- Active result viewers use shared title, state, warning, focus and close
+  chrome. Specialized chart/3D/trajectory/electronic controls, geometry,
+  values, units, selection and series colors are unchanged.
+- `UX-002` and `UX-003` are `FIXED_WITH_EVIDENCE`. UX-004 -> 12-4, UX-005 ->
+  12-5, UX-006/009 -> 12-6, and UX-010 -> 12-7 remain open with their owners.
+
+## Selection, Lifecycle and Authority
+Exact compatible selection, versioned URL selection, Back/Forward/reload,
+one Workspace per Job, server layout authority, cancellation, stale-response
+suppression, `WorkspaceHeavyViewerLease`, inert fallback, and table/text
+alternatives remain intact. No latest, fuzzy, label, filename or array-position
+binding was introduced. Findings/Evidence/Inspector redesign remains Phase 12-4.
+
+## Verification and Evidence
+Local: backend `1298 passed, 50 skipped`; frontend `451 passed`; typecheck,
+production build, `uv lock --check` and `git diff --check` PASS. Retained
+Workspace/Artifact Gallery replay passed Chromium, Firefox, WebKit and Chromium
+390x844. Deterministic evidence contains 53 hashed entries, including desktop,
+mobile and partial screenshots, at
+`docs/phase12/evidence/phase12_3_scientific_workspace_viewers/`.
+
+Implementation exact-SHA CI `31370240101` passed Unit, Frontend/Typecheck/Build
+and all retained browser replays, PostgreSQL/Redis/MinIO service integration,
+and Linux/Windows invariant replay for
+`9b38a753bda134e9c27425e1193d2980a0790731`.
+
+`P12X3-A01` through `P12X3-A08`: `8/8`; missing/extra/duplicate/conflicting =
+`0/0/0/0`. `npm audit = UNAVAILABLE` under the configured mirror policy; lock,
+dependency tree and security tests pass.
+
+## Required Markers
+```text
+PHASE12_3_PRODUCTION_UI_CHANGES = YES_WORKSPACE_VIEWER_PRESENTATION_ONLY
+PHASE12_3_BACKEND_BEHAVIOR_CHANGES = 0
+PHASE12_3_SCIENTIFIC_BEHAVIOR_CHANGES = 0
+PHASE12_3_NEW_SCIENTIFIC_TOOLS = 0
+PHASE12_3_NEW_SCIENTIFIC_ALGORITHMS = 0
+PHASE12_3_NEW_ARTIFACT_FAMILIES = 0
+PHASE12_3_NEW_DATAPROFILE_VERSION = 0
+PHASE12_3_NEW_ANALYSISPLAN_VERSION = 0
+PHASE12_3_NEW_DATABASE_MIGRATIONS = 0
+PHASE12_3_NEW_PUBLIC_API_FAMILIES = 0
+PHASE12_3_NEW_PYTHON_DEPENDENCIES = 0
+PHASE12_3_NEW_FRONTEND_DEPENDENCIES = 0
+PHASE12_3_LOCKFILE_CHANGES = 0
+PHASE12_3_NEW_LLM_CALL_SITES = 0
+PHASE12_3_REAL_LLM_CALLS = 0
+PHASE12_3_FRONTEND_SCIENTIFIC_RECOMPUTATION = 0
+REGISTRY_BEFORE_12_3 = 62
+REGISTRY_AFTER_12_3 = 62
+DATAPROFILE_BEFORE_12_3 = 2.4
+DATAPROFILE_AFTER_12_3 = 2.4
+MIGRATION_AFTER_12_3 = 0007_phase10m1_workspace_domain
+ONE_WORKSPACE_PER_JOB = YES
+LOCAL_STORAGE_CANONICAL_AUTHORITY = NONE
+SESSION_STORAGE_CANONICAL_AUTHORITY = NONE
+LATEST_SCIENTIFIC_REBINDING = 0
+FUZZY_SCIENTIFIC_IDENTITY = 0
+SCREENSHOT_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+FRONTEND_SCIENTIFIC_AUTHORITY = NONE
+SCIENTIFIC_COLOR_MAPPING_CHANGES = 0
+INITIAL_HEAVY_PAYLOAD_REQUESTS = 0
+P12X3_OWNED_PROBLEMS = UX-002, UX-003
+P12X3_OWNED_PROBLEMS_CLOSED = 2
+P12X3_OWNED_PROBLEMS_OPEN = 0
+NEW_P0_INTRODUCED_BY_12_3 = 0
+NEW_P1_INTRODUCED_BY_12_3 = 0
+P12X3_ACCEPTANCE = 8/8
+FULL_PRODUCT_ACCESSIBILITY_COMPLETE = NO
+IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI = PASS
+COMPLETION_RECORDED = YES
+QUEUE_ARCHIVED = PENDING_ARCHIVE_COMMIT
+```
+
+## Lifecycle and Gate
+Implementation commit `9b38a753bda134e9c27425e1193d2980a0790731`, CI
+`31370240101` PASS. The completion record is committed directly after the one
+required CI confirmation. Only the Phase 12-3 task is then removed in a direct
+queue-archive commit, without waiting for another CI. Phase 12-4 remains
+`REVIEWER_GATE / AWAITING REVIEWER PROMPT`; Phase 13 is approved but not queued
+or executable.

@@ -146,10 +146,10 @@ Phase 11 is `COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS`. Phase 12-0
 is `COMPLETE / PRODUCT_EXPERIENCE_AUDITED / REVIEWER_APPROVAL_REQUIRED`;
 Phase 12-1 is `COMPLETE / DESIGN_SYSTEM_2_0_IMPLEMENTED /
 VISUAL_LANGUAGE_FOUNDATION_SEALED`; Phase 12-2 is `COMPLETE /
-GLOBAL_NAVIGATION_AND_PLANNER_EXPERIENCE_IMPLEMENTED`; Phase 12-3 is the
-current active implementation phase under reviewer authorization. It owns
-result-first Workspace presentation and shared scientific viewer chrome; it does
-not change scientific or Workspace authority. The
+GLOBAL_NAVIGATION_AND_PLANNER_EXPERIENCE_IMPLEMENTED`; Phase 12-3 is
+`COMPLETE / SCIENTIFIC_WORKSPACE_AND_VIEWER_EXPERIENCE_IMPLEMENTED` and Phase
+12-4 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`. Phase 12-3 changed
+presentation only; scientific and Workspace authority remain unchanged. The
 former Phase 12 final-closure numbering is superseded by the approved Phase 12
 UI/UX and Phase 13 final-closure split.
 

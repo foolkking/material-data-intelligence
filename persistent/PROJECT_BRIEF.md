@@ -482,3 +482,7 @@ Phase 12-3 is now the single active reviewer-authorized task. Its presentation
 scope is result-first Workspace hierarchy and shared scientific viewer chrome;
 Workspace, Artifact, Selection, URL and scientific payload authorities remain
 unchanged. UX-002 and UX-003 are the only owned issues.
+
+Phase 12-3 completed at implementation `9b38a753bda134e9c27425e1193d2980a0790731`
+with exact-SHA CI `31370240101`. Phase 12-4 is reviewer-gated; no future
+executable task has been created.

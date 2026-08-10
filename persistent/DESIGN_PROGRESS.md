@@ -2167,3 +2167,7 @@ nine panel kinds are presentation-grouped as Overview, Data, Analysis, Results,
 Findings, Evidence, Report and Advanced/Provenance. Result summaries and shared
 viewer framing are being added without changing scientific or Workspace
 authority.
+
+Phase 12-3 is complete. Implementation `9b38a753bda134e9c27425e1193d2980a0790731`
+passed exact-SHA CI `31370240101`; result-first hierarchy and shared viewer
+chrome are sealed, with UX-002/UX-003 closed and Phase 12-4 reviewer-gated.
