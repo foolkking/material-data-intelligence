@@ -32,3 +32,6 @@ Phase 11-1 keeps Registry 62, DataProfile 2.4, migration 0007, tolerances, scien
 ## Phase 11-2 Lock
 
 Phase 11-2 consumes only the sealed Phase 11-1 handoff and existing locked dependencies. Expected and actual records remain separate; reference-limited cases are N/A, not PASS. No new Tool, algorithm, Artifact family, DataProfile/AnalysisPlan version, migration, API family, dependency, tolerance, or frontend scientific authority may be introduced.
+
+Phase 11-4 is similarly audit-only. It may classify existing Tool, input, and official-example evidence,
+but cannot promote coverage from browser, service, fixture, mapping, or self-reference evidence.

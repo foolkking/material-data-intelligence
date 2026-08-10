@@ -1,0 +1,4295 @@
+{
+  "rowCount": 62,
+  "tools": [
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "composition",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use formulas from DataFrames or normalized Composition objects.",
+            "name": "formula_or_composition_collection",
+            "requiredFields": [
+              {
+                "dtype": "string",
+                "role": "formula"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame",
+              "Composition"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "composition.chem_sys_sunburst",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "composition",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use formulas from DataFrames or normalized Composition objects.",
+            "name": "formula_or_composition_collection",
+            "requiredFields": [
+              {
+                "dtype": "string",
+                "role": "formula"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame",
+              "Composition"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "composition.chem_sys_treemap",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "composition",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use formulas from DataFrames or normalized Composition objects.",
+            "name": "formula_or_composition_collection",
+            "requiredFields": [
+              {
+                "dtype": "string",
+                "role": "formula"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame",
+              "Composition"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "composition.cluster_2d",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "composition",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use formulas from DataFrames or normalized Composition objects.",
+            "name": "formula_or_composition_collection",
+            "requiredFields": [
+              {
+                "dtype": "string",
+                "role": "formula"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame",
+              "Composition"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "composition.cluster_3d",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "composition",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use formulas from DataFrames or normalized Composition objects.",
+            "name": "formula_or_composition_collection",
+            "requiredFields": [
+              {
+                "dtype": "string",
+                "role": "formula"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame",
+              "Composition"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "composition.elements_hist",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "composition",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use formulas from DataFrames or normalized Composition objects.",
+            "name": "formula_or_composition_collection",
+            "requiredFields": [
+              {
+                "dtype": "string",
+                "role": "formula"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame",
+              "Composition"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "composition.formula_statistics",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "composition",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use formulas from a table column.",
+            "name": "formula_column",
+            "requiredFields": [
+              {
+                "dtype": "string",
+                "role": "formula"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          },
+          {
+            "description": "Use normalized Composition objects.",
+            "name": "composition_objects",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Composition"
+            ]
+          },
+          {
+            "description": "Use an element-to-value mapping.",
+            "name": "element_value_map",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "ElementValueMap"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "composition.ptable_heatmap",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "composition",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use formulas from DataFrames or normalized Composition objects.",
+            "name": "formula_or_composition_collection",
+            "requiredFields": [
+              {
+                "dtype": "string",
+                "role": "formula"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame",
+              "Composition"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "composition.ptable_heatmap_splits",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "composition",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use formulas from DataFrames or normalized Composition objects.",
+            "name": "formula_or_composition_collection",
+            "requiredFields": [
+              {
+                "dtype": "string",
+                "role": "formula"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame",
+              "Composition"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "composition.ptable_hists",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "composition",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use formulas from DataFrames or normalized Composition objects.",
+            "name": "formula_or_composition_collection",
+            "requiredFields": [
+              {
+                "dtype": "string",
+                "role": "formula"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame",
+              "Composition"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "composition.ptable_scatter",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "composition",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use formulas from DataFrames or normalized Composition objects.",
+            "name": "formula_or_composition_collection",
+            "requiredFields": [
+              {
+                "dtype": "string",
+                "role": "formula"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame",
+              "Composition"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "composition.summary",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "dataset",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one Material Data Profile 2.0 ref and one or two explicitly identified DataFrames with canonical material_formula semantics. Optional ML coloring requires an explicit sample-bound Phase 10K-3 artifact.",
+            "name": "profile_bound_composition_tables",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "dataset.composition_space",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "dataset",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a Profile 2.0 ref plus its explicitly identified DataFrame and optional canonical Structure resources. Comparison requires two named resources or one explicit group column.",
+            "name": "profile_bound_material_table",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          },
+          {
+            "description": "Use a Profile 2.0 ref plus the matching bounded canonical Structure collection.",
+            "name": "profile_bound_structure_collection",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "quality_issues_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "dataset.materials_explorer",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "electronic",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one immutable phase10n5.electronic_band_resource.v1 object.",
+            "name": "supplied_electronic_band_resource",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "ElectronicBand"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "electronic.band_structure",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "electronic",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one immutable phase10n5.electronic_dos_resource.v1 object.",
+            "name": "supplied_electronic_dos_resource",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "ElectronicDos"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "electronic.dos",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "ml",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame with target and prediction columns.",
+            "name": "ml_results_dataframe",
+            "requiredFields": [
+              {
+                "dtype": "number",
+                "role": "target"
+              },
+              {
+                "dtype": "number",
+                "role": "prediction"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "metrics_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "ml.basic_metrics",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "ml",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one Material Data Profile 2.0 ref and the explicitly bound immutable result DataFrame. Target, prediction, uncertainty, probability, unit, and sample identities come only from the Profile contract.",
+            "name": "profile_bound_ml_result_table",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "ml.classification_evaluation",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "ml",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame with target and prediction columns.",
+            "name": "ml_results_dataframe",
+            "requiredFields": [
+              {
+                "dtype": "number",
+                "role": "target"
+              },
+              {
+                "dtype": "number",
+                "role": "prediction"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "ml.density_scatter",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "ml",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame with target and prediction columns.",
+            "name": "ml_results_dataframe",
+            "requiredFields": [
+              {
+                "dtype": "number",
+                "role": "target"
+              },
+              {
+                "dtype": "number",
+                "role": "prediction"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "ml.error_by_chem_sys",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "ml",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame with target and prediction columns.",
+            "name": "ml_results_dataframe",
+            "requiredFields": [
+              {
+                "dtype": "number",
+                "role": "target"
+              },
+              {
+                "dtype": "number",
+                "role": "prediction"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "ml.error_by_element",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "ml",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame with target and prediction columns.",
+            "name": "ml_results_dataframe",
+            "requiredFields": [
+              {
+                "dtype": "number",
+                "role": "target"
+              },
+              {
+                "dtype": "number",
+                "role": "prediction"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "metrics_json",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "ml.error_distribution",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "ml",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame with target and prediction columns.",
+            "name": "ml_results_dataframe",
+            "requiredFields": [
+              {
+                "dtype": "number",
+                "role": "target"
+              },
+              {
+                "dtype": "number",
+                "role": "prediction"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "table_csv",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "ml.outlier_table",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "ml",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame with target and prediction columns.",
+            "name": "ml_results_dataframe",
+            "requiredFields": [
+              {
+                "dtype": "number",
+                "role": "target"
+              },
+              {
+                "dtype": "number",
+                "role": "prediction"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "ml.parity_plot",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "ml",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one Material Data Profile 2.0 ref and the explicitly bound immutable result DataFrame. Target, prediction, uncertainty, probability, unit, and sample identities come only from the Profile contract.",
+            "name": "profile_bound_ml_result_table",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "ml.regression_evaluation",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "ml",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame with target and prediction columns.",
+            "name": "ml_results_dataframe",
+            "requiredFields": [
+              {
+                "dtype": "number",
+                "role": "target"
+              },
+              {
+                "dtype": "number",
+                "role": "prediction"
+              }
+            ],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "metrics_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "ml.uncertainty_calibration",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "ml",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one Material Data Profile 2.0 ref and the explicitly bound immutable result DataFrame. Target, prediction, uncertainty, probability, unit, and sample identities come only from the Profile contract.",
+            "name": "profile_bound_ml_result_table",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "ml.uncertainty_evaluation",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "phonon",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly three role-bound inert inputs: canonical structure, validated phase10h band, and validated phase10h eigenvector set.",
+            "name": "approved_structure_band_and_eigenvectors",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure",
+              "PhononBand",
+              "PhononEigenvector"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "phonon_animation_json",
+        "phonon_animation_summary_json",
+        "phonon_animation_manifest_json",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "phonon.animation",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "phonon",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one validated phase10h.phonon_band.v1 object or bounded phonopy band.yaml wrapper.",
+            "name": "approved_phonon_band",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "PhononBand"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "phonon_band_json",
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "plotly_json",
+        "table_json",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "phonon.band",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "phonon",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly two role-bound artifact references: one validated phase10h.phonon_band.v1 and one validated phase10h.phonon_dos.v1.",
+            "name": "approved_phonon_band_and_dos_artifacts",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "PhononBand",
+              "PhononDos"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "phonon_band_dos_json",
+        "phonon_summary_json",
+        "phonon_compatibility_json",
+        "plotly_json",
+        "table_json",
+        "phonon_manifest_json",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "phonon.band_dos",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "phonon",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one validated phase10h.phonon_dos.v1 object or bounded phonopy DOS text wrapper with explicit structure and projection metadata.",
+            "name": "approved_phonon_dos",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "PhononDos"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "phonon_dos_json",
+        "phonon_summary_json",
+        "phonon_report_json",
+        "phonon_manifest_json",
+        "plotly_json",
+        "table_json",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "phonon.dos",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [
+        "P11B-008"
+      ],
+      "benchmarkVerdicts": [
+        "PASS_INVARIANT"
+      ],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one ordered non-magnetic three-dimensional periodic Structure.",
+            "name": "single_periodic_structure",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "reciprocal_lattice_json",
+        "brillouin_zone_json",
+        "kpath_json",
+        "brillouin_zone_manifest_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [
+        {
+          "11_2Verdict": "PASS_INVARIANT",
+          "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI",
+          "benchmarkId": "P11B-008",
+          "browserStatus": "CANONICAL_MATRIX_REQUIRED",
+          "coverageEligibilityFacts": [
+            "identity exact",
+            "units exact",
+            "no reference mutation"
+          ],
+          "evidenceRefs": [
+            "benchmarks/P11B-008/comparison.json"
+          ],
+          "inputSupportRelationship": "SEALED_FIXTURE",
+          "knownLimitations": [
+            "invariant-only; no numeric value"
+          ],
+          "numericCrossPlatformStatus": "NOT_APPLICABLE",
+          "officialExampleRelationship": "SELF_REFERENCE",
+          "referenceProvenanceStatus": "ANALYTIC_REFERENCE",
+          "remainingGaps": [
+            "numeric cross-platform value not present"
+          ],
+          "roleClass": "SCIENTIFIC_VALIDATION_INPUT",
+          "serviceStatus": "REGRESSION_ONLY",
+          "toolId": "structure.brillouin_zone",
+          "toolVersion": "0.1.0",
+          "v4Status": "NOT_PROMOTED",
+          "validationLevel": "V2",
+          "varianceVerdict": "PASS_INVARIANT_CI"
+        }
+      ],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.brillouin_zone",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.chem_env_sunburst",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.composition_from_structure",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.coordination_crystalnn",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.coordination_hist",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.coordination_voronoinn",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [
+        "P11B-003"
+      ],
+      "benchmarkVerdicts": [
+        "PASS_INVARIANT"
+      ],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use one explicit experimental XRD Resource and one exact persisted structure.xrd Artifact.",
+            "name": "experimental_resource_and_theoretical_xrd",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "DataFrame",
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [
+        {
+          "11_2Verdict": "PASS_INVARIANT",
+          "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI",
+          "benchmarkId": "P11B-003",
+          "browserStatus": "CANONICAL_MATRIX_REQUIRED",
+          "coverageEligibilityFacts": [
+            "identity exact",
+            "units exact",
+            "no reference mutation"
+          ],
+          "evidenceRefs": [
+            "benchmarks/P11B-003/comparison.json"
+          ],
+          "inputSupportRelationship": "SEALED_FIXTURE",
+          "knownLimitations": [
+            "invariant-only; no numeric value"
+          ],
+          "numericCrossPlatformStatus": "NOT_APPLICABLE",
+          "officialExampleRelationship": "SELF_REFERENCE",
+          "referenceProvenanceStatus": "ANALYTIC_REFERENCE",
+          "remainingGaps": [
+            "numeric cross-platform value not present"
+          ],
+          "roleClass": "SCIENTIFIC_VALIDATION_INPUT",
+          "serviceStatus": "REGRESSION_ONLY",
+          "toolId": "structure.experimental_xrd_comparison",
+          "toolVersion": "0.1.0",
+          "v4Status": "NOT_PROMOTED",
+          "validationLevel": "V2",
+          "varianceVerdict": "PASS_INVARIANT_CI"
+        }
+      ],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.experimental_xrd_comparison",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.lattice_summary",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [
+        "P11B-002"
+      ],
+      "benchmarkVerdicts": [
+        "PASS_INVARIANT"
+      ],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [
+        {
+          "11_2Verdict": "PASS_INVARIANT",
+          "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI",
+          "benchmarkId": "P11B-002",
+          "browserStatus": "CANONICAL_MATRIX_REQUIRED",
+          "coverageEligibilityFacts": [
+            "identity exact",
+            "units exact",
+            "no reference mutation"
+          ],
+          "evidenceRefs": [
+            "benchmarks/P11B-002/comparison.json"
+          ],
+          "inputSupportRelationship": "SEALED_FIXTURE",
+          "knownLimitations": [
+            "invariant-only; no numeric value"
+          ],
+          "numericCrossPlatformStatus": "NOT_APPLICABLE",
+          "officialExampleRelationship": "SELF_REFERENCE",
+          "referenceProvenanceStatus": "INDEPENDENT_CROSS_LIBRARY_REFERENCE",
+          "remainingGaps": [
+            "numeric cross-platform value not present"
+          ],
+          "roleClass": "SCIENTIFIC_VALIDATION_INPUT",
+          "serviceStatus": "REGRESSION_ONLY",
+          "toolId": "structure.local_environment_polyhedra",
+          "toolVersion": "0.1.0",
+          "v4Status": "NOT_PROMOTED",
+          "validationLevel": "V2",
+          "varianceVerdict": "PASS_INVARIANT_CI"
+        }
+      ],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.local_environment_polyhedra",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "structure_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.preview_metadata",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.rdf",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.spacegroup_summary",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.structure_2d",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use one or more periodic pymatgen Structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "preview_png",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.structure_3d",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "structure_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.summary",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one bounded normalized phase10g.trajectory.v1 object.",
+            "name": "validated_trajectory",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Trajectory"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "trajectory_json",
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.trajectory_import",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one bounded normalized phase10g.trajectory.v1 object.",
+            "name": "validated_trajectory",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Trajectory"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "trajectory_json",
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.trajectory_viewer",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one periodic structure to generate a canonical inert viewer scene.",
+            "name": "single_periodic_structure",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "structure_json",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.viewer_3d",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "structure_json",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.viewer_export_package",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "structure_json",
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.viewer_scene",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "structure_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.viewer_scene_metadata",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one parser-validated bounded VASP volumetric or single-dataset Gaussian CUBE object.",
+            "name": "single_bounded_volumetric_source",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "VolumetricData"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "volumetric_grid_json",
+        "volumetric_payload_json",
+        "volumetric_field_json",
+        "volumetric_dataset_json",
+        "volumetric_manifest_json",
+        "volumetric_binary",
+        "volumetric_structure_overlay_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.volumetric_data",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "structure",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use periodic structure objects.",
+            "name": "periodic_structures",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Structure"
+            ]
+          }
+        ],
+        "periodicity": "periodic_required"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "structure.xrd",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "table",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame or table records for descriptive statistics.",
+            "name": "table_dataframe",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "table.distribution_summary",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "table",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame or table records for descriptive statistics.",
+            "name": "table_dataframe",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "table.numeric_summary",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "trajectory",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one persisted phase10n4 trajectory MSD Artifact binding.",
+            "name": "persisted_msd_artifact",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Trajectory"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "trajectory.diffusion",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "trajectory",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one immutable phase10g trajectory resource.",
+            "name": "validated_trajectory",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Trajectory"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "trajectory.msd",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [
+        "P11B-004"
+      ],
+      "benchmarkVerdicts": [
+        "PASS_INVARIANT"
+      ],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "trajectory",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use exactly one immutable phase10g trajectory resource.",
+            "name": "validated_trajectory",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "Trajectory"
+            ]
+          }
+        ],
+        "periodicity": "any"
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "plotly_json",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [
+        {
+          "11_2Verdict": "PASS_INVARIANT",
+          "11_3VarianceVerdict": "PENDING_IMPLEMENTATION_CI",
+          "benchmarkId": "P11B-004",
+          "browserStatus": "CANONICAL_MATRIX_REQUIRED",
+          "coverageEligibilityFacts": [
+            "identity exact",
+            "units exact",
+            "no reference mutation"
+          ],
+          "evidenceRefs": [
+            "benchmarks/P11B-004/comparison.json"
+          ],
+          "inputSupportRelationship": "SEALED_FIXTURE",
+          "knownLimitations": [
+            "invariant-only; no numeric value"
+          ],
+          "numericCrossPlatformStatus": "NOT_APPLICABLE",
+          "officialExampleRelationship": "SELF_REFERENCE",
+          "referenceProvenanceStatus": "ANALYTIC_REFERENCE",
+          "remainingGaps": [
+            "numeric cross-platform value not present"
+          ],
+          "roleClass": "SCIENTIFIC_VALIDATION_INPUT",
+          "serviceStatus": "REGRESSION_ONLY",
+          "toolId": "trajectory.rdf",
+          "toolVersion": "0.1.0",
+          "v4Status": "NOT_PROMOTED",
+          "validationLevel": "V2",
+          "varianceVerdict": "PASS_INVARIANT_CI"
+        }
+      ],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "trajectory.rdf",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "trajectory",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "matterviz_html",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "trajectory.viewer",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "viz",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame or table records for visualization artifacts.",
+            "name": "table_dataframe",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "table_json",
+        "plotly_json",
+        "plotly_html",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "viz.correlation",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "viz",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame or table records for visualization artifacts.",
+            "name": "table_dataframe",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "viz.histogram",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    },
+    {
+      "availability": "RUNTIME_REGISTERED",
+      "benchmarkIds": [],
+      "benchmarkVerdicts": [],
+      "browserStatus": "RETAINED_EVIDENCE",
+      "coverageReason": "The platform path and retained regression evidence are indexed, but the current record does not provide independently governed expected values for this coverage axis.",
+      "coverageVerdict": "MAPPING_ONLY",
+      "dependencies": [],
+      "domain": "viz",
+      "evidenceRefs": [
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/tool_validation_matrix.json",
+        "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/phase11_4_handoff.json"
+      ],
+      "inputContracts": {
+        "inputOptions": [
+          {
+            "description": "Use a DataFrame or table records for visualization artifacts.",
+            "name": "table_dataframe",
+            "requiredFields": [],
+            "requiredObjectTypes": [
+              "DataFrame"
+            ]
+          }
+        ],
+        "periodicity": null
+      },
+      "knownLimits": [
+        "Coverage classification is independent from validation level.",
+        "Browser and service evidence are not numeric scientific references.",
+        "Phase 11-3 PASS_INVARIANT_CI contains no bounded numeric cross-platform claim."
+      ],
+      "outputArtifacts": [
+        "plotly_json",
+        "plotly_html",
+        "summary_md",
+        "recipe_json"
+      ],
+      "phase11_3Cases": [],
+      "referenceIndependence": "INTERNAL_REGRESSION",
+      "referenceTypes": [
+        "REPOSITORY_INTERNAL_EXPECTED_VALUE"
+      ],
+      "revalidationTriggers": [
+        "tool or algorithm version change",
+        "scientific contract or unit semantics change",
+        "input parser semantics change",
+        "reference, expected value, or tolerance change"
+      ],
+      "roleClass": null,
+      "scientificAuthority": "REGISTERED_ADAPTER",
+      "serviceStatus": "RETAINED_EVIDENCE",
+      "toolId": "viz.scatter",
+      "toolVersion": "0.1.0",
+      "validationLevel": "V1_RUNTIME_AND_ARTIFACT_VERIFIED",
+      "whatWasNotVerified": [
+        "independent numeric reference equality",
+        "universal input-format support"
+      ],
+      "whatWasVerified": [
+        "Registry identity",
+        "declared contract/runtime disposition",
+        "retained regression evidence"
+      ]
+    }
+  ]
+}

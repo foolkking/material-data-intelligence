@@ -144,6 +144,15 @@ def test_roadmap_and_queue_boundaries_are_exact() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
     assert len(blocks) in {0, 1, 2, 3}
+    if blocks and "Phase 11-4 Reviewer Prompt" in blocks[0]:
+        assert len(blocks) == 2
+        assert "状态：处理中" in blocks[0]
+        assert "Phase 11-5 Reviewer Prompt" in blocks[1]
+        return
+    if blocks and "Phase 11-5 Reviewer Prompt" in blocks[0]:
+        assert len(blocks) == 1
+        assert "状态：处理中" in blocks[0]
+        return
     if len(blocks) == 1:
         assert (
             "Phase 11-0 Validation Baseline Reconciliation + Governance Seal" in blocks[0]

@@ -22,3 +22,8 @@ Current audited headline verdicts:
 | LAMMPS trajectory | UNSUPPORTED | no platform parser path |
 
 Library theoretical capability is not platform support. Unsupported inputs cannot be promoted by documentation or example mapping.
+
+Phase 11-4 preserves these 14 support verdicts and records input-path coverage separately in
+`evidence/phase11_4_honest_tool_input_example_coverage/input_coverage_matrix.json`.
+`DIRECT_VERIFIED` there means a directly exercised platform input path only; it is not a claim of
+independent scientific numeric validation.

@@ -446,3 +446,7 @@ Phase 11-2 implementation passed exact-SHA CI `31328760532`. The bounded suite r
 Phase 11-3 is now active. It adds validation-only Linux/Windows replay jobs for the eight invariant handoff records, keeps numeric cross-platform claims unavailable, and changes no production scientific authority.
 
 Phase 11-3 is complete after CI `31332350363` passed Linux, Windows, unit, service-backed, frontend, browser, typecheck, and build gates. Phase 11-4 remains reviewer-gated and non-executable; Registry 62 and DataProfile 2.4 remain sealed.
+
+Phase 11-4 coverage reconciliation is the current active audit task. It classifies 62 Tools, 14 input
+families, and 55 retained official/example records without adding scientific authority. Phase 11-5
+remains reviewer-gated; Phase 12 and Phase 13 remain approved but not queued.

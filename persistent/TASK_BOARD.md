@@ -2438,4 +2438,5 @@ current board above.
 ## Phase 11-1
 
 - [x] Phase 11-1 Reference Provenance + Safe Fixture Consolidation completed and archived.
-- [ ] Phase 11-2 Cross-Capability Golden Scientific Benchmark Suite is in progress; its task remains the only active queue item.
+- [ ] Phase 11-4 Honest Tool / Input / Official-Example Coverage Matrix is in progress; it is the only active queue item.
+- [ ] Phase 11-5 Scientific Validation Closure + Release Candidate Gate remains reviewer-gated and is not executable.

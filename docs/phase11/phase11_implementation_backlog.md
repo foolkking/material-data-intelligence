@@ -52,3 +52,6 @@ Publish Tool, Input, and Official/Candidate Example matrices under the exact ver
 ## Phase 11-5: Closure
 
 Require a Reference Registry, Golden Benchmark Suite, Tolerance Registry, Variance Matrix, Tool Validation Matrix, Input Support Matrix, Honest Example Coverage Matrix, Reproducibility Report, Known Scientific Limitations, Evidence Manifest, and final acceptance. Target wording is `COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS`, never `ALL_SCIENCE_CORRECT`.
+
+Phase 11-4 coverage classification is implemented as an audit/evidence deliverable only. Phase 11-5
+remains reviewer-gated and is the only authority allowed to close Phase 11.

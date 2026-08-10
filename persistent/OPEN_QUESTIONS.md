@@ -1192,3 +1192,6 @@ is the only remaining work.
 - Phase 11-2 preserves this limitation: no numeric value is manufactured for the four N/A cases; Phase 11-3 must characterize only the eight reproducibility-ready cases.
 - Phase 11-3 cannot promote the invariant-only records to V4; numeric cross-platform reference evidence remains an honest gap for later coverage decisions.
 - Phase 11-3 replay is complete. Phase 11-4 must retain the eight invariant results as coverage inputs only and must not publish a numeric coverage verdict without reviewer authorization.
+
+- Phase 11-4 retains eight `PASS_INVARIANT_CI` cases with numeric cross-platform status `NOT_APPLICABLE`;
+  Phase 11-5 must decide final release validation status without treating coverage mapping as reference proof.

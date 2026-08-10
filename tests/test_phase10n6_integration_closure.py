@@ -119,6 +119,13 @@ def test_n6_queue_lifecycle_and_no_phase11_task() -> None:
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
     assert task_count in {0, 1, 2, 3}
+    if task_count == 2 and "Phase 11-4 Reviewer Prompt" in tasks:
+        assert "状态：处理中" in tasks
+        assert "Phase 11-5 Reviewer Prompt" in tasks
+        return
+    if task_count == 1 and "Phase 11-5 Reviewer Prompt" in tasks:
+        assert "状态：处理中" in tasks
+        return
     if task_count == 1 and "Phase 11-3 Reviewer Prompt" in tasks:
         assert "状态：处理中" in tasks
         return

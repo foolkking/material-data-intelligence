@@ -1,0 +1,70 @@
+{
+  "files": [
+    {
+      "path": "acceptance_registry.json",
+      "sha256": "308a394c2bdc2dff91f7c7ba75a90c91960954a730d389dad0d2bf3a459f610b"
+    },
+    {
+      "path": "baseline.txt",
+      "sha256": "b779be135b47bc5a408497620d124650e0c7a2400cd04f6c4f5ec3b0df4462fe"
+    },
+    {
+      "path": "coverage_consistency.json",
+      "sha256": "1fa0c472cabcbaa1cf4e8e767f4a404c02dc019e62b5b484c67847389b075962"
+    },
+    {
+      "path": "coverage_summary.json",
+      "sha256": "6456f9785254f1844f33da260d5c8a582631ec0b04a66b18e81342abe7c8ec18"
+    },
+    {
+      "path": "docs_link_check.txt",
+      "sha256": "0f950f88b0331e08e1ee99e8cf0ed1525a250d071cc32b787f1c0ac55a0a18b5"
+    },
+    {
+      "path": "entry_gate.md",
+      "sha256": "2edcaecc0264af65d295d259b0b74cfaa06b9feac28d3eff6675857220c1cdc7"
+    },
+    {
+      "path": "input_coverage_matrix.json",
+      "sha256": "2bec4bcc781ed8787c038872d05049c52241d20b9e548080760f0255257bf2d9"
+    },
+    {
+      "path": "known_limitations.json",
+      "sha256": "9e5d1ea5f136292c0d2535e11c19a88ec1be200b537b149f535f3b806c74d036"
+    },
+    {
+      "path": "no_production_change_audit.md",
+      "sha256": "1e22cb36975e8f30596c69a1015be91015d8fdb5ce6d62667fddca5fda4d98f1"
+    },
+    {
+      "path": "official_example_coverage_matrix.json",
+      "sha256": "1931ce1a8f76061672c23cf940caa27e2e5532b04ed061e82f93f244650fc36b"
+    },
+    {
+      "path": "overclaim_audit.md",
+      "sha256": "06a79efb9f4a59e969bad7e1a9e69cda86dfeab38dfca6ee8a42da21f17774fd"
+    },
+    {
+      "path": "phase11_5_closure_input_manifest.json",
+      "sha256": "887760fb0a47eee310dc57d000b24df08f0ad5ea51c425fabbc437513cc50e15"
+    },
+    {
+      "path": "public_claim_matrix.json",
+      "sha256": "aeb8ca7bc22bb91e8415a0c7b3736e90daf6eb940c30cec12c887b918d66b194"
+    },
+    {
+      "path": "remaining_gaps.json",
+      "sha256": "975d33c9e535fc97da31859930312080b848b86d169a5a38b6a7128c1aaa4342"
+    },
+    {
+      "path": "secret_scan.txt",
+      "sha256": "6c520306039e3be652d0758290aa2ebb695d14cc415c673ef7f2b09f00589080"
+    },
+    {
+      "path": "tool_coverage_matrix.json",
+      "sha256": "2b5c6cd262bc1e1e0db80d2b5e334d66bcd1a98327d4db2439f18133e3185a36"
+    }
+  ],
+  "schemaVersion": "phase11-4-evidence-manifest/1.0",
+  "scientificNumericAuthority": "none added by Phase 11-4"
+}

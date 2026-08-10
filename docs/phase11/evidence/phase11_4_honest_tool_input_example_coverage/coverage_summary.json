@@ -1,0 +1,39 @@
+{
+  "externalReferenceDownloads": 0,
+  "inputCount": 14,
+  "inputCoverageCounts": {
+    "DIRECT_VERIFIED": 10,
+    "EXTRACTION_REQUIRED": 0,
+    "FUTURE_SCOPE": 0,
+    "MAPPING_ONLY": 1,
+    "OFFICIAL_DERIVED_VERIFIED": 0,
+    "REFERENCE_VERIFIED": 0,
+    "UNSUPPORTED": 3
+  },
+  "newScientificAuthority": 0,
+  "numericCrossPlatformClaims": 0,
+  "officialExampleCount": 55,
+  "officialExampleCoverageCounts": {
+    "DIRECT_VERIFIED": 0,
+    "EXTRACTION_REQUIRED": 0,
+    "FUTURE_SCOPE": 0,
+    "MAPPING_ONLY": 55,
+    "OFFICIAL_DERIVED_VERIFIED": 0,
+    "REFERENCE_VERIFIED": 0,
+    "UNSUPPORTED": 0
+  },
+  "registryCount": 62,
+  "schemaVersion": "phase11-4-honest-coverage/1.0",
+  "supportVerdictChanges": 0,
+  "toolCoverageCounts": {
+    "DIRECT_VERIFIED": 0,
+    "EXTRACTION_REQUIRED": 0,
+    "FUTURE_SCOPE": 0,
+    "MAPPING_ONLY": 62,
+    "OFFICIAL_DERIVED_VERIFIED": 0,
+    "REFERENCE_VERIFIED": 0,
+    "UNSUPPORTED": 0
+  },
+  "v4Promotions": 0,
+  "validationLevelChanges": 0
+}

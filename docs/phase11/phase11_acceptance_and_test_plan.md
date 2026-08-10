@@ -58,3 +58,7 @@ P11V2-A10 IMPLEMENTATION_EXACT_SHA_CI_COMPLETION_ARCHIVE_AND_11_3_REVIEWER_GATE
 The phase requires deterministic matrix tests, retained Phase 10 evidence validators, docs links, TASKS lifecycle, secret scan, `git diff --check`, `uv lock --check`, full backend, frontend tests/typecheck/build, canonical browser regression, and PostgreSQL/Redis/MinIO regression with zero skips/failures/errors.
 
 The three-commit exact-SHA lifecycle is mandatory. Phase 11-1 remains reviewer-gated and absent from the executable queue.
+
+Phase 11-4 adds deterministic coverage consistency and overclaim checks. The implementation commit is
+the only CI wait gate for this task; completion and archive documentation commits follow the task policy
+without a second CI wait.

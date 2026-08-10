@@ -1541,3 +1541,6 @@ The Phase 11-2 evidence suite does not alter Tool metadata or scientific authori
 Phase 11-3 adds no Tool or Adapter. Its runner validates sealed evidence identities and emits no scientific result Artifact.
 
 Cross-platform CI replay passed without changing the Registry, Adapter bindings, or Artifact contracts.
+
+Phase 11-4 re-audited the live Registry and emitted an exact 62-row honest coverage matrix. No Tool was
+promoted from retained regression/mapping evidence to independent scientific reference coverage.

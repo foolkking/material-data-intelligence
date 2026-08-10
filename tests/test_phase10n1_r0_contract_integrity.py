@@ -58,6 +58,13 @@ def test_r0_exact_scope_and_queue_admission_are_closed() -> None:
     ):
         assert marker in scope
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    if "Phase 11-4 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 2 and "状态：处理中" in tasks
+        assert "Phase 11-5 Reviewer Prompt" in tasks
+        return
+    if "Phase 11-5 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
+        return
     if "Phase 11-3 Reviewer Prompt" in tasks:
         assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
         return

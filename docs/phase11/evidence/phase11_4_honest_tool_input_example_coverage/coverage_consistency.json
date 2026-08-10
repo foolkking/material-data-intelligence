@@ -1,0 +1,13 @@
+{
+  "exampleRows": 55,
+  "impossiblePromotions": 0,
+  "inputRows": 14,
+  "invalidVerdicts": 0,
+  "registryDuplicates": 0,
+  "registryRows": 62,
+  "supportVerdictChanges": 0,
+  "unclassifiedExamples": 0,
+  "unclassifiedInputs": 0,
+  "unclassifiedTools": 0,
+  "v4Rows": 0
+}

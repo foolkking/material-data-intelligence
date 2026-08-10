@@ -55,6 +55,13 @@ def test_n5_r0_required_contract_documents_exist_without_critical_tbd() -> None:
 
 def test_n5_queue_state_remains_compatible_through_n6_archive() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    if "Phase 11-4 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 2 and "状态：处理中" in tasks
+        assert "Phase 11-5 Reviewer Prompt" in tasks
+        return
+    if "Phase 11-5 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
+        return
     if "Phase 11-3 Reviewer Prompt" in tasks:
         assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
         return

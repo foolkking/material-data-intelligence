@@ -2133,3 +2133,7 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 ## Phase 11-1 Reference Provenance
 
 Completed the deterministic provenance and fixture handoff pack and started bounded Phase 11-2 golden replay. No external source was downloaded and no production scientific behavior changed. The current suite records 8 invariant replays and 4 reference-limited N/A cases.
+
+Phase 11-4 coverage matrices are now generated from the live Registry and retained evidence. The current
+classification is intentionally conservative: Tool coverage is mapping-only, input-path coverage is
+reported separately, and official/example records remain mapping-only pending governed extraction.
