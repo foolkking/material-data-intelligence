@@ -13,3 +13,14 @@
 All phases require Registry 62, DataProfile 2.4, existing Runtime/Artifact/
 Selection authority, zero frontend scientific recomputation, and no new dependency
 or migration unless separately reviewer-authorized.
+
+## 12-1 Execution Detail
+
+Sources: `apps/web/app/globals.css`, existing shared native controls and
+presentation-only `StatusLabel`. Allowed: semantic tokens, typography, density,
+surface/focus/motion/status rules, component styling and representative shared
+surface migration. Forbidden: Global/Workspace IA, Planner flow, viewer controls,
+scientific colors/payloads, backend/API/schema/Registry/Profile/dependency changes.
+Acceptance is `P12X1-A01` through `P12X1-A08`; the evidence manifest, browser
+matrix, mobile/focus/contrast foundation and exact-SHA CI are required. 12-2 and
+12-3 consume handoffs only after reviewer authorization.

@@ -2516,3 +2516,9 @@
   plan and execution lock.
 - Implementation `0ea893bb85d6abd90ab89bc81e1606b378ea1e7f` passed exact-SHA
   CI `31354589883`; production UI and Phase 11 scientific authority remain unchanged.
+
+## 2026-08-10 - Phase 12-1 Design System 2.0
+
+- Started the authorized Design System 2.0 presentation-only implementation.
+- DS2 uses existing CSS and component infrastructure; no UI framework, font,
+  external asset, scientific computation, backend/API/schema or dependency change is admitted.

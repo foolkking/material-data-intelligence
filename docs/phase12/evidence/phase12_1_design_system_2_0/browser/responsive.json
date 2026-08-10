@@ -1,0 +1,26 @@
+{
+  "desktopOverflow": {
+    "chromium": {
+      "body": 0,
+      "root": 0
+    },
+    "firefox": {
+      "body": 0,
+      "root": 0
+    },
+    "webkit": {
+      "body": 0,
+      "root": 0
+    }
+  },
+  "mobileViewport": [
+    390,
+    844
+  ],
+  "mobileOverflow": {
+    "body": 0,
+    "root": 0
+  },
+  "touchTargetMinimumObserved": 44,
+  "marker": "PHASE10M2_RESPONSIVE_PASS"
+}

@@ -133,7 +133,7 @@ def test_phase10m6_required_inventory_acceptance_authorities_and_screenshots() -
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     if not tasks.strip():
         return
-    if "Phase 12-0 Current UX Reality Audit" in tasks:
+    if "Phase 12-0 Current UX Reality Audit" in tasks or "Phase 12-1 Design System 2.0" in tasks:
         assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
         return
     if "Phase 11-4 Reviewer Prompt" in tasks:

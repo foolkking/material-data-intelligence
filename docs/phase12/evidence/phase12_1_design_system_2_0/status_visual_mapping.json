@@ -1,0 +1,95 @@
+{
+  "mappings": [
+    {
+      "UIVariant": "success",
+      "colorOnlyMeaning": false,
+      "colorToken": "color-status-success",
+      "iconPolicy": "optional decorative only",
+      "labelPolicy": "retain exact source label",
+      "scientificAuthorityChanged": false,
+      "sourceAuthority": "persisted runtime/profile/artifact state",
+      "sourceStatus": "ready"
+    },
+    {
+      "UIVariant": "neutral",
+      "colorOnlyMeaning": false,
+      "colorToken": "color-status-neutral",
+      "iconPolicy": "optional decorative only",
+      "labelPolicy": "retain exact source label",
+      "scientificAuthorityChanged": false,
+      "sourceAuthority": "persisted runtime/profile/artifact state",
+      "sourceStatus": "not run"
+    },
+    {
+      "UIVariant": "progress",
+      "colorOnlyMeaning": false,
+      "colorToken": "color-status-progress",
+      "iconPolicy": "optional decorative only",
+      "labelPolicy": "retain exact source label",
+      "scientificAuthorityChanged": false,
+      "sourceAuthority": "persisted runtime/profile/artifact state",
+      "sourceStatus": "running"
+    },
+    {
+      "UIVariant": "success",
+      "colorOnlyMeaning": false,
+      "colorToken": "color-status-success",
+      "iconPolicy": "optional decorative only",
+      "labelPolicy": "retain exact source label",
+      "scientificAuthorityChanged": false,
+      "sourceAuthority": "persisted runtime/profile/artifact state",
+      "sourceStatus": "produced"
+    },
+    {
+      "UIVariant": "partial",
+      "colorOnlyMeaning": false,
+      "colorToken": "color-status-partial",
+      "iconPolicy": "optional decorative only",
+      "labelPolicy": "retain exact source label",
+      "scientificAuthorityChanged": false,
+      "sourceAuthority": "persisted runtime/profile/artifact state",
+      "sourceStatus": "partial"
+    },
+    {
+      "UIVariant": "unsupported",
+      "colorOnlyMeaning": false,
+      "colorToken": "color-status-unsupported",
+      "iconPolicy": "optional decorative only",
+      "labelPolicy": "retain exact source label",
+      "scientificAuthorityChanged": false,
+      "sourceAuthority": "persisted runtime/profile/artifact state",
+      "sourceStatus": "unsupported"
+    },
+    {
+      "UIVariant": "stale",
+      "colorOnlyMeaning": false,
+      "colorToken": "color-status-stale",
+      "iconPolicy": "optional decorative only",
+      "labelPolicy": "retain exact source label",
+      "scientificAuthorityChanged": false,
+      "sourceAuthority": "persisted runtime/profile/artifact state",
+      "sourceStatus": "stale"
+    },
+    {
+      "UIVariant": "danger",
+      "colorOnlyMeaning": false,
+      "colorToken": "color-status-danger",
+      "iconPolicy": "optional decorative only",
+      "labelPolicy": "retain exact source label",
+      "scientificAuthorityChanged": false,
+      "sourceAuthority": "persisted runtime/profile/artifact state",
+      "sourceStatus": "error"
+    }
+  ],
+  "sourceVocabulary": [
+    "ready",
+    "not run",
+    "running",
+    "produced",
+    "partial",
+    "unsupported",
+    "stale",
+    "error"
+  ],
+  "unmappedUserVisibleStatusFamilies": 0
+}

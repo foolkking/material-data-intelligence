@@ -1,0 +1,14 @@
+{
+  "allowed": [
+    "state transition",
+    "drawer/sheet",
+    "popover",
+    "feedback"
+  ],
+  "continuousDecorativeAnimation": false,
+  "durations": {
+    "fast": 120,
+    "standard": 180
+  },
+  "reducedMotion": "PASS"
+}

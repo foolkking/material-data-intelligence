@@ -1,0 +1,7 @@
+{
+  "disabled": "distinct from unavailable",
+  "focusVisible": "3px semantic focus ring",
+  "iconOnly": "accessible name required",
+  "nativeControls": "semantic elements retained",
+  "newSharedControlsKeyboardOperable": "PASS"
+}

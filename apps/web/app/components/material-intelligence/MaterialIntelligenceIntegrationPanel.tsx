@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 
 import type { Artifact } from "../../lib/planner-api";
+import { StatusLabel, type StatusVariant } from "../design-system/StatusLabel";
 import { validateCompositionSpacePayload } from "../composition-space/CompositionSpaceExplorerPanel";
 import { validateDatasetExplorerPayload } from "../dataset-explorer/DatasetMaterialsExplorerPanel";
 import { validateMaterialsMlProductPayload } from "../materials-ml/MaterialsMlEvaluationPanel";
@@ -11,6 +12,7 @@ import {
   type JsonRecord,
   type MaterialIntelligenceAssessment,
   type MaterialIntelligenceProductId,
+  type MaterialIntelligenceProductState,
 } from "./materialIntelligenceIntegration";
 
 export function assessMaterialIntelligenceProducts(artifacts: readonly Artifact[]): MaterialIntelligenceAssessment {
@@ -24,7 +26,7 @@ export function MaterialIntelligenceIntegrationPanel({ artifacts }: { artifacts:
   return <section className="panel material-intelligence" data-testid="material-intelligence-integration" aria-label="Material Intelligence product status">
     <header className="panel-heading">
       <div><span>Profile-authoritative product surface</span><h2>Material Intelligence</h2></div>
-      <span className="badge">{assessment.authority ? "Bound" : "Partial"}</span>
+      <StatusLabel label={assessment.authority ? "Bound" : "Partial"} variant={assessment.authority ? "success" : "partial"} />
     </header>
     {binding ? <dl className="mini-grid material-intelligence-identity">
       <Field label="Dataset" value={binding.datasetId} />
@@ -35,12 +37,21 @@ export function MaterialIntelligenceIntegrationPanel({ artifacts }: { artifacts:
     <ul className="material-product-state-list" aria-label="Material Intelligence capability states">
       {assessment.products.map((product) => <li key={product.id} data-testid={`material-product-${product.id}`}>
         <span><strong>{product.label}</strong><small>{product.capability}</small></span>
-        <span className={`badge material-product-state-${product.state.toLowerCase()}`}>{product.state}</span>
+        <StatusLabel className={`material-product-state-${product.state.toLowerCase()}`} label={product.state} variant={productStatusVariant(product.state)} />
         {product.state !== "PRODUCED" ? <code>{product.reason}</code> : null}
       </li>)}
     </ul>
     <p className="dataset-method-note">Availability combines Material Data Profile 2.0 readiness with validated product artifacts. A filename alone never enables a capability.</p>
   </section>;
+}
+
+function productStatusVariant(state: MaterialIntelligenceProductState): StatusVariant {
+  if (state === "PRODUCED") return "success";
+  if (state === "READY_NOT_RUN") return "neutral";
+  if (state === "STALE") return "stale";
+  if (state === "REJECTED") return "danger";
+  if (state === "CAPABILITY_MISMATCH") return "warning";
+  return "unsupported";
 }
 
 function validateProduct(id: MaterialIntelligenceProductId, payload: JsonRecord): string | null {

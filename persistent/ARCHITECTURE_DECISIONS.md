@@ -4532,3 +4532,12 @@ Modern Data Workspace`, with meaning-before-mechanism, result-first hierarchy,
 progressive disclosure, visible limitations, unified viewer chrome, a three-layer
 Inspector, and separate support/validation/reproducibility/presentation axes.
 These are reviewer-gated UX decisions, not production scientific authority.
+
+## Phase 12-1 Design System 2.0
+
+Design System 2.0 is a frontend presentation identity only. Its semantic hash
+binds tokens, primitive definitions, status mapping, typography, density,
+surface/elevation, focus and motion, but never participates in scientific
+Artifact/Plan/Workspace identity. Existing aliases are temporary compatibility
+mappings; scientific trace/category colors and specialized viewer semantics are
+frozen for later owning phases.

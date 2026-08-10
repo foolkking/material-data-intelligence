@@ -1555,3 +1555,7 @@ not add Tool metadata, change Tool availability or treat UI labels as authority.
 The completed Phase 12-0 audit preserved the exact 62-Tool Registry. Its surface,
 viewer and experience matrices are documentation/evidence artifacts and do not
 participate in Tool validation, planning, Runtime dispatch or Artifact production.
+
+Phase 12-1 likewise changes only shared frontend presentation. Its Design System
+hash, tokens and status variants are not Registry metadata and cannot affect Tool
+eligibility, Runtime dispatch, Artifact identity or scientific validation status.

@@ -1,0 +1,12 @@
+{
+  "duplicatePatterns": [
+    "button",
+    "status",
+    "panel/card",
+    "focus",
+    "overlay"
+  ],
+  "remainingOwner": "12-2 through 12-7 specialized workflow chrome",
+  "resolution": "DS2 semantic aliases and shared native-control rules",
+  "uncontrolledVisualVocabulary": 0
+}

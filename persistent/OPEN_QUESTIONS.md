@@ -1210,3 +1210,9 @@ is the only remaining work.
 - Phase 12-0 found no scientific contract defect requiring presentation-layer
   resolution. The proposed experience decisions require reviewer approval before
   Phase 12-1 implementation; no executable Phase 12-1 task exists.
+
+## Phase 12-1 Design System
+
+- Phase 12-1 may close only `UX-007` through shared visual-system consolidation.
+  Navigation, viewer, trust-path, Recipe, mobile and cross-product issues retain
+  their original Phase 12 owners.

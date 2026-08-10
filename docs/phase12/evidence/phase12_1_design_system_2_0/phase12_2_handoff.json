@@ -1,0 +1,32 @@
+{
+  "designSystemVersion": "2.0",
+  "formPrimitives": [
+    "input",
+    "select",
+    "textarea"
+  ],
+  "globalIaTarget": [
+    "Home",
+    "Data",
+    "Analyses",
+    "Workspaces",
+    "Reports",
+    "Settings"
+  ],
+  "navigationPrimitives": [
+    "button",
+    "link",
+    "tabs",
+    "status"
+  ],
+  "remainingProblems": [
+    "UX-001",
+    "UX-008"
+  ],
+  "responsivePrimitives": [
+    "44px touch controls",
+    "semantic spacing"
+  ],
+  "scientificAuthorityConstraints": "unchanged",
+  "tokenRegistryHash": "2a87269216cddb1193af9a08ae7b136889ba43905532e508042b78369a68714d"
+}

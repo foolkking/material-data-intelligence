@@ -1,0 +1,804 @@
+{
+  "componentCount": 38,
+  "components": [
+    {
+      "12_0Classification": "RECOMPOSE",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/band-bz-link/BandBZLinkedView.tsx",
+      "currentSource": "apps/web/app/components/band-bz-link/BandBZLinkedView.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "DEFERRED_TO_12_2",
+      "owner": "12-2",
+      "remainingPhase": "12-2",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/brillouin-zone/BrillouinZonePreviewPanel.tsx",
+      "currentSource": "apps/web/app/components/brillouin-zone/BrillouinZonePreviewPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-2",
+      "remainingPhase": "12-2",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/brillouin-zone/BrillouinZoneSurface.tsx",
+      "currentSource": "apps/web/app/components/brillouin-zone/BrillouinZoneSurface.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-2",
+      "remainingPhase": "12-2",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/composition-space/CompositionSpaceExplorerPanel.tsx",
+      "currentSource": "apps/web/app/components/composition-space/CompositionSpaceExplorerPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-2",
+      "remainingPhase": "12-2",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/dataset-explorer/DatasetMaterialsExplorerPanel.tsx",
+      "currentSource": "apps/web/app/components/dataset-explorer/DatasetMaterialsExplorerPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-2",
+      "remainingPhase": "12-2",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/material-intelligence/MaterialIntelligenceIntegrationPanel.tsx",
+      "currentSource": "apps/web/app/components/material-intelligence/MaterialIntelligenceIntegrationPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "ADAPTED_TO_DS2",
+      "owner": "12-1",
+      "remainingPhase": null,
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/materials-ml/MaterialsMlEvaluationPanel.tsx",
+      "currentSource": "apps/web/app/components/materials-ml/MaterialsMlEvaluationPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-2",
+      "remainingPhase": "12-2",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/phonon-animation/PhononAnimationSurface.tsx",
+      "currentSource": "apps/web/app/components/phonon-animation/PhononAnimationSurface.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-2",
+      "remainingPhase": "12-2",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/phonon-band/PhononBandPreviewPanel.tsx",
+      "currentSource": "apps/web/app/components/phonon-band/PhononBandPreviewPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-2",
+      "remainingPhase": "12-2",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/phonon-band-dos/PhononBandDosPreviewPanel.tsx",
+      "currentSource": "apps/web/app/components/phonon-band-dos/PhononBandDosPreviewPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-2",
+      "remainingPhase": "12-2",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/phonon-dos/PhononDosPreviewPanel.tsx",
+      "currentSource": "apps/web/app/components/phonon-dos/PhononDosPreviewPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-2",
+      "remainingPhase": "12-2",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "RECOMPOSE",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/PlannerWorkbench.tsx",
+      "currentSource": "apps/web/app/components/PlannerWorkbench.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "ADAPTED_TO_DS2",
+      "owner": "12-1",
+      "remainingPhase": null,
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/trajectory-viewer/TrajectoryViewerSurface.tsx",
+      "currentSource": "apps/web/app/components/trajectory-viewer/TrajectoryViewerSurface.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/viewer-scene/ViewerBondInspector.tsx",
+      "currentSource": "apps/web/app/components/viewer-scene/ViewerBondInspector.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/viewer-scene/ViewerExportPanel.tsx",
+      "currentSource": "apps/web/app/components/viewer-scene/ViewerExportPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/viewer-scene/ViewerMeasurementPanel.tsx",
+      "currentSource": "apps/web/app/components/viewer-scene/ViewerMeasurementPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/viewer-scene/ViewerSceneRendererSurface.tsx",
+      "currentSource": "apps/web/app/components/viewer-scene/ViewerSceneRendererSurface.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/viewer-scene/ViewerSiteInspector.tsx",
+      "currentSource": "apps/web/app/components/viewer-scene/ViewerSiteInspector.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/viewer-scene/ViewerSupercellControls.tsx",
+      "currentSource": "apps/web/app/components/viewer-scene/ViewerSupercellControls.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/viewer-scene/ViewerViewControls.tsx",
+      "currentSource": "apps/web/app/components/viewer-scene/ViewerViewControls.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/volumetric-viewer/VolumetricIsosurfaceSurface.tsx",
+      "currentSource": "apps/web/app/components/volumetric-viewer/VolumetricIsosurfaceSurface.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/volumetric-viewer/VolumetricPreviewPanel.tsx",
+      "currentSource": "apps/web/app/components/volumetric-viewer/VolumetricPreviewPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/volumetric-viewer/VolumetricSliceVolumeSurface.tsx",
+      "currentSource": "apps/web/app/components/volumetric-viewer/VolumetricSliceVolumeSurface.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/workspace/CoordinationResultPanel.tsx",
+      "currentSource": "apps/web/app/components/workspace/CoordinationResultPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/workspace/ElectronicStructurePanel.tsx",
+      "currentSource": "apps/web/app/components/workspace/ElectronicStructurePanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/workspace/ExperimentalXrdComparisonPanel.tsx",
+      "currentSource": "apps/web/app/components/workspace/ExperimentalXrdComparisonPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/workspace/LocalEnvironmentPolyhedraPanel.tsx",
+      "currentSource": "apps/web/app/components/workspace/LocalEnvironmentPolyhedraPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "RECOMPOSE",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/workspace/ScientificWorkspaceShell.tsx",
+      "currentSource": "apps/web/app/components/workspace/ScientificWorkspaceShell.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "DEFERRED_TO_12_3",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "SPECIALIZED_SCIENTIFIC",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/workspace/TrajectoryAnalyticsPanel.tsx",
+      "currentSource": "apps/web/app/components/workspace/TrajectoryAnalyticsPanel.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "UNCHANGED_SPECIALIZED",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "RECOMPOSE",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/workspace/workspace-heavy-viewer-gate.tsx",
+      "currentSource": "apps/web/app/components/workspace/workspace-heavy-viewer-gate.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "DEFERRED_TO_12_3",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "RECOMPOSE",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/workspace/WorkspaceArtifactGallery.tsx",
+      "currentSource": "apps/web/app/components/workspace/WorkspaceArtifactGallery.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "DEFERRED_TO_12_3",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "RECOMPOSE",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/workspace/WorkspaceGenericPlot.tsx",
+      "currentSource": "apps/web/app/components/workspace/WorkspaceGenericPlot.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "DEFERRED_TO_12_3",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "RECOMPOSE",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/components/workspace/WorkspaceReportComposer.tsx",
+      "currentSource": "apps/web/app/components/workspace/WorkspaceReportComposer.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "DEFERRED_TO_12_3",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "RECOMPOSE",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/layout.tsx",
+      "currentSource": "apps/web/app/layout.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "DEFERRED_TO_12_2",
+      "owner": "12-2",
+      "remainingPhase": "12-2",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "RECOMPOSE",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/page.tsx",
+      "currentSource": "apps/web/app/page.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "DEFERRED_TO_12_2",
+      "owner": "12-2",
+      "remainingPhase": "12-2",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "RECOMPOSE",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/workspaces/[workspaceId]/error.tsx",
+      "currentSource": "apps/web/app/workspaces/[workspaceId]/error.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "DEFERRED_TO_12_3",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "RECOMPOSE",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/workspaces/[workspaceId]/loading.tsx",
+      "currentSource": "apps/web/app/workspaces/[workspaceId]/loading.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "DEFERRED_TO_12_3",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    },
+    {
+      "12_0Classification": "RECOMPOSE",
+      "accessibilityImpact": "focus/contrast/status foundation only",
+      "componentId": "apps/web/app/workspaces/[workspaceId]/page.tsx",
+      "currentSource": "apps/web/app/workspaces/[workspaceId]/page.tsx",
+      "evidence": [
+        "apps/web/app/globals.css",
+        "component_inventory.json"
+      ],
+      "interactionSemanticsChanged": false,
+      "migrationStatus": "DEFERRED_TO_12_3",
+      "owner": "12-3",
+      "remainingPhase": "12-3",
+      "targetPrimitive": "DS2 native control/panel/status foundation",
+      "visualTokens": [
+        "color-surface",
+        "color-border",
+        "color-text-primary",
+        "ds-space-3"
+      ]
+    }
+  ],
+  "unclassified": 0
+}

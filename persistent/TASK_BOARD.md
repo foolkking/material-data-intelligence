@@ -2455,3 +2455,12 @@ current board above.
 - [x] Preserve Registry 62, DataProfile 2.4 and all Phase 11 scientific authority.
 - [x] Verify implementation `0ea893bb85d6abd90ab89bc81e1606b378ea1e7f`
   with exact-SHA CI `31354589883`; keep Phase 12-1 reviewer-gated.
+
+## Phase 12-1
+
+- [ ] Implement DS2 semantic tokens, typography, spacing/density, surfaces,
+  status variants, focus and reduced-motion foundations.
+- [ ] Migrate shared product presentation without altering navigation, Workspace
+  IA, Planner flows, scientific values or backend behavior.
+- [ ] Close `UX-007` and retain all other Phase 12 owners; keep Phase 12-2 and
+  Phase 13 non-executable.

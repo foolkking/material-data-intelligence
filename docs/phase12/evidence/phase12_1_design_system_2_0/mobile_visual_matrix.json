@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "surfaces": [
+    "mobile-planner",
+    "mobile-workspace"
+  ],
+  "touchTargetFoundation": 44,
+  "viewport": "390x844"
+}

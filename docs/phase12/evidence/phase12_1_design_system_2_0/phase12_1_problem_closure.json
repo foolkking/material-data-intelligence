@@ -1,0 +1,22 @@
+{
+  "closed": [
+    "UX-007"
+  ],
+  "evidence": [
+    "design_token_registry.json",
+    "component_migration_matrix.json",
+    "before_after_surface_matrix.json"
+  ],
+  "open": [],
+  "owned": [
+    {
+      "Phase12Owner": "12-1",
+      "currentBehavior": "one global stylesheet and specialized surfaces expose an uncontrolled visual vocabulary",
+      "problemClass": "VISUAL_INCONSISTENCY",
+      "problemId": "UX-007",
+      "severity": "P2",
+      "surfaceId": "global",
+      "targetOutcome": "owned tokens and core components"
+    }
+  ]
+}

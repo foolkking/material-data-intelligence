@@ -38,6 +38,10 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 - [`phase12/phase12_product_experience_principles.md`](phase12/phase12_product_experience_principles.md): sealed experience principles.
 - [`phase12/phase12_implementation_backlog.md`](phase12/phase12_implementation_backlog.md): reviewer-gated 12-1 through 12-7 backlog.
 - [`phase12/phase12_execution_lock.md`](phase12/phase12_execution_lock.md): scientific-authority-safe UX execution lock.
+- [`phase12/phase12_1_design_system_2_0.md`](phase12/phase12_1_design_system_2_0.md): Design System 2.0 presentation foundation.
+- [`phase12/phase12_1_design_token_registry.md`](phase12/phase12_1_design_token_registry.md): semantic token registry and deterministic hash boundary.
+- [`phase12/phase12_1_component_migration_matrix.md`](phase12/phase12_1_component_migration_matrix.md): 38-component DS2 migration disposition.
+- [`phase12/evidence/phase12_1_design_system_2_0/manifest.json`](phase12/evidence/phase12_1_design_system_2_0/manifest.json): normalized DS2 evidence manifest.
 
 Phase 10N-1 coordination contracts and evidence: `phase10n/phase10n1_coordination_contract.md`,
 `phase10n/phase10n1_algorithm_parameter_contract.md`,

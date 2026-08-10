@@ -149,6 +149,10 @@ def test_roadmap_and_queue_boundaries_are_exact() -> None:
         assert len(blocks) == 1
         assert "状态：处理中" in blocks[0] or "状态：已完成" in blocks[0]
         return
+    if "Phase 12-1 Design System 2.0" in blocks[0]:
+        assert len(blocks) == 1
+        assert "状态：处理中" in blocks[0] or "状态：已完成" in blocks[0]
+        return
     assert len(blocks) in {0, 1, 2, 3}
     if blocks and "Phase 11-4 Reviewer Prompt" in blocks[0]:
         assert len(blocks) == 2

@@ -1,0 +1,1 @@
+Scientific payloads, units, identities, selection, Artifact values, Tool Registry, DataProfile and Phase 11 validation evidence are unchanged. CSS and StatusLabel map presentation only; frontend scientific authority is NONE.

@@ -2150,3 +2150,8 @@ Phase 12-0 audit implementation is verified by exact-SHA CI `31354589883`.
 All inventoried surfaces, components, canonical journeys and UX problems are
 classified; the result proposes a reviewer-gated experience seal and preserves
 all Phase 11 scientific authority.
+
+Phase 12-1 is active under the approved Design System 2.0 scope. It consolidates
+the visual token/status/focus/density foundation and representative shared
+presentation only. Planner flow, navigation, Workspace/viewer IA and scientific
+semantics remain owned by later reviewer-gated phases.

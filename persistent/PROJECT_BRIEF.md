@@ -463,3 +463,9 @@ changing production presentation, scientific behavior or authority.
 Phase 12-0 completed its current-reality audit after implementation exact-SHA CI
 `31354589883`. The experience seal is proposed for reviewer approval; Phase 12-1
 remains reviewer-gated, and Phase 13 remains approved but not queued.
+
+Phase 12-1 is now the sole authorized task. It upgrades the existing frontend
+presentation foundation to Design System 2.0: semantic tokens, density, focus,
+reduced motion, status presentation and shared visual primitives. Navigation,
+Workspace IA, scientific payloads, Registry 62, DataProfile 2.4, runtime, backend
+and Phase 11 validation authority remain unchanged; Phase 12-2 is not queued.

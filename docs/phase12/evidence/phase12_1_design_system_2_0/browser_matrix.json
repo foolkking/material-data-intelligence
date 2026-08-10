@@ -1,0 +1,13 @@
+{
+  "implementationCi": "PENDING",
+  "localWorkspaceReplay": "PASS",
+  "localWorkspaceReplayEvidence": "browser/browser_matrix.json",
+  "required": [
+    "Chromium",
+    "Firefox",
+    "WebKit",
+    "Chromium 390x844"
+  ],
+  "scientificAuthority": "NONE",
+  "scope": "semantic/layout consistency, not pixel equality"
+}

@@ -1,0 +1,18 @@
+{
+  "panel": "surface + subtle border",
+  "radius": {
+    "large": 8,
+    "medium": 6,
+    "pill": "status/tag only",
+    "small": 4
+  },
+  "raised": "overlay only",
+  "zIndex": {
+    "base": 0,
+    "drawer": 70,
+    "modal": 80,
+    "popover": 60,
+    "sticky": 20,
+    "toast": 90
+  }
+}
