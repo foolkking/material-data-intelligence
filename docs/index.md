@@ -27,6 +27,9 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 - [`phase11/phase11_reference_evidence_inventory.md`](phase11/phase11_reference_evidence_inventory.md): retained evidence, fixture, and official-example provenance.
 - [`phase11/phase11_tolerance_registry.md`](phase11/phase11_tolerance_registry.md): quantity-specific tolerance ownership.
 - [`phase11/phase11_implementation_backlog.md`](phase11/phase11_implementation_backlog.md): exact Phase 11-1 through 11-5 scope.
+- [`phase11/phase11_final_scientific_validation_baseline.md`](phase11/phase11_final_scientific_validation_baseline.md): sealed Phase 11 validation baseline and explicit limits.
+- [`phase11/phase11_phase12_scientific_authority_handoff.md`](phase11/phase11_phase12_scientific_authority_handoff.md): read-only scientific authority handoff for Phase 12.
+- [`phase11/evidence/phase11_5_scientific_validation_closure/manifest.json`](phase11/evidence/phase11_5_scientific_validation_closure/manifest.json): final normalized Phase 11 evidence manifest.
 - [`phase11/evidence/phase11_0_validation_baseline_reconciliation/manifest.json`](phase11/evidence/phase11_0_validation_baseline_reconciliation/manifest.json): normalized Phase 11-0 evidence manifest.
 
 Phase 10N-1 coordination contracts and evidence: `phase10n/phase10n1_coordination_contract.md`,

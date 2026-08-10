@@ -1,0 +1,14 @@
+{
+  "coverageVerdicts": {
+    "DIRECT_VERIFIED": 10,
+    "MAPPING_ONLY": 1,
+    "UNSUPPORTED": 3
+  },
+  "rowCount": 14,
+  "supportVerdicts": {
+    "DIRECT_SUPPORTED": 3,
+    "MAPPING_ONLY": 1,
+    "SUPPORTED_WITH_LIMITS": 7,
+    "UNSUPPORTED": 3
+  }
+}

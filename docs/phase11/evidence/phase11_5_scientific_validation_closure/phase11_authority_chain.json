@@ -1,0 +1,22 @@
+{
+  "allApprovedCapabilities": "indexed from retained evidence",
+  "chain": [
+    "Profile",
+    "Intent",
+    "Eligibility",
+    "Planner",
+    "AnalysisPlan",
+    "PlanValidator",
+    "Runtime",
+    "Adapter",
+    "Artifact",
+    "Lineage",
+    "Workspace",
+    "Selection",
+    "Inspector",
+    "Interpretation",
+    "Report",
+    "Recipe"
+  ],
+  "newRuntimeAuthority": 0
+}

@@ -1,0 +1,8 @@
+{
+  "inputSupport": "phase11-4 sealed matrix",
+  "knownLimitations": "visible",
+  "phase12TaskCreated": false,
+  "readOnly": true,
+  "toolCoverage": "phase11-4 sealed matrix",
+  "validationLevels": "phase11 sealed matrix"
+}

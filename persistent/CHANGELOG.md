@@ -2499,3 +2499,9 @@
 - Started Phase 11-4 audit-only coverage reconciliation. Added deterministic Tool/input/official-example
   matrices and explicit limitation handoff; Registry, DataProfile, dependencies, and production science
   remain unchanged.
+
+## 2026-08-10 - Phase 11-5 Scientific Validation Closure
+
+- Sealed the Phase 11 validation baseline from retained Phase 11-0 through 11-4 evidence.
+- Preserved Registry 62, DataProfile 2.4, migration 0007, scientific contracts, dependencies and lockfile.
+- Recorded explicit reference-limited and mapping-only limitations without adding production authority.

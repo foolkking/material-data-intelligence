@@ -4512,3 +4512,11 @@ The line-ending-independent lock semantic hash is evidence-only: it normalizes t
 
 Phase 11-4 coverage is evidence-only and has no runtime authority. The live Registry remains the source of
 the 62 Tool rows; coverage, support, validation level, browser status, and service status remain separate.
+
+## Phase 11-5 Validation Closure
+
+The final validation package is evidence/documentation authority only. It
+aggregates sealed provenance, benchmark, reproducibility and coverage records;
+it does not become runtime schema or promote scientific validation levels.
+`COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS` is the permitted Phase 11
+completion wording.

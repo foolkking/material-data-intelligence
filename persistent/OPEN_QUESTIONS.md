@@ -1195,3 +1195,10 @@ is the only remaining work.
 
 - Phase 11-4 retains eight `PASS_INVARIANT_CI` cases with numeric cross-platform status `NOT_APPLICABLE`;
   Phase 11-5 must decide final release validation status without treating coverage mapping as reference proof.
+
+## Phase 11-5 Closure
+
+- The sealed baseline remains bounded: reference-limited cases are explicit N/A,
+  mapping-only coverage is disclosed, and V4 numeric cross-platform validation is
+  not claimed.
+- Phase 12 is the next reviewer-gated scope; no executable task is created automatically.

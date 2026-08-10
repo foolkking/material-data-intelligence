@@ -450,3 +450,8 @@ Phase 11-3 is complete after CI `31332350363` passed Linux, Windows, unit, servi
 Phase 11-4 coverage reconciliation is the current active audit task. It classifies 62 Tools, 14 input
 families, and 55 retained official/example records without adding scientific authority. Phase 11-5
 remains reviewer-gated; Phase 12 and Phase 13 remain approved but not queued.
+
+Phase 11-5 is closed as `COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS`.
+The validation baseline is sealed with Registry 62 and DataProfile 2.4. Phase
+12 is UI/UX-only and reviewer-gated; Phase 13 is approved but not queued. No
+Phase 14 is created.

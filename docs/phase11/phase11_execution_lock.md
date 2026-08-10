@@ -35,3 +35,11 @@ Phase 11-2 consumes only the sealed Phase 11-1 handoff and existing locked depen
 
 Phase 11-4 is similarly audit-only. It may classify existing Tool, input, and official-example evidence,
 but cannot promote coverage from browser, service, fixture, mapping, or self-reference evidence.
+
+## Phase 11-5 Lock
+
+Phase 11-5 closes the validation baseline without adding science. Registry 62,
+DataProfile 2.4, migration 0007, AnalysisPlan 0.1/0.2, scientific contracts,
+tolerances, dependencies, APIs, and lockfile are unchanged. It may aggregate
+sealed evidence and publish explicit limitations, but may not promote validation
+levels, mutate fixtures/references, or declare final product release readiness.

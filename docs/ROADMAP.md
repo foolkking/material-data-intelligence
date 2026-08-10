@@ -95,9 +95,11 @@ is `COMPLETE / READY_WITH_EXPLICIT_LIMITS`.
 Fermi Surface is not part of Phase 10N or the initial release.
 
 Current status: Phase 10N-0 through 10N-6 are complete and evidence-closed as
-`COMPLETE / READY_WITH_EXPLICIT_LIMITS`. Phase 11-0 is the sole active audit and
-governance task. Phase 11-1 is reviewer-gated; Phase 12 and Phase 13 are approved
-roadmap only and have no executable tasks.
+`COMPLETE / READY_WITH_EXPLICIT_LIMITS`. Phase 11-0 through 11-5 are complete as
+`COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS`; the scientific validation
+baseline is sealed, with release-relevant limitations retained. Phase 12 is
+reviewer-gated and Phase 13 is approved roadmap only; neither has an executable
+task.
 
 ### Phase 11 - Scientific Validation, Provenance, Reproducibility, and Honest Coverage
 
@@ -108,8 +110,9 @@ roadmap only and have no executable tasks.
 * 11-4: Honest Tool / Input / Example Coverage Matrix.
 * 11-5: Scientific Validation Closure + Release Candidate Gate.
 
-Phase 11 adds no science by default. Registry remains 62 and DataProfile remains
-2.4 unless a scientific defect is separately reviewed and authorized.
+Phase 11 adds no science. Registry remains 62 and DataProfile remains 2.4.
+Phase 11-5 sealed the release-candidate validation baseline without claiming
+universal scientific correctness or final product release readiness.
 
 ### Phase 12 - Comprehensive UI/UX Product Experience Redesign
 
@@ -138,6 +141,11 @@ or scientific Artifact authority by default.
 The former `Phase 12 - Final Product Closure` numbering is
 `SUPERSEDED_BY_APPROVED_ROADMAP_REVISION`. Historical records remain unchanged.
 No Phase 14 is created.
+
+Phase 11 is `COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS` and Phase 12
+is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`. The former Phase 12 final-closure
+numbering is superseded by the approved Phase 12 UI/UX and Phase 13 final-closure
+split.
 
 ## Scope Authority
 

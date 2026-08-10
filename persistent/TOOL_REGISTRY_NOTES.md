@@ -1544,3 +1544,7 @@ Cross-platform CI replay passed without changing the Registry, Adapter bindings,
 
 Phase 11-4 re-audited the live Registry and emitted an exact 62-row honest coverage matrix. No Tool was
 promoted from retained regression/mapping evidence to independent scientific reference coverage.
+
+Phase 11-5 preserves the exact 62-row Registry and adds no Tool. The final
+validation matrix records role, evidence axes, support status and limitations;
+it is not a new Registry source or scientific runtime authority.

@@ -2137,3 +2137,7 @@ Completed the deterministic provenance and fixture handoff pack and started boun
 Phase 11-4 coverage matrices are now generated from the live Registry and retained evidence. The current
 classification is intentionally conservative: Tool coverage is mapping-only, input-path coverage is
 reported separately, and official/example records remain mapping-only pending governed extraction.
+
+Phase 11-5 closed the scientific validation baseline from retained evidence.
+Reference-limited cases, mapping-only coverage, and the absence of V4 numeric
+cross-platform claims remain explicitly disclosed.

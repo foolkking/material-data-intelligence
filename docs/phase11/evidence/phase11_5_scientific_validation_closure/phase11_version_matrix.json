@@ -1,0 +1,25 @@
+{
+  "analysisPlan": {
+    "changes": 0,
+    "supported": [
+      "0.1",
+      "0.2"
+    ]
+  },
+  "dependencies": {
+    "lockfileChanged": 0,
+    "new": 0
+  },
+  "migration": {
+    "after": "0007_phase10m1_workspace_domain",
+    "before": "0007_phase10m1_workspace_domain"
+  },
+  "profile": {
+    "after": "2.4",
+    "before": "2.4"
+  },
+  "registry": {
+    "after": 62,
+    "before": 62
+  }
+}

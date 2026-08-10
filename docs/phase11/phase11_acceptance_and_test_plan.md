@@ -62,3 +62,16 @@ The three-commit exact-SHA lifecycle is mandatory. Phase 11-1 remains reviewer-g
 Phase 11-4 adds deterministic coverage consistency and overclaim checks. The implementation commit is
 the only CI wait gate for this task; completion and archive documentation commits follow the task policy
 without a second CI wait.
+
+## Phase 11-5 Acceptance Registry
+
+The exact registry is `P11V5-A01` through `P11V5-A12`: Phase 11-4 handoff;
+governance integrity; provenance/fixture integrity; golden benchmark integrity;
+Linux/Windows reproducibility integrity; honest coverage integrity; final
+reference/fixture/benchmark/tolerance/variance registries; reproducibility and
+limitations; zero release blockers; Phase 12 read-only handoff; no-new-science
+security/evidence integrity; and exact-SHA lifecycle closure.
+
+Expected 12, implemented 12, missing/extra/duplicate/conflicting/shorthand 0.
+The implementation CI is the only CI wait gate for this task; completion and
+archive documentation commits are direct lifecycle commits under the queue policy.

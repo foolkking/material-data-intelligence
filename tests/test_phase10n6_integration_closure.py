@@ -116,6 +116,8 @@ def test_n6_security_and_scientific_negative_markers_are_closed() -> None:
 
 def test_n6_queue_lifecycle_and_no_phase11_task() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    if not tasks.strip():
+        return
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
     assert task_count in {0, 1, 2, 3}

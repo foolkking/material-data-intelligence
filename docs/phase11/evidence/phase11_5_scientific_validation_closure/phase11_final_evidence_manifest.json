@@ -1,0 +1,12 @@
+{
+  "externalDownloads": 0,
+  "newScientificEvidence": 0,
+  "secretBearingEvidence": 0,
+  "sourceRoots": [
+    "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation",
+    "docs/phase11/evidence/phase11_1_reference_provenance_safe_fixture",
+    "docs/phase11/evidence/phase11_2_golden_scientific_benchmark",
+    "docs/phase11/evidence/phase11_3_cross_platform_reproducibility",
+    "docs/phase11/evidence/phase11_4_honest_tool_input_example_coverage"
+  ]
+}

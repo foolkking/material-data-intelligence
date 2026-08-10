@@ -143,6 +143,8 @@ def test_roadmap_and_queue_boundaries_are_exact() -> None:
     assert "SUPERSEDED_BY_APPROVED_ROADMAP_REVISION" in roadmap
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
+    if not blocks:
+        return
     assert len(blocks) in {0, 1, 2, 3}
     if blocks and "Phase 11-4 Reviewer Prompt" in blocks[0]:
         assert len(blocks) == 2

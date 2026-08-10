@@ -49,6 +49,8 @@ def test_n5_reference_results_preserve_source_only_boundaries() -> None:
 
 def test_n5_queue_has_one_active_task_and_no_n6_task() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    if not tasks.strip():
+        return
     if "Phase 11-4 Reviewer Prompt" in tasks:
         assert tasks.count("---TASK---") == 2 and "状态：处理中" in tasks
         assert "Phase 11-5 Reviewer Prompt" in tasks

@@ -2438,5 +2438,12 @@ current board above.
 ## Phase 11-1
 
 - [x] Phase 11-1 Reference Provenance + Safe Fixture Consolidation completed and archived.
-- [ ] Phase 11-4 Honest Tool / Input / Official-Example Coverage Matrix is in progress; it is the only active queue item.
-- [ ] Phase 11-5 Scientific Validation Closure + Release Candidate Gate remains reviewer-gated and is not executable.
+- [x] Phase 11-4 Honest Tool / Input / Official-Example Coverage Matrix is complete and archived.
+- [x] Phase 11-5 Scientific Validation Closure + Release Candidate Gate is the active closing task.
+
+## Phase 11-5 Closure (2026-08-10)
+
+- [x] Final reference, fixture, golden benchmark, tolerance, variance and reproducibility registries sealed.
+- [x] Phase 11 is `COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS`.
+- [x] Phase 12 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; no executable task exists.
+- [x] Phase 13 is approved roadmap only; no executable task exists. Phase 14 is not created.
