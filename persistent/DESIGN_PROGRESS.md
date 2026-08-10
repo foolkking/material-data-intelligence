@@ -7,7 +7,7 @@
 - [x] Present source eligibility, session-only draft, no-write preview, and explicit immutable finalization.
 - [x] Present a human-readable non-executable Recipe before exact raw JSON.
 - [x] Close only `UX-005`; retain `UX-006`, `UX-009`, and `UX-010` ownership.
-- [ ] Verify the Phase 12-5 implementation commit in exact-SHA CI.
+- [x] Verify implementation `d20d0a1` in exact-SHA CI `31386432220`.
 
 ## 2026-08-10 Phase 12-4 Findings/Evidence Implementation
 

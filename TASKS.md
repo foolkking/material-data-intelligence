@@ -1,7 +1,15 @@
 
 
 ---TASK---
- 状态：处理中
+ 状态：已完成
+
+完成时间：2026-08-10 20:21:33 +08:00
+
+修改文件：`WorkspaceReportComposer.tsx`、`globals.css`、Report/Recipe 浏览器回放、Phase 12 文档/证据/持久状态、CI workflow 与确定性证据测试。
+
+修改摘要：完成精确来源资格说明、会话草稿诚实性、无写入预览、显式不可变定稿确认、人可读且不可执行的 Recipe、精确原始声明、历史/导出/恢复展示；关闭 `UX-005`，科学与后端权威不变。
+
+测试结果：后端 `1304 passed`；前端 `453 passed`；typecheck/build/lock/diff PASS；Chromium/Firefox/WebKit/390x844 PASS；PostgreSQL/Redis/MinIO CI PASS；实现 `d20d0a1437844a9a69e71fba52cdf57dfd5144db` / CI `31386432220` PASS。失败候选 `f263d70`、`11eb1b3`、`e535ecf` 已保留并 fix-forward。
 
 # Phase 12-5 Reviewer Prompt
 

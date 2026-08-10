@@ -14,3 +14,8 @@ third candidate `e535ecf2d38080e3922f94e1d75d477da62ad009` / CI
 recovery script that had not yet modeled the new explicit confirmation. The
 script now confirms finalization and retains all recovery assertions. The
 authoritative implementation SHA and CI are recorded only after verification.
+
+Authoritative implementation is `d20d0a1437844a9a69e71fba52cdf57dfd5144db`;
+exact-SHA CI `31386432220` passed Unit, frontend tests, typecheck, build, all
+retained and Phase 12-5 browser replays, and PostgreSQL/Redis/MinIO. Phase 12-5
+is `PASS / REPORT_RECIPE_EXPERIENCE_IMPLEMENTED / COMPLETION_RECORDED`.

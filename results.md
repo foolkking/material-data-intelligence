@@ -9191,6 +9191,93 @@ COMPLETION_RECORDED = YES
 QUEUE_ARCHIVED = PENDING_ARCHIVE_COMMIT
 ```
 
+# Phase 12-5 Report / Recipe Experience Result
+
+## Conclusion
+
+Phase 12-5 is PASS. Exact persisted Report/Recipe 1.0 authority now has a
+human-readable, result-first composition experience without new science,
+execution authority, API, migration, dependency, or LLM behavior.
+
+## Baseline And Entry
+
+Phase 12-4 implementation `9fac62bbb2cc9069da62370ee9d02cf3150e987a`
+and CI `31379672528` were verified from archive `4417e275`. Registry remained
+62, DataProfile 2.4, migration `0007_phase10m1_workspace_domain`.
+
+## Report Experience
+
+The metadata-only source inventory explains exact eligibility, metadata-only,
+unsupported, stale, and integrity states. Selection/order/captions preserve
+exact source IDs and mandatory disclosures. Drafts remain session-only;
+preview writes zero records; finalization requires explicit confirmation and
+creates one immutable Report/Recipe pair. History and JSON/Markdown exports use
+existing server authority.
+
+## Recipe Experience
+
+The default view explains ordered Tool steps, expected output contracts,
+dependency model, execution outcome, warnings, and limitations. Exact canonical
+JSON remains available as collapsed inert text. No Run or replay action exists.
+
+## UX Problem And Acceptance
+
+`UX-005` is `FIXED_WITH_EVIDENCE`. `UX-006` and `UX-009` remain owned by 12-6;
+`UX-010` remains owned by 12-7. `P12X5-A01` through `P12X5-A08` are 8/8.
+
+## Verification
+
+Local: backend `1304 passed`, frontend `453 passed`, focused evidence 3 passed,
+typecheck/build/lock/diff PASS. Chromium, Firefox, WebKit, and Chromium 390x844
+PASS. Exact-SHA CI `31386432220` passed Unit, frontend/build/browser, Linux and
+Windows invariant replay, and PostgreSQL/Redis/MinIO with zero skipped service
+tests.
+
+## Failed Candidates
+
+`f263d704` / CI `31382890102` failed from omitted workflow working directory.
+`11eb1b3b` / CI `31383949826` failed from redundant pytest in a Node-only job.
+`e535ecf2` / CI `31385082975` exposed a retained M6 replay missing the new
+confirmation click. All are historical-only and were fixed forward.
+
+## Authority And Security Markers
+
+```text
+PHASE12_5_PRODUCTION_UI_CHANGES = YES_PRESENTATION_ONLY
+PHASE12_5_BACKEND_BEHAVIOR_CHANGES = 0
+PHASE12_5_SCIENTIFIC_BEHAVIOR_CHANGES = 0
+PHASE12_5_NEW_SCIENTIFIC_TOOLS = 0
+PHASE12_5_NEW_SCIENTIFIC_ALGORITHMS = 0
+PHASE12_5_NEW_ARTIFACT_FAMILIES = 0
+PHASE12_5_NEW_DATAPROFILE_VERSION = 0
+PHASE12_5_NEW_ANALYSISPLAN_VERSION = 0
+PHASE12_5_NEW_DATABASE_MIGRATIONS = 0
+PHASE12_5_NEW_PUBLIC_API_FAMILIES = 0
+PHASE12_5_NEW_DEPENDENCIES = 0
+PHASE12_5_NEW_LLM_CALL_SITES = 0
+PHASE12_5_REAL_LLM_CALLS = 0
+PHASE12_5_FRONTEND_SCIENTIFIC_RECOMPUTATION = 0
+RECIPE_EXECUTION_AUTHORITY = NONE
+REPORT_SCIENTIFIC_RECOMPUTATION = 0
+SCREENSHOT_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+REGISTRY_BEFORE_12_5 = 62
+REGISTRY_AFTER_12_5 = 62
+DATAPROFILE_BEFORE_12_5 = 2.4
+DATAPROFILE_AFTER_12_5 = 2.4
+MIGRATION_BEFORE_12_5 = 0007_phase10m1_workspace_domain
+MIGRATION_AFTER_12_5 = 0007_phase10m1_workspace_domain
+PHASE12_5_OWNED_PROBLEMS = UX-005
+PHASE12_5_OWNED_PROBLEMS_OPEN = 0
+NEW_P0_INTRODUCED_BY_12_5 = 0
+P12X5_ACCEPTANCE = 8/8
+IMPLEMENTATION_SHA = d20d0a1437844a9a69e71fba52cdf57dfd5144db
+IMPLEMENTATION_CI = 31386432220 PASS
+IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI = PASS
+COMPLETION_RECORDED = YES
+QUEUE_ARCHIVED = PENDING_ARCHIVE_COMMIT
+PHASE_12_6_EXECUTED_BY_12_5 = NO
+```
+
 ## Lifecycle and Gate
 Implementation commit `9b38a753bda134e9c27425e1193d2980a0790731`, CI
 `31370240101` PASS. The completion record is committed directly after the one
