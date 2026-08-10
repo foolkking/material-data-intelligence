@@ -27,6 +27,7 @@ ALLOWED_COVERAGE = {
     "FUTURE_SCOPE",
     "UNSUPPORTED",
 }
+TEXT_SUFFIXES = {".json", ".md", ".txt", ".yaml", ".yml"}
 
 
 def read_json(path: Path) -> Any:
@@ -35,6 +36,17 @@ def read_json(path: Path) -> Any:
 
 def dump_json(path: Path, value: Any) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def semantic_bytes(path: Path) -> bytes:
+    data = path.read_bytes()
+    if path.suffix.lower() in TEXT_SUFFIXES:
+        return data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return data
+
+
+def semantic_sha256(path: Path) -> str:
+    return hashlib.sha256(semantic_bytes(path)).hexdigest()
 
 
 def as_list(value: Any) -> list[Any]:
@@ -207,6 +219,9 @@ def main() -> None:
     dump_json(OUT / "tool_coverage_matrix.json", {"rowCount": len(tools), "tools": tools})
     dump_json(OUT / "input_coverage_matrix.json", {"rowCount": len(inputs), "inputs": inputs})
     dump_json(OUT / "official_example_coverage_matrix.json", {"rowCount": len(examples), "records": examples})
+    summary["toolCoverageMatrixHash"] = semantic_sha256(OUT / "tool_coverage_matrix.json")
+    summary["inputCoverageMatrixHash"] = semantic_sha256(OUT / "input_coverage_matrix.json")
+    summary["officialExampleCoverageMatrixHash"] = semantic_sha256(OUT / "official_example_coverage_matrix.json")
     dump_json(OUT / "coverage_summary.json", summary)
     dump_json(OUT / "phase11_5_closure_input_manifest.json", {
         "schemaVersion": "phase11-4-to-11-5/1.0",
@@ -329,7 +344,7 @@ def main() -> None:
     for path in sorted(OUT.iterdir()):
         if path.name == "manifest.json" or not path.is_file():
             continue
-        manifest["files"].append({"path": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
+        manifest["files"].append({"path": path.name, "sha256": semantic_sha256(path)})
     dump_json(OUT / "manifest.json", manifest)
     print(json.dumps(summary, indent=2, sort_keys=True))
 

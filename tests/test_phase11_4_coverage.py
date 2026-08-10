@@ -18,10 +18,18 @@ ALLOWED = {
     "FUTURE_SCOPE",
     "UNSUPPORTED",
 }
+TEXT_SUFFIXES = {".json", ".md", ".txt", ".yaml", ".yml"}
 
 
 def read(name: str) -> dict:
     return json.loads((EVIDENCE / name).read_text(encoding="utf-8"))
+
+
+def semantic_sha256(path: Path) -> str:
+    data = path.read_bytes()
+    if path.suffix.lower() in TEXT_SUFFIXES:
+        data = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(data).hexdigest()
 
 
 def test_live_registry_and_matrices_are_exactly_classified() -> None:
@@ -53,6 +61,9 @@ def test_phase11_3_handoff_is_not_promoted_to_numeric_v4() -> None:
     assert summary["v4Promotions"] == 0
     assert summary["validationLevelChanges"] == 0
     assert summary["supportVerdictChanges"] == 0
+    assert len(summary["toolCoverageMatrixHash"]) == 64
+    assert len(summary["inputCoverageMatrixHash"]) == 64
+    assert len(summary["officialExampleCoverageMatrixHash"]) == 64
 
 
 def test_evidence_manifest_hashes_and_acceptance_registry() -> None:
@@ -60,7 +71,7 @@ def test_evidence_manifest_hashes_and_acceptance_registry() -> None:
     for item in manifest["files"]:
         path = EVIDENCE / item["path"]
         assert path.is_file()
-        assert hashlib.sha256(path.read_bytes()).hexdigest() == item["sha256"]
+        assert semantic_sha256(path) == item["sha256"]
     acceptance = read("acceptance_registry.json")
     assert acceptance["expected"] == acceptance["implemented"] == 10
     assert acceptance["missing"] == acceptance["extra"] == 0
