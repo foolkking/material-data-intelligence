@@ -32,6 +32,13 @@ authoritative for future scope when they conflict with `ROADMAP.md`.
 - [`phase11/evidence/phase11_5_scientific_validation_closure/manifest.json`](phase11/evidence/phase11_5_scientific_validation_closure/manifest.json): final normalized Phase 11 evidence manifest.
 - [`phase11/evidence/phase11_0_validation_baseline_reconciliation/manifest.json`](phase11/evidence/phase11_0_validation_baseline_reconciliation/manifest.json): normalized Phase 11-0 evidence manifest.
 
+## Phase 12 Product Experience
+
+- [`phase12/phase12_0_current_ux_reality_audit.md`](phase12/phase12_0_current_ux_reality_audit.md): current product UX audit and evidence boundary.
+- [`phase12/phase12_product_experience_principles.md`](phase12/phase12_product_experience_principles.md): sealed experience principles.
+- [`phase12/phase12_implementation_backlog.md`](phase12/phase12_implementation_backlog.md): reviewer-gated 12-1 through 12-7 backlog.
+- [`phase12/phase12_execution_lock.md`](phase12/phase12_execution_lock.md): scientific-authority-safe UX execution lock.
+
 Phase 10N-1 coordination contracts and evidence: `phase10n/phase10n1_coordination_contract.md`,
 `phase10n/phase10n1_algorithm_parameter_contract.md`,
 `phase10n/phase10n1_identity_and_provenance.md`,

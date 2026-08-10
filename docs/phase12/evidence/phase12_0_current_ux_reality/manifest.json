@@ -1,0 +1,125 @@
+{
+  "files": [
+    {
+      "path": "acceptance_registry.json",
+      "sha256": "8c7be8fa50b967b24dd44a536111676a32e7f99370f4c9be7a053f3060e93690"
+    },
+    {
+      "path": "accessibility_audit.json",
+      "sha256": "47c679dd28891d9fb06c81a96409166872cfff45e442a39ddab2505221e8d474"
+    },
+    {
+      "path": "baseline.txt",
+      "sha256": "be7ce7d0e446b5dfe9fc38e31d62a329049bdc13ab645a26482e40ce20850501"
+    },
+    {
+      "path": "browser_matrix.json",
+      "sha256": "18c442d28e4deeb476d782afbb884e56f6febe5ecc9dacd397438879e69672f0"
+    },
+    {
+      "path": "component_consistency_matrix.json",
+      "sha256": "b6aebe2f238367d29da4154bb96a8418b4bacdbf38ba397d30aef6e15040753f"
+    },
+    {
+      "path": "component_inventory.json",
+      "sha256": "38ac4071c43a928742a3718f198636ec04dbd522397b385c8d9e5b5a3b27bfeb"
+    },
+    {
+      "path": "design_token_inventory.json",
+      "sha256": "0b35df3b37340607b764eaacddefb5ce5a4e2a1682a9ea1cb616097904704a52"
+    },
+    {
+      "path": "empty_state_matrix.json",
+      "sha256": "2417e91c6e76e60df17c5c313f0f6392c7b78d2a4626681057ef26ac6ab38355"
+    },
+    {
+      "path": "entry_gate.md",
+      "sha256": "ae38f784304a68c9447a01f336dd8694196c2e004f00c7bfc7bd7cbe252f4060"
+    },
+    {
+      "path": "error_recovery_matrix.json",
+      "sha256": "eda5fe0c682f6c4cc1dcea0a831045bbe63eeda3cc7020eeb94b9f0b1f6c6f04"
+    },
+    {
+      "path": "findings_evidence_audit.json",
+      "sha256": "90f504b2688e1b8e7203f17ae854e16ed49406bdfc5d3dbe1d1a615a967a06a8"
+    },
+    {
+      "path": "interaction_baseline.json",
+      "sha256": "e60e4b65df7b005065c91344b9b99e1de6ba67ce205ff71653bc67e8fdc29189"
+    },
+    {
+      "path": "loading_state_matrix.json",
+      "sha256": "a5b72982f8a70f185f2f0635b46ac866e05a55bec9d3133d94edfc153af78574"
+    },
+    {
+      "path": "phase11_scientific_authority_snapshot.json",
+      "sha256": "32317c201d6f33b7373e639965289a8e5618d4908f20d2183525d0aaa917a670"
+    },
+    {
+      "path": "phase12_backlog_snapshot.json",
+      "sha256": "66c719e97b57e178d8dee75171b6594f3ce6a1afc673d75d073a13e6ff29098a"
+    },
+    {
+      "path": "phase12_decision_registry.json",
+      "sha256": "526dd882c19ba11481c234d426bf7e26aaf0252f744379961d790d4308195e27"
+    },
+    {
+      "path": "planner_agent_audit.json",
+      "sha256": "8a5193df102683f0263607644427b37f7e51c83b840c79c0bef744b9dc933d24"
+    },
+    {
+      "path": "report_recipe_audit.json",
+      "sha256": "e065885c5594602a6cf8452cd5086d734411159b25ada99a5429bd7aed46eb02"
+    },
+    {
+      "path": "responsive_audit.json",
+      "sha256": "2229325091355a21b0a4c1a71e292391ac20bd0a8dc058c589910574df51e191"
+    },
+    {
+      "path": "route_inventory.json",
+      "sha256": "b33f7447707fd4af0bac8d9be5cf5ffb858bf7f4a1b39c7fee91325533f0b8c0"
+    },
+    {
+      "path": "scientific_viewer_matrix.json",
+      "sha256": "e8525b210eb0bca009aa4f6f4be8aaea5641252ad25064be8c52ebd07fd27023"
+    },
+    {
+      "path": "secret_scan.txt",
+      "sha256": "024817ff15a6fe374b5c2b6c458d9c77ee9b4687570e5d3e8528ae190684969c"
+    },
+    {
+      "path": "security.md",
+      "sha256": "8d06e716fb56ba92349283acca1c6aab0f9185b044876f359fb0edc092dacb30"
+    },
+    {
+      "path": "status_vocabulary.json",
+      "sha256": "8a18ad717094f62cf6539de011c41c15d3f0e2dfde3a56b9f177501f8e72f94c"
+    },
+    {
+      "path": "surface_registry.json",
+      "sha256": "ca8ac4775fe265bec2e2b806ffc42c558c7d5bf7cd51dd75e6aa6f78bfce7f4c"
+    },
+    {
+      "path": "terminology_i18n_audit.json",
+      "sha256": "10d231b5f6a582bd9184e2a0666434540f603dcee48777fd87eb30a213e9e900"
+    },
+    {
+      "path": "user_journey_matrix.json",
+      "sha256": "c0d68cc3526e05b1d610807b6df68e809f8c3ebcfa7a3889291696238bde7af8"
+    },
+    {
+      "path": "ux_problem_matrix.json",
+      "sha256": "b27f4c7f2621c38d98d3652bc77887199dfe91313a3ee7cddd3a1175630219f7"
+    },
+    {
+      "path": "visual_hierarchy_matrix.json",
+      "sha256": "0e4318ad130e13f1411aedb198e53be179aa5156573c5408fb169fa5d70bedbf"
+    },
+    {
+      "path": "workspace_audit.json",
+      "sha256": "95d79303d4b7e8f49161206b93a05a66bb79221f94aeb93b01bba339f8b4ab6a"
+    }
+  ],
+  "schemaVersion": "phase12-0-ux-audit/1.0"
+}

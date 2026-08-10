@@ -1,0 +1,99 @@
+{
+  "distribution": {
+    "P1": 6,
+    "P2": 4
+  },
+  "problems": [
+    {
+      "Phase12Owner": "12-2",
+      "currentBehavior": "planning terms and internal identifiers share the primary flow",
+      "problemClass": "DEVELOPER_DETAIL_LEAKAGE",
+      "problemId": "UX-001",
+      "severity": "P1",
+      "surfaceId": "planner",
+      "targetOutcome": "human plan before developer plan"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "currentBehavior": "artifact-centric navigation competes with result meaning",
+      "problemClass": "INFORMATION_HIERARCHY",
+      "problemId": "UX-002",
+      "severity": "P1",
+      "surfaceId": "workspace",
+      "targetOutcome": "result-first hierarchy with provenance drilldown"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "currentBehavior": "specialized charts and 3D surfaces use different chrome conventions",
+      "problemClass": "VISUAL_INCONSISTENCY",
+      "problemId": "UX-003",
+      "severity": "P1",
+      "surfaceId": "scientific-viewers",
+      "targetOutcome": "unified viewer chrome"
+    },
+    {
+      "Phase12Owner": "12-4",
+      "currentBehavior": "limitations and provenance require deep navigation",
+      "problemClass": "TRUST_AND_EVIDENCE",
+      "problemId": "UX-004",
+      "severity": "P1",
+      "surfaceId": "findings-evidence-inspector",
+      "targetOutcome": "visible trust path and three-layer Inspector"
+    },
+    {
+      "Phase12Owner": "12-5",
+      "currentBehavior": "declarative Recipe detail is more prominent than human explanation",
+      "problemClass": "COGNITIVE_LOAD",
+      "problemId": "UX-005",
+      "severity": "P2",
+      "surfaceId": "report-recipe",
+      "targetOutcome": "human-readable summary before raw declaration"
+    },
+    {
+      "Phase12Owner": "12-6",
+      "currentBehavior": "dense scientific controls and tables require audit across narrow viewports",
+      "problemClass": "RESPONSIVE_FAILURE",
+      "problemId": "UX-006",
+      "severity": "P1",
+      "surfaceId": "mobile",
+      "targetOutcome": "mobile-specific hierarchy and touch closure"
+    },
+    {
+      "Phase12Owner": "12-1",
+      "currentBehavior": "one global stylesheet and specialized surfaces expose an uncontrolled visual vocabulary",
+      "problemClass": "VISUAL_INCONSISTENCY",
+      "problemId": "UX-007",
+      "severity": "P2",
+      "surfaceId": "global",
+      "targetOutcome": "owned tokens and core components"
+    },
+    {
+      "Phase12Owner": "12-2",
+      "currentBehavior": "typed backend state is not consistently organized around what happened, why, and preservation",
+      "problemClass": "ERROR_RECOVERY",
+      "problemId": "UX-008",
+      "severity": "P1",
+      "surfaceId": "errors",
+      "targetOutcome": "context-preserving recovery language"
+    },
+    {
+      "Phase12Owner": "12-6",
+      "currentBehavior": "zh-CN/en-US catalogs exist but scientific/developer vocabulary needs surface-level consistency",
+      "problemClass": "I18N",
+      "problemId": "UX-009",
+      "severity": "P2",
+      "surfaceId": "terminology",
+      "targetOutcome": "sealed terminology glossary"
+    },
+    {
+      "Phase12Owner": "12-7",
+      "currentBehavior": "many capability panels have independently evolved density and toolbar patterns",
+      "problemClass": "DENSITY_MISMATCH",
+      "problemId": "UX-010",
+      "severity": "P2",
+      "surfaceId": "cross-product",
+      "targetOutcome": "cross-product consistency validation"
+    }
+  ],
+  "unassigned": 0
+}

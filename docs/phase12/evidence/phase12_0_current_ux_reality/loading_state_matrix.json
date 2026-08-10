@@ -1,0 +1,13 @@
+{
+  "owner": "12-2",
+  "states": [
+    "first load",
+    "profile",
+    "planning",
+    "execution",
+    "artifact",
+    "heavy viewer",
+    "interpretation",
+    "report"
+  ]
+}

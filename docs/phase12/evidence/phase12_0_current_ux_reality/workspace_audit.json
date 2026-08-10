@@ -1,0 +1,29 @@
+{
+  "candidateIA": {
+    "advanced": [
+      "Provenance",
+      "Developer Details"
+    ],
+    "decision": "ACCEPT_WITH_REFINEMENT",
+    "groups": [
+      "Overview",
+      "Data",
+      "Analysis",
+      "Results",
+      "Findings",
+      "Evidence",
+      "Report"
+    ]
+  },
+  "oneWorkspacePerJob": true,
+  "serverAuthority": [
+    "identity",
+    "membership",
+    "durable state"
+  ],
+  "storageAuthority": "NONE",
+  "urlAuthority": [
+    "active panel",
+    "selection"
+  ]
+}

@@ -2447,3 +2447,9 @@ current board above.
 - [x] Phase 11 is `COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS`.
 - [x] Phase 12 is `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; no executable task exists.
 - [x] Phase 13 is approved roadmap only; no executable task exists. Phase 14 is not created.
+
+## Phase 12-0
+
+- [ ] Inventory and audit current routes, surfaces, component vocabulary, journeys and scientific UX.
+- [ ] Seal experience principles, IA decisions, Phase 12 backlog and execution lock.
+- [ ] Preserve Registry 62, DataProfile 2.4 and all Phase 11 scientific authority.

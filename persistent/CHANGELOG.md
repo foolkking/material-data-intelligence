@@ -2505,3 +2505,9 @@
 - Sealed the Phase 11 validation baseline from retained Phase 11-0 through 11-4 evidence.
 - Preserved Registry 62, DataProfile 2.4, migration 0007, scientific contracts, dependencies and lockfile.
 - Recorded explicit reference-limited and mapping-only limitations without adding production authority.
+
+## 2026-08-10 - Phase 12-0 UX Reality Audit
+
+- Started a documentation/evidence-only UX audit of current Planner, Workspace,
+  scientific viewer, state, mobile and accessibility surfaces.
+- No production UI, scientific behavior, schema, dependency or API change is admitted.

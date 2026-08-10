@@ -4520,3 +4520,9 @@ aggregates sealed provenance, benchmark, reproducibility and coverage records;
 it does not become runtime schema or promote scientific validation levels.
 `COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS` is the permitted Phase 11
 completion wording.
+
+## Phase 12 UX Authority
+
+Phase 12 may change presentation and interaction only after reviewer approval
+of each subphase. It cannot change scientific authority, exact identities,
+selection, Runtime, Artifact semantics or Phase 11 coverage conclusions.

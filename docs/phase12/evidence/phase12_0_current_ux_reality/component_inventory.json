@@ -1,0 +1,196 @@
+{
+  "componentCount": 38,
+  "components": [
+    {
+      "classification": "RECOMPOSE",
+      "component": "apps/web/app/components/band-bz-link/BandBZLinkedView.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/brillouin-zone/BrillouinZonePreviewPanel.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/brillouin-zone/BrillouinZoneSurface.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/composition-space/CompositionSpaceExplorerPanel.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/dataset-explorer/DatasetMaterialsExplorerPanel.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/material-intelligence/MaterialIntelligenceIntegrationPanel.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/materials-ml/MaterialsMlEvaluationPanel.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/phonon-animation/PhononAnimationSurface.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/phonon-band/PhononBandPreviewPanel.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/phonon-band-dos/PhononBandDosPreviewPanel.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/phonon-dos/PhononDosPreviewPanel.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "RECOMPOSE",
+      "component": "apps/web/app/components/PlannerWorkbench.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/trajectory-viewer/TrajectoryViewerSurface.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/viewer-scene/ViewerBondInspector.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/viewer-scene/ViewerExportPanel.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/viewer-scene/ViewerMeasurementPanel.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/viewer-scene/ViewerSceneRendererSurface.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/viewer-scene/ViewerSiteInspector.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/viewer-scene/ViewerSupercellControls.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/viewer-scene/ViewerViewControls.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/volumetric-viewer/VolumetricIsosurfaceSurface.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/volumetric-viewer/VolumetricPreviewPanel.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/volumetric-viewer/VolumetricSliceVolumeSurface.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/workspace/CoordinationResultPanel.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/workspace/ElectronicStructurePanel.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/workspace/ExperimentalXrdComparisonPanel.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/workspace/LocalEnvironmentPolyhedraPanel.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "RECOMPOSE",
+      "component": "apps/web/app/components/workspace/ScientificWorkspaceShell.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "SPECIALIZED_SCIENTIFIC",
+      "component": "apps/web/app/components/workspace/TrajectoryAnalyticsPanel.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "RECOMPOSE",
+      "component": "apps/web/app/components/workspace/workspace-heavy-viewer-gate.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "RECOMPOSE",
+      "component": "apps/web/app/components/workspace/WorkspaceArtifactGallery.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "RECOMPOSE",
+      "component": "apps/web/app/components/workspace/WorkspaceGenericPlot.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "RECOMPOSE",
+      "component": "apps/web/app/components/workspace/WorkspaceReportComposer.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "RECOMPOSE",
+      "component": "apps/web/app/layout.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "RECOMPOSE",
+      "component": "apps/web/app/page.tsx",
+      "phaseOwner": "12-2"
+    },
+    {
+      "classification": "RECOMPOSE",
+      "component": "apps/web/app/workspaces/[workspaceId]/error.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "RECOMPOSE",
+      "component": "apps/web/app/workspaces/[workspaceId]/loading.tsx",
+      "phaseOwner": "12-3"
+    },
+    {
+      "classification": "RECOMPOSE",
+      "component": "apps/web/app/workspaces/[workspaceId]/page.tsx",
+      "phaseOwner": "12-3"
+    }
+  ],
+  "unclassified": 0
+}

@@ -1,0 +1,945 @@
+{
+  "surfaceCount": 27,
+  "surfaces": [
+    {
+      "Phase12Owner": "12-2",
+      "component": "PlannerWorkbench",
+      "designSystemUsage": "globals.css",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "native controls",
+      "mainActions": [
+        "inspect",
+        "navigate"
+      ],
+      "mobileMode": "one active panel",
+      "navigationEntry": "direct route",
+      "navigationExit": "workspace panel or history",
+      "parentSurface": null,
+      "primaryUserGoal": "start or inspect bounded analysis",
+      "primaryUserType": "scientific user",
+      "purpose": "primary application entry",
+      "route": "/",
+      "scientificContent": false,
+      "screenReaderSemantics": "component-specific",
+      "sourceAuthority": "server metadata and persisted artifacts",
+      "states": [
+        "empty",
+        "ready",
+        "clarification",
+        "eligibility",
+        "plan",
+        "running",
+        "partial",
+        "error"
+      ],
+      "surfaceId": "planner"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "ScientificWorkspaceShell",
+      "designSystemUsage": "globals.css",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "native controls",
+      "mainActions": [
+        "inspect",
+        "navigate"
+      ],
+      "mobileMode": "one active panel",
+      "navigationEntry": "direct route",
+      "navigationExit": "workspace panel or history",
+      "parentSurface": null,
+      "primaryUserGoal": "start or inspect bounded analysis",
+      "primaryUserType": "scientific user",
+      "purpose": "persisted scientific workspace",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "component-specific",
+      "sourceAuthority": "server metadata and persisted artifacts",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "stale",
+        "missing",
+        "error",
+        "recovery"
+      ],
+      "surfaceId": "workspace"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "loading.tsx",
+      "designSystemUsage": "globals.css",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "native controls",
+      "mainActions": [
+        "inspect",
+        "navigate"
+      ],
+      "mobileMode": "one active panel",
+      "navigationEntry": "direct route",
+      "navigationExit": "workspace panel or history",
+      "parentSurface": null,
+      "primaryUserGoal": "start or inspect bounded analysis",
+      "primaryUserType": "scientific user",
+      "purpose": "persisted scientific workspace",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": false,
+      "screenReaderSemantics": "component-specific",
+      "sourceAuthority": "server metadata and persisted artifacts",
+      "states": [
+        "loading"
+      ],
+      "surfaceId": "workspace-loading"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "error.tsx",
+      "designSystemUsage": "globals.css",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "native controls",
+      "mainActions": [
+        "inspect",
+        "navigate"
+      ],
+      "mobileMode": "one active panel",
+      "navigationEntry": "direct route",
+      "navigationExit": "workspace panel or history",
+      "parentSurface": null,
+      "primaryUserGoal": "start or inspect bounded analysis",
+      "primaryUserType": "scientific user",
+      "purpose": "persisted scientific workspace",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": false,
+      "screenReaderSemantics": "component-specific",
+      "sourceAuthority": "server metadata and persisted artifacts",
+      "states": [
+        "error",
+        "recovery"
+      ],
+      "surfaceId": "workspace-error"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "dataset-explorer"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "materials-ml"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "composition-space"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "structure-3d"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "coordination"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "local-environment-polyhedra"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "experimental-xrd"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "trajectory"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "rdf"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "msd"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "diffusion"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "phonon-band"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "phonon-dos"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "band-dos"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "brillouin-zone"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "volumetric"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "electronic-band-structure"
+    },
+    {
+      "Phase12Owner": "12-3",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "electronic-dos"
+    },
+    {
+      "Phase12Owner": "12-4",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "findings"
+    },
+    {
+      "Phase12Owner": "12-4",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "evidence"
+    },
+    {
+      "Phase12Owner": "12-4",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "inspector"
+    },
+    {
+      "Phase12Owner": "12-5",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "report"
+    },
+    {
+      "Phase12Owner": "12-5",
+      "component": "registered Workspace renderer",
+      "designSystemUsage": "globals.css plus specialized styles",
+      "developerDetailLevel": "progressive",
+      "evidenceRefs": [
+        "apps/web/app/components"
+      ],
+      "i18nStatus": "PARTIALLY_LOCALIZED",
+      "keyboardPath": "panel controls",
+      "mainActions": [
+        "inspect",
+        "select",
+        "view table alternative"
+      ],
+      "mobileMode": "single active panel",
+      "navigationEntry": "Workspace navigation",
+      "navigationExit": "Inspector/Evidence/Report",
+      "parentSurface": "workspace",
+      "primaryUserGoal": "understand persisted scientific result",
+      "primaryUserType": "scientific user",
+      "purpose": "scientific result inspection",
+      "route": "/workspaces/{workspaceId}",
+      "scientificContent": true,
+      "screenReaderSemantics": "table or status alternative",
+      "sourceAuthority": "persisted Artifact and renderer registry",
+      "states": [
+        "loading",
+        "ready",
+        "partial",
+        "unsupported",
+        "error"
+      ],
+      "surfaceId": "recipe"
+    }
+  ],
+  "unclassified": 0
+}

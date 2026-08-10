@@ -1202,3 +1202,8 @@ is the only remaining work.
   mapping-only coverage is disclosed, and V4 numeric cross-platform validation is
   not claimed.
 - Phase 12 is the next reviewer-gated scope; no executable task is created automatically.
+
+## Phase 12-0 Audit
+
+- The audit must distinguish current UX debt from scientific contract defects;
+  Phase 12 may not resolve a scientific semantics issue through presentation.

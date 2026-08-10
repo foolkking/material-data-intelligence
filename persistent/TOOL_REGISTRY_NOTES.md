@@ -1548,3 +1548,6 @@ promoted from retained regression/mapping evidence to independent scientific ref
 Phase 11-5 preserves the exact 62-row Registry and adds no Tool. The final
 validation matrix records role, evidence axes, support status and limitations;
 it is not a new Registry source or scientific runtime authority.
+
+Phase 12-0 audits how Registry-derived capabilities are presented only. It does
+not add Tool metadata, change Tool availability or treat UI labels as authority.

@@ -2141,3 +2141,7 @@ reported separately, and official/example records remain mapping-only pending go
 Phase 11-5 closed the scientific validation baseline from retained evidence.
 Reference-limited cases, mapping-only coverage, and the absence of V4 numeric
 cross-platform claims remain explicitly disclosed.
+
+Phase 12-0 current UX reality audit is active. It classifies routes, surfaces,
+components, viewer/state journeys, accessibility and UX debt only; no production
+UI or scientific behavior is changed.

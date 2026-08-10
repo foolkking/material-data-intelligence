@@ -1,0 +1,30 @@
+{
+  "frontendScientificRecomputation": 0,
+  "unifiedViewerChrome": "REQUIRED_IN_12_3",
+  "viewers": [
+    "Dataset Explorer",
+    "Materials ML",
+    "Composition Space",
+    "Structure 3D",
+    "Coordination",
+    "Local Environment / Polyhedra",
+    "Experimental XRD",
+    "Trajectory",
+    "RDF",
+    "MSD",
+    "Diffusion",
+    "Phonon Band",
+    "Phonon DOS",
+    "Band + DOS",
+    "Brillouin Zone",
+    "Volumetric",
+    "Electronic Band Structure",
+    "Electronic DOS",
+    "Findings",
+    "Evidence",
+    "Inspector",
+    "Report",
+    "Recipe"
+  ],
+  "webglPresentationOnly": true
+}

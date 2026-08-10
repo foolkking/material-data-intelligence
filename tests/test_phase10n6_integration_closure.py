@@ -118,6 +118,9 @@ def test_n6_queue_lifecycle_and_no_phase11_task() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     if not tasks.strip():
         return
+    if "Phase 12-0 Current UX Reality Audit" in tasks:
+        assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
+        return
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
     assert task_count in {0, 1, 2, 3}

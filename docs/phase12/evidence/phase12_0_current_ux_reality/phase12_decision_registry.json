@@ -1,0 +1,99 @@
+{
+  "decisions": [
+    {
+      "id": "P12-D001",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D002",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D003",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D004",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D005",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D006",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D007",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D008",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D009",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D010",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D011",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D012",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D013",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D014",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D015",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D016",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D017",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D018",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D019",
+      "status": "SEALED"
+    },
+    {
+      "id": "P12-D020",
+      "status": "SEALED"
+    }
+  ],
+  "globalIA": {
+    "decision": "ACCEPT_WITH_REFINEMENT",
+    "groups": [
+      "Home",
+      "Data",
+      "Analyses",
+      "Workspaces",
+      "Reports",
+      "Settings"
+    ]
+  },
+  "implementationCriticalTbd": 0,
+  "meaningBeforeMechanism": true,
+  "resultFirst": true,
+  "scientificAuditabilityRetained": true
+}
