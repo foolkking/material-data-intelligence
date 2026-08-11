@@ -1,0 +1,8 @@
+{
+  "authority": "HISTORICAL_FAILED_CANDIDATE",
+  "ciRun": 31459364889,
+  "failedJob": "Unit Tests (Python 3.11)",
+  "fixForward": "Normalize all textual manifest inputs to LF before hashing and sizing",
+  "implementationSha": "800d15c0401a30507fe679dfa6dba3d539e39559",
+  "rootCause": "Windows-generated manifest recorded CRLF byte sizes; Linux checkout used LF"
+}

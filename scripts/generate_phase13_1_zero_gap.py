@@ -209,6 +209,7 @@ def main() -> None:
     write_json("scientific_authority_nonchange.json", {"RegistryBefore": 62, "RegistryAfter": 62, "DataProfileBefore": "2.4", "DataProfileAfter": "2.4", "migrationBefore": "0007_phase10m1_workspace_domain", "migrationAfter": "0007_phase10m1_workspace_domain", "V4Before": 0, "V4After": 0, "mutation": 0})
     write_json("release_claim_nonchange.json", {"capabilityPromotion": 0, "inputSupportPromotion": 0, "validationPromotion": 0, "newPublicClaims": 0, "status": "PASS"})
     write_json("release_gap_registry_after.json", gaps)
+    write_json("failed_candidate.json", {"implementationSha": "800d15c0401a30507fe679dfa6dba3d539e39559", "ciRun": 31459364889, "failedJob": "Unit Tests (Python 3.11)", "rootCause": "Windows-generated manifest recorded CRLF byte sizes; Linux checkout used LF", "authority": "HISTORICAL_FAILED_CANDIDATE", "fixForward": "Normalize all textual manifest inputs to LF before hashing and sizing"})
     write_json("phase13_acceptance_registry.json", {"expected": 8, "implemented": 8, "missing": 0, "extra": 0, "duplicate": 0, "conflicting": 0, "records": p13x1})
 
     handoff = {"handoffId": "Phase13_2CanonicalRealUserE2EEntryHandoff", "factModelHash": FACT_HASH, "scopeBaselineHash": SCOPE_HASH, "Phase12BaselineHash": PHASE12_HASH, "Registry": 62, "DataProfile": "2.4", "migration": "0007_phase10m1_workspace_domain", "clarification": {"maxRounds": 1, "maxQuestions": 3, "secondRound": "CLARIFICATION_NOT_ALLOWED"}, "demoIds": [x["demoId"] for x in preflights], "fixtureRecords": 11, "fixtureIntegrity": "11/11 PASS", "providerPolicy": "DETERMINISTIC_RELEASE_AUTHORITY_PLUS_BOUNDED_DEEPSEEK_USER_ACCEPTANCE", "realRuntime": True, "realPersistence": True, "services": ["PostgreSQL", "Redis", "MinIO"], "noInjection": True, "demosExecuted": 0, "executionAuthorized": False, "p13x2AcceptanceIds": [f"P13X2-A{i:02d}" for i in range(1, 9)], "prohibitions": ["no handcrafted objects", "no direct-adapter E2E authority", "no scientific claim promotion"]}
@@ -226,7 +227,8 @@ def main() -> None:
     for path in sorted(OUT.iterdir()):
         if path.name == "manifest.json":
             continue
-        entries.append({"path": path.name, "sha256": sha256_bytes(path.read_bytes()), "bytes": path.stat().st_size})
+        content = stable_bytes(path)
+        entries.append({"path": path.name, "sha256": sha256_bytes(content), "bytes": len(content), "textNormalization": "LF"})
     manifest = {"schemaVersion": "phase13-1-zero-gap-manifest/1.0", "entries": entries, "expectedFiles": len(entries), "missing": 0, "hashMismatch": 0, "unclassified": 0, "implementationCi": implementation_ci, "productionCodeChanges": 0, "demosExecuted": 0}
     write_json("manifest.json", manifest)
 

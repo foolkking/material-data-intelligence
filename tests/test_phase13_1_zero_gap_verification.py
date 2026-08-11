@@ -13,6 +13,10 @@ def data(name: str):
     return json.loads((OUT / name).read_text(encoding="utf-8"))
 
 
+def stable_bytes(path: Path) -> bytes:
+    return path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+
+
 def test_phase13_1_authorities_and_zero_gap_reconcile() -> None:
     assert data("fact_model_hash_verification.json")["status"] == "PASS"
     assert data("scope_baseline_hash_verification.json")["status"] == "PASS"
@@ -84,5 +88,6 @@ def test_manifest_is_complete_and_hash_valid() -> None:
     assert manifest["expectedFiles"] == len(manifest["entries"])
     for row in manifest["entries"]:
         path = OUT / row["path"]
-        assert path.stat().st_size == row["bytes"]
-        assert hashlib.sha256(path.read_bytes()).hexdigest() == row["sha256"]
+        content = stable_bytes(path)
+        assert len(content) == row["bytes"]
+        assert hashlib.sha256(content).hexdigest() == row["sha256"]

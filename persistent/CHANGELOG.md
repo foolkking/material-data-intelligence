@@ -2623,3 +2623,6 @@ directly afterward. Phase 12-2 remains reviewer-gated.
   entry handoff evidence.
 - Preserved zero blockers, zero critical integration gaps, all scientific and
   product authorities, and zero Phase 13-2 demo execution.
+- Failed implementation candidate `800d15c` / CI `31459364889` exposed a
+  cross-platform manifest byte-count mismatch (CRLF on Windows versus LF on
+  Linux). The fix-forward normalizes textual evidence before hashing/sizing.
