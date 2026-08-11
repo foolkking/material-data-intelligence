@@ -34,7 +34,9 @@ at the Phase 13-3 reviewer gate.
 测试结果：失败证据治理 `4 passed`；PostgreSQL/Redis/MinIO 服务复现
 `1 passed, 0 skipped`；后端 `1378 passed, 52 skipped`；前端 `456 passed`；
 typecheck、build、`uv lock --check` 和 `git diff --check` PASS。Exact-SHA CI
-在 evidence candidate 上执行。
+`31511289851` 对 evidence candidate
+`fc54d4eec3f537e1ad57fca8d085539e9acd1ac3` PASS，包含 50 个零跳过
+PostgreSQL/Redis/MinIO integration tests、浏览器矩阵和 Linux/Windows replay。
 
 失败原因：真实上传只在 Phase2 进程内 runtime 保存 normalized source exports；
 Planner 创建的 SQL dataset 缺少 `normalizedExports`，新 worker 因而无法重建 exact

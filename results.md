@@ -8937,6 +8937,7 @@ PHASE13_EXECUTABLE_TASK_CREATED = NO
 PHASE14_CREATED = NO
 ```
 
+
 # Phase 13-1 Zero-Gap Verification Closure Result
 
 ## 1. Conclusion
@@ -11091,5 +11092,98 @@ EXECUTABLE_PENDING_TASKS = 0
 TASK_BLOCK_COUNT = 2
 PHASE13_2_ATTEMPT_3_EXECUTABLE_TASK_CREATED = NO
 PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+PHASE14_CREATED = NO
+```
+
+# Phase 13-2 Attempt 3 Seven Canonical Real-User E2E Demonstrations Result
+
+## Conclusion and History
+
+`FAILED / REVIEWER_ACTION_REQUIRED`. Attempt 1 remains `FAILED_HISTORICAL`,
+Fix-Forward #1 remains PASS, Attempt 2 remains `FAILED_RERUN_HISTORICAL`, and
+Fix-Forward #2 remains PASS (`bc6a6f525515c256c6807c71c5a5f2591607abab`,
+CI `31504920945`). Attempt 3 passed its repository, authority, Level C 7/7,
+Level C2 7/7, eight-of-eight resource and service entry gates, then stopped on
+a new P0 during the first fresh Level-D execution. No production repair was made.
+
+## Fresh Execution and Finding
+
+Demo 1 used a fresh HTTP `/datasets/upload`, retained `formulas.csv`, DataProfile
+2.4, canonical natural-language prompt, AnalysisIntent 1.0, EligibilityResolution
+1.0, capability Planner, PlanValidator, persisted Plan/Job and real Redis enqueue.
+A newly constructed production QueueWorkerRuntime failed before ToolCall creation:
+
+```text
+TOOL_INPUT_INVALID: Unknown input ref: profile
+```
+
+`P13-R3-001` is a P0 `RELEASE_CRITICAL_INTEGRATION_DEFECT`. The upload process
+contains normalized source exports, but Planner's SQL dataset lacks
+`normalizedExports`; the fresh PostgreSQL/MinIO durable resolver cannot rebuild
+the exact source object store. Fix-Forward #2 C2 manually persisted those exports
+and did not cover the real endpoint-to-worker boundary.
+
+Demo 1 is `FAIL_PRODUCT_INTEGRATION`; Demo 2-7 are
+`NOT_EXECUTED_AFTER_P0_STOP`. Negative paths, browser-driven Attempt 3 flows,
+mobile inspection and bounded live DeepSeek were not executed. Full demos are
+`0/7`, old evidence reused as PASS is 0, and `P13X2_ACCEPTANCE = 0/8`.
+
+## Authority, Regression and Lifecycle
+
+All handcrafted injection and Runtime fallback counters are zero. No ToolCall,
+Artifact, Workspace, interpretation, Finding/Evidence, Report or Recipe was
+created. Registry 62, DataProfile 2.4, AnalysisIntent 1.0, EligibilityResolution
+1.0, AnalysisPlan 0.1/0.2, migration 0007, Fact Model
+`e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06` and
+Scope Baseline `eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94`
+are unchanged.
+
+- Evidence governance: `4 passed`.
+- Service reproduction: `1 passed, 0 skipped` locally.
+- Backend: `1378 passed, 52 skipped`; frontend: `456 passed`.
+- Typecheck, build, lock, diff, deterministic manifest, security and secret scan: PASS.
+- Evidence SHA: `fc54d4eec3f537e1ad57fca8d085539e9acd1ac3`.
+- Exact-SHA CI: `31511289851` PASS, including 50 zero-skip service tests,
+  retained browser gates and Linux/Windows replay.
+- Completion/archive SHA: not applicable; Attempt 3 failed and all three failed
+  Phase 13-2 task blocks remain retained.
+
+```text
+PHASE_13_2_ATTEMPT_3 = FAILED / REVIEWER_ACTION_REQUIRED
+DEMO_1_STATUS = FAIL_PRODUCT_INTEGRATION
+DEMO_2_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+DEMO_3_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+DEMO_4_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+DEMO_5_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+DEMO_6_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+DEMO_7_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+PHASE13_2_ATTEMPT_3_DEMOS_EXECUTED = 0
+OLD_EVIDENCE_REUSED_AS_PASS = 0
+P13X2_ACCEPTANCE = 0/8
+P13_R3_001 = OPEN_REVIEWER_ACTION_REQUIRED
+RELEASE_CRITICAL_INTEGRATION_DEFECTS = 1
+SCIENTIFIC_DEFECTS = 0
+SECURITY_DEFECTS = 0
+PRODUCTION_CODE_CHANGES = 0
+SCIENTIFIC_BEHAVIOR_CHANGES = 0
+ALL_HANDCRAFTED_INJECTION_COUNTERS = 0
+CURRENT_FACT_MODEL_HASH = e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06
+CURRENT_SCOPE_BASELINE_HASH = eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94
+FACT_MODEL_HASH_IMPACT_BY_ATTEMPT_3 = NO
+SCOPE_BASELINE_HASH_IMPACT_BY_ATTEMPT_3 = NO
+BASELINE_DETERMINISM = PASS
+REGISTRY = 62
+DATAPROFILE = 2.4
+ANALYSIS_INTENT = 1.0
+ELIGIBILITY_RESOLUTION = 1.0
+ANALYSIS_PLAN = 0.1 / 0.2
+MIGRATION = 0007_phase10m1_workspace_domain
+REAL_LLM_CALLS = 0
+PHASE_13_3 = BLOCKED_BY_PHASE13_2_ATTEMPT_3
+PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+FAILED_RETAINED_TASK_BLOCKS = 3
+EXECUTABLE_PENDING_TASKS = 0
+TASK_BLOCK_COUNT = 3
 PHASE14_CREATED = NO
 ```
