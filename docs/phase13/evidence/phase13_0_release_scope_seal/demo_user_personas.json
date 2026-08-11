@@ -1,0 +1,29 @@
+{
+  "personas": [
+    {
+      "contract": [
+        "supported material data",
+        "reasonable scientific question",
+        "does not know Tool IDs",
+        "user-facing UI only",
+        "expects result and limitations"
+      ],
+      "name": "Canonical Scientist User",
+      "personaId": "P13-PERSONA-A"
+    },
+    {
+      "contract": [
+        "ambiguous question",
+        "wrong or limited data",
+        "unsupported request",
+        "back navigation",
+        "refresh and recovery",
+        "partial execution",
+        "inspects limitations"
+      ],
+      "name": "Exploratory / Imperfect User",
+      "personaId": "P13-PERSONA-B"
+    }
+  ],
+  "schemaVersion": "phase13-demo-personas/1.0"
+}

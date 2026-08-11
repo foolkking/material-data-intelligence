@@ -1,0 +1,20 @@
+{
+  "boundedLiveAcceptance": {
+    "maximumCallsPerCase": 2,
+    "rawPayloadRetention": false,
+    "requiredCases": 1,
+    "retries": 0,
+    "timeoutSeconds": 60
+  },
+  "deterministicReleaseAuthority": "DETERMINISTIC_PROVIDER_REPLAY_ALLOWED",
+  "endpoint": "https://api.deepseek.com",
+  "keySource": "DEEPSEEK_KEY",
+  "llmScientificAuthority": "NONE",
+  "models": [
+    "deepseek-v4-flash",
+    "deepseek-v4-pro"
+  ],
+  "phase13_0RealCalls": 0,
+  "realProvider": "deepseek",
+  "schemaVersion": "phase13-demo-provider-policy/1.0"
+}

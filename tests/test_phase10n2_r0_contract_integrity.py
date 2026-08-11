@@ -58,6 +58,11 @@ def test_n2_r0_scope_is_exact_and_bounded() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     if not tasks.strip():
         return
+    if "Phase 13-0 Reviewer Prompt" in tasks:
+        assert tasks.count("---TASK---") == tasks.count("---END---") == 1
+        assert "状态：处理中" in tasks or "状态：已完成" in tasks
+        assert "Phase 13-1 Reviewer Prompt" not in tasks
+        return
     if "Phase 12-6 Reviewer Prompt" in tasks and "Phase 12-5 Reviewer Prompt" not in tasks:
         assert tasks.count("---TASK---") == 1
         assert tasks.count("---TASK---") == tasks.count("---END---")

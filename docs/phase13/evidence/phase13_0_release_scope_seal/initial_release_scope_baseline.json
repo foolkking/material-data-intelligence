@@ -1,0 +1,21 @@
+{
+  "acceptanceRegistryHash": "1e2e5b48e203bb4a129420a4a02865ed51a76e042636f68b4c45d6791c06fb1f",
+  "baselineId": "P13-0-INITIAL-RELEASE-SCOPE-BASELINE",
+  "capabilityMatrixHash": "dd9580e64996c27f1b464a8f4b4fe60fc13f387c79b44afa6e00f1e1625553b9",
+  "dataProfileVersion": "2.4",
+  "demoFixtureRegistryHash": "28be625d61363767f021be9a995078742a9292da421a12b0faa2f8e76d70eef4",
+  "factModelHash": "e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06",
+  "futureScopeHash": "1553d52252d8271856cb6925f3bc660352cdc12b0f1af0662cdf479b60d627c1",
+  "inputMatrixHash": "b2b711c755a568a018c756003b20c1002cb2359758b40281e22ce34990144dad",
+  "limitationHash": "45e377d5b66772d5730c6c72c1954adfd7334c4a0a8e85c502b23cc73456b325",
+  "notPlannedHash": "61dc14b581988ccd09ae44bdfb41b13e5bd81410ff5a04dc40116f6544d824b5",
+  "phase11ScientificBaselineHash": "5273b5e866e950c592fe757c2e7bde2d4ede9551f7eb406d0744bb6dcf7d93cb",
+  "phase12ProductBaselineHash": "29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4",
+  "registrySnapshotHash": "45a7125d6b98d5f242004c4f331dcd79d5650c79b3e720b61a33742f6e2b504b",
+  "releaseClaimHash": "28d241a42119dbb823d557d43f637af9b2d97b03a03828308fe395fd751dd4c8",
+  "releaseGapHash": "5743944d1ecf4d5d4d0b68cffc060381d5fe2cb161df43e4dda9a1545a2ad1aa",
+  "schemaVersion": "initial-release-scope-baseline/1.0",
+  "securityBoundaryHash": "393d38819e0544d6e678f6a97374c312266a01571d1996ed91418c65706215cd",
+  "semanticHash": "6fc3a621ef582d1eb7b5854273a05dfe0aedd739f20073ef034610c449335526",
+  "sevenDemoRegistryHash": "bc1133e1ccaf05e4649ed66532beec83e8ae7a06c9c2230173ace303143f27b7"
+}

@@ -2539,3 +2539,13 @@ current board above.
 - [x] Verify implementation `8fb5dcbe54fbbcd32677107abb5f4117bd04948d`
   in exact-SHA CI `31397995499`; record completion and archive only the Phase
   12-7 queue block without creating Phase 13.
+
+## Phase 13-0
+
+- [x] Reconcile Phase 11, Phase 12 and live repository facts without promotion.
+- [x] Assign all 62 Registry Tools exactly once in the release capability matrix.
+- [x] Seal 14 input rows, claims, limitations, Future Scope and Not Planned scope.
+- [x] Seal exactly seven real-user E2E contracts and checksummed retained fixtures.
+- [x] Seal 56 Phase 13 acceptance IDs, lifecycle and no-injection governance.
+- [ ] Verify the audit implementation by exact-SHA CI, then record completion and
+  archive only Phase 13-0 without creating Phase 13-1 or Phase 13-2 tasks.

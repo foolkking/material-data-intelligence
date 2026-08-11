@@ -1,0 +1,20 @@
+{
+  "backend": {
+    "note": "local full suite; service-backed cases remain required in implementation CI",
+    "passed": 1320,
+    "skipped": 50,
+    "status": "PASS"
+  },
+  "browserSmoke": "PASS",
+  "frontend": {
+    "passed": 455,
+    "status": "PASS"
+  },
+  "gitDiffCheck": "PASS",
+  "npmAudit": "UNAVAILABLE",
+  "npmAuditReason": "configured npmmirror security audit endpoint returned NOT_IMPLEMENTED",
+  "productionBuild": "PASS",
+  "serviceBacked": "IMPLEMENTATION_CI_REQUIRED",
+  "typecheck": "PASS",
+  "uvLockCheck": "PASS"
+}

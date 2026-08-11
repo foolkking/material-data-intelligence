@@ -1,0 +1,18 @@
+{
+  "analysisPlan": 0,
+  "artifact": 0,
+  "developerAuditMayReadExactIdsAfterFlow": true,
+  "evidence": 0,
+  "finding": 0,
+  "job": 0,
+  "normalUserLocators": [
+    "role",
+    "accessible name",
+    "user-visible semantics"
+  ],
+  "recipe": 0,
+  "report": 0,
+  "schemaVersion": "phase13-demo-no-injection-policy/1.0",
+  "toolCall": 0,
+  "workspace": 0
+}

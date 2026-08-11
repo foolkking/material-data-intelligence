@@ -1,0 +1,5 @@
+PHASE13_0_PRODUCTION_CODE_CHANGES = 0
+BACKEND_BEHAVIOR_CHANGES = 0
+FRONTEND_BEHAVIOR_CHANGES = 0
+SCIENTIFIC_BEHAVIOR_CHANGES = 0
+This generator and its tests are audit-only and are not runtime authorities.

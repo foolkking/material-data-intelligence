@@ -766,3 +766,14 @@ and
 | [`phase12/phase12_final_known_limitations.md`](phase12/phase12_final_known_limitations.md) | Final explicit UX and evidence limitations |
 | [`phase12/phase13_final_product_closure_handoff.md`](phase12/phase13_final_product_closure_handoff.md) | Reviewer-gated Phase 13 handoff without execution authority |
 | [`phase12/evidence/phase12_7_cross_product_ux_validation/`](phase12/evidence/phase12_7_cross_product_ux_validation/) | Final journey, consistency, accessibility, authority and baseline evidence |
+| [`phase13/phase13_0_final_fact_alignment_release_scope_seal.md`](phase13/phase13_0_final_fact_alignment_release_scope_seal.md) | Phase 13-0 live-repository fact alignment and Initial Release scope seal |
+| [`phase13/phase13_initial_release_scope.md`](phase13/phase13_initial_release_scope.md) | Bounded Initial Release architecture, authority and scope |
+| [`phase13/phase13_release_capability_matrix.md`](phase13/phase13_release_capability_matrix.md) | Exact 62-Tool release capability reconciliation |
+| [`phase13/phase13_release_claims_and_limitations.md`](phase13/phase13_release_claims_and_limitations.md) | Public claims, forbidden stronger wording and explicit limitations |
+| [`phase13/phase13_future_and_not_planned_scope.md`](phase13/phase13_future_and_not_planned_scope.md) | Final Future Scope and Not Planned boundary |
+| [`phase13/phase13_release_critical_gap_registry.md`](phase13/phase13_release_critical_gap_registry.md) | Classified blockers, integration gaps, limitations and evidence gaps |
+| [`phase13/phase13_seven_canonical_e2e_demo_contract.md`](phase13/phase13_seven_canonical_e2e_demo_contract.md) | Seven real-user service-backed E2E contracts without execution claims |
+| [`phase13/phase13_real_user_simulation_contract.md`](phase13/phase13_real_user_simulation_contract.md) | User personas, natural-language entry and no-injection policy |
+| [`phase13/phase13_acceptance_registry.md`](phase13/phase13_acceptance_registry.md) | Canonical 56-ID Phase 13 acceptance registry |
+| [`phase13/phase13_initial_release_fact_model.md`](phase13/phase13_initial_release_fact_model.md) | Deterministic Initial Release fact model and scope baseline |
+| [`phase13/evidence/phase13_0_release_scope_seal/`](phase13/evidence/phase13_0_release_scope_seal/) | Phase 13-0 registries, fixtures, contracts, hashes and security evidence |

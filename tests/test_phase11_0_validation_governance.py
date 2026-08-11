@@ -145,6 +145,11 @@ def test_roadmap_and_queue_boundaries_are_exact() -> None:
     blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
     if not blocks:
         return
+    if "Phase 13-0 Reviewer Prompt" in blocks[0]:
+        assert len(blocks) == 1
+        assert "状态：处理中" in blocks[0] or "状态：已完成" in blocks[0]
+        assert "Phase 13-1 Reviewer Prompt" not in tasks
+        return
     if "Phase 12-6 Reviewer Prompt" in blocks[0] and "Phase 12-5 Reviewer Prompt" not in blocks[0]:
         assert len(blocks) == 1
         assert re.search(r"状态：(待处理|处理中|已完成)", blocks[0])

@@ -1,0 +1,11 @@
+{
+  "archiveCiWaitRequired": false,
+  "completionCiWaitRequired": false,
+  "failedCandidateRetention": true,
+  "forcePush": false,
+  "implementationExactShaCiRequired": true,
+  "phase13_1TaskCreated": false,
+  "phase13_2TaskCreated": false,
+  "phase14Created": false,
+  "schemaVersion": "phase13-lifecycle-contract/1.0"
+}

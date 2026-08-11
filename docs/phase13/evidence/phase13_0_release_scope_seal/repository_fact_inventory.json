@@ -1,0 +1,17 @@
+{
+  "analysisIntent": "1.0",
+  "analysisPlans": [
+    "0.1",
+    "0.2"
+  ],
+  "branch": "master",
+  "dataProfile": "2.4",
+  "eligibilityResolution": "1.0",
+  "entryBaseline": "69d53376b188a20db2c3cc2c28824afb5971621d",
+  "migration": "0007_phase10m1_workspace_domain",
+  "phase12Archive": "69d53376b188a20db2c3cc2c28824afb5971621d",
+  "phase12Completion": "a369bf26aca1b11522aed97e5baa1fa9017d673e",
+  "phase12Implementation": "8fb5dcbe54fbbcd32677107abb5f4117bd04948d",
+  "phase12ImplementationCi": "31397995499",
+  "registry": 62
+}

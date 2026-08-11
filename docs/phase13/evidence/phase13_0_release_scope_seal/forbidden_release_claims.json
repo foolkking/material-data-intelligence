@@ -1,0 +1,15 @@
+{
+  "claims": [
+    "all tools independently scientifically validated",
+    "all numeric outputs cross-platform reference validated",
+    "formal WCAG certified",
+    "autonomous scientific researcher",
+    "arbitrary scientific workflow engine",
+    "DFT/GW computation platform",
+    "Rietveld refinement platform",
+    "Recipe automatically reproduces by executing itself",
+    "browser rendering proves numeric correctness",
+    "all common file types directly scientifically supported"
+  ],
+  "schemaVersion": "forbidden-release-claims/1.0"
+}

@@ -2595,3 +2595,16 @@ directly afterward. Phase 12-2 remains reviewer-gated.
   gated Phase 13 handoff; implementation exact-SHA CI remains required.
 - Implementation `8fb5dcbe54fbbcd32677107abb5f4117bd04948d` passed CI
   `31397995499`; Phase 12 is sealed and Phase 13 remains reviewer-gated.
+
+## 2026-08-11 - Phase 13-0 release scope audit candidate
+
+- Added deterministic audit-only generation for the Initial Release fact model,
+  scope baseline, 62-Tool capability reconciliation, sealed Phase 11 input and
+  validation snapshots, claims, limitations, Future/Not Planned boundaries and
+  classified release gaps.
+- Sealed seven real-user-entry E2E contracts using retained checksummed fixtures,
+  real persistence/Runtime requirements and zero handcrafted Plan/Job/Artifact/
+  Workspace/Finding/Evidence/Report/Recipe injection.
+- Added 56 exact Phase 13 acceptance IDs and reviewer-gated 13-1/13-2 contracts.
+  No production code, scientific value, API, database, dependency or LLM call
+  changed; implementation exact-SHA CI remains required.

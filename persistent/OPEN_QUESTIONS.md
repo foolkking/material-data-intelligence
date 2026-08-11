@@ -1246,3 +1246,13 @@ is the only remaining work.
 - Phase 13 scope and execution remain subject to a new reviewer prompt.
 - Phase 12 has no remaining implementation-critical UX question after CI
   `31397995499`; all future product-closure decisions belong to Phase 13 review.
+
+## Phase 13-0
+
+- Current repository evidence yields zero release blockers and zero release-
+  critical integration gaps. Phase 13-1 therefore remains a reviewer-gated
+  zero-gap verification closure unless new evidence proves an integration defect.
+- The seven service-backed user demonstrations are contract-ready but unexecuted;
+  their planned P2 evidence gap belongs only to Phase 13-2 after the 13-1 reviewer gate.
+- V4=0, numeric cross-platform N/A, mapping-only phonon input, no formal WCAG
+  certification and bounded 3D alternatives remain explicit nonblocking limits.

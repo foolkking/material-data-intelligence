@@ -1,0 +1,35 @@
+{
+  "limitations": [
+    {
+      "limitationId": "P13-LIM-001",
+      "releaseBlocking": false,
+      "statement": "V4 validation promotions remain zero and numeric cross-platform reference validation is not applicable."
+    },
+    {
+      "limitationId": "P13-LIM-002",
+      "releaseBlocking": false,
+      "statement": "macOS is not a current scientific release target."
+    },
+    {
+      "limitationId": "P13-LIM-003",
+      "releaseBlocking": false,
+      "statement": "Formal WCAG certification and a human assistive-technology study are absent."
+    },
+    {
+      "limitationId": "P13-LIM-004",
+      "releaseBlocking": false,
+      "statement": "Some spatial 3D interaction is not screen-reader-equivalent; structured alternatives remain available."
+    },
+    {
+      "limitationId": "P13-LIM-005",
+      "releaseBlocking": false,
+      "statement": "Phonon YAML/JSON is mapping-only rather than a generic direct-upload claim."
+    },
+    {
+      "limitationId": "P13-LIM-006",
+      "releaseBlocking": false,
+      "statement": "Official examples remain mapping-only and do not constitute independent scientific validation."
+    }
+  ],
+  "schemaVersion": "initial-release-known-limitations/1.0"
+}

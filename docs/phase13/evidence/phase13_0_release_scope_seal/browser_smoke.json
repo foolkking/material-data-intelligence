@@ -1,0 +1,9 @@
+{
+  "authority": "retained Phase 12-7 product/browser replay plus Phase 13-0 local replay",
+  "chromium": "PASS",
+  "chromium390x844": "PASS",
+  "firefox": "PASS",
+  "screenshotNumericScientificAuthority": "NONE",
+  "sevenPhase13DemosExecuted": 0,
+  "webkit": "PASS"
+}

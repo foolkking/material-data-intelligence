@@ -1,0 +1,15 @@
+{
+  "items": [
+    "Fermi surface",
+    "projected bands / fatbands",
+    "full Rietveld / refinement / phase fractions",
+    "advanced diffraction",
+    "Bader / charge topology / ELF topology",
+    "defects / surfaces / slabs",
+    "VACF / Green-Kubo / Arrhenius / hops / van Hove",
+    "effective mass",
+    "advanced transport"
+  ],
+  "schemaVersion": "initial-release-future-scope/1.0",
+  "status": "DOCUMENTED_NOT_QUEUED"
+}

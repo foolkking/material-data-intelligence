@@ -1,0 +1,155 @@
+{
+  "claims": [
+    {
+      "claimId": "P13-CLAIM-001",
+      "claimType": "PRODUCT_CAPABILITY",
+      "forbiddenStrongerWording": true,
+      "limitations": "See InitialReleaseLimitationRegistry",
+      "publicWording": "Material Data Intelligence and Scientific Visualization Platform",
+      "releaseBlockingIfFalse": true,
+      "scientificEvidence": "Phase 11 only where applicable",
+      "scope": "Initial Release",
+      "supportEvidence": [
+        "Phase 11",
+        "Phase 12"
+      ],
+      "technicalMeaning": "Bounded materials-data analysis, persisted scientific products and evidence-aware presentation."
+    },
+    {
+      "claimId": "P13-CLAIM-002",
+      "claimType": "PRODUCT_CAPABILITY",
+      "forbiddenStrongerWording": true,
+      "limitations": "See InitialReleaseLimitationRegistry",
+      "publicWording": "Natural-language entry routes eligible work through a bounded Planner.",
+      "releaseBlockingIfFalse": true,
+      "scientificEvidence": "Phase 11 only where applicable",
+      "scope": "Initial Release",
+      "supportEvidence": [
+        "Phase 11",
+        "Phase 12"
+      ],
+      "technicalMeaning": "Intent, clarification, eligibility and Plan validation precede execution."
+    },
+    {
+      "claimId": "P13-CLAIM-003",
+      "claimType": "SCIENTIFIC_VALIDATION",
+      "forbiddenStrongerWording": true,
+      "limitations": "See InitialReleaseLimitationRegistry",
+      "publicWording": "Scientific validation is reference-backed with explicit limits.",
+      "releaseBlockingIfFalse": true,
+      "scientificEvidence": "Phase 11 only where applicable",
+      "scope": "Initial Release",
+      "supportEvidence": [
+        "Phase 11",
+        "Phase 12"
+      ],
+      "technicalMeaning": "Phase 11 has 12 golden records: 8 invariant passes and 4 explicit N/A cases."
+    },
+    {
+      "claimId": "P13-CLAIM-004",
+      "claimType": "REPRODUCIBILITY",
+      "forbiddenStrongerWording": true,
+      "limitations": "See InitialReleaseLimitationRegistry",
+      "publicWording": "Sealed invariants replay on locked Linux and Windows environments.",
+      "releaseBlockingIfFalse": true,
+      "scientificEvidence": "Phase 11 only where applicable",
+      "scope": "Initial Release",
+      "supportEvidence": [
+        "Phase 11",
+        "Phase 12"
+      ],
+      "technicalMeaning": "Numeric cross-platform reference validation remains N/A and V4 remains zero."
+    },
+    {
+      "claimId": "P13-CLAIM-005",
+      "claimType": "PRESENTATION",
+      "forbiddenStrongerWording": true,
+      "limitations": "See InitialReleaseLimitationRegistry",
+      "publicWording": "Core product journeys were validated in Chromium, Firefox, WebKit and 390x844 presentation.",
+      "releaseBlockingIfFalse": true,
+      "scientificEvidence": "Phase 11 only where applicable",
+      "scope": "Initial Release",
+      "supportEvidence": [
+        "Phase 11",
+        "Phase 12"
+      ],
+      "technicalMeaning": "Browser evidence is presentation authority only."
+    },
+    {
+      "claimId": "P13-CLAIM-006",
+      "claimType": "ACCESSIBILITY",
+      "forbiddenStrongerWording": true,
+      "limitations": "See InitialReleaseLimitationRegistry",
+      "publicWording": "The accessibility engineering target is met with documented limitations.",
+      "releaseBlockingIfFalse": true,
+      "scientificEvidence": "Phase 11 only where applicable",
+      "scope": "Initial Release",
+      "supportEvidence": [
+        "Phase 11",
+        "Phase 12"
+      ],
+      "technicalMeaning": "This is not formal WCAG certification or a human assistive-technology study."
+    },
+    {
+      "claimId": "P13-CLAIM-007",
+      "claimType": "PROVIDER",
+      "forbiddenStrongerWording": true,
+      "limitations": "See InitialReleaseLimitationRegistry",
+      "publicWording": "DeepSeek is the only real LLM provider policy.",
+      "releaseBlockingIfFalse": true,
+      "scientificEvidence": "Phase 11 only where applicable",
+      "scope": "Initial Release",
+      "supportEvidence": [
+        "Phase 11",
+        "Phase 12"
+      ],
+      "technicalMeaning": "Endpoint and model allowlist are bounded; the LLM is not a scientific executor."
+    },
+    {
+      "claimId": "P13-CLAIM-008",
+      "claimType": "SECURITY",
+      "forbiddenStrongerWording": true,
+      "limitations": "See InitialReleaseLimitationRegistry",
+      "publicWording": "Artifacts and Recipes are inert and do not grant arbitrary execution authority.",
+      "releaseBlockingIfFalse": true,
+      "scientificEvidence": "Phase 11 only where applicable",
+      "scope": "Initial Release",
+      "supportEvidence": [
+        "Phase 11",
+        "Phase 12"
+      ],
+      "technicalMeaning": "No arbitrary Python, shell, notebook, HTML, JavaScript or remote Artifact execution."
+    },
+    {
+      "claimId": "P13-CLAIM-009",
+      "claimType": "REPRODUCIBILITY_RECORD",
+      "forbiddenStrongerWording": true,
+      "limitations": "See InitialReleaseLimitationRegistry",
+      "publicWording": "Reports compose persisted facts and Recipes preserve exact declarative provenance.",
+      "releaseBlockingIfFalse": true,
+      "scientificEvidence": "Phase 11 only where applicable",
+      "scope": "Initial Release",
+      "supportEvidence": [
+        "Phase 11",
+        "Phase 12"
+      ],
+      "technicalMeaning": "Recipe execution authority is none."
+    },
+    {
+      "claimId": "P13-CLAIM-010",
+      "claimType": "INPUT_SUPPORT",
+      "forbiddenStrongerWording": true,
+      "limitations": "See InitialReleaseLimitationRegistry",
+      "publicWording": "Supported inputs follow the sealed 14-row Phase 11 matrix.",
+      "releaseBlockingIfFalse": true,
+      "scientificEvidence": "Phase 11 only where applicable",
+      "scope": "Initial Release",
+      "supportEvidence": [
+        "Phase 11",
+        "Phase 12"
+      ],
+      "technicalMeaning": "Upload/parse support does not imply direct scientific support or independent validation."
+    }
+  ],
+  "schemaVersion": "initial-release-claim-registry/1.0"
+}

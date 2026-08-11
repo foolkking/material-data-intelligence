@@ -4585,3 +4585,17 @@ acceptance evidence. Its semantic hash excludes timestamps and CI state and
 must never participate in Plan, Artifact, Workspace, Selection or scientific
 identity. Phase 12-7 validates existing architecture and creates no new product
 or scientific authority.
+
+## Phase 13 Initial Release Fact Authority
+
+Phase 13-0 establishes an audit-only `InitialReleaseFactModel` and deterministic
+`InitialReleaseScopeBaseline`. They bind references and hashes for Phase 11,
+Phase 12, Registry 62, DataProfile 2.4, input/capability/claim/limitation/gap and
+seven-demo registries. These hashes govern release documentation and acceptance
+only; they never participate in AnalysisPlan, Artifact, Workspace, Selection or
+scientific semantic identity.
+
+Final E2E authority requires user-facing natural-language entry where applicable,
+real PostgreSQL/Redis/MinIO persistence, the real queue/worker Runtime, registered
+Adapters and exact lineage. Injected Plan, Job, ToolCall, Artifact, Workspace,
+Finding, Evidence, Report or Recipe records can never establish release E2E PASS.
