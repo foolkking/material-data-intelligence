@@ -2673,3 +2673,8 @@ directly afterward. Phase 12-2 remains reviewer-gated.
   existing `CuKa` contract; mismatch rejection and all XRD science are unchanged.
 - Level C and C2 both pass `7/7`; no Job, queue message, ToolCall, produced
   Artifact, Workspace, Report or Recipe is created. Attempt 3 is not executed.
+- Failed candidate `67a95c4` / CI `31503729464` exposed two test-governance
+  defects: historical Attempt-2 evidence was incorrectly regenerated against
+  remediated production, and the new isolated PostgreSQL test omitted the
+  standard users/organizations test bootstrap. Both are fixed forward without
+  production or scientific changes.
