@@ -543,3 +543,7 @@ Phase 13-1 zero-gap verification is active. The audit independently reconciles
 the live Registry split of 62 Tools / 51 runtime Adapters / 11 mapping-only or
 unavailable entries. It changes no product or scientific behavior and does not
 execute Phase 13-2 demonstrations.
+
+Phase 13-1 implementation `d1a60955a77aec000f1e6fd630f0770db545421d`
+passed exact-SHA CI `31460352586`. Zero-gap verification is complete; Phase
+13-2 remains a separate user/reviewer task and no demonstration has yet run.

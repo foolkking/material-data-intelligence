@@ -198,11 +198,11 @@ phase names and historical evidence are unchanged.
 
 ## Phase 13-1 Current Status
 
-Phase 13-1 is active as `ZERO_GAP_VERIFICATION_CLOSURE`. Its deterministic
+Phase 13-1 is complete as `ZERO_GAP_VERIFICATION_CLOSED`. Its deterministic
 preflight reconciles 30 integration seams, all seven canonical demo contracts,
 11 retained fixtures, 62 Registry entries (51 runtime Adapter bindings and 11
 explicit mapping-only/unavailable entries), and the corrected one-round
 clarification authority. No release blocker or release-critical integration
-gap was found locally. Production and scientific behavior remain unchanged;
-exact-SHA implementation CI is still required. Phase 13-2 remains unexecuted
-and is not authorized by Phase 13-1.
+gap was found. Production and scientific behavior remain unchanged.
+Implementation `d1a60955a77aec000f1e6fd630f0770db545421d` passed exact-SHA CI
+`31460352586`. Phase 13-2 remains unexecuted and reviewer-gated.

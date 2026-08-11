@@ -2626,3 +2626,5 @@ directly afterward. Phase 12-2 remains reviewer-gated.
 - Failed implementation candidate `800d15c` / CI `31459364889` exposed a
   cross-platform manifest byte-count mismatch (CRLF on Windows versus LF on
   Linux). The fix-forward normalizes textual evidence before hashing/sizing.
+- Corrected implementation `d1a60955a77aec000f1e6fd630f0770db545421d`
+  passed exact-SHA CI `31460352586`; all required jobs succeeded.

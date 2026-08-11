@@ -8937,6 +8937,129 @@ PHASE13_EXECUTABLE_TASK_CREATED = NO
 PHASE14_CREATED = NO
 ```
 
+# Phase 13-1 Zero-Gap Verification Closure Result
+
+## 1. Conclusion
+
+Phase 13-1 is `PASS / ZERO_GAP_VERIFICATION_CLOSED`. The corrected Phase 13-0
+zero-gap conclusion was independently replayed without production or scientific
+changes. Phase 13-2 demos remain unexecuted.
+
+## 2. Entry And Authority
+
+- Entry HEAD/origin: `7bf991c6524db0544f8e97024b6a5d30868ebaf5`.
+- Phase 13-0 Fact Model: `e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06`.
+- Corrected scope baseline: `93dea4a2b0bf31215ab2af1952b16ac47b20b7ed9b111bb2fb60ef70dd431627`.
+- Phase 12 baseline: `29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4`.
+- AnalysisIntent remains `1.0`: one clarification round, three questions, typed
+  `CLARIFICATION_NOT_ALLOWED` for a second attempt.
+
+## 3. Integration Seam Verification
+
+The canonical matrix classifies 30 seams. Twenty-seven are `VERIFIED`; three
+are `VERIFIED_WITH_EXPLICIT_LIMIT`. `GAP_FOUND=0`, `UNCLASSIFIED=0`.
+Resource/Profile/Intent/Eligibility/Planner/Plan/Validator/Queue/Runtime/
+Registry/Adapter/persistence/Artifact/Workspace/Interpretation/Evidence/
+Provenance/Report/Recipe/recovery/isolation/security paths all resolve.
+
+## 4. Registry And Runtime
+
+- Registry: `62` unique versioned Tool identities.
+- Runtime Adapter bindings: `51`.
+- Explicit mapping-only/unavailable entries: `11`.
+- Registry promotions or availability mutations: `0`.
+- DataProfile `2.4`; AnalysisPlan `0.1 / 0.2`; migration
+  `0007_phase10m1_workspace_domain` unchanged.
+
+## 5. Seven-Demo Preflight
+
+All seven canonical contracts are `READY_WITH_EXPLICIT_NONBLOCKING_LIMIT`:
+Dataset Intelligence/Composition, Materials ML, Structure/coordination/local
+environment/polyhedra/XRD, Trajectory/RDF/MSD/diffusion, Phonon/BZ,
+Volumetric, and Electronic Band/DOS. This is contract preflight, not E2E PASS.
+
+## 6. Fixture And Identity Integrity
+
+All `11/11` retained fixtures exist, are retention-safe and match normalized
+checksums. External downloads: `0`. Latest/fuzzy/filename/display-label/array-
+position authority: `0`.
+
+## 7. Persistence, Runtime And Security
+
+Real PostgreSQL/Redis/MinIO, QueueWorkerRuntime, registered Adapter execution,
+persisted Artifact, one Workspace per Job and persisted-fact Report/Recipe are
+required for Phase 13-2. Recipe execution remains `NONE`; arbitrary code,
+external Artifact execution, real LLM calls and external downloads in 13-1: `0`.
+
+## 8. Release Gap Reconciliation
+
+- `RELEASE_BLOCKERS = 0`
+- `RELEASE_CRITICAL_INTEGRATION_GAPS = 0`
+- `UNCLASSIFIED_RELEASE_GAPS = 0`
+- Nonblocking limitations remain unchanged and publicly required.
+
+## 9. Acceptance
+
+`P13X1-A01..P13X1-A08 = 8/8 PASS`. Phase 13-2 acceptance IDs remain sealed
+and unexecuted.
+
+## 10. Tests
+
+- Backend: `1335 passed, 50 skipped` locally; CI unit PASS.
+- Frontend: `455 passed`; typecheck and production build PASS.
+- Focused historical queue governance: `69 passed`.
+- Phase 13-1/canonical governance: `14 passed`.
+- `uv lock --check`, `git diff --check`, Linux/Windows invariant replay,
+  PostgreSQL/Redis/MinIO, Chromium/Firefox/WebKit/390x844 evidence: PASS.
+
+## 11. Commit And CI History
+
+- Failed candidate: `800d15c0401a30507fe679dfa6dba3d539e39559`, CI
+  `31459364889`; Linux checkout exposed Windows CRLF manifest byte-size drift.
+- Fix-forward implementation: `d1a60955a77aec000f1e6fd630f0770db545421d`.
+- Implementation exact-SHA CI: `31460352586 / success`.
+- Completion terminology: `IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI` and
+  `COMPLETION_RECORDED`; queue archive follows directly without a CI wait.
+
+## 12. Mandatory Markers
+
+```text
+PHASE_13_1 = PASS
+PHASE_13_1_MODE = ZERO_GAP_VERIFICATION_CLOSURE
+PHASE13_1_PRODUCTION_CODE_CHANGES = 0
+PHASE13_1_SCIENTIFIC_BEHAVIOR_CHANGES = 0
+PHASE13_1_NEW_TOOLS = 0
+PHASE13_1_NEW_ALGORITHMS = 0
+PHASE13_1_NEW_ARTIFACT_FAMILIES = 0
+PHASE13_1_NEW_DATAPROFILE_VERSION = 0
+PHASE13_1_NEW_ANALYSISPLAN_VERSION = 0
+PHASE13_1_NEW_MIGRATIONS = 0
+PHASE13_1_NEW_PUBLIC_API_FAMILIES = 0
+PHASE13_1_NEW_DEPENDENCIES = 0
+PHASE13_1_NEW_LLM_CALL_SITES = 0
+PHASE13_1_REAL_LLM_CALLS = 0
+REGISTRY_BEFORE_13_1 = 62
+REGISTRY_AFTER_13_1 = 62
+DATAPROFILE_BEFORE_13_1 = 2.4
+DATAPROFILE_AFTER_13_1 = 2.4
+RELEASE_BLOCKERS = 0
+RELEASE_CRITICAL_INTEGRATION_GAPS = 0
+UNCLASSIFIED_RELEASE_GAPS = 0
+INTEGRATION_SEAMS = 30/30 CLASSIFIED
+DEMO_PREFLIGHT = 7/7 READY_WITH_EXPLICIT_NONBLOCKING_LIMIT
+FIXTURE_INTEGRITY = 11/11 PASS
+P13X1_ACCEPTANCE = 8/8
+HANDCRAFTED_PLAN_INJECTION = 0
+HANDCRAFTED_JOB_INJECTION = 0
+HANDCRAFTED_ARTIFACT_INJECTION = 0
+HANDCRAFTED_WORKSPACE_INJECTION = 0
+HANDCRAFTED_REPORT_INJECTION = 0
+PHASE13_2_DEMOS_EXECUTED = 0
+PHASE13_2_DEMO_PASS_CLAIMS = 0
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+```
+
 # Phase 12-1 Design System 2.0 + Visual Language Result
 
 ## Conclusion
