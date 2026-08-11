@@ -495,6 +495,14 @@ def main() -> None:
                     "reason": "Initial release semantic baseline used platform-specific generated-file bytes, so CRLF/LF differences changed the exact hash.",
                     "authority": "HISTORICAL_FAILED_CANDIDATE",
                     "fixForward": "Canonical JSON hashes and normalized text-fixture identities replace platform-specific byte hashes.",
+                },
+                {
+                    "sha": "0692864ff3981b0e2ee75d5ac88ee2a438da90b6",
+                    "ciRun": 31450249072,
+                    "failedJob": "Frontend Typecheck & Build",
+                    "reason": "The Phase 13 audit generator ran in the Node-only frontend job, where the Python workspace packages were not installed.",
+                    "authority": "HISTORICAL_FAILED_CANDIDATE",
+                    "fixForward": "Run the generator in the Unit job after the frozen Python workspace installation.",
                 }
             ]
         },

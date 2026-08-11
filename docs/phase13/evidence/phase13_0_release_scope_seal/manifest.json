@@ -50,7 +50,7 @@
     },
     {
       "path": "failed_candidates.json",
-      "sha256": "3626da065d75b47d186965acd6d865f2d45ee0fe8bc13cfdabdde80335c456e4"
+      "sha256": "23a1b584e0f1e962576194778903048e594c82040029ce66f78c0b0e1bfcaed3"
     },
     {
       "path": "forbidden_release_claims.json",

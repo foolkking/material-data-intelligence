@@ -40,6 +40,9 @@ jobs:
       - name: Run unit tests
         run: uv run python -m pytest -q -m "not integration" --tb=short
 
+      - name: Phase 13-0 final fact alignment and release scope evidence
+        run: uv run python scripts/generate_phase13_0_release_scope.py
+
       - name: uv lock check
         run: uv lock --check
 
@@ -332,14 +335,6 @@ jobs:
           node test/phase12-7-cross-product-browser-evidence.mjs
           cd ../..
           python scripts/generate_phase12_7_cross_product_evidence.py
-        working-directory: apps/web
-
-      - name: Phase 13-0 final fact alignment and release scope evidence
-        env:
-          DEEPSEEK_KEY: ""
-        run: |
-          cd ../..
-          python scripts/generate_phase13_0_release_scope.py
         working-directory: apps/web
 
       - name: Replay Phase 10M-6 Workspace recovery browser evidence
