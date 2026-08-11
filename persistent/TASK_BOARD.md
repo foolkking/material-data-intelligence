@@ -2566,3 +2566,14 @@ current board above.
 - [x] Verify 11 retained fixture identities and all seven demo preflight paths.
 - [x] Verify implementation `d1a60955a77aec000f1e6fd630f0770db545421d`
   by exact-SHA CI `31460352586`; record completion and archive only Phase 13-1.
+
+## Phase 13-2
+
+- [x] Verify the Phase 13-1 handoff, corrected fact/scope hashes, 11 fixtures,
+  seven demo contracts and no-injection policy.
+- [x] Reproduce current parser/Profile/Intent/Eligibility/Planner outcomes for
+  all canonical and alternate demo prompts.
+- [ ] Execute seven real-user service-backed E2E demonstrations. Blocked by
+  `P13-RF-001`, `P13-RF-002` and `P13-RF-003` before real Job creation.
+- [ ] Close Phase 13-2. Reviewer-authorized integration correction is required;
+  production changes are outside the current phase authority.

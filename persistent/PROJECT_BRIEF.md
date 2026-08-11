@@ -547,3 +547,11 @@ execute Phase 13-2 demonstrations.
 Phase 13-1 implementation `d1a60955a77aec000f1e6fd630f0770db545421d`
 passed exact-SHA CI `31460352586`. Zero-gap verification is complete; Phase
 13-2 remains a separate user/reviewer task and no demonstration has yet run.
+
+Phase 13-2 real-user entry probing found three release-critical integration
+defects before real Job creation: the Planner rejects parser-produced
+DataProfile 2.3/2.4, the sealed experimental XRD input lacks a parser/eligibility
+path, and sealed phonon/BZ prompts are unsupported by AnalysisIntent. A fourth
+P1 finding records a volumetric canonical-prompt mismatch. Production and
+scientific code remain unchanged; seven E2E PASS claims remain zero and Initial
+Release is blocked pending reviewer-authorized closure.

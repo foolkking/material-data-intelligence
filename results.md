@@ -10590,3 +10590,85 @@ PHASE13_2_EXECUTABLE_TASK_CREATED = NO
 INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
+
+# Phase 13-2 Seven Canonical Real-User E2E Demonstrations Result
+
+## Conclusion
+
+Status: `FAILED / BLOCKED_BY_RELEASE_CRITICAL_INTEGRATION_DEFECTS`.
+
+Phase 13-1 authority, both Phase 13 hashes, 11 fixture identities, all seven
+demo contracts and the no-injection policy resolved. Deterministic current-code
+probes then found three P0 product-entry defects before any real Job could be
+created. Phase 13-2 therefore cannot honestly satisfy its seven-demo PASS gate.
+No production or scientific change was made, and no demonstration PASS is
+claimed.
+
+## Entry And Attempts
+
+- Entry HEAD/origin: `d07c8809e677049bcf651c1aa63ab04fddec1ec2`; branch `master`; clean worktree.
+- Phase 13-1 implementation: `d1a60955a77aec000f1e6fd630f0770db545421d`;
+  exact-SHA CI `31460352586` PASS; completion `3d9c59b`; archive `d07c8809`.
+- Fact Model hash: `e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06`.
+- Scope baseline hash: `93dea4a2b0bf31215ab2af1952b16ac47b20b7ed9b111bb2fb60ef70dd431627`.
+- Current parser, DataProfile builder, AnalysisIntent, Eligibility and Planner
+  were probed using every sealed fixture and canonical/alternate prompt.
+- Local PostgreSQL and Redis endpoints, MinIO binary, Playwright and bounded
+  DeepSeek configuration were inspected. Execution stopped before provider,
+  service-backed queue/runtime and browser acceptance because the product entry
+  contract had already failed.
+
+## Release Findings
+
+- `P13-RF-001` P0: schema/parser produce DataProfile 2.3/2.4, but Planner accepts
+  only 2.0/2.1 (`PROFILE_2_REQUIRED`), blocking demos 4 and 7.
+- `P13-RF-002` P0: the sealed experimental XRD JSON is parser-unsupported and
+  eligibility reports `XRD_COMPARISON_SOURCE_NOT_ELIGIBLE`, blocking demo 3.
+- `P13-RF-003` P0: both sealed phonon/BZ prompts return `INTENT_UNSUPPORTED`,
+  blocking demo 5.
+- `P13-RF-004` P1: the volumetric canonical prompt fails while its bounded
+  alternate reaches `structure.volumetric_data`, requiring contract correction.
+
+## Verification
+
+- `uv run python scripts/generate_phase13_2_blocker_evidence.py`: PASS.
+- Focused Phase 13 governance tests: `26 passed`.
+- Full backend regression: `1339 passed, 50 skipped`.
+- Frontend regression: `455 passed`; typecheck and production build PASS.
+- `uv lock --check` and `git diff --check`: PASS.
+- Production files changed: `0`; scientific files changed: `0`; dependencies,
+  lockfile, database, migration, public API and Registry changes: `0`.
+- Live LLM calls: `0`; external downloads: `0`; handcrafted injections: `0`.
+
+## Status Markers
+
+```text
+PHASE_13_2 = FAILED / BLOCKED_BY_RELEASE_CRITICAL_INTEGRATION_DEFECTS
+PHASE13_DEMO_FAMILIES = 7
+PHASE13_2_DEMOS_EXECUTED = 0
+PHASE13_2_DEMO_PASS_CLAIMS = 0
+P13X2_ACCEPTANCE = 0/8
+RELEASE_CRITICAL_INTEGRATION_DEFECTS = 3
+DOCUMENTATION_DEFECTS = 1
+SCIENTIFIC_DEFECTS = 0
+SECURITY_DEFECTS = 0
+HANDCRAFTED_PLAN_INJECTION = 0
+HANDCRAFTED_JOB_INJECTION = 0
+HANDCRAFTED_TOOLCALL_INJECTION = 0
+HANDCRAFTED_ARTIFACT_INJECTION = 0
+HANDCRAFTED_WORKSPACE_INJECTION = 0
+HANDCRAFTED_FINDING_INJECTION = 0
+HANDCRAFTED_EVIDENCE_INJECTION = 0
+HANDCRAFTED_REPORT_INJECTION = 0
+HANDCRAFTED_RECIPE_INJECTION = 0
+PHASE13_2_PRODUCTION_CODE_CHANGES = 0
+PHASE13_2_SCIENTIFIC_BEHAVIOR_CHANGES = 0
+REGISTRY = 62
+DATAPROFILE = 2.4
+MIGRATION = 0007_phase10m1_workspace_domain
+INITIAL_RELEASE_COMPLETE = NO
+PHASE_13_3_EXECUTABLE_TASK_CREATED = NO
+PHASE14_CREATED = NO
+TASK_BLOCK_COUNT = 1
+REVIEWER_ACTION_REQUIRED = YES
+```

@@ -49,6 +49,9 @@ jobs:
       - name: Phase 13-1 zero-gap verification evidence
         run: uv run python scripts/generate_phase13_1_zero_gap.py
 
+      - name: Phase 13-2 blocker evidence integrity
+        run: uv run python scripts/generate_phase13_2_blocker_evidence.py
+
       - name: uv lock check
         run: uv lock --check
 

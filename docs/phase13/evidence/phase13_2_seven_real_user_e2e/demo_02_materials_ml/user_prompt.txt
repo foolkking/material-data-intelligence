@@ -1,0 +1,2 @@
+canonical: Evaluate these materials-model predictions and explain the largest errors and limitations.
+alternate: How well does this model perform, and which samples deserve inspection?

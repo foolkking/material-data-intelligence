@@ -1,5 +1,5 @@
 ---TASK---
- 状态：待处理
+ 状态：失败
 
 # Phase 13-2 Reviewer Prompt
 
@@ -5014,5 +5014,15 @@ WORKTREE_CLEAN = YES
 
 
 
+
+## 执行结果
+
+- 完成时间：2026-08-11 18:17:55 +08:00
+- 状态：失败 / `BLOCKED_BY_RELEASE_CRITICAL_INTEGRATION_DEFECTS`
+- 修改文件：`.github/workflows/ci.yml`、`scripts/generate_phase13_2_blocker_evidence.py`、`tests/test_phase13_2_blocker_evidence.py`、`docs/phase13/`、`docs/phase13/evidence/phase13_2_seven_real_user_e2e/`、`docs/ROADMAP.md`、`persistent/*.md`、`results.md`、`TASKS.md`
+- 修改摘要：完成 Phase 13-2 确定性真实用户入口预检和失败证据封存；未修改生产代码、科学算法、Registry、DataProfile、数据库、API 或依赖。
+- 阻断原因：`P13-RF-001`（Planner 拒绝 parser/schema 已产生并支持的 DataProfile 2.3/2.4，阻断 Demo 4/7）、`P13-RF-002`（实验 XRD sealed JSON 无 parser/eligibility 产品入口，阻断 Demo 3）、`P13-RF-003`（phonon/BZ canonical 与 alternate intent 均为 `INTENT_UNSUPPORTED`，阻断 Demo 5）。`P13-RF-004` 为 Demo 6 canonical prompt 与可达 alternate 不一致的 P1 文档契约缺陷。
+- 已尝试方法：核验 Phase 13-1 exact-SHA CI 和 handoff；校验 11 个 fixture；通过当前 parser、DataProfile builder、AnalysisIntent、Eligibility、Planner 对七个 canonical/alternate prompt 做确定性入口探测；核验本地 PostgreSQL/Redis/MinIO/Playwright/DeepSeek 环境可用性。阻断发生在真实 Job 创建之前，因此未启动 live provider、真实 queue/runtime 或浏览器演示，也未使用 handcrafted injection 绕过。
+- 测试结果：生成器 PASS；Phase 13 聚焦治理测试 `26 passed`；完整后端 `1339 passed, 50 skipped`；前端 `455 passed`；typecheck、production build、lock、diff 均 PASS。Phase 13-2 demos executed = `0/7`，PASS claims = `0`。
 
 ---END---

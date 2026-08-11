@@ -1,0 +1,6 @@
+{
+  "limitations": [
+    "Diffusion requires an exact persisted MSD dependency and valid time semantics."
+  ],
+  "preserved": true
+}

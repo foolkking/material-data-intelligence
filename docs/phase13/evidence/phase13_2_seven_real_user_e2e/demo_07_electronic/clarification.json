@@ -1,0 +1,6 @@
+{
+  "maxQuestions": 3,
+  "maxRounds": 1,
+  "secondRound": "TYPED_FAILURE",
+  "status": "CONTRACT_VERIFIED_NOT_EXECUTED"
+}

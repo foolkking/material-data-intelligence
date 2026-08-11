@@ -1,0 +1,29 @@
+{
+  "parseResults": [
+    {
+      "fixtureId": "P13-DEMO-02-FIX-01",
+      "format": "csv",
+      "objectTypes": [
+        "DataFrame"
+      ],
+      "status": "success"
+    }
+  ],
+  "records": [
+    {
+      "byteSize": 64,
+      "checksum": "9473b499a846608123be135e8527e2144191c02c92e9147b84a3608326d4df3d",
+      "demoId": "P13-DEMO-02",
+      "expectedProfileCapabilities": [
+        "materials-ml"
+      ],
+      "fixtureId": "P13-DEMO-02-FIX-01",
+      "format": ".csv",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "tests/fixtures/tables/ml_results.csv",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture"
+    }
+  ]
+}

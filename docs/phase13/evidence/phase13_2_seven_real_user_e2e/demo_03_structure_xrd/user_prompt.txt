@@ -1,0 +1,2 @@
+canonical: Inspect this crystal structure, compare its coordination methods and local polyhedra, then compare the supplied experimental diffraction peaks.
+alternate: What are the local environments in this crystal, and how do its supplied XRD peaks correspond to the theoretical pattern?

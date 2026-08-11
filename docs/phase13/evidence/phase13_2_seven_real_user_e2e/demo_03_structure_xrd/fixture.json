@@ -1,0 +1,56 @@
+{
+  "parseResults": [
+    {
+      "fixtureId": "P13-DEMO-03-FIX-01",
+      "format": "cif",
+      "objectTypes": [
+        "Structure"
+      ],
+      "status": "success"
+    },
+    {
+      "fixtureId": "P13-DEMO-03-FIX-02",
+      "format": "json_limited",
+      "objectTypes": [],
+      "status": "unsupported"
+    }
+  ],
+  "records": [
+    {
+      "byteSize": 382,
+      "checksum": "cb832812e186173117b59fb0beb629375d89b2452679aa9a1a1070a7dcdb0f5e",
+      "demoId": "P13-DEMO-03",
+      "expectedProfileCapabilities": [
+        "structure",
+        "coordination",
+        "local-environment-polyhedra",
+        "experimental-xrd"
+      ],
+      "fixtureId": "P13-DEMO-03-FIX-01",
+      "format": ".cif",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "tests/fixtures/structures/simple_cubic.cif",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture"
+    },
+    {
+      "byteSize": 136,
+      "checksum": "0a1d4d245dfb0b442697f803462dcfc32452e322a07620bdcbf47244a4940777",
+      "demoId": "P13-DEMO-03",
+      "expectedProfileCapabilities": [
+        "structure",
+        "coordination",
+        "local-environment-polyhedra",
+        "experimental-xrd"
+      ],
+      "fixtureId": "P13-DEMO-03-FIX-02",
+      "format": ".json",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "docs/phase10n/evidence/phase10n3_experimental_xrd_comparison_peak_matching/perfect_match.json",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "documentationDefects": 1,
+  "findings": [
+    {
+      "affectedDemos": [
+        "P13-DEMO-04",
+        "P13-DEMO-07"
+      ],
+      "category": "RELEASE_CRITICAL_INTEGRATION_DEFECT",
+      "evidence": "DataProfile schema supports 2.0..2.4 and parser emits 2.3/2.4, while planner _resolve_profile accepts only 2.0/2.1.",
+      "findingId": "P13-RF-001",
+      "fixed": false,
+      "owner": "REVIEWER_REQUIRED",
+      "productionPath": "apps/api/mdi_api/routers/planner.py",
+      "severity": "P0"
+    },
+    {
+      "affectedDemos": [
+        "P13-DEMO-03"
+      ],
+      "category": "RELEASE_CRITICAL_INTEGRATION_DEFECT",
+      "evidence": "The sealed experimental XRD JSON fixture is parser-unsupported and alternate planning reports XRD_COMPARISON_SOURCE_NOT_ELIGIBLE.",
+      "findingId": "P13-RF-002",
+      "fixed": false,
+      "owner": "REVIEWER_REQUIRED",
+      "productionPath": "packages/material-parsers",
+      "severity": "P0"
+    },
+    {
+      "affectedDemos": [
+        "P13-DEMO-05"
+      ],
+      "category": "RELEASE_CRITICAL_INTEGRATION_DEFECT",
+      "evidence": "Both sealed phonon/BZ prompts return INTENT_UNSUPPORTED for the approved normalized profile.",
+      "findingId": "P13-RF-003",
+      "fixed": false,
+      "owner": "REVIEWER_REQUIRED",
+      "productionPath": "packages/llm-core",
+      "severity": "P0"
+    },
+    {
+      "affectedDemos": [
+        "P13-DEMO-06"
+      ],
+      "category": "DOCUMENTATION_DEFECT",
+      "evidence": "The sealed canonical volumetric prompt fails INTENT_PROFILE_CAPABILITY_MISSING while its bounded alternate reaches structure.volumetric_data.",
+      "findingId": "P13-RF-004",
+      "fixed": false,
+      "owner": "REVIEWER_REQUIRED",
+      "productionPath": "docs/phase13/evidence/phase13_0_release_scope_seal/seven_demo_registry.json",
+      "severity": "P1"
+    }
+  ],
+  "releaseCriticalIntegrationDefects": 3,
+  "scientificDefects": 0,
+  "securityDefects": 0,
+  "unclassified": 0
+}

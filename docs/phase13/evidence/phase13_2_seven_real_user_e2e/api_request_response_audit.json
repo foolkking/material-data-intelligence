@@ -1,0 +1,6 @@
+{
+  "reason": "Deterministic Planner entry probes failed before a real Job could be created.",
+  "requests": 0,
+  "responses": 0,
+  "status": "NOT_EXECUTED_DUE_RELEASE_CRITICAL_INTEGRATION_DEFECT"
+}

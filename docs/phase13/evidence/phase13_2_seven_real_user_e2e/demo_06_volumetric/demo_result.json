@@ -1,0 +1,34 @@
+{
+  "demoId": "P13-DEMO-06",
+  "demoPassClaim": false,
+  "plannerOutcomes": [
+    {
+      "capabilityOutcome": null,
+      "errorCode": "INTENT_PROFILE_CAPABILITY_MISSING",
+      "intentOutcome": null,
+      "ok": false,
+      "planSchemaVersion": null,
+      "prompt": "Inspect this volumetric field with its structure context, slices and supported volume presentation.",
+      "promptKind": "canonical",
+      "selectedTools": [],
+      "validationCodes": [
+        "INTENT_PROFILE_CAPABILITY_MISSING"
+      ]
+    },
+    {
+      "capabilityOutcome": "PLAN_READY",
+      "errorCode": null,
+      "intentOutcome": "READY",
+      "ok": true,
+      "planSchemaVersion": "0.1",
+      "prompt": "What does this supplied volumetric grid contain, and which bounded views are available?",
+      "promptKind": "alternate",
+      "selectedTools": [
+        "structure.volumetric_data"
+      ],
+      "validationCodes": []
+    }
+  ],
+  "reason": "Product user-entry contract failed during deterministic Planner probe.",
+  "status": "NOT_EXECUTED_DUE_RELEASE_CRITICAL_INTEGRATION_DEFECT"
+}

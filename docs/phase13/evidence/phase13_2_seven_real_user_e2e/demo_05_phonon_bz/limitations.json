@@ -1,0 +1,6 @@
+{
+  "limitations": [
+    "Generic phonon YAML/JSON upload remains mapping-only; the demo must exercise the sealed normalized resource path."
+  ],
+  "preserved": true
+}

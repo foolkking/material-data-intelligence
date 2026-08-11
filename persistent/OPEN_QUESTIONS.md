@@ -1269,3 +1269,14 @@ is the only remaining work.
 - No implementation-critical integration question was found by the zero-gap
   preflight. Phase 13-2 execution remains a separate reviewer decision after
   exact-SHA CI closes this audit.
+
+## Phase 13-2 Blockers
+
+- Reviewer authorization is required to reconcile the Planner's DataProfile
+  2.0/2.1 gate with parser/schema output at 2.3/2.4 (`P13-RF-001`).
+- Reviewer authorization is required to establish or revise the real-user XRD
+  parser/eligibility path (`P13-RF-002`) and phonon/BZ intent path
+  (`P13-RF-003`) without handcrafted injection.
+- The canonical volumetric prompt contract must be aligned with its currently
+  reachable alternate (`P13-RF-004`). Phase 13-3 may not start while these
+  release-critical product-entry defects remain unresolved.

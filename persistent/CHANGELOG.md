@@ -2628,3 +2628,13 @@ directly afterward. Phase 12-2 remains reviewer-gated.
   Linux). The fix-forward normalizes textual evidence before hashing/sizing.
 - Corrected implementation `d1a60955a77aec000f1e6fd630f0770db545421d`
   passed exact-SHA CI `31460352586`; all required jobs succeeded.
+
+## 2026-08-11 - Phase 13-2 release-critical entry blockers
+
+- Added deterministic audit-only replay of all seven sealed demo fixtures and
+  canonical/alternate natural-language entry prompts.
+- Recorded three P0 integration defects affecting demos 3, 4, 5 and 7, plus one
+  P1 volumetric prompt-contract discrepancy affecting demo 6.
+- Added immutable per-demo non-execution evidence and governance tests. No real
+  provider call, handcrafted Plan/Job/Artifact/Workspace injection, production
+  change, scientific change or demo PASS claim was made.

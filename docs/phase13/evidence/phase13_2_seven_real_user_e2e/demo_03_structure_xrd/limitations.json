@@ -1,0 +1,7 @@
+{
+  "limitations": [
+    "CrystalNN and VoronoiNN are separate algorithms.",
+    "Peak correspondence is not phase confirmation or Rietveld refinement."
+  ],
+  "preserved": true
+}

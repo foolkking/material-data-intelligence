@@ -1,0 +1,6 @@
+{
+  "limitations": [
+    "The platform analyzes supplied electronic data; it does not perform DFT or GW calculations."
+  ],
+  "preserved": true
+}

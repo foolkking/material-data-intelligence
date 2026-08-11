@@ -206,3 +206,15 @@ clarification authority. No release blocker or release-critical integration
 gap was found. Production and scientific behavior remain unchanged.
 Implementation `d1a60955a77aec000f1e6fd630f0770db545421d` passed exact-SHA CI
 `31460352586`. Phase 13-2 remains unexecuted and reviewer-gated.
+
+## Phase 13-2 Current Status
+
+Phase 13-2 is blocked by release-critical product-entry defects discovered by
+the deterministic real-user entry probe. Demo 4 and Demo 7 cannot pass the
+Planner because parser/schema DataProfile 2.3/2.4 output is rejected by the
+Planner's 2.0/2.1 gate; Demo 3 has no sealed XRD JSON parser/eligibility path;
+Demo 5's sealed phonon/BZ prompts are unsupported by AnalysisIntent. Demo 6
+also has a canonical-prompt contract discrepancy. No production or scientific
+change was authorized, no handcrafted injection was used, and no E2E PASS is
+claimed. Phase 13 and Initial Release are blocked pending reviewer-authorized
+integration closure; Phase 13-3 and Phase 14 are not queued.

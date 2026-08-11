@@ -4620,3 +4620,13 @@ not scientific runtime identity.
   identities include 51 runtime Adapter bindings and 11 explicitly retained
   mapping-only/unavailable entries.
 - Demo preflight readiness is not E2E execution or scientific reference proof.
+
+## Phase 13-2 Failure Authority
+
+- A deterministic Planner preflight may diagnose user-entry blockers, but it is
+  not product E2E authority and cannot create a demo PASS claim.
+- Phase 13-2 has no production-change authority. Entry defects discovered before
+  real Job creation must remain visible and reviewer-gated; direct Adapter calls,
+  handcrafted persisted objects, and prompt Tool IDs are prohibited bypasses.
+- The Phase 13-1 zero-gap audit is superseded only for the newly observed entry
+  evidence; its scientific and release-scope identities remain unchanged.

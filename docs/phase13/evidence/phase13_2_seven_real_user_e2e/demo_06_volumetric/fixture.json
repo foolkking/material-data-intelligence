@@ -1,0 +1,29 @@
+{
+  "parseResults": [
+    {
+      "fixtureId": "P13-DEMO-06-FIX-01",
+      "format": "vasp_volumetric",
+      "objectTypes": [
+        "VolumetricData"
+      ],
+      "status": "success"
+    }
+  ],
+  "records": [
+    {
+      "byteSize": 114,
+      "checksum": "1ea8ada56bec22e6b1f4caf3d24f048c980f3ea5ad5d355b8c7af36b152c953d",
+      "demoId": "P13-DEMO-06",
+      "expectedProfileCapabilities": [
+        "volumetric"
+      ],
+      "fixtureId": "P13-DEMO-06-FIX-01",
+      "format": "CHGCAR",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "docs/phase10j/fixtures/volumetric_parser/CHGCAR",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture"
+    }
+  ]
+}

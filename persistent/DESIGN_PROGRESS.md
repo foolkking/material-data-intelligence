@@ -2237,3 +2237,9 @@ demos remain unexecuted pending their own reviewer-gated phase.
 
 Phase 13-1 implementation `d1a60955a77aec000f1e6fd630f0770db545421d`
 passed exact-SHA CI `31460352586`; completion and queue archive proceed directly.
+
+Phase 13-2 did not reach UI demonstration execution. Deterministic probes using
+the sealed fixtures and user prompts reproduced three P0 product-entry defects
+and one P1 documentation-contract defect. Evidence is retained under
+`docs/phase13/evidence/phase13_2_seven_real_user_e2e/`; no production UX or
+scientific behavior was changed to bypass the failures.

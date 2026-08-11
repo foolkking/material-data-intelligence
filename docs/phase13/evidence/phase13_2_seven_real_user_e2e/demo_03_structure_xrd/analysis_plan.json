@@ -1,0 +1,31 @@
+{
+  "handcrafted": false,
+  "outcomes": [
+    {
+      "capabilityOutcome": "CAPABILITY_MISMATCH",
+      "errorCode": "CAPABILITY_MISMATCH",
+      "intentOutcome": "READY",
+      "ok": false,
+      "planSchemaVersion": null,
+      "prompt": "Inspect this crystal structure, compare its coordination methods and local polyhedra, then compare the supplied experimental diffraction peaks.",
+      "promptKind": "canonical",
+      "selectedTools": [],
+      "validationCodes": [
+        "CAPABILITY_COVERAGE_INCOMPLETE"
+      ]
+    },
+    {
+      "capabilityOutcome": "CAPABILITY_MISMATCH",
+      "errorCode": "CAPABILITY_MISMATCH",
+      "intentOutcome": "READY",
+      "ok": false,
+      "planSchemaVersion": null,
+      "prompt": "What are the local environments in this crystal, and how do its supplied XRD peaks correspond to the theoretical pattern?",
+      "promptKind": "alternate",
+      "selectedTools": [],
+      "validationCodes": [
+        "XRD_COMPARISON_SOURCE_NOT_ELIGIBLE"
+      ]
+    }
+  ]
+}

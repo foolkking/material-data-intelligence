@@ -1608,3 +1608,11 @@ version, Adapter binding, availability or validation level.
   mapping-only/unavailable and are not promoted by demo preflight evidence.
 - No Tool, version, availability, Planner metadata or scientific authority is
   changed by the Phase 13-1 audit.
+
+## Phase 13-2 Registry Boundary
+
+- Registry remains 62 with 51 runtime Adapter bindings and 11 explicit
+  mapping-only/unavailable entries.
+- The Phase 13-2 blockers concern parser/Profile/Intent/Planner reachability;
+  they do not change Tool identity, Adapter implementation, validation level,
+  V4 count, scientific algorithms or scientific reference authority.

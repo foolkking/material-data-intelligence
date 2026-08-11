@@ -1,0 +1,34 @@
+{
+  "demoId": "P13-DEMO-04",
+  "demoPassClaim": false,
+  "plannerOutcomes": [
+    {
+      "capabilityOutcome": null,
+      "errorCode": "PROFILE_2_REQUIRED",
+      "intentOutcome": null,
+      "ok": false,
+      "planSchemaVersion": null,
+      "prompt": "Analyze this trajectory, show the RDF and MSD, and estimate diffusion with its fit diagnostics.",
+      "promptKind": "canonical",
+      "selectedTools": [],
+      "validationCodes": [
+        "PROFILE_2_REQUIRED"
+      ]
+    },
+    {
+      "capabilityOutcome": null,
+      "errorCode": "PROFILE_2_REQUIRED",
+      "intentOutcome": null,
+      "ok": false,
+      "planSchemaVersion": null,
+      "prompt": "What structural and transport behavior is visible in this trajectory, including RDF, MSD and diffusion limits?",
+      "promptKind": "alternate",
+      "selectedTools": [],
+      "validationCodes": [
+        "PROFILE_2_REQUIRED"
+      ]
+    }
+  ],
+  "reason": "Product user-entry contract failed during deterministic Planner probe.",
+  "status": "NOT_EXECUTED_DUE_RELEASE_CRITICAL_INTEGRATION_DEFECT"
+}
