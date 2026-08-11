@@ -2654,4 +2654,5 @@ directly afterward. Phase 12-2 remains reviewer-gated.
   `caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`.
 - Implementation `2e47263ac3042663cf901a7fcb8f44e203143e2e` passed exact-SHA
   CI `31493208538`, including Unit, browser/build, Linux/Windows replay and
-  PostgreSQL/Redis/MinIO integration. Completion is recorded before direct archive.
+  PostgreSQL/Redis/MinIO integration. Completion is recorded and the fix-forward
+  queue block is directly archived; failed Phase 13-2 history is retained.

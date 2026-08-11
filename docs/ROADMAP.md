@@ -208,13 +208,18 @@ bounded phonon/BZ and electronic intent coverage, and aligns the trajectory and
 volumetric prompts. The permanent pre-Job product-entry gate is `7/7 READY`.
 Implementation `2e47263ac3042663cf901a7fcb8f44e203143e2e` passed exact-SHA
 CI `31493208538`; Registry and scientific authority are unchanged. Completion
-is recorded and direct queue archive follows.
+is recorded and the fix-forward queue block is archived. Phase 13-1 is `PASS /
+REOPENED_FIX_FORWARD / RELEASE_CRITICAL_PRODUCT_ENTRY_GAPS_CLOSED /
+CANONICAL_ENTRY_SLICE_7_OF_7_READY / QUEUE_ARCHIVED`.
 
 ## Phase 13-2 Current Status
 
-Phase 13-2 remains `FAILED_HISTORICAL / REMEDIATION_CANDIDATE / RERUN_REQUIRED`.
+Phase 13-2 remains `FAILED_HISTORICAL / REMEDIATED / RERUN_REQUIRED /
+REVIEWER_GATE`.
 Its immutable failure evidence records three P0 entry defects and one P1 demo-
 contract defect before Job creation. The Phase 13-1 fix-forward candidate closes
 those defects at Levels A/B/C, but this is not Level D full E2E execution:
 `PHASE13_2_DEMOS_EXECUTED = 0` and `P13X2_ACCEPTANCE = 0/8`. A rerun requires a
 separate reviewer prompt. Phase 13-3 and Phase 14 are not queued.
+Phase 13 is `IN_PROGRESS / PRODUCT_ENTRY_GAPS_REMEDIATED /
+READY_FOR_PHASE13_2_RERUN_REVIEW`; Initial Release remains incomplete.

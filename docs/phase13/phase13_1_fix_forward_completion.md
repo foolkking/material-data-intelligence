@@ -5,6 +5,6 @@ Implementation `2e47263ac3042663cf901a7fcb8f44e203143e2e` passed exact-SHA CI
 RELEASE_CRITICAL_PRODUCT_ENTRY_GAPS_CLOSED /
 CANONICAL_ENTRY_SLICE_7_OF_7_READY`.
 
-Completion is recorded; queue archive is the next direct lifecycle commit.
+Completion is recorded and the fix-forward queue block is archived directly.
 Historical Phase 13-1 and failed Phase 13-2 records remain append-only. Phase
 13-2 has not been rerun and `P13X2_ACCEPTANCE` remains `0/8`.

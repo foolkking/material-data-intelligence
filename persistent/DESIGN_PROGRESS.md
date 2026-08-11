@@ -2251,4 +2251,5 @@ Level-C gate. All seven canonical parser/Profile/Intent/Eligibility/Planner/
 PlanValidator slices select the intended existing Tools and validate; all
 persistence counters remain zero. Negative Future Scope, unsupported input,
 stale binding/profile and second-round clarification controls pass. No Phase
-13-2 demonstration has been rerun; completion is recorded before direct queue archive.
+13-2 demonstration has been rerun; completion is recorded and the fix-forward
+queue block is directly archived while the failed Phase 13-2 block remains.
