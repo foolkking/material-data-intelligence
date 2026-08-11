@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：失败
 
 # Phase 13-2 Seven Canonical Real-User E2E Demonstrations Full Rerun
 
@@ -11,6 +11,37 @@ applicable Finding/Evidence/Provenance and Report/Recipe. Preserve the original
 failed attempt as historical evidence; use current Scope hash
 `caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`.
 No production/scientific/dependency/schema/API/LLM-call-site change is authorized.
+
+失败时间：2026-08-11 21:55:28 +08:00
+
+修改文件：`.github/workflows/ci.yml`、`docs/ROADMAP.md`、`docs/index.md`、
+`docs/phase13/phase13_2_real_user_e2e_rerun_failure.md`、
+`docs/phase13/phase13_2_rerun_release_findings.md`、
+`docs/phase13/evidence/phase13_2_seven_real_user_e2e_rerun/`、
+`scripts/generate_phase13_2_rerun_failure_evidence.py`、
+`tests/test_phase13_2_rerun_failure_evidence.py` 和 persistent 状态文件。
+
+修改摘要：保留 attempt-1 历史失败和 Phase 13-1 remediation，通过 fresh
+七族 runtime preflight 发现 `P13-RR-001..003` 三个 P0 release-critical
+integration defects。Demo 5/7 的解析资源没有进入 production object store；
+Demo 3 的实验/理论 XRD 波长不兼容。依照 stop rule 未修改生产代码、未继续
+service/browser full E2E、未创建任何 demo PASS claim。
+
+测试结果：focused governance `21 passed`；backend `1356 passed, 50 skipped`；
+frontend `456 passed`；typecheck/build/lock/diff PASS。Evidence implementation
+`0877450140a76ad7ecd59e99ad48f0c19c5e7059` 的 exact-SHA CI
+`31497337708` PASS，包含 Unit、Frontend/browser、Linux/Windows replay 和
+PostgreSQL/Redis/MinIO integration。`PHASE13_2_DEMOS_EXECUTED=0`，
+`P13X2_ACCEPTANCE=0/8`。
+
+失败原因：真实 runtime preflight 暴露三个本阶段无权修复的 production
+integration defects；reviewer action required。
+
+已尝试方法：验证 remediation/hash/entry gate；启动隔离 PostgreSQL/MinIO
+并验证 Redis；使用真实 parser/Profile/Intent/Eligibility/Planner/
+PlanValidator/QueueWorkerRuntime 重放七族；核对 exact tool-call errors 与
+production object-store refs；运行完整回归和 exact-SHA CI。确认不是测试
+harness、科学算法、服务环境或既有回归失败。
 
 ---END---
 

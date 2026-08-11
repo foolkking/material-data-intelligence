@@ -2590,8 +2590,8 @@ current board above.
 - [x] Archive only this fix-forward task while retaining the failed Phase 13-2 block.
 ## Phase 13-2 Rerun
 
-The authorized full rerun is stopping as `FAILED_RERUN /
-REVIEWER_ACTION_REQUIRED`. Fresh runtime preflight found `P13-RR-001..003`
-before service-backed/browser execution. The active rerun block remains in
-`TASKS.md` until failure evidence exact-SHA CI is recorded; the historical
-failed attempt remains retained.
+The authorized full rerun is `FAILED_RERUN / REVIEWER_ACTION_REQUIRED`. Fresh
+runtime preflight found `P13-RR-001..003` before service-backed/browser
+execution. Failure evidence implementation `0877450140a76ad7ecd59e99ad48f0c19c5e7059`
+passed exact-SHA CI `31497337708`. Both the original failed attempt and failed
+rerun remain retained in `TASKS.md`; there is no executable pending task.

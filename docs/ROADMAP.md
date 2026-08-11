@@ -231,4 +231,7 @@ production object-store builder; `P13-RR-003` shows that Demo 3's sealed
 experimental wavelength is incompatible with the real theoretical XRD result.
 Attempt 2 is `FAILED_RERUN / REVIEWER_ACTION_REQUIRED`, full service-backed
 demos remain `0/7`, and `P13X2` remains `0/8`. Phase 13-3 is blocked. No
-production or scientific change was made during this rerun.
+production or scientific change was made during this rerun. Failure evidence
+implementation `0877450140a76ad7ecd59e99ad48f0c19c5e7059` passed exact-SHA
+CI `31497337708`; both failed task blocks remain retained and no executable
+Phase 13-3 task exists.

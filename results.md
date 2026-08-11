@@ -10843,3 +10843,116 @@ PHASE13_3_EXECUTABLE_TASK_CREATED = NO
 PHASE14_CREATED = NO
 FIX_FORWARD_QUEUE_ARCHIVED
 ```
+# Phase 13-2 Seven Canonical Real-User E2E Full Rerun Result
+
+## Conclusion
+
+`FAILED_RERUN / REVIEWER_ACTION_REQUIRED`.
+
+Attempt 1 remains `FAILED_HISTORICAL / BLOCKED_BY_PRODUCT_ENTRY_DEFECTS`.
+Phase 13-1 Fix-Forward remains PASS. Attempt 2 passed its remediation, hash and
+entry gates, then stopped during a fresh seven-family production-runtime
+preflight after three new P0 release-critical integration defects were observed.
+No production fix was made and no full demo PASS is claimed.
+
+## Findings
+
+- `P13-RR-001`: Demo 5 parsed `PhononBand`/`PhononDos` exact IDs are absent from
+  the production object store; registered phonon Adapters fail `Unknown input ref`.
+- `P13-RR-002`: Demo 7 parsed `ElectronicBand`/`ElectronicDos` exact IDs are
+  absent from the production object store; registered electronic Adapters fail
+  `Unknown input ref`.
+- `P13-RR-003`: Demo 3's real experimental XRD comparison rejects the real
+  theoretical dependency because their wavelengths are incompatible.
+
+All three are product integration defects. Scientific defects and security
+defects remain zero.
+
+## Execution And Authority
+
+- Fresh runtime preflights: `7/7`.
+- Full service-backed real-user demos executed: `0/7`.
+- Demo PASS or explicit-limit claims: `0/7`.
+- `P13X2_ACCEPTANCE = 0/8`.
+- Current Fact Model hash:
+  `e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06`.
+- Current Scope Baseline hash:
+  `caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`.
+- Registry/DataProfile/Intent/Eligibility/Plan/migration:
+  `62 / 2.4 / 1.0 / 1.0 / 0.1+0.2 / 0007_phase10m1_workspace_domain`.
+- Production, scientific, schema, API, dependency and provider changes: `0`.
+
+## Verification And Lifecycle
+
+- Focused governance: `21 passed`.
+- Backend: `1356 passed, 50 skipped`.
+- Frontend: `456 passed`.
+- Typecheck/build/lock/diff: PASS.
+- Failure evidence implementation:
+  `0877450140a76ad7ecd59e99ad48f0c19c5e7059`.
+- Implementation exact-SHA CI: `31497337708 / success`.
+- CI jobs: Unit, Frontend/browser, Linux replay, Windows replay and
+  PostgreSQL/Redis/MinIO integration all success.
+- Failed candidates before evidence commit: none. One local backend command
+  timed out at 120 seconds and passed when rerun with a 300-second limit.
+- Completed at: `2026-08-11 21:55:28 +08:00`.
+
+The original failed attempt evidence, remediation evidence and attempt-2
+evidence remain separate. Both failed Phase 13-2 task blocks are retained.
+Phase 13-3 is blocked; Initial Release is not complete; Phase 14 is absent.
+
+```text
+PHASE_13_2_RERUN = FAILED
+
+PHASE13_2_ATTEMPT_1 = FAILED_HISTORICAL
+PHASE13_1_FIX_FORWARD = PASS
+PHASE13_2_ATTEMPT_2 = FAILED_RERUN
+
+P13_RR_001 = OPEN_REVIEWER_ACTION_REQUIRED
+P13_RR_002 = OPEN_REVIEWER_ACTION_REQUIRED
+P13_RR_003 = OPEN_REVIEWER_ACTION_REQUIRED
+
+RELEASE_CRITICAL_INTEGRATION_DEFECTS = 3
+SCIENTIFIC_DEFECTS = 0
+SECURITY_DEFECTS = 0
+
+PHASE13_DEMO_FAMILIES = 7
+FRESH_RUNTIME_PREFLIGHTS = 7/7
+PHASE13_2_DEMOS_EXECUTED = 0
+DEMO_PASS_OR_EXPLICIT_LIMIT = 0/7
+P13X2_ACCEPTANCE = 0/8
+
+OLD_DEMO_RESULT_AS_RERUN_PASS = 0
+HANDCRAFTED_INTENT_INJECTION = 0
+HANDCRAFTED_ELIGIBILITY_INJECTION = 0
+HANDCRAFTED_ANALYSISPLAN_INJECTION = 0
+HANDCRAFTED_JOB_INJECTION = 0
+HANDCRAFTED_TOOLCALL_INJECTION = 0
+HANDCRAFTED_ARTIFACT_INJECTION = 0
+HANDCRAFTED_WORKSPACE_INJECTION = 0
+HANDCRAFTED_REPORT_INJECTION = 0
+HANDCRAFTED_RECIPE_INJECTION = 0
+
+PRODUCTION_CODE_CHANGES = 0
+SCIENTIFIC_BEHAVIOR_CHANGES = 0
+NEW_SCIENTIFIC_TOOLS = 0
+NEW_SCIENTIFIC_ALGORITHMS = 0
+NEW_ARTIFACT_FAMILIES = 0
+NEW_DATAPROFILE_VERSION = 0
+NEW_ANALYSISINTENT_VERSION = 0
+NEW_ELIGIBILITY_VERSION = 0
+NEW_ANALYSISPLAN_VERSION = 0
+NEW_DATABASE_MIGRATIONS = 0
+NEW_PUBLIC_API_FAMILIES = 0
+NEW_DEPENDENCIES = 0
+NEW_LLM_CALL_SITES = 0
+FRONTEND_SCIENTIFIC_RECOMPUTATION = 0
+
+PHASE_13_3 = BLOCKED_BY_PHASE13_2_RERUN
+PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+FAILED_RETAINED_TASK_BLOCKS = 2
+EXECUTABLE_PENDING_TASKS = 0
+TASK_BLOCK_COUNT = 2
+PHASE14_CREATED = NO
+```
