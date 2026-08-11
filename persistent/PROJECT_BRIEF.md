@@ -565,4 +565,6 @@ DOS; and trajectory/volumetric prompts match current supported semantics. The
 permanent parser-to-Plan entry slice is `7/7 READY` with zero Job/queue/Artifact
 side effects. Fact hash remains `e0248d50...`; superseding scope hash is
 `caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`.
-Exact-SHA CI is pending; Phase 13-2 remains failed historical and unexecuted.
+Implementation `2e47263ac3042663cf901a7fcb8f44e203143e2e` passed exact-SHA CI
+`31493208538`; completion is recorded and queue archive is next. Phase 13-2
+remains failed historical, unexecuted and separately reviewer-gated.

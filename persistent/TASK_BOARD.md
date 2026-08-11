@@ -2585,5 +2585,6 @@ current board above.
 - [x] Establish the permanent seven-demo canonical product-entry slice gate.
 - [x] Verify `7/7 READY`, correct Tool families and zero persistence side effects.
 - [x] Regenerate the superseding deterministic scope baseline; keep Fact Model unchanged.
-- [ ] Verify the remediation implementation by exact-SHA CI, record completion,
-  and archive only this fix-forward task while retaining the failed Phase 13-2 block.
+- [x] Verify remediation implementation `2e47263ac3042663cf901a7fcb8f44e203143e2e`
+  by exact-SHA CI `31493208538` and record completion.
+- [ ] Archive only this fix-forward task while retaining the failed Phase 13-2 block.

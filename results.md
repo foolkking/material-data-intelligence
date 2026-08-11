@@ -10672,3 +10672,158 @@ PHASE14_CREATED = NO
 TASK_BLOCK_COUNT = 1
 REVIEWER_ACTION_REQUIRED = YES
 ```
+
+# Phase 13-1 Release-Critical Product-Entry Fix-Forward Result
+
+## 1. Conclusion
+
+Status: `PASS / REOPENED_FIX_FORWARD / RELEASE_CRITICAL_PRODUCT_ENTRY_GAPS_CLOSED / CANONICAL_ENTRY_SLICE_7_OF_7_READY`. Historical Phase 13-1 zero-gap verification remains forensic truth but is superseded for current release authority by the stronger Phase 13-2 real-entry evidence.
+
+## 2. Triggering Phase 13-2 Failure
+
+Historical evidence implementation `456b698948d286d4e60dc8d6807748a97df9fb96`, CI `31482829487` PASS, retained `P13-RF-001..004`, three release-critical defects, one documentation defect, zero scientific/security defects and zero full demos executed.
+
+## 3. Historical Authority
+
+Original Phase 13-1 implementation `d1a60955a77aec000f1e6fd630f0770db545421d` / CI `31460352586` remains `PASS_AT_TIME`; original Phase 13-2 remains `FAILED_HISTORICAL` and its evidence was not rewritten.
+
+## 4. Entry Gate And Queue
+
+Entry was clean `master` at `456b698...`; one failed retained Phase 13-2 block was preserved and one fix-forward task was admitted. No rerun task was created.
+
+## 5. Current Fact And Scope Baselines
+
+Fact Model hash remains `e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06` (`IMPACT=NO`). Scope hash `caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4` supersedes historical `93dea4a2b0bf31215ab2af1952b16ac47b20b7ed9b111bb2fb60ef70dd431627` (`IMPACT=YES`, deterministic Linux/Windows canonical JSON).
+
+## 6. RF-001 Root Cause, Fix And Regression
+
+Global Planner/interpretation gates duplicated stale `2.0/2.1` rules. One explicit shared allowlist accepts existing `2.0..2.4`, rejects future `2.5+`, and is projected exactly to PlannerWorkbench. Demo 4 profile 2.3 and Demo 7 profile 2.4 now plan successfully; stale hashes remain rejected.
+
+## 7. RF-002 XRD Authority Decision And Resolution
+
+Decision: `Branch B1`. The old `perfect_match.json` is an expected-result record, not user input. Demo 3 now uses the existing strict `phase10n3.experimental_xrd_resource.v1` supported-with-limits contract. Generic JSON/phonon upload support was not promoted; exact resource identity and existing XRD comparison eligibility are preserved.
+
+## 8. RF-003 Intent Coverage
+
+Bounded semantic mapping now recognizes supplied phonon Band/DOS plus Structure-backed Brillouin-zone context without Tool IDs or exact-prompt branches. Canonical and alternate prompts reach the intended existing Tool family; DFT phonon generation, advanced unsupported requests and unrelated substring controls remain unsupported.
+
+## 9. RF-004 Authority Decision
+
+Decision: `Branch B`. The old canonical wording overstated structure context; the corrected natural-language prompt asks only for supported supplied-grid slice/volume views. Canonical and alternate prompts reach `structure.volumetric_data`; Bader/topology remains Future Scope.
+
+## 10. Finding Closure Registry
+
+`P13-RF-001 = CLOSED_WITH_REGRESSION`; `P13-RF-002 = CLOSED_WITH_AUTHORITY_PRESERVED`; `P13-RF-003 = CLOSED_WITH_REGRESSION`; `P13-RF-004 = CLOSED`. Original severity, evidence and failure SHA remain retained with append-only closure provenance.
+
+## 11. Canonical Product Entry Slice
+
+Level C is exact retained fixture -> production parser or approved normalized mapper -> DataProfile -> natural-language AnalysisIntent -> bounded clarification -> Eligibility -> capability Planner -> PlanValidator -> stop before Job. Levels A/B/C PASS; Level D remains Phase 13-2.
+
+## 12. Demo Entry Slices
+
+Demo 1 Dataset/Composition, Demo 2 Materials ML, Demo 3 Structure/XRD, Demo 4 Trajectory analytics, Demo 5 Phonon/BZ, Demo 6 Volumetric and Demo 7 Electronic Band/DOS are `7/7 READY` and `7/7 PLAN_VALIDATED`, with zero blocked or wrong-capability results.
+
+## 13. Negative Entry Slice And No Injection
+
+Future Bader, unsupported input, stale Profile hash, missing resource binding and second clarification round produce typed non-ready outcomes and no Plan. Handcrafted Intent, Eligibility, Plan and Tool selection are all zero; production contains no phase/demo fixture/checksum or exact-prompt routing authority.
+
+## 14. Release Gap And Input-Support Reconciliation
+
+Release-critical integration gaps: `3 -> 0`; documentation defects: `1 -> 0`; scientific/security/unclassified gaps: `0`. Input-support promotions and scientific validation/V4 promotions are zero.
+
+## 15. Scientific Authority Non-Change
+
+Registry `62`, DataProfile `2.4`, AnalysisIntent `1.0`, EligibilityResolution `1.0`, AnalysisPlan `0.1/0.2`, migration `0007_phase10m1_workspace_domain`. No Tool, algorithm, Adapter science, Artifact family, schema version, database, API family, dependency, provider, LLM call site or frontend scientific recomputation changed.
+
+## 16. Verification
+
+Backend `1351 passed, 50 skipped`; frontend `456 passed`; Phase 13 governance `37 passed`; final focused fix-forward/history `16 passed`; PlannerWorkbench `32 passed`; typecheck, build, `uv lock --check`, `git diff --check`, hash determinism, manifest and secret scan PASS. npm audit is `UNAVAILABLE` because the configured mirror returns `[NOT_IMPLEMENTED]`.
+
+## 17. Services, Browser And Platform
+
+Exact-SHA CI passed PostgreSQL/Redis/MinIO, Chromium/Firefox/WebKit and 390x844 retained browser evidence, production build, Linux/Windows sealed replay and cross-platform fix-forward hash comparison.
+
+## 18. Implementation And CI
+
+Implementation SHA `2e47263ac3042663cf901a7fcb8f44e203143e2e`; exact-SHA CI `31493208538` success. Failed remediation candidates: none. Completion is recorded in the following direct commit; queue archive follows separately without CI wait.
+
+## 19. Phase 13-2 Rerun Handoff
+
+The corrected seven contracts, fixture registry, prompts, 7/7 entry results, negative controls, no-injection rules, current hashes and real persistence/runtime requirements are sealed. Phase 13-2 has not been rerun; `P13X2_ACCEPTANCE = 0/8`; a separate reviewer prompt is required.
+
+## 20. Required Markers
+
+```text
+PHASE_13_1_FIX_FORWARD = PASS
+REMEDIATION_TRIGGER = PHASE13_2_REAL_USER_ENTRY_FAILURE
+P13_RF_001 = CLOSED
+P13_RF_002 = CLOSED
+P13_RF_003 = CLOSED
+P13_RF_004 = CLOSED
+PROFILE_PLANNER_COMPATIBILITY_DRIFT = CLOSED
+XRD_INPUT_AUTHORITY_RESOLVED = YES
+INPUT_SUPPORT_PROMOTIONS = 0
+PHONON_BZ_INTENT_COVERAGE = PASS
+VOLUMETRIC_CANONICAL_PROMPT = ALIGNED
+CANONICAL_PRODUCT_ENTRY_SLICE_GATE = PASS
+CANONICAL_ENTRY_SLICE_READY = 7/7
+CANONICAL_ENTRY_SLICE_BLOCKED = 0
+CANONICAL_ENTRY_SLICE_WRONG_CAPABILITY = 0
+ENTRY_SLICE_JOB_CREATION = 0
+ENTRY_SLICE_QUEUE_MESSAGES = 0
+ENTRY_SLICE_TOOLCALL_CREATION = 0
+ENTRY_SLICE_ARTIFACT_CREATION = 0
+HANDCRAFTED_INTENT_INJECTION = 0
+HANDCRAFTED_ELIGIBILITY_INJECTION = 0
+HANDCRAFTED_PLAN_INJECTION = 0
+HANDCRAFTED_TOOL_SELECTION = 0
+RELEASE_CRITICAL_INTEGRATION_GAPS = 0
+DOCUMENTATION_DEFECTS = 0
+SCIENTIFIC_DEFECTS = 0
+SECURITY_DEFECTS = 0
+UNCLASSIFIED_RELEASE_GAPS = 0
+REGISTRY = 62
+DATAPROFILE = 2.4
+ANALYSIS_INTENT = 1.0
+ELIGIBILITY_RESOLUTION = 1.0
+ANALYSIS_PLAN = 0.1 / 0.2
+MIGRATION = 0007_phase10m1_workspace_domain
+PHASE13_CLARIFICATION_MAX_ROUNDS = 1
+PHASE13_CLARIFICATION_MAX_QUESTIONS = 3
+PHASE13_SECOND_CLARIFICATION_ROUND = TYPED_FAILURE
+NEW_SCIENTIFIC_TOOLS = 0
+NEW_SCIENTIFIC_ALGORITHMS = 0
+SCIENTIFIC_ADAPTER_BEHAVIOR_CHANGES = 0
+NEW_ARTIFACT_FAMILIES = 0
+SCIENTIFIC_VALIDATION_PROMOTIONS = 0
+V4_PROMOTIONS = 0
+FRONTEND_SCIENTIFIC_RECOMPUTATION = 0
+NEW_DATAPROFILE_VERSION = 0
+NEW_ANALYSISINTENT_VERSION = 0
+NEW_ELIGIBILITY_VERSION = 0
+NEW_ANALYSISPLAN_VERSION = 0
+NEW_DATABASE_MIGRATIONS = 0
+NEW_PUBLIC_API_FAMILIES = 0
+NEW_DEPENDENCIES = 0
+NEW_LLM_CALL_SITES = 0
+REAL_LLM_CALLS = 0
+OLD_FACT_MODEL_HASH = e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06
+FACT_MODEL_HASH_IMPACT = NO
+CURRENT_FACT_MODEL_HASH = e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06
+OLD_SCOPE_BASELINE_HASH = 93dea4a2b0bf31215ab2af1952b16ac47b20b7ed9b111bb2fb60ef70dd431627
+SCOPE_BASELINE_HASH_IMPACT = YES
+CURRENT_SCOPE_BASELINE_HASH = caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4
+BASELINE_DETERMINISM = PASS
+PHASE13_2_FULL_E2E_RERUN = NO
+PHASE13_2_DEMOS_EXECUTED = 0
+PHASE13_2_DEMO_PASS_CLAIMS = 0
+P13X2_ACCEPTANCE = 0/8
+PHASE13_2_RERUN_REQUIRED = YES
+PHASE13_2_RERUN_EXECUTABLE_TASK_CREATED = NO
+PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+PHASE14_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+FIX_FORWARD_IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI
+FIX_FORWARD_COMPLETION_RECORDED
+FIX_FORWARD_QUEUE_ARCHIVE = PENDING_DIRECT_COMMIT
+```

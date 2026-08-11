@@ -2244,10 +2244,11 @@ and one P1 documentation-contract defect. Evidence is retained under
 `docs/phase13/evidence/phase13_2_seven_real_user_e2e/`; no production UX or
 scientific behavior was changed to bypass the failures.
 
-Phase 13-1 fix-forward remediation is complete locally and awaiting exact-SHA
-CI. RF-001..004 are closed by minimal product-entry corrections and a permanent
+Phase 13-1 fix-forward remediation implementation
+`2e47263ac3042663cf901a7fcb8f44e203143e2e` passed exact-SHA CI
+`31493208538`. RF-001..004 are closed by minimal product-entry corrections and a permanent
 Level-C gate. All seven canonical parser/Profile/Intent/Eligibility/Planner/
 PlanValidator slices select the intended existing Tools and validate; all
 persistence counters remain zero. Negative Future Scope, unsupported input,
 stale binding/profile and second-round clarification controls pass. No Phase
-13-2 demonstration has been rerun.
+13-2 demonstration has been rerun; completion is recorded before direct queue archive.

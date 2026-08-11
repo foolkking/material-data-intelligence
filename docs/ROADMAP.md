@@ -202,12 +202,13 @@ phase names and historical evidence are unchanged.
 The historical `ZERO_GAP_VERIFICATION_CLOSED` result remains forensic truth but
 is superseded for current release authority by stronger Phase 13-2 real-entry
 evidence. Phase 13-1 is reopened only for fix-forward closure of `P13-RF-001`
-through `P13-RF-004`. The local candidate aligns explicit DataProfile 2.0-2.4
+through `P13-RF-004`. The verified implementation aligns explicit DataProfile 2.0-2.4
 Planner compatibility, corrects the Demo 3 XRD/5 BZ user-input fixtures, adds
 bounded phonon/BZ and electronic intent coverage, and aligns the trajectory and
-volumetric prompts. The permanent pre-Job product-entry gate is `7/7 READY`;
-implementation exact-SHA CI is pending. Registry and scientific authority are
-unchanged.
+volumetric prompts. The permanent pre-Job product-entry gate is `7/7 READY`.
+Implementation `2e47263ac3042663cf901a7fcb8f44e203143e2e` passed exact-SHA
+CI `31493208538`; Registry and scientific authority are unchanged. Completion
+is recorded and direct queue archive follows.
 
 ## Phase 13-2 Current Status
 

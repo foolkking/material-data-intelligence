@@ -1288,6 +1288,7 @@ is the only remaining work.
   with limits. No input-support promotion is required.
 - RF-004 authority is resolved as Branch B: canonical wording is corrected to
   the existing bounded volumetric presentation scope.
-- No implementation-critical question remains inside fix-forward scope. The
-  next decision after exact-SHA CI is whether to authorize Phase 13-2 to rerun
-  all seven real-user demonstrations from scratch.
+- No implementation-critical question remains inside fix-forward scope. Exact-
+  SHA CI `31493208538` passed; after direct queue archive, the next reviewer
+  decision is whether to authorize Phase 13-2 to rerun all seven real-user
+  demonstrations from scratch.

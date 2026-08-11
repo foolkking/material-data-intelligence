@@ -2652,3 +2652,6 @@ directly afterward. Phase 12-2 remains reviewer-gated.
 - Added deterministic 7/7 pre-Job entry-slice and negative-path governance.
   Current Fact Model is unchanged; scope baseline is superseded by
   `caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`.
+- Implementation `2e47263ac3042663cf901a7fcb8f44e203143e2e` passed exact-SHA
+  CI `31493208538`, including Unit, browser/build, Linux/Windows replay and
+  PostgreSQL/Redis/MinIO integration. Completion is recorded before direct archive.

@@ -1,5 +1,5 @@
 ---TASK---
- 状态：处理中
+ 状态：已完成
 
 # Phase 13-1 Release-Critical Product-Entry Fix-Forward
 
@@ -17,6 +17,22 @@ P13-RF-004 volumetric canonical prompt mismatch
 PlanValidator，并在 Job 创建前停止。不得新增 science、Tool、Artifact、schema
 version、migration、API family、dependency、provider 或 LLM call site；不得执行
 Phase 13-2 full E2E。完成后保留历史 Phase 13-2 失败块且不创建 rerun task。
+
+完成时间：2026-08-11 21:05:13 +08:00
+
+修改文件：Planner/Profile/Intent/Eligibility 入口实现、共享 schema/parser、
+PlannerWorkbench 兼容投影、Phase 13 governance/CI、fix-forward docs/evidence、
+ROADMAP 与 persistent 状态文件。
+
+修改摘要：关闭 `P13-RF-001..004`，以显式 DataProfile 2.0-2.4 allowlist、
+Branch B1 XRD 输入合同、bounded phonon/BZ 与 electronic intent mapping、
+校正后的 volumetric/trajectory demo contract 建立永久 Level-C entry-slice gate；
+7/7 PlanValidator PASS，未创建 Job/queue/ToolCall/Artifact/Workspace/Report/Recipe。
+
+测试结果：backend `1351 passed, 50 skipped`；frontend `456 passed`；
+Phase 13 governance `37 passed`；focused final `16 passed`；typecheck/build/lock/diff PASS；
+exact-SHA CI `31493208538` 对 implementation `2e47263ac3042663cf901a7fcb8f44e203143e2e`
+全部 PASS（Unit、Frontend/browser/build、Linux/Windows、PostgreSQL/Redis/MinIO）。
 
 ---END---
 
