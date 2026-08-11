@@ -2602,5 +2602,6 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Unify exact typed source-resource registration and Runtime resolution.
 - [x] Preserve strict XRD wavelength mismatch rejection through Branch B1.
 - [x] Keep Level C at `7/7` and establish Level C2 at `7/7` with zero execution state growth.
-- [ ] Verify the implementation candidate by exact-SHA CI, record completion,
+- [x] Verify implementation `bc6a6f525515c256c6807c71c5a5f2591607abab`
+  by exact-SHA CI `31504920945`, record completion,
   and archive only this active block while retaining both failed Phase 13-2 blocks.

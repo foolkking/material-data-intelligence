@@ -10956,3 +10956,123 @@ EXECUTABLE_PENDING_TASKS = 0
 TASK_BLOCK_COUNT = 2
 PHASE14_CREATED = NO
 ```
+
+# Phase 13-1 Integration Fix-Forward #2 Result
+
+## 1. Conclusion
+
+`PASS / FIX_FORWARD_2 / RUNTIME_RESOURCE_RESOLUTION_CLOSED /
+XRD_DEPENDENCY_COMPATIBILITY_CLOSED / CANONICAL_EXECUTION_PREFLIGHT_7_OF_7_READY`.
+Phase 13-2 Attempt 3 was not executed or queued.
+
+## 2-6. Trigger, History, Entry Gate, Queue, Baselines
+
+Attempt 1 and Attempt 2 remain immutable failed history. Fix-Forward #1 remains
+PASS. Entry was clean on `master` with two retained failed TASK blocks. Fact
+Model remains `e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06`.
+Scope Baseline `eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94`
+supersedes `caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`.
+
+## 7-14. RR-001 and RR-002
+
+Both findings shared one root cause: parsed `PhononBand`, `PhononDos`,
+`ElectronicBand` and `ElectronicDos` exact IDs escaped the canonical Runtime
+source-resource index and durable resolver. One bounded generic registration
+mechanism now preserves exact ID, type, hash and dataset scope in immediate and
+PostgreSQL/MinIO-backed resolution. Missing ID, wrong project, hash mismatch,
+stale identity and wrong subtype remain rejected. Electronic spin, k-point,
+band/path, DOS channel and energy-unit provenance are unchanged.
+
+## 15-19. RR-003
+
+Authority decision: Branch B1. `structure.xrd@0.1.0` legally binds the existing
+`CuKa` configuration, not arbitrary wavelength. Demo 3's retained experimental
+fixture now uses exact `1.54184 angstrom`, matching the approved theoretical
+configuration. The strict mismatch case still rejects `1.5406`; no conversion,
+reprojection, tolerance, peak-policy or XRD algorithm changed.
+
+## 20-30. Findings and Level C/C2
+
+`P13-RR-001`, `P13-RR-002`, and `P13-RR-003` are closed. Level C is `7/7`.
+Level C2 is `7/7`, with eight execution-eligible root kinds audited and eight
+Runtime-resolvable. Root-resolution, dependency-contract and scientific-
+compatibility failures are all zero. Jobs, queue messages, ToolCalls, produced
+Artifacts, Workspaces, Reports and Recipes created by C2 are all zero.
+
+## 31-38. Authority and Hashes
+
+No handcrafted Intent, Eligibility, Plan or Tool selection was used. Release-
+critical integration gaps are zero; scientific/security/unclassified defects
+are zero. Input support, capability and scientific-validation promotions are
+zero. Fact Model impact is `NO`; Scope Baseline impact is `YES` because the
+retained Demo 3 checksum changed. Repeated and Linux/Windows hashes are equal.
+Phase 11 and Phase 12 authorities are unchanged.
+
+## 39-49. Regression and Evidence
+
+- Backend: `1374 passed, 50 skipped` locally.
+- Frontend: `456 passed`; typecheck and build PASS.
+- Focused Phase 13 C2/governance: `23 passed`.
+- PostgreSQL/Redis/MinIO: `49 passed, 0 skipped` in exact-SHA CI.
+- Chromium, Firefox, WebKit and 390x844 retained browser matrix: PASS.
+- Linux/Windows invariant replay and semantic hash comparison: PASS.
+- `uv lock --check`, `git diff --check`, security, secret scan and manifest: PASS.
+
+## 50-59. Handoff and Lifecycle
+
+Attempt 3 handoff is sealed and requires all seven demos from scratch under a
+separate reviewer prompt. Implementation `bc6a6f525515c256c6807c71c5a5f2591607abab`
+passed exact-SHA CI `31504920945`. Failed candidate `67a95c4f94088fcd1f8e351f65d617840ccd9906`
+/ run `31503729464` is retained; root causes were historical evidence
+regeneration and missing integration-test base-table bootstrap. Completion is
+recorded here; queue archive follows in a separate direct commit.
+
+```text
+PHASE_13_1_FIX_FORWARD_2 = PASS
+REMEDIATION_TRIGGER = PHASE13_2_ATTEMPT_2_RUNTIME_PREFLIGHT_FAILURE
+P13_RR_001 = CLOSED
+P13_RR_002 = CLOSED
+P13_RR_003 = CLOSED
+PARSED_RESOURCE_PERSISTENCE_AND_RUNTIME_RESOLUTION_GAP = CLOSED
+XRD_DEPENDENCY_COMPATIBILITY_GAP = CLOSED
+ALL_EXECUTION_ELIGIBLE_ROOT_RESOURCES_RUNTIME_RESOLVABLE = YES
+UNRESOLVABLE_EXECUTION_ELIGIBLE_RESOURCE_KINDS = 0
+CANONICAL_PRODUCT_ENTRY_SLICE_GATE = PASS
+CANONICAL_ENTRY_SLICE_READY = 7/7
+CANONICAL_EXECUTION_PREFLIGHT_GATE = PASS
+CANONICAL_EXECUTION_PREFLIGHT_READY = 7/7
+CANONICAL_EXECUTION_PREFLIGHT_BLOCKED = 0
+ROOT_RESOURCE_RESOLUTION_FAILURES = 0
+DEPENDENCY_CONTRACT_FAILURES = 0
+SCIENTIFIC_COMPATIBILITY_FAILURES = 0
+XRD_WAVELENGTH_MISMATCH_REJECTION = UNCHANGED
+INPUT_SUPPORT_PROMOTIONS = 0
+CAPABILITY_PROMOTIONS = 0
+SCIENTIFIC_VALIDATION_PROMOTIONS = 0
+RELEASE_CRITICAL_INTEGRATION_GAPS = 0
+SCIENTIFIC_DEFECTS = 0
+SECURITY_DEFECTS = 0
+REGISTRY = 62
+DATAPROFILE = 2.4
+ANALYSIS_INTENT = 1.0
+ELIGIBILITY_RESOLUTION = 1.0
+ANALYSIS_PLAN = 0.1 / 0.2
+MIGRATION = 0007_phase10m1_workspace_domain
+OLD_FACT_MODEL_HASH = e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06
+FACT_MODEL_HASH_IMPACT = NO
+CURRENT_FACT_MODEL_HASH = e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06
+OLD_SCOPE_BASELINE_HASH = caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4
+SCOPE_BASELINE_HASH_IMPACT = YES
+CURRENT_SCOPE_BASELINE_HASH = eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94
+BASELINE_DETERMINISM = PASS
+REAL_LLM_CALLS = 0
+PHASE13_2_ATTEMPT_3_FULL_E2E = NO
+PHASE13_2_DEMOS_EXECUTED = 0
+P13X2_ACCEPTANCE = 0/8
+FIX_FORWARD_2_IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI
+FIX_FORWARD_2_COMPLETION_RECORDED
+PHASE13_2_ATTEMPT_3_EXECUTABLE_TASK_CREATED = NO
+PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+PHASE14_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+```

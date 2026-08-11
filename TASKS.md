@@ -1,5 +1,5 @@
 ---TASK---
-状态：处理中
+状态：已完成
 
 # Phase 13-1 Integration Fix-Forward #2
 
@@ -11,6 +11,22 @@ Level C2 canonical execution resource and dependency preflight gate for all
 seven Phase 13 demos without creating Jobs, queue messages, ToolCalls,
 scientific Artifacts, Workspaces, Reports, or Recipes. Preserve both historical
 Phase 13-2 failed task blocks and do not create or execute Attempt 3.
+
+完成时间：2026-08-11 23:17:09 +08:00
+
+修改文件：`apps/api/mdi_api/phase2_runtime.py`、`apps/api/mdi_api/routers/planner.py`、
+`services/workers/mdi_workers/source_resources.py`、`services/workers/mdi_workers/object_store.py`、
+`tests/fixtures/experimental_xrd/phase13_demo3_xrd.json`、Phase 13 focused/integration tests、
+`.github/workflows/ci.yml`、`docs/phase13/`、`persistent/`、`docs/ROADMAP.md`、`docs/index.md`。
+
+修改摘要：以统一 exact typed source-resource registration/resolution 关闭 RR-001/002；
+选择 XRD Branch B1 并保留严格 wavelength mismatch rejection；建立 Level C2 7/7 gate，
+无 Job/queue/ToolCall/produced Artifact/Workspace/Report/Recipe 增长。Fact Model 不变，
+scope baseline 更新为 `eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94`。
+
+测试结果：后端 `1374 passed, 50 skipped`；前端 `456 passed`；focused C2/governance
+`23 passed`；typecheck/build/lock/diff PASS；exact-SHA CI `31504920945` PASS，包含
+PostgreSQL/Redis/MinIO `49 passed, 0 skipped`、Linux/Windows replay 及完整 browser matrix。
 ---END---
 
 ---TASK---
