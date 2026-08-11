@@ -789,3 +789,9 @@ and
 | [`phase13/phase13_2_real_user_e2e_rerun_failure.md`](phase13/phase13_2_real_user_e2e_rerun_failure.md) | Attempt-2 stop result and current release state |
 | [`phase13/phase13_2_rerun_release_findings.md`](phase13/phase13_2_rerun_release_findings.md) | P13-RR-001..003 release-critical findings |
 | [`phase13/evidence/phase13_2_seven_real_user_e2e_rerun/`](phase13/evidence/phase13_2_seven_real_user_e2e_rerun/) | Fresh runtime preflight, attempt chain and failed-rerun evidence |
+| [`phase13/phase13_1_runtime_resource_fix_forward_2.md`](phase13/phase13_1_runtime_resource_fix_forward_2.md) | RR-001..003 runtime-resource and XRD dependency remediation |
+| [`phase13/phase13_scientific_resource_lifecycle_contract.md`](phase13/phase13_scientific_resource_lifecycle_contract.md) | Exact source-resource identity, persistence and Runtime resolution contract |
+| [`phase13/phase13_execution_resource_preflight_contract.md`](phase13/phase13_execution_resource_preflight_contract.md) | Permanent Level-C2 pre-Job resource/dependency gate |
+| [`phase13/phase13_xrd_dependency_compatibility_resolution.md`](phase13/phase13_xrd_dependency_compatibility_resolution.md) | XRD Branch B1 and unchanged mismatch rejection |
+| [`phase13/phase13_2_attempt3_rerun_handoff.md`](phase13/phase13_2_attempt3_rerun_handoff.md) | Reviewer-gated fresh Attempt 3 contract; not executable here |
+| [`phase13/evidence/phase13_1_runtime_resource_fix_forward_2/`](phase13/evidence/phase13_1_runtime_resource_fix_forward_2/) | Level C/C2, root-resource, XRD, hash and security evidence |

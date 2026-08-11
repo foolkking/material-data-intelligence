@@ -2260,3 +2260,10 @@ preflight. Three new P0 product integration findings are retained as
 phonon/electronic resources and an XRD wavelength authority mismatch. Full
 service-backed demos remain unexecuted (`0/7`), `P13X2=0/8`, and no production
 or scientific code was changed.
+
+Phase 13-1 Fix-Forward #2 is active. A shared exact source-resource lifecycle
+now registers all execution-eligible typed parser outputs for immediate and
+durable Runtime resolution. Level C remains `7/7`; the new Level C2 resolves
+all root refs and validates formal dependencies for `7/7`, with zero execution
+object growth. XRD Branch B1 retains strict mismatch rejection and changes no
+scientific algorithm. Exact-SHA CI remains required before completion.

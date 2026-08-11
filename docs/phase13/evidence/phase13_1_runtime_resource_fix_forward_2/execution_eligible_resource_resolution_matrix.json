@@ -1,0 +1,15 @@
+{
+  "executionEligibleRootResourceKinds": 8,
+  "kinds": [
+    "DataFrame",
+    "Structure",
+    "Trajectory",
+    "PhononBand",
+    "PhononDos",
+    "VolumetricData",
+    "ElectronicBand",
+    "ElectronicDos"
+  ],
+  "runtimeResolvableKinds": 8,
+  "unresolvableKinds": 0
+}

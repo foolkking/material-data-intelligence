@@ -2662,3 +2662,14 @@ directly afterward. Phase 12-2 remains reviewer-gated.
 - Recorded three release-critical product integration findings (`P13-RR-001..003`).
 - Added deterministic governance checks for the attempt chain, hashes, no-injection policy and evidence manifest.
 - Made no production, scientific, schema, API, dependency or provider change.
+
+## 2026-08-11 - Phase 13-1 runtime-resource fix-forward #2 candidate
+
+- Added a shared exact source-resource registry used by the production object
+  store and durable resolver, closing the omitted phonon/electronic lifecycle.
+- Added the Level-C2 canonical execution preflight for root-resource identity,
+  Plan 0.2 dependency contracts and existing XRD compatibility predicates.
+- Selected XRD Branch B1 and aligned the retained experimental fixture with the
+  existing `CuKa` contract; mismatch rejection and all XRD science are unchanged.
+- Level C and C2 both pass `7/7`; no Job, queue message, ToolCall, produced
+  Artifact, Workspace, Report or Recipe is created. Attempt 3 is not executed.

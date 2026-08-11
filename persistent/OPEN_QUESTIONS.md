@@ -1296,3 +1296,10 @@ is the only remaining work.
 
 - What reviewer-authorized phase will close `P13-RR-001` and `P13-RR-002`, the exact object-store binding gaps for parsed phonon and electronic resources?
 - Should `P13-RR-003` be resolved by an existing XRD parameter-binding path or by a demo-contract fixture correction that preserves input-support and scientific authority?
+
+## Phase 13-2 Attempt 3 Gate
+
+- Fix-Forward #2 selected the existing-authority XRD Branch B1; no scientific
+  algorithm or input-support decision remains open inside this remediation.
+- Attempt 3 remains a separate reviewer decision and must execute all seven
+  service-backed demonstrations from scratch; Level C/C2 evidence is not Level D PASS.

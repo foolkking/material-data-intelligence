@@ -9,7 +9,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 SEAL_ROOT = ROOT / "docs/phase13/evidence/phase13_0_release_scope_seal"
-FIX_FORWARD_ROOT = ROOT / "docs/phase13/evidence/phase13_1_product_entry_fix_forward"
+FIX_FORWARD_ROOT = ROOT / "docs/phase13/evidence/phase13_1_runtime_resource_fix_forward_2"
 
 
 def canonical_hash(value: Any) -> str:
@@ -48,14 +48,14 @@ def main() -> None:
         windows = json.loads(args.compare[1].read_text(encoding="utf-8"))
         if linux != windows:
             raise SystemExit(f"cross-platform semantic hash mismatch: {linux} != {windows}")
-        print(f"PHASE13_1_FIX_FORWARD_HASH_CROSS_PLATFORM_PASS {linux['scopeBaselineHash']}")
+        print(f"PHASE13_1_FIX_FORWARD_2_HASH_CROSS_PLATFORM_PASS {linux['scopeBaselineHash']}")
         return
     result = current_result()
     encoded = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(encoded, encoding="utf-8", newline="\n")
-    print(f"PHASE13_1_FIX_FORWARD_HASH_PASS {result['scopeBaselineHash']}")
+    print(f"PHASE13_1_FIX_FORWARD_2_HASH_PASS {result['scopeBaselineHash']}")
 
 
 if __name__ == "__main__":

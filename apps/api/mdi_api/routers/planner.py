@@ -7,7 +7,7 @@ from dataclasses import dataclass, field, replace
 import hashlib
 import json
 import os
-from typing import Any, Literal
+from typing import Any, Literal, Mapping
 import uuid
 
 from pydantic import BaseModel, Field
@@ -63,7 +63,7 @@ from mdi_schemas import (
     is_supported_data_profile_contract_version,
     validate_interpretation_json_bounds,
 )
-from mdi_workers import InMemoryQueueBackend, QueueWorkerRuntime, RedisRQQueueBackend
+from mdi_workers import InMemoryQueueBackend, QueueWorkerRuntime, RedisRQQueueBackend, preflight_execution_resources
 from mdi_workers.object_store import DurableObjectStoreResolver
 from mdi_tool_registry import ToolRegistry, load_manifests, validate_dependency_plan
 from mdi_tool_registry.plan_validator import PlanValidationError, PlanValidationResult, validate_plan
@@ -584,6 +584,38 @@ def planner_jobs(
             intent_outcome=intent.outcome.value if intent else None,
             intent=intent.model_dump(mode="json") if intent else None,
         )
+    object_store = _execution_object_store_for_dataset(
+        runtime,
+        dataset_id=request.datasetId,
+        profile_id=profile_id,
+    )
+    if object_store:
+        execution_preflight = preflight_execution_resources(
+            validated_plan,
+            object_store=object_store,
+            registry=reg,
+            dataset_id=request.datasetId,
+        )
+        if not execution_preflight.ok:
+            return PlannerJobsResult(
+                ok=False,
+                job_id=None,
+                plan_id=None,
+                plan_hash=None,
+                validation_errors=[
+                    {
+                        "code": item.code,
+                        "message": item.message,
+                        "detail": {"stepId": item.step_id, "ref": item.ref},
+                    }
+                    for item in execution_preflight.issues
+                ],
+                plan=None,
+                planner_provider=_provider_name(llm),
+                intent_id=intent.intentId if intent else None,
+                intent_outcome=intent.outcome.value if intent else None,
+                intent=intent.model_dump(mode="json") if intent else None,
+            )
 
     plan_hash = compute_plan_hash(validated_plan)
     planner_provider = _provider_name(llm)
@@ -1720,6 +1752,25 @@ def _phase2_object_store_for_dataset(dataset_id: str) -> dict[str, Any] | None:
         return get_phase2_dataset_object_store(dataset_id)
     except Exception:
         return None
+
+
+def _execution_object_store_for_dataset(
+    runtime: QueueWorkerRuntime,
+    *,
+    dataset_id: str,
+    profile_id: str,
+) -> Mapping[str, Any] | None:
+    resolver = runtime.object_store_resolver
+    exact_resolver = getattr(resolver, "resolve", None)
+    if callable(exact_resolver):
+        resolved = exact_resolver(dataset_id, profile_id=profile_id)
+        if resolved:
+            return resolved
+    elif callable(resolver):
+        resolved = resolver(dataset_id)
+        if resolved:
+            return resolved
+    return _phase2_object_store_for_dataset(dataset_id)
 
 
 def _validate_executable_input_refs(plan: Any, dataset_id: str) -> list[dict[str, Any]]:

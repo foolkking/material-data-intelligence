@@ -2595,3 +2595,12 @@ runtime preflight found `P13-RR-001..003` before service-backed/browser
 execution. Failure evidence implementation `0877450140a76ad7ecd59e99ad48f0c19c5e7059`
 passed exact-SHA CI `31497337708`. Both the original failed attempt and failed
 rerun remain retained in `TASKS.md`; there is no executable pending task.
+
+## Phase 13-1 Fix-Forward #2
+
+- [x] Reproduce and classify `P13-RR-001..003` without changing science.
+- [x] Unify exact typed source-resource registration and Runtime resolution.
+- [x] Preserve strict XRD wavelength mismatch rejection through Branch B1.
+- [x] Keep Level C at `7/7` and establish Level C2 at `7/7` with zero execution state growth.
+- [ ] Verify the implementation candidate by exact-SHA CI, record completion,
+  and archive only this active block while retaining both failed Phase 13-2 blocks.

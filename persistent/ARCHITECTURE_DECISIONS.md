@@ -4652,3 +4652,16 @@ The Level-D rerun must stop when a fresh production-runtime preflight exposes a
 release-critical defect. Phase 13-2 cannot patch production and rerun in place.
 Runtime preflight evidence is diagnostic, not a full real-user E2E PASS, and
 does not upgrade product support or scientific validation.
+
+## Phase 13 Scientific Source Resource and C2 Authority
+
+- Every execution-eligible root resource must be registered and Runtime
+  resolvable by exact ID, type, semantic hash and dataset scope before Job creation.
+- Runtime reparse and latest, nearest, fuzzy, filename or array-position fallback
+  are forbidden; source resources are not produced Artifacts.
+- Level C2 invokes production parsing, registration, Profile, Intent, Eligibility,
+  Planner, PlanValidator and exact resolver, validates formal future-Artifact
+  port contracts, then stops with no execution state.
+- XRD dependency compatibility uses existing Tool contracts. The current
+  `structure.xrd@0.1.0` CuKa contract does not authorize arbitrary wavelength
+  binding, so Demo 3 uses Branch B1 and retains strict mismatch rejection.

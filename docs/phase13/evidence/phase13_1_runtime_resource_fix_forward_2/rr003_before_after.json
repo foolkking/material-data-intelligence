@@ -1,0 +1,14 @@
+{
+  "after": {
+    "experimental": 1.54184,
+    "result": "PREFLIGHT_COMPATIBLE",
+    "theoretical": 1.54184
+  },
+  "before": {
+    "experimental": 1.5406,
+    "result": "REJECTED",
+    "theoretical": 1.54184
+  },
+  "mismatchRejection": "UNCHANGED",
+  "status": "CLOSED"
+}

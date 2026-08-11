@@ -12,6 +12,14 @@ from .queue_runtime import (
     RedisRQQueueBackend,
     run_queued_job,
 )
+from .source_resources import (
+    CUKA_WAVELENGTH_ANGSTROM,
+    SOURCE_RESOURCE_INDEX_KEY,
+    ExecutionPreflightIssue,
+    ExecutionPreflightResult,
+    preflight_execution_resources,
+    register_runtime_source_resource,
+)
 
 __all__ = [
     "InMemoryJobStore",
@@ -28,4 +36,10 @@ __all__ = [
     "WorkerRunResult",
     "WorkerToolExecutionError",
     "run_tool_call_job",
+    "CUKA_WAVELENGTH_ANGSTROM",
+    "SOURCE_RESOURCE_INDEX_KEY",
+    "ExecutionPreflightIssue",
+    "ExecutionPreflightResult",
+    "preflight_execution_resources",
+    "register_runtime_source_resource",
 ]

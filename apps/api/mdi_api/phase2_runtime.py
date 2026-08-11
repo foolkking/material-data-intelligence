@@ -29,7 +29,7 @@ from mdi_schemas import (
     VisualizationRecipe,
 )
 from mdi_tool_registry import ToolRegistry, load_manifests
-from mdi_workers import InMemoryJobStore, WorkerToolExecutionError, run_tool_call_job
+from mdi_workers import InMemoryJobStore, WorkerToolExecutionError, register_runtime_source_resource, run_tool_call_job
 
 
 PHASE2_TOOL_ORDER = (
@@ -855,25 +855,48 @@ def build_object_store(
     structure_resources: dict[str, Any] = {}
     if profile is not None:
         object_refs["profile"] = "profile"
-        object_store["profile"] = profile
+        register_runtime_source_resource(
+            object_store, object_id="profile", object_type="DataProfile",
+            object_hash=profile.semanticHash or profile.profileId,
+            dataset_id=profile.datasetId, value=profile,
+        )
     for obj in objects:
         if obj.object_type == MaterialObjectType.DataFrame:
             dataframe = pd.DataFrame(obj.payload)
             experimental_xrd = obj.metadata.get("experimentalXrd")
-            object_store[obj.id] = _experimental_xrd_resource(dataframe, experimental_xrd) if isinstance(experimental_xrd, dict) else dataframe
+            value = _experimental_xrd_resource(dataframe, experimental_xrd) if isinstance(experimental_xrd, dict) else dataframe
+            aliases = ("ml_table",) if not isinstance(experimental_xrd, dict) and "ml_table" not in object_store else ()
+            register_runtime_source_resource(
+                object_store, object_id=obj.id, object_type=obj.object_type.value,
+                object_hash=obj.hash, dataset_id=obj.dataset_id, value=value, aliases=aliases,
+            )
             object_refs.setdefault("dataset_table", obj.id)
             if isinstance(experimental_xrd, dict):
                 object_refs.setdefault("experimental_xrd", obj.id)
         elif obj.object_type == MaterialObjectType.Structure:
-            object_store[obj.id] = obj.payload
+            register_runtime_source_resource(
+                object_store, object_id=obj.id, object_type=obj.object_type.value,
+                object_hash=obj.hash, dataset_id=obj.dataset_id, value=obj.payload,
+            )
             structure_resources[obj.id] = obj.payload
         elif obj.object_type == MaterialObjectType.VolumetricData:
-            object_store[obj.id] = obj
+            register_runtime_source_resource(
+                object_store, object_id=obj.id, object_type=obj.object_type.value,
+                object_hash=obj.hash, dataset_id=obj.dataset_id, value=obj,
+            )
             object_refs.setdefault("volumetric", obj.id)
             object_store.setdefault("volumetric", obj)
         elif obj.object_type == MaterialObjectType.Trajectory:
-            object_store[obj.id] = obj
+            register_runtime_source_resource(
+                object_store, object_id=obj.id, object_type=obj.object_type.value,
+                object_hash=obj.hash, dataset_id=obj.dataset_id, value=obj,
+            )
             object_refs.setdefault("trajectory", obj.id)
+        else:
+            register_runtime_source_resource(
+                object_store, object_id=obj.id, object_type=obj.object_type.value,
+                object_hash=obj.hash, dataset_id=obj.dataset_id, value=obj.payload,
+            )
     if formulas:
         object_refs["formulas"] = "formulas"
         object_store["formulas"] = formulas
@@ -886,7 +909,7 @@ def build_object_store(
         object_store["structure_resources"] = structure_resources
     if dataframes:
         object_refs["ml_table"] = "ml_table"
-        object_store["ml_table"] = dataframes[0]
+        object_store.setdefault("ml_table", dataframes[0])
     return object_store, object_refs
 
 

@@ -2,7 +2,7 @@
   "schemaVersion": "phase10n3.experimental_xrd_resource.v1",
   "resourceId": "phase13_demo3_experimental_xrd",
   "resourceVersion": "1",
-  "resourceHash": "bc36695e447f50c7c0ad51a3b1ab59e4cbfcf68fa9589c4e62c0319f7eadbc28",
+  "resourceHash": "d1d92f1477ea8dc28cacf8d793622c2b978463f9cbcb5cc94d975247d2ba4406",
   "xAxis": {
     "kind": "two_theta",
     "unit": "degree"
@@ -31,7 +31,7 @@
   ],
   "intensitySemantic": "counts",
   "wavelength": {
-    "value": 1.5406,
+    "value": 1.54184,
     "unit": "angstrom"
   },
   "metadata": {

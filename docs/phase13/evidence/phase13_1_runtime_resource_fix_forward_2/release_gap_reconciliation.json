@@ -1,0 +1,31 @@
+{
+  "after": {
+    "releaseCriticalIntegrationGaps": 0,
+    "scientificDefects": 0,
+    "securityDefects": 0,
+    "unclassified": 0
+  },
+  "before": {
+    "releaseCriticalIntegrationGaps": 3,
+    "scientificDefects": 0,
+    "securityDefects": 0
+  },
+  "closures": [
+    {
+      "findingId": "P13-RR-001",
+      "resolutionType": "UNIFIED_SOURCE_RESOURCE_REGISTRATION_AND_EXACT_RESOLUTION",
+      "status": "CLOSED"
+    },
+    {
+      "findingId": "P13-RR-002",
+      "resolutionType": "UNIFIED_SOURCE_RESOURCE_REGISTRATION_AND_EXACT_RESOLUTION",
+      "status": "CLOSED"
+    },
+    {
+      "findingId": "P13-RR-003",
+      "resolutionType": "XRD_BRANCH_B1_COMPATIBLE_RETAINED_FIXTURE",
+      "status": "CLOSED"
+    }
+  ],
+  "schemaVersion": "phase13-release-gap-reconciliation/1.2"
+}

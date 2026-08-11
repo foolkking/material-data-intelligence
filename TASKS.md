@@ -1,4 +1,19 @@
 ---TASK---
+状态：处理中
+
+# Phase 13-1 Integration Fix-Forward #2
+
+## Runtime-Resolvable Scientific Resource Closure + XRD Dependency Compatibility + Canonical Execution Preflight Gate
+
+Close only `P13-RR-001`, `P13-RR-002`, and `P13-RR-003` through the
+minimum authorized production integration corrections. Establish the permanent
+Level C2 canonical execution resource and dependency preflight gate for all
+seven Phase 13 demos without creating Jobs, queue messages, ToolCalls,
+scientific Artifacts, Workspaces, Reports, or Recipes. Preserve both historical
+Phase 13-2 failed task blocks and do not create or execute Attempt 3.
+---END---
+
+---TASK---
  状态：失败
 
 # Phase 13-2 Seven Canonical Real-User E2E Demonstrations Full Rerun

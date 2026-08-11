@@ -1,0 +1,19 @@
+{
+  "findings": [
+    {
+      "findingId": "P13-RR-001",
+      "status": "CLOSED"
+    },
+    {
+      "findingId": "P13-RR-002",
+      "status": "CLOSED"
+    },
+    {
+      "findingId": "P13-RR-003",
+      "status": "CLOSED"
+    }
+  ],
+  "releaseCriticalIntegrationDefects": 0,
+  "scientificDefects": 0,
+  "securityDefects": 0
+}

@@ -1,0 +1,10 @@
+{
+  "dependencyMismatch": "REJECTED",
+  "missingId": "REJECTED",
+  "staleResource": "REJECTED_BY_EXACT_HASH_OR_ID",
+  "status": "PASS",
+  "wrongHash": "REJECTED",
+  "wrongKind": "REJECTED",
+  "wrongProject": "REJECTED",
+  "xrdWavelengthMismatch": "REJECTED"
+}

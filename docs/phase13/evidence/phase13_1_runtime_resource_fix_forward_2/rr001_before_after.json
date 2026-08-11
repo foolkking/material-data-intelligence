@@ -1,0 +1,5 @@
+{
+  "after": "PhononBand and PhononDos exact IDs resolve with type/hash/dataset scope",
+  "before": "Unknown input ref",
+  "status": "CLOSED_WITH_RUNTIME_RESOLVABILITY_REGRESSION"
+}

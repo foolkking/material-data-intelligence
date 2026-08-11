@@ -1,0 +1,22 @@
+{
+  "canonicalPrompt": "Inspect the supplied electronic band structure and DOS, including gap, spin, projection and compatibility limitations.",
+  "demoId": "P13-DEMO-07",
+  "dependencyContractsChecked": 0,
+  "family": "Electronic Band + DOS",
+  "planSchemaVersion": "0.1",
+  "planValidated": true,
+  "plannedTools": [
+    "electronic.band_structure",
+    "electronic.dos"
+  ],
+  "profileContractVersion": "2.4",
+  "profileId": "profile_phase13_entry_p13_demo_07_v2",
+  "rootResourceRefs": [
+    "obj_electronic_band_5626a7644201",
+    "obj_electronic_dos_7b5afc1a3e8d"
+  ],
+  "rootResourcesResolved": 2,
+  "runtimeResolver": "production exact source-resource index",
+  "scientificCompatibilityChecks": [],
+  "status": "READY_FOR_FULL_E2E"
+}

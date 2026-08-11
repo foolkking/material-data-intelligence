@@ -1,0 +1,7 @@
+{
+  "current": "eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94",
+  "impact": "YES",
+  "old": "caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4",
+  "reason": "Demo 3 retained fixture checksum and exact CuKa dependency compatibility changed.",
+  "status": "PASS"
+}

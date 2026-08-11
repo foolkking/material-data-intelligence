@@ -1,0 +1,20 @@
+{
+  "canonicalPrompt": "Inspect this supplied volumetric grid and show its supported slice and volume views.",
+  "demoId": "P13-DEMO-06",
+  "dependencyContractsChecked": 0,
+  "family": "Volumetric",
+  "planSchemaVersion": "0.1",
+  "planValidated": true,
+  "plannedTools": [
+    "structure.volumetric_data"
+  ],
+  "profileContractVersion": "2.0",
+  "profileId": "profile_phase13_entry_p13_demo_06_v2",
+  "rootResourceRefs": [
+    "obj_volumetric_5ef6442c2627"
+  ],
+  "rootResourcesResolved": 1,
+  "runtimeResolver": "production exact source-resource index",
+  "scientificCompatibilityChecks": [],
+  "status": "READY_FOR_FULL_E2E"
+}

@@ -575,3 +575,12 @@ The second Phase 13-2 attempt is blocked by three newly observed release-critica
 product integration defects during fresh runtime preflight. Full seven-demo
 service/browser execution has not occurred, Initial Release is not complete,
 and Phase 13-3 remains blocked.
+
+## Phase 13-1 Fix-Forward #2
+
+The current candidate closes RR-001/002 through one canonical source-resource
+registration and exact Runtime-resolution path, and closes RR-003 using the
+existing CuKa-compatible retained XRD input while preserving mismatch rejection.
+Level C and Level C2 are `7/7`; full Attempt 3 remains unexecuted. Fact Model
+`e0248d...4a06` is unchanged and Scope Baseline `eb91799b...e5e94` supersedes
+`caf9a67d...fd4`, pending exact-SHA CI.

@@ -1632,3 +1632,11 @@ version, Adapter binding, availability or validation level.
 Registry remains `62`. The rerun findings concern product object-store/input
 binding and XRD parameter authority; no Tool manifest, Adapter scientific
 behavior, validation level or Registry membership changed.
+
+## Phase 13-1 Fix-Forward #2 Registry Boundary
+
+- Registry remains 62. The source-resource lifecycle fix changes registration
+  and exact resolution only; no Tool, Adapter algorithm, Artifact family or
+  scientific parameter authority is added.
+- Level C2 validates root-resource identity and existing Tool dependency ports.
+  It does not execute a Tool or become scientific authority.

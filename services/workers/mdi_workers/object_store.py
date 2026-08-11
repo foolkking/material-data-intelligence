@@ -8,6 +8,8 @@ from mdi_api.artifact_storage import ArtifactStorage
 from mdi_api.unit_of_work import RepositoryFactory
 from mdi_schemas import DataProfile, MaterialObjectType
 
+from .source_resources import register_runtime_source_resource
+
 
 class DurableObjectStoreResolver:
     """Rebuild worker object_store from persisted dataset metadata and storage.
@@ -50,7 +52,7 @@ class DurableObjectStoreResolver:
         structure_resources: dict[str, Any] = {}
         formulas: list[str] = []
         dataframes: list[pd.DataFrame] = []
-        dataframe_resources: dict[str, Any] = {}
+        source_records: list[dict[str, Any]] = []
 
         for export in exports:
             metadata_key = str(export.get("metadataKey") or export.get("metadata_key") or "")
@@ -63,23 +65,27 @@ class DurableObjectStoreResolver:
             object_type = str((metadata_payload.get("provenance") or {}).get("objectType") or object_metadata.get("objectType") or "")
             object_id = str(export.get("objectId") or export.get("object_id") or metadata_payload.get("objectId") or "")
             payload = self.artifact_storage.get_json(storage_key)
+            object_hash = str(export.get("contentHash") or export.get("content_hash") or metadata_payload.get("contentHash") or "")
 
             if object_type == MaterialObjectType.DataFrame.value:
                 dataframe = pd.DataFrame(payload)
                 dataframes.append(dataframe)
                 if object_id:
                     experimental_xrd = object_metadata.get("experimentalXrd")
-                    dataframe_resources[object_id] = _experimental_xrd_resource(dataframe, experimental_xrd) if isinstance(experimental_xrd, dict) else dataframe
+                    source_records.append({"id": object_id, "type": object_type, "hash": object_hash, "value": _experimental_xrd_resource(dataframe, experimental_xrd) if isinstance(experimental_xrd, dict) else dataframe})
                 if "formula" in dataframe.columns:
                     formulas.extend(str(value) for value in dataframe["formula"].dropna().tolist())
             elif object_type == MaterialObjectType.Structure.value:
                 structures.append(payload)
                 if object_id:
                     structure_resources[object_id] = payload
+                    source_records.append({"id": object_id, "type": object_type, "hash": object_hash, "value": payload})
                 if object_metadata.get("formula"):
                     formulas.append(str(object_metadata["formula"]))
             elif object_type == MaterialObjectType.Atoms.value and object_metadata.get("formula"):
                 formulas.append(str(object_metadata["formula"]))
+            elif object_id and object_type in {item.value for item in MaterialObjectType}:
+                source_records.append({"id": object_id, "type": object_type, "hash": object_hash, "value": payload})
 
         object_store: dict[str, Any] = {}
         profiles = repos.data_profiles.list_for_dataset(dataset_id)
@@ -99,9 +105,24 @@ class DurableObjectStoreResolver:
                 eligible_profiles,
                 key=lambda item: (str(item.get("version") or ""), str(item.get("profileId") or "")),
             )[-1]
-            object_store["profile"] = DataProfile.model_validate(selected)
-        object_store.update(dataframe_resources)
-        object_store.update(structure_resources)
+            profile = DataProfile.model_validate(selected)
+            register_runtime_source_resource(
+                object_store, object_id="profile", object_type="DataProfile",
+                object_hash=profile.semanticHash or profile.profileId,
+                dataset_id=dataset_id, value=profile,
+            )
+        for source in source_records:
+            aliases = (
+                ("ml_table",)
+                if source["type"] == MaterialObjectType.DataFrame.value
+                and isinstance(source["value"], pd.DataFrame)
+                and "ml_table" not in object_store
+                else ()
+            )
+            register_runtime_source_resource(
+                object_store, object_id=source["id"], object_type=source["type"],
+                object_hash=source["hash"], dataset_id=dataset_id, value=source["value"], aliases=aliases,
+            )
         if formulas:
             object_store["formulas"] = formulas
         if structures:
@@ -109,7 +130,7 @@ class DurableObjectStoreResolver:
             object_store["structure_resources"] = structure_resources
             object_store["viewer_structure"] = structures[0]
         if dataframes:
-            object_store["ml_table"] = dataframes[0]
+            object_store.setdefault("ml_table", dataframes[0])
         return object_store or None
 
     def _repositories_from_factory(self) -> Any | None:

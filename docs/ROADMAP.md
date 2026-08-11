@@ -235,3 +235,17 @@ production or scientific change was made during this rerun. Failure evidence
 implementation `0877450140a76ad7ecd59e99ad48f0c19c5e7059` passed exact-SHA
 CI `31497337708`; both failed task blocks remain retained and no executable
 Phase 13-3 task exists.
+
+## Phase 13-1 Fix-Forward #2 Current Status
+
+Phase 13-1 is reopened only for `P13-RR-001..003`. The candidate unifies exact
+typed source-resource registration and durable Runtime resolution for all
+execution-eligible root resources, preserves dataset/type/hash identity, and
+adds the permanent Level-C2 execution preflight. XRD uses Branch B1: the
+retained experimental fixture is aligned with the existing `CuKa` Tool
+configuration while strict wavelength-mismatch rejection remains unchanged.
+Level C and Level C2 are both `7/7`; Phase 13-2 Attempt 3 remains unexecuted and
+unqueued. The Fact Model is unchanged and Scope Baseline
+`eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94`
+supersedes `caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`,
+subject to implementation exact-SHA CI.

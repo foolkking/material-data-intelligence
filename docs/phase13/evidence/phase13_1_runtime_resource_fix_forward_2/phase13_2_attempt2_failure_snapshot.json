@@ -1,0 +1,44 @@
+{
+  "findings": [
+    {
+      "affectedDemos": [
+        "P13-DEMO-05"
+      ],
+      "category": "RELEASE_CRITICAL_INTEGRATION_DEFECT",
+      "evidence": "runtime_preflight.json",
+      "findingId": "P13-RR-001",
+      "productionArea": "apps/api/mdi_api/phase2_runtime.py",
+      "rootCause": "Production build_object_store omits parsed PhononBand and PhononDos exact object IDs, so registered phonon Adapters cannot resolve Planner input refs.",
+      "severity": "P0",
+      "status": "OPEN_REVIEWER_ACTION_REQUIRED"
+    },
+    {
+      "affectedDemos": [
+        "P13-DEMO-07"
+      ],
+      "category": "RELEASE_CRITICAL_INTEGRATION_DEFECT",
+      "evidence": "runtime_preflight.json",
+      "findingId": "P13-RR-002",
+      "productionArea": "apps/api/mdi_api/phase2_runtime.py",
+      "rootCause": "Production build_object_store omits parsed ElectronicBand and ElectronicDos exact object IDs, so registered electronic Adapters cannot resolve Planner input refs.",
+      "severity": "P0",
+      "status": "OPEN_REVIEWER_ACTION_REQUIRED"
+    },
+    {
+      "affectedDemos": [
+        "P13-DEMO-03"
+      ],
+      "category": "RELEASE_CRITICAL_INTEGRATION_DEFECT",
+      "evidence": "runtime_preflight.json",
+      "findingId": "P13-RR-003",
+      "productionArea": "Phase 13 Demo 3 contract and XRD runtime parameter binding",
+      "rootCause": "The sealed experimental XRD input wavelength is incompatible with the theoretical XRD output selected by the capability-aware Plan, so the comparison Adapter rejects the real dependency result.",
+      "severity": "P0",
+      "status": "OPEN_REVIEWER_ACTION_REQUIRED"
+    }
+  ],
+  "releaseCriticalIntegrationDefects": 3,
+  "scientificDefects": 0,
+  "securityDefects": 0,
+  "unclassified": 0
+}

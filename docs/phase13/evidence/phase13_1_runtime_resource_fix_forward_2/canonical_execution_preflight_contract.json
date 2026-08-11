@@ -1,0 +1,7 @@
+{
+  "futureArtifacts": "FORMAL_DEPENDENCY_CONTRACT_ONLY",
+  "level": "C2",
+  "noFakeResolver": true,
+  "rootRefs": "ACTUAL_PRODUCTION_EXACT_RESOLVER",
+  "stopsBeforeJob": true
+}
