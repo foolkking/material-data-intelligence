@@ -1,0 +1,100 @@
+{
+  "artifactFamilies": [
+    "table_json",
+    "plotly_json",
+    "summary_md",
+    "recipe_json"
+  ],
+  "blockingReason": null,
+  "capabilities": [
+    "dataset-intelligence",
+    "dataset-materials-explorer",
+    "composition-space",
+    "composition-analysis"
+  ],
+  "demoId": "P13-DEMO-01",
+  "eligibleTools": [
+    "composition.chem_sys_sunburst@0.1.0",
+    "composition.chem_sys_treemap@0.1.0",
+    "composition.elements_hist@0.1.0",
+    "composition.formula_statistics@0.1.0",
+    "composition.ptable_heatmap@0.1.0",
+    "composition.summary@0.1.0",
+    "dataset.composition_space@0.1.0",
+    "dataset.materials_explorer@0.1.0",
+    "table.distribution_summary@0.1.0",
+    "table.numeric_summary@0.1.0",
+    "viz.correlation@0.1.0",
+    "viz.histogram@0.1.0",
+    "viz.scatter@0.1.0"
+  ],
+  "executed": false,
+  "explicitLimits": [
+    "Composition-space PCA and clustering are descriptive, not material identity."
+  ],
+  "family": "Dataset Intelligence + Composition Space",
+  "findingEvidence": "APPLICABLE_WHERE_PERSISTED_INTERPRETATION_CONTRACT_EXISTS",
+  "fixtureIds": [
+    "P13-DEMO-01-FIX-01"
+  ],
+  "formats": [
+    ".csv"
+  ],
+  "interpretation": "APPLICABLE_WHERE_PERSISTED_INTERPRETATION_CONTRACT_EXISTS",
+  "mappingOnlyTools": [
+    "composition.cluster_2d@0.1.0",
+    "composition.cluster_3d@0.1.0",
+    "composition.ptable_heatmap_splits@0.1.0",
+    "composition.ptable_hists@0.1.0",
+    "composition.ptable_scatter@0.1.0"
+  ],
+  "negativeCases": [
+    "ambiguous-intent",
+    "unsupported-capability",
+    "partial-execution",
+    "stale-historical-recovery",
+    "provider-controlled-failure"
+  ],
+  "passClaim": false,
+  "planSemantics": {
+    "handcrafted": false,
+    "semanticStepsOnly": true,
+    "versions": [
+      "0.1",
+      "0.2"
+    ]
+  },
+  "plannerReachability": "VERIFIED_BY_CONTRACT_AND_RETAINED_TESTS",
+  "profileExpectations": [
+    "composition-analysis",
+    "composition-space",
+    "dataset-intelligence",
+    "dataset-materials-explorer"
+  ],
+  "readiness": "READY_WITH_EXPLICIT_NONBLOCKING_LIMIT",
+  "registeredAdapters": [
+    "ChemSysSunburstAdapter",
+    "ChemSysTreemapAdapter",
+    "ElementsHistAdapter",
+    "FormulaStatisticsAdapter",
+    "PTableHeatmapAdapter",
+    "CompositionSummaryAdapter",
+    "CompositionSpaceAdapter",
+    "DatasetMaterialsExplorerAdapter",
+    "DistributionSummaryAdapter",
+    "NumericSummaryAdapter",
+    "CorrelationAdapter",
+    "HistogramAdapter",
+    "ScatterAdapter"
+  ],
+  "reportRecipe": {
+    "persistedFactsOnly": true,
+    "recipeExecutable": false,
+    "required": true
+  },
+  "runtimeCompatibility": "VERIFIED_REGISTERED_ADAPTER_PATH",
+  "workspace": {
+    "artifactIdentityExact": true,
+    "oneWorkspacePerRealJob": true
+  }
+}

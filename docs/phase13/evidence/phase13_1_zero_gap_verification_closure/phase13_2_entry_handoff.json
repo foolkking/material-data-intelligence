@@ -1,0 +1,51 @@
+{
+  "DataProfile": "2.4",
+  "Phase12BaselineHash": "29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4",
+  "Registry": 62,
+  "clarification": {
+    "maxQuestions": 3,
+    "maxRounds": 1,
+    "secondRound": "CLARIFICATION_NOT_ALLOWED"
+  },
+  "demoIds": [
+    "P13-DEMO-01",
+    "P13-DEMO-02",
+    "P13-DEMO-03",
+    "P13-DEMO-04",
+    "P13-DEMO-05",
+    "P13-DEMO-06",
+    "P13-DEMO-07"
+  ],
+  "demosExecuted": 0,
+  "executionAuthorized": false,
+  "factModelHash": "e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06",
+  "fixtureIntegrity": "11/11 PASS",
+  "fixtureRecords": 11,
+  "handoffId": "Phase13_2CanonicalRealUserE2EEntryHandoff",
+  "migration": "0007_phase10m1_workspace_domain",
+  "noInjection": true,
+  "p13x2AcceptanceIds": [
+    "P13X2-A01",
+    "P13X2-A02",
+    "P13X2-A03",
+    "P13X2-A04",
+    "P13X2-A05",
+    "P13X2-A06",
+    "P13X2-A07",
+    "P13X2-A08"
+  ],
+  "prohibitions": [
+    "no handcrafted objects",
+    "no direct-adapter E2E authority",
+    "no scientific claim promotion"
+  ],
+  "providerPolicy": "DETERMINISTIC_RELEASE_AUTHORITY_PLUS_BOUNDED_DEEPSEEK_USER_ACCEPTANCE",
+  "realPersistence": true,
+  "realRuntime": true,
+  "scopeBaselineHash": "93dea4a2b0bf31215ab2af1952b16ac47b20b7ed9b111bb2fb60ef70dd431627",
+  "services": [
+    "PostgreSQL",
+    "Redis",
+    "MinIO"
+  ]
+}

@@ -195,3 +195,14 @@ Volumetric Slice/Volume Rendering. A short-lived post-J6 freeze then proposed
 J-7 through J-12 for electronic/Fermi work. Gate J6-R supersedes that proposal:
 Electronic Band/DOS is now 10N-5, while Fermi Surface is Future Scope. Completed
 phase names and historical evidence are unchanged.
+
+## Phase 13-1 Current Status
+
+Phase 13-1 is active as `ZERO_GAP_VERIFICATION_CLOSURE`. Its deterministic
+preflight reconciles 30 integration seams, all seven canonical demo contracts,
+11 retained fixtures, 62 Registry entries (51 runtime Adapter bindings and 11
+explicit mapping-only/unavailable entries), and the corrected one-round
+clarification authority. No release blocker or release-critical integration
+gap was found locally. Production and scientific behavior remain unchanged;
+exact-SHA implementation CI is still required. Phase 13-2 remains unexecuted
+and is not authorized by Phase 13-1.

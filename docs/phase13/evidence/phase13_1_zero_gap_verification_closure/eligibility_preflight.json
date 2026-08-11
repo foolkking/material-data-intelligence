@@ -1,0 +1,73 @@
+[
+  {
+    "capabilities": [
+      "dataset-intelligence",
+      "dataset-materials-explorer",
+      "composition-space",
+      "composition-analysis"
+    ],
+    "demoId": "P13-DEMO-01",
+    "status": "VERIFIED",
+    "toolIdInjected": false
+  },
+  {
+    "capabilities": [
+      "materials-ml"
+    ],
+    "demoId": "P13-DEMO-02",
+    "status": "VERIFIED",
+    "toolIdInjected": false
+  },
+  {
+    "capabilities": [
+      "structure",
+      "coordination",
+      "local-environment-polyhedra",
+      "experimental-xrd"
+    ],
+    "demoId": "P13-DEMO-03",
+    "status": "VERIFIED",
+    "toolIdInjected": false
+  },
+  {
+    "capabilities": [
+      "trajectory",
+      "rdf",
+      "msd",
+      "diffusion"
+    ],
+    "demoId": "P13-DEMO-04",
+    "status": "VERIFIED",
+    "toolIdInjected": false
+  },
+  {
+    "capabilities": [
+      "phonon-band",
+      "phonon-dos",
+      "phonon-combined",
+      "phonon-animation",
+      "brillouin-zone"
+    ],
+    "demoId": "P13-DEMO-05",
+    "status": "VERIFIED",
+    "toolIdInjected": false
+  },
+  {
+    "capabilities": [
+      "volumetric"
+    ],
+    "demoId": "P13-DEMO-06",
+    "status": "VERIFIED",
+    "toolIdInjected": false
+  },
+  {
+    "capabilities": [
+      "electronic-band",
+      "electronic-dos",
+      "combined-band-dos"
+    ],
+    "demoId": "P13-DEMO-07",
+    "status": "VERIFIED",
+    "toolIdInjected": false
+  }
+]

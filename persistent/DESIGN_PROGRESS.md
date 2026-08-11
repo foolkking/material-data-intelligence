@@ -2229,3 +2229,8 @@ Phase 13-0 clarification correction generation is complete locally. All seven
 demo contracts now inherit the production one-round/three-question limit and
 typed second-round failure. Implementation `abe4bd68363f9eb9c357a840b17d0f2c216ebfee`
 passed exact-SHA correction CI `31455125693`.
+
+Phase 13-1 deterministic zero-gap preflight is complete locally. All 30 seams
+are classified, 11/11 fixtures pass normalized checksum verification, and all
+seven demo contracts are ready with explicit nonblocking limits. The seven
+demos remain unexecuted pending their own reviewer-gated phase.

@@ -1600,3 +1600,11 @@ version, Adapter binding, availability or validation level.
 
 - Registry remains 62 and DataProfile remains 2.4. The correction changes no Tool,
   Adapter, Artifact, validation level, eligibility rule or scientific authority.
+
+## Phase 13-1 Registry Reconciliation
+
+- The live release inventory remains 62 unique versioned Tools.
+- 51 entries have runtime Adapter bindings; 11 retained entries are explicitly
+  mapping-only/unavailable and are not promoted by demo preflight evidence.
+- No Tool, version, availability, Planner metadata or scientific authority is
+  changed by the Phase 13-1 audit.

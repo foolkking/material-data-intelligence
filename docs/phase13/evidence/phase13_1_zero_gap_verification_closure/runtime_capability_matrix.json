@@ -1,0 +1,109 @@
+[
+  {
+    "demoId": "P13-DEMO-01",
+    "directAdapterAuthority": false,
+    "realRuntimeRequired": true,
+    "status": "VERIFIED_PRECONDITION",
+    "tools": [
+      "composition.chem_sys_sunburst@0.1.0",
+      "composition.chem_sys_treemap@0.1.0",
+      "composition.elements_hist@0.1.0",
+      "composition.formula_statistics@0.1.0",
+      "composition.ptable_heatmap@0.1.0",
+      "composition.summary@0.1.0",
+      "dataset.composition_space@0.1.0",
+      "dataset.materials_explorer@0.1.0",
+      "table.distribution_summary@0.1.0",
+      "table.numeric_summary@0.1.0",
+      "viz.correlation@0.1.0",
+      "viz.histogram@0.1.0",
+      "viz.scatter@0.1.0"
+    ]
+  },
+  {
+    "demoId": "P13-DEMO-02",
+    "directAdapterAuthority": false,
+    "realRuntimeRequired": true,
+    "status": "VERIFIED_PRECONDITION",
+    "tools": [
+      "ml.basic_metrics@0.1.0",
+      "ml.classification_evaluation@0.1.0",
+      "ml.density_scatter@0.1.0",
+      "ml.error_distribution@0.1.0",
+      "ml.outlier_table@0.1.0",
+      "ml.regression_evaluation@0.1.0",
+      "ml.uncertainty_evaluation@0.1.0"
+    ]
+  },
+  {
+    "demoId": "P13-DEMO-03",
+    "directAdapterAuthority": false,
+    "realRuntimeRequired": true,
+    "status": "VERIFIED_PRECONDITION",
+    "tools": [
+      "structure.composition_from_structure@0.1.0",
+      "structure.coordination_crystalnn@0.1.0",
+      "structure.coordination_hist@0.1.0",
+      "structure.coordination_voronoinn@0.1.0",
+      "structure.experimental_xrd_comparison@0.1.0",
+      "structure.lattice_summary@0.1.0",
+      "structure.local_environment_polyhedra@0.1.0",
+      "structure.preview_metadata@0.1.0",
+      "structure.spacegroup_summary@0.1.0",
+      "structure.structure_3d@0.1.0",
+      "structure.summary@0.1.0",
+      "structure.viewer_3d@0.1.0",
+      "structure.viewer_export_package@0.1.0",
+      "structure.viewer_scene@0.1.0",
+      "structure.viewer_scene_metadata@0.1.0",
+      "structure.xrd@0.1.0"
+    ]
+  },
+  {
+    "demoId": "P13-DEMO-04",
+    "directAdapterAuthority": false,
+    "realRuntimeRequired": true,
+    "status": "VERIFIED_PRECONDITION",
+    "tools": [
+      "structure.rdf@0.1.0",
+      "structure.trajectory_import@0.1.0",
+      "structure.trajectory_viewer@0.1.0",
+      "trajectory.diffusion@0.1.0",
+      "trajectory.msd@0.1.0",
+      "trajectory.rdf@0.1.0",
+      "trajectory.viewer@0.1.0"
+    ]
+  },
+  {
+    "demoId": "P13-DEMO-05",
+    "directAdapterAuthority": false,
+    "realRuntimeRequired": true,
+    "status": "VERIFIED_PRECONDITION",
+    "tools": [
+      "phonon.animation@0.1.0",
+      "phonon.band@0.1.0",
+      "phonon.band_dos@0.1.0",
+      "phonon.dos@0.1.0",
+      "structure.brillouin_zone@0.1.0"
+    ]
+  },
+  {
+    "demoId": "P13-DEMO-06",
+    "directAdapterAuthority": false,
+    "realRuntimeRequired": true,
+    "status": "VERIFIED_PRECONDITION",
+    "tools": [
+      "structure.volumetric_data@0.1.0"
+    ]
+  },
+  {
+    "demoId": "P13-DEMO-07",
+    "directAdapterAuthority": false,
+    "realRuntimeRequired": true,
+    "status": "VERIFIED_PRECONDITION",
+    "tools": [
+      "electronic.band_structure@0.1.0",
+      "electronic.dos@0.1.0"
+    ]
+  }
+]

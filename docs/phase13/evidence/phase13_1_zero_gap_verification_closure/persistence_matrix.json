@@ -1,0 +1,9 @@
+{
+  "artifact": "CHECKSUM_AND_ID",
+  "job": "EXACT",
+  "plan": "EXACT",
+  "report": "PERSISTED_FACTS_ONLY",
+  "status": "VERIFIED",
+  "toolCall": "EXACT",
+  "workspace": "ONE_PER_REAL_JOB"
+}

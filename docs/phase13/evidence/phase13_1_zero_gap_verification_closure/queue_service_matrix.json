@@ -1,0 +1,8 @@
+{
+  "MinIO": "REQUIRED_AND_RETAINED",
+  "PostgreSQL": "REQUIRED_AND_RETAINED",
+  "Redis": "REQUIRED_AND_RETAINED",
+  "evidence": "tests/integration/test_phase10_product_closure.py",
+  "mockPersistenceAuthority": false,
+  "realQueueWorkerRuntime": true
+}

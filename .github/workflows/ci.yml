@@ -46,6 +46,9 @@ jobs:
       - name: Phase 13-0 clarification fact correction evidence
         run: uv run python scripts/generate_phase13_0_clarification_correction.py
 
+      - name: Phase 13-1 zero-gap verification evidence
+        run: uv run python scripts/generate_phase13_1_zero_gap.py
+
       - name: uv lock check
         run: uv lock --check
 

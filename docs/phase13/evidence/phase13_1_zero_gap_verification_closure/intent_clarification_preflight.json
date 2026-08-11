@@ -1,0 +1,8 @@
+{
+  "AnalysisIntent": "1.0",
+  "maxQuestions": 3,
+  "maxRounds": 1,
+  "resolvedIntentInjection": 0,
+  "secondRound": "CLARIFICATION_NOT_ALLOWED",
+  "status": "PASS"
+}

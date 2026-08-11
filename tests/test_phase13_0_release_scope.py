@@ -125,6 +125,16 @@ def test_phase13_0_docs_ci_and_queue_contract_resolve() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     if tasks.strip():
         blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
+        assert len(blocks) == tasks.count("---TASK---") == tasks.count("---END---")
+        active = [block for block in blocks if "状态：处理中" in block]
+        assert len(active) <= 1
+        if active:
+            assert blocks[0] == active[0]
+        assert all(
+            any(f"状态：{status}" in block for status in ("待处理", "处理中", "失败", "已完成"))
+            for block in blocks
+        )
+        return
         assert len(blocks) == 1
         assert "Phase 13-0 Reviewer Prompt" in blocks[0] or "Phase 13-0 Reviewer Correction Prompt" in blocks[0]
         assert re.search(r"状态：(处理中|已完成)", blocks[0])

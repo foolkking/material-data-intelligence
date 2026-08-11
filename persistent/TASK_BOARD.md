@@ -2558,3 +2558,11 @@ current board above.
 - [x] Preserve AnalysisIntent 1.0 production behavior and all scientific authority.
 - [x] Regenerate the affected scope baseline; retain the Fact Model hash.
 - [x] Keep Phase 13-1 reviewer-gated and Phase 13-2 unqueued.
+
+## Phase 13-1
+
+- [x] Revalidate the corrected Phase 13-0 fact and scope hashes.
+- [x] Classify 30 integration seams with no unclassified or discovered gap.
+- [x] Verify 11 retained fixture identities and all seven demo preflight paths.
+- [ ] Verify the implementation commit by exact-SHA CI, then record completion
+  and archive only the Phase 13-1 queue block.

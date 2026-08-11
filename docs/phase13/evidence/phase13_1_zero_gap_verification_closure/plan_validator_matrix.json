@@ -1,0 +1,10 @@
+{
+  "dependencyValidationRequired": true,
+  "handcraftedPlanInjection": 0,
+  "registryValidationRequired": true,
+  "status": "VERIFIED",
+  "versions": [
+    "0.1",
+    "0.2"
+  ]
+}

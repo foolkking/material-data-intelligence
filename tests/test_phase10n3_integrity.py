@@ -66,6 +66,12 @@ def test_n3_ci_registers_browser_and_zero_skip_service_closure() -> None:
 
 def test_n3_task_and_n4_gate_are_exact() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    if "Phase 13-1 Reviewer Prompt" in tasks or "Phase 13-2 Reviewer Prompt" in tasks:
+        blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
+        active = [block for block in blocks if "状态：处理中" in block]
+        assert len(blocks) == tasks.count("---TASK---") == tasks.count("---END---")
+        assert len(active) <= 1 and (not active or active[0] == blocks[0])
+        return
     if not tasks.strip():
         return
     if "Phase 13-0 Reviewer Prompt" in tasks or "Phase 13-0 Reviewer Correction Prompt" in tasks:

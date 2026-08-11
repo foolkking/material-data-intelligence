@@ -58,6 +58,12 @@ def test_n0_registry_has_no_extra_canonical_ids() -> None:
 
 def test_n0_does_not_admit_an_executable_task() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
+    if "Phase 13-1 Reviewer Prompt" in tasks or "Phase 13-2 Reviewer Prompt" in tasks:
+        blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
+        active = [block for block in blocks if "状态：处理中" in block]
+        assert len(blocks) == tasks.count("---TASK---") == tasks.count("---END---")
+        assert len(active) <= 1 and (not active or active[0] == blocks[0])
+        return
     if not tasks.strip():
         return
     if "Phase 13-0 Reviewer Prompt" in tasks or "Phase 13-0 Reviewer Correction Prompt" in tasks:

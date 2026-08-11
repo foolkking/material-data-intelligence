@@ -1,0 +1,71 @@
+{
+  "artifactFamilies": [
+    "table_json",
+    "plotly_json",
+    "summary_md",
+    "recipe_json"
+  ],
+  "blockingReason": null,
+  "capabilities": [
+    "electronic-band",
+    "electronic-dos",
+    "combined-band-dos"
+  ],
+  "demoId": "P13-DEMO-07",
+  "eligibleTools": [
+    "electronic.band_structure@0.1.0",
+    "electronic.dos@0.1.0"
+  ],
+  "executed": false,
+  "explicitLimits": [
+    "The platform analyzes supplied electronic data; it does not perform DFT or GW calculations."
+  ],
+  "family": "Electronic Band + DOS",
+  "findingEvidence": "APPLICABLE_WHERE_PERSISTED_INTERPRETATION_CONTRACT_EXISTS",
+  "fixtureIds": [
+    "P13-DEMO-07-FIX-01",
+    "P13-DEMO-07-FIX-02"
+  ],
+  "formats": [
+    ".json"
+  ],
+  "interpretation": "APPLICABLE_WHERE_PERSISTED_INTERPRETATION_CONTRACT_EXISTS",
+  "mappingOnlyTools": [],
+  "negativeCases": [
+    "ambiguous-intent",
+    "unsupported-capability",
+    "partial-execution",
+    "stale-historical-recovery",
+    "provider-controlled-failure"
+  ],
+  "passClaim": false,
+  "planSemantics": {
+    "handcrafted": false,
+    "semanticStepsOnly": true,
+    "versions": [
+      "0.1",
+      "0.2"
+    ]
+  },
+  "plannerReachability": "VERIFIED_BY_CONTRACT_AND_RETAINED_TESTS",
+  "profileExpectations": [
+    "combined-band-dos",
+    "electronic-band",
+    "electronic-dos"
+  ],
+  "readiness": "READY_WITH_EXPLICIT_NONBLOCKING_LIMIT",
+  "registeredAdapters": [
+    "ElectronicBandStructureAdapter",
+    "ElectronicDosAdapter"
+  ],
+  "reportRecipe": {
+    "persistedFactsOnly": true,
+    "recipeExecutable": false,
+    "required": true
+  },
+  "runtimeCompatibility": "VERIFIED_REGISTERED_ADAPTER_PATH",
+  "workspace": {
+    "artifactIdentityExact": true,
+    "oneWorkspacePerRealJob": true
+  }
+}

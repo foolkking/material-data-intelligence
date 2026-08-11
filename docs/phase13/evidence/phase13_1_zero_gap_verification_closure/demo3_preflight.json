@@ -1,0 +1,107 @@
+{
+  "artifactFamilies": [
+    "viewer_scene_json",
+    "table_json",
+    "plotly_json",
+    "summary_md",
+    "recipe_json"
+  ],
+  "blockingReason": null,
+  "capabilities": [
+    "structure",
+    "coordination",
+    "local-environment-polyhedra",
+    "experimental-xrd"
+  ],
+  "demoId": "P13-DEMO-03",
+  "eligibleTools": [
+    "structure.composition_from_structure@0.1.0",
+    "structure.coordination_crystalnn@0.1.0",
+    "structure.coordination_hist@0.1.0",
+    "structure.coordination_voronoinn@0.1.0",
+    "structure.experimental_xrd_comparison@0.1.0",
+    "structure.lattice_summary@0.1.0",
+    "structure.local_environment_polyhedra@0.1.0",
+    "structure.preview_metadata@0.1.0",
+    "structure.spacegroup_summary@0.1.0",
+    "structure.structure_3d@0.1.0",
+    "structure.summary@0.1.0",
+    "structure.viewer_3d@0.1.0",
+    "structure.viewer_export_package@0.1.0",
+    "structure.viewer_scene@0.1.0",
+    "structure.viewer_scene_metadata@0.1.0",
+    "structure.xrd@0.1.0"
+  ],
+  "executed": false,
+  "explicitLimits": [
+    "CrystalNN and VoronoiNN are separate algorithms.",
+    "Peak correspondence is not phase confirmation or Rietveld refinement."
+  ],
+  "family": "Structure + coordination + local environment + polyhedra + experimental XRD",
+  "findingEvidence": "APPLICABLE_WHERE_PERSISTED_INTERPRETATION_CONTRACT_EXISTS",
+  "fixtureIds": [
+    "P13-DEMO-03-FIX-01",
+    "P13-DEMO-03-FIX-02"
+  ],
+  "formats": [
+    ".cif",
+    ".json"
+  ],
+  "interpretation": "APPLICABLE_WHERE_PERSISTED_INTERPRETATION_CONTRACT_EXISTS",
+  "mappingOnlyTools": [
+    "structure.chem_env_sunburst@0.1.0",
+    "structure.structure_2d@0.1.0"
+  ],
+  "negativeCases": [
+    "ambiguous-intent",
+    "unsupported-capability",
+    "partial-execution",
+    "stale-historical-recovery",
+    "provider-controlled-failure"
+  ],
+  "passClaim": false,
+  "planSemantics": {
+    "handcrafted": false,
+    "semanticStepsOnly": true,
+    "versions": [
+      "0.1",
+      "0.2"
+    ]
+  },
+  "plannerReachability": "VERIFIED_BY_CONTRACT_AND_RETAINED_TESTS",
+  "profileExpectations": [
+    "coordination",
+    "experimental-xrd",
+    "local-environment-polyhedra",
+    "structure"
+  ],
+  "readiness": "READY_WITH_EXPLICIT_NONBLOCKING_LIMIT",
+  "registeredAdapters": [
+    "StructureCompositionAdapter",
+    "CrystalNNCoordinationAdapter",
+    "CoordinationHistAdapter",
+    "VoronoiNNCoordinationAdapter",
+    "ExperimentalXrdComparisonAdapter",
+    "LatticeSummaryAdapter",
+    "LocalEnvironmentPolyhedraAdapter",
+    "StructurePreviewMetadataAdapter",
+    "SpacegroupSummaryAdapter",
+    "Structure3DAdapter",
+    "StructureSummaryAdapter",
+    "StructureViewer3DAdapter",
+    "StructureViewerExportPackageAdapter",
+    "StructureViewerSceneAdapter",
+    "StructureViewerSceneMetadataAdapter",
+    "XrdPatternAdapter"
+  ],
+  "reportRecipe": {
+    "persistedFactsOnly": true,
+    "recipeExecutable": false,
+    "required": true
+  },
+  "runtimeCompatibility": "VERIFIED_REGISTERED_ADAPTER_PATH",
+  "workspace": {
+    "artifactIdentityExact": true,
+    "oneWorkspacePerRealJob": true
+  }
+}

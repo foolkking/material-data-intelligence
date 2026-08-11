@@ -4611,3 +4611,12 @@ not scientific runtime identity.
   `MAX_CLARIFICATION_ROUNDS=1`, at most three questions, and typed
   `CLARIFICATION_NOT_ALLOWED` for a second attempt.
 - Documentation projections may not widen production clarification authority.
+
+## Phase 13-1 Zero-Gap Verification Authority
+
+- Phase 13-1 is an independent audit over existing contracts, not production
+  implementation authority.
+- Registry count and Adapter executability remain separate: 62 registered Tool
+  identities include 51 runtime Adapter bindings and 11 explicitly retained
+  mapping-only/unavailable entries.
+- Demo preflight readiness is not E2E execution or scientific reference proof.

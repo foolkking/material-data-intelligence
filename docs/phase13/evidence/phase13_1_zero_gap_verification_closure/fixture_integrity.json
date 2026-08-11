@@ -1,0 +1,235 @@
+{
+  "checksumMismatch": 0,
+  "expected": 11,
+  "externalDownloads": 0,
+  "missing": 0,
+  "records": [
+    {
+      "actualChecksum": "09f9d17fe6857e0ede385c9a442cacccc73e5a12f3b0b456201797f378fb2520",
+      "byteSize": 26,
+      "checksum": "09f9d17fe6857e0ede385c9a442cacccc73e5a12f3b0b456201797f378fb2520",
+      "demoId": "P13-DEMO-01",
+      "exists": true,
+      "expectedProfileCapabilities": [
+        "dataset-intelligence",
+        "dataset-materials-explorer",
+        "composition-space",
+        "composition-analysis"
+      ],
+      "fixtureId": "P13-DEMO-01-FIX-01",
+      "format": ".csv",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "tests/fixtures/tables/formulas.csv",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture",
+      "status": "PASS"
+    },
+    {
+      "actualChecksum": "9473b499a846608123be135e8527e2144191c02c92e9147b84a3608326d4df3d",
+      "byteSize": 64,
+      "checksum": "9473b499a846608123be135e8527e2144191c02c92e9147b84a3608326d4df3d",
+      "demoId": "P13-DEMO-02",
+      "exists": true,
+      "expectedProfileCapabilities": [
+        "materials-ml"
+      ],
+      "fixtureId": "P13-DEMO-02-FIX-01",
+      "format": ".csv",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "tests/fixtures/tables/ml_results.csv",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture",
+      "status": "PASS"
+    },
+    {
+      "actualChecksum": "cb832812e186173117b59fb0beb629375d89b2452679aa9a1a1070a7dcdb0f5e",
+      "byteSize": 382,
+      "checksum": "cb832812e186173117b59fb0beb629375d89b2452679aa9a1a1070a7dcdb0f5e",
+      "demoId": "P13-DEMO-03",
+      "exists": true,
+      "expectedProfileCapabilities": [
+        "structure",
+        "coordination",
+        "local-environment-polyhedra",
+        "experimental-xrd"
+      ],
+      "fixtureId": "P13-DEMO-03-FIX-01",
+      "format": ".cif",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "tests/fixtures/structures/simple_cubic.cif",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture",
+      "status": "PASS"
+    },
+    {
+      "actualChecksum": "0a1d4d245dfb0b442697f803462dcfc32452e322a07620bdcbf47244a4940777",
+      "byteSize": 136,
+      "checksum": "0a1d4d245dfb0b442697f803462dcfc32452e322a07620bdcbf47244a4940777",
+      "demoId": "P13-DEMO-03",
+      "exists": true,
+      "expectedProfileCapabilities": [
+        "structure",
+        "coordination",
+        "local-environment-polyhedra",
+        "experimental-xrd"
+      ],
+      "fixtureId": "P13-DEMO-03-FIX-02",
+      "format": ".json",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "docs/phase10n/evidence/phase10n3_experimental_xrd_comparison_peak_matching/perfect_match.json",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture",
+      "status": "PASS"
+    },
+    {
+      "actualChecksum": "7e0a46b2582b26d57aa4e82f9ab05a57aa1d80585ac54003ceceed83b6684e13",
+      "byteSize": 4326,
+      "checksum": "7e0a46b2582b26d57aa4e82f9ab05a57aa1d80585ac54003ceceed83b6684e13",
+      "demoId": "P13-DEMO-04",
+      "exists": true,
+      "expectedProfileCapabilities": [
+        "trajectory",
+        "rdf",
+        "msd",
+        "diffusion"
+      ],
+      "fixtureId": "P13-DEMO-04-FIX-01",
+      "format": ".json",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "docs/phase10g/fixtures/trajectory_v1/fixed_lattice_md.json",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture",
+      "status": "PASS"
+    },
+    {
+      "actualChecksum": "f8f96c7e93fe67398c15c3dfba7b191c1827bb81d642635f415677da3010883f",
+      "byteSize": 3562,
+      "checksum": "f8f96c7e93fe67398c15c3dfba7b191c1827bb81d642635f415677da3010883f",
+      "demoId": "P13-DEMO-05",
+      "exists": true,
+      "expectedProfileCapabilities": [
+        "phonon-band",
+        "phonon-dos",
+        "phonon-combined",
+        "phonon-animation",
+        "brillouin-zone"
+      ],
+      "fixtureId": "P13-DEMO-05-FIX-01",
+      "format": ".json",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "docs/phase10h/fixtures/phonon_contract/stable_band.json",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture",
+      "status": "PASS"
+    },
+    {
+      "actualChecksum": "51dc70e4f4a6b57161606656fc3e2146243101d7793439569763d717e097ae5f",
+      "byteSize": 1948,
+      "checksum": "51dc70e4f4a6b57161606656fc3e2146243101d7793439569763d717e097ae5f",
+      "demoId": "P13-DEMO-05",
+      "exists": true,
+      "expectedProfileCapabilities": [
+        "phonon-band",
+        "phonon-dos",
+        "phonon-combined",
+        "phonon-animation",
+        "brillouin-zone"
+      ],
+      "fixtureId": "P13-DEMO-05-FIX-02",
+      "format": ".json",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "docs/phase10h/fixtures/phonon_contract/total_dos.json",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture",
+      "status": "PASS"
+    },
+    {
+      "actualChecksum": "425a10cfeb853708108e80f4fb261401507da220e43002f90b26fcfb3904bc32",
+      "byteSize": 3423,
+      "checksum": "425a10cfeb853708108e80f4fb261401507da220e43002f90b26fcfb3904bc32",
+      "demoId": "P13-DEMO-05",
+      "exists": true,
+      "expectedProfileCapabilities": [
+        "phonon-band",
+        "phonon-dos",
+        "phonon-combined",
+        "phonon-animation",
+        "brillouin-zone"
+      ],
+      "fixtureId": "P13-DEMO-05-FIX-03",
+      "format": ".json",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/reciprocal_lattice.json",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture",
+      "status": "PASS"
+    },
+    {
+      "actualChecksum": "1ea8ada56bec22e6b1f4caf3d24f048c980f3ea5ad5d355b8c7af36b152c953d",
+      "byteSize": 114,
+      "checksum": "1ea8ada56bec22e6b1f4caf3d24f048c980f3ea5ad5d355b8c7af36b152c953d",
+      "demoId": "P13-DEMO-06",
+      "exists": true,
+      "expectedProfileCapabilities": [
+        "volumetric"
+      ],
+      "fixtureId": "P13-DEMO-06-FIX-01",
+      "format": "CHGCAR",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "docs/phase10j/fixtures/volumetric_parser/CHGCAR",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture",
+      "status": "PASS"
+    },
+    {
+      "actualChecksum": "51fd7a057a398eaa127917338030da3dccb15f5fcd8f299822c76d741e11c6c4",
+      "byteSize": 1808,
+      "checksum": "51fd7a057a398eaa127917338030da3dccb15f5fcd8f299822c76d741e11c6c4",
+      "demoId": "P13-DEMO-07",
+      "exists": true,
+      "expectedProfileCapabilities": [
+        "electronic-band",
+        "electronic-dos",
+        "combined-band-dos"
+      ],
+      "fixtureId": "P13-DEMO-07-FIX-01",
+      "format": ".json",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "docs/phase10n/evidence/phase10n5_electronic_band_dos/electronic_resource_contracts/band.json",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture",
+      "status": "PASS"
+    },
+    {
+      "actualChecksum": "b0023d82aa1448893def37f3a323de22a642e7c4f048737dd373ea0342aebbdf",
+      "byteSize": 1101,
+      "checksum": "b0023d82aa1448893def37f3a323de22a642e7c4f048737dd373ea0342aebbdf",
+      "demoId": "P13-DEMO-07",
+      "exists": true,
+      "expectedProfileCapabilities": [
+        "electronic-band",
+        "electronic-dos",
+        "combined-band-dos"
+      ],
+      "fixtureId": "P13-DEMO-07-FIX-02",
+      "format": ".json",
+      "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
+      "newScientificExpectedValues": 0,
+      "path": "docs/phase10n/evidence/phase10n5_electronic_band_dos/electronic_resource_contracts/dos.json",
+      "retentionSafe": true,
+      "source": "repository-retained reviewed fixture",
+      "status": "PASS"
+    }
+  ],
+  "verified": 11
+}

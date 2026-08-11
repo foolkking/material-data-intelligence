@@ -1,0 +1,786 @@
+{
+  "expectedMinimum": 30,
+  "rows": [
+    {
+      "consumer": "Resource builder",
+      "contract": "Upload allowlist and bounded parser dispatch",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "apps/api/mdi_api",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Upload API",
+      "seamId": "P13S-01-resource-ingestion",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10_product_closure.py"
+    },
+    {
+      "consumer": "DataProfile builder",
+      "contract": "Exact project/dataset/version identity",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/resource-core",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Resource store",
+      "seamId": "P13S-02-dataset-version-resolution",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/test_phase10k_resource_contracts.py"
+    },
+    {
+      "consumer": "Eligibility",
+      "contract": "DataProfile 2.4 semantic hash",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/data-profile",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Profile builder",
+      "seamId": "P13S-03-data-profile",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/test_phase10k_profile_contracts.py"
+    },
+    {
+      "consumer": "Intent builder",
+      "contract": "AnalysisIntent 1.0",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/llm-core",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Prompt request",
+      "seamId": "P13S-04-analysis-intent",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/test_phase10l1_analysis_intent.py"
+    },
+    {
+      "consumer": "Eligibility",
+      "contract": "One round, three questions, typed second-round failure",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": "Applicability follows the sealed product contract.",
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/llm-core",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Intent builder",
+      "seamId": "P13S-05-clarification",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED_WITH_EXPLICIT_LIMIT",
+      "testEvidence": "tests/test_phase13_0_clarification_correction.py"
+    },
+    {
+      "consumer": "Planner",
+      "contract": "EligibilityResolution 1.0",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/planner",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Profile and Intent",
+      "seamId": "P13S-06-eligibility-resolution",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/test_phase10l2_planner.py"
+    },
+    {
+      "consumer": "AnalysisPlan",
+      "contract": "Capability-aware bounded planning",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/planner",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Eligible Intent",
+      "seamId": "P13S-07-planner",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10l2_planner_service_backed.py"
+    },
+    {
+      "consumer": "PlanValidator",
+      "contract": "AnalysisPlan 0.1/0.2",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/schemas",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Planner",
+      "seamId": "P13S-08-analysis-plan",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/test_phase10l3_dependency_contracts.py"
+    },
+    {
+      "consumer": "Queue submission",
+      "contract": "Registry and dependency validation",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/tool-registry",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "AnalysisPlan",
+      "seamId": "P13S-09-plan-validator",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/test_phase10l3_dependency_contracts.py"
+    },
+    {
+      "consumer": "Redis queue",
+      "contract": "Validated persisted Plan only",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "apps/api/mdi_api",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "API",
+      "seamId": "P13S-10-queue-submission",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10_product_closure.py"
+    },
+    {
+      "consumer": "Worker",
+      "contract": "Bounded durable job identity",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/runtime",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Queue producer",
+      "seamId": "P13S-11-redis-queue",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10_product_closure.py"
+    },
+    {
+      "consumer": "Registry resolver",
+      "contract": "QueueWorkerRuntime validated execution",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/runtime",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Worker",
+      "seamId": "P13S-12-queue-worker-runtime",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10_product_closure.py"
+    },
+    {
+      "consumer": "Adapter resolver",
+      "contract": "Exact versioned Tool identity",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/tool-registry",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Runtime",
+      "seamId": "P13S-13-tool-registry",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/test_phase11_0_audit.py"
+    },
+    {
+      "consumer": "Adapter",
+      "contract": "Registered adapter binding",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/adapters",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Registry",
+      "seamId": "P13S-14-adapter-resolution",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/test_phase10n6_professional_closure.py"
+    },
+    {
+      "consumer": "Artifact persistence",
+      "contract": "Bounded registered adapter output",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/adapters",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Runtime",
+      "seamId": "P13S-15-adapter-execution",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10n6_service_backed.py"
+    },
+    {
+      "consumer": "Repository services",
+      "contract": "Job/Plan/ToolCall/Workspace identity",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/persistence",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Runtime",
+      "seamId": "P13S-16-postgres-persistence",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10m7_integration.py"
+    },
+    {
+      "consumer": "Artifact retrieval",
+      "contract": "Checksum-addressed inert payload",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/artifact-core",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Artifact exporter",
+      "seamId": "P13S-17-minio-artifact-persistence",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10m7_integration.py"
+    },
+    {
+      "consumer": "Workspace projection",
+      "contract": "Exact Artifact identity and checksum",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/artifact-core",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Artifact repository",
+      "seamId": "P13S-18-artifact-retrieval",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10m4_artifact_gallery_service_backed.py"
+    },
+    {
+      "consumer": "Workspace",
+      "contract": "One Workspace per Job",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/workspace",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Real Job",
+      "seamId": "P13S-19-workspace-projection",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10m1_workspace_service_backed.py"
+    },
+    {
+      "consumer": "Viewer/Inspector",
+      "contract": "URL exact versioned selection",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "apps/web/app",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Workspace",
+      "seamId": "P13S-20-workspace-selection",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10m3_selection_service_backed.py"
+    },
+    {
+      "consumer": "Finding",
+      "contract": "GroundedScientificInterpretation only",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": "Applicability follows the sealed product contract.",
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/interpretation",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Persisted Artifact",
+      "seamId": "P13S-21-interpretation",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED_WITH_EXPLICIT_LIMIT",
+      "testEvidence": "tests/integration/test_phase10l4_interpretation_service_backed.py"
+    },
+    {
+      "consumer": "Evidence",
+      "contract": "Exact claim/evidence source references",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/interpretation",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Interpretation",
+      "seamId": "P13S-22-finding-evidence",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10m7_integration.py"
+    },
+    {
+      "consumer": "Developer audit",
+      "contract": "Tool/version/input/checksum lineage",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/schemas",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Evidence",
+      "seamId": "P13S-23-provenance",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10m7_integration.py"
+    },
+    {
+      "consumer": "Report builder",
+      "contract": "Persisted eligible sources only",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/reporting",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Workspace facts",
+      "seamId": "P13S-24-report-source-eligibility",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10m5_report_recipe_service_backed.py"
+    },
+    {
+      "consumer": "Final Report",
+      "contract": "Immutable source identities and warnings",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/reporting",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Report builder",
+      "seamId": "P13S-25-report-finalization",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10m5_report_recipe_service_backed.py"
+    },
+    {
+      "consumer": "Recipe",
+      "contract": "Declarative non-executable manifest",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/reporting",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Final Report",
+      "seamId": "P13S-26-recipe-generation",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/test_phase10m5_report_recipe.py"
+    },
+    {
+      "consumer": "Reloaded Workspace",
+      "contract": "Server state and exact revision",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": "Applicability follows the sealed product contract.",
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/workspace",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Persisted Workspace",
+      "seamId": "P13S-27-historical-recovery",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED_WITH_EXPLICIT_LIMIT",
+      "testEvidence": "tests/integration/test_phase10m6_recovery_service_backed.py"
+    },
+    {
+      "consumer": "All repositories",
+      "contract": "Cross-project denial",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/persistence",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Project scope",
+      "seamId": "P13S-28-cross-project-isolation",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10m7_integration.py"
+    },
+    {
+      "consumer": "Recovery UI",
+      "contract": "No latest/fuzzy fallback",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/workspace",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Versioned selection",
+      "seamId": "P13S-29-stale-identity",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/integration/test_phase10m6_recovery_service_backed.py"
+    },
+    {
+      "consumer": "Renderer/export",
+      "contract": "Inert data; no script/shell/HTML execution",
+      "exactIdentity": "REQUIRED",
+      "explicitLimit": null,
+      "gapIfFailed": "RELEASE_CRITICAL_INTEGRATION_GAP",
+      "implementationPath": "packages/artifact-core",
+      "negativePathDependencies": [
+        "ambiguous-intent",
+        "partial-execution",
+        "stale-historical-recovery"
+      ],
+      "producer": "Untrusted Artifact",
+      "seamId": "P13S-30-security-boundary",
+      "sevenDemoDependencies": [
+        "P13-DEMO-01",
+        "P13-DEMO-02",
+        "P13-DEMO-03",
+        "P13-DEMO-04",
+        "P13-DEMO-05",
+        "P13-DEMO-06",
+        "P13-DEMO-07"
+      ],
+      "status": "VERIFIED",
+      "testEvidence": "tests/test_phase10_security.py"
+    }
+  ],
+  "schemaVersion": "phase13-integration-seam/1.0"
+}

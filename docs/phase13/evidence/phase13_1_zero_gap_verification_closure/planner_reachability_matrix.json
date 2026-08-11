@@ -1,0 +1,102 @@
+[
+  {
+    "demoId": "P13-DEMO-01",
+    "prompt": "Explore this materials table, summarize its quality, and show how the compositions are distributed.",
+    "reachableTools": [
+      "composition.chem_sys_sunburst@0.1.0",
+      "composition.chem_sys_treemap@0.1.0",
+      "composition.elements_hist@0.1.0",
+      "composition.formula_statistics@0.1.0",
+      "composition.ptable_heatmap@0.1.0",
+      "composition.summary@0.1.0",
+      "dataset.composition_space@0.1.0",
+      "dataset.materials_explorer@0.1.0",
+      "table.distribution_summary@0.1.0",
+      "table.numeric_summary@0.1.0",
+      "viz.correlation@0.1.0",
+      "viz.histogram@0.1.0",
+      "viz.scatter@0.1.0"
+    ],
+    "status": "VERIFIED_BY_CONTRACT_NOT_EXECUTED"
+  },
+  {
+    "demoId": "P13-DEMO-02",
+    "prompt": "Evaluate these materials-model predictions and explain the largest errors and limitations.",
+    "reachableTools": [
+      "ml.basic_metrics@0.1.0",
+      "ml.classification_evaluation@0.1.0",
+      "ml.density_scatter@0.1.0",
+      "ml.error_distribution@0.1.0",
+      "ml.outlier_table@0.1.0",
+      "ml.regression_evaluation@0.1.0",
+      "ml.uncertainty_evaluation@0.1.0"
+    ],
+    "status": "VERIFIED_BY_CONTRACT_NOT_EXECUTED"
+  },
+  {
+    "demoId": "P13-DEMO-03",
+    "prompt": "Inspect this crystal structure, compare its coordination methods and local polyhedra, then compare the supplied experimental diffraction peaks.",
+    "reachableTools": [
+      "structure.composition_from_structure@0.1.0",
+      "structure.coordination_crystalnn@0.1.0",
+      "structure.coordination_hist@0.1.0",
+      "structure.coordination_voronoinn@0.1.0",
+      "structure.experimental_xrd_comparison@0.1.0",
+      "structure.lattice_summary@0.1.0",
+      "structure.local_environment_polyhedra@0.1.0",
+      "structure.preview_metadata@0.1.0",
+      "structure.spacegroup_summary@0.1.0",
+      "structure.structure_3d@0.1.0",
+      "structure.summary@0.1.0",
+      "structure.viewer_3d@0.1.0",
+      "structure.viewer_export_package@0.1.0",
+      "structure.viewer_scene@0.1.0",
+      "structure.viewer_scene_metadata@0.1.0",
+      "structure.xrd@0.1.0"
+    ],
+    "status": "VERIFIED_BY_CONTRACT_NOT_EXECUTED"
+  },
+  {
+    "demoId": "P13-DEMO-04",
+    "prompt": "Analyze this trajectory, show the RDF and MSD, and estimate diffusion with its fit diagnostics.",
+    "reachableTools": [
+      "structure.rdf@0.1.0",
+      "structure.trajectory_import@0.1.0",
+      "structure.trajectory_viewer@0.1.0",
+      "trajectory.diffusion@0.1.0",
+      "trajectory.msd@0.1.0",
+      "trajectory.rdf@0.1.0",
+      "trajectory.viewer@0.1.0"
+    ],
+    "status": "VERIFIED_BY_CONTRACT_NOT_EXECUTED"
+  },
+  {
+    "demoId": "P13-DEMO-05",
+    "prompt": "Show the supplied phonon bands and density of states together with the matching Brillouin-zone context.",
+    "reachableTools": [
+      "phonon.animation@0.1.0",
+      "phonon.band@0.1.0",
+      "phonon.band_dos@0.1.0",
+      "phonon.dos@0.1.0",
+      "structure.brillouin_zone@0.1.0"
+    ],
+    "status": "VERIFIED_BY_CONTRACT_NOT_EXECUTED"
+  },
+  {
+    "demoId": "P13-DEMO-06",
+    "prompt": "Inspect this volumetric field with its structure context, slices and supported volume presentation.",
+    "reachableTools": [
+      "structure.volumetric_data@0.1.0"
+    ],
+    "status": "VERIFIED_BY_CONTRACT_NOT_EXECUTED"
+  },
+  {
+    "demoId": "P13-DEMO-07",
+    "prompt": "Inspect the supplied electronic band structure and DOS, including gap, spin, projection and compatibility limitations.",
+    "reachableTools": [
+      "electronic.band_structure@0.1.0",
+      "electronic.dos@0.1.0"
+    ],
+    "status": "VERIFIED_BY_CONTRACT_NOT_EXECUTED"
+  }
+]

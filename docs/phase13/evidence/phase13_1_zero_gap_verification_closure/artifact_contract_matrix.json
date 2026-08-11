@@ -1,0 +1,89 @@
+[
+  {
+    "artifactFamilies": [
+      "table_json",
+      "plotly_json",
+      "summary_md",
+      "recipe_json"
+    ],
+    "demoId": "P13-DEMO-01",
+    "filenameAuthority": false,
+    "registeredAdapterRequired": true,
+    "status": "VERIFIED_PRECONDITION"
+  },
+  {
+    "artifactFamilies": [
+      "table_json",
+      "plotly_json",
+      "summary_md",
+      "recipe_json"
+    ],
+    "demoId": "P13-DEMO-02",
+    "filenameAuthority": false,
+    "registeredAdapterRequired": true,
+    "status": "VERIFIED_PRECONDITION"
+  },
+  {
+    "artifactFamilies": [
+      "viewer_scene_json",
+      "table_json",
+      "plotly_json",
+      "summary_md",
+      "recipe_json"
+    ],
+    "demoId": "P13-DEMO-03",
+    "filenameAuthority": false,
+    "registeredAdapterRequired": true,
+    "status": "VERIFIED_PRECONDITION"
+  },
+  {
+    "artifactFamilies": [
+      "trajectory_json",
+      "table_json",
+      "plotly_json",
+      "summary_md",
+      "recipe_json"
+    ],
+    "demoId": "P13-DEMO-04",
+    "filenameAuthority": false,
+    "registeredAdapterRequired": true,
+    "status": "VERIFIED_PRECONDITION"
+  },
+  {
+    "artifactFamilies": [
+      "phonon_band_json",
+      "phonon_dos_json",
+      "brillouin_zone_json",
+      "summary_md",
+      "recipe_json"
+    ],
+    "demoId": "P13-DEMO-05",
+    "filenameAuthority": false,
+    "registeredAdapterRequired": true,
+    "status": "VERIFIED_PRECONDITION"
+  },
+  {
+    "artifactFamilies": [
+      "volumetric_grid_json",
+      "volumetric_dataset_json",
+      "summary_md",
+      "recipe_json"
+    ],
+    "demoId": "P13-DEMO-06",
+    "filenameAuthority": false,
+    "registeredAdapterRequired": true,
+    "status": "VERIFIED_PRECONDITION"
+  },
+  {
+    "artifactFamilies": [
+      "table_json",
+      "plotly_json",
+      "summary_md",
+      "recipe_json"
+    ],
+    "demoId": "P13-DEMO-07",
+    "filenameAuthority": false,
+    "registeredAdapterRequired": true,
+    "status": "VERIFIED_PRECONDITION"
+  }
+]
