@@ -32,6 +32,20 @@ def file_hash(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+TEXT_FIXTURE_SUFFIXES = {".cif", ".csv", ".json", ".md", ".txt", ".vasp", ".yaml", ".yml", ".xyz"}
+
+
+def stable_fixture_bytes(path: Path) -> bytes:
+    content = path.read_bytes()
+    if path.suffix.lower() in TEXT_FIXTURE_SUFFIXES:
+        return content.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return content
+
+
+def stable_fixture_hash(path: Path) -> str:
+    return hashlib.sha256(stable_fixture_bytes(path)).hexdigest()
+
+
 def write_json(name: str, value: Any) -> None:
     (OUT / name).write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
@@ -245,8 +259,8 @@ def build_demo_registry() -> tuple[dict[str, Any], dict[str, Any]]:
                 "fixtureId": fixture_id,
                 "demoId": spec["demoId"],
                 "path": relative,
-                "checksum": file_hash(path),
-                "byteSize": path.stat().st_size,
+                "checksum": stable_fixture_hash(path),
+                "byteSize": len(stable_fixture_bytes(path)),
                 "format": path.suffix.lower() or path.name,
                 "source": "repository-retained reviewed fixture",
                 "licenseDisposition": "REPOSITORY_INTERNAL_OR_RETAINED_WITH_EXISTING_PROVENANCE",
@@ -360,7 +374,7 @@ def main() -> None:
         "numericCrossPlatformValidation": "NOT_APPLICABLE",
         "validationLevelDistribution": phase11_levels["distribution"],
         "v4": phase11_levels["distribution"]["V4"],
-        "toolCoverageSourceHash": file_hash(tool_source_path),
+        "toolCoverageSourceHash": canonical_hash(tool_source),
         "tools": tool_source["tools"],
     }
 
@@ -450,7 +464,7 @@ def main() -> None:
         "repository_fact_inventory.json": {"entryBaseline": ENTRY_BASELINE, "branch": "master", "phase12Implementation": "8fb5dcbe54fbbcd32677107abb5f4117bd04948d", "phase12ImplementationCi": "31397995499", "phase12Completion": "a369bf26aca1b11522aed97e5baa1fa9017d673e", "phase12Archive": ENTRY_BASELINE, "registry": 62, "dataProfile": "2.4", "analysisIntent": "1.0", "eligibilityResolution": "1.0", "analysisPlans": ["0.1", "0.2"], "migration": "0007_phase10m1_workspace_domain"},
         "registry_reconciliation.json": registry_reconciliation,
         "capability_matrix.json": capability_matrix,
-        "input_support_matrix.json": {"schemaVersion": "phase13-input-support-snapshot/1.0", "source": str(input_source_path.relative_to(ROOT)).replace("\\", "/"), "sourceHash": file_hash(input_source_path), "rowCount": input_source["rowCount"], "inputs": input_source["inputs"], "supportPromotions": 0},
+        "input_support_matrix.json": {"schemaVersion": "phase13-input-support-snapshot/1.0", "source": str(input_source_path.relative_to(ROOT)).replace("\\", "/"), "sourceHash": canonical_hash(input_source), "rowCount": input_source["rowCount"], "inputs": input_source["inputs"], "supportPromotions": 0},
         "scientific_validation_matrix.json": scientific_validation,
         "release_claim_registry.json": claim_registry,
         "forbidden_release_claims.json": forbidden,
@@ -472,6 +486,18 @@ def main() -> None:
         "phase13_lifecycle_contract.json": lifecycle_contract,
         "phase13_1_handoff.json": phase13_1_handoff,
         "phase13_2_contract_preview.json": phase13_2_preview,
+        "failed_candidates.json": {
+            "records": [
+                {
+                    "sha": "c26815289b239c1169b344ac02707cd737b0b9e5",
+                    "ciRun": 31449685832,
+                    "failedJob": "Unit Tests (Python 3.11)",
+                    "reason": "Initial release semantic baseline used platform-specific generated-file bytes, so CRLF/LF differences changed the exact hash.",
+                    "authority": "HISTORICAL_FAILED_CANDIDATE",
+                    "fixForward": "Canonical JSON hashes and normalized text-fixture identities replace platform-specific byte hashes.",
+                }
+            ]
+        },
     }
     for name, value in records.items():
         write_json(name, value)
@@ -514,16 +540,16 @@ def main() -> None:
         "phase12ProductBaselineHash": PHASE12_BASELINE_HASH,
         "registrySnapshotHash": canonical_hash(registry_reconciliation),
         "dataProfileVersion": "2.4",
-        "inputMatrixHash": file_hash(OUT / "input_support_matrix.json"),
-        "capabilityMatrixHash": file_hash(OUT / "capability_matrix.json"),
-        "releaseClaimHash": file_hash(OUT / "release_claim_registry.json"),
-        "limitationHash": file_hash(OUT / "known_limitations.json"),
-        "futureScopeHash": file_hash(OUT / "future_scope_registry.json"),
-        "notPlannedHash": file_hash(OUT / "not_planned_registry.json"),
-        "releaseGapHash": file_hash(OUT / "release_gap_registry.json"),
-        "sevenDemoRegistryHash": file_hash(OUT / "seven_demo_registry.json"),
-        "demoFixtureRegistryHash": file_hash(OUT / "demo_fixture_registry.json"),
-        "acceptanceRegistryHash": file_hash(OUT / "phase13_acceptance_registry.json"),
+        "inputMatrixHash": canonical_hash(records["input_support_matrix.json"]),
+        "capabilityMatrixHash": canonical_hash(capability_matrix),
+        "releaseClaimHash": canonical_hash(claim_registry),
+        "limitationHash": canonical_hash(limitations),
+        "futureScopeHash": canonical_hash(future_scope),
+        "notPlannedHash": canonical_hash(not_planned),
+        "releaseGapHash": canonical_hash(gap_registry),
+        "sevenDemoRegistryHash": canonical_hash(demo_registry),
+        "demoFixtureRegistryHash": canonical_hash(fixture_registry),
+        "acceptanceRegistryHash": canonical_hash(acceptance_registry),
         "securityBoundaryHash": canonical_hash({"artifactInert": True, "recipeExecution": False, "recommendationExecution": False, "arbitraryCode": False}),
         "factModelHash": fact_model["semanticHash"],
     }

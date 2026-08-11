@@ -14,7 +14,7 @@
     },
     {
       "path": "demo_fixture_registry.json",
-      "sha256": "28be625d61363767f021be9a995078742a9292da421a12b0faa2f8e76d70eef4"
+      "sha256": "50a5ff5ddb212d1d2e4a5be1794d60391081d5900b0b5b7ac0add18bba3130ca"
     },
     {
       "path": "demo_negative_path_registry.json",
@@ -49,6 +49,10 @@
       "sha256": "03ef9c26672e9262caf004d70260696db63fa3679714361c1d88504118d59ef3"
     },
     {
+      "path": "failed_candidates.json",
+      "sha256": "3626da065d75b47d186965acd6d865f2d45ee0fe8bc13cfdabdde80335c456e4"
+    },
+    {
       "path": "forbidden_release_claims.json",
       "sha256": "95bcd0ac33664bb2a9f9f5a1e59bc4b3ab0b63f71a3f02c6dabb781f7a479dfe"
     },
@@ -62,15 +66,15 @@
     },
     {
       "path": "initial_release_scope_baseline.json",
-      "sha256": "c9244d4a25f57a3770d7a497bc25268afc56ea8eea06befb9fc407469dd011f6"
+      "sha256": "3515ce92b15ea06de689d50fe10bc7831c3f6ed956463afd6d54198346a6ee6d"
     },
     {
       "path": "initial_release_scope_baseline_hash.txt",
-      "sha256": "665902d176f74b7bfe63c14262f069a19be2bcecdcec94ab704e07203d34cc37"
+      "sha256": "c7633b593b763fbe4756d4b4797fcd08ae0fe2555d5925a76e29892398c3f16f"
     },
     {
       "path": "input_support_matrix.json",
-      "sha256": "b2b711c755a568a018c756003b20c1002cb2359758b40281e22ce34990144dad"
+      "sha256": "82c53f65cdbf8bd451cf06901eed1c1418142dff3ed946f01ea9f1379e15c767"
     },
     {
       "path": "known_limitations.json",
@@ -142,7 +146,7 @@
     },
     {
       "path": "scientific_validation_matrix.json",
-      "sha256": "275eca4149d39d6015c658723cf25a477cdec835aa50b0ed8212da53ffb4b9dd"
+      "sha256": "0043f419e7327c0f96e837b84c956e5d363c4da089e6168b304c36a4a436f0df"
     },
     {
       "path": "secret_scan.txt",

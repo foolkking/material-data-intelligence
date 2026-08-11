@@ -18,6 +18,13 @@ def load(name: str):
     return json.loads((OUT / name).read_text(encoding="utf-8"))
 
 
+def stable_fixture_hash(path: Path) -> str:
+    content = path.read_bytes()
+    if path.suffix.lower() in {".cif", ".csv", ".json", ".md", ".txt", ".vasp", ".yaml", ".yml", ".xyz"}:
+        content = content.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(content).hexdigest()
+
+
 def test_phase13_0_evidence_is_deterministic_and_complete() -> None:
     before = (OUT / "initial_release_scope_baseline_hash.txt").read_text(encoding="utf-8").strip()
     subprocess.run([sys.executable, "scripts/generate_phase13_0_release_scope.py"], cwd=ROOT, check=True)
@@ -72,7 +79,7 @@ def test_seven_demo_real_user_and_no_injection_contracts_are_sealed_not_executed
     for fixture in fixtures["records"]:
         path = ROOT / fixture["path"]
         assert path.is_file()
-        assert hashlib.sha256(path.read_bytes()).hexdigest() == fixture["checksum"]
+        assert stable_fixture_hash(path) == fixture["checksum"]
     injection = load("demo_no_injection_policy.json")
     for key in ("analysisPlan", "job", "toolCall", "artifact", "workspace", "finding", "evidence", "report", "recipe"):
         assert injection[key] == 0
@@ -122,4 +129,3 @@ def test_phase13_0_docs_ci_and_queue_contract_resolve() -> None:
         assert "Phase 13-0 Reviewer Prompt" in blocks[0]
         assert re.search(r"状态：(处理中|已完成)", blocks[0])
         assert "Phase 13-1 Reviewer Prompt" not in tasks
-

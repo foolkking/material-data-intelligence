@@ -4,8 +4,8 @@
   "missing": 0,
   "records": [
     {
-      "byteSize": 31,
-      "checksum": "33ea137432cb76843cbf5d42fe367a0106a3d7c2e72c37fdf30915287116df4b",
+      "byteSize": 26,
+      "checksum": "09f9d17fe6857e0ede385c9a442cacccc73e5a12f3b0b456201797f378fb2520",
       "demoId": "P13-DEMO-01",
       "expectedProfileCapabilities": [
         "dataset-intelligence",
@@ -22,8 +22,8 @@
       "source": "repository-retained reviewed fixture"
     },
     {
-      "byteSize": 69,
-      "checksum": "9d1b1119204ad8f4496ff6fd3593722eb3e8fe734bd81e8a20e9bd38c3a55565",
+      "byteSize": 64,
+      "checksum": "9473b499a846608123be135e8527e2144191c02c92e9147b84a3608326d4df3d",
       "demoId": "P13-DEMO-02",
       "expectedProfileCapabilities": [
         "materials-ml"
@@ -129,8 +129,8 @@
       "source": "repository-retained reviewed fixture"
     },
     {
-      "byteSize": 3564,
-      "checksum": "e32d08ba699ae109ac8a05aa826f9170ebb98116f012e779bfa00ffd3d3c3f64",
+      "byteSize": 3423,
+      "checksum": "425a10cfeb853708108e80f4fb261401507da220e43002f90b26fcfb3904bc32",
       "demoId": "P13-DEMO-05",
       "expectedProfileCapabilities": [
         "phonon-band",
@@ -163,8 +163,8 @@
       "source": "repository-retained reviewed fixture"
     },
     {
-      "byteSize": 1901,
-      "checksum": "88412ab141e00e2e4977bc2f24625db2574be285f8667e40968b853f23ca2506",
+      "byteSize": 1808,
+      "checksum": "51fd7a057a398eaa127917338030da3dccb15f5fcd8f299822c76d741e11c6c4",
       "demoId": "P13-DEMO-07",
       "expectedProfileCapabilities": [
         "electronic-band",
@@ -180,8 +180,8 @@
       "source": "repository-retained reviewed fixture"
     },
     {
-      "byteSize": 1151,
-      "checksum": "1c976545234d4c46050566fdbe42e11a0dd58c6f6a0459a612bc08973f1218ad",
+      "byteSize": 1101,
+      "checksum": "b0023d82aa1448893def37f3a323de22a642e7c4f048737dd373ea0342aebbdf",
       "demoId": "P13-DEMO-07",
       "expectedProfileCapabilities": [
         "electronic-band",
