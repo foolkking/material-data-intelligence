@@ -256,3 +256,13 @@ XRD_DEPENDENCY_COMPATIBILITY_CLOSED / CANONICAL_EXECUTION_PREFLIGHT_7_OF_7_READY
 Phase 13-2 remains `REMEDIATED_AGAIN / ATTEMPT_3_REQUIRED / REVIEWER_GATE`.
 The Fix-Forward #2 queue block is archived; both historical Phase 13-2 failed
 blocks remain retained and no Attempt 3 executable task exists.
+
+## Phase 13-2 Attempt 3 Current Status
+
+Attempt 3 is `FAILED / REVIEWER_ACTION_REQUIRED`. Entry, Level C and Level C2
+passed, but the first fresh real upload-to-worker path exposed `P13-R3-001`:
+normalized source exports remain process-local after `/datasets/upload`, while
+the SQL dataset used by a fresh QueueWorkerRuntime has no durable export index.
+The worker fails with `Unknown input ref: profile` before ToolCall creation.
+Demo 2-7 were not executed after the P0 stop. `P13X2` remains `0/8`, Phase 13-3
+is blocked, Initial Release is incomplete, and no Phase 14 exists.

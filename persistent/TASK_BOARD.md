@@ -2606,3 +2606,11 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
   by exact-SHA CI `31504920945`, record completion,
   and archive only this active block while retaining both failed Phase 13-2 blocks.
 - [x] Queue archive complete: two failed Phase 13-2 blocks retained, zero executable tasks.
+
+## Phase 13-2 Attempt 3 - Failed
+
+- [x] Verify Fix-Forward #2, Level C/C2, Fact/Scope hashes and service entry.
+- [x] Start Demo 1 fresh through HTTP upload, real Planner, PostgreSQL and Redis.
+- [x] Record `P13-R3-001`: fresh worker cannot resolve process-local Profile exports.
+- [x] Stop before Demo 2-7 and retain all three failed Phase 13-2 queue blocks.
+- [ ] Reviewer-authorized remediation is required before another Phase 13-2 attempt.

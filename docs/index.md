@@ -795,3 +795,6 @@ and
 | [`phase13/phase13_xrd_dependency_compatibility_resolution.md`](phase13/phase13_xrd_dependency_compatibility_resolution.md) | XRD Branch B1 and unchanged mismatch rejection |
 | [`phase13/phase13_2_attempt3_rerun_handoff.md`](phase13/phase13_2_attempt3_rerun_handoff.md) | Reviewer-gated fresh Attempt 3 contract; not executable here |
 | [`phase13/evidence/phase13_1_runtime_resource_fix_forward_2/`](phase13/evidence/phase13_1_runtime_resource_fix_forward_2/) | Level C/C2, root-resource, XRD, hash and security evidence |
+| [`phase13/phase13_2_attempt3_failure.md`](phase13/phase13_2_attempt3_failure.md) | Attempt 3 P0 stop and immutable execution result |
+| [`phase13/phase13_2_attempt3_release_findings.md`](phase13/phase13_2_attempt3_release_findings.md) | P13-R3-001 root cause and reviewer boundary |
+| [`phase13/evidence/phase13_2_attempt3_seven_real_user_e2e/`](phase13/evidence/phase13_2_attempt3_seven_real_user_e2e/) | Fresh upload-to-worker failure, service reproduction and manifest |

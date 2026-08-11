@@ -62,6 +62,8 @@ jobs:
         run: |
           uv run python scripts/generate_phase13_1_runtime_resource_fix_forward_2.py
           uv run python -m pytest -q tests/test_phase13_1_runtime_resource_fix_forward_2.py tests/test_phase13_1_runtime_resource_fix_forward_2_evidence.py --tb=short
+          uv run python scripts/generate_phase13_2_attempt3_failure_evidence.py
+          uv run python -m pytest -q tests/test_phase13_2_attempt3_failure_evidence.py --tb=short
 
       - name: uv lock check
         run: uv lock --check
@@ -604,7 +606,7 @@ jobs:
       - name: Run integration tests (capture output)
         run: |
           set +e
-          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py tests/integration/test_phase10l2_capability_planner_service_backed.py tests/integration/test_phase10l3_dependency_service_backed.py tests/integration/test_phase10l4_interpretation_service_backed.py tests/integration/test_phase10l5_natural_language_service_backed.py tests/integration/test_phase10m1_workspace_service_backed.py tests/integration/test_phase10m5_report_recipe_service_backed.py tests/integration/test_phase10m6_workspace_recovery_service_backed.py tests/integration/test_phase10m7_workspace_integration_service_backed.py tests/integration/test_phase10n1_coordination_service_backed.py tests/integration/test_phase10n2_local_environment_service_backed.py tests/integration/test_phase10n3_experimental_xrd_service_backed.py tests/integration/test_phase10n4_trajectory_analytics_service_backed.py tests/integration/test_phase10n5_electronic_service_backed.py tests/integration/test_phase10n6_professional_closure_service_backed.py tests/integration/test_phase13_1_c2_resource_preflight_service_backed.py -vv -m integration \
+          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py tests/integration/test_phase10l2_capability_planner_service_backed.py tests/integration/test_phase10l3_dependency_service_backed.py tests/integration/test_phase10l4_interpretation_service_backed.py tests/integration/test_phase10l5_natural_language_service_backed.py tests/integration/test_phase10m1_workspace_service_backed.py tests/integration/test_phase10m5_report_recipe_service_backed.py tests/integration/test_phase10m6_workspace_recovery_service_backed.py tests/integration/test_phase10m7_workspace_integration_service_backed.py tests/integration/test_phase10n1_coordination_service_backed.py tests/integration/test_phase10n2_local_environment_service_backed.py tests/integration/test_phase10n3_experimental_xrd_service_backed.py tests/integration/test_phase10n4_trajectory_analytics_service_backed.py tests/integration/test_phase10n5_electronic_service_backed.py tests/integration/test_phase10n6_professional_closure_service_backed.py tests/integration/test_phase13_1_c2_resource_preflight_service_backed.py tests/integration/test_phase13_2_attempt3_service_backed.py -vv -m integration \
             --tb=long --color=yes 2>&1 | tee integration.log
           PYTEST_EXIT=${PIPESTATUS[0]}
           set -e
@@ -652,10 +654,10 @@ jobs:
           fi
 
           # P0: every explicitly selected integration test must be collected and pass.
-          if [ "${PASSED:-0}" -lt 49 ]; then
+          if [ "${PASSED:-0}" -lt 50 ]; then
             echo ""
-            echo "ERROR: Only ${PASSED:-0}/49 integration tests passed."
-            echo "Expected: at least 49 passed, including the Phase 13 C2 service-backed gate."
+            echo "ERROR: Only ${PASSED:-0}/50 integration tests passed."
+            echo "Expected: at least 50 passed, including the Phase 13 Attempt 3 failure gate."
             exit 1
           fi
 
@@ -676,6 +678,7 @@ jobs:
             test_phase10n5_postgres_redis_minio_band_dos_closure \
             test_phase10n6_postgres_redis_minio_professional_integration_closure \
             test_phase13_1_postgres_redis_minio_c2_exact_resource_resolution \
+            test_phase13_2_attempt3_real_upload_to_fresh_worker_gap \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[dataset\]' \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[structure\]' \
             'test_phase10l5_postgres_redis_minio_natural_language_closure\[materials_ml\]' \

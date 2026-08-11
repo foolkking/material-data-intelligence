@@ -584,3 +584,11 @@ existing CuKa-compatible retained XRD input while preserving mismatch rejection.
 Level C and Level C2 are `7/7`; full Attempt 3 remains unexecuted. Fact Model
 `e0248d...4a06` is unchanged and Scope Baseline `eb91799b...e5e94` supersedes
 `caf9a67d...fd4`, pending exact-SHA CI.
+
+## Phase 13-2 Attempt 3
+
+Attempt 3 stopped on `P13-R3-001`. A real HTTP upload reaches the Planner and
+Redis queue, but normalized source exports remain in the upload process and are
+absent from the SQL dataset used by a fresh durable worker. Demo 1 fails before
+ToolCall creation; Demo 2-7 are not executed. Phase 13-3 is blocked and Initial
+Release remains incomplete.

@@ -1,4 +1,52 @@
 ---TASK---
+状态：失败
+
+# Phase 13-2 Attempt 3
+
+## Seven Canonical Real-User E2E Demonstrations - Full Fresh Rerun
+
+Execute all seven canonical demonstrations from fresh user-facing entry through
+real Intent, Eligibility, Planner, validated Plan, Job, Redis queue,
+QueueWorkerRuntime, registered Adapters, PostgreSQL/MinIO persistence,
+Workspace, applicable interpretation/Finding/Evidence/Provenance, and finalized
+Report/paired Recipe. Use the current Fact Model and Scope Baseline, preserve
+both historical failed attempts, prohibit handcrafted injection and production
+changes, execute required negative paths and browser/service matrices, and stop
+at the Phase 13-3 reviewer gate.
+
+失败时间：2026-08-12 00:06:11 +08:00
+
+修改文件：`.github/workflows/ci.yml`、`TASKS.md`、`docs/ROADMAP.md`、
+`docs/index.md`、`docs/phase13/phase13_2_attempt3_failure.md`、
+`docs/phase13/phase13_2_attempt3_release_findings.md`、
+`docs/phase13/evidence/phase13_2_attempt3_seven_real_user_e2e/`、
+`scripts/generate_phase13_2_attempt3_failure_evidence.py`、
+`tests/test_phase13_2_attempt3_failure_evidence.py`、
+`tests/integration/test_phase13_2_attempt3_service_backed.py` 和 persistent 状态文件。
+
+修改摘要：Attempt 3 entry、Level C、Level C2 和服务门通过后，Demo 1 从真实
+`/datasets/upload`、自然语言 Planner、Redis 入队进入新 QueueWorkerRuntime。
+新 worker 无法从 PostgreSQL/MinIO durable resolver 获取上传进程中的 `profile`
+资源，稳定失败为 `TOOL_INPUT_INVALID: Unknown input ref: profile`。记录新 P0
+`P13-R3-001`，未修改生产或科学代码，并按 stop rule 未执行 Demo 2-7、浏览器矩阵、
+负向场景或 live DeepSeek。
+
+测试结果：失败证据治理 `4 passed`；PostgreSQL/Redis/MinIO 服务复现
+`1 passed, 0 skipped`；后端 `1378 passed, 52 skipped`；前端 `456 passed`；
+typecheck、build、`uv lock --check` 和 `git diff --check` PASS。Exact-SHA CI
+在 evidence candidate 上执行。
+
+失败原因：真实上传只在 Phase2 进程内 runtime 保存 normalized source exports；
+Planner 创建的 SQL dataset 缺少 `normalizedExports`，新 worker 因而无法重建 exact
+source object store。该发布关键生产集成缺口不在 Phase 13-2 的修复授权内。
+
+已尝试方法：核验 Fix-Forward #2 生命周期、Fact/Scope hash、Level C/C2 7/7 和
+8/8 resource authority；使用隔离 PostgreSQL、Redis、MinIO 执行真实 HTTP upload、
+Planner enqueue 和 fresh worker；排除 provider gate、服务不可用、测试内存 resolver、
+latest/filename/reparse fallback 与科学 Adapter 问题。
+---END---
+
+---TASK---
  状态：失败
 
 # Phase 13-2 Seven Canonical Real-User E2E Demonstrations Full Rerun

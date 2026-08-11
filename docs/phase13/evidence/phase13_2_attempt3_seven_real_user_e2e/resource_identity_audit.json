@@ -1,0 +1,11 @@
+{
+  "filenameFallback": 0,
+  "latestFallback": 0,
+  "parserResourceAvailableInUploadProcess": true,
+  "plannerBoundResource": true,
+  "profileResourceAvailableInUploadProcess": true,
+  "reparseFallback": 0,
+  "runtimeResolvedProfile": false,
+  "sqlDatasetNormalizedExportsPresent": false,
+  "status": "FAIL"
+}

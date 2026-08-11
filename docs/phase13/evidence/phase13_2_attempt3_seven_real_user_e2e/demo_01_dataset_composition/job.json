@@ -1,0 +1,7 @@
+{
+  "createdByProductPath": true,
+  "enqueued": true,
+  "error": "TOOL_INPUT_INVALID: Unknown input ref: profile",
+  "fresh": true,
+  "terminalStatus": "failed"
+}

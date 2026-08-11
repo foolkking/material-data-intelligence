@@ -2267,3 +2267,12 @@ durable Runtime resolution. Level C remains `7/7`; the new Level C2 resolves
 all root refs and validates formal dependencies for `7/7`, with zero execution
 object growth. XRD Branch B1 retains strict mismatch rejection and changes no
 scientific algorithm. Exact-SHA CI remains required before completion.
+
+## Phase 13-2 Attempt 3 Stop Authority
+
+- `P13-R3-001` proves the real upload-to-fresh-worker boundary is not covered by
+  Level C2's manually registered source-resource setup.
+- Product upload, Intent, Eligibility, Planner and Redis enqueue pass; durable
+  Runtime Profile resolution fails before ToolCall creation.
+- Attempt 3 is failed with no production/scientific repair, no demo PASS claim,
+  and no Phase 13-3 execution authority.

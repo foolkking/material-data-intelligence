@@ -4665,3 +4665,13 @@ does not upgrade product support or scientific validation.
 - XRD dependency compatibility uses existing Tool contracts. The current
   `structure.xrd@0.1.0` CuKa contract does not authorize arbitrary wavelength
   binding, so Demo 3 uses Branch B1 and retains strict mismatch rejection.
+
+## Phase 13 Upload-to-Worker Persistence Decision
+
+- Level C2 registration evidence cannot substitute for the real upload endpoint
+  crossing into a new worker process.
+- Every uploaded execution-eligible source must be durably registered before a
+  Job is executable by another process. Process-local normalized exports are not
+  Runtime authority.
+- Runtime reparse and latest, filename, fuzzy, in-memory, or fixture-specific
+  substitution remain forbidden remediation strategies.

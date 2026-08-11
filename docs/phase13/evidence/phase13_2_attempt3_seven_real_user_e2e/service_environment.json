@@ -1,0 +1,7 @@
+{
+  "MinIO": "REQUIRED_AND_REPRODUCED",
+  "PostgreSQL": "REQUIRED_AND_REPRODUCED",
+  "Redis": "REQUIRED_AND_REPRODUCED",
+  "authority": "tests/integration/test_phase13_2_attempt3_service_backed.py",
+  "requiredServiceSkips": 0
+}

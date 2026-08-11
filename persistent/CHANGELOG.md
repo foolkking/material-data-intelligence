@@ -2678,3 +2678,14 @@ directly afterward. Phase 12-2 remains reviewer-gated.
   remediated production, and the new isolated PostgreSQL test omitted the
   standard users/organizations test bootstrap. Both are fixed forward without
   production or scientific changes.
+
+## 2026-08-12 - Phase 13-2 Attempt 3 failure evidence
+
+- Started Demo 1 from the real upload and natural-language Planner HTTP routes,
+  persisted the Plan/Job in PostgreSQL, and enqueued it in Redis.
+- Reproduced `P13-R3-001` in a fresh QueueWorkerRuntime: the SQL dataset lacks
+  process-local normalized exports, so durable Profile resolution fails before
+  ToolCall creation.
+- Added deterministic failure evidence, service-backed regression and CI guards.
+  No production, scientific, schema, API, dependency, provider, or scope change
+  was made; Demo 2-7 were not executed after the P0 stop.

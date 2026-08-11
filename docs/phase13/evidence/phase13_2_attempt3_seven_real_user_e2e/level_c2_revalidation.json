@@ -1,0 +1,8 @@
+{
+  "executionEligibleResourceKinds": 8,
+  "expected": 7,
+  "failures": 0,
+  "ready": 7,
+  "runtimeResolvableResourceKinds": 8,
+  "status": "PASS"
+}
