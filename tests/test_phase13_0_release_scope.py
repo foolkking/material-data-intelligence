@@ -126,6 +126,6 @@ def test_phase13_0_docs_ci_and_queue_contract_resolve() -> None:
     if tasks.strip():
         blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
         assert len(blocks) == 1
-        assert "Phase 13-0 Reviewer Prompt" in blocks[0]
+        assert "Phase 13-0 Reviewer Prompt" in blocks[0] or "Phase 13-0 Reviewer Correction Prompt" in blocks[0]
         assert re.search(r"状态：(处理中|已完成)", blocks[0])
         assert "Phase 13-1 Reviewer Prompt" not in tasks

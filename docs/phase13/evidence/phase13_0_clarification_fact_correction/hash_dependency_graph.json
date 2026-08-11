@@ -1,0 +1,10 @@
+{
+  "factModel": {
+    "clarificationFieldsHashed": false,
+    "sevenDemoDependency": "REFERENCE_PATH_ONLY"
+  },
+  "scopeBaseline": {
+    "clarificationFieldsHashed": true,
+    "sevenDemoDependency": "CONTENT_HASH"
+  }
+}

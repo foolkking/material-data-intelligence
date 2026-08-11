@@ -96,8 +96,11 @@
         "composition-analysis"
       ],
       "clarification": {
-        "maxRounds": 2,
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
         "resolvedIntentInjection": false,
+        "secondRoundBehavior": "TYPED_FAILURE",
+        "secondRoundErrorCode": "CLARIFICATION_NOT_ALLOWED",
         "validOptions": "user-visible bounded choices",
         "whenRequired": true
       },
@@ -241,8 +244,11 @@
         "materials-ml"
       ],
       "clarification": {
-        "maxRounds": 2,
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
         "resolvedIntentInjection": false,
+        "secondRoundBehavior": "TYPED_FAILURE",
+        "secondRoundErrorCode": "CLARIFICATION_NOT_ALLOWED",
         "validOptions": "user-visible bounded choices",
         "whenRequired": true
       },
@@ -386,8 +392,11 @@
         "experimental-xrd"
       ],
       "clarification": {
-        "maxRounds": 2,
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
         "resolvedIntentInjection": false,
+        "secondRoundBehavior": "TYPED_FAILURE",
+        "secondRoundErrorCode": "CLARIFICATION_NOT_ALLOWED",
         "validOptions": "user-visible bounded choices",
         "whenRequired": true
       },
@@ -537,8 +546,11 @@
         "diffusion"
       ],
       "clarification": {
-        "maxRounds": 2,
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
         "resolvedIntentInjection": false,
+        "secondRoundBehavior": "TYPED_FAILURE",
+        "secondRoundErrorCode": "CLARIFICATION_NOT_ALLOWED",
         "validOptions": "user-visible bounded choices",
         "whenRequired": true
       },
@@ -687,8 +699,11 @@
         "brillouin-zone"
       ],
       "clarification": {
-        "maxRounds": 2,
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
         "resolvedIntentInjection": false,
+        "secondRoundBehavior": "TYPED_FAILURE",
+        "secondRoundErrorCode": "CLARIFICATION_NOT_ALLOWED",
         "validOptions": "user-visible bounded choices",
         "whenRequired": true
       },
@@ -836,8 +851,11 @@
         "volumetric"
       ],
       "clarification": {
-        "maxRounds": 2,
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
         "resolvedIntentInjection": false,
+        "secondRoundBehavior": "TYPED_FAILURE",
+        "secondRoundErrorCode": "CLARIFICATION_NOT_ALLOWED",
         "validOptions": "user-visible bounded choices",
         "whenRequired": true
       },
@@ -980,8 +998,11 @@
         "combined-band-dos"
       ],
       "clarification": {
-        "maxRounds": 2,
+        "maxQuestionsPerRound": 3,
+        "maxRounds": 1,
         "resolvedIntentInjection": false,
+        "secondRoundBehavior": "TYPED_FAILURE",
+        "secondRoundErrorCode": "CLARIFICATION_NOT_ALLOWED",
         "validOptions": "user-visible bounded choices",
         "whenRequired": true
       },

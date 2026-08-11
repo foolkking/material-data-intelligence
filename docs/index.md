@@ -776,4 +776,6 @@ and
 | [`phase13/phase13_real_user_simulation_contract.md`](phase13/phase13_real_user_simulation_contract.md) | User personas, natural-language entry and no-injection policy |
 | [`phase13/phase13_acceptance_registry.md`](phase13/phase13_acceptance_registry.md) | Canonical 56-ID Phase 13 acceptance registry |
 | [`phase13/phase13_initial_release_fact_model.md`](phase13/phase13_initial_release_fact_model.md) | Deterministic Initial Release fact model and scope baseline |
+| [`phase13/phase13_0_clarification_fact_correction.md`](phase13/phase13_0_clarification_fact_correction.md) | Append-only AnalysisIntent clarification round-limit fact correction |
 | [`phase13/evidence/phase13_0_release_scope_seal/`](phase13/evidence/phase13_0_release_scope_seal/) | Phase 13-0 registries, fixtures, contracts, hashes and security evidence |
+| [`phase13/evidence/phase13_0_clarification_fact_correction/`](phase13/evidence/phase13_0_clarification_fact_correction/) | Correction authority, hash impact, determinism and governance evidence |

@@ -1,0 +1,15 @@
+{
+  "demosExecuted": 0,
+  "expected": 7,
+  "maxQuestionsPerRound": [
+    3
+  ],
+  "maxRounds": [
+    1
+  ],
+  "passClaims": 0,
+  "reconciled": 7,
+  "secondRoundBehavior": [
+    "TYPED_FAILURE"
+  ]
+}

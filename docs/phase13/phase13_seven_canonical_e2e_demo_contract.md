@@ -13,3 +13,7 @@ Exactly seven real-user-entry contracts are sealed. All require real persistence
 | P13-DEMO-07 | Electronic Band + DOS | READY_WITH_LIMITS | 2 |
 
 Feasibility is not PASS. Phase 13-0 executes zero demonstrations.
+
+Clarification follows `AnalysisIntent 1.0`: at most one round, at most three
+questions, and any second-round attempt returns typed
+`CLARIFICATION_NOT_ALLOWED`. Resolved-Intent injection is prohibited.

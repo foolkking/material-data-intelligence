@@ -133,7 +133,7 @@ def test_phase10m6_required_inventory_acceptance_authorities_and_screenshots() -
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     if not tasks.strip():
         return
-    if "Phase 13-0 Reviewer Prompt" in tasks:
+    if "Phase 13-0 Reviewer Prompt" in tasks or "Phase 13-0 Reviewer Correction Prompt" in tasks:
         assert tasks.count("---TASK---") == tasks.count("---END---") == 1
         assert "状态：处理中" in tasks or "状态：已完成" in tasks
         assert "Phase 13-1 Reviewer Prompt" not in tasks

@@ -2550,3 +2550,10 @@ current board above.
 - [x] Verify implementation `6217d042d0190c43144e402e4479aa9810b8e9d0`
   by exact-SHA CI `31451202923`; record completion and archive only Phase 13-0
   without creating Phase 13-1 or Phase 13-2 tasks.
+
+## Phase 13-0 Clarification Fact Correction
+
+- [ ] Verify the append-only one-round clarification correction by exact-SHA CI.
+- [x] Preserve AnalysisIntent 1.0 production behavior and all scientific authority.
+- [x] Regenerate the affected scope baseline; retain the Fact Model hash.
+- [x] Keep Phase 13-1 reviewer-gated and Phase 13-2 unqueued.

@@ -276,7 +276,15 @@ def build_demo_registry() -> tuple[dict[str, Any], dict[str, Any]]:
             "executed": False,
             "passClaim": False,
             "naturalLanguageIntentRequired": True,
-            "clarification": {"whenRequired": True, "maxRounds": 2, "validOptions": "user-visible bounded choices", "resolvedIntentInjection": False},
+            "clarification": {
+                "whenRequired": True,
+                "maxRounds": 1,
+                "maxQuestionsPerRound": 3,
+                "secondRoundBehavior": "TYPED_FAILURE",
+                "secondRoundErrorCode": "CLARIFICATION_NOT_ALLOWED",
+                "validOptions": "user-visible bounded choices",
+                "resolvedIntentInjection": False,
+            },
             "eligibility": {"expectedCapabilityFamilies": spec["capabilities"], "toolIdInjected": False},
             "plan": {"versions": ["0.1", "0.2"], "semanticStepsOnly": True, "handcrafted": False},
             "workspace": {"oneWorkspacePerRealJob": True, "artifactIdentityExact": True},
@@ -464,7 +472,26 @@ def main() -> None:
     evidence_contract = {"schemaVersion": "phase13-evidence-contract/1.0", "requiredAxes": ["user entry", "profile", "intent", "eligibility", "plan", "runtime", "artifact", "workspace", "interpretation", "evidence", "report/recipe", "identity", "persistence", "presentation"], "screenshotsNumericAuthority": "NONE", "realPersistenceRequired": True, "manifestRequired": True, "secretRedactionRequired": True}
     lifecycle_contract = {"schemaVersion": "phase13-lifecycle-contract/1.0", "implementationExactShaCiRequired": True, "completionCiWaitRequired": False, "archiveCiWaitRequired": False, "failedCandidateRetention": True, "forcePush": False, "phase13_1TaskCreated": False, "phase13_2TaskCreated": False, "phase14Created": False}
     phase13_1_handoff = {"schemaVersion": "phase13-1-release-critical-integration-gap-handoff/1.0", "scopeBaselineRef": "initial_release_scope_baseline.json", "releaseBlockerIds": [], "releaseCriticalIntegrationGapIds": [], "mode": "ZERO_GAP_VERIFICATION_CLOSURE", "minimalFixBoundary": "No implementation unless reviewer-authorized evidence proves a release-critical integration defect.", "featureExpansionForbidden": True, "phase11Authority": PHASE11_BASELINE_HASH, "phase12Authority": PHASE12_BASELINE_HASH, "acceptanceIds": [f"P13X1-A{i:02d}" for i in range(1, 9)], "phase13_2Entry": "reviewer approval after 13-1 closure"}
-    phase13_2_preview = {"schemaVersion": "phase13-2-canonical-e2e-contract/1.0", "demoIds": [spec["demoId"] for spec in DEMO_SPECS], "fixtures": [record["fixtureId"] for record in fixture_registry["records"]], "personas": [item["personaId"] for item in personas["personas"]], "naturalLanguagePrompts": user_entry["canonicalPrompts"], "providerMode": provider_policy, "runtimePolicy": runtime_policy, "noInjection": no_injection, "negativePaths": negative_paths["paths"], "executed": False}
+    phase13_2_preview = {
+        "schemaVersion": "phase13-2-canonical-e2e-contract/1.0",
+        "demoIds": [spec["demoId"] for spec in DEMO_SPECS],
+        "fixtures": [record["fixtureId"] for record in fixture_registry["records"]],
+        "personas": [item["personaId"] for item in personas["personas"]],
+        "naturalLanguagePrompts": user_entry["canonicalPrompts"],
+        "clarificationPolicy": {
+            "authority": "AnalysisIntent 1.0",
+            "maxRounds": 1,
+            "maxQuestionsPerRound": 3,
+            "secondRoundBehavior": "TYPED_FAILURE",
+            "secondRoundErrorCode": "CLARIFICATION_NOT_ALLOWED",
+            "resolvedIntentInjection": False,
+        },
+        "providerMode": provider_policy,
+        "runtimePolicy": runtime_policy,
+        "noInjection": no_injection,
+        "negativePaths": negative_paths["paths"],
+        "executed": False,
+    }
 
     records: dict[str, Any] = {
         "phase12_handoff_snapshot.json": phase12_handoff,
@@ -595,6 +622,10 @@ Phase 13-0 changes no production code. It seals the Initial Release fact model, 
 The Initial Release is a Material Data Intelligence and Scientific Visualization Platform. The product chain is Resource/Upload -> DataProfile -> AnalysisIntent -> bounded clarification -> EligibilityResolution -> capability-aware Planner -> AnalysisPlan 0.1/0.2 -> PlanValidator -> QueueWorkerRuntime -> registered Adapter -> persisted Artifact -> Grounded Interpretation -> ScientificWorkspace -> Finding/Evidence/Provenance -> Report -> non-executable Recipe.
 
 Support, scientific validation, cross-platform reproducibility and presentation validation remain separate. Future Scope and Not Planned work are outside this release.
+
+Bounded clarification means exactly the existing `AnalysisIntent 1.0` authority:
+at most one clarification round, at most three questions, and typed
+`CLARIFICATION_NOT_ALLOWED` on any second-round attempt.
 """)
     write_doc("phase13_release_capability_matrix.md", f"""# Phase 13 Release Capability Matrix
 
@@ -631,16 +662,24 @@ Exactly seven real-user-entry contracts are sealed. All require real persistence
 {demo_lines}
 
 Feasibility is not PASS. Phase 13-0 executes zero demonstrations.
+
+Clarification follows `AnalysisIntent 1.0`: at most one round, at most three
+questions, and any second-round attempt returns typed
+`CLARIFICATION_NOT_ALLOWED`. Resolved-Intent injection is prohibited.
 """)
     write_doc("phase13_real_user_simulation_contract.md", """# Phase 13 Real User Simulation Contract
 
 The Canonical Scientist persona uses supported data, user-facing language and the UI without internal Tool IDs. The Exploratory/Imperfect persona exercises ambiguity, limited or unsupported input, partial execution, provider failure, history/recovery and limitation-bearing Reports.
 
 Normal locators use roles, accessible names and visible semantics. Exact internal identities may be read only after the flow for lineage audit. Deterministic provider replay is the release authority; one bounded live DeepSeek acceptance case permits at most two calls, sixty-second timeouts and zero retries.
+
+Clarification is bounded by `AnalysisIntent 1.0` to one round and three questions.
+A second clarification attempt is a typed failure, never an implicit retry or
+resolved-Intent injection.
 """)
     write_doc("phase13_acceptance_registry.md", """# Phase 13 Acceptance Registry
 
-The canonical registry contains 56 unique IDs: eight for each Phase 13-0 through 13-6. Phase 13-0 closes `P13X0-A01` through `P13X0-A08`; all later IDs are sealed and not executed.
+The canonical registry contains 56 unique IDs: eight for each Phase 13-0 through 13-6. Phase 13-0 closes `P13X0-A01` through `P13X0-A08`; all later IDs are sealed and not executed. Clarification acceptance inherits the one-round, three-question AnalysisIntent 1.0 authority.
 """)
     write_doc("phase13_evidence_and_lifecycle_contract.md", """# Phase 13 Evidence and Lifecycle Contract
 
@@ -653,12 +692,18 @@ The implementation commit requires exact-SHA CI. After it passes, completion and
 Mode: `ZERO_GAP_VERIFICATION_CLOSURE`. Current release blockers and release-critical integration gaps are both zero. Phase 13-1 remains reviewer-gated and must not create features or execute Phase 13-2.
 
 Scope baseline: `{baseline['semanticHash']}`. Phase 11 and Phase 12 authorities remain read-only.
+
+Phase 13-2 clarification remains bounded to one round with at most three
+questions; a second round is typed `CLARIFICATION_NOT_ALLOWED`.
 """)
     write_doc("phase13_initial_release_fact_model.md", f"""# Phase 13 Initial Release Fact Model
 
 The canonical machine-readable model is `evidence/phase13_0_release_scope_seal/initial_release_fact_model.json` with semantic hash `{fact_model['semanticHash']}`. The scope baseline hash is `{baseline['semanticHash']}`.
 
 Neither hash participates in Artifact, Plan or Workspace scientific identity. Initial Release remains incomplete until Phase 13-5 passes and Phase 13-6 archives the release.
+
+The Fact Model retains `AnalysisIntentVersion = 1.0`; its clarification authority
+is one round, at most three questions, with typed second-round failure.
 """)
     if implementation_ci == "31451202923 PASS":
         write_doc("phase13_0_completion.md", """# Phase 13-0 Completion

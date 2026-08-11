@@ -155,9 +155,12 @@ RESPONSIVE_MOBILE_ACCESSIBILITY_CLOSED`; Phase 12-7 is `COMPLETE /
 CROSS_PRODUCT_UX_VALIDATED / DESIGN_EVIDENCE_SEALED`. Phase 12 is `COMPLETE /
 PRODUCT_EXPERIENCE_REDESIGN_VALIDATED_AND_SEALED`. Phase 13 is `IN_PROGRESS /
 RELEASE_SCOPE_SEALED`; Phase 13-0 is `COMPLETE / FINAL_FACTS_ALIGNED /
-INITIAL_RELEASE_SCOPE_SEALED`. Phase 13-1 is `REVIEWER_GATE / AWAITING REVIEWER
-PROMPT`, Phase 13-2 is not queued or executable, Initial Release is not complete,
-and no Phase 14 is created. Phase 12-6
+INITIAL_RELEASE_SCOPE_SEALED`; its clarification projection is under an
+append-only fact correction to align with AnalysisIntent 1.0 (`maxRounds=1`,
+three questions maximum, typed second-round failure). Phase 13-1 remains
+`REVIEWER_GATE / ZERO_GAP_VERIFICATION_CLOSURE / AWAITING REVIEWER PROMPT`,
+Phase 13-2 is not queued or executable, Initial Release is not complete, and no
+Phase 14 is created. Phase 12-6
 changes responsive and accessibility presentation only; persisted
 claim/evidence, scientific and Workspace authority remain unchanged. The
 former Phase 12 final-closure numbering is superseded by the approved Phase 12

@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "authority equality",
+    "max questions",
+    "one-round success",
+    "second-round typed failure",
+    "resolved Intent bypass zero"
+  ],
+  "status": "PASS",
+  "test": "tests/test_phase13_0_clarification_correction.py"
+}

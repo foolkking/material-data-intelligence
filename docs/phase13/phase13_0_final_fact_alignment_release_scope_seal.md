@@ -4,4 +4,4 @@ The live repository, Phase 11 scientific authority and Phase 12 product-experien
 
 Phase 13-0 changes no production code. It seals the Initial Release fact model, claims, explicit limits, seven real-user E2E contracts and Phase 13 governance. The seven demonstrations are not executed here and Initial Release is not complete.
 
-`INITIAL_RELEASE_SCOPE_BASELINE_HASH = 8e8b4f659888635192d259eee90f3befdd655cacb292a78c5e13c20a5fdabdde`
+`INITIAL_RELEASE_SCOPE_BASELINE_HASH = 93dea4a2b0bf31215ab2af1952b16ac47b20b7ed9b111bb2fb60ef70dd431627`

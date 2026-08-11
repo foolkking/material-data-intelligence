@@ -1,4 +1,12 @@
 {
+  "clarificationPolicy": {
+    "authority": "AnalysisIntent 1.0",
+    "maxQuestionsPerRound": 3,
+    "maxRounds": 1,
+    "resolvedIntentInjection": false,
+    "secondRoundBehavior": "TYPED_FAILURE",
+    "secondRoundErrorCode": "CLARIFICATION_NOT_ALLOWED"
+  },
   "demoIds": [
     "P13-DEMO-01",
     "P13-DEMO-02",

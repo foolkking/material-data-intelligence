@@ -2224,3 +2224,7 @@ mapping, 14-row input snapshot, seven demo contracts, fixture checksums,
 no-injection policy and 56-ID acceptance registry passed implementation exact-SHA
 CI `31451202923` at `6217d042d0190c43144e402e4479aa9810b8e9d0`. No
 production UX, backend, scientific or authority change is included.
+
+Phase 13-0 clarification correction generation is complete locally. All seven
+demo contracts now inherit the production one-round/three-question limit and
+typed second-round failure; exact-SHA correction CI is pending.

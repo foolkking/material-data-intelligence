@@ -4605,3 +4605,9 @@ The sealed Initial Release scope baseline is
 Its implementation authority is exact-SHA CI `31451202923` on
 `6217d042d0190c43144e402e4479aa9810b8e9d0`; it is release-governance identity,
 not scientific runtime identity.
+## Phase 13-0 Clarification Projection Authority
+
+- Release and E2E documentation must inherit `AnalysisIntent 1.0` directly:
+  `MAX_CLARIFICATION_ROUNDS=1`, at most three questions, and typed
+  `CLARIFICATION_NOT_ALLOWED` for a second attempt.
+- Documentation projections may not widen production clarification authority.

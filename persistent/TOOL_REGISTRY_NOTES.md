@@ -1596,3 +1596,7 @@ coverage and V4=0 remain intact.
 Phase 13-0 Registry reconciliation passed exact-SHA CI `31451202923` with live,
 documented and release-matrix counts all equal to 62. Phase 13-0 changed no Tool,
 version, Adapter binding, availability or validation level.
+## Phase 13-0 Clarification Fact Correction
+
+- Registry remains 62 and DataProfile remains 2.4. The correction changes no Tool,
+  Adapter, Artifact, validation level, eligibility rule or scientific authority.

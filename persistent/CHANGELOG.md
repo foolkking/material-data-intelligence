@@ -2609,3 +2609,9 @@ directly afterward. Phase 12-2 remains reviewer-gated.
   No production code, scientific value, API, database, dependency or LLM call
   changed. Fix-forward implementation `6217d042d0190c43144e402e4479aa9810b8e9d0`
   passed exact-SHA CI `31451202923`; failed candidates and reasons remain retained.
+## 2026-08-11 - Phase 13-0 clarification fact correction candidate
+
+- Corrected the Phase 13 release-contract projection from two clarification
+  rounds to the AnalysisIntent 1.0 authority of one round and three questions.
+- Added typed second-round failure, hash-impact, determinism and cross-platform
+  governance evidence without changing production behavior or scientific scope.

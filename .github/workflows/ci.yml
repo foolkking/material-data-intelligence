@@ -43,6 +43,9 @@ jobs:
       - name: Phase 13-0 final fact alignment and release scope evidence
         run: uv run python scripts/generate_phase13_0_release_scope.py
 
+      - name: Phase 13-0 clarification fact correction evidence
+        run: uv run python scripts/generate_phase13_0_clarification_correction.py
+
       - name: uv lock check
         run: uv lock --check
 
@@ -60,6 +63,8 @@ jobs:
         run: uv sync --frozen --extra test
       - name: Replay sealed invariant cases
         run: uv run python scripts/run_phase11_3_reproducibility.py --platform linux --output-dir "${RUNNER_TEMP}/phase11-3-linux"
+      - name: Verify Phase 13 clarification semantic hashes
+        run: uv run python scripts/verify_phase13_0_clarification_hash.py --output "${RUNNER_TEMP}/phase11-3-linux/phase13_clarification_hash.json"
       - name: Upload Linux reproducibility evidence
         uses: actions/upload-artifact@v4
         with:
@@ -78,7 +83,12 @@ jobs:
             pyproject.toml
             uv.lock
             scripts/run_phase11_3_reproducibility.py
+            scripts/verify_phase13_0_clarification_hash.py
             docs/phase11/evidence/phase11_2_golden_scientific_benchmark
+            docs/phase13/evidence/phase13_0_release_scope_seal/initial_release_fact_model.json
+            docs/phase13/evidence/phase13_0_release_scope_seal/initial_release_scope_baseline.json
+            docs/phase13/evidence/phase13_0_clarification_fact_correction/fact_model_hash_impact.json
+            docs/phase13/evidence/phase13_0_clarification_fact_correction/scope_baseline_hash_impact.json
           sparse-checkout-cone-mode: false
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -88,6 +98,8 @@ jobs:
         run: uv sync --frozen --extra test
       - name: Replay sealed invariant cases
         run: uv run python scripts/run_phase11_3_reproducibility.py --platform windows --output-dir "$env:RUNNER_TEMP\phase11-3-windows"
+      - name: Verify Phase 13 clarification semantic hashes
+        run: uv run python scripts/verify_phase13_0_clarification_hash.py --output "$env:RUNNER_TEMP\phase11-3-windows\phase13_clarification_hash.json"
       - name: Download Linux reproducibility evidence
         uses: actions/download-artifact@v4
         with:
@@ -99,6 +111,11 @@ jobs:
           --compare-linux "$env:RUNNER_TEMP\phase11-3-linux\linux_replay.json"
           --compare-windows "$env:RUNNER_TEMP\phase11-3-windows\windows_replay.json"
           --output-dir "$env:RUNNER_TEMP\phase11-3-cross-platform"
+      - name: Compare Phase 13 clarification semantic hashes
+        run: >-
+          uv run python scripts/verify_phase13_0_clarification_hash.py
+          --compare "$env:RUNNER_TEMP\phase11-3-linux\phase13_clarification_hash.json"
+          "$env:RUNNER_TEMP\phase11-3-windows\phase13_clarification_hash.json"
       - name: Upload cross-platform evidence
         uses: actions/upload-artifact@v4
         with:

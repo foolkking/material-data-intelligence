@@ -530,3 +530,8 @@ scientific validation baseline, Phase 12 product-experience baseline, 14-row
 input matrix and seven canonical real-user demo contracts into deterministic
 Initial Release scope baseline `8e8b4f659888635192d259eee90f3befdd655cacb292a78c5e13c20a5fdabdde`.
 Phase 13-1 remains reviewer-gated; Phase 13-2 and Phase 14 are not queued.
+
+Phase 13-0 clarification fact correction is active. It aligns release contracts
+to AnalysisIntent 1.0: one round, at most three questions, and typed
+`CLARIFICATION_NOT_ALLOWED` on a second attempt. Production behavior and the
+Fact Model hash remain unchanged; the scope baseline is regenerated.

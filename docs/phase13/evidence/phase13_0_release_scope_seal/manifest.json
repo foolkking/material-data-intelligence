@@ -66,11 +66,11 @@
     },
     {
       "path": "initial_release_scope_baseline.json",
-      "sha256": "3515ce92b15ea06de689d50fe10bc7831c3f6ed956463afd6d54198346a6ee6d"
+      "sha256": "3bcb4a1c990846f0f1d5219baf8ec62c27abd24d62db5c985c853db047faac2c"
     },
     {
       "path": "initial_release_scope_baseline_hash.txt",
-      "sha256": "c7633b593b763fbe4756d4b4797fcd08ae0fe2555d5925a76e29892398c3f16f"
+      "sha256": "1d321764b80a6d3ad99ec22f93a8f15b2f51c0b92828a54ef4392301aa7e529e"
     },
     {
       "path": "input_support_matrix.json",
@@ -106,7 +106,7 @@
     },
     {
       "path": "phase13_2_contract_preview.json",
-      "sha256": "d8fe2e0cc5df84e5ef8f01b7c79127136361c77b4ad41bdd01d0652ea4986ab8"
+      "sha256": "5cc7bc1a2ff8c0235f3f39f4aad64b4842b5b50a51143c6b89e459cdd26267f5"
     },
     {
       "path": "phase13_acceptance_registry.json",
@@ -158,7 +158,7 @@
     },
     {
       "path": "seven_demo_registry.json",
-      "sha256": "bc1133e1ccaf05e4649ed66532beec83e8ae7a06c9c2230173ace303143f27b7"
+      "sha256": "7faa323073d996575ddb302ca8335701b4188b7df4dac3c13493f5c55cc4a1aa"
     },
     {
       "path": "verification_baseline.json",

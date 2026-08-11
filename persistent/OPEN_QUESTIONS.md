@@ -1259,3 +1259,7 @@ is the only remaining work.
 - Phase 13-0 implementation `6217d042d0190c43144e402e4479aa9810b8e9d0`
   passed CI `31451202923`; the only next decision is reviewer authorization for
   Phase 13-1 zero-gap verification closure.
+## Phase 13-0 Clarification Correction
+
+- No implementation-critical question remains. Phase 13-1 stays a reviewer-gated
+  zero-gap verification closure after this correction is archived.
