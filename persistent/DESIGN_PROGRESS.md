@@ -2227,4 +2227,5 @@ production UX, backend, scientific or authority change is included.
 
 Phase 13-0 clarification correction generation is complete locally. All seven
 demo contracts now inherit the production one-round/three-question limit and
-typed second-round failure; exact-SHA correction CI is pending.
+typed second-round failure. Implementation `abe4bd68363f9eb9c357a840b17d0f2c216ebfee`
+passed exact-SHA correction CI `31455125693`.

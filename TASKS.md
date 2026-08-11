@@ -1,6 +1,6 @@
 
 ---TASK---
- 状态：处理中
+ 状态：已完成
 
 # Phase 13-0 Reviewer Correction Prompt
 
@@ -2630,5 +2630,13 @@ create Phase 14
 ```
 
 返回 reviewer并等待下一条 prompt。
+
+完成时间：2026-08-11 19:39 +08:00
+
+修改文件：`scripts/generate_phase13_0_release_scope.py`、`scripts/generate_phase13_0_clarification_correction.py`、`scripts/verify_phase13_0_clarification_hash.py`、`.github/workflows/ci.yml`、`tests/test_phase13_0_clarification_correction.py`、Phase 13 docs/evidence、persistent 状态文件、`results.md`、`TASKS.md`。
+
+修改摘要：将 Phase 13 clarification projection 对齐 AnalysisIntent 1.0 的一轮、最多三问及第二轮 typed failure；保留旧历史记录；Fact Model hash 不变，Scope Baseline hash 以生成器确定性更新；未修改生产或科学行为。
+
+测试结果：本地 backend `1327 passed, 50 skipped`；frontend `455 passed`；typecheck/build/uv lock/git diff/docs links/secret scan PASS；implementation `abe4bd68363f9eb9c357a840b17d0f2c216ebfee` exact-SHA CI `31455125693` PASS（含 Linux/Windows hash、service、Chromium/Firefox/WebKit/390x844）。
 
 ---END---

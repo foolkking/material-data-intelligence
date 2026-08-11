@@ -535,3 +535,5 @@ Phase 13-0 clarification fact correction is active. It aligns release contracts
 to AnalysisIntent 1.0: one round, at most three questions, and typed
 `CLARIFICATION_NOT_ALLOWED` on a second attempt. Production behavior and the
 Fact Model hash remain unchanged; the scope baseline is regenerated.
+The correction implementation passed exact-SHA CI `31455125693`; Phase 13-1
+remains reviewer-gated and no future executable task has been created.

@@ -10369,3 +10369,101 @@ PHASE13_1_EXECUTABLE_TASK_CREATED = NO
 PHASE13_2_EXECUTABLE_TASK_CREATED = NO
 PHASE14_CREATED = NO
 ```
+# Phase 13-0 Clarification Round-Limit Fact Alignment Correction Addendum
+
+## 1. Conclusion
+
+`PASS / FINAL_FACTS_ALIGNED / INITIAL_RELEASE_SCOPE_SEALED / FACT_ALIGNMENT_CORRECTED`.
+This append-only fix-forward corrects only the Phase 13 release-contract projection.
+Production AnalysisIntent behavior was already correct and was not changed.
+
+## 2. Baseline And Authority
+
+- Archived Phase 13-0 baseline: implementation `6217d042d0190c43144e402e4479aa9810b8e9d0`, CI `31451202923` PASS, completion `0af74ff078e1dab6324852a8329cea42bf092acb`, archive `7a554cd91b0638898bfe097972f29a097540b514`.
+- Production authority: AnalysisIntent `1.0`, `MAX_CLARIFICATION_ROUNDS=1`, `MAX_CLARIFICATION_QUESTIONS=3`, second attempt typed `CLARIFICATION_NOT_ALLOWED`.
+- The historical Phase 13-0 statement remains intact and is superseded by this addendum.
+
+## 3. Correction And Occurrence Audit
+
+All seven canonical demo contracts, the Phase 13-2 preview, acceptance wording,
+real-user contract, scope, fact-model documentation and 13-1 handoff now inherit
+the one-round production authority. Current canonical two-round assertions are zero;
+remaining mentions are classified historical or correction/governance evidence.
+
+## 4. Hash Impact
+
+- `OLD_INITIAL_RELEASE_FACT_MODEL_HASH=e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06`
+- `FACT_MODEL_HASH_IMPACT=NO`
+- `CURRENT_INITIAL_RELEASE_FACT_MODEL_HASH=e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06`
+- Reason: clarification fields are outside the Fact Model semantic hash dependency domain; the model references the demo registry by path.
+- `OLD_INITIAL_RELEASE_SCOPE_BASELINE_HASH=8e8b4f659888635192d259eee90f3befdd655cacb292a78c5e13c20a5fdabdde`
+- `SCOPE_BASELINE_HASH_IMPACT=YES`
+- `CURRENT_INITIAL_RELEASE_SCOPE_BASELINE_HASH=93dea4a2b0bf31215ab2af1952b16ac47b20b7ed9b111bb2fb60ef70dd431627`
+- Reason: the Scope Baseline hashes the seven-demo registry content. The old hash is historical and superseded.
+- Two generator runs and Linux/Windows CI replay produced identical current semantic hashes.
+
+## 5. Governance And Scientific Boundaries
+
+`ONE_ROUND_CLARIFICATION_SUCCESS=PASS`, `SECOND_ROUND_TYPED_FAILURE=PASS`,
+`MAX_THREE_QUESTIONS=PASS`, and `RESOLVED_INTENT_BYPASS=0`. Seven demo families
+remain sealed but unexecuted. Release blockers and release-critical integration
+gaps remain zero. Registry 62, DataProfile 2.4, EligibilityResolution 1.0,
+AnalysisPlan 0.1/0.2 and migration `0007_phase10m1_workspace_domain` are unchanged.
+
+No production code, production behavior, scientific behavior, Tool, algorithm,
+Artifact family, schema version, migration, API, dependency, lockfile, LLM call
+site, real LLM call, external download, or frontend scientific recomputation was added.
+
+## 6. Verification
+
+- Local backend: `1327 passed, 50 skipped`.
+- Frontend: `455 passed`; typecheck and production build PASS.
+- Focused correction/governance compatibility: `82 passed`; correction suite `7 passed`.
+- `uv lock --check`, `git diff --check`, docs link check and secret scan PASS.
+- Linux/Windows semantic hash replay, PostgreSQL/Redis/MinIO, Chromium, Firefox,
+  WebKit and Chromium `390x844`: PASS in exact-SHA CI `31455125693`.
+
+## 7. Lifecycle And Queue
+
+- Correction implementation: `abe4bd68363f9eb9c357a840b17d0f2c216ebfee`.
+- Implementation exact-SHA CI: `31455125693` PASS.
+- `CORRECTION_IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI`.
+- Completion is recorded by the commit containing this addendum; no completion CI wait is required.
+- Phase 13-1 remains `REVIEWER_GATE / ZERO_GAP_VERIFICATION_CLOSURE / AWAITING REVIEWER PROMPT`.
+- Phase 13-2 is not queued or executable; Initial Release is not complete; Phase 14 is not created.
+
+## 8. Required Status
+
+```text
+PHASE_13_0_FACT_CORRECTION = PASS
+CORRECTION_TYPE = FACT_ALIGNMENT_FIX_FORWARD
+PHASE13_CLARIFICATION_MAX_ROUNDS = 1
+PHASE13_CLARIFICATION_MAX_QUESTIONS = 3
+PHASE13_SECOND_CLARIFICATION_ROUND = TYPED_FAILURE
+CURRENT_CANONICAL_TWO_ROUND_ASSERTIONS = 0
+PRODUCTION_CODE_CHANGES = 0
+PRODUCTION_BEHAVIOR_CHANGES = 0
+SCIENTIFIC_BEHAVIOR_CHANGES = 0
+FACT_MODEL_HASH_IMPACT = NO
+INITIAL_RELEASE_FACT_MODEL_HASH = e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06
+SCOPE_BASELINE_HASH_IMPACT = YES
+INITIAL_RELEASE_SCOPE_BASELINE_HASH = 93dea4a2b0bf31215ab2af1952b16ac47b20b7ed9b111bb2fb60ef70dd431627
+BASELINE_DETERMINISM = PASS
+RELEASE_BLOCKERS = 0
+RELEASE_CRITICAL_INTEGRATION_GAPS = 0
+P13X0_ACCEPTANCE = 8/8
+PHASE13_DEMO_FAMILIES = 7
+PHASE13_2_DEMOS_EXECUTED = 0
+REGISTRY = 62
+DATAPROFILE = 2.4
+ANALYSIS_INTENT = 1.0
+ELIGIBILITY_RESOLUTION = 1.0
+ANALYSIS_PLAN = 0.1 / 0.2
+MIGRATION = 0007_phase10m1_workspace_domain
+PHASE_13_0 = PASS / FINAL_FACTS_ALIGNED / INITIAL_RELEASE_SCOPE_SEALED / FACT_ALIGNMENT_CORRECTED
+PHASE_13_1 = REVIEWER_GATE / ZERO_GAP_VERIFICATION_CLOSURE / AWAITING REVIEWER PROMPT
+PHASE13_1_EXECUTABLE_TASK_CREATED = NO
+PHASE13_2_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+```

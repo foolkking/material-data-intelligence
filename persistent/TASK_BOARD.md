@@ -2553,7 +2553,8 @@ current board above.
 
 ## Phase 13-0 Clarification Fact Correction
 
-- [ ] Verify the append-only one-round clarification correction by exact-SHA CI.
+- [x] Verify implementation `abe4bd68363f9eb9c357a840b17d0f2c216ebfee`
+  by exact-SHA CI `31455125693`.
 - [x] Preserve AnalysisIntent 1.0 production behavior and all scientific authority.
 - [x] Regenerate the affected scope baseline; retain the Fact Model hash.
 - [x] Keep Phase 13-1 reviewer-gated and Phase 13-2 unqueued.
