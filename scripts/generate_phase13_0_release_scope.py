@@ -290,6 +290,15 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     DOCS.mkdir(parents=True, exist_ok=True)
 
+    old_manifest = OUT / "manifest.json"
+    old_ci = "PENDING"
+    if old_manifest.exists():
+        try:
+            old_ci = load_json(old_manifest).get("implementationCi", "PENDING")
+        except (json.JSONDecodeError, OSError):
+            old_ci = "PENDING"
+    implementation_ci = os.environ.get("PHASE13_0_IMPLEMENTATION_CI", old_ci)
+
     phase12 = load_json(PHASE12 / "phase12_product_experience_baseline.json")
     phase12_handoff = load_json(PHASE12 / "phase13_handoff.json")
     phase11_final = load_json(PHASE11 / "phase11_5_scientific_validation_closure/phase11_final_baseline.json")
@@ -651,7 +660,15 @@ The canonical machine-readable model is `evidence/phase13_0_release_scope_seal/i
 
 Neither hash participates in Artifact, Plan or Workspace scientific identity. Initial Release remains incomplete until Phase 13-5 passes and Phase 13-6 archives the release.
 """)
-    write_doc("phase13_0_completion.md", """# Phase 13-0 Completion Contract
+    if implementation_ci == "31451202923 PASS":
+        write_doc("phase13_0_completion.md", """# Phase 13-0 Completion
+
+Implementation `6217d042d0190c43144e402e4479aa9810b8e9d0` is verified by exact-SHA CI run `31451202923`.
+
+Status: `PASS / FINAL_FACTS_ALIGNED / INITIAL_RELEASE_SCOPE_SEALED / COMPLETION_RECORDED`. The Phase 13-0 queue block is ready for direct archive. Phase 13-1 remains reviewer-gated, Phase 13-2 remains not queued, and Initial Release is not complete.
+""")
+    else:
+        write_doc("phase13_0_completion.md", """# Phase 13-0 Completion Contract
 
 Implementation state: `AUDIT_COMPLETE / AWAITING_IMPLEMENTATION_EXACT_SHA_CI`.
 
@@ -715,14 +732,6 @@ On successful implementation CI, this document records `PASS / FINAL_FACTS_ALIGN
         raise SystemExit(f"missing Phase 13 docs: {missing_docs}")
     write_text("docs_link_check.txt", f"PHASE13_REQUIRED_DOCS = {len(required_docs)}\nMISSING = 0\nSTATUS = PASS")
 
-    old_manifest = OUT / "manifest.json"
-    old_ci = "PENDING"
-    if old_manifest.exists():
-        try:
-            old_ci = load_json(old_manifest).get("implementationCi", "PENDING")
-        except (json.JSONDecodeError, OSError):
-            old_ci = "PENDING"
-    implementation_ci = os.environ.get("PHASE13_0_IMPLEMENTATION_CI", old_ci)
     entries = []
     for path in sorted(OUT.rglob("*")):
         if path.is_file() and path.name != "manifest.json":

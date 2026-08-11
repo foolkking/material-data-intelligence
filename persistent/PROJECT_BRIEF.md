@@ -524,9 +524,9 @@ Phase 12 is complete and sealed. Phase 12-7 implementation
 Phase 13 remains reviewer-gated, Initial Release is not complete, and no future
 executable task has been created.
 
-Phase 13-0 is the sole active audit task. It reconciles the live 62-Tool
-Registry, Phase 11 scientific validation baseline, Phase 12 product-experience
-baseline, 14-row input matrix and seven canonical real-user demo contracts into
-one deterministic Initial Release scope baseline. It changes no production or
-scientific behavior, executes no demo or LLM call, and does not create Phase
-13-1, Phase 13-2 or Phase 14 tasks.
+Phase 13-0 is complete at implementation `6217d042d0190c43144e402e4479aa9810b8e9d0`
+and exact-SHA CI `31451202923`. It reconciles the live 62-Tool Registry, Phase 11
+scientific validation baseline, Phase 12 product-experience baseline, 14-row
+input matrix and seven canonical real-user demo contracts into deterministic
+Initial Release scope baseline `8e8b4f659888635192d259eee90f3befdd655cacb292a78c5e13c20a5fdabdde`.
+Phase 13-1 remains reviewer-gated; Phase 13-2 and Phase 14 are not queued.

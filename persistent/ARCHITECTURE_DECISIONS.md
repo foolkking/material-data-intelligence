@@ -4599,3 +4599,9 @@ Final E2E authority requires user-facing natural-language entry where applicable
 real PostgreSQL/Redis/MinIO persistence, the real queue/worker Runtime, registered
 Adapters and exact lineage. Injected Plan, Job, ToolCall, Artifact, Workspace,
 Finding, Evidence, Report or Recipe records can never establish release E2E PASS.
+
+The sealed Initial Release scope baseline is
+`8e8b4f659888635192d259eee90f3befdd655cacb292a78c5e13c20a5fdabdde`.
+Its implementation authority is exact-SHA CI `31451202923` on
+`6217d042d0190c43144e402e4479aa9810b8e9d0`; it is release-governance identity,
+not scientific runtime identity.

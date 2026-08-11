@@ -2547,5 +2547,6 @@ current board above.
 - [x] Seal 14 input rows, claims, limitations, Future Scope and Not Planned scope.
 - [x] Seal exactly seven real-user E2E contracts and checksummed retained fixtures.
 - [x] Seal 56 Phase 13 acceptance IDs, lifecycle and no-injection governance.
-- [ ] Verify the audit implementation by exact-SHA CI, then record completion and
-  archive only Phase 13-0 without creating Phase 13-1 or Phase 13-2 tasks.
+- [x] Verify implementation `6217d042d0190c43144e402e4479aa9810b8e9d0`
+  by exact-SHA CI `31451202923`; record completion and archive only Phase 13-0
+  without creating Phase 13-1 or Phase 13-2 tasks.

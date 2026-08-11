@@ -2607,4 +2607,5 @@ directly afterward. Phase 12-2 remains reviewer-gated.
   Workspace/Finding/Evidence/Report/Recipe injection.
 - Added 56 exact Phase 13 acceptance IDs and reviewer-gated 13-1/13-2 contracts.
   No production code, scientific value, API, database, dependency or LLM call
-  changed; implementation exact-SHA CI remains required.
+  changed. Fix-forward implementation `6217d042d0190c43144e402e4479aa9810b8e9d0`
+  passed exact-SHA CI `31451202923`; failed candidates and reasons remain retained.

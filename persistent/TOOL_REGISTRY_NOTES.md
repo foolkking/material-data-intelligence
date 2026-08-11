@@ -1592,3 +1592,7 @@ exactly once to release capability families. This release matrix is evidence,
 not a new Registry source. No Tool, Adapter, availability, planner metadata,
 validation level or scientific authority changes; Phase 11's mapping-only Tool
 coverage and V4=0 remain intact.
+
+Phase 13-0 Registry reconciliation passed exact-SHA CI `31451202923` with live,
+documented and release-matrix counts all equal to 62. Phase 13-0 changed no Tool,
+version, Adapter binding, availability or validation level.

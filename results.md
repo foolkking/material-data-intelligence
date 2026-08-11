@@ -10046,3 +10046,326 @@ PHASE13_EXECUTABLE_TASK_CREATED = NO
 PHASE14_CREATED = NO
 INITIAL_RELEASE_COMPLETE = NO
 ```
+
+# Phase 13-0 Final Fact Alignment + Release Scope Seal Result
+
+## 1. Conclusion
+`PASS / FINAL_FACTS_ALIGNED / INITIAL_RELEASE_SCOPE_SEALED / COMPLETION_RECORDED`. Phase 13-0 changes no production or scientific behavior. The seven final demonstrations are precisely contracted but not executed.
+
+## 2. Phase 12 Baseline
+Phase 12 is `COMPLETE / PRODUCT_EXPERIENCE_REDESIGN_VALIDATED_AND_SEALED`; baseline `29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4` regenerated deterministically.
+
+## 3. Entry Gate
+Entry baseline `69d53376b188a20db2c3cc2c28824afb5971621d`, master, clean worktree, empty queue, and absent Phase 13-1/13-2/14 tasks were verified before admission.
+
+## 4. Repository State
+Phase 12-7 implementation `8fb5dcbe54fbbcd32677107abb5f4117bd04948d`, CI `31397995499`, completion `a369bf26aca1b11522aed97e5baa1fa9017d673e`, archive `69d53376b188a20db2c3cc2c28824afb5971621d` resolve and are ancestors.
+
+## 5. Phase 13 Handoff Integrity
+The unique Phase 13 final-product-closure handoff resolves to the Phase 11 and Phase 12 sealed authorities and exactly seven demo families.
+
+## 6. Phase 11 Scientific Authority
+`COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS`; baseline `5273b5e866e950c592fe757c2e7bde2d4ede9551f7eb406d0744bb6dcf7d93cb` remains read-only.
+
+## 7. Phase 12 Product Experience Authority
+Acceptance `68/68`, journeys `11/11`, UX problems `10/10 closed`; no Phase 12 baseline mutation occurred.
+
+## 8. Registry Reconciliation
+Live Registry, documented inventory and release matrix each contain 62 unique versioned Tools, assigned exactly once.
+
+## 9. DataProfile / Analysis Contract Baseline
+DataProfile `2.4`, AnalysisIntent `1.0`, EligibilityResolution `1.0`, AnalysisPlan `0.1/0.2`, migration `0007_phase10m1_workspace_domain`.
+
+## 10. Input Support Matrix
+The sealed 14-row Phase 11 matrix is retained with zero support promotions: 10 direct-supported rows, one mapping-only row and three unsupported rows.
+
+## 11. Tool / Capability Matrix
+Twenty-six release-relevant capability families reconcile all 62 Tools plus product-composition authorities.
+
+## 12. Product Support
+Product support remains independent from scientific validation, reproducibility and presentation evidence.
+
+## 13. Scientific Validation
+Golden records `12`: `8 PASS_INVARIANT`, `4 NOT_APPLICABLE`, `0 failures`; V4 promotions remain `0`.
+
+## 14. Cross-Platform Reproducibility
+Locked Linux and Windows invariant replay PASS; numeric cross-platform reference validation remains `NOT_APPLICABLE`; macOS is not a current scientific release target.
+
+## 15. Presentation Validation
+Chromium, Firefox, WebKit and Chromium `390x844` PASS as presentation authority only.
+
+## 16. Initial Release Product Positioning
+`Material Data Intelligence and Scientific Visualization Platform`, not a generic AI wrapper.
+
+## 17. Initial Release Capability Claims
+Claims cover bounded natural-language planning, deterministic registered execution, persisted Artifacts, Workspace, Evidence, Report and non-executable Recipe.
+
+## 18. Forbidden Claims
+Forbidden wording includes all-tools independent validation, all-numeric cross-platform validation, formal WCAG certification, autonomous research, arbitrary workflows, DFT/GW execution, Rietveld refinement and executable Recipes.
+
+## 19. Known Limitations
+Six explicit limitations retain V4=0, cross-platform numeric N/A, macOS scope, accessibility certification boundary, bounded 3D alternatives, and mapping-only input/example coverage.
+
+## 20. Future Scope
+Advanced diffraction, electronic, topology, defect, trajectory and transport families remain documented and unqueued.
+
+## 21. Not Planned Scope
+Arbitrary DAG/code/notebook execution, runtime replanning, RAG, marketplace, SaaS/billing/enterprise infrastructure and unrestricted providers remain Not Planned.
+
+## 22. Provider Policy
+Real provider is DeepSeek only at `https://api.deepseek.com`, models `deepseek-v4-flash` and `deepseek-v4-pro`, key source `DEEPSEEK_KEY`; Phase 13-0 made zero real calls.
+
+## 23. Security Boundary
+Artifacts and Recipes remain inert; no arbitrary Python, shell, notebook, HTML/JS, filesystem, network or remote Artifact execution authority was added.
+
+## 24. Accessibility / Browser / Platform Claims
+Accessibility engineering target and tested browser set may be stated; formal certification and universal platform/browser claims are prohibited.
+
+## 25. Release Gap Registry
+Three classified rows: two nonblocking limitations and one planned Phase 13-2 evidence gap; unclassified rows `0`.
+
+## 26. Release Blockers
+`RELEASE_BLOCKERS = 0`; `RELEASE_CRITICAL_INTEGRATION_GAPS = 0`.
+
+## 27. Nonblocking Limitations
+Two grouped nonblocking release-gap records remain disclosure-owned; the seven-demo execution evidence gap is P2 and owned by 13-2.
+
+## 28. Seven Demo Registry
+Exactly seven `REAL_USER_ENTRY_E2E` contracts are sealed; extra `0`, missing `0`, executed `0`, PASS claims `0`.
+
+## 29. Demo 1 Contract
+Dataset Intelligence + Composition Space, retained checksummed tabular fixture, natural-language entry, real Runtime/persistence.
+
+## 30. Demo 2 Contract
+Materials ML with retained checksummed dataset fixture and persisted model/evaluation products.
+
+## 31. Demo 3 Contract
+Structure + coordination + local environment + polyhedra + experimental XRD with retained structure/XRD fixtures.
+
+## 32. Demo 4 Contract
+Trajectory + RDF + MSD + diffusion with retained boundary-aware trajectory fixture.
+
+## 33. Demo 5 Contract
+Phonon + Brillouin Zone with retained phonon/structure fixtures and explicit mapping boundaries.
+
+## 34. Demo 6 Contract
+Volumetric with retained checksummed grid fixture and presentation-only WebGL authority.
+
+## 35. Demo 7 Contract
+Electronic Band + DOS with supplied electronic fixtures; no DFT/GW platform claim.
+
+## 36. Real User Simulation Contract
+Normal flow uses user-facing UI, roles, accessible names and visible semantics; internal identities are read only after flow for lineage audit.
+
+## 37. Canonical Scientist Persona
+Supported data, reasonable scientific question, no Tool-ID knowledge, result plus limitations expected.
+
+## 38. Imperfect / Exploratory Persona
+Ambiguity, limited/unsupported data, back navigation, refresh/recovery, partial execution and limitation inspection are required.
+
+## 39. Negative Path Registry
+Ambiguous Intent, unsupported capability/input, partial execution, stale recovery, provider failure and limitation-bearing Report are sealed.
+
+## 40. No-Handcrafted-Injection Policy
+Plan, Job, ToolCall, Artifact, Workspace, Finding, Evidence, Report and Recipe injection counts are all zero.
+
+## 41. Persistence / Runtime Requirements
+Real PostgreSQL, Redis, MinIO, queue/worker Runtime, registered Adapter execution, persisted Artifact and Workspace-from-real-Job are mandatory.
+
+## 42. Provider Mode Requirements
+Deterministic provider replay is release authority; one future bounded live case allows at most two calls, 60-second timeout and zero retries.
+
+## 43. Fixture Registry
+Eleven retained fixture records cover all seven demos; missing `0`, checksum mismatch `0`, external downloads `0`.
+
+## 44. Fixture License / Checksum Integrity
+Fixtures retain repository provenance/license dispositions and cross-platform-stable text checksums; binary checksums remain byte-exact.
+
+## 45. Natural-Language Prompt Registry
+Each demo has one canonical user prompt and one bounded paraphrase without Tool IDs or schema syntax.
+
+## 46. Clarification Expectations
+Applicable clarification is user-visible, bounded to two rounds and cannot be bypassed by resolved-Intent injection.
+
+## 47. Eligibility Expectations
+Tests assert capability family and acceptable Registry outcomes; they do not pass Tool IDs directly.
+
+## 48. Plan Expectations
+Required semantic steps accept AnalysisPlan `0.1/0.2`; handcrafted Plan injection is prohibited.
+
+## 49. Artifact / Workspace Expectations
+Exact Artifact kinds and lineage drive one Workspace per real Job; filename, display label, array position and latest-binding authority remain zero.
+
+## 50. Interpretation / Finding Expectations
+Grounded interpretation and Finding/Evidence are required only where current persisted contracts apply.
+
+## 51. Report / Recipe Expectations
+Reports compose persisted facts; Recipes are exact declarative manifests with execution authority `NONE`.
+
+## 52. Phase 13 Acceptance Registry
+Fifty-six unique IDs are sealed, eight per Phase 13-0 through 13-6; `P13X0-A01..A08 = 8/8`.
+
+## 53. Phase 13 Evidence Contract
+User-entry, Profile, Intent, Plan, Runtime, Artifact, Workspace, evidence, identity, persistence and presentation axes remain independent.
+
+## 54. Phase 13 Lifecycle Contract
+Implementation exact-SHA CI is required; completion and archive are direct pushes without separate CI waits; failed candidates are retained.
+
+## 55. Initial Release Fact Model
+`SEALED`; semantic hash `e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06`.
+
+## 56. Initial Release Scope Baseline
+`SEALED`; semantic hash `8e8b4f659888635192d259eee90f3befdd655cacb292a78c5e13c20a5fdabdde`.
+
+## 57. Baseline Determinism
+PASS locally and in Linux CI after canonical JSON hashing and normalized text-fixture identity.
+
+## 58. Release Scope Drift Audit
+`NONE`; capability, validation, input support, scientific semantics and public claims received zero promotion.
+
+## 59. Phase 13-1 Handoff
+`ZERO_GAP_VERIFICATION_CLOSURE`; reviewer-gated, no executable task created.
+
+## 60. Phase 13-2 Contract Preview
+Contract ready `YES`; execution ready and demo PASS remain `NO` until the Phase 13-1 reviewer gate.
+
+## 61. Backend Baseline Regression
+Local full suite: `1320 passed`, 50 service-marked skips; implementation CI Unit Tests PASS.
+
+## 62. Frontend Baseline Regression
+`455 passed`; no frontend production behavior changed.
+
+## 63. Typecheck / Build / Lock / Diff
+Typecheck, production build, `uv lock --check` and `git diff --check` PASS; lockfile changes `0`.
+
+## 64. Service Integration
+PostgreSQL + Redis + MinIO required integration job PASS with zero skipped service tests in CI.
+
+## 65. Linux / Windows Replay
+Both sealed invariant replay jobs PASS.
+
+## 66. Browser Smoke
+Chromium, Firefox, WebKit and `390x844` retained matrix PASS; seven Phase 13 demos were not executed.
+
+## 67. Security / Secret Scan
+Security and secret scan PASS; external downloads, external scientific APIs and real LLM calls `0`.
+
+## 68. Evidence Manifest
+41 deterministic members; missing `0`, extra `0`, hash mismatch `0`, unclassified `0`; implementation CI `31451202923 PASS`.
+
+## 69. Files Changed
+Only docs, persistent state, TASK queue, audit generator/tests and CI evidence placement changed; production source and lockfiles did not.
+
+## 70. Implementation/Audit Commit
+Authoritative implementation: `6217d042d0190c43144e402e4479aa9810b8e9d0`.
+
+## 71. Implementation Exact-SHA CI
+Run `31451202923` PASS: Unit, Frontend/browser/build, PostgreSQL/Redis/MinIO, Linux replay and Windows replay all success.
+
+## 72. Failed Candidates
+`c26815289b239c1169b344ac02707cd737b0b9e5` / `31449685832`: platform-specific CRLF/LF semantic hash. `0692864ff3981b0e2ee75d5ac88ee2a438da90b6` / `31450249072`: Python audit generator incorrectly placed in Node-only frontend job. Both are historical-only and fixed forward.
+
+## 73. Completion Record
+`COMPLETION_RECORDED`; this commit is pushed directly without waiting for completion-record CI.
+
+## 74. Queue Archive
+The next direct commit removes only the completed Phase 13-0 task; no archive CI wait is authorized.
+
+## 75. Queue State
+After archive: `TASK_BLOCK_COUNT = 0`; Phase 13-1 and Phase 13-2 executable tasks absent.
+
+## 76. Phase 13-1 Reviewer Gate
+`REVIEWER_GATE / AWAITING REVIEWER PROMPT`; blocker count `0`, critical integration-gap count `0`.
+
+## 77. Final Repository State
+After direct archive push: master, HEAD equals origin/master, clean worktree, Initial Release not complete, Phase 14 absent.
+
+```text
+PHASE_13_0 = PASS
+PHASE_13 = IN_PROGRESS / RELEASE_SCOPE_SEALED
+INITIAL_RELEASE_FACT_MODEL = SEALED
+INITIAL_RELEASE_SCOPE_BASELINE = SEALED
+INITIAL_RELEASE_SCOPE_BASELINE_DETERMINISM = PASS
+INITIAL_RELEASE_SCOPE_BASELINE_HASH = 8e8b4f659888635192d259eee90f3befdd655cacb292a78c5e13c20a5fdabdde
+REGISTRY = 62
+DATAPROFILE = 2.4
+MIGRATION = 0007_phase10m1_workspace_domain
+PHASE12_PRODUCT_EXPERIENCE_BASELINE_HASH = 29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4
+PHASE12_BASELINE_MUTATION_BY_13_0 = 0
+PHASE13_0_PRODUCTION_CODE_CHANGES = 0
+PHASE13_0_BACKEND_BEHAVIOR_CHANGES = 0
+PHASE13_0_FRONTEND_BEHAVIOR_CHANGES = 0
+PHASE13_0_SCIENTIFIC_BEHAVIOR_CHANGES = 0
+PHASE13_0_NEW_SCIENTIFIC_TOOLS = 0
+PHASE13_0_NEW_SCIENTIFIC_ALGORITHMS = 0
+PHASE13_0_NEW_ARTIFACT_FAMILIES = 0
+PHASE13_0_NEW_DATAPROFILE_VERSION = 0
+PHASE13_0_NEW_ANALYSISPLAN_VERSION = 0
+PHASE13_0_NEW_DATABASE_MIGRATIONS = 0
+PHASE13_0_NEW_PUBLIC_API_FAMILIES = 0
+PHASE13_0_NEW_DEPENDENCIES = 0
+PHASE13_0_LOCKFILE_CHANGES = 0
+PHASE13_0_NEW_LLM_CALL_SITES = 0
+PHASE13_0_REAL_LLM_CALLS = 0
+PHASE13_0_FRONTEND_SCIENTIFIC_RECOMPUTATION = 0
+REGISTRY_BEFORE_13_0 = 62
+REGISTRY_AFTER_13_0 = 62
+DATAPROFILE_BEFORE_13_0 = 2.4
+DATAPROFILE_AFTER_13_0 = 2.4
+MIGRATION_BEFORE_13_0 = 0007_phase10m1_workspace_domain
+MIGRATION_AFTER_13_0 = 0007_phase10m1_workspace_domain
+V4_BEFORE_13_0 = 0
+V4_AFTER_13_0 = 0
+INITIAL_RELEASE_CAPABILITY_MATRIX = SEALED
+INITIAL_RELEASE_CLAIM_REGISTRY = SEALED
+INITIAL_RELEASE_LIMITATION_REGISTRY = SEALED
+INITIAL_RELEASE_FUTURE_SCOPE_REGISTRY = SEALED
+INITIAL_RELEASE_NOT_PLANNED_REGISTRY = SEALED
+PHASE13_RELEASE_GAP_REGISTRY = SEALED
+PHASE13_SEVEN_DEMO_REGISTRY = SEALED
+PHASE13_ACCEPTANCE_REGISTRY = SEALED
+PHASE13_DEMO_FAMILIES = 7
+REAL_USER_ENTRY_E2E_REQUIRED = YES
+HANDCRAFTED_PLAN_INJECTION = 0
+HANDCRAFTED_JOB_INJECTION = 0
+HANDCRAFTED_TOOLCALL_INJECTION = 0
+HANDCRAFTED_ARTIFACT_INJECTION = 0
+HANDCRAFTED_WORKSPACE_INJECTION = 0
+HANDCRAFTED_FINDING_INJECTION = 0
+HANDCRAFTED_EVIDENCE_INJECTION = 0
+HANDCRAFTED_REPORT_INJECTION = 0
+HANDCRAFTED_RECIPE_INJECTION = 0
+REAL_PERSISTENCE_REQUIRED = YES
+REAL_RUNTIME_REQUIRED = YES
+REGISTERED_ADAPTER_EXECUTION_REQUIRED = YES
+WORKSPACE_FROM_REAL_JOB_REQUIRED = YES
+REPORT_FROM_REAL_PERSISTED_FACTS_REQUIRED = YES
+CANONICAL_SCIENTIST_PERSONA = SEALED
+IMPERFECT_EXPLORATORY_PERSONA = SEALED
+NEGATIVE_PATH_REGISTRY = SEALED
+NATURAL_LANGUAGE_ENTRY_REQUIRED = YES_WHERE_PRODUCT_CONTRACT_APPLIES
+RELEASE_BLOCKERS = 0
+RELEASE_CRITICAL_INTEGRATION_GAPS = 0
+NONBLOCKING_LIMITATIONS = 2
+UNCLASSIFIED_RELEASE_GAPS = 0
+PHASE13_2_DEMOS_EXECUTED = 0
+PHASE13_2_DEMO_PASS_CLAIMS = 0
+SUPPORTED_EQUALS_VALIDATED = NO
+E2E_PASS_EQUALS_REFERENCE_VALIDATED = NO
+REPORT_INCLUDED_EQUALS_VALIDATED = NO
+RECIPE_EXISTS_EQUALS_REPRODUCIBILITY_VALIDATED = NO
+BROWSER_PASS_EQUALS_SCIENTIFIC_PASS = NO
+SERVICE_PASS_EQUALS_SCIENTIFIC_PASS = NO
+ACCESSIBILITY_PASS_EQUALS_SCIENTIFIC_PASS = NO
+FRONTEND_SCIENTIFIC_AUTHORITY = NONE
+SCREENSHOT_NUMERIC_SCIENTIFIC_AUTHORITY = NONE
+P13X0_ACCEPTANCE = 8/8
+PHASE13_ACCEPTANCE_REGISTRY_EXPECTED_TOTAL = 56
+IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI
+COMPLETION_RECORDED
+INITIAL_RELEASE_COMPLETE = NO
+PHASE_13_1 = REVIEWER_GATE / AWAITING REVIEWER PROMPT
+PHASE13_1_EXECUTABLE_TASK_CREATED = NO
+PHASE13_2_EXECUTABLE_TASK_CREATED = NO
+PHASE14_CREATED = NO
+```

@@ -154,9 +154,10 @@ REPORT_RECIPE_EXPERIENCE_IMPLEMENTED`. Phase 12-6 is `COMPLETE /
 RESPONSIVE_MOBILE_ACCESSIBILITY_CLOSED`; Phase 12-7 is `COMPLETE /
 CROSS_PRODUCT_UX_VALIDATED / DESIGN_EVIDENCE_SEALED`. Phase 12 is `COMPLETE /
 PRODUCT_EXPERIENCE_REDESIGN_VALIDATED_AND_SEALED`. Phase 13 is `IN_PROGRESS /
-RELEASE_SCOPE_SEAL_AWAITING_IMPLEMENTATION_CI`; Phase 13-0 is the sole active
-audit task. Phase 13-1 is `REVIEWER_GATE / NOT_QUEUED`, Phase 13-2 is not
-executable, Initial Release is not complete, and no Phase 14 is created. Phase 12-6
+RELEASE_SCOPE_SEALED`; Phase 13-0 is `COMPLETE / FINAL_FACTS_ALIGNED /
+INITIAL_RELEASE_SCOPE_SEALED`. Phase 13-1 is `REVIEWER_GATE / AWAITING REVIEWER
+PROMPT`, Phase 13-2 is not queued or executable, Initial Release is not complete,
+and no Phase 14 is created. Phase 12-6
 changes responsive and accessibility presentation only; persisted
 claim/evidence, scientific and Workspace authority remain unchanged. The
 former Phase 12 final-closure numbering is superseded by the approved Phase 12

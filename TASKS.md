@@ -1,6 +1,6 @@
 
 ---TASK---
- 状态：处理中
+ 状态：已完成
 
 # Phase 13-0 Reviewer Prompt
 
@@ -5496,5 +5496,15 @@ TASK_BLOCK_COUNT = 0
 
 PHASE14_CREATED = NO
 ```
+
+完成时间：2026-08-11T10:21:29+08:00
+
+修改文件：`.github/workflows/ci.yml`、`scripts/generate_phase13_0_release_scope.py`、`tests/test_phase13_0_release_scope.py`、`docs/phase13/`、`docs/ROADMAP.md`、`docs/index.md`、`persistent/*.md`、queue compatibility tests、`TASKS.md`、`results.md`。
+
+修改摘要：完成 Phase 13-0 最终事实对齐、62 Tool release capability reconciliation、14-row input snapshot、Initial Release claims/limitations/Future/Not Planned registries、七个 real-user E2E contract、fixture/checksum registry、no-injection/runtime/provider policy、56 acceptance IDs、deterministic fact model/scope baseline及13-1 zero-gap handoff；生产代码、科学行为、API、数据库、依赖和 LLM 调用均未改变。
+
+测试结果：backend `1320 passed`（本地完整套件）；frontend `455 passed`；focused Phase 13/queue tests `16 passed`；typecheck/build/uv lock/git diff/browser smoke/secret scan PASS；npm audit 因 configured mirror `NOT_IMPLEMENTED` 记录为 `UNAVAILABLE`；implementation exact-SHA CI `31451202923` 对 commit `6217d042d0190c43144e402e4479aa9810b8e9d0` 全部 required jobs success。
+
+提交/CI：failed candidates `c26815289b239c1169b344ac02707cd737b0b9e5` / `31449685832`（cross-platform hash）与 `0692864ff3981b0e2ee75d5ac88ee2a438da90b6` / `31450249072`（audit step environment）保留；fix-forward implementation `6217d042d0190c43144e402e4479aa9810b8e9d0` / `31451202923` PASS；completion与queue archive按批准 lifecycle直接提交/推送且不等待额外CI。
 
 ---END---
