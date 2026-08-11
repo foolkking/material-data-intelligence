@@ -1,0 +1,105 @@
+{
+  "entries": [
+    {
+      "bytes": 264,
+      "path": "acceptance_results.json",
+      "sha256": "91228540e67fce6dd7bac4e7c3e286624483d95ade8227a7a12f1af8c9b0f1c2",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 215,
+      "path": "attempt_chain.json",
+      "sha256": "634c259b772ca802edf5e181270fc5f0e5729d1687c838367ee33ddc4c4a9459",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 232,
+      "path": "baseline.txt",
+      "sha256": "4ea2908ae2fe54ddee1c87b3fd7d9680e4dbe63af70430146dcb564b3896292c",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 321,
+      "path": "baseline_verification.json",
+      "sha256": "1de2f11bad2851b4485051129e8bd98df9ae0faf5e18f00c2f81b91123a44494",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 331,
+      "path": "browser_matrix.json",
+      "sha256": "8b4d195eea305d566db49fd3af0a1a84f66ec56bea8df73fbd8361d41e928575",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 271,
+      "path": "demo_execution_aggregate.json",
+      "sha256": "31faab3ebb75e449ba41ce4c7d90a81f23350a18e66ae509831e94734825c43d",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 137,
+      "path": "entry_gate.md",
+      "sha256": "589acade50d3ff96000ed28782870001e25489e357711ae8dec55bb1a2544e42",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 118,
+      "path": "negative_path_aggregate.json",
+      "sha256": "ff2fc02cc5d47ee1b189ef2f4b0bcb9bf971e82cc37bc220be0a9bffe134468b",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 361,
+      "path": "no_injection_audit.json",
+      "sha256": "d241ba7fdd3ebf2451c194c93182dd50b5440a4854066da11fa5b32bfd52e2ad",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 1745,
+      "path": "release_finding_registry.json",
+      "sha256": "7504a31fda1dc0eaeaed57d5e3b4ee6c46dc54ed5e9c384b989e9ab54b1b5a2d",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 375,
+      "path": "remediation_dependency.json",
+      "sha256": "bef27f0ee2f9cc3ba429fcdb0b5db9ac12dbe86624a586c5277f06563350b9e1",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 9117,
+      "path": "runtime_preflight.json",
+      "sha256": "907f96f908cae53389982b9ece2dec4a914b4fc3407927cea9efef0bcae81e1d",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 291,
+      "path": "scientific_authority_nonchange.json",
+      "sha256": "f0647d15d35578a369a29a1d43b4fe6fc582c39f51b2848a11703b4adead4566",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 59,
+      "path": "secret_scan.txt",
+      "sha256": "36af9553e92a2e42fdc2702a7297cc72ea8d7480da8e7fdd064a1b0fb654c064",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 119,
+      "path": "security.md",
+      "sha256": "164bb8cdf0b69be1312de8ed4ff21547df867537b50e7039378a65a2bd2938a2",
+      "textNormalization": "LF"
+    },
+    {
+      "bytes": 252,
+      "path": "service_environment.json",
+      "sha256": "73c3fa480057f5123ea51564a847e441dd8d65259b0e5d3fcce5d5f661dfd25c",
+      "textNormalization": "LF"
+    }
+  ],
+  "hashMismatch": 0,
+  "missing": 0,
+  "phaseStatus": "FAILED_RERUN",
+  "releaseCriticalIntegrationDefects": 3,
+  "unclassified": 0
+}

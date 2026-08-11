@@ -1,0 +1,7 @@
+{
+  "localMinIO": "ISOLATED_INSTANCE_REACHABLE",
+  "localPostgreSQL": "ISOLATED_INSTANCE_REACHABLE",
+  "localRedis": "REACHABLE",
+  "reason": "Defect-discovery stop rule triggered before service-backed full rerun.",
+  "usedAsFullE2eAuthority": false
+}

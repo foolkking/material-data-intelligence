@@ -2253,3 +2253,10 @@ persistence counters remain zero. Negative Future Scope, unsupported input,
 stale binding/profile and second-round clarification controls pass. No Phase
 13-2 demonstration has been rerun; completion is recorded and the fix-forward
 queue block is directly archived while the failed Phase 13-2 block remains.
+
+The authorized Phase 13-2 rerun stopped during fresh seven-family runtime
+preflight. Three new P0 product integration findings are retained as
+`P13-RR-001..003`: missing exact runtime object-store bindings for parsed
+phonon/electronic resources and an XRD wavelength authority mismatch. Full
+service-backed demos remain unexecuted (`0/7`), `P13X2=0/8`, and no production
+or scientific code was changed.

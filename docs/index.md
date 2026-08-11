@@ -786,3 +786,6 @@ and
 | [`phase13/phase13_canonical_product_entry_slice_contract.md`](phase13/phase13_canonical_product_entry_slice_contract.md) | Permanent pre-Job parser-to-validated-Plan release gate |
 | [`phase13/phase13_2_rerun_handoff.md`](phase13/phase13_2_rerun_handoff.md) | Reviewer-gated full E2E rerun contract; no executable task |
 | [`phase13/evidence/phase13_1_product_entry_fix_forward/`](phase13/evidence/phase13_1_product_entry_fix_forward/) | RF-001..004 closure, 7/7 entry-slice, hash and security evidence |
+| [`phase13/phase13_2_real_user_e2e_rerun_failure.md`](phase13/phase13_2_real_user_e2e_rerun_failure.md) | Attempt-2 stop result and current release state |
+| [`phase13/phase13_2_rerun_release_findings.md`](phase13/phase13_2_rerun_release_findings.md) | P13-RR-001..003 release-critical findings |
+| [`phase13/evidence/phase13_2_seven_real_user_e2e_rerun/`](phase13/evidence/phase13_2_seven_real_user_e2e_rerun/) | Fresh runtime preflight, attempt chain and failed-rerun evidence |

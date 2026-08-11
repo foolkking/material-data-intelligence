@@ -4646,3 +4646,9 @@ not scientific runtime identity.
 - The Fact Model remains `e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06`.
   Scope baseline `caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`
   supersedes the historical prompt/fixture baseline for release governance only.
+## Phase 13-2 Rerun Stop Decision
+
+The Level-D rerun must stop when a fresh production-runtime preflight exposes a
+release-critical defect. Phase 13-2 cannot patch production and rerun in place.
+Runtime preflight evidence is diagnostic, not a full real-user E2E PASS, and
+does not upgrade product support or scientific validation.

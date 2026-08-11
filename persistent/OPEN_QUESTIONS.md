@@ -1292,3 +1292,7 @@ is the only remaining work.
   SHA CI `31493208538` passed and the direct queue archive is complete. The next
   reviewer decision is whether to authorize Phase 13-2 to rerun all seven real-user
   demonstrations from scratch.
+## Phase 13-2 Rerun Blockers
+
+- What reviewer-authorized phase will close `P13-RR-001` and `P13-RR-002`, the exact object-store binding gaps for parsed phonon and electronic resources?
+- Should `P13-RR-003` be resolved by an existing XRD parameter-binding path or by a demo-contract fixture correction that preserves input-support and scientific authority?

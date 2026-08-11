@@ -55,6 +55,11 @@ jobs:
       - name: Phase 13-1 product-entry fix-forward evidence
         run: uv run python scripts/generate_phase13_1_product_entry_fix_forward.py
 
+      - name: Phase 13-2 full-rerun failure evidence
+        run: |
+          uv run python scripts/generate_phase13_2_rerun_failure_evidence.py
+          uv run python -m pytest -q tests/test_phase13_2_rerun_failure_evidence.py --tb=short
+
       - name: uv lock check
         run: uv lock --check
 

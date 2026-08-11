@@ -569,3 +569,9 @@ Implementation `2e47263ac3042663cf901a7fcb8f44e203143e2e` passed exact-SHA CI
 `31493208538`; completion is recorded and the queue archive is complete. Phase 13-2
 remains failed historical, unexecuted and separately reviewer-gated. The
 fix-forward queue block is now archived; the failed Phase 13-2 block is retained.
+## Phase 13-2 Rerun Status
+
+The second Phase 13-2 attempt is blocked by three newly observed release-critical
+product integration defects during fresh runtime preflight. Full seven-demo
+service/browser execution has not occurred, Initial Release is not complete,
+and Phase 13-3 remains blocked.

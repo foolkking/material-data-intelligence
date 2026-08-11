@@ -2588,3 +2588,10 @@ current board above.
 - [x] Verify remediation implementation `2e47263ac3042663cf901a7fcb8f44e203143e2e`
   by exact-SHA CI `31493208538` and record completion.
 - [x] Archive only this fix-forward task while retaining the failed Phase 13-2 block.
+## Phase 13-2 Rerun
+
+The authorized full rerun is stopping as `FAILED_RERUN /
+REVIEWER_ACTION_REQUIRED`. Fresh runtime preflight found `P13-RR-001..003`
+before service-backed/browser execution. The active rerun block remains in
+`TASKS.md` until failure evidence exact-SHA CI is recorded; the historical
+failed attempt remains retained.

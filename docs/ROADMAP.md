@@ -223,3 +223,12 @@ those defects at Levels A/B/C, but this is not Level D full E2E execution:
 separate reviewer prompt. Phase 13-3 and Phase 14 are not queued.
 Phase 13 is `IN_PROGRESS / PRODUCT_ENTRY_GAPS_REMEDIATED /
 READY_FOR_PHASE13_2_RERUN_REVIEW`; Initial Release remains incomplete.
+
+The reviewer-authorized Phase 13-2 full rerun passed the remediated product-entry
+gate but stopped at fresh runtime preflight. `P13-RR-001` and `P13-RR-002`
+show that parsed phonon and electronic resource IDs are not exposed by the
+production object-store builder; `P13-RR-003` shows that Demo 3's sealed
+experimental wavelength is incompatible with the real theoretical XRD result.
+Attempt 2 is `FAILED_RERUN / REVIEWER_ACTION_REQUIRED`, full service-backed
+demos remain `0/7`, and `P13X2` remains `0/8`. Phase 13-3 is blocked. No
+production or scientific change was made during this rerun.

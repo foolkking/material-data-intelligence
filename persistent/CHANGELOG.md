@@ -2656,3 +2656,9 @@ directly afterward. Phase 12-2 remains reviewer-gated.
   CI `31493208538`, including Unit, browser/build, Linux/Windows replay and
   PostgreSQL/Redis/MinIO integration. Completion is recorded and the fix-forward
   queue block is directly archived; failed Phase 13-2 history is retained.
+## 2026-08-11 - Phase 13-2 rerun failure evidence
+
+- Added independent attempt-2 evidence without overwriting the original failed attempt.
+- Recorded three release-critical product integration findings (`P13-RR-001..003`).
+- Added deterministic governance checks for the attempt chain, hashes, no-injection policy and evidence manifest.
+- Made no production, scientific, schema, API, dependency or provider change.

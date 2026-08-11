@@ -1,0 +1,7 @@
+{
+  "demoPassOrExplicitLimit": "0/7",
+  "freshRuntimePreflights": 7,
+  "phase13DemoFamilies": 7,
+  "phase13_2DemosExecuted": 0,
+  "reason": "Full service-backed/browser execution stopped when fresh runtime preflight exposed three release-critical integration defects."
+}

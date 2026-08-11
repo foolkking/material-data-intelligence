@@ -1,0 +1,15 @@
+{
+  "handcraftedAnalysisPlan": 0,
+  "handcraftedArtifact": 0,
+  "handcraftedEligibility": 0,
+  "handcraftedEvidence": 0,
+  "handcraftedFinding": 0,
+  "handcraftedIntent": 0,
+  "handcraftedInterpretation": 0,
+  "handcraftedJob": 0,
+  "handcraftedRecipe": 0,
+  "handcraftedReport": 0,
+  "handcraftedToolCall": 0,
+  "handcraftedWorkspace": 0,
+  "status": "PASS"
+}

@@ -1627,3 +1627,8 @@ version, Adapter binding, availability or validation level.
 - Canonical Demo 3 composes existing CrystalNN/local-polyhedra and XRD comparison
   dependency chains. Demo 5 composes existing phonon and BZ Tools. Demo 7 selects
   the existing Band and DOS Tools. None is a support or scientific promotion.
+## Phase 13-2 Rerun Integrity
+
+Registry remains `62`. The rerun findings concern product object-store/input
+binding and XRD parameter authority; no Tool manifest, Adapter scientific
+behavior, validation level or Registry membership changed.

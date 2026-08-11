@@ -1,4 +1,20 @@
 ---TASK---
+ 状态：处理中
+
+# Phase 13-2 Seven Canonical Real-User E2E Demonstrations Full Rerun
+
+Reviewer-authorized full rerun after Phase 13-1 product-entry remediation.
+Freshly execute all seven canonical demos through real user entry, natural-
+language Intent, Eligibility, Planner, validated Plan, PostgreSQL/Redis/MinIO,
+real queue/worker Runtime, registered Adapters, persisted Artifacts, Workspace,
+applicable Finding/Evidence/Provenance and Report/Recipe. Preserve the original
+failed attempt as historical evidence; use current Scope hash
+`caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`.
+No production/scientific/dependency/schema/API/LLM-call-site change is authorized.
+
+---END---
+
+---TASK---
  状态：失败
 
 # Phase 13-2 Reviewer Prompt
