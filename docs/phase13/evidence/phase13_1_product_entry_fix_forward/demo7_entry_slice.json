@@ -1,0 +1,74 @@
+{
+  "demoId": "P13-DEMO-07",
+  "eligibilityResolutionHash": "d6f94bfeca52ef78676f8846aa1660e577da170f16e7919b51f5dc760b228b47",
+  "eligibilityResolutionId": "resolution_d6f94bfeca52ef78676f8846",
+  "eligibleToolCount": 2,
+  "entrySliceOnly": true,
+  "expectedTools": [
+    "electronic.band_structure",
+    "electronic.dos"
+  ],
+  "family": "Electronic Band + DOS",
+  "fixtures": [
+    {
+      "detectedFormat": "json_limited",
+      "entryMode": "parse",
+      "fixtureId": "P13-DEMO-07-FIX-01",
+      "objectHashes": [
+        "5626a7644201255297d1832220fad1dcb1e9ec01e683e28c4c9300320cee9a9d"
+      ],
+      "objectIds": [
+        "obj_electronic_band_5626a7644201"
+      ],
+      "objectTypes": [
+        "ElectronicBand"
+      ],
+      "parseStatus": "success",
+      "path": "docs/phase10n/evidence/phase10n5_electronic_band_dos/electronic_resource_contracts/band.json"
+    },
+    {
+      "detectedFormat": "json_limited",
+      "entryMode": "parse",
+      "fixtureId": "P13-DEMO-07-FIX-02",
+      "objectHashes": [
+        "7b5afc1a3e8db985eacde4f483eabbd8aae1585830f0380e3c7a0738a1ecbfe5"
+      ],
+      "objectIds": [
+        "obj_electronic_dos_7b5afc1a3e8d"
+      ],
+      "objectTypes": [
+        "ElectronicDos"
+      ],
+      "parseStatus": "success",
+      "path": "docs/phase10n/evidence/phase10n5_electronic_band_dos/electronic_resource_contracts/dos.json"
+    }
+  ],
+  "fullE2eExecuted": false,
+  "intentHash": "2e81e030f69a7f139151cdecd8cba84063cd495981ea9eaf8e93cf2d35ab1446",
+  "intentId": "intent_2e81e030f69a7f139151cdec",
+  "intentOutcome": "READY",
+  "planSchemaVersion": "0.1",
+  "planSemanticHash": null,
+  "planValidated": true,
+  "planValidationErrors": [],
+  "planningOutcome": "PLAN_READY",
+  "profileContractVersion": "2.4",
+  "profileSemanticHash": "7e087858f1d37ae7c63ab971f0a17064c1e63a13851f8cacecaec74fd5d7c281",
+  "prompt": "Inspect the supplied electronic band structure and DOS, including gap, spin, projection and compatibility limitations.",
+  "ready": true,
+  "requiredCapabilityNeeds": [
+    "electronic_resource"
+  ],
+  "scientificIntents": [
+    "electronic_structure_analysis"
+  ],
+  "selectedResourceAuthority": "ACTUAL_PARSER_OUTPUT_FROM_USER_SELECTED_DATA",
+  "selectedResourceIds": [
+    "obj_electronic_band_5626a7644201",
+    "obj_electronic_dos_7b5afc1a3e8d"
+  ],
+  "selectedTools": [
+    "electronic.band_structure",
+    "electronic.dos"
+  ]
+}

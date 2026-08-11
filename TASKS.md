@@ -1,4 +1,26 @@
 ---TASK---
+ 状态：处理中
+
+# Phase 13-1 Release-Critical Product-Entry Fix-Forward
+
+由 Phase 13-2 real-user entry evidence 触发，关闭且只关闭：
+
+```text
+P13-RF-001 profile/planner compatibility drift
+P13-RF-002 XRD user-input authority conflict
+P13-RF-003 phonon/BZ intent coverage gap
+P13-RF-004 volumetric canonical prompt mismatch
+```
+
+必须建立永久 `CANONICAL_PRODUCT_ENTRY_SLICE_GATE`，要求七个 sealed demo
+均通过真实 parser -> DataProfile -> AnalysisIntent -> Eligibility -> Planner ->
+PlanValidator，并在 Job 创建前停止。不得新增 science、Tool、Artifact、schema
+version、migration、API family、dependency、provider 或 LLM call site；不得执行
+Phase 13-2 full E2E。完成后保留历史 Phase 13-2 失败块且不创建 rerun task。
+
+---END---
+
+---TASK---
  状态：失败
 
 # Phase 13-2 Reviewer Prompt

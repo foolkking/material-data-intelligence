@@ -1,0 +1,8 @@
+{
+  "findingId": "P13-RF-002",
+  "historicalFixtureAlreadySupportedUserInput": false,
+  "inputSupportPromotion": 0,
+  "reason": "perfect_match.json is result evidence; strict phase10n3 experimental XRD JSON is the existing supported-with-limits user representation.",
+  "selectedBranch": "B1",
+  "supportedRepresentationExists": true
+}

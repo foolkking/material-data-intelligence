@@ -779,3 +779,10 @@ and
 | [`phase13/phase13_0_clarification_fact_correction.md`](phase13/phase13_0_clarification_fact_correction.md) | Append-only AnalysisIntent clarification round-limit fact correction |
 | [`phase13/evidence/phase13_0_release_scope_seal/`](phase13/evidence/phase13_0_release_scope_seal/) | Phase 13-0 registries, fixtures, contracts, hashes and security evidence |
 | [`phase13/evidence/phase13_0_clarification_fact_correction/`](phase13/evidence/phase13_0_clarification_fact_correction/) | Correction authority, hash impact, determinism and governance evidence |
+| [`phase13/phase13_1_product_entry_fix_forward.md`](phase13/phase13_1_product_entry_fix_forward.md) | Phase 13-2-triggered product-entry remediation and current authority |
+| [`phase13/phase13_1_profile_planner_compatibility.md`](phase13/phase13_1_profile_planner_compatibility.md) | Explicit DataProfile 2.0-2.4 Planner compatibility authority |
+| [`phase13/phase13_1_xrd_input_authority_resolution.md`](phase13/phase13_1_xrd_input_authority_resolution.md) | Demo 3 XRD Branch B1 input-authority resolution |
+| [`phase13/phase13_1_intent_coverage_remediation.md`](phase13/phase13_1_intent_coverage_remediation.md) | Bounded phonon/BZ, trajectory, volumetric and electronic intent remediation |
+| [`phase13/phase13_canonical_product_entry_slice_contract.md`](phase13/phase13_canonical_product_entry_slice_contract.md) | Permanent pre-Job parser-to-validated-Plan release gate |
+| [`phase13/phase13_2_rerun_handoff.md`](phase13/phase13_2_rerun_handoff.md) | Reviewer-gated full E2E rerun contract; no executable task |
+| [`phase13/evidence/phase13_1_product_entry_fix_forward/`](phase13/evidence/phase13_1_product_entry_fix_forward/) | RF-001..004 closure, 7/7 entry-slice, hash and security evidence |

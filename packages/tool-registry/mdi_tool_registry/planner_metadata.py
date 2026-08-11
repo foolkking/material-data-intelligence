@@ -90,6 +90,8 @@ def _intents(tool_id: str) -> list[ScientificIntent]:
         return [ScientificIntent.phonon_analysis, ScientificIntent.visualization]
     if tool_id.startswith("electronic."):
         return [ScientificIntent.electronic_structure_analysis, ScientificIntent.comparison, ScientificIntent.visualization]
+    if tool_id == "structure.experimental_xrd_comparison":
+        return [ScientificIntent.structure_analysis, ScientificIntent.comparison, ScientificIntent.visualization]
     if tool_id.startswith("structure."):
         values = [ScientificIntent.structure_analysis]
         if tool_id in {
@@ -217,6 +219,11 @@ def _bindings(tool_id: str) -> list[PlannerParameterBinding]:
         ]
     if tool_id == "phonon.animation":
         return [PlannerParameterBinding(parameter="mode_id", source=PlannerBindingSource.resource_fact, objectTypes=["PhononEigenvector"], factKeys=["modeId"])]
+    if tool_id == "trajectory.diffusion":
+        return [
+            PlannerParameterBinding(parameter="fit_start_time_ps", source=PlannerBindingSource.resource_fact, objectTypes=["Trajectory"], factKeys=["timeStartPs"]),
+            PlannerParameterBinding(parameter="fit_end_time_ps", source=PlannerBindingSource.resource_fact, objectTypes=["Trajectory"], factKeys=["timeEndPs"]),
+        ]
     if tool_id in {
         "composition.formula_statistics",
         "composition.ptable_heatmap",

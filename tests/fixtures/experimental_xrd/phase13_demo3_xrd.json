@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "phase10n3.experimental_xrd_resource.v1",
+  "resourceId": "phase13_demo3_experimental_xrd",
+  "resourceVersion": "1",
+  "resourceHash": "bc36695e447f50c7c0ad51a3b1ab59e4cbfcf68fa9589c4e62c0319f7eadbc28",
+  "xAxis": {
+    "kind": "two_theta",
+    "unit": "degree"
+  },
+  "twoTheta": [
+    19.8,
+    20.0,
+    20.2,
+    39.8,
+    40.0,
+    40.2,
+    59.8,
+    60.0,
+    60.2
+  ],
+  "intensity": [
+    0.0,
+    10.0,
+    0.0,
+    0.0,
+    8.0,
+    0.0,
+    0.0,
+    6.0,
+    0.0
+  ],
+  "intensitySemantic": "counts",
+  "wavelength": {
+    "value": 1.5406,
+    "unit": "angstrom"
+  },
+  "metadata": {
+    "fixtureStatus": "SYNTHETIC_CONTROLLED",
+    "purpose": "Phase 13 Demo 3 user-entry fixture; not an independent scientific reference"
+  }
+}

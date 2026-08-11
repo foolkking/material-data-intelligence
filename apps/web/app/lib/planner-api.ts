@@ -17,6 +17,13 @@ export type PlannerJobRequest = {
   selectedTargetIds?: string[];
 };
 
+export const SUPPORTED_DATA_PROFILE_CONTRACT_VERSIONS = ["2.0", "2.1", "2.2", "2.3", "2.4"] as const;
+export type SupportedDataProfileContractVersion = (typeof SUPPORTED_DATA_PROFILE_CONTRACT_VERSIONS)[number];
+
+export function isSupportedDataProfileContractVersion(value: unknown): value is SupportedDataProfileContractVersion {
+  return typeof value === "string" && (SUPPORTED_DATA_PROFILE_CONTRACT_VERSIONS as readonly string[]).includes(value);
+}
+
 export function isTerminalPlannerJobStatus(status: string): boolean {
   return ["completed", "failed", "partial_success"].includes(status);
 }
@@ -636,7 +643,7 @@ export type DataProfileSummary = {
     formulaStats?: { total?: number; uniqueCount?: number };
   };
   objects?: Array<{ objectType?: string; count?: number; objectHash?: string }>;
-  profileContractVersion?: "2.0" | "2.1";
+  profileContractVersion?: SupportedDataProfileContractVersion;
   semanticRulesVersion?: string;
   semanticHash?: string;
   semanticColumns?: Array<{

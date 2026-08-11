@@ -45,6 +45,7 @@ from mdi_schemas import (
     compute_analysis_intent_hash,
     deterministic_intent_id,
     validate_intent_json_bounds,
+    is_supported_data_profile_contract_version,
 )
 
 from .providers import OpenAICompatibleProvider, PlannerUserConfig
@@ -172,7 +173,7 @@ class AnalysisIntentValidator:
         expected_hash = compute_analysis_intent_hash(validated)
         if validated.intentHash != expected_hash or validated.intentId != deterministic_intent_id(expected_hash):
             raise AnalysisIntentError("AnalysisIntent identity does not match canonical content.", code="INTENT_HASH_MISMATCH")
-        if profile.profileContractVersion not in {"2.0", "2.1", "2.2", "2.3", "2.4"} or not profile.semanticHash:
+        if not is_supported_data_profile_contract_version(profile.profileContractVersion) or not profile.semanticHash:
             raise AnalysisIntentError("DataProfile 2.0 through 2.4 semantic identity is required.", code="PROFILE_2_REQUIRED")
         if validated.datasetId != profile.datasetId or validated.profileId != profile.profileId:
             raise AnalysisIntentError("AnalysisIntent dataset/profile identity is stale.", code="STALE_PROFILE")
@@ -759,7 +760,7 @@ def build_analysis_intent_messages(request: AnalysisIntentRequest, *, profile: D
 def _validate_request_identity(request: AnalysisIntentRequest, profile: DataProfile) -> None:
     if request.dataset_id != profile.datasetId or request.profile_id != profile.profileId:
         raise AnalysisIntentError("Requested dataset/profile does not match the exact profile.", code="STALE_PROFILE")
-    if profile.profileContractVersion not in {"2.0", "2.1", "2.2", "2.3", "2.4"} or not profile.semanticHash:
+    if not is_supported_data_profile_contract_version(profile.profileContractVersion) or not profile.semanticHash:
         raise AnalysisIntentError("DataProfile 2.0 through 2.4 semantic identity is required.", code="PROFILE_2_REQUIRED")
     if len(request.selected_resource_ids) > ANALYSIS_INTENT_MAX_RESOURCE_REFS:
         raise AnalysisIntentError("Selected resources exceed the cap.", code="INTENT_RESOURCE_CAP_EXCEEDED")
@@ -1002,12 +1003,14 @@ def _classify_goal(goal: str) -> _Classification:
         required.append(CapabilityNeed.regression_semantics)
         ml_kind = ml_kind or "regression"
         outputs.append(DesiredOutput.metrics)
-    if _contains(value, "classification", "confusion", "roc", "precision", "分类", "混淆矩阵"):
+    if _contains(value, "classification", "confusion", "precision", "分类", "混淆矩阵") or _contains_token(value, "roc"):
         add_intent(ScientificIntent.ml_classification_evaluation)
         required.append(CapabilityNeed.classification_semantics)
         ml_kind = "classification"
         outputs.append(DesiredOutput.metrics)
-    if not _contains(value, "phonon", "澹板瓙") and _contains(value, "band structure", "band gap", "electronic dos", "density of states", "projected dos", "electronic structure"):
+    electronic_terms = _contains(value, "band structure", "band gap", "electronic dos", "density of states", "projected dos", "electronic structure")
+    electronic_pair = _contains_token(value, "band") and _contains_token(value, "dos")
+    if not _contains(value, "phonon", "澹板瓙") and (electronic_terms or electronic_pair):
         add_intent(ScientificIntent.electronic_structure_analysis)
         required.append(CapabilityNeed.electronic_resource)
         required_kind = "electronic"
@@ -1141,7 +1144,11 @@ def _resolve_resources(
             return [], [], [_diagnostic("RESOURCE_KIND_MISMATCH", "dataScope.resourceRefs", "The selected resource has the wrong scientific kind.", boundary="MISSING_DATA")], []
     if required_kind and not candidates:
         return [], [], [_diagnostic("REQUIRED_RESOURCE_MISSING", "dataScope.resourceRefs", f"No {required_kind} resource is available.", boundary="MISSING_DATA")], []
-    if required_kind and len(candidates) > 1 and not selected:
+    if required_kind and len(candidates) > 1 and not selected and not _requests_resource_pair(
+        request.raw_goal,
+        required_kind=required_kind,
+        candidates=candidates,
+    ):
         options = [_resource_option(item) for item in candidates[:32]]
         ambiguity = IntentAmbiguity(
             code="RESOURCE_SELECTION_AMBIGUOUS",
@@ -1273,11 +1280,30 @@ def _resource_matches(kind: str, capabilities: Sequence[str], required_kind: str
         "trajectory": {"trajectory"},
         "phonon": {"phonon"},
         "electronic": {"electronicband", "electronicdos"},
-        "reciprocal": {"reciprocal", "brillouin_zone"},
+        # A periodic Structure is the source resource for the registered
+        # Brillouin-zone adapter; it is not a precomputed reciprocal artifact.
+        "reciprocal": {"reciprocal", "brillouin_zone", "structure"},
         "volumetric": {"volumetric", "volume", "cube"},
     }
     allowed = aliases.get(required_kind, {required_kind})
     return kind.casefold() in allowed or bool({value.casefold() for value in capabilities} & allowed)
+
+
+def _requests_resource_pair(goal: str, *, required_kind: str, candidates: Sequence[Any]) -> bool:
+    value = goal.casefold()
+    kinds = {item.kind.casefold() for item in candidates}
+    if required_kind == "electronic":
+        asks_for_pair = _contains_token(value, "band") and (
+            _contains_token(value, "dos") or "density of states" in value
+        )
+        return asks_for_pair and {"electronicband", "electronicdos"}.issubset(kinds)
+    if required_kind == "phonon":
+        asks_for_pair = _contains_token(value, "band") and (
+            _contains_token(value, "dos") or "density of states" in value
+        )
+        object_types = {item.objectType.casefold() for item in candidates}
+        return asks_for_pair and {"phononband", "phonondos"}.issubset(object_types)
+    return False
 
 
 def _resource_option(item: Any) -> ClarificationOption:
@@ -1302,6 +1328,10 @@ def _diagnostic(
 
 def _contains(value: str, *terms: str) -> bool:
     return any(term.casefold() in value for term in terms)
+
+
+def _contains_token(value: str, term: str) -> bool:
+    return re.search(rf"(?<![a-z0-9]){re.escape(term.casefold())}(?![a-z0-9])", value.casefold()) is not None
 
 
 __all__ = [

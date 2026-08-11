@@ -61,6 +61,7 @@ import {
   getPlannerJobToolCalls,
   getPlannerProviderStatus,
   getRuntimeHealth,
+  isSupportedDataProfileContractVersion,
   listDatasets,
   listPlannerProviders,
   loadDemoDataset,
@@ -1028,7 +1029,7 @@ function FormatAdaptiveProfile({ t, profile }: { t: ReturnType<typeof createTran
 }
 
 function MaterialProfileIntelligence({ t, profile }: { t: ReturnType<typeof createTranslator>; profile: DataProfileSummary }) {
-  if (profile.profileContractVersion !== "2.0" && profile.profileContractVersion !== "2.1") return null;
+  if (!isSupportedDataProfileContractVersion(profile.profileContractVersion)) return null;
   const roles = Array.from(
     new Set((profile.semanticColumns || []).flatMap((column) => (column.roles || []).map((role) => role.role).filter(Boolean)))
   ).sort();

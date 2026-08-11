@@ -1,0 +1,71 @@
+{
+  "currentDataProfileVersion": "2.4",
+  "futureUnknownAccepted": false,
+  "plannerAcceptsCurrent": true,
+  "rows": [
+    {
+      "authority": "SCHEMA",
+      "component": "DataProfile schema",
+      "path": "packages/schemas/mdi_schemas/models.py",
+      "requiresCorrection": false,
+      "status": "CURRENT",
+      "versionRule": "2.0..2.4 literal"
+    },
+    {
+      "authority": "PLANNER_COMPATIBILITY",
+      "component": "shared compatibility predicate",
+      "path": "packages/schemas/mdi_schemas/data_profile_compatibility.py",
+      "requiresCorrection": false,
+      "status": "CURRENT",
+      "versionRule": "explicit 2.0..2.4 allowlist"
+    },
+    {
+      "authority": "PROFILE_PRODUCER",
+      "component": "DataProfile builder",
+      "path": "packages/material-parsers/mdi_material_parsers/profile.py",
+      "requiresCorrection": false,
+      "status": "CURRENT",
+      "versionRule": "bounded 2.0..2.4 emission"
+    },
+    {
+      "authority": "INTENT_ENTRY",
+      "component": "AnalysisIntent",
+      "path": "services/llm/mdi_llm/analysis_intent.py",
+      "requiresCorrection": false,
+      "status": "CURRENT",
+      "versionRule": "shared predicate"
+    },
+    {
+      "authority": "PRODUCT_ENTRY",
+      "component": "Planner API",
+      "path": "apps/api/mdi_api/routers/planner.py",
+      "requiresCorrection": false,
+      "status": "CORRECTED",
+      "versionRule": "shared predicate"
+    },
+    {
+      "authority": "PRODUCT_ENTRY_UI",
+      "component": "Planner web contract",
+      "path": "apps/web/app/lib/planner-api.ts",
+      "requiresCorrection": false,
+      "status": "CORRECTED",
+      "versionRule": "explicit 2.0..2.4 allowlist"
+    },
+    {
+      "authority": "PRODUCT_ENTRY_UI",
+      "component": "Profile presentation gate",
+      "path": "apps/web/app/components/PlannerWorkbench.tsx",
+      "requiresCorrection": false,
+      "status": "CORRECTED",
+      "versionRule": "web allowlist predicate"
+    },
+    {
+      "authority": "SPECIALIZED_TABLE_INPUT",
+      "component": "table-only adapters",
+      "path": "packages/adapters/mdi_adapters/platform_builtin",
+      "requiresCorrection": false,
+      "status": "CURRENT_NARROW_CONTRACT",
+      "versionRule": "2.0/2.1"
+    }
+  ]
+}

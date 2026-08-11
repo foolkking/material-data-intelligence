@@ -157,10 +157,11 @@ PRODUCT_EXPERIENCE_REDESIGN_VALIDATED_AND_SEALED`. Phase 13 is `IN_PROGRESS /
 RELEASE_SCOPE_SEALED`; Phase 13-0 is `COMPLETE / FINAL_FACTS_ALIGNED /
 INITIAL_RELEASE_SCOPE_SEALED`; its clarification projection was corrected by an
 append-only fact alignment to AnalysisIntent 1.0 (`maxRounds=1`, three questions
-maximum, typed second-round failure), verified by CI `31455125693`. Phase 13-1 remains
-`REVIEWER_GATE / ZERO_GAP_VERIFICATION_CLOSURE / AWAITING REVIEWER PROMPT`,
-Phase 13-2 is not queued or executable, Initial Release is not complete, and no
-Phase 14 is created. Phase 12-6
+maximum, typed second-round failure), verified by CI `31455125693`. The
+historical Phase 13-1 zero-gap verification completed at that point but is
+superseded for current release authority by Phase 13-2 real-entry evidence.
+Phase 13-2 remains failed and reviewer-gated for a full rerun; Initial Release
+is not complete, and no Phase 14 is created. Phase 12-6
 changes responsive and accessibility presentation only; persisted
 claim/evidence, scientific and Workspace authority remain unchanged. The
 former Phase 12 final-closure numbering is superseded by the approved Phase 12
@@ -198,23 +199,21 @@ phase names and historical evidence are unchanged.
 
 ## Phase 13-1 Current Status
 
-Phase 13-1 is complete as `ZERO_GAP_VERIFICATION_CLOSED`. Its deterministic
-preflight reconciles 30 integration seams, all seven canonical demo contracts,
-11 retained fixtures, 62 Registry entries (51 runtime Adapter bindings and 11
-explicit mapping-only/unavailable entries), and the corrected one-round
-clarification authority. No release blocker or release-critical integration
-gap was found. Production and scientific behavior remain unchanged.
-Implementation `d1a60955a77aec000f1e6fd630f0770db545421d` passed exact-SHA CI
-`31460352586`. Phase 13-2 remains unexecuted and reviewer-gated.
+The historical `ZERO_GAP_VERIFICATION_CLOSED` result remains forensic truth but
+is superseded for current release authority by stronger Phase 13-2 real-entry
+evidence. Phase 13-1 is reopened only for fix-forward closure of `P13-RF-001`
+through `P13-RF-004`. The local candidate aligns explicit DataProfile 2.0-2.4
+Planner compatibility, corrects the Demo 3 XRD/5 BZ user-input fixtures, adds
+bounded phonon/BZ and electronic intent coverage, and aligns the trajectory and
+volumetric prompts. The permanent pre-Job product-entry gate is `7/7 READY`;
+implementation exact-SHA CI is pending. Registry and scientific authority are
+unchanged.
 
 ## Phase 13-2 Current Status
 
-Phase 13-2 is blocked by release-critical product-entry defects discovered by
-the deterministic real-user entry probe. Demo 4 and Demo 7 cannot pass the
-Planner because parser/schema DataProfile 2.3/2.4 output is rejected by the
-Planner's 2.0/2.1 gate; Demo 3 has no sealed XRD JSON parser/eligibility path;
-Demo 5's sealed phonon/BZ prompts are unsupported by AnalysisIntent. Demo 6
-also has a canonical-prompt contract discrepancy. No production or scientific
-change was authorized, no handcrafted injection was used, and no E2E PASS is
-claimed. Phase 13 and Initial Release are blocked pending reviewer-authorized
-integration closure; Phase 13-3 and Phase 14 are not queued.
+Phase 13-2 remains `FAILED_HISTORICAL / REMEDIATION_CANDIDATE / RERUN_REQUIRED`.
+Its immutable failure evidence records three P0 entry defects and one P1 demo-
+contract defect before Job creation. The Phase 13-1 fix-forward candidate closes
+those defects at Levels A/B/C, but this is not Level D full E2E execution:
+`PHASE13_2_DEMOS_EXECUTED = 0` and `P13X2_ACCEPTANCE = 0/8`. A rerun requires a
+separate reviewer prompt. Phase 13-3 and Phase 14 are not queued.

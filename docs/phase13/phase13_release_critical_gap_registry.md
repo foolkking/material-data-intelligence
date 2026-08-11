@@ -1,5 +1,5 @@
 # Phase 13 Release-Critical Gap Registry
 
-`RELEASE_BLOCKERS = 0` and `RELEASE_CRITICAL_INTEGRATION_GAPS = 0` based on current retained integration evidence. Phase 13-1 is therefore a reviewer-gated zero-gap verification closure, not automatic execution.
+Phase 13-2 real-entry evidence superseded the historical zero-gap result and established three release-critical integration defects plus one documentation defect. The Phase 13-1 fix-forward candidate closes `P13-RF-001` through `P13-RF-004`; current candidate counts are `RELEASE_CRITICAL_INTEGRATION_GAPS = 0`, `DOCUMENTATION_DEFECTS = 0`, and `UNCLASSIFIED_RELEASE_GAPS = 0`, subject to implementation exact-SHA CI.
 
-Two nonblocking limitations remain disclosed. One planned P2 evidence gap is owned by Phase 13-2: the seven sealed real-user service-backed demonstrations have not yet been executed. This is not a demo PASS claim and is not a Phase 13-1 integration gap.
+The original findings, severities and failed Phase 13-2 evidence remain immutable. Phase 13-2 is not rerun here, and the seven full real-user service-backed demonstrations remain required under a separate reviewer gate.

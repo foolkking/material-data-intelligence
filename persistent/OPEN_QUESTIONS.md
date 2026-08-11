@@ -1280,3 +1280,14 @@ is the only remaining work.
 - The canonical volumetric prompt contract must be aligned with its currently
   reachable alternate (`P13-RF-004`). Phase 13-3 may not start while these
   release-critical product-entry defects remain unresolved.
+
+## Phase 13-1 Fix-Forward
+
+- RF-002 authority is resolved as Branch B1: the historical fixture was a result
+  record, while the existing strict XRD JSON input contract is already supported
+  with limits. No input-support promotion is required.
+- RF-004 authority is resolved as Branch B: canonical wording is corrected to
+  the existing bounded volumetric presentation scope.
+- No implementation-critical question remains inside fix-forward scope. The
+  next decision after exact-SHA CI is whether to authorize Phase 13-2 to rerun
+  all seven real-user demonstrations from scratch.

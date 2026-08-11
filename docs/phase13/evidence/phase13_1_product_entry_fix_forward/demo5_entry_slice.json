@@ -1,0 +1,97 @@
+{
+  "demoId": "P13-DEMO-05",
+  "eligibilityResolutionHash": "78afc42bd2871add3e35c18654f6b9467edf8b14c9d4af8a686e6521669fc960",
+  "eligibilityResolutionId": "resolution_78afc42bd2871add3e35c186",
+  "eligibleToolCount": 4,
+  "entrySliceOnly": true,
+  "expectedTools": [
+    "phonon.band",
+    "phonon.band_dos",
+    "phonon.dos",
+    "structure.brillouin_zone"
+  ],
+  "family": "Phonon + Brillouin Zone",
+  "fixtures": [
+    {
+      "detectedFormat": "json_limited",
+      "entryMode": "normalized_mapping",
+      "fixtureId": "P13-DEMO-05-FIX-01",
+      "objectHashes": [
+        "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c"
+      ],
+      "objectIds": [
+        "obj_phonon_band_4aec088125c6"
+      ],
+      "objectTypes": [
+        "PhononBand"
+      ],
+      "parseStatus": "success",
+      "path": "docs/phase10h/fixtures/phonon_contract/stable_band.json"
+    },
+    {
+      "detectedFormat": "json_limited",
+      "entryMode": "normalized_mapping",
+      "fixtureId": "P13-DEMO-05-FIX-02",
+      "objectHashes": [
+        "3041f69c4b8e933371001beed1371105e6f7d1a17ff881e223b77521f63cab36"
+      ],
+      "objectIds": [
+        "obj_phonon_dos_3041f69c4b8e"
+      ],
+      "objectTypes": [
+        "PhononDos"
+      ],
+      "parseStatus": "success",
+      "path": "docs/phase10h/fixtures/phonon_contract/total_dos.json"
+    },
+    {
+      "detectedFormat": "poscar",
+      "entryMode": "parse",
+      "fixtureId": "P13-DEMO-05-FIX-03",
+      "objectHashes": [
+        "e49de8a0940d3242d798b282b4898078d00bbd5b4f79cbfbf4a01328aaa7b9de"
+      ],
+      "objectIds": [
+        "obj_structure_e49de8a0940d"
+      ],
+      "objectTypes": [
+        "Structure"
+      ],
+      "parseStatus": "success",
+      "path": "tests/fixtures/structures/POSCAR"
+    }
+  ],
+  "fullE2eExecuted": false,
+  "intentHash": "72a947d15f623445e2131f7518674956988b3e18cc1936fa21f5be6eeb861c1a",
+  "intentId": "intent_72a947d15f623445e2131f75",
+  "intentOutcome": "READY",
+  "planSchemaVersion": "0.2",
+  "planSemanticHash": null,
+  "planValidated": true,
+  "planValidationErrors": [],
+  "planningOutcome": "PLAN_READY",
+  "profileContractVersion": "2.1",
+  "profileSemanticHash": "8d8d4100076fa7d83cb4cb9c7cd050be5a93b7eb7a44c0fd98bff26ff9997d94",
+  "prompt": "Show the supplied phonon bands and density of states together with the matching Brillouin-zone context.",
+  "ready": true,
+  "requiredCapabilityNeeds": [
+    "phonon_resource",
+    "reciprocal_space_resource"
+  ],
+  "scientificIntents": [
+    "phonon_analysis",
+    "reciprocal_space_analysis"
+  ],
+  "selectedResourceAuthority": "ACTUAL_PARSER_OUTPUT_FROM_USER_SELECTED_DATA",
+  "selectedResourceIds": [
+    "obj_phonon_band_4aec088125c6",
+    "obj_phonon_dos_3041f69c4b8e",
+    "obj_structure_e49de8a0940d"
+  ],
+  "selectedTools": [
+    "phonon.band",
+    "phonon.band_dos",
+    "phonon.dos",
+    "structure.brillouin_zone"
+  ]
+}

@@ -2638,3 +2638,17 @@ directly afterward. Phase 12-2 remains reviewer-gated.
 - Added immutable per-demo non-execution evidence and governance tests. No real
   provider call, handcrafted Plan/Job/Artifact/Workspace injection, production
   change, scientific change or demo PASS claim was made.
+
+## 2026-08-11 - Phase 13-1 product-entry fix-forward candidate
+
+- Replaced stale global Planner/Profile gates with explicit DataProfile 2.0-2.4
+  compatibility shared by backend Intent/Planner and the PlannerWorkbench; 2.5+
+  remains rejected.
+- Corrected Demo 3 to an existing strict XRD user-input contract, retained
+  generic phonon upload as mapping-only, and used a real Structure for Demo 5 BZ.
+- Added bounded phonon/BZ and electronic Band/DOS intent/resource selection,
+  exact trajectory fit-window Profile facts, and existing-tool dependency
+  composition without changing Adapter science.
+- Added deterministic 7/7 pre-Job entry-slice and negative-path governance.
+  Current Fact Model is unchanged; scope baseline is superseded by
+  `caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`.

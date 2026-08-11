@@ -1616,3 +1616,14 @@ version, Adapter binding, availability or validation level.
 - The Phase 13-2 blockers concern parser/Profile/Intent/Planner reachability;
   they do not change Tool identity, Adapter implementation, validation level,
   V4 count, scientific algorithms or scientific reference authority.
+
+## Phase 13-1 Product-Entry Fix-Forward Registry Boundary
+
+- Registry remains 62; no Tool, Adapter, Artifact family, scientific algorithm,
+  validation level or availability status changes.
+- Existing Planner metadata now exposes the already-registered XRD comparison
+  intent and exact trajectory fit-window bindings derived from validated Profile
+  facts. This changes reachability only, not Adapter computation.
+- Canonical Demo 3 composes existing CrystalNN/local-polyhedra and XRD comparison
+  dependency chains. Demo 5 composes existing phonon and BZ Tools. Demo 7 selects
+  the existing Band and DOS Tools. None is a support or scientific promotion.

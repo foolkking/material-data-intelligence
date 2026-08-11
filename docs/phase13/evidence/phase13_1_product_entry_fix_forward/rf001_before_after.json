@@ -1,0 +1,23 @@
+{
+  "after": {
+    "demo4": "PLAN_READY",
+    "demo7": "PLAN_READY",
+    "future2_5": "REJECTED",
+    "plannerAccepted": [
+      "2.0",
+      "2.1",
+      "2.2",
+      "2.3",
+      "2.4"
+    ]
+  },
+  "before": {
+    "demo4": "PROFILE_2_REQUIRED",
+    "demo7": "PROFILE_2_REQUIRED",
+    "plannerAccepted": [
+      "2.0",
+      "2.1"
+    ]
+  },
+  "status": "CLOSED_WITH_REGRESSION"
+}

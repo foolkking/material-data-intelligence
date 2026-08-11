@@ -1,0 +1,6 @@
+{
+  "afterPath": "tests/fixtures/experimental_xrd/phase13_demo3_xrd.json",
+  "beforePath": "docs/phase10n/evidence/phase10n3_experimental_xrd_comparison_peak_matching/perfect_match.json",
+  "eligibility": "XRD_COMPARISON_REACHABLE",
+  "status": "CLOSED_WITH_AUTHORITY_PRESERVED"
+}

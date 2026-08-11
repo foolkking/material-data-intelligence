@@ -1,0 +1,59 @@
+{
+  "demoId": "P13-DEMO-02",
+  "eligibilityResolutionHash": "2861629c49dbb8b2b527ef54faec5eb267e887386058114ea0886c43b1069a80",
+  "eligibilityResolutionId": "resolution_2861629c49dbb8b2b527ef54",
+  "eligibleToolCount": 2,
+  "entrySliceOnly": true,
+  "expectedTools": [
+    "dataset.materials_explorer",
+    "ml.regression_evaluation"
+  ],
+  "family": "Materials ML",
+  "fixtures": [
+    {
+      "detectedFormat": "csv",
+      "entryMode": "parse",
+      "fixtureId": "P13-DEMO-02-FIX-01",
+      "objectHashes": [
+        "a0ebd1d365afcce22116f3ecb52436c0fa9866ada45585fd724d0b60f6914b75"
+      ],
+      "objectIds": [
+        "obj_dataframe_a0ebd1d365af"
+      ],
+      "objectTypes": [
+        "DataFrame"
+      ],
+      "parseStatus": "success",
+      "path": "tests/fixtures/tables/ml_results.csv"
+    }
+  ],
+  "fullE2eExecuted": false,
+  "intentHash": "127551083a46e0bb67222bcae6c9eb4a7ab344487874f5cd3183736095c39722",
+  "intentId": "intent_127551083a46e0bb67222bca",
+  "intentOutcome": "READY",
+  "planSchemaVersion": "0.1",
+  "planSemanticHash": null,
+  "planValidated": true,
+  "planValidationErrors": [],
+  "planningOutcome": "PLAN_READY",
+  "profileContractVersion": "2.0",
+  "profileSemanticHash": "5913f350b6053723ec803618d48e3c78caea2f7547d9a878829832b19242203a",
+  "prompt": "Evaluate these materials-model predictions and explain the largest errors and limitations.",
+  "ready": true,
+  "requiredCapabilityNeeds": [
+    "tabular_data",
+    "regression_semantics"
+  ],
+  "scientificIntents": [
+    "dataset_overview",
+    "ml_regression_evaluation"
+  ],
+  "selectedResourceAuthority": "ACTUAL_PARSER_OUTPUT_FROM_USER_SELECTED_DATA",
+  "selectedResourceIds": [
+    "obj_dataframe_a0ebd1d365af"
+  ],
+  "selectedTools": [
+    "dataset.materials_explorer",
+    "ml.regression_evaluation"
+  ]
+}

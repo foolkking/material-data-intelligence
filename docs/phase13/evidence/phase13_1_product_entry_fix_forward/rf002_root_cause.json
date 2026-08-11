@@ -1,0 +1,5 @@
+{
+  "findingId": "P13-RF-002",
+  "rootCause": "Demo 3 sealed a scientific expected-result record as if it were a user input.",
+  "scienceDefect": false
+}

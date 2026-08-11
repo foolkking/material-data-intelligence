@@ -462,6 +462,7 @@ def _resource_semantic(obj: NormalizedObjectDraft) -> dict[str, Any]:
     elif obj.object_type == MaterialObjectType.Trajectory:
         summary = metadata.get("trajectorySummary", {})
         properties = sorted(str(value) for value in summary.get("properties", []))
+        time_start_ps, time_end_ps = _trajectory_time_bounds_ps(obj.payload)
         facts.update(
             {
                 "frameCount": summary.get("frameCount"),
@@ -470,6 +471,8 @@ def _resource_semantic(obj: NormalizedObjectDraft) -> dict[str, Any]:
                 "latticeMode": summary.get("latticeMode"),
                 "properties": properties,
                 "timeAvailable": _trajectory_time_available(obj.payload),
+                "timeStartPs": time_start_ps,
+                "timeEndPs": time_end_ps,
                 "positionWrapping": obj.payload.get("position_wrapping") if isinstance(obj.payload, dict) else None,
             }
         )
@@ -492,6 +495,18 @@ def _resource_semantic(obj: NormalizedObjectDraft) -> dict[str, Any]:
             }
         )
         capabilities.append("volumetric")
+    elif obj.object_type in {MaterialObjectType.ElectronicBand, MaterialObjectType.ElectronicDos}:
+        payload = obj.payload if isinstance(obj.payload, dict) else {}
+        facts.update(
+            {
+                "resourceId": payload.get("resourceId"),
+                "calculationIdentity": payload.get("calculationIdentity"),
+                "energyUnit": payload.get("energyUnit"),
+                "energyReference": payload.get("energyReference"),
+                "spinMode": payload.get("spinMode"),
+            }
+        )
+        capabilities.append("electronic")
     return {
         "objectId": obj.id,
         "objectType": obj.object_type.value,
@@ -501,6 +516,26 @@ def _resource_semantic(obj: NormalizedObjectDraft) -> dict[str, Any]:
         "capabilities": sorted(set(capabilities)),
         "warnings": warnings,
     }
+
+
+def _trajectory_time_bounds_ps(payload: Any) -> tuple[float | None, float | None]:
+    if not isinstance(payload, dict):
+        return None, None
+    frames = payload.get("frames")
+    time = payload.get("time")
+    if not isinstance(frames, list) or not frames or not isinstance(time, dict):
+        return None, None
+    scale = {"femtosecond": 0.001, "picosecond": 1.0}.get(time.get("unit"))
+    values = [frame.get("time") for frame in frames if isinstance(frame, dict)]
+    if scale is None or len(values) != len(frames) or any(
+        not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(float(value))
+        for value in values
+    ):
+        return None, None
+    converted = [float(value) * scale for value in values]
+    if any(left >= right for left, right in zip(converted, converted[1:])):
+        return None, None
+    return converted[0], converted[-1]
 
 
 def analysis_readiness(

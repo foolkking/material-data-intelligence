@@ -1,5 +1,11 @@
 """Shared schema types for Material Data Intelligence."""
 
+from .data_profile_compatibility import (
+    CURRENT_DATAPROFILE_CONTRACT_VERSION,
+    SUPPORTED_DATAPROFILE_CONTRACT_VERSIONS,
+    is_supported_data_profile_contract_version,
+)
+
 from .analysis_intent import (
     ANALYSIS_INTENT_MAX_AMBIGUITIES,
     ANALYSIS_INTENT_MAX_CLARIFICATION_ROUNDS,

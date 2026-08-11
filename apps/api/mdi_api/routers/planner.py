@@ -60,6 +60,7 @@ from mdi_schemas import (
     compute_analysis_intent_hash,
     deterministic_capability_id,
     deterministic_intent_id,
+    is_supported_data_profile_contract_version,
     validate_interpretation_json_bounds,
 )
 from mdi_workers import InMemoryQueueBackend, QueueWorkerRuntime, RedisRQQueueBackend
@@ -1116,7 +1117,7 @@ def _interpretation_source(repos: Any, job: dict[str, Any], plan_record: dict[st
     profile_payload = profile or {}
     if schema_version == "0.2" and (
         profile_payload.get("datasetId") != str(job.get("datasetId") or plan_record.get("datasetId") or plan.get("datasetId") or "")
-        or profile_payload.get("profileContractVersion") not in {"2.0", "2.1"}
+        or not is_supported_data_profile_contract_version(profile_payload.get("profileContractVersion"))
         or not profile_payload.get("semanticHash")
     ):
         raise InterpretationError("SOURCE_INTEGRITY_FAILED", "AnalysisPlan 0.2 interpretation requires the exact DataProfile 2.x identity.")
@@ -1563,7 +1564,7 @@ def _planner_exact_data_profile(repos: Any, dataset_id: str, profile_id: str) ->
             profile = get_phase2_dataset_profile_model(dataset_id)
         except Exception as exc:
             raise AnalysisIntentError(
-                "The exact DataProfile 2.0 or 2.1 record is unavailable.",
+                "The exact supported DataProfile record is unavailable.",
                 code="STALE_PROFILE",
                 field="profileId",
             ) from exc
@@ -1575,9 +1576,9 @@ def _planner_exact_data_profile(repos: Any, dataset_id: str, profile_id: str) ->
             code="STALE_PROFILE",
             field="profileId",
         )
-    if profile.profileContractVersion not in {"2.0", "2.1"} or not profile.semanticHash:
+    if not is_supported_data_profile_contract_version(profile.profileContractVersion) or not profile.semanticHash:
         raise AnalysisIntentError(
-            "AnalysisIntent requires an exact DataProfile 2.0 or 2.1 semantic identity.",
+            "AnalysisIntent requires an exact supported DataProfile semantic identity.",
             code="PROFILE_2_REQUIRED",
             field="profileId",
         )

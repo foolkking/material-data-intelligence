@@ -1,0 +1,7 @@
+{
+  "canonicalMeaningWithinScope": false,
+  "findingId": "P13-RF-004",
+  "reason": "The old phrase independently required structure context; the corrected prompt asks only for supported supplied-grid views.",
+  "scopeBroadened": false,
+  "selectedBranch": "B"
+}

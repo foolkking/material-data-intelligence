@@ -2,6 +2,7 @@
 
 from .detector import detect_format
 from .models import DetectedFormat, NormalizedObjectDraft, ParseResult
+from .mapped_resources import map_normalized_phonon_resource
 from .parsers import parse_dataset, parse_file
 from .profile import build_data_profile
 from .semantic_profile import SEMANTIC_RULES_VERSION, stable_sample_reference
@@ -23,6 +24,7 @@ __all__ = [
     "NormalizedObjectDraft",
     "ParseResult",
     "build_data_profile",
+    "map_normalized_phonon_resource",
     "SEMANTIC_RULES_VERSION",
     "stable_sample_reference",
     "detect_format",

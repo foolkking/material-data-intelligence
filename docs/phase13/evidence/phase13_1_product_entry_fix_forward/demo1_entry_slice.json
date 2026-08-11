@@ -1,0 +1,57 @@
+{
+  "demoId": "P13-DEMO-01",
+  "eligibilityResolutionHash": "dd682bb7d51e7de1d00d01b561160e78ac05b9f847bc39bcc85d02ce61cb132f",
+  "eligibilityResolutionId": "resolution_dd682bb7d51e7de1d00d01b5",
+  "eligibleToolCount": 7,
+  "entrySliceOnly": true,
+  "expectedTools": [
+    "dataset.materials_explorer"
+  ],
+  "family": "Dataset Intelligence + Composition Space",
+  "fixtures": [
+    {
+      "detectedFormat": "csv",
+      "entryMode": "parse",
+      "fixtureId": "P13-DEMO-01-FIX-01",
+      "objectHashes": [
+        "2b3a36cebe19e5a81218b374f7d9daa58ad37a13c6824e97f9e0c22d61606318"
+      ],
+      "objectIds": [
+        "obj_dataframe_2b3a36cebe19"
+      ],
+      "objectTypes": [
+        "DataFrame"
+      ],
+      "parseStatus": "success",
+      "path": "tests/fixtures/tables/formulas.csv"
+    }
+  ],
+  "fullE2eExecuted": false,
+  "intentHash": "b00867aa7963d652840c6a7b23b5710bdfaa62c978c3de9a3a65a261ae9d2faa",
+  "intentId": "intent_b00867aa7963d652840c6a7b",
+  "intentOutcome": "READY",
+  "planSchemaVersion": "0.1",
+  "planSemanticHash": null,
+  "planValidated": true,
+  "planValidationErrors": [],
+  "planningOutcome": "PLAN_READY",
+  "profileContractVersion": "2.0",
+  "profileSemanticHash": "70962cca02b9634b72f82eb85743b03549f9bdd081479bcc2546c57bebabb606",
+  "prompt": "Explore this materials table, summarize its quality, and show how the compositions are distributed.",
+  "ready": true,
+  "requiredCapabilityNeeds": [
+    "composition_data",
+    "tabular_data"
+  ],
+  "scientificIntents": [
+    "composition_analysis",
+    "dataset_overview"
+  ],
+  "selectedResourceAuthority": "ACTUAL_PARSER_OUTPUT_FROM_USER_SELECTED_DATA",
+  "selectedResourceIds": [
+    "obj_dataframe_2b3a36cebe19"
+  ],
+  "selectedTools": [
+    "dataset.materials_explorer"
+  ]
+}

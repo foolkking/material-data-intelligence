@@ -4630,3 +4630,19 @@ not scientific runtime identity.
   handcrafted persisted objects, and prompt Tool IDs are prohibited bypasses.
 - The Phase 13-1 zero-gap audit is superseded only for the newly observed entry
   evidence; its scientific and release-scope identities remain unchanged.
+
+## Phase 13 Canonical Product-Entry Slice Authority
+
+- `LEVEL_A` component contracts, `LEVEL_B` integration seams and `LEVEL_C`
+  canonical product entry must pass before Phase 13-2 full E2E (`LEVEL_D`).
+- Level C uses exact retained user fixtures, actual parser or approved normalized
+  mapper, current DataProfile, AnalysisIntent, bounded clarification,
+  EligibilityResolution, capability Planner and PlanValidator. It stops before
+  Job creation and has no scientific authority.
+- DataProfile Planner compatibility is an explicit 2.0-2.4 allowlist. Major-
+  version or prefix wildcards are prohibited.
+- User-selected resource IDs are derived only from actual parser outputs. Tool
+  IDs, fixture names, checksums and exact demo prompts cannot route production.
+- The Fact Model remains `e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06`.
+  Scope baseline `caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`
+  supersedes the historical prompt/fixture baseline for release governance only.

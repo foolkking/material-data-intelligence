@@ -1,0 +1,79 @@
+{
+  "demoId": "P13-DEMO-03",
+  "eligibilityResolutionHash": "43fc0c2b053db74d82febf7575f881c35193a212d452ad9c4a73db6707fe78b0",
+  "eligibilityResolutionId": "resolution_43fc0c2b053db74d82febf75",
+  "eligibleToolCount": 15,
+  "entrySliceOnly": true,
+  "expectedTools": [
+    "structure.coordination_crystalnn",
+    "structure.experimental_xrd_comparison",
+    "structure.local_environment_polyhedra",
+    "structure.xrd"
+  ],
+  "family": "Structure + coordination + local environment + polyhedra + experimental XRD",
+  "fixtures": [
+    {
+      "detectedFormat": "cif",
+      "entryMode": "parse",
+      "fixtureId": "P13-DEMO-03-FIX-01",
+      "objectHashes": [
+        "72a5ab29a9494f477b40069fec69ea5e7611d964a78aad8ad10c1a87f2c0d71d"
+      ],
+      "objectIds": [
+        "obj_structure_72a5ab29a949"
+      ],
+      "objectTypes": [
+        "Structure"
+      ],
+      "parseStatus": "success",
+      "path": "tests/fixtures/structures/simple_cubic.cif"
+    },
+    {
+      "detectedFormat": "json_limited",
+      "entryMode": "parse",
+      "fixtureId": "P13-DEMO-03-FIX-02",
+      "objectHashes": [
+        "4e34572e413c39ed6ac67003bcc6b3c0c101547f755d480f198483337a710b47"
+      ],
+      "objectIds": [
+        "obj_dataframe_4e34572e413c"
+      ],
+      "objectTypes": [
+        "DataFrame"
+      ],
+      "parseStatus": "success",
+      "path": "tests/fixtures/experimental_xrd/phase13_demo3_xrd.json"
+    }
+  ],
+  "fullE2eExecuted": false,
+  "intentHash": "9ef3cb88df9bd38b1482b7c01fc6807711bafc5bdef0e3ba9c6838d379db7a2f",
+  "intentId": "intent_9ef3cb88df9bd38b1482b7c0",
+  "intentOutcome": "READY",
+  "planSchemaVersion": "0.2",
+  "planSemanticHash": null,
+  "planValidated": true,
+  "planValidationErrors": [],
+  "planningOutcome": "PLAN_READY",
+  "profileContractVersion": "2.2",
+  "profileSemanticHash": "8df536375cb92f525058854e84bbe218b0f523e7012a61fa99b413c36c5179b9",
+  "prompt": "Inspect this crystal structure, map its CrystalNN local environment and coordination polyhedra, then compare the supplied experimental XRD peaks with its theoretical pattern.",
+  "ready": true,
+  "requiredCapabilityNeeds": [
+    "structure_resource"
+  ],
+  "scientificIntents": [
+    "comparison",
+    "structure_analysis"
+  ],
+  "selectedResourceAuthority": "ACTUAL_PARSER_OUTPUT_FROM_USER_SELECTED_DATA",
+  "selectedResourceIds": [
+    "obj_dataframe_4e34572e413c",
+    "obj_structure_72a5ab29a949"
+  ],
+  "selectedTools": [
+    "structure.coordination_crystalnn",
+    "structure.experimental_xrd_comparison",
+    "structure.local_environment_polyhedra",
+    "structure.xrd"
+  ]
+}

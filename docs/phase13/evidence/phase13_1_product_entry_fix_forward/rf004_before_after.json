@@ -1,0 +1,70 @@
+{
+  "after": {
+    "demoId": "P13-DEMO-06",
+    "eligibilityResolutionHash": "f9a39f40b17ce8edc21140ca6efb9ccaaf7280f695aa1f3ac861d523b062ca71",
+    "eligibilityResolutionId": "resolution_f9a39f40b17ce8edc21140ca",
+    "eligibleToolCount": 1,
+    "entrySliceOnly": true,
+    "expectedTools": [
+      "structure.volumetric_data"
+    ],
+    "family": "Volumetric",
+    "fixtures": [
+      {
+        "detectedFormat": "vasp_volumetric",
+        "entryMode": "parse",
+        "fixtureId": "P13-DEMO-06-FIX-01",
+        "objectHashes": [
+          "5ef6442c2627412b27afaf726f67c43242adad7b1c880fcb4231ec2c3ad32374"
+        ],
+        "objectIds": [
+          "obj_volumetric_5ef6442c2627"
+        ],
+        "objectTypes": [
+          "VolumetricData"
+        ],
+        "parseStatus": "success",
+        "path": "docs/phase10j/fixtures/volumetric_parser/CHGCAR"
+      }
+    ],
+    "fullE2eExecuted": false,
+    "intentHash": "57720d4e6f0b650482dd04004e01a605790bd6a5f084e9b1afe3a14b96faf0c0",
+    "intentId": "intent_57720d4e6f0b650482dd0400",
+    "intentOutcome": "READY",
+    "planSchemaVersion": "0.1",
+    "planSemanticHash": null,
+    "planValidated": true,
+    "planValidationErrors": [],
+    "planningOutcome": "PLAN_READY",
+    "profileContractVersion": "2.0",
+    "profileSemanticHash": "266049af06a9fc79a3be60ff25bae0c7c952b8c68a4e726e138986b7671857fe",
+    "prompt": "Inspect this supplied volumetric grid and show its supported slice and volume views.",
+    "ready": true,
+    "requiredCapabilityNeeds": [
+      "volumetric_resource"
+    ],
+    "scientificIntents": [
+      "volumetric_analysis",
+      "visualization"
+    ],
+    "selectedResourceAuthority": "ACTUAL_PARSER_OUTPUT_FROM_USER_SELECTED_DATA",
+    "selectedResourceIds": [
+      "obj_volumetric_5ef6442c2627"
+    ],
+    "selectedTools": [
+      "structure.volumetric_data"
+    ]
+  },
+  "alternate": {
+    "intentCodes": [],
+    "intentOutcome": "READY",
+    "planValidated": true,
+    "planningOutcome": "PLAN_READY",
+    "prompt": "What does this supplied volumetric grid contain, and which bounded views are available?",
+    "selectedTools": [
+      "structure.volumetric_data"
+    ]
+  },
+  "beforePrompt": "Inspect this volumetric field with its structure context, slices and supported volume presentation.",
+  "status": "CLOSED"
+}

@@ -2577,3 +2577,13 @@ current board above.
   `P13-RF-001`, `P13-RF-002` and `P13-RF-003` before real Job creation.
 - [ ] Close Phase 13-2. Reviewer-authorized integration correction is required;
   production changes are outside the current phase authority.
+
+## Phase 13-1 Product-Entry Fix-Forward
+
+- [x] Preserve historical Phase 13-1 PASS and Phase 13-2 FAILED evidence.
+- [x] Close `P13-RF-001..004` without support or validation promotion.
+- [x] Establish the permanent seven-demo canonical product-entry slice gate.
+- [x] Verify `7/7 READY`, correct Tool families and zero persistence side effects.
+- [x] Regenerate the superseding deterministic scope baseline; keep Fact Model unchanged.
+- [ ] Verify the remediation implementation by exact-SHA CI, record completion,
+  and archive only this fix-forward task while retaining the failed Phase 13-2 block.

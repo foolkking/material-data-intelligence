@@ -1,0 +1,10 @@
+{
+  "class": "PROFILE_PLANNER_COMPATIBILITY_DRIFT",
+  "currentVersion": "2.4",
+  "findingId": "P13-RF-001",
+  "rootCause": "Global Planner/API/UI allowlists lagged the schema and parser-produced DataProfile versions.",
+  "staleVersions": [
+    "2.0",
+    "2.1"
+  ]
+}

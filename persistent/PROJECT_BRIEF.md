@@ -555,3 +555,14 @@ path, and sealed phonon/BZ prompts are unsupported by AnalysisIntent. A fourth
 P1 finding records a volumetric canonical-prompt mismatch. Production and
 scientific code remain unchanged; seven E2E PASS claims remain zero and Initial
 Release is blocked pending reviewer-authorized closure.
+
+Phase 13-1 is now reopened under reviewer-authorized fix-forward scope. The
+candidate closes only `P13-RF-001..004`: explicit Planner compatibility covers
+DataProfile 2.0-2.4 without a future-version wildcard; Demo 3 uses the existing
+strict XRD input contract; Demo 5 uses normalized phonon resources plus a real
+Structure for BZ; bounded intent mapping reaches phonon/BZ and electronic Band+
+DOS; and trajectory/volumetric prompts match current supported semantics. The
+permanent parser-to-Plan entry slice is `7/7 READY` with zero Job/queue/Artifact
+side effects. Fact hash remains `e0248d50...`; superseding scope hash is
+`caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`.
+Exact-SHA CI is pending; Phase 13-2 remains failed historical and unexecuted.

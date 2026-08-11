@@ -1,0 +1,10 @@
+{
+  "exactPromptProductionRouting": 0,
+  "fixtureSpecificProductionRouting": 0,
+  "handcraftedEligibility": 0,
+  "handcraftedIntent": 0,
+  "handcraftedPlan": 0,
+  "handcraftedToolSelection": 0,
+  "status": "PASS",
+  "testHarnessScientificAuthority": "NONE"
+}

@@ -10,7 +10,7 @@ import bzZone from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_
 import bzKpath from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/kpath.json";
 import bzManifest from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/brillouin_zone_manifest.json";
 import { PlannerWorkbench, VolumetricMetadataPreviewPanel } from "./PlannerWorkbench";
-import { isTerminalPlannerJobStatus } from "../lib/planner-api";
+import { isSupportedDataProfileContractVersion, isTerminalPlannerJobStatus } from "../lib/planner-api";
 import { periodicBoundaryScene } from "./viewer-scene/viewerScenePeriodicBondTestFixture";
 
 type CapturedLiveArtifact = { name?: string; content?: Record<string, unknown> };
@@ -75,6 +75,13 @@ const demoProfile = {
   profileCoverage: { policy: "complete" as const, rowsInspected: 5, totalRows: 5, columnsInspected: 3, totalColumns: 3 },
   qualityIssues: [{ code: "FORMULA_VALUES_PARTIALLY_INVALID" }]
 };
+
+it("uses an explicit Planner-compatible DataProfile allowlist", () => {
+  for (const version of ["2.0", "2.1", "2.2", "2.3", "2.4"]) {
+    expect(isSupportedDataProfileContractVersion(version)).toBe(true);
+  }
+  expect(isSupportedDataProfileContractVersion("2.5")).toBe(false);
+});
 
 const createdJob = {
   ok: true,

@@ -1,19 +1,7 @@
 # Phase 13 Seven Canonical E2E Demo Contract
 
-Exactly seven real-user-entry contracts are sealed. All require real persistence, real queue/worker Runtime, registered Adapter execution, exact lineage, a Workspace from the real Job and Report/Recipe sources from persisted facts. No Plan, Job, ToolCall, Artifact, Workspace, Finding, Evidence, Report or Recipe may be injected.
+Exactly seven real-user-entry contracts remain sealed: Dataset Intelligence/Composition, Materials ML, Structure/local environment/Experimental XRD, Trajectory/RDF/MSD/Diffusion, Phonon/Brillouin Zone, Volumetric, and Electronic Band/DOS.
 
-| Demo | Family | Feasibility | Fixtures |
-| --- | --- | --- | ---: |
-| P13-DEMO-01 | Dataset Intelligence + Composition Space | READY_WITH_LIMITS | 1 |
-| P13-DEMO-02 | Materials ML | READY_WITH_LIMITS | 1 |
-| P13-DEMO-03 | Structure + coordination + local environment + polyhedra + experimental XRD | READY_WITH_LIMITS | 2 |
-| P13-DEMO-04 | Trajectory + RDF + MSD + diffusion | READY_WITH_LIMITS | 1 |
-| P13-DEMO-05 | Phonon + Brillouin Zone | READY_WITH_LIMITS | 3 |
-| P13-DEMO-06 | Volumetric | READY_WITH_LIMITS | 1 |
-| P13-DEMO-07 | Electronic Band + DOS | READY_WITH_LIMITS | 2 |
+The permanent Level-C product-entry gate runs each exact retained fixture through the production parser or approved normalized mapper, current DataProfile, natural-language AnalysisIntent, bounded clarification, Eligibility, capability Planner and PlanValidator, then stops before Job creation. Current candidate status is `7/7 READY`, `7/7 PLAN_VALIDATED`, with zero Job, queue, ToolCall, Artifact, Workspace, Report or Recipe creation.
 
-Feasibility is not PASS. Phase 13-0 executes zero demonstrations.
-
-Clarification follows `AnalysisIntent 1.0`: at most one round, at most three
-questions, and any second-round attempt returns typed
-`CLARIFICATION_NOT_ALLOWED`. Resolved-Intent injection is prohibited.
+This gate is not Level-D E2E execution. Full demos still require real persistence, queue/worker Runtime, registered Adapter execution, exact lineage, Workspace projection and Report/Recipe sources from persisted facts. `PHASE13_2_DEMOS_EXECUTED = 0` and `P13X2_ACCEPTANCE = 0/8` remain current.

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import re
 from typing import Any, Iterable
 
 from pydantic import ValidationError
@@ -464,17 +465,19 @@ class CapabilityContextValidator:
 
 def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandidateProjection) -> list[str]:
     goal = intent.rawGoal.casefold()
+    dependency_requests: list[str] = []
     if "xrd" in goal and any(marker in goal for marker in ("experimental", "match", "correspond", "comparison")):
         producer = "structure.xrd"
         consumer = "structure.experimental_xrd_comparison"
         eligible = {item.toolId for item in projection.candidates}
         if {producer, consumer}.issubset(eligible):
-            return sorted([producer, consumer])
-        raise CapabilityPlanningError(
-            "Experimental XRD comparison requires exact eligible experimental and theoretical XRD sources.",
-            code="XRD_COMPARISON_SOURCE_NOT_ELIGIBLE",
-            outcome=CapabilityPlanningOutcome.capability_mismatch,
-        )
+            dependency_requests.extend([producer, consumer])
+        else:
+            raise CapabilityPlanningError(
+                "Experimental XRD comparison requires exact eligible experimental and theoretical XRD sources.",
+                code="XRD_COMPARISON_SOURCE_NOT_ELIGIBLE",
+                outcome=CapabilityPlanningOutcome.capability_mismatch,
+            )
     if any(marker in goal for marker in ("local environment", "coordination polyhed", "local geometry")):
         n2 = "structure.local_environment_polyhedra"
         if "crystalnn" in goal:
@@ -489,12 +492,55 @@ def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandida
             )
         eligible = {item.toolId for item in projection.candidates}
         if {producer, n2}.issubset(eligible):
-            return sorted([producer, n2])
-        raise CapabilityPlanningError(
-            "The requested local-environment dependency chain is not eligible.",
-            code="DEPENDENCY_PRODUCER_NOT_ELIGIBLE",
-            outcome=CapabilityPlanningOutcome.capability_mismatch,
-        )
+            dependency_requests.extend([producer, n2])
+        else:
+            raise CapabilityPlanningError(
+                "The requested local-environment dependency chain is not eligible.",
+                code="DEPENDENCY_PRODUCER_NOT_ELIGIBLE",
+                outcome=CapabilityPlanningOutcome.capability_mismatch,
+            )
+    if dependency_requests:
+        return sorted(set(dependency_requests))
+    if ScientificIntent.trajectory_analysis in intent.scientificIntents:
+        requested: list[str] = []
+        if any(marker in goal for marker in ("rdf", "radial distribution", "pair distribution")):
+            requested.append("trajectory.rdf")
+        if any(marker in goal for marker in ("msd", "mean squared displacement", "diffusion", "diffusivity")):
+            requested.append("trajectory.msd")
+        if any(marker in goal for marker in ("diffusion", "diffusivity")):
+            if "full supplied time range" not in goal:
+                raise CapabilityPlanningError(
+                    "Diffusion planning requires the user to select an explicit fit window or the full supplied time range.",
+                    code="DIFFUSION_FIT_WINDOW_REQUIRED",
+                    outcome=CapabilityPlanningOutcome.needs_clarification,
+                )
+            requested.append("trajectory.diffusion")
+        if requested:
+            selected = sorted(set(requested))
+            eligible = {item.toolId for item in projection.candidates}
+            if set(selected).issubset(eligible):
+                return selected
+            raise CapabilityPlanningError(
+                "The requested trajectory analytics are not eligible for the exact trajectory resource.",
+                code="TRAJECTORY_ANALYTICS_NOT_ELIGIBLE",
+                outcome=CapabilityPlanningOutcome.capability_mismatch,
+            )
+    if ScientificIntent.electronic_structure_analysis in intent.scientificIntents:
+        requested: list[str] = []
+        if _goal_has_token(goal, "band"):
+            requested.append("electronic.band_structure")
+        if _goal_has_token(goal, "dos") or "density of states" in goal:
+            requested.append("electronic.dos")
+        if requested:
+            selected = sorted(set(requested))
+            eligible = {item.toolId for item in projection.candidates}
+            if set(selected).issubset(eligible):
+                return selected
+            raise CapabilityPlanningError(
+                "The requested supplied electronic resources are not eligible.",
+                code="ELECTRONIC_RESOURCES_NOT_ELIGIBLE",
+                outcome=CapabilityPlanningOutcome.capability_mismatch,
+            )
     remaining_intents = set(intent.scientificIntents)
     remaining_needs = set(intent.requiredCapabilityNeeds)
     selected: list[ProjectedCandidate] = []
@@ -534,6 +580,13 @@ def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandida
             outcome=CapabilityPlanningOutcome.capability_mismatch,
         )
     return sorted(item.toolId for item in selected)
+
+
+def _goal_has_token(goal: str, token: str) -> bool:
+    return re.search(
+        rf"(?<![a-z0-9]){re.escape(token.casefold())}(?![a-z0-9])",
+        goal.casefold(),
+    ) is not None
 
 
 def _build_ready_decision_and_plan(
@@ -1184,6 +1237,8 @@ def _profile_capabilities(profile: DataProfile, resources: list[PlannerResourceI
         capabilities.add(CapabilityNeed.trajectory_resource.value)
     if "phonon" in capabilities:
         capabilities.add(CapabilityNeed.phonon_resource.value)
+    if "electronic" in capabilities:
+        capabilities.add(CapabilityNeed.electronic_resource.value)
     if "reciprocal" in capabilities or "structure" in capabilities:
         capabilities.add(CapabilityNeed.reciprocal_space_resource.value)
     if "volumetric" in capabilities:

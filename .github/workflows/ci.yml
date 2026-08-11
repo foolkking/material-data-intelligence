@@ -49,8 +49,11 @@ jobs:
       - name: Phase 13-1 zero-gap verification evidence
         run: uv run python scripts/generate_phase13_1_zero_gap.py
 
-      - name: Phase 13-2 blocker evidence integrity
-        run: uv run python scripts/generate_phase13_2_blocker_evidence.py
+      - name: Phase 13-2 historical blocker evidence integrity
+        run: uv run python -m pytest -q tests/test_phase13_2_blocker_evidence.py --tb=short
+
+      - name: Phase 13-1 product-entry fix-forward evidence
+        run: uv run python scripts/generate_phase13_1_product_entry_fix_forward.py
 
       - name: uv lock check
         run: uv lock --check
@@ -71,6 +74,8 @@ jobs:
         run: uv run python scripts/run_phase11_3_reproducibility.py --platform linux --output-dir "${RUNNER_TEMP}/phase11-3-linux"
       - name: Verify Phase 13 clarification semantic hashes
         run: uv run python scripts/verify_phase13_0_clarification_hash.py --output "${RUNNER_TEMP}/phase11-3-linux/phase13_clarification_hash.json"
+      - name: Verify Phase 13-1 fix-forward semantic hashes
+        run: uv run python scripts/verify_phase13_1_fix_forward_hash.py --output "${RUNNER_TEMP}/phase11-3-linux/phase13_1_fix_forward_hash.json"
       - name: Upload Linux reproducibility evidence
         uses: actions/upload-artifact@v4
         with:
@@ -90,11 +95,15 @@ jobs:
             uv.lock
             scripts/run_phase11_3_reproducibility.py
             scripts/verify_phase13_0_clarification_hash.py
+            scripts/verify_phase13_1_fix_forward_hash.py
             docs/phase11/evidence/phase11_2_golden_scientific_benchmark
             docs/phase13/evidence/phase13_0_release_scope_seal/initial_release_fact_model.json
             docs/phase13/evidence/phase13_0_release_scope_seal/initial_release_scope_baseline.json
             docs/phase13/evidence/phase13_0_clarification_fact_correction/fact_model_hash_impact.json
             docs/phase13/evidence/phase13_0_clarification_fact_correction/scope_baseline_hash_impact.json
+            docs/phase13/evidence/phase13_1_product_entry_fix_forward/initial_release_scope_baseline.json
+            docs/phase13/evidence/phase13_1_product_entry_fix_forward/fact_model_hash_impact.json
+            docs/phase13/evidence/phase13_1_product_entry_fix_forward/scope_baseline_hash_impact.json
           sparse-checkout-cone-mode: false
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -106,6 +115,8 @@ jobs:
         run: uv run python scripts/run_phase11_3_reproducibility.py --platform windows --output-dir "$env:RUNNER_TEMP\phase11-3-windows"
       - name: Verify Phase 13 clarification semantic hashes
         run: uv run python scripts/verify_phase13_0_clarification_hash.py --output "$env:RUNNER_TEMP\phase11-3-windows\phase13_clarification_hash.json"
+      - name: Verify Phase 13-1 fix-forward semantic hashes
+        run: uv run python scripts/verify_phase13_1_fix_forward_hash.py --output "$env:RUNNER_TEMP\phase11-3-windows\phase13_1_fix_forward_hash.json"
       - name: Download Linux reproducibility evidence
         uses: actions/download-artifact@v4
         with:
@@ -122,6 +133,11 @@ jobs:
           uv run python scripts/verify_phase13_0_clarification_hash.py
           --compare "$env:RUNNER_TEMP\phase11-3-linux\phase13_clarification_hash.json"
           "$env:RUNNER_TEMP\phase11-3-windows\phase13_clarification_hash.json"
+      - name: Compare Phase 13-1 fix-forward semantic hashes
+        run: >-
+          uv run python scripts/verify_phase13_1_fix_forward_hash.py
+          --compare "$env:RUNNER_TEMP\phase11-3-linux\phase13_1_fix_forward_hash.json"
+          "$env:RUNNER_TEMP\phase11-3-windows\phase13_1_fix_forward_hash.json"
       - name: Upload cross-platform evidence
         uses: actions/upload-artifact@v4
         with:
