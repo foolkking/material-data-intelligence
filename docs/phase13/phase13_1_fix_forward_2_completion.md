@@ -5,4 +5,5 @@ Implementation `bc6a6f525515c256c6807c71c5a5f2591607abab` passed exact-SHA CI
 and the current scope baseline is
 `eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94`.
 Attempt 1, Fix-Forward #1 and Attempt 2 history remain append-only. Attempt 3
-was not executed or queued.
+was not executed or queued. The Fix-Forward #2 task is archived; both historical
+Phase 13-2 failed task blocks remain retained.

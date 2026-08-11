@@ -2605,3 +2605,4 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Verify implementation `bc6a6f525515c256c6807c71c5a5f2591607abab`
   by exact-SHA CI `31504920945`, record completion,
   and archive only this active block while retaining both failed Phase 13-2 blocks.
+- [x] Queue archive complete: two failed Phase 13-2 blocks retained, zero executable tasks.

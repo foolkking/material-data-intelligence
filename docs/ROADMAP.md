@@ -254,3 +254,5 @@ Implementation `bc6a6f525515c256c6807c71c5a5f2591607abab` passed exact-SHA
 CI `31504920945`. Phase 13-1 Fix-Forward #2 is `PASS / RUNTIME_RESOURCE_RESOLUTION_CLOSED /
 XRD_DEPENDENCY_COMPATIBILITY_CLOSED / CANONICAL_EXECUTION_PREFLIGHT_7_OF_7_READY`.
 Phase 13-2 remains `REMEDIATED_AGAIN / ATTEMPT_3_REQUIRED / REVIEWER_GATE`.
+The Fix-Forward #2 queue block is archived; both historical Phase 13-2 failed
+blocks remain retained and no Attempt 3 executable task exists.
