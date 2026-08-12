@@ -1,0 +1,5 @@
+{
+  "freshServiceBackedSmoke": "NOT_EXECUTED_AFTER_BRANCH_C_STOP",
+  "status": "FOCUSED_REGRESSION_PASS",
+  "tests": 29
+}

@@ -245,7 +245,10 @@ def _profile_dataset_version(profile: Mapping[str, Any] | None) -> str | None:
     if direct is not None:
         return direct
     sample_identity = _record(profile.get("sampleIdentity")) if profile else None
-    return _identity(sample_identity, "datasetVersion", "dataset_version")
+    sampled = _identity(sample_identity, "datasetVersion", "dataset_version")
+    if sampled is not None:
+        return sampled
+    return _identity(profile, "version")
 
 
 def _contract_token(value: Any, fallback: str) -> str:
@@ -480,15 +483,34 @@ class WorkspaceProjectionService:
             allow_missing_job=True,
             fallback_project_id=stored.projectId,
         )
+        source_status = source.status
+        source_read_only = source.read_only
+        source_warnings = source.warnings
+        if source_status not in {
+            WorkspaceStatus.SOURCE_MISSING,
+            WorkspaceStatus.UNSUPPORTED,
+            WorkspaceStatus.LEGACY_READ_ONLY,
+        } and not self._stored_source_identity_matches(stored, source):
+            source_status = WorkspaceStatus.STALE
+            source_read_only = True
+            source_warnings = self._merge_warnings(
+                source_warnings,
+                (
+                    WorkspaceWarning(
+                        code="WORKSPACE_SOURCE_IDENTITY_STALE",
+                        message="The immutable Workspace source snapshot no longer matches the exact persisted execution source.",
+                    ),
+                ),
+            )
         workspace_payload = stored.model_dump(mode="json", by_alias=True)
         workspace_payload.update(
             {
-                "projectedStatus": source.status.value,
-                "readOnly": bool(stored.readOnly or source.read_only),
+                "projectedStatus": source_status.value,
+                "readOnly": bool(stored.readOnly or source_read_only),
                 "historicalProjection": bool(stored.historicalProjection or source.historical),
                 "warnings": [
                     warning.model_dump(mode="json", by_alias=True)
-                    for warning in self._merge_warnings(stored.warnings, source.warnings)
+                    for warning in self._merge_warnings(stored.warnings, source_warnings)
                 ],
                 "artifactCount": len(source.artifacts),
                 "toolCallCount": len(source.tool_calls),
@@ -500,7 +522,7 @@ class WorkspaceProjectionService:
         projected_workspace = ScientificWorkspace.model_validate(workspace_payload)
         panels = self._project_current_panels(
             self._load_panels(workspace_id, projected_workspace.projectId),
-            source.status,
+            source_status,
         )
         revisions = self._load_revisions(workspace_id, projected_workspace.projectId)
         current_layout = self._current_layout(projected_workspace, revisions)
@@ -527,6 +549,47 @@ class WorkspaceProjectionService:
         etag = _semantic_hash(body)
         body["projectionHash"] = etag
         return WorkspaceSnapshot(body=body, etag=etag)
+
+    @staticmethod
+    def _stored_source_identity_matches(
+        stored: ScientificWorkspace, source: _SourceProjection
+    ) -> bool:
+        plan_record = source.plan_record
+        plan = source.plan
+        expected = {
+            "projectId": _identity(source.job, "projectId", "project_id"),
+            "sourceJobId": _identity(source.job, "jobId", "id"),
+            "datasetId": _identity(source.job, "datasetId", "dataset_id"),
+            "datasetVersion": _profile_dataset_version(source.profile),
+            "profileId": _identity(source.profile, "profileId", "profile_id"),
+            "profileSemanticHash": _source_hash(source.profile, "semanticHash", "semantic_hash"),
+            "intentId": _identity(source.intent, "intentId", "intent_id"),
+            "intentSemanticHash": _source_hash(
+                source.intent, "intentHash", "semanticHash", "semantic_hash"
+            ),
+            "planId": (
+                _identity(plan_record, "planId", "analysisPlanId", "id")
+                or _identity(source.job, "planId", "plan_id")
+            ),
+            "planHash": _source_hash(
+                plan_record, "planHash", "semanticHash", "semantic_hash"
+            ),
+            "planSchemaVersion": str((plan or {}).get("schemaVersion") or "") or None,
+        }
+        actual = {
+            "projectId": stored.projectId,
+            "sourceJobId": stored.sourceJobId,
+            "datasetId": stored.datasetId,
+            "datasetVersion": stored.datasetVersion,
+            "profileId": stored.profileId,
+            "profileSemanticHash": stored.profileSemanticHash,
+            "intentId": stored.intentId,
+            "intentSemanticHash": stored.intentSemanticHash,
+            "planId": stored.planId,
+            "planHash": stored.planHash,
+            "planSchemaVersion": stored.planSchemaVersion,
+        }
+        return actual == expected
 
     def read_source_projection(self, workspace_id: str) -> _SourceProjection:
         """Return exact metadata-only source records without projecting or writing state."""

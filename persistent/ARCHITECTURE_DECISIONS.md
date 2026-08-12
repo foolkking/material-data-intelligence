@@ -4718,3 +4718,16 @@ by Workspace read-only policy. Both gaps require separate reviewer authority.
   when the real upload path reports `INTENT_PROFILE_CAPABILITY_MISSING`.
 - Attempt 5 carries no repair authority. These findings add no new schema,
   capability, Tool, science, or runtime fallback authority.
+
+## Phase 13 User-Ingestion Fidelity and Currentness Decision
+
+- Workspace source currentness compares the immutable Workspace snapshot to the
+  exact Job source identities. It uses the same Profile dataset-version fallback
+  as Intent/Eligibility and never rebinds to a latest source.
+- Runtime capability, an internal normalized mapper and a typed schema do not
+  establish user-facing input support. A canonical real-user demo must have a
+  supported public product action that creates or selects its exact typed
+  resources.
+- Generic phonon YAML/JSON remains `MAPPING_ONLY`. Adding a user-visible typed
+  phonon import is an input-support/scope authority decision, not an integration
+  wiring fix authorized by Fix-Forward #5.

@@ -1,0 +1,8 @@
+{
+  "attempt5Action": "POST /datasets/upload with stable_band.json, total_dos.json and POSCAR",
+  "decision": "BRANCH_C",
+  "profileResult": "Structure only; no PhononBand/PhononDos semantics",
+  "runtimeCapabilitiesExist": true,
+  "snifferResult": "json_limited for phonon JSON",
+  "userVisibleSupportedTypedEntryExists": false
+}

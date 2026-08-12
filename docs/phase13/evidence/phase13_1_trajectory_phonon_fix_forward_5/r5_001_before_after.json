@@ -1,0 +1,14 @@
+{
+  "afterForNewProjection": {
+    "profileVersion": "2",
+    "status": "COMPLETE",
+    "workspaceDatasetVersion": "2"
+  },
+  "before": {
+    "profileVersion": "2",
+    "status": "STALE",
+    "workspaceDatasetVersion": null
+  },
+  "freshDemo4Smoke": "NOT_EXECUTED_AFTER_BRANCH_C_STOP",
+  "historicalIncompleteSnapshot": "REMAINS_STALE"
+}

@@ -11540,3 +11540,77 @@ PHASE13_3_EXECUTABLE_TASK_CREATED = NO
 INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
+
+# Phase 13-1 Integration Fix-Forward #5 Result
+
+Status: BLOCKED / DEMO5_INITIAL_RELEASE_ENTRY_AUTHORITY_CONFLICT
+
+Time: 2026-08-12 23:25:00 +08:00
+
+`P13-R5-001` was reproduced from the retained real Attempt 5 PostgreSQL state.
+Intent and Eligibility used top-level `DataProfile.version = 2` because the
+Trajectory Profile legitimately had `sampleIdentity = null`; Workspace
+projection omitted that fallback and persisted `datasetVersion = null`.
+The bounded implementation now applies the same fallback and verifies the
+immutable Workspace source snapshot against the exact execution source. The
+Workspace/Report focused suite passed `29/29`. Because the Branch C hard stop
+occurred before the required fresh Demo 4 service/browser smoke, the full
+R5-001 closure gate is not claimed.
+
+The required R5-002 authority audit selected Branch C. Attempt 5's exact user
+action was public `/datasets/upload` with `stable_band.json`, `total_dos.json`
+and `POSCAR`. Phase 11 classifies generic phonon YAML/JSON as `MAPPING_ONLY` and
+the product has no supported user-visible typed phonon import/selection path.
+Exact schemas, internal normalized mappers, C/C2 preparation, runtime resolver,
+Adapters and viewers exist, but none constitutes legal normal-user ingestion.
+No parser, support matrix row, hidden endpoint, Profile injection or input
+support promotion was added.
+
+```text
+PHASE_13_1_FIX_FORWARD_5 = BLOCKED / DEMO5_INITIAL_RELEASE_ENTRY_AUTHORITY_CONFLICT
+P13_R5_001 = IMPLEMENTATION_CORRECTED / FRESH_DEMO4_SMOKE_NOT_EXECUTED
+P13_R5_001_MISMATCH_FIELD = datasetVersion
+P13_R5_002 = OPEN_REVIEWER_AUTHORITY_REQUIRED
+P13_R5_002_HISTORICAL_CLASS = REAL_UPLOAD_PHONON_PROFILE_CAPABILITY_HANDOFF_DEFECT
+P13_R5_002_SELECTED_BRANCH = C
+P13_R5_002_FINAL_CLASS = DEMO5_INITIAL_RELEASE_ENTRY_AUTHORITY_CONFLICT
+PHONON_DIRECT_UPLOAD_SUPPORT_PROMOTION = 0
+INPUT_SUPPORT_PROMOTIONS = 0
+PHASE11_INPUT_SUPPORT_MATRIX_CHANGED = NO
+CANONICAL_DEMO_SEMANTIC_COVERAGE = 7/7 PASS
+CANONICAL_USER_INGESTION_FIDELITY = 6/7 BLOCKED
+USER_ENTRY_CONTRACT_MISMATCHES = 1
+INTERNAL_ONLY_ENTRY_PATHS_USED_AS_USER_PASS = 0
+FRESH_DEMO4_PRODUCT_CLOSURE_SMOKE = NOT_EXECUTED_AFTER_BRANCH_C_STOP
+FRESH_DEMO5_PRODUCT_CLOSURE_SMOKE = NOT_APPLICABLE_BRANCH_C
+LEVEL_C = 7/7 PASS
+LEVEL_C2 = 7/7 PASS
+D0_REAL_UPLOAD_TO_FRESH_WORKER = PASS
+DEMO1_PRODUCT_CLOSURE_REGRESSION = PASS
+CURRENT_FACT_MODEL_HASH = e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06
+CURRENT_SCOPE_BASELINE_HASH = f188b3e15aa94111787297ffde07b37f90cfdd1fe4e910e39f941e956b455455
+FACT_MODEL_HASH_IMPACT = NO
+SCOPE_BASELINE_HASH_IMPACT = NO
+PHASE12_PRODUCT_BASELINE_HASH = 29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4
+REGISTRY = 62
+DATAPROFILE = 2.4
+ANALYSIS_INTENT = 1.0
+ELIGIBILITY_RESOLUTION = 1.0
+ANALYSIS_PLAN = 0.1 / 0.2
+MIGRATION = 0007_phase10m1_workspace_domain
+NEW_DATABASE_MIGRATIONS = 0
+NEW_DEPENDENCIES = 0
+NEW_LLM_CALL_SITES = 0
+REAL_LLM_CALLS = 0
+PHASE13_2_ATTEMPT_6 = BLOCKED / NOT_AUTHORIZED
+PHASE13_2_ATTEMPT_6_EXECUTABLE_TASK_CREATED = NO
+PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+FAILED_RETAINED_TASK_BLOCKS = 6
+EXECUTABLE_PENDING_TASKS = 0
+TASK_BLOCK_COUNT = 6
+FIX_FORWARD_5_IMPLEMENTATION_EXACT_SHA_CI = NOT_RUN_BRANCH_C_STOP
+FIX_FORWARD_5_COMPLETION_RECORDED = NO
+FIX_FORWARD_5_QUEUE_ARCHIVED = NO
+```

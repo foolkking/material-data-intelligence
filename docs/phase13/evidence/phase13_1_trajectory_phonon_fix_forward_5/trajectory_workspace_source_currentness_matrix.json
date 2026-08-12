@@ -1,0 +1,31 @@
+{
+  "rows": [
+    {
+      "currentness": "CURRENT",
+      "datasetId": "dataset_f04d895e5f5943fcb7f84bb1",
+      "datasetVersion": "2",
+      "layer": "Job execution",
+      "planHash": "a462e3ab39337c9846b2943bf3e1ea400eac6dba5587f0a10d8d5c95192273ca",
+      "planId": "plan_e28d5214255b43a2826981cd",
+      "profileId": "profile_dataset_f04d895e5f5943fcb7f84bb1_v2",
+      "profileSemanticHash": "0a036dd0439d70e4c9e184beff277fd79a27baeebd1f0b5f35069032c11d9b26"
+    },
+    {
+      "currentness": "STALE",
+      "datasetId": "dataset_f04d895e5f5943fcb7f84bb1",
+      "datasetVersion": null,
+      "layer": "Workspace immutable snapshot",
+      "mismatchField": "datasetVersion",
+      "planHash": "a462e3ab39337c9846b2943bf3e1ea400eac6dba5587f0a10d8d5c95192273ca",
+      "planId": "plan_e28d5214255b43a2826981cd",
+      "profileId": "profile_dataset_f04d895e5f5943fcb7f84bb1_v2",
+      "profileSemanticHash": "0a036dd0439d70e4c9e184beff277fd79a27baeebd1f0b5f35069032c11d9b26"
+    },
+    {
+      "decision": "WORKSPACE_SOURCE_NOT_CURRENT",
+      "layer": "Report eligibility",
+      "mismatchField": "datasetVersion",
+      "workspaceId": "workspace_29114b0e05133e9088c5317c18d3b91b"
+    }
+  ]
+}

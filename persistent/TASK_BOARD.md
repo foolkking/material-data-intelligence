@@ -2653,3 +2653,15 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Record `P13-R5-002` at Demo 5 upload/Profile-to-Intent capability handoff.
 - [x] Stop Demo 6-7 and downstream suites after the new P0 findings.
 - [ ] Reviewer-authorized remediation is required before another Phase 13-2 rerun.
+
+## Phase 13-1 Fix-Forward #5 - Blocked
+
+- [x] Reproduce and identify the R5-001 dataset-version mismatch.
+- [x] Implement bounded exact Workspace source identity correction.
+- [x] Pass Workspace/Report focused regression `29/29`.
+- [x] Audit Phase 11 phonon input support and all user-visible entry paths.
+- [x] Select R5-002 Branch C without promoting mapping-only support.
+- [ ] Reviewer authority is required for bounded typed phonon input support or
+  Demo 5 initial-release scope revision.
+- [ ] Fresh Demo 4/5 closure, full regression, completion and archive were not
+  executed after the Branch C hard stop.

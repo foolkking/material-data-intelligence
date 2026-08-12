@@ -1,6 +1,40 @@
 ---TASK---
 状态：失败
 
+# Phase 13-1 Integration Fix-Forward #5
+## Trajectory Currentness + Phonon Ingestion Authority Closure
+
+Authorized scope: close `P13-R5-001`; audit `P13-R5-002` and select Branch
+A/B/C without promoting mapping-only phonon upload; establish canonical user
+ingestion fidelity evidence; run only the authorized Demo 4 and conditional
+Demo 5 product-closure smokes; preserve all five historical Phase 13-2 failed
+attempt blocks. Phase 13-2 Attempt 6 is not authorized and must not be queued.
+
+失败时间：2026-08-12 23:25:00 +08:00
+
+失败原因：`P13-R5-002` authority audit selected Branch C. Phase 11 seals
+generic phonon YAML/JSON as `MAPPING_ONLY`, and the current product exposes no
+supported user-visible path that creates or selects exact `PhononBand` and
+`PhononDos` resources. Closing Demo 5 would require reviewer-authorized input
+support expansion or an initial-release scope revision. No support promotion
+was made. `P13-R5-001` received a bounded implementation correction and passed
+29 focused tests, but its required fresh Demo 4 smoke was not executed after
+the Branch C hard stop, so full closure is not claimed.
+
+修改文件：`apps/api/mdi_api/workspaces.py`, Workspace focused tests, Fix-Forward
+#5 blocker generator/evidence/docs, persistent status files, `TASKS.md`, and
+`results.md`.
+
+测试结果：Workspace/Report focused suite `29 passed`; retained Attempt 5
+PostgreSQL forensic replay preserved the historical incomplete Workspace as
+typed `STALE`. Full regression, Demo 4/5 product smokes, exact-SHA CI,
+completion, and queue archive are not applicable after Branch C stop.
+
+---END---
+
+---TASK---
+状态：失败
+
 # Phase 13-2 Attempt 5
 
 ## Seven Canonical Real-User E2E Demonstrations - Full Fresh Rerun

@@ -309,6 +309,55 @@ def test_projection_states_cover_legacy_partial_stale_and_missing_sources() -> N
     assert missing.body["workspace"]["readOnly"] is True
 
 
+def test_projection_uses_profile_version_when_sample_identity_is_not_applicable() -> None:
+    repos = InMemoryRepositoryBundle.create()
+    _seed_modern(repos)
+    profile = repos.data_profiles.records["profile_1"]
+    profile["sampleIdentity"] = None
+    profile["version"] = "2"
+    resolution = next(iter(repos.capability_planning.resolutions.values()))
+    resolution["eligibilityResolution"]["datasetVersion"] = "2"
+
+    current, _ = WorkspaceProjectionService(repos).project_job(
+        source_job_id="job_m1", created_by="user_local"
+    )
+    assert current.body["workspace"]["projectedStatus"] == "COMPLETE"
+    assert current.body["workspace"]["datasetVersion"] == "2"
+
+    workspace_id = current.body["workspace"]["workspaceId"]
+    stored = repos.workspaces.workspaces[workspace_id]
+    stored["dataset_version"] = None
+    stored["source_reference_hash"] = workspace_semantic_hash(
+        {
+            "schemaVersion": stored["schema_version"],
+            "workspaceId": stored["workspace_id"],
+            "projectId": stored["project_id"],
+            "sourceJobId": stored["source_job_id"],
+            "datasetId": stored["dataset_id"],
+            "datasetVersion": None,
+            "profileId": stored["profile_id"],
+            "profileSemanticHash": stored["profile_semantic_hash"],
+            "intentId": stored["intent_id"],
+            "intentSemanticHash": stored["intent_semantic_hash"],
+            "planId": stored["plan_id"],
+            "planHash": stored["plan_hash"],
+            "planSchemaVersion": stored["plan_schema_version"],
+        }
+    )
+    stale_snapshot = WorkspaceProjectionService(repos).get_snapshot(workspace_id)
+    assert stale_snapshot.body["workspace"]["projectedStatus"] == "STALE"
+    assert stale_snapshot.body["workspace"]["warnings"][-1]["code"] == "WORKSPACE_SOURCE_IDENTITY_STALE"
+
+    stored["dataset_version"] = "2"
+    stored["source_reference_hash"] = current.body["workspace"]["sourceReferenceHash"]
+    profile["version"] = "3"
+    stale = WorkspaceProjectionService(repos).get_snapshot(
+        workspace_id
+    )
+    assert stale.body["workspace"]["projectedStatus"] == "STALE"
+    assert stale.body["workspace"]["readOnly"] is True
+
+
 def test_job_list_and_workspace_get_never_create_hidden_projection() -> None:
     repos = InMemoryRepositoryBundle.create()
     _seed_legacy(repos)

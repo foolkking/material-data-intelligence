@@ -1,0 +1,200 @@
+{
+  "expected": 7,
+  "passed": 6,
+  "rows": [
+    {
+      "canonicalPrompt": "Explore this materials dataset, summarize its quality, and map its compositions in composition space.",
+      "canonicalResourceKinds": "CURRENT_PROFILE_RESOURCE_SEMANTICS",
+      "demoId": "P13-DEMO-01",
+      "durablePersistencePath": "PostgreSQL + MinIO",
+      "eligibilityRequiredFacts": "CURRENT_CONTRACT",
+      "fileContainerType": [
+        ".csv"
+      ],
+      "fixtureResource": [
+        "tests/fixtures/tables/formulas.csv"
+      ],
+      "inputSupportDisposition": "DIRECT_OR_BOUNDED",
+      "intentRequiredFacts": "CURRENT_CONTRACT",
+      "internalOnlyPreparation": false,
+      "mapperProductionVisibility": true,
+      "mismatch": null,
+      "parser": "current production parser",
+      "plannerRootBindings": "EXACT",
+      "profileSemanticsProduced": true,
+      "realUserReachable": true,
+      "sealedUserAction": "upload/select current sealed fixture",
+      "supportStatus": "PASS",
+      "userVisibleEndpointAction": "POST /datasets/upload",
+      "workerResolver": "DurableObjectStoreResolver"
+    },
+    {
+      "canonicalPrompt": "Evaluate these materials-model predictions and explain the largest errors and limitations.",
+      "canonicalResourceKinds": "CURRENT_PROFILE_RESOURCE_SEMANTICS",
+      "demoId": "P13-DEMO-02",
+      "durablePersistencePath": "PostgreSQL + MinIO",
+      "eligibilityRequiredFacts": "CURRENT_CONTRACT",
+      "fileContainerType": [
+        ".csv"
+      ],
+      "fixtureResource": [
+        "tests/fixtures/tables/ml_results.csv"
+      ],
+      "inputSupportDisposition": "DIRECT_OR_BOUNDED",
+      "intentRequiredFacts": "CURRENT_CONTRACT",
+      "internalOnlyPreparation": false,
+      "mapperProductionVisibility": true,
+      "mismatch": null,
+      "parser": "current production parser",
+      "plannerRootBindings": "EXACT",
+      "profileSemanticsProduced": true,
+      "realUserReachable": true,
+      "sealedUserAction": "upload/select current sealed fixture",
+      "supportStatus": "PASS",
+      "userVisibleEndpointAction": "POST /datasets/upload",
+      "workerResolver": "DurableObjectStoreResolver"
+    },
+    {
+      "canonicalPrompt": "Inspect this crystal structure, map its CrystalNN local environment and coordination polyhedra, then compare the supplied experimental XRD peaks with its theoretical pattern.",
+      "canonicalResourceKinds": "CURRENT_PROFILE_RESOURCE_SEMANTICS",
+      "demoId": "P13-DEMO-03",
+      "durablePersistencePath": "PostgreSQL + MinIO",
+      "eligibilityRequiredFacts": "CURRENT_CONTRACT",
+      "fileContainerType": [
+        ".cif",
+        ".json"
+      ],
+      "fixtureResource": [
+        "tests/fixtures/structures/simple_cubic.cif",
+        "tests/fixtures/experimental_xrd/phase13_demo3_xrd.json"
+      ],
+      "inputSupportDisposition": "DIRECT_OR_BOUNDED",
+      "intentRequiredFacts": "CURRENT_CONTRACT",
+      "internalOnlyPreparation": false,
+      "mapperProductionVisibility": true,
+      "mismatch": null,
+      "parser": "current production parser",
+      "plannerRootBindings": "EXACT",
+      "profileSemanticsProduced": true,
+      "realUserReachable": true,
+      "sealedUserAction": "upload/select current sealed fixture",
+      "supportStatus": "PASS",
+      "userVisibleEndpointAction": "POST /datasets/upload",
+      "workerResolver": "DurableObjectStoreResolver"
+    },
+    {
+      "canonicalPrompt": "Analyze this trajectory, show the RDF and MSD, and estimate diffusion over the full supplied time range with fit diagnostics.",
+      "canonicalResourceKinds": "CURRENT_PROFILE_RESOURCE_SEMANTICS",
+      "demoId": "P13-DEMO-04",
+      "durablePersistencePath": "PostgreSQL + MinIO",
+      "eligibilityRequiredFacts": "CURRENT_CONTRACT",
+      "fileContainerType": [
+        ".json"
+      ],
+      "fixtureResource": [
+        "docs/phase10g/fixtures/trajectory_v1/fixed_lattice_md.json"
+      ],
+      "inputSupportDisposition": "DIRECT_OR_BOUNDED",
+      "intentRequiredFacts": "CURRENT_CONTRACT",
+      "internalOnlyPreparation": false,
+      "mapperProductionVisibility": true,
+      "mismatch": null,
+      "parser": "current production parser",
+      "plannerRootBindings": "EXACT",
+      "profileSemanticsProduced": true,
+      "realUserReachable": true,
+      "sealedUserAction": "upload/select current sealed fixture",
+      "supportStatus": "PASS",
+      "userVisibleEndpointAction": "POST /datasets/upload",
+      "workerResolver": "DurableObjectStoreResolver"
+    },
+    {
+      "canonicalPrompt": "Show the supplied phonon bands and density of states together with the matching Brillouin-zone context.",
+      "canonicalResourceKinds": [
+        "PhononBand",
+        "PhononDos",
+        "Structure"
+      ],
+      "demoId": "P13-DEMO-05",
+      "durablePersistencePath": "PostgreSQL + MinIO",
+      "eligibilityRequiredFacts": "typed exact resources",
+      "fileContainerType": [
+        ".json",
+        ".json",
+        "POSCAR"
+      ],
+      "fixtureResource": [
+        "docs/phase10h/fixtures/phonon_contract/stable_band.json",
+        "docs/phase10h/fixtures/phonon_contract/total_dos.json",
+        "tests/fixtures/structures/POSCAR"
+      ],
+      "inputSupportDisposition": "MAPPING_ONLY",
+      "intentRequiredFacts": "phonon_resource",
+      "internalOnlyPreparation": true,
+      "mapperProductionVisibility": false,
+      "mismatch": "No supported user-visible typed phonon entry",
+      "parser": "json_limited + internal normalized mapper",
+      "plannerRootBindings": "UNAVAILABLE_FROM_USER_ENTRY",
+      "profileSemanticsProduced": false,
+      "realUserReachable": false,
+      "sealedUserAction": "upload/select current sealed fixture",
+      "supportStatus": "AUTHORITY_CONFLICT",
+      "userVisibleEndpointAction": "POST /datasets/upload",
+      "workerResolver": "DurableObjectStoreResolver"
+    },
+    {
+      "canonicalPrompt": "Inspect this supplied volumetric grid and show its supported slice and volume views.",
+      "canonicalResourceKinds": "CURRENT_PROFILE_RESOURCE_SEMANTICS",
+      "demoId": "P13-DEMO-06",
+      "durablePersistencePath": "PostgreSQL + MinIO",
+      "eligibilityRequiredFacts": "CURRENT_CONTRACT",
+      "fileContainerType": [
+        "CHGCAR"
+      ],
+      "fixtureResource": [
+        "docs/phase10j/fixtures/volumetric_parser/CHGCAR"
+      ],
+      "inputSupportDisposition": "DIRECT_OR_BOUNDED",
+      "intentRequiredFacts": "CURRENT_CONTRACT",
+      "internalOnlyPreparation": false,
+      "mapperProductionVisibility": true,
+      "mismatch": null,
+      "parser": "current production parser",
+      "plannerRootBindings": "EXACT",
+      "profileSemanticsProduced": true,
+      "realUserReachable": true,
+      "sealedUserAction": "upload/select current sealed fixture",
+      "supportStatus": "PASS",
+      "userVisibleEndpointAction": "POST /datasets/upload",
+      "workerResolver": "DurableObjectStoreResolver"
+    },
+    {
+      "canonicalPrompt": "Inspect the supplied electronic band structure and DOS, including gap, spin, projection and compatibility limitations.",
+      "canonicalResourceKinds": "CURRENT_PROFILE_RESOURCE_SEMANTICS",
+      "demoId": "P13-DEMO-07",
+      "durablePersistencePath": "PostgreSQL + MinIO",
+      "eligibilityRequiredFacts": "CURRENT_CONTRACT",
+      "fileContainerType": [
+        ".json",
+        ".json"
+      ],
+      "fixtureResource": [
+        "docs/phase10n/evidence/phase10n5_electronic_band_dos/electronic_resource_contracts/band.json",
+        "docs/phase10n/evidence/phase10n5_electronic_band_dos/electronic_resource_contracts/dos.json"
+      ],
+      "inputSupportDisposition": "DIRECT_OR_BOUNDED",
+      "intentRequiredFacts": "CURRENT_CONTRACT",
+      "internalOnlyPreparation": false,
+      "mapperProductionVisibility": true,
+      "mismatch": null,
+      "parser": "current production parser",
+      "plannerRootBindings": "EXACT",
+      "profileSemanticsProduced": true,
+      "realUserReachable": true,
+      "sealedUserAction": "upload/select current sealed fixture",
+      "supportStatus": "PASS",
+      "userVisibleEndpointAction": "POST /datasets/upload",
+      "workerResolver": "DurableObjectStoreResolver"
+    }
+  ]
+}

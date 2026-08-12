@@ -2306,3 +2306,11 @@ failed at current Workspace Report source eligibility (`P13-R5-001`); Demo 5
 failed before Plan/Job because the real upload Profile lacked canonical phonon
 capability facts (`P13-R5-002`). Demo 6-7 and downstream suites remain
 `NOT_EXECUTED_AFTER_P0_STOP`. No production or scientific repair was made.
+
+Phase 13-1 Fix-Forward #5 is blocked by the Demo 5 user-ingestion authority.
+R5-001 was isolated to inconsistent Profile dataset-version fallback in
+Workspace currentness and received a bounded exact-identity correction with
+29 focused tests passing. R5-002 selected Branch C: direct phonon upload is
+Phase 11 `MAPPING_ONLY`, and no supported user-visible typed phonon resource
+entry exists. No support promotion, Demo 5 smoke, Attempt 6 task, completion or
+archive was created.

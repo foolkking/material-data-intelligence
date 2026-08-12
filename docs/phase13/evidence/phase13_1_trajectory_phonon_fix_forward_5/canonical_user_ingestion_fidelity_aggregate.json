@@ -1,0 +1,7 @@
+{
+  "expected": 7,
+  "internalOnlyEntryPathsUsedAsUserPass": 0,
+  "passed": 6,
+  "status": "BLOCKED",
+  "userEntryContractMismatches": 1
+}
