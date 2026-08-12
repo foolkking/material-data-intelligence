@@ -11341,3 +11341,92 @@ EXECUTABLE_PENDING_TASKS = 0
 TASK_BLOCK_COUNT = 4
 PHASE14_CREATED = NO
 ```
+
+# Phase 13-1 Integration Fix-Forward #4 Result
+
+Status: PASS
+
+Completion time: 2026-08-12 21:00:02 +08:00
+
+`P13-R4-001` selected Branch B. The historical Demo 1 prompt expressed
+composition distribution, while the sealed demo required explicit composition
+space. The current prompt authority was corrected; production Intent,
+Eligibility and Planner behavior did not change. Demo 1 now selects exactly
+`dataset.materials_explorer` and `dataset.composition_space`, and all seven
+canonical prompts pass semantic coverage (`7/7`) without invented dependencies,
+forced Plan upgrades or unrequested capabilities.
+
+`P13-R4-002` was caused by the Workspace projection omitting the Report panel
+before a Report existed and the frontend treating scientific
+`LEGACY_READ_ONLY` as a global Report Finalize prohibition. Report actions now
+derive independently from exact current Profile, Intent, Eligibility, Plan,
+terminal Job, scope and integrity facts. Current valid Plan 0.1 Finalize passes;
+legacy incomplete and stale Plan 0.1 sources remain unavailable with typed
+reasons; cross-project sources remain rejected; Plan 0.2 is unchanged.
+
+The fresh Demo 1 smoke used real PostgreSQL, Redis, MinIO and a fresh Worker.
+Plan `plan_7d0d916dd60945fcb28a9879` executed two registered tools and persisted
+eight Artifacts. Chromium finalized Report
+`report_884dec9549b6617dc4b10d562542a61a` with paired non-executable Recipe
+`recipe_884dec9549b6617dc4b10d562542a61a`. Recipe inspection caused zero Plan,
+Job, queue, ToolCall or Artifact growth.
+
+Backend: `1406 passed, 52 skipped`; required services separately passed with
+zero required skips. Frontend: `458 passed`; Phase 13 focused/governance:
+`89 passed`. Typecheck, build, lock, diff, PostgreSQL, Redis, MinIO,
+Chromium/Firefox/WebKit/390x844, Linux/Windows, security, secret scan and
+manifest all PASS. Failed candidate
+`f3ec578acd1cfaddb9437d74869cf437ad17c848` / CI `31594862635` is retained.
+Corrected implementation `71985085ac0ab0dbe36b141b88c0251d76892689`
+passed exact-SHA CI `31597787296`.
+
+```text
+PHASE_13_1_FIX_FORWARD_4 = PASS
+P13_R4_001 = CLOSED
+P13_R4_002 = CLOSED
+CANONICAL_DEMO_SEMANTIC_COVERAGE = 7/7
+DEMO1_REQUIRED_CAPABILITY_COVERAGE = COMPLETE
+FRESH_DEMO1_PRODUCT_CLOSURE_SMOKE = PASS
+CURRENT_VALID_PLAN01_REPORT_FINALIZE = PASS
+LEGACY_INCOMPLETE_PLAN01_REPORT_FINALIZE = UNAVAILABLE_WITH_TYPED_REASON
+STALE_PLAN01_REPORT_FINALIZE = UNAVAILABLE_WITH_TYPED_REASON
+PLAN02_REPORT_BEHAVIOR = UNCHANGED
+LEVEL_C = 7/7 PASS
+LEVEL_C2 = 7/7 PASS
+D0_REAL_UPLOAD_TO_FRESH_WORKER = PASS
+RELEASE_CRITICAL_INTEGRATION_GAPS = 0
+SCIENTIFIC_DEFECTS = 0
+SECURITY_DEFECTS = 0
+REGISTRY = 62
+DATAPROFILE = 2.4
+ANALYSIS_INTENT = 1.0
+ELIGIBILITY_RESOLUTION = 1.0
+ANALYSIS_PLAN = 0.1 / 0.2
+MIGRATION = 0007_phase10m1_workspace_domain
+CURRENT_FACT_MODEL_HASH = e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06
+FACT_MODEL_HASH_IMPACT = NO
+CURRENT_SCOPE_BASELINE_HASH = f188b3e15aa94111787297ffde07b37f90cfdd1fe4e910e39f941e956b455455
+SCOPE_BASELINE_HASH_IMPACT = YES
+BASELINE_DETERMINISM = PASS
+NEW_SCIENTIFIC_TOOLS = 0
+NEW_SCIENTIFIC_ALGORITHMS = 0
+NEW_ARTIFACT_FAMILIES = 0
+NEW_ANALYSISINTENT_VERSION = 0
+NEW_ELIGIBILITY_VERSION = 0
+NEW_ANALYSISPLAN_VERSION = 0
+NEW_DATABASE_MIGRATIONS = 0
+NEW_DEPENDENCIES = 0
+NEW_LLM_CALL_SITES = 0
+REAL_LLM_CALLS = 0
+PHASE13_2_ATTEMPT_1 = FAILED_HISTORICAL
+PHASE13_2_ATTEMPT_2 = FAILED_RERUN_HISTORICAL
+PHASE13_2_ATTEMPT_3 = FAILED_RERUN_HISTORICAL
+PHASE13_2_ATTEMPT_4 = FAILED_RERUN_HISTORICAL
+PHASE13_2_ATTEMPT_5 = REVIEWER_GATE / NOT_EXECUTED / NOT_QUEUED
+P13X2_ACCEPTANCE = 0/8
+FIX_FORWARD_4_IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI
+FIX_FORWARD_4_COMPLETION_RECORDED
+PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+```

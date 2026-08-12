@@ -2639,4 +2639,6 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Pass seven-demo semantic capability coverage without Job creation.
 - [x] Separate Plan 0.1 scientific read-only state from exact Report actions.
 - [x] Pass fresh Demo 1 PostgreSQL/Redis/MinIO/fresh Worker/Chromium closure smoke.
-- [ ] Pass full regression and implementation exact-SHA CI, then record and archive.
+- [x] Pass full regression and implementation
+  71985085ac0ab0dbe36b141b88c0251d76892689 exact-SHA CI 31597787296,
+  then record completion. Queue archive follows in its own direct commit.

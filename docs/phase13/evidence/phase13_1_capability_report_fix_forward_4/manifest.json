@@ -109,8 +109,8 @@
     },
     {
       "path": "implementation_ci_records.json",
-      "sha256": "5b8e5f14efb880dd827cb2b111f5f390fa3f4b96a7fe43bf8ff6739a9c8d2fe6",
-      "size": 607
+      "sha256": "0eb5676156998d5da75dcf1c687df8b37febdfa0fa1bd834b404970d9088178f",
+      "size": 754
     },
     {
       "path": "initial_release_scope_baseline.json",

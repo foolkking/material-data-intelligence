@@ -204,7 +204,7 @@ npm audit = UNAVAILABLE_CONFIGURED_MIRROR_NOT_IMPLEMENTED""")
     _write_text("secret_scan.txt", "NO_SECRET_PATTERN_HITS = PASS\nREAL_LLM_CALLS = 0\nEXTERNAL_DOWNLOADS = 0")
     _docs(scope["semanticHash"])
 
-    _write_json("implementation_ci_records.json", {"candidates": [{"sha": "f3ec578acd1cfaddb9437d74869cf437ad17c848", "ci": 31594862635, "conclusion": "failure", "failures": [{"step": "Run unit tests", "failure": "test_fix_forward_4_evidence_manifest_is_complete_and_exact: manifest sha256 mismatch - lines were recorded with CRLF but CI uses LF"}, {"step": "Replay Phase 10M-6 Workspace recovery browser evidence", "failure": "Fixture report sources response lacked actionEligibility field; Preview button remained disabled"}]}]})
+    _write_json("implementation_ci_records.json", {"candidates": [{"sha": "f3ec578acd1cfaddb9437d74869cf437ad17c848", "ci": 31594862635, "conclusion": "failure", "failures": [{"step": "Run unit tests", "failure": "test_fix_forward_4_evidence_manifest_is_complete_and_exact: manifest sha256 mismatch - lines were recorded with CRLF but CI uses LF"}, {"step": "Replay Phase 10M-6 Workspace recovery browser evidence", "failure": "Fixture report sources response lacked actionEligibility field; Preview button remained disabled"}]}, {"sha": "71985085ac0ab0dbe36b141b88c0251d76892689", "ci": 31597787296, "conclusion": "success", "failures": []}]})
     manifest = []
     for path in sorted(OUT.rglob("*"), key=lambda item: item.relative_to(OUT).as_posix()):
         if path.is_file() and path.name != "manifest.json":
