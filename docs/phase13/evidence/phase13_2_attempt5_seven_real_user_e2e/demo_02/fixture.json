@@ -1,0 +1,9 @@
+{
+  "fixtureIds": [
+    "P13-DEMO-02-FIX-01"
+  ],
+  "freshUpload": true,
+  "paths": [
+    "tests/fixtures/tables/ml_results.csv"
+  ]
+}

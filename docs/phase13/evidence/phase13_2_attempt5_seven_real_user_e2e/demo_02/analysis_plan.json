@@ -1,0 +1,98 @@
+{
+  "assumptions": [
+    "Capability selection used exact persisted Intent/Profile/Registry identities."
+  ],
+  "datasetId": "dataset_1d55d0bfca4c43aeab46a967",
+  "expectedArtifacts": [
+    {
+      "fromStepId": "step_001",
+      "name": "dataset_materials_explorer_table_json.json",
+      "type": "table_json"
+    },
+    {
+      "fromStepId": "step_002",
+      "name": "ml_regression_evaluation_table_json.json",
+      "type": "table_json"
+    }
+  ],
+  "goal": "Evaluate these materials-model predictions and explain the largest errors and limitations.",
+  "profileId": "profile_dataset_1d55d0bfca4c43aeab46a967_v2",
+  "schemaVersion": "0.1",
+  "steps": [
+    {
+      "constraints": null,
+      "inputRefs": [
+        {
+          "columnName": null,
+          "fieldRole": null,
+          "objectType": null,
+          "ref": "profile",
+          "refType": "profile"
+        },
+        {
+          "columnName": null,
+          "fieldRole": "table",
+          "objectType": "DataFrame",
+          "ref": "obj_dataframe_a0ebd1d365af",
+          "refType": "normalized_object"
+        }
+      ],
+      "output": {
+        "artifactTypes": [
+          "table_json",
+          "quality_issues_json",
+          "summary_md",
+          "recipe_json"
+        ],
+        "displayTarget": "overview"
+      },
+      "params": {
+        "tableObjectId": "obj_dataframe_a0ebd1d365af"
+      },
+      "purpose": "Satisfy the validated structured AnalysisIntent with an eligible registered capability.",
+      "reason": "Selected from exact Intent, DataProfile, Registry, and parameter-binding facts.",
+      "stepId": "step_001",
+      "toolId": "dataset.materials_explorer"
+    },
+    {
+      "constraints": null,
+      "inputRefs": [
+        {
+          "columnName": null,
+          "fieldRole": null,
+          "objectType": null,
+          "ref": "profile",
+          "refType": "profile"
+        },
+        {
+          "columnName": null,
+          "fieldRole": "table",
+          "objectType": "DataFrame",
+          "ref": "obj_dataframe_a0ebd1d365af",
+          "refType": "normalized_object"
+        }
+      ],
+      "output": {
+        "artifactTypes": [
+          "table_json",
+          "summary_md",
+          "recipe_json"
+        ],
+        "displayTarget": "ml"
+      },
+      "params": {
+        "groupIds": [
+          "obj_dataframe_a0ebd1d365af:regression:default"
+        ]
+      },
+      "purpose": "Satisfy the validated structured AnalysisIntent with an eligible registered capability.",
+      "reason": "Selected from exact Intent, DataProfile, Registry, and parameter-binding facts.",
+      "stepId": "step_002",
+      "toolId": "ml.regression_evaluation"
+    }
+  ],
+  "toolRegistryVersion": "0.1.0",
+  "warnings": [
+    "Some requested delivery formats are not produced by the selected current capabilities."
+  ]
+}

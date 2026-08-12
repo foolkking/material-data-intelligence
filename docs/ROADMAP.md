@@ -274,3 +274,12 @@ not reach the sealed Composition Space capability, and the resulting Plan 0.1
 Workspace was read-only so the real user could not finalize Report/Recipe.
 Phase 13-3 remains blocked pending reviewer action. No production or scientific
 change was made in Attempt 4.
+
+## Phase 13-2 Attempt 5 - Failed
+
+Attempt 5 completed fresh Demos 1-3 through real service-backed execution and
+Chromium Report/Recipe closure, then stopped under the P0 rule. Demo 4 failed
+Report action eligibility with `WORKSPACE_SOURCE_NOT_CURRENT` (`P13-R5-001`).
+Demo 5 failed the real upload/Profile-to-Intent handoff with
+`INTENT_PROFILE_CAPABILITY_MISSING` (`P13-R5-002`). Demo 6-7 were not executed.
+Phase 13-3 remains blocked and Initial Release is incomplete.

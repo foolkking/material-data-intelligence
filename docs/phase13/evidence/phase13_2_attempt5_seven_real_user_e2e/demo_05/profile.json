@@ -1,0 +1,416 @@
+{
+  "analysisReadiness": [
+    {
+      "capability": "dataset_materials_explorer",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "profile_2"
+      ]
+    },
+    {
+      "capability": "table_distribution",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:table"
+      ],
+      "requiredSemantics": [
+        "table"
+      ]
+    },
+    {
+      "capability": "scatter",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:two_finite_numeric_columns"
+      ],
+      "requiredSemantics": [
+        "table"
+      ]
+    },
+    {
+      "capability": "histogram",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:finite_numeric_column"
+      ],
+      "requiredSemantics": [
+        "table"
+      ]
+    },
+    {
+      "capability": "correlation",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:two_finite_numeric_columns"
+      ],
+      "requiredSemantics": [
+        "table"
+      ]
+    },
+    {
+      "capability": "composition_summary",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "formula_statistics",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "element_distribution",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "chemical_system_visualization",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "structure_summary",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "structure"
+      ]
+    },
+    {
+      "capability": "trajectory_visualization",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:trajectory"
+      ],
+      "requiredSemantics": [
+        "trajectory"
+      ]
+    },
+    {
+      "capability": "phonon_visualization",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:phonon"
+      ],
+      "requiredSemantics": [
+        "phonon"
+      ]
+    },
+    {
+      "capability": "volumetric_visualization",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:volumetric"
+      ],
+      "requiredSemantics": [
+        "volumetric"
+      ]
+    },
+    {
+      "capability": "regression_evaluation",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:regression_prediction",
+        "MISSING:regression_target"
+      ],
+      "requiredSemantics": [
+        "regression_prediction",
+        "regression_target"
+      ]
+    },
+    {
+      "capability": "uncertainty_evaluation",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:regression_prediction",
+        "MISSING:regression_target",
+        "MISSING:regression_uncertainty"
+      ],
+      "requiredSemantics": [
+        "regression_prediction",
+        "regression_target",
+        "regression_uncertainty"
+      ]
+    },
+    {
+      "capability": "classification_evaluation",
+      "dataStatus": "MISSING_REQUIRED_DATA",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "MISSING:classification_output",
+        "MISSING:classification_target"
+      ],
+      "requiredSemantics": [
+        "classification_output",
+        "classification_target"
+      ]
+    },
+    {
+      "capability": "composition_space",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "material_formula"
+      ]
+    },
+    {
+      "capability": "dataset_structure_statistics",
+      "dataStatus": "READY",
+      "matchingGroups": [],
+      "platformStatus": "AVAILABLE",
+      "reasons": [
+        "DATA_REQUIREMENTS_SATISFIED"
+      ],
+      "requiredSemantics": [
+        "structure"
+      ]
+    }
+  ],
+  "coordinationReadiness": {
+    "contractVersion": "1.0",
+    "eligibleStructureCount": 1,
+    "periodicStructurePresent": true,
+    "reasons": [],
+    "status": "READY",
+    "structures": [
+      {
+        "coordinationInputStatus": "READY",
+        "disorderStatus": "ORDERED",
+        "latticeStatus": "VALID",
+        "objectHash": "e49de8a0940d3242d798b282b4898078d00bbd5b4f79cbfbf4a01328aaa7b9de",
+        "objectId": "obj_structure_e49de8a0940d",
+        "partialOccupancyStatus": "ABSENT",
+        "periodic": true,
+        "reasons": [],
+        "siteCount": 1,
+        "speciesOccupancyStatus": "ORDERED_FULL_OCCUPANCY"
+      }
+    ]
+  },
+  "createdAt": "2026-08-12T13:41:50.194553+00:00",
+  "datasetId": "dataset_30b9b4b168ba40a4863c1199",
+  "datasetType": "structure_collection",
+  "electronicReadiness": null,
+  "experimentalXrdReadiness": null,
+  "files": [
+    {
+      "detectedFormat": "json_limited",
+      "errorCode": "JSON_LIMITED_UNSUPPORTED",
+      "errorMessage": "Only pymatgen Structure JSON and simple table JSON are supported in MVP.",
+      "fileId": "file_001",
+      "fileName": "stable_band.json",
+      "parseStatus": "unsupported"
+    },
+    {
+      "detectedFormat": "json_limited",
+      "errorCode": "JSON_LIMITED_UNSUPPORTED",
+      "errorMessage": "Only pymatgen Structure JSON and simple table JSON are supported in MVP.",
+      "fileId": "file_002",
+      "fileName": "total_dos.json",
+      "parseStatus": "unsupported"
+    },
+    {
+      "detectedFormat": "poscar",
+      "fileId": "file_003",
+      "fileName": "POSCAR",
+      "parseStatus": "success"
+    }
+  ],
+  "id": "profile_dataset_30b9b4b168ba40a4863c1199_v2",
+  "objects": [
+    {
+      "count": 1,
+      "objectHash": "e49de8a0940d3242d798b282b4898078d00bbd5b4f79cbfbf4a01328aaa7b9de",
+      "objectId": "obj_structure_e49de8a0940d",
+      "objectType": "Structure",
+      "periodicity": "periodic",
+      "sourceFileIds": [
+        "file_003"
+      ]
+    }
+  ],
+  "phononSummary": null,
+  "profileContractVersion": "2.1",
+  "profileCoverage": null,
+  "profileId": "profile_dataset_30b9b4b168ba40a4863c1199_v2",
+  "qualityIssues": [
+    {
+      "code": "JSON_LIMITED_UNSUPPORTED",
+      "message": "Only pymatgen Structure JSON and simple table JSON are supported in MVP.",
+      "refs": [
+        {
+          "id": "file_001",
+          "type": "file"
+        }
+      ],
+      "severity": "warning"
+    },
+    {
+      "code": "JSON_LIMITED_UNSUPPORTED",
+      "message": "Only pymatgen Structure JSON and simple table JSON are supported in MVP.",
+      "refs": [
+        {
+          "id": "file_002",
+          "type": "file"
+        }
+      ],
+      "severity": "warning"
+    }
+  ],
+  "recommendedTasks": [
+    {
+      "availableNow": true,
+      "label": "Composition overview",
+      "reason": "Periodic structures contain composition information.",
+      "requiredTools": [
+        "composition.ptable_heatmap"
+      ],
+      "stage": "mvp",
+      "taskId": "composition.overview",
+      "taskType": "composition_overview"
+    },
+    {
+      "availableNow": true,
+      "label": "Representative structure viewer",
+      "reason": "Periodic Structure objects are available.",
+      "requiredTools": [
+        "structure.structure_3d",
+        "structure.viewer_3d"
+      ],
+      "stage": "mvp",
+      "taskId": "structure.viewer",
+      "taskType": "structure_quality"
+    }
+  ],
+  "resourceSemantics": [
+    {
+      "capabilities": [
+        "composition",
+        "structure"
+      ],
+      "facts": {
+        "chemicalSystem": "Si",
+        "density": 1.7272988896352832,
+        "elements": [
+          "Si"
+        ],
+        "formula": "Si",
+        "latticeVolume": 27.0,
+        "periodicity": "periodic",
+        "siteCount": 1,
+        "sourceFileIds": [
+          "file_003"
+        ]
+      },
+      "kind": "structure",
+      "objectHash": "e49de8a0940d3242d798b282b4898078d00bbd5b4f79cbfbf4a01328aaa7b9de",
+      "objectId": "obj_structure_e49de8a0940d",
+      "objectType": "Structure",
+      "warnings": []
+    }
+  ],
+  "sampleIdentity": null,
+  "schemaVersion": "0.1",
+  "semanticColumns": [],
+  "semanticGroups": [],
+  "semanticHash": "7f3045759057d70bec1281691f24d34ae80d0c28a0e9e2e61a77685a84e5353e",
+  "semanticRulesVersion": "phase10k1.material_profile_semantics.v1",
+  "structureSummary": {
+    "atomCountStats": {
+      "max": 1,
+      "median": 1,
+      "min": 1
+    },
+    "chemicalSystemStats": {
+      "topChemicalSystems": [
+        {
+          "chemSys": "Si",
+          "count": 1
+        }
+      ],
+      "uniqueCount": 1
+    },
+    "elements": [
+      "Si"
+    ],
+    "formulaStats": {
+      "topFormulas": [
+        {
+          "count": 1,
+          "formula": "Si"
+        }
+      ],
+      "total": 1,
+      "uniqueCount": 1
+    },
+    "hasForces": false,
+    "hasMagmoms": false,
+    "nStructures": 1,
+    "representativeStructureIds": [
+      "obj_structure_e49de8a0940d"
+    ]
+  },
+  "tableSummary": null,
+  "trajectoryReadiness": null,
+  "trajectorySummary": null,
+  "version": "2"
+}

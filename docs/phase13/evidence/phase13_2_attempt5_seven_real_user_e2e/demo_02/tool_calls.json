@@ -1,0 +1,33 @@
+{
+  "handcrafted": 0,
+  "items": [
+    {
+      "attempt": 1,
+      "error": null,
+      "id": "call_job_c571c7cd7171417c8bf5f715_step_001",
+      "idempotencyKey": "job_c571c7cd7171417c8bf5f715:step_001",
+      "jobId": "job_c571c7cd7171417c8bf5f715",
+      "params": {
+        "tableObjectId": "obj_dataframe_a0ebd1d365af"
+      },
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "dataset.materials_explorer"
+    },
+    {
+      "attempt": 1,
+      "error": null,
+      "id": "call_job_c571c7cd7171417c8bf5f715_step_002",
+      "idempotencyKey": "job_c571c7cd7171417c8bf5f715:step_002",
+      "jobId": "job_c571c7cd7171417c8bf5f715",
+      "params": {
+        "groupIds": [
+          "obj_dataframe_a0ebd1d365af:regression:default"
+        ]
+      },
+      "status": "completed",
+      "stepId": "step_002",
+      "toolId": "ml.regression_evaluation"
+    }
+  ]
+}

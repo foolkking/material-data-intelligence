@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "0.1",
+  "steps": [
+    "dataset.composition_space",
+    "dataset.materials_explorer"
+  ]
+}

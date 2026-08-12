@@ -2643,3 +2643,13 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
   71985085ac0ab0dbe36b141b88c0251d76892689 exact-SHA CI 31597787296,
   record completion, and archive only the Fix-Forward #4 task.
 - [x] Final queue: four failed Phase 13-2 blocks retained, zero executable tasks.
+
+## Phase 13-2 Attempt 5 - Failed
+
+- [x] Verify Fix-Forward #4, semantic coverage, Level C/C2, D0, current hashes,
+  and real PostgreSQL/Redis/MinIO entry authority.
+- [x] Complete fresh Demos 1-3 through Chromium UI Report Finalize and Recipe.
+- [x] Record `P13-R5-001` at Demo 4 Workspace Report source eligibility.
+- [x] Record `P13-R5-002` at Demo 5 upload/Profile-to-Intent capability handoff.
+- [x] Stop Demo 6-7 and downstream suites after the new P0 findings.
+- [ ] Reviewer-authorized remediation is required before another Phase 13-2 rerun.

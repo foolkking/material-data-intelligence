@@ -1,0 +1,16 @@
+{
+  "Linux": "NOT_EXECUTED_AFTER_P0_STOP",
+  "Windows": "CURRENT_LOCAL_EXECUTION_FAILED_AS_RECORDED",
+  "backend": "NOT_RERUN_AFTER_P0_STOP",
+  "build": "NOT_RERUN_AFTER_P0_STOP",
+  "diff": "PENDING",
+  "frontend": "NOT_RERUN_AFTER_P0_STOP",
+  "localEvidenceCandidate": {
+    "resolution": "Use repository-authoritative list_by_project method",
+    "result": "3 failed, 1 passed",
+    "rootCause": "Attempt 5 evidence generator called list_for_project on SqlAlchemyWorkspaceRepository"
+  },
+  "lock": "NOT_RERUN_AFTER_P0_STOP",
+  "phase13Focused": "PENDING_EVIDENCE_INTEGRITY_ONLY",
+  "typecheck": "NOT_RERUN_AFTER_P0_STOP"
+}

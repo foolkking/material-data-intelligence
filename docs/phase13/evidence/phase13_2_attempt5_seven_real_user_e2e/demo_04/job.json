@@ -1,0 +1,12 @@
+{
+  "createdAt": "2026-08-12T13:41:51.267230+00:00",
+  "createdBy": "user_local",
+  "datasetId": "dataset_f04d895e5f5943fcb7f84bb1",
+  "id": "job_b0a4fb2be3694da39b71fed0",
+  "jobId": "job_b0a4fb2be3694da39b71fed0",
+  "kind": "analysis",
+  "planId": "plan_e28d5214255b43a2826981cd",
+  "projectId": "project_c3fb0a6e8a9b4326a38b4de9",
+  "status": "completed",
+  "updatedAt": "2026-08-12T13:41:52.534075+00:00"
+}

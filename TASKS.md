@@ -1,6 +1,37 @@
 ---TASK---
 状态：失败
 
+# Phase 13-2 Attempt 5
+
+## Seven Canonical Real-User E2E Demonstrations - Full Fresh Rerun
+
+Execute all seven canonical demonstrations from fresh user-facing entry through
+durable PostgreSQL/MinIO source persistence, natural-language Intent,
+Eligibility, capability-aware Planner, validated AnalysisPlan, PostgreSQL Job,
+Redis queue, fresh QueueWorkerRuntime, registered Adapters, persisted Artifacts,
+Workspace, applicable Finding/Evidence/Provenance, real UI Report Finalize, and
+paired non-executable Recipe. Attempt 5 is validation-only: production and
+scientific changes are not authorized. Stop immediately on a new P0.
+
+Failure time: 2026-08-12 22:15:00 +08:00
+
+Summary: Entry authorities and real PostgreSQL/Redis/MinIO services passed.
+Fresh Demos 1-3 completed through registered Adapters, persisted Artifacts,
+Workspace, Chromium UI Report Finalize, and paired Recipe. Demo 4 completed its
+Job, three ToolCalls, and twelve Artifacts but Report source eligibility rejected
+the fresh Workspace as `WORKSPACE_SOURCE_NOT_CURRENT` (`P13-R5-001`). Demo 5
+stopped before Plan/Job with `INTENT_PROFILE_CAPABILITY_MISSING` after the real
+phonon upload (`P13-R5-002`). Demo 6-7 and downstream suites were not executed
+after the new P0 stop. Production and scientific changes: 0.
+
+Tests: fresh full demos completed `3/7`; fresh demos started `5/7`; old evidence
+reused as PASS `0`; required service skips `0`. Exact-SHA CI pending for the
+Attempt 5 failure-evidence candidate.
+---END---
+
+---TASK---
+状态：失败
+
 # Phase 13-2 Attempt 4
 
 ## Seven Canonical Real-User E2E Demonstrations - Full Fresh Rerun

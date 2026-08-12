@@ -1,0 +1,18 @@
+{
+  "consoleErrors": [],
+  "expectedClientAborts": [
+    "net::ERR_ABORTED http://127.0.0.1:8000/workspaces/workspace_71b34d99d54b8646fbf57810416e380e/report-composition/sources",
+    "net::ERR_ABORTED http://127.0.0.1:8000/workspaces/workspace_71b34d99d54b8646fbf57810416e380e/report-compositions"
+  ],
+  "externalRequests": [],
+  "failedRequests": [],
+  "failedResponses": [],
+  "finalizeEnabled": true,
+  "pageErrors": [],
+  "recipeLoaded": true,
+  "reportDetailLoaded": true,
+  "screenshot": "E:\\1project\\Material Data Intelligence\\.pytest_tmp\\fresh_demo1_report_ui.png",
+  "selectedSources": 21,
+  "status": "PASS",
+  "workspaceId": "workspace_71b34d99d54b8646fbf57810416e380e"
+}

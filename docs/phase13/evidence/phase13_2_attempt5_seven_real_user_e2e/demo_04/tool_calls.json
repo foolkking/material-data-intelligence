@@ -1,0 +1,41 @@
+{
+  "expectedCount": 3,
+  "items": [
+    {
+      "attempt": 1,
+      "error": null,
+      "id": "call_job_b0a4fb2be3694da39b71fed0_step_002",
+      "idempotencyKey": "job_b0a4fb2be3694da39b71fed0:step_002",
+      "jobId": "job_b0a4fb2be3694da39b71fed0",
+      "params": {},
+      "status": "completed",
+      "stepId": "step_002",
+      "toolId": "trajectory.msd"
+    },
+    {
+      "attempt": 1,
+      "error": null,
+      "id": "call_job_b0a4fb2be3694da39b71fed0_step_001",
+      "idempotencyKey": "job_b0a4fb2be3694da39b71fed0:step_001",
+      "jobId": "job_b0a4fb2be3694da39b71fed0",
+      "params": {
+        "fit_end_time_ps": 0.006,
+        "fit_start_time_ps": 0.0
+      },
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "trajectory.diffusion"
+    },
+    {
+      "attempt": 1,
+      "error": null,
+      "id": "call_job_b0a4fb2be3694da39b71fed0_step_003",
+      "idempotencyKey": "job_b0a4fb2be3694da39b71fed0:step_003",
+      "jobId": "job_b0a4fb2be3694da39b71fed0",
+      "params": {},
+      "status": "completed",
+      "stepId": "step_003",
+      "toolId": "trajectory.rdf"
+    }
+  ]
+}

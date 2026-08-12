@@ -2299,3 +2299,10 @@ Planner contracts. A fresh Demo 1 real-service smoke selected Composition Space
 and Materials Explorer, executed through PostgreSQL/Redis/MinIO/fresh Worker,
 and finalized a Report/Recipe through Chromium while the Plan 0.1 Workspace
 remained scientifically read-only. Full regression and exact-SHA CI remain.
+
+Phase 13-2 Attempt 5 stopped after five fresh starts and three completed full
+product paths. Demos 1-3 passed through real UI Report/Recipe closure. Demo 4
+failed at current Workspace Report source eligibility (`P13-R5-001`); Demo 5
+failed before Plan/Job because the real upload Profile lacked canonical phonon
+capability facts (`P13-R5-002`). Demo 6-7 and downstream suites remain
+`NOT_EXECUTED_AFTER_P0_STOP`. No production or scientific repair was made.

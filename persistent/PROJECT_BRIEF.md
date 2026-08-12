@@ -626,3 +626,15 @@ actions: every Workspace projects the Report surface, while exact server-derived
 M5 eligibility controls Preview/Finalize/Recipe inspection. Current Plan 0.1 may
 finalize; incomplete legacy and stale sources remain typed unavailable. The
 current Scope Baseline is `f188b3e15aa94111787297ffde07b37f90cfdd1fe4e910e39f941e956b455455`.
+
+## Phase 13-2 Attempt 5
+
+Attempt 5 is `FAILED / REVIEWER_ACTION_REQUIRED`. Fresh Demos 1-3 completed
+through real PostgreSQL/Redis/MinIO, fresh Worker, registered Adapters,
+Workspace, Chromium UI Report Finalize, and paired Recipe. Demo 4 exposed
+`P13-R5-001`: a completed current trajectory Workspace is rejected by Report
+source eligibility as `WORKSPACE_SOURCE_NOT_CURRENT`. Demo 5 exposed
+`P13-R5-002`: real phonon upload/Profile reaches Intent validation without the
+required phonon capability facts and fails `INTENT_PROFILE_CAPABILITY_MISSING`.
+Demo 6-7 were not executed after the P0 stop. Production/scientific changes are
+zero; Phase 13-3 remains blocked.

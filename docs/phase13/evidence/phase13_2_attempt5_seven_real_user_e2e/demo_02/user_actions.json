@@ -1,0 +1,14 @@
+{
+  "actions": [
+    "upload",
+    "enter NL goal",
+    "run",
+    "open Workspace",
+    "open Report",
+    "preview",
+    "UI Finalize",
+    "open Recipe"
+  ],
+  "humanEquivalent": true,
+  "internalIdsRequired": false
+}

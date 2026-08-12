@@ -4706,3 +4706,15 @@ by Workspace read-only policy. Both gaps require separate reviewer authority.
   staleness and Artifact integrity facts.
 - This decision adds no schema, migration, Plan version, Tool, Artifact family,
   scientific behavior or Recipe execution authority.
+
+## Phase 13-2 Attempt 5 Runtime Findings
+
+- Semantic coverage, C/C2 and D0 remain admission gates, not substitutes for a
+  full current Workspace/Report closure across every canonical resource family.
+- A fresh terminal Job with persisted Artifacts may still be ineligible for M5
+  Report actions; `P13-R5-001` requires repository-grounded currentness audit.
+- Canonical phonon source mappings must survive real upload into Profile facts
+  consumed by AnalysisIntent; static normalized-mapping coverage is insufficient
+  when the real upload path reports `INTENT_PROFILE_CAPABILITY_MISSING`.
+- Attempt 5 carries no repair authority. These findings add no new schema,
+  capability, Tool, science, or runtime fallback authority.

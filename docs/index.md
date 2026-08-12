@@ -806,3 +806,5 @@ and
 | [`phase13/phase13_2_attempt4_failure.md`](phase13/phase13_2_attempt4_failure.md) | Attempt 4 fresh Demo 1 P0 stop and immutable failure result |
 | [`phase13/phase13_2_attempt4_release_findings.md`](phase13/phase13_2_attempt4_release_findings.md) | P13-R4-001/002 capability and real-user Report closure defects |
 | [`phase13/evidence/phase13_2_attempt4_seven_real_user_e2e/`](phase13/evidence/phase13_2_attempt4_seven_real_user_e2e/) | Attempt 4 entry, fresh execution, findings, authority and manifest evidence |
+| [`phase13/phase13_2_attempt5_failure.md`](phase13/phase13_2_attempt5_failure.md) | Attempt 5 fresh Demo 1-5 execution and P0 stop result |
+| [`phase13/evidence/phase13_2_attempt5_seven_real_user_e2e/`](phase13/evidence/phase13_2_attempt5_seven_real_user_e2e/) | Attempt 5 fresh execution, UI closure, findings and manifest evidence |
