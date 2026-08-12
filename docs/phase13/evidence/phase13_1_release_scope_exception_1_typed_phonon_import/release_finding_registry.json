@@ -1,0 +1,12 @@
+{
+  "findings": [
+    {
+      "category": "RELEASE_CRITICAL_INTEGRATION_DEFECT",
+      "class": "CANONICAL_PHONON_JOB_EXCEEDS_WORKSPACE_PANEL_CAP",
+      "findingId": "P13-RSE1-001",
+      "rootCause": "The fresh canonical Demo 5 Job persisted 27 Artifacts from four registered phonon/BZ ToolCalls, but deterministic Workspace projection expands them to more than the fixed 32-panel contract and rejects the Workspace with PANEL_CAP_EXCEEDED before Report composition.",
+      "severity": "P0",
+      "status": "OPEN_REVIEWER_ACTION_REQUIRED"
+    }
+  ]
+}

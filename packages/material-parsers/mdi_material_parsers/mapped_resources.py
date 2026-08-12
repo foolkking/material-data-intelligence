@@ -25,8 +25,10 @@ def map_normalized_phonon_resource(
     *,
     dataset_id: str,
     file_id: str,
+    declared_kind: str | None = None,
+    declared_contract_version: str | None = None,
 ) -> ParseResult:
-    """Map an approved normalized phonon source without enabling upload parsing."""
+    """Map an explicitly declared canonical phonon resource."""
 
     file_path = Path(path)
     raw = file_path.read_bytes()
@@ -38,6 +40,8 @@ def map_normalized_phonon_resource(
 
     schema_version = payload.get("schema_version")
     if schema_version == PHONON_BAND_SCHEMA_VERSION:
+        if declared_kind not in {None, "phonon_band"}:
+            raise ValueError("TYPED_PHONON_IMPORT_KIND_MISMATCH")
         validation = validate_phonon_band(payload, raw_size_bytes=len(raw))
         object_type = MaterialObjectType.PhononBand
         kind = "band"
@@ -51,6 +55,8 @@ def map_normalized_phonon_resource(
             ),
         }
     elif schema_version == PHONON_DOS_SCHEMA_VERSION:
+        if declared_kind not in {None, "phonon_dos"}:
+            raise ValueError("TYPED_PHONON_IMPORT_KIND_MISMATCH")
         validation = validate_phonon_dos(payload, raw_size_bytes=len(raw))
         object_type = MaterialObjectType.PhononDos
         kind = "dos"
@@ -60,6 +66,8 @@ def map_normalized_phonon_resource(
         }
     else:
         raise ValueError("Normalized phonon resource schema is not approved.")
+    if declared_contract_version is not None and declared_contract_version != schema_version:
+        raise ValueError("TYPED_PHONON_IMPORT_CONTRACT_VERSION_MISMATCH")
     if not validation.valid:
         raise ValueError(
             "Normalized phonon resource validation failed: "
@@ -75,7 +83,8 @@ def map_normalized_phonon_resource(
         source_file_ids=[file_id],
         storage_key=f"normalized/{object_id}/phonon.json",
         metadata={
-            "detectedFormat": "normalized_mapping",
+            "detectedFormat": "typed_phonon_import" if declared_kind else "normalized_mapping",
+            "declaredImportKind": declared_kind,
             "schemaVersion": schema_version,
             **metadata,
         },

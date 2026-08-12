@@ -1,6 +1,40 @@
 ---TASK---
 状态：失败
 
+# Phase 13-1 Release Scope Exception #1
+## Bounded Typed Phonon User Import + Fix-Forward #5 Resolution
+
+Reviewer-authorized bounded product-scope exception: add explicit normal-user
+typed imports for existing `PhononBand` and `PhononDos` contracts while keeping
+generic phonon YAML/JSON `MAPPING_ONLY`; include the existing R5-001 correction
+in the final exact-SHA verification; execute only fresh Demo 4 and Demo 5
+product-closure smokes; update Fact/Scope authorities; preserve all five
+historical Phase 13-2 failed attempt blocks. Attempt 6 is not authorized and
+must not be queued.
+
+失败时间：2026-08-13 00:20:00 +08:00
+
+失败原因：The fresh typed Demo 5 path passed explicit Band/DOS import,
+DataProfile, Intent, Eligibility, Plan, PostgreSQL Job, Redis, fresh Worker,
+four registered ToolCalls, and 27 persisted Artifacts. Workspace projection
+then returned `PANEL_CAP_EXCEEDED` because the canonical output expands beyond
+the fixed 32-panel contract (`P13-RSE1-001`). The P0 stop rule prevented
+Chromium Report Finalize and prevented R5-001/R5-002 closure. Production fixes
+for the new finding were not attempted.
+
+修改文件：typed import candidate, frontend Data import surface, focused tests,
+Release Scope Exception #1 runner/evidence/docs, `TASKS.md`, and `results.md`.
+
+测试结果：typed import backend `10 passed`; PlannerWorkbench `33 passed`;
+phonon contract/adapters `76 passed`; typecheck PASS; Demo 4 prepared through
+fresh Workspace; Demo 5 failed at Workspace projection after 27 Artifacts.
+Full regression and browser closure were not executed after the new P0 stop.
+
+---END---
+
+---TASK---
+状态：失败
+
 # Phase 13-1 Integration Fix-Forward #5
 ## Trajectory Currentness + Phonon Ingestion Authority Closure
 

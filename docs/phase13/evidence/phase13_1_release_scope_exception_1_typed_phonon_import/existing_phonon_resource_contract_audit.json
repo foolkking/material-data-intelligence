@@ -1,0 +1,15 @@
+{
+  "band": {
+    "kind": "PhononBand",
+    "schemaVersion": "phase10h.phonon_band.v1"
+  },
+  "dos": {
+    "kind": "PhononDos",
+    "schemaVersion": "phase10h.phonon_dos.v1"
+  },
+  "migrationRequired": false,
+  "newScientificAdapter": 0,
+  "newScientificSchema": 0,
+  "newTool": 0,
+  "reusedExistingContracts": true
+}

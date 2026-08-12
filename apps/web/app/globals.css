@@ -3546,6 +3546,25 @@ pre {
   box-shadow: none;
 }
 
+.typed-import-fieldset {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 16px 0 0;
+  padding: 12px;
+  border: 1px solid var(--border, #d7dce2);
+  border-radius: 6px;
+}
+
+.typed-import-fieldset legend {
+  padding: 0 4px;
+  font-weight: 700;
+}
+
+.typed-import-fieldset small {
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 1180px) {
   .global-context-bar {
     grid-template-columns: 1fr 1fr;

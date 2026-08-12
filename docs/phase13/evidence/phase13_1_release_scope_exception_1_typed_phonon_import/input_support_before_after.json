@@ -1,0 +1,14 @@
+{
+  "before": {
+    "generic": "MAPPING_ONLY",
+    "typedBand": "ABSENT",
+    "typedDos": "ABSENT"
+  },
+  "candidate": {
+    "generic": "MAPPING_ONLY",
+    "typedBand": "BOUNDED",
+    "typedDos": "BOUNDED"
+  },
+  "currentReleaseAuthority": "UNCHANGED_PENDING_REVIEWER_ACTION",
+  "status": "CANDIDATE_NOT_PROMOTED_AFTER_P0_STOP"
+}

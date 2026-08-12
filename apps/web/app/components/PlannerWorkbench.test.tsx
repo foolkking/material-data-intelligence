@@ -844,6 +844,53 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(profileIntelligence.textContent).toContain("FORMULA_VALUES_PARTIALLY_INVALID");
   });
 
+  it("submits explicit typed phonon declarations without exposing internal resource ids", async () => {
+    let uploadBody: Record<string, unknown> | null = null;
+    fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if ((init?.method || "GET") === "POST" && url.endsWith("/datasets/upload")) {
+        uploadBody = JSON.parse(String(init?.body || "{}"));
+        return jsonResponse({
+          id: "dataset_phonon",
+          datasetId: "dataset_phonon",
+          projectId: "project_local",
+          name: "typed phonon",
+          status: "profile_ready",
+          profileId: "profile_phonon",
+          profile: { ...demoProfile, datasetId: "dataset_phonon", profileId: "profile_phonon", phononSummary: { resourceKinds: ["PhononBand", "PhononDos"] } },
+        });
+      }
+      return mockPlannerFetch(input, init);
+    });
+    const user = userEvent.setup();
+    render(<PlannerWorkbench />);
+
+    await user.click(contextButton(0));
+    const dialog = screen.getByRole("dialog");
+    const bandFile = new File(["{}"], "stable_band.json", { type: "application/json" });
+    const dosFile = new File(["{}"], "total_dos.json", { type: "application/json" });
+    const structureFile = new File(["Si"], "POSCAR", { type: "text/plain" });
+    Object.defineProperty(bandFile, "text", { value: async () => "{}" });
+    Object.defineProperty(dosFile, "text", { value: async () => "{}" });
+    Object.defineProperty(structureFile, "text", { value: async () => "Si" });
+    await user.upload(within(dialog).getByLabelText("选择 Phonon Band"), bandFile);
+    await user.upload(within(dialog).getByLabelText("选择 Phonon DOS"), dosFile);
+    await user.upload(within(dialog).getByLabelText("选择结构上下文"), structureFile);
+    expect(within(dialog).queryByLabelText(/resource id/i)).toBeNull();
+    expect(within(dialog).queryByLabelText(/tool id/i)).toBeNull();
+    await user.click(within(dialog).getByRole("button", { name: "导入声子数据" }));
+
+    await waitFor(() => expect(uploadBody).not.toBeNull());
+    if (uploadBody === null) throw new Error("typed import request was not captured");
+    const files = (uploadBody as unknown as { files: Array<Record<string, unknown>> }).files;
+    expect(files).toEqual([
+      expect.objectContaining({ fileName: "stable_band.json", importKind: "phonon_band", contractVersion: "phase10h.phonon_band.v1" }),
+      expect.objectContaining({ fileName: "total_dos.json", importKind: "phonon_dos", contractVersion: "phase10h.phonon_dos.v1" }),
+      expect.objectContaining({ fileName: "POSCAR" }),
+    ]);
+    expect(files[2]).not.toHaveProperty("importKind");
+  });
+
   it("loads metadata-only Workspace history and exposes exact Workspace routes", async () => {
     fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);

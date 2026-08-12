@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { createTranslator, type Locale, type MessageKey } from "../lib/i18n";
+import { PHONON_BAND_SCHEMA_VERSION, PHONON_DOS_SCHEMA_VERSION } from "../lib/phononContract";
 import { createWorkspace, listProjectWorkspaces, WorkspaceApiError, type WorkspaceSummary } from "../lib/workspace-api";
 import { ViewerSceneRendererSurface } from "./viewer-scene/ViewerSceneRendererSurface";
 import { TrajectoryViewerSurface } from "./trajectory-viewer/TrajectoryViewerSurface";
@@ -394,6 +395,37 @@ export function PlannerWorkbench() {
     }
   }
 
+  async function handleTypedPhononImport(bandFile: File, dosFile: File, structureFile: File) {
+    setDataBusy(true);
+    try {
+      const [bandContent, dosContent, structureContent] = await Promise.all([
+        bandFile.text(), dosFile.text(), structureFile.text(),
+      ]);
+      const uploaded = await uploadDataset({
+        projectId,
+        datasetName: `${bandFile.name.replace(/\.[^.]+$/, "")} phonon dataset`,
+        files: [
+          { fileName: bandFile.name, content: bandContent, importKind: "phonon_band", contractVersion: PHONON_BAND_SCHEMA_VERSION },
+          { fileName: dosFile.name, content: dosContent, importKind: "phonon_dos", contractVersion: PHONON_DOS_SCHEMA_VERSION },
+          { fileName: structureFile.name, content: structureContent },
+        ],
+      });
+      const nextDatasetId = uploaded.datasetId || uploaded.id;
+      setDatasetId(nextDatasetId);
+      if (uploaded.profile) {
+        setProfile(uploaded.profile);
+        setProfileId(uploaded.profile.profileId || nextDatasetId);
+      }
+      setDataMessage(t("typedPhononImportCompleted"));
+      await refreshDatasets();
+      setDatasetDialogOpen(false);
+    } catch (error) {
+      setSubmitError(error as Error);
+    } finally {
+      setDataBusy(false);
+    }
+  }
+
   async function handleProviderTest() {
     setProviderResult(null);
     const result = await testPlannerProvider({
@@ -761,6 +793,7 @@ export function PlannerWorkbench() {
           onLoadDemo={handleLoadDemo}
           onGenerateProfile={handleGenerateProfile}
           onUploadFile={handleUploadFile}
+          onTypedPhononImport={handleTypedPhononImport}
           onClose={() => setDatasetDialogOpen(false)}
         />
       ) : null}
@@ -1081,9 +1114,14 @@ function DatasetCommandDialog(props: {
   onLoadDemo: () => Promise<void>;
   onGenerateProfile: () => Promise<void>;
   onUploadFile: (file: File | null) => Promise<void>;
+  onTypedPhononImport: (bandFile: File, dosFile: File, structureFile: File) => Promise<void>;
   onClose: () => void;
 }) {
   const { t } = props;
+  const [phononBandFile, setPhononBandFile] = useState<File | null>(null);
+  const [phononDosFile, setPhononDosFile] = useState<File | null>(null);
+  const [phononStructureFile, setPhononStructureFile] = useState<File | null>(null);
+  const phononReady = Boolean(phononBandFile && phononDosFile && phononStructureFile);
   return (
     <div className="dialog-backdrop" role="presentation">
       <section className="dialog-panel" role="dialog" aria-modal="true" aria-label={t("datasetDialogTitle")}>
@@ -1126,6 +1164,34 @@ function DatasetCommandDialog(props: {
               </label>
             </div>
             <p className="selector-status">{props.dataMessage}</p>
+            <fieldset className="typed-import-fieldset">
+              <legend>{t("importScientificData")}</legend>
+              <p className="selector-status">{t("typedPhononImportHint")}</p>
+              <label className="file-button">
+                {t("selectPhononBand")}
+                <input aria-label={t("selectPhononBand")} type="file" accept="application/json,.json" onChange={(event) => setPhononBandFile(event.currentTarget.files?.[0] || null)} />
+              </label>
+              <small>{phononBandFile?.name || t("fileNotSelected")}</small>
+              <label className="file-button">
+                {t("selectPhononDos")}
+                <input aria-label={t("selectPhononDos")} type="file" accept="application/json,.json" onChange={(event) => setPhononDosFile(event.currentTarget.files?.[0] || null)} />
+              </label>
+              <small>{phononDosFile?.name || t("fileNotSelected")}</small>
+              <label className="file-button">
+                {t("selectStructureContext")}
+                <input aria-label={t("selectStructureContext")} type="file" onChange={(event) => setPhononStructureFile(event.currentTarget.files?.[0] || null)} />
+              </label>
+              <small>{phononStructureFile?.name || t("fileNotSelected")}</small>
+              <button
+                type="button"
+                disabled={props.busy || !phononReady}
+                onClick={() => phononBandFile && phononDosFile && phononStructureFile
+                  ? void props.onTypedPhononImport(phononBandFile, phononDosFile, phononStructureFile)
+                  : undefined}
+              >
+                {t("importTypedPhonon")}
+              </button>
+            </fieldset>
           </div>
           <div className="panel compact-panel">
             <PanelHeading title={t("profileSummary")} badge={props.profile?.profileId || t("profileNotReady")} />

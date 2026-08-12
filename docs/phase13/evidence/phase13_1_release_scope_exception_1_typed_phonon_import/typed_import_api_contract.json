@@ -1,0 +1,8 @@
+{
+  "additiveFields": [
+    "importKind",
+    "contractVersion"
+  ],
+  "newRouteCount": 0,
+  "route": "/datasets/upload"
+}

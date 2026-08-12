@@ -7,7 +7,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Literal
 
 import pandas as pd
 from pydantic import BaseModel, Field, model_validator
@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field, model_validator
 from mdi_api.artifact_storage import LocalFileArtifactStorage
 from mdi_adapters import ToolExecutionContext
 from mdi_artifact_core import ArtifactPayload, LocalArtifactExporter, content_hash, stable_json_dumps
-from mdi_material_parsers import NormalizedObjectDraft, ParseResult, build_data_profile, parse_file
+from mdi_material_parsers import NormalizedObjectDraft, ParseResult, build_data_profile, map_normalized_phonon_resource, parse_file
 from mdi_schemas import (
     AnalysisPlan,
     AnalysisStep,
@@ -55,6 +55,14 @@ class CreateProjectRequest(BaseModel):
 class InlineUploadFile(BaseModel):
     fileName: str = Field(min_length=1, max_length=240)
     content: str
+    importKind: Literal["phonon_band", "phonon_dos"] | None = None
+    contractVersion: str | None = Field(default=None, min_length=1, max_length=128)
+
+    @model_validator(mode="after")
+    def validate_typed_import_declaration(self) -> "InlineUploadFile":
+        if self.contractVersion is not None and self.importKind is None:
+            raise ValueError("TYPED_PHONON_IMPORT_KIND_REQUIRED")
+        return self
 
 
 class DatasetUploadRequest(BaseModel):
@@ -251,9 +259,7 @@ class Phase2ProductRuntime:
         self._dataset_seq += 1
         dataset_id = _runtime_record_id("dataset", self._dataset_seq)
         paths = self._materialize_uploads(request, dataset_id)
-        parse_results: list[ParseResult] = []
-        for index, path in enumerate(paths, start=1):
-            parse_results.append(parse_file(path, dataset_id=dataset_id, file_id=f"file_{index:03d}"))
+        parse_results = self._parse_upload_paths(request, paths, dataset_id)
 
         objects = [obj for result in parse_results for obj in result.objects]
         profile = build_data_profile(
@@ -329,9 +335,7 @@ class Phase2ProductRuntime:
             ],
         )
         paths = self._materialize_uploads(request, dataset_id)
-        parse_results: list[ParseResult] = []
-        for index, path in enumerate(paths, start=1):
-            parse_results.append(parse_file(path, dataset_id=dataset_id, file_id=f"file_{index:03d}"))
+        parse_results = self._parse_upload_paths(request, paths, dataset_id)
 
         objects = [obj for result in parse_results for obj in result.objects]
         profile = build_data_profile(
@@ -621,6 +625,30 @@ class Phase2ProductRuntime:
             target.write_text(inline_file.content, encoding="utf-8")
             paths.append(target)
         return paths
+
+    def _parse_upload_paths(
+        self,
+        request: DatasetUploadRequest,
+        paths: list[Path],
+        dataset_id: str,
+    ) -> list[ParseResult]:
+        parse_results: list[ParseResult] = []
+        for index, path in enumerate(paths, start=1):
+            inline_index = index - len(request.filePaths) - 1
+            inline_file = request.files[inline_index] if inline_index >= 0 else None
+            if inline_file is not None and inline_file.importKind is not None:
+                parse_results.append(
+                    map_normalized_phonon_resource(
+                        path,
+                        dataset_id=dataset_id,
+                        file_id=f"file_{index:03d}",
+                        declared_kind=inline_file.importKind,
+                        declared_contract_version=inline_file.contractVersion,
+                    )
+                )
+            else:
+                parse_results.append(parse_file(path, dataset_id=dataset_id, file_id=f"file_{index:03d}"))
+        return parse_results
 
     def _export_normalized_objects(
         self,

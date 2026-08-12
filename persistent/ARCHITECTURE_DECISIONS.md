@@ -4731,3 +4731,15 @@ by Workspace read-only policy. Both gaps require separate reviewer authority.
 - Generic phonon YAML/JSON remains `MAPPING_ONLY`. Adding a user-visible typed
   phonon import is an input-support/scope authority decision, not an integration
   wiring fix authorized by Fix-Forward #5.
+
+## Phase 13 Typed Phonon Candidate and Workspace Capacity Finding
+
+- Explicit import kind plus exact existing schema version is sufficient to use
+  the current Dataset/Profile/MinIO resource pipeline; filename and MIME remain
+  non-authoritative and generic JSON is not auto-promoted.
+- This candidate does not become current release support authority while
+  `P13-RSE1-001` is open.
+- Canonical Demo 5 produces 27 persisted Artifacts, but current deterministic
+  projection expands them beyond `WORKSPACE_MAX_PANELS = 32`; Workspace rejects
+  the request before Report composition. Any repair requires separate reviewer
+  authority and must not weaken the fixed cap without a bounded product policy.

@@ -11614,3 +11614,76 @@ FIX_FORWARD_5_IMPLEMENTATION_EXACT_SHA_CI = NOT_RUN_BRANCH_C_STOP
 FIX_FORWARD_5_COMPLETION_RECORDED = NO
 FIX_FORWARD_5_QUEUE_ARCHIVED = NO
 ```
+
+# Phase 13-1 Release Scope Exception #1 Result
+
+Status: FAILED / REVIEWER_ACTION_REQUIRED
+
+Time: 2026-08-13 00:20:00 +08:00
+
+The authorized bounded typed `PhononBand`/`PhononDos` import candidate reused
+the existing `/datasets/upload`, strict Phase 10H resource contracts,
+PostgreSQL Dataset/DataProfile metadata, and MinIO normalized source authority.
+Generic phonon JSON remained mapping-only. Focused backend tests passed 10/10,
+PlannerWorkbench passed 33/33, retained phonon contract/Adapter tests passed
+76/76, and frontend typecheck passed.
+
+Fresh Demo 4 reached a completed three-ToolCall Job, twelve persisted Artifacts,
+a current Workspace, and eligible Report actions. Before its Chromium finalize,
+fresh Demo 5 exposed a new P0 and activated the stop rule. Demo 5 passed typed
+Band/DOS import, Profile, Intent, Eligibility, PlanValidator, PostgreSQL Job,
+Redis enqueue, a fresh Worker, four registered ToolCalls, and 27 persisted
+Artifacts. Workspace creation then returned `PANEL_CAP_EXCEEDED`: deterministic
+projection exceeds the fixed 32-panel contract. This is `P13-RSE1-001`, class
+`CANONICAL_PHONON_JOB_EXCEEDS_WORKSPACE_PANEL_CAP`.
+
+No repair for the new finding was attempted. Demo 4/5 UI Finalize, full
+regression, new Fact/Scope hashes, exact-SHA CI, completion, and queue archive
+are not applicable to this failed candidate. R5-001 and R5-002 remain open.
+
+```text
+PHASE_13_1_RELEASE_SCOPE_EXCEPTION_1 = FAILED / REVIEWER_ACTION_REQUIRED
+P13_RSE1_001 = OPEN_REVIEWER_ACTION_REQUIRED
+P13_RSE1_001_SEVERITY = P0
+P13_RSE1_001_CLASS = CANONICAL_PHONON_JOB_EXCEEDS_WORKSPACE_PANEL_CAP
+P13_R5_001 = IMPLEMENTATION_CORRECTED / FRESH_DEMO4_SMOKE_NOT_COMPLETED
+P13_R5_002 = OPEN_REVIEWER_ACTION_REQUIRED
+TYPED_PHONON_BAND_CANDIDATE = REACHED_FRESH_WORKER
+TYPED_PHONON_DOS_CANDIDATE = REACHED_FRESH_WORKER
+GENERIC_PHONON_YAML_JSON = MAPPING_ONLY
+GENERIC_PHONON_JSON_AUTO_PROMOTION = 0
+FRESH_DEMO4_PRODUCT_CLOSURE_SMOKE = NOT_COMPLETED_AFTER_P0_STOP
+FRESH_DEMO5_PRODUCT_CLOSURE_SMOKE = FAIL_PRODUCT_INTEGRATION
+DEMO5_TOOLCALLS = 4
+DEMO5_PERSISTED_ARTIFACTS = 27
+DEMO5_WORKSPACES = 0
+RELEASE_CRITICAL_INTEGRATION_GAPS = 1
+SCIENTIFIC_DEFECTS = 0
+SECURITY_DEFECTS = 0
+CURRENT_FACT_MODEL_HASH = e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06
+CURRENT_SCOPE_BASELINE_HASH = f188b3e15aa94111787297ffde07b37f90cfdd1fe4e910e39f941e956b455455
+PHASE12_PRODUCT_BASELINE_HASH = 29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4
+FACT_MODEL_HASH_IMPACT = NOT_APPLIED_AFTER_P0_STOP
+SCOPE_BASELINE_HASH_IMPACT = NOT_APPLIED_AFTER_P0_STOP
+REGISTRY = 62
+DATAPROFILE = 2.4
+ANALYSIS_INTENT = 1.0
+ELIGIBILITY_RESOLUTION = 1.0
+ANALYSIS_PLAN = 0.1 / 0.2
+MIGRATION = 0007_phase10m1_workspace_domain
+NEW_SCIENTIFIC_TOOLS = 0
+NEW_SCIENTIFIC_ALGORITHMS = 0
+NEW_ARTIFACT_FAMILIES = 0
+NEW_DATABASE_MIGRATIONS = 0
+NEW_DEPENDENCIES = 0
+NEW_LLM_CALL_SITES = 0
+REAL_LLM_CALLS = 0
+PHASE13_2_ATTEMPT_6 = REVIEWER_GATE / NOT_EXECUTED / NOT_QUEUED
+P13X2_ACCEPTANCE = 0/8
+FAILED_RETAINED_TASK_BLOCKS = 7
+EXECUTABLE_PENDING_TASKS = 0
+TASK_BLOCK_COUNT = 7
+PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+```

@@ -1,0 +1,6 @@
+{
+  "band": "docs/phase10h/fixtures/phonon_contract/stable_band.json",
+  "dos": "docs/phase10h/fixtures/phonon_contract/total_dos.json",
+  "newHandcraftedScientificValues": 0,
+  "structure": "tests/fixtures/structures/POSCAR"
+}

@@ -1,0 +1,6 @@
+{
+  "canonicalDurableExportsExact": true,
+  "redisScientificAuthority": "NONE",
+  "runtimeReparseFallback": 0,
+  "uploadToFreshWorker": "PASS"
+}

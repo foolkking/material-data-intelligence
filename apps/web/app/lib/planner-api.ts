@@ -778,7 +778,12 @@ export type CreateSecretRequest = {
 export type UploadDatasetRequest = {
   projectId: string;
   datasetName: string;
-  files: Array<{ fileName: string; content: string }>;
+  files: Array<{
+    fileName: string;
+    content: string;
+    importKind?: "phonon_band" | "phonon_dos";
+    contractVersion?: string;
+  }>;
 };
 
 export type SafeErrorPayload = {

@@ -29,8 +29,20 @@ def _current_specs() -> tuple[dict[str, Any], ...]:
         "dataset.composition_space",
         "dataset.materials_explorer",
     )
+    specs[4]["fixtures"] = (
+        (
+            "P13-DEMO-05-FIX-01",
+            "docs/phase10h/fixtures/phonon_contract/stable_band.json",
+            "typed_phonon_band_import",
+        ),
+        (
+            "P13-DEMO-05-FIX-02",
+            "docs/phase10h/fixtures/phonon_contract/total_dos.json",
+            "typed_phonon_dos_import",
+        ),
+        ("P13-DEMO-05-FIX-03", "tests/fixtures/structures/POSCAR", "parse"),
+    )
     return tuple(specs)
 
 
 CURRENT_DEMO_SPECS = _current_specs()
-

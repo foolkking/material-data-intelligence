@@ -2665,3 +2665,12 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
   Demo 5 initial-release scope revision.
 - [ ] Fresh Demo 4/5 closure, full regression, completion and archive were not
   executed after the Branch C hard stop.
+
+## Phase 13-1 Release Scope Exception #1 - Failed
+
+- [x] Reuse exact PhononBand/PhononDos contracts with explicit typed import.
+- [x] Keep generic phonon JSON mapping-only and pass focused validation.
+- [x] Reach Demo 5 through fresh Worker and persisted Artifacts.
+- [x] Record `P13-RSE1-001`: canonical phonon Workspace projection exceeds 32 panels.
+- [x] Stop immediately without repairing the new P0.
+- [ ] Reviewer-authorized remediation is required before typed-import scope can be sealed.
