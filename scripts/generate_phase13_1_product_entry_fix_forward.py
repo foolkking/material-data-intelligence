@@ -147,11 +147,20 @@ def _parse_demo(spec: dict[str, Any], registry_tool_ids: set[str]) -> tuple[list
     parse_results = []
     for fixture_id, relative, mode in spec["fixtures"]:
         path = ROOT / relative
-        if mode == "normalized_mapping":
+        if mode in {
+            "normalized_mapping",
+            "typed_phonon_band_import",
+            "typed_phonon_dos_import",
+        }:
+            declared_kind = {
+                "typed_phonon_band_import": "phonon_band",
+                "typed_phonon_dos_import": "phonon_dos",
+            }.get(mode)
             result = map_normalized_phonon_resource(
                 path,
                 dataset_id=dataset_id,
                 file_id=fixture_id,
+                declared_kind=declared_kind,
             )
         else:
             result = parse_file(path, dataset_id=dataset_id, file_id=fixture_id)

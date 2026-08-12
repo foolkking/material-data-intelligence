@@ -11641,6 +11641,13 @@ No repair for the new finding was attempted. Demo 4/5 UI Finalize, full
 regression, new Fact/Scope hashes, exact-SHA CI, completion, and queue archive
 are not applicable to this failed candidate. R5-001 and R5-002 remain open.
 
+Failed candidate `f3871ab44287b658e64fc1c82b90472d890ebdba` ran CI
+`31619480956`. Its Python job reported `1423 passed` and one governance failure:
+the current seven-demo coverage helper recognized only historical
+`normalized_mapping`, not the new explicit typed import fixture modes. The
+subsequent candidate changes only that test/evidence dispatch and does not
+alter product behavior or the `P13-RSE1-001` conclusion.
+
 ```text
 PHASE_13_1_RELEASE_SCOPE_EXCEPTION_1 = FAILED / REVIEWER_ACTION_REQUIRED
 P13_RSE1_001 = OPEN_REVIEWER_ACTION_REQUIRED

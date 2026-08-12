@@ -31,6 +31,12 @@
       "textCanonicalization": "UTF8_LF"
     },
     {
+      "bytes": 630,
+      "path": "failed_candidate_history.json",
+      "sha256": "336369021605f95d7427dc642c150263fd76af407e7ef3a5d9bf52dcb166d30d",
+      "textCanonicalization": "UTF8_LF"
+    },
+    {
       "bytes": 648,
       "path": "failure_conclusion.md",
       "sha256": "b7c9054d943e6bea26b545eb13f63215ae2baec3df3de172b455d8a47d0eeda8",
