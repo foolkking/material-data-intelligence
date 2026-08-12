@@ -595,9 +595,11 @@ Release remains incomplete.
 
 ## Phase 13-1 Fix-Forward #3
 
-`P13-R3-001` is closed in the implementation candidate by connecting the real
+`P13-R3-001` is closed by implementation
+`88103ff61584ba81a01ab0e5ebf2adbbc09275e1`, exact-SHA CI `31553972770`, by connecting the real
 HTTP upload path to the existing PostgreSQL Dataset/DataProfile and MinIO
 normalized-source authority. A fresh QueueWorkerRuntime now reconstructs exact
 root refs without uploader memory, creates a real ToolCall through the Registry,
 and persists the first Artifact. Level C and C2 remain `7/7`; the new D0
-process-boundary smoke passes. Attempt 4 remains reviewer-gated and unqueued.
+process-boundary smoke passes. Completion is recorded and the active task is
+archived. Attempt 4 remains reviewer-gated and unqueued.

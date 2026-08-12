@@ -2621,5 +2621,6 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Reuse the existing schema and storage authority; add no migration.
 - [x] Persist exact normalized source manifests and DataProfile 2.4 automatically.
 - [x] Pass Level C `7/7`, Level C2 `7/7`, and real service-backed D0.
-- [ ] Verify the implementation candidate by exact-SHA CI, then record completion
-  and archive only the active Fix-Forward #3 task.
+- [x] Implementation `88103ff61584ba81a01ab0e5ebf2adbbc09275e1` passed exact-SHA CI
+  `31553972770`; completion was recorded and only the active Fix-Forward #3 task
+  was archived.
