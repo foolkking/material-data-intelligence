@@ -11240,3 +11240,104 @@ EXECUTABLE_PENDING_TASKS = 0
 TASK_BLOCK_COUNT = 3
 PHASE14_CREATED = NO
 ```
+
+# Phase 13-2 Attempt 4 Seven Canonical Real-User E2E Demonstrations Result
+
+## Conclusion and History
+
+`FAILED / REVIEWER_ACTION_REQUIRED`. Attempts 1-3 remain immutable historical
+failures and Fix-Forwards 1-3 remain PASS. Attempt 4 passed repository,
+authority, Level C `7/7`, Level C2 `7/7`, and real upload-to-fresh-worker D0
+entry gates, then stopped on two new P0 product-integration findings during the
+first fresh full demonstration. No production or scientific repair was made.
+
+## Fresh Demo 1 and Findings
+
+Fresh Demo 1 used the current `formulas.csv`, canonical natural-language prompt,
+real HTTP upload, PostgreSQL/MinIO durable source authority, AnalysisIntent 1.0,
+EligibilityResolution 1.0, capability-aware Planner, PlanValidator, persisted
+Job, Redis enqueue, a fresh QueueWorkerRuntime, registered Adapter execution,
+four persisted Artifacts, and Workspace projection.
+
+- `P13-R4-001` (`CANONICAL_PROMPT_TO_SEALED_CAPABILITY_MISMATCH`): the actual
+  Plan and ToolCall contain only `dataset.materials_explorer`. The sealed Demo 1
+  contract also requires `dataset.composition_space`, but no such ToolCall or
+  `plotly_json` Artifact was produced.
+- `P13-R4-002` (`REAL_USER_REPORT_FINALIZE_BLOCKED_BY_PLAN_0_1_WORKSPACE_POLICY`):
+  the Planner-produced AnalysisPlan 0.1 Workspace is `LEGACY_READ_ONLY`; the
+  frontend disables Report Finalize for read-only Workspaces. A diagnostic
+  direct API finalize was excluded from real-user PASS authority.
+
+Demo 1 is `FAIL_PRODUCT_INTEGRATION`. Demo 2-7, negative scenarios, Attempt 4
+browser execution, mobile inspection, and bounded live DeepSeek were not
+executed after the P0 stop. Fresh demos started are `1/7`, full demos completed
+are `0/7`, old evidence reused as PASS is 0, and `P13X2_ACCEPTANCE = 0/8`.
+
+## Regression and Lifecycle
+
+- D0: `1 passed, 0 skipped` using real PostgreSQL, Redis, and MinIO.
+- Backend: `1391 passed, 52 skipped`; frontend: `456 passed`.
+- Phase 13 focused/governance: `46 passed`.
+- Typecheck, build, lock, diff, current Fact/Scope hash, security, secret scan,
+  evidence manifest, retained browser gates, and Linux/Windows replay: PASS.
+- Local failed test candidate: `1390 passed, 52 skipped, 1 failed`; root cause
+  was the Attempt 4 TASK block's English status label. The queue/evidence-only
+  correction passed the full rerun.
+- Evidence SHA: `9b087606e1d6093e3129dc20e43020790e703a58`.
+- Exact-SHA CI: `31577647965` PASS across all five required jobs.
+- Completion/archive SHA: not applicable. Attempt 4 failed; all four failed
+  Phase 13-2 blocks remain in `TASKS.md`.
+
+```text
+PHASE_13_2_ATTEMPT_4 = FAILED / REVIEWER_ACTION_REQUIRED
+PHASE13_2_ATTEMPT_1 = FAILED_HISTORICAL
+PHASE13_1_FIX_FORWARD_1 = PASS
+PHASE13_2_ATTEMPT_2 = FAILED_RERUN_HISTORICAL
+PHASE13_1_FIX_FORWARD_2 = PASS
+PHASE13_2_ATTEMPT_3 = FAILED_RERUN_HISTORICAL
+PHASE13_1_FIX_FORWARD_3 = PASS
+DEMO_1_STATUS = FAIL_PRODUCT_INTEGRATION
+DEMO_2_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+DEMO_3_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+DEMO_4_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+DEMO_5_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+DEMO_6_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+DEMO_7_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+PHASE13_2_ATTEMPT_4_FRESH_DEMOS_STARTED = 1
+PHASE13_2_ATTEMPT_4_DEMOS_EXECUTED = 0
+OLD_EVIDENCE_REUSED_AS_ATTEMPT4_PASS = 0
+UPLOAD_PROCESS_MEMORY_DEPENDENCY = 0
+MANUAL_NORMALIZED_EXPORT_PRELOAD = 0
+RUNTIME_REPARSE_FALLBACK = 0
+ALL_HANDCRAFTED_INJECTION_COUNTERS = 0
+P13X2_ACCEPTANCE = 0/8
+P13_R4_001 = OPEN_REVIEWER_ACTION_REQUIRED
+P13_R4_002 = OPEN_REVIEWER_ACTION_REQUIRED
+RELEASE_CRITICAL_INTEGRATION_DEFECTS = 2
+SCIENTIFIC_DEFECTS = 0
+SECURITY_DEFECTS = 0
+UNCLASSIFIED_RELEASE_GAPS = 0
+PROVIDER_EXTERNAL_EVENTS = 0
+PRODUCTION_CODE_CHANGES = 0
+SCIENTIFIC_BEHAVIOR_CHANGES = 0
+CURRENT_FACT_MODEL_HASH = e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06
+CURRENT_SCOPE_BASELINE_HASH = eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94
+PHASE12_PRODUCT_BASELINE_HASH = 29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4
+FACT_MODEL_HASH_IMPACT_BY_ATTEMPT_4 = NO
+SCOPE_BASELINE_HASH_IMPACT_BY_ATTEMPT_4 = NO
+BASELINE_DETERMINISM = PASS
+REGISTRY = 62
+DATAPROFILE = 2.4
+ANALYSIS_INTENT = 1.0
+ELIGIBILITY_RESOLUTION = 1.0
+ANALYSIS_PLAN = 0.1 / 0.2
+MIGRATION = 0007_phase10m1_workspace_domain
+REAL_LLM_CALLS = 0
+PHASE_13_3 = BLOCKED_BY_PHASE13_2_ATTEMPT_4
+PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+FAILED_RETAINED_TASK_BLOCKS = 4
+EXECUTABLE_PENDING_TASKS = 0
+TASK_BLOCK_COUNT = 4
+PHASE14_CREATED = NO
+```
