@@ -1,0 +1,13 @@
+{
+  "after": {
+    "releaseCriticalIntegrationGaps": 0,
+    "scientificDefects": 0,
+    "securityDefects": 0,
+    "unclassified": 0
+  },
+  "before": {
+    "releaseCriticalIntegrationGaps": 1,
+    "scientificDefects": 0,
+    "securityDefects": 0
+  }
+}

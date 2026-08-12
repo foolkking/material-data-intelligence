@@ -1,0 +1,7 @@
+{
+  "identityManifest": "PostgreSQL datasets.metadata_json",
+  "newAuthority": false,
+  "normalizedPayload": "configured ArtifactStorage/MinIO",
+  "profile": "PostgreSQL data_profiles.profile_json",
+  "queue": "job identity only"
+}

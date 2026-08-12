@@ -3,6 +3,7 @@ from __future__ import annotations
 import html
 import json
 import shutil
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -216,7 +217,7 @@ class Phase2ProductRuntime:
         request = request if isinstance(request, CreateProjectRequest) else CreateProjectRequest.model_validate(request)
         self._project_seq += 1
         project = ProjectRecord(
-            id=f"project_{self._project_seq:04d}",
+            id=_runtime_record_id("project", self._project_seq),
             name=request.name,
             project_type=request.projectType,
             default_units=request.defaultUnits,
@@ -248,7 +249,7 @@ class Phase2ProductRuntime:
         request = request if isinstance(request, DatasetUploadRequest) else DatasetUploadRequest.model_validate(request)
         self._require_project(request.projectId)
         self._dataset_seq += 1
-        dataset_id = f"dataset_{self._dataset_seq:04d}"
+        dataset_id = _runtime_record_id("dataset", self._dataset_seq)
         paths = self._materialize_uploads(request, dataset_id)
         parse_results: list[ParseResult] = []
         for index, path in enumerate(paths, start=1):
@@ -644,6 +645,7 @@ class Phase2ProductRuntime:
                     "objectId": exported.object_id,
                     "storageKey": exported.storage_key,
                     "metadataKey": exported.metadata_key,
+                    "objectHash": obj.hash,
                     "contentHash": exported.content_hash,
                 }
             )
@@ -948,7 +950,19 @@ def create_phase2_demo_dataset() -> dict[str, Any]:
 
 
 def upload_phase2_dataset(request: DatasetUploadRequest) -> dict[str, Any]:
-    return _api_call(lambda: get_phase2_runtime().upload_dataset(request))
+    def upload_and_persist() -> dict[str, Any]:
+        runtime = get_phase2_runtime()
+        result = runtime.upload_dataset(request)
+        try:
+            from mdi_api.durable_uploads import persist_phase2_upload
+
+            persist_phase2_upload(runtime, str(result["datasetId"]))
+        except Exception:
+            runtime.datasets.pop(str(result["datasetId"]), None)
+            raise
+        return result
+
+    return _api_call(upload_and_persist)
 
 
 def get_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
@@ -1264,6 +1278,17 @@ def _safe_id(value: str) -> str:
 
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _runtime_record_id(prefix: str, sequence: int) -> str:
+    try:
+        from mdi_api.config import load_settings
+
+        if load_settings().runtime_backend == "postgresql":
+            return f"{prefix}_{uuid.uuid4().hex[:24]}"
+    except Exception:
+        pass
+    return f"{prefix}_{sequence:04d}"
 
 
 _PHASE2_RUNTIME = Phase2ProductRuntime()

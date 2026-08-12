@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import json
 from pathlib import Path
+from types import SimpleNamespace
 import uuid
 
 from alembic.command import upgrade as alembic_upgrade
@@ -15,8 +16,11 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.schema import CreateSchema, DropSchema
 
 from mdi_api.main import create_app
+from mdi_api.artifact_storage import create_artifact_storage_from_settings
+from mdi_api.config import load_settings
 from mdi_api.phase2_runtime import get_phase2_runtime, reset_phase2_runtime
 from mdi_api.routers.planner import _planner_repositories_and_runtime
+from mdi_workers.object_store import DurableObjectStoreResolver
 from tests.integration.test_phase10m1_workspace_service_backed import (
     _minio_client,
     _required_postgres_url,
@@ -25,11 +29,11 @@ from tests.integration.test_phase10m1_workspace_service_backed import (
 
 
 @pytest.mark.integration
-def test_phase13_2_attempt3_real_upload_to_fresh_worker_gap(
+def test_phase13_1_fix_forward_3_real_upload_to_fresh_worker_d0(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
-    """Preserve the Attempt 3 P0 at the real upload/worker process boundary."""
+    """Prove durable upload reconstruction through the first worker Artifact."""
 
     if os.getenv("MDI_RUN_INTEGRATION") != "1":
         pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")
@@ -115,21 +119,82 @@ def test_phase13_2_attempt3_real_upload_to_fresh_worker_gap(
         assert planned["ok"] is True, json.dumps(planned, indent=2)
         assert planned["enqueued"] is True
         queued_job_id = planned["job_id"]
-        assert queue.fetch_job(planned["job_id"]) is not None
+        queued_job = queue.fetch_job(planned["job_id"])
+        assert queued_job is not None
+        assert queued_job.args == (planned["job_id"],)
 
         phase2_record = get_phase2_runtime().datasets[dataset["id"]]
         assert phase2_record.normalized_exports
+        upload_exports = {
+            item["objectId"]: (item["storageKey"], item["contentHash"])
+            for item in phase2_record.normalized_exports
+        }
+
+        # Destroy all process-local upload state before constructing the worker.
+        reset_phase2_runtime(tmp_path / "fresh-process-empty")
         repositories, fresh_worker = _planner_repositories_and_runtime(
             repositories=None,
             queue_runtime=None,
         )
         persisted_dataset = repositories.datasets.get(dataset["id"])
-        assert persisted_dataset["metadata"].get("normalizedExports") in (None, [])
+        persisted_exports = persisted_dataset["metadata"]["normalizedExports"]
+        assert {
+            item["objectId"]: (item["storageKey"], item["contentHash"])
+            for item in persisted_exports
+        } == upload_exports
+        assert get_phase2_runtime().datasets == {}
 
         executed = fresh_worker.handle_job(planned["job_id"])
-        assert executed.status == "failed"
-        assert "Unknown input ref: profile" in executed.message
-        assert repositories.artifacts.list_for_job(planned["job_id"]) == []
+        assert executed.status == "completed", executed.message
+        tool_calls = repositories.tool_calls.list_for_job(planned["job_id"])
+        artifacts = repositories.artifacts.list_for_job(planned["job_id"])
+        assert tool_calls
+        assert artifacts
+        assert all(item.get("storageKey") for item in artifacts)
+        assert all(client_s3.head_object(Bucket=bucket, Key=item["storageKey"]) for item in artifacts)
+
+        storage = create_artifact_storage_from_settings(load_settings())
+        resolver = DurableObjectStoreResolver(repositories=repositories, artifact_storage=storage)
+        source_export = persisted_exports[0]
+        source_key = source_export["storageKey"]
+        source_bytes = storage.get_bytes(source_key)
+
+        client_s3.delete_object(Bucket=bucket, Key=source_key)
+        with pytest.raises(ValueError, match="payload is unavailable"):
+            resolver.resolve(dataset["id"], profile_id=profile["profileId"])
+        storage.put_bytes(source_key, source_bytes, content_type="application/json")
+
+        storage.put_bytes(source_key, b"{}", content_type="application/json")
+        with pytest.raises(ValueError, match="payload checksum mismatch"):
+            resolver.resolve(dataset["id"], profile_id=profile["profileId"])
+        storage.put_bytes(source_key, source_bytes, content_type="application/json")
+
+        original_metadata = persisted_dataset["metadata"]
+        foreign_exports = [
+            {
+                **item,
+                "storageKey": item["storageKey"].replace(
+                    f"projects/{project['id']}/", "projects/foreign_project/"
+                ),
+            }
+            for item in persisted_exports
+        ]
+        foreign_repositories = SimpleNamespace(
+            datasets=SimpleNamespace(
+                get=lambda _dataset_id: {
+                    **persisted_dataset,
+                    "metadata": {**original_metadata, "normalizedExports": foreign_exports},
+                }
+            ),
+            data_profiles=repositories.data_profiles,
+        )
+        with pytest.raises(ValueError, match="outside the persisted dataset scope"):
+            DurableObjectStoreResolver(
+                repositories=foreign_repositories,
+                artifact_storage=storage,
+            ).resolve(dataset["id"], profile_id=profile["profileId"])
+        with pytest.raises(LookupError, match="DataProfile is unavailable"):
+            resolver.resolve(dataset["id"], profile_id="profile_stale")
     finally:
         if queued_job_id:
             queued_job = queue.fetch_job(queued_job_id)

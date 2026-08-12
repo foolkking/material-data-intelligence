@@ -1,4 +1,20 @@
 ---TASK---
+状态：处理中
+
+# Phase 13-1 Integration Fix-Forward #3
+
+## Durable Upload-to-Worker Handoff Closure
+
+Close only `P13-R3-001` by connecting the real HTTP upload path to the existing
+canonical durable source-resource authority, removing upload-process memory
+dependency, and establishing the D0 real upload-to-fresh-worker process-boundary
+gate through the first persisted Artifact. Preserve Registry 62, DataProfile 2.4,
+AnalysisIntent 1.0, EligibilityResolution 1.0, AnalysisPlan 0.1/0.2, migration
+0007, all scientific semantics, and all three historical Phase 13-2 failures.
+Do not execute or queue Phase 13-2 Attempt 4.
+---END---
+
+---TASK---
 状态：失败
 
 # Phase 13-2 Attempt 3

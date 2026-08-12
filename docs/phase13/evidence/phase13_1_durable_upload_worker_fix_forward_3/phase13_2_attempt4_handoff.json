@@ -1,0 +1,39 @@
+{
+  "attempt4Executed": false,
+  "attempt4MustExecuteAll7FromScratch": true,
+  "attempt4Queued": false,
+  "attemptHistory": [
+    "ATTEMPT_1_FAILED",
+    "FIX_FORWARD_1_PASS",
+    "ATTEMPT_2_FAILED",
+    "FIX_FORWARD_2_PASS",
+    "ATTEMPT_3_FAILED",
+    "FIX_FORWARD_3_PASS_CANDIDATE"
+  ],
+  "canonicalPrompts": {
+    "P13-DEMO-01": "Explore this materials table, summarize its quality, and show how the compositions are distributed.",
+    "P13-DEMO-02": "Evaluate these materials-model predictions and explain the largest errors and limitations.",
+    "P13-DEMO-03": "Inspect this crystal structure, map its CrystalNN local environment and coordination polyhedra, then compare the supplied experimental XRD peaks with its theoretical pattern.",
+    "P13-DEMO-04": "Analyze this trajectory, show the RDF and MSD, and estimate diffusion over the full supplied time range with fit diagnostics.",
+    "P13-DEMO-05": "Show the supplied phonon bands and density of states together with the matching Brillouin-zone context.",
+    "P13-DEMO-06": "Inspect this supplied volumetric grid and show its supported slice and volume views.",
+    "P13-DEMO-07": "Inspect the supplied electronic band structure and DOS, including gap, spin, projection and compatibility limitations."
+  },
+  "d0": "PASS",
+  "durableAuthority": "PostgreSQL manifest/Profile + MinIO payload",
+  "factModelHash": "e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06",
+  "findingClosure": "P13-R3-001",
+  "fixtures": null,
+  "handoffId": "Phase13_2Attempt4RealUserE2ERerunHandoff",
+  "levelC": "7/7",
+  "levelC2": "7/7",
+  "noInjection": true,
+  "p13x2Ids": null,
+  "providerPolicy": "DEEPSEEK_ONLY_BOUNDED",
+  "realServicesRequired": [
+    "PostgreSQL",
+    "Redis",
+    "MinIO"
+  ],
+  "scopeBaselineHash": "eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94"
+}

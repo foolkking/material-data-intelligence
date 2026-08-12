@@ -1,0 +1,17 @@
+{
+  "datasetId": "dataset_0001",
+  "profileContractVersion": "2.0",
+  "profileId": "profile_dataset_0001_v2",
+  "profileResourceIds": [
+    "obj_dataframe_2b3a36cebe19"
+  ],
+  "resources": [
+    {
+      "contentHash": "4b8717a6943e23fa23c11004483b617d358d4077358a3604412414c4f5248ad3",
+      "metadataKey": "projects/project_0001/datasets/dataset_0001/normalized/obj_dataframe_2b3a36cebe19/metadata.json",
+      "objectHash": "2b3a36cebe19e5a81218b374f7d9daa58ad37a13c6824e97f9e0c22d61606318",
+      "objectId": "obj_dataframe_2b3a36cebe19",
+      "storageKey": "projects/project_0001/datasets/dataset_0001/normalized/obj_dataframe_2b3a36cebe19/data.json"
+    }
+  ]
+}

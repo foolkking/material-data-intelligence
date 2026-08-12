@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import hashlib
+import json
 
 import pytest
 
@@ -128,8 +130,8 @@ def test_durable_resolver_restores_typed_specialized_sources(spec: dict[str, obj
         def __init__(self):
             self.values = {}
 
-        def get_json(self, key):
-            return deepcopy(self.values[key])
+        def get_bytes(self, key):
+            return self.values[key]
 
     class Datasets:
         def get(self, dataset_id):
@@ -146,15 +148,20 @@ def test_durable_resolver_restores_typed_specialized_sources(spec: dict[str, obj
     storage = Storage()
     exports = []
     for obj in objects:
-        data_key = f"data/{obj.id}.json"
-        metadata_key = f"metadata/{obj.id}.json"
-        storage.values[data_key] = obj.payload
-        storage.values[metadata_key] = {
+        base = f"projects/project/datasets/{profile.datasetId}/normalized/{obj.id}"
+        data_key = f"{base}/data.json"
+        metadata_key = f"{base}/metadata.json"
+        payload_bytes = json.dumps(obj.payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
+        content_hash = hashlib.sha256(payload_bytes).hexdigest()
+        metadata = {
             "objectId": obj.id,
+            "contentHash": content_hash,
             "metadata": obj.metadata,
             "provenance": {"objectType": obj.object_type.value},
         }
-        exports.append({"objectId": obj.id, "storageKey": data_key, "metadataKey": metadata_key, "contentHash": obj.hash})
+        storage.values[data_key] = payload_bytes
+        storage.values[metadata_key] = json.dumps(metadata, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
+        exports.append({"objectId": obj.id, "storageKey": data_key, "metadataKey": metadata_key, "objectHash": obj.hash, "contentHash": content_hash})
 
     restored = DurableObjectStoreResolver(artifact_storage=storage, repositories=Repositories()).resolve(
         profile.datasetId,
@@ -162,7 +169,7 @@ def test_durable_resolver_restores_typed_specialized_sources(spec: dict[str, obj
     )
     assert restored is not None
     for obj in objects:
-        assert restored[obj.id] == obj.payload
+        assert restored[obj.id] == json.loads(json.dumps(obj.payload, default=str))
         assert restored[SOURCE_RESOURCE_INDEX_KEY][obj.id]["objectHash"] == obj.hash
 
 

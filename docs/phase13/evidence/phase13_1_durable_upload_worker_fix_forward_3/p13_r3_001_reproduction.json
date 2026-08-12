@@ -1,0 +1,9 @@
+{
+  "artifacts": 0,
+  "before": "TOOL_INPUT_INVALID: Unknown input ref: profile",
+  "class": "UPLOAD_TO_WORKER_DURABLE_RESOURCE_HANDOFF_DEFECT",
+  "failureBoundary": "POSTGRES_JOB_REDIS_ENQUEUE_TO_FRESH_WORKER_ROOT_INPUT_RESOLUTION",
+  "findingId": "P13-R3-001",
+  "rootCause": "The HTTP Phase2 upload exported normalized sources only to its process-local LocalFileArtifactStorage and DatasetRecord. The SQL Dataset loaded by Planner/worker omitted normalizedExports, so DurableObjectStoreResolver returned no profile/source store and the fresh worker failed before its first ToolCall.",
+  "toolCalls": 0
+}

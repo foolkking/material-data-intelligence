@@ -1,0 +1,8 @@
+{
+  "branch": "A",
+  "canExistingDurableSchemaRepresentRequiredSourceReferences": "YES",
+  "migrationAfter": "0007_phase10m1_workspace_domain",
+  "migrationBefore": "0007_phase10m1_workspace_domain",
+  "newColumns": 0,
+  "newTables": 0
+}

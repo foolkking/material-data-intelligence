@@ -592,3 +592,12 @@ Redis queue, but normalized source exports remain in the upload process and are
 absent from the SQL dataset used by a fresh durable worker. Demo 1 fails before
 ToolCall creation; Demo 2-7 are not executed. Phase 13-3 is blocked and Initial
 Release remains incomplete.
+
+## Phase 13-1 Fix-Forward #3
+
+`P13-R3-001` is closed in the implementation candidate by connecting the real
+HTTP upload path to the existing PostgreSQL Dataset/DataProfile and MinIO
+normalized-source authority. A fresh QueueWorkerRuntime now reconstructs exact
+root refs without uploader memory, creates a real ToolCall through the Registry,
+and persists the first Artifact. Level C and C2 remain `7/7`; the new D0
+process-boundary smoke passes. Attempt 4 remains reviewer-gated and unqueued.

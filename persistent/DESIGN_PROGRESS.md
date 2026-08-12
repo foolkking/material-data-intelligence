@@ -2276,3 +2276,12 @@ scientific algorithm. Exact-SHA CI remains required before completion.
   Runtime Profile resolution fails before ToolCall creation.
 - Attempt 3 is failed with no production/scientific repair, no demo PASS claim,
   and no Phase 13-3 execution authority.
+
+## Phase 13-1 Fix-Forward #3
+
+- `P13-R3-001` is reproduced and classified at the upload-to-fresh-worker boundary.
+- Existing PostgreSQL JSON fields and ArtifactStorage are sufficient; migration remains `0007`.
+- Real HTTP upload now durably registers normalized source refs and DataProfile 2.4.
+- Executable Planner jobs require durable root resolution before enqueue.
+- Level C `7/7`, Level C2 `7/7`, and real service-backed D0 pass locally.
+- Exact-SHA CI, completion record and active-task archive remain lifecycle gates.

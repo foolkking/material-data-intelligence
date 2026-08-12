@@ -798,3 +798,8 @@ and
 | [`phase13/phase13_2_attempt3_failure.md`](phase13/phase13_2_attempt3_failure.md) | Attempt 3 P0 stop and immutable execution result |
 | [`phase13/phase13_2_attempt3_release_findings.md`](phase13/phase13_2_attempt3_release_findings.md) | P13-R3-001 root cause and reviewer boundary |
 | [`phase13/evidence/phase13_2_attempt3_seven_real_user_e2e/`](phase13/evidence/phase13_2_attempt3_seven_real_user_e2e/) | Fresh upload-to-worker failure, service reproduction and manifest |
+| [`phase13/phase13_1_durable_upload_worker_fix_forward_3.md`](phase13/phase13_1_durable_upload_worker_fix_forward_3.md) | P13-R3-001 durable upload-to-worker remediation |
+| [`phase13/phase13_durable_source_resource_handoff_contract.md`](phase13/phase13_durable_source_resource_handoff_contract.md) | Existing SQL/MinIO exact source-resource authority |
+| [`phase13/phase13_real_upload_to_fresh_worker_d0_contract.md`](phase13/phase13_real_upload_to_fresh_worker_d0_contract.md) | Permanent real process-boundary D0 admission smoke |
+| [`phase13/phase13_2_attempt4_rerun_handoff.md`](phase13/phase13_2_attempt4_rerun_handoff.md) | Reviewer-gated fresh Attempt 4 contract; not queued here |
+| [`phase13/evidence/phase13_1_durable_upload_worker_fix_forward_3/`](phase13/evidence/phase13_1_durable_upload_worker_fix_forward_3/) | Durable authority, D0, C/C2, hash and security evidence |

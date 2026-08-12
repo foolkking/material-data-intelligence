@@ -2614,3 +2614,12 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Record `P13-R3-001`: fresh worker cannot resolve process-local Profile exports.
 - [x] Stop before Demo 2-7 and retain all three failed Phase 13-2 queue blocks.
 - [ ] Reviewer-authorized remediation is required before another Phase 13-2 attempt.
+
+## Phase 13-1 Fix-Forward #3
+
+- [x] Trace `/datasets/upload` through SQL/MinIO/Redis into a fresh Worker.
+- [x] Reuse the existing schema and storage authority; add no migration.
+- [x] Persist exact normalized source manifests and DataProfile 2.4 automatically.
+- [x] Pass Level C `7/7`, Level C2 `7/7`, and real service-backed D0.
+- [ ] Verify the implementation candidate by exact-SHA CI, then record completion
+  and archive only the active Fix-Forward #3 task.

@@ -68,16 +68,18 @@ def test_phase13_1_postgres_redis_minio_c2_exact_resource_resolution(tmp_path: P
             project_id = f"project_{spec['demoId'].lower()}_{suffix}"
             exports = []
             for obj in objects:
-                data_key = f"phase13c2/{suffix}/{obj.id}.json"
-                metadata_key = f"phase13c2/{suffix}/{obj.id}.metadata.json"
-                storage.put_json(data_key, obj.payload)
+                base = f"projects/{project_id}/datasets/{profile.datasetId}/normalized/{obj.id}"
+                data_key = f"{base}/data.json"
+                metadata_key = f"{base}/metadata.json"
+                stored = storage.put_json(data_key, obj.payload)
                 storage.put_json(metadata_key, {
                     "objectId": obj.id,
+                    "contentHash": stored.sha256,
                     "metadata": obj.metadata,
                     "provenance": {"objectType": obj.object_type.value},
                 })
                 keys.extend((data_key, metadata_key))
-                exports.append({"objectId": obj.id, "storageKey": data_key, "metadataKey": metadata_key, "contentHash": obj.hash})
+                exports.append({"objectId": obj.id, "storageKey": data_key, "metadataKey": metadata_key, "objectHash": obj.hash, "contentHash": stored.sha256})
             repositories.projects.save({"id": project_id, "name": project_id, "createdBy": "phase13_c2"})
             repositories.datasets.save({
                 "id": profile.datasetId,

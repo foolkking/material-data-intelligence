@@ -1,0 +1,15 @@
+{
+  "firstArtifactPersisted": true,
+  "firstToolCall": true,
+  "freshWorker": true,
+  "realEligibility": true,
+  "realHttpUpload": true,
+  "realJob": true,
+  "realNaturalLanguageIntent": true,
+  "realPlanValidator": true,
+  "realPlanner": true,
+  "realRedisEnqueue": true,
+  "registeredAdapterExecuted": true,
+  "requiredSkips": 0,
+  "status": "PASS"
+}

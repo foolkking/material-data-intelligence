@@ -4675,3 +4675,13 @@ does not upgrade product support or scientific validation.
   Runtime authority.
 - Runtime reparse and latest, filename, fuzzy, in-memory, or fixture-specific
   substitution remain forbidden remediation strategies.
+- Durable source authority uses existing `datasets.metadata_json` for scoped
+  normalized manifests, `data_profiles.profile_json` for DataProfile 2.4, and
+  configured ArtifactStorage/MinIO for exact normalized bytes. No schema or
+  migration is added.
+- Parser semantic `objectHash` and persisted byte `contentHash` are distinct and
+  both mandatory. A fresh Worker verifies scope, identity and storage checksum
+  before registering the semantic resource hash.
+- Level-D admission includes D0: real HTTP upload, SQL/MinIO persistence,
+  natural-language Planner Job, Redis enqueue, uploader-state disposal, fresh
+  Worker, first registered ToolCall and first persisted Artifact.

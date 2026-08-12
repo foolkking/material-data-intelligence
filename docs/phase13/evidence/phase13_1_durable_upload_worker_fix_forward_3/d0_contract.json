@@ -1,0 +1,10 @@
+{
+  "fullDemoPassAuthority": false,
+  "services": [
+    "PostgreSQL",
+    "Redis",
+    "MinIO"
+  ],
+  "start": "real HTTP upload",
+  "stop": "first persisted Artifact"
+}

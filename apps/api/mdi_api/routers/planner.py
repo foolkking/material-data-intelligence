@@ -584,11 +584,54 @@ def planner_jobs(
             intent_outcome=intent.outcome.value if intent else None,
             intent=intent.model_dump(mode="json") if intent else None,
         )
-    object_store = _execution_object_store_for_dataset(
-        runtime,
-        dataset_id=request.datasetId,
-        profile_id=profile_id,
-    )
+    try:
+        object_store = _execution_object_store_for_dataset(
+            runtime,
+            dataset_id=request.datasetId,
+            profile_id=profile_id,
+        )
+    except (LookupError, ValueError) as exc:
+        return PlannerJobsResult(
+            ok=False,
+            job_id=None,
+            plan_id=None,
+            plan_hash=None,
+            validation_errors=[
+                {
+                    "code": "DURABLE_ROOT_INPUTS_INVALID",
+                    "message": "Executable root source inputs failed durable identity or integrity validation.",
+                    "detail": {"reason": str(exc)},
+                }
+            ],
+            plan=None,
+            planner_provider=_provider_name(llm),
+            intent_id=intent.intentId if intent else None,
+            intent_outcome=intent.outcome.value if intent else None,
+            intent=intent.model_dump(mode="json") if intent else None,
+        )
+    if (
+        (request.enqueue or request.execute)
+        and _requires_durable_root_inputs(runtime)
+        and not object_store
+    ):
+        return PlannerJobsResult(
+            ok=False,
+            job_id=None,
+            plan_id=None,
+            plan_hash=None,
+            validation_errors=[
+                {
+                    "code": "DURABLE_ROOT_INPUTS_REQUIRED",
+                    "message": "Executable jobs require all root source inputs to be durably resolvable.",
+                    "detail": {"datasetId": request.datasetId, "profileId": profile_id},
+                }
+            ],
+            plan=None,
+            planner_provider=_provider_name(llm),
+            intent_id=intent.intentId if intent else None,
+            intent_outcome=intent.outcome.value if intent else None,
+            intent=intent.model_dump(mode="json") if intent else None,
+        )
     if object_store:
         execution_preflight = preflight_execution_resources(
             validated_plan,
@@ -1763,14 +1806,16 @@ def _execution_object_store_for_dataset(
     resolver = runtime.object_store_resolver
     exact_resolver = getattr(resolver, "resolve", None)
     if callable(exact_resolver):
-        resolved = exact_resolver(dataset_id, profile_id=profile_id)
-        if resolved:
-            return resolved
+        return exact_resolver(dataset_id, profile_id=profile_id)
     elif callable(resolver):
         resolved = resolver(dataset_id)
         if resolved:
             return resolved
     return _phase2_object_store_for_dataset(dataset_id)
+
+
+def _requires_durable_root_inputs(runtime: QueueWorkerRuntime) -> bool:
+    return isinstance(runtime.object_store_resolver, DurableObjectStoreResolver)
 
 
 def _validate_executable_input_refs(plan: Any, dataset_id: str) -> list[dict[str, Any]]:

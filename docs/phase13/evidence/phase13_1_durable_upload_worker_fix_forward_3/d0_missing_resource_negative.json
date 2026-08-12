@@ -1,0 +1,6 @@
+{
+  "adapterExecuted": false,
+  "expectedRejection": "DURABLE_SOURCE_UNAVAILABLE",
+  "fallbackUsed": false,
+  "status": "PASS"
+}
