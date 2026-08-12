@@ -1,0 +1,19 @@
+{
+  "candidates": [
+    {
+      "ci": 31594862635,
+      "conclusion": "failure",
+      "failures": [
+        {
+          "failure": "test_fix_forward_4_evidence_manifest_is_complete_and_exact: manifest sha256 mismatch - lines were recorded with CRLF but CI uses LF",
+          "step": "Run unit tests"
+        },
+        {
+          "failure": "Fixture report sources response lacked actionEligibility field; Preview button remained disabled",
+          "step": "Replay Phase 10M-6 Workspace recovery browser evidence"
+        }
+      ],
+      "sha": "f3ec578acd1cfaddb9437d74869cf437ad17c848"
+    }
+  ]
+}

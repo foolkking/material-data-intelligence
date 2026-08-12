@@ -4,6 +4,7 @@ from dataclasses import replace
 import hashlib
 import json
 from pathlib import Path
+from typing import Final
 
 import pytest
 
@@ -16,6 +17,13 @@ from scripts.phase13_current_demo_contracts import CURRENT_DEMO_SPECS, DEMO1_CAN
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs/phase13/evidence/phase13_1_capability_report_fix_forward_4"
+_TEXT_SUFFIXES: Final = frozenset({".json", ".md", ".txt"})
+
+
+def _evidence_bytes(path: Path) -> bytes:
+    if path.suffix.lower() in _TEXT_SUFFIXES:
+        return path.read_text(encoding="utf-8").replace("\r\n", "\n").encode("utf-8")
+    return path.read_bytes()
 
 
 @pytest.mark.parametrize("spec", CURRENT_DEMO_SPECS, ids=lambda item: item["demoId"])
@@ -100,11 +108,12 @@ def test_fix_forward_4_evidence_manifest_is_complete_and_exact() -> None:
     manifest = json.loads((EVIDENCE / "manifest.json").read_text(encoding="utf-8"))
     records = {item["path"]: item for item in manifest["records"]}
 
-    assert required.issubset(records)
+    assert required.issubset(records), f"Missing records: {required - records.keys()}"
     assert manifest["missing"] == manifest["hashMismatch"] == manifest["unclassified"] == 0
     for relative, record in records.items():
-        payload = (EVIDENCE / relative).read_bytes()
-        assert hashlib.sha256(payload).hexdigest() == record["sha256"]
+        payload = _evidence_bytes(EVIDENCE / relative)
+        live = hashlib.sha256(payload).hexdigest()
+        assert live == record["sha256"], f"{relative}: live {live} != manifest {record['sha256']}"
         assert len(payload) == record["size"]
 
 
