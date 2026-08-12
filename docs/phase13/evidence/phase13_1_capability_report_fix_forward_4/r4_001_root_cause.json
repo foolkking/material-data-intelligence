@@ -1,0 +1,9 @@
+{
+  "canonicalPromptChanged": true,
+  "classification": "SEALED_CANONICAL_PROMPT_UNDER_SPECIFIES_REQUIRED_CAPABILITY",
+  "findingId": "P13-R4-001",
+  "productionEligibilityChanged": false,
+  "productionIntentChanged": false,
+  "productionPlannerChanged": false,
+  "selectedBranch": "B"
+}

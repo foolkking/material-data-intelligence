@@ -1,0 +1,18 @@
+{
+  "consoleErrors": [],
+  "expectedClientAborts": [
+    "net::ERR_ABORTED http://127.0.0.1:8000/workspaces/workspace_ed5cf370bf7aa1bd4eaae03a6639e75e/report-composition/sources",
+    "net::ERR_ABORTED http://127.0.0.1:8000/workspaces/workspace_ed5cf370bf7aa1bd4eaae03a6639e75e/report-compositions"
+  ],
+  "externalRequests": [],
+  "failedRequests": [],
+  "failedResponses": [],
+  "finalizeEnabled": true,
+  "pageErrors": [],
+  "recipeLoaded": true,
+  "reportDetailLoaded": true,
+  "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\phase13\\evidence\\phase13_1_capability_report_fix_forward_4\\fresh_demo1_report_ui.png",
+  "selectedSources": 21,
+  "status": "PASS",
+  "workspaceId": "workspace_ed5cf370bf7aa1bd4eaae03a6639e75e"
+}

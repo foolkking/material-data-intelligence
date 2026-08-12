@@ -171,6 +171,17 @@ export type ReportSourceInventory = {
   metadataOnly: true;
   heavyArtifactPayloadRequests: 0;
   webglContexts: 0;
+  actionEligibility: ReportActionEligibility;
+};
+
+export type ReportActionEligibility = {
+  reportCompositionAllowed: boolean;
+  reportPreviewAllowed: boolean;
+  reportFinalizeAllowed: boolean;
+  recipeInspectionAllowed: boolean;
+  reasons: Array<{ code: string; message: string }>;
+  scientificSourceMutationAllowed: false;
+  recipeExecutionAllowed: false;
 };
 
 export type ReportCompositionPreview = {

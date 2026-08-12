@@ -1,0 +1,308 @@
+{
+  "hashMismatch": 0,
+  "missing": 0,
+  "records": [
+    {
+      "path": "attempt4_failure_snapshot.json",
+      "sha256": "bcc87755c8f73ace38c2b0d58c8e90a993295fbaa11d8f3ec5c78dfefedfac12",
+      "size": 2593
+    },
+    {
+      "path": "baseline_determinism.json",
+      "sha256": "e5877f4ce93485dfd68a703b675cd77adba51c7811e5732181a0fb3e946dae12",
+      "size": 401
+    },
+    {
+      "path": "browser_matrix.json",
+      "sha256": "7153e011977201336b083408aa53b3cbc2caea78975b1d499bbce36b7bb49846",
+      "size": 253
+    },
+    {
+      "path": "canonical_demo_semantic_coverage_matrix.json",
+      "sha256": "065c515818f5542a95659adf2df2d8cb039bdfe2bcddcb0cf4579fab16b74899",
+      "size": 17660
+    },
+    {
+      "path": "cross_project_report_negative.json",
+      "sha256": "1cb25f7f11ddc18f5b645eb7ce13b9e05684f349381cd7bc0a5e8d33ff00cacb",
+      "size": 58
+    },
+    {
+      "path": "current_demo_contract_registry.json",
+      "sha256": "f7922f20973ced8d828905ea0c14fb4b7b7e4daddd8cdade48a1b6014a36ea53",
+      "size": 5589
+    },
+    {
+      "path": "d0_regression.json",
+      "sha256": "5d2c8a3cfb5905f4b5d83603adea472d461bddbb6555630f6e493bce0c05c66b",
+      "size": 64
+    },
+    {
+      "path": "demo1_before_after_eligibility.json",
+      "sha256": "49f0312da99d1e943752e549f246ec1fc28d7c14006fe82d05a75c87519fa534",
+      "size": 231
+    },
+    {
+      "path": "demo1_before_after_intent.json",
+      "sha256": "efa320e4ee1e2f65335ffbcc7be9762d498008e3775218f0271a47bc68f365c2",
+      "size": 438
+    },
+    {
+      "path": "demo1_before_after_plan.json",
+      "sha256": "14bc9caed06dd52b05cf4d451e41f8360926316ca17ca61db6c9f76e5fb5cc21",
+      "size": 219
+    },
+    {
+      "path": "demo1_branch_decision.json",
+      "sha256": "1927e3c4fe6023ea488440e05711e19a7fa028f8ca0bfc687003246fdf50f3b7",
+      "size": 124
+    },
+    {
+      "path": "demo1_prompt_authority_audit.json",
+      "sha256": "f0e34f448c322088e2c11296c399403f34abeaa98f951e4bb60e1d7639a03b3e",
+      "size": 435
+    },
+    {
+      "path": "entry_gate.md",
+      "sha256": "1bbe23ebe70fac70bff20624a2a97977ed6b0d04c7de67bb8c94f745df92ca9f",
+      "size": 501
+    },
+    {
+      "path": "fact_model_hash_impact.json",
+      "sha256": "d71bbc9aff95988d9c92277a61533c959fccfd7544f66d18a7a25755c2a62376",
+      "size": 205
+    },
+    {
+      "path": "fresh_demo1_closure_smoke.json",
+      "sha256": "1100351b3b769ced0be2b72962e4fa9eaa4d34603ab4d566cf3bafd5b5eab585",
+      "size": 413
+    },
+    {
+      "path": "fresh_demo1_recipe.json",
+      "sha256": "25a085740f2b73923db23b95a01ffcd1fbbead1da5d49e295477d7fcccd68724",
+      "size": 13900
+    },
+    {
+      "path": "fresh_demo1_report.json",
+      "sha256": "9fd0c9874b2933c84a1d4e84d2c79efbc86796a668aff724864c18cfd315f493",
+      "size": 34314
+    },
+    {
+      "path": "fresh_demo1_report_ui.json",
+      "sha256": "283b552f46c3acedf73bf92a7cbbaf134aa0be30e5528d1a0af0c3d4972a9399",
+      "size": 762
+    },
+    {
+      "path": "fresh_demo1_report_ui.png",
+      "sha256": "d9353e71865ed470ce27f6c733f5d8169c48159039c4b14bd3606905d61a50a3",
+      "size": 448200
+    },
+    {
+      "path": "fresh_demo1_runtime_lineage.json",
+      "sha256": "bb3a0497f52ecc3342de9e6e0667de00cef8e0048b03daeb8783a46baec9b17e",
+      "size": 2433
+    },
+    {
+      "path": "fresh_demo1_workspace.json",
+      "sha256": "425b2cd2c6b7624a995a1183d357fba7eafe597dd5a0e8f95cde76b79c279fb6",
+      "size": 467
+    },
+    {
+      "path": "initial_release_scope_baseline.json",
+      "sha256": "3e06b4433cf11c836adef61cb1b6c1314c13239443a861f0db006f5300b09b2a",
+      "size": 1883
+    },
+    {
+      "path": "initial_release_scope_baseline_hash.txt",
+      "sha256": "e2998504729a70b452d9dbc924d1f9127c4b40b17c23415b50bb74b5c0c9f8ad",
+      "size": 66
+    },
+    {
+      "path": "level_c2_regression.json",
+      "sha256": "881fff79958551e42ea256c7ed737604577e403a969fc31e3ad3a77dd8572455",
+      "size": 59
+    },
+    {
+      "path": "level_c_regression.json",
+      "sha256": "881fff79958551e42ea256c7ed737604577e403a969fc31e3ad3a77dd8572455",
+      "size": 59
+    },
+    {
+      "path": "no_overplanning_regression.json",
+      "sha256": "ada19f78a39a466c9980f7f4583b755194eef741a6020a348e99756068d5b5b1",
+      "size": 167
+    },
+    {
+      "path": "phase11_nonchange.json",
+      "sha256": "9e31429deaa1dd0b0c2f1764c143b24cc05e49293a1f15df6c6ead3daaa79e1f",
+      "size": 158
+    },
+    {
+      "path": "phase12_nonchange.json",
+      "sha256": "a72176eccdc8ef9a9db870afa84589b78bd1d1913bf941ac495d96e9aa24a178",
+      "size": 210
+    },
+    {
+      "path": "phase13_2_attempt5_handoff.json",
+      "sha256": "7321b339ced17afeaa054e6e30f402ed85dc24f45d5b606ff66f41b8b976be93",
+      "size": 2970
+    },
+    {
+      "path": "plan01_current_positive.json",
+      "sha256": "07d6af62fa3a4820fff495ef940dc3af6198281062e539a9647e624307a0f0a6",
+      "size": 169
+    },
+    {
+      "path": "plan01_legacy_negative.json",
+      "sha256": "90ca61b67698595d86b11e0d3ab87a872808ee029a1e41ebff6ddd715bc1bc23",
+      "size": 145
+    },
+    {
+      "path": "plan01_stale_negative.json",
+      "sha256": "bfd7795c01eed0d950d5d274687098ed6918d67bb11f3ff45f47a950da1f2ca8",
+      "size": 111
+    },
+    {
+      "path": "plan02_regression.json",
+      "sha256": "f03ed9d731a848c0bd560012d53f7df32cbb5927b4aa5feb488d2f5165dfc82e",
+      "size": 60
+    },
+    {
+      "path": "platform_replay.json",
+      "sha256": "7f521db32095c659939ad6659eda4b35ff4afee1b66f6adea83722860a6c03db",
+      "size": 248
+    },
+    {
+      "path": "prompt_paraphrase_regression.json",
+      "sha256": "8f0f124ff496db0f16dea678465cce7b420a31bb6318174f2c8048731679505d",
+      "size": 234
+    },
+    {
+      "path": "r4_001_root_cause.json",
+      "sha256": "aabaa68cbce8c699d5db7516179ccef96331edd92a5e24971788948ba35ed60e",
+      "size": 297
+    },
+    {
+      "path": "r4_002_root_cause.json",
+      "sha256": "a0d1cf39ec2c3a9654eb239bfcdc7877e77d95c5fb50d9978ab78b45ef6e3e63",
+      "size": 494
+    },
+    {
+      "path": "recipe_no_execution_growth.json",
+      "sha256": "806f1257629e64847dd044b1669b6e411d822ce7d404cfb00cddb89e6aba3b15",
+      "size": 289
+    },
+    {
+      "path": "release_finding_closure.json",
+      "sha256": "fd34af187ed432e2782cf3a77df3db423730f81c7f4117a2d9062c9ccd17f228",
+      "size": 304
+    },
+    {
+      "path": "release_gap_reconciliation.json",
+      "sha256": "087e25a558df7f4b540209b6f92e6f39eb06d7f6c5e87bb6d6b067ca805f7203",
+      "size": 110
+    },
+    {
+      "path": "report_action_eligibility_contract.json",
+      "sha256": "41d14ecc60d84e09866e8b5c14c9103c36f171923ed34d3834721e24d8e2761a",
+      "size": 421
+    },
+    {
+      "path": "report_limitations_regression.json",
+      "sha256": "505839902b8ac77e5034e52e7b429718c785ac1166f7573b8c80844a814f98f0",
+      "size": 110
+    },
+    {
+      "path": "retained_browser_matrix/browser_chromium.json",
+      "sha256": "bd7763231914dcaaa3fa27429695c6b13e8c4f23dc8aca5b97b12dd86d4f27cf",
+      "size": 596
+    },
+    {
+      "path": "retained_browser_matrix/browser_firefox.json",
+      "sha256": "e67f1189464baf8c5109ec8483457c8e5a1fea1d962195c8aa6825d9b64db11d",
+      "size": 595
+    },
+    {
+      "path": "retained_browser_matrix/browser_matrix.json",
+      "sha256": "53e61fd74e58084c03f0daf100a2776d758968af015854074b1ee3877aa0780f",
+      "size": 1986
+    },
+    {
+      "path": "retained_browser_matrix/browser_mobile.json",
+      "sha256": "152dc357f016e172ab65a163e9a16573e96cbe6cc0853cc25b0771f3ed67e1dd",
+      "size": 394
+    },
+    {
+      "path": "retained_browser_matrix/browser_webkit.json",
+      "sha256": "9597b51a8cbb4a4ac77af8b27a2b8fac06380f09938e2b85187ba6ad30fadc76",
+      "size": 594
+    },
+    {
+      "path": "retained_browser_matrix/console_summary.json",
+      "sha256": "380795a2b3341e4ab062375f7e1fbed225b4714b7dab62e0e01ba872b391dea1",
+      "size": 107
+    },
+    {
+      "path": "retained_browser_matrix/network_summary.json",
+      "sha256": "ee2505a35fe7157415184f314b76a8058097324ff91a47e4bf5ad0b8d161d764",
+      "size": 170
+    },
+    {
+      "path": "retained_browser_matrix/screenshots/chromium_report.png",
+      "sha256": "ee2915bf38fe96405ad628969d8d05ab354f091fbbab2a73b151fb5f47179345",
+      "size": 218918
+    },
+    {
+      "path": "retained_browser_matrix/screenshots/firefox_report.png",
+      "sha256": "1be07b9646fb236bdaa0993bebd273edb409bc6707dfa57720fb4c654ec7efed",
+      "size": 278315
+    },
+    {
+      "path": "retained_browser_matrix/screenshots/mobile_report.png",
+      "sha256": "de63cb37ec2cba6070cf1c3c2ef8fec1c9de241646377a082865a42a0ac15b12",
+      "size": 61355
+    },
+    {
+      "path": "retained_browser_matrix/screenshots/webkit_report.png",
+      "sha256": "48cee18332a0f93b8e5c117a6767d056919179030264da9ca6943e32d83b7b0a",
+      "size": 156451
+    },
+    {
+      "path": "scope_baseline_hash_impact.json",
+      "sha256": "81dad684d48dc7c8b3901b73d4fb5774da8a58109bb8176d2c8b6ac65b2d01ce",
+      "size": 288
+    },
+    {
+      "path": "secret_scan.txt",
+      "sha256": "89dc3d52ab598ebe47c9d0febed2c879410a1be0ca8acb021b69dbae463cadb1",
+      "size": 75
+    },
+    {
+      "path": "security.md",
+      "sha256": "ddff5fba0d1039337f4e88f8ee5eb33ba6f308eb61547a3e6cbbc3bd565b328b",
+      "size": 605
+    },
+    {
+      "path": "service_environment.json",
+      "sha256": "f1491befb9eb8084850b0adc8bf901e88570233e206ceb244217c308f1a8a491",
+      "size": 129
+    },
+    {
+      "path": "seven_demo_coverage_aggregate.json",
+      "sha256": "cf391583b2a2ef64febe6fa87df895fbc26a95dc2cd18467b882e189463a58d0",
+      "size": 206
+    },
+    {
+      "path": "test_summary.json",
+      "sha256": "efd3d41d07b9dd8af907e695ac422a4552a55ddc318c667afb40afd0e14f4a92",
+      "size": 285
+    },
+    {
+      "path": "workspace_readonly_authority_audit.json",
+      "sha256": "5f44a1cd3ad37b4384ac1d1b64b49e3af557e2992b6826d7ec1d969cc5ac62f6",
+      "size": 141
+    }
+  ],
+  "schemaVersion": "phase13-fix-forward-4-manifest/1.0",
+  "unclassified": 0
+}

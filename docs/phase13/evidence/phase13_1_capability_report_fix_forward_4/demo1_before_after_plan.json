@@ -1,0 +1,11 @@
+{
+  "afterTools": [
+    "dataset.composition_space",
+    "dataset.materials_explorer"
+  ],
+  "beforeTools": [
+    "dataset.materials_explorer"
+  ],
+  "inventedDependencies": 0,
+  "planSchemaVersion": "0.1"
+}

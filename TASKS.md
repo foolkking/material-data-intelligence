@@ -1,4 +1,20 @@
 ---TASK---
+状态：处理中
+
+# Phase 13-1 Integration Fix-Forward #4
+
+## Canonical Capability Coverage + Report Finalize Policy Closure
+
+Close only `P13-R4-001` and `P13-R4-002`. Audit all seven canonical prompts
+through real Intent/Eligibility/Planner/PlanValidator semantic coverage; apply
+the bounded authorized coverage correction; decouple immutable scientific
+Workspace state from exact M5 Report action eligibility while preserving
+legacy/stale/cross-project safety; and run one fresh Demo 1 product-closure
+smoke through real services and Chromium UI Report Finalize/paired Recipe.
+Do not execute or queue Phase 13-2 Attempt 5.
+---END---
+
+---TASK---
 状态：失败
 
 # Phase 13-2 Attempt 4

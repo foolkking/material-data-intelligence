@@ -1,0 +1,6 @@
+{
+  "currentPrompt": "Explore this materials dataset, summarize its quality, and map its compositions in composition space.",
+  "decision": "NO",
+  "historicalPrompt": "Explore this materials table, summarize its quality, and show how the compositions are distributed.",
+  "reason": "Composition distribution is formally composition_analysis; composition_space requires an explicit space, embedding, or clustering expression."
+}

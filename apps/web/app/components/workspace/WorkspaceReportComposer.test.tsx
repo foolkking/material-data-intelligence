@@ -42,12 +42,7 @@ const HASH = "a".repeat(64);
 
 beforeEach(() => {
   vi.clearAllMocks();
-  sourcesMock.mockResolvedValue({
-    schemaVersion: "1.0", workspaceId: "workspace_demo", workspaceRevision: 1,
-    workspaceProjectionHash: HASH, sources: [figureSource(), metadataSource(), unsupportedSource()],
-    mandatoryDisclosures: [disclosure()], sourceCount: 3, mandatoryDisclosureCount: 1,
-    artifactContractInventoryCount: 42, metadataOnly: true, heavyArtifactPayloadRequests: 0, webglContexts: 0,
-  });
+  sourcesMock.mockResolvedValue(inventoryFixture());
   historyMock.mockResolvedValue({ workspaceId: "workspace_demo", items: [], count: 0, immutableHistory: true });
   previewMock.mockResolvedValue({ report: reportFixture(true), recipe: recipeFixture(true), sourceCount: 3, mandatoryDisclosureCount: 1, predictedOutcome: "REPORT_READY_WITH_LIMITS", persisted: false, noExecution: { planCreated: false, jobCreated: false, toolCallCreated: false, queueMessageCreated: false } });
   finalizeMock.mockResolvedValue({ reportId: "report_saved", reportHash: HASH, recipeId: "recipe_saved", recipeHash: HASH, compositionHash: HASH, workspaceId: "workspace_demo", workspaceRevision: 1, outcome: "REPORT_READY_WITH_LIMITS", idempotentReplay: false, immutable: true, noExecution: { planCreated: false, jobCreated: false, toolCallCreated: false, queueMessageCreated: false } });
@@ -112,6 +107,25 @@ describe("Phase 10M-5 WorkspaceReportComposer", () => {
     expect(screen.getAllByText("No", { selector: "dd" })).toHaveLength(2);
     expect(reportMock).toHaveBeenCalledWith("workspace_demo", "report_saved", expect.any(AbortSignal));
     expect(recipeMock).toHaveBeenCalledWith("workspace_demo", "report_saved", expect.any(AbortSignal));
+  });
+
+  it("uses report action eligibility instead of scientific Workspace mutability", async () => {
+    const user = userEvent.setup();
+    const workspace = { ...workspaceSnapshotFixture().workspace, readOnly: true, projectedStatus: "LEGACY_READ_ONLY" as const };
+    render(<WorkspaceReportComposer workspace={workspace} />);
+    await screen.findByText("3 exact sources; 1 mandatory disclosures");
+    await user.click(screen.getByRole("button", { name: "Add artifact_plot to report" }));
+    await user.click(screen.getByRole("button", { name: "Preview report" }));
+    expect(await screen.findByRole("button", { name: "Finalize report" })).toBeEnabled();
+  });
+
+  it("keeps report actions disabled with the server typed reason", async () => {
+    sourcesMock.mockResolvedValueOnce(inventoryFixture(false));
+    render(<WorkspaceReportComposer workspace={workspaceSnapshotFixture().workspace} />);
+    await screen.findByText("3 exact sources; 1 mandatory disclosures");
+    const preview = screen.getByRole("button", { name: "Preview report" });
+    expect(preview).toBeDisabled();
+    expect(preview).toHaveAttribute("title", "Current source identities are incomplete.");
   });
 
   it("renders malicious persisted strings as inert text", async () => {
@@ -188,6 +202,8 @@ function figureSource() { return source({}); }
 function metadataSource() { return source({ sourceId: "artifact_structure", artifactId: "artifact_structure", contract: "structure_json", role: "REPORT_METADATA_ONLY", state: "METADATA_ONLY", representation: "METADATA", fallback: "Structure identity and approved text fallback." }); }
 function unsupportedSource() { return source({ sourceId: "artifact_unsupported", artifactId: "artifact_unsupported", contract: "unknown_contract", role: "REPORT_UNSUPPORTED", state: "UNSUPPORTED", representation: "NONE", fallback: null, reason: "Unknown Artifact contract." }); }
 function disclosure() { return source({ sourceKind: "DISCLOSURE", sourceId: "disclosure_partial", artifactId: null, artifactChecksum: null, contract: "report.disclosure", role: "REPORT_DISCLOSURE_ONLY", state: "MANDATORY", representation: "DISCLOSURE", fallback: "Required partial execution disclosure." }); }
+function reportActions(allowed: boolean) { return { reportCompositionAllowed: allowed, reportPreviewAllowed: allowed, reportFinalizeAllowed: allowed, recipeInspectionAllowed: allowed, reasons: allowed ? [] : [{ code: "SOURCE_IDENTITIES_INCOMPLETE", message: "Current source identities are incomplete." }], scientificSourceMutationAllowed: false as const, recipeExecutionAllowed: false as const }; }
+function inventoryFixture(allowed = true) { return { schemaVersion: "1.0" as const, workspaceId: "workspace_demo", workspaceRevision: 1, workspaceProjectionHash: HASH, sources: [figureSource(), metadataSource(), unsupportedSource()], mandatoryDisclosures: [disclosure()], sourceCount: 3, mandatoryDisclosureCount: 1, artifactContractInventoryCount: 42, metadataOnly: true as const, heavyArtifactPayloadRequests: 0 as const, webglContexts: 0 as const, actionEligibility: reportActions(allowed) }; }
 
 function reportFixture(preview: boolean): ReportCompositionSnapshot {
   const ids = ["TITLE", "ANALYSIS_GOAL", "DATASET_RESOURCE_SCOPE", "METHODS_PLAN", "EXECUTION_STATUS", "SELECTED_RESULTS", "GROUNDED_FINDINGS", "WARNINGS_LIMITATIONS", "FAILED_BLOCKED_MISSING", "EVIDENCE_PROVENANCE", "ENVIRONMENT_REFERENCES", "EXACT_RERUN_RECIPE"];

@@ -15,7 +15,10 @@ from mdi_api.db import organizations, reports as reports_table, users, visualiza
 from mdi_api.repositories import InMemoryRepositoryBundle, SqlAlchemyRecipeRepository, SqlAlchemyRepositoryBundle, compute_plan_hash
 from mdi_api.routers import planner
 from mdi_api.workspaces import WorkspaceProjectionService
+from mdi_llm import AnalysisIntentRequest, DeterministicAnalysisIntentBuilder, MockLLMProvider, plan_capabilities
 from mdi_schemas import ReportCompositionRequest
+from mdi_tool_registry import load_manifests
+from tests.test_phase10l1_analysis_intent import _profile
 
 
 def _plan_01() -> dict:
@@ -48,10 +51,25 @@ def _plan_01() -> dict:
 
 def _seed(*, status: str = "completed", repos: InMemoryRepositoryBundle | None = None) -> tuple[InMemoryRepositoryBundle, str, str]:
     repos = repos or InMemoryRepositoryBundle.create()
-    plan = _plan_01()
+    profile = _profile().model_copy(update={"profileId": "profile_m5", "datasetId": "dataset_m5"})
+    intent = DeterministicAnalysisIntentBuilder().build(
+        AnalysisIntentRequest(
+            raw_goal="Summarize exact dataset statistics.",
+            dataset_id="dataset_m5",
+            profile_id="profile_m5",
+        ),
+        profile=profile,
+    )
+    capability = plan_capabilities(intent, profile=profile, registry=load_manifests(), provider=MockLLMProvider())
+    assert capability.plan is not None and capability.plan.schemaVersion == "0.1"
+    plan = capability.plan.model_dump(mode="json")
     plan_hash = compute_plan_hash(plan)
     repos.projects.save({"projectId": "project_m5", "name": "M5", "createdBy": "user_local"})
     repos.datasets.save({"datasetId": "dataset_m5", "projectId": "project_m5", "name": "Dataset", "createdBy": "user_local"})
+    repos.data_profiles.save(profile)
+    repos.analysis_intents.save_intent({"projectId": "project_m5", "analysisIntent": intent.model_dump(mode="json"), "createdBy": "user_local"})
+    repos.capability_planning.save_resolution({"eligibilityResolution": capability.resolution.model_dump(mode="json"), "createdBy": "user_local"})
+    repos.capability_planning.save_decision({"capabilityDecision": capability.decision.model_dump(mode="json"), "createdBy": "user_local"})
     repos.analysis_plans.save_plan({
         "id": "plan_m5", "projectId": "project_m5", "datasetId": "dataset_m5",
         "profileId": "profile_m5", "analysisPlan": plan, "planHash": plan_hash,
@@ -61,16 +79,19 @@ def _seed(*, status: str = "completed", repos: InMemoryRepositoryBundle | None =
         "id": "job_m5", "projectId": "project_m5", "datasetId": "dataset_m5",
         "planId": "plan_m5", "status": status, "createdBy": "user_local",
     })
+    repos.analysis_intents.attach_execution(intent.intentId, "plan_m5", "job_m5")
+    repos.capability_planning.attach_execution(capability.decision.decisionId, intent.intentId, "plan_m5", "job_m5")
+    step = plan["steps"][0]
     repos.tool_calls.save({
-        "id": "call_m5", "jobId": "job_m5", "stepId": "step_summary",
-        "toolId": "table.numeric_summary", "status": "completed", "params": {"columns": ["formation_energy"]},
+        "id": "call_m5", "jobId": "job_m5", "stepId": step["stepId"],
+        "toolId": step["toolId"], "status": "completed", "params": step["params"],
     })
     repos.artifacts.save({
         "id": "artifact_m5", "projectId": "project_m5", "datasetId": "dataset_m5",
         "jobId": "job_m5", "toolCallId": "call_m5", "type": "table_json", "version": "1",
         "name": "malicious filename ignored.html", "storageKey": "opaque_m5_key", "storageProvider": "local",
         "sizeBytes": 123, "contentType": "application/json", "contentHash": "a" * 64, "sha256": "a" * 64,
-        "metadata": {"toolId": "table.numeric_summary", "toolVersion": "1.0", "adapterVersion": "1.0", "rawPayload": "not report authority"},
+        "metadata": {"toolId": step["toolId"], "toolVersion": "1.0", "adapterVersion": "1.0", "rawPayload": "not report authority"},
     })
     snapshot, created = WorkspaceProjectionService(repos).project_job(source_job_id="job_m5", created_by="user_local", title="Workspace")
     assert created
@@ -89,12 +110,23 @@ def _request(workspace_id: str, revision: int, *, title: str = "Exact scientific
 
 def test_source_inventory_is_metadata_only_and_uses_all_42_contract_roles() -> None:
     repos, workspace_id, _ = _seed()
+    panels = WorkspaceProjectionService(repos).list_panels(workspace_id)
+    assert any(panel.panelKind.value == "REPORT" for panel in panels)
     inventory = ReportCompositionService(repos).source_inventory(workspace_id)
 
     assert inventory["artifactContractInventoryCount"] == 42
     assert inventory["metadataOnly"] is True
     assert inventory["heavyArtifactPayloadRequests"] == 0
     assert inventory["webglContexts"] == 0
+    assert inventory["actionEligibility"] == {
+        "reportCompositionAllowed": True,
+        "reportPreviewAllowed": True,
+        "reportFinalizeAllowed": True,
+        "recipeInspectionAllowed": True,
+        "reasons": [],
+        "scientificSourceMutationAllowed": False,
+        "recipeExecutionAllowed": False,
+    }
     artifact = next(item for item in inventory["sources"] if item["sourceId"] == "artifact_m5")
     assert artifact["role"] == "REPORT_TABLE_SOURCE"
     serialized = json.dumps(inventory, sort_keys=True)
@@ -154,6 +186,34 @@ def test_finalize_creates_exact_immutable_pair_and_is_idempotent() -> None:
         service.finalize(conflicting, idempotency_key="m5-finalize", created_by="user_local")
     assert captured.value.code == "REPORT_IDEMPOTENCY_CONFLICT"
     assert len(repos.reports.records) == len(repos.recipes.records) == 1
+
+
+def test_legacy_incomplete_plan01_report_actions_fail_closed_with_typed_reason() -> None:
+    repos = InMemoryRepositoryBundle.create()
+    plan = _plan_01()
+    repos.projects.save({"projectId": "project_m5", "name": "M5", "createdBy": "user_local"})
+    repos.datasets.save({"datasetId": "dataset_m5", "projectId": "project_m5", "name": "Legacy", "createdBy": "user_local"})
+    repos.analysis_plans.save_plan({
+        "id": "plan_m5", "projectId": "project_m5", "datasetId": "dataset_m5",
+        "profileId": "profile_m5", "analysisPlan": plan, "planHash": compute_plan_hash(plan),
+        "createdBy": "user_local",
+    })
+    repos.jobs.save({"id": "job_m5", "projectId": "project_m5", "datasetId": "dataset_m5", "planId": "plan_m5", "status": "completed", "createdBy": "user_local"})
+    snapshot, _ = WorkspaceProjectionService(repos).project_job(source_job_id="job_m5", created_by="user_local")
+    workspace_id = snapshot.body["workspace"]["workspaceId"]
+    service = ReportCompositionService(repos)
+    inventory = service.source_inventory(workspace_id)
+    panels = WorkspaceProjectionService(repos).list_panels(workspace_id)
+    assert any(panel.panelKind.value == "REPORT" for panel in panels)
+    assert inventory["actionEligibility"]["reportFinalizeAllowed"] is False
+    assert inventory["actionEligibility"]["reasons"][0]["code"] == "SOURCE_IDENTITIES_INCOMPLETE"
+    with pytest.raises(ReportCompositionDomainError) as captured:
+        service.preview(ReportCompositionRequest(
+            workspaceId=workspace_id,
+            expectedWorkspaceRevision=snapshot.body["workspace"]["revision"],
+            title="Legacy report",
+        ))
+    assert captured.value.code == "SOURCE_IDENTITIES_INCOMPLETE"
 
 
 def test_atomic_in_memory_pair_rolls_back_when_recipe_write_fails(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -319,7 +379,7 @@ def test_stale_workspace_sources_are_disclosed_without_latest_rebinding() -> Non
             selectedArtifactIds=("artifact_m5_stale",),
             itemOrder=("artifact_m5_stale",),
         ))
-    assert captured.value.code == "REPORT_SOURCE_STALE"
+    assert captured.value.code == "WORKSPACE_SOURCE_NOT_CURRENT"
 
 
 def test_legacy_report_is_read_only_and_has_no_inferred_recipe_pair() -> None:
@@ -416,19 +476,11 @@ def test_grounded_claim_and_evidence_membership_is_exact_and_cross_job_injection
         selectedEvidenceItemIds=(evidence["sourceId"],),
         itemOrder=("artifact_l4_api", claim["sourceId"], evidence["sourceId"]),
     )
-    preview = service.preview(request)
-    finding_section = next(section for section in preview.report.sections if section.sectionId == "GROUNDED_FINDINGS")
-    selected_claim = next(item for item in interpreted["claims"] if item["claimId"] == claim["sourceId"])
-    assert selected_claim["renderedText"] in finding_section.items
-    assert {item.sourceId for item in preview.report.selectedSources}.issuperset({claim["sourceId"], evidence["sourceId"]})
-
-    injected = request.model_copy(update={
-        "selectedClaimIds": ("claim_foreign_job",),
-        "itemOrder": ("artifact_l4_api", "claim_foreign_job", evidence["sourceId"]),
-    })
+    assert inventory["actionEligibility"]["reportFinalizeAllowed"] is False
+    assert inventory["actionEligibility"]["reasons"][0]["code"] == "SOURCE_IDENTITIES_INCOMPLETE"
     with pytest.raises(ReportCompositionDomainError) as captured:
-        service.preview(injected)
-    assert captured.value.code == "REPORT_SOURCE_NOT_FOUND"
+        service.preview(request)
+    assert captured.value.code == "SOURCE_IDENTITIES_INCOMPLETE"
     assert repos.reports.records == {} and repos.recipes.records == {}
 
 

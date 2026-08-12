@@ -110,6 +110,9 @@ export function WorkspaceReportComposer({ workspace, onDraftDirtyChange }: { wor
 
   const draftSignature = useMemo(() => JSON.stringify({ title, selectedIds, captions }), [captions, selectedIds, title]);
   const draftDirty = draftSignature !== savedDraftSignature;
+  const actionEligibility = inventory?.actionEligibility;
+  const previewUnavailableReason = actionEligibility?.reasons[0]?.message || "Report preview is unavailable for this source.";
+  const finalizeUnavailableReason = actionEligibility?.reasons[0]?.message || "Report finalization is unavailable for this source.";
 
   useEffect(() => {
     onDraftDirtyChange?.(draftDirty);
@@ -321,13 +324,13 @@ export function WorkspaceReportComposer({ workspace, onDraftDirtyChange }: { wor
           </li>)}
         </ul>
         <section className="workspace-report-mandatory" aria-labelledby="report-mandatory-title"><h5 id="report-mandatory-title">Mandatory disclosures</h5>{inventory?.mandatoryDisclosures.length ? <ul>{inventory.mandatoryDisclosures.map((item) => <li key={item.sourceId}>{item.fallback || item.reason || item.sourceId}</li>)}</ul> : <p>No mandatory disclosures.</p>}</section>
-        <div className="workspace-report-actions"><button type="button" onClick={() => void runPreview()} disabled={!title.trim() || state === "PREVIEWING" || state === "FINALIZING"}>Preview report</button></div>
+        <div className="workspace-report-actions"><button type="button" onClick={() => void runPreview()} disabled={!title.trim() || !actionEligibility?.reportPreviewAllowed || state === "PREVIEWING" || state === "FINALIZING"} title={!actionEligibility?.reportPreviewAllowed ? previewUnavailableReason : undefined}>Preview report</button></div>
       </section>
     </div> : null}
 
     {view === "PREVIEW" ? <section className="workspace-report-preview" aria-labelledby="report-preview-title">
       <div className="workspace-report-section-heading"><h4 id="report-preview-title">Deterministic preview</h4><span>{preview?.predictedOutcome || "Not generated"}</span></div>
-      {preview ? <><p className="workspace-report-no-write" role="status">Preview is not persisted. Report writes 0; Recipe writes 0; Job creation 0.</p><ReportSections report={preview.report} /><RecipeSummary recipe={preview.recipe} /><div className="workspace-report-actions"><button type="button" onClick={() => setFinalizeConfirmationOpen(true)} disabled={workspace.readOnly || state === "FINALIZING"}>Finalize report</button></div>{finalizeConfirmationOpen ? <section className="workspace-report-finalize-confirmation" role="alertdialog" aria-labelledby="report-finalize-title" aria-describedby="report-finalize-description"><h5 id="report-finalize-title">Create an immutable Report and Recipe?</h5><p id="report-finalize-description">This saves the exact preview as a new immutable history entry. It does not run an analysis or execute the Recipe.</p><div className="workspace-report-actions"><button type="button" className="secondary" onClick={() => setFinalizeConfirmationOpen(false)}>Keep editing</button><button type="button" onClick={() => void finalize()} disabled={state === "FINALIZING"}>Confirm and finalize</button></div></section> : null}</> : <p>Generate a preview from the current draft.</p>}
+      {preview ? <><p className="workspace-report-no-write" role="status">Preview is not persisted. Report writes 0; Recipe writes 0; Job creation 0.</p><ReportSections report={preview.report} /><RecipeSummary recipe={preview.recipe} /><div className="workspace-report-actions"><button type="button" onClick={() => setFinalizeConfirmationOpen(true)} disabled={!actionEligibility?.reportFinalizeAllowed || state === "FINALIZING"} title={!actionEligibility?.reportFinalizeAllowed ? finalizeUnavailableReason : undefined}>Finalize report</button></div>{finalizeConfirmationOpen ? <section className="workspace-report-finalize-confirmation" role="alertdialog" aria-labelledby="report-finalize-title" aria-describedby="report-finalize-description"><h5 id="report-finalize-title">Create an immutable Report and Recipe?</h5><p id="report-finalize-description">This saves the exact preview as a new immutable history entry. It does not run an analysis or execute the Recipe.</p><div className="workspace-report-actions"><button type="button" className="secondary" onClick={() => setFinalizeConfirmationOpen(false)}>Keep editing</button><button type="button" onClick={() => void finalize()} disabled={!actionEligibility?.reportFinalizeAllowed || state === "FINALIZING"}>Confirm and finalize</button></div></section> : null}</> : <p>Generate a preview from the current draft.</p>}
     </section> : null}
 
     {view === "HISTORY" ? <section className="workspace-report-history" aria-labelledby="report-history-title">

@@ -1,0 +1,81 @@
+{
+  "attempt5Executed": false,
+  "attempt5MustExecuteAll7FromScratch": true,
+  "attempt5Queued": false,
+  "attemptHistory": [
+    "ATTEMPT1_FAILED",
+    "FIX_FORWARD1_PASS",
+    "ATTEMPT2_FAILED",
+    "FIX_FORWARD2_PASS",
+    "ATTEMPT3_FAILED",
+    "FIX_FORWARD3_PASS",
+    "ATTEMPT4_FAILED",
+    "FIX_FORWARD4_PASS"
+  ],
+  "canonicalPrompts": {
+    "P13-DEMO-01": "Explore this materials dataset, summarize its quality, and map its compositions in composition space.",
+    "P13-DEMO-02": "Evaluate these materials-model predictions and explain the largest errors and limitations.",
+    "P13-DEMO-03": "Inspect this crystal structure, map its CrystalNN local environment and coordination polyhedra, then compare the supplied experimental XRD peaks with its theoretical pattern.",
+    "P13-DEMO-04": "Analyze this trajectory, show the RDF and MSD, and estimate diffusion over the full supplied time range with fit diagnostics.",
+    "P13-DEMO-05": "Show the supplied phonon bands and density of states together with the matching Brillouin-zone context.",
+    "P13-DEMO-06": "Inspect this supplied volumetric grid and show its supported slice and volume views.",
+    "P13-DEMO-07": "Inspect the supplied electronic band structure and DOS, including gap, spin, projection and compatibility limitations."
+  },
+  "d0": "PASS",
+  "durableUpload": true,
+  "factModelHash": "e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06",
+  "freshDemo1ClosureSmoke": "PASS_REQUIRED_BY_IMPLEMENTATION_EVIDENCE",
+  "handoffId": "Phase13_2Attempt5RealUserE2ERerunHandoff",
+  "levelC": "7/7",
+  "levelC2": "7/7",
+  "noInjection": true,
+  "p13x2Ids": [
+    "P13X2-A01",
+    "P13X2-A02",
+    "P13X2-A03",
+    "P13X2-A04",
+    "P13X2-A05",
+    "P13X2-A06",
+    "P13X2-A07",
+    "P13X2-A08"
+  ],
+  "phase12BaselineHash": "29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4",
+  "providerPolicy": "DEEPSEEK_ONLY_BOUNDED_WHERE_ATTEMPT5_AUTHORIZES",
+  "reportActionEligibility": true,
+  "requiredTools": {
+    "P13-DEMO-01": [
+      "dataset.composition_space",
+      "dataset.materials_explorer"
+    ],
+    "P13-DEMO-02": [
+      "dataset.materials_explorer",
+      "ml.regression_evaluation"
+    ],
+    "P13-DEMO-03": [
+      "structure.coordination_crystalnn",
+      "structure.experimental_xrd_comparison",
+      "structure.local_environment_polyhedra",
+      "structure.xrd"
+    ],
+    "P13-DEMO-04": [
+      "trajectory.diffusion",
+      "trajectory.msd",
+      "trajectory.rdf"
+    ],
+    "P13-DEMO-05": [
+      "phonon.band",
+      "phonon.band_dos",
+      "phonon.dos",
+      "structure.brillouin_zone"
+    ],
+    "P13-DEMO-06": [
+      "structure.volumetric_data"
+    ],
+    "P13-DEMO-07": [
+      "electronic.band_structure",
+      "electronic.dos"
+    ]
+  },
+  "scopeBaselineHash": "f188b3e15aa94111787297ffde07b37f90cfdd1fe4e910e39f941e956b455455",
+  "semanticCoverage": "7/7"
+}

@@ -1,0 +1,17 @@
+{
+  "backend": {
+    "passed": 1406,
+    "requiredServiceSkips": 0,
+    "skipped": 52
+  },
+  "build": "PASS",
+  "frontend": {
+    "passed": 458
+  },
+  "gitDiffCheck": "PASS",
+  "phase13Focused": {
+    "passed": 89
+  },
+  "typecheck": "PASS",
+  "uvLockCheck": "PASS"
+}

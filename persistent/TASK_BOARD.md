@@ -2632,3 +2632,11 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - Findings: P13-R4-001, P13-R4-002
 - Phase 13-3: blocked
 - Production/scientific changes: 0
+
+## Phase 13-1 Fix-Forward #4
+
+- [x] Select R4-001 Branch B and correct the current Demo 1 prompt authority.
+- [x] Pass seven-demo semantic capability coverage without Job creation.
+- [x] Separate Plan 0.1 scientific read-only state from exact Report actions.
+- [x] Pass fresh Demo 1 PostgreSQL/Redis/MinIO/fresh Worker/Chromium closure smoke.
+- [ ] Pass full regression and implementation exact-SHA CI, then record and archive.

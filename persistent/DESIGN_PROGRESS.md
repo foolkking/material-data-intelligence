@@ -2292,3 +2292,10 @@ entry gates, then failed on fresh Demo 1. The canonical prompt planned only
 0.1 Workspace was `LEGACY_READ_ONLY`, blocking real-user Report finalization.
 `P13-R4-001` and `P13-R4-002` are open reviewer-action P0 findings. No
 production or scientific behavior changed.
+
+Phase 13-1 Fix-Forward #4 is active. Seven canonical prompts now pass exact
+semantic capability coverage (`7/7`) using the existing Intent/Eligibility/
+Planner contracts. A fresh Demo 1 real-service smoke selected Composition Space
+and Materials Explorer, executed through PostgreSQL/Redis/MinIO/fresh Worker,
+and finalized a Report/Recipe through Chromium while the Plan 0.1 Workspace
+remained scientifically read-only. Full regression and exact-SHA CI remain.

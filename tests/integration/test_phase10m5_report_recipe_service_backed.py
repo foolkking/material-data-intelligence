@@ -16,6 +16,8 @@ from mdi_api.db import reports as reports_table, visualization_recipes
 from mdi_api.main import create_app
 from mdi_api.repositories import SqlAlchemyRepositoryBundle, compute_plan_hash
 from mdi_api.workspaces import WorkspaceProjectionService
+from mdi_llm import AnalysisIntentRequest, DeterministicAnalysisIntentBuilder, MockLLMProvider, plan_capabilities
+from mdi_tool_registry import load_manifests
 
 from tests.integration.test_phase10m1_workspace_service_backed import (
     _minio_client,
@@ -23,6 +25,7 @@ from tests.integration.test_phase10m1_workspace_service_backed import (
     _required_postgres_url,
     _schema_database_url,
 )
+from tests.test_phase10l1_analysis_intent import _profile
 
 
 @pytest.mark.integration
@@ -73,28 +76,41 @@ def test_phase10m5_postgres_redis_minio_report_recipe_composition(
         artifact_id = f"artifact_m5_{suffix}"
         repos.projects.save({"id": project_id, "name": "M5 service", "createdBy": "user_local"})
         repos.datasets.save({"id": dataset_id, "projectId": project_id, "name": "M5 data", "status": "profile_ready", "createdBy": "user_local"})
-        plan = {
-            "schemaVersion": "0.1", "goal": "Summarize exact persisted values.",
-            "datasetId": dataset_id, "profileId": f"profile_m5_{suffix}", "toolRegistryVersion": "1.0",
-            "assumptions": [], "warnings": [],
-            "steps": [{
-                "stepId": "step_summary", "toolId": "table.numeric_summary",
-                "purpose": "Persist exact statistics.", "reason": "Requested summary.",
-                "inputRefs": [{"refType": "normalized_object", "ref": "table_1", "datasetId": dataset_id, "objectId": "table_1", "objectType": "DataFrame"}],
-                "params": {"columns": ["value"]}, "output": {"artifactTypes": ["table_json"]},
-            }],
-            "expectedArtifacts": [{"name": "summary", "type": "table_json", "fromStepId": "step_summary"}],
-        }
+        profile_id = f"profile_m5_{suffix}"
+        profile = _profile().model_copy(update={"profileId": profile_id, "datasetId": dataset_id})
+        intent = DeterministicAnalysisIntentBuilder().build(
+            AnalysisIntentRequest(
+                raw_goal="Summarize exact dataset statistics.",
+                dataset_id=dataset_id,
+                profile_id=profile_id,
+            ),
+            profile=profile,
+        )
+        capability = plan_capabilities(
+            intent,
+            profile=profile,
+            registry=load_manifests(),
+            provider=MockLLMProvider(),
+        )
+        assert capability.plan is not None and capability.plan.schemaVersion == "0.1"
+        plan = capability.plan.model_dump(mode="json")
         plan_hash = compute_plan_hash(plan)
-        repos.analysis_plans.save_plan({"id": plan_id, "projectId": project_id, "datasetId": dataset_id, "profileId": f"profile_m5_{suffix}", "analysisPlan": plan, "planHash": plan_hash, "validationStatus": "validated", "createdBy": "user_local"})
+        repos.data_profiles.save(profile)
+        repos.analysis_intents.save_intent({"projectId": project_id, "analysisIntent": intent.model_dump(mode="json"), "createdBy": "user_local"})
+        repos.capability_planning.save_resolution({"eligibilityResolution": capability.resolution.model_dump(mode="json"), "createdBy": "user_local"})
+        repos.capability_planning.save_decision({"capabilityDecision": capability.decision.model_dump(mode="json"), "createdBy": "user_local"})
+        repos.analysis_plans.save_plan({"id": plan_id, "projectId": project_id, "datasetId": dataset_id, "profileId": profile_id, "analysisPlan": plan, "planHash": plan_hash, "validationStatus": "validated", "createdBy": "user_local"})
         repos.jobs.save({"id": job_id, "projectId": project_id, "datasetId": dataset_id, "planId": plan_id, "status": "completed", "kind": "analysis", "createdBy": "user_local"})
-        repos.tool_calls.save({"id": call_id, "jobId": job_id, "stepId": "step_summary", "toolId": "table.numeric_summary", "status": "completed", "params": {"columns": ["value"]}})
+        repos.analysis_intents.attach_execution(intent.intentId, plan_id, job_id)
+        repos.capability_planning.attach_execution(capability.decision.decisionId, intent.intentId, plan_id, job_id)
+        step = plan["steps"][0]
+        repos.tool_calls.save({"id": call_id, "jobId": job_id, "stepId": step["stepId"], "toolId": step["toolId"], "status": "completed", "params": step["params"]})
         repos.artifacts.save({
             "id": artifact_id, "projectId": project_id, "datasetId": dataset_id, "jobId": job_id,
             "toolCallId": call_id, "type": "table_json", "version": "1", "name": "ignored-name.html",
             "storageKey": object_key, "storageProvider": "minio", "bucket": bucket,
             "sizeBytes": len(payload), "contentType": "application/json", "contentHash": checksum,
-            "sha256": checksum, "metadata": {"toolId": "table.numeric_summary", "toolVersion": "1.0", "adapterVersion": "1.0", "rawPayload": "PRIVATE_M5_PAYLOAD"},
+            "sha256": checksum, "metadata": {"toolId": step["toolId"], "toolVersion": "1.0", "adapterVersion": "1.0", "rawPayload": "PRIVATE_M5_PAYLOAD"},
         })
         foreign_project_id = f"project_foreign_{suffix}"
         foreign_dataset_id = f"dataset_foreign_{suffix}"

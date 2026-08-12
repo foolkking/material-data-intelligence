@@ -4,4 +4,4 @@ The Initial Release is a Material Data Intelligence and Scientific Visualization
 
 Support, scientific validation, cross-platform reproducibility and presentation validation remain separate. Future Scope and Not Planned work are outside this release. Bounded clarification remains one round, at most three questions, with typed `CLARIFICATION_NOT_ALLOWED` on a second-round attempt.
 
-The current superseding Scope Baseline is `eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94`. It incorporates only product-entry integration and sealed demo-contract corrections; it does not promote input support, scientific validation or capability scope.
+The current superseding Scope Baseline is `f188b3e15aa94111787297ffde07b37f90cfdd1fe4e910e39f941e956b455455`. It incorporates only product-entry integration and the Branch B canonical Demo 1 prompt correction; it does not promote input support, scientific validation or capability scope. The prior `eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94` baseline remains historical and superseded.

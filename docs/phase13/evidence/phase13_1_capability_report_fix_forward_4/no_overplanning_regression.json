@@ -1,0 +1,6 @@
+{
+  "compositionOnlyForcesExplorer": false,
+  "narrowExplorerGoal": "dataset.materials_explorer only",
+  "status": "PASS",
+  "unsupportedNeed": "TYPED_REJECT"
+}

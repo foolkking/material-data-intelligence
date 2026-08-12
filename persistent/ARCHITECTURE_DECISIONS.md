@@ -4691,3 +4691,18 @@ Attempt 4 adds no architecture authority. It confirms that a Demo contract may
 not claim a capability absent from the actual natural-language Plan, and that
 diagnostic direct API Report finalization cannot replace a real UI path blocked
 by Workspace read-only policy. Both gaps require separate reviewer authority.
+
+## Phase 13 Canonical Coverage and Report Action Decision
+
+- Canonical demo capability authority is semantic: prompt -> AnalysisIntent ->
+  EligibilityResolution -> Planner. Exact prompt strings and demo IDs cannot
+  route production. The current Demo 1 contract explicitly asks for composition
+  space because composition distribution is a distinct existing intent meaning.
+- Scientific Workspace mutability and Report action eligibility are independent.
+  Plan 0.1 remains immutable for Plan, dependency, Artifact and scientific source
+  changes. The Report panel is always projected as a non-scientific action
+  surface, while M5 derives Preview/Finalize/Recipe inspection eligibility from
+  exact persisted Profile, Intent, Eligibility, Plan, terminal Job, scope,
+  staleness and Artifact integrity facts.
+- This decision adds no schema, migration, Plan version, Tool, Artifact family,
+  scientific behavior or Recipe execution authority.

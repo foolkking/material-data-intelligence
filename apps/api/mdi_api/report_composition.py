@@ -148,6 +148,87 @@ class _CompositionContext:
     lineage_records: tuple[Mapping[str, Any], ...]
 
 
+def _report_action_eligibility(context: _CompositionContext) -> dict[str, Any]:
+    """Derive report actions from exact persisted source facts.
+
+    Workspace scientific mutability is intentionally independent from M5 report
+    composition. Plan 0.1 remains read-only for scientific edits, while a
+    complete, current source projection may still produce an immutable Report.
+    """
+    reasons: list[dict[str, str]] = []
+    source = context.source
+    plan = source.plan or {}
+    plan_record = source.plan_record or {}
+    schema = str(plan.get("schemaVersion") or "")
+    identity_complete = all((
+        source.profile is not None,
+        source.intent is not None,
+        source.eligibility_resolution is not None,
+        source.selection_decision is not None,
+        _hash(source.profile, "semanticHash", "semantic_hash"),
+        _hash(source.intent, "intentHash", "semanticHash", "semantic_hash"),
+        _hash(source.eligibility_resolution, "resolutionHash", "semanticHash", "semantic_hash"),
+        _hash(source.selection_decision, "decisionHash", "semanticHash", "semantic_hash"),
+        _hash(plan_record, "planHash", "semanticHash", "semantic_hash"),
+    ))
+    if source.job is None or source.project is None:
+        reasons.append({"code": "SOURCE_SCOPE_UNAVAILABLE", "message": "The exact source Job or Project is unavailable."})
+    if schema not in {"0.1", "0.2"}:
+        reasons.append({"code": "PLAN_SCHEMA_UNSUPPORTED", "message": "The persisted AnalysisPlan schema is unavailable or unsupported."})
+    if schema == "0.1" and not identity_complete:
+        reasons.append({"code": "SOURCE_IDENTITIES_INCOMPLETE", "message": "Current Profile, Intent, Eligibility, selection, and Plan identities are incomplete."})
+    elif schema == "0.1":
+        profile_id = _identity(source.profile, "profileId", "profile_id")
+        profile_hash = _hash(source.profile, "semanticHash", "semantic_hash")
+        intent_id = _identity(source.intent, "intentId", "intent_id")
+        intent_hash = _hash(source.intent, "intentHash", "semanticHash", "semantic_hash")
+        resolution_id = _identity(source.eligibility_resolution, "resolutionId", "resolution_id")
+        resolution_hash = _hash(source.eligibility_resolution, "resolutionHash", "semanticHash", "semantic_hash")
+        job_dataset_id = _identity(source.job, "datasetId", "dataset_id")
+        identities_match = all((
+            _identity(plan_record, "profileId", "profile_id") == profile_id,
+            _identity(plan, "datasetId", "dataset_id") in {None, job_dataset_id},
+            _identity(source.profile, "datasetId", "dataset_id") in {None, job_dataset_id},
+            _identity(source.eligibility_resolution, "profileId", "profile_id") == profile_id,
+            _hash(source.eligibility_resolution, "profileSemanticHash", "profile_semantic_hash") == profile_hash,
+            _identity(source.eligibility_resolution, "intentId", "intent_id") == intent_id,
+            _hash(source.eligibility_resolution, "intentHash", "intent_hash") == intent_hash,
+            _identity(source.selection_decision, "profileId", "profile_id") == profile_id,
+            _hash(source.selection_decision, "profileSemanticHash", "profile_semantic_hash") == profile_hash,
+            _identity(source.selection_decision, "intentId", "intent_id") == intent_id,
+            _hash(source.selection_decision, "intentHash", "intent_hash") == intent_hash,
+            _identity(source.selection_decision, "resolutionId", "resolution_id") == resolution_id,
+            _hash(source.selection_decision, "resolutionHash", "resolution_hash") == resolution_hash,
+            context.workspace.profileId == profile_id,
+            context.workspace.profileSemanticHash == profile_hash,
+            context.workspace.intentId == intent_id,
+            context.workspace.intentSemanticHash == intent_hash,
+            context.workspace.planHash == _hash(plan_record, "planHash", "semanticHash", "semantic_hash"),
+            sorted(_identity(item, "toolId", "tool_id") for item in plan.get("steps") or ())
+            == sorted(
+                _identity(item, "toolId", "tool_id")
+                for item in source.selection_decision.get("selections") or ()
+            ),
+        ))
+        if not identities_match:
+            reasons.append({"code": "SOURCE_IDENTITY_STALE", "message": "Persisted Report source identities do not describe one exact Dataset, Intent, Eligibility decision, and Plan."})
+    if context.workspace.projectedStatus.value in {"STALE", "SOURCE_MISSING", "UNSUPPORTED"}:
+        reasons.append({"code": "WORKSPACE_SOURCE_NOT_CURRENT", "message": "The Workspace source projection is stale, missing, or unsupported."})
+    job_status = str((source.job or {}).get("status") or "").lower()
+    if job_status not in {"completed", "succeeded", "partial_success", "partial_results", "failed", "all_failed"}:
+        reasons.append({"code": "JOB_NOT_TERMINAL", "message": "Report composition requires a terminal persisted Job."})
+    allowed = not reasons
+    return {
+        "reportCompositionAllowed": allowed,
+        "reportPreviewAllowed": allowed,
+        "reportFinalizeAllowed": allowed,
+        "recipeInspectionAllowed": allowed,
+        "reasons": reasons,
+        "scientificSourceMutationAllowed": False,
+        "recipeExecutionAllowed": False,
+    }
+
+
 def _identity(record: Mapping[str, Any] | None, *keys: str) -> str | None:
     if record is None:
         return None
@@ -469,6 +550,7 @@ class ReportSourceEligibilityProjector:
             "metadataOnly": True,
             "heavyArtifactPayloadRequests": 0,
             "webglContexts": 0,
+            "actionEligibility": _report_action_eligibility(context),
         }
 
     @staticmethod
@@ -510,6 +592,7 @@ class ReportCompositionService:
     def preview(self, request: ReportCompositionRequest) -> CompositionPreview:
         context = self.projector.project(request.workspaceId)
         self._validate_workspace_revision(context, request.expectedWorkspaceRevision)
+        self._validate_report_actions(context, "reportPreviewAllowed")
         request_hash = report_composition_semantic_hash(request.model_dump(mode="json"))
         seed = report_composition_semantic_hash({"mode": "PREVIEW", "requestHash": request_hash})
         report_id = deterministic_report_composition_id("report_preview", seed)
@@ -558,6 +641,7 @@ class ReportCompositionService:
     ) -> dict[str, Any]:
         context = self.projector.project(request.workspaceId)
         self._validate_workspace_revision(context, request.expectedWorkspaceRevision)
+        self._validate_report_actions(context, "reportFinalizeAllowed")
         request_hash = report_composition_semantic_hash(request.model_dump(mode="json"))
         identity_hash = report_composition_semantic_hash({
             "workspaceId": context.workspace.workspaceId,
@@ -846,6 +930,14 @@ class ReportCompositionService:
     def _validate_workspace_revision(context: _CompositionContext, expected: int) -> None:
         if context.workspace.revision != expected:
             raise ReportCompositionDomainError("WORKSPACE_REVISION_CONFLICT", "The Workspace revision changed; no Report or Recipe was persisted.", 409)
+
+    @staticmethod
+    def _validate_report_actions(context: _CompositionContext, action: str) -> None:
+        eligibility = _report_action_eligibility(context)
+        if not eligibility.get(action, False):
+            reasons = eligibility.get("reasons") or [{"code": "REPORT_ACTION_UNAVAILABLE", "message": "Report composition is unavailable for this exact source."}]
+            reason = reasons[0]
+            raise ReportCompositionDomainError(str(reason["code"]), str(reason["message"]), 409)
 
     @staticmethod
     def _analysis_goal(context: _CompositionContext, plan: Mapping[str, Any]) -> str:

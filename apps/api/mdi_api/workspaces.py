@@ -1740,17 +1740,16 @@ class WorkspaceProjectionService:
                 "state": self._base_panel_state(source.status),
             }
         )
-        if source.reports or source.recipes:
-            specifications.append(
-                {
-                    "kind": WorkspacePanelKind.REPORT,
-                    "title": "Report and recipe references",
-                    "identity": job_id,
-                    "refs": base_refs,
-                    "renderer": "workspace.report/1.0",
-                    "state": self._artifact_panel_state(source.status),
-                }
-            )
+        specifications.append(
+            {
+                "kind": WorkspacePanelKind.REPORT,
+                "title": "Report and recipe",
+                "identity": job_id,
+                "refs": base_refs,
+                "renderer": "workspace.report/1.0",
+                "state": self._artifact_panel_state(source.status),
+            }
+        )
 
         if len(specifications) > WORKSPACE_MAX_PANELS:
             raise WorkspaceDomainError(

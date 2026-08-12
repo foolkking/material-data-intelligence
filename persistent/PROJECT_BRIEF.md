@@ -614,3 +614,15 @@ then stopped on fresh Demo 1 with two P0 product-integration findings.
 `LEGACY_READ_ONLY`, so the real UI cannot finalize the required Report/Recipe.
 Demo 2-7, negative scenarios, browsers, live DeepSeek, and Phase 13-3 were not
 executed. No production or scientific behavior changed.
+
+## Phase 13-1 Fix-Forward #4
+
+The active remediation selects R4-001 Branch B: the prior Demo 1 prompt
+requested composition distribution but under-specified the sealed
+composition-space capability. The current prompt explicitly requests a
+composition-space map; production Intent, Eligibility and Planner semantics are
+unchanged. R4-002 separates immutable scientific Workspace policy from Report
+actions: every Workspace projects the Report surface, while exact server-derived
+M5 eligibility controls Preview/Finalize/Recipe inspection. Current Plan 0.1 may
+finalize; incomplete legacy and stale sources remain typed unavailable. The
+current Scope Baseline is `f188b3e15aa94111787297ffde07b37f90cfdd1fe4e910e39f941e956b455455`.

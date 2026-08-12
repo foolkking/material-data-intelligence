@@ -1,0 +1,8 @@
+{
+  "exactBlockingAuthorities": [
+    "if source.reports or source.recipes: project REPORT panel",
+    "disabled={workspace.readOnly || state === FINALIZING}"
+  ],
+  "findingId": "P13-R4-002",
+  "rootCause": "WorkspaceProjectionService omitted the REPORT panel until a Report or Recipe already existed, while WorkspaceReportComposer also disabled Finalize whenever workspace.readOnly was true. Plan 0.1 LEGACY_READ_ONLY is scientific mutation authority, not Report action authority."
+}
