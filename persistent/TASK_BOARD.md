@@ -2641,4 +2641,5 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Pass fresh Demo 1 PostgreSQL/Redis/MinIO/fresh Worker/Chromium closure smoke.
 - [x] Pass full regression and implementation
   71985085ac0ab0dbe36b141b88c0251d76892689 exact-SHA CI 31597787296,
-  then record completion. Queue archive follows in its own direct commit.
+  record completion, and archive only the Fix-Forward #4 task.
+- [x] Final queue: four failed Phase 13-2 blocks retained, zero executable tasks.
