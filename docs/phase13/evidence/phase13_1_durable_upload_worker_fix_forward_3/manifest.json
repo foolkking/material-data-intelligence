@@ -109,8 +109,8 @@
     },
     {
       "path": "phase13_2_attempt4_handoff.json",
-      "sha256": "341a4fa96bf1904f3eb54d03016c2a59603d705f688827f841f6dfcee2e51784",
-      "size": 1891
+      "sha256": "fa050207f7eb07f992d88014b305306efab2f71b0f43d5c113d46ec7e27459a9",
+      "size": 1881
     },
     {
       "path": "process_boundary_proof.json",
@@ -119,8 +119,8 @@
     },
     {
       "path": "release_finding_closure.json",
-      "sha256": "20bab839fb589e84a27080356a66c4a20f790a860cbb60206d6dd5d9d62eed2a",
-      "size": 788
+      "sha256": "3f9d658b30b087f6777fdc6ef4907a386143235e9c42b4fef43b1d0d834945cd",
+      "size": 799
     },
     {
       "path": "release_gap_reconciliation.json",

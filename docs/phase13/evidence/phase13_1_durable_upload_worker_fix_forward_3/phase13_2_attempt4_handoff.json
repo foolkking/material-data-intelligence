@@ -8,7 +8,7 @@
     "ATTEMPT_2_FAILED",
     "FIX_FORWARD_2_PASS",
     "ATTEMPT_3_FAILED",
-    "FIX_FORWARD_3_PASS_CANDIDATE"
+    "FIX_FORWARD_3_PASS"
   ],
   "canonicalPrompts": {
     "P13-DEMO-01": "Explore this materials table, summarize its quality, and show how the compositions are distributed.",

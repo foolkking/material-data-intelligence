@@ -95,7 +95,13 @@ Current Fact Model: `{FACT_HASH}`. Current Scope Baseline: `{SCOPE_HASH}`. Attem
 """)
     _write_doc("phase13_1_fix_forward_3_completion.md", """# Phase 13-1 Fix-Forward #3 Completion
 
-Implementation candidate status: `READY_FOR_EXACT_SHA_CI`. The permanent result is appended only after exact-SHA CI passes. All three historical Phase 13-2 failures remain immutable and Attempt 4 remains reviewer-gated, unqueued and unexecuted.
+Implementation `88103ff61584ba81a01ab0e5ebf2adbbc09275e1` passed exact-SHA CI
+`31553972770`. P13-R3-001 is closed through the existing PostgreSQL Dataset
+metadata/profile authority and MinIO source persistence. D0 passed the real HTTP
+upload to a fresh Worker boundary through the first registered Adapter and first
+persisted Artifact. Level C and C2 remain 7/7. Attempt 1, Attempt 2 and Attempt
+3 remain immutable historical failures; Attempt 4 remains reviewer-gated,
+unqueued and unexecuted.
 """)
 
 
@@ -177,7 +183,7 @@ SCHEMA_DECISION = EXISTING_SCHEMA_SUFFICIENT
     _write_json("level_c2_regression.json", {"expected": 7, "ready": 7, "blocked": 0, "records": c2_records, "historicalLimitation": "REAL_UPLOAD_TO_WORKER_DURABILITY_NOT_COVERED", "currentD0Coverage": "PASS"})
     _write_json("no_manual_preload_audit.json", {"manualNormalizedExportPreload": 0, "testFixtureRuntimeInjection": 0, "status": "PASS"})
     _write_json("no_runtime_reparse_audit.json", {"runtimeReparseFallback": 0, "latestFallback": 0, "fuzzyFallback": 0, "filenameFallback": 0, "status": "PASS"})
-    _write_json("release_finding_closure.json", {**root_cause, "status": "CLOSED", "resolutionType": "EXISTING_DURABLE_SOURCE_AUTHORITY_WIRING", "schemaDecision": "EXISTING_SCHEMA_SUFFICIENT", "migrationImpact": "NONE", "scienceImpact": "NONE", "scopeImpact": "NONE", "closureSHA": "PENDING_IMPLEMENTATION_COMMIT"})
+    _write_json("release_finding_closure.json", {**root_cause, "status": "CLOSED", "resolutionType": "EXISTING_DURABLE_SOURCE_AUTHORITY_WIRING", "schemaDecision": "EXISTING_SCHEMA_SUFFICIENT", "migrationImpact": "NONE", "scienceImpact": "NONE", "scopeImpact": "NONE", "closureSHA": "88103ff61584ba81a01ab0e5ebf2adbbc09275e1"})
     _write_json("release_gap_reconciliation.json", {"before": {"releaseCriticalIntegrationGaps": 1, "scientificDefects": 0, "securityDefects": 0}, "after": {"releaseCriticalIntegrationGaps": 0, "scientificDefects": 0, "securityDefects": 0, "unclassified": 0}})
     _write_json("fact_model_hash_impact.json", {"impact": "NO", "old": FACT_HASH, "current": FACT_HASH, "run1": fact["semanticHash"], "run2": fact["semanticHash"]})
     _write_json("scope_baseline_hash_impact.json", {"impact": "NO", "old": SCOPE_HASH, "current": SCOPE_HASH, "run1": scope["semanticHash"], "run2": scope["semanticHash"]})
@@ -185,7 +191,7 @@ SCHEMA_DECISION = EXISTING_SCHEMA_SUFFICIENT
     _write_json("science_nonchange.json", {"registry": 62, "dataProfile": "2.4", "analysisIntent": "1.0", "eligibilityResolution": "1.0", "analysisPlan": ["0.1", "0.2"], "migration": "0007_phase10m1_workspace_domain", "scientificBehaviorChanges": 0, "newTools": 0, "newAlgorithms": 0, "newArtifactFamilies": 0})
     _write_json("phase12_nonchange.json", {"baselineHash": PHASE12_HASH, "mutation": 0, "status": "PASS"})
     prior_handoff = json.loads((FF2 / "phase13_2_attempt3_handoff.json").read_text(encoding="utf-8"))
-    _write_json("phase13_2_attempt4_handoff.json", {"handoffId": "Phase13_2Attempt4RealUserE2ERerunHandoff", "attemptHistory": ["ATTEMPT_1_FAILED", "FIX_FORWARD_1_PASS", "ATTEMPT_2_FAILED", "FIX_FORWARD_2_PASS", "ATTEMPT_3_FAILED", "FIX_FORWARD_3_PASS_CANDIDATE"], "findingClosure": "P13-R3-001", "factModelHash": FACT_HASH, "scopeBaselineHash": SCOPE_HASH, "levelC": "7/7", "levelC2": "7/7", "d0": "PASS", "durableAuthority": "PostgreSQL manifest/Profile + MinIO payload", "fixtures": prior_handoff.get("fixtures"), "canonicalPrompts": prior_handoff.get("canonicalPrompts"), "p13x2Ids": prior_handoff.get("p13x2Ids"), "noInjection": True, "realServicesRequired": ["PostgreSQL", "Redis", "MinIO"], "providerPolicy": "DEEPSEEK_ONLY_BOUNDED", "attempt4MustExecuteAll7FromScratch": True, "attempt4Queued": False, "attempt4Executed": False})
+    _write_json("phase13_2_attempt4_handoff.json", {"handoffId": "Phase13_2Attempt4RealUserE2ERerunHandoff", "attemptHistory": ["ATTEMPT_1_FAILED", "FIX_FORWARD_1_PASS", "ATTEMPT_2_FAILED", "FIX_FORWARD_2_PASS", "ATTEMPT_3_FAILED", "FIX_FORWARD_3_PASS"], "findingClosure": "P13-R3-001", "factModelHash": FACT_HASH, "scopeBaselineHash": SCOPE_HASH, "levelC": "7/7", "levelC2": "7/7", "d0": "PASS", "durableAuthority": "PostgreSQL manifest/Profile + MinIO payload", "fixtures": prior_handoff.get("fixtures"), "canonicalPrompts": prior_handoff.get("canonicalPrompts"), "p13x2Ids": prior_handoff.get("p13x2Ids"), "noInjection": True, "realServicesRequired": ["PostgreSQL", "Redis", "MinIO"], "providerPolicy": "DEEPSEEK_ONLY_BOUNDED", "attempt4MustExecuteAll7FromScratch": True, "attempt4Queued": False, "attempt4Executed": False})
     _write_text("security.md", """# Security
 
 NO_UPLOAD_ARBITRARY_CODE_EXECUTION = PASS

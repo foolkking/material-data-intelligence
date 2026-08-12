@@ -8937,6 +8937,59 @@ PHASE13_EXECUTABLE_TASK_CREATED = NO
 PHASE14_CREATED = NO
 ```
 
+# Phase 13-1 Integration Fix-Forward #3 Result
+
+状态：PASS / DURABLE_UPLOAD_TO_WORKER_HANDOFF_CLOSED / REAL_PROCESS_BOUNDARY_D0_PASS
+
+完成时间：2026-08-12 10:01:40 +08:00
+
+P13-R3-001 根因：真实 HTTP Phase2 upload 只把 normalized source exports 写入上传进程的 LocalFileArtifactStorage 与内存 DatasetRecord；Planner/Worker 重新加载的 SQL Dataset 没有 normalizedExports 等 durable references，fresh Worker 因而在首个 ToolCall 前以 `Unknown input ref: profile` 失败。
+
+修复：复用现有 PostgreSQL `datasets.metadata_json`、`data_profiles.profile_json` 与 MinIO source payload authority，在 production upload 内完成 exact manifest/Profile/source persistence；Planner enqueue 前校验 durable root inputs，fresh Worker 只从 durable refs 重建，不使用手工 preload、runtime reparse、latest/filename/fuzzy fallback 或 Redis scientific payload。
+
+Schema decision：`EXISTING_SCHEMA_SUFFICIENT`；migration 仍为 `0007_phase10m1_workspace_domain`。科学 Adapter、算法、单位、容差、Tool Registry、Artifact family 与 public API 未改变。
+
+D0：真实 `/datasets/upload`、PostgreSQL、MinIO、自然语言 Intent、Eligibility、Planner、PlanValidator、Job、Redis enqueue 后销毁上传进程状态；fresh QueueWorkerRuntime exact-resolve root inputs，创建真实 ToolCall，执行 registered Adapter 并持久化首个 Artifact。missing object、hash mismatch、cross-project、stale Profile 均 typed reject。
+
+验证：Level C `7/7` PASS；Level C2 `7/7` PASS；D0 PASS；后端 `1386 passed, 52 skipped`；前端 `456 passed`；typecheck/build/lock/diff PASS；PostgreSQL/Redis/MinIO required skips `0`；Chromium/Firefox/WebKit/390x844 PASS；Linux/Windows replay PASS；security/secret scan/manifest PASS；npm audit 因 configured mirror `NOT_IMPLEMENTED` 为 `UNAVAILABLE`。
+
+实现候选：`5b2f62e0c9ad9861f12bdc82a4bb632f1a5eaf51`，CI `31553548486` FAILED。失败根因是 service-backed tests 全部通过后 workflow 仍要求 superseded test name；产品/D0 测试未失败。Fix-forward implementation SHA：`88103ff61584ba81a01ab0e5ebf2adbbc09275e1`，exact-SHA CI `31553972770` PASS。
+
+Hash audit：Fact Model impact `NO`，current `e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06`；Scope Baseline impact `NO`，current `eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94`；determinism PASS。
+
+```text
+PHASE_13_1_FIX_FORWARD_3 = PASS
+P13_R3_001 = CLOSED
+REAL_UPLOAD_TO_FRESH_WORKER_D0 = PASS
+UPLOAD_PROCESS_MEMORY_DEPENDENCY = 0
+MANUAL_NORMALIZED_EXPORT_PRELOAD = 0
+RUNTIME_REPARSE_FALLBACK = 0
+FIRST_REAL_TOOLCALL_CREATED = YES
+FIRST_REGISTERED_ADAPTER_EXECUTED = YES
+FIRST_REAL_ARTIFACT_PERSISTED = YES
+LEVEL_C = 7/7 PASS
+LEVEL_C2 = 7/7 PASS
+RELEASE_CRITICAL_INTEGRATION_GAPS = 0
+SCIENTIFIC_DEFECTS = 0
+SECURITY_DEFECTS = 0
+REGISTRY = 62
+DATAPROFILE = 2.4
+ANALYSIS_INTENT = 1.0
+ELIGIBILITY_RESOLUTION = 1.0
+ANALYSIS_PLAN = 0.1 / 0.2
+MIGRATION = 0007_phase10m1_workspace_domain
+PHASE13_2_ATTEMPT_1 = FAILED_HISTORICAL
+PHASE13_2_ATTEMPT_2 = FAILED_RERUN_HISTORICAL
+PHASE13_2_ATTEMPT_3 = FAILED_RERUN_HISTORICAL
+PHASE13_2_ATTEMPT_4 = REVIEWER_GATE / NOT_EXECUTED / NOT_QUEUED
+PHASE13_2_ATTEMPT_4_EXECUTABLE_TASK_CREATED = NO
+PHASE13_2_DEMOS_EXECUTED = 0
+P13X2_ACCEPTANCE = 0/8
+FIX_FORWARD_3_IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+```
+
 
 # Phase 13-1 Zero-Gap Verification Closure Result
 

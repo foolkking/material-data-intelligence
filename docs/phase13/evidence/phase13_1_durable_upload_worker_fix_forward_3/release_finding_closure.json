@@ -1,6 +1,6 @@
 {
   "class": "UPLOAD_TO_WORKER_DURABLE_RESOURCE_HANDOFF_DEFECT",
-  "closureSHA": "PENDING_IMPLEMENTATION_COMMIT",
+  "closureSHA": "88103ff61584ba81a01ab0e5ebf2adbbc09275e1",
   "failureBoundary": "POSTGRES_JOB_REDIS_ENQUEUE_TO_FRESH_WORKER_ROOT_INPUT_RESOLUTION",
   "findingId": "P13-R3-001",
   "migrationImpact": "NONE",
