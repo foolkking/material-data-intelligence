@@ -266,3 +266,11 @@ the SQL dataset used by a fresh QueueWorkerRuntime has no durable export index.
 The worker fails with `Unknown input ref: profile` before ToolCall creation.
 Demo 2-7 were not executed after the P0 stop. `P13X2` remains `0/8`, Phase 13-3
 is blocked, Initial Release is incomplete, and no Phase 14 exists.
+## Phase 13-2 Attempt 4 - Failed
+
+Attempt 4 passed Fix-Forward #3, Level C/C2 and D0 entry authority, then stopped
+on fresh Demo 1 with `P13-R4-001` and `P13-R4-002`. The canonical prompt did
+not reach the sealed Composition Space capability, and the resulting Plan 0.1
+Workspace was read-only so the real user could not finalize Report/Recipe.
+Phase 13-3 remains blocked pending reviewer action. No production or scientific
+change was made in Attempt 4.

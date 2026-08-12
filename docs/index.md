@@ -803,3 +803,6 @@ and
 | [`phase13/phase13_real_upload_to_fresh_worker_d0_contract.md`](phase13/phase13_real_upload_to_fresh_worker_d0_contract.md) | Permanent real process-boundary D0 admission smoke |
 | [`phase13/phase13_2_attempt4_rerun_handoff.md`](phase13/phase13_2_attempt4_rerun_handoff.md) | Reviewer-gated fresh Attempt 4 contract; not queued here |
 | [`phase13/evidence/phase13_1_durable_upload_worker_fix_forward_3/`](phase13/evidence/phase13_1_durable_upload_worker_fix_forward_3/) | Durable authority, D0, C/C2, hash and security evidence |
+| [`phase13/phase13_2_attempt4_failure.md`](phase13/phase13_2_attempt4_failure.md) | Attempt 4 fresh Demo 1 P0 stop and immutable failure result |
+| [`phase13/phase13_2_attempt4_release_findings.md`](phase13/phase13_2_attempt4_release_findings.md) | P13-R4-001/002 capability and real-user Report closure defects |
+| [`phase13/evidence/phase13_2_attempt4_seven_real_user_e2e/`](phase13/evidence/phase13_2_attempt4_seven_real_user_e2e/) | Attempt 4 entry, fresh execution, findings, authority and manifest evidence |

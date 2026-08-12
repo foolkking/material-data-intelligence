@@ -603,3 +603,14 @@ root refs without uploader memory, creates a real ToolCall through the Registry,
 and persists the first Artifact. Level C and C2 remain `7/7`; the new D0
 process-boundary smoke passes. Completion is recorded and the active task is
 archived. Attempt 4 remains reviewer-gated and unqueued.
+
+## Phase 13-2 Attempt 4
+
+Attempt 4 passed the current authority, Level C/C2, and real D0 entry gates,
+then stopped on fresh Demo 1 with two P0 product-integration findings.
+`P13-R4-001` records that the canonical prompt plans only
+`dataset.materials_explorer`, omitting the sealed Composition Space capability.
+`P13-R4-002` records that the Planner-produced AnalysisPlan 0.1 Workspace is
+`LEGACY_READ_ONLY`, so the real UI cannot finalize the required Report/Recipe.
+Demo 2-7, negative scenarios, browsers, live DeepSeek, and Phase 13-3 were not
+executed. No production or scientific behavior changed.

@@ -1,0 +1,10 @@
+{
+  "demoId": "P13-DEMO-01",
+  "findingIds": [
+    "P13-R4-001",
+    "P13-R4-002"
+  ],
+  "freshExecutionStarted": true,
+  "fullDemoExecuted": false,
+  "status": "FAIL_PRODUCT_INTEGRATION"
+}

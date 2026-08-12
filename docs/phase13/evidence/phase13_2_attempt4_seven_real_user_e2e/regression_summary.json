@@ -1,0 +1,32 @@
+{
+  "backend": {
+    "passed": 1391,
+    "skipped": 52,
+    "status": "PASS"
+  },
+  "browser": "NOT_EXECUTED_AFTER_P0_STOP",
+  "build": "PASS_WITH_EXISTING_PLOTLY_GLSLIFY_WARNINGS",
+  "diff": "PASS",
+  "frontend": {
+    "passed": 456,
+    "status": "PASS"
+  },
+  "linuxReplay": "NOT_EXECUTED_AFTER_P0_STOP",
+  "localFailedCandidate": {
+    "cause": "Attempt 4 TASK block used an English status label",
+    "resolution": "Use the repository-authoritative Chinese failed status label",
+    "result": "1390 passed, 52 skipped, 1 failed"
+  },
+  "lock": "PASS",
+  "phase13FocusedGovernance": {
+    "passed": 46,
+    "status": "PASS"
+  },
+  "serviceD0": {
+    "passed": 1,
+    "skipped": 0,
+    "status": "PASS"
+  },
+  "typecheck": "PASS",
+  "windowsReplay": "NOT_EXECUTED_AFTER_P0_STOP"
+}

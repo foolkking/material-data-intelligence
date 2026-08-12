@@ -1,6 +1,46 @@
 ---TASK---
 状态：失败
 
+# Phase 13-2 Attempt 4
+
+## Seven Canonical Real-User E2E Demonstrations - Full Fresh Rerun
+
+Execute all seven canonical demonstrations from fresh user-facing entry through
+durable source persistence, real Intent, Eligibility, Planner, validated Plan,
+PostgreSQL Job, Redis queue, fresh QueueWorkerRuntime, registered Adapters,
+MinIO Artifacts, Workspace, applicable Finding/Evidence/Provenance, finalized
+Report and paired Recipe. Preserve Attempts 1-3 as historical failures. The
+reviewer-authorized `.claude/` and `ui-ux-audit/` inputs are part of this work
+but carry no production, scientific, or release-scope authority.
+
+Failure time: 2026-08-12 15:30:00 +08:00
+
+Modified files: `TASKS.md`, `.claude/`, `ui-ux-audit/`,
+`scripts/run_phase13_2_attempt4.py`,
+`scripts/generate_phase13_2_attempt4_failure_evidence.py`,
+`tests/test_phase13_2_attempt4_failure_evidence.py`, Phase 13 Attempt 4
+documentation/evidence, and persistent project status files.
+
+Summary: Attempt 4 passed its repository-authority, Level C/C2 and real D0
+entry gates, then fresh Demo 1 produced only `dataset.materials_explorer`
+instead of the sealed `dataset.composition_space` capability and projected an
+AnalysisPlan 0.1 Workspace as `LEGACY_READ_ONLY`, preventing a normal UI user
+from finalizing the required Report/Recipe. Findings `P13-R4-001` and
+`P13-R4-002` are retained as P0 release-critical integration defects. No
+production or scientific code was changed; Demo 2-7 and downstream suites were
+not executed after the P0 stop.
+
+Tests: D0 `1 passed, 0 skipped`; backend `1391 passed, 52 skipped`; frontend
+`456 passed`; Phase 13 focused/governance `46 passed`; typecheck/build/lock/diff
+PASS; Fact/Scope hash and secret/security scans PASS. An initial local backend
+candidate (`1390 passed, 1 failed`) exposed the English TASK status label and
+passed after correction. Browser and Linux/Windows replay were not executed
+after the P0 stop. Exact-SHA CI is pending for the failed evidence candidate.
+---END---
+
+---TASK---
+状态：失败
+
 # Phase 13-2 Attempt 3
 
 ## Seven Canonical Real-User E2E Demonstrations - Full Fresh Rerun

@@ -64,6 +64,8 @@ jobs:
           uv run python -m pytest -q tests/test_phase13_1_runtime_resource_fix_forward_2.py tests/test_phase13_1_runtime_resource_fix_forward_2_evidence.py --tb=short
           uv run python scripts/generate_phase13_2_attempt3_failure_evidence.py
           uv run python -m pytest -q tests/test_phase13_2_attempt3_failure_evidence.py --tb=short
+          uv run python scripts/generate_phase13_2_attempt4_failure_evidence.py
+          uv run python -m pytest -q tests/test_phase13_2_attempt4_failure_evidence.py --tb=short
 
       - name: uv lock check
         run: uv lock --check

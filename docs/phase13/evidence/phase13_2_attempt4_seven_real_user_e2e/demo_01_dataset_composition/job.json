@@ -1,0 +1,7 @@
+{
+  "fresh": true,
+  "jobId": "job_71ec040c2e0e49baba47863b",
+  "postgresqlPersisted": true,
+  "redisEnqueued": true,
+  "workerStatus": "completed"
+}

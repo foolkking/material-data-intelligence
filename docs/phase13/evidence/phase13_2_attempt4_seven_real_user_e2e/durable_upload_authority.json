@@ -1,0 +1,7 @@
+{
+  "authority": "PostgreSQL manifest/Profile + MinIO payload",
+  "manualNormalizedExportPreload": 0,
+  "runtimeReparseFallback": 0,
+  "status": "PASS",
+  "uploadProcessMemoryDependency": 0
+}

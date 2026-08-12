@@ -1,0 +1,9 @@
+{
+  "handcrafted": false,
+  "outcome": "READY",
+  "schemaVersion": "1.0",
+  "scientificIntents": [
+    "composition_analysis",
+    "dataset_overview"
+  ]
+}

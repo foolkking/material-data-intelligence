@@ -1,0 +1,16 @@
+{
+  "expected": 7,
+  "freshExecutionsStarted": 1,
+  "fullDemosExecuted": 0,
+  "oldEvidenceReusedAsPass": 0,
+  "passOrExplicitLimit": "0/7",
+  "statuses": {
+    "P13-DEMO-01": "FAIL_PRODUCT_INTEGRATION",
+    "P13-DEMO-02": "NOT_EXECUTED_AFTER_P0_STOP",
+    "P13-DEMO-03": "NOT_EXECUTED_AFTER_P0_STOP",
+    "P13-DEMO-04": "NOT_EXECUTED_AFTER_P0_STOP",
+    "P13-DEMO-05": "NOT_EXECUTED_AFTER_P0_STOP",
+    "P13-DEMO-06": "NOT_EXECUTED_AFTER_P0_STOP",
+    "P13-DEMO-07": "NOT_EXECUTED_AFTER_P0_STOP"
+  }
+}

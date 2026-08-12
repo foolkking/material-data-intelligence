@@ -1,0 +1,7 @@
+{
+  "MinIO": "REAL_ISOLATED_INSTANCE",
+  "PostgreSQL": "REAL_ISOLATED_INSTANCE",
+  "Redis": "REAL_MEMURAI_REDIS_PROTOCOL_DB14",
+  "requiredServiceSkips": 0,
+  "secretsRecorded": false
+}

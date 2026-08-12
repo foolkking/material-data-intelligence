@@ -1,0 +1,18 @@
+{
+  "artifactIds": [
+    "call_job_71ec040c2e0e49baba47863b_step_001-table_json",
+    "call_job_71ec040c2e0e49baba47863b_step_001-quality_issues_json",
+    "call_job_71ec040c2e0e49baba47863b_step_001-summary_md",
+    "call_job_71ec040c2e0e49baba47863b_step_001-recipe_json"
+  ],
+  "count": 4,
+  "handcrafted": 0,
+  "missingRequiredType": "plotly_json",
+  "persistedInMinIO": true,
+  "types": [
+    "table_json",
+    "quality_issues_json",
+    "summary_md",
+    "recipe_json"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "findings": [
+    {
+      "affectedDemos": [
+        "P13-DEMO-01"
+      ],
+      "category": "RELEASE_CRITICAL_INTEGRATION_DEFECT",
+      "classification": "CANONICAL_PROMPT_TO_SEALED_CAPABILITY_MISMATCH",
+      "evidence": [
+        "demo_01_dataset_composition/analysis_plan.json",
+        "demo_01_dataset_composition/tool_calls.json",
+        "demo_01_dataset_composition/artifact_manifest.json"
+      ],
+      "findingId": "P13-R4-001",
+      "observed": {
+        "artifactTypes": [
+          "table_json",
+          "quality_issues_json",
+          "summary_md",
+          "recipe_json"
+        ],
+        "executedTools": [
+          "dataset.materials_explorer"
+        ],
+        "missingArtifactType": "plotly_json",
+        "missingTool": "dataset.composition_space",
+        "plannedTools": [
+          "dataset.materials_explorer"
+        ]
+      },
+      "productionCodeChanged": false,
+      "rootCause": "The sealed Demo 1 contract requires dataset.composition_space, but the canonical phrase 'show how the compositions are distributed' is formally classified as composition_analysis. Production Intent and Mock planning require an explicit composition-space, embedding, or clustering expression.",
+      "severity": "P0",
+      "status": "OPEN_REVIEWER_ACTION_REQUIRED"
+    },
+    {
+      "affectedDemos": [
+        "P13-DEMO-01"
+      ],
+      "category": "RELEASE_CRITICAL_INTEGRATION_DEFECT",
+      "classification": "REAL_USER_REPORT_FINALIZE_BLOCKED_BY_PLAN_0_1_WORKSPACE_POLICY",
+      "evidence": [
+        "demo_01_dataset_composition/workspace.json",
+        "demo_01_dataset_composition/report.json",
+        "demo_01_dataset_composition/recipe.json"
+      ],
+      "findingId": "P13-R4-002",
+      "observed": {
+        "diagnosticDirectApiFinalizeIsUserPathAuthority": false,
+        "planSchemaVersion": "0.1",
+        "uiFinalizeEnabled": false,
+        "workspaceReadOnly": true,
+        "workspaceStatus": "LEGACY_READ_ONLY"
+      },
+      "productionCodeChanged": false,
+      "rootCause": "Workspace projection classifies every AnalysisPlan 0.1 source as LEGACY_READ_ONLY. The Workspace Report composer disables Finalize when workspace.readOnly is true, so a normal user cannot complete the sealed Report/Recipe path for this current Planner-produced job.",
+      "severity": "P0",
+      "status": "OPEN_REVIEWER_ACTION_REQUIRED"
+    }
+  ],
+  "providerExternalEvents": 0,
+  "releaseCriticalIntegrationDefects": 2,
+  "scientificDefects": 0,
+  "securityDefects": 0,
+  "unclassified": 0
+}

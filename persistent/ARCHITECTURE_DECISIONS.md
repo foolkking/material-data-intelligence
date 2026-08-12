@@ -4685,3 +4685,9 @@ does not upgrade product support or scientific validation.
 - Level-D admission includes D0: real HTTP upload, SQL/MinIO persistence,
   natural-language Planner Job, Redis enqueue, uploader-state disposal, fresh
   Worker, first registered ToolCall and first persisted Artifact.
+## Phase 13-2 Attempt 4 Forensic Boundary
+
+Attempt 4 adds no architecture authority. It confirms that a Demo contract may
+not claim a capability absent from the actual natural-language Plan, and that
+diagnostic direct API Report finalization cannot replace a real UI path blocked
+by Workspace read-only policy. Both gaps require separate reviewer authority.

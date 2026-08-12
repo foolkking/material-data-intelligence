@@ -2286,3 +2286,9 @@ scientific algorithm. Exact-SHA CI remains required before completion.
 - Level C `7/7`, Level C2 `7/7`, and real service-backed D0 pass locally.
 - Implementation `88103ff61584ba81a01ab0e5ebf2adbbc09275e1` passed exact-SHA CI
   `31553972770`; completion is recorded and the active Fix-Forward #3 task is archived.
+Phase 13-2 Attempt 4 passed its current authority, C/C2 and fresh-worker D0
+entry gates, then failed on fresh Demo 1. The canonical prompt planned only
+`dataset.materials_explorer`, omitting sealed Composition Space, and the Plan
+0.1 Workspace was `LEGACY_READ_ONLY`, blocking real-user Report finalization.
+`P13-R4-001` and `P13-R4-002` are open reviewer-action P0 findings. No
+production or scientific behavior changed.

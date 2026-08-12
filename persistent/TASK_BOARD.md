@@ -2624,3 +2624,11 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Implementation `88103ff61584ba81a01ab0e5ebf2adbbc09275e1` passed exact-SHA CI
   `31553972770`; completion was recorded and only the active Fix-Forward #3 task
   was archived.
+## Phase 13-2 Attempt 4
+
+- Status: FAILED / REVIEWER_ACTION_REQUIRED
+- Fresh demos started: 1/7
+- Full demos completed: 0/7
+- Findings: P13-R4-001, P13-R4-002
+- Phase 13-3: blocked
+- Production/scientific changes: 0
