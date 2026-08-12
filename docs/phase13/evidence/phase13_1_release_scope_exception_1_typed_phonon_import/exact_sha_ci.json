@@ -1,0 +1,14 @@
+{
+  "conclusion": "PASS",
+  "jobs": {
+    "Frontend Typecheck & Build": "PASS",
+    "Phase 11-3 Scientific Replay (Linux)": "PASS",
+    "Phase 11-3 Scientific Replay (Windows)": "PASS",
+    "Service-backed Integration (PostgreSQL + Redis + MinIO)": "PASS",
+    "Unit Tests (Python 3.11)": "PASS"
+  },
+  "productClosureConclusion": "FAILED_REVIEWER_ACTION_REQUIRED",
+  "runId": 31620258786,
+  "sha": "0429b88be6fac1c1d602edfe9fdeaf3f3555e9e1",
+  "status": "FAILURE_EVIDENCE_CANDIDATE_VERIFIED_BY_EXACT_SHA_CI"
+}

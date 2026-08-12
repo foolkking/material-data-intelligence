@@ -19,6 +19,12 @@
       "textCanonicalization": "UTF8_LF"
     },
     {
+      "bytes": 511,
+      "path": "exact_sha_ci.json",
+      "sha256": "4f7f26991e34a2732b74724ff054f08e7830d9b60859f47f47f53e9eef504cef",
+      "textCanonicalization": "UTF8_LF"
+    },
+    {
       "bytes": 318,
       "path": "existing_phonon_resource_contract_audit.json",
       "sha256": "7d521a0d229ab51e0d36c692a0476b3e23f23f658afaf48a4c5d20746376b781",
@@ -31,9 +37,9 @@
       "textCanonicalization": "UTF8_LF"
     },
     {
-      "bytes": 630,
+      "bytes": 857,
       "path": "failed_candidate_history.json",
-      "sha256": "336369021605f95d7427dc642c150263fd76af407e7ef3a5d9bf52dcb166d30d",
+      "sha256": "015b922bf55fa102056d5b7d110007809da73196354102c04b325bfe05a21e1d",
       "textCanonicalization": "UTF8_LF"
     },
     {

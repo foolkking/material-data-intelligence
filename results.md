@@ -11435,6 +11435,29 @@ INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
 
+## Release Scope Exception #1 Failure-Evidence CI Record
+
+The initial failure-evidence candidate
+`f3871ab44287b658e64fc1c82b90472d890ebdba` retained CI `31619480956` as a
+failed candidate: one current semantic-coverage test did not recognize explicit
+typed phonon fixture modes. The test-only corrected candidate
+`0429b88be6fac1c1d602edfe9fdeaf3f3555e9e1` passed exact-SHA CI
+`31620258786`, including Python unit/governance, PostgreSQL/Redis/MinIO service
+integration, frontend typecheck/build and retained browser evidence, plus
+Linux/Windows scientific replay.
+
+This is failure-evidence verification only. `P13-RSE1-001` remains open,
+Release Scope Exception #1 remains failed, completion/archive are not
+applicable, all seven queue blocks remain retained, and Attempt 6 remains
+unqueued.
+
+```text
+RELEASE_SCOPE_EXCEPTION_1_FAILURE_EVIDENCE_SHA = 0429b88be6fac1c1d602edfe9fdeaf3f3555e9e1
+RELEASE_SCOPE_EXCEPTION_1_FAILURE_EVIDENCE_EXACT_SHA_CI = 31620258786 / PASS
+RELEASE_SCOPE_EXCEPTION_1_COMPLETION_RECORDED = NOT_APPLICABLE
+RELEASE_SCOPE_EXCEPTION_1_QUEUE_ARCHIVED = NO
+```
+
 # Phase 13-2 Attempt 5
 # Seven Canonical Real-User E2E Demonstrations Result
 

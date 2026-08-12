@@ -29,6 +29,9 @@ Release Scope Exception #1 runner/evidence/docs, `TASKS.md`, and `results.md`.
 phonon contract/adapters `76 passed`; typecheck PASS; Demo 4 prepared through
 fresh Workspace; Demo 5 failed at Workspace projection after 27 Artifacts.
 Full regression and browser closure were not executed after the new P0 stop.
+Failure-evidence candidate `0429b88be6fac1c1d602edfe9fdeaf3f3555e9e1`
+passed exact-SHA CI `31620258786`; this verifies the candidate/evidence but does
+not satisfy the failed Demo 5 product-closure gate.
 
 ---END---
 

@@ -7,6 +7,12 @@
       "rootCause": "The current semantic-coverage helper recognized only the historical normalized_mapping fixture mode and did not dispatch the new explicit typed_phonon_band_import/typed_phonon_dos_import modes through the same strict mapper.",
       "sha": "f3871ab44287b658e64fc1c82b90472d890ebdba",
       "status": "FAILED_CANDIDATE_RETAINED"
+    },
+    {
+      "ciRun": 31620258786,
+      "productClosure": "FAILED_REVIEWER_ACTION_REQUIRED",
+      "sha": "0429b88be6fac1c1d602edfe9fdeaf3f3555e9e1",
+      "status": "FAILURE_EVIDENCE_CANDIDATE_VERIFIED_BY_EXACT_SHA_CI"
     }
   ]
 }
