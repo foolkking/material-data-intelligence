@@ -11434,3 +11434,109 @@ PHASE13_3_EXECUTABLE_TASK_CREATED = NO
 INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
+
+# Phase 13-2 Attempt 5
+# Seven Canonical Real-User E2E Demonstrations Result
+
+Status: FAILED / REVIEWER_ACTION_REQUIRED
+
+Completion time: 2026-08-12 22:09:13 +08:00
+
+Attempt 5 passed its repository-authority, semantic-coverage, Level C, Level
+C2, D0, durable-source, and Demo 1 product-closure entry gates. The execution
+then started five entirely fresh canonical demos. Demos 1-3 completed through
+real PostgreSQL Jobs, Redis, fresh Workers, registered Adapters, persisted
+Artifacts, Workspaces, Chromium Report Finalize, and paired non-executable
+Recipes. No historical execution was used as current PASS evidence.
+
+The P0 stop rule was activated by two release-critical product integration
+defects. `P13-R5-001` affects Demo 4: a fresh Plan 0.2 trajectory Job completed
+RDF, MSD, and diffusion and persisted twelve Artifacts, but its projected
+Workspace was rejected for Report actions as `WORKSPACE_SOURCE_NOT_CURRENT`.
+`P13-R5-002` affects Demo 5: the real phonon upload persisted a Profile with
+only structure resource semantics, so natural-language Intent validation
+returned `INTENT_PROFILE_CAPABILITY_MISSING` before Plan or Job creation.
+Production and scientific code were not changed. Demos 6-7 and all downstream
+negative/provider/cross-browser aggregate work were not executed after the P0
+stop.
+
+Evidence commit `d8d1966ff0fb419ff8299ec440c1af8e0c349f24` passed exact-SHA
+CI `31603622900`. CI recorded `1410 passed, 1 skipped, 51 deselected` for the
+main Python suite, `50 passed, 0 skipped` for service-backed PostgreSQL/Redis/
+MinIO integration, and PASS for frontend typecheck/build and retained browser
+replays plus Linux/Windows scientific replay. Attempt 5 evidence checks passed
+`4/4`; lock, diff, security, secret scan, and the 132-entry evidence manifest
+passed. Completion and queue archive are not applicable to this failed attempt.
+
+```text
+PHASE_13_2_ATTEMPT_5 = FAILED / REVIEWER_ACTION_REQUIRED
+PHASE13_2_ATTEMPT_1 = FAILED_HISTORICAL
+PHASE13_1_FIX_FORWARD_1 = PASS
+PHASE13_2_ATTEMPT_2 = FAILED_RERUN_HISTORICAL
+PHASE13_1_FIX_FORWARD_2 = PASS
+PHASE13_2_ATTEMPT_3 = FAILED_RERUN_HISTORICAL
+PHASE13_1_FIX_FORWARD_3 = PASS
+PHASE13_2_ATTEMPT_4 = FAILED_RERUN_HISTORICAL
+PHASE13_1_FIX_FORWARD_4 = PASS
+
+SEMANTIC_COVERAGE = 7/7 PASS
+LEVEL_C = 7/7 PASS
+LEVEL_C2 = 7/7 PASS
+D0_REAL_UPLOAD_TO_FRESH_WORKER = PASS
+DEMO1_PRODUCT_CLOSURE_REGRESSION = PASS
+
+DEMO_1_STATUS = PASS
+DEMO_2_STATUS = PASS
+DEMO_3_STATUS = PASS
+DEMO_4_STATUS = FAIL_PRODUCT_INTEGRATION
+DEMO_5_STATUS = FAIL_PRODUCT_INTEGRATION
+DEMO_6_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+DEMO_7_STATUS = NOT_EXECUTED_AFTER_P0_STOP
+ATTEMPT_5_FRESH_DEMOS_STARTED = 5
+ATTEMPT_5_FULL_DEMOS_EXECUTED = 3
+DEMO_PASS_OR_EXPLICIT_LIMIT = 3/7
+OLD_EVIDENCE_REUSED_AS_ATTEMPT5_PASS = 0
+
+P13_R5_001 = OPEN_REVIEWER_ACTION_REQUIRED
+P13_R5_001_CLASS = FRESH_TRAJECTORY_WORKSPACE_REPORT_SOURCE_CURRENTNESS_DEFECT
+P13_R5_002 = OPEN_REVIEWER_ACTION_REQUIRED
+P13_R5_002_CLASS = REAL_UPLOAD_PHONON_PROFILE_CAPABILITY_HANDOFF_DEFECT
+RELEASE_CRITICAL_INTEGRATION_DEFECTS = 2
+SCIENTIFIC_DEFECTS = 0
+SECURITY_DEFECTS = 0
+PROVIDER_EXTERNAL_EVENTS = 0
+PRODUCTION_CODE_CHANGES = 0
+SCIENTIFIC_BEHAVIOR_CHANGES = 0
+
+UPLOAD_PROCESS_MEMORY_DEPENDENCY = 0
+MANUAL_NORMALIZED_EXPORT_PRELOAD = 0
+RUNTIME_REPARSE_FALLBACK = 0
+ALL_HANDCRAFTED_INJECTION_COUNTERS = 0
+P13X2_ACCEPTANCE = 0/8
+
+CURRENT_FACT_MODEL_HASH = e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06
+CURRENT_SCOPE_BASELINE_HASH = f188b3e15aa94111787297ffde07b37f90cfdd1fe4e910e39f941e956b455455
+PHASE12_PRODUCT_BASELINE_HASH = 29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4
+FACT_MODEL_HASH_IMPACT_BY_ATTEMPT_5 = NO
+SCOPE_BASELINE_HASH_IMPACT_BY_ATTEMPT_5 = NO
+BASELINE_DETERMINISM = PASS
+
+REGISTRY = 62
+DATAPROFILE = 2.4
+ANALYSIS_INTENT = 1.0
+ELIGIBILITY_RESOLUTION = 1.0
+ANALYSIS_PLAN = 0.1 / 0.2
+MIGRATION = 0007_phase10m1_workspace_domain
+
+ATTEMPT_5_EVIDENCE_VERIFIED_BY_EXACT_SHA_CI
+ATTEMPT_5_COMPLETION_RECORDED = NOT_APPLICABLE
+PHASE13_2_QUEUE_ARCHIVED = NO
+
+FAILED_RETAINED_TASK_BLOCKS = 5
+EXECUTABLE_PENDING_TASKS = 0
+TASK_BLOCK_COUNT = 5
+PHASE_13_3 = BLOCKED_BY_PHASE13_2_ATTEMPT_5
+PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+```
