@@ -57,6 +57,7 @@ jobs:
 
       - name: Phase 13-4 targeted product polish
         run: |
+          git fetch --no-tags --depth=1 origin d415d05bb3abc66b7b5bdab3b0d7c3f229779ede
           uv run python scripts/generate_phase13_4_targeted_polish.py
           uv run python -m pytest -q tests/test_phase13_4_targeted_polish.py --tb=short
 

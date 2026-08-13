@@ -2370,3 +2370,11 @@ external-link isolation. Backend and scientific behavior remain unchanged.
 Focused component/i18n tests and Chromium desktop plus `390x844` before/after
 evidence pass. Full regressions, cross-engine CI, exact-SHA CI, completion, and
 queue archive remain pending. Phase 13-5 is handoff-only and not queued.
+
+Implementation candidate `34f7cb7cea3db351edff0d3b39ff7fe39cd7e192`
+failed CI run `31713598663` only in the Phase 13-4 evidence step because the
+GitHub shallow checkout omitted sealed entry SHA `d415d05...` required by
+canonical nonchange `git show` checks. Product unit tests, frontend/browser,
+Linux/Windows replay, and PostgreSQL/Redis/MinIO jobs passed. The correction
+fetches that exact historical object before evidence verification; product
+behavior is unchanged.

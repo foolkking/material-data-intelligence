@@ -525,6 +525,22 @@ Report, Recipe, and frontend scientific-authority gates remain unchanged.
             },
         },
     )
+    write_json(
+        "failed_candidates.json",
+        {
+            "candidates": [
+                {
+                    "sha": "34f7cb7cea3db351edff0d3b39ff7fe39cd7e192",
+                    "ciRun": 31713598663,
+                    "failedJob": "Unit Tests (Python 3.11) / Phase 13-4 targeted product polish",
+                    "rootCause": "GitHub shallow checkout omitted the sealed entry SHA required by canonical nonchange git-show checks",
+                    "classification": "TEST_EVIDENCE_PORTABILITY_ONLY",
+                    "productBehaviorFailure": False,
+                    "correctedBy": "NEXT_IMPLEMENTATION_CANDIDATE",
+                }
+            ]
+        },
+    )
     write_manifest()
     print("PHASE13_4_TARGETED_POLISH_EVIDENCE_PASS")
 

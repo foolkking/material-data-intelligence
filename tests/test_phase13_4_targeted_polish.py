@@ -104,3 +104,18 @@ def test_evidence_manifest_matches_raw_bytes() -> None:
         payload = (OUT / row["path"]).read_bytes()
         assert len(payload) == row["bytes"]
         assert hashlib.sha256(payload).hexdigest() == row["sha256"]
+
+
+def test_failed_candidate_provenance_is_retained() -> None:
+    failed = load("failed_candidates.json")["candidates"]
+    assert failed == [
+        {
+            "sha": "34f7cb7cea3db351edff0d3b39ff7fe39cd7e192",
+            "ciRun": 31713598663,
+            "failedJob": "Unit Tests (Python 3.11) / Phase 13-4 targeted product polish",
+            "rootCause": "GitHub shallow checkout omitted the sealed entry SHA required by canonical nonchange git-show checks",
+            "classification": "TEST_EVIDENCE_PORTABILITY_ONLY",
+            "productBehaviorFailure": False,
+            "correctedBy": "NEXT_IMPLEMENTATION_CANDIDATE",
+        }
+    ]

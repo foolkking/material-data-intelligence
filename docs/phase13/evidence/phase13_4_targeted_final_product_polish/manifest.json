@@ -32,6 +32,12 @@
       "sha256": "379942b48edd0cac543d950cef674c5d14f22c7ff64d8a50f775ae01c45878f9"
     },
     {
+      "bytes": 480,
+      "hashMode": "UTF8_LF",
+      "path": "failed_candidates.json",
+      "sha256": "57653e2cabc6716ef9aa34ceb6d7fa68293e1439ed311e22abffafdf3d7178aa"
+    },
+    {
       "bytes": 745,
       "hashMode": "UTF8_LF",
       "path": "nonselected_items.json",
