@@ -11841,3 +11841,25 @@ PHASE13_3_EXECUTABLE_TASK_CREATED = NO
 INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
+
+## Fix-Forward #6 Queue Archive
+
+The completed Fix-Forward #6 block, resolved Fix-Forward #5 blocked block, and
+historical failed Release Scope Exception #1 queue block are archived after
+their permanent `results.md` and evidence provenance was verified. The five
+failed Phase 13-2 Attempt blocks remain. Attempt 6 is not executed or queued.
+
+```text
+FIX_FORWARD_6_QUEUE_ARCHIVED
+FIX_FORWARD_5_BLOCK_RESOLVED_BY_FIX_FORWARD_6
+RELEASE_SCOPE_EXCEPTION_1_FAILURE_RESOLVED_BY_FIX_FORWARD_6
+FAILED_RETAINED_PHASE13_2_ATTEMPTS = 5
+BLOCKED_FIX_FORWARD_TASKS = 0
+EXECUTABLE_PENDING_TASKS = 0
+TASK_BLOCK_COUNT = 5
+PHASE13_2_ATTEMPT_6 = REVIEWER_GATE / NOT_EXECUTED / NOT_QUEUED
+PHASE13_2_ATTEMPT_6_EXECUTABLE_TASK_CREATED = NO
+PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+```

@@ -2686,5 +2686,6 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
   service-backed 7 with zero required skips, and four-browser matrix 4/4.
 - [x] Implementation `0867a69a587bf8e0ddb5aaeec7a177808a69e6f1` passed
   exact-SHA CI `31667748439`; completion is recorded.
-- [ ] Archive the resolved FF5, failed Exception #1, and completed FF6 queue
-  blocks while retaining Attempts 1-5.
+- [x] Archive the resolved FF5, failed Exception #1, and completed FF6 queue
+  blocks while retaining Attempts 1-5. Attempt 6 remains reviewer-gated and
+  unqueued.
