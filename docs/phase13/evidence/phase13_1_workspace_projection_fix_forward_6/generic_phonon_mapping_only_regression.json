@@ -1,0 +1,7 @@
+{
+  "after": "MAPPING_ONLY",
+  "autoPromotion": 0,
+  "before": "MAPPING_ONLY",
+  "inputFamily": "Phonon YAML/JSON",
+  "status": "PASS"
+}

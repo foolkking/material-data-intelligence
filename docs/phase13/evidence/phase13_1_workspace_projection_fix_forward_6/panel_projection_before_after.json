@@ -1,0 +1,15 @@
+{
+  "after": {
+    "artifactPayloadCopies": 0,
+    "galleryAuthority": "existing Job-scoped Artifact Gallery",
+    "resultSurfaces": 1,
+    "structuralPanels": 6,
+    "total": 7
+  },
+  "before": {
+    "artifactPanels": 27,
+    "result": "PANEL_CAP_EXCEEDED",
+    "structuralPanels": 6,
+    "total": 33
+  }
+}

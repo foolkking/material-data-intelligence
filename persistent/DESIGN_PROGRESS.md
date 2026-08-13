@@ -2315,10 +2315,11 @@ Phase 11 `MAPPING_ONLY`, and no supported user-visible typed phonon resource
 entry exists. No support promotion, Demo 5 smoke, Attempt 6 task, completion or
 archive was created.
 
-Phase 13-1 Release Scope Exception #1 is `FAILED / REVIEWER_ACTION_REQUIRED`.
+Phase 13-1 Release Scope Exception #1 is historically `FAILED / REVIEWER_ACTION_REQUIRED`.
 The bounded typed Band/DOS import candidate reached Profile, Planner, real
 PostgreSQL/Redis/MinIO, fresh Worker, four registered ToolCalls and 27 persisted
 Artifacts. Fresh Demo 5 then failed before Workspace creation with
-`PANEL_CAP_EXCEEDED`; deterministic projection exceeds the fixed 32-panel
-contract (`P13-RSE1-001`). The stop rule prevented Demo 4/5 Chromium closure,
-Fact/Scope promotion, and R5-001/R5-002 closure.
+`PANEL_CAP_EXCEEDED`; deterministic projection exceeded the fixed 32-panel
+contract (`P13-RSE1-001`). Fix-Forward #6 applies generic logical-surface/Gallery
+projection without raising the cap, then closes fresh Demo 4 and Demo 5 Report/Recipe
+smokes. The exception is sealed by FF6; Attempt 6 remains reviewer-gated.

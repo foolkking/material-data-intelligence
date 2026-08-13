@@ -401,11 +401,26 @@ def test_phase10m1_postgres_redis_minio_workspace_domain_persistence(
         assert stored["planHash"] == planned.plan_hash
         assert stored["profileId"] == profile_id
         assert stored["profileSemanticHash"] == profile.semanticHash
-        assert any(
-            source["sourceId"] == artifact_id
-            for panel in first.body["panels"]
-            for source in panel["sourceRefs"]
+        results_panel = next(
+            panel for panel in first.body["panels"]
+            if panel["panelKind"] == "SCIENTIFIC_RESULT"
         )
+        assert results_panel["rendererContract"] == "workspace.artifact-metadata/1.0"
+        assert any(
+            source["kind"] == "JOB"
+            and source["sourceId"] == planned.job_id
+            and source["projectId"] == project_id
+            and source["jobId"] == planned.job_id
+            for source in results_panel["sourceRefs"]
+        )
+        assert not any(
+            source["kind"] == "ARTIFACT"
+            for source in results_panel["sourceRefs"]
+        )
+        assert next(
+            artifact for artifact in repos.artifacts.list_for_job(planned.job_id)
+            if artifact["id"] == artifact_id
+        )["contentHash"] == payload_hash
 
         snapshot_json = json.dumps(first.body, sort_keys=True)
         assert private_payload_marker not in snapshot_json

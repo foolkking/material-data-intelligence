@@ -808,3 +808,6 @@ and
 | [`phase13/evidence/phase13_2_attempt4_seven_real_user_e2e/`](phase13/evidence/phase13_2_attempt4_seven_real_user_e2e/) | Attempt 4 entry, fresh execution, findings, authority and manifest evidence |
 | [`phase13/phase13_2_attempt5_failure.md`](phase13/phase13_2_attempt5_failure.md) | Attempt 5 fresh Demo 1-5 execution and P0 stop result |
 | [`phase13/evidence/phase13_2_attempt5_seven_real_user_e2e/`](phase13/evidence/phase13_2_attempt5_seven_real_user_e2e/) | Attempt 5 fresh execution, UI closure, findings and manifest evidence |
+| [`phase13/phase13_1_workspace_projection_fix_forward_6.md`](phase13/phase13_1_workspace_projection_fix_forward_6.md) | RSE1 Workspace projection, Demo 4/5 closure, typed phonon support sealing |
+| [`phase13/phase13_workspace_panel_projection_cardinality_contract.md`](phase13/phase13_workspace_panel_projection_cardinality_contract.md) | Fixed-cap logical panel and exact Artifact Gallery reachability contract |
+| [`phase13/evidence/phase13_1_workspace_projection_fix_forward_6/`](phase13/evidence/phase13_1_workspace_projection_fix_forward_6/) | FF6 census, fresh service smokes, hashes, security, and Attempt 6 handoff |

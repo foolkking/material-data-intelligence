@@ -174,12 +174,15 @@ def test_modern_projection_is_exact_idempotent_and_metadata_only() -> None:
     assert workspace["datasetVersion"] == "dataset_version_2"
     assert first.etag == second.etag
     assert len(repos.workspaces.list_by_project("project_1")) == 1
-    assert "artifact_1" in serialized
+    assert "artifact_1" not in serialized
+    assert len(repos.artifacts.list_for_job("job_m1")) == 1
     assert "private/object/store/key" not in serialized
     assert "must-not-copy" not in serialized
     panels = first.body["panels"]
     overview = next(item for item in panels if item["panelKind"] == "OVERVIEW")
     result_panel = next(item for item in panels if item["panelKind"] == "SCIENTIFIC_RESULT")
+    assert result_panel["title"] == "Scientific results"
+    assert not any(ref["kind"] == "ARTIFACT" for ref in result_panel["sourceRefs"])
     assert len(overview["acceptedSelectionKinds"]) == 20
     assert overview["emittedSelectionKinds"] == []
     assert result_panel["emittedSelectionKinds"] == [
@@ -222,6 +225,52 @@ def test_modern_projection_is_exact_idempotent_and_metadata_only() -> None:
             title="Conflicting title",
         )
     assert conflict.value.code == "WORKSPACE_CREATE_CONFLICT"
+
+
+def test_many_artifacts_project_to_one_exact_job_results_surface() -> None:
+    repos = InMemoryRepositoryBundle.create()
+    _seed_modern(repos)
+    for index in range(40):
+        checksum = f"{index:064x}"
+        repos.artifacts.save(
+            {
+                "id": f"artifact_{index:02d}",
+                "projectId": "project_1",
+                "datasetId": "dataset_1",
+                "jobId": "job_m1",
+                "toolCallId": f"call_{index:02d}",
+                "type": "phonon_band_json" if index % 2 == 0 else "table_json",
+                "version": "1.0",
+                "name": f"display-{39 - index}.json",
+                "storageKey": f"private/{index}",
+                "sizeBytes": 12,
+                "contentType": "application/json",
+                "contentHash": checksum,
+                "sha256": checksum,
+                "metadata": {"provenance": {}},
+            }
+        )
+
+    first, created = WorkspaceProjectionService(repos).project_job(
+        source_job_id="job_m1", created_by="user_local"
+    )
+    assert created is True
+    result_panels = [
+        item for item in first.body["panels"]
+        if item["panelKind"] == "SCIENTIFIC_RESULT"
+    ]
+    assert len(result_panels) == 1
+    assert len(first.body["panels"]) == 7
+    assert len(repos.artifacts.list_for_job("job_m1")) == 40
+    assert result_panels[0]["rendererContract"] == "workspace.artifact-metadata/1.0"
+    assert [ref["kind"] for ref in result_panels[0]["sourceRefs"]].count("JOB") == 1
+
+    replay, replay_created = WorkspaceProjectionService(repos).project_job(
+        source_job_id="job_m1", created_by="user_local"
+    )
+    assert replay_created is False
+    assert replay.body["workspace"]["workspaceId"] == first.body["workspace"]["workspaceId"]
+    assert replay.body["workspace"]["panelIds"] == first.body["workspace"]["panelIds"]
 
 
 def test_historical_empty_panel_declarations_are_read_projected_without_write() -> None:

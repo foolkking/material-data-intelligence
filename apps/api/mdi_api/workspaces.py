@@ -1583,6 +1583,7 @@ class WorkspaceProjectionService:
             ),
         )
         artifact_refs: list[WorkspaceSourceRef] = []
+        unsupported_artifact_count = 0
         for artifact in sorted_artifacts:
             artifact_id = _identity(artifact, "artifactId", "id")
             if not artifact_id:
@@ -1593,6 +1594,8 @@ class WorkspaceProjectionService:
                 "html",
                 "javascript",
             }
+            if unsupported:
+                unsupported_artifact_count += 1
             artifact_ref = WorkspaceSourceRef(
                 kind=WorkspaceSourceKind.ARTIFACT,
                 sourceId=artifact_id,
@@ -1607,25 +1610,28 @@ class WorkspaceProjectionService:
                 mediaType=(content_type if content_type and not unsupported else None),
             )
             artifact_refs.append(artifact_ref)
+
+        if artifact_refs:
+            all_artifacts_unsupported = unsupported_artifact_count == len(artifact_refs)
             specifications.append(
                 {
                     "kind": WorkspacePanelKind.SCIENTIFIC_RESULT,
-                    "title": f"Result: {artifact_type}",
-                    "identity": artifact_id,
-                    "refs": (*base_refs, artifact_ref),
+                    "title": "Scientific results",
+                    "identity": job_id,
+                    "refs": base_refs,
                     "renderer": (
                         "workspace.inert-fallback/1.0"
-                        if unsupported
+                        if all_artifacts_unsupported
                         else "workspace.artifact-metadata/1.0"
                     ),
                     "state": (
                         WorkspacePanelState.CONTRACT_UNSUPPORTED
-                        if unsupported
+                        if all_artifacts_unsupported
                         else self._artifact_panel_state(source.status)
                     ),
                     "unsupported": (
                         "Executable or HTML artifact contracts are inert and unsupported."
-                        if unsupported
+                        if all_artifacts_unsupported
                         else None
                     ),
                 }

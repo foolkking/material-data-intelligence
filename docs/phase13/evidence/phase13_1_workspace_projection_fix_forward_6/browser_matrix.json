@@ -1,0 +1,54 @@
+{
+  "chromium": {
+    "status": "PASS",
+    "artifactCards": 27,
+    "expectedArtifacts": 27,
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "horizontalOverflow": 0,
+    "pageErrors": 0,
+    "consoleErrors": 0,
+    "unexpectedFailedRequests": 0
+  },
+  "firefox": {
+    "status": "PASS",
+    "artifactCards": 27,
+    "expectedArtifacts": 27,
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "horizontalOverflow": 0,
+    "pageErrors": 0,
+    "consoleErrors": 0,
+    "unexpectedFailedRequests": 0
+  },
+  "webkit": {
+    "status": "PASS",
+    "artifactCards": 27,
+    "expectedArtifacts": 27,
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "horizontalOverflow": 0,
+    "pageErrors": 0,
+    "consoleErrors": 0,
+    "unexpectedFailedRequests": 0
+  },
+  "mobile_390x844": {
+    "status": "PASS",
+    "artifactCards": 27,
+    "expectedArtifacts": 27,
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "horizontalOverflow": 0,
+    "pageErrors": 0,
+    "consoleErrors": 0,
+    "unexpectedFailedRequests": 0
+  }
+}

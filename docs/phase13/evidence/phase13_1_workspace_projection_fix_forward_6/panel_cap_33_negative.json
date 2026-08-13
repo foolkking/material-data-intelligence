@@ -1,0 +1,6 @@
+{
+  "authority": "existing test_phase10m1_workspace_persistence.py",
+  "case": 33,
+  "result": "PANEL_CAP_EXCEEDED",
+  "truncation": 0
+}

@@ -1,0 +1,19 @@
+{
+  "demoSpecificRouting": 0,
+  "forbiddenAuthority": [
+    "filename",
+    "MIME only",
+    "array position",
+    "ToolCall position",
+    "timestamp",
+    "latest",
+    "nearest",
+    "fuzzy label"
+  ],
+  "groupingAuthority": [
+    "exact Artifact type/version",
+    "exact renderer contract/version",
+    "existing Gallery/bundle contract",
+    "exact Job/project lineage"
+  ]
+}

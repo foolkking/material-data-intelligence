@@ -1,4 +1,19 @@
 ---TASK---
+状态：处理中
+
+# Phase 13-1 Integration Fix-Forward #6
+## Workspace Panel Projection Cardinality Closure + Demo4/Demo5 Final Closure
+
+Reviewer-authorized scope: close `P13-RSE1-001` using generic logical-surface
+Workspace projection while preserving `WORKSPACE_MAX_PANELS = 32`, exact
+Artifact Gallery reachability, selection, lineage, Report-source access, and
+historical Workspace immutability. Complete fresh Demo 4 and typed Demo 5
+product-closure smokes, then seal only the previously authorized bounded typed
+PhononBand/PhononDos imports. Attempt 6 is not authorized and must not be queued.
+
+---END---
+
+---TASK---
 状态：失败
 
 # Phase 13-1 Release Scope Exception #1

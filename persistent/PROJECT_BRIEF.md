@@ -639,10 +639,12 @@ required phonon capability facts and fails `INTENT_PROFILE_CAPABILITY_MISSING`.
 Demo 6-7 were not executed after the P0 stop. Production/scientific changes are
 zero; Phase 13-3 remains blocked.
 
-## Phase 13-1 Release Scope Exception #1
+## Phase 13-1 Integration Fix-Forward #6
 
-The reviewer-authorized typed phonon import candidate remains unverified after
-fresh Demo 5 exposed `P13-RSE1-001`. The existing strict contracts and durable
-source path work through 27 Artifacts, but Workspace projection rejects the
-canonical output because it exceeds 32 panels. Current Phase 11 support, Fact
-Model, and Scope Baseline remain unchanged pending reviewer action.
+Fix-Forward #6 closes the Workspace cardinality defect without changing the fixed
+32-panel cap: 27 Demo 5 Artifacts are reached through one Job-bound Results/Gallery
+surface and six structural panels. Fresh Demo 4 and Demo 5 Chromium Report/Recipe
+closure smokes pass. The authorized typed PhononBand/PhononDos input rows are now
+sealed while generic phonon YAML/JSON remains `MAPPING_ONLY`. Current Fact/Scope
+authorities are generated under the FF6 evidence root; Attempt 6 remains reviewer-gated,
+not executed, and not queued.

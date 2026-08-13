@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "id": "P13-RSE1-001",
+      "status": "CLOSED"
+    },
+    {
+      "id": "P13-R5-001",
+      "status": "CLOSED"
+    },
+    {
+      "id": "P13-R5-002",
+      "status": "CLOSED"
+    }
+  ]
+}

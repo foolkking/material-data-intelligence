@@ -1,0 +1,18 @@
+{
+  "artifactCount": 27,
+  "fresh": true,
+  "freshWorker": true,
+  "oldEvidenceReused": 0,
+  "panelCount": 7,
+  "realChromiumFinalize": true,
+  "realDurableUpload": true,
+  "realMinIO": true,
+  "realPostgreSQL": true,
+  "realRedis": true,
+  "realUserEntry": true,
+  "recipeId": "recipe_044097cefce37d3471a7846b63c7604b",
+  "registeredAdapters": true,
+  "reportId": "report_044097cefce37d3471a7846b63c7604b",
+  "status": "PASS",
+  "workspaceId": "workspace_bea76bb13adc0987324ad23cb1fa6413"
+}

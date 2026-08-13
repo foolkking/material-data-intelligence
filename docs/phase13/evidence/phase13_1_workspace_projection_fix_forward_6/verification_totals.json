@@ -1,0 +1,36 @@
+{
+  "backend": {
+    "passed": 1432,
+    "skipped": 50,
+    "status": "PASS"
+  },
+  "browser": {
+    "chromium": "PASS",
+    "firefox": "PASS",
+    "mobile390x844": "PASS",
+    "webkit": "PASS"
+  },
+  "build": "PASS",
+  "diffCheck": "PASS",
+  "frontend": {
+    "files": 71,
+    "passed": 460,
+    "status": "PASS"
+  },
+  "linuxReplay": "PASS",
+  "npmAudit": "UNAVAILABLE_CONFIGURED_MIRROR_NOT_IMPLEMENTED",
+  "phase13Focused": {
+    "passed": 113,
+    "status": "PASS"
+  },
+  "serviceBacked": {
+    "minio": "PASS",
+    "passed": 7,
+    "postgresql": "PASS",
+    "redis": "PASS",
+    "requiredSkips": 0
+  },
+  "typecheck": "PASS",
+  "uvLock": "PASS",
+  "windowsReplay": "PASS"
+}

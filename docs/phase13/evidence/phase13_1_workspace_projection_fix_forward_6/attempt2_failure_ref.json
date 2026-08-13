@@ -1,0 +1,7 @@
+{
+  "ref": {
+    "sha": "dacef387ea63f0eb37cb1d01ddcd913e573973a9",
+    "subject": "phase13: record failed real-user E2E rerun"
+  },
+  "status": "FAILED_RERUN_HISTORICAL"
+}

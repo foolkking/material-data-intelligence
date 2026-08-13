@@ -4,7 +4,7 @@ import type { Artifact } from "../../lib/planner-api";
 import type { WorkspacePanel } from "../../lib/workspace-api";
 import { workspaceSnapshotFixture } from "./workspace-test-fixture";
 import { validateWorkspaceSelectionContext } from "./workspace-selection-contract";
-import { artifactSelectionFromPanel, claimSelection, coordinationSiteSelection, datasetSampleSelection, evidenceItemSelection, evidenceSourceArtifactSelection, resolvePanelSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
+import { artifactSelectionFromArtifact, artifactSelectionFromPanel, claimSelection, coordinationSiteSelection, datasetSampleSelection, evidenceItemSelection, evidenceSourceArtifactSelection, resolvePanelSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
 
 const HASH = "a".repeat(64);
 
@@ -56,6 +56,34 @@ describe("Phase 10M-3 exact selection runtime", () => {
     const injected = validateWorkspaceSelectionContext({ ...selection!, primary: { ...selection!.primary!, artifactId: "artifact_foreign" } });
     expect(resolvePanelSelection(result, injected, snapshot.workspace)).toMatchObject({ compatibility: "NOT_APPLICABLE", context: null });
     expect(artifactSelectionFromPanel({ ...result, emittedSelectionKinds: [] }, snapshot.workspace)).toBeNull();
+  });
+
+  it("routes Gallery-validated exact Artifacts through one Job-bound Results surface", () => {
+    const snapshot = workspaceSnapshotFixture();
+    const legacyResult = snapshot.panels.find((panel) => panel.panelKind === "SCIENTIFIC_RESULT")!;
+    const jobBoundResult: WorkspacePanel = {
+      ...legacyResult,
+      sourceRefs: [{
+        kind: "JOB", sourceId: snapshot.workspace.sourceJobId, sourceHash: HASH,
+        contract: null, contractVersion: null, mediaType: null,
+        projectId: snapshot.workspace.projectId, jobId: snapshot.workspace.sourceJobId,
+        toolCallId: null, stepId: null,
+      }],
+    };
+    const artifact: Artifact = {
+      id: "artifact_gallery", artifactId: "artifact_gallery",
+      jobId: snapshot.workspace.sourceJobId, type: "phonon_band_json", version: "1.0",
+      name: "display-only.json", sizeBytes: 10, sha256: HASH,
+      metadata: { projectId: snapshot.workspace.projectId },
+    };
+    const selection = artifactSelectionFromArtifact(artifact, snapshot.workspace)!;
+    expect(resolvePanelSelection(jobBoundResult, selection, snapshot.workspace)).toMatchObject({ compatibility: "EXACT" });
+
+    const foreignJobPanel = {
+      ...jobBoundResult,
+      sourceRefs: jobBoundResult.sourceRefs.map((source) => ({ ...source, sourceId: "job_foreign", jobId: "job_foreign" })),
+    };
+    expect(resolvePanelSelection(foreignJobPanel, selection, snapshot.workspace)).toMatchObject({ compatibility: "NOT_APPLICABLE", context: null });
   });
 
   it("emits exact Dataset sample identities through the declared Result panel", () => {

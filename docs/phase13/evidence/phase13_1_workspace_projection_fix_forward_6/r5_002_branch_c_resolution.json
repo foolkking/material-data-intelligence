@@ -1,0 +1,6 @@
+{
+  "findingId": "P13-R5-002",
+  "genericMappingOnly": true,
+  "historicalBranch": "C",
+  "resolution": "BOUNDED_TYPED_PHONON_USER_IMPORT_SEALED_BY_FIX_FORWARD_6"
+}

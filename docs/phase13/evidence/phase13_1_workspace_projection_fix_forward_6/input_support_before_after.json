@@ -1,0 +1,14 @@
+{
+  "after": {
+    "genericPhononYamlJson": "MAPPING_ONLY",
+    "typedPhononBandImport": "SUPPORTED_WITH_LIMITS / BOUNDED_TYPED_ENTRY",
+    "typedPhononDosImport": "SUPPORTED_WITH_LIMITS / BOUNDED_TYPED_ENTRY"
+  },
+  "authorizedRowsChanged": 2,
+  "before": {
+    "genericPhononYamlJson": "MAPPING_ONLY",
+    "typedPhononBandImport": "ABSENT",
+    "typedPhononDosImport": "ABSENT"
+  },
+  "otherRowsChanged": 0
+}

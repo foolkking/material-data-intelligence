@@ -2674,3 +2674,14 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Record `P13-RSE1-001`: canonical phonon Workspace projection exceeds 32 panels.
 - [x] Stop immediately without repairing the new P0.
 - [ ] Reviewer-authorized remediation is required before typed-import scope can be sealed.
+
+## Phase 13-1 Integration Fix-Forward #6 - Active
+
+- [x] Correct generic Workspace panel projection while retaining the 32-panel cap.
+- [x] Preserve exact Artifact Gallery reachability and add 32/33 cardinality regressions.
+- [x] Re-run fresh Demo 4 and Demo 5 Chromium Report/Recipe closure smokes.
+- [x] Seal the two authorized typed phonon input rows; generic phonon remains mapping-only.
+- [x] Generate deterministic Fact/Scope authorities and Attempt 6 handoff.
+- [x] Full regression passed: backend 1432, frontend 460, Phase13 focused 113,
+  service-backed 7 with zero required skips, and four-browser matrix 4/4.
+- [ ] Exact-SHA CI, completion record, and queue archive remain to be closed.

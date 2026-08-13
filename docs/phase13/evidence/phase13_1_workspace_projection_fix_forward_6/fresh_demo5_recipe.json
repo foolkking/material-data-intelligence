@@ -1,0 +1,12 @@
+{
+  "executionAuthorized": false,
+  "executionGrowth": {
+    "artifacts": 0,
+    "jobs": 0,
+    "plans": 0,
+    "queue": 0,
+    "toolCalls": 0
+  },
+  "persisted": true,
+  "recipeId": "recipe_044097cefce37d3471a7846b63c7604b"
+}

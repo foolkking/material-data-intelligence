@@ -283,3 +283,10 @@ Report action eligibility with `WORKSPACE_SOURCE_NOT_CURRENT` (`P13-R5-001`).
 Demo 5 failed the real upload/Profile-to-Intent handoff with
 `INTENT_PROFILE_CAPABILITY_MISSING` (`P13-R5-002`). Demo 6-7 were not executed.
 Phase 13-3 remains blocked and Initial Release is incomplete.
+
+## Phase 13-1 Integration Fix-Forward #6
+
+Fix-Forward #6 is the current authorized closure. It retains the 32-panel cap,
+projects many supporting Artifacts through the existing exact Job-scoped Results
+Gallery, seals bounded typed PhononBand/PhononDos entry, and closes fresh Demo 4 and
+Demo 5 Report/Recipe smokes. Attempt 6 remains a reviewer gate and is not queued.

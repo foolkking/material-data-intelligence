@@ -1,0 +1,14 @@
+{
+  "capChange": "NO",
+  "finalClass": "WORKSPACE_PANEL_PROJECTION_CARDINALITY_DEFECT",
+  "findingId": "P13-RSE1-001",
+  "historicalClass": "CANONICAL_PHONON_JOB_EXCEEDS_WORKSPACE_PANEL_CAP",
+  "maxPanelsBeforeAfter": [
+    32,
+    32
+  ],
+  "migration": 0,
+  "newSchema": 0,
+  "panelTruncation": 0,
+  "repair": "one exact Job-bound Results/Gallery surface for all supporting Artifacts"
+}

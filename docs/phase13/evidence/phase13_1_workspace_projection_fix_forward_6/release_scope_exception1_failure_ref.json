@@ -1,0 +1,7 @@
+{
+  "ref": {
+    "sha": "ef1d7800f162b1b6cb8c4edb3159e573332e42dd",
+    "subject": "docs: record scope exception failure CI"
+  },
+  "status": "FAILED / REVIEWER_ACTION_REQUIRED"
+}

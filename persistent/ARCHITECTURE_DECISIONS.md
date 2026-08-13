@@ -4743,3 +4743,12 @@ by Workspace read-only policy. Both gaps require separate reviewer authority.
   projection expands them beyond `WORKSPACE_MAX_PANELS = 32`; Workspace rejects
   the request before Report composition. Any repair requires separate reviewer
   authority and must not weaken the fixed cap without a bounded product policy.
+
+## Phase 13 Fix-Forward #6 Workspace Projection Decision
+
+The panel cap remains 32. A Workspace panel is a logical product surface, not an
+Artifact row. Supporting Artifacts are exact-reachable through the existing
+Job-scoped Artifact Gallery and typed renderer contracts. Projection grouping is
+authorized only by exact contracts and Job/project lineage; no filename, MIME,
+array-position, latest, or fuzzy rebinding is allowed. Existing persisted
+Workspaces are not backfilled or reprojected on GET.

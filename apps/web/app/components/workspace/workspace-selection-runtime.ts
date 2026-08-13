@@ -404,7 +404,13 @@ function panelSourceCompatible(panel: WorkspacePanel, context: WorkspaceSelectio
       : selected.kind === "RECIPROCAL_POINT" ? selected.reciprocalArtifactId
         : selected.kind === "VOLUMETRIC_FIELD" ? selected.artifactId : null;
   const checksum = "artifactChecksum" in selected ? selected.artifactChecksum : null;
-  if (artifactId) return panel.sourceRefs.some((source) => source.kind === "ARTIFACT" && source.sourceId === artifactId && source.sourceHash === checksum && source.jobId === workspace.sourceJobId);
+  if (artifactId) {
+    const exactArtifactRef = panel.sourceRefs.some((source) => source.kind === "ARTIFACT" && source.sourceId === artifactId && source.sourceHash === checksum && source.jobId === workspace.sourceJobId);
+    if (exactArtifactRef) return true;
+    return panel.panelKind === "SCIENTIFIC_RESULT"
+      && panel.rendererContract === "workspace.artifact-metadata/1.0"
+      && panel.sourceRefs.some((source) => source.kind === "JOB" && source.sourceId === workspace.sourceJobId && source.projectId === workspace.projectId && source.jobId === workspace.sourceJobId);
+  }
   if (selected.kind === "DATASET_SAMPLE" || selected.kind === "MATERIAL_OBJECT") {
     return ["DATA", "SCIENTIFIC_RESULT"].includes(panel.panelKind)
       && selected.datasetId === workspace.datasetId
