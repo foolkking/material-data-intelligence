@@ -705,3 +705,11 @@ documentation and reproducibility revalidation, and final authority reconciliati
 No production, scientific, polish, support, dependency, migration, or LLM-site
 change is authorized. Phase 13-6 remains reviewer-gated and unqueued; Initial
 Release remains incomplete.
+
+## Phase 13-5 Final Regression and Release Acceptance - Completed
+
+Validation/evidence commit `b60e048abbf366fdbd9fe72da27efd675fc50939` passed
+exact-SHA CI `31728986993`. The seven fresh canonical user paths, retained
+negative/browser/platform gates, and authority reconciliation pass with no
+production behavior change. Phase13-6 remains a reviewer gate only; Initial
+Release is not complete.

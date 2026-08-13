@@ -12236,3 +12236,54 @@ PHASE13_4_EXECUTABLE_TASK_CREATED = NO
 INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
+
+## Phase 13-5 Final Regression + Release Acceptance Result
+
+Status: PASS
+Completed: 2026-08-14
+
+The validation/evidence implementation `b60e048abbf366fdbd9fe72da27efd675fc50939`
+passed exact-SHA CI `31728986993`. Seven newly created canonical user paths used
+real PostgreSQL, Redis, MinIO, a fresh worker, registered adapters, persisted
+artifacts, job-derived Workspaces, Chromium UI Finalize, Reports, and paired
+non-executable Recipes. The run recorded 18 ToolCalls, 85 Artifacts, seven
+Workspaces, seven finalized Reports, and seven Recipes; no fresh Artifact was
+unreachable. No production, scientific, support, schema, dependency, migration,
+or LLM-site change was made.
+
+The retained negative, panel-cap, documentation/reproducibility, browser,
+accessibility, performance, security, and Linux/Windows authority gates pass.
+The sealed Fact hash is
+`92d8295c7d78467d8ce021dc8033a58326219372a5d8fa87c93377ed1275953a`, the
+sealed Scope hash is
+`bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba`, the
+Phase12 baseline is
+`29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4`, and the
+reproducibility-manifest semantic hash is
+`931d6214cb11dbcad628f5b33ea97e043bbfeb54fbccc2f8c87cffebad9537e2`.
+
+```text
+PHASE_13_5 = PASS / FINAL_REGRESSION_AND_RELEASE_ACCEPTANCE_COMPLETE
+PHASE13_5_RELEASE_ACCEPTANCE = PASS
+RELEASE_CANDIDATE_ACCEPTED = YES
+READY_FOR_PHASE13_6 = YES
+PHASE13_5_FRESH_DEMOS_STARTED = 7
+PHASE13_5_FULL_DEMOS_EXECUTED = 7
+PHASE13_5_DEMO_PASS_OR_EXPLICIT_LIMIT = 7/7
+P13X2_ACCEPTANCE = 8/8
+UNREACHABLE_ARTIFACTS = 0
+PANEL_TRUNCATION = 0
+MAX_PANELS_PER_WORKSPACE = 32
+TYPED_PHONON_BAND_IMPORT = SUPPORTED_WITH_LIMITS
+TYPED_PHONON_DOS_IMPORT = SUPPORTED_WITH_LIMITS
+GENERIC_PHONON_YAML_JSON = MAPPING_ONLY
+PRODUCTION_CODE_CHANGES = 0
+SCIENTIFIC_BEHAVIOR_CHANGES = 0
+INPUT_SUPPORT_PROMOTIONS = 0
+PHASE13_5_VALIDATION_VERIFIED_BY_EXACT_SHA_CI
+PHASE13_5_COMPLETION_RECORDED
+PHASE_13_6 = REVIEWER_GATE / AWAITING_REVIEWER_PROMPT
+PHASE13_6_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+```
