@@ -11928,22 +11928,6 @@ INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
 
-## Phase 13-5 Queue Archive
-
-After verification of completion commit `1afed7f982bdd6d2b5e9bef50e2cf4b14b984d32`,
-the completed Phase 13-5 task block was removed. The validation result and all
-evidence remain permanently retained.
-
-```text
-PHASE13_5_QUEUE_ARCHIVED
-TASK_BLOCK_COUNT = 0
-EXECUTABLE_PENDING_TASKS = 0
-PHASE_13_6 = REVIEWER_GATE / AWAITING_REVIEWER_PROMPT
-PHASE13_6_EXECUTABLE_TASK_CREATED = NO
-INITIAL_RELEASE_COMPLETE = NO
-PHASE14_CREATED = NO
-```
-
 ## Phase 13-4 Queue Archive
 
 The implementation/evidence SHA `40403cfa19451cc9a473c41bddecfe053e1a5fea`
@@ -11960,6 +11944,22 @@ TASK_BLOCK_COUNT = 0
 EXECUTABLE_PENDING_TASKS = 0
 PHASE_13_5 = REVIEWER_GATE / AWAITING REVIEWER PROMPT
 PHASE13_5_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+```
+
+## Phase 13-5 Queue Archive
+
+After verification of completion commit `1afed7f982bdd6d2b5e9bef50e2cf4b14b984d32`,
+the completed Phase 13-5 task block was removed. The validation result and all
+evidence remain permanently retained.
+
+```text
+PHASE13_5_QUEUE_ARCHIVED
+TASK_BLOCK_COUNT = 0
+EXECUTABLE_PENDING_TASKS = 0
+PHASE_13_6 = REVIEWER_GATE / AWAITING_REVIEWER_PROMPT
+PHASE13_6_EXECUTABLE_TASK_CREATED = NO
 INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
