@@ -2716,9 +2716,10 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 Phase 13-2 queue archive is complete. Historical Attempt1-5 failures and the
 Attempt6 PASS remain in `results.md` and evidence; `TASK_BLOCK_COUNT = 0`.
 Phase 13-3 is reviewer-gated and unqueued.
-# Current Task: Phase 13-3 Documentation + Reproducibility Package
+# Phase 13-3 Documentation + Reproducibility Package - Completed and Archived
 
-Status: completed. Attempt 6 passed seven fresh canonical demos and P13X2 8/8.
-Phase 13-3 documentation and reproducibility package passed exact-SHA CI; Phase
-13-4 remains reviewer-gated with no executable task, Initial Release is not
-complete, and Phase 14 does not exist.
+Implementation `c3aabd055e067c5a52a0c0238c625dbc035a96f0` passed exact-SHA
+CI `31703805747`; completion commit `f4e2bb324ec4c248869cdc022f926d6f40448522`
+is pushed and the completed queue block is archived. `TASK_BLOCK_COUNT = 0`.
+Phase 13-4 remains reviewer-gated with no executable task, Initial Release is
+not complete, and Phase 14 does not exist.

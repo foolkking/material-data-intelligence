@@ -2354,3 +2354,6 @@ Phase 13-3 implementation/evidence `c3aabd055e067c5a52a0c0238c625dbc035a96f0`
 passed exact-SHA CI `31703805747`. The current release docs, deterministic
 seven-demo contracts, clean-checkout verification, service proof, and Linux /
 Windows manifest parity are complete. Phase 13-4 remains reviewer-gated.
+
+Completion commit `f4e2bb324ec4c248869cdc022f926d6f40448522` is pushed.
+Phase 13-3 is archived from `TASKS.md`; no Phase 13-4 task was created.
