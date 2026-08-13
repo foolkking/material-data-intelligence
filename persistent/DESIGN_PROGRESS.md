@@ -2349,3 +2349,8 @@ task and reconciles current release-facing documentation, seven canonical demo
 reproduction contracts, deterministic manifests, limitations, security,
 provider, API, and setup guidance. Production and scientific behavior remain
 frozen. Phase 13-4 remains reviewer-gated and is not queued.
+
+Phase 13-3 implementation/evidence `c3aabd055e067c5a52a0c0238c625dbc035a96f0`
+passed exact-SHA CI `31703805747`. The current release docs, deterministic
+seven-demo contracts, clean-checkout verification, service proof, and Linux /
+Windows manifest parity are complete. Phase 13-4 remains reviewer-gated.

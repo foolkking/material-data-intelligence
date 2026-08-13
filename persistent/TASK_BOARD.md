@@ -2718,6 +2718,7 @@ Attempt6 PASS remain in `results.md` and evidence; `TASK_BLOCK_COUNT = 0`.
 Phase 13-3 is reviewer-gated and unqueued.
 # Current Task: Phase 13-3 Documentation + Reproducibility Package
 
-Status: in progress. Attempt 6 passed seven fresh canonical demos and P13X2
-8/8. Current work is documentation/evidence only; Phase 13-4 has no executable
-task, Initial Release is not complete, and Phase 14 does not exist.
+Status: completed. Attempt 6 passed seven fresh canonical demos and P13X2 8/8.
+Phase 13-3 documentation and reproducibility package passed exact-SHA CI; Phase
+13-4 remains reviewer-gated with no executable task, Initial Release is not
+complete, and Phase 14 does not exist.

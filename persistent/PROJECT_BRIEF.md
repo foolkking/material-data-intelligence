@@ -678,3 +678,7 @@ only remaining lifecycle action.
 Attempt1-6 Phase 13-2 queue blocks are archived after the verified Attempt6
 completion. The task queue has zero blocks. Phase 13-3 remains reviewer-gated,
 Initial Release is incomplete, and Phase14 is absent.
+
+Phase 13-3 implementation/evidence `c3aabd055e067c5a52a0c0238c625dbc035a96f0`
+passed exact-SHA CI `31703805747`. Current release documentation and the seven-
+demo reproducibility package are complete; Phase 13-4 remains reviewer-gated.

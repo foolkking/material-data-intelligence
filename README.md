@@ -62,8 +62,8 @@ After each design or implementation phase, update:
 ## Current Status
 
 Phase 13-2 Attempt 6 passed all seven fresh canonical real-user service-backed
-workflows and P13X2 `8/8`. Phase 13-3 is producing the current documentation
-and reproducibility package. The current Fact Model is
+workflows and P13X2 `8/8`. Phase 13-3 documentation and reproducibility is
+complete. The current Fact Model is
 `92d8295c7d78467d8ce021dc8033a58326219372a5d8fa87c93377ed1275953a` and
 the current Scope Baseline is
 `bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba`.

@@ -297,9 +297,9 @@ Reviewer-authorized Attempt 6 completed seven fresh canonical product paths
 through real PostgreSQL/Redis/MinIO, Redis queueing, fresh workers, registered
 Adapters, persisted Artifacts, bounded Workspaces, Chromium UI Report Finalize,
 and paired non-executable Recipes. Full regression and implementation exact-SHA
-CI `31682863560` pass. Completion is recorded; queue archive remains. Phase 13-3
-is a reviewer-gated handoff and is not queued.
+CI `31682863560` pass. Completion and queue archive are recorded.
 
-The Phase 13-2 queue is archived after completion. `TASK_BLOCK_COUNT = 0`;
-Phase 13-3 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT` and has no
-executable task.
+The Phase 13-2 queue is archived after completion. Phase 13-3 documentation and
+reproducibility is complete after implementation/evidence SHA `c3aabd055e067c5a52a0c0238c625dbc035a96f0`
+passed exact-SHA CI `31703805747`. Phase 13-4 remains
+`REVIEWER_GATE / AWAITING REVIEWER PROMPT` and has no executable task.

@@ -13,6 +13,7 @@
 - [Troubleshooting](phase13/release/troubleshooting.md)
 - [Seven-demo deterministic reproducibility](phase13/reproducibility/README.md)
 - [Machine-readable reproducibility manifest](phase13/reproducibility/manifest.json)
+- [Phase 13-3 completion](phase13/phase13_3_completion.md)
 
 These documents resolve current release authority. Phase documents and evidence
 below preserve design and forensic history and do not override current Fact,
