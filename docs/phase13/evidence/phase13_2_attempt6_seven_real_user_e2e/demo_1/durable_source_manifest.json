@@ -1,0 +1,17 @@
+{
+  "exports": {
+    "obj_dataframe_2b3a36cebe19": {
+      "contentHash": "4b8717a6943e23fa23c11004483b617d358d4077358a3604412414c4f5248ad3",
+      "storageKey": "projects/project_0d9beef8ca34455f935bf8d6/datasets/dataset_ff8e8d27f58444e09c0a068d/normalized/obj_dataframe_2b3a36cebe19/data.json"
+    }
+  },
+  "identityExact": true,
+  "manualNormalizedExportPreload": 0,
+  "minioPayloadAuthority": true,
+  "postgresqlMetadata": true,
+  "resourceIds": [
+    "obj_dataframe_2b3a36cebe19"
+  ],
+  "runtimeReparseFallback": 0,
+  "uploadProcessMemoryDependency": 0
+}

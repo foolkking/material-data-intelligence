@@ -1,0 +1,126 @@
+{
+  "artifacts": [
+    {
+      "artifactId": "call_job_06bf13648f504cc3968099da_step_001-table_json",
+      "checksum": "7d77c0292277cb5df13f971e34b52e505cc6a6838a25c5bda68d9d3ae600d1b5",
+      "contract": "table_json",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_06bf13648f504cc3968099da",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_06bf13648f504cc3968099da_step_001",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_06bf13648f504cc3968099da_step_001-plotly_json",
+      "checksum": "91c1295ab155f96b6621bf751e7bcc3756b7b0846c55870391662d093bc1b492",
+      "contract": "plotly_json",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_06bf13648f504cc3968099da",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_06bf13648f504cc3968099da_step_001",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_06bf13648f504cc3968099da_step_001-summary_md",
+      "checksum": "0b3f4a3dd589496909b99a1813f19bd94c841add6aa269015b4f7fc088aa9cc9",
+      "contract": "summary_md",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_06bf13648f504cc3968099da",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_06bf13648f504cc3968099da_step_001",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_06bf13648f504cc3968099da_step_001-recipe_json",
+      "checksum": "103e07e14fc017f7ffb627e1ff425b18f3f599c8f7709cfd0fc891f725fd92e9",
+      "contract": "recipe_json",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_06bf13648f504cc3968099da",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_06bf13648f504cc3968099da_step_001",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_06bf13648f504cc3968099da_step_002-table_json",
+      "checksum": "0b8310e8697ea25f01b653212955284f3918b31694502645dc5a996040272b00",
+      "contract": "table_json",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_06bf13648f504cc3968099da",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_06bf13648f504cc3968099da_step_002",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_06bf13648f504cc3968099da_step_002-plotly_json",
+      "checksum": "a1dbca1cfa43f757602ca84ce63d349e5df1a5f6b5362dbb8b9ac807a111810a",
+      "contract": "plotly_json",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_06bf13648f504cc3968099da",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_06bf13648f504cc3968099da_step_002",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_06bf13648f504cc3968099da_step_002-summary_md",
+      "checksum": "b979293d88c30e172a3d1b915344a59d91a44b12442f03f2c0a8be91a08f0597",
+      "contract": "summary_md",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_06bf13648f504cc3968099da",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_06bf13648f504cc3968099da_step_002",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_06bf13648f504cc3968099da_step_002-recipe_json",
+      "checksum": "f8edcf96edcca65748d44242e276465c273a6ad3968cbc51732432fd74a57114",
+      "contract": "recipe_json",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_06bf13648f504cc3968099da",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_06bf13648f504cc3968099da_step_002",
+      "typedRendererReachable": true
+    }
+  ],
+  "jobId": "job_06bf13648f504cc3968099da",
+  "planId": "plan_8d146cca5c04415cab4b7efa",
+  "toolCalls": [
+    {
+      "attempt": 1,
+      "error": null,
+      "id": "call_job_06bf13648f504cc3968099da_step_001",
+      "idempotencyKey": "job_06bf13648f504cc3968099da:step_001",
+      "jobId": "job_06bf13648f504cc3968099da",
+      "params": {},
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "electronic.band_structure"
+    },
+    {
+      "attempt": 1,
+      "error": null,
+      "id": "call_job_06bf13648f504cc3968099da_step_002",
+      "idempotencyKey": "job_06bf13648f504cc3968099da:step_002",
+      "jobId": "job_06bf13648f504cc3968099da",
+      "params": {},
+      "status": "completed",
+      "stepId": "step_002",
+      "toolId": "electronic.dos"
+    }
+  ]
+}

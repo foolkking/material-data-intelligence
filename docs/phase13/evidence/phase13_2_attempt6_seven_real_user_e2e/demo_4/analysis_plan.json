@@ -1,0 +1,117 @@
+{
+  "assumptions": [
+    "Capability selection used exact persisted Intent/Profile/Registry identities."
+  ],
+  "datasetId": "dataset_26796b312d9245d0b851c537",
+  "dependencyBindings": [
+    {
+      "artifactContractVersion": "phase10n4.trajectory_msd.v1",
+      "artifactKind": "table_json",
+      "bindingId": "binding_b4ed76c711622fa55276d58a96745549",
+      "cardinality": "EXACTLY_ONE",
+      "consumerInputPort": "msd",
+      "consumerStepId": "step_001",
+      "mediaType": "application/json",
+      "producerOutputPort": "trajectory-msd",
+      "producerStepId": "step_002"
+    }
+  ],
+  "expectedArtifacts": [
+    {
+      "fromStepId": "step_001",
+      "name": "trajectory_diffusion_table_json.json",
+      "type": "table_json"
+    },
+    {
+      "fromStepId": "step_002",
+      "name": "trajectory_msd_table_json.json",
+      "type": "table_json"
+    },
+    {
+      "fromStepId": "step_003",
+      "name": "trajectory_rdf_table_json.json",
+      "type": "table_json"
+    }
+  ],
+  "goal": "Analyze this trajectory, show the RDF and MSD, and estimate diffusion over the full supplied time range with fit diagnostics.",
+  "graphHash": "e06981008346d09fb5cbcc0af3efcd6399373af56e30862971623305fe488b90",
+  "profileId": "profile_dataset_26796b312d9245d0b851c537_v2",
+  "schemaVersion": "0.2",
+  "steps": [
+    {
+      "constraints": null,
+      "inputRefs": [],
+      "output": {
+        "artifactTypes": [
+          "table_json",
+          "plotly_json",
+          "summary_md",
+          "recipe_json"
+        ],
+        "displayTarget": "trajectory"
+      },
+      "params": {
+        "fit_end_time_ps": 0.006,
+        "fit_start_time_ps": 0.0
+      },
+      "purpose": "Satisfy the validated structured AnalysisIntent with an eligible registered capability.",
+      "reason": "Selected from exact Intent, DataProfile, Registry, and parameter-binding facts.",
+      "stepId": "step_001",
+      "toolId": "trajectory.diffusion"
+    },
+    {
+      "constraints": null,
+      "inputRefs": [
+        {
+          "columnName": null,
+          "fieldRole": "trajectory",
+          "objectType": "Trajectory",
+          "ref": "obj_trajectory_ee665f2c7771",
+          "refType": "normalized_object"
+        }
+      ],
+      "output": {
+        "artifactTypes": [
+          "table_json",
+          "plotly_json",
+          "summary_md",
+          "recipe_json"
+        ],
+        "displayTarget": "trajectory"
+      },
+      "params": {},
+      "purpose": "Satisfy the validated structured AnalysisIntent with an eligible registered capability.",
+      "reason": "Selected from exact Intent, DataProfile, Registry, and parameter-binding facts.",
+      "stepId": "step_002",
+      "toolId": "trajectory.msd"
+    },
+    {
+      "constraints": null,
+      "inputRefs": [
+        {
+          "columnName": null,
+          "fieldRole": "trajectory",
+          "objectType": "Trajectory",
+          "ref": "obj_trajectory_ee665f2c7771",
+          "refType": "normalized_object"
+        }
+      ],
+      "output": {
+        "artifactTypes": [
+          "table_json",
+          "plotly_json",
+          "summary_md",
+          "recipe_json"
+        ],
+        "displayTarget": "trajectory"
+      },
+      "params": {},
+      "purpose": "Satisfy the validated structured AnalysisIntent with an eligible registered capability.",
+      "reason": "Selected from exact Intent, DataProfile, Registry, and parameter-binding facts.",
+      "stepId": "step_003",
+      "toolId": "trajectory.rdf"
+    }
+  ],
+  "toolRegistryVersion": "0.1.0",
+  "warnings": []
+}

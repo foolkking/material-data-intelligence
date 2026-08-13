@@ -1,0 +1,16 @@
+{
+  "demoId": 7,
+  "entryModes": [
+    "parse",
+    "parse"
+  ],
+  "fixtureIds": [
+    "P13-DEMO-07-FIX-01",
+    "P13-DEMO-07-FIX-02"
+  ],
+  "fixturePaths": [
+    "docs/phase10n/evidence/phase10n5_electronic_band_dos/electronic_resource_contracts/band.json",
+    "docs/phase10n/evidence/phase10n5_electronic_band_dos/electronic_resource_contracts/dos.json"
+  ],
+  "fresh": true
+}

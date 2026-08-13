@@ -1,0 +1,19 @@
+{
+  "cases": [
+    "ambiguous intent",
+    "one-round clarification",
+    "second-round typed failure",
+    "unsupported capability/input",
+    "generic phonon mapping-only",
+    "partial execution",
+    "stale recovery",
+    "provider failure",
+    "limitation-bearing report",
+    "cross-project",
+    "cross-job",
+    "double-submit",
+    "32/33 panels"
+  ],
+  "focusedTests": 148,
+  "status": "PASS"
+}

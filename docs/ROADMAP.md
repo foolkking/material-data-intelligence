@@ -286,7 +286,16 @@ Phase 13-3 remains blocked and Initial Release is incomplete.
 
 ## Phase 13-1 Integration Fix-Forward #6
 
-Fix-Forward #6 is the current authorized closure. It retains the 32-panel cap,
+Fix-Forward #6 is complete. It retains the 32-panel cap,
 projects many supporting Artifacts through the existing exact Job-scoped Results
 Gallery, seals bounded typed PhononBand/PhononDos entry, and closes fresh Demo 4 and
-Demo 5 Report/Recipe smokes. Attempt 6 remains a reviewer gate and is not queued.
+Demo 5 Report/Recipe smokes.
+
+## Phase 13-2 Attempt 6 - In Progress
+
+Reviewer-authorized Attempt 6 has completed seven fresh canonical product paths
+through real PostgreSQL/Redis/MinIO, Redis queueing, fresh workers, registered
+Adapters, persisted Artifacts, bounded Workspaces, Chromium UI Report Finalize,
+and paired non-executable Recipes. Full regression and evidence sealing pass
+locally; exact-SHA CI, completion, and queue archive remain. Phase 13-3 is a
+reviewer-gated handoff and is not queued.

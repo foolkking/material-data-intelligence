@@ -1,0 +1,16 @@
+{
+  "artifactCount": 12,
+  "demoId": 4,
+  "family": "Trajectory + RDF + MSD + diffusion",
+  "fresh": true,
+  "oldEvidenceReusedAsPass": 0,
+  "panelCount": 7,
+  "recipeId": "recipe_d35a49a64038fe7bfba6c2bf24a1fe45",
+  "reportId": "report_d35a49a64038fe7bfba6c2bf24a1fe45",
+  "selectedTools": [
+    "trajectory.diffusion",
+    "trajectory.msd",
+    "trajectory.rdf"
+  ],
+  "status": "PASS"
+}

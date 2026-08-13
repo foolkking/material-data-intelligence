@@ -1,0 +1,91 @@
+{
+  "ambiguities": [],
+  "clarification": {
+    "answers": [],
+    "maxQuestionsPerRound": 3,
+    "maxRounds": 1,
+    "questions": [],
+    "round": 0
+  },
+  "constraints": {
+    "clarificationAllowed": true,
+    "costPreference": null,
+    "descriptiveOnly": false,
+    "excludeResourceIds": [],
+    "excludeScientificIntents": [],
+    "forbidDerivedInterpretation": false,
+    "groupIds": [],
+    "includeResourceIds": [
+      "obj_electronic_band_5626a7644201",
+      "obj_electronic_dos_7b5afc1a3e8d"
+    ],
+    "includeScientificIntents": [],
+    "maxAnalyses": null,
+    "maxToolCalls": null,
+    "modelIds": [],
+    "outputPreferences": [],
+    "targetIds": [],
+    "timePreference": null
+  },
+  "dataScope": {
+    "datasetId": "dataset_b413cfb7a5b646e3999b8575",
+    "datasetVersion": "2",
+    "groupIds": [],
+    "modelIds": [],
+    "origin": "USER_EXPLICIT",
+    "profileContractVersion": "2.4",
+    "profileId": "profile_dataset_b413cfb7a5b646e3999b8575_v2",
+    "profileSemanticHash": "6558647a3ec1b488864329a9bec1c82fff4533dab20d6b831f3253d70f3476fc",
+    "resourceRefs": [
+      {
+        "kind": "electronicband",
+        "objectHash": "5626a7644201255297d1832220fad1dcb1e9ec01e683e28c4c9300320cee9a9d",
+        "objectId": "obj_electronic_band_5626a7644201",
+        "objectType": "ElectronicBand",
+        "origin": "USER_EXPLICIT"
+      },
+      {
+        "kind": "electronicdos",
+        "objectHash": "7b5afc1a3e8db985eacde4f483eabbd8aae1585830f0380e3c7a0738a1ecbfe5",
+        "objectId": "obj_electronic_dos_7b5afc1a3e8d",
+        "objectType": "ElectronicDos",
+        "origin": "USER_EXPLICIT"
+      }
+    ],
+    "sampleIds": []
+  },
+  "datasetId": "dataset_b413cfb7a5b646e3999b8575",
+  "desiredOutputs": [
+    "summary",
+    "warnings",
+    "plot",
+    "table"
+  ],
+  "intentHash": "fed72209608ed247e200d75fe28551bc6f09b13c5d9ba041b2536bdf58ec17f0",
+  "intentId": "intent_fed72209608ed247e200d75f",
+  "language": "en",
+  "missingFacts": [],
+  "normalizedGoal": "Inspect the supplied electronic band structure and DOS, including gap, spin, projection and compatibility limitations.",
+  "optionalCapabilityNeeds": [],
+  "outcome": "READY",
+  "profileId": "profile_dataset_b413cfb7a5b646e3999b8575_v2",
+  "provenance": {
+    "answerBindings": [],
+    "createdAt": "2026-08-13T08:09:05.916992+00:00",
+    "model": "bounded-rules-v1",
+    "parentIntentId": null,
+    "promptVersion": "phase10l1.intent.v1",
+    "provider": "deterministic_mock"
+  },
+  "rawGoal": "Inspect the supplied electronic band structure and DOS, including gap, spin, projection and compatibility limitations.",
+  "requiredCapabilityNeeds": [
+    "electronic_resource"
+  ],
+  "schemaVersion": "1.0",
+  "scientificIntents": [
+    "electronic_structure_analysis"
+  ],
+  "targetSemantics": [],
+  "unsupportedReasons": [],
+  "warnings": []
+}

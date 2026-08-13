@@ -1,4 +1,21 @@
 ---TASK---
+状态：处理中
+
+# Phase 13-2 Attempt 6
+## Seven Canonical Real-User E2E Demonstrations - Full Fresh Rerun
+
+Execute all seven canonical demonstrations from entirely fresh current
+user-facing entry through durable PostgreSQL/MinIO persistence, natural-language
+Intent, Eligibility, capability-aware Planner, validated AnalysisPlan, Redis,
+fresh QueueWorkerRuntime, registered Adapters, persisted Artifacts, bounded
+Workspace logical-surface projection, exact Artifact Gallery reachability,
+typed Viewer, applicable Finding/Evidence/Provenance, real UI Report Finalize,
+and paired non-executable Recipe. Attempt 6 is validation-only; production and
+scientific changes are not authorized. Stop immediately on a new P0.
+
+---END---
+
+---TASK---
 状态：失败
 
 # Phase 13-2 Attempt 5

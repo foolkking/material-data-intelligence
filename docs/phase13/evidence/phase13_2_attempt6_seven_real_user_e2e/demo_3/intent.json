@@ -1,0 +1,96 @@
+{
+  "ambiguities": [],
+  "clarification": {
+    "answers": [],
+    "maxQuestionsPerRound": 3,
+    "maxRounds": 1,
+    "questions": [],
+    "round": 0
+  },
+  "constraints": {
+    "clarificationAllowed": true,
+    "costPreference": null,
+    "descriptiveOnly": false,
+    "excludeResourceIds": [],
+    "excludeScientificIntents": [],
+    "forbidDerivedInterpretation": false,
+    "groupIds": [],
+    "includeResourceIds": [
+      "obj_dataframe_4e34572e413c",
+      "obj_structure_72a5ab29a949"
+    ],
+    "includeScientificIntents": [],
+    "maxAnalyses": null,
+    "maxToolCalls": null,
+    "modelIds": [],
+    "outputPreferences": [],
+    "targetIds": [],
+    "timePreference": null
+  },
+  "dataScope": {
+    "datasetId": "dataset_c420bd927b0840f58f2a4948",
+    "datasetVersion": "2",
+    "groupIds": [],
+    "modelIds": [],
+    "origin": "USER_EXPLICIT",
+    "profileContractVersion": "2.2",
+    "profileId": "profile_dataset_c420bd927b0840f58f2a4948_v2",
+    "profileSemanticHash": "a17c13959bcf47525b42b710ce1d59886dcb99b605af230fd5d500a0de599645",
+    "resourceRefs": [
+      {
+        "kind": "dataframe",
+        "objectHash": "4e34572e413c39ed6ac67003bcc6b3c0c101547f755d480f198483337a710b47",
+        "objectId": "obj_dataframe_4e34572e413c",
+        "objectType": "DataFrame",
+        "origin": "USER_EXPLICIT"
+      },
+      {
+        "kind": "structure",
+        "objectHash": "72a5ab29a9494f477b40069fec69ea5e7611d964a78aad8ad10c1a87f2c0d71d",
+        "objectId": "obj_structure_72a5ab29a949",
+        "objectType": "Structure",
+        "origin": "USER_EXPLICIT"
+      }
+    ],
+    "sampleIds": []
+  },
+  "datasetId": "dataset_c420bd927b0840f58f2a4948",
+  "desiredOutputs": [
+    "summary",
+    "warnings",
+    "comparison",
+    "three_dimensional_view",
+    "plot",
+    "table"
+  ],
+  "intentHash": "75ca488cbd2eb2e6a3a63b5fd2061f5a9da1275afa8e194c4012fe4ce187376d",
+  "intentId": "intent_75ca488cbd2eb2e6a3a63b5f",
+  "language": "en",
+  "missingFacts": [],
+  "normalizedGoal": "Inspect this crystal structure, map its CrystalNN local environment and coordination polyhedra, then compare the supplied experimental XRD peaks with its theoretical pattern.",
+  "optionalCapabilityNeeds": [
+    "comparison_groups"
+  ],
+  "outcome": "READY",
+  "profileId": "profile_dataset_c420bd927b0840f58f2a4948_v2",
+  "provenance": {
+    "answerBindings": [],
+    "createdAt": "2026-08-13T08:04:55.689110+00:00",
+    "model": "bounded-rules-v1",
+    "parentIntentId": null,
+    "promptVersion": "phase10l1.intent.v1",
+    "provider": "deterministic_mock"
+  },
+  "rawGoal": "Inspect this crystal structure, map its CrystalNN local environment and coordination polyhedra, then compare the supplied experimental XRD peaks with its theoretical pattern.",
+  "requiredCapabilityNeeds": [
+    "structure_resource"
+  ],
+  "schemaVersion": "1.0",
+  "scientificIntents": [
+    "comparison",
+    "structure_analysis"
+  ],
+  "targetSemantics": [],
+  "unsupportedReasons": [],
+  "warnings": []
+}

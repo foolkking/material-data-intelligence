@@ -1,0 +1,16 @@
+{
+  "arrayPositionRebinding": 0,
+  "filenameRebinding": 0,
+  "intentId": "intent_3f359b7f7c0f76b51bddf452",
+  "jobId": "job_d0cc3440086e4b799fade2ab",
+  "latestRebinding": 0,
+  "nearestRebinding": 0,
+  "planId": "plan_d505e038c9f44bb7b5063279",
+  "profileId": "profile_dataset_417a41a32c0a4fba8357e169_v2",
+  "resourceIds": [
+    "obj_phonon_band_4aec088125c6",
+    "obj_phonon_dos_3041f69c4b8e",
+    "obj_structure_e49de8a0940d"
+  ],
+  "workspaceId": "workspace_d36068f65fc64e2db685a8bbaab0430f"
+}

@@ -1,0 +1,120 @@
+{
+  "artifacts": [
+    {
+      "artifactId": "call_job_54acb629e4f7420797b91628_step_001-table_json",
+      "checksum": "b3eab4f97cdf6791d607d7b91be270e22c846a1a1b660d262d392a7203e007cf",
+      "contract": "table_json",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_54acb629e4f7420797b91628",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_54acb629e4f7420797b91628_step_001",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_54acb629e4f7420797b91628_step_001-quality_issues_json",
+      "checksum": "9e8d44288d69a1599afdbe506ddd4d6de448a87c64f090e40ea08192f52db9bc",
+      "contract": "quality_issues_json",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_54acb629e4f7420797b91628",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_54acb629e4f7420797b91628_step_001",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_54acb629e4f7420797b91628_step_001-summary_md",
+      "checksum": "eb894d6d1261fa3b206bee93d2c190eb97f990704c065477179d474ec4b5a94a",
+      "contract": "summary_md",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_54acb629e4f7420797b91628",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_54acb629e4f7420797b91628_step_001",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_54acb629e4f7420797b91628_step_001-recipe_json",
+      "checksum": "b4b64b7314073ad66916553ae4515bc9272a9a7822ea90e57807e9d65f745dc1",
+      "contract": "recipe_json",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_54acb629e4f7420797b91628",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_54acb629e4f7420797b91628_step_001",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_54acb629e4f7420797b91628_step_002-table_json",
+      "checksum": "20910b4fe9662ba94901f7097170079e97359e76a87cc1badb352ce6ca7d4dfc",
+      "contract": "table_json",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_54acb629e4f7420797b91628",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_54acb629e4f7420797b91628_step_002",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_54acb629e4f7420797b91628_step_002-summary_md",
+      "checksum": "a22efeaf6f21f07a8b61f3647dd4478a1f26908e2fcb5e4b6788866ae877466f",
+      "contract": "summary_md",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_54acb629e4f7420797b91628",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_54acb629e4f7420797b91628_step_002",
+      "typedRendererReachable": true
+    },
+    {
+      "artifactId": "call_job_54acb629e4f7420797b91628_step_002-recipe_json",
+      "checksum": "73151023c14a29385f1a129ce384c1302617c9933385eed0c1e94a7288edad94",
+      "contract": "recipe_json",
+      "exactIdentity": true,
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_54acb629e4f7420797b91628",
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_54acb629e4f7420797b91628_step_002",
+      "typedRendererReachable": true
+    }
+  ],
+  "jobId": "job_54acb629e4f7420797b91628",
+  "planId": "plan_454c40e99d934898aae332d8",
+  "toolCalls": [
+    {
+      "attempt": 1,
+      "error": null,
+      "id": "call_job_54acb629e4f7420797b91628_step_001",
+      "idempotencyKey": "job_54acb629e4f7420797b91628:step_001",
+      "jobId": "job_54acb629e4f7420797b91628",
+      "params": {
+        "tableObjectId": "obj_dataframe_a0ebd1d365af"
+      },
+      "status": "completed",
+      "stepId": "step_001",
+      "toolId": "dataset.materials_explorer"
+    },
+    {
+      "attempt": 1,
+      "error": null,
+      "id": "call_job_54acb629e4f7420797b91628_step_002",
+      "idempotencyKey": "job_54acb629e4f7420797b91628:step_002",
+      "jobId": "job_54acb629e4f7420797b91628",
+      "params": {
+        "groupIds": [
+          "obj_dataframe_a0ebd1d365af:regression:default"
+        ]
+      },
+      "status": "completed",
+      "stepId": "step_002",
+      "toolId": "ml.regression_evaluation"
+    }
+  ]
+}

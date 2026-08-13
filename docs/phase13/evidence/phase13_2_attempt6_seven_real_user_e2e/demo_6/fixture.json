@@ -1,0 +1,13 @@
+{
+  "demoId": 6,
+  "entryModes": [
+    "parse"
+  ],
+  "fixtureIds": [
+    "P13-DEMO-06-FIX-01"
+  ],
+  "fixturePaths": [
+    "docs/phase10j/fixtures/volumetric_parser/CHGCAR"
+  ],
+  "fresh": true
+}

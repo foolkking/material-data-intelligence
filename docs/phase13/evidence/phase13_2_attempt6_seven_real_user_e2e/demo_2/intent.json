@@ -1,0 +1,107 @@
+{
+  "ambiguities": [],
+  "clarification": {
+    "answers": [],
+    "maxQuestionsPerRound": 3,
+    "maxRounds": 1,
+    "questions": [],
+    "round": 0
+  },
+  "constraints": {
+    "clarificationAllowed": true,
+    "costPreference": null,
+    "descriptiveOnly": false,
+    "excludeResourceIds": [],
+    "excludeScientificIntents": [],
+    "forbidDerivedInterpretation": false,
+    "groupIds": [],
+    "includeResourceIds": [
+      "obj_dataframe_a0ebd1d365af"
+    ],
+    "includeScientificIntents": [],
+    "maxAnalyses": null,
+    "maxToolCalls": null,
+    "modelIds": [],
+    "outputPreferences": [],
+    "targetIds": [],
+    "timePreference": null
+  },
+  "dataScope": {
+    "datasetId": "dataset_e79a26c6b41a4f95a44b6a19",
+    "datasetVersion": "2",
+    "groupIds": [],
+    "modelIds": [],
+    "origin": "USER_EXPLICIT",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_e79a26c6b41a4f95a44b6a19_v2",
+    "profileSemanticHash": "d8b9aebc8fdbb8287935000222e55638e477b554a587a422bc5440ece1b9065f",
+    "resourceRefs": [
+      {
+        "kind": "dataframe",
+        "objectHash": "a0ebd1d365afcce22116f3ecb52436c0fa9866ada45585fd724d0b60f6914b75",
+        "objectId": "obj_dataframe_a0ebd1d365af",
+        "objectType": "DataFrame",
+        "origin": "USER_EXPLICIT"
+      }
+    ],
+    "sampleIds": []
+  },
+  "datasetId": "dataset_e79a26c6b41a4f95a44b6a19",
+  "desiredOutputs": [
+    "summary",
+    "warnings",
+    "metrics",
+    "plot",
+    "table"
+  ],
+  "intentHash": "cca4844b38db0793c746c8f82b28105e9cd9297f12ec23ec463e6d71927c99b4",
+  "intentId": "intent_cca4844b38db0793c746c8f8",
+  "language": "en",
+  "missingFacts": [],
+  "normalizedGoal": "Evaluate these materials-model predictions and explain the largest errors and limitations.",
+  "optionalCapabilityNeeds": [],
+  "outcome": "READY",
+  "profileId": "profile_dataset_e79a26c6b41a4f95a44b6a19_v2",
+  "provenance": {
+    "answerBindings": [],
+    "createdAt": "2026-08-13T08:04:19.998124+00:00",
+    "model": "bounded-rules-v1",
+    "parentIntentId": null,
+    "promptVersion": "phase10l1.intent.v1",
+    "provider": "deterministic_mock"
+  },
+  "rawGoal": "Evaluate these materials-model predictions and explain the largest errors and limitations.",
+  "requiredCapabilityNeeds": [
+    "tabular_data",
+    "regression_semantics"
+  ],
+  "schemaVersion": "1.0",
+  "scientificIntents": [
+    "dataset_overview",
+    "ml_regression_evaluation"
+  ],
+  "targetSemantics": [
+    {
+      "column": "y_true",
+      "groupId": "obj_dataframe_a0ebd1d365af:regression:default",
+      "objectId": "obj_dataframe_a0ebd1d365af",
+      "origin": "USER_EXPLICIT",
+      "role": "regression_target",
+      "semanticId": "obj_dataframe_a0ebd1d365af:regression:default:target:y_true",
+      "seriesId": null,
+      "unit": null
+    },
+    {
+      "column": "y_pred",
+      "groupId": "obj_dataframe_a0ebd1d365af:regression:default",
+      "objectId": "obj_dataframe_a0ebd1d365af",
+      "origin": "USER_EXPLICIT",
+      "role": "regression_prediction",
+      "semanticId": "obj_dataframe_a0ebd1d365af:regression:default:prediction:y_pred",
+      "seriesId": null,
+      "unit": null
+    }
+  ],
+  "unsupportedReasons": [],
+  "warnings": []
+}

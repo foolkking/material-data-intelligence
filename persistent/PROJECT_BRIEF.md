@@ -652,3 +652,11 @@ not executed, and not queued.
 Fix-Forward #6 implementation `0867a69a587bf8e0ddb5aaeec7a177808a69e6f1`
 is verified by exact-SHA CI `31667748439`; completion is recorded. The queue
 archive retains the five failed Phase 13-2 attempts and creates no Attempt 6 task.
+
+## Phase 13-2 Attempt 6
+
+Attempt 6 is active under reviewer authorization. Seven fresh canonical user
+paths have completed through real PostgreSQL, Redis, MinIO, fresh workers,
+registered Adapters, persisted Artifacts, Job-derived Workspaces, Chromium UI
+Report Finalize, and paired non-executable Recipes. Evidence sealing and full
+regression remain before completion; Phase 13-3 is handoff-only and unqueued.

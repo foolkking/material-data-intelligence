@@ -1,5 +1,17 @@
 # TASK_BOARD
 
+## Phase 13-2 Attempt 6 - Active
+
+- [x] Verify FF6 lifecycle, closed findings, current Fact/Scope/Phase12 hashes,
+  support matrix, panel cap, semantic coverage, ingestion fidelity, C/C2/D0,
+  Demo1/4/5 closure dependencies, services, and browser runtimes.
+- [x] Admit exactly one Attempt 6 task; retain Attempts 1-5 as failed history.
+- [ ] Execute seven fully fresh service-backed real-user demos and per-demo audits.
+- [ ] Execute negative/provider/browser/scientific/P13X2 reconciliation.
+- [ ] Run full regressions, service/cross-platform/security/hash gates.
+- [ ] Package evidence and handoff, then complete exact-SHA CI lifecycle.
+
+
 ## Completed: Phase 12-5
 
 - Status: implementation `d20d0a1` verified by exact-SHA CI `31386432220`; completion recorded.
@@ -2689,3 +2701,13 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Archive the resolved FF5, failed Exception #1, and completed FF6 queue
   blocks while retaining Attempts 1-5. Attempt 6 remains reviewer-gated and
   unqueued.
+
+## Phase 13-2 Attempt 6 - In Progress
+
+- [x] Verify Fix-Forward #6 lifecycle, current hashes, support matrix, and entry gates.
+- [x] Execute all seven fresh canonical real-user service-backed product paths.
+- [x] Finalize seven Reports and paired non-executable Recipes through Chromium UI.
+- [x] Pass negative/clarification, service-backed, panel cardinality, and provider gates.
+- [x] Generate independent per-Demo and aggregate evidence with raw-byte manifest self-check.
+- [ ] Pass full backend/frontend/focused/build/cross-platform/security regression.
+- [ ] Commit and push evidence, pass exact-SHA CI, append completion, and archive Attempt1-6 queue blocks.

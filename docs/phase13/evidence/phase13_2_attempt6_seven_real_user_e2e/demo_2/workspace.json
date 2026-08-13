@@ -1,0 +1,56 @@
+{
+  "activePanelId": "panel_e6bef397b02fa2c6a23e326001ae0dc0",
+  "artifactCount": 7,
+  "createdAt": "2026-08-13T08:04:21.188963Z",
+  "createdBy": "user_local",
+  "createdByKind": "USER",
+  "currentLayoutRevision": 0,
+  "datasetId": "dataset_e79a26c6b41a4f95a44b6a19",
+  "datasetVersion": "2",
+  "diagnostics": [],
+  "durableMetadata": {
+    "note": null,
+    "tags": []
+  },
+  "executionAuthorized": false,
+  "historicalProjection": true,
+  "intentId": "intent_cca4844b38db0793c746c8f8",
+  "intentSemanticHash": "cca4844b38db0793c746c8f82b28105e9cd9297f12ec23ec463e6d71927c99b4",
+  "interpretationCount": 0,
+  "panelIds": [
+    "panel_e6bef397b02fa2c6a23e326001ae0dc0",
+    "panel_94f38a0baa04accaebc2c7c22157b977",
+    "panel_61cf784219d0e74311128a69029c59c9",
+    "panel_7113ee6ad497d813fad10e90cd002e24",
+    "panel_468d51076af4229c745b60d9223d2048",
+    "panel_02fc135fdaf63a639af8138e16d2c026",
+    "panel_260b60b034b54470c6716e56f39c8df7"
+  ],
+  "pinnedSelection": null,
+  "planHash": "ad3f92e6e6779491dc1e8841b2d6e335ae891715e011e4f5d33c539507a3e61b",
+  "planId": "plan_454c40e99d934898aae332d8",
+  "planSchemaVersion": "0.1",
+  "profileId": "profile_dataset_e79a26c6b41a4f95a44b6a19_v2",
+  "profileSemanticHash": "d8b9aebc8fdbb8287935000222e55638e477b554a587a422bc5440ece1b9065f",
+  "projectId": "project_703607362b6444f99bc457e1",
+  "projectedStatus": "LEGACY_READ_ONLY",
+  "readOnly": true,
+  "recipeCount": 0,
+  "reportCount": 0,
+  "revision": 0,
+  "schemaVersion": "1.0",
+  "scientificAuthority": false,
+  "sourceJobId": "job_54acb629e4f7420797b91628",
+  "sourceReferenceHash": "284d6b7d896af3ef5147bd95c5e863ef4c8f22b2163a4badbe82f30cc52e0750",
+  "title": "Attempt 6 Demo 2",
+  "toolCallCount": 2,
+  "updatedAt": "2026-08-13T08:04:21.188963Z",
+  "warnings": [
+    {
+      "code": "LEGACY_PLAN_READ_ONLY",
+      "message": "AnalysisPlan 0.1 is projected without dependency reinterpretation.",
+      "sourceId": null
+    }
+  ],
+  "workspaceId": "workspace_53e9055c59275a3d994a75c735b66cdc"
+}

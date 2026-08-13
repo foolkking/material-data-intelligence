@@ -1,0 +1,16 @@
+{
+  "demoId": 3,
+  "entryModes": [
+    "parse",
+    "parse"
+  ],
+  "fixtureIds": [
+    "P13-DEMO-03-FIX-01",
+    "P13-DEMO-03-FIX-02"
+  ],
+  "fixturePaths": [
+    "tests/fixtures/structures/simple_cubic.cif",
+    "tests/fixtures/experimental_xrd/phase13_demo3_xrd.json"
+  ],
+  "fresh": true
+}

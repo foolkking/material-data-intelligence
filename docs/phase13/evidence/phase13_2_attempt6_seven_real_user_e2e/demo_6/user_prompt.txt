@@ -1,0 +1,1 @@
+Inspect this supplied volumetric grid and show its supported slice and volume views.

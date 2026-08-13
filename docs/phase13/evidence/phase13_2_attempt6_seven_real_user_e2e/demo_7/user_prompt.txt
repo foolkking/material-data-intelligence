@@ -1,0 +1,1 @@
+Inspect the supplied electronic band structure and DOS, including gap, spin, projection and compatibility limitations.

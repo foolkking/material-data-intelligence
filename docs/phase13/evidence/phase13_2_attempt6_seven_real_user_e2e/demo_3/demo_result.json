@@ -1,0 +1,17 @@
+{
+  "artifactCount": 14,
+  "demoId": 3,
+  "family": "Structure + coordination + local environment + polyhedra + experimental XRD",
+  "fresh": true,
+  "oldEvidenceReusedAsPass": 0,
+  "panelCount": 7,
+  "recipeId": "recipe_627e593293d3795112fbdd14f3f61210",
+  "reportId": "report_627e593293d3795112fbdd14f3f61210",
+  "selectedTools": [
+    "structure.coordination_crystalnn",
+    "structure.experimental_xrd_comparison",
+    "structure.local_environment_polyhedra",
+    "structure.xrd"
+  ],
+  "status": "PASS"
+}

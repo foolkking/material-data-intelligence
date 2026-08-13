@@ -4752,3 +4752,11 @@ Job-scoped Artifact Gallery and typed renderer contracts. Projection grouping is
 authorized only by exact contracts and Job/project lineage; no filename, MIME,
 array-position, latest, or fuzzy rebinding is allowed. Existing persisted
 Workspaces are not backfilled or reprojected on GET.
+
+## Phase 13 Attempt 6 Validation Authority
+
+Attempt 6 is validation-only: fresh E2E state and evidence may be added, but
+production and scientific behavior may not change. A canonical PASS requires a
+real UI Finalize and paired inert Recipe for each Demo, while screenshot,
+browser, provider, Report inclusion, and Recipe existence remain explicitly
+non-scientific authorities. Phase 13-3 remains a reviewer-gated handoff.

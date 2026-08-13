@@ -1,0 +1,13 @@
+{
+  "demoId": 2,
+  "entryModes": [
+    "parse"
+  ],
+  "fixtureIds": [
+    "P13-DEMO-02-FIX-01"
+  ],
+  "fixturePaths": [
+    "tests/fixtures/tables/ml_results.csv"
+  ],
+  "fresh": true
+}

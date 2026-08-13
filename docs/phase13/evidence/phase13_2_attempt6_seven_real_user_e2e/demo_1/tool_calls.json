@@ -1,0 +1,28 @@
+[
+  {
+    "attempt": 1,
+    "error": null,
+    "id": "call_job_cd4a1813a5124260ba1200f9_step_001",
+    "idempotencyKey": "job_cd4a1813a5124260ba1200f9:step_001",
+    "jobId": "job_cd4a1813a5124260ba1200f9",
+    "params": {
+      "tableObjectId": "obj_dataframe_2b3a36cebe19"
+    },
+    "status": "completed",
+    "stepId": "step_001",
+    "toolId": "dataset.composition_space"
+  },
+  {
+    "attempt": 1,
+    "error": null,
+    "id": "call_job_cd4a1813a5124260ba1200f9_step_002",
+    "idempotencyKey": "job_cd4a1813a5124260ba1200f9:step_002",
+    "jobId": "job_cd4a1813a5124260ba1200f9",
+    "params": {
+      "tableObjectId": "obj_dataframe_2b3a36cebe19"
+    },
+    "status": "completed",
+    "stepId": "step_002",
+    "toolId": "dataset.materials_explorer"
+  }
+]

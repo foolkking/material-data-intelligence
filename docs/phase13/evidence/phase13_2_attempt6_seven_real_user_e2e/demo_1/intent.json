@@ -1,0 +1,86 @@
+{
+  "ambiguities": [],
+  "clarification": {
+    "answers": [],
+    "maxQuestionsPerRound": 3,
+    "maxRounds": 1,
+    "questions": [],
+    "round": 0
+  },
+  "constraints": {
+    "clarificationAllowed": true,
+    "costPreference": null,
+    "descriptiveOnly": false,
+    "excludeResourceIds": [],
+    "excludeScientificIntents": [],
+    "forbidDerivedInterpretation": false,
+    "groupIds": [],
+    "includeResourceIds": [
+      "obj_dataframe_2b3a36cebe19"
+    ],
+    "includeScientificIntents": [],
+    "maxAnalyses": null,
+    "maxToolCalls": null,
+    "modelIds": [],
+    "outputPreferences": [],
+    "targetIds": [],
+    "timePreference": null
+  },
+  "dataScope": {
+    "datasetId": "dataset_ff8e8d27f58444e09c0a068d",
+    "datasetVersion": "2",
+    "groupIds": [],
+    "modelIds": [],
+    "origin": "USER_EXPLICIT",
+    "profileContractVersion": "2.0",
+    "profileId": "profile_dataset_ff8e8d27f58444e09c0a068d_v2",
+    "profileSemanticHash": "29011e9ef9880b8f1e8b89c35099f2d94dfc15da5f61b22069aee609c5fbf1c6",
+    "resourceRefs": [
+      {
+        "kind": "dataframe",
+        "objectHash": "2b3a36cebe19e5a81218b374f7d9daa58ad37a13c6824e97f9e0c22d61606318",
+        "objectId": "obj_dataframe_2b3a36cebe19",
+        "objectType": "DataFrame",
+        "origin": "USER_EXPLICIT"
+      }
+    ],
+    "sampleIds": []
+  },
+  "datasetId": "dataset_ff8e8d27f58444e09c0a068d",
+  "desiredOutputs": [
+    "summary",
+    "warnings",
+    "plot",
+    "table"
+  ],
+  "intentHash": "2b794ef1e46d5912019ad127135ed326bb07259110135ffdab9c4f097586f740",
+  "intentId": "intent_2b794ef1e46d5912019ad127",
+  "language": "en",
+  "missingFacts": [],
+  "normalizedGoal": "Explore this materials dataset, summarize its quality, and map its compositions in composition space.",
+  "optionalCapabilityNeeds": [],
+  "outcome": "READY",
+  "profileId": "profile_dataset_ff8e8d27f58444e09c0a068d_v2",
+  "provenance": {
+    "answerBindings": [],
+    "createdAt": "2026-08-13T08:00:01.135222+00:00",
+    "model": "bounded-rules-v1",
+    "parentIntentId": null,
+    "promptVersion": "phase10l1.intent.v1",
+    "provider": "deterministic_mock"
+  },
+  "rawGoal": "Explore this materials dataset, summarize its quality, and map its compositions in composition space.",
+  "requiredCapabilityNeeds": [
+    "composition_data",
+    "tabular_data"
+  ],
+  "schemaVersion": "1.0",
+  "scientificIntents": [
+    "composition_analysis",
+    "dataset_overview",
+    "composition_space"
+  ],
+  "targetSemantics": [],
+  "unsupportedReasons": [],
+  "warnings": []
+}

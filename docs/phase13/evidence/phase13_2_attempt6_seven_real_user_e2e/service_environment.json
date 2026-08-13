@@ -1,0 +1,6 @@
+{
+  "minio": "PASS",
+  "postgresql": "PASS",
+  "redis": "PASS",
+  "requiredSkips": 0
+}

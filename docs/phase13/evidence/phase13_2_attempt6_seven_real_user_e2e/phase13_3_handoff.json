@@ -1,0 +1,58 @@
+{
+  "attemptHistory": {
+    "attempt1": "FAILED_HISTORICAL",
+    "attempt2": "FAILED_RERUN_HISTORICAL",
+    "attempt3": "FAILED_RERUN_HISTORICAL",
+    "attempt4": "FAILED_RERUN_HISTORICAL",
+    "attempt5": "FAILED_RERUN_HISTORICAL",
+    "attempt6": "CURRENT",
+    "fixForward1": "PASS",
+    "fixForward2": "PASS",
+    "fixForward3": "PASS",
+    "fixForward4": "PASS",
+    "fixForward5": "BLOCKED",
+    "fixForward6": "PASS",
+    "releaseScopeException1": "FAILED"
+  },
+  "authorities": {
+    "analysisIntent": "1.0",
+    "analysisPlan": [
+      "0.1",
+      "0.2"
+    ],
+    "dataProfile": "2.4",
+    "eligibilityResolution": "1.0",
+    "factModelHash": "92d8295c7d78467d8ce021dc8033a58326219372a5d8fa87c93377ed1275953a",
+    "maxLayoutRevisions": 128,
+    "maxPanelsPerWorkspace": 32,
+    "migration": "0007_phase10m1_workspace_domain",
+    "phase12ProductBaselineHash": "29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4",
+    "registry": 62,
+    "scopeBaselineHash": "bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba"
+  },
+  "documentationGaps": [],
+  "executableTaskCreated": false,
+  "p13x2": "8/8",
+  "schemaVersion": "Phase13_3DocumentationReproducibilityHandoff/1.0",
+  "sevenDemoStatuses": {
+    "demo1": "PASS",
+    "demo2": "PASS",
+    "demo3": "PASS",
+    "demo4": "PASS",
+    "demo5": "PASS",
+    "demo6": "PASS",
+    "demo7": "PASS"
+  },
+  "status": "REVIEWER_GATE",
+  "targetedPolishFindings": [],
+  "typedPhononSupport": {
+    "PhononBand": "SUPPORTED_WITH_LIMITS",
+    "PhononDos": "SUPPORTED_WITH_LIMITS",
+    "genericYamlJson": "MAPPING_ONLY"
+  },
+  "workspaceCardinality": {
+    "artifactCountNotPanelCount": true,
+    "artifactGalleryReachability": "PASS",
+    "maxPanels": 32
+  }
+}

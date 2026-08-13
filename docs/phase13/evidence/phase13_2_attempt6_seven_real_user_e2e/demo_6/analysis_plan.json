@@ -1,0 +1,51 @@
+{
+  "assumptions": [
+    "Capability selection used exact persisted Intent/Profile/Registry identities."
+  ],
+  "datasetId": "dataset_606694d108434c29b0ce8d78",
+  "expectedArtifacts": [
+    {
+      "fromStepId": "step_001",
+      "name": "structure_volumetric_data_volumetric_grid_json.json",
+      "type": "volumetric_grid_json"
+    }
+  ],
+  "goal": "Inspect this supplied volumetric grid and show its supported slice and volume views.",
+  "profileId": "profile_dataset_606694d108434c29b0ce8d78_v2",
+  "schemaVersion": "0.1",
+  "steps": [
+    {
+      "constraints": null,
+      "inputRefs": [
+        {
+          "columnName": null,
+          "fieldRole": "volumetric",
+          "objectType": "VolumetricData",
+          "ref": "obj_volumetric_5ef6442c2627",
+          "refType": "normalized_object"
+        }
+      ],
+      "output": {
+        "artifactTypes": [
+          "volumetric_grid_json",
+          "volumetric_payload_json",
+          "volumetric_field_json",
+          "volumetric_dataset_json",
+          "volumetric_manifest_json",
+          "volumetric_binary",
+          "volumetric_structure_overlay_json",
+          "summary_md",
+          "recipe_json"
+        ],
+        "displayTarget": "volumetric"
+      },
+      "params": {},
+      "purpose": "Satisfy the validated structured AnalysisIntent with an eligible registered capability.",
+      "reason": "Selected from exact Intent, DataProfile, Registry, and parameter-binding facts.",
+      "stepId": "step_001",
+      "toolId": "structure.volumetric_data"
+    }
+  ],
+  "toolRegistryVersion": "0.1.0",
+  "warnings": []
+}

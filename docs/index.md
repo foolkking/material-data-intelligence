@@ -811,3 +811,6 @@ and
 | [`phase13/phase13_1_workspace_projection_fix_forward_6.md`](phase13/phase13_1_workspace_projection_fix_forward_6.md) | RSE1 Workspace projection, Demo 4/5 closure, typed phonon support sealing |
 | [`phase13/phase13_workspace_panel_projection_cardinality_contract.md`](phase13/phase13_workspace_panel_projection_cardinality_contract.md) | Fixed-cap logical panel and exact Artifact Gallery reachability contract |
 | [`phase13/evidence/phase13_1_workspace_projection_fix_forward_6/`](phase13/evidence/phase13_1_workspace_projection_fix_forward_6/) | FF6 census, fresh service smokes, hashes, security, and Attempt 6 handoff |
+| [`phase13/phase13_2_attempt6_seven_real_user_e2e.md`](phase13/phase13_2_attempt6_seven_real_user_e2e.md) | Attempt 6 seven fresh canonical real-user product paths and validation status |
+| [`phase13/evidence/phase13_2_attempt6_seven_real_user_e2e/`](phase13/evidence/phase13_2_attempt6_seven_real_user_e2e/) | Attempt 6 per-Demo lineage, browser, Report/Recipe, negative, hash, security, and manifest evidence |
+| [`phase13/phase13_3_documentation_reproducibility_handoff.md`](phase13/phase13_3_documentation_reproducibility_handoff.md) | Reviewer-gated Phase 13-3 handoff; no executable task created |

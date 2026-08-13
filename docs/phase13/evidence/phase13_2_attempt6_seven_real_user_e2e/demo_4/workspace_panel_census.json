@@ -1,0 +1,17 @@
+{
+  "artifactCount": 12,
+  "artifactCountEqualsPanelCount": false,
+  "logicalResultSurfaceCount": 6,
+  "maxPanels": 32,
+  "panelIds": [
+    "panel_6ba8cb3f59785954216a2ae9a94bc02f",
+    "panel_78c70f071a40d0570636a407c40ce639",
+    "panel_d50149db47700921d7cf7a9b62ca54e0",
+    "panel_d59562e1728670c7b0295a345c308022",
+    "panel_db07aeb4a1aa4a52867b0aea60172cc8",
+    "panel_c2d15517bf69fbba184dd662db87c77b",
+    "panel_99bdaaa09eb9c3a3c64164f8571ffbbf"
+  ],
+  "panelTruncation": 0,
+  "workspacePanelCount": 7
+}

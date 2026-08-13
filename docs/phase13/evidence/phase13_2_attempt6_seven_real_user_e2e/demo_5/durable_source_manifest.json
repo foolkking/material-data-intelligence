@@ -1,0 +1,27 @@
+{
+  "exports": {
+    "obj_phonon_band_4aec088125c6": {
+      "contentHash": "c9e3ec55aa21ede77e770d8e13647da759944ab2ffadf376b79172a9abde3ca4",
+      "storageKey": "projects/project_9a14c76a675f4078855ea2d9/datasets/dataset_417a41a32c0a4fba8357e169/normalized/obj_phonon_band_4aec088125c6/phonon.json"
+    },
+    "obj_phonon_dos_3041f69c4b8e": {
+      "contentHash": "a651434197b5e1c43204aff0a2eef96dbfc577aeadbe3f747488e8f5a7765037",
+      "storageKey": "projects/project_9a14c76a675f4078855ea2d9/datasets/dataset_417a41a32c0a4fba8357e169/normalized/obj_phonon_dos_3041f69c4b8e/phonon.json"
+    },
+    "obj_structure_e49de8a0940d": {
+      "contentHash": "a68f93c39571a106efb5fe1b5e8b74b40a5738c3272cf7d498b2f4a2174531e6",
+      "storageKey": "projects/project_9a14c76a675f4078855ea2d9/datasets/dataset_417a41a32c0a4fba8357e169/normalized/obj_structure_e49de8a0940d/structure.json"
+    }
+  },
+  "identityExact": true,
+  "manualNormalizedExportPreload": 0,
+  "minioPayloadAuthority": true,
+  "postgresqlMetadata": true,
+  "resourceIds": [
+    "obj_phonon_band_4aec088125c6",
+    "obj_phonon_dos_3041f69c4b8e",
+    "obj_structure_e49de8a0940d"
+  ],
+  "runtimeReparseFallback": 0,
+  "uploadProcessMemoryDependency": 0
+}

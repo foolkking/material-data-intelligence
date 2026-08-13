@@ -1,0 +1,101 @@
+{
+  "ambiguities": [],
+  "clarification": {
+    "answers": [],
+    "maxQuestionsPerRound": 3,
+    "maxRounds": 1,
+    "questions": [],
+    "round": 0
+  },
+  "constraints": {
+    "clarificationAllowed": true,
+    "costPreference": null,
+    "descriptiveOnly": false,
+    "excludeResourceIds": [],
+    "excludeScientificIntents": [],
+    "forbidDerivedInterpretation": false,
+    "groupIds": [],
+    "includeResourceIds": [
+      "obj_phonon_band_4aec088125c6",
+      "obj_phonon_dos_3041f69c4b8e",
+      "obj_structure_e49de8a0940d"
+    ],
+    "includeScientificIntents": [],
+    "maxAnalyses": null,
+    "maxToolCalls": null,
+    "modelIds": [],
+    "outputPreferences": [],
+    "targetIds": [],
+    "timePreference": null
+  },
+  "dataScope": {
+    "datasetId": "dataset_417a41a32c0a4fba8357e169",
+    "datasetVersion": "2",
+    "groupIds": [],
+    "modelIds": [],
+    "origin": "USER_EXPLICIT",
+    "profileContractVersion": "2.1",
+    "profileId": "profile_dataset_417a41a32c0a4fba8357e169_v2",
+    "profileSemanticHash": "903e051ecfff7efd71feccc8bf83d7b63b1521a015a6bab685f30995e2bce2f0",
+    "resourceRefs": [
+      {
+        "kind": "phononband",
+        "objectHash": "4aec088125c63088d6ae937a05519fedffa5f6399c3a03a74da7bbcdb9bd0e7c",
+        "objectId": "obj_phonon_band_4aec088125c6",
+        "objectType": "PhononBand",
+        "origin": "USER_EXPLICIT"
+      },
+      {
+        "kind": "phonondos",
+        "objectHash": "3041f69c4b8e933371001beed1371105e6f7d1a17ff881e223b77521f63cab36",
+        "objectId": "obj_phonon_dos_3041f69c4b8e",
+        "objectType": "PhononDos",
+        "origin": "USER_EXPLICIT"
+      },
+      {
+        "kind": "structure",
+        "objectHash": "e49de8a0940d3242d798b282b4898078d00bbd5b4f79cbfbf4a01328aaa7b9de",
+        "objectId": "obj_structure_e49de8a0940d",
+        "objectType": "Structure",
+        "origin": "USER_EXPLICIT"
+      }
+    ],
+    "sampleIds": []
+  },
+  "datasetId": "dataset_417a41a32c0a4fba8357e169",
+  "desiredOutputs": [
+    "summary",
+    "warnings",
+    "plot",
+    "table"
+  ],
+  "intentHash": "3f359b7f7c0f76b51bddf4528738618c23a762f86419e9c643b506ba47bd21af",
+  "intentId": "intent_3f359b7f7c0f76b51bddf452",
+  "language": "en",
+  "missingFacts": [],
+  "normalizedGoal": "Show the supplied phonon bands and density of states together with the matching Brillouin-zone context.",
+  "optionalCapabilityNeeds": [],
+  "outcome": "READY",
+  "profileId": "profile_dataset_417a41a32c0a4fba8357e169_v2",
+  "provenance": {
+    "answerBindings": [],
+    "createdAt": "2026-08-13T08:06:48.064077+00:00",
+    "model": "bounded-rules-v1",
+    "parentIntentId": null,
+    "promptVersion": "phase10l1.intent.v1",
+    "provider": "deterministic_mock"
+  },
+  "rawGoal": "Show the supplied phonon bands and density of states together with the matching Brillouin-zone context.",
+  "requiredCapabilityNeeds": [
+    "phonon_resource",
+    "reciprocal_space_resource"
+  ],
+  "schemaVersion": "1.0",
+  "scientificIntents": [
+    "phonon_analysis",
+    "reciprocal_space_analysis"
+  ],
+  "targetSemantics": [],
+  "unsupportedReasons": [],
+  "warnings": []
+}
