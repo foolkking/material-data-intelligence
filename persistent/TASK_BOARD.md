@@ -2724,15 +2724,13 @@ is pushed and the completed queue block is archived. `TASK_BLOCK_COUNT = 0`.
 Phase 13-4 remains reviewer-gated with no executable task, Initial Release is
 not complete, and Phase 14 does not exist.
 
-# Current Task: Phase 13-4 Targeted Final Product Polish
+# Phase 13-4 Targeted Final Product Polish - Completed Pending Archive
 
-Status: active under reviewer authorization. The Phase 13-3 handoff contains
-two presentation candidates. Current-facing mojibake is already resolved; the
-sole selected item connects the existing inert Help control to the current
-Initial Release documentation. No new navigation, capability, API, backend,
-scientific, dependency, or Phase 13-5 task is authorized.
-
-Current implementation state: `P13-POLISH-001 = ALREADY_RESOLVED` and
-`P13-POLISH-002 = IMPLEMENTED_PENDING_FULL_VALIDATION`. Focused frontend and
-Chromium desktop/mobile evidence pass. Full regression, exact-SHA CI, completion,
-and queue archive remain open. Phase 13-5 remains unqueued.
+The Phase 13-3 handoff contains two presentation candidates.
+`P13-POLISH-001 = ALREADY_RESOLVED`; `P13-POLISH-002 = IMPLEMENTED` connects the
+existing Help control to the current Initial Release documentation without adding
+a navigation family. Implementation `40403cfa19451cc9a473c41bddecfe053e1a5fea`
+passed exact-SHA CI `31715231470`; completion is recorded. Full backend,
+frontend, Phase13 focused, service-backed, browser, typecheck, build, lock/diff,
+Linux, and Windows gates pass. The queue archive is the only remaining lifecycle
+action. Phase 13-5 remains reviewer-gated and unqueued.

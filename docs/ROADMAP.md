@@ -301,5 +301,9 @@ CI `31682863560` pass. Completion and queue archive are recorded.
 
 The Phase 13-2 queue is archived after completion. Phase 13-3 documentation and
 reproducibility is complete after implementation/evidence SHA `c3aabd055e067c5a52a0c0238c625dbc035a96f0`
-passed exact-SHA CI `31703805747`. Phase 13-4 remains
-`REVIEWER_GATE / AWAITING REVIEWER PROMPT` and has no executable task.
+passed exact-SHA CI `31703805747`. Phase 13-4 targeted final product polish is
+complete pending its separate queue archive: implementation/evidence SHA
+`40403cfa19451cc9a473c41bddecfe053e1a5fea` passed exact-SHA CI `31715231470`.
+It changes only the existing Help affordance and preserves all release contracts.
+Phase 13-5 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT` with no executable
+task.

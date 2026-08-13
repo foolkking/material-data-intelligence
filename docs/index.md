@@ -14,6 +14,7 @@
 - [Seven-demo deterministic reproducibility](phase13/reproducibility/README.md)
 - [Machine-readable reproducibility manifest](phase13/reproducibility/manifest.json)
 - [Phase 13-3 completion](phase13/phase13_3_completion.md)
+- [Phase 13-4 completion](phase13/phase13_4_completion.md)
 
 These documents resolve current release authority. Phase documents and evidence
 below preserve design and forensic history and do not override current Fact,

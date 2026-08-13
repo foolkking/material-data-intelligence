@@ -2378,3 +2378,14 @@ canonical nonchange `git show` checks. Product unit tests, frontend/browser,
 Linux/Windows replay, and PostgreSQL/Redis/MinIO jobs passed. The correction
 fetches that exact historical object before evidence verification; product
 behavior is unchanged.
+
+Correction implementation `40403cfa19451cc9a473c41bddecfe053e1a5fea` passed
+exact-SHA CI `31715231470`. Phase 13-4 closes only P13-POLISH-002 by turning the
+existing top Help control into an accessible link to the current Initial Release
+documentation. P13-POLISH-001 remains already resolved. Full backend (`1450
+passed`), frontend (`460 passed`), Phase13 focused (`133 passed`), service-backed
+CI, retained browser matrix, typecheck, build, lock/diff, Linux and Windows
+replay pass. Fact, Scope, Phase12, the reproducibility manifest, canonical
+prompts, fixtures, user entries, support matrix, and scientific authority remain
+unchanged. Completion is recorded; only queue archive remains. Phase 13-5 stays
+reviewer-gated and unqueued.

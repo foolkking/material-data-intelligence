@@ -687,10 +687,11 @@ the Phase 13-3 queue block is archived; the task queue is empty.
 
 ## Phase 13-4 Targeted Final Product Polish
 
-Phase 13-4 is active under explicit reviewer authority. Its handoff census found
-two bounded presentation candidates: current-facing mojibake is already resolved,
-and the existing inert Help control is selected for a minimal link to the current
-Initial Release documentation. No backend, API, scientific, Planner, Runtime,
-Workspace, Report, Recipe, canonical demo, input-support, or reproducibility
-semantic authority changes are allowed. Phase 13-5 remains reviewer-gated and
-unqueued.
+Phase 13-4 is complete pending only the separate queue archive lifecycle.
+Its handoff census found two bounded presentation candidates: P13-POLISH-001
+is already resolved by the current UTF-8 product surface, and P13-POLISH-002
+connects the existing Help control to the current Initial Release documentation.
+Implementation `40403cfa19451cc9a473c41bddecfe053e1a5fea` passed exact-SHA CI
+`31715231470`. No backend, API, scientific, Planner, Runtime, Workspace, Report,
+Recipe, canonical demo, input-support, Fact, Scope, or reproducibility semantic
+authority changed. Phase 13-5 remains reviewer-gated and unqueued.

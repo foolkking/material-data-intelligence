@@ -11842,6 +11842,78 @@ INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
 
+# Phase 13-4 Targeted Final Product Polish Result
+
+Status: `PASS / TARGETED_FINAL_PRODUCT_POLISH_COMPLETE`
+
+Completion time: `2026-08-13 23:42:03 +08:00`
+
+Implementation/evidence SHA:
+`40403cfa19451cc9a473c41bddecfe053e1a5fea`
+
+Exact-SHA CI: `31715231470` `PASS`
+
+The Phase13-3 handoff produced two presentation candidates. `P13-POLISH-001`
+is `ALREADY_RESOLVED` because the current-facing UTF-8 scan found zero mojibake
+hits. `P13-POLISH-002` is the sole implemented item: the existing Planner
+top-bar Help control is now a localized, keyboard-accessible link to current
+Initial Release documentation. It changes no product execution, API, backend,
+scientific, Planner, Runtime, Workspace, Report, Recipe, capability, input
+support, canonical prompt, fixture, Fact, Scope, or reproducibility authority.
+
+Candidate `34f7cb7cea3db351edff0d3b39ff7fe39cd7e192` failed CI
+`31713598663` only because GitHub shallow checkout lacked sealed entry object
+`d415d05...` for evidence nonchange checks. Candidate
+`40403cfa19451cc9a473c41bddecfe053e1a5fea` corrects that CI-only portability
+issue and passed all exact-SHA jobs.
+
+```text
+PHASE_13_4 = PASS / TARGETED_FINAL_PRODUCT_POLISH_COMPLETE
+HANDOFF_POLISH_ITEMS_DISCOVERED = 2
+ACTIONABLE_POLISH_ITEMS = 1
+POLISH_ITEMS_IMPLEMENTED = 1
+POLISH_ITEMS_SKIPPED_WITH_REASON = 1
+UNAUTHORIZED_POLISH_ITEMS = 0
+
+CURRENT_FACT_MODEL_HASH = 92d8295c7d78467d8ce021dc8033a58326219372a5d8fa87c93377ed1275953a
+FACT_MODEL_HASH_IMPACT_BY_PHASE13_4 = NO
+CURRENT_SCOPE_BASELINE_HASH = bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba
+SCOPE_BASELINE_HASH_IMPACT_BY_PHASE13_4 = NO
+PHASE12_PRODUCT_BASELINE_HASH = 29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4
+REPRO_MANIFEST_HASH = 931d6214cb11dbcad628f5b33ea97e043bbfeb54fbccc2f8c87cffebad9537e2
+
+BACKEND = 1450 passed / 1 skipped / 51 integration deselected
+FRONTEND = 460 passed
+PHASE13_FOCUSED = 133 passed
+POSTGRESQL_REDIS_MINIO = PASS / 0 skipped
+CHROMIUM = PASS
+FIREFOX = PASS
+WEBKIT = PASS
+MOBILE_390X844 = PASS
+LINUX_REPLAY = PASS
+WINDOWS_REPLAY = PASS
+TYPECHECK = PASS
+BUILD = PASS
+UV_LOCK_CHECK = PASS
+GIT_DIFF_CHECK = PASS
+SECURITY = PASS
+SECRET_SCAN = PASS
+MANIFEST_SELF_CHECK = PASS
+npm audit = UNAVAILABLE_CONFIGURED_MIRROR_NOT_IMPLEMENTED
+
+BACKEND_PRODUCTION_CHANGES = 0
+SCIENTIFIC_BEHAVIOR_CHANGES = 0
+NEW_LLM_CALL_SITES = 0
+REAL_LLM_CALLS = 0
+
+PHASE13_4_IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI
+PHASE13_4_COMPLETION_RECORDED
+PHASE_13_5 = REVIEWER_GATE / AWAITING_REVIEWER_PROMPT
+PHASE13_5_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+```
+
 ## Fix-Forward #6 Queue Archive
 
 The completed Fix-Forward #6 block, resolved Fix-Forward #5 blocked block, and
