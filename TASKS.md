@@ -1,5 +1,5 @@
 ---TASK---
-状态：处理中
+状态：已完成
 
 # Phase 13-1 Integration Fix-Forward #6
 ## Workspace Panel Projection Cardinality Closure + Demo4/Demo5 Final Closure
@@ -10,6 +10,23 @@ Artifact Gallery reachability, selection, lineage, Report-source access, and
 historical Workspace immutability. Complete fresh Demo 4 and typed Demo 5
 product-closure smokes, then seal only the previously authorized bounded typed
 PhononBand/PhononDos imports. Attempt 6 is not authorized and must not be queued.
+
+完成时间：2026-08-13 12:58:00 +08:00
+
+修改文件：Workspace projection/selection runtime、focused tests、browser
+runner、Fix-Forward #6 evidence/docs、Fact/Scope authorities、persistent
+status、`TASKS.md` 和 `results.md`。
+
+修改摘要：将 Artifact-per-panel projection 修正为 exact Job-bound logical
+Results/Gallery surface；保持 panel cap 32、全部 Artifact exact reachable、
+历史 Workspace 不重投影；完成 fresh Demo4/Demo5 Chromium Report/Recipe
+closure，并 seal 已授权 typed phonon imports。
+
+测试结果：backend 1432 passed；frontend 460 passed；Phase13 focused 113
+passed；service-backed 7 passed/0 required skips；Chromium/Firefox/WebKit/
+390x844 4/4 PASS；typecheck/build/lock/diff/Linux/Windows/security/secret/
+manifest PASS。Implementation `0867a69a587bf8e0ddb5aaeec7a177808a69e6f1`
+通过 exact-SHA CI `31667748439`。
 
 ---END---
 

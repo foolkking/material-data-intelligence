@@ -11717,3 +11717,127 @@ PHASE13_3_EXECUTABLE_TASK_CREATED = NO
 INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
+
+# Phase 13-1 Integration Fix-Forward #6 Result
+
+Status: PASS
+
+Time: 2026-08-13 12:58:00 +08:00
+
+Implementation `0867a69a587bf8e0ddb5aaeec7a177808a69e6f1` passed exact-SHA
+CI `31667748439`. This candidate includes the bounded R5-001 correction, the
+authorized typed phonon import candidate, generic logical-surface Workspace
+projection, evidence, tests, and generated Fact/Scope authorities.
+
+`P13-RSE1-001` is closed as a Workspace panel projection cardinality defect.
+The historical Demo 5 projection had six structural plus 27 Artifact-derived
+candidate panels. The corrected projection has six structural panels and one
+exact Job-bound Results/Artifact Gallery surface. All 27 Artifacts remain
+checksum-, ToolCall-, and lineage-bound and exactly reachable. The cap remains
+32; exact-32 passes and 33 distinct non-groupable surfaces still return
+`PANEL_CAP_EXCEEDED`, with no truncation or historical reprojection.
+
+Fresh Demo 4 completed through three ToolCalls, 12 persisted Artifacts,
+Workspace `workspace_7b853905207a11183b981c3cea68fc05`, Chromium UI
+Finalize, Report `report_68f398a22f6ece8286d3c65d57ef48fa`, and Recipe
+`recipe_68f398a22f6ece8286d3c65d57ef48fa`. Exact execution, Workspace,
+and Report source snapshots agree; stale, hash, and cross-project negatives
+remain rejected. `P13-R5-001` is closed.
+
+Fresh Demo 5 completed from explicit typed PhononBand and PhononDos import
+through DataProfile 2.4, Intent 1.0, Eligibility 1.0, Planner, PlanValidator,
+PostgreSQL Job `job_66e90ccd3a9648ceb39d576a`, Redis, fresh Worker, four
+registered ToolCalls, 27 Artifacts, Workspace
+`workspace_bea76bb13adc0987324ad23cb1fa6413`, seven panels, exact Gallery
+reachability, Chromium UI Finalize, Report
+`report_044097cefce37d3471a7846b63c7604b`, and Recipe
+`recipe_044097cefce37d3471a7846b63c7604b`. Unknown input refs and Recipe
+execution growth are zero. `P13-R5-002` is closed.
+
+The failed Release Scope Exception #1 remains immutable historical evidence.
+Its authorized scope is sealed by Fix-Forward #6: typed PhononBand/PhononDos
+imports are `SUPPORTED_WITH_LIMITS`, while generic phonon YAML/JSON remains
+`MAPPING_ONLY`; no other support or scientific capability is promoted.
+
+Validation: backend `1432 passed, 50 skipped`; frontend `460 passed` in 71
+files; Phase 13 focused/governance `113 passed`; service suite `7 passed` with
+zero required skips; Chromium, Firefox, WebKit, and 390x844 checks `4/4 PASS`;
+typecheck, build, lock, diff, Linux, Windows, security, secret scan, and manifest
+PASS. npm audit is `UNAVAILABLE_CONFIGURED_MIRROR_NOT_IMPLEMENTED`.
+
+```text
+PHASE_13_1_INTEGRATION_FIX_FORWARD_6 = PASS
+P13_RSE1_001 = CLOSED
+P13_RSE1_001_HISTORICAL_CLASS = CANONICAL_PHONON_JOB_EXCEEDS_WORKSPACE_PANEL_CAP
+P13_RSE1_001_FINAL_CLASS = WORKSPACE_PANEL_PROJECTION_CARDINALITY_DEFECT
+MAX_PANELS_PER_WORKSPACE = 32
+PANEL_CAP_CHANGE = NO
+ARTIFACT_COUNT_TO_PANEL_COUNT_ONE_TO_ONE = NO
+PANEL_TRUNCATION = 0
+DROPPED_ARTIFACTS = 0
+UNREACHABLE_ARTIFACTS = 0
+PANEL_CAP_32_CASE = PASS
+PANEL_CAP_33_CASE = PANEL_CAP_EXCEEDED
+P13_R5_001 = CLOSED
+FRESH_DEMO4_PRODUCT_CLOSURE_SMOKE = PASS
+FRESH_TRAJECTORY_WORKSPACE_SOURCE_CURRENTNESS = PASS
+TRAJECTORY_STALE_SOURCE_REJECTION = PASS
+P13_R5_002 = CLOSED
+TYPED_PHONON_BAND_USER_IMPORT = SUPPORTED_WITH_LIMITS / PASS
+TYPED_PHONON_DOS_USER_IMPORT = SUPPORTED_WITH_LIMITS / PASS
+GENERIC_PHONON_YAML_JSON = MAPPING_ONLY
+GENERIC_PHONON_JSON_AUTO_PROMOTION = 0
+FRESH_DEMO5_PRODUCT_CLOSURE_SMOKE = PASS
+FRESH_DEMO5_WORKSPACE_PROJECTION = PASS
+FRESH_DEMO5_PANEL_CAP_EXCEEDED = 0
+FRESH_DEMO5_ARTIFACT_REACHABILITY = COMPLETE
+RELEASE_SCOPE_EXCEPTION_1_AUTHORIZED_SCOPE = SEALED_BY_FIX_FORWARD_6
+FIX_FORWARD_5_BLOCK = RESOLVED_BY_FIX_FORWARD_6
+CANONICAL_DEMO_SEMANTIC_COVERAGE = 7/7
+CANONICAL_USER_INGESTION_FIDELITY = 7/7
+USER_ENTRY_CONTRACT_MISMATCHES = 0
+INTERNAL_ONLY_ENTRY_PATHS_USED_AS_USER_PASS = 0
+LEVEL_C = 7/7 PASS
+LEVEL_C2 = 7/7 PASS
+D0_REAL_UPLOAD_TO_FRESH_WORKER = PASS
+DEMO1_PRODUCT_CLOSURE_REGRESSION = PASS
+RELEASE_CRITICAL_INTEGRATION_GAPS = 0
+SCIENTIFIC_DEFECTS = 0
+SECURITY_DEFECTS = 0
+REGISTRY = 62
+DATAPROFILE = 2.4
+ANALYSIS_INTENT = 1.0
+ELIGIBILITY_RESOLUTION = 1.0
+ANALYSIS_PLAN = 0.1 / 0.2
+MIGRATION = 0007_phase10m1_workspace_domain
+INPUT_SUPPORT_MATRIX_CHANGED = YES
+AUTHORIZED_TYPED_IMPORT_SUPPORT_ADDITIONS = 2
+OTHER_INPUT_SUPPORT_PROMOTIONS = 0
+SCIENTIFIC_CAPABILITY_PROMOTIONS = 0
+OLD_FACT_MODEL_HASH = e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06
+FACT_MODEL_HASH_IMPACT = YES
+CURRENT_FACT_MODEL_HASH = 92d8295c7d78467d8ce021dc8033a58326219372a5d8fa87c93377ed1275953a
+OLD_SCOPE_BASELINE_HASH = f188b3e15aa94111787297ffde07b37f90cfdd1fe4e910e39f941e956b455455
+SCOPE_BASELINE_HASH_IMPACT = YES
+CURRENT_SCOPE_BASELINE_HASH = bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba
+PHASE12_PRODUCT_BASELINE_HASH = 29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4
+BASELINE_DETERMINISM = PASS
+NEW_SCIENTIFIC_TOOLS = 0
+NEW_SCIENTIFIC_ALGORITHMS = 0
+NEW_SCIENTIFIC_ADAPTERS = 0
+NEW_ARTIFACT_FAMILIES = 0
+NEW_DATABASE_MIGRATIONS = 0
+NEW_DEPENDENCIES = 0
+NEW_LLM_CALL_SITES = 0
+REAL_LLM_CALLS = 0
+FIX_FORWARD_6_IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI
+FIX_FORWARD_6_COMPLETION_RECORDED
+FIX_FORWARD_5_BLOCK_RESOLVED_BY_FIX_FORWARD_6
+RELEASE_SCOPE_EXCEPTION_1_FAILURE_RESOLVED_BY_FIX_FORWARD_6
+PHASE13_2_ATTEMPT_6 = REVIEWER_GATE / NOT_EXECUTED / NOT_QUEUED
+PHASE13_2_ATTEMPT_6_DEMOS_EXECUTED = 0
+P13X2_ACCEPTANCE = 0/8
+PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+```

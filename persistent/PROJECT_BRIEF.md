@@ -648,3 +648,7 @@ closure smokes pass. The authorized typed PhononBand/PhononDos input rows are no
 sealed while generic phonon YAML/JSON remains `MAPPING_ONLY`. Current Fact/Scope
 authorities are generated under the FF6 evidence root; Attempt 6 remains reviewer-gated,
 not executed, and not queued.
+
+Fix-Forward #6 implementation `0867a69a587bf8e0ddb5aaeec7a177808a69e6f1`
+is verified by exact-SHA CI `31667748439`; completion is recorded. The queue
+archive retains the five failed Phase 13-2 attempts and creates no Attempt 6 task.

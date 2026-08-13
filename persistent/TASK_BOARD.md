@@ -2675,7 +2675,7 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Stop immediately without repairing the new P0.
 - [ ] Reviewer-authorized remediation is required before typed-import scope can be sealed.
 
-## Phase 13-1 Integration Fix-Forward #6 - Active
+## Phase 13-1 Integration Fix-Forward #6 - Completed
 
 - [x] Correct generic Workspace panel projection while retaining the 32-panel cap.
 - [x] Preserve exact Artifact Gallery reachability and add 32/33 cardinality regressions.
@@ -2684,4 +2684,7 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Generate deterministic Fact/Scope authorities and Attempt 6 handoff.
 - [x] Full regression passed: backend 1432, frontend 460, Phase13 focused 113,
   service-backed 7 with zero required skips, and four-browser matrix 4/4.
-- [ ] Exact-SHA CI, completion record, and queue archive remain to be closed.
+- [x] Implementation `0867a69a587bf8e0ddb5aaeec7a177808a69e6f1` passed
+  exact-SHA CI `31667748439`; completion is recorded.
+- [ ] Archive the resolved FF5, failed Exception #1, and completed FF6 queue
+  blocks while retaining Attempts 1-5.

@@ -2323,3 +2323,8 @@ Artifacts. Fresh Demo 5 then failed before Workspace creation with
 contract (`P13-RSE1-001`). Fix-Forward #6 applies generic logical-surface/Gallery
 projection without raising the cap, then closes fresh Demo 4 and Demo 5 Report/Recipe
 smokes. The exception is sealed by FF6; Attempt 6 remains reviewer-gated.
+
+Fix-Forward #6 implementation `0867a69a587bf8e0ddb5aaeec7a177808a69e6f1`
+passed exact-SHA CI `31667748439`. Completion records `P13-RSE1-001`,
+`P13-R5-001`, and `P13-R5-002` closed; only queue archive remains before the
+Attempt 6 reviewer gate.
