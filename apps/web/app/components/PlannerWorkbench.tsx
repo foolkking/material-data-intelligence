@@ -74,6 +74,8 @@ import {
 type MainWorkspaceTab = "agent_process" | "conversation_plan" | "results_export";
 type ProviderMode = "mock" | "deepseek";
 type ChunkKind = "user_request" | "plan_preview" | "validation_result" | "run_status" | "result_reference";
+const INITIAL_RELEASE_DOCUMENTATION_URL =
+  "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md";
 
 type WorkspaceSnapshot = {
   job?: PlannerJobDetail;
@@ -881,9 +883,15 @@ function GlobalContextBar(props: {
         <button type="button" className="icon-button" aria-label={t("userSettings")}>
           ⚙
         </button>
-        <button type="button" className="icon-button" aria-label={t("help")}>
+        <a
+          className="icon-button"
+          href={INITIAL_RELEASE_DOCUMENTATION_URL}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={t("releaseDocumentation")}
+        >
           ?
-        </button>
+        </a>
         <label className="developer-toggle">
           <input type="checkbox" checked={props.developerMode} onChange={(event) => props.setDeveloperMode(event.target.checked)} />
           <span>{props.developerMode ? t("developerMode") : t("userMode")}</span>

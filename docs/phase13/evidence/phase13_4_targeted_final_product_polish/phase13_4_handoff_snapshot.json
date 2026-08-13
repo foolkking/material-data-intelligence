@@ -1,0 +1,12 @@
+{
+  "candidates": [
+    "P13-POLISH-001",
+    "P13-POLISH-002"
+  ],
+  "discovered": 2,
+  "releaseCriticalDefects": 0,
+  "scientificDefects": 0,
+  "securityDefects": 0,
+  "source": "docs/phase13/phase13_4_targeted_final_product_polish_handoff.md",
+  "status": "REVIEWER_GATE"
+}

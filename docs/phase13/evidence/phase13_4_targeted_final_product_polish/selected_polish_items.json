@@ -1,0 +1,60 @@
+{
+  "count": 1,
+  "items": [
+    {
+      "actionability": "IMPLEMENT_NOW",
+      "evidence": {
+        "desktop": {
+          "consoleErrors": [],
+          "focusVisible": true,
+          "horizontalOverflow": false,
+          "href": null,
+          "keyboardActivation": "NO_ACTION",
+          "mode": "before",
+          "pageErrors": [],
+          "rel": null,
+          "screenshot": "docs/phase13/evidence/phase13_4_targeted_final_product_polish/screenshots/before/chromium_1440x900.png",
+          "tagName": "BUTTON",
+          "target": null,
+          "touchTarget": "PASS",
+          "unapprovedExternalRequests": [],
+          "unexpectedFailedRequests": [],
+          "viewport": "1440x900"
+        },
+        "documentationUrl": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+        "mobile": {
+          "consoleErrors": [],
+          "focusVisible": true,
+          "horizontalOverflow": false,
+          "href": null,
+          "keyboardActivation": "NO_ACTION",
+          "mode": "before",
+          "pageErrors": [],
+          "rel": null,
+          "screenshot": "docs/phase13/evidence/phase13_4_targeted_final_product_polish/screenshots/before/chromium_390x844.png",
+          "tagName": "BUTTON",
+          "target": null,
+          "touchTarget": "PASS",
+          "unapprovedExternalRequests": [],
+          "unexpectedFailedRequests": [],
+          "viewport": "390x844"
+        },
+        "polishId": "P13-POLISH-002",
+        "screenshotScientificAuthority": "NONE"
+      },
+      "observedIssue": "Existing Help button had no action or documentation destination",
+      "persona": "canonical scientist user",
+      "polishId": "P13-POLISH-002",
+      "reason": "A semantic link reuses the existing control and current documentation without a new navigation family.",
+      "releaseCritical": false,
+      "route": "/",
+      "scientificImpact": "NONE",
+      "scopeImpact": "NONE",
+      "securityImpact": "NONE",
+      "selectedForImplementation": true,
+      "severity": "P3 / discoverability",
+      "sourceHandoffId": "product-help-release-doc-link",
+      "surface": "Planner global context Help control"
+    }
+  ]
+}

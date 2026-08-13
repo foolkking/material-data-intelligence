@@ -1,0 +1,63 @@
+{
+  "polishId": "P13-POLISH-002",
+  "documentationUrl": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+  "screenshotScientificAuthority": "NONE",
+  "browsers": {
+    "chromium": {
+      "desktop": {
+        "mode": "after",
+        "browser": "chromium",
+        "viewport": "1440x900",
+        "tagName": "A",
+        "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+        "target": "_blank",
+        "rel": "noreferrer",
+        "focusVisible": true,
+        "keyboardActivation": "PASS",
+        "touchTarget": "PASS",
+        "horizontalOverflow": false,
+        "screenshot": "docs/phase13/evidence/phase13_4_targeted_final_product_polish/screenshots/after/chromium_1440x900.png",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "unexpectedFailedRequests": [],
+        "unapprovedExternalRequests": []
+      }
+    }
+  },
+  "desktop": {
+    "mode": "after",
+    "browser": "chromium",
+    "viewport": "1440x900",
+    "tagName": "A",
+    "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+    "target": "_blank",
+    "rel": "noreferrer",
+    "focusVisible": true,
+    "keyboardActivation": "PASS",
+    "touchTarget": "PASS",
+    "horizontalOverflow": false,
+    "screenshot": "docs/phase13/evidence/phase13_4_targeted_final_product_polish/screenshots/after/chromium_1440x900.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "unexpectedFailedRequests": [],
+    "unapprovedExternalRequests": []
+  },
+  "mobile": {
+    "mode": "after",
+    "browser": "chromium",
+    "viewport": "390x844",
+    "tagName": "A",
+    "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+    "target": "_blank",
+    "rel": "noreferrer",
+    "focusVisible": true,
+    "keyboardActivation": "PASS",
+    "touchTarget": "PASS",
+    "horizontalOverflow": false,
+    "screenshot": "docs/phase13/evidence/phase13_4_targeted_final_product_polish/screenshots/after/chromium_390x844.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "unexpectedFailedRequests": [],
+    "unapprovedExternalRequests": []
+  }
+}

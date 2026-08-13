@@ -1,0 +1,8 @@
+{
+  "criticalActionsReachable": true,
+  "desktop1440x900": "PASS",
+  "horizontalOverflow": 0,
+  "mandatoryDisclosuresReachable": true,
+  "mobile390x844": "PASS",
+  "oneActiveWorkspacePanelPreserved": true
+}

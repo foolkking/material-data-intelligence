@@ -834,3 +834,5 @@ and
 | [`phase13/phase13_2_attempt6_completion.md`](phase13/phase13_2_attempt6_completion.md) | Attempt 6 exact-SHA CI-verified completion record |
 | [`phase13/evidence/phase13_2_attempt6_seven_real_user_e2e/`](phase13/evidence/phase13_2_attempt6_seven_real_user_e2e/) | Attempt 6 per-Demo lineage, browser, Report/Recipe, negative, hash, security, and manifest evidence |
 | [`phase13/phase13_3_documentation_reproducibility_handoff.md`](phase13/phase13_3_documentation_reproducibility_handoff.md) | Reviewer-gated Phase 13-3 handoff; no executable task created |
+| [`phase13/phase13_4_targeted_final_product_polish_handoff.md`](phase13/phase13_4_targeted_final_product_polish_handoff.md) | Phase 13-3 evidence-bounded polish candidates and reviewer authority |
+| [`phase13/phase13_5_final_regression_release_acceptance_handoff.md`](phase13/phase13_5_final_regression_release_acceptance_handoff.md) | Reviewer-gated Phase 13-5 final regression handoff; no executable task created |

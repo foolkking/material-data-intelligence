@@ -125,11 +125,12 @@ def test_phase10m7_document_links_and_phase10n_gate() -> None:
     assert "NOT QUEUED" in next_scope
     assert "NOT EXECUTABLE" in next_scope
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    if "Phase 13-1 Reviewer Prompt" in tasks or "Phase 13-2 Reviewer Prompt" in tasks:
+    if "Phase 13-1 Reviewer Prompt" in tasks or "Phase 13-2 Reviewer Prompt" in tasks or "Phase 13-4 Targeted Final Product Polish" in tasks:
         blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
         active = [block for block in blocks if "状态：处理中" in block]
         assert len(blocks) == tasks.count("---TASK---") == tasks.count("---END---")
         assert len(active) <= 1 and (not active or active[0] == blocks[0])
+        assert "Task: Phase 13-5" not in tasks
         return
     if not tasks.strip():
         return

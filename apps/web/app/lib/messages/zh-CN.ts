@@ -39,6 +39,7 @@ export const zhCN = {
   theme: "主题",
   userSettings: "用户设置",
   help: "帮助",
+  releaseDocumentation: "Initial Release 文档",
   providerDialogHint: "点击配置模型 API",
   dataContext: "数据上下文",
   dataContextViewer: "数据上下文查看器",

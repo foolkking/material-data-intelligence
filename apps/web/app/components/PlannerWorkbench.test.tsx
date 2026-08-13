@@ -818,6 +818,12 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(screen.getByTestId("conversation-plan-tab")).not.toBeNull();
     expect(document.querySelector<HTMLAnchorElement>(".skip-link")?.getAttribute("href")).toBe("#planner-primary-content");
     expect(document.getElementById("planner-primary-content")?.getAttribute("tabindex")).toBe("-1");
+    const releaseDocs = screen.getByRole("link", { name: "Initial Release 文档" });
+    expect(releaseDocs.getAttribute("href")).toBe(
+      "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+    );
+    expect(releaseDocs.getAttribute("target")).toBe("_blank");
+    expect(releaseDocs.getAttribute("rel")).toBe("noreferrer");
   });
 
   it("opens dataset dialog from the top bar, loads demo data, and updates the left data viewer", async () => {

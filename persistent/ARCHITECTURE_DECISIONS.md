@@ -4769,3 +4769,14 @@ demo registry, fixture bytes, Attempt 6 evidence, and the sealed Fact/Scope
 hashes. Historical phase/evidence documents retain forensic authority but do
 not override this current release-facing package. The reproducibility manifest
 excludes runtime IDs and timestamps from semantic identity.
+
+# Phase 13-4 Help Documentation Affordance Decision
+
+The existing top-bar Help control may resolve to the current Initial Release
+documentation as a presentation-only affordance. It remains in the existing
+global context bar and does not create a navigation family, product route, API,
+workflow, capability, or execution authority. The destination is the current
+repository documentation, opens as an inert external HTTPS link, uses a localized
+accessible name, and carries `rel=noreferrer`. This decision does not alter any
+Fact, Scope, Phase 12, reproducibility, scientific, Planner, Runtime, Workspace,
+Report, Recipe, or input-support contract.

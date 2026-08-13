@@ -2723,3 +2723,16 @@ CI `31703805747`; completion commit `f4e2bb324ec4c248869cdc022f926d6f40448522`
 is pushed and the completed queue block is archived. `TASK_BLOCK_COUNT = 0`.
 Phase 13-4 remains reviewer-gated with no executable task, Initial Release is
 not complete, and Phase 14 does not exist.
+
+# Current Task: Phase 13-4 Targeted Final Product Polish
+
+Status: active under reviewer authorization. The Phase 13-3 handoff contains
+two presentation candidates. Current-facing mojibake is already resolved; the
+sole selected item connects the existing inert Help control to the current
+Initial Release documentation. No new navigation, capability, API, backend,
+scientific, dependency, or Phase 13-5 task is authorized.
+
+Current implementation state: `P13-POLISH-001 = ALREADY_RESOLVED` and
+`P13-POLISH-002 = IMPLEMENTED_PENDING_FULL_VALIDATION`. Focused frontend and
+Chromium desktop/mobile evidence pass. Full regression, exact-SHA CI, completion,
+and queue archive remain open. Phase 13-5 remains unqueued.

@@ -2357,3 +2357,16 @@ Windows manifest parity are complete. Phase 13-4 remains reviewer-gated.
 
 Completion commit `f4e2bb324ec4c248869cdc022f926d6f40448522` is pushed.
 Phase 13-3 is archived from `TASKS.md`; no Phase 13-4 task was created.
+
+# 2026-08-13 Phase 13-4 Targeted Final Product Polish
+
+The reviewer-authorized census contains two handoff items. `P13-POLISH-001` is
+`ALREADY_RESOLVED` after a deterministic UTF-8 current-facing scan returned no
+repository hits. `P13-POLISH-002` is selected: the existing top-bar Help control
+now links to the current Initial Release documentation with localized accessible
+naming, unchanged placement and sizing, keyboard activation, and `noreferrer`
+external-link isolation. Backend and scientific behavior remain unchanged.
+
+Focused component/i18n tests and Chromium desktop plus `390x844` before/after
+evidence pass. Full regressions, cross-engine CI, exact-SHA CI, completion, and
+queue archive remain pending. Phase 13-5 is handoff-only and not queued.

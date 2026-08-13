@@ -1,0 +1,8 @@
+{
+  "bundleImpact": "one semantic anchor and one localization key per locale",
+  "maxActiveHeavyViewers": 1,
+  "newDependencies": 0,
+  "newExternalAssets": 0,
+  "newInitialArtifactRequests": 0,
+  "status": "PASS"
+}

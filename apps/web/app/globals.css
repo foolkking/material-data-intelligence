@@ -123,7 +123,8 @@ textarea {
 }
 
 button,
-.file-button {
+.file-button,
+a.icon-button {
   min-height: var(--ds-control-regular);
   border: var(--ds-border-width) solid var(--accent);
   border-radius: var(--ds-radius-md);
@@ -133,11 +134,13 @@ button,
   font-weight: 700;
   line-height: 1.25;
   cursor: pointer;
+  text-decoration: none;
   transition: background-color var(--ds-duration-fast) var(--ds-ease-standard), border-color var(--ds-duration-fast) var(--ds-ease-standard), color var(--ds-duration-fast) var(--ds-ease-standard);
 }
 
 button:hover:not(:disabled),
-.file-button:hover:not(:disabled) {
+.file-button:hover:not(:disabled),
+a.icon-button:hover {
   border-color: var(--color-accent-hover);
   background: var(--color-accent-hover);
 }
@@ -1917,8 +1920,11 @@ small {
 }
 
 .icon-button {
+  display: inline-flex;
   width: 36px;
   min-width: 36px;
+  align-items: center;
+  justify-content: center;
   padding: 0;
 }
 

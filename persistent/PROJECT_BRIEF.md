@@ -684,3 +684,13 @@ passed exact-SHA CI `31703805747`. Current release documentation and the seven-
 demo reproducibility package are complete; Phase 13-4 remains reviewer-gated.
 Completion commit `f4e2bb324ec4c248869cdc022f926d6f40448522` is pushed and
 the Phase 13-3 queue block is archived; the task queue is empty.
+
+## Phase 13-4 Targeted Final Product Polish
+
+Phase 13-4 is active under explicit reviewer authority. Its handoff census found
+two bounded presentation candidates: current-facing mojibake is already resolved,
+and the existing inert Help control is selected for a minimal link to the current
+Initial Release documentation. No backend, API, scientific, Planner, Runtime,
+Workspace, Report, Recipe, canonical demo, input-support, or reproducibility
+semantic authority changes are allowed. Phase 13-5 remains reviewer-gated and
+unqueued.

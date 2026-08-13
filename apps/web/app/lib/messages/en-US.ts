@@ -39,6 +39,7 @@ export const enUS = {
   theme: "Theme",
   userSettings: "User settings",
   help: "Help",
+  releaseDocumentation: "Initial Release documentation",
   providerDialogHint: "Click to configure model API",
   dataContext: "Data context",
   dataContextViewer: "Data context viewer",

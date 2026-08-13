@@ -1,0 +1,153 @@
+{
+  "binaryHashing": "RAW_BYTES",
+  "entries": [
+    {
+      "bytes": 179,
+      "hashMode": "UTF8_LF",
+      "path": "accessibility_matrix.json",
+      "sha256": "93ff80aa0ed8c685e5eefed70552cd0c1b97b306a30bd08154e62953392a0826"
+    },
+    {
+      "bytes": 1778,
+      "hashMode": "UTF8_LF",
+      "path": "before_after_matrix.json",
+      "sha256": "492753103e8ae78dd7da82af9baf499b651c1783ca34d78d5fc354359f593e85"
+    },
+    {
+      "bytes": 236,
+      "hashMode": "UTF8_LF",
+      "path": "browser_matrix.json",
+      "sha256": "d5309f3ddf0567e0aa49bdbe4e4a1e63f5a91729ed91c3b87d461981fc726ee5"
+    },
+    {
+      "bytes": 649,
+      "hashMode": "UTF8_LF",
+      "path": "entry_gate.md",
+      "sha256": "002bc8379c3ef91d04713ac118eef584a0630a733fab6b733d70fea833cadbf9"
+    },
+    {
+      "bytes": 729,
+      "hashMode": "UTF8_LF",
+      "path": "fact_scope_nonchange.json",
+      "sha256": "379942b48edd0cac543d950cef674c5d14f22c7ff64d8a50f775ae01c45878f9"
+    },
+    {
+      "bytes": 745,
+      "hashMode": "UTF8_LF",
+      "path": "nonselected_items.json",
+      "sha256": "950151d33a1680bc8e5ab8711bc37a659456257a7f6285954f860fe5d4c69a91"
+    },
+    {
+      "bytes": 215,
+      "hashMode": "UTF8_LF",
+      "path": "performance_regression.json",
+      "sha256": "5c32d5bfe33f9d6514f0536eac31277a6450bc37440d1df090fbd68327f37a9a"
+    },
+    {
+      "bytes": 611,
+      "hashMode": "UTF8_LF",
+      "path": "phase13_3_authority_snapshot.json",
+      "sha256": "d3809ba717f8d8989d05fa6ab848a92fc8e6e1d04386811de4abab9a5f4799d8"
+    },
+    {
+      "bytes": 277,
+      "hashMode": "UTF8_LF",
+      "path": "phase13_4_handoff_snapshot.json",
+      "sha256": "11a7c10923d124d74417f9893b2794593af46438cf9d845d120f36ef6fbf2fdd"
+    },
+    {
+      "bytes": 1531,
+      "hashMode": "UTF8_LF",
+      "path": "phase13_5_handoff.json",
+      "sha256": "50be3d1a9f302ed4341197883cbba0aa9bb94d286dde377d1e277c21835b58fe"
+    },
+    {
+      "bytes": 2952,
+      "hashMode": "UTF8_LF",
+      "path": "polish_census.json",
+      "sha256": "0446f07e937e96d106de2d6e02948f3b2fee0342bb8eca800b46a7eb711f1815"
+    },
+    {
+      "bytes": 2241,
+      "hashMode": "UTF8_LF",
+      "path": "polish_p13_polish_002_after.json",
+      "sha256": "292c95bcb58a43f998cdb76220993076376b36fc11af903fcdf3ab486f5ab7a5"
+    },
+    {
+      "bytes": 1237,
+      "hashMode": "UTF8_LF",
+      "path": "polish_p13_polish_002_before.json",
+      "sha256": "2cfecd7c6dbee47c911a743b5a48b9ce62d5a6ec804cdf07ea4df8f872130046"
+    },
+    {
+      "bytes": 70,
+      "hashMode": "UTF8_LF",
+      "path": "private_path_scan.txt",
+      "sha256": "96d870fc857c70c3b523e881ed4483a16a5cf4a37a9ebdaa7eee0cfdb5d5c97c"
+    },
+    {
+      "bytes": 207,
+      "hashMode": "UTF8_LF",
+      "path": "responsive_matrix.json",
+      "sha256": "d4f142190462b3ed79a93d720ee5d8c44838a1c0c4fb9d80d565c7cfee201a14"
+    },
+    {
+      "bytes": 2584,
+      "hashMode": "UTF8_LF",
+      "path": "scope_nonexpansion.json",
+      "sha256": "6e86004d30819303ff6f404fa1eee74c8c732753d41b9def659d35b6249fb2c9"
+    },
+    {
+      "bytes": 110583,
+      "hashMode": "RAW_BYTES",
+      "path": "screenshots/after/chromium_1440x900.png",
+      "sha256": "4a3cd19468b4d891b5f1d6b54ffe200b95a04d2b2721992764344bb2e8bd3dd8"
+    },
+    {
+      "bytes": 108281,
+      "hashMode": "RAW_BYTES",
+      "path": "screenshots/after/chromium_390x844.png",
+      "sha256": "31aca2e672eed8bbee2294e696fc8553674a07f5bea15e1cf7fc3397145935c1"
+    },
+    {
+      "bytes": 110583,
+      "hashMode": "RAW_BYTES",
+      "path": "screenshots/before/chromium_1440x900.png",
+      "sha256": "4a3cd19468b4d891b5f1d6b54ffe200b95a04d2b2721992764344bb2e8bd3dd8"
+    },
+    {
+      "bytes": 108281,
+      "hashMode": "RAW_BYTES",
+      "path": "screenshots/before/chromium_390x844.png",
+      "sha256": "31aca2e672eed8bbee2294e696fc8553674a07f5bea15e1cf7fc3397145935c1"
+    },
+    {
+      "bytes": 66,
+      "hashMode": "UTF8_LF",
+      "path": "secret_scan.txt",
+      "sha256": "76f6a62030fb83aaa111e806f2ff77016f51cd03aab4417b91dd8cfdc6221b28"
+    },
+    {
+      "bytes": 417,
+      "hashMode": "UTF8_LF",
+      "path": "security.md",
+      "sha256": "45c016053afaa9e867e6d1defc21e5297a3f30b07d94abd32dcc252d9499b099"
+    },
+    {
+      "bytes": 2207,
+      "hashMode": "UTF8_LF",
+      "path": "selected_polish_items.json",
+      "sha256": "c9d4458e19efdcc82ccf203540016b30b8efc1f25e482c612208468321c535ff"
+    },
+    {
+      "bytes": 4700,
+      "hashMode": "UTF8_LF",
+      "path": "validation_summary.json",
+      "sha256": "1409c02f4fc858589756e69f6e117ae2da5b938839486355300d186c979d57b9"
+    }
+  ],
+  "hashMismatches": 0,
+  "missing": 0,
+  "schemaVersion": "Phase13_4PolishEvidenceManifest/1.0",
+  "textHashing": "UTF8_LF"
+}
