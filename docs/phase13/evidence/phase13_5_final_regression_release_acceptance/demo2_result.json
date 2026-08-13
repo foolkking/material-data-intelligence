@@ -1,0 +1,13 @@
+{
+  "artifacts": 7,
+  "demo": 2,
+  "demoId": "P13-DEMO-02",
+  "fresh": true,
+  "oldAttempt6EvidenceUsedAsPass": 0,
+  "panelCount": 7,
+  "recipe": "PASS",
+  "report": "PASS",
+  "status": "PASS",
+  "toolCalls": 2,
+  "workspace": "PASS"
+}

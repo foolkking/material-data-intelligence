@@ -1,0 +1,158 @@
+{
+  "chromiumSevenDemos": "PASS",
+  "consoleErrors": 0,
+  "firefoxRepresentative": "PASS",
+  "helpLinkRuns": {
+    "browsers": {
+      "chromium": {
+        "desktop": {
+          "browser": "chromium",
+          "consoleErrors": [],
+          "focusVisible": true,
+          "horizontalOverflow": false,
+          "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+          "keyboardActivation": "PASS",
+          "mode": "after",
+          "pageErrors": [],
+          "rel": "noreferrer",
+          "screenshot": "screenshots/help/chromium_1440x900.png",
+          "tagName": "A",
+          "target": "_blank",
+          "touchTarget": "PASS",
+          "unapprovedExternalRequests": [],
+          "unexpectedFailedRequests": [],
+          "viewport": "1440x900"
+        }
+      },
+      "firefox": {
+        "desktop": {
+          "browser": "firefox",
+          "consoleErrors": [],
+          "focusVisible": true,
+          "horizontalOverflow": false,
+          "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+          "keyboardActivation": "PASS",
+          "mode": "after",
+          "pageErrors": [],
+          "rel": "noreferrer",
+          "screenshot": "screenshots/help/firefox_1440x900.png",
+          "tagName": "A",
+          "target": "_blank",
+          "touchTarget": "PASS",
+          "unapprovedExternalRequests": [],
+          "unexpectedFailedRequests": [],
+          "viewport": "1440x900"
+        }
+      },
+      "webkit": {
+        "desktop": {
+          "browser": "webkit",
+          "consoleErrors": [],
+          "focusVisible": true,
+          "horizontalOverflow": false,
+          "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+          "keyboardActivation": "PASS",
+          "mode": "after",
+          "pageErrors": [],
+          "rel": "noreferrer",
+          "screenshot": "screenshots/help/webkit_1440x900.png",
+          "tagName": "A",
+          "target": "_blank",
+          "touchTarget": "PASS",
+          "unapprovedExternalRequests": [],
+          "unexpectedFailedRequests": [],
+          "viewport": "1440x900"
+        }
+      }
+    },
+    "desktop": {
+      "browser": "chromium",
+      "consoleErrors": [],
+      "focusVisible": true,
+      "horizontalOverflow": false,
+      "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+      "keyboardActivation": "PASS",
+      "mode": "after",
+      "pageErrors": [],
+      "rel": "noreferrer",
+      "screenshot": "screenshots/help/chromium_1440x900.png",
+      "tagName": "A",
+      "target": "_blank",
+      "touchTarget": "PASS",
+      "unapprovedExternalRequests": [],
+      "unexpectedFailedRequests": [],
+      "viewport": "1440x900"
+    },
+    "documentationUrl": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+    "mobile": {
+      "browser": "chromium",
+      "consoleErrors": [],
+      "focusVisible": true,
+      "horizontalOverflow": false,
+      "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+      "keyboardActivation": "PASS",
+      "mode": "after",
+      "pageErrors": [],
+      "rel": "noreferrer",
+      "screenshot": "screenshots/help/chromium_390x844.png",
+      "tagName": "A",
+      "target": "_blank",
+      "touchTarget": "PASS",
+      "unapprovedExternalRequests": [],
+      "unexpectedFailedRequests": [],
+      "viewport": "390x844"
+    },
+    "polishId": "P13-POLISH-002",
+    "screenshotScientificAuthority": "NONE"
+  },
+  "mobile390x844": "PASS",
+  "pageErrors": 0,
+  "representativeGalleryRuns": {
+    "chromium": {
+      "cards": 27,
+      "consoleErrors": [],
+      "expected": 27,
+      "externalRequests": [],
+      "failedRequests": [],
+      "horizontalOverflow": 0,
+      "pageErrors": [],
+      "screenshot": "screenshots/gallery/chromium.png",
+      "status": "PASS"
+    },
+    "firefox": {
+      "cards": 27,
+      "consoleErrors": [],
+      "expected": 27,
+      "externalRequests": [],
+      "failedRequests": [],
+      "horizontalOverflow": 0,
+      "pageErrors": [],
+      "screenshot": "screenshots/gallery/firefox.png",
+      "status": "PASS"
+    },
+    "mobile_390x844": {
+      "cards": 27,
+      "consoleErrors": [],
+      "expected": 27,
+      "externalRequests": [],
+      "failedRequests": [],
+      "horizontalOverflow": 0,
+      "pageErrors": [],
+      "status": "PASS"
+    },
+    "webkit": {
+      "cards": 27,
+      "consoleErrors": [],
+      "expected": 27,
+      "externalRequests": [],
+      "failedRequests": [],
+      "horizontalOverflow": 0,
+      "pageErrors": [],
+      "screenshot": "screenshots/gallery/webkit.png",
+      "status": "PASS"
+    }
+  },
+  "unapprovedExternalRequests": 0,
+  "unexpectedFailedRequests": 0,
+  "webkitRepresentative": "PASS"
+}

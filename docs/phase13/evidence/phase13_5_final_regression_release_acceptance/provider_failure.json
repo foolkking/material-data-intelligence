@@ -1,0 +1,7 @@
+{
+  "cases": [
+    "typed provider failure; no fake science"
+  ],
+  "executionOnTypedNonReady": 0,
+  "status": "PASS"
+}

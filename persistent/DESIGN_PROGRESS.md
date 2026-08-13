@@ -2390,3 +2390,13 @@ prompts, fixtures, user entries, support matrix, and scientific authority remain
 unchanged. Completion is recorded; only queue archive remains. Phase 13-5 stays
 reviewer-gated and unqueued. The Phase 13-4 completion record is pushed and its
 task block is archived; the queue is empty.
+
+# 2026-08-14 Phase 13-5 Final Regression and Release Acceptance
+
+Entry authority is `ff3f923330acede6c5442cc1226d3bce10b7c299`, with Phase13-4
+implementation `40403cfa19451cc9a473c41bddecfe053e1a5fea` verified by exact-SHA
+CI `31715231470`. The current Fact, Scope, Phase12, and reproducibility hashes
+match their sealed values. Phase13-5 will reuse the established Attempt6 real
+service/product runner under a new independent state/evidence root and will not
+reuse Attempt6 runtime entities as current PASS. Production remediation is not
+authorized. Phase13-6 remains handoff-only and unqueued.

@@ -55,12 +55,17 @@ def test_n5_r0_required_contract_documents_exist_without_critical_tbd() -> None:
 
 def test_n5_queue_state_remains_compatible_through_n6_archive() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    if "Phase 13-1 Reviewer Prompt" in tasks or "Phase 13-2 Reviewer Prompt" in tasks or "Phase 13-4 Targeted Final Product Polish" in tasks:
+    if (
+        "Phase 13-1 Reviewer Prompt" in tasks
+        or "Phase 13-2 Reviewer Prompt" in tasks
+        or "Phase 13-4 Targeted Final Product Polish" in tasks
+        or "Phase 13-5 Final Regression + Release Acceptance" in tasks
+    ):
         blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
         active = [block for block in blocks if "状态：处理中" in block]
         assert len(blocks) == tasks.count("---TASK---") == tasks.count("---END---")
         assert len(active) <= 1 and (not active or active[0] == blocks[0])
-        assert "Task: Phase 13-5" not in tasks
+        assert "Task: Phase 13-6" not in tasks
         return
     if not tasks.strip():
         return

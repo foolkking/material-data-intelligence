@@ -101,8 +101,12 @@ def test_attempt6_is_authority_and_phase13_4_is_not_queued() -> None:
     assert attempt6["status"] == "PASS" and attempt6["demos"] == "7/7" and attempt6["p13x2"] == "8/8"
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
     assert "Task: Phase 13-3 Documentation + Reproducibility Package" not in tasks
-    if "Task: Phase 13-4 Targeted Final Product Polish" in tasks:
+    if (
+        "Task: Phase 13-4 Targeted Final Product Polish" in tasks
+        or "Task: Phase 13-5 Final Regression + Release Acceptance" in tasks
+    ):
         assert tasks.count("---TASK---") == 1
         assert "状态：处理中" in tasks
+        assert "Task: Phase 13-6" not in tasks
     else:
         assert "---TASK---" not in tasks

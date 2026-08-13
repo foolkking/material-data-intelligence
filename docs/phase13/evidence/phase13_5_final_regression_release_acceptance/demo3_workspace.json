@@ -1,0 +1,21 @@
+{
+  "artifactCount": 14,
+  "demo": 3,
+  "demoId": "P13-DEMO-03",
+  "fresh": true,
+  "logicalSurfaceCount": 6,
+  "maxPanels": 32,
+  "panelCount": 7,
+  "panelIds": [
+    "panel_9425deb2d02eb1991666cf31d1894038",
+    "panel_bdaa4749fe8e5c006d2bc6de60122390",
+    "panel_817774cecd5ab92531f54dd6af565745",
+    "panel_c3c78cc945a1ab244c5131fcfa0f7a31",
+    "panel_84936f952110651e4626213631aab289",
+    "panel_cd4d4400d7cb80906c70949ae55090bb",
+    "panel_c94b0cc055e19f7320f1073df58a049c"
+  ],
+  "panelTruncation": 0,
+  "sourceJobId": "job_1a126117e68745009b267662",
+  "workspaceId": "workspace_adf40f54fe27704c153491caccfa21e8"
+}

@@ -1,0 +1,78 @@
+{
+  "count": 8,
+  "limitations": [
+    {
+      "category": "scientific-validation",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Phase 11 authority",
+      "limitationId": "LIM-001",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Tool availability is not independent reference validation."
+    },
+    {
+      "category": "cross-platform",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Release governance",
+      "limitationId": "LIM-002",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Linux/Windows invariant replay is not independent cross-platform numeric validation."
+    },
+    {
+      "category": "browser",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Phase 13",
+      "limitationId": "LIM-003",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Tested browser engines are not universal browser certification."
+    },
+    {
+      "category": "phonon-input",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Product scope",
+      "limitationId": "LIM-004",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Typed Band/DOS imports are limited; generic YAML/JSON is mapping-only."
+    },
+    {
+      "category": "provider",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Provider policy",
+      "limitationId": "LIM-005",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Optional DeepSeek verification is not science or reference validation."
+    },
+    {
+      "category": "recipe",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Security model",
+      "limitationId": "LIM-006",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Recipes are declarative and non-executable."
+    },
+    {
+      "category": "xrd",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Scientific contract",
+      "limitationId": "LIM-007",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Peak correspondence is not phase confirmation or refinement."
+    },
+    {
+      "category": "diffusion",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Scientific contract",
+      "limitationId": "LIM-008",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Diffusion is an estimate over the selected fit window."
+    }
+  ],
+  "withoutDisclosure": 0
+}

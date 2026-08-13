@@ -1,0 +1,85 @@
+{
+  "artifactCount": 7,
+  "artifacts": [
+    {
+      "artifactId": "call_job_d6ced9d927f145708820b856_step_001-table_json",
+      "artifactType": "table_json",
+      "checksum": "d3ef0892bcb483d4cc51d832567af9fae18c3be4a33cacd66b6c47589335da6b",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_d6ced9d927f145708820b856",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_d6ced9d927f145708820b856_step_001"
+    },
+    {
+      "artifactId": "call_job_d6ced9d927f145708820b856_step_001-quality_issues_json",
+      "artifactType": "quality_issues_json",
+      "checksum": "9e8d44288d69a1599afdbe506ddd4d6de448a87c64f090e40ea08192f52db9bc",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_d6ced9d927f145708820b856",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_d6ced9d927f145708820b856_step_001"
+    },
+    {
+      "artifactId": "call_job_d6ced9d927f145708820b856_step_001-summary_md",
+      "artifactType": "summary_md",
+      "checksum": "df22d9a3f219c199ad538d9577c2c308d9bbcddf2606f3189d1fb37e0d7082c8",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_d6ced9d927f145708820b856",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_d6ced9d927f145708820b856_step_001"
+    },
+    {
+      "artifactId": "call_job_d6ced9d927f145708820b856_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "checksum": "bfdf7c02d07fe8b59e32abccc8a9f482c2864dbb38c8294559dd764ad17bdf9a",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_d6ced9d927f145708820b856",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_d6ced9d927f145708820b856_step_001"
+    },
+    {
+      "artifactId": "call_job_d6ced9d927f145708820b856_step_002-table_json",
+      "artifactType": "table_json",
+      "checksum": "109161dcbd03b0e0d16ac5d535af9a7f4b1b4749d719ac72b369bd74e3c27916",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_d6ced9d927f145708820b856",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_d6ced9d927f145708820b856_step_002"
+    },
+    {
+      "artifactId": "call_job_d6ced9d927f145708820b856_step_002-summary_md",
+      "artifactType": "summary_md",
+      "checksum": "56632b3b04c2ad27719417263fa02c09cb8ffde7a86a733fae1122d43ce28534",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_d6ced9d927f145708820b856",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_d6ced9d927f145708820b856_step_002"
+    },
+    {
+      "artifactId": "call_job_d6ced9d927f145708820b856_step_002-recipe_json",
+      "artifactType": "recipe_json",
+      "checksum": "59e5225d0bbc011654f34979b4d886ce6da3ebe00769834b8ea126de3cc456aa",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_d6ced9d927f145708820b856",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_d6ced9d927f145708820b856_step_002"
+    }
+  ],
+  "demo": 2,
+  "demoId": "P13-DEMO-02",
+  "fresh": true
+}

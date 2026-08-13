@@ -69,12 +69,17 @@ def test_n4_scientific_negative_and_positive_controls_are_honest() -> None:
 
 def test_n4_queue_state_preserves_the_n5_reviewer_gate() -> None:
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    if "Phase 13-1 Reviewer Prompt" in tasks or "Phase 13-2 Reviewer Prompt" in tasks or "Phase 13-4 Targeted Final Product Polish" in tasks:
+    if (
+        "Phase 13-1 Reviewer Prompt" in tasks
+        or "Phase 13-2 Reviewer Prompt" in tasks
+        or "Phase 13-4 Targeted Final Product Polish" in tasks
+        or "Phase 13-5 Final Regression + Release Acceptance" in tasks
+    ):
         blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
         active = [block for block in blocks if "状态：处理中" in block]
         assert len(blocks) == tasks.count("---TASK---") == tasks.count("---END---")
         assert len(active) <= 1 and (not active or active[0] == blocks[0])
-        assert "Task: Phase 13-5" not in tasks
+        assert "Task: Phase 13-6" not in tasks
         return
     if not tasks.strip():
         return

@@ -1,0 +1,32 @@
+{
+  "arrayPositionRebinding": 0,
+  "demo": 6,
+  "demoId": "P13-DEMO-06",
+  "filenameRebinding": 0,
+  "fresh": true,
+  "fuzzyRebinding": 0,
+  "identityExact": true,
+  "latestRebinding": 0,
+  "manualNormalizedExportPreload": 0,
+  "minio": "REAL",
+  "postgresql": "REAL",
+  "profileId": "profile_dataset_7501ec82d1154aee802dbb9b_v2",
+  "redis": "REAL",
+  "resourceIds": [
+    "obj_volumetric_5ef6442c2627"
+  ],
+  "runtimeReparseFallback": 0,
+  "uploadExports": {
+    "obj_volumetric_5ef6442c2627": {
+      "contentHash": "d87c591bacea2bae5282559fae7d3a0d0e7232f1d373a059671bd57e4848ceeb",
+      "storageKey": "projects/project_28c786c3d1a0403980502065/datasets/dataset_7501ec82d1154aee802dbb9b/normalized/obj_volumetric_5ef6442c2627/volumetric_source.json"
+    }
+  },
+  "uploadProcessMemoryDependency": 0,
+  "workerResolvedExports": {
+    "obj_volumetric_5ef6442c2627": {
+      "contentHash": "d87c591bacea2bae5282559fae7d3a0d0e7232f1d373a059671bd57e4848ceeb",
+      "storageKey": "projects/project_28c786c3d1a0403980502065/datasets/dataset_7501ec82d1154aee802dbb9b/normalized/obj_volumetric_5ef6442c2627/volumetric_source.json"
+    }
+  }
+}

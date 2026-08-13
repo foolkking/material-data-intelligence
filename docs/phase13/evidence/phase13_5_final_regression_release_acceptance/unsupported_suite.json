@@ -1,0 +1,8 @@
+{
+  "cases": [
+    "unsupported capability",
+    "limited input"
+  ],
+  "executionOnTypedNonReady": 0,
+  "status": "PASS"
+}

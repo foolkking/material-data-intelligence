@@ -1,0 +1,18 @@
+{
+  "demo": 4,
+  "demoId": "P13-DEMO-04",
+  "family": "Trajectory + RDF + MSD + diffusion",
+  "fixtureEntryModes": [
+    "parse"
+  ],
+  "fixtureIds": [
+    "P13-DEMO-04-FIX-01"
+  ],
+  "fixturePaths": [
+    "docs/phase10g/fixtures/trajectory_v1/fixed_lattice_md.json"
+  ],
+  "fresh": true,
+  "naturalLanguagePrompt": "Analyze this trajectory, show the RDF and MSD, and estimate diffusion over the full supplied time range with fit diagnostics.",
+  "normalUserInternalIdRequirement": 0,
+  "oldAttempt6EvidenceUsedAsPass": 0
+}

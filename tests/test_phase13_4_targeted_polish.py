@@ -92,9 +92,12 @@ def test_performance_security_and_next_phase_are_bounded() -> None:
     assert handoff["status"] == "REVIEWER_GATE"
     assert handoff["executableTaskCreated"] is False
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    assert "Phase 13-4 Targeted Final Product Polish" in tasks
-    assert "状态：处理中" in tasks
-    assert "Task: Phase 13-5" not in tasks
+    if "Task: Phase 13-5 Final Regression + Release Acceptance" in tasks:
+        assert tasks.count("---TASK---") == tasks.count("---END---") == 1
+        assert "状态：处理中" in tasks
+        assert "Task: Phase 13-6" not in tasks
+    else:
+        assert "Phase 13-4 Targeted Final Product Polish" in tasks
 
 
 def test_evidence_manifest_matches_raw_bytes() -> None:

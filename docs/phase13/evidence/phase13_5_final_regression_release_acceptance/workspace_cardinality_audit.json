@@ -1,0 +1,16 @@
+{
+  "maxPanels": 32,
+  "panelCap32Case": "PASS",
+  "panelCap33Case": "PANEL_CAP_EXCEEDED",
+  "panelCounts": [
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7
+  ],
+  "panelTruncation": 0,
+  "totalPanelCount": 49
+}

@@ -66,6 +66,9 @@ jobs:
           uv run python scripts/generate_phase13_3_documentation_reproducibility.py
           uv run python -m pytest -q tests/test_phase13_3_documentation_reproducibility.py --tb=short
 
+      - name: Phase 13-5 final release acceptance evidence
+        run: uv run python -m pytest -q tests/test_phase13_5_release_acceptance.py --tb=short
+
       - name: Phase 13-2 full-rerun failure evidence
         run: uv run python -m pytest -q tests/test_phase13_2_rerun_failure_evidence.py --tb=short
 

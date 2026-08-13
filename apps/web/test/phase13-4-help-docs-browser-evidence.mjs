@@ -7,6 +7,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const MODE = process.env.MDI_PHASE13_4_EXPECT || "after";
 const ORIGIN = process.env.MDI_PHASE13_4_ORIGIN || "http://127.0.0.1:3464";
+const API_ORIGIN = process.env.MDI_PHASE13_4_API_ORIGIN || "http://localhost:8000";
 const PLAYWRIGHT =
   process.env.MDI_PLAYWRIGHT_MODULE ||
   path.join(ROOT, "apps/web/node_modules/playwright/index.mjs");
@@ -33,7 +34,7 @@ async function installReplay(page, audit) {
     const request = route.request();
     const url = new URL(request.url());
     if (url.origin === ORIGIN) return route.continue();
-    if (url.hostname !== "localhost" || url.port !== "8000") {
+    if (url.origin !== API_ORIGIN) {
       audit.unapprovedExternalRequests.push(request.url());
       return route.abort();
     }

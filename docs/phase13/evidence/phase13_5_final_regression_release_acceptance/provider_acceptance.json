@@ -1,0 +1,12 @@
+{
+  "deterministicProvider": "PASS",
+  "keySource": "DEEPSEEK_KEY",
+  "liveProviderReleaseCheck": "SUPPLEMENTAL",
+  "models": [
+    "deepseek-v4-flash",
+    "deepseek-v4-pro"
+  ],
+  "realLlmCalls": 0,
+  "realProvider": "DEEPSEEK_ONLY",
+  "scientificAuthority": "NONE"
+}

@@ -695,3 +695,13 @@ Implementation `40403cfa19451cc9a473c41bddecfe053e1a5fea` passed exact-SHA CI
 `31715231470`. No backend, API, scientific, Planner, Runtime, Workspace, Report,
 Recipe, canonical demo, input-support, Fact, Scope, or reproducibility semantic
 authority changed. Phase 13-5 remains reviewer-gated and unqueued.
+
+## Phase 13-5 Final Regression and Release Acceptance
+
+Phase 13-5 is active under explicit reviewer authorization at entry
+`ff3f923330acede6c5442cc1226d3bce10b7c299`. It is validation-only: seven fresh
+canonical service-backed product paths, retained negative/browser/platform gates,
+documentation and reproducibility revalidation, and final authority reconciliation.
+No production, scientific, polish, support, dependency, migration, or LLM-site
+change is authorized. Phase 13-6 remains reviewer-gated and unqueued; Initial
+Release remains incomplete.

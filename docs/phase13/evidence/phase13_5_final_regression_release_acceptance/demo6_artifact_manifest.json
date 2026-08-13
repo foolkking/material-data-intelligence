@@ -1,0 +1,107 @@
+{
+  "artifactCount": 9,
+  "artifacts": [
+    {
+      "artifactId": "call_job_eedbe0092703461988383650_step_001-volumetric_grid_json",
+      "artifactType": "volumetric_grid_json",
+      "checksum": "5ea9a9394c977aa285cbf39c30db5af798b3cc73abe07f115edc6927d5bb9e14",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_eedbe0092703461988383650",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_eedbe0092703461988383650_step_001"
+    },
+    {
+      "artifactId": "call_job_eedbe0092703461988383650_step_001-volumetric_payload_json",
+      "artifactType": "volumetric_payload_json",
+      "checksum": "84157c48820972ab6deaa6f0eab51d0d40a908df237426832b8a5ea7b26b0994",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_eedbe0092703461988383650",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_eedbe0092703461988383650_step_001"
+    },
+    {
+      "artifactId": "call_job_eedbe0092703461988383650_step_001-volumetric_field_json",
+      "artifactType": "volumetric_field_json",
+      "checksum": "97b003f125eefaf14d24ee22fa0ab64b2376e98351f7714a3a75cdaf6f27bb58",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_eedbe0092703461988383650",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_eedbe0092703461988383650_step_001"
+    },
+    {
+      "artifactId": "call_job_eedbe0092703461988383650_step_001-volumetric_binary",
+      "artifactType": "volumetric_binary",
+      "checksum": "6f360e74fd5959280762f657d434c72771146205e8ef12b611fa562ba1a55904",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_eedbe0092703461988383650",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_eedbe0092703461988383650_step_001"
+    },
+    {
+      "artifactId": "call_job_eedbe0092703461988383650_step_001-volumetric_dataset_json",
+      "artifactType": "volumetric_dataset_json",
+      "checksum": "92bb606d8e376a69888ab031de6580a3fe46b57a08810154bd0efbe032342c39",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_eedbe0092703461988383650",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_eedbe0092703461988383650_step_001"
+    },
+    {
+      "artifactId": "call_job_eedbe0092703461988383650_step_001-volumetric_manifest_json",
+      "artifactType": "volumetric_manifest_json",
+      "checksum": "4bd7713f2c1de3f359c5f46f47f1e9026c21dd433d60f8dfa96de801dd24b52f",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_eedbe0092703461988383650",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_eedbe0092703461988383650_step_001"
+    },
+    {
+      "artifactId": "call_job_eedbe0092703461988383650_step_001-volumetric_structure_overlay_json",
+      "artifactType": "volumetric_structure_overlay_json",
+      "checksum": "2e0788e4e63978c8fcf4e486019d5e67c5c9088522e9d69e31b88222ebe446ea",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_eedbe0092703461988383650",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_eedbe0092703461988383650_step_001"
+    },
+    {
+      "artifactId": "call_job_eedbe0092703461988383650_step_001-summary_md",
+      "artifactType": "summary_md",
+      "checksum": "21105175f3cde12aa91a7790bd3acd89c497ea14515aa1a1509e83762de33fe2",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_eedbe0092703461988383650",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_eedbe0092703461988383650_step_001"
+    },
+    {
+      "artifactId": "call_job_eedbe0092703461988383650_step_001-recipe_json",
+      "artifactType": "recipe_json",
+      "checksum": "8b3d97877a1e9f487ef20c24388f043c556f33e42fb3224fea0371d73b7f9183",
+      "galleryReachable": true,
+      "inspectorReachable": true,
+      "jobId": "job_eedbe0092703461988383650",
+      "lineageExact": true,
+      "reportSourceReachable": true,
+      "toolCallId": "call_job_eedbe0092703461988383650_step_001"
+    }
+  ],
+  "demo": 6,
+  "demoId": "P13-DEMO-06",
+  "fresh": true
+}

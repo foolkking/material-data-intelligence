@@ -1,0 +1,18 @@
+{
+  "demo": 2,
+  "demoId": "P13-DEMO-02",
+  "family": "Materials ML",
+  "fixtureEntryModes": [
+    "parse"
+  ],
+  "fixtureIds": [
+    "P13-DEMO-02-FIX-01"
+  ],
+  "fixturePaths": [
+    "tests/fixtures/tables/ml_results.csv"
+  ],
+  "fresh": true,
+  "naturalLanguagePrompt": "Evaluate these materials-model predictions and explain the largest errors and limitations.",
+  "normalUserInternalIdRequirement": 0,
+  "oldAttempt6EvidenceUsedAsPass": 0
+}

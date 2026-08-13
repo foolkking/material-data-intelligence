@@ -1,0 +1,24 @@
+{
+  "demo": 5,
+  "demoId": "P13-DEMO-05",
+  "family": "Phonon + Brillouin Zone",
+  "fixtureEntryModes": [
+    "typed_phonon_band_import",
+    "typed_phonon_dos_import",
+    "parse"
+  ],
+  "fixtureIds": [
+    "P13-DEMO-05-FIX-01",
+    "P13-DEMO-05-FIX-02",
+    "P13-DEMO-05-FIX-03"
+  ],
+  "fixturePaths": [
+    "docs/phase10h/fixtures/phonon_contract/stable_band.json",
+    "docs/phase10h/fixtures/phonon_contract/total_dos.json",
+    "tests/fixtures/structures/POSCAR"
+  ],
+  "fresh": true,
+  "naturalLanguagePrompt": "Show the supplied phonon bands and density of states together with the matching Brillouin-zone context.",
+  "normalUserInternalIdRequirement": 0,
+  "oldAttempt6EvidenceUsedAsPass": 0
+}

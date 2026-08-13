@@ -39,6 +39,10 @@ from tests.integration.test_phase10m1_workspace_service_backed import (
     _schema_database_url,
 )
 
+RUN_LABEL = os.getenv("MDI_PHASE13_RUN_LABEL", "Attempt 6")
+SCHEMA_PREFIX = os.getenv("MDI_PHASE13_SCHEMA_PREFIX", "phase13a6d")
+RUNTIME_SLUG = os.getenv("MDI_PHASE13_RUNTIME_SLUG", "attempt6")
+
 
 def _upload_files(index: int, spec: dict[str, Any]) -> dict[str, Any]:
     if index != 5:
@@ -64,7 +68,7 @@ def run_demo(index: int, state_path: Path) -> dict[str, Any]:
     spec = CURRENT_DEMO_SPECS[index - 1]
     database_url = _required_postgres_url()
     suffix = uuid.uuid4().hex[:12]
-    schema_name = f"phase13a6d{index}_{suffix}"
+    schema_name = f"{SCHEMA_PREFIX}{index}_{suffix}"
     schema_url = _schema_database_url(database_url, schema_name)
     base_engine = create_engine(database_url, future=True)
     engine = None
@@ -96,16 +100,16 @@ def run_demo(index: int, state_path: Path) -> dict[str, Any]:
             "MDI_ARTIFACT_BACKEND": "minio",
             "MDI_ALLOW_TEST_PROVIDERS": "1",
         })
-        reset_phase2_runtime(ROOT / ".pytest_tmp" / f"attempt6-d{index}-upload-{suffix}")
+        reset_phase2_runtime(ROOT / ".pytest_tmp" / f"{RUNTIME_SLUG}-d{index}-upload-{suffix}")
         with TestClient(create_app()) as client:
             project = _require(
-                client.post("/projects", json={"name": f"Attempt 6 Demo {index} {suffix}"}),
+                client.post("/projects", json={"name": f"{RUN_LABEL} Demo {index} {suffix}"}),
                 "project creation",
             )
             upload = _require(
                 client.post("/datasets/upload", json={
                     "projectId": project["id"],
-                    "datasetName": f"Attempt 6 {spec['demoId']}",
+                    "datasetName": f"{RUN_LABEL} {spec['demoId']}",
                     **_upload_files(index, spec),
                 }),
                 "real typed dataset upload" if index == 5 else "real dataset upload",
@@ -143,7 +147,7 @@ def run_demo(index: int, state_path: Path) -> dict[str, Any]:
             if queue.fetch_job(job_id) is None:
                 raise RuntimeError("Redis does not contain the persisted Job identity")
 
-            reset_phase2_runtime(ROOT / ".pytest_tmp" / f"attempt6-d{index}-worker-{suffix}")
+            reset_phase2_runtime(ROOT / ".pytest_tmp" / f"{RUNTIME_SLUG}-d{index}-worker-{suffix}")
             repositories, worker = _planner_repositories_and_runtime(
                 repositories=None,
                 queue_runtime=None,
@@ -166,7 +170,7 @@ def run_demo(index: int, state_path: Path) -> dict[str, Any]:
                 client.post(
                     "/workspaces",
                     headers={"Idempotency-Key": f"attempt6-d{index}-workspace-{suffix}"},
-                    json={"sourceJobId": job_id, "title": f"Attempt 6 Demo {index}"},
+                    json={"sourceJobId": job_id, "title": f"{RUN_LABEL} Demo {index}"},
                 ),
                 "workspace creation",
                 (200, 201),

@@ -11842,6 +11842,20 @@ INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
 
+# Phase 13-5 Final Regression + Release Acceptance Local Validation
+
+Status: `LOCAL_VALIDATION_PASS_PENDING_EXACT_SHA_CI`.
+
+Seven fresh isolated, service-backed canonical paths passed without reusing
+Attempt6 runtime entities: 18 registered ToolCalls, 85 persisted Artifacts,
+seven Job-derived Workspaces, seven UI-finalized Reports, and seven paired
+non-executable Recipes. Demo5 used explicit typed PhononBand and PhononDos
+imports; generic phonon YAML/JSON remained mapping-only. Artifact reachability,
+32/33 panel-cap protection, frozen authority hashes, documentation/reproducibility,
+browser, security, and retained regression gates passed locally. No production,
+scientific, support, or dependency change was made. Exact-SHA CI, completion,
+and queue archive remain pending.
+
 # Phase 13-4 Targeted Final Product Polish Result
 
 Status: `PASS / TARGETED_FINAL_PRODUCT_POLISH_COMPLETE`

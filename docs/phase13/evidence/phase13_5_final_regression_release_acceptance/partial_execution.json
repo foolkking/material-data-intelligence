@@ -1,0 +1,8 @@
+{
+  "cases": [
+    "independent success retained",
+    "dependent descendants blocked"
+  ],
+  "executionOnTypedNonReady": 0,
+  "status": "PASS"
+}

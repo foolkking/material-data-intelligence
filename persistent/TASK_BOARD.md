@@ -2735,3 +2735,11 @@ frontend, Phase13 focused, service-backed, browser, typecheck, build, lock/diff,
 Linux, and Windows gates pass. The queue archive is the only remaining lifecycle
 action. The Phase 13-4 task block is now archived after completion verification.
 Phase 13-5 remains reviewer-gated and unqueued.
+
+# Current Task: Phase 13-5 Final Regression and Release Acceptance
+
+Status: active under reviewer authorization. Entry Git/queue and Phase13-4
+lifecycle gates pass. The task performs seven fresh service-backed release
+acceptance paths plus retained negative, browser, documentation, reproducibility,
+security, and cross-platform validation. No product remediation or Phase13-6
+execution is authorized. `PHASE13_6_EXECUTABLE_TASK_CREATED = NO`.

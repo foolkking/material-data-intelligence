@@ -142,12 +142,17 @@ def test_roadmap_and_queue_boundaries_are_exact() -> None:
     assert "Phase 13 - Final Product Closure" in roadmap
     assert "SUPERSEDED_BY_APPROVED_ROADMAP_REVISION" in roadmap
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    if "Phase 13-1 Reviewer Prompt" in tasks or "Phase 13-2 Reviewer Prompt" in tasks or "Phase 13-4 Targeted Final Product Polish" in tasks:
+    if (
+        "Phase 13-1 Reviewer Prompt" in tasks
+        or "Phase 13-2 Reviewer Prompt" in tasks
+        or "Phase 13-4 Targeted Final Product Polish" in tasks
+        or "Phase 13-5 Final Regression + Release Acceptance" in tasks
+    ):
         blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
         active = [block for block in blocks if "状态：处理中" in block]
         assert len(blocks) == tasks.count("---TASK---") == tasks.count("---END---")
         assert len(active) <= 1 and (not active or active[0] == blocks[0])
-        assert "Task: Phase 13-5" not in tasks
+        assert "Task: Phase 13-6" not in tasks
         return
     blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
     if not blocks:

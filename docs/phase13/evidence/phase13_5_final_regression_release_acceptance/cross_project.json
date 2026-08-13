@@ -1,0 +1,7 @@
+{
+  "cases": [
+    "resource/artifact/workspace/report isolation"
+  ],
+  "executionOnTypedNonReady": 0,
+  "status": "PASS"
+}

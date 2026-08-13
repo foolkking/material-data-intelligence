@@ -1,0 +1,15 @@
+{
+  "archiveSha": "ff3f923330acede6c5442cc1226d3bce10b7c299",
+  "completionSha": "46c70c2ed49b30e44ab33450540d1b90aacdea2c",
+  "exactShaCi": 31715231470,
+  "failedCandidate": {
+    "ciRun": 31713598663,
+    "classification": "CI_EVIDENCE_PORTABILITY_SHALLOW_CHECKOUT_OBJECT_AVAILABILITY",
+    "productFailure": false,
+    "sha": "34f7cb7cea3db351edff0d3b39ff7fe39cd7e192"
+  },
+  "implementationSha": "40403cfa19451cc9a473c41bddecfe053e1a5fea",
+  "p13Polish001": "ALREADY_RESOLVED",
+  "p13Polish002": "IMPLEMENTED_VERIFIED",
+  "status": "PASS"
+}

@@ -1,0 +1,10 @@
+{
+  "artifacts": 85,
+  "evidenceRef": "../phase13_2_attempt6_seven_real_user_e2e",
+  "recipes": 7,
+  "reports": 7,
+  "status": "HISTORICAL_BASELINE_ONLY",
+  "toolCalls": 18,
+  "usedAsPhase13_5Pass": 0,
+  "workspaces": 7
+}

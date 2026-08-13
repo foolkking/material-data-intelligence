@@ -1,0 +1,21 @@
+{
+  "artifacts": 85,
+  "completed": 7,
+  "oldAttempt6EvidenceUsedAsPass": 0,
+  "passOrExplicitLimit": 7,
+  "recipes": 7,
+  "reports": 7,
+  "started": 7,
+  "status": "PASS",
+  "statuses": {
+    "demo1": "PASS",
+    "demo2": "PASS",
+    "demo3": "PASS",
+    "demo4": "PASS",
+    "demo5": "PASS",
+    "demo6": "PASS",
+    "demo7": "PASS"
+  },
+  "toolCalls": 18,
+  "workspaces": 7
+}

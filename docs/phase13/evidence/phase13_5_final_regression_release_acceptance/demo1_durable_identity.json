@@ -1,0 +1,32 @@
+{
+  "arrayPositionRebinding": 0,
+  "demo": 1,
+  "demoId": "P13-DEMO-01",
+  "filenameRebinding": 0,
+  "fresh": true,
+  "fuzzyRebinding": 0,
+  "identityExact": true,
+  "latestRebinding": 0,
+  "manualNormalizedExportPreload": 0,
+  "minio": "REAL",
+  "postgresql": "REAL",
+  "profileId": "profile_dataset_795beba39f6c42a5be75c52d_v2",
+  "redis": "REAL",
+  "resourceIds": [
+    "obj_dataframe_2b3a36cebe19"
+  ],
+  "runtimeReparseFallback": 0,
+  "uploadExports": {
+    "obj_dataframe_2b3a36cebe19": {
+      "contentHash": "4b8717a6943e23fa23c11004483b617d358d4077358a3604412414c4f5248ad3",
+      "storageKey": "projects/project_b0a2549442aa4f96bc9e9d32/datasets/dataset_795beba39f6c42a5be75c52d/normalized/obj_dataframe_2b3a36cebe19/data.json"
+    }
+  },
+  "uploadProcessMemoryDependency": 0,
+  "workerResolvedExports": {
+    "obj_dataframe_2b3a36cebe19": {
+      "contentHash": "4b8717a6943e23fa23c11004483b617d358d4077358a3604412414c4f5248ad3",
+      "storageKey": "projects/project_b0a2549442aa4f96bc9e9d32/datasets/dataset_795beba39f6c42a5be75c52d/normalized/obj_dataframe_2b3a36cebe19/data.json"
+    }
+  }
+}
