@@ -2724,7 +2724,7 @@ is pushed and the completed queue block is archived. `TASK_BLOCK_COUNT = 0`.
 Phase 13-4 remains reviewer-gated with no executable task, Initial Release is
 not complete, and Phase 14 does not exist.
 
-# Phase 13-4 Targeted Final Product Polish - Completed Pending Archive
+# Phase 13-4 Targeted Final Product Polish - Completed and Archived
 
 The Phase 13-3 handoff contains two presentation candidates.
 `P13-POLISH-001 = ALREADY_RESOLVED`; `P13-POLISH-002 = IMPLEMENTED` connects the
@@ -2733,4 +2733,5 @@ a navigation family. Implementation `40403cfa19451cc9a473c41bddecfe053e1a5fea`
 passed exact-SHA CI `31715231470`; completion is recorded. Full backend,
 frontend, Phase13 focused, service-backed, browser, typecheck, build, lock/diff,
 Linux, and Windows gates pass. The queue archive is the only remaining lifecycle
-action. Phase 13-5 remains reviewer-gated and unqueued.
+action. The Phase 13-4 task block is now archived after completion verification.
+Phase 13-5 remains reviewer-gated and unqueued.

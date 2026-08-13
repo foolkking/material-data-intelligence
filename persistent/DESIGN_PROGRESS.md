@@ -2388,4 +2388,5 @@ CI, retained browser matrix, typecheck, build, lock/diff, Linux and Windows
 replay pass. Fact, Scope, Phase12, the reproducibility manifest, canonical
 prompts, fixtures, user entries, support matrix, and scientific authority remain
 unchanged. Completion is recorded; only queue archive remains. Phase 13-5 stays
-reviewer-gated and unqueued.
+reviewer-gated and unqueued. The Phase 13-4 completion record is pushed and its
+task block is archived; the queue is empty.
