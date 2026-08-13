@@ -1,5 +1,5 @@
 ---TASK---
-状态：处理中
+状态：已完成
 
 # Phase 13-2 Attempt 6
 ## Seven Canonical Real-User E2E Demonstrations - Full Fresh Rerun
@@ -12,6 +12,25 @@ Workspace logical-surface projection, exact Artifact Gallery reachability,
 typed Viewer, applicable Finding/Evidence/Provenance, real UI Report Finalize,
 and paired non-executable Recipe. Attempt 6 is validation-only; production and
 scientific changes are not authorized. Stop immediately on a new P0.
+
+完成时间：2026-08-13 17:10:00 +08:00
+
+修改文件：Attempt 6 test/evidence harness、独立 per-Demo/aggregate evidence、
+Phase 13 文档与 handoff、TASKS/persistent 状态文件。生产代码修改为 0。
+
+修改摘要：七个 canonical Demo 均从 fresh current user entry 完成真实
+PostgreSQL/Redis/MinIO、Redis queue、fresh Worker、registered Adapter、
+persisted Artifact、Job-derived Workspace、Chromium UI Finalize、Report 和
+paired non-executable Recipe。共 18 ToolCalls、85 Artifacts、7 Reports、7 Recipes，
+所有 Workspace 为 7 panels，Artifact reachability 85/85，P13X2 8/8。
+
+测试结果：backend 1438 passed；frontend 460 passed；Phase13 focused 121 passed；
+required service-backed 8 passed、0 skipped；Chromium 7 demos PASS；Firefox、
+WebKit、390x844 representative PASS；typecheck/build/lock/diff/security/secret/
+manifest PASS；Fact/Scope hashes unchanged；exact-SHA CI 31682863560 PASS。
+
+提交/CI：implementation 5ddf2c0508a1f61642808a35774917fa3b54b0b0，
+CI https://github.com/foolkking/material-data-intelligence/actions/runs/31682863560 PASS。
 
 ---END---
 

@@ -2702,12 +2702,13 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
   blocks while retaining Attempts 1-5. Attempt 6 remains reviewer-gated and
   unqueued.
 
-## Phase 13-2 Attempt 6 - In Progress
+## Phase 13-2 Attempt 6 - Completed
 
 - [x] Verify Fix-Forward #6 lifecycle, current hashes, support matrix, and entry gates.
 - [x] Execute all seven fresh canonical real-user service-backed product paths.
 - [x] Finalize seven Reports and paired non-executable Recipes through Chromium UI.
 - [x] Pass negative/clarification, service-backed, panel cardinality, and provider gates.
 - [x] Generate independent per-Demo and aggregate evidence with raw-byte manifest self-check.
-- [ ] Pass full backend/frontend/focused/build/cross-platform/security regression.
-- [ ] Commit and push evidence, pass exact-SHA CI, append completion, and archive Attempt1-6 queue blocks.
+- [x] Pass full backend/frontend/focused/build/cross-platform/security regression.
+- [x] Commit and push evidence, pass exact-SHA CI, and append completion.
+- [ ] Archive Attempt1-6 queue blocks in the separate archive lifecycle commit.
