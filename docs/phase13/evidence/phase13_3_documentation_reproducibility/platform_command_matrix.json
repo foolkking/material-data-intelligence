@@ -1,0 +1,12 @@
+{
+  "linux": {
+    "copy": "cp",
+    "env": "export"
+  },
+  "macosScientificReleaseTarget": false,
+  "status": "PASS",
+  "windows": {
+    "copy": "Copy-Item",
+    "env": "$env:NAME"
+  }
+}

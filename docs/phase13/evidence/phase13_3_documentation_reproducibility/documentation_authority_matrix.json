@@ -1,0 +1,12 @@
+{
+  "classifications": [
+    "CURRENT_AUTHORITY",
+    "CURRENT_DERIVED_DOC",
+    "HISTORICAL_EVIDENCE",
+    "INTERNAL_FORENSIC_ONLY",
+    "PLANNING_ONLY",
+    "RELEASE_FACING"
+  ],
+  "currentAuthorityResolved": true,
+  "historicalRewrite": 0
+}

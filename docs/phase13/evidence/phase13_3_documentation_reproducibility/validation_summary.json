@@ -1,0 +1,20 @@
+{
+  "backend": {
+    "integrationDeselected": 51,
+    "passed": 1445,
+    "skipped": 1
+  },
+  "build": "PASS",
+  "frontend": {
+    "passed": 460
+  },
+  "phase13Focused": {
+    "passed": 128
+  },
+  "serviceBacked": {
+    "passed": 50,
+    "skipped": 0
+  },
+  "typecheck": "PASS",
+  "uvLockCheck": "PASS"
+}

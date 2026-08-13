@@ -4760,3 +4760,12 @@ production and scientific behavior may not change. A canonical PASS requires a
 real UI Finalize and paired inert Recipe for each Demo, while screenshot,
 browser, provider, Report inclusion, and Recipe existence remain explicitly
 non-scientific authorities. Phase 13-3 remains a reviewer-gated handoff.
+# Phase 13-3 Documentation Authority Decision
+
+The current Initial Release human documentation lives under
+`docs/phase13/release/`; deterministic seven-demo reproduction lives under
+`docs/phase13/reproducibility/`. Both are derived from current code, the current
+demo registry, fixture bytes, Attempt 6 evidence, and the sealed Fact/Scope
+hashes. Historical phase/evidence documents retain forensic authority but do
+not override this current release-facing package. The reproducibility manifest
+excludes runtime IDs and timestamps from semantic identity.

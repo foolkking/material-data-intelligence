@@ -1,0 +1,206 @@
+{
+  "entries": [
+    {
+      "bytes": 331,
+      "mode": "utf8-lf",
+      "path": "api_documentation_parity.json",
+      "sha256": "b3ee22198579cda464e39da0ce060a3c23fde4f659098e78e08658bf04aedb3f"
+    },
+    {
+      "bytes": 315,
+      "mode": "utf8-lf",
+      "path": "attempt6_authority_snapshot.json",
+      "sha256": "c17636f8776fb445da3dbbc8ab317b9e2af4b92eb0b05bbc0a3c406adfcf78d0"
+    },
+    {
+      "bytes": 86,
+      "mode": "utf8-lf",
+      "path": "broken_link_audit.json",
+      "sha256": "086aecd4112361b7eeee119734546c287cd6d83e4acf54dc85f3d9f861b8f0b1"
+    },
+    {
+      "bytes": 222,
+      "mode": "utf8-lf",
+      "path": "clean_checkout_verification.json",
+      "sha256": "51514dfd5330e46b3a69bc9a7f55ff2630b9b2ab979d3e7e50503e6ead3c802a"
+    },
+    {
+      "bytes": 301,
+      "mode": "utf8-lf",
+      "path": "current_hash_authority.json",
+      "sha256": "878546614d298ad70cdd1a65bd63faddb53ff1f915792cd9d0ae98af4d3419ff"
+    },
+    {
+      "bytes": 2026,
+      "mode": "utf8-lf",
+      "path": "current_input_support_matrix.json",
+      "sha256": "bf00810d64a4d3ded58d2fb781b850678fdbd1dc1c047ea31711ddd0a9018566"
+    },
+    {
+      "bytes": 2091,
+      "mode": "utf8-lf",
+      "path": "demo1_repro_contract.json",
+      "sha256": "0a92e4935780eb64410dd3f6fd80384b5621056e4d1709e09f3853e35b4978bc"
+    },
+    {
+      "bytes": 2074,
+      "mode": "utf8-lf",
+      "path": "demo2_repro_contract.json",
+      "sha256": "09f97787f4692d611291fbfd1adacb33c3ff6721e75293c4b9a4b4aee53c16c7"
+    },
+    {
+      "bytes": 2770,
+      "mode": "utf8-lf",
+      "path": "demo3_repro_contract.json",
+      "sha256": "cc2db43feaab510ce6b816822e63a10d5cc6a53153bdba5ed2b6d7062fdaa0b9"
+    },
+    {
+      "bytes": 2100,
+      "mode": "utf8-lf",
+      "path": "demo4_repro_contract.json",
+      "sha256": "da9f412493233a197a764b77b0358100c2d2ff1d4df82adf873950fcc58cef48"
+    },
+    {
+      "bytes": 3015,
+      "mode": "utf8-lf",
+      "path": "demo5_repro_contract.json",
+      "sha256": "886d08ebe5ea0868f0977258bd4d413909af11eff1a647eec047c3daadf7b6cf"
+    },
+    {
+      "bytes": 2046,
+      "mode": "utf8-lf",
+      "path": "demo6_repro_contract.json",
+      "sha256": "f228d7af3816d885641cfcf4d236562223eaec546185ea4cb941c1241978af8c"
+    },
+    {
+      "bytes": 2607,
+      "mode": "utf8-lf",
+      "path": "demo7_repro_contract.json",
+      "sha256": "072cacca85b1ce93ff26b336591258a6ccf3ca20a2f02115288d294c36c4b541"
+    },
+    {
+      "bytes": 57,
+      "mode": "utf8-lf",
+      "path": "docs_command_verification.json",
+      "sha256": "7d10ed484a4e0176f0e299246843149b90eac549cfd7ad921e8c0440f0de23e0"
+    },
+    {
+      "bytes": 244,
+      "mode": "utf8-lf",
+      "path": "documentation_authority_matrix.json",
+      "sha256": "d88f159b5d968e5c68266e4ed76cfdf122529b9b4ab792e6fa2ba67db6b59924"
+    },
+    {
+      "bytes": 203480,
+      "mode": "utf8-lf",
+      "path": "documentation_inventory.json",
+      "sha256": "a1dbfd98f49fcc947eb2a54f3689ff7ab558983d4b53ed71bef03fa1ca22d609"
+    },
+    {
+      "bytes": 216,
+      "mode": "utf8-lf",
+      "path": "entry_gate.md",
+      "sha256": "aaab46fc349faf20d107c34d976e4ad3532b662f31038f661e78304e07ee1c32"
+    },
+    {
+      "bytes": 3227,
+      "mode": "utf8-lf",
+      "path": "fixture_hash_matrix.json",
+      "sha256": "662f8e7ea227a87cd19d6af80aaacbe6590d06f6a40c6b849c4ff787fd806450"
+    },
+    {
+      "bytes": 130,
+      "mode": "utf8-lf",
+      "path": "forensic_history_integrity.json",
+      "sha256": "13ff8d5e2c2826cddff1991a5401a5410e6c554316fa0a2305dd94d3f867765b"
+    },
+    {
+      "bytes": 3044,
+      "mode": "utf8-lf",
+      "path": "known_limitations.json",
+      "sha256": "615e9c9c19719c86bd5004b322edd8d3069867644caff2085ed03c6bfaa1c065"
+    },
+    {
+      "bytes": 183,
+      "mode": "utf8-lf",
+      "path": "linux_windows_repro_manifest_parity.json",
+      "sha256": "2f076cf8e5f165778d6c7c8df37f2239db83e732e4fd4e907c6e37d0c31b1005"
+    },
+    {
+      "bytes": 68,
+      "mode": "utf8-lf",
+      "path": "migration_verification.json",
+      "sha256": "808d0fcd52021284fc0c40d183a29a070579b146c73f3602868634a5278db582"
+    },
+    {
+      "bytes": 89,
+      "mode": "utf8-lf",
+      "path": "npm_audit.json",
+      "sha256": "802e7f78322cf260549fd74101552b3e59310f4304540769e519401f2be21648"
+    },
+    {
+      "bytes": 188,
+      "mode": "utf8-lf",
+      "path": "platform_command_matrix.json",
+      "sha256": "29f5646103553d7b4393581ccde38856c390c46146ba53dcc0ee95b76aa66e4a"
+    },
+    {
+      "bytes": 52,
+      "mode": "utf8-lf",
+      "path": "private_path_scan.json",
+      "sha256": "39184170d32eb7486a5bdc36e7f096200e39430b034c5ecaef01dce5cd6c2822"
+    },
+    {
+      "bytes": 1865,
+      "mode": "utf8-lf",
+      "path": "prompt_hash_matrix.json",
+      "sha256": "9fb51c2e36fe8f4f3f2a8df8335efd8ec3e416ec1cddb0c0ffc6296efc00cf44"
+    },
+    {
+      "bytes": 1539,
+      "mode": "utf8-lf",
+      "path": "release_claim_matrix.json",
+      "sha256": "def03c8408bcd079e1b1729798a56c3ba4a2685f264c0b59ef52040cf99eb0ca"
+    },
+    {
+      "bytes": 179,
+      "mode": "utf8-lf",
+      "path": "repro_manifest_determinism.json",
+      "sha256": "3dc81cad43aee6cd4e3301b87d534569abbc93a755a744ac1aeb8e1e3fdbc58f"
+    },
+    {
+      "bytes": 89,
+      "mode": "utf8-lf",
+      "path": "secret_scan.txt",
+      "sha256": "0d1020915dd6ffd0bf539f07426398d04ccf5db5bb0bc31726f2a8af178b8634"
+    },
+    {
+      "bytes": 169,
+      "mode": "utf8-lf",
+      "path": "security_documentation_audit.json",
+      "sha256": "28b47c20b1656c4b50553ece4f3901cb20568c5ac8bcdd710f7359cba2da35a1"
+    },
+    {
+      "bytes": 259,
+      "mode": "utf8-lf",
+      "path": "service_bootstrap_verification.json",
+      "sha256": "80b5c6019970920b33f299fbb2edf09a13769b16f3e4fb77e6f4c5d800e58149"
+    },
+    {
+      "bytes": 142,
+      "mode": "utf8-lf",
+      "path": "seven_demo_repro_matrix.json",
+      "sha256": "e149d189a33acc2e33a9a0b0904c6c0c7e5d2bc0c0977eb6a5d680a8eafe017d"
+    },
+    {
+      "bytes": 305,
+      "mode": "utf8-lf",
+      "path": "validation_summary.json",
+      "sha256": "d134069ebbe9891e356cff8262584fb45ae35a5bbbb9b5cf06495a32989d8909"
+    }
+  ],
+  "hashMismatches": 0,
+  "missingFiles": 0,
+  "packageManifestSelfCheck": "PASS",
+  "schemaVersion": "phase13-evidence-manifest/1.0"
+}

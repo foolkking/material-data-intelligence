@@ -2342,3 +2342,10 @@ the six Phase 13-2 queue blocks remains.
 
 The separate archive lifecycle is complete: Phase 13-2 has zero TASK blocks,
 and Phase 13-3 remains an unqueued reviewer gate.
+# 2026-08-13 Phase 13-3 Documentation and Reproducibility
+
+Phase 13-2 Attempt 6 is verified and archived. Phase 13-3 is the sole active
+task and reconciles current release-facing documentation, seven canonical demo
+reproduction contracts, deterministic manifests, limitations, security,
+provider, API, and setup guidance. Production and scientific behavior remain
+frozen. Phase 13-4 remains reviewer-gated and is not queued.

@@ -1,0 +1,37 @@
+{
+  "claims": [
+    {
+      "allowedWording": "Attempt 6 passed seven fresh canonical paths",
+      "authority": "Attempt6",
+      "claim": "seven canonical product paths passed",
+      "evidence": "phase13_2_attempt6_seven_real_user_e2e/seven_demo_aggregate.json",
+      "forbiddenWording": "all science independently validated",
+      "limitation": "E2E is not reference validation"
+    },
+    {
+      "allowedWording": "SUPPORTED_WITH_LIMITS",
+      "authority": "Fact/Scope",
+      "claim": "typed phonon import",
+      "evidence": "phase13_1_workspace_projection_fix_forward_6/input_support_before_after.json",
+      "forbiddenWording": "generic phonon JSON supported",
+      "limitation": "generic YAML/JSON is MAPPING_ONLY"
+    },
+    {
+      "allowedWording": "Linux and Windows invariant replay passed",
+      "authority": "Phase11/Attempt6",
+      "claim": "cross-platform",
+      "evidence": "phase13_2_attempt6_seven_real_user_e2e/scientific_authority_nonchange.json",
+      "forbiddenWording": "all numeric results independently validated cross-platform",
+      "limitation": "independent numeric cross-platform reference validation is N/A"
+    },
+    {
+      "allowedWording": "Chromium, Firefox, WebKit, Chromium 390x844 tested",
+      "authority": "Attempt6",
+      "claim": "browser",
+      "evidence": "phase13_2_attempt6_seven_real_user_e2e/browser_matrix.json",
+      "forbiddenWording": "all browsers universally supported",
+      "limitation": "no universal certification"
+    }
+  ],
+  "unsupportedPublicClaims": 0
+}

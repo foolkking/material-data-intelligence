@@ -23,6 +23,10 @@ not run DFT/HPC jobs or arbitrary user code.
 
 ## Canonical Product Documents
 
+* [`docs/phase13/release/README.md`](docs/phase13/release/README.md) - current Initial Release documentation
+* [`docs/phase13/reproducibility/README.md`](docs/phase13/reproducibility/README.md) - deterministic seven-demo reproduction
+* [`docs/phase13/release/quick-start.md`](docs/phase13/release/quick-start.md) - verified installation and service startup
+* [`docs/phase13/release/limitations.md`](docs/phase13/release/limitations.md) - current claim and limitation boundaries
 * [`docs/00_PROJECT_GOAL.md`](docs/00_PROJECT_GOAL.md)
 * [`docs/01_PRODUCT_REQUIREMENTS.md`](docs/01_PRODUCT_REQUIREMENTS.md)
 * [`docs/ROADMAP.md`](docs/ROADMAP.md)
@@ -57,18 +61,17 @@ After each design or implementation phase, update:
 
 ## Current Status
 
-The validated scientific foundation now includes production periodic structure,
-trajectory, phonon, Brillouin-zone, and bounded volumetric products through Phase
-10J-6. Phase 10J-6 is archived. The next approved direction is Phase 10K-0, a
-Material Intelligence capability gap audit; implementation waits for a complete
-reviewer-supplied task prompt.
+Phase 13-2 Attempt 6 passed all seven fresh canonical real-user service-backed
+workflows and P13X2 `8/8`. Phase 13-3 is producing the current documentation
+and reproducibility package. The current Fact Model is
+`92d8295c7d78467d8ce021dc8033a58326219372a5d8fa87c93377ed1275953a` and
+the current Scope Baseline is
+`bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba`.
 
-The remaining initial-release route is 10K Material Intelligence, 10L Intelligent
-Analysis Agent, 10M Unified Scientific Workspace, 10N Professional Scientific
-Completion, Phase 11 validation, Phase 12 comprehensive UI/UX redesign, and
-Phase 13 final product closure. Fermi
-Surface is Future Scope. Enterprise SaaS, deployment productization, and a
-plugin marketplace are Not Planned.
+Phase 13-4 remains reviewer-gated. Initial Release completion has not been
+declared, and no Phase 14 exists. Fermi Surface remains Future Scope;
+enterprise SaaS, deployment productization, and a plugin marketplace remain
+Not Planned.
 
 ## Sharing Archive
 

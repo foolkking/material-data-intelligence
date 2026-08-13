@@ -1,0 +1,14 @@
+{
+  "documentedCanonicalRoutes": [
+    "/datasets/upload",
+    "/planner/intents",
+    "/planner/preview",
+    "/planner/validate",
+    "/planner/jobs",
+    "/workspaces",
+    "/workspaces/{workspace_id}/report-compositions"
+  ],
+  "routeAuthority": "apps/api/mdi_api/main.py",
+  "status": "PASS",
+  "testOnlyRoutesPublished": 0
+}

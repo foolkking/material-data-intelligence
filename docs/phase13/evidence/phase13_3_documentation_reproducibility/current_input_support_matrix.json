@@ -1,0 +1,87 @@
+{
+  "canonicalEntries": [
+    {
+      "demoId": "P13-DEMO-01",
+      "fixtures": [
+        {
+          "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+          "fixtureId": "P13-DEMO-01-FIX-01"
+        }
+      ]
+    },
+    {
+      "demoId": "P13-DEMO-02",
+      "fixtures": [
+        {
+          "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+          "fixtureId": "P13-DEMO-02-FIX-01"
+        }
+      ]
+    },
+    {
+      "demoId": "P13-DEMO-03",
+      "fixtures": [
+        {
+          "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+          "fixtureId": "P13-DEMO-03-FIX-01"
+        },
+        {
+          "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+          "fixtureId": "P13-DEMO-03-FIX-02"
+        }
+      ]
+    },
+    {
+      "demoId": "P13-DEMO-04",
+      "fixtures": [
+        {
+          "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+          "fixtureId": "P13-DEMO-04-FIX-01"
+        }
+      ]
+    },
+    {
+      "demoId": "P13-DEMO-05",
+      "fixtures": [
+        {
+          "disposition": "SUPPORTED_WITH_LIMITS",
+          "fixtureId": "P13-DEMO-05-FIX-01"
+        },
+        {
+          "disposition": "SUPPORTED_WITH_LIMITS",
+          "fixtureId": "P13-DEMO-05-FIX-02"
+        },
+        {
+          "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+          "fixtureId": "P13-DEMO-05-FIX-03"
+        }
+      ]
+    },
+    {
+      "demoId": "P13-DEMO-06",
+      "fixtures": [
+        {
+          "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+          "fixtureId": "P13-DEMO-06-FIX-01"
+        }
+      ]
+    },
+    {
+      "demoId": "P13-DEMO-07",
+      "fixtures": [
+        {
+          "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+          "fixtureId": "P13-DEMO-07-FIX-01"
+        },
+        {
+          "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+          "fixtureId": "P13-DEMO-07-FIX-02"
+        }
+      ]
+    }
+  ],
+  "genericPhononYamlJson": "MAPPING_ONLY",
+  "otherPromotions": 0,
+  "typedPhononBandImport": "SUPPORTED_WITH_LIMITS",
+  "typedPhononDosImport": "SUPPORTED_WITH_LIMITS"
+}

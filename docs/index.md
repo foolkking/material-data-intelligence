@@ -1,5 +1,23 @@
 # 文档索引
 
+## Initial Release
+
+- [Initial Release documentation](phase13/release/README.md)
+- [Installation and quick start](phase13/release/quick-start.md)
+- [Architecture and authority](phase13/release/architecture.md)
+- [Current input support](phase13/release/input-support.md)
+- [API reference](phase13/release/api-reference.md)
+- [Known limitations](phase13/release/limitations.md)
+- [Security model](phase13/release/security.md)
+- [Provider policy](phase13/release/provider.md)
+- [Troubleshooting](phase13/release/troubleshooting.md)
+- [Seven-demo deterministic reproducibility](phase13/reproducibility/README.md)
+- [Machine-readable reproducibility manifest](phase13/reproducibility/manifest.json)
+
+These documents resolve current release authority. Phase documents and evidence
+below preserve design and forensic history and do not override current Fact,
+Scope, input-support, or limitation authorities.
+
 ## Phase 12 Current UX Implementation
 
 - [Phase 12-4 Findings, Evidence, Inspector and Provenance](phase12/phase12_4_findings_evidence_inspector_provenance.md)

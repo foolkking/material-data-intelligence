@@ -2716,3 +2716,8 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 Phase 13-2 queue archive is complete. Historical Attempt1-5 failures and the
 Attempt6 PASS remain in `results.md` and evidence; `TASK_BLOCK_COUNT = 0`.
 Phase 13-3 is reviewer-gated and unqueued.
+# Current Task: Phase 13-3 Documentation + Reproducibility Package
+
+Status: in progress. Attempt 6 passed seven fresh canonical demos and P13X2
+8/8. Current work is documentation/evidence only; Phase 13-4 has no executable
+task, Initial Release is not complete, and Phase 14 does not exist.

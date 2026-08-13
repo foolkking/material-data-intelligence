@@ -1,0 +1,47 @@
+{
+  "attempt6Evidence": "../evidence/phase13_2_attempt6_seven_real_user_e2e/demo_2/demo_result.json",
+  "canonicalPrompt": "Evaluate these materials-model predictions and explain the largest errors and limitations.",
+  "demoId": "P13-DEMO-02",
+  "doesNotProve": "independent validation of every numerical output, universal browser support, or new scientific capability",
+  "expectedCapabilityCoverage": [
+    "dataset.materials_explorer",
+    "ml.regression_evaluation"
+  ],
+  "family": "Materials ML",
+  "fixtures": [
+    {
+      "bytes": 64,
+      "entryMode": "parse",
+      "fixtureId": "P13-DEMO-02-FIX-01",
+      "hashMode": "UTF8_LF",
+      "path": "tests/fixtures/tables/ml_results.csv",
+      "sha256": "9473b499a846608123be135e8527e2144191c02c92e9147b84a3608326d4df3d"
+    }
+  ],
+  "inputSupport": [
+    {
+      "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+      "fixtureId": "P13-DEMO-02-FIX-01"
+    }
+  ],
+  "limitations": [
+    "This is bounded evaluation of supplied predictions, not training, AutoML, SHAP, or a generalization guarantee."
+  ],
+  "negativeBoundary": "Do not interpret evaluation as model training or guaranteed generalization.",
+  "planSemantics": "Plan 0.1 or 0.2 according to actual Artifact dependencies; multi-tool does not itself require 0.2",
+  "plannerSemantics": "capability-aware selection; every selected Tool must be Registry-eligible",
+  "promptSha256": "47579983daf0c517282ca11ab79d302aed3f49b762053c6c5a1752974e3dd30d",
+  "proves": "the current canonical entry, semantic coverage, durable identity, runtime registration, Artifact, Workspace, Report, and Recipe contracts are reproducible",
+  "reportRecipeExpectation": "explicit UI Preview and Finalize over persisted facts; paired non-executable Recipe",
+  "requiredServices": [
+    "PostgreSQL",
+    "Redis",
+    "MinIO"
+  ],
+  "schemaVersion": "Phase13InitialReleaseDemoReproContract/1.0",
+  "userEntry": [
+    "parse",
+    "natural_language_prompt"
+  ],
+  "workspaceExpectation": "one Job-derived Workspace; exact persisted Artifacts remain reachable; panel count <= 32"
+}

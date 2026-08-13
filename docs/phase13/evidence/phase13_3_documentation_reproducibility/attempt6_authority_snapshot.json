@@ -1,0 +1,13 @@
+{
+  "artifactsObserved": 85,
+  "demos": "7/7",
+  "exactShaCi": "31682863560",
+  "implementationSha": "5ddf2c0508a1f61642808a35774917fa3b54b0b0",
+  "p13x2": "8/8",
+  "recipesObserved": 7,
+  "reportsObserved": 7,
+  "status": "PASS",
+  "toolCallsObserved": 18,
+  "unreachableArtifacts": 0,
+  "workspacesObserved": 7
+}

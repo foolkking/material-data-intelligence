@@ -1,0 +1,62 @@
+{
+  "attempt6Evidence": "../evidence/phase13_2_attempt6_seven_real_user_e2e/demo_3/demo_result.json",
+  "canonicalPrompt": "Inspect this crystal structure, map its CrystalNN local environment and coordination polyhedra, then compare the supplied experimental XRD peaks with its theoretical pattern.",
+  "demoId": "P13-DEMO-03",
+  "doesNotProve": "independent validation of every numerical output, universal browser support, or new scientific capability",
+  "expectedCapabilityCoverage": [
+    "structure.coordination_crystalnn",
+    "structure.experimental_xrd_comparison",
+    "structure.local_environment_polyhedra",
+    "structure.xrd"
+  ],
+  "family": "Structure + coordination + local environment + polyhedra + experimental XRD",
+  "fixtures": [
+    {
+      "bytes": 382,
+      "entryMode": "parse",
+      "fixtureId": "P13-DEMO-03-FIX-01",
+      "hashMode": "UTF8_LF",
+      "path": "tests/fixtures/structures/simple_cubic.cif",
+      "sha256": "cb832812e186173117b59fb0beb629375d89b2452679aa9a1a1070a7dcdb0f5e"
+    },
+    {
+      "bytes": 763,
+      "entryMode": "parse",
+      "fixtureId": "P13-DEMO-03-FIX-02",
+      "hashMode": "UTF8_LF",
+      "path": "tests/fixtures/experimental_xrd/phase13_demo3_xrd.json",
+      "sha256": "b62b79e7e580c772d7dce563fa8eeb0d1d15d0cc3db6fa614c4f1eb3008e4ae3"
+    }
+  ],
+  "inputSupport": [
+    {
+      "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+      "fixtureId": "P13-DEMO-03-FIX-01"
+    },
+    {
+      "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+      "fixtureId": "P13-DEMO-03-FIX-02"
+    }
+  ],
+  "limitations": [
+    "Coordination and local environments are algorithm-derived. XRD is peak correspondence under wavelength/tolerance policy, not phase confirmation or Rietveld refinement."
+  ],
+  "negativeBoundary": "A wavelength mismatch is rejected; it is not reprojected or converted.",
+  "planSemantics": "Plan 0.1 or 0.2 according to actual Artifact dependencies; multi-tool does not itself require 0.2",
+  "plannerSemantics": "capability-aware selection; every selected Tool must be Registry-eligible",
+  "promptSha256": "f7c06c5b1d7d1f1ceb55bbe48696fa16e45fe5707077d81f8b8a03583e20629e",
+  "proves": "the current canonical entry, semantic coverage, durable identity, runtime registration, Artifact, Workspace, Report, and Recipe contracts are reproducible",
+  "reportRecipeExpectation": "explicit UI Preview and Finalize over persisted facts; paired non-executable Recipe",
+  "requiredServices": [
+    "PostgreSQL",
+    "Redis",
+    "MinIO"
+  ],
+  "schemaVersion": "Phase13InitialReleaseDemoReproContract/1.0",
+  "userEntry": [
+    "parse",
+    "parse",
+    "natural_language_prompt"
+  ],
+  "workspaceExpectation": "one Job-derived Workspace; exact persisted Artifacts remain reachable; panel count <= 32"
+}

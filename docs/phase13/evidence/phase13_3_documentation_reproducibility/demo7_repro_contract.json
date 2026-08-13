@@ -1,0 +1,60 @@
+{
+  "attempt6Evidence": "../evidence/phase13_2_attempt6_seven_real_user_e2e/demo_7/demo_result.json",
+  "canonicalPrompt": "Inspect the supplied electronic band structure and DOS, including gap, spin, projection and compatibility limitations.",
+  "demoId": "P13-DEMO-07",
+  "doesNotProve": "independent validation of every numerical output, universal browser support, or new scientific capability",
+  "expectedCapabilityCoverage": [
+    "electronic.band_structure",
+    "electronic.dos"
+  ],
+  "family": "Electronic Band + DOS",
+  "fixtures": [
+    {
+      "bytes": 1808,
+      "entryMode": "parse",
+      "fixtureId": "P13-DEMO-07-FIX-01",
+      "hashMode": "UTF8_LF",
+      "path": "docs/phase10n/evidence/phase10n5_electronic_band_dos/electronic_resource_contracts/band.json",
+      "sha256": "51fd7a057a398eaa127917338030da3dccb15f5fcd8f299822c76d741e11c6c4"
+    },
+    {
+      "bytes": 1101,
+      "entryMode": "parse",
+      "fixtureId": "P13-DEMO-07-FIX-02",
+      "hashMode": "UTF8_LF",
+      "path": "docs/phase10n/evidence/phase10n5_electronic_band_dos/electronic_resource_contracts/dos.json",
+      "sha256": "b0023d82aa1448893def37f3a323de22a642e7c4f048737dd373ea0342aebbdf"
+    }
+  ],
+  "inputSupport": [
+    {
+      "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+      "fixtureId": "P13-DEMO-07-FIX-01"
+    },
+    {
+      "disposition": "SUPPORTED_BY_CANONICAL_ENTRY",
+      "fixtureId": "P13-DEMO-07-FIX-02"
+    }
+  ],
+  "limitations": [
+    "Band/DOS values and Fermi energy are source supplied. Unknown energy units are ineligible; classification is policy-bounded."
+  ],
+  "negativeBoundary": "Unknown energy units are INELIGIBLE and are never assumed to be eV.",
+  "planSemantics": "Plan 0.1 or 0.2 according to actual Artifact dependencies; multi-tool does not itself require 0.2",
+  "plannerSemantics": "capability-aware selection; every selected Tool must be Registry-eligible",
+  "promptSha256": "aedbb3c41c4eabf8de863973e454562c51ee4361bfe35d89eaba54656a75993f",
+  "proves": "the current canonical entry, semantic coverage, durable identity, runtime registration, Artifact, Workspace, Report, and Recipe contracts are reproducible",
+  "reportRecipeExpectation": "explicit UI Preview and Finalize over persisted facts; paired non-executable Recipe",
+  "requiredServices": [
+    "PostgreSQL",
+    "Redis",
+    "MinIO"
+  ],
+  "schemaVersion": "Phase13InitialReleaseDemoReproContract/1.0",
+  "userEntry": [
+    "parse",
+    "parse",
+    "natural_language_prompt"
+  ],
+  "workspaceExpectation": "one Job-derived Workspace; exact persisted Artifacts remain reachable; panel count <= 32"
+}

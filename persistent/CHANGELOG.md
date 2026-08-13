@@ -2689,3 +2689,12 @@ directly afterward. Phase 12-2 remains reviewer-gated.
 - Added deterministic failure evidence, service-backed regression and CI guards.
   No production, scientific, schema, API, dependency, provider, or scope change
   was made; Demo 2-7 were not executed after the P0 stop.
+# 2026-08-13 Phase 13-3 Documentation Package
+
+- Added current Initial Release, quick-start, architecture, API, input-support,
+  limitations, security, provider, troubleshooting, and forensic documents.
+- Added seven current demo reproduction contracts and a deterministic
+  machine-readable manifest.
+- Added non-production documentation/evidence generation and validation.
+- No production, scientific, schema, dependency, lockfile, or live-provider
+  behavior changed.

@@ -72,7 +72,7 @@ export DATABASE_URL="postgresql+psycopg://mdi:mdi-local-dev@localhost:5432/mdi"
 python -m alembic -c apps/api/alembic.ini upgrade head
 ```
 
-Expected: migration `0001_phase4_persistence_baseline` applied; all Phase 4 tables created.
+Expected: migration head `0007_phase10m1_workspace_domain` applied.
 
 ### Run upgrade (SQLite, no Docker)
 
@@ -89,17 +89,8 @@ docker compose exec postgres psql -U mdi -d mdi -c "\dt"
 
 Tables expected: `projects`, `datasets`, `data_profiles`, `jobs`, `job_events`, `tool_calls`, `artifacts`, `visualization_recipes`, `reports`.
 
-### Create a new migration
-
-```bash
-python -m alembic -c apps/api/alembic.ini revision --autogenerate -m "description"
-```
-
-### Rollback
-
-```bash
-python -m alembic -c apps/api/alembic.ini downgrade -1
-```
+Creating or rolling back migrations is a maintainer operation and is not part
+of the Initial Release reproduction procedure.
 
 ## 6. Repository Smoke Tests
 
@@ -195,8 +186,10 @@ This ensures `python -m pytest -q` always works without Docker.
 | Run Phase 8B persisted-plan integration | `MDI_RUN_INTEGRATION=1 python -m pytest tests/test_phase8b_persisted_plan_queue.py -q -m integration` |
 | Downgrade | `python -m alembic -c apps/api/alembic.ini downgrade -1` |
 | MinIO console | http://localhost:9001 |
-| Reset PostgreSQL | `docker compose down -v postgres && docker compose up -d postgres` |
-| Clean MinIO bucket | `docker compose exec minio mc rm --recursive local/mdi-artifacts/` |
+| Safe service stop | `docker compose down` |
+
+Do not remove named volumes or recursively clear buckets when user or
+production data may be present. Reproduction uses isolated test identities.
 
 ## 11. Phase 6 Integration Tests
 
@@ -305,10 +298,8 @@ docker compose exec postgres psql -U mdi -d mdi -c "SELECT 1 AS ok"
 ### Alembic migration failed
 
 ```bash
-# Reset and re-migrate
-docker compose down -v postgres
-docker compose up -d postgres
-# Wait for healthy
+# Confirm service health, then re-run the idempotent upgrade.
+docker compose ps postgres
 export DATABASE_URL="postgresql+psycopg://mdi:mdi-local-dev@localhost:5432/mdi"
 python -m alembic -c apps/api/alembic.ini upgrade head
 ```

@@ -1,5 +1,15 @@
 # PROJECT_BRIEF
 
+## 2026-08-13 Phase 13-3 Current Release Documentation
+
+Phase 13-2 Attempt 6 passed all seven fresh canonical real-user workflows and
+P13X2 8/8 at implementation `5ddf2c0508a1f61642808a35774917fa3b54b0b0`,
+exact-SHA CI `31682863560`. Phase 13-3 is the sole active documentation and
+reproducibility task. Current release entry is `docs/phase13/release/README.md`;
+current machine reproduction entry is
+`docs/phase13/reproducibility/manifest.json`. No production or scientific
+behavior changes are authorized.
+
 ## 2026-08-10 Phase 12-5 Report and Recipe Experience
 
 Phase 12-5 is complete at implementation `d20d0a1`, verified by exact-SHA CI

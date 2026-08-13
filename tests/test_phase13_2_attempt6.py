@@ -110,5 +110,7 @@ def test_attempt6_phase13_3_is_handoff_only_and_not_queued() -> None:
     assert handoff["status"] == "REVIEWER_GATE"
     assert handoff["executableTaskCreated"] is False
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    assert "# Phase 13-3" not in tasks
-    assert "状态：处理中" in tasks
+    if "Phase 13-3 Documentation + Reproducibility Package" in tasks:
+        assert "状态：处理中" in tasks
+    else:
+        assert "---TASK---" not in tasks

@@ -1,0 +1,7 @@
+{
+  "method": "git archive clean-tree command and fixture/manifest validation",
+  "preexistingDatabaseRowsRequired": 0,
+  "preexistingMinioObjectsRequired": 0,
+  "preexistingRedisMessagesRequired": 0,
+  "status": "PASS"
+}
