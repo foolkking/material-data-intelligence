@@ -2750,3 +2750,8 @@ Implementation/evidence commit `b60e048abbf366fdbd9fe72da27efd675fc50939` passed
 exact-SHA CI `31728986993`. Seven fresh release-acceptance paths and the
 required retained validation gates passed. Queue archival is the remaining
 lifecycle action; Phase13-6 remains reviewer-gated and unqueued.
+
+## Phase 13-5 Queue Archive
+
+The completion record is verified and the Phase13-5 task is archived. The queue
+is empty; Phase13-6 remains reviewer-gated and Initial Release remains incomplete.

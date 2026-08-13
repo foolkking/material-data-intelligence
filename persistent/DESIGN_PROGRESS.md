@@ -2408,3 +2408,8 @@ exact-SHA CI `31728986993`. The fresh seven-demo release acceptance, retained
 negative and browser gates, and Fact/Scope/reproducibility reconciliation passed
 without product, scientific, or support-scope mutation. Phase13-6 remains
 reviewer-gated and Initial Release remains incomplete.
+
+## 2026-08-14 Phase 13-5 Queue Archive
+
+The completed Phase13-5 task is archived. `TASK_BLOCK_COUNT = 0`; Phase13-6
+remains reviewer-gated and Initial Release remains incomplete.

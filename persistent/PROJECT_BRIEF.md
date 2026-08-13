@@ -713,3 +713,9 @@ exact-SHA CI `31728986993`. The seven fresh canonical user paths, retained
 negative/browser/platform gates, and authority reconciliation pass with no
 production behavior change. Phase13-6 remains a reviewer gate only; Initial
 Release is not complete.
+
+## Phase 13-5 Queue Archive
+
+The completed Phase13-5 task is archived after completion verification. The queue
+is empty; Phase13-6 is still reviewer-gated and Initial Release remains
+incomplete.
