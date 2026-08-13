@@ -2711,4 +2711,8 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Generate independent per-Demo and aggregate evidence with raw-byte manifest self-check.
 - [x] Pass full backend/frontend/focused/build/cross-platform/security regression.
 - [x] Commit and push evidence, pass exact-SHA CI, and append completion.
-- [ ] Archive Attempt1-6 queue blocks in the separate archive lifecycle commit.
+- [x] Archive Attempt1-6 queue blocks in the separate archive lifecycle commit.
+
+Phase 13-2 queue archive is complete. Historical Attempt1-5 failures and the
+Attempt6 PASS remain in `results.md` and evidence; `TASK_BLOCK_COUNT = 0`.
+Phase 13-3 is reviewer-gated and unqueued.

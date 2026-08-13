@@ -11964,3 +11964,23 @@ PHASE13_3_EXECUTABLE_TASK_CREATED = NO
 INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
+
+## Phase 13-2 Queue Archive
+
+Attempt6 PASS, implementation exact-SHA CI `31682863560`, and completion commit
+`dd4ac01` were verified before archive. Attempt1-5 historical failures and the
+Attempt6 PASS remain permanently recorded in `results.md` and evidence. All six
+Phase13-2 TASK blocks are removed; no Phase13-3 task is created.
+
+```text
+PHASE13_2_QUEUE_ARCHIVED
+ATTEMPT_6_IMPLEMENTATION_VERIFIED_BY_EXACT_SHA_CI
+ATTEMPT_6_COMPLETION_RECORDED
+FAILED_RETAINED_TASK_BLOCKS = 0
+EXECUTABLE_PENDING_TASKS = 0
+TASK_BLOCK_COUNT = 0
+PHASE_13_3 = REVIEWER_GATE / AWAITING REVIEWER PROMPT
+PHASE13_3_EXECUTABLE_TASK_CREATED = NO
+INITIAL_RELEASE_COMPLETE = NO
+PHASE14_CREATED = NO
+```

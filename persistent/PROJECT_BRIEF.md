@@ -664,3 +664,7 @@ regression remain before completion; Phase 13-3 is handoff-only and unqueued.
 Attempt 6 implementation/evidence `5ddf2c0508a1f61642808a35774917fa3b54b0b0`
 passed exact-SHA CI `31682863560`; completion is recorded. Queue archive is the
 only remaining lifecycle action.
+
+Attempt1-6 Phase 13-2 queue blocks are archived after the verified Attempt6
+completion. The task queue has zero blocks. Phase 13-3 remains reviewer-gated,
+Initial Release is incomplete, and Phase14 is absent.

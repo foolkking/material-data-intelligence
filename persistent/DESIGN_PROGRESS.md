@@ -2339,3 +2339,6 @@ CI remain.
 Attempt 6 exact-SHA CI `31682863560` passed for implementation/evidence SHA
 `5ddf2c0508a1f61642808a35774917fa3b54b0b0`. Completion is recorded; archive of
 the six Phase 13-2 queue blocks remains.
+
+The separate archive lifecycle is complete: Phase 13-2 has zero TASK blocks,
+and Phase 13-3 remains an unqueued reviewer gate.

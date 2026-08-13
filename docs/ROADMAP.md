@@ -299,3 +299,7 @@ Adapters, persisted Artifacts, bounded Workspaces, Chromium UI Report Finalize,
 and paired non-executable Recipes. Full regression and implementation exact-SHA
 CI `31682863560` pass. Completion is recorded; queue archive remains. Phase 13-3
 is a reviewer-gated handoff and is not queued.
+
+The Phase 13-2 queue is archived after completion. `TASK_BLOCK_COUNT = 0`;
+Phase 13-3 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT` and has no
+executable task.
