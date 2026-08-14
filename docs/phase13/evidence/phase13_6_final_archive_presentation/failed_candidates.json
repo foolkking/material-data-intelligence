@@ -1,0 +1,12 @@
+{
+  "candidates": [
+    {
+      "candidateSha": "ad0c98f4e469bb9215cd651ad6ed791527faf01c",
+      "ciRun": 31767331402,
+      "classification": "CI_EVIDENCE_PORTABILITY / CLEAN_CHECKOUT_ARTIFACT_ORDERING",
+      "correctedSha": "PENDING_CORRECTED_IMPLEMENTATION_COMMIT",
+      "failedJob": "Unit Tests (Python 3.11)",
+      "rootCause": "The full unit step ran before the ignored deterministic ZIP was built in a clean checkout."
+    }
+  ]
+}

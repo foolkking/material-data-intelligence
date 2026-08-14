@@ -3,6 +3,8 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import subprocess
+import sys
 import zipfile
 
 
@@ -85,6 +87,12 @@ def test_presentation_assets_have_exact_provenance_and_no_science_authority() ->
 
 def test_archive_is_deterministic_sanitized_and_self_verifying() -> None:
     archive = ARTIFACTS / "material-data-intelligence-initial-release.zip"
+    if not archive.is_file():
+        subprocess.run(
+            [sys.executable, str(ROOT / "scripts/generate_phase13_6_final_archive.py")],
+            cwd=ROOT,
+            check=True,
+        )
     determinism = load(OUT / "archive_determinism.json")
     check = load(OUT / "archive_extract_self_check.json")
     assert hashlib.sha256(archive.read_bytes()).hexdigest() == determinism["build1Sha256"] == determinism["build2Sha256"]
@@ -114,3 +122,14 @@ def test_evidence_manifest_and_queue_governance() -> None:
     assert decision["overall"] == "PASS_WITH_EXISTING_EXPLICIT_LIMIT"
     assert decision["lifecycleStatus"] == "PENDING_IMPLEMENTATION_EXACT_SHA_CI"
     assert decision["initialReleaseComplete"] is False
+    failed = load(OUT / "failed_candidates.json")
+    assert failed["candidates"] == [
+        {
+            "candidateSha": "ad0c98f4e469bb9215cd651ad6ed791527faf01c",
+            "ciRun": 31767331402,
+            "classification": "CI_EVIDENCE_PORTABILITY / CLEAN_CHECKOUT_ARTIFACT_ORDERING",
+            "correctedSha": "PENDING_CORRECTED_IMPLEMENTATION_COMMIT",
+            "failedJob": "Unit Tests (Python 3.11)",
+            "rootCause": "The full unit step ran before the ignored deterministic ZIP was built in a clean checkout.",
+        }
+    ]
