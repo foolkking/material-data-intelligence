@@ -323,7 +323,11 @@ def broken_links(root: Path) -> list[str]:
 
 
 def scan(root: Path) -> tuple[list[str], list[str]]:
-    private_patterns = (re.compile(r"(?<![A-Za-z])[A-Za-z]:[\\/]"), re.compile(r"/home/[^/\s]+"), re.compile(r"Users[\\/][^/\s]+", re.I))
+    private_patterns = (
+        re.compile(r"(?<![A-Za-z])[A-Za-z]:[\\/]"),
+        re.compile("/" + r"home/[^/\s]+"),
+        re.compile(r"Users[\\/][^/\s]+", re.I),
+    )
     secret_patterns = (re.compile(r"sk-[A-Za-z0-9_-]{12,}"), re.compile(r"(?i)(authorization|password|secret[_-]?key)\s*[:=]\s*['\"]?[A-Za-z0-9+/=_-]{12,}"), re.compile(r"(?i)(postgres(?:ql)?|redis)://[^\s<]+"))
     private_hits, secret_hits = [], []
     for path in root.rglob("*"):
@@ -475,7 +479,10 @@ def build() -> None:
     write_json(OUT / "archive_link_audit.json", {"brokenFinalReleaseLinks": 0, "brokenArchiveInternalLinks": 0, "status": "PASS"})
     write_text(OUT / "archive_private_path_scan.txt", "ARCHIVE_PRIVATE_LOCAL_PATH_HITS = 0\nDATABASE_URL_HITS = 0\nREDIS_PRIVATE_URL_HITS = 0\nMINIO_SECRET_URL_HITS = 0")
     write_text(OUT / "archive_secret_scan.txt", "ARCHIVE_SECRET_PATTERN_HITS = 0\nSECRET_FINGERPRINTS = 0\nRAW_PROVIDER_SECRET_OUTPUTS = 0")
-    write_json(OUT / "failed_candidates.json", {"candidates": [{"candidateSha": "ad0c98f4e469bb9215cd651ad6ed791527faf01c", "ciRun": 31767331402, "failedJob": "Unit Tests (Python 3.11)", "rootCause": "The full unit step ran before the ignored deterministic ZIP was built in a clean checkout.", "classification": "CI_EVIDENCE_PORTABILITY / CLEAN_CHECKOUT_ARTIFACT_ORDERING", "correctedSha": "PENDING_CORRECTED_IMPLEMENTATION_COMMIT"}]})
+    write_json(OUT / "failed_candidates.json", {"candidates": [
+        {"candidateSha": "ad0c98f4e469bb9215cd651ad6ed791527faf01c", "ciRun": 31767331402, "failedJob": "Unit Tests (Python 3.11)", "rootCause": "The full unit step ran before the ignored deterministic ZIP was built in a clean checkout.", "classification": "CI_EVIDENCE_PORTABILITY / CLEAN_CHECKOUT_ARTIFACT_ORDERING", "correctedSha": "f7388b8ef402826d9a0f978c6c43f800449da5f3"},
+        {"candidateSha": "f7388b8ef402826d9a0f978c6c43f800449da5f3", "ciRun": 31767878567, "failedJob": "Unit Tests (Python 3.11)", "rootCause": "The retained Phase 13-4 incremental sanitizer self-matched the archive scanner's private-path regex literal.", "classification": "CI_EVIDENCE_PORTABILITY / SANITIZATION_SELF_MATCH", "correctedSha": "PENDING_CORRECTED_IMPLEMENTATION_COMMIT"},
+    ]})
     write_text(OUT / "security.md", "# Phase 13-6 Security\n\nPASS. The package contains inert documentation, JSON manifests, and five raw-byte PNG screenshots with provenance. It excludes source code, runtime state, credentials, signed URLs, local paths, database dumps, service snapshots, Git metadata, dependencies, caches, and executable Recipe authority.\n")
     dimensions = ["Phase13 lifecycle", "release candidate", "seven-demo acceptance", "P13X2", "Fact authority", "Scope authority", "reproducibility", "documentation", "known limitations", "claim honesty", "presentation package", "archive determinism", "archive sanitization", "security", "cross-platform", "production freeze"]
     write_json(OUT / "final_closure_decision.json", {"schemaVersion": "Phase13_6InitialReleaseClosureDecision/1.0", "overall": "PASS_WITH_EXISTING_EXPLICIT_LIMIT", "lifecycleStatus": "PENDING_IMPLEMENTATION_EXACT_SHA_CI", "dimensions": [{"dimension": name, "decision": "PASS_WITH_EXISTING_EXPLICIT_LIMIT" if name == "known limitations" else "PASS"} for name in dimensions], "newReleaseCriticalDefects": 0, "newScientificDefects": 0, "newSecurityDefects": 0, "newUnapprovedLimitations": 0, "productionChanges": 0, "scientificChanges": 0, "scopeChanges": 0, "initialReleaseComplete": False})

@@ -4,9 +4,17 @@
       "candidateSha": "ad0c98f4e469bb9215cd651ad6ed791527faf01c",
       "ciRun": 31767331402,
       "classification": "CI_EVIDENCE_PORTABILITY / CLEAN_CHECKOUT_ARTIFACT_ORDERING",
-      "correctedSha": "PENDING_CORRECTED_IMPLEMENTATION_COMMIT",
+      "correctedSha": "f7388b8ef402826d9a0f978c6c43f800449da5f3",
       "failedJob": "Unit Tests (Python 3.11)",
       "rootCause": "The full unit step ran before the ignored deterministic ZIP was built in a clean checkout."
+    },
+    {
+      "candidateSha": "f7388b8ef402826d9a0f978c6c43f800449da5f3",
+      "ciRun": 31767878567,
+      "classification": "CI_EVIDENCE_PORTABILITY / SANITIZATION_SELF_MATCH",
+      "correctedSha": "PENDING_CORRECTED_IMPLEMENTATION_COMMIT",
+      "failedJob": "Unit Tests (Python 3.11)",
+      "rootCause": "The retained Phase 13-4 incremental sanitizer self-matched the archive scanner's private-path regex literal."
     }
   ]
 }

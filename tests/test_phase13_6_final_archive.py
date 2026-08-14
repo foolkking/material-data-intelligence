@@ -123,13 +123,10 @@ def test_evidence_manifest_and_queue_governance() -> None:
     assert decision["lifecycleStatus"] == "PENDING_IMPLEMENTATION_EXACT_SHA_CI"
     assert decision["initialReleaseComplete"] is False
     failed = load(OUT / "failed_candidates.json")
-    assert failed["candidates"] == [
-        {
-            "candidateSha": "ad0c98f4e469bb9215cd651ad6ed791527faf01c",
-            "ciRun": 31767331402,
-            "classification": "CI_EVIDENCE_PORTABILITY / CLEAN_CHECKOUT_ARTIFACT_ORDERING",
-            "correctedSha": "PENDING_CORRECTED_IMPLEMENTATION_COMMIT",
-            "failedJob": "Unit Tests (Python 3.11)",
-            "rootCause": "The full unit step ran before the ignored deterministic ZIP was built in a clean checkout.",
-        }
+    assert [row["candidateSha"] for row in failed["candidates"]] == [
+        "ad0c98f4e469bb9215cd651ad6ed791527faf01c",
+        "f7388b8ef402826d9a0f978c6c43f800449da5f3",
     ]
+    assert failed["candidates"][0]["correctedSha"] == "f7388b8ef402826d9a0f978c6c43f800449da5f3"
+    assert failed["candidates"][1]["classification"] == "CI_EVIDENCE_PORTABILITY / SANITIZATION_SELF_MATCH"
+    assert failed["candidates"][1]["correctedSha"] == "PENDING_CORRECTED_IMPLEMENTATION_COMMIT"
