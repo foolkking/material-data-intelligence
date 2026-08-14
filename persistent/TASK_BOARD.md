@@ -2755,3 +2755,12 @@ lifecycle action; Phase13-6 remains reviewer-gated and unqueued.
 
 The completion record is verified and the Phase13-5 task is archived. The queue
 is empty; Phase13-6 remains reviewer-gated and Initial Release remains incomplete.
+
+## Phase 13-6 Final Archive and Presentation - Completed
+
+Implementation/evidence `48b270c6d2c6191b5707f6ee1c4d81a6ab9c8987`
+passed exact-SHA CI `31768285019`. The final archive and presentation package,
+InitialReleaseManifest, claim matrix, limitations linkage, forensic timeline,
+and evidence index are sealed without product or science changes. Phase 13 and
+the Initial Release are complete. The completed Phase13-6 queue block remains
+only until the separate archive commit; Phase 14 is absent.

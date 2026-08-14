@@ -2413,3 +2413,12 @@ reviewer-gated and Initial Release remains incomplete.
 
 The completed Phase13-5 task is archived. `TASK_BLOCK_COUNT = 0`; Phase13-6
 remains reviewer-gated and Initial Release remains incomplete.
+
+## 2026-08-14 Phase 13-6 Completion
+
+Implementation/evidence `48b270c6d2c6191b5707f6ee1c4d81a6ab9c8987`
+passed exact-SHA CI `31768285019`. The production surface hash is unchanged;
+the InitialReleaseManifest and deterministic ZIP are sealed with complete
+sanitization, extraction, provenance, claim, limitation, and evidence-index
+checks. Phase 13 is complete, `INITIAL_RELEASE_COMPLETE = YES`, no Phase 14
+task exists, and queue archive is the only remaining lifecycle action.

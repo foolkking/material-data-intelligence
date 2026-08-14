@@ -307,3 +307,11 @@ complete pending its separate queue archive: implementation/evidence SHA
 It changes only the existing Help affordance and preserves all release contracts.
 Phase 13-5 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT` with no executable
 task.
+
+## Phase 13 Completion
+
+Phase 13-5 final regression and release acceptance passed, followed by the
+reviewer-authorized Phase 13-6 deterministic final archive and presentation
+seal. Phase 13 is `COMPLETE / INITIAL_RELEASE_COMPLETE`; production and
+scientific authorities remain frozen, all eight known limitations remain
+explicit, and no Phase 14 or other executable future phase is created.

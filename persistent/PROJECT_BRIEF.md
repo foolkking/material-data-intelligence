@@ -719,3 +719,13 @@ Release is not complete.
 The completed Phase13-5 task is archived after completion verification. The queue
 is empty; Phase13-6 is still reviewer-gated and Initial Release remains
 incomplete.
+
+## Phase 13-6 Final Archive and Initial Release Completion
+
+The final archive/presentation implementation
+`48b270c6d2c6191b5707f6ee1c4d81a6ab9c8987` passed exact-SHA CI
+`31768285019`. Production, scientific, input-support, Planner, Runtime,
+Workspace, Report, and Recipe behavior did not change. The deterministic
+release archive, presentation, claim matrix, eight known limitations, evidence
+index, and InitialReleaseManifest are sealed. Phase 13 and the Initial Release
+are complete; the next executable phase is NONE and Phase 14 does not exist.
