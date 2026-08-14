@@ -24,6 +24,7 @@ not run DFT/HPC jobs or arbitrary user code.
 ## Canonical Product Documents
 
 * [`docs/phase13/release/README.md`](docs/phase13/release/README.md) - current Initial Release documentation
+* [`docs/phase13/final/README.md`](docs/phase13/final/README.md) - final archive and presentation package
 * [`docs/phase13/reproducibility/README.md`](docs/phase13/reproducibility/README.md) - deterministic seven-demo reproduction
 * [`docs/phase13/release/quick-start.md`](docs/phase13/release/quick-start.md) - verified installation and service startup
 * [`docs/phase13/release/limitations.md`](docs/phase13/release/limitations.md) - current claim and limitation boundaries
@@ -68,8 +69,10 @@ complete. The current Fact Model is
 the current Scope Baseline is
 `bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba`.
 
-Phase 13-4 remains reviewer-gated. Initial Release completion has not been
-declared, and no Phase 14 exists. Fermi Surface remains Future Scope;
+Phase 13-5 final regression and release acceptance passed. Phase 13-6 final
+archive and presentation closure is in progress; Initial Release completion
+has not been declared before its exact-SHA CI gate, and no Phase 14 exists.
+Fermi Surface remains Future Scope;
 enterprise SaaS, deployment productization, and a plugin marketplace remain
 Not Planned.
 

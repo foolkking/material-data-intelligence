@@ -1,0 +1,24 @@
+{
+  "analysisIntent": "1.0",
+  "analysisPlanVersions": [
+    "0.1",
+    "0.2"
+  ],
+  "dataProfile": "2.4",
+  "eligibilityResolution": "1.0",
+  "factModelHash": "92d8295c7d78467d8ce021dc8033a58326219372a5d8fa87c93377ed1275953a",
+  "inputSupport": {
+    "genericPhononYamlJson": "MAPPING_ONLY",
+    "typedPhononBandImport": "SUPPORTED_WITH_LIMITS",
+    "typedPhononDosImport": "SUPPORTED_WITH_LIMITS"
+  },
+  "maxLayoutRevisions": 128,
+  "maxWorkspacePanels": 32,
+  "migrationHead": "0007_phase10m1_workspace_domain",
+  "phase11": "COMPLETE / REFERENCE_VALIDATED_WITH_EXPLICIT_LIMITS",
+  "phase12ProductBaselineHash": "29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4",
+  "registry": 62,
+  "reproManifest": "Phase13InitialReleaseReproducibilityManifest/1.0",
+  "reproManifestHash": "931d6214cb11dbcad628f5b33ea97e043bbfeb54fbccc2f8c87cffebad9537e2",
+  "scopeBaselineHash": "bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba"
+}

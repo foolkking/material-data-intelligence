@@ -97,7 +97,8 @@ def test_performance_security_and_next_phase_are_bounded() -> None:
         assert "状态：处理中" in tasks
         assert "Task: Phase 13-6" not in tasks
     else:
-        assert "Phase 13-4 Targeted Final Product Polish" in tasks
+        assert "Phase 13-4 Targeted Final Product Polish" not in tasks
+        assert "Phase 13-6 - Final Archive + Presentation Package" in tasks
 
 
 def test_evidence_manifest_matches_raw_bytes() -> None:

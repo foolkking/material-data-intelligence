@@ -1,0 +1,79 @@
+{
+  "dimensions": [
+    {
+      "decision": "PASS",
+      "dimension": "Phase13 lifecycle"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "release candidate"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "seven-demo acceptance"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "P13X2"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "Fact authority"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "Scope authority"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "reproducibility"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "documentation"
+    },
+    {
+      "decision": "PASS_WITH_EXISTING_EXPLICIT_LIMIT",
+      "dimension": "known limitations"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "claim honesty"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "presentation package"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "archive determinism"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "archive sanitization"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "security"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "cross-platform"
+    },
+    {
+      "decision": "PASS",
+      "dimension": "production freeze"
+    }
+  ],
+  "initialReleaseComplete": false,
+  "lifecycleStatus": "PENDING_IMPLEMENTATION_EXACT_SHA_CI",
+  "newReleaseCriticalDefects": 0,
+  "newScientificDefects": 0,
+  "newSecurityDefects": 0,
+  "newUnapprovedLimitations": 0,
+  "overall": "PASS_WITH_EXISTING_EXPLICIT_LIMIT",
+  "productionChanges": 0,
+  "schemaVersion": "Phase13_6InitialReleaseClosureDecision/1.0",
+  "scientificChanges": 0,
+  "scopeChanges": 0
+}

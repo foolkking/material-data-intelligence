@@ -72,6 +72,7 @@ def test_queue_has_only_the_active_phase12_6_task() -> None:
         or "Phase 13-2 Reviewer Prompt" in tasks
         or "Phase 13-4 Targeted Final Product Polish" in tasks
         or "Phase 13-5 Final Regression + Release Acceptance" in tasks
+        or "Phase 13-6 - Final Archive + Presentation Package" in tasks
     ):
         blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
         active = [block for block in blocks if "状态：处理中" in block]

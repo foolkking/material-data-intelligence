@@ -102,5 +102,5 @@ def test_phase13_5_decision_manifest_and_phase13_6_handoff_are_bounded() -> None
         assert len(payload) == entry["bytes"]
         assert hashlib.sha256(payload).hexdigest() == entry["sha256"]
     tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    assert "Task: Phase 13-5 Final Regression + Release Acceptance" in tasks
-    assert "Task: Phase 13-6" not in tasks
+    assert "Phase 13-5 Final Regression + Release Acceptance" not in tasks
+    assert "Phase 13-6 - Final Archive + Presentation Package" in tasks

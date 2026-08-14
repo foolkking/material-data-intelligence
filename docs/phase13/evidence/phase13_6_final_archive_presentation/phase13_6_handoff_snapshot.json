@@ -1,0 +1,307 @@
+{
+  "archiveExclusion": [
+    "runtime service state",
+    "database URLs",
+    "provider secrets",
+    "local absolute paths"
+  ],
+  "archiveInclusion": [
+    "current release docs",
+    "reproducibility manifest",
+    "Phase13 evidence manifests"
+  ],
+  "authorities": {
+    "analysisIntent": "1.0",
+    "analysisPlan": [
+      "0.1",
+      "0.2"
+    ],
+    "dataProfile": "2.4",
+    "eligibilityResolution": "1.0",
+    "entryGitSha": "ff3f923330acede6c5442cc1226d3bce10b7c299",
+    "factModelHash": "92d8295c7d78467d8ce021dc8033a58326219372a5d8fa87c93377ed1275953a",
+    "inputSupport": {
+      "genericPhononYamlJson": "MAPPING_ONLY",
+      "typedPhononBand": "SUPPORTED_WITH_LIMITS",
+      "typedPhononDos": "SUPPORTED_WITH_LIMITS"
+    },
+    "maxLayoutRevisions": 128,
+    "maxPanels": 32,
+    "migration": "0007_phase10m1_workspace_domain",
+    "phase12ProductBaselineHash": "29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4",
+    "phase13_4Polish": {
+      "P13-POLISH-001": "ALREADY_RESOLVED",
+      "P13-POLISH-002": "VERIFIED"
+    },
+    "productionMutation": 0,
+    "registry": 62,
+    "reproManifestHash": "931d6214cb11dbcad628f5b33ea97e043bbfeb54fbccc2f8c87cffebad9537e2",
+    "schemaVersion": "Phase13_5ReleaseCandidateIdentity/1.0",
+    "scopeBaselineHash": "bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba"
+  },
+  "browserPlatformMatrix": {
+    "chromiumSevenDemos": "PASS",
+    "consoleErrors": 0,
+    "firefoxRepresentative": "PASS",
+    "helpLinkRuns": {
+      "browsers": {
+        "chromium": {
+          "desktop": {
+            "browser": "chromium",
+            "consoleErrors": [],
+            "focusVisible": true,
+            "horizontalOverflow": false,
+            "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+            "keyboardActivation": "PASS",
+            "mode": "after",
+            "pageErrors": [],
+            "rel": "noreferrer",
+            "screenshot": "screenshots/help/chromium_1440x900.png",
+            "tagName": "A",
+            "target": "_blank",
+            "touchTarget": "PASS",
+            "unapprovedExternalRequests": [],
+            "unexpectedFailedRequests": [],
+            "viewport": "1440x900"
+          }
+        },
+        "firefox": {
+          "desktop": {
+            "browser": "firefox",
+            "consoleErrors": [],
+            "focusVisible": true,
+            "horizontalOverflow": false,
+            "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+            "keyboardActivation": "PASS",
+            "mode": "after",
+            "pageErrors": [],
+            "rel": "noreferrer",
+            "screenshot": "screenshots/help/firefox_1440x900.png",
+            "tagName": "A",
+            "target": "_blank",
+            "touchTarget": "PASS",
+            "unapprovedExternalRequests": [],
+            "unexpectedFailedRequests": [],
+            "viewport": "1440x900"
+          }
+        },
+        "webkit": {
+          "desktop": {
+            "browser": "webkit",
+            "consoleErrors": [],
+            "focusVisible": true,
+            "horizontalOverflow": false,
+            "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+            "keyboardActivation": "PASS",
+            "mode": "after",
+            "pageErrors": [],
+            "rel": "noreferrer",
+            "screenshot": "screenshots/help/webkit_1440x900.png",
+            "tagName": "A",
+            "target": "_blank",
+            "touchTarget": "PASS",
+            "unapprovedExternalRequests": [],
+            "unexpectedFailedRequests": [],
+            "viewport": "1440x900"
+          }
+        }
+      },
+      "desktop": {
+        "browser": "chromium",
+        "consoleErrors": [],
+        "focusVisible": true,
+        "horizontalOverflow": false,
+        "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+        "keyboardActivation": "PASS",
+        "mode": "after",
+        "pageErrors": [],
+        "rel": "noreferrer",
+        "screenshot": "screenshots/help/chromium_1440x900.png",
+        "tagName": "A",
+        "target": "_blank",
+        "touchTarget": "PASS",
+        "unapprovedExternalRequests": [],
+        "unexpectedFailedRequests": [],
+        "viewport": "1440x900"
+      },
+      "documentationUrl": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+      "mobile": {
+        "browser": "chromium",
+        "consoleErrors": [],
+        "focusVisible": true,
+        "horizontalOverflow": false,
+        "href": "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+        "keyboardActivation": "PASS",
+        "mode": "after",
+        "pageErrors": [],
+        "rel": "noreferrer",
+        "screenshot": "screenshots/help/chromium_390x844.png",
+        "tagName": "A",
+        "target": "_blank",
+        "touchTarget": "PASS",
+        "unapprovedExternalRequests": [],
+        "unexpectedFailedRequests": [],
+        "viewport": "390x844"
+      },
+      "polishId": "P13-POLISH-002",
+      "screenshotScientificAuthority": "NONE"
+    },
+    "mobile390x844": "PASS",
+    "pageErrors": 0,
+    "representativeGalleryRuns": {
+      "chromium": {
+        "cards": 27,
+        "consoleErrors": [],
+        "expected": 27,
+        "externalRequests": [],
+        "failedRequests": [],
+        "horizontalOverflow": 0,
+        "pageErrors": [],
+        "screenshot": "screenshots/gallery/chromium.png",
+        "status": "PASS"
+      },
+      "firefox": {
+        "cards": 27,
+        "consoleErrors": [],
+        "expected": 27,
+        "externalRequests": [],
+        "failedRequests": [],
+        "horizontalOverflow": 0,
+        "pageErrors": [],
+        "screenshot": "screenshots/gallery/firefox.png",
+        "status": "PASS"
+      },
+      "mobile_390x844": {
+        "cards": 27,
+        "consoleErrors": [],
+        "expected": 27,
+        "externalRequests": [],
+        "failedRequests": [],
+        "horizontalOverflow": 0,
+        "pageErrors": [],
+        "status": "PASS"
+      },
+      "webkit": {
+        "cards": 27,
+        "consoleErrors": [],
+        "expected": 27,
+        "externalRequests": [],
+        "failedRequests": [],
+        "horizontalOverflow": 0,
+        "pageErrors": [],
+        "screenshot": "screenshots/gallery/webkit.png",
+        "status": "PASS"
+      }
+    },
+    "unapprovedExternalRequests": 0,
+    "unexpectedFailedRequests": 0,
+    "webkitRepresentative": "PASS"
+  },
+  "evidenceRoots": [
+    "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+  ],
+  "executableTaskCreated": false,
+  "initialReleaseComplete": false,
+  "knownLimitations": [
+    {
+      "category": "scientific-validation",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Phase 11 authority",
+      "limitationId": "LIM-001",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Tool availability is not independent reference validation."
+    },
+    {
+      "category": "cross-platform",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Release governance",
+      "limitationId": "LIM-002",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Linux/Windows invariant replay is not independent cross-platform numeric validation."
+    },
+    {
+      "category": "browser",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Phase 13",
+      "limitationId": "LIM-003",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Tested browser engines are not universal browser certification."
+    },
+    {
+      "category": "phonon-input",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Product scope",
+      "limitationId": "LIM-004",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Typed Band/DOS imports are limited; generic YAML/JSON is mapping-only."
+    },
+    {
+      "category": "provider",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Provider policy",
+      "limitationId": "LIM-005",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Optional DeepSeek verification is not science or reference validation."
+    },
+    {
+      "category": "recipe",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Security model",
+      "limitationId": "LIM-006",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Recipes are declarative and non-executable."
+    },
+    {
+      "category": "xrd",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Scientific contract",
+      "limitationId": "LIM-007",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Peak correspondence is not phase confirmation or refinement."
+    },
+    {
+      "category": "diffusion",
+      "currentStatus": "RETAINED",
+      "evidenceSource": "docs/phase13/release/limitations.md",
+      "futureOwnerOrRetained": "Scientific contract",
+      "limitationId": "LIM-008",
+      "releaseImpact": "NONBLOCKING_EXPLICIT_LIMIT",
+      "userFacingWording": "Diffusion is an estimate over the selected fit window."
+    }
+  ],
+  "p13x2": "8/8",
+  "phase13Lifecycle": "Attempt1-6 / FixForward1-6 / ReleaseScopeException1 / Phase13-3 / Phase13-4 / Phase13-5",
+  "phase13_5ReleaseAcceptance": "PASS",
+  "provider": {
+    "deterministicProvider": "PASS",
+    "keySource": "DEEPSEEK_KEY",
+    "liveProviderReleaseCheck": "SUPPLEMENTAL",
+    "models": [
+      "deepseek-v4-flash",
+      "deepseek-v4-pro"
+    ],
+    "realLlmCalls": 0,
+    "realProvider": "DEEPSEEK_ONLY",
+    "scientificAuthority": "NONE"
+  },
+  "schemaVersion": "Phase13_6FinalArchivePresentationPackageHandoff/1.0",
+  "scientificHonesty": {
+    "browserPassEqualsScientificValidation": false,
+    "newExpectedValues": 0,
+    "phase11AuthorityChanged": false,
+    "status": "PASS",
+    "supportedEqualsValidated": false,
+    "v4Promotions": 0,
+    "validationPromotions": 0
+  },
+  "security": "PASS",
+  "sevenFreshDemos": "7/7",
+  "status": "REVIEWER_GATE"
+}

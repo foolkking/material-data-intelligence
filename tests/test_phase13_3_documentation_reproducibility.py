@@ -104,6 +104,7 @@ def test_attempt6_is_authority_and_phase13_4_is_not_queued() -> None:
     if (
         "Task: Phase 13-4 Targeted Final Product Polish" in tasks
         or "Task: Phase 13-5 Final Regression + Release Acceptance" in tasks
+        or "Phase 13-6 - Final Archive + Presentation Package" in tasks
     ):
         assert tasks.count("---TASK---") == 1
         assert "状态：处理中" in tasks

@@ -1,0 +1,30 @@
+{
+  "archiveOrderingHead": "bde200acbe4e0d761d6c7a8338fbe68870fa82d6",
+  "completionSha": "1afed7f982bdd6d2b5e9bef50e2cf4b14b984d32",
+  "exactShaCi": 31728986993,
+  "readyForPhase13_6": true,
+  "releaseCandidateAccepted": true,
+  "sevenDemos": {
+    "artifacts": 85,
+    "completed": 7,
+    "oldAttempt6EvidenceUsedAsPass": 0,
+    "passOrExplicitLimit": 7,
+    "recipes": 7,
+    "reports": 7,
+    "started": 7,
+    "status": "PASS",
+    "statuses": {
+      "demo1": "PASS",
+      "demo2": "PASS",
+      "demo3": "PASS",
+      "demo4": "PASS",
+      "demo5": "PASS",
+      "demo6": "PASS",
+      "demo7": "PASS"
+    },
+    "toolCalls": 18,
+    "workspaces": 7
+  },
+  "status": "PASS",
+  "validationSha": "b60e048abbf366fdbd9fe72da27efd675fc50939"
+}

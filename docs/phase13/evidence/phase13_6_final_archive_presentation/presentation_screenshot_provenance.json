@@ -1,0 +1,62 @@
+{
+  "assetCount": 5,
+  "records": [
+    {
+      "asset": "screenshots/planner.png",
+      "browser": "chromium",
+      "scientificAuthority": "NONE",
+      "sha256": "4a3cd19468b4d891b5f1d6b54ffe200b95a04d2b2721992764344bb2e8bd3dd8",
+      "sourceEvidenceRoot": "docs/phase13/evidence/phase13_5_final_regression_release_acceptance",
+      "sourceFile": "screenshots/help/chromium_1440x900.png",
+      "sourcePhase": "Phase13-5",
+      "surface": "Planner / user entry",
+      "viewport": "1440x900"
+    },
+    {
+      "asset": "screenshots/artifact-gallery.png",
+      "browser": "chromium",
+      "scientificAuthority": "NONE",
+      "sha256": "5d67a4ba70a7b6cf5d61c9df96d376b344b42e05983d43fd5b14c2afb95a1c5e",
+      "sourceEvidenceRoot": "docs/phase13/evidence/phase13_5_final_regression_release_acceptance",
+      "sourceFile": "screenshots/gallery/chromium.png",
+      "sourcePhase": "Phase13-5",
+      "surface": "Workspace Artifact Gallery",
+      "viewport": "1440x900"
+    },
+    {
+      "asset": "screenshots/structure-report.png",
+      "browser": "chromium",
+      "scientificAuthority": "NONE",
+      "sha256": "6fefa1ce30f5ab884a165cf19c5df3c462614a451dae56afb651336b95095172",
+      "sourceEvidenceRoot": "docs/phase13/evidence/phase13_5_final_regression_release_acceptance",
+      "sourceFile": "screenshots/demo3_report_ui.png",
+      "sourcePhase": "Phase13-5",
+      "surface": "Structure/XRD Report",
+      "viewport": "1440x900"
+    },
+    {
+      "asset": "screenshots/phonon-report.png",
+      "browser": "chromium",
+      "scientificAuthority": "NONE",
+      "sha256": "6028fde1bd7564a50c57b401e7190d81b883fd5768f31cad18cdff0e9344dfb4",
+      "sourceEvidenceRoot": "docs/phase13/evidence/phase13_5_final_regression_release_acceptance",
+      "sourceFile": "screenshots/demo5_report_ui.png",
+      "sourcePhase": "Phase13-5",
+      "surface": "Phonon Report",
+      "viewport": "1440x900"
+    },
+    {
+      "asset": "screenshots/mobile.png",
+      "browser": "chromium",
+      "scientificAuthority": "NONE",
+      "sha256": "31aca2e672eed8bbee2294e696fc8553674a07f5bea15e1cf7fc3397145935c1",
+      "sourceEvidenceRoot": "docs/phase13/evidence/phase13_5_final_regression_release_acceptance",
+      "sourceFile": "screenshots/help/chromium_390x844.png",
+      "sourcePhase": "Phase13-5",
+      "surface": "Mobile product entry",
+      "viewport": "390x844"
+    }
+  ],
+  "scientificAuthority": "NONE",
+  "status": "PASS"
+}

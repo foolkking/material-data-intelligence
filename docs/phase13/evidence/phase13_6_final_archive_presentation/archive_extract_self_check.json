@@ -1,0 +1,13 @@
+{
+  "absolutePathHits": 0,
+  "brokenInternalLinks": 0,
+  "manifestByteSizeMismatches": 0,
+  "manifestExtraFiles": 0,
+  "manifestHashMismatches": 0,
+  "manifestMissingFiles": 0,
+  "pathTraversalEntries": 0,
+  "privatePathHits": [],
+  "secretPatternHits": [],
+  "status": "PASS",
+  "symlinks": 0
+}

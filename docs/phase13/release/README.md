@@ -35,6 +35,7 @@ Attempt 6 observed 18 ToolCalls, 85 persisted Artifacts, seven Workspaces, seven
 
 ## Start here
 
+- [Final archive and presentation package](../final/README.md)
 - [Installation and quick start](quick-start.md)
 - [Architecture and authority](architecture.md)
 - [Input support](input-support.md)

@@ -69,6 +69,11 @@ jobs:
       - name: Phase 13-5 final release acceptance evidence
         run: uv run python -m pytest -q tests/test_phase13_5_release_acceptance.py --tb=short
 
+      - name: Phase 13-6 final archive and presentation package
+        run: |
+          uv run python scripts/generate_phase13_6_final_archive.py
+          uv run python -m pytest -q tests/test_phase13_6_final_archive.py --tb=short
+
       - name: Phase 13-2 full-rerun failure evidence
         run: uv run python -m pytest -q tests/test_phase13_2_rerun_failure_evidence.py --tb=short
 
@@ -105,6 +110,8 @@ jobs:
         run: uv run python scripts/verify_phase13_1_fix_forward_hash.py --output "${RUNNER_TEMP}/phase11-3-linux/phase13_1_fix_forward_hash.json"
       - name: Verify Phase 13-3 reproducibility manifest
         run: uv run python scripts/verify_phase13_3_repro_manifest.py --platform linux --output "${RUNNER_TEMP}/phase11-3-linux/phase13_3_repro_manifest.json"
+      - name: Verify Phase 13-6 Initial Release manifest
+        run: uv run python scripts/verify_phase13_6_release_manifest.py --platform linux --manifest docs/phase13/final/initial_release_manifest.json --output "${RUNNER_TEMP}/phase11-3-linux/phase13_6_release_manifest.json"
       - name: Upload Linux reproducibility evidence
         uses: actions/upload-artifact@v4
         with:
@@ -126,7 +133,9 @@ jobs:
             scripts/verify_phase13_0_clarification_hash.py
             scripts/verify_phase13_1_fix_forward_hash.py
             scripts/verify_phase13_3_repro_manifest.py
+            scripts/verify_phase13_6_release_manifest.py
             docs/phase13/reproducibility/manifest.json
+            docs/phase13/final/initial_release_manifest.json
             docs/phase11/evidence/phase11_2_golden_scientific_benchmark
             docs/phase13/evidence/phase13_0_release_scope_seal/initial_release_fact_model.json
             docs/phase13/evidence/phase13_0_release_scope_seal/initial_release_scope_baseline.json
@@ -153,6 +162,8 @@ jobs:
         run: uv run python scripts/verify_phase13_1_fix_forward_hash.py --output "$env:RUNNER_TEMP\phase11-3-windows\phase13_1_fix_forward_hash.json"
       - name: Verify Phase 13-3 reproducibility manifest
         run: uv run python scripts/verify_phase13_3_repro_manifest.py --platform windows --output "$env:RUNNER_TEMP\phase11-3-windows\phase13_3_repro_manifest.json"
+      - name: Verify Phase 13-6 Initial Release manifest
+        run: uv run python scripts/verify_phase13_6_release_manifest.py --platform windows --manifest docs/phase13/final/initial_release_manifest.json --output "$env:RUNNER_TEMP\phase11-3-windows\phase13_6_release_manifest.json"
       - name: Download Linux reproducibility evidence
         uses: actions/download-artifact@v4
         with:
@@ -179,6 +190,11 @@ jobs:
           uv run python scripts/verify_phase13_3_repro_manifest.py
           --compare "$env:RUNNER_TEMP\phase11-3-linux\phase13_3_repro_manifest.json"
           "$env:RUNNER_TEMP\phase11-3-windows\phase13_3_repro_manifest.json"
+      - name: Compare Phase 13-6 Initial Release manifest hashes
+        run: >-
+          uv run python scripts/verify_phase13_6_release_manifest.py
+          --compare "$env:RUNNER_TEMP\phase11-3-linux\phase13_6_release_manifest.json"
+          "$env:RUNNER_TEMP\phase11-3-windows\phase13_6_release_manifest.json"
       - name: Upload cross-platform evidence
         uses: actions/upload-artifact@v4
         with:

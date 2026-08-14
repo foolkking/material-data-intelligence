@@ -2,6 +2,7 @@
 
 ## Initial Release
 
+- [Final archive and presentation package](phase13/final/README.md)
 - [Initial Release documentation](phase13/release/README.md)
 - [Installation and quick start](phase13/release/quick-start.md)
 - [Architecture and authority](phase13/release/architecture.md)
@@ -15,6 +16,7 @@
 - [Machine-readable reproducibility manifest](phase13/reproducibility/manifest.json)
 - [Phase 13-3 completion](phase13/phase13_3_completion.md)
 - [Phase 13-4 completion](phase13/phase13_4_completion.md)
+- [Phase 13-5 release acceptance evidence](phase13/evidence/phase13_5_final_regression_release_acceptance/release_acceptance_decision.json)
 
 These documents resolve current release authority. Phase documents and evidence
 below preserve design and forensic history and do not override current Fact,
