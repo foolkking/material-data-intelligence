@@ -729,3 +729,9 @@ Workspace, Report, and Recipe behavior did not change. The deterministic
 release archive, presentation, claim matrix, eight known limitations, evidence
 index, and InitialReleaseManifest are sealed. Phase 13 and the Initial Release
 are complete; the next executable phase is NONE and Phase 14 does not exist.
+
+## Phase 13-6 Queue Archive
+
+The completion record is pushed and the sole completed Phase13-6 task is
+archived. `TASK_BLOCK_COUNT = 0`, `NEXT_EXECUTABLE_PHASE = NONE`, and Phase 14
+remains absent.

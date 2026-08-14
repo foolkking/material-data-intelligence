@@ -2764,3 +2764,9 @@ InitialReleaseManifest, claim matrix, limitations linkage, forensic timeline,
 and evidence index are sealed without product or science changes. Phase 13 and
 the Initial Release are complete. The completed Phase13-6 queue block remains
 only until the separate archive commit; Phase 14 is absent.
+
+## Phase 13-6 Queue Archive
+
+The verified completion record is pushed and the completed Phase13-6 task is
+archived. `TASK_BLOCK_COUNT = 0`, `EXECUTABLE_PENDING_TASKS = 0`, Phase 14 is
+absent, and no executable follow-on task exists.

@@ -2422,3 +2422,9 @@ the InitialReleaseManifest and deterministic ZIP are sealed with complete
 sanitization, extraction, provenance, claim, limitation, and evidence-index
 checks. Phase 13 is complete, `INITIAL_RELEASE_COMPLETE = YES`, no Phase 14
 task exists, and queue archive is the only remaining lifecycle action.
+
+## 2026-08-14 Phase 13-6 Queue Archive
+
+Completion commit `7159e0c16de514b73524ef158d6761897d94cf31` is pushed and
+the completed Phase13-6 task block is archived. The queue is empty, the Initial
+Release is complete, and no next executable phase is created.
