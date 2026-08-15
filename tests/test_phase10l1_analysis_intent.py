@@ -146,9 +146,9 @@ def test_contract_hash_is_deterministic_and_round_trips_unicode() -> None:
     assert {item.value for item in first.scientificIntents} >= {
         "dataset_overview",
         "composition_analysis",
-        "property_distribution",
         "anomaly_candidate_review",
     }
+    assert ScientificIntent.property_distribution not in first.scientificIntents
     assert first.intentHash == second.intentHash
     assert first.intentId == second.intentId
     assert AnalysisIntent.model_validate_json(first.model_dump_json()) == first
@@ -474,7 +474,7 @@ def test_llm_intent_prompt_includes_a_complete_typed_clarification_template() ->
         "questions": [],
         "round": 0,
     }
-    assert template["provenance"]["promptVersion"] == "phase_e.intent.v7"
+    assert template["provenance"]["promptVersion"] == "phase_e.intent.v8"
     assert "clarification must always be an object" in messages[0]["content"]
 
 
@@ -723,6 +723,43 @@ def test_live_provider_cannot_omit_explicit_composition_mapping_semantics() -> N
 
     assert ScientificIntent.composition_space in intent.scientificIntents
     assert DesiredOutput.plot in intent.desiredOutputs
+
+
+def test_live_provider_cannot_expand_chemical_system_distribution_to_property_data() -> None:
+    profile = _profile(targets=(), uncertainty=False)
+    request = _request("Summarize the formulas and show element and chemical-system distributions.")
+    provider_payload = DeterministicAnalysisIntentBuilder().build(
+        request,
+        profile=profile,
+    ).model_dump(mode="json")
+    provider_payload["scientificIntents"] = ["composition_analysis", "property_distribution"]
+    provider_payload["requiredCapabilityNeeds"] = ["composition_data", "material_property_data"]
+
+    def transport(**_: object) -> dict[str, object]:
+        return {
+            "choices": [{
+                "message": {"content": json.dumps(provider_payload)},
+                "finish_reason": "stop",
+            }]
+        }
+
+    intent = OpenAICompatibleAnalysisIntentBuilder(
+        OpenAICompatibleProvider(transport=transport)
+    ).build(request, profile=profile)
+
+    assert intent.outcome.value == "READY"
+    assert intent.scientificIntents == [ScientificIntent.composition_analysis]
+    assert intent.requiredCapabilityNeeds == [CapabilityNeed.composition_data]
+
+
+def test_explicit_property_distribution_remains_property_analysis() -> None:
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("Summarize the material property distribution and coverage."),
+        profile=_profile(),
+    )
+
+    assert ScientificIntent.property_distribution in intent.scientificIntents
+    assert CapabilityNeed.material_property_data in intent.requiredCapabilityNeeds
 
 
 def test_validator_rejects_invented_clarification_candidate_label() -> None:

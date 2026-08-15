@@ -53,7 +53,7 @@ from .redaction import redact_credential_values
 
 
 INTENT_PROMPT_VERSION = "phase10l1.intent.v1"
-LLM_INTENT_PROMPT_VERSION = "phase_e.intent.v7"
+LLM_INTENT_PROMPT_VERSION = "phase_e.intent.v8"
 DETERMINISTIC_INTENT_MODEL = "bounded-rules-v1"
 
 _DEFAULT_OUTPUTS_BY_INTENT: dict[ScientificIntent, tuple[DesiredOutput, ...]] = {
@@ -632,6 +632,16 @@ def _reconcile_explicit_goal_semantics(
 ) -> None:
     """Preserve explicit semantics recognized by the application-owned classifier."""
     classification = _classify_goal(request.raw_goal)
+    supplied_intents = parsed.get("scientificIntents")
+    if isinstance(supplied_intents, list) and ScientificIntent.property_distribution not in classification.intents:
+        parsed["scientificIntents"] = [
+            value for value in supplied_intents if value != ScientificIntent.property_distribution.value
+        ]
+        supplied_needs = parsed.get("requiredCapabilityNeeds")
+        if isinstance(supplied_needs, list):
+            parsed["requiredCapabilityNeeds"] = [
+                value for value in supplied_needs if value != CapabilityNeed.material_property_data.value
+            ]
     for field_name, required_values in (
         ("scientificIntents", classification.intents),
         ("requiredCapabilityNeeds", classification.required),
@@ -739,6 +749,8 @@ def build_analysis_intent_messages(request: AnalysisIntentRequest, *, profile: D
         "When the user did not specify a delivery format, set desiredOutputs to the sorted union declared by defaultDesiredOutputsByScientificIntent. "
         "When the raw goal explicitly requests a delivery format, include only the explicitly requested delivery outputs; do not add default summary, table, comparison, report, or warning outputs. "
         "A named chart form such as scatter, histogram, correlation matrix, heatmap, treemap, or sunburst is an explicit visualization request: include visualization and plot, preserve the named form in rawGoal, and do not substitute another chart form. "
+        "Formula, element, composition, and chemical-system distributions are composition_analysis, not property_distribution. "
+        "Select property_distribution only when the raw goal explicitly asks for material properties or property coverage. "
         "Composition distribution is composition_analysis, not composition_space. Select composition_space only when the raw goal explicitly asks to "
         "map compositions or asks for embedding, clustering, or composition space. Do not add visualization merely because a plot-capable tool may exist. "
         "Do not choose tools, execute code, invent identifiers, use Markdown, or add prose. "
@@ -1000,7 +1012,7 @@ def _classify_goal(goal: str) -> _Classification:
     if _contains(value, "composition", "formula", "element distribution", "组成", "成分", "元素分布"):
         add_intent(ScientificIntent.composition_analysis)
         required.append(CapabilityNeed.composition_data)
-    if _contains(value, "property", "distribution", "coverage", "性质", "属性", "分布", "覆盖"):
+    if _contains(value, "property", "coverage", "性质", "属性", "覆盖"):
         add_intent(ScientificIntent.property_distribution)
         required.append(CapabilityNeed.material_property_data)
     if _contains(value, "dataset", "batch", "这批", "数据集", "materials"):
