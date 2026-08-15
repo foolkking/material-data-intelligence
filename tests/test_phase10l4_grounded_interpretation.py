@@ -268,6 +268,42 @@ def test_phase10k_product_artifacts_project_without_scientific_recalculation() -
         assert all("material is stable" not in claim.renderedText.lower() for claim in result.interpretation.claims)
 
 
+def test_dataset_explorer_projector_accepts_contract_valid_unavailable_properties() -> None:
+    payload = json.loads(
+        (
+            ROOT
+            / "docs/phase10k/evidence/phase10k2_dataset_materials_explorer/artifacts/dataset_materials_explorer.json"
+        ).read_text(encoding="utf-8")
+    )
+    payload["overview"] = {**payload["overview"], "propertyCount": 0}
+    payload["properties"] = {"status": "UNAVAILABLE", "properties": []}
+    base = _candidate(
+        payload,
+        artifact_type="table_json",
+        tool_id="dataset.materials_explorer",
+        suffix="dataset_unavailable_properties",
+    )
+    candidate = replace(
+        base,
+        artifact={**base.artifact, "datasetId": "dataset_phase10k2_evidence"},
+    )
+    bundle = build_scientific_evidence_bundle(
+        replace(
+            _source(),
+            dataset_id="dataset_phase10k2_evidence",
+            dataset_version="2",
+        ),
+        [candidate],
+    )
+
+    assert bundle.supportedArtifactCount == 1
+    assert {
+        "dataset.sample_count",
+        "dataset.property_count",
+        "composition.valid_count",
+    }.issubset({item.semanticRole for item in bundle.evidenceItems})
+
+
 def test_unsupported_artifact_total_obeys_the_schema_cap_with_typed_failure() -> None:
     unsupported = _candidate({}, artifact_type="report_md", tool_id="report.generate", suffix="unsupported")
     at_cap = build_scientific_evidence_bundle(

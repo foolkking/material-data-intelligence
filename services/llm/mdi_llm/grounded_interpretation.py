@@ -852,7 +852,14 @@ def _project_dataset_materials_explorer(
     ):
         raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Dataset explorer coverage is inconsistent.")
     records = properties.get("properties")
-    if properties.get("status") != "READY" or not isinstance(records, list) or len(records) != property_count or len(records) > 32:
+    property_status = properties.get("status")
+    if (
+        not isinstance(records, list)
+        or len(records) > 32
+        or property_status not in {"READY", "UNAVAILABLE"}
+        or (property_status == "READY" and len(records) != property_count)
+        or (property_status == "UNAVAILABLE" and (property_count != 0 or records))
+    ):
         raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Dataset explorer properties are invalid.")
 
     items = [
