@@ -474,7 +474,7 @@ def test_llm_intent_prompt_includes_a_complete_typed_clarification_template() ->
         "questions": [],
         "round": 0,
     }
-    assert template["provenance"]["promptVersion"] == "phase_e.intent.v6"
+    assert template["provenance"]["promptVersion"] == "phase_e.intent.v7"
     assert "clarification must always be an object" in messages[0]["content"]
 
 
@@ -694,6 +694,35 @@ def test_composition_mapping_language_routes_to_composition_space() -> None:
     assert {CapabilityNeed.tabular_data, CapabilityNeed.composition_data}.issubset(
         intent.requiredCapabilityNeeds
     )
+
+
+def test_live_provider_cannot_omit_explicit_composition_mapping_semantics() -> None:
+    profile = _profile(targets=(), uncertainty=False)
+    request = _request(
+        "Explore this materials dataset, summarize quality, and map its compositions."
+    )
+    provider_payload = DeterministicAnalysisIntentBuilder().build(
+        request,
+        profile=profile,
+    ).model_dump(mode="json")
+    provider_payload["scientificIntents"] = ["dataset_overview", "composition_analysis"]
+    provider_payload["requiredCapabilityNeeds"] = ["tabular_data", "composition_data"]
+    provider_payload["desiredOutputs"] = ["summary", "table"]
+
+    def transport(**_: object) -> dict[str, object]:
+        return {
+            "choices": [{
+                "message": {"content": json.dumps(provider_payload)},
+                "finish_reason": "stop",
+            }]
+        }
+
+    intent = OpenAICompatibleAnalysisIntentBuilder(
+        OpenAICompatibleProvider(transport=transport)
+    ).build(request, profile=profile)
+
+    assert ScientificIntent.composition_space in intent.scientificIntents
+    assert DesiredOutput.plot in intent.desiredOutputs
 
 
 def test_validator_rejects_invented_clarification_candidate_label() -> None:

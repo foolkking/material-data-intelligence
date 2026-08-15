@@ -53,7 +53,7 @@ from .redaction import redact_credential_values
 
 
 INTENT_PROMPT_VERSION = "phase10l1.intent.v1"
-LLM_INTENT_PROMPT_VERSION = "phase_e.intent.v6"
+LLM_INTENT_PROMPT_VERSION = "phase_e.intent.v7"
 DETERMINISTIC_INTENT_MODEL = "bounded-rules-v1"
 
 _DEFAULT_OUTPUTS_BY_INTENT: dict[ScientificIntent, tuple[DesiredOutput, ...]] = {
@@ -503,6 +503,7 @@ class OpenAICompatibleAnalysisIntentBuilder:
             raise AnalysisIntentError("LLM Intent changed the application-owned normalized goal.", code="INTENT_LLM_NORMALIZED_GOAL_MISMATCH")
         if parsed.get("language") != expected_language:
             raise AnalysisIntentError("LLM Intent changed the application-owned goal language.", code="INTENT_LLM_LANGUAGE_MISMATCH")
+        _reconcile_explicit_goal_semantics(parsed, request=request)
         _canonicalize_llm_profile_bindings(parsed, request=request, profile=profile)
         supplied_provenance = parsed.get("provenance")
         if supplied_provenance is not None and (
@@ -622,6 +623,26 @@ def _canonicalize_llm_profile_bindings(
         "questions": [item.model_dump(mode="json") for item in questions],
         "answers": [],
     }
+
+
+def _reconcile_explicit_goal_semantics(
+    parsed: dict[str, Any],
+    *,
+    request: AnalysisIntentRequest,
+) -> None:
+    """Preserve explicit semantics recognized by the application-owned classifier."""
+    classification = _classify_goal(request.raw_goal)
+    for field_name, required_values in (
+        ("scientificIntents", classification.intents),
+        ("requiredCapabilityNeeds", classification.required),
+        ("optionalCapabilityNeeds", classification.optional),
+        ("desiredOutputs", classification.outputs),
+    ):
+        supplied = parsed.get(field_name)
+        if not isinstance(supplied, list):
+            continue
+        existing = {value for value in supplied if isinstance(value, str)}
+        supplied.extend(value.value for value in required_values if value.value not in existing)
 
 
 def build_analysis_intent_messages(request: AnalysisIntentRequest, *, profile: DataProfile) -> list[dict[str, str]]:
