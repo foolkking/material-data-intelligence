@@ -35,7 +35,19 @@ def _create_exact_parent_fixture(path: Path) -> None:
     engine = create_engine(f"sqlite:///{path.as_posix()}")
     with engine.begin() as connection:
         connection.execute(text("PRAGMA foreign_keys=ON"))
-        connection.execute(text("CREATE TABLE projects (id VARCHAR(64) PRIMARY KEY)"))
+        connection.execute(
+            text(
+                "CREATE TABLE projects ("
+                "id VARCHAR(64) PRIMARY KEY, "
+                "organization_id VARCHAR(64) NOT NULL, "
+                "name VARCHAR(160) NOT NULL, "
+                "description TEXT NOT NULL DEFAULT '', "
+                "created_by VARCHAR(64) NOT NULL, "
+                "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+                "updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+                "CONSTRAINT uq_projects_org_name UNIQUE (organization_id, name))"
+            )
+        )
         connection.execute(text("CREATE TABLE datasets (id VARCHAR(64) PRIMARY KEY, project_id VARCHAR(64))"))
         connection.execute(text("CREATE TABLE data_profiles (id VARCHAR(64) PRIMARY KEY, dataset_id VARCHAR(64))"))
         connection.execute(text("CREATE TABLE analysis_plans (id VARCHAR(96) PRIMARY KEY, project_id VARCHAR(64))"))

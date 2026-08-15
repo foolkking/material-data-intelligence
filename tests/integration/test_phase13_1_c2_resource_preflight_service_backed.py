@@ -53,9 +53,6 @@ def test_phase13_1_postgres_redis_minio_c2_exact_resource_resolution(tmp_path: P
             else:
                 os.environ["DATABASE_URL"] = previous_url
         engine = create_engine(schema_url, future=True)
-        with engine.begin() as connection:
-            connection.execute(text("CREATE TABLE IF NOT EXISTS organizations (id VARCHAR(64) PRIMARY KEY, name VARCHAR(160) NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"))
-            connection.execute(text("CREATE TABLE IF NOT EXISTS users (id VARCHAR(64) PRIMARY KEY, email VARCHAR(320) NOT NULL UNIQUE, display_name VARCHAR(160) NOT NULL, is_active BOOLEAN NOT NULL DEFAULT TRUE, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"))
         _redis_smoke(f"phase13-c2-{suffix}")
         redis = Redis.from_url(os.environ["REDIS_URL"])
         queue_before = int(redis.llen("mdi:jobs"))

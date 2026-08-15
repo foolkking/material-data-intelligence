@@ -50,7 +50,7 @@ def test_phase10m7_postgres_redis_minio_workspace_integration_closure(
 
         engine = create_engine(schema_url, future=True)
         with engine.connect() as connection:
-            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0007_phase10m1_workspace_domain"
+            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0008_phase_d_r1_namespace"
         tables = set(inspect(engine).get_table_names())
         assert {
             "data_profiles", "analysis_intents", "capability_eligibility_resolutions",

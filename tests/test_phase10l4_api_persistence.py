@@ -499,11 +499,11 @@ def test_phase10l4_migration_upgrades_downgrades_and_reupgrades(tmp_path: Path) 
         "scientific_interpretation_evidence_links",
     }
     alembic_command.stamp(config, "0005_phase10l3_dependency")
-    alembic_command.upgrade(config, "head")
+    alembic_command.upgrade(config, "0006_phase10l4_interpretation")
     engine = create_engine(f"sqlite:///{database.as_posix()}", future=True)
     assert expected.issubset(inspect(engine).get_table_names())
     alembic_command.downgrade(config, "0005_phase10l3_dependency")
     assert expected.isdisjoint(inspect(engine).get_table_names())
-    alembic_command.upgrade(config, "head")
+    alembic_command.upgrade(config, "0006_phase10l4_interpretation")
     assert expected.issubset(inspect(engine).get_table_names())
     engine.dispose()

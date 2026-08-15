@@ -148,7 +148,7 @@ def test_phase10m1_postgres_redis_minio_workspace_domain_persistence(
             connection.execute(CreateSchema(schema_name))
 
         # Alembic env.py intentionally gives DATABASE_URL precedence. Point it
-        # at the isolated schema so this is a fresh base-to-0007 migration.
+        # at the isolated schema so this is a fresh base-to-head migration.
         monkeypatch.setenv("DATABASE_URL", schema_url)
         monkeypatch.delenv("MDI_DATABASE_URL", raising=False)
         monkeypatch.delenv("POSTGRES_HOST", raising=False)
@@ -165,7 +165,7 @@ def test_phase10m1_postgres_redis_minio_workspace_domain_persistence(
         }.issubset(db_inspector.get_table_names())
         with engine.connect() as connection:
             assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-                "0007_phase10m1_workspace_domain"
+                "0008_phase_d_r1_namespace"
             )
 
         workspace_foreign_keys = db_inspector.get_foreign_keys("scientific_workspaces")
@@ -193,29 +193,7 @@ def test_phase10m1_postgres_redis_minio_workspace_domain_persistence(
         }.issubset(upgraded_inspector.get_table_names())
         with engine.connect() as connection:
             assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-                "0007_phase10m1_workspace_domain"
-            )
-
-        # The historical baseline predates these actor tables. Create only the
-        # repository actor fixtures explicitly; Workspace tables were already
-        # proven by Alembic above. This is not a migration substitute.
-        with engine.begin() as connection:
-            connection.execute(
-                text(
-                    "CREATE TABLE IF NOT EXISTS organizations ("
-                    "id VARCHAR(64) PRIMARY KEY, name VARCHAR(160) NOT NULL, "
-                    "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-                    "updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"
-                )
-            )
-            connection.execute(
-                text(
-                    "CREATE TABLE IF NOT EXISTS users ("
-                    "id VARCHAR(64) PRIMARY KEY, email VARCHAR(320) NOT NULL UNIQUE, "
-                    "display_name VARCHAR(160) NOT NULL, is_active BOOLEAN NOT NULL DEFAULT TRUE, "
-                    "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-                    "updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"
-                )
+                "0008_phase_d_r1_namespace"
             )
 
         _redis_smoke(suffix)
@@ -531,11 +509,8 @@ def test_phase10m2_postgres_redis_minio_workspace_shell_api_contract(
         with engine.connect() as connection:
             assert connection.execute(text("SELECT current_schema()")).scalar_one() == schema_name
             assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-                "0007_phase10m1_workspace_domain"
+                "0008_phase_d_r1_namespace"
             )
-        with engine.begin() as connection:
-            connection.execute(text("CREATE TABLE IF NOT EXISTS organizations (id VARCHAR(64) PRIMARY KEY, name VARCHAR(160) NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"))
-            connection.execute(text("CREATE TABLE IF NOT EXISTS users (id VARCHAR(64) PRIMARY KEY, email VARCHAR(320) NOT NULL UNIQUE, display_name VARCHAR(160) NOT NULL, is_active BOOLEAN NOT NULL DEFAULT TRUE, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"))
 
         _redis_smoke(f"m2-{suffix}")
         minio, minio_bucket = _minio_client()
@@ -649,9 +624,6 @@ def test_phase10m3_postgres_redis_minio_canonical_selection_and_pinning(
         config.set_main_option("script_location", "apps/api/alembic")
         alembic_upgrade(config, "head")
         engine = create_engine(schema_url, future=True)
-        with engine.begin() as connection:
-            connection.execute(text("CREATE TABLE IF NOT EXISTS organizations (id VARCHAR(64) PRIMARY KEY, name VARCHAR(160) NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"))
-            connection.execute(text("CREATE TABLE IF NOT EXISTS users (id VARCHAR(64) PRIMARY KEY, email VARCHAR(320) NOT NULL UNIQUE, display_name VARCHAR(160) NOT NULL, is_active BOOLEAN NOT NULL DEFAULT TRUE, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"))
 
         _redis_smoke(f"m3-{suffix}")
         minio, minio_bucket = _minio_client()

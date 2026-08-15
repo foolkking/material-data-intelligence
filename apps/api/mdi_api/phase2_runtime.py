@@ -958,11 +958,21 @@ def _experimental_xrd_resource(dataframe: pd.DataFrame, metadata: dict[str, Any]
 
 
 def list_phase2_projects() -> list[dict[str, Any]]:
-    return get_phase2_runtime().list_projects()
+    from mdi_api.durable_projects import list_runtime_projects
+
+    return list_runtime_projects(get_phase2_runtime())
 
 
 def create_phase2_project(request: CreateProjectRequest) -> dict[str, Any]:
-    return get_phase2_runtime().create_project(request)
+    from mdi_api.durable_projects import persist_runtime_project
+
+    runtime = get_phase2_runtime()
+    project = runtime.create_project(request)
+    try:
+        return persist_runtime_project(runtime, str(project["id"])) or project
+    except Exception:
+        runtime.projects.pop(str(project["id"]), None)
+        raise
 
 
 def list_phase2_datasets() -> list[dict[str, Any]]:

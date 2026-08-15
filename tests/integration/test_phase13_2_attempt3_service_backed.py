@@ -55,18 +55,6 @@ def test_phase13_1_fix_forward_3_real_upload_to_fresh_worker_d0(
         monkeypatch.setenv("DATABASE_URL", schema_url)
         alembic_upgrade(config, "head")
         engine = create_engine(schema_url, future=True)
-        with engine.begin() as connection:
-            connection.execute(text(
-                "CREATE TABLE IF NOT EXISTS organizations (id VARCHAR(64) PRIMARY KEY, "
-                "name VARCHAR(160) NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT "
-                "CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"
-            ))
-            connection.execute(text(
-                "CREATE TABLE IF NOT EXISTS users (id VARCHAR(64) PRIMARY KEY, "
-                "email VARCHAR(320) NOT NULL UNIQUE, display_name VARCHAR(160) NOT NULL, "
-                "is_active BOOLEAN NOT NULL DEFAULT TRUE, created_at TIMESTAMP NOT NULL "
-                "DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)"
-            ))
 
         monkeypatch.setenv("MDI_RUNTIME_BACKEND", "postgresql")
         monkeypatch.setenv("MDI_QUEUE_BACKEND", "redis")
