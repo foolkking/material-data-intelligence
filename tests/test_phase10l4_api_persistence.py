@@ -427,6 +427,68 @@ def test_structured_artifact_media_type_and_depth_are_strict(tmp_path: Path) -> 
     assert result["claims"] == []
 
 
+def test_large_unprojected_table_does_not_block_supported_evidence(tmp_path: Path) -> None:
+    repos, runtime, plan_hash = _seed_api_source(tmp_path / "large-unprojected")
+    raw = json.dumps({"rows": ["x" * 1024] * 300}, separators=(",", ":")).encode("utf-8")
+    stored = runtime.artifact_storage.put_bytes(
+        "jobs/job_l4_api/composition-space.json",
+        raw,
+        content_type="application/json",
+    )
+    repos.tool_calls.save({
+        "id": "tool_call_l4_composition",
+        "jobId": "job_l4_api",
+        "stepId": "step_composition",
+        "toolId": "dataset.composition_space",
+        "status": "completed",
+        "params": {},
+        "artifactIds": ["artifact_l4_composition"],
+    })
+    repos.artifacts.save({
+        "id": "artifact_l4_composition",
+        "artifactId": "artifact_l4_composition",
+        "projectId": "project_l4_api",
+        "datasetId": "dataset_l4_api",
+        "jobId": "job_l4_api",
+        "toolCallId": "tool_call_l4_composition",
+        "type": "table_json",
+        "name": "composition-space",
+        "version": "1",
+        "storageKey": stored.storage_key,
+        "storageProvider": "local",
+        "sizeBytes": stored.size_bytes,
+        "contentType": stored.content_type,
+        "contentHash": stored.sha256,
+        "sha256": stored.sha256,
+        "metadata": {
+            "toolId": "dataset.composition_space",
+            "toolVersion": "0.1.0",
+            "adapterVersion": "0.1.0",
+            "inputHashes": [],
+            "createdAt": "2026-08-16T00:00:00Z",
+            "provenance": {"planId": "plan_l4_api", "planHash": plan_hash},
+        },
+    })
+
+    result = create_planner_job_interpretation(
+        "job_l4_api",
+        PlannerInterpretationRequest(expectedPlanHash=plan_hash),
+        repositories=repos,
+        queue_runtime=runtime,
+    )
+    evidence = get_planner_interpretation_evidence(
+        result["interpretationId"],
+        repositories=repos,
+    )
+
+    assert stored.size_bytes > 262_144
+    assert result["outcome"] == "INTERPRETATION_READY_WITH_LIMITS"
+    assert evidence["bundleLimitations"] == [
+        "1 artifact(s) have no approved structured evidence projector."
+    ]
+    assert result["claims"]
+
+
 def test_interpretation_request_caps_and_bounded_storage_reads(tmp_path: Path) -> None:
     with pytest.raises(ValidationError):
         PlannerInterpretationRequest(

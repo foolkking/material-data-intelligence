@@ -18,6 +18,7 @@ from mdi_api.database import create_repository_factory
 from mdi_api.repositories import InMemoryRepositoryBundle, compute_plan_hash
 from mdi_api.secrets import InMemorySecretStore
 from mdi_llm import (
+    ARTIFACT_PROJECTOR_CONTRACTS,
     AnalysisIntentError,
     AnalysisIntentRequest,
     AnalysisIntentValidator,
@@ -36,7 +37,6 @@ from mdi_llm import (
     PlannerUserConfig,
     plan_capabilities,
     redact_credential_values,
-    redact_params_for_log,
     ArtifactProjectionInput,
     InterpretationError,
     InterpretationSource,
@@ -907,7 +907,6 @@ def _create_planner_job_interpretation_locked(
         plan_record = _try_get_job_plan(repos, job)
         if plan_record is None:
             raise InterpretationError("SOURCE_INTEGRITY_FAILED", "The job has no exact persisted AnalysisPlan.")
-        plan = plan_record.get("analysisPlan") or {}
         plan_hash = _plan_hash(plan_record)
         if not plan_hash or plan_hash != request.expectedPlanHash:
             raise InterpretationError("SOURCE_INTEGRITY_FAILED", "The expected AnalysisPlan hash is stale or mismatched.")
@@ -1312,6 +1311,11 @@ def _interpretation_artifact_candidates(
             continue
         tool_call = tool_calls.get(str(artifact.get("toolCallId") or ""))
         if not tool_call or tool_call.get("status") != "completed":
+            unsupported_artifact_count += 1
+            continue
+        tool_id = str(tool_call.get("toolId") or tool_call.get("tool_id") or "")
+        artifact_type = str(artifact.get("type") or "")
+        if (tool_id, artifact_type) not in ARTIFACT_PROJECTOR_CONTRACTS:
             unsupported_artifact_count += 1
             continue
         size = int(artifact.get("sizeBytes") or 0)
