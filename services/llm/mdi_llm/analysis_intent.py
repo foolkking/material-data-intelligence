@@ -53,7 +53,7 @@ from .redaction import redact_credential_values
 
 
 INTENT_PROMPT_VERSION = "phase10l1.intent.v1"
-LLM_INTENT_PROMPT_VERSION = "phase10l5.intent.v5"
+LLM_INTENT_PROMPT_VERSION = "phase_e.intent.v6"
 DETERMINISTIC_INTENT_MODEL = "bounded-rules-v1"
 
 _DEFAULT_OUTPUTS_BY_INTENT: dict[ScientificIntent, tuple[DesiredOutput, ...]] = {
@@ -228,6 +228,9 @@ class AnalysisIntentValidator:
             "embedding",
             "cluster",
             "composition space",
+            "map its composition",
+            "map the composition",
+            "map these composition",
             "dimensional reduction",
             "聚类",
             "嵌入",
@@ -235,7 +238,7 @@ class AnalysisIntentValidator:
             "降维",
         ):
             raise AnalysisIntentError(
-                "composition_space requires an explicit embedding, clustering, or composition-space goal.",
+                "composition_space requires an explicit mapping, embedding, clustering, or composition-space goal.",
                 code="INTENT_SEMANTIC_EXPANSION",
             )
         _validate_profile_derived_questions(validated, profile)
@@ -715,8 +718,8 @@ def build_analysis_intent_messages(request: AnalysisIntentRequest, *, profile: D
         "When the user did not specify a delivery format, set desiredOutputs to the sorted union declared by defaultDesiredOutputsByScientificIntent. "
         "When the raw goal explicitly requests a delivery format, include only the explicitly requested delivery outputs; do not add default summary, table, comparison, report, or warning outputs. "
         "A named chart form such as scatter, histogram, correlation matrix, heatmap, treemap, or sunburst is an explicit visualization request: include visualization and plot, preserve the named form in rawGoal, and do not substitute another chart form. "
-        "Composition distribution is composition_analysis, not composition_space. Select composition_space only when the raw goal explicitly asks for "
-        "embedding, clustering, or composition space. Do not add visualization merely because a plot-capable tool may exist. "
+        "Composition distribution is composition_analysis, not composition_space. Select composition_space only when the raw goal explicitly asks to "
+        "map compositions or asks for embedding, clustering, or composition space. Do not add visualization merely because a plot-capable tool may exist. "
         "Do not choose tools, execute code, invent identifiers, use Markdown, or add prose. "
         "Only candidates in the supplied DataProfile are valid. Future/Not Planned and arbitrary "
         "code requests must be UNSUPPORTED. READY cannot contain a blocking ambiguity."
@@ -741,7 +744,7 @@ def build_analysis_intent_messages(request: AnalysisIntentRequest, *, profile: D
             },
             "scientificIntentDisambiguation": {
                 "composition_analysis": "composition, formula, element or composition distribution facts",
-                "composition_space": "only explicit embedding, clustering, dimensional reduction or composition-space requests",
+                "composition_space": "only explicit composition-mapping, embedding, clustering, dimensional reduction or composition-space requests",
                 "property_distribution": "property coverage or distribution facts",
                 "visualization": "only an explicit visualization request, never inferred from tool availability",
             },
@@ -990,7 +993,18 @@ def _classify_goal(goal: str) -> _Classification:
         add_intent(ScientificIntent.comparison)
         optional.append(CapabilityNeed.comparison_groups)
         outputs.append(DesiredOutput.comparison)
-    if _contains(value, "embedding", "cluster", "composition space", "聚类", "嵌入", "成分空间"):
+    if _contains(
+        value,
+        "embedding",
+        "cluster",
+        "composition space",
+        "map its composition",
+        "map the composition",
+        "map these composition",
+        "聚类",
+        "嵌入",
+        "成分空间",
+    ):
         add_intent(ScientificIntent.composition_space)
         required.extend([CapabilityNeed.tabular_data, CapabilityNeed.composition_data])
     if _contains(value, "uncertainty", "calibrat", "不确定性", "可信"):

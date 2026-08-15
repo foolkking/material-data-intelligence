@@ -35,6 +35,7 @@ from mdi_schemas import (
     CapabilityNeed,
     ClarificationAnswer,
     DataProfile,
+    DesiredOutput,
     IntentBindingOrigin,
     IntentTargetSemantic,
     ScientificIntent,
@@ -473,7 +474,7 @@ def test_llm_intent_prompt_includes_a_complete_typed_clarification_template() ->
         "questions": [],
         "round": 0,
     }
-    assert template["provenance"]["promptVersion"] == "phase10l5.intent.v5"
+    assert template["provenance"]["promptVersion"] == "phase_e.intent.v6"
     assert "clarification must always be an object" in messages[0]["content"]
 
 
@@ -679,6 +680,20 @@ def test_validator_rejects_unrequested_composition_space_expansion() -> None:
     with pytest.raises(AnalysisIntentError) as error:
         AnalysisIntentValidator().validate(payload, profile=profile)
     assert error.value.code == "INTENT_SEMANTIC_EXPANSION"
+
+
+def test_composition_mapping_language_routes_to_composition_space() -> None:
+    profile = _profile(targets=(), uncertainty=False)
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("Explore this materials dataset, summarize quality, and map its compositions."),
+        profile=profile,
+    )
+
+    assert ScientificIntent.composition_space in intent.scientificIntents
+    assert DesiredOutput.plot in intent.desiredOutputs
+    assert {CapabilityNeed.tabular_data, CapabilityNeed.composition_data}.issubset(
+        intent.requiredCapabilityNeeds
+    )
 
 
 def test_validator_rejects_invented_clarification_candidate_label() -> None:
