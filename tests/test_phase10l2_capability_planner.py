@@ -15,7 +15,6 @@ from mdi_api.db import metadata
 from mdi_api.repositories import InMemoryRepositoryBundle, SqlAlchemyRepositoryBundle
 from mdi_api.routers.planner import PlannerJobsRequest, get_planner_job, planner_jobs
 from mdi_llm import (
-    AnalysisIntentRequest,
     CapabilityContextValidator,
     CapabilityPlanningError,
     ClarificationSubmission,
@@ -29,7 +28,6 @@ from mdi_schemas import (
     CapabilityNeed,
     ClarificationAnswer,
     DesiredOutput,
-    EligibilityResolution,
     ScientificIntent,
     compute_analysis_intent_hash,
     deterministic_intent_id,
@@ -537,6 +535,41 @@ def test_llm_redundant_semantic_selection_uses_the_single_repair_budget() -> Non
     assert [item.toolId for item in result.decision.selections] == ["structure.summary"]
     assert result.decision.provenance.repairCount == 1
     assert result.decision.provenance.repairDiagnostics[0].code == "CAPABILITY_LLM_SELECTION_REDUNDANT"
+
+
+def test_live_provider_context_exposes_application_validated_minimal_selection() -> None:
+    profile = _profile()
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("Explore this materials dataset, summarize quality, and map its compositions."),
+        profile=profile,
+    )
+    captured: dict[str, object] = {}
+
+    def transport(**kwargs: object) -> dict[str, object]:
+        context = json.loads(kwargs["messages"][-1]["content"])
+        captured.update(context)
+        payload = {
+            "schemaVersion": "1.0",
+            "resolutionId": context["eligibleCandidates"]["resolutionId"],
+            "selectedToolIds": context["applicationValidatedMinimalToolIds"],
+        }
+        return {"choices": [{"message": {"content": json.dumps(payload)}, "finish_reason": "stop"}]}
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=OpenAICompatibleProvider(transport=transport),
+    )
+
+    assert captured["applicationValidatedMinimalToolIds"] == [
+        "dataset.composition_space",
+        "dataset.materials_explorer",
+    ]
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == captured[
+        "applicationValidatedMinimalToolIds"
+    ]
 
 
 @pytest.mark.parametrize(
