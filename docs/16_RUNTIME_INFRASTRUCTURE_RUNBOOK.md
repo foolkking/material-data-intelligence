@@ -72,7 +72,7 @@ export DATABASE_URL="postgresql+psycopg://mdi:mdi-local-dev@localhost:5432/mdi"
 python -m alembic -c apps/api/alembic.ini upgrade head
 ```
 
-Expected: migration head `0007_phase10m1_workspace_domain` applied.
+Expected: migration head `0008_phase_d_r1_namespace` applied.
 
 ### Run upgrade (SQLite, no Docker)
 
@@ -87,7 +87,11 @@ python -m alembic -c apps/api/alembic.ini upgrade head
 docker compose exec postgres psql -U mdi -d mdi -c "\dt"
 ```
 
-Tables expected: `projects`, `datasets`, `data_profiles`, `jobs`, `job_events`, `tool_calls`, `artifacts`, `visualization_recipes`, `reports`.
+Tables expected for the durable Project/Workspace path include `users`,
+`organizations`, `projects`, `datasets`, `data_profiles`, `jobs`, `job_events`,
+`tool_calls`, `artifacts`, `visualization_recipes`, `reports`,
+`scientific_workspaces`, `workspace_panels`, and
+`workspace_layout_revisions`.
 
 Creating or rolling back migrations is a maintainer operation and is not part
 of the Initial Release reproduction procedure.
@@ -131,6 +135,18 @@ export REDIS_URL=redis://localhost:6379/0
 The `QueueWorkerRuntime` uses RQ to enqueue jobs. Workers load the Job from
 PostgreSQL repository, execute ToolCalls through Tool Registry + Adapter, and
 write ToolCall/Artifact/JobEvent state back.
+
+Start the canonical worker from the repository environment:
+
+```bash
+python -m mdi_workers.worker_entrypoint
+```
+
+The entrypoint uses RQ's process-isolated `Worker` on POSIX hosts. On Windows,
+where `fork()` and `wait4()` are unavailable, it selects RQ's `SimpleWorker`
+so queued jobs execute instead of terminating the worker process. Use one
+worker process per queue on Windows because that worker executes jobs in the
+worker process.
 
 For persisted planner jobs, the worker must load `job.plan_id`, fetch the
 matching `analysis_plans` record, reconstruct the `AnalysisPlan`, and execute
@@ -181,6 +197,7 @@ This ensures `python -m pytest -q` always works without Docker.
 | Start infra | `docker compose up -d postgres redis minio` |
 | Check infra | `docker compose ps` |
 | Alembic upgrade (PG) | `python -m alembic -c apps/api/alembic.ini upgrade head` |
+| Start queue worker | `python -m mdi_workers.worker_entrypoint` |
 | Run unit tests | `python -m pytest -q` |
 | Run integration tests | `MDI_RUN_INTEGRATION=1 python -m pytest -q -m integration` |
 | Run Phase 8B persisted-plan integration | `MDI_RUN_INTEGRATION=1 python -m pytest tests/test_phase8b_persisted_plan_queue.py -q -m integration` |
