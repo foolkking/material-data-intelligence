@@ -142,7 +142,7 @@ def validate_trajectory(payload: Any, *, raw_size_bytes: int | None = None) -> T
         errors.add("TRAJECTORY_BYTE_LIMIT_EXCEEDED")
 
     _validate_security(payload.get("security"), errors)
-    _scan_inert_content(payload, errors)
+    _scan_trajectory_inert_content(payload, errors)
     _validate_units(payload.get("units"), payload.get("coordinate_mode"), errors)
     _validate_time_contract(payload.get("time"), payload.get("kind"), errors)
     atom_count, atom_ids = _validate_atoms(payload.get("atoms"), errors)
@@ -561,6 +561,38 @@ def _scan_inert_content(
             errors.add("TRAJECTORY_EXTERNAL_REFERENCE_FORBIDDEN")
         if any(pattern.search(value) for pattern in _PRIVATE_PATH_PATTERNS):
             errors.add("TRAJECTORY_PRIVATE_PATH_FORBIDDEN")
+
+
+def _scan_trajectory_inert_content(payload: dict[str, Any], errors: set[str]) -> None:
+    """Scan unstructured trajectory content without treating numeric arrays as inert trees."""
+    for field in (
+        "schema_version", "trajectory_id", "kind", "coordinate_mode", "position_wrapping",
+        "lattice_mode", "atom_identity_mode", "periodic_boundary", "units", "time",
+        "fixed_lattice", "properties", "metadata", "provenance", "warnings", "security",
+    ):
+        _scan_inert_content(payload.get(field), errors, key=field)
+
+    atoms = payload.get("atoms")
+    if isinstance(atoms, dict):
+        _scan_inert_content(atoms.get("count"), errors, key="count")
+        records = atoms.get("records")
+        if isinstance(records, list):
+            for record in records:
+                _scan_inert_content(record, errors, key="atom", budget=[128])
+
+    frames = payload.get("frames")
+    if isinstance(frames, list):
+        for frame in frames:
+            if isinstance(frame, dict):
+                # Positions and optional vector arrays have strict numeric shape, magnitude, and
+                # cardinality validation below. Only frame fields that can contain inert text need
+                # recursive content scanning here.
+                _scan_inert_content(
+                    {"schema_version": frame.get("schema_version"), "metadata": frame.get("metadata")},
+                    errors,
+                    key="frame",
+                    budget=[128],
+                )
 
 
 def _result(errors: set[str], warnings: set[str], frame_count: int, atom_count: int) -> TrajectoryValidationResult:

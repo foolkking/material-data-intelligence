@@ -71,6 +71,28 @@ def test_extxyz_fixtures_normalize_to_contract(name: str, kind: str, frames: int
     assert parsed.report["input_sha256"] == parsed.trajectory["provenance"]["input_sha256"]
 
 
+def test_extxyz_coordinate_volume_uses_contract_caps_not_inert_node_budget(tmp_path: Path) -> None:
+    atoms = 80
+    frames = 64
+    source = tmp_path / "bounded_large.extxyz"
+    rows: list[str] = []
+    for frame_index in range(frames):
+        rows.append(str(atoms))
+        rows.append(
+            'Lattice="5 0 0 0 5 0 0 0 5" '
+            'Properties=species:S:1:id:I:1:pos:R:3 pbc="T T T" '
+            f"Time={frame_index} time_unit=femtosecond position_unit=angstrom trajectory_kind=molecular_dynamics"
+        )
+        rows.extend(f"Si {atom_id} {atom_id / atoms:.6f} 0.0 0.0" for atom_id in range(atoms))
+    source.write_text("\n".join(rows) + "\n", encoding="utf-8")
+
+    parsed = parse_trajectory_file(source)
+
+    assert validate_trajectory(parsed.trajectory).valid
+    assert len(parsed.trajectory["frames"]) == frames
+    assert parsed.trajectory["atoms"]["count"] == atoms
+
+
 def test_stable_source_ids_reorder_without_changing_identity() -> None:
     parsed = parse_trajectory_file(FIXTURES / "triclinic_reordered.extxyz")
     assert parsed.report["reordered_by_atom_id"] is True
