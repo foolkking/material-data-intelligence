@@ -312,6 +312,55 @@ def test_coordination_questions_preserve_required_dependency_producer(
     assert [item.toolId for item in result.decision.selections] == expected_tools
 
 
+def test_provider_dependency_pair_is_not_rejected_as_redundant() -> None:
+    profile = _resource_profile(
+        object_id="structure_exact",
+        object_type="Structure",
+        kind="structure",
+        capabilities=["structure"],
+    )
+    goal = "Inspect CrystalNN coordination and its local-environment polyhedra."
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request(goal, selected_resource_ids=("structure_exact",)),
+        profile=profile,
+    )
+
+    def transport(**kwargs: object) -> dict[str, object]:
+        context = json.loads(kwargs["messages"][-1]["content"])
+        if "compatiblePairs" in context:
+            payload = {
+                "schemaVersion": "1.0",
+                "matrixId": context["matrixId"],
+                "selectedPairIds": sorted(item["pairId"] for item in context["compatiblePairs"]),
+            }
+        else:
+            payload = {
+                "schemaVersion": "1.0",
+                "resolutionId": context["eligibleCandidates"]["resolutionId"],
+                "selectedToolIds": context["applicationValidatedMinimalToolIds"],
+            }
+        return {
+            "choices": [{
+                "message": {
+                    "content": json.dumps(payload, separators=(",", ":")),
+                },
+                "finish_reason": "stop",
+            }],
+        }
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=OpenAICompatibleProvider(transport=transport),
+    )
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == [
+        "structure.coordination_crystalnn",
+        "structure.local_environment_polyhedra",
+    ]
+
+
 def test_provider_repairs_wrong_explicit_material_property_operation() -> None:
     profile = _material_property_profile()
     intent = DeterministicAnalysisIntentBuilder().build(

@@ -1088,6 +1088,8 @@ def _validate_minimal_provider_selection(
             repairable=True,
         )
     _validate_explicit_visual_form(intent, projection, selected_tool_ids)
+    if _is_required_dependency_selection(intent, selected_tool_ids):
+        return
     if len(selected_tool_ids) <= 1:
         return
     candidates = {item.toolId: item for item in projection.candidates}
@@ -1119,6 +1121,22 @@ def _validate_minimal_provider_selection(
             code="CAPABILITY_LLM_SELECTION_REDUNDANT",
             repairable=True,
         )
+
+
+def _is_required_dependency_selection(intent: AnalysisIntent, selected_tool_ids: list[str]) -> bool:
+    goal = intent.rawGoal.casefold()
+    selected = set(selected_tool_ids)
+    if "xrd" in goal and any(marker in goal for marker in ("experimental", "match", "correspond", "comparison")):
+        return selected == {"structure.xrd", "structure.experimental_xrd_comparison"}
+    if any(marker in goal for marker in ("local environment", "local-environment", "coordination polyhed", "local geometry")):
+        if "crystalnn" in goal:
+            producer = "structure.coordination_crystalnn"
+        elif "voronoinn" in goal or "voronoi nn" in goal:
+            producer = "structure.coordination_voronoinn"
+        else:
+            return False
+        return selected == {producer, "structure.local_environment_polyhedra"}
+    return False
 
 
 def _validate_explicit_visual_form(
