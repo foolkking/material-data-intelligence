@@ -752,6 +752,33 @@ def test_live_provider_cannot_expand_chemical_system_distribution_to_property_da
     assert intent.requiredCapabilityNeeds == [CapabilityNeed.composition_data]
 
 
+def test_live_provider_cannot_expand_formula_summary_source_wording_to_dataset_overview() -> None:
+    profile = _profile(targets=(), uncertainty=False)
+    request = _request("Summarize the formulas in this materials table.")
+    provider_payload = DeterministicAnalysisIntentBuilder().build(
+        request,
+        profile=profile,
+    ).model_dump(mode="json")
+    provider_payload["scientificIntents"] = ["composition_analysis", "dataset_overview"]
+    provider_payload["requiredCapabilityNeeds"] = ["composition_data", "tabular_data"]
+
+    def transport(**_: object) -> dict[str, object]:
+        return {
+            "choices": [{
+                "message": {"content": json.dumps(provider_payload)},
+                "finish_reason": "stop",
+            }]
+        }
+
+    intent = OpenAICompatibleAnalysisIntentBuilder(
+        OpenAICompatibleProvider(transport=transport)
+    ).build(request, profile=profile)
+
+    assert intent.outcome.value == "READY"
+    assert intent.scientificIntents == [ScientificIntent.composition_analysis]
+    assert intent.requiredCapabilityNeeds == [CapabilityNeed.composition_data]
+
+
 def test_explicit_property_distribution_remains_property_analysis() -> None:
     intent = DeterministicAnalysisIntentBuilder().build(
         _request("Summarize the material property distribution and coverage."),

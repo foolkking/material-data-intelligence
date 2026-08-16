@@ -573,6 +573,39 @@ def test_live_provider_context_exposes_application_validated_minimal_selection()
 
 
 @pytest.mark.parametrize(
+    ("goal", "expected_tool"),
+    [
+        ("Summarize the formulas in this materials table.", "composition.formula_statistics"),
+        ("Show the element distribution across the formulas in this table.", "composition.elements_hist"),
+        (
+            "Show the chemical-system distribution for this materials table as a sunburst.",
+            "composition.chem_sys_sunburst",
+        ),
+    ],
+)
+def test_explicit_composition_delivery_routes_to_exact_existing_tool(
+    goal: str,
+    expected_tool: str,
+) -> None:
+    profile = _profile(targets=(), uncertainty=False)
+    intent = DeterministicAnalysisIntentBuilder().build(_request(goal), profile=profile)
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=MockLLMProvider(),
+    )
+
+    assert intent.scientificIntents == [ScientificIntent.composition_analysis]
+    assert intent.requiredCapabilityNeeds == [CapabilityNeed.composition_data]
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == [expected_tool]
+    assert result.plan is not None
+    assert [step.toolId for step in result.plan.steps] == [expected_tool]
+
+
+@pytest.mark.parametrize(
     "raw",
     [
         '```json\n{"schemaVersion":"1.0"}\n```',

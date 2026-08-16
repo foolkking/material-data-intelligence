@@ -633,14 +633,27 @@ def _reconcile_explicit_goal_semantics(
     """Preserve explicit semantics recognized by the application-owned classifier."""
     classification = _classify_goal(request.raw_goal)
     supplied_intents = parsed.get("scientificIntents")
-    if isinstance(supplied_intents, list) and ScientificIntent.property_distribution not in classification.intents:
+    if isinstance(supplied_intents, list):
+        excluded_intents: set[ScientificIntent] = set()
+        excluded_needs: set[CapabilityNeed] = set()
+        if ScientificIntent.property_distribution not in classification.intents:
+            excluded_intents.add(ScientificIntent.property_distribution)
+            if CapabilityNeed.material_property_data not in classification.required:
+                excluded_needs.add(CapabilityNeed.material_property_data)
+        if (
+            ScientificIntent.composition_analysis in classification.intents
+            and ScientificIntent.dataset_overview not in classification.intents
+        ):
+            excluded_intents.add(ScientificIntent.dataset_overview)
+            if CapabilityNeed.tabular_data not in classification.required:
+                excluded_needs.add(CapabilityNeed.tabular_data)
         parsed["scientificIntents"] = [
-            value for value in supplied_intents if value != ScientificIntent.property_distribution.value
+            value for value in supplied_intents if value not in {item.value for item in excluded_intents}
         ]
         supplied_needs = parsed.get("requiredCapabilityNeeds")
         if isinstance(supplied_needs, list):
             parsed["requiredCapabilityNeeds"] = [
-                value for value in supplied_needs if value != CapabilityNeed.material_property_data.value
+                value for value in supplied_needs if value not in {item.value for item in excluded_needs}
             ]
     for field_name, required_values in (
         ("scientificIntents", classification.intents),
@@ -1009,13 +1022,29 @@ def _classify_goal(goal: str) -> _Classification:
         if item not in intents:
             intents.append(item)
 
-    if _contains(value, "composition", "formula", "element distribution", "组成", "成分", "元素分布"):
+    if _contains(
+        value,
+        "composition",
+        "formula",
+        "element distribution",
+        "chemical-system",
+        "chemical system",
+        "组成",
+        "成分",
+        "元素分布",
+    ):
         add_intent(ScientificIntent.composition_analysis)
         required.append(CapabilityNeed.composition_data)
     if _contains(value, "property", "coverage", "性质", "属性", "覆盖"):
         add_intent(ScientificIntent.property_distribution)
         required.append(CapabilityNeed.material_property_data)
-    if _contains(value, "dataset", "batch", "这批", "数据集", "materials"):
+    dataset_overview_requested = _contains(value, "dataset", "batch", "这批", "数据集", "materials")
+    composition_table_source_only = (
+        ScientificIntent.composition_analysis in intents
+        and "materials table" in value
+        and not _contains(value, "dataset", "batch", "这批", "数据集")
+    )
+    if dataset_overview_requested and not composition_table_source_only:
         add_intent(ScientificIntent.dataset_overview)
         required.append(CapabilityNeed.tabular_data)
     if _contains(value, "outlier", "anomal", "异常", "离群"):

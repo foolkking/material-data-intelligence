@@ -539,6 +539,16 @@ def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandida
                 code="ELECTRONIC_RESOURCES_NOT_ELIGIBLE",
                 outcome=CapabilityPlanningOutcome.capability_mismatch,
             )
+    composition_tool = _explicit_composition_tool(goal)
+    if composition_tool is not None and ScientificIntent.composition_analysis in intent.scientificIntents:
+        eligible = {item.toolId for item in projection.candidates}
+        if composition_tool in eligible:
+            return [composition_tool]
+        raise CapabilityPlanningError(
+            "The explicitly requested composition analysis is not eligible for the exact formula semantics.",
+            code="COMPOSITION_ANALYSIS_NOT_ELIGIBLE",
+            outcome=CapabilityPlanningOutcome.capability_mismatch,
+        )
     remaining_intents = set(intent.scientificIntents)
     remaining_needs = set(intent.requiredCapabilityNeeds)
     selected: list[ProjectedCandidate] = []
@@ -585,6 +595,19 @@ def _goal_has_token(goal: str, token: str) -> bool:
         rf"(?<![a-z0-9]){re.escape(token.casefold())}(?![a-z0-9])",
         goal.casefold(),
     ) is not None
+
+
+def _explicit_composition_tool(goal: str) -> str | None:
+    if (
+        any(marker in goal for marker in ("chemical-system distribution", "chemical system distribution"))
+        and "sunburst" in goal
+    ):
+        return "composition.chem_sys_sunburst"
+    if "element distribution" in goal:
+        return "composition.elements_hist"
+    if "formula" in goal and any(marker in goal for marker in ("summarize", "summary", "statistics")):
+        return "composition.formula_statistics"
+    return None
 
 
 def _build_ready_decision_and_plan(
