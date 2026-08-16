@@ -1126,6 +1126,8 @@ def _validate_minimal_provider_selection(
             code="EXPLICIT_TRAJECTORY_OPERATION_MISMATCH",
             repairable=True,
         )
+    if exact_trajectory_selection is not None:
+        return
     _validate_explicit_visual_form(intent, projection, selected_tool_ids)
     if _is_required_dependency_selection(intent, selected_tool_ids):
         return
