@@ -223,6 +223,72 @@ def test_explicit_material_property_targets_bind_only_profile_selected_values(
     assert captured["eligibleCandidates"]["resolutionId"] == result.resolution.resolutionId
 
 
+@pytest.mark.parametrize(
+    ("goal", "expected_tool"),
+    [
+        ("Summarize formation energy, band gap, and density.", "table.numeric_summary"),
+        ("Show the distribution of band gap.", "viz.histogram"),
+        ("Analyze the correlations among formation energy, band gap, and density.", "viz.correlation"),
+        ("Plot formation energy against density.", "viz.scatter"),
+    ],
+)
+def test_deterministic_selection_preserves_explicit_material_property_operation(
+    goal: str,
+    expected_tool: str,
+) -> None:
+    profile = _material_property_profile()
+    intent = DeterministicAnalysisIntentBuilder().build(_request(goal), profile=profile)
+
+    result = plan_capabilities(intent, profile=profile, registry=load_manifests(), provider=MockLLMProvider())
+
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == [expected_tool]
+
+
+def test_provider_repairs_wrong_explicit_material_property_operation() -> None:
+    profile = _material_property_profile()
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("Summarize formation energy, band gap, and density."),
+        profile=profile,
+    )
+    calls = 0
+
+    def transport(**kwargs: object) -> dict[str, object]:
+        nonlocal calls
+        calls += 1
+        context = json.loads(kwargs["messages"][-1]["content"])
+        selected = "viz.correlation" if calls == 1 else "table.numeric_summary"
+        return {
+            "choices": [
+                {
+                    "message": {
+                        "content": json.dumps(
+                            {
+                                "schemaVersion": "1.0",
+                                "resolutionId": context["eligibleCandidates"]["resolutionId"],
+                                "selectedToolIds": [selected],
+                            },
+                            separators=(",", ":"),
+                        )
+                    },
+                    "finish_reason": "stop",
+                }
+            ]
+        }
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=OpenAICompatibleProvider(transport=transport),
+    )
+
+    assert calls == 2
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == ["table.numeric_summary"]
+    assert result.decision.provenance.repairCount == 1
+
+
 def test_uncertainty_selects_only_explicit_uncertainty_capability() -> None:
     profile = _profile()
     intent = DeterministicAnalysisIntentBuilder().build(

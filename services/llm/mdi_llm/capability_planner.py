@@ -463,6 +463,9 @@ class CapabilityContextValidator:
 
 def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandidateProjection) -> list[str]:
     goal = intent.rawGoal.casefold()
+    property_selection = _explicit_material_property_selection(intent, projection)
+    if property_selection is not None:
+        return property_selection
     dependency_requests: list[str] = []
     if "xrd" in goal and any(marker in goal for marker in ("experimental", "match", "correspond", "comparison")):
         producer = "structure.xrd"
@@ -595,6 +598,48 @@ def _goal_has_token(goal: str, token: str) -> bool:
         rf"(?<![a-z0-9]){re.escape(token.casefold())}(?![a-z0-9])",
         goal.casefold(),
     ) is not None
+
+
+def _explicit_material_property_selection(
+    intent: AnalysisIntent,
+    projection: EligibleCandidateProjection,
+) -> list[str] | None:
+    targets = getattr(intent, "targetSemantics", [])
+    if getattr(intent, "schemaVersion", None) != "1.1" or not targets:
+        return None
+    if any(item.role != "material_property" for item in targets):
+        return None
+
+    goal = intent.rawGoal.casefold()
+    selection_roles = {item.selectionRole.value for item in targets if item.selectionRole is not None}
+    requested: str | None = None
+    if {"X_PROPERTY", "Y_PROPERTY"}.issubset(selection_roles) and (
+        " against " in goal or _goal_has_token(goal, "scatter")
+    ):
+        requested = "viz.scatter"
+    elif "PROPERTY_SET" in selection_roles and any(
+        marker in goal for marker in ("correlation", "correlations", "correlate")
+    ):
+        requested = "viz.correlation"
+    elif selection_roles == {"PROPERTY"} and any(
+        marker in goal for marker in ("distribution", "histogram")
+    ):
+        requested = "viz.histogram"
+    elif "PROPERTY_SET" in selection_roles and any(
+        marker in goal for marker in ("summarize", "summary", "statistics")
+    ):
+        requested = "table.numeric_summary"
+
+    if requested is None:
+        return None
+    eligible = {item.toolId for item in projection.candidates}
+    if requested not in eligible:
+        raise CapabilityPlanningError(
+            "The explicitly requested material-property operation is not eligible for the exact Profile targets.",
+            code="MATERIAL_PROPERTY_OPERATION_NOT_ELIGIBLE",
+            outcome=CapabilityPlanningOutcome.capability_mismatch,
+        )
+    return [requested]
 
 
 def _explicit_composition_tool(goal: str) -> str | None:
@@ -991,6 +1036,13 @@ def _validate_minimal_provider_selection(
             "LLM selected a tool outside the eligible projection.",
             code="CAPABILITY_LLM_CANDIDATE_INVALID",
             repairable=not invented,
+        )
+    exact_property_selection = _explicit_material_property_selection(intent, projection)
+    if exact_property_selection is not None and selected_tool_ids != exact_property_selection:
+        raise CapabilityPlanningError(
+            "Provider selection does not preserve the explicit material-property operation.",
+            code="EXPLICIT_MATERIAL_PROPERTY_OPERATION_MISMATCH",
+            repairable=True,
         )
     _validate_explicit_visual_form(intent, projection, selected_tool_ids)
     if len(selected_tool_ids) <= 1:
