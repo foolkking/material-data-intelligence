@@ -36,7 +36,7 @@ from mdi_tool_registry import build_registry_snapshot, load_manifests
 from mdi_llm.capability_planner import _explicit_visual_capability_gap, _validate_minimal_provider_selection
 from mdi_llm.capability_planner import resolve_eligibility
 
-from tests.test_phase10l1_analysis_intent import _profile, _request
+from tests.test_phase10l1_analysis_intent import _material_property_profile, _profile, _request
 
 
 def _ready_target_intent(target: str) -> tuple[AnalysisIntent, object]:
@@ -150,6 +150,77 @@ def test_formation_energy_and_band_gap_bind_exact_distinct_groups() -> None:
     assert formation_groups == ["regression_0"]
     assert band_gap_groups == ["regression_1"]
     assert formation_groups != band_gap_groups
+
+
+@pytest.mark.parametrize(
+    ("goal", "expected_tool", "expected_parameters"),
+    [
+        (
+            "Summarize formation energy, band gap, and density.",
+            "table.numeric_summary",
+            {"numericColumns": ["formation_energy", "band_gap", "density"]},
+        ),
+        (
+            "Show the distribution of band gap.",
+            "viz.histogram",
+            {"column": "band_gap"},
+        ),
+        (
+            "Analyze the correlations among formation energy, band gap, and density.",
+            "viz.correlation",
+            {"numericColumns": ["formation_energy", "band_gap", "density"]},
+        ),
+        (
+            "Plot formation energy against density.",
+            "viz.scatter",
+            {"xColumn": "formation_energy", "yColumn": "density"},
+        ),
+    ],
+)
+def test_explicit_material_property_targets_bind_only_profile_selected_values(
+    goal: str,
+    expected_tool: str,
+    expected_parameters: dict[str, object],
+) -> None:
+    profile = _material_property_profile()
+    intent = DeterministicAnalysisIntentBuilder().build(_request(goal), profile=profile)
+    captured: dict[str, object] = {}
+
+    def transport(**kwargs: object) -> dict[str, object]:
+        context = json.loads(kwargs["messages"][-1]["content"])
+        captured.update(context)
+        return {
+            "choices": [
+                {
+                    "message": {
+                        "content": json.dumps(
+                            {
+                                "schemaVersion": "1.0",
+                                "resolutionId": context["eligibleCandidates"]["resolutionId"],
+                                "selectedToolIds": [expected_tool],
+                            },
+                            separators=(",", ":"),
+                        )
+                    },
+                    "finish_reason": "stop",
+                }
+            ]
+        }
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=OpenAICompatibleProvider(transport=transport),
+    )
+
+    assert intent.outcome.value == "READY"
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == [expected_tool]
+    bound = {item.parameter: item.value for item in result.decision.selections[0].boundParameters}
+    assert bound == expected_parameters
+    assert all("numeric_descriptor" not in str(value) for value in bound.values())
+    assert captured["eligibleCandidates"]["resolutionId"] == result.resolution.resolutionId
 
 
 def test_uncertainty_selects_only_explicit_uncertainty_capability() -> None:

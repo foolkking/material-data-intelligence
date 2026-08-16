@@ -11,7 +11,7 @@ from mdi_llm.analysis_intent import AnalysisIntentError, ClarificationSubmission
 from mdi_schemas import (
     ANALYSIS_INTENT_MAX_CLARIFICATION_ROUNDS,
     ANALYSIS_INTENT_MAX_QUESTIONS,
-    ANALYSIS_INTENT_SCHEMA_VERSION,
+    ANALYSIS_INTENT_SUPPORTED_SCHEMA_VERSIONS,
     ClarificationAnswer,
 )
 
@@ -30,7 +30,7 @@ def _json(path: Path) -> dict:
 
 
 def test_analysis_intent_one_round_authority_and_typed_second_round_failure() -> None:
-    assert ANALYSIS_INTENT_SCHEMA_VERSION == "1.0"
+    assert "1.0" in ANALYSIS_INTENT_SUPPORTED_SCHEMA_VERSIONS
     assert ANALYSIS_INTENT_MAX_CLARIFICATION_ROUNDS == 1
     assert ANALYSIS_INTENT_MAX_QUESTIONS == 3
 

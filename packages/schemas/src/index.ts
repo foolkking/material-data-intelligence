@@ -571,6 +571,7 @@ export type AnalysisIntentCapabilityNeed =
   | "sample_identity";
 
 export type AnalysisIntentBindingOrigin = "USER_EXPLICIT" | "PROFILE_EXACT" | "CLARIFICATION_ANSWER";
+export type AnalysisIntentPropertyTargetRole = "PROPERTY" | "X_PROPERTY" | "Y_PROPERTY" | "PROPERTY_SET";
 export type AnalysisIntentAmbiguitySource = "USER_GOAL" | "DATA_PROFILE" | "RESOURCE_SELECTION" | "SEMANTIC_BINDING";
 
 export type AnalysisIntentResourceRef = {
@@ -612,6 +613,7 @@ export type AnalysisIntentTargetSemantic = {
   unit?: string;
   groupId?: string;
   seriesId?: string;
+  selectionRole?: AnalysisIntentPropertyTargetRole;
   origin: AnalysisIntentBindingOrigin;
 };
 
@@ -648,7 +650,7 @@ export type AnalysisIntentClarificationQuestion = {
 export type AnalysisIntentClarificationAnswer = { questionId: string; selectedValues: string[] };
 
 export type AnalysisIntent = {
-  schemaVersion: "1.0";
+  schemaVersion: "1.0" | "1.1";
   intentId: string;
   intentHash: string;
   datasetId: string;

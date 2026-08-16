@@ -38,6 +38,7 @@ from mdi_schemas import (
     DesiredOutput,
     IntentBindingOrigin,
     IntentTargetSemantic,
+    PropertyTargetRole,
     ScientificIntent,
     compute_analysis_intent_hash,
     deterministic_intent_id,
@@ -137,6 +138,47 @@ def _request(goal: str, **kwargs: object) -> AnalysisIntentRequest:
     return AnalysisIntentRequest(raw_goal=goal, dataset_id="dataset_1", profile_id="profile_1", **kwargs)
 
 
+def _material_property_profile(*, include_numeric_descriptor: bool = False) -> DataProfile:
+    profile = _profile(targets=(), uncertainty=False)
+    payload = profile.model_dump(mode="json")
+    columns = payload["semanticColumns"]
+    columns.extend(
+        [
+            {
+                "objectId": "table_1",
+                "column": "formation_energy",
+                "dtype": "number",
+                "roles": [{"role": "material_property", "authority": "canonical_name"}],
+                "unit": "eV/atom",
+            },
+            {
+                "objectId": "table_1",
+                "column": "band_gap",
+                "dtype": "number",
+                "roles": [{"role": "material_property", "authority": "canonical_name"}],
+                "unit": "eV",
+            },
+            {
+                "objectId": "table_1",
+                "column": "density",
+                "dtype": "number",
+                "roles": [{"role": "material_property", "authority": "canonical_name"}],
+                "unit": "g/cm3",
+            },
+        ]
+    )
+    if include_numeric_descriptor:
+        columns.append(
+            {
+                "objectId": "table_1",
+                "column": "numeric_descriptor",
+                "dtype": "number",
+                "roles": [],
+            }
+        )
+    return DataProfile.model_validate(payload)
+
+
 def test_contract_hash_is_deterministic_and_round_trips_unicode() -> None:
     profile = _profile()
     builder = DeterministicAnalysisIntentBuilder()
@@ -158,6 +200,68 @@ def test_checked_in_json_schema_matches_python_contract() -> None:
     checked_in = json.loads(Path("packages/schemas/json/analysis-intent-v1.schema.json").read_text(encoding="utf-8"))
     assert checked_in == AnalysisIntent.model_json_schema()
     assert checked_in["additionalProperties"] is False
+
+
+@pytest.mark.parametrize(
+    ("goal", "expected_roles", "expected_columns"),
+    [
+        (
+            "Summarize formation energy, band gap, and density.",
+            [PropertyTargetRole.property_set] * 3,
+            ["formation_energy", "band_gap", "density"],
+        ),
+        (
+            "Show the distribution of band gap.",
+            [PropertyTargetRole.property],
+            ["band_gap"],
+        ),
+        (
+            "Analyze the correlations among formation energy, band gap, and density.",
+            [PropertyTargetRole.property_set] * 3,
+            ["formation_energy", "band_gap", "density"],
+        ),
+        (
+            "Plot formation energy against density.",
+            [PropertyTargetRole.x_property, PropertyTargetRole.y_property],
+            ["formation_energy", "density"],
+        ),
+    ],
+)
+def test_explicit_profile_material_properties_build_v11_exact_targets(
+    goal: str,
+    expected_roles: list[PropertyTargetRole],
+    expected_columns: list[str],
+) -> None:
+    profile = _material_property_profile()
+    intent = DeterministicAnalysisIntentBuilder().build(_request(goal), profile=profile)
+
+    assert intent.schemaVersion == "1.1"
+    assert intent.outcome.value == "READY"
+    assert intent.scientificIntents == [ScientificIntent.property_distribution] or intent.scientificIntents == [
+        ScientificIntent.visualization,
+        ScientificIntent.property_distribution,
+    ]
+    assert [item.column for item in intent.targetSemantics] == expected_columns
+    assert [item.selectionRole for item in intent.targetSemantics] == expected_roles
+    assert all(item.role == "material_property" and item.objectId == "table_1" for item in intent.targetSemantics)
+
+
+@pytest.mark.parametrize(
+    ("goal", "code"),
+    [
+        ("Show the distribution of melting point.", "MATERIAL_PROPERTY_TARGET_NOT_FOUND"),
+        ("Plot band gap against.", "MATERIAL_PROPERTY_SCATTER_TARGETS_INCOMPLETE"),
+        ("Plot band gap against band gap.", "MATERIAL_PROPERTY_SCATTER_TARGETS_NOT_DISTINCT"),
+        ("Show the distribution of numeric descriptor.", "MATERIAL_PROPERTY_TARGET_NOT_FOUND"),
+    ],
+)
+def test_material_property_targets_reject_unknown_or_incomplete_user_requests(goal: str, code: str) -> None:
+    profile = _material_property_profile(include_numeric_descriptor=True)
+    intent = DeterministicAnalysisIntentBuilder().build(_request(goal), profile=profile)
+
+    assert intent.outcome.value == "UNSUPPORTED"
+    assert [item.code for item in intent.unsupportedReasons] == [code]
+    assert intent.targetSemantics == []
 
 
 def test_contract_rejects_duplicate_semantic_identity_and_inconsistent_answer_provenance() -> None:

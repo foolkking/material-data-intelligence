@@ -10,7 +10,7 @@ from generate_phase13_0_release_scope import main as generate_release_scope
 from mdi_schemas import (
     ANALYSIS_INTENT_MAX_CLARIFICATION_ROUNDS,
     ANALYSIS_INTENT_MAX_QUESTIONS,
-    ANALYSIS_INTENT_SCHEMA_VERSION,
+    ANALYSIS_INTENT_SUPPORTED_SCHEMA_VERSIONS,
 )
 
 
@@ -91,8 +91,8 @@ def main() -> None:
     phase12 = load_json(SEAL_ROOT / "phase12_baseline_verification.json")
 
     policies = [demo["clarification"] for demo in demos["demos"]]
-    if ANALYSIS_INTENT_SCHEMA_VERSION != "1.0":
-        raise AssertionError("AnalysisIntent version drift")
+    if "1.0" not in ANALYSIS_INTENT_SUPPORTED_SCHEMA_VERSIONS:
+        raise AssertionError("AnalysisIntent legacy version drift")
     if ANALYSIS_INTENT_MAX_CLARIFICATION_ROUNDS != 1 or ANALYSIS_INTENT_MAX_QUESTIONS != 3:
         raise AssertionError("AnalysisIntent clarification authority drift")
     if len(policies) != 7 or any(policy["maxRounds"] != 1 for policy in policies):
@@ -130,7 +130,7 @@ def main() -> None:
         raise AssertionError("Current/historical clarification occurrence classification failed")
 
     authority = {
-        "schemaVersion": ANALYSIS_INTENT_SCHEMA_VERSION,
+        "schemaVersion": "1.0",
         "maxClarificationRounds": ANALYSIS_INTENT_MAX_CLARIFICATION_ROUNDS,
         "maxClarificationQuestions": ANALYSIS_INTENT_MAX_QUESTIONS,
         "secondRoundBehavior": "TYPED_FAILURE",

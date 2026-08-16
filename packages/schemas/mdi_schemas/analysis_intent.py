@@ -8,7 +8,8 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
-ANALYSIS_INTENT_SCHEMA_VERSION = "1.0"
+ANALYSIS_INTENT_SCHEMA_VERSION = "1.1"
+ANALYSIS_INTENT_SUPPORTED_SCHEMA_VERSIONS = ("1.0", "1.1")
 ANALYSIS_INTENT_MAX_RAW_GOAL_CHARS = 16_384
 ANALYSIS_INTENT_MAX_RESOURCE_REFS = 32
 ANALYSIS_INTENT_MAX_SCIENTIFIC_INTENTS = 16
@@ -91,6 +92,15 @@ class IntentBindingOrigin(str, Enum):
     clarification_answer = "CLARIFICATION_ANSWER"
 
 
+class PropertyTargetRole(str, Enum):
+    """Bounded user-declared role for an exact material-property fact."""
+
+    property = "PROPERTY"
+    x_property = "X_PROPERTY"
+    y_property = "Y_PROPERTY"
+    property_set = "PROPERTY_SET"
+
+
 class AmbiguitySource(str, Enum):
     user_goal = "USER_GOAL"
     data_profile = "DATA_PROFILE"
@@ -144,6 +154,7 @@ class IntentTargetSemantic(StrictIntentModel):
     unit: str | None = Field(default=None, max_length=64)
     groupId: str | None = Field(default=None, max_length=128)
     seriesId: str | None = Field(default=None, max_length=128)
+    selectionRole: PropertyTargetRole | None = None
     origin: IntentBindingOrigin
 
 
@@ -232,7 +243,7 @@ class AnalysisIntentProvenance(StrictIntentModel):
 
 
 class AnalysisIntent(StrictIntentModel):
-    schemaVersion: Literal["1.0"] = ANALYSIS_INTENT_SCHEMA_VERSION
+    schemaVersion: Literal["1.0", "1.1"] = "1.0"
     intentId: str = Field(min_length=1, max_length=96)
     intentHash: str = Field(pattern=r"^[0-9a-f]{64}$")
     datasetId: str = Field(min_length=1, max_length=64)
@@ -271,6 +282,20 @@ class AnalysisIntent(StrictIntentModel):
         for field_name, values in unique_fields.items():
             if len(values) != len(set(values)):
                 raise ValueError(f"{field_name} identities must be unique.")
+        property_targets = [item for item in self.targetSemantics if item.role == "material_property"]
+        if self.schemaVersion == "1.0" and any(item.selectionRole is not None for item in property_targets):
+            raise ValueError("AnalysisIntent 1.0 cannot contain material-property target selection roles.")
+        if any(item.selectionRole is not None and item.role != "material_property" for item in self.targetSemantics):
+            raise ValueError("Only material-property targets can carry a selection role.")
+        if self.schemaVersion == "1.1" and any(item.selectionRole is None for item in property_targets):
+            raise ValueError("AnalysisIntent 1.1 material-property targets require a selection role.")
+        roles = [item.selectionRole for item in property_targets if item.selectionRole is not None]
+        if len(roles) != len(set(roles)) and any(role in {PropertyTargetRole.x_property, PropertyTargetRole.y_property, PropertyTargetRole.property} for role in roles):
+            raise ValueError("Scalar material-property target selection roles must be unique.")
+        x_targets = [item for item in property_targets if item.selectionRole is PropertyTargetRole.x_property]
+        y_targets = [item for item in property_targets if item.selectionRole is PropertyTargetRole.y_property]
+        if x_targets and y_targets and x_targets[0].semanticId == y_targets[0].semanticId:
+            raise ValueError("Scatter x and y material-property targets must be distinct.")
         if self.clarification.round == 0:
             if self.provenance.parentIntentId is not None or self.clarification.answers or self.provenance.answerBindings:
                 raise ValueError("Initial Intent cannot contain clarification parent or answer provenance.")
@@ -309,6 +334,11 @@ def canonical_analysis_intent_payload(intent: AnalysisIntent | dict[str, Any]) -
     provenance = payload.get("provenance")
     if isinstance(provenance, dict):
         provenance.pop("createdAt", None)
+    # Intent 1.1 adds a nullable field. Omitting its default retains the canonical
+    # identity of persisted 1.0 records without reinterpreting their semantics.
+    for target in payload.get("targetSemantics", []):
+        if isinstance(target, dict) and target.get("selectionRole") is None:
+            target.pop("selectionRole", None)
     return payload
 
 

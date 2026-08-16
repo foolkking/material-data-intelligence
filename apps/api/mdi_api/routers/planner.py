@@ -401,8 +401,8 @@ def planner_jobs(
     capability_result: CapabilityPlanningResult | None = None
     if request.intentSchemaVersion is not None or request.intentId is not None:
         _ensure_planner_project_dataset(repos, project_id=project_id, dataset_id=dataset_id, created_by=created_by)
-        if request.intentSchemaVersion not in {None, "1.0"}:
-            return _planner_jobs_intent_error("INTENT_SCHEMA_UNSUPPORTED", "Only AnalysisIntent schema 1.0 is supported.")
+        if request.intentSchemaVersion not in {None, "1.0", "1.1"}:
+            return _planner_jobs_intent_error("INTENT_SCHEMA_UNSUPPORTED", "Only AnalysisIntent schema 1.0 or 1.1 is supported.")
         try:
             dp = _planner_exact_data_profile(repos, dataset_id, profile_id)
             if request.intentId:

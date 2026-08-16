@@ -1138,10 +1138,18 @@ def _binding_domains(
                 for item in resources
             ]
         elif binding.source is PlannerBindingSource.target_column:
+            selection_role = {
+                "xColumn": "X_PROPERTY",
+                "yColumn": "Y_PROPERTY",
+            }.get(binding.parameter, "PROPERTY")
             values = [
                 _binding_value(item.semanticId, item.column or "", binding.source, item.semanticId)
                 for item in intent.targetSemantics
                 if item.role in binding.targetRoles and item.column
+                and (
+                    item.role != "material_property"
+                    or getattr(item.selectionRole, "value", item.selectionRole) == selection_role
+                )
             ]
         elif binding.source is PlannerBindingSource.target_group_ids:
             groups = sorted({item.groupId for item in intent.targetSemantics if item.groupId})
@@ -1149,15 +1157,29 @@ def _binding_domains(
                 values = [_binding_value("groups:" + ":".join(groups), groups, binding.source, "|".join(groups))]
         elif binding.source is PlannerBindingSource.semantic_columns:
             resource_ids = {item.objectId for item in resources}
-            columns = sorted(
-                {
-                    (column.objectId, column.column, role.role)
-                    for column in profile.semanticColumns
-                    if column.objectId in resource_ids
-                    for role in column.roles
-                    if role.role in binding.targetRoles
-                }
-            )
+            explicit_properties = [
+                (item.objectId, item.column)
+                for item in intent.targetSemantics
+                if item.role == "material_property"
+                and item.column
+                and getattr(item.selectionRole, "value", item.selectionRole) in {"PROPERTY", "PROPERTY_SET"}
+            ]
+            if explicit_properties and "material_property" in binding.targetRoles:
+                columns = [
+                    (object_id, column, "material_property")
+                    for object_id, column in explicit_properties
+                    if object_id in resource_ids
+                ]
+            else:
+                columns = sorted(
+                    {
+                        (column.objectId, column.column, role.role)
+                        for column in profile.semanticColumns
+                        if column.objectId in resource_ids
+                        for role in column.roles
+                        if role.role in binding.targetRoles
+                    }
+                )
             if binding.multiple and columns:
                 names = [item[1] for item in columns]
                 values = [_binding_value("columns:" + ":".join(names), names, binding.source, profile.semanticHash or profile.profileId)]

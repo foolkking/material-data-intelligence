@@ -41,6 +41,7 @@ from mdi_schemas import (
     IntentDiagnostic,
     IntentResourceRef,
     IntentTargetSemantic,
+    PropertyTargetRole,
     ScientificIntent,
     compute_analysis_intent_hash,
     deterministic_intent_id,
@@ -199,9 +200,8 @@ class AnalysisIntentValidator:
         }
         for target in validated.targetSemantics:
             current = target_candidates.get(target.semanticId)
-            if current is None or target.model_dump(mode="json", exclude={"origin"}) != current.model_dump(
-                mode="json", exclude={"origin"}
-            ):
+            target_fact = target.model_dump(mode="json", exclude={"origin", "selectionRole"})
+            if current is None or target_fact != current.model_dump(mode="json", exclude={"origin", "selectionRole"}):
                 raise AnalysisIntentError(
                     "A target semantic is not an exact current Profile fact.",
                     code="INTENT_TARGET_SEMANTIC_INVALID",
@@ -281,15 +281,20 @@ class DeterministicAnalysisIntentBuilder:
         if _PROMPT_INJECTION.search(normalized):
             warnings.append(_diagnostic("INTENT_POLICY_TEXT_INERT", "rawGoal", "Instruction-like text is inert and cannot change system policy."))
 
-        resource_refs, resource_ambiguities, resource_missing, resource_questions = _resolve_resources(
-            request,
-            profile,
-            required_kind=classification.required_resource_kind,
-        )
         targets, target_ambiguities, target_missing, target_questions = _resolve_targets(
             request,
             profile,
             ml_kind=classification.ml_kind,
+        )
+        classification = _with_explicit_material_property_classification(
+            classification,
+            targets,
+            profile_has_named_property=_goal_mentions_profile_material_property(normalized, profile),
+        )
+        resource_refs, resource_ambiguities, resource_missing, resource_questions = _resolve_resources(
+            request,
+            profile,
+            required_kind=classification.required_resource_kind,
         )
         ambiguities = [*resource_ambiguities, *target_ambiguities]
         generic_profile_needs = set(classification.required) & {
@@ -353,7 +358,7 @@ class DeterministicAnalysisIntentBuilder:
         )
         clarification_round = 1 if parent else 0
         payload: dict[str, Any] = {
-            "schemaVersion": "1.0",
+            "schemaVersion": "1.1" if any(item.role == "material_property" for item in targets) else "1.0",
             "intentId": "pending",
             "intentHash": "0" * 64,
             "datasetId": profile.datasetId,
@@ -503,7 +508,7 @@ class OpenAICompatibleAnalysisIntentBuilder:
             raise AnalysisIntentError("LLM Intent changed the application-owned normalized goal.", code="INTENT_LLM_NORMALIZED_GOAL_MISMATCH")
         if parsed.get("language") != expected_language:
             raise AnalysisIntentError("LLM Intent changed the application-owned goal language.", code="INTENT_LLM_LANGUAGE_MISMATCH")
-        _reconcile_explicit_goal_semantics(parsed, request=request)
+        _reconcile_explicit_goal_semantics(parsed, request=request, profile=profile)
         _canonicalize_llm_profile_bindings(parsed, request=request, profile=profile)
         supplied_provenance = parsed.get("provenance")
         if supplied_provenance is not None and (
@@ -598,8 +603,10 @@ def _canonicalize_llm_profile_bindings(
         }
     )
     parsed["dataScope"] = scope
-    if ml_kind is not None:
+    if ml_kind is not None or any(item.role == "material_property" for item in targets):
         parsed["targetSemantics"] = [item.model_dump(mode="json") for item in targets]
+    if any(item.role == "material_property" for item in targets):
+        parsed["schemaVersion"] = "1.1"
 
     questions = [*resource_questions, *target_questions][:ANALYSIS_INTENT_MAX_QUESTIONS]
     ambiguities = [*resource_ambiguities, *target_ambiguities]
@@ -629,9 +636,16 @@ def _reconcile_explicit_goal_semantics(
     parsed: dict[str, Any],
     *,
     request: AnalysisIntentRequest,
+    profile: DataProfile,
 ) -> None:
     """Preserve explicit semantics recognized by the application-owned classifier."""
     classification = _classify_goal(request.raw_goal)
+    material_targets, _, _, _ = _resolve_explicit_material_property_targets(request, profile)
+    classification = _with_explicit_material_property_classification(
+        classification,
+        material_targets,
+        profile_has_named_property=_goal_mentions_profile_material_property(request.raw_goal, profile),
+    )
     supplied_intents = parsed.get("scientificIntents")
     if isinstance(supplied_intents, list):
         excluded_intents: set[ScientificIntent] = set()
@@ -764,6 +778,7 @@ def build_analysis_intent_messages(request: AnalysisIntentRequest, *, profile: D
         "A named chart form such as scatter, histogram, correlation matrix, heatmap, treemap, or sunburst is an explicit visualization request: include visualization and plot, preserve the named form in rawGoal, and do not substitute another chart form. "
         "Formula, element, composition, and chemical-system distributions are composition_analysis, not property_distribution. "
         "Select property_distribution only when the raw goal explicitly asks for material properties or property coverage. "
+        "When a raw goal explicitly names a current material property, use only the matching targetSemanticCandidate and its required selectionRole; never invent a property, unit, column, or target. "
         "Composition distribution is composition_analysis, not composition_space. Select composition_space only when the raw goal explicitly asks to "
         "map compositions or asks for embedding, clustering, or composition space. Do not add visualization merely because a plot-capable tool may exist. "
         "Do not choose tools, execute code, invent identifiers, use Markdown, or add prose. "
@@ -1185,6 +1200,34 @@ def _specialize_profile_dependent_classification(
     )
 
 
+def _with_explicit_material_property_classification(
+    classification: _Classification,
+    targets: Sequence[IntentTargetSemantic],
+    *,
+    profile_has_named_property: bool = False,
+) -> _Classification:
+    """Add only the already-recognized property-analysis intent implied by exact targets."""
+    if not profile_has_named_property and not any(item.role == "material_property" for item in targets):
+        return classification
+    # A DataProfile-owned material property named ``band_gap`` is not a request
+    # for an ElectronicBand resource. Exact Profile evidence takes precedence
+    # over a lexical scientific-domain overlap.
+    intents = [item for item in classification.intents if item is not ScientificIntent.electronic_structure_analysis]
+    required = [item for item in classification.required if item is not CapabilityNeed.electronic_resource]
+    if ScientificIntent.property_distribution not in intents:
+        intents.append(ScientificIntent.property_distribution)
+    if CapabilityNeed.material_property_data not in required:
+        required.append(CapabilityNeed.material_property_data)
+    return _Classification(
+        tuple(intents),
+        tuple(required),
+        classification.optional,
+        classification.outputs,
+        None if classification.required_resource_kind == "electronic" else classification.required_resource_kind,
+        classification.ml_kind,
+    )
+
+
 def _unsupported_reasons(goal: str) -> list[IntentDiagnostic]:
     value = goal.casefold()
     rules = [
@@ -1266,7 +1309,7 @@ def _resolve_targets(
     ml_kind: str | None,
 ) -> tuple[list[IntentTargetSemantic], list[IntentAmbiguity], list[IntentDiagnostic], list[ClarificationQuestion]]:
     if not ml_kind:
-        return [], [], [], []
+        return _resolve_explicit_material_property_targets(request, profile)
     expected_group_kind = "classification" if ml_kind == "classification" else "regression"
     groups = [group for group in profile.semanticGroups if group.kind == expected_group_kind and group.status in {"COMPLETE", "AMBIGUOUS"}]
     candidates: list[tuple[str, Any, Any]] = []
@@ -1345,6 +1388,100 @@ def _resolve_targets(
                     )
                 )
     return result, [], [], []
+
+
+def _resolve_explicit_material_property_targets(
+    request: AnalysisIntentRequest,
+    profile: DataProfile,
+) -> tuple[list[IntentTargetSemantic], list[IntentAmbiguity], list[IntentDiagnostic], list[ClarificationQuestion]]:
+    """Resolve only exact normal-language mentions of current Profile property facts."""
+    goal = normalize_analysis_goal(request.raw_goal).casefold()
+    candidates = [item for item in _profile_target_semantic_candidates(profile) if item.role == "material_property" and item.column]
+    matches: list[tuple[int, int, IntentTargetSemantic]] = []
+    for candidate in candidates:
+        assert candidate.column is not None
+        display_name = _canonical_property_phrase(candidate.column)
+        matches.extend(
+            (match.start(), match.end(), candidate)
+            for match in re.finditer(
+                rf"(?<![a-z0-9]){re.escape(display_name)}(?![a-z0-9])",
+                _canonical_property_phrase(goal),
+            )
+        )
+    matches.sort(key=lambda item: (item[0], item[2].semanticId))
+    if not matches:
+        if _requests_material_property_target(goal):
+            return [], [], [
+                _diagnostic(
+                    "MATERIAL_PROPERTY_TARGET_NOT_FOUND",
+                    "targetSemantics",
+                    "The requested material property is not an exact current DataProfile fact.",
+                    boundary="MISSING_DATA",
+                )
+            ], []
+        return [], [], [], []
+
+    unique: list[tuple[int, int, IntentTargetSemantic]] = []
+    seen: set[str] = set()
+    for item in matches:
+        if item[2].semanticId not in seen:
+            unique.append(item)
+            seen.add(item[2].semanticId)
+    scatter_marker = re.search(r"\b(?:against|versus|vs\.?)\b", goal)
+    if scatter_marker is not None:
+        before = [item for item in matches if item[1] <= scatter_marker.start()]
+        after = [item for item in matches if item[0] >= scatter_marker.end()]
+        if len(before) != 1 or len(after) != 1:
+            return [], [], [
+                _diagnostic(
+                    "MATERIAL_PROPERTY_SCATTER_TARGETS_INCOMPLETE",
+                    "targetSemantics",
+                    "A scatter request requires two distinct explicit material properties.",
+                    boundary="MISSING_DATA",
+                )
+            ], []
+        if before[0][2].semanticId == after[0][2].semanticId:
+            return [], [], [
+                _diagnostic(
+                    "MATERIAL_PROPERTY_SCATTER_TARGETS_NOT_DISTINCT",
+                    "targetSemantics",
+                    "A scatter request requires two distinct material properties.",
+                    boundary="MISSING_DATA",
+                )
+            ], []
+        return [
+            before[0][2].model_copy(update={"selectionRole": PropertyTargetRole.x_property}),
+            after[0][2].model_copy(update={"selectionRole": PropertyTargetRole.y_property}),
+        ], [], [], []
+    if len(unique) == 1:
+        return [unique[0][2].model_copy(update={"selectionRole": PropertyTargetRole.property})], [], [], []
+    return [
+        item[2].model_copy(update={"selectionRole": PropertyTargetRole.property_set})
+        for item in unique
+    ], [], [], []
+
+
+def _canonical_property_phrase(value: str) -> str:
+    """Normalize only formatting separators of an exact Profile-owned column label."""
+    return _WS.sub(" ", re.sub(r"[_-]+", " ", value.casefold())).strip()
+
+
+def _goal_mentions_profile_material_property(goal: str, profile: DataProfile) -> bool:
+    normalized_goal = _canonical_property_phrase(goal)
+    return any(
+        re.search(
+            rf"(?<![a-z0-9]){re.escape(_canonical_property_phrase(item.column or ''))}(?![a-z0-9])",
+            normalized_goal,
+        )
+        for item in _profile_target_semantic_candidates(profile)
+        if item.role == "material_property" and item.column
+    )
+
+
+def _requests_material_property_target(goal: str) -> bool:
+    return _contains(goal, "distribution of", "histogram of", "scatter of") or bool(
+        re.search(r"\b(?:plot|scatter)\b.+\b(?:against|versus|vs\.?)\b", goal)
+    )
 
 
 def _resource_matches(kind: str, capabilities: Sequence[str], required_kind: str | None) -> bool:

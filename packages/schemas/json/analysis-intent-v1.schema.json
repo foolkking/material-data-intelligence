@@ -789,6 +789,17 @@
           "default": null,
           "title": "Seriesid"
         },
+        "selectionRole": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PropertyTargetRole"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "origin": {
           "$ref": "#/$defs/IntentBindingOrigin"
         }
@@ -801,6 +812,17 @@
       ],
       "title": "IntentTargetSemantic",
       "type": "object"
+    },
+    "PropertyTargetRole": {
+      "description": "Bounded user-declared role for an exact material-property fact.",
+      "enum": [
+        "PROPERTY",
+        "X_PROPERTY",
+        "Y_PROPERTY",
+        "PROPERTY_SET"
+      ],
+      "title": "PropertyTargetRole",
+      "type": "string"
     },
     "ScientificIntent": {
       "enum": [
@@ -831,8 +853,11 @@
   "additionalProperties": false,
   "properties": {
     "schemaVersion": {
-      "const": "1.0",
       "default": "1.0",
+      "enum": [
+        "1.0",
+        "1.1"
+      ],
       "title": "Schemaversion",
       "type": "string"
     },
