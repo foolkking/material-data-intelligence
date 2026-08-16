@@ -44,6 +44,27 @@ def list_runtime_projects(
     return [_durable_project_summary(project) for project in factory.create_repositories().projects.list()]
 
 
+def hydrate_runtime_project(
+    runtime: Any,
+    project_id: str,
+    *,
+    settings: ApiSettings | None = None,
+    repository_factory: Any | None = None,
+) -> dict[str, Any]:
+    """Restore an existing durable project into the process-local runtime."""
+
+    if project_id in runtime.projects:
+        return runtime.projects[project_id].summary()
+
+    active_settings = settings or load_settings()
+    if active_settings.runtime_backend != "postgresql":
+        raise LookupError(f"Unknown project_id: {project_id}")
+
+    factory = repository_factory or create_repository_factory(active_settings)
+    project = factory.create_repositories().projects.get(project_id)
+    return runtime.ensure_project(project_id, name=str(project["name"]))
+
+
 def _runtime_project_summary(runtime_project: dict[str, Any], persisted: dict[str, Any]) -> dict[str, Any]:
     return {
         **runtime_project,

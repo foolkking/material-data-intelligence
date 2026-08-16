@@ -1287,7 +1287,14 @@ def upload_phase2_dataset(request: DatasetUploadRequest) -> dict[str, Any]:
 
 
 def create_phase2_upload_session(project_id: str, request: CreateUploadSessionRequest) -> dict[str, Any]:
-    return _api_call(lambda: get_phase2_runtime().create_upload_session(project_id, request))
+    def create_session() -> dict[str, Any]:
+        from mdi_api.durable_projects import hydrate_runtime_project
+
+        runtime = get_phase2_runtime()
+        hydrate_runtime_project(runtime, project_id)
+        return runtime.create_upload_session(project_id, request)
+
+    return _api_call(create_session)
 
 
 async def put_phase2_upload_session_file(

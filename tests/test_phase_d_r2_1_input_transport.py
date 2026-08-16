@@ -4,6 +4,7 @@ import hashlib
 import io
 import json
 from pathlib import Path
+from types import SimpleNamespace
 import zipfile
 
 from fastapi.testclient import TestClient
@@ -15,8 +16,9 @@ from mdi_api.input_transport import (
     MAX_TOTAL_UPLOAD_BYTES,
     input_transport_capability_contract,
 )
+from mdi_api.durable_projects import hydrate_runtime_project
 from mdi_api.main import create_app
-from mdi_api.phase2_runtime import get_phase2_runtime, reset_phase2_runtime
+from mdi_api.phase2_runtime import Phase2ProductRuntime, get_phase2_runtime, reset_phase2_runtime
 from mdi_artifact_core.electronic_contract import electronic_resource_hash
 
 
@@ -214,6 +216,34 @@ def test_input_transport_contract_is_bounded_and_order_independent() -> None:
     assert contract["fileOrderIsSemanticAuthority"] is False
     assert contract["partialFailurePolicy"] == "NO_DATASET_PUBLICATION_UNTIL_COMPLETE_BUNDLE_VALIDATES"
     assert len(str(contract["semanticHash"])) == 64
+
+
+def test_durable_project_is_rehydrated_before_upload_session_after_process_restart(tmp_path: Path) -> None:
+    runtime = Phase2ProductRuntime(artifact_root=tmp_path / "restarted-runtime")
+    persisted = {
+        "id": "project_durable_upload",
+        "projectId": "project_durable_upload",
+        "name": "Durable upload project",
+    }
+    projects = SimpleNamespace(get=lambda project_id: persisted if project_id == persisted["id"] else None)
+    repository_factory = SimpleNamespace(create_repositories=lambda: SimpleNamespace(projects=projects))
+
+    hydrated = hydrate_runtime_project(
+        runtime,
+        persisted["id"],
+        settings=SimpleNamespace(runtime_backend="postgresql"),
+        repository_factory=repository_factory,
+    )
+
+    assert hydrated["projectId"] == persisted["id"]
+    session = runtime.create_upload_session(
+        persisted["id"],
+        {
+            "datasetName": "Durable upload",
+            "files": [{"clientFileId": "client_1", "fileName": "materials.csv", "byteSize": 4, "sha256": "a" * 64}],
+        },
+    )
+    assert session["projectId"] == persisted["id"]
 
 
 def test_upload_limits_hash_retry_and_content_type_are_enforced(tmp_path: Path) -> None:
