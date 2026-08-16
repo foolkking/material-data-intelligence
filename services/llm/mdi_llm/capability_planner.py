@@ -680,6 +680,36 @@ def _explicit_structure_selection(
     return [requested]
 
 
+def _explicit_trajectory_selection(
+    intent: AnalysisIntent,
+    projection: EligibleCandidateProjection,
+) -> list[str] | None:
+    if ScientificIntent.trajectory_analysis not in intent.scientificIntents:
+        return None
+    if "trajectory_resource" not in intent.requiredCapabilityNeeds:
+        return None
+    goal = intent.rawGoal.casefold()
+    requested: list[str] = []
+    if any(marker in goal for marker in ("rdf", "radial distribution", "pair distribution")):
+        requested.append("trajectory.rdf")
+    if any(marker in goal for marker in ("msd", "mean squared displacement")):
+        requested.append("trajectory.msd")
+    if any(marker in goal for marker in ("diffusion", "diffusivity")):
+        if "full supplied time range" not in goal:
+            return None
+        requested.append("trajectory.diffusion")
+    if not requested:
+        return None
+    selected = sorted(set(requested))
+    if not set(selected).issubset({item.toolId for item in projection.candidates}):
+        raise CapabilityPlanningError(
+            "The explicitly requested trajectory analytics are not eligible for the exact trajectory resource.",
+            code="TRAJECTORY_ANALYTICS_NOT_ELIGIBLE",
+            outcome=CapabilityPlanningOutcome.capability_mismatch,
+        )
+    return selected
+
+
 def _explicit_composition_tool(goal: str) -> str | None:
     if (
         any(marker in goal for marker in ("chemical-system distribution", "chemical system distribution"))
@@ -1087,6 +1117,13 @@ def _validate_minimal_provider_selection(
         raise CapabilityPlanningError(
             "Provider selection does not preserve the explicit structure operation.",
             code="EXPLICIT_STRUCTURE_OPERATION_MISMATCH",
+            repairable=True,
+        )
+    exact_trajectory_selection = _explicit_trajectory_selection(intent, projection)
+    if exact_trajectory_selection is not None and selected_tool_ids != exact_trajectory_selection:
+        raise CapabilityPlanningError(
+            "Provider selection does not preserve the explicit trajectory operation.",
+            code="EXPLICIT_TRAJECTORY_OPERATION_MISMATCH",
             repairable=True,
         )
     _validate_explicit_visual_form(intent, projection, selected_tool_ids)

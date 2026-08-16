@@ -33,7 +33,7 @@ from mdi_schemas import (
     deterministic_intent_id,
 )
 from mdi_tool_registry import build_registry_snapshot, load_manifests
-from mdi_llm.capability_planner import _explicit_visual_capability_gap, _validate_minimal_provider_selection
+from mdi_llm.capability_planner import _explicit_trajectory_selection, _explicit_visual_capability_gap, _validate_minimal_provider_selection
 from mdi_llm.capability_planner import resolve_eligibility
 
 from tests.test_phase10l1_analysis_intent import _material_property_profile, _profile, _request
@@ -377,6 +377,22 @@ def test_coordination_questions_preserve_required_dependency_producer(
     )
     assert result.outcome.value == "PLAN_READY"
     assert [item.toolId for item in result.decision.selections] == expected_tools
+
+
+def test_explicit_trajectory_analytics_exclude_the_trajectory_viewer() -> None:
+    intent = SimpleNamespace(
+        scientificIntents=[ScientificIntent.trajectory_analysis],
+        requiredCapabilityNeeds=[CapabilityNeed.trajectory_resource],
+        rawGoal="Show its RDF and MSD and estimate diffusion over the full supplied time range.",
+    )
+    projection = SimpleNamespace(
+        candidates=[SimpleNamespace(toolId=tool_id) for tool_id in (
+            "structure.trajectory_viewer", "trajectory.diffusion", "trajectory.msd", "trajectory.rdf",
+        )],
+    )
+    assert _explicit_trajectory_selection(intent, projection) == [
+        "trajectory.diffusion", "trajectory.msd", "trajectory.rdf",
+    ]
 
 
 def test_provider_dependency_pair_is_not_rejected_as_redundant() -> None:
