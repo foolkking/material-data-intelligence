@@ -654,10 +654,12 @@ def _explicit_structure_selection(
     if "structure_resource" not in intent.requiredCapabilityNeeds:
         return None
     goal = intent.rawGoal.casefold()
-    if any(marker in goal for marker in ("xrd", "coordination", "local environment", "local-environment", "rdf", "volumetric", "trajectory")):
+    if any(marker in goal for marker in ("xrd", "coordination", "local environment", "local-environment", "volumetric", "trajectory")):
         return None
     requested: str | None = None
-    if "lattice" in goal:
+    if any(marker in goal for marker in ("rdf", "radial distribution", "pair distribution")):
+        requested = "structure.rdf"
+    elif "lattice" in goal:
         requested = "structure.lattice_summary"
     elif "symmetry" in goal or "space group" in goal:
         requested = "structure.spacegroup_summary"
