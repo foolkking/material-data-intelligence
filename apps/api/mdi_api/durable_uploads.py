@@ -8,6 +8,7 @@ from typing import Any, Mapping
 from mdi_api.artifact_storage import ArtifactStorage, create_artifact_storage_from_settings
 from mdi_api.config import ApiSettings, load_settings
 from mdi_api.database import create_repository_factory
+from mdi_api.input_transport import MAX_FILE_BYTES
 from mdi_workers.object_store import DurableObjectStoreResolver
 
 
@@ -50,11 +51,20 @@ def persist_phase2_upload(
         dataset_id=record.id,
         exports=record.normalized_exports,
     )
+    durable_raw_uploads = _persist_raw_uploads(
+        source_storage=runtime.artifact_storage,
+        durable_storage=storage,
+        project_id=record.project_id,
+        dataset_id=record.id,
+        files=record.files,
+    )
 
     dataset_metadata = {
         **record.summary(),
         "files": record.files,
         "normalizedExports": durable_exports,
+        "rawUploads": durable_raw_uploads,
+        "inputTransport": record.input_transport,
         "sourceResourceAuthority": "artifact_storage",
     }
     with factory.session() as session:
@@ -92,6 +102,47 @@ def persist_phase2_upload(
         normalized_resource_ids=tuple(item["objectId"] for item in durable_exports),
         storage_keys=tuple(item["storageKey"] for item in durable_exports),
     )
+
+
+def _persist_raw_uploads(
+    *,
+    source_storage: ArtifactStorage,
+    durable_storage: ArtifactStorage,
+    project_id: str,
+    dataset_id: str,
+    files: list[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    required_scope = f"projects/{project_id}/datasets/{dataset_id}/raw/"
+    durable: list[dict[str, Any]] = []
+    for item in files:
+        storage_key = str(item.get("storageKey") or "")
+        expected_hash = str(item.get("sha256") or "")
+        expected_size = int(item.get("byteSize") or 0)
+        if not storage_key.startswith(required_scope) or len(expected_hash) != 64 or not 0 < expected_size <= MAX_FILE_BYTES:
+            raise ValueError("Raw upload manifest is incomplete or outside the dataset scope.")
+        content = source_storage.get_bytes_bounded(storage_key, max_bytes=MAX_FILE_BYTES)
+        if len(content) != expected_size or hashlib.sha256(content).hexdigest() != expected_hash:
+            raise ValueError(f"Raw upload checksum mismatch for {item.get('fileId')}.")
+        durable_key = _put_exact(
+            durable_storage,
+            storage_key,
+            content,
+            content_type="application/octet-stream",
+            expected_hash=expected_hash,
+        )
+        restored = durable_storage.get_bytes_bounded(durable_key, max_bytes=MAX_FILE_BYTES)
+        if len(restored) != expected_size or hashlib.sha256(restored).hexdigest() != expected_hash:
+            raise ValueError(f"Durable raw upload verification failed for {item.get('fileId')}.")
+        durable.append(
+            {
+                "fileId": str(item.get("fileId")),
+                "fileName": str(item.get("name")),
+                "storageKey": durable_key,
+                "sha256": expected_hash,
+                "byteSize": expected_size,
+            }
+        )
+    return durable
 
 
 def _persist_normalized_exports(

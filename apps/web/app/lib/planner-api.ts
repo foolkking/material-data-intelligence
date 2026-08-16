@@ -786,6 +786,23 @@ export type UploadDatasetRequest = {
   }>;
 };
 
+export type UploadDatasetFile = {
+  file: File;
+  importKind?: "phonon_band" | "phonon_dos";
+  contractVersion?: string;
+  companionGroupId?: string;
+};
+
+type UploadSession = {
+  uploadSessionId: string;
+  files: Array<{
+    fileId: string;
+    clientFileId: string;
+    byteSize: number;
+    sha256: string;
+  }>;
+};
+
 export type SafeErrorPayload = {
   ok?: false;
   errorType?: string;
@@ -960,6 +977,66 @@ export async function uploadDataset(payload: UploadDatasetRequest): Promise<Data
   });
 }
 
+export async function uploadDatasetFiles(
+  projectId: string,
+  datasetName: string,
+  files: UploadDatasetFile[],
+): Promise<DatasetDetail & { profile?: DataProfileSummary }> {
+  if (files.length === 0) throw new Error("UPLOAD_FILES_REQUIRED");
+  const declared = await Promise.all(files.map(async (item, index) => {
+    const bytes = await item.file.arrayBuffer();
+    const sha256 = bytesToHex(await crypto.subtle.digest("SHA-256", bytes));
+    return {
+      item,
+      declaration: {
+        clientFileId: `client_${index + 1}_${sha256.slice(0, 12)}`,
+        fileName: item.file.name,
+        byteSize: item.file.size,
+        sha256,
+        importKind: item.importKind,
+        contractVersion: item.contractVersion,
+        companionGroupId: item.companionGroupId,
+      },
+    };
+  }));
+  const session = await apiFetch<UploadSession>(`/projects/${encodeURIComponent(projectId)}/upload-sessions`, {
+    method: "POST",
+    body: JSON.stringify({ datasetName, files: declared.map((item) => item.declaration) }),
+  });
+  const serverFiles = new Map(session.files.map((item) => [item.clientFileId, item]));
+  try {
+    await Promise.all(declared.map(async ({ item, declaration }) => {
+      const serverFile = serverFiles.get(declaration.clientFileId);
+      if (!serverFile) throw new Error("UPLOAD_SESSION_FILE_MAPPING_MISSING");
+      const response = await fetch(
+        `${API_BASE}/upload-sessions/${encodeURIComponent(session.uploadSessionId)}/files/${encodeURIComponent(serverFile.fileId)}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/octet-stream" },
+          body: item.file,
+          credentials: "omit",
+        },
+      );
+      if (!response.ok) {
+        const text = await response.text();
+        const body = text ? safeParseJson(text) : null;
+        throw new PlannerApiError(errorMessage(body) || `Upload failed with status ${response.status}`, response.status, body);
+      }
+      const receipt = await response.json() as { byteSize?: number; sha256?: string };
+      if (receipt.byteSize !== declaration.byteSize || receipt.sha256 !== declaration.sha256) {
+        throw new Error("UPLOAD_SERVER_RECEIPT_MISMATCH");
+      }
+    }));
+    return await apiFetch<DatasetDetail & { profile?: DataProfileSummary }>(
+      `/upload-sessions/${encodeURIComponent(session.uploadSessionId)}/complete`,
+      { method: "POST" },
+    );
+  } catch (error) {
+    await apiFetch(`/upload-sessions/${encodeURIComponent(session.uploadSessionId)}`, { method: "DELETE" }).catch(() => undefined);
+    throw error;
+  }
+}
+
 export async function getDatasetProfile(datasetId: string): Promise<DataProfileSummary> {
   return apiFetch<DataProfileSummary>(`/datasets/${encodeURIComponent(datasetId)}/profile`);
 }
@@ -1025,6 +1102,10 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
 
 function normalizeBaseUrl(value: string): string {
   return value.endsWith("/") ? value.slice(0, -1) : value;
+}
+
+function bytesToHex(value: ArrayBuffer): string {
+  return Array.from(new Uint8Array(value), (item) => item.toString(16).padStart(2, "0")).join("");
 }
 
 function safeParseJson(value: string): unknown {

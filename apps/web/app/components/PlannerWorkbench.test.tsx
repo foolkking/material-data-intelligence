@@ -852,10 +852,24 @@ describe("Phase 9C PlannerWorkbench", () => {
 
   it("submits explicit typed phonon declarations without exposing internal resource ids", async () => {
     let uploadBody: Record<string, unknown> | null = null;
+    const uploadedFileIds: string[] = [];
     fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
-      if ((init?.method || "GET") === "POST" && url.endsWith("/datasets/upload")) {
+      if ((init?.method || "GET") === "POST" && url.endsWith("/projects/project_local/upload-sessions")) {
         uploadBody = JSON.parse(String(init?.body || "{}"));
+        const declared = (uploadBody as { files: Array<{ clientFileId: string; byteSize: number; sha256: string }> }).files;
+        return jsonResponse({
+          uploadSessionId: "upload_phonon",
+          files: declared.map((item, index) => ({ ...item, fileId: `file_${index + 1}` })),
+        });
+      }
+      if ((init?.method || "GET") === "PUT" && url.includes("/upload-sessions/upload_phonon/files/")) {
+        const fileId = url.split("/").at(-1) || "";
+        uploadedFileIds.push(fileId);
+        const declared = (uploadBody as { files: Array<{ byteSize: number; sha256: string }> }).files[Number(fileId.split("_")[1]) - 1];
+        return jsonResponse({ byteSize: declared.byteSize, sha256: declared.sha256 });
+      }
+      if ((init?.method || "GET") === "POST" && url.endsWith("/upload-sessions/upload_phonon/complete")) {
         return jsonResponse({
           id: "dataset_phonon",
           datasetId: "dataset_phonon",
@@ -876,9 +890,9 @@ describe("Phase 9C PlannerWorkbench", () => {
     const bandFile = new File(["{}"], "stable_band.json", { type: "application/json" });
     const dosFile = new File(["{}"], "total_dos.json", { type: "application/json" });
     const structureFile = new File(["Si"], "POSCAR", { type: "text/plain" });
-    Object.defineProperty(bandFile, "text", { value: async () => "{}" });
-    Object.defineProperty(dosFile, "text", { value: async () => "{}" });
-    Object.defineProperty(structureFile, "text", { value: async () => "Si" });
+    Object.defineProperty(bandFile, "arrayBuffer", { value: async () => new TextEncoder().encode("{}").buffer });
+    Object.defineProperty(dosFile, "arrayBuffer", { value: async () => new TextEncoder().encode("{}").buffer });
+    Object.defineProperty(structureFile, "arrayBuffer", { value: async () => new TextEncoder().encode("Si").buffer });
     await user.upload(within(dialog).getByLabelText("选择 Phonon Band"), bandFile);
     await user.upload(within(dialog).getByLabelText("选择 Phonon DOS"), dosFile);
     await user.upload(within(dialog).getByLabelText("选择结构上下文"), structureFile);
@@ -895,6 +909,7 @@ describe("Phase 9C PlannerWorkbench", () => {
       expect.objectContaining({ fileName: "POSCAR" }),
     ]);
     expect(files[2]).not.toHaveProperty("importKind");
+    expect(uploadedFileIds.sort()).toEqual(["file_1", "file_2", "file_3"]);
   });
 
   it("loads metadata-only Workspace history and exposes exact Workspace routes", async () => {

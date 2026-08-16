@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from starlette.requests import Request
+
+from mdi_api.input_transport import CreateUploadSessionRequest, input_transport_capability_contract
 
 
 class DatasetSummary(BaseModel):
@@ -14,24 +17,38 @@ class DatasetSummary(BaseModel):
     profileId: str | None = None
 
 
-class UploadSessionRequest(BaseModel):
-    datasetName: str = Field(default="Uploaded materials dataset", min_length=1, max_length=160)
-    fileNames: list[str] = Field(default_factory=list)
-
-
 def list_datasets_stub() -> list[DatasetSummary]:
     return []
 
 
-def create_upload_session_stub(project_id: str, request: UploadSessionRequest) -> dict[str, object]:
-    return {
-        "id": "upload_session_local",
-        "projectId": project_id,
-        "datasetId": "dataset_local",
-        "datasetName": request.datasetName,
-        "status": "created",
-        "files": [
-            {"fileId": f"file_{idx + 1:03d}", "name": name, "status": "created"}
-            for idx, name in enumerate(request.fileNames)
-        ],
-    }
+def get_upload_capabilities() -> dict[str, object]:
+    return input_transport_capability_contract()
+
+
+def create_upload_session(project_id: str, request: CreateUploadSessionRequest) -> dict[str, object]:
+    from mdi_api.phase2_runtime import create_phase2_upload_session
+
+    return create_phase2_upload_session(project_id, request)
+
+
+async def put_upload_session_file(session_id: str, file_id: str, request: Request) -> dict[str, object]:
+    from mdi_api.phase2_runtime import put_phase2_upload_session_file
+
+    return await put_phase2_upload_session_file(
+        session_id,
+        file_id,
+        content_type=request.headers.get("content-type", ""),
+        chunks=request.stream(),
+    )
+
+
+def complete_upload_session(session_id: str) -> dict[str, object]:
+    from mdi_api.phase2_runtime import complete_phase2_upload_session
+
+    return complete_phase2_upload_session(session_id)
+
+
+def cancel_upload_session(session_id: str) -> dict[str, object]:
+    from mdi_api.phase2_runtime import cancel_phase2_upload_session
+
+    return cancel_phase2_upload_session(session_id)

@@ -1,18 +1,25 @@
 from __future__ import annotations
 
 import html
+import hashlib
 import json
 import shutil
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable, Literal
+from typing import Any, AsyncIterable, Iterable, Literal
 
 import pandas as pd
 from pydantic import BaseModel, Field, model_validator
 
 from mdi_api.artifact_storage import LocalFileArtifactStorage
+from mdi_api.input_transport import (
+    CreateUploadSessionRequest,
+    MAX_FILE_BYTES,
+    UPLOAD_SESSION_SCHEMA_VERSION,
+    UploadFileDeclaration,
+)
 from mdi_adapters import ToolExecutionContext
 from mdi_artifact_core import ArtifactPayload, LocalArtifactExporter, content_hash, stable_json_dumps
 from mdi_material_parsers import NormalizedObjectDraft, ParseResult, build_data_profile, map_normalized_phonon_resource, parse_file
@@ -122,6 +129,7 @@ class DatasetRecord:
     object_store: dict[str, Any]
     object_refs: dict[str, str]
     normalized_exports: list[dict[str, str]]
+    input_transport: dict[str, Any] = field(default_factory=dict)
     created_at: str = field(default_factory=lambda: _utc_now())
     status: str = "profile_ready"
 
@@ -136,8 +144,40 @@ class DatasetRecord:
             "objectCount": len(self.objects),
             "profileId": self.profile.profileId,
             "normalizedExports": self.normalized_exports,
+            "inputTransport": self.input_transport,
             "createdAt": self.created_at,
         }
+
+
+@dataclass(frozen=True)
+class MaterializedUpload:
+    file_id: str
+    path: Path
+    storage_key: str
+    byte_size: int
+    sha256: str
+    import_kind: Literal["phonon_band", "phonon_dos"] | None = None
+    contract_version: str | None = None
+    companion_group_id: str | None = None
+
+
+@dataclass
+class UploadSessionFileRecord:
+    file_id: str
+    declaration: UploadFileDeclaration
+    path: Path
+    status: str = "declared"
+
+
+@dataclass
+class UploadSessionRecord:
+    id: str
+    project_id: str
+    dataset_name: str
+    files: dict[str, UploadSessionFileRecord]
+    status: str = "created"
+    dataset_id: str | None = None
+    created_at: str = field(default_factory=lambda: _utc_now())
 
 
 @dataclass
@@ -213,6 +253,7 @@ class Phase2ProductRuntime:
         self.registry = registry or load_manifests()
         self.projects: dict[str, ProjectRecord] = {}
         self.datasets: dict[str, DatasetRecord] = {}
+        self.upload_sessions: dict[str, UploadSessionRecord] = {}
         self.jobs: dict[str, JobRunRecord] = {}
         self.job_store = InMemoryJobStore()
         self.artifact_store = LocalFileArtifactStore(self.artifact_root)
@@ -253,36 +294,153 @@ class Phase2ProductRuntime:
             )
         return self.projects[project_id].summary()
 
+    def create_upload_session(
+        self,
+        project_id: str,
+        request: CreateUploadSessionRequest | dict[str, Any],
+    ) -> dict[str, Any]:
+        request = request if isinstance(request, CreateUploadSessionRequest) else CreateUploadSessionRequest.model_validate(request)
+        self._require_project(project_id)
+        session_id = f"upload_{uuid.uuid4().hex}"
+        staging_root = self.artifact_root / "upload_sessions" / session_id
+        files: dict[str, UploadSessionFileRecord] = {}
+        for index, declaration in enumerate(request.files, start=1):
+            file_id = f"file_{index:03d}_{uuid.uuid4().hex[:8]}"
+            target = staging_root / "files" / file_id / declaration.fileName
+            files[file_id] = UploadSessionFileRecord(file_id=file_id, declaration=declaration, path=target)
+        session = UploadSessionRecord(
+            id=session_id,
+            project_id=project_id,
+            dataset_name=request.datasetName,
+            files=files,
+        )
+        self.upload_sessions[session_id] = session
+        return self._upload_session_summary(session)
+
+    async def put_upload_session_file(
+        self,
+        session_id: str,
+        file_id: str,
+        *,
+        content_type: str,
+        chunks: AsyncIterable[bytes],
+    ) -> dict[str, Any]:
+        session = self._require_upload_session(session_id)
+        if session.status in {"cancelled", "completed"}:
+            raise ValueError("UPLOAD_SESSION_NOT_WRITABLE")
+        try:
+            file_record = session.files[file_id]
+        except KeyError as exc:
+            raise LookupError(f"Unknown upload file: {file_id}") from exc
+        if content_type.split(";", 1)[0].strip().lower() != "application/octet-stream":
+            raise ValueError("UPLOAD_CONTENT_TYPE_UNSUPPORTED")
+
+        target = file_record.path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        temporary = target.with_name(f"{target.name}.part")
+        digest = hashlib.sha256()
+        observed = 0
+        try:
+            with temporary.open("wb") as handle:
+                async for chunk in chunks:
+                    if not chunk:
+                        continue
+                    observed += len(chunk)
+                    if observed > file_record.declaration.byteSize or observed > MAX_FILE_BYTES:
+                        raise ValueError("UPLOAD_OBSERVED_BYTE_CAP_EXCEEDED")
+                    digest.update(chunk)
+                    handle.write(chunk)
+            if observed != file_record.declaration.byteSize:
+                raise ValueError("UPLOAD_BYTE_SIZE_MISMATCH")
+            if digest.hexdigest() != file_record.declaration.sha256:
+                raise ValueError("UPLOAD_SHA256_MISMATCH")
+            temporary.replace(target)
+        except Exception:
+            temporary.unlink(missing_ok=True)
+            raise
+        file_record.status = "received"
+        session.status = "files_received" if all(item.status == "received" for item in session.files.values()) else "receiving"
+        return {
+            "schemaVersion": UPLOAD_SESSION_SCHEMA_VERSION,
+            "uploadSessionId": session.id,
+            "fileId": file_id,
+            "clientFileId": file_record.declaration.clientFileId,
+            "status": file_record.status,
+            "byteSize": observed,
+            "sha256": digest.hexdigest(),
+        }
+
+    def complete_upload_session(self, session_id: str) -> dict[str, Any]:
+        session = self._require_upload_session(session_id)
+        if session.status == "completed" and session.dataset_id is not None:
+            return self.get_dataset(session.dataset_id)
+        if any(item.status != "received" for item in session.files.values()):
+            raise ValueError("UPLOAD_SESSION_INCOMPLETE")
+
+        self._dataset_seq += 1
+        dataset_id = _runtime_record_id("dataset", self._dataset_seq)
+        dataset_root = self.artifact_root / "projects" / session.project_id / "datasets" / dataset_id
+        uploads: list[MaterializedUpload] = []
+        try:
+            for file_record in session.files.values():
+                target = dataset_root / "raw" / file_record.file_id / file_record.declaration.fileName
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(file_record.path, target)
+                uploads.append(
+                    MaterializedUpload(
+                        file_id=file_record.file_id,
+                        path=target,
+                        storage_key=target.relative_to(self.artifact_root).as_posix(),
+                        byte_size=file_record.declaration.byteSize,
+                        sha256=file_record.declaration.sha256,
+                        import_kind=file_record.declaration.importKind,
+                        contract_version=file_record.declaration.contractVersion,
+                        companion_group_id=file_record.declaration.companionGroupId,
+                    )
+                )
+            result = self._publish_materialized_dataset(
+                project_id=session.project_id,
+                dataset_id=dataset_id,
+                dataset_name=session.dataset_name,
+                uploads=uploads,
+                require_complete_bundle=True,
+            )
+        except Exception:
+            shutil.rmtree(dataset_root, ignore_errors=True)
+            raise
+        session.status = "completed"
+        session.dataset_id = dataset_id
+        return result
+
+    def cancel_upload_session(self, session_id: str) -> dict[str, Any]:
+        session = self._require_upload_session(session_id)
+        if session.status == "completed":
+            raise ValueError("COMPLETED_UPLOAD_SESSION_CANNOT_BE_CANCELLED")
+        session.status = "cancelled"
+        shutil.rmtree(self.artifact_root / "upload_sessions" / session.id, ignore_errors=True)
+        return self._upload_session_summary(session)
+
+    def rollback_completed_upload(self, session_id: str) -> None:
+        session = self._require_upload_session(session_id)
+        if session.dataset_id is not None:
+            dataset = self.datasets.pop(session.dataset_id, None)
+            if dataset is not None:
+                shutil.rmtree(self.artifact_root / "projects" / dataset.project_id / "datasets" / dataset.id, ignore_errors=True)
+        session.dataset_id = None
+        session.status = "files_received"
+
     def upload_dataset(self, request: DatasetUploadRequest | dict[str, Any]) -> dict[str, Any]:
         request = request if isinstance(request, DatasetUploadRequest) else DatasetUploadRequest.model_validate(request)
         self._require_project(request.projectId)
         self._dataset_seq += 1
         dataset_id = _runtime_record_id("dataset", self._dataset_seq)
-        paths = self._materialize_uploads(request, dataset_id)
-        parse_results = self._parse_upload_paths(request, paths, dataset_id)
-
-        objects = [obj for result in parse_results for obj in result.objects]
-        profile = build_data_profile(
-            dataset_id=dataset_id,
-            parse_results=parse_results,
-            platform_tool_ids={tool.toolId for tool in self.registry.tools},
-        )
-        object_store, object_refs = build_object_store(objects, profile=profile)
-        normalized_exports = self._export_normalized_objects(request.projectId, dataset_id, objects)
-        record = DatasetRecord(
-            id=dataset_id,
+        uploads = self._materialize_uploads(request, dataset_id)
+        return self._publish_materialized_dataset(
             project_id=request.projectId,
-            name=request.datasetName,
-            files=[_uploaded_file_summary(result) for result in parse_results],
-            parse_results=parse_results,
-            objects=objects,
-            profile=profile,
-            object_store=object_store,
-            object_refs=object_refs,
-            normalized_exports=normalized_exports,
+            dataset_id=dataset_id,
+            dataset_name=request.datasetName,
+            uploads=uploads,
         )
-        self.datasets[dataset_id] = record
-        return {**record.summary(), "files": record.files, "profile": profile.model_dump(mode="json")}
 
     def get_dataset(self, dataset_id: str) -> dict[str, Any]:
         dataset = self._require_dataset(dataset_id)
@@ -334,8 +492,8 @@ class Phase2ProductRuntime:
                 )
             ],
         )
-        paths = self._materialize_uploads(request, dataset_id)
-        parse_results = self._parse_upload_paths(request, paths, dataset_id)
+        uploads = self._materialize_uploads(request, dataset_id)
+        parse_results = self._parse_materialized_uploads(uploads, dataset_id)
 
         objects = [obj for result in parse_results for obj in result.objects]
         profile = build_data_profile(
@@ -356,6 +514,7 @@ class Phase2ProductRuntime:
             object_store=object_store,
             object_refs=object_refs,
             normalized_exports=normalized_exports,
+            input_transport=self._input_transport_summary(uploads, objects),
         )
         self.datasets[dataset_id] = record
         return {**record.summary(), "demo": True, "files": record.files, "profile": profile.model_dump(mode="json")}
@@ -605,50 +764,174 @@ class Phase2ProductRuntime:
             "expiresInSec": signed.expires_in_sec,
         }
 
-    def _materialize_uploads(self, request: DatasetUploadRequest, dataset_id: str) -> list[Path]:
+    def _publish_materialized_dataset(
+        self,
+        *,
+        project_id: str,
+        dataset_id: str,
+        dataset_name: str,
+        uploads: list[MaterializedUpload],
+        require_complete_bundle: bool = False,
+    ) -> dict[str, Any]:
+        parse_results = self._parse_materialized_uploads(uploads, dataset_id)
+        if require_complete_bundle and any(result.parse_status == "failed" or not result.objects for result in parse_results):
+            raise ValueError("UPLOAD_BUNDLE_PARSE_FAILED")
+        if require_complete_bundle and len(uploads) > 1 and any(result.parse_status != "success" for result in parse_results):
+            raise ValueError("MULTI_RESOURCE_UPLOAD_PARTIAL_NOT_EXECUTION_READY")
+        objects = [obj for result in parse_results for obj in result.objects]
+        self._validate_companion_resources(objects)
+        profile = build_data_profile(
+            dataset_id=dataset_id,
+            parse_results=parse_results,
+            platform_tool_ids={tool.toolId for tool in self.registry.tools},
+        )
+        object_store, object_refs = build_object_store(objects, profile=profile)
+        normalized_exports = self._export_normalized_objects(project_id, dataset_id, objects)
+        input_transport = self._input_transport_summary(uploads, objects)
+        record = DatasetRecord(
+            id=dataset_id,
+            project_id=project_id,
+            name=dataset_name,
+            files=[_uploaded_file_summary(result, upload) for result, upload in zip(parse_results, uploads, strict=True)],
+            parse_results=parse_results,
+            objects=objects,
+            profile=profile,
+            object_store=object_store,
+            object_refs=object_refs,
+            normalized_exports=normalized_exports,
+            input_transport=input_transport,
+        )
+        self.datasets[dataset_id] = record
+        return {
+            **record.summary(),
+            "files": record.files,
+            "profile": profile.model_dump(mode="json"),
+            "inputTransport": input_transport,
+        }
+
+    def _materialize_uploads(self, request: DatasetUploadRequest, dataset_id: str) -> list[MaterializedUpload]:
         raw_dir = self.artifact_root / "projects" / request.projectId / "datasets" / dataset_id / "raw"
         raw_dir.mkdir(parents=True, exist_ok=True)
-        paths: list[Path] = []
+        uploads: list[MaterializedUpload] = []
         for file_path in request.filePaths:
             path = Path(file_path)
             if not path.exists():
                 raise FileNotFoundError(f"Upload file does not exist: {file_path}")
-            file_id = f"file_{len(paths) + 1:03d}"
+            file_id = f"file_{len(uploads) + 1:03d}"
             target = raw_dir / file_id / path.name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(path, target)
-            paths.append(target)
+            payload = target.read_bytes()
+            uploads.append(MaterializedUpload(file_id=file_id, path=target, storage_key=target.relative_to(self.artifact_root).as_posix(), byte_size=len(payload), sha256=hashlib.sha256(payload).hexdigest()))
         for inline_file in request.files:
-            file_id = f"file_{len(paths) + 1:03d}"
+            file_id = f"file_{len(uploads) + 1:03d}"
             target = raw_dir / file_id / Path(inline_file.fileName).name
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(inline_file.content, encoding="utf-8")
-            paths.append(target)
-        return paths
+            payload = target.read_bytes()
+            uploads.append(
+                MaterializedUpload(
+                    file_id=file_id,
+                    path=target,
+                    storage_key=target.relative_to(self.artifact_root).as_posix(),
+                    byte_size=len(payload),
+                    sha256=hashlib.sha256(payload).hexdigest(),
+                    import_kind=inline_file.importKind,
+                    contract_version=inline_file.contractVersion,
+                )
+            )
+        return uploads
 
-    def _parse_upload_paths(
-        self,
-        request: DatasetUploadRequest,
-        paths: list[Path],
-        dataset_id: str,
-    ) -> list[ParseResult]:
+    def _parse_materialized_uploads(self, uploads: list[MaterializedUpload], dataset_id: str) -> list[ParseResult]:
         parse_results: list[ParseResult] = []
-        for index, path in enumerate(paths, start=1):
-            inline_index = index - len(request.filePaths) - 1
-            inline_file = request.files[inline_index] if inline_index >= 0 else None
-            if inline_file is not None and inline_file.importKind is not None:
+        for upload in uploads:
+            if upload.import_kind is not None:
                 parse_results.append(
                     map_normalized_phonon_resource(
-                        path,
+                        upload.path,
                         dataset_id=dataset_id,
-                        file_id=f"file_{index:03d}",
-                        declared_kind=inline_file.importKind,
-                        declared_contract_version=inline_file.contractVersion,
+                        file_id=upload.file_id,
+                        declared_kind=upload.import_kind,
+                        declared_contract_version=upload.contract_version,
                     )
                 )
             else:
-                parse_results.append(parse_file(path, dataset_id=dataset_id, file_id=f"file_{index:03d}"))
+                parse_results.append(parse_file(upload.path, dataset_id=dataset_id, file_id=upload.file_id))
         return parse_results
+
+    def _validate_companion_resources(self, objects: list[NormalizedObjectDraft]) -> None:
+        from mdi_artifact_core.electronic_contract import electronic_band_dos_compatibility
+
+        bands = [item.payload for item in objects if item.object_type == MaterialObjectType.ElectronicBand]
+        densities = [item.payload for item in objects if item.object_type == MaterialObjectType.ElectronicDos]
+        if len(bands) > 1 or len(densities) > 1:
+            raise ValueError("ELECTRONIC_COMPANION_SET_AMBIGUOUS")
+        if bands and densities:
+            compatibility = electronic_band_dos_compatibility(bands[0], densities[0])
+            if not compatibility.valid:
+                raise ValueError(f"ELECTRONIC_COMPANION_INCOMPATIBLE: {', '.join(compatibility.errors)}")
+
+    def _input_transport_summary(
+        self,
+        uploads: list[MaterializedUpload],
+        objects: list[NormalizedObjectDraft],
+    ) -> dict[str, Any]:
+        object_kinds = sorted({item.object_type.value for item in objects})
+        groups = sorted({item.companion_group_id for item in uploads if item.companion_group_id})
+        return {
+            "schemaVersion": UPLOAD_SESSION_SCHEMA_VERSION,
+            "bytePreservation": "EXACT_SHA256_AND_BYTE_SIZE",
+            "atomicPublication": True,
+            "fileOrderIsSemanticAuthority": False,
+            "sameDatasetBinding": len(uploads) > 1,
+            "companionGroupIds": groups,
+            "objectKinds": object_kinds,
+            "files": [
+                {
+                    "fileId": item.file_id,
+                    "fileName": item.path.name,
+                    "storageKey": item.storage_key,
+                    "byteSize": item.byte_size,
+                    "sha256": item.sha256,
+                    "importKind": item.import_kind,
+                    "contractVersion": item.contract_version,
+                    "companionGroupId": item.companion_group_id,
+                }
+                for item in uploads
+            ],
+        }
+
+    def _upload_session_summary(self, session: UploadSessionRecord) -> dict[str, Any]:
+        return {
+            "schemaVersion": UPLOAD_SESSION_SCHEMA_VERSION,
+            "id": session.id,
+            "uploadSessionId": session.id,
+            "projectId": session.project_id,
+            "datasetId": session.dataset_id,
+            "datasetName": session.dataset_name,
+            "status": session.status,
+            "createdAt": session.created_at,
+            "files": [
+                {
+                    "fileId": item.file_id,
+                    "clientFileId": item.declaration.clientFileId,
+                    "fileName": item.declaration.fileName,
+                    "byteSize": item.declaration.byteSize,
+                    "sha256": item.declaration.sha256,
+                    "importKind": item.declaration.importKind,
+                    "contractVersion": item.declaration.contractVersion,
+                    "companionGroupId": item.declaration.companionGroupId,
+                    "status": item.status,
+                }
+                for item in session.files.values()
+            ],
+        }
+
+    def _require_upload_session(self, session_id: str) -> UploadSessionRecord:
+        try:
+            return self.upload_sessions[session_id]
+        except KeyError as exc:
+            raise LookupError(f"Unknown upload session: {session_id}") from exc
 
     def _export_normalized_objects(
         self,
@@ -1003,6 +1286,60 @@ def upload_phase2_dataset(request: DatasetUploadRequest) -> dict[str, Any]:
     return _api_call(upload_and_persist)
 
 
+def create_phase2_upload_session(project_id: str, request: CreateUploadSessionRequest) -> dict[str, Any]:
+    return _api_call(lambda: get_phase2_runtime().create_upload_session(project_id, request))
+
+
+async def put_phase2_upload_session_file(
+    session_id: str,
+    file_id: str,
+    *,
+    content_type: str,
+    chunks: AsyncIterable[bytes],
+) -> dict[str, Any]:
+    try:
+        return await get_phase2_runtime().put_upload_session_file(
+            session_id,
+            file_id,
+            content_type=content_type,
+            chunks=chunks,
+        )
+    except LookupError as exc:
+        try:
+            from fastapi import HTTPException
+
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except ImportError:
+            raise
+    except ValueError as exc:
+        try:
+            from fastapi import HTTPException
+
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except ImportError:
+            raise
+
+
+def complete_phase2_upload_session(session_id: str) -> dict[str, Any]:
+    def complete_and_persist() -> dict[str, Any]:
+        runtime = get_phase2_runtime()
+        result = runtime.complete_upload_session(session_id)
+        try:
+            from mdi_api.durable_uploads import persist_phase2_upload
+
+            persist_phase2_upload(runtime, str(result["datasetId"]))
+        except Exception:
+            runtime.rollback_completed_upload(session_id)
+            raise
+        return result
+
+    return _api_call(complete_and_persist)
+
+
+def cancel_phase2_upload_session(session_id: str) -> dict[str, Any]:
+    return _api_call(lambda: get_phase2_runtime().cancel_upload_session(session_id))
+
+
 def get_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
     return _api_call(lambda: get_phase2_runtime().get_dataset_profile(dataset_id))
 
@@ -1173,8 +1510,8 @@ def _report_html(markdown: str) -> str:
     )
 
 
-def _uploaded_file_summary(result: ParseResult) -> dict[str, Any]:
-    return {
+def _uploaded_file_summary(result: ParseResult, upload: MaterializedUpload | None = None) -> dict[str, Any]:
+    summary = {
         "fileId": result.file_id,
         "name": result.file_path.name,
         "detectedFormat": result.detected_format.value,
@@ -1182,6 +1519,18 @@ def _uploaded_file_summary(result: ParseResult) -> dict[str, Any]:
         "objectCount": len(result.objects),
         "errorCode": result.error_code,
     }
+    if upload is not None:
+        summary.update(
+            {
+                "byteSize": upload.byte_size,
+                "sha256": upload.sha256,
+                "importKind": upload.import_kind,
+                "contractVersion": upload.contract_version,
+                "companionGroupId": upload.companion_group_id,
+                "storageKey": upload.storage_key,
+            }
+        )
+    return summary
 
 
 def _artifact_summary(artifact: Artifact) -> dict[str, Any]:

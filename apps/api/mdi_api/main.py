@@ -24,7 +24,14 @@ from mdi_api.phase2_runtime import (
     upload_phase2_dataset,
 )
 from mdi_api.routers.auth import CurrentUser, get_current_user_stub
-from mdi_api.routers.datasets import DatasetSummary, create_upload_session_stub
+from mdi_api.routers.datasets import (
+    DatasetSummary,
+    cancel_upload_session,
+    complete_upload_session,
+    create_upload_session,
+    get_upload_capabilities,
+    put_upload_session_file,
+)
 from mdi_api.routers.health import health, runtime_health
 from mdi_api.routers.planner import (
     PlannerIntentClarificationRequest,
@@ -114,11 +121,15 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/projects", create_phase2_project, ("POST",), ("projects",)),
     RouteSpec("/datasets", list_phase2_datasets, ("GET",), ("datasets",), list[DatasetSummary]),
     RouteSpec("/datasets/demo", create_phase2_demo_dataset, ("POST",), ("datasets",)),
+    RouteSpec("/datasets/upload-capabilities", get_upload_capabilities, ("GET",), ("datasets",)),
     RouteSpec("/datasets/upload", upload_phase2_dataset, ("POST",), ("datasets",)),
     RouteSpec("/datasets/{dataset_id}", get_phase2_dataset, ("GET",), ("datasets",)),
     RouteSpec("/datasets/{dataset_id}/profile", get_phase2_dataset_profile, ("GET",), ("datasets",)),
     RouteSpec("/datasets/{dataset_id}/profile", create_phase2_dataset_profile, ("POST",), ("datasets",)),
-    RouteSpec("/projects/{project_id}/upload-sessions", create_upload_session_stub, ("POST",), ("datasets",)),
+    RouteSpec("/projects/{project_id}/upload-sessions", create_upload_session, ("POST",), ("datasets",)),
+    RouteSpec("/upload-sessions/{session_id}/files/{file_id}", put_upload_session_file, ("PUT",), ("datasets",)),
+    RouteSpec("/upload-sessions/{session_id}/complete", complete_upload_session, ("POST",), ("datasets",)),
+    RouteSpec("/upload-sessions/{session_id}", cancel_upload_session, ("DELETE",), ("datasets",)),
     RouteSpec("/analysis-requests", submit_analysis_request_stub, ("POST",), ("analysis",)),
     RouteSpec("/jobs", create_phase2_job, ("POST",), ("jobs",)),
     RouteSpec("/jobs/{job_id}", get_phase2_job, ("GET",), ("jobs",)),
@@ -205,7 +216,7 @@ def create_app() -> Any:
             CORSMiddleware,
             allow_origins=list(settings.cors_origins),
             allow_credentials=False,
-            allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+            allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
             allow_headers=["*"],
             expose_headers=["ETag", "X-Idempotent-Replay"],
         )

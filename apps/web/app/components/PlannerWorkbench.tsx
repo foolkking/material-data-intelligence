@@ -68,7 +68,7 @@ import {
   loadDemoDataset,
   resolvePlannerProvider,
   testPlannerProvider,
-  uploadDataset
+  uploadDatasetFiles
 } from "../lib/planner-api";
 
 type MainWorkspaceTab = "agent_process" | "conversation_plan" | "results_export";
@@ -371,16 +371,16 @@ export function PlannerWorkbench() {
     }
   }
 
-  async function handleUploadFile(file: File | null) {
-    if (!file) return;
+  async function handleUploadFiles(files: File[]) {
+    if (files.length === 0) return;
     setDataBusy(true);
     try {
-      const content = await file.text();
-      const uploaded = await uploadDataset({
+      const first = files[0];
+      const uploaded = await uploadDatasetFiles(
         projectId,
-        datasetName: file.name.replace(/\.[^.]+$/, "") || file.name,
-        files: [{ fileName: file.name, content }]
-      });
+        files.length === 1 ? first.name.replace(/\.[^.]+$/, "") || first.name : `${first.name.replace(/\.[^.]+$/, "")} bundle`,
+        files.map((file) => ({ file, companionGroupId: files.length > 1 ? "primary_bundle" : undefined })),
+      );
       const nextDatasetId = uploaded.datasetId || uploaded.id;
       setDatasetId(nextDatasetId);
       if (uploaded.profile) {
@@ -400,18 +400,15 @@ export function PlannerWorkbench() {
   async function handleTypedPhononImport(bandFile: File, dosFile: File, structureFile: File) {
     setDataBusy(true);
     try {
-      const [bandContent, dosContent, structureContent] = await Promise.all([
-        bandFile.text(), dosFile.text(), structureFile.text(),
-      ]);
-      const uploaded = await uploadDataset({
+      const uploaded = await uploadDatasetFiles(
         projectId,
-        datasetName: `${bandFile.name.replace(/\.[^.]+$/, "")} phonon dataset`,
-        files: [
-          { fileName: bandFile.name, content: bandContent, importKind: "phonon_band", contractVersion: PHONON_BAND_SCHEMA_VERSION },
-          { fileName: dosFile.name, content: dosContent, importKind: "phonon_dos", contractVersion: PHONON_DOS_SCHEMA_VERSION },
-          { fileName: structureFile.name, content: structureContent },
+        `${bandFile.name.replace(/\.[^.]+$/, "")} phonon dataset`,
+        [
+          { file: bandFile, importKind: "phonon_band", contractVersion: PHONON_BAND_SCHEMA_VERSION, companionGroupId: "phonon_bundle" },
+          { file: dosFile, importKind: "phonon_dos", contractVersion: PHONON_DOS_SCHEMA_VERSION, companionGroupId: "phonon_bundle" },
+          { file: structureFile, companionGroupId: "phonon_bundle" },
         ],
-      });
+      );
       const nextDatasetId = uploaded.datasetId || uploaded.id;
       setDatasetId(nextDatasetId);
       if (uploaded.profile) {
@@ -794,7 +791,7 @@ export function PlannerWorkbench() {
           onDatasetSelect={selectDataset}
           onLoadDemo={handleLoadDemo}
           onGenerateProfile={handleGenerateProfile}
-          onUploadFile={handleUploadFile}
+          onUploadFiles={handleUploadFiles}
           onTypedPhononImport={handleTypedPhononImport}
           onClose={() => setDatasetDialogOpen(false)}
         />
@@ -1121,7 +1118,7 @@ function DatasetCommandDialog(props: {
   onDatasetSelect: (datasetId: string) => Promise<void>;
   onLoadDemo: () => Promise<void>;
   onGenerateProfile: () => Promise<void>;
-  onUploadFile: (file: File | null) => Promise<void>;
+  onUploadFiles: (files: File[]) => Promise<void>;
   onTypedPhononImport: (bandFile: File, dosFile: File, structureFile: File) => Promise<void>;
   onClose: () => void;
 }) {
@@ -1168,7 +1165,7 @@ function DatasetCommandDialog(props: {
               </button>
               <label className="file-button">
                 {t("uploadDataset")}
-                <input type="file" onChange={(event) => void props.onUploadFile(event.currentTarget.files?.[0] || null)} />
+                <input type="file" multiple onChange={(event) => void props.onUploadFiles(Array.from(event.currentTarget.files || []))} />
               </label>
             </div>
             <p className="selector-status">{props.dataMessage}</p>
