@@ -275,6 +275,43 @@ def test_deterministic_selection_preserves_explicit_structure_operation(goal: st
     assert [item.toolId for item in result.decision.selections] == [expected_tool]
 
 
+@pytest.mark.parametrize(
+    ("goal", "expected_tools"),
+    [
+        (
+            "Inspect CrystalNN coordination and its local-environment polyhedra.",
+            ["structure.coordination_crystalnn", "structure.local_environment_polyhedra"],
+        ),
+        (
+            "Inspect VoronoiNN coordination and its local-environment polyhedra.",
+            ["structure.coordination_voronoinn", "structure.local_environment_polyhedra"],
+        ),
+    ],
+)
+def test_coordination_questions_preserve_required_dependency_producer(
+    goal: str,
+    expected_tools: list[str],
+) -> None:
+    profile = _resource_profile(
+        object_id="structure_exact",
+        object_type="Structure",
+        kind="structure",
+        capabilities=["structure"],
+    )
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request(goal, selected_resource_ids=("structure_exact",)),
+        profile=profile,
+    )
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=MockLLMProvider(),
+    )
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == expected_tools
+
+
 def test_provider_repairs_wrong_explicit_material_property_operation() -> None:
     profile = _material_property_profile()
     intent = DeterministicAnalysisIntentBuilder().build(

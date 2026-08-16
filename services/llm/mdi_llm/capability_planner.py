@@ -482,7 +482,7 @@ def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandida
                 code="XRD_COMPARISON_SOURCE_NOT_ELIGIBLE",
                 outcome=CapabilityPlanningOutcome.capability_mismatch,
             )
-    if any(marker in goal for marker in ("local environment", "coordination polyhed", "local geometry")):
+    if any(marker in goal for marker in ("local environment", "local-environment", "coordination polyhed", "local geometry")):
         n2 = "structure.local_environment_polyhedra"
         if "crystalnn" in goal:
             producer = "structure.coordination_crystalnn"
@@ -654,7 +654,7 @@ def _explicit_structure_selection(
     if "structure_resource" not in intent.requiredCapabilityNeeds:
         return None
     goal = intent.rawGoal.casefold()
-    if any(marker in goal for marker in ("xrd", "coordination", "local environment", "rdf", "volumetric", "trajectory")):
+    if any(marker in goal for marker in ("xrd", "coordination", "local environment", "local-environment", "rdf", "volumetric", "trajectory")):
         return None
     requested: str | None = None
     if "lattice" in goal:
