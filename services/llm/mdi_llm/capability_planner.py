@@ -463,6 +463,9 @@ class CapabilityContextValidator:
 
 def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandidateProjection) -> list[str]:
     goal = intent.rawGoal.casefold()
+    structure_selection = _explicit_structure_selection(intent, projection)
+    if structure_selection is not None:
+        return structure_selection
     property_selection = _explicit_material_property_selection(intent, projection)
     if property_selection is not None:
         return property_selection
@@ -637,6 +640,39 @@ def _explicit_material_property_selection(
         raise CapabilityPlanningError(
             "The explicitly requested material-property operation is not eligible for the exact Profile targets.",
             code="MATERIAL_PROPERTY_OPERATION_NOT_ELIGIBLE",
+            outcome=CapabilityPlanningOutcome.capability_mismatch,
+        )
+    return [requested]
+
+
+def _explicit_structure_selection(
+    intent: AnalysisIntent,
+    projection: EligibleCandidateProjection,
+) -> list[str] | None:
+    if ScientificIntent.structure_analysis not in intent.scientificIntents:
+        return None
+    if "structure_resource" not in intent.requiredCapabilityNeeds:
+        return None
+    goal = intent.rawGoal.casefold()
+    if any(marker in goal for marker in ("xrd", "coordination", "local environment", "rdf", "volumetric", "trajectory")):
+        return None
+    requested: str | None = None
+    if "lattice" in goal:
+        requested = "structure.lattice_summary"
+    elif "symmetry" in goal or "space group" in goal:
+        requested = "structure.spacegroup_summary"
+    elif any(marker in goal for marker in ("3d", "three-dimensional", "periodic 3d")) and any(
+        marker in goal for marker in ("view", "viewer", "show")
+    ):
+        requested = "structure.viewer_3d"
+    elif any(marker in goal for marker in ("summarize", "summary", "inspect")):
+        requested = "structure.summary"
+    if requested is None:
+        return None
+    if requested not in {item.toolId for item in projection.candidates}:
+        raise CapabilityPlanningError(
+            "The explicit structure operation is not eligible for the exact Structure resource.",
+            code="STRUCTURE_OPERATION_NOT_ELIGIBLE",
             outcome=CapabilityPlanningOutcome.capability_mismatch,
         )
     return [requested]
@@ -1042,6 +1078,13 @@ def _validate_minimal_provider_selection(
         raise CapabilityPlanningError(
             "Provider selection does not preserve the explicit material-property operation.",
             code="EXPLICIT_MATERIAL_PROPERTY_OPERATION_MISMATCH",
+            repairable=True,
+        )
+    exact_structure_selection = _explicit_structure_selection(intent, projection)
+    if exact_structure_selection is not None and selected_tool_ids != exact_structure_selection:
+        raise CapabilityPlanningError(
+            "Provider selection does not preserve the explicit structure operation.",
+            code="EXPLICIT_STRUCTURE_OPERATION_MISMATCH",
             repairable=True,
         )
     _validate_explicit_visual_form(intent, projection, selected_tool_ids)

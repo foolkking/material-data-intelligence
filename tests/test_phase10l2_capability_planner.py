@@ -245,6 +245,36 @@ def test_deterministic_selection_preserves_explicit_material_property_operation(
     assert [item.toolId for item in result.decision.selections] == [expected_tool]
 
 
+@pytest.mark.parametrize(
+    ("goal", "expected_tool"),
+    [
+        ("Summarize this crystal structure.", "structure.summary"),
+        ("Summarize the lattice of this crystal structure.", "structure.lattice_summary"),
+        ("Summarize the symmetry of this crystal structure.", "structure.spacegroup_summary"),
+        ("Show this crystal structure in the supported periodic 3D viewer.", "structure.viewer_3d"),
+    ],
+)
+def test_deterministic_selection_preserves_explicit_structure_operation(goal: str, expected_tool: str) -> None:
+    profile = _resource_profile(
+        object_id="structure_exact",
+        object_type="Structure",
+        kind="structure",
+        capabilities=["structure"],
+    )
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request(goal, selected_resource_ids=("structure_exact",)),
+        profile=profile,
+    )
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=MockLLMProvider(),
+    )
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == [expected_tool]
+
+
 def test_provider_repairs_wrong_explicit_material_property_operation() -> None:
     profile = _material_property_profile()
     intent = DeterministicAnalysisIntentBuilder().build(
