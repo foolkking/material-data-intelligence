@@ -26,6 +26,7 @@ from .providers import LLMProviderError, OpenAICompatibleProvider, PlannerUserCo
 DEPENDENCY_COMPOSER_VERSION = "1.0"
 _REAL_PRODUCER_CLOSURES: dict[str, tuple[str, ...]] = {
     "phonon.band_dos": ("phonon.band", "phonon.dos"),
+    "structure.experimental_xrd_comparison": ("structure.xrd",),
 }
 
 

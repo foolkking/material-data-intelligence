@@ -137,6 +137,72 @@ def test_deterministic_resolution_selection_and_provider_isolation() -> None:
     assert first.plan is not None and first.plan.schemaVersion == "0.1"
 
 
+def test_provider_selected_xrd_consumer_receives_registered_producer_closure() -> None:
+    resources = [
+        {"objectId": "experimental", "objectType": "DataFrame", "objectHash": "1" * 64, "kind": "dataframe", "capabilities": ["table"]},
+        {"objectId": "structure", "objectType": "Structure", "objectHash": "2" * 64, "kind": "structure", "capabilities": ["structure"]},
+    ]
+    profile_payload = _profile(resources=resources, targets=(), uncertainty=False).model_dump(mode="json")
+    profile_payload["experimentalXrdReadiness"] = {
+        "contractVersion": "1.0",
+        "experimentalXrdPresent": True,
+        "eligibleResourceCount": 1,
+        "resources": [{
+            "objectId": "experimental",
+            "objectHash": "1" * 64,
+            "resourceId": "experimental_xrd",
+            "resourceHash": "3" * 64,
+            "xAxisKind": "two_theta",
+            "xAxisUnit": "degree",
+            "intensitySemantic": "counts",
+            "wavelengthPresent": True,
+            "wavelengthUnit": "angstrom",
+            "pointCount": 10,
+            "axisMonotonicity": "STRICTLY_INCREASING",
+            "status": "READY",
+            "reasons": [],
+        }],
+        "status": "READY",
+        "reasons": [],
+    }
+    profile = type(_profile()).model_validate(profile_payload)
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("Compare the supplied experimental XRD peaks with the theoretical pattern for this structure."),
+        profile=profile,
+    )
+
+    def transport(**kwargs: object) -> dict[str, object]:
+        context = json.loads(kwargs["messages"][-1]["content"])
+        if "eligibleCandidates" in context:
+            payload = {
+                "schemaVersion": "1.0",
+                "resolutionId": context["eligibleCandidates"]["resolutionId"],
+                "selectedToolIds": ["structure.experimental_xrd_comparison"],
+            }
+        else:
+            payload = {
+                "schemaVersion": "1.0",
+                "matrixId": context["matrixId"],
+                "selectedPairIds": sorted(item["pairId"] for item in context["compatiblePairs"]),
+            }
+        return {"choices": [{"message": {"content": json.dumps(payload)}, "finish_reason": "stop"}]}
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=OpenAICompatibleProvider(transport=transport),
+    )
+
+    assert result.outcome.value == "PLAN_READY"
+    assert {item.toolId for item in result.decision.selections} == {
+        "structure.xrd",
+        "structure.experimental_xrd_comparison",
+    }
+    assert result.plan is not None and result.plan.schemaVersion == "0.2"
+    assert len(result.plan.dependencyBindings) == 1
+
+
 def test_formation_energy_and_band_gap_bind_exact_distinct_groups() -> None:
     registry = load_manifests()
     formation_intent, profile = _ready_target_intent("formation_energy")
