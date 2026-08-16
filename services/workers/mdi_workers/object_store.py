@@ -103,8 +103,11 @@ class DurableObjectStoreResolver:
                     source_records.append({"id": object_id, "type": object_type, "hash": object_hash, "value": payload})
                 if object_metadata.get("formula"):
                     formulas.append(str(object_metadata["formula"]))
-            elif object_type == MaterialObjectType.Atoms.value and object_metadata.get("formula"):
-                formulas.append(str(object_metadata["formula"]))
+            elif object_type == MaterialObjectType.Atoms.value:
+                if object_id:
+                    source_records.append({"id": object_id, "type": object_type, "hash": object_hash, "value": payload})
+                if object_metadata.get("formula"):
+                    formulas.append(str(object_metadata["formula"]))
             elif object_id and object_type in {item.value for item in MaterialObjectType}:
                 source_records.append({"id": object_id, "type": object_type, "hash": object_hash, "value": payload})
 

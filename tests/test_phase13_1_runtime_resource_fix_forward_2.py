@@ -3,6 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 import hashlib
 import json
+from types import SimpleNamespace
 
 import pytest
 
@@ -171,6 +172,57 @@ def test_durable_resolver_restores_typed_specialized_sources(spec: dict[str, obj
     for obj in objects:
         assert restored[obj.id] == json.loads(json.dumps(obj.payload, default=str))
         assert restored[SOURCE_RESOURCE_INDEX_KEY][obj.id]["objectHash"] == obj.hash
+
+
+def test_durable_resolver_restores_non_periodic_atoms_source() -> None:
+    class Storage:
+        def __init__(self):
+            self.values = {}
+
+        def get_bytes(self, key):
+            return self.values[key]
+
+    storage = Storage()
+    dataset_id = "dataset_atoms"
+    object_id = "obj_atoms"
+    payload = {"symbols": ["C", "C", "H", "H"], "positions": [[0.0, 0.0, 0.0]] * 4}
+    payload_bytes = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    content_hash = hashlib.sha256(payload_bytes).hexdigest()
+    base = "projects/project_atoms/datasets/dataset_atoms/normalized/obj_atoms"
+    data_key = f"{base}/data.json"
+    metadata_key = f"{base}/metadata.json"
+    metadata = {
+        "objectId": object_id,
+        "contentHash": content_hash,
+        "metadata": {"objectType": "Atoms", "formula": "C2H2"},
+        "provenance": {"objectType": "Atoms"},
+    }
+    storage.values[data_key] = payload_bytes
+    storage.values[metadata_key] = json.dumps(metadata, sort_keys=True).encode("utf-8")
+
+    class Datasets:
+        @staticmethod
+        def get(_dataset_id):
+            return {"id": dataset_id, "projectId": "project_atoms", "normalizedExports": [{
+                "objectId": object_id,
+                "storageKey": data_key,
+                "metadataKey": metadata_key,
+                "objectHash": content_hash,
+                "contentHash": content_hash,
+            }]}
+
+    class Profiles:
+        @staticmethod
+        def list_for_dataset(_dataset_id):
+            return []
+
+    restored = DurableObjectStoreResolver(
+        artifact_storage=storage,
+        repositories=SimpleNamespace(datasets=Datasets(), data_profiles=Profiles()),
+    ).resolve(dataset_id)
+    assert restored is not None
+    assert restored[object_id] == payload
+    assert restored[SOURCE_RESOURCE_INDEX_KEY][object_id]["objectType"] == "Atoms"
 
 
 def test_source_registration_is_idempotent_and_rejects_conflicting_identity() -> None:
