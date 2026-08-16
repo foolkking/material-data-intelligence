@@ -340,6 +340,44 @@ def test_phonon_intent_accepts_exact_composite_resources_but_rejects_wrong_kind_
     assert {item.code for item in wrong_kind.unsupportedReasons} == {"RESOURCE_KIND_MISMATCH"}
 
 
+def test_xrd_comparison_binds_profile_validated_experimental_resource_with_structure() -> None:
+    resources = [
+        {"objectId": "xrd_table", "objectType": "DataFrame", "objectHash": "1" * 64, "kind": "dataframe", "capabilities": ["table"]},
+        {"objectId": "structure", "objectType": "Structure", "objectHash": "2" * 64, "kind": "structure", "capabilities": ["structure"]},
+    ]
+    profile_payload = _profile(resources=resources).model_dump(mode="json")
+    profile_payload["experimentalXrdReadiness"] = {
+        "contractVersion": "1.0",
+        "experimentalXrdPresent": True,
+        "eligibleResourceCount": 1,
+        "resources": [{
+            "objectId": "xrd_table",
+            "objectHash": "1" * 64,
+            "resourceId": "xrd_resource",
+            "resourceHash": "3" * 64,
+            "xAxisKind": "two_theta",
+            "xAxisUnit": "degree",
+            "intensitySemantic": "counts",
+            "wavelengthPresent": True,
+            "wavelengthUnit": "angstrom",
+            "pointCount": 10,
+            "axisMonotonicity": "STRICTLY_INCREASING",
+            "status": "READY",
+            "reasons": [],
+        }],
+        "status": "READY",
+        "reasons": [],
+    }
+    profile = DataProfile.model_validate(profile_payload)
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("Compare the supplied experimental XRD peaks with the theoretical pattern for this structure."),
+        profile=profile,
+    )
+
+    assert intent.outcome.value == "READY"
+    assert {item.objectId for item in intent.dataScope.resourceRefs} == {"xrd_table", "structure"}
+
+
 def test_multiple_structure_resources_create_profile_derived_question() -> None:
     resources = [
         {"objectId": "structure_a", "objectType": "Structure", "objectHash": "1" * 64, "kind": "structure", "capabilities": ["structure"]},

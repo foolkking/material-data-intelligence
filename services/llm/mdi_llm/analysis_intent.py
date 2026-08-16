@@ -1257,6 +1257,22 @@ def _resolve_resources(
         return [], [], [_diagnostic("RESOURCE_NOT_FOUND", "dataScope.resourceRefs", "A selected resource does not exist.", boundary="MISSING_DATA")], []
     excluded = set(request.constraints.excludeResourceIds)
     candidates = [item for item in resources if item.objectId not in excluded and _resource_matches(item.kind, item.capabilities, required_kind)]
+    # XRD comparison is a bounded same-dataset composition: the Structure is
+    # the producer input and the exact Profile-validated experimental XRD
+    # resource is the consumer input. Keep both identities in the Intent so
+    # eligibility can validate the producer/consumer contract before planning.
+    if required_kind == "structure" and _requests_xrd_resource_pair(request.raw_goal, profile):
+        experimental_ids = {
+            item.objectId
+            for item in (profile.experimentalXrdReadiness.resources if profile.experimentalXrdReadiness else [])
+            if item.status == "READY"
+        }
+        candidates = [
+            item
+            for item in resources
+            if item.objectId not in excluded
+            and (_resource_matches(item.kind, item.capabilities, "structure") or item.objectId in experimental_ids)
+        ]
     if selected:
         candidates = [by_id[value] for value in selected if by_id[value].objectId not in excluded]
         if required_kind and not any(_resource_matches(item.kind, item.capabilities, required_kind) for item in candidates):
@@ -1516,7 +1532,26 @@ def _requests_resource_pair(goal: str, *, required_kind: str, candidates: Sequen
         )
         object_types = {item.objectType.casefold() for item in candidates}
         return asks_for_pair and {"phononband", "phonondos"}.issubset(object_types)
+    if required_kind == "structure":
+        asks_for_xrd = _contains_token(value, "xrd") and any(
+            marker in value for marker in ("experimental", "match", "correspond", "comparison")
+        )
+        object_types = {item.objectType.casefold() for item in candidates}
+        return asks_for_xrd and object_types == {"structure", "dataframe"} and len(candidates) == 2
     return False
+
+
+def _requests_xrd_resource_pair(goal: str, profile: DataProfile) -> bool:
+    value = goal.casefold()
+    if not (_contains_token(value, "xrd") and any(marker in value for marker in ("experimental", "match", "correspond", "comparison"))):
+        return False
+    readiness = profile.experimentalXrdReadiness
+    return bool(
+        readiness
+        and readiness.status == "READY"
+        and readiness.eligibleResourceCount == 1
+        and any(item.status == "READY" for item in readiness.resources)
+    )
 
 
 def _resource_option(item: Any) -> ClarificationOption:
