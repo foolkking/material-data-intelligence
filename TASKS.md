@@ -1,37 +1,5 @@
 ---TASK---
 状态：已完成
-任务名称：Release Closure — Full Repository Green + Push + Remote CI
-开始时间：2026-08-17T16:00:00+08:00
-
-保持 Phase E-R1.7 canonical qualification 已关闭且 PASS，不重开 Phase D、Phase E、
-R1.8 或新的 16-Case campaign。审计当前仓库，复现并消除所有 active test failures，
-以内容/契约验证替代过时的 queue/evidence byte-size/digest assertions；不得通过
-skip、xfail、降低阈值或修改 qualification authority 获得 green。
-
-完成完整 backend、service-backed、frontend、typecheck、production build、当前
-browser/replay、migration、static/security gates；REAL_LLM_CALLS=0。仅提交合法的
-Release Closure 修改，正常 push，观察实际 remote CI 并修复真实失败，直到
-FULL_REPOSITORY_GREEN_AND_REMOTE_CI_VERIFIED。不得部署生产。
-
-完成时间：2026-08-17T19:42:17+08:00
-
-修改文件：Release Closure 测试、CI、browser replay、`docs/index.md`、
-`docs/release_closure/2026-08-17/`、`persistent/`、`TASKS.md` 与 `results.md`。
-
-修改摘要：以当前 queue invariant 和内容级 evidence validation 替代 28 个
-过时历史断言；修复 clean-checkout 测试依赖和 Phase 10M-4 CI 启动/等待稳定性；
-保持 Phase E-R1.7 authority、final evidence 与历史失败 evidence 不变。
-
-测试结果：backend `1563 passed`；service-backed `50 passed`、required skips 0；
-frontend `465 passed`、typecheck/build PASS；全部配置 browser/replay、migration、
-static/security/secret/private-path gates PASS；`REAL_LLM_CALLS=0`。
-
-提交/CI：正常 push PASS；GitHub Actions run `32024851926` 全部 required jobs
-PASS。`DEPLOYMENT=NOT_STARTED`，开放 Release blockers 0。
----END---
-
----TASK---
-状态：已完成
 任务名称：Phase D R1.7 — Live Qualification Environment Re-Seal
 开始时间：2026-08-17T08:36:15+08:00
 
