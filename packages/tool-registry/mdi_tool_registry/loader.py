@@ -126,8 +126,8 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
     tool_id = entry["tool_id"]
     if tool_id in {"trajectory.rdf", "trajectory.msd", "trajectory.diffusion"}:
         return {
-            "maxFrames": 2000,
-            "maxAtoms": 2000,
+            "maxFrames": 200,
+            "maxAtoms": 5000,
             "maxSpecies": 64,
             "maxRdfPairs": 2_000_000,
             "maxRdfBins": 2048,

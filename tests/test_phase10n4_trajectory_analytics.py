@@ -40,7 +40,11 @@ def test_registry_and_exact_msd_dependency() -> None:
     registry = load_manifests()
     assert len(registry.tools) == 62
     for tool_id in ("trajectory.rdf", "trajectory.msd", "trajectory.diffusion"):
-        assert registry.get_tool_by_id(tool_id).version == "0.1.0"
+        tool = registry.get_tool_by_id(tool_id)
+        assert tool.version == "0.1.0"
+        assert tool.resourceLimits["maxFrames"] == 200
+        assert tool.resourceLimits["maxAtoms"] == 5000
+        assert tool.resourceLimits["maxRdfPairs"] == 2_000_000
     matrix = build_artifact_compatibility_matrix(registry, selected_tool_ids=["trajectory.diffusion", "trajectory.msd"])
     pair = next(item for item in matrix.pairs if item.producerToolId == "trajectory.msd")
     assert pair.compatible and pair.artifactContractVersion == "phase10n4.trajectory_msd.v1"
