@@ -3,8 +3,8 @@
   "canonicalPhaseE": "PASS / R1_7_CANONICAL_LIVE_AGENT_BROWSER_QUALIFICATION_COMPLETE",
   "canonicalQualificationReopened": false,
   "localReleaseGate": "PASS",
-  "remoteCi": "PENDING",
+  "remoteCi": "PASS",
   "deployment": "NOT_STARTED",
-  "readyForDeploymentReview": false,
-  "openReleaseBlockers": ["normal push and remote CI verification remain"]
+  "readyForDeploymentReview": true,
+  "openReleaseBlockers": []
 }

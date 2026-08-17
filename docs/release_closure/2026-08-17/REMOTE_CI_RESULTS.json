@@ -1,9 +1,17 @@
 {
   "schemaVersion": "release-closure-remote-ci/1.0",
   "releaseState": "STABLE_COMMITTED_PRODUCT_STATE",
-  "push": "PENDING",
+  "push": "PASS",
   "workflow": ".github/workflows/ci.yml",
+  "workflowRun": 32024851926,
   "requiredJobs": ["Unit Tests", "Phase 11-3 Scientific Replay (Linux)", "Phase 11-3 Scientific Replay (Windows)", "Frontend Typecheck & Build", "Service-backed Integration (PostgreSQL + Redis + MinIO)"],
-  "remoteCiForReleaseState": "PENDING",
-  "status": "PENDING"
+  "jobResults": {
+    "Unit Tests": "PASS",
+    "Phase 11-3 Scientific Replay (Linux)": "PASS",
+    "Phase 11-3 Scientific Replay (Windows)": "PASS",
+    "Frontend Typecheck & Build": "PASS",
+    "Service-backed Integration (PostgreSQL + Redis + MinIO)": "PASS"
+  },
+  "remoteCiForReleaseState": "PASS",
+  "status": "PASS"
 }

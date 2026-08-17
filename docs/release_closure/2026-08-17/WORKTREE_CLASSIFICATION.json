@@ -2,14 +2,14 @@
   "schemaVersion": "release-closure-worktree/1.0",
   "branch": "master",
   "trackingBranch": "origin/master",
-  "ahead": 33,
+  "ahead": 0,
   "behind": 0,
   "committedProductStatePresent": true,
   "migrationHead": "0008_phase_d_r1_namespace",
   "toolRegistry": {"version": "0.1.0", "toolCount": 62, "mvpToolCount": 50},
   "productionRuntimeAffectingUncommitted": {
     "preExisting": [],
-    "releaseOwnedPendingCommit": ["apps/web/next.config.mjs"]
+    "releaseOwnedPendingCommit": []
   },
   "qualificationEvidenceGovernanceUncommitted": {
     "classification": "preserved and excluded except queue/results lifecycle records",

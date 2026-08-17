@@ -13426,3 +13426,32 @@ R1.7 attempt23 PASS；final campaign 16/16 PASS。最终 evidence 共 471 files�
 
 证据：`_qualification/evidence/phase_d/attempt_23_r1_7_candidate9_reseal/` 与
 `_qualification/evidence/phase_e_r1_7/final_20260817_03/`。
+
+---
+
+任务名称：Release Closure — Full Repository Green + Push + Remote CI
+状态：已完成 / `PASS / FULL_REPOSITORY_GREEN_AND_REMOTE_CI_VERIFIED`
+完成时间：2026-08-17T19:42:17+08:00
+
+Phase E-R1.7 canonical qualification 保持
+`PASS / R1_7_CANONICAL_LIVE_AGENT_BROWSER_QUALIFICATION_COMPLETE`，未重开、
+未重跑或改写 16-Case/26-turn authority 与 evidence。Release Closure 独立完成
+仓库测试债清理：初始本地 21 项和 clean-checkout 追加暴露的 7 项均为过时历史
+queue/evidence/docs assertions；共 28 项改为当前 queue invariant、内容级 evidence
+inventory/JSON/semantic validation 或受支持入口断言。真实当前产品缺陷 0，
+qualification-relevant regression 0。
+
+本地验证：backend `1563 passed, 0 failed, 0 errors, 53 deselected, 75 warnings`；
+service-backed PostgreSQL/Redis/MinIO/migration `50 passed, 0 failed, 0 errors,
+0 skipped`；frontend Vitest `465 passed`，TypeScript typecheck 和 production build
+PASS。Chromium/Firefox/WebKit、390x844 及当前全部 browser/replay gates PASS，
+包括 Phase 10M-4 Artifact Gallery headful CI replay。compile、lock、diff、schema、
+queue、secret 和 private-path checks PASS；`REAL_LLM_CALLS=0`。
+
+提交/CI：Release Closure changes 正常提交并 push 到 `origin/master`；GitHub
+Actions run `32024851926` 的 Unit、Linux/Windows semantic replay、Frontend
+Typecheck & Build、PostgreSQL/Redis/MinIO service-backed integration 全部 PASS。
+production runtime-affecting release-owned uncommitted diffs 为 0；已分类的本地
+历史 qualification/evidence 与用户工作区改动保持未提交且未改写。
+
+部署：`NOT_STARTED`。`READY_FOR_DEPLOYMENT_REVIEW=YES`，开放 Release blockers 0。
