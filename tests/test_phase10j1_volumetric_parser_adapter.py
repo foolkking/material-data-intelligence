@@ -196,6 +196,35 @@ def test_adapter_vectorizes_noncollinear_and_rejects_unsafe_params(tmp_path: Pat
     assert cube_field["unit"]["conversion_applied"] is True
 
 
+def test_cube_with_non_elemental_atom_context_keeps_field_package_valid(tmp_path: Path) -> None:
+    source_path = tmp_path / "non_elemental_context.cube"
+    source_path.write_text(
+        (FIXTURES / "orthogonal.cube").read_text(encoding="utf-8").replace(
+            "14 0.0 0.0 0.0 0.0",
+            "0 0.0 0.0 0.0 0.0",
+            1,
+        ),
+        encoding="utf-8",
+    )
+    source = parse_file(source_path, dataset_id="dataset_volume").objects[0]
+
+    artifacts = VolumetricDataAdapter().execute(_context(tmp_path, source), _request())
+    overlay = _read(tmp_path, artifacts, "volumetric_structure_overlay.json")
+
+    assert overlay["kind"] == "non_periodic_atom_context"
+    assert overlay["atom_records"] == []
+    assert overlay["unavailable_reason"] == "source_atom_context_not_elemental"
+    assert validate_volumetric_manifest(
+        _read(tmp_path, artifacts, "volumetric_manifest.json"),
+        dataset=_read(tmp_path, artifacts, "volumetric_dataset.json"),
+        artifacts={
+            item.name: (tmp_path / item.storageKey).read_bytes()
+            for item in artifacts
+            if item.type.value == "volumetric_binary"
+        },
+    ).valid
+
+
 def _profile() -> DataProfile:
     return DataProfile.model_validate({
         "schemaVersion": "0.1", "profileId": "profile_volume", "datasetId": "dataset_volume",

@@ -279,12 +279,27 @@ def _build_structure_overlay(
                 grid=grid,
                 unavailable_reason="periodic_structure_overlay_unavailable",
             )
+    source_atom_records = prepared.get("atom_records", [])
+    if any(
+        not isinstance(item, dict)
+        or type(item.get("atomic_number")) is not int
+        or not 1 <= item["atomic_number"] <= 118
+        or not isinstance(item.get("cartesian_angstrom"), (list, tuple))
+        or len(item["cartesian_angstrom"]) != 3
+        for item in source_atom_records
+    ):
+        # Preserve the source atom context in the parsed input, but do not
+        # invent element identities for non-elemental/ghost atom records.
+        return build_volumetric_structure_overlay(
+            grid=grid,
+            unavailable_reason="source_atom_context_not_elemental",
+        )
     atom_records = [
         {
-            "atomic_number": int(item["atomic_number"]),
+            "atomic_number": item["atomic_number"],
             "cartesian_angstrom": list(item["cartesian_angstrom"]),
         }
-        for item in prepared.get("atom_records", [])
+        for item in source_atom_records
     ]
     return build_volumetric_structure_overlay(grid=grid, atom_records=atom_records)
 
