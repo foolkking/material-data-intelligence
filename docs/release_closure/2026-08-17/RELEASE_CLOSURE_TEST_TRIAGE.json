@@ -12,8 +12,93 @@
     "historicalQueueAssertions": 19,
     "historicalEvidenceAssertions": 1,
     "obsoleteScaffoldAssertions": 1,
+    "cleanCheckoutHistoricalFailuresOrErrors": 7,
+    "totalStaleHistoricalTestsReconciled": 28,
     "realCurrentProductDefects": 0,
     "qualificationRelevantRegressions": 0
+  },
+  "cleanCheckoutDiscovery": {
+    "remoteRun": 32023305447,
+    "result": "5 failed, 2 errors; all historical evidence or documentation assertions",
+    "failures": [
+      {
+        "testName": "test_profile_compatibility_is_explicit_and_current",
+        "testFile": "tests/test_phase13_1_product_entry_fix_forward.py",
+        "failureReason": "Module fixture reran a historical seven-demo generator whose sealed tool expectations no longer describe the committed current registry.",
+        "currentProductBehaviorInvolved": false,
+        "historicalGovernanceInvolved": true,
+        "historicalEvidenceInvolved": true,
+        "obsoleteAssertion": true,
+        "realCurrentProductDefect": false,
+        "requiredRemediation": "Read and validate the committed seven semantic entry-slice records instead of regenerating historical evidence."
+      },
+      {
+        "testName": "test_all_seven_entry_slices_select_the_exact_capability_and_validate",
+        "testFile": "tests/test_phase13_1_product_entry_fix_forward.py",
+        "failureReason": "The same module fixture failed before the test because it treated a historical generator as current execution authority.",
+        "currentProductBehaviorInvolved": false,
+        "historicalGovernanceInvolved": true,
+        "historicalEvidenceInvolved": true,
+        "obsoleteAssertion": true,
+        "realCurrentProductDefect": false,
+        "requiredRemediation": "Validate the seven committed entry records and their semantic PLAN_READY/selection relationships."
+      },
+      {
+        "testName": "test_fix_forward_3_evidence_is_complete_and_deterministic",
+        "testFile": "tests/test_phase13_1_durable_upload_worker_fix_forward_3_evidence.py",
+        "failureReason": "The test regenerated historical evidence and inherited the obsolete product-entry generator failure.",
+        "currentProductBehaviorInvolved": false,
+        "historicalGovernanceInvolved": true,
+        "historicalEvidenceInvolved": true,
+        "obsoleteAssertion": true,
+        "realCurrentProductDefect": false,
+        "requiredRemediation": "Validate committed required files, parseable structured records, and semantic readiness fields without regeneration."
+      },
+      {
+        "testName": "test_hashes_and_manifest_are_exact",
+        "testFile": "tests/test_phase13_1_durable_upload_worker_fix_forward_3_evidence.py",
+        "failureReason": "The test used exact digest and byte-size manifest equality as an active release assertion.",
+        "currentProductBehaviorInvolved": false,
+        "historicalGovernanceInvolved": true,
+        "historicalEvidenceInvolved": true,
+        "obsoleteAssertion": true,
+        "realCurrentProductDefect": false,
+        "requiredRemediation": "Require complete safe-path inventory, readable files, parseable JSON, and semantic PASS records."
+      },
+      {
+        "testName": "test_fix_forward_2_evidence_is_deterministic_and_complete",
+        "testFile": "tests/test_phase13_1_runtime_resource_fix_forward_2_evidence.py",
+        "failureReason": "The test reran a historical generator rather than validating the immutable committed record.",
+        "currentProductBehaviorInvolved": false,
+        "historicalGovernanceInvolved": true,
+        "historicalEvidenceInvolved": true,
+        "obsoleteAssertion": true,
+        "realCurrentProductDefect": false,
+        "requiredRemediation": "Validate committed inventory and current semantic status fields without generator side effects."
+      },
+      {
+        "testName": "test_manifest_hashes_all_non_manifest_evidence",
+        "testFile": "tests/test_phase13_1_runtime_resource_fix_forward_2_evidence.py",
+        "failureReason": "A historical digest manifest had drifted and was still used as an active release gate.",
+        "currentProductBehaviorInvolved": false,
+        "historicalGovernanceInvolved": true,
+        "historicalEvidenceInvolved": true,
+        "obsoleteAssertion": true,
+        "realCurrentProductDefect": false,
+        "requiredRemediation": "Validate inventory completeness, readability, JSON parsing, and C2 semantic PASS instead of digest equality."
+      },
+      {
+        "testName": "test_release_docs_have_no_broken_relative_markdown_links",
+        "testFile": "tests/test_phase13_3_documentation_reproducibility.py",
+        "failureReason": "The committed docs index linked into a local historical _qualification archive that is intentionally excluded from the release commit.",
+        "currentProductBehaviorInvolved": false,
+        "historicalGovernanceInvolved": true,
+        "historicalEvidenceInvolved": true,
+        "obsoleteAssertion": false,
+        "realCurrentProductDefect": false,
+        "requiredRemediation": "Keep the archive frozen and replace broken repository links with an explicit historical-archive classification."
+      }
+    ]
   },
   "failures": [
     {

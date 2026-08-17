@@ -12,6 +12,7 @@
     "families": ["10L-4", "10L-5", "10M-2", "10M-3", "10M-4", "10N-1 through 10N-6", "10M-5", "12-5", "12-6", "12-7", "10M-6", "10M-7", "13-4"],
     "failed": 0,
     "realLlmCalls": 0,
+    "phase10m4CiReplay": "PASS_HEADLESS_AND_HEADFUL",
     "status": "PASS"
   },
   "status": "PASS"

@@ -24,11 +24,10 @@ Scope, input-support, or limitation authorities.
 
 ## System Qualification Audit
 
-- [Qualification integrity policy](qualification/QUALIFICATION_INTEGRITY_POLICY.md)
-- Frozen Phase B/C/D/E qualification packages and forensic evidence remain preserved in the local `_qualification/` archive; they are historical records, not current repository authorities or release gates.
-- [Phase A repository capability census](qualification/phase_a_repository_capability_census/README.md)
-- [System Qualification Capability Manifest](qualification/phase_a_repository_capability_census/SystemQualificationCapabilityManifest.md)
-- [Phase B external-data research handoff](qualification/phase_a_repository_capability_census/phase_b_external_qualification_dataset_research_handoff.json)
+- Frozen Phase A/B/C/D/E qualification policies, capability census, packages,
+  research handoff, and forensic evidence remain preserved in the local
+  `docs/qualification/` and `_qualification/` archives. They are historical
+  records, not current repository authorities or release gates.
 
 Phase A is a repository-grounded qualification design audit. It does not reopen
 the Initial Release, acquire external data, run browser qualification, or make

@@ -3,14 +3,14 @@
   "recordedAt": "2026-08-17T18:20:03+08:00",
   "realLlmCalls": 0,
   "backend": {
-    "passed": 1562,
+    "passed": 1563,
     "failed": 0,
     "errors": 0,
     "deselected": 53,
-    "warnings": 93,
+    "warnings": 75,
     "status": "PASS"
   },
-  "focusedHistoricalReconciliation": {"passed": 111, "failed": 0, "status": "PASS"},
+  "focusedHistoricalReconciliation": {"passed": 136, "failed": 0, "status": "PASS"},
   "activeTestFailures": 0,
   "status": "PASS"
 }
