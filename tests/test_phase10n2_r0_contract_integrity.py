@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 import re
 
+from tests.task_queue_contract import assert_current_task_queue
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = [
@@ -118,6 +120,9 @@ def test_n2_r0_scope_is_exact_and_bounded() -> None:
         return
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
+    if task_count > 3:
+        assert_current_task_queue(ROOT)
+        return
     if task_count == 2 and "Phase 11-2 Reviewer Prompt" in tasks:
         assert "状态：处理中" in tasks
         return

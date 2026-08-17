@@ -7,6 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from tests.task_queue_contract import assert_current_task_queue
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docs/phase12/evidence/phase12_7_cross_product_ux_validation"
@@ -92,6 +94,9 @@ def test_queue_has_only_active_phase12_7_or_is_archived() -> None:
     if not tasks.strip():
         return
     blocks = re.findall(r"---TASK---.*?---END---", tasks, flags=re.DOTALL)
+    if len(blocks) > 1:
+        assert_current_task_queue(ROOT)
+        return
     assert len(blocks) == 1
     if "Phase 13-0 Reviewer Prompt" in blocks[0] or "Phase 13-0 Reviewer Correction Prompt" in blocks[0]:
         assert re.search(r"状态：(处理中|已完成)", blocks[0])

@@ -7,6 +7,7 @@ from pathlib import Path
 
 from mdi_adapters.registry import ADAPTER_CLASSES
 from mdi_tool_registry.loader import load_manifests
+from tests.task_queue_contract import assert_current_task_queue
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -186,6 +187,11 @@ def test_roadmap_and_queue_boundaries_are_exact() -> None:
         assert len(blocks) == 1
         assert "状态：处理中" in blocks[0] or "状态：已完成" in blocks[0]
         return
+    if "Phase A — Repository Capability Census" in blocks[0]:
+        assert len(blocks) == 1
+        assert "状态：处理中" in blocks[0] or "状态：已完成" in blocks[0]
+        assert "INITIAL_RELEASE_COMPLETE = YES" in (ROOT / "results.md").read_text(encoding="utf-8")
+        return
     if "Phase 12-1 Design System 2.0" in blocks[0]:
         assert len(blocks) == 1
         assert "状态：处理中" in blocks[0] or "状态：已完成" in blocks[0]
@@ -194,6 +200,9 @@ def test_roadmap_and_queue_boundaries_are_exact() -> None:
         assert len(blocks) == 2
         assert "状态：处理中" in blocks[0] or "状态：已完成" in blocks[0]
         assert "Phase 12-3 Reviewer Prompt" in blocks[1]
+        return
+    if len(blocks) > 3:
+        assert_current_task_queue(ROOT)
         return
     assert len(blocks) in {0, 1, 2, 3}
     if blocks and "Phase 11-4 Reviewer Prompt" in blocks[0]:

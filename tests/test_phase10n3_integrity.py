@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import re
 
+from tests.task_queue_contract import assert_current_task_queue
+
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs/phase10n/evidence/phase10n3_experimental_xrd_comparison_peak_matching"
@@ -128,6 +130,9 @@ def test_n3_task_and_n4_gate_are_exact() -> None:
         return
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
+    if task_count > 3:
+        assert_current_task_queue(ROOT)
+        return
     if task_count == 2 and "Phase 11-2 Reviewer Prompt" in tasks:
         assert "状态：处理中" in tasks
         return

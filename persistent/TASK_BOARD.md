@@ -2926,3 +2926,13 @@ archival remains withheld.
   distinct natural-language choices.
 - [ ] Continue the active qualification queue task and preserve its status and
   evidence; this UX remediation does not claim Phase E completion.
+
+## Release Closure — In Progress
+
+- [x] Local backend, service-backed, frontend, browser, migration, static,
+  secret, and private-path gates pass with `REAL_LLM_CALLS=0`.
+- [x] Former 21 failures reconciled; real current-product defects found: 0.
+- [x] Release-owned changes separated from qualification and user worktree data.
+- [ ] Commit and push the stable product state through the normal workflow.
+- [ ] Require all configured remote CI jobs to pass, then archive the task.
+- [ ] Deployment remains `NOT_STARTED`.

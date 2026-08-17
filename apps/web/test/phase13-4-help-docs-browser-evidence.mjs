@@ -112,7 +112,7 @@ async function capture(browserName, viewport, mobile = false) {
     });
     page.on("pageerror", (error) => audit.pageErrors.push(String(error)));
     await installReplay(page, audit);
-    await page.goto(ORIGIN, { waitUntil: "networkidle" });
+    await page.goto(`${ORIGIN}/analysis`, { waitUntil: "networkidle" });
 
     const help = page.locator(
       MODE === "before"

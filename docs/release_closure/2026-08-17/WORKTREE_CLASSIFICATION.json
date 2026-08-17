@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "release-closure-worktree/1.0",
+  "branch": "master",
+  "trackingBranch": "origin/master",
+  "ahead": 33,
+  "behind": 0,
+  "committedProductStatePresent": true,
+  "migrationHead": "0008_phase_d_r1_namespace",
+  "toolRegistry": {"version": "0.1.0", "toolCount": 62, "mvpToolCount": 50},
+  "productionRuntimeAffectingUncommitted": {
+    "preExisting": [],
+    "releaseOwnedPendingCommit": ["apps/web/next.config.mjs"]
+  },
+  "qualificationEvidenceGovernanceUncommitted": {
+    "classification": "preserved and excluded except queue/results lifecycle records",
+    "untrackedFileCount": 5664,
+    "majorRoots": {
+      "_qualification/evidence": {"files": 3029, "approxMiB": 206.59},
+      "_qualification/inputs": {"files": 6, "approxMiB": 93.96},
+      "_qualification/sources": {"files": 5, "approxMiB": 0.21},
+      "_qualification/work": {"files": 2672, "approxMiB": 1472.01},
+      "docs/qualification": {"files": 36, "approxMiB": 1.25}
+    }
+  },
+  "userOrHistoricalChanges": {
+    "classification": "preserved and excluded from the Release Closure code commit",
+    "examples": ["Phase 12 generated evidence", "Phase 13 historical evidence", "qualification work directories", "handoff and diagnostic files"]
+  }
+}

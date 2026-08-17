@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "release-closure-service-tests/1.0",
+  "environment": {
+    "postgresql": "fresh PostgreSQL 16 container on an isolated local port",
+    "redis": "fresh Redis 7 container on an isolated local port",
+    "minio": "fresh MinIO container on isolated local ports",
+    "migration": "fresh Alembic upgrade through 0008_phase_d_r1_namespace"
+  },
+  "passed": 50,
+  "failed": 0,
+  "errors": 0,
+  "requiredSkips": 0,
+  "deselected": 13,
+  "cleanup": "temporary services removed; qualification services untouched",
+  "status": "PASS"
+}

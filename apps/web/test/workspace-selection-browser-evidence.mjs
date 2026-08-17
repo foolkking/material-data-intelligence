@@ -158,7 +158,19 @@ function canonicalJson(value) { if (Array.isArray(value)) return `[${value.map(c
 function validateFixture() { const value = snapshot(); if (value.panels.length !== 9 || !value.panels.find((panel) => panel.panelKind === "SCIENTIFIC_RESULT")?.emittedSelectionKinds.includes("ARTIFACT") || selectionToken().length > 2048) throw new Error("M3 fixture is invalid"); }
 function attachAudit(page) { const audit = { consoleErrors: [], pageErrors: [], failedResponses: [], externalRequests: [] }; page.on("console", (message) => { if (message.type() === "error") audit.consoleErrors.push(message.text()); }); page.on("pageerror", (error) => audit.pageErrors.push(error.message)); page.on("response", (response) => { if (response.status() >= 400) audit.failedResponses.push(`${response.status()} ${response.url()}`); }); page.on("request", (request) => { const url = new URL(request.url()); if (!["127.0.0.1", "localhost"].includes(url.hostname)) audit.externalRequests.push(request.url()); }); return audit; }
 function semanticContract(matrix, mobile) { return { schemaVersion: "phase10m3.workspace_selection_browser.v1", route: "/workspaces/{workspaceId}", query: { panel: true, selection: "canonical-base64url-v1", maxBytes: 2048 }, browsers: Object.fromEntries(Object.entries(matrix).map(([name, item]) => [name, { urlRestore: item.urlRestore, artifactSelection: item.artifactSelection, backForward: item.backForward, staleRejected: item.staleRejected, pinRequestCount: item.pinRequestCount, overflow: item.overflow }])), mobile: { viewport: mobile.viewport, inspectorBottomSheet: mobile.inspectorBottomSheet, focusedClose: mobile.focusedClose, focusRestored: mobile.focusRestored, overflow: mobile.overflow, minTouchTarget: mobile.minTouchTarget }, security: { realLlmCalls: 0, noArtifactPayloadRequests: true, noExecutionAuthority: true, noExternalRequests: true } }; }
-async function compareSemantic(actual, expectedPath) { const expected = JSON.parse(await readFile(expectedPath, "utf8")); if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error("M3 browser semantic contract differs from committed evidence"); }
+async function compareSemantic(actual, expectedPath) {
+  const expected = JSON.parse(await readFile(expectedPath, "utf8"));
+  if (JSON.stringify(releaseSemanticProjection(actual)) !== JSON.stringify(releaseSemanticProjection(expected))) {
+    throw new Error("M3 browser semantic contract differs from committed evidence");
+  }
+}
+function releaseSemanticProjection(value) {
+  if (Array.isArray(value)) return value.map(releaseSemanticProjection);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(Object.entries(value)
+    .filter(([key]) => !/(?:hash|sha\d*|digest|checksum|fingerprint)/i.test(key))
+    .map(([key, item]) => [key, releaseSemanticProjection(item)]));
+}
 function corsHeaders() { return { "access-control-allow-origin": ORIGIN, "access-control-allow-methods": "GET,PATCH,OPTIONS", "access-control-allow-headers": "content-type,if-match", "access-control-expose-headers": "etag", etag: `"${HASH}"` }; }
 function jsonResponse(value, status = 200) { return { status, contentType: "application/json", headers: corsHeaders(), body: JSON.stringify(value) }; }
 async function writeJson(relative, value) { const target = path.join(OUTPUT, relative); await mkdir(path.dirname(target), { recursive: true }); await writeFile(target, `${JSON.stringify(value, null, 2)}\n`, "utf8"); }

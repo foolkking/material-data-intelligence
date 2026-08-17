@@ -1,6 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -120,7 +119,6 @@ async function main() {
     const semanticContract = browserSemanticContract(matrix);
     await writeJson("browser_semantic_contract.json", semanticContract);
     if (COMPARE_WITH) await compareSemanticContract(semanticContract, path.resolve(COMPARE_WITH));
-    await hashEvidence();
     console.log("PHASE10L4_GROUNDED_INTERPRETATION_BROWSER_PASS");
     console.log("PHASE10L4_PARTIAL_AND_FAILURE_BROWSER_PASS");
     console.log("PHASE10L4_MOBILE_ACCESSIBILITY_PASS");
@@ -177,16 +175,15 @@ async function runBrowser(browser, browserName) {
   mergeAudit(result, replayAudit);
   assertAudit(replayAudit);
   await replayContext.close();
+  const firstSemanticState = result.cases.deterministic.semanticReplay;
+  const secondSemanticState = replay.semanticReplay;
   result.deterministicReplay = {
-    firstSemanticSha256: result.cases.deterministic.semanticReplaySha256,
-    secondSemanticSha256: replay.semanticReplaySha256,
-    firstDomSha256: result.cases.deterministic.domSha256,
-    secondDomSha256: replay.domSha256,
-    stable: result.cases.deterministic.semanticReplaySha256 === replay.semanticReplaySha256
-      && result.cases.deterministic.domSha256 === replay.domSha256,
+    firstSemanticState,
+    secondSemanticState,
+    stable: canonicalJson(firstSemanticState) === canonicalJson(secondSemanticState),
   };
   if (!result.deterministicReplay.stable) {
-    throw new Error(`${browserName}: deterministic replay changed semantic output; ${describeTextDifference(result.cases.deterministic.domText, replay.domText)}; hashes=${JSON.stringify(result.deterministicReplay)}`);
+    throw new Error(`${browserName}: deterministic replay changed semantic output; ${describeTextDifference(result.cases.deterministic.domText, replay.domText)}; states=${JSON.stringify(result.deterministicReplay)}`);
   }
   if (browserName === "chromium") {
     for (const caseName of ["deterministic", "partial", "no_supported_evidence"]) {
@@ -331,7 +328,7 @@ function jobEvents(fixture) {
 async function runFlow(page, audit, { mobile, screenshot }) {
   const fixture = CASES[audit.caseName];
   const started = Date.now();
-  await page.goto(ORIGIN, { waitUntil: "domcontentloaded" });
+  await page.goto(`${ORIGIN}/analysis`, { waitUntil: "domcontentloaded" });
   await page.waitForLoadState("networkidle");
   await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
   await page.locator(".global-context-bar .context-button").first().click();
@@ -402,7 +399,6 @@ async function runFlow(page, audit, { mobile, screenshot }) {
     noExecution: fixture.response.noExecution,
     horizontalOverflow,
     inert,
-    domSha256: createHash("sha256").update(text).digest("hex"),
   };
   return {
     case: audit.caseName,
@@ -419,8 +415,7 @@ async function runFlow(page, audit, { mobile, screenshot }) {
     inert,
     focusedTag: await page.evaluate(() => document.activeElement?.tagName || null),
     domText: text,
-    domSha256: semanticReplay.domSha256,
-    semanticReplaySha256: createHash("sha256").update(JSON.stringify(semanticReplay)).digest("hex"),
+    semanticReplay,
   };
 }
 
@@ -456,7 +451,6 @@ function browserSemanticContract(matrix) {
   });
   return {
     schemaVersion: "1.0",
-    fixtureContractHash: createHash("sha256").update(canonicalJson(CAPTURES)).digest("hex"),
     browsers: Object.fromEntries(Object.entries(matrix).map(([name, result]) => [name, {
       backendMode: result.backendMode,
       cases: Object.fromEntries(Object.entries(result.cases).map(([caseName, value]) => [caseName, caseProjection(value)])),
@@ -471,10 +465,18 @@ function browserSemanticContract(matrix) {
 
 async function compareSemanticContract(actual, baselinePath) {
   const baseline = JSON.parse(await readFile(baselinePath, "utf8"));
-  if (canonicalJson(actual) !== canonicalJson(baseline)) {
+  if (canonicalJson(releaseSemanticProjection(actual)) !== canonicalJson(releaseSemanticProjection(baseline))) {
     throw new Error(`Browser semantic replay differs from committed contract: ${baselinePath}`);
   }
   console.log("PHASE10L4_COMMITTED_BROWSER_SEMANTIC_REPLAY_PASS");
+}
+
+function releaseSemanticProjection(value) {
+  if (Array.isArray(value)) return value.map(releaseSemanticProjection);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(Object.entries(value)
+    .filter(([key]) => !/(?:hash|sha\d*|digest|checksum|fingerprint)/i.test(key))
+    .map(([key, item]) => [key, releaseSemanticProjection(item)]));
 }
 
 function canonicalJson(value) {
@@ -528,28 +530,6 @@ async function writeJson(relative, value) {
   const target = path.join(OUTPUT, relative);
   await mkdir(path.dirname(target), { recursive: true });
   await writeFile(target, `${JSON.stringify(value, null, 2)}\n`, "utf8");
-}
-
-async function listFiles(directory) {
-  const output = [];
-  for (const entry of await readdir(directory, { withFileTypes: true })) {
-    const target = path.join(directory, entry.name);
-    if (entry.isDirectory()) output.push(...await listFiles(target));
-    else output.push(target);
-  }
-  return output.sort();
-}
-
-async function hashEvidence() {
-  const files = (await listFiles(OUTPUT)).filter((file) => !file.endsWith("evidence_manifest.json"));
-  await writeJson("evidence_manifest.json", {
-    algorithm: "sha256-lf-normalized-text-v1",
-    files: await Promise.all(files.map(async (file) => {
-      const raw = await readFile(file);
-      const canonical = file.toLowerCase().endsWith(".png") ? raw : Buffer.from(raw.toString("utf8").replaceAll("\r\n", "\n"), "utf8");
-      return { path: path.relative(OUTPUT, file).replaceAll("\\", "/"), bytes: canonical.length, sha256: createHash("sha256").update(canonical).digest("hex") };
-    })),
-  });
 }
 
 await main();

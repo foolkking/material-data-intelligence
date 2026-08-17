@@ -1,0 +1,251 @@
+{
+  "schemaVersion": "ReleaseClosureTestTriage/1.0",
+  "baseline": {
+    "command": "uv run python -m pytest -q -m not-integration-and-not-llm-integration --tb=short",
+    "passed": 1540,
+    "failed": 21,
+    "deselected": 53,
+    "warnings": 93,
+    "realLlmCalls": 0
+  },
+  "summary": {
+    "historicalQueueAssertions": 19,
+    "historicalEvidenceAssertions": 1,
+    "obsoleteScaffoldAssertions": 1,
+    "realCurrentProductDefects": 0,
+    "qualificationRelevantRegressions": 0
+  },
+  "failures": [
+    {
+      "testName": "test_phase10m6_required_inventory_acceptance_authorities_and_screenshots",
+      "testFile": "tests/test_phase10m6_evidence.py",
+      "failureReason": "Live TASKS.md cardinality was restricted to at most three historical queue blocks.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Validate balanced blocks and the single-processing-task ordering invariant for history-retaining queues."
+    },
+    {
+      "testName": "test_phase10m7_document_links_and_phase10n_gate",
+      "testFile": "tests/test_phase10m7_evidence.py",
+      "failureReason": "Live TASKS.md cardinality was restricted to an obsolete Phase 10/11 queue shape.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Use the current queue invariant while retaining document and reviewer-gate assertions."
+    },
+    {
+      "testName": "test_n0_does_not_admit_an_executable_task",
+      "testFile": "tests/test_phase10n0_audit_integrity.py",
+      "failureReason": "The test treated a later history-retaining queue as an invalid N0-era live queue.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Keep N0 evidence checks and validate present queue structure independently."
+    },
+    {
+      "testName": "test_r0_exact_scope_and_queue_admission_are_closed",
+      "testFile": "tests/test_phase10n1_r0_contract_integrity.py",
+      "failureReason": "Historical Phase 10N task cardinality was asserted against the current queue.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Separate immutable N1 scope checks from current queue lifecycle validation."
+    },
+    {
+      "testName": "test_n2_r0_scope_is_exact_and_bounded",
+      "testFile": "tests/test_phase10n2_r0_contract_integrity.py",
+      "failureReason": "Only one or three N2-era tasks were allowed in live TASKS.md.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Validate retained history with the current queue invariant."
+    },
+    {
+      "testName": "test_n3_task_and_n4_gate_are_exact",
+      "testFile": "tests/test_phase10n3_integrity.py",
+      "failureReason": "N3/N4 historical queue state was required to remain the live queue state.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Retain historical authority checks and apply current queue invariants to TASKS.md."
+    },
+    {
+      "testName": "test_n4_queue_state_preserves_the_n5_reviewer_gate",
+      "testFile": "tests/test_phase10n4_evidence.py",
+      "failureReason": "A historical archived marker was required in the current live queue.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Use current queue structure validation for queues retaining later history."
+    },
+    {
+      "testName": "test_n5_queue_has_one_active_task_and_no_n6_task",
+      "testFile": "tests/test_phase10n5_evidence.py",
+      "failureReason": "The current queue was required to be empty after the historical N5 lifecycle.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Preserve N5 evidence assertions and validate current queue ordering."
+    },
+    {
+      "testName": "test_n5_queue_state_remains_compatible_through_n6_archive",
+      "testFile": "tests/test_phase10n5_r0_contract_integrity.py",
+      "failureReason": "The test expected the live queue to remain empty after N6 archival.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Validate current multi-generation queue history rather than recreate the N6 archive state."
+    },
+    {
+      "testName": "test_n6_queue_lifecycle_and_no_phase11_task",
+      "testFile": "tests/test_phase10n6_integration_closure.py",
+      "failureReason": "The test limited the current queue to obsolete N6/Phase 11 cardinalities.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Retain N6 contract checks and validate current queue structure."
+    },
+    {
+      "testName": "test_roadmap_and_queue_boundaries_are_exact",
+      "testFile": "tests/test_phase11_0_validation_governance.py",
+      "failureReason": "Only zero to three live task blocks were allowed despite retained failed qualification history.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Keep roadmap assertions and adopt the repository-wide current queue invariant."
+    },
+    {
+      "testName": "test_queue_has_only_the_active_phase12_6_task",
+      "testFile": "tests/test_phase12_6_responsive_accessibility.py",
+      "failureReason": "A Phase 12-6-era single-task queue was asserted against the current queue.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Validate current queue structure when historical blocks are retained."
+    },
+    {
+      "testName": "test_queue_has_only_active_phase12_7_or_is_archived",
+      "testFile": "tests/test_phase12_7_cross_product_evidence.py",
+      "failureReason": "A Phase 12-7-era single-task queue was asserted against the current queue.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Retain cross-product evidence checks and validate current queue structure."
+    },
+    {
+      "testName": "test_phase13_0_docs_ci_and_queue_contract_resolve",
+      "testFile": "tests/test_phase13_0_release_scope.py",
+      "failureReason": "Every retained task was required to use the newer Chinese status vocabulary; older English historical failures were rejected.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Validate balanced blocks and active-task ordering without rewriting retained historical records."
+    },
+    {
+      "testName": "test_attempt6_phase13_3_is_handoff_only_and_not_queued",
+      "testFile": "tests/test_phase13_2_attempt6.py",
+      "failureReason": "A past handoff test required the entire current queue to be empty.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": true,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Assert the historical handoff was not activated and independently validate the current queue."
+    },
+    {
+      "testName": "test_attempt6_is_authority_and_phase13_4_is_not_queued",
+      "testFile": "tests/test_phase13_3_documentation_reproducibility.py",
+      "failureReason": "A past Phase 13-3 handoff test required the entire current queue to be empty.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": true,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Keep the Attempt 6 content authority assertion and validate current queue invariants."
+    },
+    {
+      "testName": "test_performance_security_and_next_phase_are_bounded",
+      "testFile": "tests/test_phase13_4_targeted_polish.py",
+      "failureReason": "The live queue was required to contain the historical Phase 13-6 task.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": true,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Keep security and handoff semantics; validate current queue structure instead of historical membership."
+    },
+    {
+      "testName": "test_evidence_manifest_matches_raw_bytes",
+      "testFile": "tests/test_phase13_4_targeted_polish.py",
+      "failureReason": "validation_summary.json remained semantically readable but its current byte size differed from a historical manifest record.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": true,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Replace byte-size and digest certification with safe-path, existence, nonempty-content, JSON parsing, and required-record validation."
+    },
+    {
+      "testName": "test_phase13_5_decision_manifest_and_phase13_6_handoff_are_bounded",
+      "testFile": "tests/test_phase13_5_release_acceptance.py",
+      "failureReason": "The live queue was required to contain the historical Phase 13-6 task.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": true,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Validate decision/handoff content and readable evidence inventory plus the current queue invariant."
+    },
+    {
+      "testName": "test_evidence_manifest_and_queue_governance",
+      "testFile": "tests/test_phase13_6_final_archive.py",
+      "failureReason": "The live queue was required to contain historical Phase 13-6 membership and exact identity governance.",
+      "currentProductBehaviorInvolved": false,
+      "historicalGovernanceInvolved": true,
+      "historicalEvidenceInvolved": true,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Validate historical result readability, semantic defect history, safe archive content, and current queue invariants without digest or Git-ID gating."
+    },
+    {
+      "testName": "test_phase1_next_workspace_shell_files_exist",
+      "testFile": "tests/test_phase1_scaffold.py",
+      "failureReason": "The scaffold test still required PlannerWorkbench on the root page after the durable Project Home routing change.",
+      "currentProductBehaviorInvolved": true,
+      "historicalGovernanceInvolved": false,
+      "historicalEvidenceInvolved": false,
+      "obsoleteAssertion": true,
+      "realCurrentProductDefect": false,
+      "requiredRemediation": "Assert ProjectHome at the root route and PlannerWorkbench at the supported analysis route while retaining workbench feature markers."
+    }
+  ]
+}

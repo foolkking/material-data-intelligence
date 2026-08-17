@@ -48,7 +48,7 @@ function attachAudit(page) {
 async function inspect(page, name, viewport, touch = false) {
   const audit = attachAudit(page);
   await installReplay(page, audit);
-  await page.goto(ORIGIN, { waitUntil: "networkidle" });
+  await page.goto(`${ORIGIN}/analysis`, { waitUntil: "networkidle" });
   const metrics = await page.evaluate(({ touch }) => {
     const root = getComputedStyle(document.documentElement);
     const visible = [...document.querySelectorAll("button, input, select, textarea, a")].filter((item) => {

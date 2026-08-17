@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import re
 
+from tests.task_queue_contract import assert_current_task_queue
+
 from mdi_tool_registry import load_manifests
 
 
@@ -115,6 +117,9 @@ def test_n5_queue_has_one_active_task_and_no_n6_task() -> None:
         return
     if "Phase 11-1 Reviewer Prompt" in tasks:
         assert tasks.count("---TASK---") == 3
+        return
+    if tasks.count("---TASK---") > 3:
+        assert_current_task_queue(ROOT)
         return
     if "Task: Phase 11-0" in tasks:
         assert tasks.count("---TASK---") == 1

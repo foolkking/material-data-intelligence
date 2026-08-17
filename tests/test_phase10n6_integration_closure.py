@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import re
 
+from tests.task_queue_contract import assert_current_task_queue
+
 from mdi_llm.grounded_interpretation import ARTIFACT_PROJECTOR_CONTRACTS
 from mdi_schemas import WorkspaceSelectionKind
 from mdi_tool_registry import load_manifests
@@ -168,6 +170,9 @@ def test_n6_queue_lifecycle_and_no_phase11_task() -> None:
         return
     task_count = tasks.count("---TASK---")
     assert task_count == tasks.count("---END---")
+    if task_count > 3:
+        assert_current_task_queue(ROOT)
+        return
     assert task_count in {0, 1, 2, 3}
     if task_count == 2 and "Phase 11-4 Reviewer Prompt" in tasks:
         assert "状态：处理中" in tasks

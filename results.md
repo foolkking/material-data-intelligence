@@ -11842,6 +11842,37 @@ INITIAL_RELEASE_COMPLETE = NO
 PHASE14_CREATED = NO
 ```
 
+## 2026-08-16 Phase D Live Qualification Environment Seal
+
+Status: BLOCKED / LIVE_QUALIFICATION_ENVIRONMENT_NOT_SEALED
+
+Entry repository SHA is
+`08939f1b72ce37f153a0bdc18eee213f336b3636`, matching `origin/master`.
+The required frozen qualification ZIP is absent from its authority path under
+`_qualification/inputs/`. A same-named untracked ZIP exists at repository root,
+has 19,073,044 bytes, and matches the expected SHA-256
+`3fa4038b3c5a33bec70d5577a3dd93411c6347d55cb99fd721d6948036a70952`,
+but Phase D did not copy, move, repackage, or accept it as a path substitute.
+
+Blocker `PHASE_D-B001 = QUALIFICATION_PACKAGE_MISSING_AT_AUTHORITY_PATH` stopped
+the run before extraction, internal manifest verification, service startup,
+worker startup, browser smoke, or provider credential inspection. Formal case,
+LLM, Job, and Artifact counters remain zero. Production code, qualification
+package, and scientific fixture changes remain zero. Local blocked evidence is
+retained under `_qualification/evidence/phase_d/`; no Phase E task was created.
+
+```text
+PHASE_D = BLOCKED / LIVE_QUALIFICATION_ENVIRONMENT_NOT_SEALED
+READY_FOR_PHASE_E = NO
+REAL_LLM_CALLS = 0
+FORMAL_QUALIFICATION_CASE_EXECUTIONS = 0
+QUALIFICATION_JOBS_RUN = 0
+PRODUCTION_CODE_CHANGES = 0
+QUALIFICATION_PACKAGE_CHANGES = 0
+SCIENTIFIC_FIXTURE_CHANGES = 0
+BLOCKERS = [PHASE_D-B001]
+```
+
 # Phase 13-5 Final Regression + Release Acceptance Local Validation
 
 Status: `LOCAL_VALIDATION_PASS_PENDING_EXACT_SHA_CI`.
@@ -12350,6 +12381,295 @@ PHASE14_CREATED = NO
 NEXT_EXECUTABLE_PHASE = NONE
 ```
 
+## 2026-08-16 Phase D Attempt 2 - Controlled Resume
+
+Status: BLOCKED / LIVE_QUALIFICATION_ENVIRONMENT_NOT_SEALED
+
+Completed: 2026-08-16T00:25:15+08:00
+
+Reviewer-authorized controlled placement resolved `PHASE_D-B001`: the
+repository-root frozen ZIP was copied byte-for-byte to `_qualification/inputs/`
+without moving or modifying the source. Source and destination are each
+19,073,044 bytes with SHA-256
+`3fa4038b3c5a33bec70d5577a3dd93411c6347d55cb99fd721d6948036a70952`,
+and direct byte comparison passed.
+
+The resumed package audit passed: root and all 16 case hash manifests have zero
+mismatches, all required case structures/assets exist, canonical readiness is
+16/16, Recipe execution authorization is 0/16, and paraphrase robustness remains
+the frozen 7/16. The current Registry is version 0.1.0 with 62 Tools; repository
+authority and qualification authority show no material contract drift.
+
+The application shell loaded in the Codex in-app browser at 1280x720, basic Data
+navigation worked, and no console warning/error was observed. DeepSeek policy
+resolves to the allowed default model and `DEEPSEEK_KEY` is present; no live call
+was made. Phase D remains blocked because PostgreSQL authentication fails,
+Redis and MinIO are unavailable, a fresh worker cannot connect, the durable
+backend runtime is unhealthy, and no safe fresh qualification namespace can be
+verified. These are retained as `PHASE_D-B002` through `PHASE_D-B007`.
+
+Evidence validation: 8 JSON files parsed, 9 SHA256SUMS entries self-validated,
+secret/private-path scans returned zero hits, all case/LLM/Job/Artifact counters
+are zero, frozen package hashes remain unchanged, and tracked production diff is
+zero. Evidence is `_qualification/evidence/phase_d/attempt_02/`; Attempt 1 is
+preserved at `_qualification/evidence/phase_d/attempt_01_blocked/`.
+
+```text
+PHASE_D = BLOCKED / LIVE_QUALIFICATION_ENVIRONMENT_NOT_SEALED
+READY_FOR_PHASE_E = NO
+PHASE_D-B001 = RESOLVED
+DATABASE_HEALTHY = NO
+MIGRATION_AT_EXPECTED_HEAD = NO
+QUEUE_BACKEND_HEALTHY = NO
+OBJECT_STORAGE_HEALTHY = NO
+BACKEND_HEALTHY = NO
+FRONTEND_HEALTHY = YES
+FRESH_WORKER_AVAILABLE = NO
+BROWSER_APP_SHELL_ACCESSIBLE = YES
+PROVIDER_CONFIGURATION_RESOLVES = YES
+REQUIRED_PROVIDER_CREDENTIAL_PRESENT = YES
+REAL_LLM_CALLS = 0
+FORMAL_QUALIFICATION_CASE_EXECUTIONS = 0
+QUALIFICATION_JOBS_RUN = 0
+QUALIFICATION_ARTIFACTS = 0
+PRODUCTION_CODE_CHANGES = 0
+QUALIFICATION_PACKAGE_CHANGES = 0
+SCIENTIFIC_FIXTURE_CHANGES = 0
+PHASE_E_EXECUTED = NO
+```
+
+## 2026-08-16 Phase E - Autonomous 16-Case Live-Agent Browser Qualification
+
+Status: FAILED / BLOCKED_AUTHORITY_CONFLICT
+
+Completed: 2026-08-16T04:51:17+08:00
+
+Discovery used the frozen qualification ZIP with SHA-256
+`3fa4038b3c5a33bec70d5577a3dd93411c6347d55cb99fd721d6948036a70952`.
+Six repository-grounded routing/planning/interpretation corrections were made
+as immutable local commits. Focused verification for the final correction
+passed 38 AnalysisIntent, 32 capability Planner, and 34 natural-language
+evidence tests; Ruff and `git diff --check` passed.
+
+`Q-DATASET-001` completed the real Browser/DeepSeek/Planner/Queue/Worker/
+Adapter/Artifact/Interpretation/Workspace/Report/Recipe discovery workflow on
+candidate `8768f544956bf89b1fc1ccf51d6896e9221b3462`.
+
+The campaign stopped at `Q-COMPOSITION-001` on candidate
+`2d7f92d266c51a3401a36f619082e5840e0d60f9`. The frozen Case provides only a
+CSV table but requires `structure_resource` and
+`structure.composition_from_structure`, whose Registry contract requires a
+periodic `Structure`. It also requires seven exact Tools/steps while current
+AnalysisPlan and selection contracts cap the plan at four. Phase E requires all
+expected Tools and explicitly mandates `BLOCKED_AUTHORITY_CONFLICT` for this
+kind of contradiction. The package, CASE files, assets, and scientific values
+were not changed.
+
+Evidence:
+`_qualification/evidence/phase_e/campaign_20260816_blocked_authority_conflict/`.
+No final 16-case requalification, exact-SHA CI, completion lifecycle, or later
+task was executed.
+
+## 2026-08-16 Phase D - Autonomous Remediation, Requalification & Environment Seal
+
+Status: PASS / LIVE_QUALIFICATION_ENVIRONMENT_SEALED
+
+Completed: 2026-08-16T03:40:00+08:00
+
+The committed D-R1 candidate exposed `PHASE_D-B009`: RQ's default Worker exits
+on Windows when it consumes a queued job because `os.fork()` is unavailable.
+Commit `54c66abc499c646dc27b612dbf28747b176177c8` adds the canonical
+cross-platform worker entrypoint and regression tests. A real isolated Redis
+execution smoke returned 42, while the final canonical worker stayed idle with
+zero successful and failed qualification jobs.
+
+Attempt 6 independently reverified ZIP SHA-256
+`3fa4038b3c5a33bec70d5577a3dd93411c6347d55cb99fd721d6948036a70952`,
+123 root entries, all 16 case manifests, canonical readiness 16/16, and the
+declared paraphrase authority 7/16. PostgreSQL, Redis, MinIO, migration head
+`0008_phase_d_r1_namespace`, a fresh base-to-head database, durable project
+survival across backend restart, empty Workspace history, backend, frontend,
+fresh Worker, provider configuration, and app-shell browser smoke all pass.
+
+Validation: affected Python `67 passed, 2 skipped`; required service-backed
+`51 passed, 0 required skips`; frontend `460 passed`; TypeScript typecheck and
+production build pass; `uv lock --check`, Ruff, and `git diff --check` pass.
+Attempt 6 evidence has 19 hashed entries with zero JSON, hash, secret,
+private-path, zero-counter, package-mutation, or production-runtime-diff errors.
+No push or CI run was required or performed.
+
+```text
+PHASE_D = PASS / LIVE_QUALIFICATION_ENVIRONMENT_SEALED
+READY_FOR_PHASE_E = YES
+FINAL_REPOSITORY_HEAD_SHA = 54c66abc499c646dc27b612dbf28747b176177c8
+HEAD_EQUALS_ORIGIN_MASTER = NO
+PHASE_D-B001..PHASE_D-B009 = RESOLVED
+REAL_LLM_CALLS = 0
+FORMAL_QUALIFICATION_CASE_EXECUTIONS = 0
+QUALIFICATION_JOBS_RUN = 0
+QUALIFICATION_ARTIFACTS = 0
+QUALIFICATION_PACKAGE_CHANGES = 0
+SCIENTIFIC_FIXTURE_CHANGES = 0
+PRODUCTION_RUNTIME_AFFECTING_UNCOMMITTED_DIFFS = 0
+BLOCKERS = []
+```
+
+## 2026-08-16 Phase D-R1 - Durable Namespace Migration / Bootstrap Remediation
+
+Status: COMPLETED / DURABLE_NAMESPACE_MIGRATION_BOOTSTRAP_CORRECTED
+
+Completed: 2026-08-16T02:31:30+08:00
+
+Root cause was confirmed as SQLAlchemy/Alembic drift plus split Project
+authority: migration 0007 lacked `users`, `organizations`, the canonical Project
+foreign keys and index, while PostgreSQL-mode `POST /projects` still created only
+process-local state. Forward migration `0008_phase_d_r1_namespace` now creates
+and backfills the required schema, and PostgreSQL-mode Project create/list uses
+`SqlAlchemyProjectRepository`.
+
+Both isolated PostgreSQL migration paths passed: empty database to new head and
+0007 to new head with an existing Project preserved and actor/organization rows
+backfilled. Production API verification created Project
+`project_4e11968a578b49d8ba165024`, resolved an empty Workspace history, and
+reloaded both after backend process restart. Database Job, ToolCall, and Artifact
+counts remained zero; no formal qualification case or LLM call ran.
+
+Modified files: migration 0008; `durable_projects.py`; PostgreSQL-mode Project
+wiring in `phase2_runtime.py`; migration/API/service regression tests; current
+runtime/schema docs and persistent governance; focused evidence under
+`_qualification/evidence/phase_d_r1/`.
+
+Tests: 23 focused unit/API passed; 15 affected PostgreSQL/Redis/MinIO service
+tests passed; 7 migration regressions passed; docs link, new-file ruff,
+`uv lock --check`, `git diff --check`, JSON parse, evidence SHA256, secret scan,
+private-path scan, and zero execution counters passed. A full backend observation
+returned 1454 passed, 51 skipped, and 21 non-D-R1 failures: 19 stale historical
+queue assumptions, one pre-existing Phase 13 raw-byte/CRLF manifest mismatch,
+and one evidence link checked before generation; that link subsequently passed.
+
+Commit/CI: not requested; HEAD remains
+`08939f1b72ce37f153a0bdc18eee213f336b3636` with an uncommitted working tree.
+
+```text
+PHASE_D_R1 = PASS / DURABLE_NAMESPACE_MIGRATION_BOOTSTRAP_CORRECTED
+NEW_MIGRATION_HEAD = 0008_phase_d_r1_namespace
+FRESH_DB_BASE_TO_HEAD = PASS
+PREVIOUS_HEAD_TO_NEW_HEAD = PASS
+PROJECT_DURABLY_PERSISTED = PASS
+PROJECT_SURVIVES_PROCESS_RESTART = PASS
+WORKSPACE_HISTORY_PROJECT_RESOLUTION = PASS
+MANUAL_DDL_WORKAROUND = 0
+METADATA_CREATE_ALL_WORKAROUND = 0
+REAL_LLM_CALLS = 0
+FORMAL_QUALIFICATION_CASE_EXECUTIONS = 0
+QUALIFICATION_PACKAGE_CHANGES = 0
+PHASE_D_ATTEMPT_5_EXECUTED = NO
+PHASE_E_EXECUTED = NO
+```
+
+## 2026-08-16 Phase D Attempt 3 - Docker Runtime Controlled Resume
+
+Status: BLOCKED / LIVE_QUALIFICATION_ENVIRONMENT_NOT_SEALED
+
+Completed: 2026-08-16T01:11:42+08:00
+
+Docker Desktop is available through its installed CLI despite the inherited
+Codex shell PATH not being refreshed. Docker Client/Engine are 29.7.2, Docker
+Desktop is 4.86.0, and Compose is 5.3.1. The checked-in Compose configuration
+parses successfully and defines project-scoped network and volume names for the
+isolated `mdi-phase-d-attempt3` project. Its infrastructure services reference
+`postgres:16-alpine`, `redis:7-alpine`, and `quay.io/minio/minio:latest`; no
+application image build is required for this Phase D infrastructure startup.
+
+Safe-isolation preflight failed before `compose up`: the checked-in file fixes
+published host ports 5432 and 6379, already owned by non-Docker PostgreSQL and
+Memurai services. Reviewer authorized preemption, but Windows denied both
+service-control and direct-process termination from the current non-elevated
+session. Existing services and data remained unchanged. No container, network,
+volume, database, Redis state, MinIO bucket, backend, worker, or namespace was
+partially created. The repository runbook provides local credential and MinIO
+bucket bootstrap authority, so credentials are not retained as a separate
+blocker.
+
+The full frozen-package gate was independently repeated: external ZIP SHA-256
+matches, root and 16 case manifests have zero mismatches, canonical readiness is
+16/16, report/Recipe readiness is 16/16, Recipe execution authorization is 0,
+and paraphrase robustness remains 7/16. Worktree classification found zero
+runtime-affecting tracked changes: governance/docs are non-production, one
+tracked test file is TEST_ONLY, and global worktree cleanliness remains NO.
+
+Evidence validation: 10 JSON files parsed, 11 SHA256SUMS entries self-validated,
+secret/private-path scans returned zero hits, and all case/LLM/Job/Artifact
+counters remain zero. Attempt 3 evidence is retained at
+`_qualification/evidence/phase_d/attempt_03/`; Attempts 1 and 2 remain intact.
+
+```text
+PHASE_D = BLOCKED / LIVE_QUALIFICATION_ENVIRONMENT_NOT_SEALED
+READY_FOR_PHASE_E = NO
+PHASE_D-B001 = RESOLVED
+PHASE_D-B008 = COMPOSE_FIXED_HOST_PORTS_NOT_AVAILABLE
+DOCKER_COMMAND_AVAILABLE = YES
+DOCKER_ENGINE_REACHABLE = YES
+DOCKER_COMPOSE_AVAILABLE = YES
+SAFE_ISOLATED_COMPOSE_RUNTIME = NO
+COMPOSE_UP_EXECUTED = NO
+GLOBAL_WORKTREE_CLEAN = NO
+TRACKED_PRODUCTION_RUNTIME_WORKTREE_CLEAN = YES
+REAL_LLM_CALLS = 0
+FORMAL_QUALIFICATION_CASE_EXECUTIONS = 0
+QUALIFICATION_JOBS_RUN = 0
+QUALIFICATION_ARTIFACTS = 0
+PRODUCTION_CODE_CHANGES = 0
+QUALIFICATION_PACKAGE_CHANGES = 0
+SCIENTIFIC_FIXTURE_CHANGES = 0
+PHASE_E_EXECUTED = NO
+```
+
+## 2026-08-14 Phase A Repository Capability Census
+
+Status: PASS / REPOSITORY_CAPABILITY_CENSUS_COMPLETE
+
+Completed: 2026-08-14 16:08:45 +08:00
+
+The repository-grounded census package is retained at
+`docs/qualification/phase_a_repository_capability_census/`. It inventories 4
+user entry paths, 15 format families, 15 semantic data kinds, 18 user capability
+families, all 62 Registry Tools, 42 Artifact/renderer declarations, and 36
+user-centric qualification cases. The 16-case minimum set covers all 20 current
+supported or supported-with-limits input combinations; the complete catalog
+gives all 47 current Planner-visible Tools case participation. Three phonon-animation
+Artifacts/renderers lack an executable normal-user case because eigenvector
+entry remains mapping-only; the exact boundary and the absent inline-upload
+request caps are retained among eight P2 qualification-design gaps.
+
+Validation: Phase A focused `7 passed`; targeted Registry/parser/Profile/current
+authority `94 passed` with four existing CIF warnings; renderer registry `4
+passed`. Two generator runs produced identical package hash
+`cd6caf371e4b0f0ef2364b0a485c043287467e9a141782506ce6b52418bf46c0`.
+Manifest hash/size, repository evidence refs, internal links, UTF-8/LF,
+private-path, secret-pattern, Python compile, and diff checks pass. An earlier
+test-only candidate failed collection due to indentation while extending queue
+vocabulary; it was corrected before the successful 94-test run.
+
+No web access, external fixture download, browser qualification, live LLM call,
+production code change, scientific behavior change, input-support change,
+Registry/parser/Adapter/renderer/API behavior change, commit, push, or exact-SHA
+CI occurred. Initial Release remains complete and Phase 13 remains sealed.
+
+```text
+PHASE_A = PASS / REPOSITORY_CAPABILITY_CENSUS_COMPLETE
+QUALIFICATION_DATA_RESEARCH_READY = YES
+AUTHORITY_CONFLICTS = 0
+QUALIFICATION_DESIGN_GAPS = 8
+PHASE_B_EXTERNAL_DATA_RESEARCH_EXECUTED = NO
+PHASE_B_EXTERNAL_DATA_DOWNLOADED = 0
+PRODUCTION_CODE_CHANGES = 0
+SCIENTIFIC_BEHAVIOR_CHANGES = 0
+REAL_LLM_CALLS = 0
+INITIAL_RELEASE_COMPLETE = YES
+PHASE14_CREATED = NO
+```
+
 ## Phase 13-6 Queue Archive
 
 Implementation/evidence `48b270c6d2c6191b5707f6ee1c4d81a6ab9c8987`
@@ -12368,3 +12688,741 @@ EXECUTABLE_PENDING_TASKS = 0
 PHASE14_CREATED = NO
 NEXT_EXECUTABLE_PHASE = NONE
 ```
+
+## 2026-08-16 Phase D Attempt 4 - Complete Live Qualification Environment Seal
+
+Status: BLOCKED / LIVE_QUALIFICATION_ENVIRONMENT_NOT_SEALED
+
+Completed: 2026-08-16T01:43:24+08:00
+
+The frozen repository and qualification identities were independently
+reverified at HEAD `08939f1b72ce37f153a0bdc18eee213f336b3636` and ZIP SHA-256
+`3fa4038b3c5a33bec70d5577a3dd93411c6347d55cb99fd721d6948036a70952`.
+Root and all 16 case hash manifests have zero mismatches, canonical readiness is
+16/16, and paraphrase robustness remains the declared 7/16.
+
+The unmodified Compose authority started PostgreSQL, Redis, and MinIO in the
+isolated `mdi-phase-d-attempt4` project. All three containers are healthy;
+their immutable image IDs and RepoDigests, isolated volume identities, and
+network identity are retained. PostgreSQL connectivity and Alembic head 0007,
+Redis `mdi-jobs`, the empty `mdi-artifacts` bucket, current-SHA backend durable
+health, fresh idle RQ worker, frontend, DeepSeek configuration presence, and the
+browser app shell all passed. The queue and durable Job/ToolCall/Artifact counts
+remain zero.
+
+The only remaining blocker is `PHASE_D-B007`. A fresh project created through
+the normal `POST /projects` surface is process-local, while Workspace history
+uses the durable SQL repository. The official Alembic 0007 migration path does
+not create `users` or `organizations`; canonical
+`SqlAlchemyProjectRepository.save()` consequently fails with an undefined
+`users` table and Workspace history returns typed `PROJECT_NOT_FOUND`. The
+historical release harness works around this with hand-written DDL, but Phase D
+correctly did not treat that test harness or `metadata.create_all` as production
+migration authority.
+
+Changed files are limited to Phase D governance and local qualification work /
+evidence. Attempts 1-3 were preserved. Validation: 12 JSON files parsed; 13
+`SHA256SUMS.txt` entries self-validated; secret and private-path scans passed;
+production runtime tracked diffs are zero; all formal case, Job, Artifact, and
+real-LLM counters are zero. No commit, push, or CI run was requested or executed.
+
+```text
+PHASE_D = BLOCKED / LIVE_QUALIFICATION_ENVIRONMENT_NOT_SEALED
+READY_FOR_PHASE_E = NO
+PHASE_D-B001 = RESOLVED
+PHASE_D-B002 = RESOLVED
+PHASE_D-B003 = RESOLVED
+PHASE_D-B004 = RESOLVED
+PHASE_D-B005 = RESOLVED
+PHASE_D-B006 = RESOLVED
+PHASE_D-B007 = UNRESOLVED
+PHASE_D-B008 = RESOLVED
+DATABASE_HEALTHY = YES
+MIGRATION_AT_EXPECTED_HEAD = YES
+QUEUE_BACKEND_HEALTHY = YES
+OBJECT_STORAGE_HEALTHY = YES
+BACKEND_HEALTHY = YES
+FRONTEND_HEALTHY = YES
+FRESH_WORKER_AVAILABLE = YES
+BROWSER_APP_SHELL_ACCESSIBLE = YES
+FRESH_QUALIFICATION_NAMESPACE_READY = NO
+REAL_LLM_CALLS = 0
+FORMAL_QUALIFICATION_CASE_EXECUTIONS = 0
+QUALIFICATION_JOBS_RUN = 0
+QUALIFICATION_ARTIFACTS = 0
+PRODUCTION_CODE_CHANGES = 0
+QUALIFICATION_PACKAGE_CHANGES = 0
+SCIENTIFIC_FIXTURE_CHANGES = 0
+PHASE_E_EXECUTED = NO
+```
+
+## 2026-08-16 Phase B/C-R1 - Qualification Authority Reconciliation, Contract Repair and Refreeze
+
+Status: COMPLETED / QUALIFICATION_AUTHORITY_RECONCILED_AND_REFROZEN
+
+Completed: 2026-08-16T09:31:27+08:00
+
+The historical package remains byte-identical at SHA-256
+`3fa4038b3c5a33bec70d5577a3dd93411c6347d55cb99fd721d6948036a70952`
+and is retained as superseded execution history. The separately versioned
+`Phase_BC_R1_Qualification_Authority_Reconciled.zip` uses schema
+`PhaseBClosurePhaseCContractManifest/1.1`, has SHA-256
+`6a1e3f1100407fd70f2d689bb2022754ac3723f8c127c8963042b25db82dc3b3`,
+contains 129 sorted entries and 19,102,189 bytes, and reproduced the same SHA in
+two independent deterministic builds.
+
+All 16 primary Cases were audited against repository candidate
+`2d7f92d266c51a3401a36f619082e5840e0d60f9`, Registry 62 / snapshot
+`registry_371aa3f8106e863af9c7c648`, AnalysisIntent 1.0,
+EligibilityResolution 1.0, AnalysisPlan 0.1/0.2, ToolPlannerMetadata 1.0,
+migration `0008_phase_d_r1_namespace`, and both four-step planning caps.
+`Q-COMPOSITION-001` no longer requires a periodic-Structure Tool from CSV-only
+assets. The 16-case result is 15 supported analyses plus one expected typed
+pre-Plan rejection for non-periodic XYZ viewer execution. Maximum required
+Tools per turn is 4/4.
+
+The primary campaign now distinguishes 33 required Tool assertions from 45/47
+Planner-available Tool coverage potential. Seventeen capability families, 35
+Artifact types and 13 renderer contracts have primary potential. The two honest
+supplemental Tool gaps are `phonon.animation` and
+`structure.composition_from_structure`; they were not forced into the primary
+Cases. Campaign association remains non-qualifying until later live observation.
+
+The new static validator passes on both the staging tree and a clean ZIP
+extraction. Root and all 16 case manifests have zero missing files and zero hash
+mismatches. Protected `SOURCE_*`, `UPLOAD_*`, `LICENSE.txt`, and
+`PROVENANCE.json` bytes are unchanged. The evidence manifest, JSON parse,
+UTF-8/LF, secret, private-path, and zero-execution checks pass.
+
+Validation: focused R1 `7 passed`; Ruff and Python compile PASS. The complete
+non-integration CI command also ran: `1471 passed, 20 failed, 1 skipped, 52
+deselected`. Nineteen failures are historical tests that hard-code obsolete
+`TASKS.md` queue cardinality/content, and one is a pre-existing Phase13-4
+evidence byte-size mismatch in the dirty entry worktree. No R1 or production
+runtime assertion failed; historical sealed evidence was not rewritten.
+
+Modified files: three non-production R1 scripts, one focused test, the new
+versioned package and R1 evidence, qualification navigation, persistent
+governance, `TASKS.md`, and this append-only result. Production runtime,
+scientific behavior, support dispositions, dependencies, lockfiles, and the old
+package were not changed.
+
+```text
+PHASE_BC_R1 = PASS / QUALIFICATION_AUTHORITY_RECONCILED_AND_REFROZEN
+CASES = 16
+EXECUTION_READY_CASES = 16/16
+CASE_AUTHORITY_CONFLICTS = 0
+REQUIRED_TOOL_INPUT_MISMATCHES = 0
+MISSING_REQUIRED_COMPANION_ASSETS = 0
+REQUIRED_TOOL_COUNT_OVER_PLAN_CAP = 0
+UNSUPPORTED_TOOL_REQUIRED_AS_EXECUTABLE = 0
+MAPPING_ONLY_REQUIRED_AS_EXECUTABLE = 0
+REQUIRED_ARTIFACT_WITHOUT_PRODUCER = 0
+REQUIRED_RENDERER_WITHOUT_ARTIFACT = 0
+STATIC_EXECUTABLE_CONTRACT_VALIDATOR = PASS
+ROOT_HASH_MISMATCHES = 0
+CASE_HASH_MISMATCHES = 0
+OLD_PACKAGE_MUTATIONS = 0
+SCIENTIFIC_VALUE_FABRICATION = 0
+UNIT_GUESSING = 0
+STRUCTURE_INFERENCE_FROM_FORMULA = 0
+SUPPORT_SURFACE_EXPANSION = 0
+REAL_LLM_CALLS = 0
+FORMAL_QUALIFICATION_CASE_EXECUTIONS = 0
+PHASE_E_CONTINUED = NO
+```
+
+Commit/CI status: no commit, push, or CI lifecycle was requested or executed.
+
+## 2026-08-16 Phase B/C-R1.1 - Minimal Qualification Authority Hygiene Correction
+
+Status: COMPLETED / QUALIFICATION_AUTHORITY_INTERNALLY_CONSISTENT_AND_REFROZEN
+
+Completed: 2026-08-16T09:57:47+08:00
+
+The historical R1 package remains byte-identical at SHA-256
+`6a1e3f1100407fd70f2d689bb2022754ac3723f8c127c8963042b25db82dc3b3`.
+The separately versioned
+`Phase_BC_R1_1_Qualification_Authority_Reconciled.zip` has SHA-256
+`bf1198f0281119af6b0485518ace053d99e827d0ed3d31d077ddf94ed8d4f87f`,
+contains 132 sorted entries and 19,105,576 bytes, and reproduced the same SHA
+in two independent deterministic builds.
+
+Repository/package governance established that `requiredReportBehavior`,
+`requiredRecipeBehavior`, and `requiredLimitations` are canonical. The retained
+`expectedReport`, `expectedRecipe`, and `expectedLimitationAssertions` fields
+remain normative compatibility aliases and now exactly mirror their canonical
+fields in all 16 Cases. The sole source contradiction was corrected in
+`Q-ATOMIC-VIEW-001`; it remains an `EXPECTED_REJECTION` with no Plan, Job,
+ToolCall, Artifact, Report, or Recipe expected.
+
+All 16 Cases pass report/recipe/limitation alias comparison, execution-turn
+Tool-union comparison, required Tool count, per-turn four-step Plan-cap, and
+expected-rejection checks. The six R1 multi-turn scenarios remain unchanged.
+Package-level machine-readable authority now states that multi-turn Planner
+submissions use ordered `executionTurns[].question`, single-turn Cases use the
+sole turn question, and expected rejection submits the canonical question and
+must stop before Plan creation. Campaign coverage remains 33 required Tool
+assertions, 45/47 primary potential Tools, and two supplemental candidates.
+
+The static validator now detects conflicting report, Recipe, and limitation
+requirements; execution-turn Tool-union mismatch; required Tool count mismatch;
+and execution requirements attached to expected rejection. The historical R1
+tree fails exactly once with `CONFLICTING_REPORT_REQUIREMENTS`; the R1.1 staging
+tree and clean extracted package both pass with zero issues. Root/case manifests
+have zero missing files and zero hash mismatches. `SOURCE_*`, `UPLOAD_*`,
+`PROVENANCE.json`, and `LICENSE.txt` bytes are unchanged; scientific values,
+units, wavelength, q-path, uncertainty, structure inference, support surface,
+production runtime, live LLM calls, and formal qualification execution all have
+zero changes/executions.
+
+Validation: Ruff PASS; focused R1/R1.1 `16 passed`; JSON parse, evidence SHA
+self-check, and secret-pattern scan PASS. Full non-integration regression was
+reproduced as `1480 passed, 20 failed, 1 skipped, 52 deselected`. The 20 failures
+match the prior disclosed classification: 19 obsolete historical tests that
+hard-code old `TASKS.md` queue content/cardinality and one pre-existing
+Phase13-4 evidence byte-size mismatch. No R1/R1.1 or production-runtime test
+failed, and the full repository suite is not claimed as PASS.
+
+Modified files: non-production R1/R1.1 qualification scripts and focused tests,
+the separately versioned package and evidence, qualification schema/navigation,
+persistent governance, `TASKS.md`, and this append-only result. Phase D and
+Phase E were not started.
+
+```text
+PHASE_BC_R1_1 = PASS / QUALIFICATION_AUTHORITY_INTERNALLY_CONSISTENT_AND_REFROZEN
+CASES = 16
+EXECUTION_READY_CASES = 16/16
+CASE_AUTHORITY_CONFLICTS = 0
+CROSS_FIELD_CONTRACT_CONFLICTS = 0
+Q_ATOMIC_VIEW_EXPECTED_REJECTION_CONSISTENT = YES
+EXECUTION_TURN_TOOL_UNION_MISMATCHES = 0
+REQUIRED_TOOL_COUNT_MISMATCHES = 0
+REQUIRED_TOOL_COUNT_OVER_PLAN_CAP = 0
+EXPECTED_REJECTION_EXECUTION_CONTRADICTIONS = 0
+STATIC_EXECUTABLE_CONTRACT_VALIDATOR = PASS
+CROSS_FIELD_CONSISTENCY_VALIDATOR = PASS
+ROOT_HASH_MISMATCHES = 0
+CASE_HASH_MISMATCHES = 0
+PROTECTED_SCIENTIFIC_BYTE_CHANGES = 0
+REAL_LLM_CALLS = 0
+FORMAL_QUALIFICATION_EXECUTIONS = 0
+READY_FOR_PHASE_D_RESEAL = YES
+READY_FOR_PHASE_E_DIRECT_CONTINUATION = NO
+```
+
+Commit/CI status: no commit, push, or CI lifecycle was requested or executed.
+
+## 2026-08-16 Phase D R1.1 - Live Qualification Environment Re-Seal
+
+Status: FAILED / LIVE_QUALIFICATION_ENVIRONMENT_NOT_RESEALED
+
+Completed: 2026-08-16T10:31:44+08:00
+
+The R1.1 package at SHA-256
+`bf1198f0281119af6b0485518ace053d99e827d0ed3d31d077ddf94ed8d4f87f`
+was independently verified: 16 Cases, 15 analysis-execution Cases, one expected
+pre-Plan rejection, 26 declared execution turns, zero root hash mismatches, and
+zero case hash mismatches. The static executable-contract and cross-field
+consistency validators both passed against current repository authority at
+`2d7f92d266c51a3401a36f619082e5840e0d60f9`.
+
+The repository-approved PostgreSQL, Redis, and MinIO containers were healthy.
+A new database reached migration head `0008_phase_d_r1_namespace` through the
+official Alembic chain. The current-SHA backend, frontend, fresh idle Worker,
+DeepSeek configuration, browser app shell, and an empty durable project/
+Workspace namespace all passed. The project survived a backend process restart;
+Jobs, ToolCalls, Artifacts, Reports, Recipes, and Workspaces remained zero.
+
+The re-seal stopped on three newly confirmed frozen-authority conflicts:
+
+- `PHASE_D_R11_AUTH_001`: `Q-ARCHIVE-001` declares execution-ready UI ZIP
+  upload, but the generic UI reads the ZIP with `File.text()` and the backend
+  writes UTF-8 text. A mechanical round trip changed 10,912 source bytes into
+  19,470 bytes and changed SHA-256.
+- `PHASE_D_R11_AUTH_002`: `Q-XRD-001` requires CIF plus experimental-XRD
+  companions in one dataset, while the generic normal-user UI submits one file.
+- `PHASE_D_R11_AUTH_003`: `Q-ELECTRONIC-001` requires Band plus DOS companions
+  in one dataset, while the same UI path submits one file.
+
+These are not ordinary Phase D runtime defects. Implementing binary or generic
+multi-resource upload would change the normal-user scientific input contract,
+which is an explicit hard stop requiring authority reconciliation and refreeze.
+No such product change was made.
+
+Validation: focused tests `17 passed`; package/root/case hashes PASS; JSON parse,
+evidence SHA-256 self-check, secret scan, private-path scan, and zero-execution
+counter checks PASS. Evidence is preserved at
+`_qualification/evidence/phase_d/attempt_07_r1_1_reseal_blocked_authority_conflict/`.
+
+```text
+PHASE_D = BLOCKED / LIVE_QUALIFICATION_ENVIRONMENT_NOT_RESEALED
+READY_FOR_PHASE_E = NO
+CASE_AUTHORITY_CONFLICTS = 3
+REAL_LLM_CALLS = 0
+FORMAL_QUALIFICATION_EXECUTIONS = 0
+QUALIFICATION_JOBS_RUN = 0
+QUALIFICATION_ARTIFACTS = 0
+PRODUCTION_CODE_CHANGES = 0
+QUALIFICATION_PACKAGE_CHANGES = 0
+SCIENTIFIC_FIXTURE_CHANGES = 0
+```
+
+Modified files: Phase D Attempt 7 evidence, `TASKS.md`, and this append-only
+result. Historical Phase D/Phase E evidence and failed tasks remain unchanged.
+Phase E-R1.1 was not created or started.
+
+Commit/CI status: no commit, push, or CI execution was performed because Phase D
+ended at the frozen-authority hard stop.
+
+## 2026-08-16 Phase D-R2 - Normal-User Input Transport Contract Closure + R1.2 Refreeze
+
+Status: FAILED / REVIEWER_AUTHORITY_DECISION_REQUIRED
+
+Completed: 2026-08-16T10:53:23+08:00
+
+The mandatory pre-change support audit classified `Q-ARCHIVE-001` and
+`Q-ELECTRONIC-001` as already-supported resources blocked only by normal-user
+transport defects. `Q-XRD-001` is different: its frozen experimental resource
+declares `1.9373 angstrom`, while the current released `structure.xrd` path is
+CuKa-only at `1.54184 angstrom`. Worker execution preflight and the experimental
+comparison Adapter both require compatible wavelengths and prohibit silent
+reprojection. The frozen Case nevertheless requires both `structure.xrd` and
+`structure.experimental_xrd_comparison` as an execution-ready path.
+
+This is a qualification-authority conflict that cannot be corrected through
+byte-safe or multi-resource transport. Per task rules, remediation stopped for
+Reviewer decision. A preliminary transport draft was completely reverted;
+production runtime changes, package changes, scientific fixture changes,
+formal qualification executions, Jobs, Artifacts, and real LLM calls are all
+zero.
+
+Validation: `uv run pytest tests/test_phase10n3_experimental_xrd.py -q` passed
+(`10 passed`), including typed mismatch rejection. The R1.1 package SHA-256
+remained `bf1198f0281119af6b0485518ace053d99e827d0ed3d31d077ddf94ed8d4f87f`.
+Blocker evidence and a self-hashed manifest are preserved at
+`_qualification/evidence/phase_d_r2/attempt_01_blocked_authority_conflict/`.
+
+```text
+PHASE_D_R2 = BLOCKED / REVIEWER_AUTHORITY_DECISION_REQUIRED
+BLOCKER = PHASE_D_R2_AUTH_001
+Q_ARCHIVE_CLASS = ALREADY_SUPPORTED_RESOURCE_BUT_INPUT_TRANSPORT_DEFECT
+Q_ELECTRONIC_CLASS = ALREADY_SUPPORTED_RESOURCE_BUT_INPUT_TRANSPORT_DEFECT
+Q_XRD_CLASS = AUTHORITY_AMBIGUOUS
+READY_FOR_PHASE_BC_R1_2_REFREEZE = NO
+READY_FOR_PHASE_D_RESEAL = NO
+READY_FOR_PHASE_E = NO
+PRODUCTION_CODE_CHANGES = 0
+QUALIFICATION_PACKAGE_CHANGES = 0
+SCIENTIFIC_FIXTURE_CHANGES = 0
+REAL_LLM_CALLS = 0
+FORMAL_QUALIFICATION_EXECUTIONS = 0
+```
+
+Commit/CI status: no commit, push, or CI was performed because the task stopped
+at its mandatory qualification-authority gate.
+
+## Phase D-R2.1 - Reviewer XRD Authority Resolution + Normal-User Input Transport Closure + R1.2 Refreeze
+
+Status: completed
+
+Completion time: 2026-08-16T14:09:02+08:00
+
+The normal-user transport defect is corrected by committed candidate
+`657d3f88849b4d561ebd3aca0a648667049306fc`: browser uploads use exact File/Blob
+bytes, the backend verifies declared SHA-256 and byte size before materializing
+raw bytes, and bounded multi-resource bundles publish atomically into one
+dataset with parser/contract-based roles rather than file-order semantics.
+
+Reviewer XRD Branch B1 remains unchanged. R1.2 replaces only the stale 1.9373
+angstrom qualification fixture with real Figshare hydroxyapatite measurements
+whose source instrument record declares Cu and `ActuallyUsedLambda=1.54184`,
+paired with public-domain COD 4317043 hydroxyapatite. The old data were not
+relabeled, reprojected, or synthesized. All other 15 Case directories are
+byte-identical to R1.1.
+
+The deterministic R1.2 package is
+`_qualification/inputs/Phase_BC_R1_2_Qualification_Authority_Reconciled.zip`,
+SHA-256 `187816077abdc154ad8b8c86f30af37ad4a6a66ed5471c52a2c3ed1a8f4bedc2`,
+19,222,448 bytes and 138 sorted entries. Two builds matched; root/case hash
+mismatches and missing files are zero; static and extracted validators PASS.
+
+Validation: backend focused `57 passed`; frontend `460 passed`, typecheck PASS,
+build PASS with existing bundler warnings; qualification/transport focused
+`30 passed` with four benign pymatgen CIF warnings. Full repository suite PASS
+is not claimed. Production remediation is committed locally, not pushed, and no
+remote CI is claimed. Real LLM calls, formal qualification executions, Jobs,
+Artifacts, and Phase E executions remain zero. Evidence is at
+`_qualification/evidence/phase_d_r2_1/`.
+
+## Phase D-R2.1 Final Candidate Correction
+
+Status: completed
+
+Completion time: 2026-08-16T15:27:41+08:00
+
+The complete Phase D re-seal found that a durable SQL Project remained visible
+after API restart, but upload-session creation still checked only the restarted
+process's local Project projection. The authorized transport closure now
+rehydrates only an exact existing PostgreSQL Project before opening the bounded
+upload transaction. Unknown Projects remain rejected.
+
+The final product candidate is
+`51e45c9436bef73f0c8ea1ccc5eb681dba1d21b8`. R1.2 was deterministically
+refrozen against that exact candidate as SHA-256
+`7a77b1db55c93454b97914bae3ee9d30e0f08ccc38bfd986c5907f65e38d1d04`,
+19,222,447 bytes and 138 sorted entries. Root/case mismatches and missing files
+are zero; R1.1 remains unchanged. This correction changes no scientific,
+Registry, support-disposition, Planner, Artifact, Renderer, Report, or Recipe
+authority.
+
+## Phase D R1.2 - Complete Live Qualification Environment Re-Seal
+
+Status: completed / PASS
+
+Completion time: 2026-08-16T15:27:41+08:00
+
+The environment was sealed against product SHA
+`51e45c9436bef73f0c8ea1ccc5eb681dba1d21b8` and R1.2 package SHA-256
+`7a77b1db55c93454b97914bae3ee9d30e0f08ccc38bfd986c5907f65e38d1d04`.
+The package has 16 Cases, zero root/case hash mismatches, and PASS results for
+static executable, cross-field, entry-path, and CuKa compatibility validators.
+
+Fresh Docker-network runtime checks passed for Alembic base-to-head and repeated
+upgrade at `0008_phase_d_r1_namespace`, PostgreSQL, Redis, MinIO, current-SHA
+API, current-SHA fresh worker, provider configuration, and an empty durable
+qualification namespace. The Project survived API process restart and Workspace
+history returned an empty contract-valid result.
+
+Actual Chrome 151 uploaded the frozen Archive, CuKa XRD/Structure, and
+Electronic Band/DOS inputs through the product UI. Browser bytes, frozen bytes,
+server receipts, and independent MinIO reads matched for all five files. XRD
+and Electronic companions were persisted in their respective same Dataset with
+no file-order role authority. A page reload re-enumerated all three Datasets.
+No console, page, or startup network error was observed.
+
+Validation: focused backend/qualification/namespace `35 passed`; service-backed
+container-network namespace `1 passed`; frontend `460 passed`; typecheck PASS;
+build PASS with the existing Plotly/glslify warning. JSON parse, evidence
+SHA-256 self-check, secret scan, private-path scan, and zero-execution checks
+PASS. Evidence is under
+`_qualification/evidence/phase_d/attempt_08_r1_2_reseal/`.
+
+```text
+PHASE_D = PASS / LIVE_QUALIFICATION_ENVIRONMENT_RESEALED
+READY_FOR_PHASE_E = YES
+PHASE_D_R11_AUTH_001 = RESOLVED_BY_PRODUCT_TRANSPORT_FIX
+PHASE_D_R11_AUTH_002 = RESOLVED_BY_PRODUCT_MULTI_RESOURCE_FIX
+PHASE_D_R11_AUTH_003 = RESOLVED_BY_PRODUCT_MULTI_RESOURCE_FIX
+REAL_LLM_CALLS = 0
+FORMAL_QUALIFICATION_EXECUTIONS = 0
+QUALIFICATION_JOBS_RUN = 0
+QUALIFICATION_ARTIFACTS = 0
+BLOCKERS = []
+```
+
+Commit/CI status: the final candidate is committed locally; no push or remote CI
+is claimed or required by this Phase D task. Phase E was not created or started.
+
+## Phase E-R1.2 — Canonical Live-Agent Browser Qualification Restart
+
+Status: failed / `BLOCKED_AUTHORITY_CONFLICT`
+
+Completion time: 2026-08-16T16:48:44+08:00
+
+The R1.2 package was independently reverified at SHA-256
+`7a77b1db55c93454b97914bae3ee9d30e0f08ccc38bfd986c5907f65e38d1d04`.
+The fresh discovery campaign completed Q-DATASET-001. Q-COMPOSITION-001 first
+failed because composition-only "materials table" wording was promoted to
+dataset overview; the minimal Intent/Planner correction is committed as
+`610de07887d7c221e377bc1d8d01882df9d5a6d2`, passed 88 focused tests, and the
+Case then passed all three fresh Browser/DeepSeek execution turns.
+
+Q-TABLE-001 reached a genuine frozen-authority contradiction. Its R1.2 contract
+requires material-property-bound `table.numeric_summary`, `viz.histogram`,
+`viz.correlation`, and `viz.scatter`, while the declared normal-user CSV produces
+zero `material_property` columns and exposes no semantic mapping entry. The real
+Planner therefore selected forbidden `dataset.materials_explorer`; changing the
+DataProfile/ToolPlannerMetadata contract or frozen Case is qualification-relevant
+authority drift and was not performed.
+
+Validation: Q-DATASET and Q-COMPOSITION are `PASS_DISCOVERY`; Q-TABLE is
+`BLOCKED_AUTHORITY_CONFLICT`; 23 real LLM calls are recorded across preserved
+attempts; no provider fallback or fixture/package mutation occurred. Evidence
+contains 170 valid JSON files and a 220-entry SHA256SUMS manifest with zero
+mismatches, secret hits, or private-path hits. Final exact-SHA CI, final Phase D,
+and final 16-Case requalification were not started after the hard stop.
+
+Evidence: `_qualification/evidence/phase_e_r1_2/discovery_20260816_01/`.
+Minimum Reviewer action: reconcile Q-TABLE-001 by supplying an already-authorized,
+provenance-preserving material-property mapping/fixture, or revise its frozen
+execution contract to the repository's generic-tabular authority.
+
+Commit/CI status: local remediation commit
+`610de07887d7c221e377bc1d8d01882df9d5a6d2`; not pushed; remote exact-SHA CI not
+run because the qualification hard stop occurred before final-candidate closure.
+
+## Phase B/C-R1.4 — Q-TABLE Explicit Property-Target Authority Reconciliation
+
+Status: failed / `PHASE_BC_R1_4 / QUALIFICATION_AUTHORITY_CONFLICT`
+
+Completion time: 2026-08-16T18:20:00+08:00
+
+The R1.4 non-production preflight retired qualification-only digest gating and
+used content/provenance inspection plus current parser, DataProfile,
+deterministic Intent, Eligibility, exact binding, and plan-cap paths. It made
+zero real LLM calls and created zero formal qualification Jobs or Artifacts.
+The historic R1.2 package and failed R1.3 evidence were preserved.
+
+The real CC BY 4.0 JARVIS candidate correctly exposes `formation_energy`,
+`band_gap`, and `density` as current material properties. With explicit natural
+questions, numeric summary and correlation bind, but histogram and scatter
+remain unbound because deterministic Intent supplies no material-property
+targets. The all-16 audit also found deterministic ML target-semantic failures
+for Q-ML-REG/UNC/CLASS, direct XRD comparison ineligibility, trajectory import
+failure (`TRAJECTORY_NESTING_LIMIT_EXCEEDED`), and typed phonon failures
+(`PHONON_SPECIES_ORDER_INVALID`). Therefore no R1.4 package was produced and
+Phase D was not started.
+
+Evidence: `_qualification/evidence/phase_bc_r1_4/attempt_01_authority_preflight/`.
+Tests: the preflight completed twice consistently; 14 JSON evidence files parse;
+the evidence has no active qualification integrity-key fields or checksum files;
+no Phase E execution occurred.
+
+## Phase B/C-R1.3 — Q-TABLE-001 Fixture Replacement and Binding Preflight
+
+Status: failed / `PHASE_BC_R13_AUTH_001 / BLOCKED_AUTHORITY_CONFLICT`
+
+Completion time: 2026-08-16T17:52:17+08:00
+
+R1.3 preserved the R1.2 package at SHA-256
+`7a77b1db55c93454b97914bae3ee9d30e0f08ccc38bfd986c5907f65e38d1d04` and
+mechanically audited the current production Profile, deterministic Intent,
+Eligibility, and ToolPlannerMetadata binding path. A real JARVIS-DFT-3D
+candidate from Figshare DOI `10.6084/m9.figshare.6815699.v11` (CC BY 4.0)
+produced three accepted material-property columns: `formation_energy`,
+`band_gap`, and `density`. It therefore resolves the old fixture's Profile
+defect, but cannot satisfy the frozen execution contract: the numeric summary,
+distribution, and correlation turns are `INTENT_NOT_RECOGNIZED`; the scatter
+turn has no target semantics and two unbound scalar property parameters.
+
+Changing that outcome would require a frozen turn-contract revision or a
+separately authorized normal-user property-target selection capability. Both
+are outside this fixture-only task. No R1.3 ZIP, Phase D re-seal, or Phase E
+execution was started. Evidence is in
+`_qualification/evidence/phase_bc_r1_3/attempt_01_blocked_authority_conflict/`.
+
+Tests: deterministic preflight rerun matched; focused Intent/Planner tests
+passed `74 passed`; evidence JSON, SHA256SUMS, secret scan, private-path scan,
+and zero-execution counters passed. The first pytest invocation lacked the
+repository `PYTHONPATH` and failed during collection; the correctly configured
+rerun passed. `REAL_LLM_CALLS=0`, formal qualification executions/jobs/artifacts
+are zero. No commit or remote CI is claimed.
+
+## Phase B/C-R1.4 — Final Result
+
+Status: failed / `PHASE_BC_R1_4 / QUALIFICATION_AUTHORITY_CONFLICT`
+
+Completion time: 2026-08-16T19:10:11+08:00
+
+The content-and-contract preflight completed all 16 Cases and 26 analysis
+turns with `REAL_LLM_CALLS=0`, zero formal qualification executions, Jobs, and
+Artifacts. It passes 9 Cases and blocks 7: Q-TABLE explicit histogram/scatter
+target binding; deterministic ML readiness for REG/UNC/CLASS; XRD direct
+comparison dependency eligibility; trajectory parsing at the nesting limit;
+and typed phonon species-order validation. The old R1.2 Q-TABLE fixture also
+reproduces its historical material-property readiness failure.
+
+No R1.4 package was created, no Phase D re-seal was started, and Phase E remains
+unstarted. The focused Intent/Planner suite passed `74 passed`; the broader
+entry-slice command reported `83 passed, 2 errors` from its existing all-seven
+ready assertion and is not claimed green. Evidence JSON parsing, secret scan,
+private-path scan, zero-execution counter validation, and the no-active-
+qualification-checksum-file policy check passed. Evidence:
+`_qualification/evidence/phase_bc_r1_4/attempt_01_authority_preflight/`.
+
+## Phase B/C-R1.5 — Comprehensive Qualification Authority and Executability Reconciliation
+
+Status: failed / `PHASE_BC_R1_5 / QUALIFICATION_AUTHORITY_CONFLICT`
+
+Completion time: 2026-08-16T20:08:17+08:00
+
+R1.5 classified all seven R1.4 blockers before correction. It closed the three
+ML representation/question paths, modeled XRD's same-Plan theoretical-artifact
+dependency, repaired the bounded trajectory validator's numeric-array scanner
+defect, verified the phonon ordering metadata path, and corrected the stale
+seven-demo entry-slice expectation. The fresh deterministic preflight passes
+15 of 16 Cases across all 26 declared analysis turns.
+
+The remaining blocker is `Q-TABLE-001`. The verified JARVIS candidate exposes
+the approved `formation_energy`, `band_gap`, and `density` facts, but the
+released non-ML normal-user Intent contract emits no exact material-property
+target semantics. Required `viz.histogram` and `viz.scatter` bindings therefore
+cannot be completed without a Reviewer decision on a qualification-relevant
+product contract. No target guessing, semantic expansion, fixture fabrication,
+or Tool metadata relaxation was used.
+
+Tests: trajectory/parser/entry-slice `53 passed, 4 warnings`; Intent/Planner/
+entry-slice `85 passed, 4 warnings`. The prior `83 passed, 2 errors` entry-slice
+failure is resolved with no skipped or deleted test. No R1.5 authority package,
+Phase D re-seal, or Phase E execution was created. `REAL_LLM_CALLS=0` and all
+formal qualification Jobs, ToolCalls, and Artifacts are zero. Evidence:
+`_qualification/evidence/phase_bc_r1_5/`.
+
+## Q-TABLE Explicit Material-Property Target Intent Closure + Phase B/C-R1.6 + Phase D Re-Seal
+
+Status: completed / `PHASE_BC_R1_6 = PASS / QUALIFICATION_AUTHORITY_PRODUCT_INTENT_ALIGNED_AND_REFROZEN`; `PHASE_D = PASS / LIVE_QUALIFICATION_ENVIRONMENT_RESEALED`.
+
+Completion time: 2026-08-16T23:49:21+08:00
+
+The committed product now provides AnalysisIntent 1.1's bounded exact
+DataProfile-backed material-property targets. It preserves AnalysisIntent 1.0
+readability and rejects unknown, ambiguous, stale, foreign-dataset,
+non-material-property, duplicate/conflicting, incomplete, and same-axis
+scatter targets. No property vocabulary, fuzzy/first-column selection, unit
+guessing, scientific Tool/algorithm, ToolPlannerMetadata prerequisite, support
+surface, or AnalysisPlan cap changed.
+
+The R1.6 authority uses the real JARVIS material-property table and four
+natural Q-TABLE turns for `table.numeric_summary`, `viz.histogram`,
+`viz.correlation`, and `viz.scatter`. The independent content-and-contract
+preflight passes all 16 Cases and 26 declared analysis turns, with one valid
+expected pre-Plan rejection and zero authority conflicts. The package is
+`_qualification/inputs/Phase_BC_R1_6_Qualification_Authority_Reconciled.zip`.
+Its integrity evidence is package inventory, schema/contract validation,
+protected direct content comparison, and direct byte-for-byte double-build
+comparison; active qualification checksum/digest gates are not used.
+
+Phase D independently reran the complete preflight and sealed a fresh official
+migration namespace at `0008_phase_d_r1_namespace`. PostgreSQL, Redis, MinIO,
+backend, fresh Worker, browser app shell, provider configuration, and required
+credential presence passed. Browser evidence proves normal-user binary ZIP and
+bounded same-dataset multi-resource import/readiness for Archive, XRD, and
+Electronic inputs; restart evidence proves Project and persisted object-storage
+durability. Formal namespace counts for Intent, Plan, Job, ToolCall, Artifact,
+Report, and Recipe are all zero. `REAL_LLM_CALLS=0` and formal qualification
+execution remains zero. Phase E was neither created nor started.
+
+Tests: focused backend `159 passed`; focused product regression `124 passed`;
+frontend typecheck PASS; frontend Vitest `460/460`; production build PASS with
+existing Plotly/glslify warnings; sealed Docker-network durable namespace test
+`1 passed`. Full repository pytest is disclosed as `1514 passed, 20 failed,
+51 skipped`; failures are 19 obsolete historical queue assertions and one
+pre-existing Phase 13 evidence-size mismatch, with no R1.6 product/runtime
+regression. Remote CI was not run or claimed.
+
+Evidence: `_qualification/evidence/phase_bc_r1_6/` and
+`_qualification/evidence/phase_d/attempt_09_r1_6_reseal/`.
+
+## Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
+
+状态：失败 / `PHASE_E / BLOCKED_AUTHORITY_CONFLICT`
+
+完成时间：2026-08-17T02:20:46+08:00
+
+本次任务从新的 R1.6 campaign state 开始并使用真实 Browser、真实 DeepSeek、
+真实 Planner、Queue、Worker、Artifact、Workspace/Renderer 和 Report 链路。
+Q-TRAJECTORY-001 的真实浏览器上传、资源 Profile 和第一 turn
+`structure.trajectory_viewer` 均通过；第二 turn 真实生成了包含
+`trajectory.diffusion`、`trajectory.msd`、`trajectory.rdf` 的 3-step
+依赖计划，但 Worker 对 `trajectory.msd` 与 `trajectory.rdf` 返回
+`TOOL_RESOURCE_LIMIT / TRAJECTORY_TOO_LARGE`，Job 失败。
+
+根因：冻结资源实际为 650 frames、516 atoms，而当前已发布
+`trajectory_analytics` Adapter 的正式上限为 200 frames、5000 atoms；冻结
+Case 要求完整 supplied time range。未提高上限、未截断/重采样轨迹、未合成
+科学数据、未修改 R1.6 package，因此该问题属于冻结 authority 与已发布
+科学资源边界冲突，不是可在 Phase E 内无审查修复的普通 runtime bug。
+
+修改文件：
+`_qualification/evidence/phase_e_r1_6/discovery_20260817_r1_6_01/cases/Q-TRAJECTORY-001/TRAJECTORY_RUNTIME_CAP_BLOCKER.json`、
+`TASKS.md`、`results.md`。历史 evidence 与历史任务未删除或改写。
+
+测试/执行结果：Q-TRAJECTORY 第一 turn 真实 Browser/DeepSeek/Planner/Queue/
+Worker/Artifact/Renderer/Report PASS_DISCOVERY；第二 turn真实 Job 失败。
+`REAL_LLM_CALLS > 0`，未发生 handcrafted Intent/Plan/Job/ToolCall/Artifact/
+Report/Recipe injection。未执行后续 Cases，因此不能声明 16/16，也不能声明
+Phase E PASS。Phase E-R1.6 队列任务按硬阻塞规则保留为失败，后续需要新的
+有效 fixture 或经 Reviewer 批准的产品/authority 变更。
+
+## Phase B/C-R1.7 — Trajectory Resource-Cap Authority Reconciliation
+
+状态：已完成 / `PHASE_BC_R1_7 = PASS / TRAJECTORY_RESOURCE_CAP_AUTHORITY_RECONCILED_AND_REFROZEN`
+
+完成时间：2026-08-17T08:36:15+08:00
+
+Reviewer 决议已落实为 qualification fixture replacement，而非产品 cap 扩展。
+新 Q-TRAJECTORY 使用 Lei et al. Cage-1 500 K 真实 AIMD 源的首个预先定义连续
+窗口 frames 0-14：15 frames、516 atoms、0-1050 fs、固定晶胞、PBC 全开、
+source-backed unwrapped Cartesian coordinates。所有 atoms/species/order、
+coordinates、cell/PBC 与 timestamps 保持；无结果驱动选择、插值、重采样、
+atom subset 或运行时截断。
+
+Registry 资源上限元数据已对齐既有 Adapter 强制上限，未改变算法、工具集、
+科学支持面或运行时行为。通用 cap-aware preflight 可在正式执行前复现旧
+650-frame authority 的 frame cap、RDF pair-evaluation cap 和 wrapping authority
+冲突；新 fixture 的 viewer/MSD/diffusion/RDF 资源与依赖预检全部 PASS。
+
+全量结果：16/16 Cases、26/26 analysis turns、expected rejection PASS；
+resource-cap conflicts 0，unpreflightable required Tools 0，preflight test errors 0。
+15 个非轨迹 Case 的保护内容逐文件字节一致。R1.7 package 为
+`_qualification/inputs/Phase_BC_R1_7_Qualification_Authority_Reconciled.zip`，
+116 个排序条目、16 个唯一 Case、无缺失/重复，双构建直接字节相等；未生成
+checksum/digest/fingerprint qualification manifest。
+
+修改文件：Registry cap metadata、R1.7 authority/preflight scripts、聚焦测试、
+R1.7 package/evidence、`TASKS.md`、`results.md`。测试为 `31 passed`；未运行
+remote CI。`REAL_LLM_CALLS=0`，正式 qualification executions/Jobs/ToolCalls/
+Artifacts 均为 0。产品及预检变更已提交；Phase D R1.7 由独立任务执行。
+
+## Phase D R1.7 — Live Qualification Environment Re-Seal
+
+状态：已完成 / `PHASE_D = PASS / LIVE_QUALIFICATION_ENVIRONMENT_RESEALED`
+
+完成时间：2026-08-17T09:06:46+08:00
+
+Phase D 针对当前稳定 committed product state 与独立 R1.7 authority 从头执行。
+fresh PostgreSQL database 已通过正式 migration 到
+`0008_phase_d_r1_namespace`；Redis、MinIO、API、frontend 和 fresh Worker 均
+健康。Provider 配置可解析且所需 credential 存在，但没有发起真实 LLM 调用。
+
+独立 cap-aware preflight 再次得到 16/16 Cases、26/26 analysis turns PASS，
+resource-cap conflicts 和 unpreflightable required Tools 均为 0。Browser 使用
+正常上传入口导入新 Q-TRAJECTORY fixture，实际 Profile 为 15 frames、516 atoms、
+0-1.05 ps、Cartesian/unwrapped、fixed cell、PBC 全开，trajectory resource-cap
+readiness PASS。fresh namespace 中 AnalysisIntents、AnalysisPlans、Jobs、
+ToolCalls、Artifacts、Reports 和 Recipes 均为 0。
+
+测试结果：聚焦回归 `31 passed`；current runtime/qualification 回归
+`212 passed`；frontend Vitest `460/460`、typecheck/build PASS；service-backed
+trajectory integration `1 passed`。完整 pytest 为
+`1534 passed, 20 failed, 51 skipped`；20 项是既有历史 queue/evidence 断言，
+不涉及当前 R1.7 runtime path，因此不声明仓库全量 CI PASS。remote CI 未运行。
+
+证据位于 `_qualification/evidence/phase_d/attempt_10_r1_7_reseal/`。
+`READY_FOR_PHASE_E=YES`，但本任务没有创建或启动 Phase E。
+
+---
+
+任务名称：Phase E-R1.7 — Canonical Live-Agent Browser Qualification Restart
+状态：已完成
+完成时间：2026-08-17T15:55:43+08:00
+最终候选：`d7c267f9d5cac1397cbe56368e8de94f0b9d69e3`
+
+修改摘要：完成 durable ProjectHistoryView/1.0、项目历史首页、独立 Dataset
+Workbench 与 Planner 恢复导航；修复电子 Band+DOS 显式工具对和 provider stale
+resolution 未进入单次 repair budget 的缺陷。最终 candidate9 使用独立 PostgreSQL
+database、Redis、fresh API/Worker 和 frontend，Phase D attempt23 通过。随后在
+`final_20260817_03` 中从 Case 1 开始完成同一 SHA 下 16/16 Cases、26/26 turns，
+真实 DeepSeek、Queue/Worker、36 ToolCalls、151 Artifacts、26 Workspaces、26
+grounded Interpretations、26 Report Preview/Finalize、26 Recipes 全部验证通过，
+Recipe executed=0，unexpected fallback/injection/fatal error=0。
+
+测试结果：capability planner `57 passed`；Project History `1 passed`；frontend
+focused `36 passed`；typecheck PASS；production build PASS；compileall PASS；Phase D
+R1.7 attempt23 PASS；final campaign 16/16 PASS。最终 evidence 共 471 files，其中
+359 JSON 全部可解析，secret scan 0 命中，`git diff --check` PASS。remote CI 未运行，
+未执行 push/deploy。
+
+证据：`_qualification/evidence/phase_d/attempt_23_r1_7_candidate9_reseal/` 与
+`_qualification/evidence/phase_e_r1_7/final_20260817_03/`。

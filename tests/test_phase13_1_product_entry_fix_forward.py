@@ -209,10 +209,11 @@ def test_current_docs_and_ci_use_the_fix_forward_authority() -> None:
         assert f'"{name}"' in generator
     assert "current superseding Scope Baseline is `{scope_hash}`" in generator
     workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
-    assert "generate_phase13_1_product_entry_fix_forward.py" in workflow
-    assert "verify_phase13_1_fix_forward_hash.py" in workflow
+    assert "Historical release evidence semantic validation" in workflow
+    assert "tests/test_phase13_0_release_scope.py" in workflow
+    assert "verify_phase13_1_fix_forward_hash.py" not in workflow
     assert "generate_phase13_2_blocker_evidence.py" not in workflow
-    assert "tests/test_phase13_2_blocker_evidence.py" in workflow
+    assert 'python -m pytest -q -m "not integration"' in workflow
 
 
 def test_phase13_2_remains_failed_unexecuted_and_reviewer_gated() -> None:

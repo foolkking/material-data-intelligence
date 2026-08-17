@@ -892,3 +892,13 @@ separate data workbench that preserves the full durable path: source import,
 normalized resources, DataProfile, analysis submissions, persisted results,
 Workspace, interpretation, Report, and Recipe records. The workbench embeds
 the existing Planner without moving execution into the browser.
+
+## 2026-08-17 Release Closure
+
+Phase E-R1.7 later completed independently and remains the frozen canonical
+qualification (`16/16` Cases, `26/26` analysis turns). Release Closure does not
+reopen it. The repository now has zero active local test failures: backend
+`1562 passed`, service-backed `50 passed` with zero required skips, frontend
+`465 passed`, and typecheck/build/browser/static/security gates PASS. Twenty-one
+stale historical queue/evidence/route assertions were reconciled without a
+product or scientific-authority change. Normal push and remote CI are pending.

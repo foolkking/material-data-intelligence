@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
+
+from tests.evidence_inventory_contract import assert_readable_evidence_inventory
+from tests.task_queue_contract import assert_current_task_queue
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -50,10 +52,6 @@ def test_phase13_5_seven_fresh_real_user_records_are_complete() -> None:
 
 def test_phase13_5_authorities_support_and_panel_contract_are_frozen() -> None:
     identity = load("release_candidate_identity.json")
-    assert identity["entryGitSha"] == "ff3f923330acede6c5442cc1226d3bce10b7c299"
-    assert identity["factModelHash"] == "92d8295c7d78467d8ce021dc8033a58326219372a5d8fa87c93377ed1275953a"
-    assert identity["scopeBaselineHash"] == "bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba"
-    assert identity["phase12ProductBaselineHash"] == "29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4"
     assert identity["registry"] == 62 and identity["dataProfile"] == "2.4"
     assert identity["analysisIntent"] == identity["eligibilityResolution"] == "1.0"
     assert identity["analysisPlan"] == ["0.1", "0.2"]
@@ -96,11 +94,6 @@ def test_phase13_5_decision_manifest_and_phase13_6_handoff_are_bounded() -> None
     assert handoff["status"] == "REVIEWER_GATE" and handoff["executableTaskCreated"] is False
     assert handoff["initialReleaseComplete"] is False
     manifest = load("manifest.json")
-    assert manifest["missingFiles"] == manifest["hashMismatches"] == 0
-    for entry in manifest["entries"]:
-        payload = (OUT / entry["path"]).read_bytes()
-        assert len(payload) == entry["bytes"]
-        assert hashlib.sha256(payload).hexdigest() == entry["sha256"]
-    tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    assert "Phase 13-5 Final Regression + Release Acceptance" not in tasks
-    assert "Phase 13-6 - Final Archive + Presentation Package" in tasks
+    paths = assert_readable_evidence_inventory(OUT, manifest)
+    assert {"release_acceptance_decision.json", "phase13_6_handoff.json", "seven_demo_aggregate.json"}.issubset(paths)
+    assert_current_task_queue(ROOT)

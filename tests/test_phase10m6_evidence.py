@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import re
 
+from tests.task_queue_contract import assert_current_task_queue
+
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs/phase10m/evidence/phase10m6_workspace_recovery_closure"
@@ -192,6 +194,9 @@ def test_phase10m6_required_inventory_acceptance_authorities_and_screenshots() -
         assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
         return
     assert tasks.count("---TASK---") == tasks.count("---END---")
+    if tasks.count("---TASK---") > 3:
+        assert_current_task_queue(ROOT)
+        return
     assert tasks.count("---TASK---") in {0, 1, 2, 3}
     if "Phase 11-2 Reviewer Prompt" in tasks:
         assert tasks.count("---TASK---") == 2

@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 import re
 
+from tests.task_queue_contract import assert_current_task_queue
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = [
@@ -119,6 +121,9 @@ def test_r0_exact_scope_and_queue_admission_are_closed() -> None:
         assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
         return
     assert tasks.count("---TASK---") == tasks.count("---END---")
+    if tasks.count("---TASK---") > 3:
+        assert_current_task_queue(ROOT)
+        return
     assert tasks.count("---TASK---") in {0, 1, 2, 3}
     if tasks.count("---TASK---") == 1:
         assert re.search(r"(?:Task:|任务：) Phase (?:10N-(?:1|2|3|4|5|6)|11-0) ", tasks)

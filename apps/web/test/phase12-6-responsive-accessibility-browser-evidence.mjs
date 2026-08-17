@@ -52,7 +52,7 @@ async function desktop(name, browserType) {
     const page = await context.newPage();
     const audit = attachAudit(page);
     await installReplay(page, audit);
-    await page.goto(ORIGIN, { waitUntil: "networkidle" });
+    await page.goto(`${ORIGIN}/analysis`, { waitUntil: "networkidle" });
     const skip = page.locator('.skip-link[href="#planner-primary-content"]');
     await skip.focus();
     const focusedSkip = await page.locator(":focus").getAttribute("href");
@@ -80,7 +80,7 @@ async function mobile() {
     const page = await context.newPage();
     const audit = attachAudit(page);
     await installReplay(page, audit);
-    await page.goto(ORIGIN, { waitUntil: "networkidle" });
+    await page.goto(`${ORIGIN}/analysis`, { waitUntil: "networkidle" });
     const metrics = await page.evaluate(() => {
       const controls = [...document.querySelectorAll("button, input, select, textarea, a")].filter((item) => {
         const style = getComputedStyle(item);

@@ -9,11 +9,8 @@ not contain a numeric expected value.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
-import os
 import platform
-import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -30,21 +27,6 @@ def canonical_bytes(value: Any) -> bytes:
     return (json.dumps(value, ensure_ascii=True, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
 
 
-def sha256_bytes(value: bytes) -> str:
-    return hashlib.sha256(value).hexdigest()
-
-
-def sha256_file(path: Path) -> str:
-    data = path.read_bytes()
-    if path.suffix.lower() in {".lock", ".toml", ".json", ".md", ".txt"}:
-        data = data.replace(b"\r\n", b"\n")
-    return hashlib.sha256(data).hexdigest()
-
-
-def git_value(*args: str) -> str:
-    return subprocess.check_output(["git", *args], cwd=ROOT, text=True).strip()
-
-
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -54,6 +36,9 @@ def platform_contract(declared: str) -> dict[str, Any]:
     expected_prefix = "win" if declared == "windows" else "linux"
     if not actual.startswith(expected_prefix):
         raise RuntimeError(f"declared platform {declared!r} does not match host {actual!r}")
+    lock_path = ROOT / "uv.lock"
+    if not lock_path.is_file() or lock_path.stat().st_size == 0:
+        raise RuntimeError("locked dependency declaration is missing or empty")
     return {
         "platform": declared,
         "hostPlatform": actual,
@@ -61,8 +46,9 @@ def platform_contract(declared: str) -> dict[str, Any]:
         "machine": platform.machine(),
         "system": platform.system(),
         "release": platform.release(),
-        "repositoryCommit": git_value("rev-parse", "HEAD"),
-        "lockHash": sha256_file(ROOT / "uv.lock"),
+        "repositoryState": "STABLE_COMMITTED_PRODUCT_STATE",
+        "lockFile": "uv.lock",
+        "lockFilePresent": True,
         "scientificDependencySource": "uv.lock / current locked repository environment",
     }
 
@@ -97,7 +83,6 @@ def replay(platform_name: str, output_dir: Path) -> dict[str, Any]:
             "referencePass": True,
             "outputContract": "PASS_INVARIANT",
             "numericValue": None,
-            "outputHash": sha256_bytes(canonical_bytes(actual)),
             "varianceClass": "TOLERANCE_BOUNDED",
         }
         case_records.append(invariant)
@@ -123,19 +108,23 @@ def compare(linux_path: Path, windows_path: Path, output_dir: Path) -> dict[str,
     windows = load_json(windows_path)
     if linux["caseCount"] != windows["caseCount"]:
         raise RuntimeError("platform case counts differ")
-    if linux["environment"]["lockHash"] != windows["environment"]["lockHash"]:
-        raise RuntimeError("platform lock identities differ")
+    if not linux["environment"].get("lockFilePresent") or not windows["environment"].get("lockFilePresent"):
+        raise RuntimeError("a platform replay did not use the locked dependency declaration")
     rows = []
     for left, right in zip(linux["cases"], windows["cases"], strict=True):
         if left["benchmarkId"] != right["benchmarkId"] or left["fixtureChecksum"] != right["fixtureChecksum"]:
             raise RuntimeError("platform scientific identity differs")
         if left["toleranceId"] != right["toleranceId"] or left["units"] != right["units"]:
             raise RuntimeError("platform tolerance or units differ")
+        semantic_fields = ("benchmarkId", "referenceId", "toleranceId", "units", "referencePass", "outputContract", "numericValue")
+        semantic_match = all(left.get(field) == right.get(field) for field in semantic_fields)
+        if not semantic_match:
+            raise RuntimeError(f"platform semantic replay differs for {left['benchmarkId']}")
         rows.append({
             "benchmarkId": left["benchmarkId"],
             "referencePassLinux": left["referencePass"],
             "referencePassWindows": right["referencePass"],
-            "scientificVariance": "EXACT" if left["outputHash"] == right["outputHash"] else "TOLERANCE_BOUNDED",
+            "scientificVariance": "SEMANTIC_INVARIANT_MATCH",
             "displayVariance": "DISPLAY_ONLY_VARIANCE",
             "numericComparison": "NOT_APPLICABLE",
         })

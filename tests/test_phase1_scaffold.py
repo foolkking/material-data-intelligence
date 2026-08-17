@@ -68,9 +68,11 @@ def test_phase1_next_workspace_shell_files_exist(repo_root):
     assert (web_root / "app" / "globals.css").exists()
 
     page = (web_root / "app" / "page.tsx").read_text(encoding="utf-8")
+    analysis_page = (web_root / "app" / "analysis" / "page.tsx").read_text(encoding="utf-8")
     workbench = (web_root / "app" / "components" / "PlannerWorkbench.tsx").read_text(encoding="utf-8")
-    combined = f"{page}\n{workbench}"
-    assert "PlannerWorkbench" in page
+    combined = f"{analysis_page}\n{workbench}"
+    assert "ProjectHome" in page
+    assert "PlannerWorkbench" in analysis_page
     assert "Analysis Planner" in combined
     assert "Validated Plan Preview" in combined
     assert "Plan Provenance" in combined
@@ -79,3 +81,17 @@ def test_phase1_next_workspace_shell_files_exist(repo_root):
     assert "Artifact Gallery" in combined
     assert "Report / Recipe Summary" in combined
     assert "No deterministic fallback used" in combined
+
+
+def test_active_planner_browser_replays_use_supported_analysis_route(repo_root):
+    replay_markers = {
+        "grounded-interpretation-browser-evidence.mjs": "`${ORIGIN}/analysis`",
+        "natural-language-closure-browser-evidence.mjs": "`${ORIGIN}/analysis?phase10l5BrowserEvidence=",
+        "workspace-shell-browser-evidence.mjs": "`${ORIGIN}/analysis`",
+        "phase12-6-responsive-accessibility-browser-evidence.mjs": "`${ORIGIN}/analysis`",
+        "phase12-7-cross-product-browser-evidence.mjs": "`${ORIGIN}/analysis`",
+        "phase13-4-help-docs-browser-evidence.mjs": "`${ORIGIN}/analysis`",
+    }
+    for name, marker in replay_markers.items():
+        script = (repo_root / "apps/web/test" / name).read_text(encoding="utf-8")
+        assert marker in script

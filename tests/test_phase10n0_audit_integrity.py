@@ -3,6 +3,8 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+
+from tests.task_queue_contract import assert_current_task_queue
 from pathlib import Path
 
 
@@ -121,6 +123,9 @@ def test_n0_does_not_admit_an_executable_task() -> None:
     # N0 itself never admitted a task; the corrective N1 authorization may
     # subsequently admit the sole N1 task while N2 remains a reviewer gate.
     assert tasks.count("---TASK---") == tasks.count("---END---")
+    if tasks.count("---TASK---") > 3:
+        assert_current_task_queue(ROOT)
+        return
     assert tasks.count("---TASK---") in {0, 1, 2, 3}
     if "Phase 11-2 Reviewer Prompt" in tasks:
         assert tasks.count("---TASK---") == 2

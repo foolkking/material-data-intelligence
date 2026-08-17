@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "release-closure-deployment-readiness/1.0",
+  "canonicalPhaseE": "PASS / R1_7_CANONICAL_LIVE_AGENT_BROWSER_QUALIFICATION_COMPLETE",
+  "canonicalQualificationReopened": false,
+  "localReleaseGate": "PASS",
+  "remoteCi": "PENDING",
+  "deployment": "NOT_STARTED",
+  "readyForDeploymentReview": false,
+  "openReleaseBlockers": ["normal push and remote CI verification remain"]
+}

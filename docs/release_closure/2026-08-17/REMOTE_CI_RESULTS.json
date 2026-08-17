@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "release-closure-remote-ci/1.0",
+  "releaseState": "STABLE_COMMITTED_PRODUCT_STATE",
+  "push": "PENDING",
+  "workflow": ".github/workflows/ci.yml",
+  "requiredJobs": ["Unit Tests", "Phase 11-3 Scientific Replay (Linux)", "Phase 11-3 Scientific Replay (Windows)", "Frontend Typecheck & Build", "Service-backed Integration (PostgreSQL + Redis + MinIO)"],
+  "remoteCiForReleaseState": "PENDING",
+  "status": "PENDING"
+}

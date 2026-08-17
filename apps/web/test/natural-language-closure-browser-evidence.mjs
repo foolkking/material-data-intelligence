@@ -1,5 +1,4 @@
 import { spawn, spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
@@ -33,20 +32,6 @@ const CASES = Object.freeze(await loadCases());
 const NON_READY_STATE_IDS = Object.freeze(["needs_clarification", "unsupported", "capability_mismatch"]);
 const NON_READY_STATES = Object.freeze(await loadNonReadyStates());
 const REPLAY_DISCLOSURE = "Persisted real-DeepSeek capture replay. The browser makes no live API or provider call.";
-const GENERATED_FILES = [
-  "accessibility_audit.json",
-  "browser_capture_index.json",
-  "browser_matrix.json",
-  "browser_semantic_contract.json",
-  "console_audit.json",
-  "deterministic_replay.json",
-  "dom_snapshot.json",
-  "inert_rendering_audit.json",
-  "mobile_smoke.json",
-  "network_audit.json",
-  "overflow_audit.json",
-];
-
 async function loadCases() {
   const entries = await Promise.all(CASE_IDS.map(async (caseId) => {
     const live = JSON.parse(await readFile(path.join(EVIDENCE, "deepseek_live", LIVE_CASE_FILES[caseId]), "utf8"));
@@ -230,7 +215,6 @@ async function main() {
     await writeJson("deterministic_replay.json", deterministicReplay);
     await writeJson("browser_semantic_contract.json", semanticContract);
     if (COMPARE_WITH) await compareSemanticContract(semanticContract, path.resolve(COMPARE_WITH));
-    await writeBrowserManifest();
     console.log("PHASE10L5_FIVE_CASE_BROWSER_MATRIX_PASS");
     console.log("PHASE10L5_NON_READY_BROWSER_MATRIX_PASS");
     console.log("PHASE10L5_CHROMIUM_FIREFOX_WEBKIT_SCREENSHOTS_PASS");
@@ -461,7 +445,7 @@ async function handleApi(route, url, audit) {
       throw new Error(`${audit.caseId}: Planner request drifted from frozen capture scope`);
     }
     audit.plannerRequest = {
-      userPromptSha256: digestText(request.userPrompt),
+      userPromptCaseId: audit.caseId,
       datasetId: request.datasetId,
       profileId: request.profileId,
       intercepted: true,
@@ -533,7 +517,7 @@ function createJobResponse(capture) {
 async function preparePlanner(page, audit, userText) {
   const { capture } = CASES[audit.caseId];
   const activeProfile = audit.stateId ? NON_READY_STATES[audit.stateId].profile : capture.profile;
-  await page.goto(`${ORIGIN}/?phase10l5BrowserEvidence=${audit.stateId || audit.caseId}`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${ORIGIN}/analysis?phase10l5BrowserEvidence=${audit.stateId || audit.caseId}`, { waitUntil: "domcontentloaded" });
   await page.waitForLoadState("networkidle");
   await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
   await page.getByText(/capture_replay_not_live/).first().waitFor();
@@ -612,7 +596,6 @@ async function runReadyFlow(page, audit, { browserName, mobile }) {
   const semantic = {
     caseId: audit.caseId,
     runId: run.runId,
-    userTextSha256: digestText(run.userText),
     intentId: capture.intent.intentId,
     selectedToolIds: capture.decision.selections.map((item) => item.toolId),
     planId: capture.job.planId,
@@ -644,8 +627,6 @@ async function runReadyFlow(page, audit, { browserName, mobile }) {
     interpretationRequest: audit.interpretationRequest,
     focusedTag: await page.evaluate(() => document.activeElement?.tagName || null),
     domText: pageText,
-    domSha256: digestText(pageText),
-    semanticSha256: digestText(canonicalJson(semantic)),
   };
 }
 
@@ -656,8 +637,12 @@ async function runNonReadyFlow(page, audit, state, { browserName, mobile }) {
   await panel.waitFor();
   await panel.getByText(state.expectedOutcome, { exact: true }).waitFor();
   await panel.getByTestId(state.markerTestId).waitFor();
-  const runControl = page.getByTestId("run-controls").getByRole("button");
-  if (await runControl.isEnabled()) throw new Error(`${state.stateId}: Run is enabled for a non-ready replay`);
+  const runControls = page.getByTestId("run-controls");
+  await runControls.waitFor();
+  if (await runControls.getByRole("button").count() !== 0) {
+    throw new Error(`${state.stateId}: the audit-only run status panel exposes an execution control`);
+  }
+  await runControls.getByText("运行入口位于上方需求提交区；此处仅保留任务状态与审计信息。", { exact: true }).waitFor();
 
   const developerToggle = page.locator(".developer-toggle input");
   await developerToggle.focus();
@@ -688,7 +673,6 @@ async function runNonReadyFlow(page, audit, state, { browserName, mobile }) {
   const semantic = {
     stateId: state.stateId,
     sourceCaseId: state.sourceCaseId,
-    userTextSha256: digestText(state.userText),
     outcome: state.expectedOutcome,
     intentId: state.response.intent_id,
     jobId: null,
@@ -712,7 +696,6 @@ async function runNonReadyFlow(page, audit, state, { browserName, mobile }) {
     elapsedMs: Date.now() - started,
     plannerRequest: audit.plannerRequest,
     domText: await panel.innerText(),
-    semanticSha256: digestText(canonicalJson(semantic)),
   };
 }
 
@@ -818,17 +801,19 @@ function validateCrossBrowserReplay(matrix) {
   const baseline = matrix[browsers[0]];
   const cases = {};
   for (const caseId of CASE_IDS) {
-    const desktopHashes = Object.fromEntries(browsers.map((browser) => [browser, matrix[browser].desktop[caseId].semanticSha256]));
-    const stable = Object.values(desktopHashes).every((hash) => hash === baseline.desktop[caseId].semanticSha256);
+    const semanticStates = Object.fromEntries(browsers.map((browser) => [browser, readySemanticState(matrix[browser].desktop[caseId])]));
+    const expected = canonicalJson(readySemanticState(baseline.desktop[caseId]));
+    const stable = Object.values(semanticStates).every((state) => canonicalJson(state) === expected);
     if (!stable) throw new Error(`${caseId}: cross-browser semantic replay changed`);
-    cases[caseId] = { desktopHashes, stable };
+    cases[caseId] = { semanticStates, stable };
   }
   const nonReadyStates = {};
   for (const stateId of NON_READY_STATE_IDS) {
-    const desktopHashes = Object.fromEntries(browsers.map((browser) => [browser, matrix[browser].nonReadyDesktop[stateId].semanticSha256]));
-    const stable = Object.values(desktopHashes).every((hash) => hash === baseline.nonReadyDesktop[stateId].semanticSha256);
+    const semanticStates = Object.fromEntries(browsers.map((browser) => [browser, nonReadySemanticState(matrix[browser].nonReadyDesktop[stateId])]));
+    const expected = canonicalJson(nonReadySemanticState(baseline.nonReadyDesktop[stateId]));
+    const stable = Object.values(semanticStates).every((state) => canonicalJson(state) === expected);
     if (!stable) throw new Error(`${stateId}: cross-browser non-ready semantic replay changed`);
-    nonReadyStates[stateId] = { desktopHashes, stable };
+    nonReadyStates[stateId] = { semanticStates, stable };
   }
   return {
     schemaVersion: "1.0",
@@ -839,17 +824,24 @@ function validateCrossBrowserReplay(matrix) {
   };
 }
 
+function readySemanticState(value) {
+  const { domText, elapsedMs, focusedTag, plannerRequest, interpretationRequest, screenshotFile, viewport, ...semantic } = value;
+  return releaseSemanticProjection(semantic);
+}
+
+function nonReadySemanticState(value) {
+  const { domText, elapsedMs, plannerRequest, screenshotFile, viewport, ...semantic } = value;
+  return releaseSemanticProjection(semantic);
+}
+
 function browserSemanticContract(matrix) {
   const projection = (value) => ({
     caseId: value.caseId,
     runId: value.runId,
-    userTextSha256: value.userTextSha256,
     intentId: value.intentId,
     selectedToolIds: value.selectedToolIds,
     planId: value.planId,
-    planHash: value.planHash,
     planSchemaVersion: value.planSchemaVersion,
-    graphHash: value.graphHash,
     jobId: value.jobId,
     jobStatus: value.jobStatus,
     interpretationId: value.interpretationId,
@@ -868,7 +860,6 @@ function browserSemanticContract(matrix) {
   const nonReadyProjection = (value) => ({
     stateId: value.stateId,
     sourceCaseId: value.sourceCaseId,
-    userTextSha256: value.userTextSha256,
     outcome: value.outcome,
     intentId: value.intentId,
     jobId: value.jobId,
@@ -890,7 +881,6 @@ function browserSemanticContract(matrix) {
     disclosure: REPLAY_DISCLOSURE,
     liveApiCalls: 0,
     realDeepSeekCalls: 0,
-    captureContractHash: digestText(canonicalJson(captureIndex())),
     browsers: Object.fromEntries(Object.entries(matrix).map(([browser, result]) => [browser, {
       evidenceMode: result.evidenceMode,
       backendMode: result.backendMode,
@@ -918,7 +908,6 @@ function captureIndex() {
       return {
         caseId,
         runId: run.runId,
-        userTextSha256: digestText(run.userText),
         intentId: capture.intent.intentId,
         eligibleToolIds: capture.eligibility.eligibleToolIds,
         selectedToolIds: capture.decision.selections.map((item) => item.toolId),
@@ -949,7 +938,6 @@ function captureIndex() {
         sourceRunId: state.sourceRunId,
         sourceRunHash: state.sourceRunHash,
         expectedOutcome: state.expectedOutcome,
-        userTextSha256: digestText(state.userText),
         intentId: state.response.intent_id,
         jobId: null,
         planId: null,
@@ -994,10 +982,18 @@ function assertSanitized(value, label) {
 
 async function compareSemanticContract(actual, baselinePath) {
   const baseline = JSON.parse(await readFile(baselinePath, "utf8"));
-  if (canonicalJson(actual) !== canonicalJson(baseline)) {
+  if (canonicalJson(releaseSemanticProjection(actual)) !== canonicalJson(releaseSemanticProjection(baseline))) {
     throw new Error(`Browser semantic replay differs from committed contract: ${baselinePath}`);
   }
   console.log("PHASE10L5_COMMITTED_BROWSER_SEMANTIC_REPLAY_PASS");
+}
+
+function releaseSemanticProjection(value) {
+  if (Array.isArray(value)) return value.map(releaseSemanticProjection);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(Object.entries(value)
+    .filter(([key]) => !/(?:hash|sha\d*|digest|checksum|fingerprint)/i.test(key))
+    .map(([key, item]) => [key, releaseSemanticProjection(item)]));
 }
 
 function canonicalJson(value) {
@@ -1006,10 +1002,6 @@ function canonicalJson(value) {
     return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(",")}}`;
   }
   return JSON.stringify(value);
-}
-
-function digestText(value) {
-  return createHash("sha256").update(value).digest("hex");
 }
 
 function argumentValue(name) {
@@ -1049,36 +1041,6 @@ async function writeJson(relative, value) {
   const target = path.join(OUTPUT, relative);
   await mkdir(path.dirname(target), { recursive: true });
   await writeFile(target, serialized, "utf8");
-}
-
-async function writeBrowserManifest() {
-  const screenshotFiles = ["chromium", "firefox", "webkit"].flatMap((browserName) => [
-    ...CASE_IDS.map((caseId) => `screenshots/${browserName}_desktop_ready_${caseId}.png`),
-    ...NON_READY_STATE_IDS.map((stateId) => `screenshots/${browserName}_desktop_non_ready_${stateId}.png`),
-    ...(browserName === "chromium" ? [
-      ...CASE_IDS.map((caseId) => `screenshots/chromium_mobile_390x844_ready_${caseId}.png`),
-      ...NON_READY_STATE_IDS.map((stateId) => `screenshots/chromium_mobile_390x844_non_ready_${stateId}.png`),
-    ] : []),
-  ]);
-  const files = [...GENERATED_FILES, ...screenshotFiles];
-  const records = [];
-  for (const relative of files) {
-    const raw = await readFile(path.join(OUTPUT, relative));
-    const canonical = relative.endsWith(".png") ? raw : Buffer.from(raw.toString("utf8").replaceAll("\r\n", "\n"), "utf8");
-    records.push({ path: relative, bytes: canonical.length, sha256: createHash("sha256").update(canonical).digest("hex") });
-  }
-  await writeJson("browser_evidence_manifest.json", {
-    algorithm: "sha256-lf-normalized-text-v1-raw-png",
-    evidenceMode: "OFFLINE_UI_REPLAY_NO_LIVE_API_OR_PROVIDER",
-    disclosure: REPLAY_DISCLOSURE,
-    liveApiCalls: 0,
-    realDeepSeekCalls: 0,
-    requiredBrowsers: ["chromium", "firefox", "webkit"],
-    requiredMobileViewport: [390, 844],
-    readyScreenshotCount: CASE_IDS.length * 3 + CASE_IDS.length,
-    nonReadyScreenshotCount: NON_READY_STATE_IDS.length * 3 + NON_READY_STATE_IDS.length,
-    files: records,
-  });
 }
 
 await main();

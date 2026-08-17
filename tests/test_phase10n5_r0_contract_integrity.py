@@ -3,6 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 import re
 
+from tests.task_queue_contract import assert_current_task_queue
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -121,6 +123,9 @@ def test_n5_queue_state_remains_compatible_through_n6_archive() -> None:
         return
     if "Phase 11-1 Reviewer Prompt" in tasks:
         assert tasks.count("---TASK---") == 3
+        return
+    if tasks.count("---TASK---") > 3:
+        assert_current_task_queue(ROOT)
         return
     if "Task: Phase 11-0" in tasks:
         assert tasks.count("---TASK---") == 1

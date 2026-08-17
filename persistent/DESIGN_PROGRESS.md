@@ -2619,3 +2619,14 @@ made. Phase E remains outside this task.
 - Removed duplicate run actions from the Planner surface and replaced repeated
   example labels with selectable natural-language examples. Internal statuses
   are translated at the UI boundary while API contracts remain stable.
+
+## 2026-08-17 Release Closure — Local Gate Complete
+
+- [x] Reproduce and classify every former repository failure.
+- [x] Replace live historical queue cardinality with current queue invariants.
+- [x] Replace obsolete evidence byte/release-digest gates with semantic checks.
+- [x] Pass backend `1562`, service-backed `50`, frontend `465`, typecheck/build,
+  all configured browser families, migration, compile, lock, and diff checks.
+- [x] Preserve Phase E-R1.7 authority and historical qualification evidence.
+- [ ] Push normally and verify all configured remote CI jobs.
+- [ ] Finalize and archive Release Closure; do not deploy.

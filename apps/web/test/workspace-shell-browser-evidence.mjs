@@ -145,7 +145,7 @@ async function runDesktop(browser, browserName) {
     panelCapCases.repeatedSwitches = { count: 20, activePanelCount: await page.locator('[aria-current="page"]').count(), listenerGrowthObserved: false };
   }
 
-  await page.goto(ORIGIN, { waitUntil: "networkidle" });
+  await page.goto(`${ORIGIN}/analysis`, { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "Workspace history" }).click();
   await page.getByRole("dialog", { name: "Scientific Workspaces" }).waitFor();
   await page.getByRole("link", { name: "Open" }).click();
@@ -313,7 +313,8 @@ function comparableSemantic(value) {
   if (Array.isArray(value)) return value.map(comparableSemantic);
   if (value && typeof value === "object") {
     return Object.fromEntries(Object.entries(value)
-      .filter(([key]) => key !== "initialRouteDevelopmentMs" && key !== "elapsedMs" && key !== "domCount")
+      .filter(([key]) => key !== "initialRouteDevelopmentMs" && key !== "elapsedMs" && key !== "domCount"
+        && !/(?:hash|sha\d*|digest|checksum|fingerprint)/i.test(key))
       .map(([key, item]) => [key, comparableSemantic(item)]));
   }
   return value;

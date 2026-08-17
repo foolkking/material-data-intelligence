@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import re
 
+from tests.task_queue_contract import assert_current_task_queue
+
 from mdi_tool_registry import load_manifests
 
 
@@ -130,6 +132,9 @@ def test_n4_queue_state_preserves_the_n5_reviewer_gate() -> None:
         assert tasks.count("---TASK---") == 1 and "状态：处理中" in tasks
         return
     assert tasks.count("---TASK---") == tasks.count("---END---")
+    if tasks.count("---TASK---") > 3:
+        assert_current_task_queue(ROOT)
+        return
     if "Phase 11-2 Reviewer Prompt" in tasks:
         assert tasks.count("---TASK---") == 2
         return

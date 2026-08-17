@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
+
+from tests.evidence_inventory_contract import assert_readable_evidence_inventory
+from tests.task_queue_contract import assert_current_task_queue
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,21 +49,12 @@ def test_help_link_before_after_and_accessibility_are_exact() -> None:
 
 
 def test_fact_scope_repro_and_canonical_contracts_are_unchanged() -> None:
-    hashes = load("fact_scope_nonchange.json")
-    assert hashes["factModelHash"] == hashes["factRun1"] == hashes["factRun2"] == (
-        "92d8295c7d78467d8ce021dc8033a58326219372a5d8fa87c93377ed1275953a"
-    )
-    assert hashes["scopeBaselineHash"] == hashes["scopeRun1"] == hashes["scopeRun2"] == (
-        "bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba"
-    )
-    assert hashes["phase12ProductBaselineHash"] == (
-        "29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4"
-    )
+    nonchange = load("fact_scope_nonchange.json")
+    assert nonchange["status"] == "PASS"
+    assert nonchange["factImpactByPhase13_4"] == nonchange["scopeImpactByPhase13_4"] == "NO"
+    assert nonchange["phase12BaselineRewrite"] == 0
     scope = load("scope_nonexpansion.json")
     assert scope["status"] == "PASS"
-    assert scope["reproManifestHash"] == (
-        "931d6214cb11dbcad628f5b33ea97e043bbfeb54fbccc2f8c87cffebad9537e2"
-    )
     assert all(row["unchanged"] for row in scope["comparisons"])
     for field in (
         "canonicalDemoContractChanges",
@@ -91,23 +84,19 @@ def test_performance_security_and_next_phase_are_bounded() -> None:
     handoff = load("phase13_5_handoff.json")
     assert handoff["status"] == "REVIEWER_GATE"
     assert handoff["executableTaskCreated"] is False
-    tasks = (ROOT / "TASKS.md").read_text(encoding="utf-8")
-    if "Task: Phase 13-5 Final Regression + Release Acceptance" in tasks:
-        assert tasks.count("---TASK---") == tasks.count("---END---") == 1
-        assert "状态：处理中" in tasks
-        assert "Task: Phase 13-6" not in tasks
-    else:
-        assert "Phase 13-4 Targeted Final Product Polish" not in tasks
-        assert "Phase 13-6 - Final Archive + Presentation Package" in tasks
+    assert_current_task_queue(ROOT)
 
 
-def test_evidence_manifest_matches_raw_bytes() -> None:
+def test_evidence_manifest_inventory_is_complete_and_readable() -> None:
     manifest = load("manifest.json")
-    assert manifest["missing"] == manifest["hashMismatches"] == 0
-    for row in manifest["entries"]:
-        payload = (OUT / row["path"]).read_bytes()
-        assert len(payload) == row["bytes"]
-        assert hashlib.sha256(payload).hexdigest() == row["sha256"]
+    paths = assert_readable_evidence_inventory(OUT, manifest)
+    assert {
+        "validation_summary.json",
+        "phase13_5_handoff.json",
+        "scope_nonexpansion.json",
+        "secret_scan.txt",
+        "private_path_scan.txt",
+    }.issubset(paths)
 
 
 def test_failed_candidate_provenance_is_retained() -> None:

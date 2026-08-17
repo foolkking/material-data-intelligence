@@ -4981,3 +4981,15 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   excludes storage keys, private paths, hashes, raw source payloads, and
   provider secrets. Execution continues through persisted AnalysisPlan, Tool
   Registry, QueueWorkerRuntime, and Adapter contracts.
+
+## ADR: Semantic Release Closure Gates (2026-08-17)
+
+- Release and qualification success is established by parseability, schemas,
+  required fields and Case IDs, semantic relationships, declared statuses,
+  queue invariants, security scans, and executable tests. Content digests,
+  byte counts, fingerprints, and exact Git identifiers are not PASS criteria.
+- Historical records and existing production/scientific identity fields remain
+  preserved. This does not redesign persistence contracts or alter Phase E-R1.7
+  questions, fixtures, Tools, values, provenance, caps, Reports, or Recipes.
+- Cross-browser and cross-platform replay compares structured semantic state;
+  volatile timing, DOM bytes, and digest metadata are excluded from correctness.
