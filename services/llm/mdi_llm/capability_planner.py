@@ -469,6 +469,9 @@ def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandida
     property_selection = _explicit_material_property_selection(intent, projection)
     if property_selection is not None:
         return property_selection
+    electronic_selection = _explicit_electronic_selection(intent, projection)
+    if electronic_selection is not None:
+        return electronic_selection
     dependency_requests: list[str] = []
     if "xrd" in goal and any(marker in goal for marker in ("experimental", "match", "correspond", "comparison")):
         producer = "structure.xrd"
@@ -527,22 +530,6 @@ def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandida
             raise CapabilityPlanningError(
                 "The requested trajectory analytics are not eligible for the exact trajectory resource.",
                 code="TRAJECTORY_ANALYTICS_NOT_ELIGIBLE",
-                outcome=CapabilityPlanningOutcome.capability_mismatch,
-            )
-    if ScientificIntent.electronic_structure_analysis in intent.scientificIntents:
-        requested: list[str] = []
-        if _goal_has_token(goal, "band"):
-            requested.append("electronic.band_structure")
-        if _goal_has_token(goal, "dos") or "density of states" in goal:
-            requested.append("electronic.dos")
-        if requested:
-            selected = sorted(set(requested))
-            eligible = {item.toolId for item in projection.candidates}
-            if set(selected).issubset(eligible):
-                return selected
-            raise CapabilityPlanningError(
-                "The requested supplied electronic resources are not eligible.",
-                code="ELECTRONIC_RESOURCES_NOT_ELIGIBLE",
                 outcome=CapabilityPlanningOutcome.capability_mismatch,
             )
     composition_tool = _explicit_composition_tool(goal)
@@ -705,6 +692,32 @@ def _explicit_trajectory_selection(
         raise CapabilityPlanningError(
             "The explicitly requested trajectory analytics are not eligible for the exact trajectory resource.",
             code="TRAJECTORY_ANALYTICS_NOT_ELIGIBLE",
+            outcome=CapabilityPlanningOutcome.capability_mismatch,
+        )
+    return selected
+
+
+def _explicit_electronic_selection(
+    intent: AnalysisIntent,
+    projection: EligibleCandidateProjection,
+) -> list[str] | None:
+    if ScientificIntent.electronic_structure_analysis not in intent.scientificIntents:
+        return None
+    if CapabilityNeed.electronic_resource not in intent.requiredCapabilityNeeds:
+        return None
+    goal = intent.rawGoal.casefold()
+    requested: list[str] = []
+    if _goal_has_token(goal, "band"):
+        requested.append("electronic.band_structure")
+    if _goal_has_token(goal, "dos") or "density of states" in goal:
+        requested.append("electronic.dos")
+    if not requested:
+        return None
+    selected = sorted(set(requested))
+    if not set(selected).issubset({item.toolId for item in projection.candidates}):
+        raise CapabilityPlanningError(
+            "The requested supplied electronic resources are not eligible.",
+            code="ELECTRONIC_RESOURCES_NOT_ELIGIBLE",
             outcome=CapabilityPlanningOutcome.capability_mismatch,
         )
     return selected
@@ -1127,6 +1140,15 @@ def _validate_minimal_provider_selection(
             repairable=True,
         )
     if exact_trajectory_selection is not None:
+        return
+    exact_electronic_selection = _explicit_electronic_selection(intent, projection)
+    if exact_electronic_selection is not None and selected_tool_ids != exact_electronic_selection:
+        raise CapabilityPlanningError(
+            "Provider selection does not preserve the explicit electronic-resource operation.",
+            code="EXPLICIT_ELECTRONIC_OPERATION_MISMATCH",
+            repairable=True,
+        )
+    if exact_electronic_selection is not None:
         return
     _validate_explicit_visual_form(intent, projection, selected_tool_ids)
     if _is_required_dependency_selection(intent, selected_tool_ids):

@@ -444,6 +444,119 @@ def test_provider_dependency_pair_is_not_rejected_as_redundant() -> None:
     ]
 
 
+def test_explicit_electronic_band_and_dos_are_not_rejected_as_redundant() -> None:
+    resources = [
+        {
+            "objectId": "band_exact",
+            "objectType": "ElectronicBand",
+            "objectHash": "1" * 64,
+            "kind": "electronicband",
+            "capabilities": ["electronic"],
+        },
+        {
+            "objectId": "dos_exact",
+            "objectType": "ElectronicDos",
+            "objectHash": "2" * 64,
+            "kind": "electronicdos",
+            "capabilities": ["electronic"],
+        },
+    ]
+    profile_payload = _profile(resources=resources, targets=(), uncertainty=False).model_dump(mode="json")
+    profile_payload["profileContractVersion"] = "2.4"
+    profile_payload["electronicReadiness"] = {
+        "contractVersion": "1.0",
+        "electronicBandResourcePresent": True,
+        "electronicDosResourcePresent": True,
+        "eligibleResourceCount": 2,
+        "resources": [
+            {
+                "objectId": "band_exact",
+                "objectHash": "1" * 64,
+                "resourceKind": "band",
+                "resourceId": "band_source",
+                "resourceHash": "3" * 64,
+                "energyUnit": "eV",
+                "energyReference": "source_absolute",
+                "fermiAvailable": True,
+                "spinMode": "non_spin_polarized",
+                "kpointCount": 8,
+                "bandCount": 4,
+                "electronicInputStatus": "READY",
+                "reasons": [],
+            },
+            {
+                "objectId": "dos_exact",
+                "objectHash": "2" * 64,
+                "resourceKind": "dos",
+                "resourceId": "dos_source",
+                "resourceHash": "4" * 64,
+                "energyUnit": "eV",
+                "energyReference": "source_absolute",
+                "fermiAvailable": True,
+                "spinMode": "non_spin_polarized",
+                "dosPointCount": 20,
+                "projectionCount": 0,
+                "projectionCompleteness": "UNKNOWN",
+                "electronicInputStatus": "READY",
+                "reasons": [],
+            },
+        ],
+        "status": "READY",
+        "reasons": [],
+    }
+    profile = type(_profile()).model_validate(profile_payload)
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request(
+            "Inspect the supplied electronic band structure and DOS, including gap, spin, projection, and compatibility limitations."
+        ),
+        profile=profile,
+    )
+    calls = 0
+
+    def transport(**kwargs: object) -> dict[str, object]:
+        nonlocal calls
+        calls += 1
+        context = json.loads(kwargs["messages"][-1]["content"])
+        assert context["applicationValidatedMinimalToolIds"] == [
+            "electronic.band_structure",
+            "electronic.dos",
+        ]
+        payload = {
+            "schemaVersion": "1.0",
+            "resolutionId": context["eligibleCandidates"]["resolutionId"],
+            "selectedToolIds": context["applicationValidatedMinimalToolIds"],
+        }
+        return {
+            "choices": [{
+                "message": {"content": json.dumps(payload, separators=(",", ":"))},
+                "finish_reason": "stop",
+            }]
+        }
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=OpenAICompatibleProvider(transport=transport),
+    )
+
+    assert calls == 1
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == [
+        "electronic.band_structure",
+        "electronic.dos",
+    ]
+    assert [item.inputResourceIds for item in result.decision.selections] == [
+        ["band_exact"],
+        ["dos_exact"],
+    ]
+    assert result.decision.provenance.repairCount == 0
+    assert result.plan is not None and [item.toolId for item in result.plan.steps] == [
+        "electronic.band_structure",
+        "electronic.dos",
+    ]
+
+
 def test_provider_repairs_wrong_explicit_material_property_operation() -> None:
     profile = _material_property_profile()
     intent = DeterministicAnalysisIntentBuilder().build(
