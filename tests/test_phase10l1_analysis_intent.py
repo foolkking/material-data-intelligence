@@ -340,6 +340,42 @@ def test_phonon_intent_accepts_exact_composite_resources_but_rejects_wrong_kind_
     assert {item.code for item in wrong_kind.unsupportedReasons} == {"RESOURCE_KIND_MISMATCH"}
 
 
+def test_phonon_bz_composite_question_binds_exact_profile_resource_bundle() -> None:
+    resources = [
+        {"objectId": "structure", "objectType": "Structure", "objectHash": "1" * 64, "kind": "structure", "capabilities": ["structure"]},
+        {"objectId": "band", "objectType": "PhononBand", "objectHash": "2" * 64, "kind": "phonon", "capabilities": ["phonon"]},
+        {"objectId": "dos", "objectType": "PhononDos", "objectHash": "3" * 64, "kind": "phonon", "capabilities": ["phonon"]},
+    ]
+    profile = _profile(resources=resources)
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("Show the supplied phonon bands and DOS together with matching Brillouin-zone context."),
+        profile=profile,
+    )
+
+    assert intent.outcome.value == "READY"
+    assert {item.objectId for item in intent.dataScope.resourceRefs} == {"structure", "band", "dos"}
+    assert {item.origin.value for item in intent.dataScope.resourceRefs} == {"USER_EXPLICIT"}
+
+
+def test_strict_llm_phonon_bz_intent_rebuilds_exact_profile_resource_bundle() -> None:
+    resources = [
+        {"objectId": "structure", "objectType": "Structure", "objectHash": "1" * 64, "kind": "structure", "capabilities": ["structure"]},
+        {"objectId": "band", "objectType": "PhononBand", "objectHash": "2" * 64, "kind": "phonon", "capabilities": ["phonon"]},
+        {"objectId": "dos", "objectType": "PhononDos", "objectHash": "3" * 64, "kind": "phonon", "capabilities": ["phonon"]},
+    ]
+    profile = _profile(resources=resources)
+    request = _request("Show the supplied phonon bands and DOS together with matching Brillouin-zone context.")
+    provider_payload = DeterministicAnalysisIntentBuilder().build(request, profile=profile).model_dump(mode="json")
+    provider_payload["dataScope"]["resourceRefs"] = []
+
+    def transport(**_: object) -> dict[str, object]:
+        return {"choices": [{"message": {"content": json.dumps(provider_payload, separators=(",", ":"))}, "finish_reason": "stop"}]}
+
+    intent = OpenAICompatibleAnalysisIntentBuilder(OpenAICompatibleProvider(transport=transport)).build(request, profile=profile)
+    assert intent.outcome.value == "READY"
+    assert {item.objectId for item in intent.dataScope.resourceRefs} == {"structure", "band", "dos"}
+
+
 def test_xrd_comparison_binds_profile_validated_experimental_resource_with_structure() -> None:
     resources = [
         {"objectId": "xrd_table", "objectType": "DataFrame", "objectHash": "1" * 64, "kind": "dataframe", "capabilities": ["table"]},

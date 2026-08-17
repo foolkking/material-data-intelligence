@@ -631,6 +631,52 @@ def test_independent_cross_domain_request_is_covered_by_multiple_exact_candidate
     assert set(result.resolution.eligibleToolIds) == {"phonon.band", "structure.brillouin_zone"}
 
 
+def test_phonon_bz_composite_question_plans_all_exact_profile_resources() -> None:
+    profile = _profile(
+        resources=[
+            {
+                "objectId": "structure_bz",
+                "objectType": "Structure",
+                "objectHash": "d" * 64,
+                "kind": "structure",
+                "capabilities": ["structure", "reciprocal"],
+            },
+            {
+                "objectId": "phonon_band_1",
+                "objectType": "PhononBand",
+                "objectHash": "e" * 64,
+                "kind": "phonon",
+                "capabilities": ["phonon"],
+            },
+            {
+                "objectId": "phonon_dos_1",
+                "objectType": "PhononDos",
+                "objectHash": "f" * 64,
+                "kind": "phonon",
+                "capabilities": ["phonon"],
+            },
+        ]
+    )
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("Show the supplied phonon bands and DOS together with matching Brillouin-zone context."),
+        profile=profile,
+    )
+    result = plan_capabilities(intent, profile=profile, registry=load_manifests(), provider=MockLLMProvider())
+
+    assert {item.objectId for item in intent.dataScope.resourceRefs} == {
+        "structure_bz",
+        "phonon_band_1",
+        "phonon_dos_1",
+    }
+    assert result.outcome.value == "PLAN_READY"
+    assert {item.toolId for item in result.decision.selections} == {
+        "phonon.band",
+        "phonon.band_dos",
+        "phonon.dos",
+        "structure.brillouin_zone",
+    }
+
+
 def test_structure_composition_uses_executable_structure_adapter_not_generic_formula_tool() -> None:
     profile = _resource_profile(
         object_id="structure_composition_exact",

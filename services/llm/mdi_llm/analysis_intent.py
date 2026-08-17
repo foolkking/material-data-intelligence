@@ -1256,6 +1256,7 @@ def _resolve_resources(
     if unknown:
         return [], [], [_diagnostic("RESOURCE_NOT_FOUND", "dataScope.resourceRefs", "A selected resource does not exist.", boundary="MISSING_DATA")], []
     excluded = set(request.constraints.excludeResourceIds)
+    required_bundle_types = _required_profile_resource_bundle_types(request.raw_goal)
     candidates = [item for item in resources if item.objectId not in excluded and _resource_matches(item.kind, item.capabilities, required_kind)]
     # XRD comparison is a bounded same-dataset composition: the Structure is
     # the producer input and the exact Profile-validated experimental XRD
@@ -1273,13 +1274,50 @@ def _resolve_resources(
             if item.objectId not in excluded
             and (_resource_matches(item.kind, item.capabilities, "structure") or item.objectId in experimental_ids)
         ]
+    if required_bundle_types:
+        candidates = [
+            item
+            for item in resources
+            if item.objectId not in excluded and item.objectType.casefold() in required_bundle_types
+        ]
     if selected:
         candidates = [by_id[value] for value in selected if by_id[value].objectId not in excluded]
+        selected_types = {item.objectType.casefold() for item in candidates}
+        if required_bundle_types and not required_bundle_types.issubset(selected_types):
+            return [], [], [_diagnostic("REQUIRED_RESOURCE_MISSING", "dataScope.resourceRefs", "The selected resources do not provide the complete scientific resource bundle.", boundary="MISSING_DATA")], []
         if required_kind and not any(_resource_matches(item.kind, item.capabilities, required_kind) for item in candidates):
             return [], [], [_diagnostic("RESOURCE_KIND_MISMATCH", "dataScope.resourceRefs", "The selected resource has the wrong scientific kind.", boundary="MISSING_DATA")], []
+    if required_bundle_types:
+        candidates_by_type = {
+            object_type: [item for item in candidates if item.objectType.casefold() == object_type]
+            for object_type in required_bundle_types
+        }
+        missing_types = sorted(object_type for object_type, items in candidates_by_type.items() if not items)
+        if missing_types:
+            return [], [], [_diagnostic("REQUIRED_RESOURCE_MISSING", "dataScope.resourceRefs", f"The required scientific resource bundle is missing: {', '.join(missing_types)}.", boundary="MISSING_DATA")], []
+        ambiguous_types = sorted(object_type for object_type, items in candidates_by_type.items() if len(items) > 1)
+        if ambiguous_types and not selected:
+            options = [_resource_option(item) for item in candidates[:32]]
+            ambiguity = IntentAmbiguity(
+                code="RESOURCE_SELECTION_AMBIGUOUS",
+                field="dataScope.resourceRefs",
+                message="Multiple resources can satisfy the requested scientific resource bundle.",
+                candidates=[IntentCandidate(value=item.value, label=item.label, semanticId=item.semanticId) for item in options],
+                blocking=True,
+                source=AmbiguitySource.resource_selection,
+            )
+            question = ClarificationQuestion(
+                questionId="select_scientific_resource_bundle",
+                code="SELECT_RESOURCE",
+                prompt="Which matching scientific resources should be analyzed?",
+                type=ClarificationQuestionType.select_many,
+                options=options,
+                bindsTo="dataScope.resourceRefs",
+            )
+            return [], [ambiguity], [], [question]
     if required_kind and not candidates:
         return [], [], [_diagnostic("REQUIRED_RESOURCE_MISSING", "dataScope.resourceRefs", f"No {required_kind} resource is available.", boundary="MISSING_DATA")], []
-    if required_kind and len(candidates) > 1 and not selected and not _requests_resource_pair(
+    if required_kind and not required_bundle_types and len(candidates) > 1 and not selected and not _requests_resource_pair(
         request.raw_goal,
         required_kind=required_kind,
         candidates=candidates,
@@ -1302,7 +1340,7 @@ def _resolve_resources(
             bindsTo="dataScope.resourceRefs",
         )
         return [], [ambiguity], [], [question]
-    if not required_kind and not selected:
+    if not required_kind and not selected and not required_bundle_types:
         # Dataset-scoped requests bind all exact table resources, never all project resources.
         candidates = [item for item in resources if _resource_matches(item.kind, item.capabilities, "table")][:ANALYSIS_INTENT_MAX_RESOURCE_REFS]
     refs = [
@@ -1539,6 +1577,20 @@ def _requests_resource_pair(goal: str, *, required_kind: str, candidates: Sequen
         object_types = {item.objectType.casefold() for item in candidates}
         return asks_for_xrd and object_types == {"structure", "dataframe"} and len(candidates) == 2
     return False
+
+
+def _required_profile_resource_bundle_types(goal: str) -> set[str]:
+    """Return exact Profile object types for a released composite request."""
+    value = goal.casefold()
+    asks_for_phonon_pair = _contains(value, "phonon", "声子") and (
+        _contains_token(value, "band") or _contains_token(value, "bands")
+    ) and (
+        _contains_token(value, "dos") or "density of states" in value
+    )
+    asks_for_reciprocal_context = _contains(value, "brillouin", "reciprocal", "bz", "布里渊", "倒易")
+    if asks_for_phonon_pair and asks_for_reciprocal_context:
+        return {"phononband", "phonondos", "structure"}
+    return set()
 
 
 def _requests_xrd_resource_pair(goal: str, profile: DataProfile) -> bool:
