@@ -397,10 +397,11 @@ def turn_preflight(case: dict[str, Any], turn: dict[str, Any], profile: Any, reg
     return entry
 
 
-def old_trajectory_reproduction(registry: Any) -> dict[str, Any]:
-    case_dir = R16 / "12_Q-TRAJECTORY-001"
-    case = load_json(case_dir / "CASE.json")
-    metrics = resource_metrics(case_dir, case, "historical_r16_trajectory")
+def old_trajectory_reproduction(registry: Any, *, metrics: dict[str, Any] | None = None) -> dict[str, Any]:
+    if metrics is None:
+        case_dir = R16 / "12_Q-TRAJECTORY-001"
+        case = load_json(case_dir / "CASE.json")
+        metrics = resource_metrics(case_dir, case, "historical_r16_trajectory")
     results = [evaluate_tool_caps(tool_id, registry.get_tool_by_id(tool_id).resourceLimits, metrics) for tool_id in ("trajectory.msd", "trajectory.diffusion", "trajectory.rdf")]
     issues = [issue for result in results for issue in result["issues"]]
     expected = {"REQUIRED_TOOL_FRAME_CAP_EXCEEDED", "REQUIRED_TOOL_PAIR_EVALUATION_CAP_EXCEEDED", "SCIENTIFIC_PARAMETER_INCOMPATIBLE"}

@@ -9,17 +9,19 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from mdi_tool_registry import load_manifests  # noqa: E402
-from phase_bc_r1_7_cap_preflight import evaluate_tool_caps, old_trajectory_reproduction, resource_metrics  # noqa: E402
-from phase_bc_r1_6_executability_preflight import load_json  # noqa: E402
+from phase_bc_r1_7_cap_preflight import evaluate_tool_caps, old_trajectory_reproduction  # noqa: E402
 
 
-R16_PACKAGE = ROOT / "_qualification" / "work" / "phase_bc_r1_6" / "authority_package"
-R17_PACKAGE = ROOT / "_qualification" / "work" / "phase_bc_r1_7" / "authority_package"
+CAP_FIXTURE = ROOT / "tests" / "fixtures" / "release_closure" / "trajectory_cap_metrics.json"
+
+
+def cap_fixture() -> dict:
+    return json.loads(CAP_FIXTURE.read_text(encoding="utf-8"))
 
 
 def test_old_trajectory_is_rejected_by_released_caps_before_execution() -> None:
     registry = load_manifests()
-    result = old_trajectory_reproduction(registry)
+    result = old_trajectory_reproduction(registry, metrics=cap_fixture()["historicalR16"])
 
     assert result["result"] == "PASS_OLD_FAILURE_REPRODUCED"
     assert "REQUIRED_TOOL_FRAME_CAP_EXCEEDED" in result["observedIssueCodes"]
@@ -31,9 +33,7 @@ def test_old_trajectory_is_rejected_by_released_caps_before_execution() -> None:
 
 def test_r17_trajectory_passes_the_same_generic_cap_projection() -> None:
     registry = load_manifests()
-    case_dir = R17_PACKAGE / "12_Q-TRAJECTORY-001"
-    case = load_json(case_dir / "CASE.json")
-    metrics = resource_metrics(case_dir, case, "test_r17_trajectory")
+    metrics = cap_fixture()["currentR17"]
 
     assert metrics["trajectoryFrames"] == 15
     assert metrics["trajectoryAtoms"] == 516

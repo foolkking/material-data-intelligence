@@ -9,7 +9,8 @@
     "align active Planner replays with /analysis and the audit-only run status panel",
     "compare browser and platform replay by structured semantics",
     "remove active Phase 13 digest verification and evidence regeneration from CI",
-    "support an isolated Next.js build output while retaining .next as the default"
+    "support an isolated Next.js build output while retaining .next as the default",
+    "make the committed R1.7 cap regression self-contained with its shared preflight module and a small semantic metrics fixture"
   ],
   "qualificationAuthorityModified": false,
   "phaseEReopened": false,
