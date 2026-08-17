@@ -95,3 +95,12 @@ def test_active_planner_browser_replays_use_supported_analysis_route(repo_root):
     for name, marker in replay_markers.items():
         script = (repo_root / "apps/web/test" / name).read_text(encoding="utf-8")
         assert marker in script
+
+
+def test_artifact_gallery_browser_replay_uses_built_server_and_explicit_readiness(repo_root):
+    script = (repo_root / "apps/web/test/workspace-artifact-gallery-browser-evidence.mjs").read_text(encoding="utf-8")
+
+    assert 'waitUntil: "domcontentloaded", timeout: 90000' in script
+    assert 'run", mode' in script
+    assert 'MDI_PHASE10M4_SERVER_MODE' in script
+    assert '"/workspaces/workspace_gallery"' in script

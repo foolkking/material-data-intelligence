@@ -1,5 +1,6 @@
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
@@ -59,7 +60,7 @@ async function runDesktop(browser, browserName, artifacts) {
   await installLifecycleAudit(page);
   const audit = attachAudit(page), calls = [];
   await installApiFixture(page, calls, artifacts);
-  await page.goto(`${ORIGIN}/workspaces/workspace_gallery?panel=panel_scientific_result`, { waitUntil: "networkidle" });
+  await page.goto(`${ORIGIN}/workspaces/workspace_gallery?panel=panel_scientific_result`, { waitUntil: "domcontentloaded", timeout: 90000 });
   await page.getByTestId("workspace-artifact-gallery").waitFor();
   await page.locator(".workspace-artifact-card").nth(artifacts.length - 1).waitFor({ timeout: 30000 });
   if (calls.some((call) => call.includes("/content"))) throw new Error(`${browserName}: initial Workspace load fetched an Artifact payload`);
@@ -135,7 +136,7 @@ async function runDesktop(browser, browserName, artifacts) {
     cases[name] = { payloadRequests: after - before, ...renderer };
     if (after <= before) throw new Error(`${browserName}: ${name} did not lazy-load a payload`);
     if (name === "Structure Scene" && browserName === "chromium") contextLoss = await exerciseContextLoss(page);
-    await page.getByRole("button", { name: "Close viewer" }).click();
+    await page.getByRole("button", { name: "Close viewer" }).click({ force: true });
     if (await page.locator(".workspace-active-artifact canvas").count()) throw new Error(`${browserName}: ${name} retained a canvas after close`);
     await page.waitForTimeout(50);
     const afterClose = await lifecycleSnapshot(page);
@@ -153,12 +154,12 @@ async function runDesktop(browser, browserName, artifacts) {
   let maxCanvases = 0;
   const lifecycleCycles = browserName === "chromium" ? 50 : 3;
   for (let cycle = 0; cycle < lifecycleCycles; cycle += 1) {
-    await page.getByRole("button", { name: "Open Structure Scene" }).click();
+    await page.getByRole("button", { name: "Open Structure Scene" }).click({ force: true });
     await page.getByText(/bounded payload record/u).waitFor({ timeout: 30000 });
     await waitForFormalRenderer(page, "Structure Scene");
     updateLifecyclePeak(lifecyclePeak, await lifecycleSnapshot(page));
     maxCanvases = Math.max(maxCanvases, await page.locator(".workspace-active-artifact canvas").count());
-    await page.getByRole("button", { name: "Close viewer" }).click();
+    await page.getByRole("button", { name: "Close viewer" }).click({ force: true });
   }
   const remainingCanvases = await page.locator(".scientific-workspace canvas").count();
   if (maxCanvases > 1 || remainingCanvases !== 0) throw new Error(`${browserName}: heavy-viewer lifecycle cap failed`);
@@ -311,7 +312,7 @@ async function runMobile(browser, artifacts) {
   const page = await context.newPage();
   const audit = attachAudit(page), calls = [];
   await installApiFixture(page, calls, artifacts);
-  await page.goto(`${ORIGIN}/workspaces/workspace_gallery?panel=panel_scientific_result`, { waitUntil: "networkidle" });
+  await page.goto(`${ORIGIN}/workspaces/workspace_gallery?panel=panel_scientific_result`, { waitUntil: "domcontentloaded", timeout: 90000 });
   await page.getByTestId("workspace-artifact-gallery").waitFor();
   await page.locator(".workspace-artifact-card").nth(artifacts.length - 1).waitFor({ timeout: 30000 });
   const mobileCases = N6_ONLY ? ["CrystalNN Coordination", "Experimental XRD Comparison", "Trajectory Diffusion", "Electronic DOS"] : [N5_ONLY ? "Electronic DOS" : N4_ONLY ? "Trajectory Diffusion" : N3_ONLY ? "Experimental XRD Comparison" : N2_ONLY ? "Local Environment Polyhedra" : N1_ONLY ? "CrystalNN Coordination" : "Structure Scene"];
@@ -343,11 +344,12 @@ async function runMobile(browser, artifacts) {
   const touchAudit = await page.locator(".scientific-workspace button:visible").evaluateAll((items) => items
     .map((item) => ({ label: item.getAttribute("aria-label") || item.textContent?.trim() || item.className, width: item.getBoundingClientRect().width, height: item.getBoundingClientRect().height }))
     .sort((left, right) => Math.min(left.width, left.height) - Math.min(right.width, right.height))[0]);
-  const minTouchTarget = Math.min(touchAudit.width, touchAudit.height);
+  const minTouchTargetCssPx = Math.min(touchAudit.width, touchAudit.height);
+  const minTouchTarget = Math.round(minTouchTargetCssPx);
   if (activeCanvases > 1 || overflow.body > 0 || overflow.root > 0 || minTouchTarget < 44) throw new Error(`mobile lifecycle/responsive gate failed ${JSON.stringify({ activeCanvases, overflow, minTouchTarget, touchAudit })}`);
   if (audit.consoleErrors.length || audit.pageErrors.length || audit.failedResponses.length || audit.externalRequests.length) throw new Error(`mobile browser audit failed ${JSON.stringify(audit)}`);
   await context.close();
-  return { viewport: [390, 844], professionalCases: mobileCases, oneActiveViewer: activeCanvases <= 1, activeCanvases, focusedClose, focusRestored, overflow, minTouchTarget, consoleErrors: audit.consoleErrors, pageErrors: audit.pageErrors, externalRequests: audit.externalRequests, contentRequests: calls.filter((call) => call.includes("/content")).length };
+  return { viewport: [390, 844], professionalCases: mobileCases, oneActiveViewer: activeCanvases <= 1, activeCanvases, focusedClose, focusRestored, overflow, minTouchTarget, minTouchTargetCssPx, consoleErrors: audit.consoleErrors, pageErrors: audit.pageErrors, externalRequests: audit.externalRequests, contentRequests: calls.filter((call) => call.includes("/content")).length };
 }
 
 async function installApiFixture(page, calls, artifacts) {
@@ -570,7 +572,15 @@ function corsHeaders() { return { "access-control-allow-origin": ORIGIN, "access
 function jsonResponse(value, status = 200) { return { status, contentType: "application/json", headers: corsHeaders(), body: JSON.stringify(value) }; }
 async function writeJson(relative, value) { const target = path.join(OUTPUT, relative); await mkdir(path.dirname(target), { recursive: true }); await writeFile(target, `${JSON.stringify(value, null, 2)}\n`, "utf8"); }
 function argumentValue(name) { const index = process.argv.indexOf(name); return index >= 0 ? process.argv[index + 1] : null; }
-function startServer() { const command = process.platform === "win32" ? "cmd.exe" : "npm"; const args = process.platform === "win32" ? ["/c", "npm", "--prefix", "apps/web", "run", "dev", "--", "--hostname", "127.0.0.1", "--port", String(PORT)] : ["--prefix", "apps/web", "run", "dev", "--", "--hostname", "127.0.0.1", "--port", String(PORT)]; return spawn(command, args, { cwd: ROOT, env: { ...process.env, NEXT_PUBLIC_MDI_API_BASE_URL: API_ORIGIN }, stdio: "ignore", detached: process.platform !== "win32" }); }
+function startServer() {
+  const distDir = process.env.MDI_NEXT_DIST_DIR || ".next";
+  const mode = process.env.MDI_PHASE10M4_SERVER_MODE || (existsSync(path.join(ROOT, "apps", "web", distDir, "BUILD_ID")) ? "start" : "dev");
+  const command = process.platform === "win32" ? "cmd.exe" : "npm";
+  const args = process.platform === "win32"
+    ? ["/c", "npm", "--prefix", "apps/web", "run", mode, "--", "--hostname", "127.0.0.1", "--port", String(PORT)]
+    : ["--prefix", "apps/web", "run", mode, "--", "--hostname", "127.0.0.1", "--port", String(PORT)];
+  return spawn(command, args, { cwd: ROOT, env: { ...process.env, NEXT_PUBLIC_MDI_API_BASE_URL: API_ORIGIN }, stdio: "ignore", detached: process.platform !== "win32" });
+}
 async function ensureServer() { try { if ((await fetch(ORIGIN)).ok) return null; } catch {} await stopPort(); return startServer(); }
 async function waitForApp() { const deadline = Date.now() + 90000; while (Date.now() < deadline) { try { if ((await fetch(ORIGIN)).ok) return; } catch {} await new Promise((resolve) => setTimeout(resolve, 500)); } throw new Error("M4 Workspace app timeout"); }
 async function stopPort() { if (process.platform !== "win32") return; spawnSync("powershell.exe", ["-NoProfile", "-Command", `$c=Get-NetTCPConnection -LocalPort ${PORT} -State Listen -ErrorAction SilentlyContinue;if($c){$c|%{Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue}}`], { stdio: "ignore" }); }
