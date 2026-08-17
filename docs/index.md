@@ -25,18 +25,7 @@ Scope, input-support, or limitation authorities.
 ## System Qualification Audit
 
 - [Qualification integrity policy](qualification/QUALIFICATION_INTEGRITY_POLICY.md)
-- [Phase B/C-R1.6 qualification authority result](../_qualification/evidence/phase_bc_r1_6/PHASE_BC_R1_6_RESULT.md)
-- [Phase B/C-R1.6 all-case executability preflight](../_qualification/evidence/phase_bc_r1_6/ALL_CASE_EXECUTABILITY_PREFLIGHT.json)
-- [Phase B/C-R1.6 qualification package](../_qualification/inputs/Phase_BC_R1_6_Qualification_Authority_Reconciled.zip)
-- [Phase D R1.6 environment re-seal](../_qualification/evidence/phase_d/attempt_09_r1_6_reseal/PHASE_D_RESEAL_RESULT.md)
-- [Phase B/C-R1.4 full executability preflight](../_qualification/evidence/phase_bc_r1_4/attempt_01_authority_preflight/ALL_CASE_EXECUTABILITY_PREFLIGHT.json)
-- [Phase B/C-R1.1 contract-hygiene result](../_qualification/evidence/phase_bc_r1_1/PHASE_BC_R1_1_RESULT.md)
-- [Phase B/C-R1.1 cross-field audit](../_qualification/evidence/phase_bc_r1_1/CROSS_FIELD_CONSISTENCY_AUDIT.json)
-- [Phase B/C-R1.1 qualification package](../_qualification/inputs/Phase_BC_R1_1_Qualification_Authority_Reconciled.zip)
-- [Phase B/C-R1 reconciliation result](../_qualification/evidence/phase_bc_r1/PHASE_BC_R1_RESULT.md)
-- [Phase B/C-R1 all-case authority audit](../_qualification/evidence/phase_bc_r1/ALL_CASE_AUTHORITY_AUDIT.json)
-- [Phase B/C-R1 corrected qualification package](../_qualification/inputs/Phase_BC_R1_Qualification_Authority_Reconciled.zip)
-- [Phase D-R1 durable namespace remediation evidence](../_qualification/evidence/phase_d_r1/PHASE_D_R1_RESULT.md)
+- Frozen Phase B/C/D/E qualification packages and forensic evidence remain preserved in the local `_qualification/` archive; they are historical records, not current repository authorities or release gates.
 - [Phase A repository capability census](qualification/phase_a_repository_capability_census/README.md)
 - [System Qualification Capability Manifest](qualification/phase_a_repository_capability_census/SystemQualificationCapabilityManifest.md)
 - [Phase B external-data research handoff](qualification/phase_a_repository_capability_census/phase_b_external_qualification_dataset_research_handoff.json)

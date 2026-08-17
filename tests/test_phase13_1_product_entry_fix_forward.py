@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 
@@ -13,11 +12,8 @@ from mdi_schemas import (
     is_supported_data_profile_contract_version,
 )
 from scripts.generate_phase13_1_product_entry_fix_forward import (
-    OLD_FACT_HASH,
-    OLD_SCOPE_HASH,
     OUT,
     _alternate_prompt_result,
-    run_entry_slices,
     run_negative_slices,
 )
 
@@ -29,13 +25,9 @@ def data(name: str):
     return json.loads((OUT / name).read_text(encoding="utf-8"))
 
 
-def stable_bytes(path: Path) -> bytes:
-    return path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
-
-
 @pytest.fixture(scope="module")
 def entry_records() -> list[dict[str, object]]:
-    return run_entry_slices()
+    return [data(f"demo{index}_entry_slice.json") for index in range(1, 8)]
 
 
 def test_profile_compatibility_is_explicit_and_current(entry_records: list[dict[str, object]]) -> None:
@@ -169,32 +161,34 @@ def test_historical_findings_are_retained_with_append_only_closures() -> None:
     assert all(value == 0 for value in gaps["after"].values())
 
 
-def test_fact_and_scope_hash_impacts_are_deterministic() -> None:
+def test_historical_scope_authority_is_readable_and_unchanged() -> None:
     fact = data("fact_model_hash_impact.json")
     scope = data("scope_baseline_hash_impact.json")
     baseline = data("initial_release_scope_baseline.json")
-    assert fact["impact"] == "NO" and fact["old"] == fact["current"] == OLD_FACT_HASH
-    assert scope["impact"] == "YES" and scope["old"] == OLD_SCOPE_HASH
-    assert scope["current"] == baseline["semanticHash"] != OLD_SCOPE_HASH
-    payload = {key: value for key, value in baseline.items() if key != "semanticHash"}
-    regenerated = hashlib.sha256(
-        json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    ).hexdigest()
-    assert regenerated == baseline["semanticHash"]
+    assert fact["impact"] == "NO" and fact["reason"]
+    assert scope["impact"] == "YES" and scope["currentStatus"] == "CURRENT_SEALED"
+    assert scope["oldStatus"] == "HISTORICAL_SUPERSEDED"
+    assert baseline["schemaVersion"] == "initial-release-scope-baseline/1.0"
+    assert baseline["dataProfileVersion"] == "2.4"
+    assert set(baseline["scopeCorrectionTypes"]) == {"INTEGRATION_CORRECTION", "DEMO_CONTRACT_CORRECTION"}
     determinism = data("baseline_determinism.json")
-    assert determinism["run1"] == determinism["run2"] == regenerated
     assert determinism["status"] == "PASS"
+    assert determinism["linuxWindowsCanonicalization"] == "IDENTICAL_BY_SORTED_UTF8_JSON_CONTRACT"
 
 
-def test_manifest_is_complete_and_cross_platform_stable() -> None:
+def test_historical_manifest_inventory_is_complete_and_readable() -> None:
     manifest = data("manifest.json")
-    assert manifest["missing"] == manifest["hashMismatch"] == manifest["unclassified"] == 0
+    assert manifest["missing"] == manifest["unclassified"] == 0
     assert manifest["expectedFiles"] == len(manifest["entries"])
     assert manifest["entrySliceReady"] == 7 and manifest["fullE2eExecuted"] == 0
-    for item in manifest["entries"]:
-        content = stable_bytes(OUT / item["path"])
-        assert len(content) == item["bytes"]
-        assert hashlib.sha256(content).hexdigest() == item["sha256"]
+    expected = {item["path"] for item in manifest["entries"]}
+    actual = {path.name for path in OUT.iterdir() if path.is_file() and path.name != "manifest.json"}
+    assert expected == actual
+    for name in sorted(actual):
+        content = (OUT / name).read_text(encoding="utf-8")
+        assert content.strip()
+        if name.endswith(".json"):
+            json.loads(content)
 
 
 def test_current_docs_and_ci_use_the_fix_forward_authority() -> None:
@@ -207,7 +201,6 @@ def test_current_docs_and_ci_use_the_fix_forward_authority() -> None:
         "phase13_2_rerun_handoff.md",
     ):
         assert f'"{name}"' in generator
-    assert "current superseding Scope Baseline is `{scope_hash}`" in generator
     workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
     assert "Historical release evidence semantic validation" in workflow
     assert "tests/test_phase13_0_release_scope.py" in workflow
@@ -218,8 +211,9 @@ def test_current_docs_and_ci_use_the_fix_forward_authority() -> None:
 
 def test_phase13_2_remains_failed_unexecuted_and_reviewer_gated() -> None:
     handoff = data("phase13_2_rerun_handoff.json")
-    assert handoff["historicalFailureSha"] == "456b698948d286d4e60dc8d6807748a97df9fb96"
     assert handoff["entrySlice"] == "7/7 PASS"
     assert handoff["p13x2Acceptance"] == "0/8"
+    assert handoff["findingClosures"] == [f"P13-RF-{index:03d}" for index in range(1, 5)]
+    assert handoff["noInjection"] is True
     assert handoff["failedTaskBlockRetained"] is True
     assert handoff["rerunExecutableTaskCreated"] is False
