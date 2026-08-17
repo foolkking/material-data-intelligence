@@ -22,4 +22,3 @@ def get_project_history(
     if owner_id and owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Current user cannot access this Project.")
     return ProjectHistoryService(repositories).build(project_id)
-
