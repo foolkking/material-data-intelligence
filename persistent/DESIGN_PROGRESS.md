@@ -1,5 +1,93 @@
 # DESIGN_PROGRESS
 
+## 2026-08-16 Q-TABLE Property-Target Closure / R1.6 / Phase D R1.6
+
+- [x] Add the bounded AnalysisIntent 1.1 exact current-Profile material-property target contract.
+- [x] Preserve AnalysisIntent 1.0 readability and reject invented, ambiguous, stale, cross-dataset, and non-property targets.
+- [x] Prove four natural Q-TABLE turns bind only their required existing Tools.
+- [x] Re-run the deterministic all-16 Case/26-turn preflight: PASS with one valid expected rejection.
+- [x] Freeze the content-and-contract R1.6 authority with a 16-Case sorted inventory and no active qualification digest artifacts.
+- [x] Pass a new Phase D re-seal using a fresh migrated PostgreSQL namespace, Redis, MinIO, API, Worker, provider configuration, and browser readiness.
+- [x] Keep real LLM calls, formal qualification submissions, Jobs, ToolCalls, Artifacts, Reports, and Recipes at zero.
+- [ ] Phase E remains a separate Reviewer authorization and is not queued by this work.
+
+## 2026-08-16 Phase B/C-R1.5 Comprehensive Authority Reconciliation
+
+- [x] Classify all seven R1.4 blockers before implementing corrections.
+- [x] Reconcile the ML fixture/question paths, XRD planned dependency model,
+  trajectory parser implementation defect, phonon ordering metadata, and the
+  stale seven-demo preflight expectation without scientific support expansion.
+- [x] Rerun the non-LLM all-16 Case/26-turn preflight: 15 Cases pass.
+- [ ] R1.5 refreeze and Phase D re-seal: blocked only by the Q-TABLE
+  normal-user material-property target-binding contract gap requiring Reviewer
+  authority.
+
+No live provider call, formal qualification Job, ToolCall, Artifact, Phase D,
+or Phase E execution occurred.
+
+## 2026-08-16 Phase B/C-R1.4 Full Executability Preflight
+
+- [x] Replace active qualification digest gates with content-and-contract validation policy.
+- [x] Reproduce the old R1.2 Q-TABLE failure and test the JARVIS candidate with explicit natural-language property targets.
+- [x] Run the non-LLM, non-formal preflight over all 16 Cases and one expected-rejection contract.
+- [ ] R1.4 refreeze and Phase D re-seal: blocked by seven current authority conflicts.
+
+No production semantic authority, frozen package, live provider path, Job, or
+Artifact changed during the preflight.
+
+## 2026-08-16 Phase B/C-R1.1 Qualification Authority Hygiene
+
+- [x] Preserve the R1 package and verify its exact SHA-256.
+- [x] Confirm the single stale report alias in `Q-ATOMIC-VIEW-001`.
+- [x] Define `required*` as canonical and retained `expected*` as exact mirrors.
+- [x] Audit all 16 Cases for alias, turn-union, count, Plan-cap, and rejection consistency.
+- [x] Harden the non-production validator with the six requested contradiction classes.
+- [x] Preserve six multi-turn scenarios and publish ordered live-submission authority.
+- [x] Build and extract-verify the deterministic R1.1 package with protected bytes unchanged.
+- [x] Reproduce and classify the same 20 unrelated historical full-suite failures.
+- [ ] Phase D reseal and Phase E execution remain separately authorized.
+
+## 2026-08-16 Phase B/C-R1 Qualification Authority Reconciliation
+
+- [x] Reproduce `PHASE_E-AUTH-001` from the CSV/Structure input mismatch and 7/4 Plan-cap contradiction.
+- [x] Audit all 16 primary Cases against current Registry, Planner, input, Artifact, Renderer, Report, and Recipe authority.
+- [x] Separate `requiredExecutionTools`, `allowedExecutionTools`, `forbiddenExecutionTools`, and campaign coverage contributions.
+- [x] Preserve all Phase B scientific/source/upload/provenance/license bytes.
+- [x] Add a static executable-contract validator with input, companion, cap, Artifact, Renderer, support, identity, and drift gates.
+- [x] Freeze a deterministic schema-1.1 package with zero case/root hash mismatches and a distinct external SHA-256.
+- [x] Retain Phase E discovery evidence without counting it as final qualification evidence.
+
+The 16 primary Cases are ready for future qualification: 15 supported analyses
+and one expected pre-Plan rejection. Primary campaign potential is 45 of 47
+Planner-available Tools; `phonon.animation` and
+`structure.composition_from_structure` require separately authorized
+supplemental scenarios rather than distorted primary Cases. Phase E was not run.
+
+## 2026-08-16 Phase E Discovery and Authority Stop
+
+- [x] Run real-browser discovery through `Q-DATASET-001` and `Q-COMPOSITION-001`.
+- [x] Add focused regressions for six observed routing/planning/interpretation defects.
+- [x] Preserve each runtime candidate as an immutable local commit.
+- [x] Verify `Q-DATASET-001` discovery end to end on candidate `8768f54`.
+- [x] Classify the Case 2 CSV/Structure and seven-step/four-step contradictions.
+- [x] Stop under `BLOCKED_AUTHORITY_CONFLICT` without mutating Phase B/C inputs.
+- [x] Reviewer authorized and Phase B/C-R1 produced a separately versioned corrected authority.
+- [ ] A new Phase E campaign remains separately reviewer-gated.
+
+## 2026-08-16 Phase D-R1 Durable Namespace Migration/Bootstrap
+
+- [x] Compare SQLAlchemy metadata and production repository requirements with a database upgraded through Alembic 0007.
+- [x] Identify missing `users`/`organizations`, Project foreign keys/index, and process-local Project route wiring.
+- [x] Add forward migration `0008_phase_d_r1_namespace` with existing-project identity backfill.
+- [x] Route PostgreSQL-mode Project create/list through the production SQL repository.
+- [x] Verify empty-db base-to-head and 0007-to-head PostgreSQL migration paths.
+- [x] Verify durable Project reload, empty Workspace history, and process-restart survival.
+- [x] Remove service-test actor-table DDL workarounds and bind current service assertions to 0008.
+
+No scientific, qualification fixture, Registry, parser, Planner, Adapter,
+Artifact, renderer, Report/Recipe, provider, dependency, or lockfile authority
+changed. Phase D Attempt 5 and Phase E remain unexecuted.
+
 ## 2026-08-10 Phase 12-5 Report/Recipe Implementation
 
 - [x] Verify Phase 12-4 implementation and exact-SHA CI.
@@ -2428,3 +2516,97 @@ task exists, and queue archive is the only remaining lifecycle action.
 Completion commit `7159e0c16de514b73524ef158d6761897d94cf31` is pushed and
 the completed Phase13-6 task block is archived. The queue is empty, the Initial
 Release is complete, and no next executable phase is created.
+
+# 2026-08-14 Phase A Repository Capability Census
+
+The repository-only capability census is complete. It defines 18 user-level
+capability families, mechanically inventories 62 Registry Tools and 42 renderer
+contracts, and proposes 36 grounded qualification cases with a 16-case minimum
+external-data set. Eight P2 qualification-design gaps remain explicit, chiefly
+the lack of a normal-user execution-ready phonon eigenvector import and its
+three animation Artifact/renderers. Phase B data research is ready but remains
+unexecuted and unqueued.
+
+## 2026-08-16 Phase D Live Qualification Environment Seal
+
+Phase D closed on committed candidate
+`54c66abc499c646dc27b612dbf28747b176177c8`. D-R1 migration commit
+`d83cb5ffa4c164c01f31de3a181c2e28a51226f4` restores durable namespace
+persistence, and the final remediation adds a cross-platform RQ worker
+entrypoint. Attempt 6 independently reverified all 16 frozen qualification
+contracts, durable services, fresh migration, empty durable namespace,
+current-SHA backend/frontend/worker, provider configuration, and browser shell.
+The environment is sealed and ready for Phase E; no qualification case or live
+LLM call was executed.
+
+## 2026-08-16 Phase D-R2.1 and R1.2 Re-Seal
+
+Normal-user input transport now preserves bounded binary bytes and atomically
+publishes parser/contract-identified companion resources into one Dataset. The
+final committed product candidate is
+`51e45c9436bef73f0c8ea1ccc5eb681dba1d21b8`; R1.2 package SHA-256 is
+`7a77b1db55c93454b97914bae3ee9d30e0f08ccc38bfd986c5907f65e38d1d04`.
+The R1.2 Phase D environment passed fresh migration, durable service, worker,
+namespace, provider, and actual Chrome transport gates with zero formal
+qualification execution or LLM calls. Phase E remains unstarted.
+
+## 2026-08-16 Phase E-R1.2 Composition Routing Remediation
+
+The fresh R1.2 discovery campaign passed Q-DATASET-001 and exposed a product
+semantic-routing defect in Q-COMPOSITION-001. Source wording such as
+"materials table" was incorrectly promoted to `dataset_overview`, allowing the
+broad Dataset Materials Explorer to displace explicit formula, element, and
+chemical-system analysis. The application-owned Intent reconciliation now
+removes that overreach for composition-only table requests, and the Planner
+routes the three explicit delivery forms to their already-registered composition
+Tools. Registry, Plan versions/cap, scientific support, and the frozen R1.2
+package remain unchanged.
+
+## 2026-08-16 Phase E-R1.2 Authority Hard Stop
+
+Q-TABLE-001 exposed `PHASE_E_R12_AUTH_001`: its frozen Case requires
+material-property-bound table Tools, but its normal-user CSV produces no
+`material_property` Profile columns and the product has no column-role mapping
+entry. Correcting this would change qualification-relevant DataProfile or
+ToolPlannerMetadata authority, or the frozen package itself. The campaign is
+therefore blocked after two discovery PASS Cases; later Cases, final CI, final
+Phase D, and final exact-SHA requalification were not started.
+
+## 2026-08-16 Phase B/C-R1.3 Q-TABLE Binding Preflight
+
+The fixture-only replacement route reached a second authority conflict rather
+than a product defect. Current Profile semantics accept a real JARVIS table
+projected to `formation_energy`, `band_gap`, and `density`, but the frozen
+summary/distribution/correlation turns are not current deterministic Intent
+phrases and the frozen scatter turn lacks exact distinct x/y target authority.
+No semantic aliases, planner metadata, intent vocabulary, tool contracts, or
+qualification package were altered. R1.3 is blocked pending Reviewer contract
+reconciliation; Phase D and Phase E remain unstarted.
+
+## 2026-08-17 Phase B/C-R1.7 and Phase D Re-Seal
+
+The trajectory authority conflict was closed without expanding product science.
+Registry resource-limit metadata now exposes the Adapter's existing 200-frame,
+5000-atom trajectory analytics bounds. R1.7 replaces the incompatible positive
+analytics fixture with a deterministic contiguous 15-frame source window that
+also satisfies the 2,000,000 RDF pair-evaluation budget. No runtime truncation,
+resampling, atom subsetting, or algorithm change was introduced.
+
+The generic executability preflight now checks bound Tool parameters against
+frame, atom, pair, bin, lag, origin, fit-point, input, and output limits and
+models planned dependencies. It reproduces the R1.6 trajectory failure before
+execution and passes the replacement fixture. The full 16-Case/26-turn preflight
+and an independent Phase D rerun pass. Browser import readiness confirms the
+new trajectory Profile; no formal qualification execution or real LLM call was
+made. Phase E remains outside this task.
+## 2026-08-17 Project History and Dataset Workbench
+
+- Added a durable ProjectHistoryView read model linking imported files and
+  normalized resources to DataProfile, analysis jobs, Workspaces, Artifacts,
+  Interpretations, Reports, Recipes, and activity.
+- Added the project home and a distinct selected-dataset workbench. The latter
+  shows the four user-facing process stages, record summary, result/report
+  counts, and retains the existing validated Planner entry.
+- Removed duplicate run actions from the Planner surface and replaced repeated
+  example labels with selectable natural-language examples. Internal statuses
+  are translated at the UI boundary while API contracts remain stable.

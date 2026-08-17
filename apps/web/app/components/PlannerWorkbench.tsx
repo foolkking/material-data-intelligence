@@ -105,7 +105,17 @@ const examplePromptKeys: MessageKey[] = ["examplePromptMetrics", "examplePromptE
 const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
 const DEEPSEEK_MODELS = ["deepseek-v4-flash", "deepseek-v4-pro"] as const;
 
-export function PlannerWorkbench() {
+export type PlannerWorkbenchProps = {
+  initialProjectId?: string;
+  initialDatasetId?: string;
+  showGlobalContextBar?: boolean;
+};
+
+export function PlannerWorkbench({
+  initialProjectId,
+  initialDatasetId,
+  showGlobalContextBar = true,
+}: PlannerWorkbenchProps = {}) {
   const [locale, setLocale] = useState<Locale>("zh-CN");
   const t = useMemo(() => createTranslator(locale), [locale]);
   const examplePrompts = useMemo(() => examplePromptKeys.map((key) => t(key)), [t]);
@@ -119,8 +129,8 @@ export function PlannerWorkbench() {
   const [leftPanelWidth, setLeftPanelWidth] = useState(332);
   const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
 
-  const [projectId, setProjectId] = useState("project_local");
-  const [datasetId, setDatasetId] = useState("");
+  const [projectId, setProjectId] = useState(initialProjectId || "project_local");
+  const [datasetId, setDatasetId] = useState(initialDatasetId || "");
   const [profileId, setProfileId] = useState("");
   const [datasets, setDatasets] = useState<DatasetOption[]>([]);
   const [profile, setProfile] = useState<DataProfileSummary | null>(null);
@@ -302,6 +312,37 @@ export function PlannerWorkbench() {
     if (datasetResult.status === "fulfilled") setDatasets(datasetResult.value);
     if (providersResult.status === "fulfilled") setProviderOptions(providersResult.value.providers);
     if (statusResult.status === "fulfilled") setProviderStatus(statusResult.value);
+    const restoredJobId = restoredJobIdFromLocation();
+    if (!restoredJobId) {
+      if (initialDatasetId) await selectDataset(initialDatasetId);
+      return;
+    }
+    try {
+      const restored = await refreshSnapshot(restoredJobId);
+      const restoredJob = restored.job;
+      if (!restoredJob) throw new Error("The requested persisted Job is unavailable.");
+      const restoredDatasetId = restoredJob.datasetId || restoredJob.analysisPlan?.datasetId || "";
+      const restoredProfileId = restoredJob.analysisIntent?.dataScope.profileId
+        || restoredJob.analysisPlan?.profileId
+        || restoredDatasetId;
+      setProjectId(restoredJob.projectId || "project_local");
+      setDatasetId(restoredDatasetId);
+      setProfileId(restoredProfileId);
+      setPrompt(restoredJob.analysisIntent?.rawGoal || restoredJob.analysisPlan?.goal || "");
+      setAnalysisIntent(restoredJob.analysisIntent || null);
+      setSelectedChunkId(restored.artifacts.length ? "result_reference" : restoredJob.analysisPlan ? "plan_preview" : "user_request");
+      setActiveMainTab(restored.artifacts.length ? "results_export" : "agent_process");
+      setDataMessage(t("datasetProfileLoaded"));
+      if (restoredDatasetId) {
+        try {
+          setProfile(await getDatasetProfile(restoredDatasetId));
+        } catch {
+          setProfile(null);
+        }
+      }
+    } catch (error) {
+      setSubmitError(error as Error);
+    }
   }
 
   async function refreshDatasets() {
@@ -653,6 +694,7 @@ export function PlannerWorkbench() {
       data-phase1-shell-labels="Validated Plan Preview; Plan Provenance; Agent Timeline; Tool Calls; Artifact Gallery; Report / Recipe Summary; No deterministic fallback used"
     >
       <a className="skip-link" href="#planner-primary-content">{t("skipToAnalysis")}</a>
+      {showGlobalContextBar ? (
       <GlobalContextBar
         t={t}
         locale={locale}
@@ -669,6 +711,7 @@ export function PlannerWorkbench() {
         activeTab={activeMainTab}
         onSelectTab={setActiveMainTab}
       />
+      ) : null}
 
       <section
         id="planner-primary-content"
@@ -1396,6 +1439,10 @@ function ConversationPlanTab(props: {
   enqueued?: boolean;
 }) {
   const { t } = props;
+  const runBlocked = Boolean(
+    (props.intent && props.intent.outcome !== "READY")
+    || (props.capabilityOutcome && props.capabilityOutcome !== "PLAN_READY")
+  );
   return (
     <div className="conversation-plan-tab" data-testid="conversation-plan-tab">
       <PlannerStageRail
@@ -1410,16 +1457,17 @@ function ConversationPlanTab(props: {
         <PanelHeading title={t("promptTitle")} badge={props.providerLabel} />
         <textarea aria-label={t("promptTitle")} value={props.prompt} onChange={(event) => props.setPrompt(event.target.value)} placeholder={t("promptPlaceholder")} />
         <div className="prompt-examples">
-          {props.examples.map((example) => (
-            <button key={example} type="button" className="secondary" onClick={() => props.setPrompt(example)}>
-              {t("examplePrompt")}
+          {props.examples.map((example, index) => (
+            <button key={example} type="button" className="secondary prompt-example-button" title={example} onClick={() => props.setPrompt(example)}>
+              <span className="prompt-example-index">{index + 1}</span>
+              <span>{example}</span>
             </button>
           ))}
         </div>
         <p className="subtle">
           {props.providerLabel} · {props.datasetLabel}
         </p>
-        <button type="button" onClick={props.onSubmit} disabled={props.submitting}>
+        <button type="button" onClick={props.onSubmit} disabled={props.submitting || runBlocked}>
           {props.submitting ? t("submitting") : t("createAndRun")}
         </button>
       </section>
@@ -1463,12 +1511,8 @@ function ConversationPlanTab(props: {
         planHash={props.planHash}
         enqueued={props.enqueued}
         status={props.jobStatus}
-        onRun={props.onSubmit}
         submitting={props.submitting}
-        blocked={Boolean(
-          (props.intent && props.intent.outcome !== "READY")
-          || (props.capabilityOutcome && props.capabilityOutcome !== "PLAN_READY")
-        )}
+        blocked={runBlocked}
       />
     </div>
   );
@@ -2000,20 +2044,18 @@ function ValidationResultPanel({ t, errors }: { t: ReturnType<typeof createTrans
   );
 }
 
-function RunControls(props: { t: ReturnType<typeof createTranslator>; jobId: string; planId: string; planHash: string; enqueued?: boolean; status: string; submitting: boolean; blocked: boolean; onRun: () => Promise<void> }) {
+function RunControls(props: { t: ReturnType<typeof createTranslator>; jobId: string; planId: string; planHash: string; enqueued?: boolean; status: string; submitting: boolean; blocked: boolean }) {
   const { t } = props;
   return (
     <section className="panel" data-testid="run-controls">
       <PanelHeading title={t("runControls")} badge={statusLabel(props.status, t)} />
       <dl className="mini-grid">
-        <Field label="jobId" value={props.jobId || t("emptyJob")} />
-        <Field label="planId" value={props.planId || t("emptyProvenance")} />
-        <Field label="planHash" value={props.planHash || t("emptyProvenance")} />
-        <Field label="enqueued" value={String(Boolean(props.enqueued))} />
+        <Field label="任务 ID" value={props.jobId || t("emptyJob")} />
+        <Field label="计划 ID" value={props.planId || t("emptyProvenance")} />
+        <Field label="计划审计" value={props.planHash || t("emptyProvenance")} />
+        <Field label="队列状态" value={props.enqueued ? "已进入队列" : "未进入队列"} />
       </dl>
-      <button type="button" onClick={props.onRun} disabled={props.submitting || props.blocked}>
-        {props.submitting ? t("submitting") : t("createAndRun")}
-      </button>
+      <p className="run-controls-note">运行入口位于上方需求提交区；此处仅保留任务状态与审计信息。</p>
     </section>
   );
 }
@@ -2726,6 +2768,11 @@ function buildConversationChunks(input: {
 
 function maxSeq(events: JobEvent[]) {
   return events.reduce((max, event) => Math.max(max, Number(event.seq || 0)), 0);
+}
+
+function restoredJobIdFromLocation(): string {
+  const value = new URLSearchParams(window.location.search).get("jobId") || "";
+  return /^job_[A-Za-z0-9_-]{1,59}$/u.test(value) ? value : "";
 }
 
 function safeEvent(value: string): JobEvent | null {

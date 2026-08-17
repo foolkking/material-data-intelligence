@@ -22,6 +22,44 @@ These documents resolve current release authority. Phase documents and evidence
 below preserve design and forensic history and do not override current Fact,
 Scope, input-support, or limitation authorities.
 
+## System Qualification Audit
+
+- [Qualification integrity policy](qualification/QUALIFICATION_INTEGRITY_POLICY.md)
+- [Phase B/C-R1.6 qualification authority result](../_qualification/evidence/phase_bc_r1_6/PHASE_BC_R1_6_RESULT.md)
+- [Phase B/C-R1.6 all-case executability preflight](../_qualification/evidence/phase_bc_r1_6/ALL_CASE_EXECUTABILITY_PREFLIGHT.json)
+- [Phase B/C-R1.6 qualification package](../_qualification/inputs/Phase_BC_R1_6_Qualification_Authority_Reconciled.zip)
+- [Phase D R1.6 environment re-seal](../_qualification/evidence/phase_d/attempt_09_r1_6_reseal/PHASE_D_RESEAL_RESULT.md)
+- [Phase B/C-R1.4 full executability preflight](../_qualification/evidence/phase_bc_r1_4/attempt_01_authority_preflight/ALL_CASE_EXECUTABILITY_PREFLIGHT.json)
+- [Phase B/C-R1.1 contract-hygiene result](../_qualification/evidence/phase_bc_r1_1/PHASE_BC_R1_1_RESULT.md)
+- [Phase B/C-R1.1 cross-field audit](../_qualification/evidence/phase_bc_r1_1/CROSS_FIELD_CONSISTENCY_AUDIT.json)
+- [Phase B/C-R1.1 qualification package](../_qualification/inputs/Phase_BC_R1_1_Qualification_Authority_Reconciled.zip)
+- [Phase B/C-R1 reconciliation result](../_qualification/evidence/phase_bc_r1/PHASE_BC_R1_RESULT.md)
+- [Phase B/C-R1 all-case authority audit](../_qualification/evidence/phase_bc_r1/ALL_CASE_AUTHORITY_AUDIT.json)
+- [Phase B/C-R1 corrected qualification package](../_qualification/inputs/Phase_BC_R1_Qualification_Authority_Reconciled.zip)
+- [Phase D-R1 durable namespace remediation evidence](../_qualification/evidence/phase_d_r1/PHASE_D_R1_RESULT.md)
+- [Phase A repository capability census](qualification/phase_a_repository_capability_census/README.md)
+- [System Qualification Capability Manifest](qualification/phase_a_repository_capability_census/SystemQualificationCapabilityManifest.md)
+- [Phase B external-data research handoff](qualification/phase_a_repository_capability_census/phase_b_external_qualification_dataset_research_handoff.json)
+
+Phase A is a repository-grounded qualification design audit. It does not reopen
+the Initial Release, acquire external data, run browser qualification, or make
+scientific validation claims.
+
+Phase B/C-R1 supersedes only the old package's future execution authority. The
+old package and Phase E discovery evidence remain immutable history. R1 changes
+qualification contracts, not product or scientific support, and executes no
+live qualification Case.
+
+Phase B/C-R1.1 supersedes R1 only for future qualification execution. It keeps
+`required*` fields as canonical Case requirements, requires retained
+`expected*` compatibility aliases to mirror them exactly, and defines the
+ordered `executionTurns[]` questions as the live Planner submissions. R1 and
+all protected scientific/source/provenance bytes remain immutable history.
+
+Phase D-R1 is a narrowly scoped post-release migration/bootstrap remediation.
+Its current runtime head is `0008_phase_d_r1_namespace`; the sealed Phase 13
+Initial Release records remain immutable historical evidence at migration 0007.
+
 ## Phase 12 Current UX Implementation
 
 - [Phase 12-4 Findings, Evidence, Inspector and Provenance](phase12/phase12_4_findings_evidence_inspector_provenance.md)
@@ -839,3 +877,11 @@ and
 | [`phase13/phase13_3_documentation_reproducibility_handoff.md`](phase13/phase13_3_documentation_reproducibility_handoff.md) | Reviewer-gated Phase 13-3 handoff; no executable task created |
 | [`phase13/phase13_4_targeted_final_product_polish_handoff.md`](phase13/phase13_4_targeted_final_product_polish_handoff.md) | Phase 13-3 evidence-bounded polish candidates and reviewer authority |
 | [`phase13/phase13_5_final_regression_release_acceptance_handoff.md`](phase13/phase13_5_final_regression_release_acceptance_handoff.md) | Reviewer-gated Phase 13-5 final regression handoff; no executable task created |
+
+## Current Product Experience
+
+| Document / surface | Purpose |
+| --- | --- |
+| [`13_SHARED_SCHEMA_SPEC.md`](13_SHARED_SCHEMA_SPEC.md#projecthistoryview10) | Durable project-history projection and privacy boundary |
+| `apps/web/app/components/ProjectHome.tsx` | Project-level history, data records, activity, and resumable links |
+| `apps/web/app/components/DatasetWorkbenchPage.tsx` | Selected-dataset process view with import/Profile/analysis/result state |

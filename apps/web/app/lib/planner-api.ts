@@ -615,11 +615,110 @@ export type DatasetOption = {
   fileCount?: number;
   objectCount?: number;
   profileId?: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type DatasetDetail = DatasetOption & {
   demo?: boolean;
   files?: Array<Record<string, unknown>>;
+};
+
+export type ProjectSummary = {
+  id: string;
+  projectId?: string;
+  name: string;
+  role?: string;
+  description?: string | null;
+  status?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+};
+
+export type ProjectHistory = {
+  schemaVersion: string;
+  project: ProjectSummary;
+  summary: {
+    datasetCount: number;
+    analysisCount: number;
+    completedAnalysisCount: number;
+    artifactCount: number;
+    workspaceCount: number;
+    reportCount: number;
+    lastActivityAt?: string | null;
+  };
+  datasets: Array<{
+    datasetId: string;
+    name: string;
+    status: string;
+    createdAt?: string | null;
+    updatedAt?: string | null;
+    analysisCount: number;
+    lastAnalysisStatus?: string | null;
+    process: Array<{
+      key: string;
+      label: string;
+      status: string;
+      detail: string;
+    }>;
+    resultSummary: {
+      artifactCount: number;
+      workspaceCount: number;
+      interpretationCount: number;
+      reportCount: number;
+      recipeCount: number;
+      artifactTypes: string[];
+      latestReportStatus?: string | null;
+    };
+    import: {
+      fileCount: number;
+      files: Array<Record<string, unknown>>;
+      resources: Array<Record<string, unknown>>;
+      parseOutcome: string;
+    };
+    profile?: {
+      profileId?: string;
+      version?: string;
+      profileContractVersion?: string;
+      datasetType?: string;
+      rowCount?: number;
+      columnCount?: number;
+      objectCount?: number;
+      semanticRoles?: Record<string, number>;
+      readyCapabilities?: string[];
+      blockedCapabilities?: string[];
+      warnings?: string[];
+    } | null;
+  }>;
+  analyses: Array<{
+    jobId: string;
+    datasetId?: string;
+    status: string;
+    createdAt?: string | null;
+    updatedAt?: string | null;
+    userQuestion?: string | null;
+    toolIds: string[];
+    stepCount: number;
+    artifactCount: number;
+    artifactTypes: string[];
+    interpretationCount: number;
+    reportCount: number;
+    recipeCount: number;
+    workspaceId?: string | null;
+    workspaceTitle?: string | null;
+  }>;
+  activity: Array<{
+    activityId: string;
+    kind: string;
+    title: string;
+    detail: string;
+    status?: string | null;
+    occurredAt?: string | null;
+    datasetId?: string;
+    jobId?: string;
+    workspaceId?: string | null;
+    href: string;
+  }>;
 };
 
 export type DataProfileSummary = {
@@ -960,6 +1059,22 @@ export async function getRuntimeHealth(): Promise<RuntimeHealth> {
 export async function listDatasets(): Promise<DatasetOption[]> {
   const result = await apiFetch<DatasetOption[] | { value: DatasetOption[] }>("/datasets");
   return Array.isArray(result) ? result : result.value;
+}
+
+export async function listProjects(): Promise<ProjectSummary[]> {
+  const result = await apiFetch<ProjectSummary[] | { value: ProjectSummary[] }>("/projects");
+  return Array.isArray(result) ? result : result.value;
+}
+
+export async function createProject(name: string): Promise<ProjectSummary> {
+  return apiFetch<ProjectSummary>("/projects", {
+    method: "POST",
+    body: JSON.stringify({ name }),
+  });
+}
+
+export async function getProjectHistory(projectId: string): Promise<ProjectHistory> {
+  return apiFetch<ProjectHistory>("/projects/" + encodeURIComponent(projectId) + "/history");
 }
 
 export async function getDataset(datasetId: string): Promise<DatasetDetail> {

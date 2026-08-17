@@ -67,6 +67,7 @@ from mdi_api.routers.planner_providers import (
     test_planner_provider_route,
 )
 from mdi_api.routers.projects import ProjectSummary
+from mdi_api.routers.project_history import get_project_history
 from mdi_api.routers.report_compositions import (
     export_report_composition,
     finalize_report_composition,
@@ -119,6 +120,7 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/auth/me", get_current_user_stub, ("GET",), ("auth",), CurrentUser),
     RouteSpec("/projects", list_phase2_projects, ("GET",), ("projects",), list[ProjectSummary]),
     RouteSpec("/projects", create_phase2_project, ("POST",), ("projects",)),
+    RouteSpec("/projects/{project_id}/history", get_project_history, ("GET",), ("projects",)),
     RouteSpec("/datasets", list_phase2_datasets, ("GET",), ("datasets",), list[DatasetSummary]),
     RouteSpec("/datasets/demo", create_phase2_demo_dataset, ("POST",), ("datasets",)),
     RouteSpec("/datasets/upload-capabilities", get_upload_capabilities, ("GET",), ("datasets",)),

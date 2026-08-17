@@ -33,7 +33,7 @@ export function WorkspaceGenericPlot({ content, maximumPoints, plotlyLoader = lo
     void plotlyLoader().then(async (loaded) => {
       if (!active) return;
       api = loaded;
-      await api.newPlot(host, spec.data, spec.layout, {
+      await api.newPlot(host, mutableRendererCopy(spec.data), mutableRendererCopy(spec.layout), {
         responsive: true,
         displaylogo: false,
         scrollZoom: false,
@@ -44,8 +44,11 @@ export function WorkspaceGenericPlot({ content, maximumPoints, plotlyLoader = lo
         return;
       }
       setStatus(`Rendered ${spec.data.length} backend-produced series and ${spec.pointCount} bounded values.`);
-    }).catch(() => {
-      if (active) setStatus("GENERIC_PLOT_RENDER_FAILED: table and inert JSON remain available.");
+    }).catch((error: unknown) => {
+      if (!active) return;
+      const detail = safeText(error instanceof Error ? error.message : String(error), 160);
+      const code = api ? "GENERIC_PLOT_RENDER_FAILED" : "GENERIC_PLOT_MODULE_LOAD_FAILED";
+      setStatus(code + (detail ? " (" + detail + ")" : "") + ": table and inert JSON remain available.");
     });
     const resize = () => api?.Plots?.resize(host);
     window.addEventListener("resize", resize);
@@ -151,3 +154,4 @@ function scalarArray(value: unknown): Array<number | string> | null { return Arr
 function numericArray(value: unknown): number[] | null { return Array.isArray(value) && value.every((item) => typeof item === "number" && Number.isFinite(item)) ? value : null; }
 function stringArray(value: unknown): string[] | null { return Array.isArray(value) && value.every((item) => typeof item === "string") ? value.map((item) => safeText(item, 120)) : null; }
 function numericMatrix(value: unknown): number[][] | null { return Array.isArray(value) && value.every((row) => numericArray(row) !== null) ? value as number[][] : null; }
+function mutableRendererCopy<T>(value: T): T { return JSON.parse(JSON.stringify(value)) as T; }

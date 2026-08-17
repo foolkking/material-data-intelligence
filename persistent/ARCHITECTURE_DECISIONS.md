@@ -1,5 +1,91 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-16 ADR: Explicit DataProfile-Backed Material Property Targets
+
+**Decision:** AnalysisIntent 1.1 may retain exact material-property targets
+selected from the current dataset's DataProfile. Roles are bounded to
+PROPERTY, X_PROPERTY, Y_PROPERTY, and PROPERTY_SET. Eligibility and Planner
+parameter binding consume these validated semantic identities rather than
+selecting a numeric column by position or display-text heuristic.
+
+**Boundary:** The change does not add DataProfile vocabulary, aliases, fuzzy
+matching, first-column fallback, unit guessing, scientific calculations, Tool
+contracts, Adapter behavior, support disposition, or AnalysisPlan capacity.
+Unknown, ambiguous, stale, foreign-dataset, non-property, incomplete, and
+same-axis scatter selections stay non-ready or require the existing bounded
+clarification path. AnalysisIntent remains inert and cannot create Plans, Jobs,
+ToolCalls, or Artifacts.
+
+## 2026-08-16 ADR: Executability Preflight Models Source, Planned, and Runtime Bindings
+
+**Decision:** Qualification preflight distinguishes source bindings available
+before planning, artifacts legally produced by a required Tool in the same
+validated Plan, and runtime-only persistence identifiers. A generic mock
+planner's minimal selection may validate schema/dependency mechanics, but it
+does not override a Case-declared required Tool that has exact current
+Intent/Eligibility bindings. This avoids rejecting valid XRD producer-consumer
+plans merely because their theoretical artifact does not exist before planning.
+
+**Boundary:** This does not grant target guessing. Q-TABLE remains blocked
+because the current normal-user non-ML Intent contract does not emit exact
+material-property targets required by histogram and scatter bindings.
+
+## 2026-08-16 ADR: Qualification Integrity Uses Content and Contract Validation
+
+Qualification authority is validated through explicit version and inventory,
+schema and semantic contracts, provenance, direct protected-byte equality,
+deterministic parser/Profile/Intent/Eligibility/Planner preflight, runtime
+checks, and later live Browser evidence. Qualification-only digests, checksum
+manifests, mismatch counters, and digest gates are non-normative historical
+records and are not permitted in future authority decisions. This does not
+remove product-level content-addressing, artifact provenance, or upload
+integrity controls.
+
+## 2026-08-16 ADR: Qualification Requirements Have One Canonical Field
+
+**Decision:** In `QualificationCaseManifest/1.1`, `requiredReportBehavior`,
+`requiredRecipeBehavior`, and `requiredLimitations` are canonical qualification
+requirements. Retained `expectedReport`, `expectedRecipe`, and
+`expectedLimitationAssertions` are normative compatibility aliases and must be
+exact semantic mirrors; no repository schema authority currently deprecates
+them. A validator failure is mandatory when either side is missing or differs.
+
+`canonicalQuestion` is the human-readable scenario summary. Multi-turn live
+Planner submissions are the ordered `executionTurns[].question` values;
+single-turn submissions use the sole turn question; expected-rejection Cases
+submit the canonical question and must stop before Plan creation. This is
+qualification authority only and changes no production or scientific contract.
+
+## 2026-08-16 ADR: Qualification Execution Requirements Are Not Campaign Coverage
+
+**Decision:** A qualification Case may require a Tool only when the canonical
+user outcome needs it, supplied resources satisfy current input and identity
+contracts, normal-user execution is ready, and the required set fits the current
+Plan cap. Optional Tools and campaign coverage contributions are separate
+machine-readable sets and never become PASS merely through association.
+
+The 16 primary Cases prioritize realistic user scenarios. Missing Tool coverage
+belongs in separately authorized supplemental Cases; it must not inflate one
+Plan, infer a Structure from formula, promote mapping-only input, or require an
+Artifact without a required producer. Repository fingerprint drift must stop a
+later campaign for authority review. This decision changes qualification
+authority only, not Registry, Planner, parser, Adapter, Artifact, Renderer,
+Report, Recipe, provider, support disposition, or scientific behavior.
+
+## 2026-08-16 ADR: Durable Project Namespace Uses Alembic + SQL Repository Authority
+
+**Decision:** `0008_phase_d_r1_namespace` is the current forward migration head.
+It creates only the actor/organization schema and Project relationships already
+declared by SQLAlchemy and required by `SqlAlchemyProjectRepository`. Existing
+Project identities are backfilled before foreign keys are installed. In
+PostgreSQL runtime mode, normal Project create/list operations persist and read
+through the SQL repository; local mode retains its established in-memory path.
+
+`metadata.create_all()`, runtime DDL, test bootstrap DDL, manual schema edits,
+and Alembic-version manipulation are not production bootstrap authorities.
+Workspace remains a separate durable repository and resolves only exact Project
+identity. This remediation introduces no scientific or qualification contract.
+
 ## ADR-P12-5: Human Recipe before exact inert declaration
 
 **Decision:** Report composition remains an exact server-authorized workflow,
@@ -4780,3 +4866,110 @@ repository documentation, opens as an inert external HTTPS link, uses a localize
 accessible name, and carries `rel=noreferrer`. This decision does not alter any
 Fact, Scope, Phase 12, reproducibility, scientific, Planner, Runtime, Workspace,
 Report, Recipe, or input-support contract.
+
+# Phase A Qualification Census Authority Decision
+
+Qualification support is classified by the tuple `entry path x container format
+x semantic data kind`; a container name or Registry availability alone does not
+establish an execution-ready user capability. User capability families, Registry
+Tools, persisted Artifact contracts, and renderer declarations remain distinct
+inventories. In particular, typed phonon Band/DOS imports remain supported with
+limits, generic phonon YAML/JSON and eigenvector entry remain mapping-only, and
+`phonon.animation` has no execution-ready normal-user eigenvector import. Phase A
+records this as a qualification gap and does not change product authority.
+
+# Cross-Platform RQ Worker Startup Decision
+
+The canonical Redis worker starts through
+`python -m mdi_workers.worker_entrypoint`. POSIX hosts retain RQ's
+process-isolated `Worker`; Windows selects RQ's `SimpleWorker` because the
+default and spawn worker implementations require unavailable `fork`/`wait4`
+process primitives in the current runtime. Queue name, Redis authority,
+Registry validation, Adapter execution, and persisted runtime semantics remain
+unchanged. Windows deployments use one worker process per queue because jobs
+execute in that worker process.
+
+# Phase D-R2.1 Normal-User Input Transport Decision
+
+Normal-user uploads use `NormalUserInputTransport/1.0`: a bounded manifest plus
+raw byte PUTs and an explicit completion boundary. Browser strings, server-side
+client paths, filename/order role inference, and partial Dataset publication are
+not authorities. The server independently verifies every declared byte count
+and SHA-256, parses the full set, checks existing companion contracts, then
+publishes one Dataset and persists both raw and normalized bytes.
+
+This closes delivery defects for already-supported Archive, experimental XRD
+with Structure, Electronic Band/DOS, and typed phonon inputs. It does not add a
+Tool, parser meaning, support disposition, arbitrary XRD wavelength, scientific
+algorithm, Artifact/renderer contract, or AnalysisPlan capacity.
+
+For PostgreSQL-backed operation, an upload session may rehydrate its existing
+Project projection from the canonical durable Project repository after an API
+process restart. Rehydration requires an exact persisted Project identity and
+does not create unknown Projects; it only restores the process-local projection
+needed by the bounded upload transaction.
+
+# Explicit Composition Request Routing Decision
+
+Words that identify a source as a "materials table" do not independently grant
+`dataset_overview` intent authority when the requested operation is explicitly
+formula, element-distribution, or chemical-system analysis. The application-owned
+classifier and live-provider reconciliation retain only the composition intent
+in that bounded case. Explicit formula summary, element distribution, and
+chemical-system sunburst requests select the existing
+`composition.formula_statistics`, `composition.elements_hist`, and
+`composition.chem_sys_sunburst` Tools respectively, subject to ordinary Profile
+and Eligibility checks. This decision does not alter Registry metadata,
+scientific algorithms, support disposition, or AnalysisPlan limits.
+
+# Q-TABLE Qualification Authority Boundary
+
+Generic numeric columns do not become `material_property` semantics merely
+because a qualification question asks for numeric-property plots. The current
+Profile recognizes canonical/declared material-property authority, while the
+Planner bindings for `table.numeric_summary` and `viz.*` require those exact
+roles. A qualification fixture with only generic tabular semantics cannot claim
+those Tools execution-ready without an authorized mapping path. Phase E must
+stop rather than infer roles, relax ToolPlannerMetadata, or mutate its frozen
+Case.
+
+# Q-TABLE Execution-Turn Binding Boundary
+
+Fixture compatibility has two independent layers: exact DataProfile property
+recognition and a normal-user execution-turn path that resolves the current
+Intent plus every Tool parameter binding. A real table with recognized
+`material_property` columns cannot retroactively make unsupported frozen
+question wording or an unspecified distinct scatter x/y selection executable.
+Qualification fixture replacement may correct source/Profile incompatibility;
+it may not change Intent vocabulary, target-selection semantics, or
+ToolPlannerMetadata to force a frozen contract. Such a mismatch is a
+qualification-authority conflict requiring Reviewer reconciliation and a
+separately versioned refreeze.
+
+# Qualification Preflight Enforces Released Runtime Resource Caps
+
+Positive qualification executability requires more than semantic eligibility.
+For every required Tool, deterministic preflight must resolve bound parameters,
+planned producer/consumer dependencies, and all mechanically available released
+runtime limits. A limit that cannot be projected is an explicit unresolved
+preflight condition, not an automatic PASS. The model is generic and must not
+special-case a qualification Case ID.
+
+The Q-TRAJECTORY R1.7 authority uses a new source-preserving contiguous window
+because the historical 650-frame source exceeded the existing 200-frame
+analytics cap. Qualification fixture derivation is permitted only when its rule
+is fixed before result inspection and preserves all atoms, coordinates, cells,
+PBC, species ordering, and physical timestamps. Runtime truncation, resampling,
+atom subsetting, and cap expansion remain forbidden without separate authority.
+## ADR: Durable Project History and Selected Dataset Workbench (2026-08-17)
+
+- Project history is a read-only projection assembled from durable repositories,
+  not a second execution store and not a browser-local cache.
+- The project home is the resumable index for datasets, analyses, Workspaces,
+  Reports, and recent activity. A selected dataset opens a separate workbench
+  route so import/Profile/analysis/result state remains visible while the
+  existing server-side Planner stays embedded.
+- `GET /projects/{projectId}/history` returns bounded user-facing metadata and
+  excludes storage keys, private paths, hashes, raw source payloads, and
+  provider secrets. Execution continues through persisted AnalysisPlan, Tool
+  Registry, QueueWorkerRuntime, and Adapter contracts.

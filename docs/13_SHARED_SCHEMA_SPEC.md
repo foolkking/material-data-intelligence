@@ -183,6 +183,24 @@ AnalysisIntent is not AnalysisPlan, does not select tools, and does not grant
 execution authority. `AnalysisPlan 0.1`, PlanValidator, Tool Registry, and
 QueueWorkerRuntime contracts remain unchanged.
 
+### AnalysisIntent 1.1 Exact Material-Property Targets
+
+AnalysisIntent 1.1 is an additive, backward-readable evolution for normal-user
+material-property analysis. `targetSemantics` may carry only exact facts from
+the selected current DataProfile with roles `PROPERTY`, `X_PROPERTY`,
+`Y_PROPERTY`, or `PROPERTY_SET`. Each target binds the Profile semantic
+identity, source property identity, role, applicable unit authority, and
+selected dataset/resource scope. Historical 1.0 records do not acquire these
+targets retroactively.
+
+Validation rejects unknown, stale, cross-dataset, conflicting, invented, and
+non-material-property targets. Scatter requires two distinct exact targets.
+The provider path receives only bounded Profile-derived candidates and an
+independent validator rejects invented selections. This contract supplies exact
+semantic parameters to existing Eligibility and Planner binding; it does not
+add DataProfile vocabulary, fuzzy/first-column selection, unit guessing,
+scientific computation, Tool execution, or AnalysisPlan authority.
+
 ## Phase 10K-3 Materials ML Evaluation artifacts
 
 Phase 10K-3 adds three inert product schemas:
@@ -1990,6 +2008,23 @@ browser/service gates, and canonical evidence hashing. The M7 evidence
 manifest is a verification artifact, not a persistence or scientific
 authority.
 
+## NormalUserInputTransport 1.0
+
+The normal Planner upload entry uses a bounded upload session. A JSON manifest
+declares immutable client file identity, filename metadata, byte count, SHA-256,
+optional typed phonon import kind/version, and optional companion group. Each
+file body is transferred as `application/octet-stream`; the server counts and
+hashes observed bytes before atomically publishing the complete resource set to
+one Dataset.
+
+The contract permits at most 8 files, 64 MiB per file, and 128 MiB in one
+session. Filename and file/selection order are never semantic authority. Roles
+come only from parser/resource contracts or an explicit typed import declaration.
+If a required file fails transport, hashing, parsing, or companion validation,
+no Dataset/Profile is published. Raw source bytes and their exact size/hash are
+persisted alongside normalized resources. Archive extraction, scientific
+interpretation, Registry support, and AnalysisPlan limits are unchanged.
+
 ## Phase 10L-5 Natural-Language Evidence Contracts
 
 Phase 10L-5 adds versioned evidence-run contracts without changing scientific
@@ -2118,3 +2153,53 @@ They do not change Registry 62, DataProfile 2.4, AnalysisPlan 0.1/0.2, Artifact
 contracts, Runtime authority, APIs, or database persistence. Browser, service,
 mapping, fixture-existence, and self-reference states remain separate from
 independent numeric validation.
+
+## ProjectHistoryView/1.0
+
+`ProjectHistoryView/1.0` is a read-only user-facing projection assembled from
+the durable Project, Dataset, source-file/resource, DataProfile, Job, ToolCall,
+Artifact, Workspace, Interpretation, Report, and Recipe repositories. It is
+served by `GET /projects/{projectId}/history` and is the authority for the
+project home history and selected-dataset workbench navigation. A dataset view
+exposes the import, Profile, analysis, and result process states, together with
+bounded result counts and artifact types. An analysis view preserves the user
+question, plan/tool count, result count, Workspace link, and applicable Report,
+Recipe, and Interpretation counts.
+
+The projection deliberately omits object-storage keys, private paths, content
+hashes, provider credentials, raw source payloads, and other secret-bearing
+implementation details. It does not grant execution authority and cannot
+create or mutate a Plan, Job, ToolCall, Artifact, Report, or Recipe.
+
+## Phase D-R1 Durable Namespace Migration Authority
+
+The current production migration head is `0008_phase_d_r1_namespace`, directly
+after `0007_phase10m1_workspace_domain`. It adds `users` and `organizations`
+from the canonical SQLAlchemy metadata, backfills actor and organization rows
+for existing Projects, and installs the canonical Project foreign keys and
+`idx_projects_org_created` index. The migration does not create the broader
+historical metadata-only table set because those tables are not required by the
+normal durable Project-to-Workspace path and no runtime repository authority
+for them was established by D-R1.
+
+When `runtime_backend=postgresql`, normal Project create/list operations use
+`SqlAlchemyProjectRepository`; the in-memory runtime is not a durable fallback.
+An empty Project therefore remains resolvable by Workspace history across
+repository/session and backend-process recreation. Local runtime behavior is
+unchanged. No Profile, Intent, Eligibility, Plan, Registry, scientific,
+Artifact, renderer, Report, Recipe, input-support, or provider contract changes.
+
+## QualificationCaseManifest 1.1 R1.1 Alias Policy
+
+This is non-production qualification authority. The canonical requirement
+fields are `requiredReportBehavior`, `requiredRecipeBehavior`, and
+`requiredLimitations`. The retained compatibility fields `expectedReport`,
+`expectedRecipe`, and `expectedLimitationAssertions` must be exact semantic
+mirrors. Conflicting or missing aliases invalidate a qualification package.
+
+`canonicalQuestion` summarizes the user scenario. Actual future live Planner
+submissions use ordered `executionTurns[].question` for multi-turn Cases and the
+sole turn question for single-turn Cases. An `EXPECTED_REJECTION` Case submits
+its canonical question and must terminate before Plan, Job, ToolCall, Artifact,
+Report, or Recipe creation. These rules add no product schema or execution
+authority.

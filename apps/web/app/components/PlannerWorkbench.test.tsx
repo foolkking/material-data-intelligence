@@ -947,6 +947,21 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(within(dialog).getByRole("link", { name: "Open" })).toHaveAttribute("href", "/workspaces/workspace_history_1");
   });
 
+  it("restores an exact persisted Job from a bounded query identity without resubmission", async () => {
+    window.history.replaceState({}, "", "/?jobId=job_1");
+    render(<PlannerWorkbench />);
+
+    expect(await screen.findByRole("button", { name: "Generate grounded interpretation" })).toBeEnabled();
+    expect(screen.getByText("job_1 · 已完成")).not.toBeNull();
+    expect(fetchMock.mock.calls.some(([input, init]) =>
+      String(input).endsWith("/planner/jobs/job_1") && (init?.method || "GET") === "GET"
+    )).toBe(true);
+    expect(fetchMock.mock.calls.some(([input, init]) =>
+      String(input).endsWith("/planner/jobs") && init?.method === "POST"
+    )).toBe(false);
+    window.history.replaceState({}, "", "/");
+  });
+
   it("shows only server-owned DeepSeek configuration with no browser key or custom endpoint input", async () => {
     const user = userEvent.setup();
     render(<PlannerWorkbench />);
@@ -1528,8 +1543,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     const panel = await screen.findByTestId("analysis-intent-panel");
     expect(within(panel).getByText("NEEDS_CLARIFICATION")).not.toBeNull();
     expect(jobBodies[0]?.intentSchemaVersion).toBe("1.0");
-    const runControlButton = within(screen.getByTestId("run-controls")).getByRole("button");
-    expect(runControlButton).toBeDisabled();
+    expect(primaryRunButton()).toBeDisabled();
 
     await user.selectOptions(within(panel).getByLabelText("Which model target should be evaluated?"), "target_b");
     await user.click(within(panel).getByRole("button", { name: "Confirm intent" }));
@@ -1565,7 +1579,7 @@ describe("Phase 9C PlannerWorkbench", () => {
 
     const panel = await screen.findByTestId("analysis-intent-panel");
     expect(within(panel).getByTestId("analysis-intent-unsupported").textContent).toContain("FUTURE_SCOPE");
-    expect(within(screen.getByTestId("run-controls")).getByRole("button")).toBeDisabled();
+    expect(primaryRunButton()).toBeDisabled();
 
     await user.click(screen.getByRole("checkbox"));
     const audit = await screen.findByTestId("analysis-intent-audit-json");
@@ -1602,7 +1616,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(within(panel).getByRole("heading", { name: "Dataset Materials Explorer" })).not.toBeNull();
     expect(within(panel).getByText("dataset.materials_explorer@0.1.0")).not.toBeNull();
     expect(within(panel).getByText("RESOURCE_ID / table_1")).not.toBeNull();
-    expect(within(screen.getByTestId("run-controls")).getByRole("button")).toBeEnabled();
+    expect(primaryRunButton()).toBeEnabled();
 
     await user.click(screen.getByRole("checkbox"));
     const audit = await screen.findByTestId("capability-planning-audit-json");
@@ -1642,7 +1656,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     const panel = await screen.findByTestId("capability-planning-panel");
     expect(within(panel).getByText("CAPABILITY_MISMATCH")).not.toBeNull();
     expect(within(panel).getByTestId("capability-planning-diagnostics")).toHaveTextContent("CAPABILITY_COVERAGE_INCOMPLETE");
-    expect(within(screen.getByTestId("run-controls")).getByRole("button")).toBeDisabled();
+    expect(primaryRunButton()).toBeDisabled();
   });
 
   it("shows the typed dependency graph, partial execution, blocked step, and inert lineage audit", async () => {

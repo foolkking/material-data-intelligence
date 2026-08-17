@@ -1259,11 +1259,26 @@ def create_phase2_project(request: CreateProjectRequest) -> dict[str, Any]:
 
 
 def list_phase2_datasets() -> list[dict[str, Any]]:
-    return get_phase2_runtime().list_datasets()
+    runtime = get_phase2_runtime()
+    if _runtime_backend_is_durable():
+        repositories = _durable_read_repositories()
+        datasets: list[dict[str, Any]] = []
+        for project in repositories.projects.list():
+            project_id = str(project.get("projectId") or project.get("id") or "")
+            if not project_id:
+                continue
+            for dataset in repositories.datasets.list_for_project(project_id):
+                datasets.append(_durable_dataset_summary(dataset, repositories))
+        return datasets
+    return runtime.list_datasets()
 
 
 def get_phase2_dataset(dataset_id: str) -> dict[str, Any]:
-    return _api_call(lambda: get_phase2_runtime().get_dataset(dataset_id))
+    runtime = get_phase2_runtime()
+    if _runtime_backend_is_durable() and dataset_id not in runtime.datasets:
+        repositories = _durable_read_repositories()
+        return _api_call(lambda: _durable_dataset_detail(dataset_id, repositories))
+    return _api_call(lambda: runtime.get_dataset(dataset_id))
 
 
 def create_phase2_demo_dataset() -> dict[str, Any]:
@@ -1348,19 +1363,105 @@ def cancel_phase2_upload_session(session_id: str) -> dict[str, Any]:
 
 
 def get_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
-    return _api_call(lambda: get_phase2_runtime().get_dataset_profile(dataset_id))
+    runtime = get_phase2_runtime()
+    if _runtime_backend_is_durable() and dataset_id not in runtime.datasets:
+        repositories = _durable_read_repositories()
+        return _api_call(lambda: _durable_dataset_profile(dataset_id, repositories))
+    return _api_call(lambda: runtime.get_dataset_profile(dataset_id))
+
+
+def _runtime_backend_is_durable() -> bool:
+    from mdi_api.config import load_settings
+
+    return load_settings().runtime_backend == "postgresql"
+
+
+def _durable_read_repositories() -> Any:
+    from mdi_api.database import create_repository_factory
+
+    return create_repository_factory().create_repositories()
+
+
+def _durable_dataset_record(dataset_id: str, repositories: Any) -> dict[str, Any]:
+    return dict(repositories.datasets.get(dataset_id))
+
+
+def _durable_dataset_profile(dataset_id: str, repositories: Any) -> dict[str, Any]:
+    _durable_dataset_record(dataset_id, repositories)
+    profiles = list(repositories.data_profiles.list_for_dataset(dataset_id))
+    if not profiles:
+        raise LookupError(f"DataProfile is not available for dataset_id: {dataset_id}")
+    profiles.sort(key=lambda item: str(item.get("createdAt") or item.get("profileId") or ""))
+    return dict(profiles[-1])
+
+
+def _durable_dataset_summary(dataset: dict[str, Any], repositories: Any) -> dict[str, Any]:
+    dataset_id = str(dataset.get("datasetId") or dataset.get("id") or "")
+    metadata = dict(dataset.get("metadata") or {})
+    files = [item for item in metadata.get("files") or [] if isinstance(item, dict)]
+    exports = [item for item in metadata.get("normalizedExports") or [] if isinstance(item, dict)]
+    profiles = list(repositories.data_profiles.list_for_dataset(dataset_id))
+    profiles.sort(key=lambda item: str(item.get("createdAt") or item.get("profileId") or ""))
+    profile_id = profiles[-1].get("profileId") if profiles else metadata.get("profileId")
+    return {
+        "id": dataset_id,
+        "datasetId": dataset_id,
+        "projectId": dataset.get("projectId"),
+        "name": dataset.get("name") or dataset_id,
+        "status": dataset.get("status") or metadata.get("status") or "created",
+        "fileCount": len(files),
+        "objectCount": len(exports),
+        "profileId": profile_id,
+        "createdAt": dataset.get("createdAt") or metadata.get("createdAt"),
+        "updatedAt": dataset.get("updatedAt") or dataset.get("createdAt") or metadata.get("createdAt"),
+    }
+
+
+def _durable_dataset_detail(dataset_id: str, repositories: Any) -> dict[str, Any]:
+    dataset = _durable_dataset_record(dataset_id, repositories)
+    metadata = dict(dataset.get("metadata") or {})
+    files = []
+    for item in metadata.get("files") or []:
+        if not isinstance(item, dict):
+            continue
+        files.append({
+            "fileId": item.get("fileId"),
+            "name": item.get("name") or item.get("fileName"),
+            "detectedFormat": item.get("detectedFormat"),
+            "status": item.get("status"),
+            "byteSize": item.get("byteSize"),
+            "objectCount": item.get("objectCount"),
+            "errorCode": item.get("errorCode"),
+            "importKind": item.get("importKind"),
+            "companionGroupId": item.get("companionGroupId"),
+        })
+    return {**_durable_dataset_summary(dataset, repositories), "files": files, "demo": dataset_id == "dataset_demo"}
 
 
 def get_phase2_dataset_object_store(dataset_id: str) -> dict[str, Any]:
-    return get_phase2_runtime().get_dataset_object_store(dataset_id)
+    runtime = get_phase2_runtime()
+    if _runtime_backend_is_durable() and dataset_id not in runtime.datasets:
+        repositories = _durable_read_repositories()
+        dataset = _durable_dataset_record(dataset_id, repositories)
+        metadata = dataset.get("metadata") or {}
+        return dict(metadata.get("objectStore") or {})
+    return runtime.get_dataset_object_store(dataset_id)
 
 
 def get_phase2_dataset_profile_model(dataset_id: str) -> DataProfile:
-    return get_phase2_runtime().get_dataset_profile_model(dataset_id)
+    runtime = get_phase2_runtime()
+    if _runtime_backend_is_durable() and dataset_id not in runtime.datasets:
+        repositories = _durable_read_repositories()
+        return DataProfile.model_validate(_durable_dataset_profile(dataset_id, repositories))
+    return runtime.get_dataset_profile_model(dataset_id)
 
 
 def create_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
-    return _api_call(lambda: get_phase2_runtime().create_dataset_profile(dataset_id))
+    runtime = get_phase2_runtime()
+    if _runtime_backend_is_durable() and dataset_id not in runtime.datasets:
+        repositories = _durable_read_repositories()
+        return _api_call(lambda: {**_durable_dataset_profile(dataset_id, repositories), "profileGenerated": True})
+    return _api_call(lambda: runtime.create_dataset_profile(dataset_id))
 
 
 def create_phase2_job(request: CreateJobRequest) -> dict[str, Any]:

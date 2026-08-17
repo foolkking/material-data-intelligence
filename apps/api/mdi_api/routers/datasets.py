@@ -15,6 +15,8 @@ class DatasetSummary(BaseModel):
     fileCount: int | None = None
     objectCount: int | None = None
     profileId: str | None = None
+    createdAt: str | None = None
+    updatedAt: str | None = None
 
 
 def list_datasets_stub() -> list[DatasetSummary]:

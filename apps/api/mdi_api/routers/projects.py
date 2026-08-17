@@ -5,8 +5,13 @@ from pydantic import BaseModel, Field
 
 class ProjectSummary(BaseModel):
     id: str
+    projectId: str | None = None
     name: str
     role: str
+    description: str | None = None
+    status: str | None = None
+    createdAt: str | None = None
+    updatedAt: str | None = None
 
 
 class CreateProjectRequest(BaseModel):

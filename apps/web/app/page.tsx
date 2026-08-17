@@ -1,5 +1,5 @@
-import { PlannerWorkbench } from "./components/PlannerWorkbench";
+import { ProjectHome } from "./components/ProjectHome";
 
-export default function WorkspacePage() {
-  return <PlannerWorkbench />;
+export default function ProjectHomePage() {
+  return <ProjectHome />;
 }

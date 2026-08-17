@@ -1,5 +1,80 @@
 # TASK_BOARD
 
+## Q-TABLE Property-Target Closure / R1.6 / Phase D R1.6 - Completed
+
+- [x] Implement exact normal-user material-property targets using current DataProfile authority only.
+- [x] Preserve all target-guessing, unit-inference, support-surface, Tool, and Plan-cap boundaries.
+- [x] Refreeze R1.6 after a fresh 16-Case / 26-turn non-LLM executability preflight.
+- [x] Complete Phase D with a fresh official migration namespace, live local services, a fresh Worker, provider configuration, and Browser readiness.
+- [x] Preserve zero real LLM calls and zero formal qualification execution records.
+- [ ] Phase E is not started or queued by this closure.
+
+## Phase B/C-R1.5 Comprehensive Authority Reconciliation - Blocked
+
+- [x] Record a complete seven-blocker triage before making changes.
+- [x] Close six evidence-backed fixture, preflight, implementation, and stale
+  test-expectation paths without changing scientific support authority.
+- [x] Re-run all 16 Cases and 26 turns in non-LLM preflight: 15 Cases pass.
+- [ ] Freeze R1.5 and run Phase D: blocked by the Q-TABLE normal-user explicit
+  material-property target-binding contract gap.
+
+No partial authority package exists. Phase E remains stopped pending Reviewer
+resolution of Q-TABLE.
+
+## Phase B/C-R1.4 Full Executability Preflight - Blocked
+
+- [x] Establish content-and-contract integrity policy for future qualification authority.
+- [x] Exercise the current parser, DataProfile, deterministic Intent, Eligibility, and required bindings for all 16 Cases.
+- [x] Preserve R1.2/R1.3 and record the complete discovered conflict surface.
+- [ ] R1.4 package and Phase D re-seal: blocked pending Reviewer reconciliation.
+
+Blockers: Q-TABLE explicit target binding; ML semantic target readiness;
+experimental-XRD direct/dependency eligibility; the trajectory nesting limit;
+and typed phonon species-order validation. No Phase E work is authorized.
+
+## 2026-08-16 Phase B/C-R1.1 Qualification Authority Hygiene
+
+- [x] Preserve R1 and create a separately versioned R1.1 package.
+- [x] Synchronize only the atomic-view report compatibility alias.
+- [x] Close cross-field conflicts across all 16 Cases.
+- [x] Preserve multi-turn execution and campaign-coverage semantics.
+- [x] Pass static/extracted validators, focused tests, hashes, and protected-byte checks.
+- [x] Disclose the non-green full suite without altering historical evidence.
+- [ ] Phase D reseal remains reviewer-gated; Phase E direct continuation is not authorized.
+
+## 2026-08-16 Phase B/C-R1 Qualification Authority Reconciliation
+
+- [x] Preserve the historical package and its exact SHA-256.
+- [x] Confirm both `Q-COMPOSITION-001` contradictions mechanically.
+- [x] Reconcile all 16 primary user scenarios to current repository authority.
+- [x] Keep every required execution set within the four-step Plan cap.
+- [x] Preserve typed/mapping-only/unsupported boundaries and paired-resource identity.
+- [x] Add and pass the static executable-contract validator.
+- [x] Build the deterministic schema-1.1 package twice with matching bytes.
+- [x] Verify package extraction, root/case manifests, protected bytes, and evidence manifest.
+- [ ] Phase E remains separately authorized and was not started by R1.
+
+## 2026-08-16 Phase E Live Qualification
+
+- [x] Preserve frozen package SHA and use fresh projects/resources/jobs.
+- [x] Reach discovery PASS for `Q-DATASET-001` on a committed exact SHA.
+- [x] Repair Case 2 composition-distribution Intent routing.
+- [x] Record the real Case 2 expected/observed Tool mismatch.
+- [x] Stop on `PHASE_E-AUTH-001` under the frozen-authority conflict rule.
+- [x] Phase B/C-R1 reopening completed without further Phase E execution.
+- [ ] Future Phase E execution remains reviewer-gated against the new authority.
+
+## 2026-08-16 Phase D-R1 Durable Namespace Remediation
+
+- [x] Establish runtime-required versus Alembic-produced schema authority.
+- [x] Add the smallest forward migration after 0007.
+- [x] Preserve existing Project rows through deterministic actor/org backfill.
+- [x] Make PostgreSQL-mode Project create/list durable.
+- [x] Pass fresh and previous-head PostgreSQL migration tests.
+- [x] Pass Project persistence, Workspace history, and process-restart checks.
+- [x] Keep formal qualification, LLM, Job, ToolCall, and Artifact counters at zero.
+- [ ] Phase D Attempt 5 remains separately reviewer-gated and is not started here.
+
 ## Phase 13-2 Attempt 6 - Active
 
 - [x] Verify FF6 lifecycle, closed findings, current Fact/Scope/Phase12 hashes,
@@ -2770,3 +2845,84 @@ only until the separate archive commit; Phase 14 is absent.
 The verified completion record is pushed and the completed Phase13-6 task is
 archived. `TASK_BLOCK_COUNT = 0`, `EXECUTABLE_PENDING_TASKS = 0`, Phase 14 is
 absent, and no executable follow-on task exists.
+
+## Phase A Repository Capability Census - Completed
+
+- [x] Inventory all current user entry, input, semantic, Tool, Artifact, and renderer authorities.
+- [x] Build capability/output/evidence/external-data/qualification coverage matrices.
+- [x] Define 36 repository-grounded cases and a 16-case minimum representative set.
+- [x] Preserve eight P2 qualification gaps without product or support mutation.
+- [x] Generate the Phase B external-data research handoff without executing Phase B.
+
+Initial Release remains sealed. No product phase or executable follow-on task is created.
+
+## Phase D Live Qualification Environment Seal - Completed
+
+- [x] Preserve Attempts 1-5 and the D-R1 remediation evidence.
+- [x] Correct Windows RQ worker startup under committed candidate `54c66abc`.
+- [x] Recompute the frozen package and all 16 case manifests.
+- [x] Pass fresh database, durable namespace, services, browser, provider, and zero-execution gates.
+- [x] Seal Attempt 6 evidence with no production runtime diff or qualification mutation.
+
+`READY_FOR_PHASE_E = YES`. Phase E has not been executed by this task.
+
+## Phase D-R2.1 / R1.2 Re-Seal - Completed
+
+- [x] Preserve R1.1 and historical failed qualification attempts.
+- [x] Preserve CuKa-only XRD authority and replace only the stale qualification fixture.
+- [x] Commit bounded byte-safe and atomic same-Dataset companion transport.
+- [x] Refreeze R1.2 against final product SHA `51e45c9436bef73f0c8ea1ccc5eb681dba1d21b8`.
+- [x] Pass fresh database, services, current-SHA worker, durable namespace, provider, and Chrome transport gates.
+- [x] Keep Jobs, ToolCalls, Artifacts, Reports, formal qualification submissions, and real LLM calls at zero.
+
+`PHASE_D = PASS / LIVE_QUALIFICATION_ENVIRONMENT_RESEALED` and
+`READY_FOR_PHASE_E = YES`. Phase E is not queued or executed.
+
+## Phase E-R1.2 Canonical Live Qualification - In Progress
+
+- [x] Recompute the R1.2 package, Case manifests, campaign shape, and static validator.
+- [x] Complete fresh Q-DATASET-001 discovery through Browser, DeepSeek, Queue, Worker, Artifacts, Workspace, Report, and inert Recipe.
+- [x] Preserve the first Q-COMPOSITION-001 semantic-routing failure without retry farming.
+- [x] Add focused Intent/Planner regressions for explicit formula, element, and chemical-system requests.
+- [ ] Commit and deploy the corrected candidate, then rerun Q-COMPOSITION-001 from fresh state.
+- [ ] Complete all remaining discovery Cases, freeze one final candidate, run governed CI and Phase D, then execute the fresh exact-SHA final campaign.
+
+Hard stop: `PHASE_E_R12_AUTH_001 / BLOCKED_AUTHORITY_CONFLICT` at Q-TABLE-001.
+Reviewer reconciliation is required before a new qualification task may continue;
+the current failed task and partial evidence remain historical.
+
+## Phase B/C-R1.3 Q-TABLE Fixture Replacement - Blocked
+
+- [x] Audit current approved material-property semantics and four required Tool bindings.
+- [x] Prove the old R1.2 Q-TABLE fixture lacks current material-property bindings.
+- [x] Evaluate a real, licensed JARVIS-DFT-3D replacement through the actual preflight path.
+- [ ] Refreeze R1.3 and run Phase D: blocked by `PHASE_BC_R13_AUTH_001`.
+
+The JARVIS candidate resolves Profile recognition but not frozen execution-turn
+Intent or scatter x/y target authority. Reviewer reconciliation is required;
+no Phase D or Phase E execution is authorized from this task.
+
+## Phase B/C-R1.7 Trajectory Resource-Cap Reconciliation - Complete
+
+- [x] Preserve the failed Phase E-R1.6 trajectory execution as history.
+- [x] Derive a real contiguous 15-frame/516-atom fixture without scientific-value changes.
+- [x] Expose existing trajectory Adapter caps through Registry authority metadata.
+- [x] Reproduce the old 650-frame failure in generic deterministic preflight.
+- [x] Pass the new fixture through viewer/MSD/diffusion/RDF cap and dependency preflight.
+- [x] Re-run all 16 Cases and 26 analysis turns.
+- [x] Freeze `Phase_BC_R1_7_Qualification_Authority_Reconciled.zip`.
+- [x] Complete the independent Phase D R1.7 environment re-seal.
+
+Current gate: `READY_FOR_PHASE_E = YES`. Phase E is not queued or running.
+Remote CI was not run and the complete repository pytest remains not fully green
+because of 20 disclosed historical queue/evidence assertions, so completed task
+archival remains withheld.
+## Project History and Data Workbench Remediation - In Progress
+
+- [x] Add a durable project-history projection over persisted product records.
+- [x] Add a selected-dataset workbench with import/Profile/analysis/result
+  process status and result summary.
+- [x] Remove duplicate run controls and replace repeated example labels with
+  distinct natural-language choices.
+- [ ] Continue the active qualification queue task and preserve its status and
+  evidence; this UX remediation does not claim Phase E completion.
