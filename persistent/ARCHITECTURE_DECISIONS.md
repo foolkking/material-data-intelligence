@@ -1,5 +1,13 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-17 — Stale capability resolution uses bounded provider repair
+
+`CAPABILITY_LLM_RESOLUTION_MISMATCH` is a repairable provider-output defect on
+the first capability-selection response. It consumes the one existing repair
+call and must then match the exact current `EligibilityResolution`. The runtime
+does not coerce, substitute, or accept stale resolution identity, and no extra
+retry budget is introduced.
+
 ## 2026-08-16 ADR: Explicit DataProfile-Backed Material Property Targets
 
 **Decision:** AnalysisIntent 1.1 may retain exact material-property targets

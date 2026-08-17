@@ -1032,6 +1032,39 @@ def test_llm_redundant_semantic_selection_uses_the_single_repair_budget() -> Non
     assert result.decision.provenance.repairDiagnostics[0].code == "CAPABILITY_LLM_SELECTION_REDUNDANT"
 
 
+def test_llm_stale_resolution_uses_the_single_repair_budget() -> None:
+    profile = _profile()
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("Explore this materials dataset and summarize its quality."),
+        profile=profile,
+    )
+    calls = 0
+
+    def transport(**kwargs: object) -> dict[str, object]:
+        nonlocal calls
+        calls += 1
+        context = json.loads(kwargs["messages"][-1]["content"])
+        resolution_id = "resolution_stale" if calls == 1 else context["eligibleCandidates"]["resolutionId"]
+        payload = {
+            "schemaVersion": "1.0",
+            "resolutionId": resolution_id,
+            "selectedToolIds": context["applicationValidatedMinimalToolIds"],
+        }
+        return {"choices": [{"message": {"content": json.dumps(payload)}, "finish_reason": "stop"}]}
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=OpenAICompatibleProvider(transport=transport),
+    )
+
+    assert calls == 2
+    assert result.outcome.value == "PLAN_READY"
+    assert result.decision.provenance.repairCount == 1
+    assert result.decision.provenance.repairDiagnostics[0].code == "CAPABILITY_LLM_RESOLUTION_MISMATCH"
+
+
 def test_live_provider_context_exposes_application_validated_minimal_selection() -> None:
     profile = _profile()
     intent = DeterministicAnalysisIntentBuilder().build(

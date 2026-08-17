@@ -949,6 +949,12 @@ def _llm_selection_with_repair(
     proposal, model = _request_llm_proposal(provider, intent, profile, projection, user_config=user_config)
     initial_hash = capability_semantic_hash(proposal, identity_fields=())
     try:
+        if proposal.resolutionId != projection.resolutionId:
+            raise CapabilityPlanningError(
+                "LLM capability selection used a stale resolution.",
+                code="CAPABILITY_LLM_RESOLUTION_MISMATCH",
+                repairable=True,
+            )
         _validate_minimal_provider_selection(
             intent,
             projection,
@@ -988,6 +994,11 @@ def _llm_selection_with_repair(
             )
             return decision, None
         try:
+            if repaired.resolutionId != projection.resolutionId:
+                raise CapabilityPlanningError(
+                    "LLM capability selection used a stale resolution.",
+                    code="CAPABILITY_LLM_RESOLUTION_MISMATCH",
+                )
             _validate_minimal_provider_selection(
                 intent,
                 projection,
@@ -1098,8 +1109,6 @@ def _request_llm_proposal(
         proposal = CapabilitySelectionProposal.model_validate(parsed)
     except ValidationError as exc:
         raise CapabilityPlanningError("LLM capability selection failed the strict schema.", code="CAPABILITY_LLM_SCHEMA_INVALID") from exc
-    if proposal.resolutionId != projection.resolutionId:
-        raise CapabilityPlanningError("LLM capability selection used a stale resolution.", code="CAPABILITY_LLM_RESOLUTION_MISMATCH")
     return proposal, response.model
 
 

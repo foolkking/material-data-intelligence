@@ -1,5 +1,14 @@
 # DESIGN_PROGRESS
 
+## 2026-08-17 R1.7 Capability Resolution Repair
+
+The capability planner now routes a provider-returned stale `resolutionId`
+through the existing single repair budget. The stale identity is never
+accepted or rewritten; the provider must return the exact current resolution
+on the repair call, otherwise planning remains validation-failed. Focused
+regression coverage preserves the existing strict JSON, redundancy, dependency,
+and explicit electronic Band/DOS selection behavior.
+
 ## 2026-08-16 Q-TABLE Property-Target Closure / R1.6 / Phase D R1.6
 
 - [x] Add the bounded AnalysisIntent 1.1 exact current-Profile material-property target contract.
