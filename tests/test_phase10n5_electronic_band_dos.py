@@ -16,7 +16,12 @@ from mdi_artifact_core.electronic_contract import (
     validate_electronic_dos_resource,
 )
 from mdi_material_parsers import build_data_profile, parse_file
-from mdi_llm import AnalysisIntentRequest, DeterministicAnalysisIntentBuilder
+from mdi_llm import (
+    AnalysisIntentRequest,
+    DeterministicAnalysisIntentBuilder,
+    OpenAICompatibleAnalysisIntentBuilder,
+)
+from mdi_llm.providers import OpenAICompatibleProvider
 from mdi_llm.providers import MockLLMProvider, PlannerRequest
 from mdi_schemas import AnalysisIntentOutcome, CapabilityNeed, ScientificIntent
 from mdi_tool_registry import build_artifact_port_inventory, load_manifests
@@ -190,6 +195,52 @@ def test_analysis_intent_accepts_profile_24_electronic_readiness(tmp_path: Path)
     assert intent.outcome == AnalysisIntentOutcome.ready
     assert ScientificIntent.electronic_structure_analysis in intent.scientificIntents
     assert CapabilityNeed.electronic_resource in intent.requiredCapabilityNeeds
+
+
+def test_provider_intent_rebuilds_exact_electronic_band_and_dos_resources(tmp_path: Path) -> None:
+    band_path = tmp_path / "band.json"
+    dos_path = tmp_path / "dos.json"
+    band_path.write_text(json.dumps(band_resource()), encoding="utf-8")
+    dos_path.write_text(json.dumps(dos_resource()), encoding="utf-8")
+    profile = build_data_profile(
+        dataset_id="dataset_n5",
+        parse_results=[
+            parse_file(band_path, dataset_id="dataset_n5"),
+            parse_file(dos_path, dataset_id="dataset_n5"),
+        ],
+    )
+    request = AnalysisIntentRequest(
+        raw_goal="Inspect the supplied electronic band structure and DOS, including gap, spin, projection, and compatibility limitations.",
+        dataset_id=profile.datasetId,
+        profile_id=profile.profileId,
+    )
+    provider_payload = DeterministicAnalysisIntentBuilder().build(
+        request,
+        profile=profile,
+    ).model_dump(mode="json")
+    provider_payload["dataScope"]["resourceRefs"] = []
+
+    def transport(**_: object) -> dict[str, object]:
+        return {
+            "choices": [{
+                "message": {"content": json.dumps(provider_payload, separators=(",", ":"))},
+                "finish_reason": "stop",
+            }]
+        }
+
+    intent = OpenAICompatibleAnalysisIntentBuilder(
+        OpenAICompatibleProvider(transport=transport)
+    ).build(request, profile=profile)
+
+    assert intent.outcome == AnalysisIntentOutcome.ready
+    assert {item.objectId for item in intent.dataScope.resourceRefs} == {
+        item.objectId for item in profile.electronicReadiness.resources
+    }
+    assert {item.objectType for item in intent.dataScope.resourceRefs} == {
+        "ElectronicBand",
+        "ElectronicDos",
+    }
+    assert {item.origin.value for item in intent.dataScope.resourceRefs} == {"PROFILE_EXACT"}
 
 
 def test_identity_and_checksum_are_deterministic(tmp_path: Path) -> None:

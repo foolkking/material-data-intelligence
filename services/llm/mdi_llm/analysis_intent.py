@@ -575,6 +575,7 @@ def _canonicalize_llm_profile_bindings(
             ScientificIntent.structure_analysis: "structure",
             ScientificIntent.trajectory_analysis: "trajectory",
             ScientificIntent.phonon_analysis: "phonon",
+            ScientificIntent.electronic_structure_analysis: "electronic",
             ScientificIntent.reciprocal_space_analysis: "reciprocal",
             ScientificIntent.volumetric_analysis: "volumetric",
         }.items()
