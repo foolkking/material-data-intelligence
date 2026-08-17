@@ -172,18 +172,20 @@ class TrajectoryRdfAdapter(_TrajectoryAdapter):
             xyz = _cartesian_positions(trajectory, frame, cell)
             indexes_a = [i for i, value in enumerate(species) if pair[0] == "*" or value == pair[0]]
             indexes_b = [i for i, value in enumerate(species) if pair[1] == "*" or value == pair[1]]
-            distances: list[float] = []
             if pair == ("*", "*"):
-                candidates = ((i, j) for i in range(len(xyz)) for j in range(i + 1, len(xyz)))
+                pair_i, pair_j = np.triu_indices(len(xyz), k=1)
             elif pair[0] == pair[1]:
-                candidates = ((indexes_a[i], indexes_a[j]) for i in range(len(indexes_a)) for j in range(i + 1, len(indexes_a)))
+                pair_i, pair_j = np.triu_indices(len(indexes_a), k=1)
+                selected = np.asarray(indexes_a, dtype=int)
+                pair_i, pair_j = selected[pair_i], selected[pair_j]
             else:
-                candidates = ((i, j) for i in indexes_a for j in indexes_b)
-            for i, j in candidates:
-                pair_evaluations += 1
-                if pair_evaluations > p["max_pair_evaluations"]:
-                    raise _error("TOOL_RESOURCE_LIMIT", "TRAJECTORY_TOO_LARGE", "RDF pair-evaluation cap exceeded.")
-                distances.append(float(np.linalg.norm(_minimum_image(xyz[j] - xyz[i], cell, pbc))))
+                pair_i = np.repeat(np.asarray(indexes_a, dtype=int), len(indexes_b))
+                pair_j = np.tile(np.asarray(indexes_b, dtype=int), len(indexes_a))
+            frame_pair_count = int(pair_i.size)
+            if pair_evaluations + frame_pair_count > p["max_pair_evaluations"]:
+                raise _error("TOOL_RESOURCE_LIMIT", "TRAJECTORY_TOO_LARGE", "RDF pair-evaluation cap exceeded.")
+            pair_evaluations += frame_pair_count
+            distances = _pair_distances(xyz[pair_j] - xyz[pair_i], cell, pbc)
             counts += np.histogram(distances, bins=edges)[0]
             volume = abs(float(np.linalg.det(cell)))
             shell = (4.0 * math.pi / 3.0) * (edges[1:] ** 3 - edges[:-1] ** 3)
@@ -437,6 +439,19 @@ def _cell(trajectory: Mapping[str, Any], frame: Mapping[str, Any]) -> np.ndarray
 def _minimum_image(delta: np.ndarray, cell: np.ndarray, pbc: tuple[bool, bool, bool]) -> np.ndarray:
     vector, _ = find_mic(np.asarray(delta, dtype=float), cell, pbc=pbc)
     return np.asarray(vector, dtype=float)
+
+
+def _pair_distances(delta: np.ndarray, cell: np.ndarray, pbc: tuple[bool, bool, bool]) -> np.ndarray:
+    """Compute bounded batches of minimum-image pair distances."""
+    values = np.asarray(delta, dtype=float)
+    if values.size == 0:
+        return np.empty(0, dtype=float)
+    values = values.reshape((-1, 3))
+    distances: list[np.ndarray] = []
+    for start in range(0, len(values), 16_384):
+        minimum_image = _minimum_image(values[start : start + 16_384], cell, pbc)
+        distances.append(np.linalg.norm(minimum_image, axis=1))
+    return np.concatenate(distances)
 
 
 def _safe_radius(cell: np.ndarray, pbc: tuple[bool, bool, bool]) -> float:

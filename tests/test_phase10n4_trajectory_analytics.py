@@ -4,6 +4,7 @@ from copy import deepcopy
 import json
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from mdi_adapters import create_adapter
@@ -12,7 +13,7 @@ from mdi_artifact_core import canonical_trajectory_id
 from mdi_llm.providers import LLMProviderError, MockLLMProvider, PlannerRequest
 from mdi_schemas import DataProfile
 from mdi_tool_registry import build_artifact_compatibility_matrix, load_manifests
-from mdi_adapters.platform_builtin.trajectory_analytics import _minimum_image
+from mdi_adapters.platform_builtin.trajectory_analytics import _minimum_image, _pair_distances
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -96,6 +97,13 @@ def test_triclinic_rdf_uses_ase_geometric_minimum_image() -> None:
     delta = [-5.04, -2.8, 0.0]  # fractional delta [-0.7, -0.7, 0]
     result = _minimum_image(delta, cell, (True, True, True))
     assert result == pytest.approx([-1.84, 1.2, 0.0])
+
+
+def test_rdf_batch_pair_distances_match_scalar_minimum_image() -> None:
+    cell = np.asarray([[4.0, 0.0, 0.0], [3.2, 4.0, 0.0], [0.0, 0.0, 5.0]])
+    deltas = np.asarray([[-5.04, -2.8, 0.0], [5.04, 2.8, 0.0], [1.0, 0.5, 2.0]])
+    expected = np.asarray([np.linalg.norm(_minimum_image(delta, cell, (True, True, True))) for delta in deltas])
+    assert _pair_distances(deltas, cell, (True, True, True)) == pytest.approx(expected)
 
 
 def test_msd_triclinic_partial_pbc_and_ambiguous_steps(tmp_path: Path) -> None:
