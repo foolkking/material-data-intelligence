@@ -18,9 +18,13 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
   const [searchProjects, setSearchProjects] = useState<ProjectSummary[]>([]);
   const [searchState, setSearchState] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [modelSettingsOpen, setModelSettingsOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const searchTriggerRef = useRef<HTMLButtonElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchDialogRef = useRef<HTMLElement | null>(null);
+  const accountRef = useRef<HTMLDivElement | null>(null);
+  const accountTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const accountMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -49,6 +53,7 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
   });
 
   async function handleLogout() {
+    setAccountOpen(false);
     await logout().catch(() => undefined);
     setUser(null);
     router.push("/");
@@ -62,11 +67,23 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
 
   function openSearch() {
     setModelSettingsOpen(false);
+    setAccountOpen(false);
     setSearchOpen(true);
     if (searchState === "idle") {
       setSearchState("loading");
       void listProjects().then((items) => { setSearchProjects(items); setSearchState("ready"); }).catch(() => setSearchState("error"));
     }
+  }
+
+  function closeAccount(restoreFocus = false) {
+    setAccountOpen(false);
+    if (restoreFocus) window.requestAnimationFrame(() => accountTriggerRef.current?.focus());
+  }
+
+  function openModelSettings() {
+    setSearchOpen(false);
+    setAccountOpen(false);
+    setModelSettingsOpen(true);
   }
 
   function closeModelSettings() {
@@ -97,11 +114,46 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
     return () => { window.cancelAnimationFrame(focus); document.removeEventListener("keydown", onKeyDown); };
   }, [searchOpen]);
 
+  useEffect(() => {
+    if (!accountOpen) return;
+    accountMenuRef.current?.querySelector<HTMLElement>("[role='menuitem']")?.focus();
+    const onPointerDown = (event: PointerEvent) => {
+      if (!accountRef.current?.contains(event.target as Node)) closeAccount(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeAccount(true);
+        return;
+      }
+      if (event.key === "Tab") {
+        closeAccount(false);
+        return;
+      }
+      const items = Array.from(accountMenuRef.current?.querySelectorAll<HTMLElement>("[role='menuitem']") || []);
+      if (!items.length || !["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      const current = Math.max(0, items.indexOf(document.activeElement as HTMLElement));
+      const next = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1 : event.key === "ArrowDown" ? (current + 1) % items.length : (current - 1 + items.length) % items.length;
+      items[next]?.focus();
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [accountOpen]);
+
+  useEffect(() => {
+    setSearchOpen(false);
+    setAccountOpen(false);
+  }, [pathname]);
+
   const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
   const matchingProjects = searchProjects.filter((item) => !normalizedQuery || [item.name, item.description || ""].join(" ").toLocaleLowerCase().includes(normalizedQuery));
 
   const isProject = Boolean(projectId);
-  const internalPage = pathname !== "/";
   return (
     <div className="product-shell">
       <header className="product-global-bar">
@@ -113,12 +165,22 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
           {isProject ? <span>项目研究</span> : <span>材料数据与科学分析</span>}
         </div>
         <div className="product-global-actions">
-          {internalPage ? <Link href="/" className="product-secondary-action">返回主页</Link> : <>
-            <button ref={searchTriggerRef} type="button" className="product-icon-action" aria-label="搜索项目" onClick={openSearch}>⌕</button>
-            {checking ? <span className="product-user-skeleton" /> : user ? (
-              <div className="product-user-menu"><span className="product-avatar" aria-hidden="true">{(user.displayName || user.email || "研").slice(0, 1)}</span><span className="product-user-name">{user.displayName}</span><button type="button" className="product-link-button" onClick={() => { setSearchOpen(false); setModelSettingsOpen(true); }}>模型设置</button><button type="button" className="product-link-button" onClick={() => void handleLogout()}>退出</button></div>
-            ) : <Link href="/?login=1" className="product-login-link">登录</Link>}
-          </>}
+          <button ref={searchTriggerRef} type="button" className="product-icon-action" aria-label="搜索项目" onClick={openSearch}>⌕</button>
+          {checking ? <span className="product-user-skeleton" aria-label="正在读取账户" /> : user ? (
+            <div ref={accountRef} className="product-account">
+              <button ref={accountTriggerRef} type="button" className="product-account-trigger" aria-haspopup="menu" aria-controls="product-account-menu" aria-expanded={accountOpen} onClick={() => setAccountOpen((value) => !value)}>
+                <span className="product-avatar" aria-hidden="true">{(user.displayName || user.email || "研").slice(0, 1)}</span>
+                <span className="product-user-name">{user.displayName}</span>
+                <span className="product-account-chevron" aria-hidden="true">⌄</span>
+                <span className="sr-only">{accountOpen ? "关闭账户菜单" : "打开账户菜单"}</span>
+              </button>
+              {accountOpen ? <div ref={accountMenuRef} id="product-account-menu" className="product-account-menu" role="menu" aria-label="账户菜单">
+                <div className="product-account-identity"><strong>{user.displayName}</strong><span>{user.email}</span></div>
+                <button type="button" role="menuitem" onClick={openModelSettings}>模型设置</button>
+                <button type="button" role="menuitem" onClick={() => void handleLogout()}>退出登录</button>
+              </div> : null}
+            </div>
+          ) : <Link href="/?login=1" className="product-login-link">登录</Link>}
         </div>
       </header>
       {isProject && <nav className="product-project-nav" aria-label="项目导航">

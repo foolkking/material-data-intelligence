@@ -1,4 +1,16 @@
 ---TASK---
+状态：处理中
+任务名称：Continuous Product Quality — Global navigation and structured details Wave 5
+开始时间：2026-08-21T17:12:00+08:00
+
+让顶部全局搜索、模型设置与账户操作在项目、数据、研究和报告路由持续可用；
+将拥挤的账户操作收拢为可键盘访问、Escape/外部关闭、焦点恢复的菜单，
+并验证 390px 移动视口无溢出。修复 Workspace 图表“技术详情 / 结构化数据”
+空白预览，增加有界 JSON、数据摘要与明确空状态。不改变认证、BYOK 存储、
+服务端执行权限或 Artifact 内容。
+---END---
+
+---TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00

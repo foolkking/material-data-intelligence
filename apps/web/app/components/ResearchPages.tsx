@@ -13,6 +13,36 @@ import { researchRunTitle } from "../lib/research-display";
 
 type ResearchState = "idle" | "planning" | "running" | "complete" | "partial" | "failed" | "unsupported" | "clarification" | "capability-clarification";
 
+export type ResearchTechnicalSummary = {
+  runId: string | null;
+  planId: string | null;
+  outputCount: number;
+  structuredOutputCount: number;
+  structuredOutputLabel: string;
+};
+
+/** Expose audit metadata without loading or rendering secret-bearing payloads. */
+export function researchTechnicalSummary(job: PlannerJobCreateResult | null, artifacts: Artifact[], resultArtifacts: ProjectedScientificArtifact[] = projectScientificArtifacts(artifacts)): ResearchTechnicalSummary {
+  const structuredOutputs = artifacts.filter((artifact) => {
+    const type = String(artifact.type || "").toLowerCase();
+    const contentType = String(artifact.contentType || "").toLowerCase();
+    return contentType.includes("json") || type.endsWith("_json") || type === "json";
+  });
+  const names = structuredOutputs.map((artifact) => String(artifact.name || "").trim()).filter(Boolean).slice(0, 3);
+  return {
+    runId: job?.job_id || null,
+    planId: job?.plan_id || null,
+    outputCount: resultArtifacts.length,
+    structuredOutputCount: structuredOutputs.length,
+    structuredOutputLabel: names.length ? names.join("、") : "暂无 JSON 输出",
+  };
+}
+
+function compactTechnicalId(value: string | null): string {
+  if (!value) return "未提供";
+  return value.length > 24 ? `${value.slice(0, 12)}…${value.slice(-8)}` : value;
+}
+
 function canWriteProject(role?: string | null) {
   return role === "owner" || role === "admin" || role === "researcher";
 }
@@ -156,7 +186,7 @@ export function ResearchPage({ projectId, sessionId, runId }: { projectId: strin
             if (!active) return;
             if (detailResult.status === "fulfilled") {
               const detail = detailResult.value;
-              setJob((current) => current ? { ...current, plan: detail.analysisPlan || current.plan, plan_hash: detail.planHash || current.plan_hash } : current);
+              setJob((current) => current ? { ...current, plan: detail.analysisPlan || current.plan, plan_id: detail.planId || current.plan_id, plan_hash: detail.planHash || current.plan_hash } : current);
             }
             if (eventResult.status === "fulfilled") setEvents(mergeJobEvents([], eventResult.value));
             if (artifactResult.status === "fulfilled") setArtifacts(mergeArtifacts([], artifactResult.value));
@@ -563,8 +593,9 @@ function ResearchWorkbenchContent({ projectId, state, scope, job, events, artifa
   const supportingArtifacts = resultArtifacts.filter((artifact) => artifact !== primaryArtifact);
   const datasetId = scope?.dataset_id || job?.plan?.datasetId || undefined;
   const jobId = job?.job_id || undefined;
+  const technical = researchTechnicalSummary(job, artifacts, resultArtifacts);
   return <div className={"research-result-state " + state}><header className="workbench-heading"><div><p className="product-kicker">{state === "running" ? "正在分析" : state === "complete" ? "科学结果" : state === "partial" ? "部分结果" : "分析未完成"}</p><h2>{scientificResultTitle(job?.plan?.goal || null, artifacts, interpretation)}</h2></div><div className="workbench-heading-actions">{datasetId ? <Link className="product-secondary-action" href={`/projects/${projectId}/data?dataset=${datasetId}`}>查看数据</Link> : null}{(state === "complete" || state === "partial") && jobId ? <Link className="product-secondary-action" href={`/projects/${projectId}/reports/${jobId}`}>打开分析报告</Link> : null}</div></header>
-    <section className="live-results"><div className="result-heading"><h3>{state === "running" ? "本次分析" : "主要结果"}</h3><span>{resultArtifacts.length ? `${resultArtifacts.length} 个科学输出` : scope?.dataset_name || ""}</span></div>{primaryArtifact ? <ResearchArtifactFigure artifact={primaryArtifact} highlighted={artifactReference(primaryArtifact) === highlightedArtifactId} projectId={projectId} datasetId={datasetId} jobId={jobId} artifacts={artifacts} /> : <div className="result-empty">{state === "running" ? <>结果生成后会在这里显示。<br />当前使用：{scope?.dataset_name || "已选择的数据"}</> : "当前没有可展示的结果。"}</div>}{supportingArtifacts.length ? <details className="report-supporting-results"><summary>支持性结果 · {supportingArtifacts.length} 项</summary><div className="report-artifact-list">{supportingArtifacts.map((artifact) => <ResearchArtifactFigure key={artifact.artifactId || artifact.id} artifact={artifact} highlighted={artifactReference(artifact) === highlightedArtifactId} projectId={projectId} datasetId={datasetId} jobId={jobId} artifacts={artifacts} />)}</div></details> : null}{(state === "complete" || state === "partial") && <section className="finding-block"><h3>主要发现</h3>{interpretationStatus === "loading" ? <p role="status">正在整理科学结论…</p> : userFacingClaims(interpretation).length ? <ul className="research-findings">{userFacingClaims(interpretation).slice(0, 8).map((claim) => <li key={claim.claimId}><strong>{claim.claimType === "LIMITATION" ? "限制" : "观察"}</strong><p>{claim.renderedText}</p></li>)}</ul> : groundedNarrative.finding ? <p>{groundedNarrative.finding}</p> : <p>本次分析已生成可复核的图表与数据表；当前解释没有足够的用户级科学结论。</p>}<h3>限制</h3>{userFacingLimitations(interpretation).length ? <ul>{userFacingLimitations(interpretation).map((item) => <li key={item}>{item}</li>)}</ul> : <p>{groundedNarrative.limitation || (interpretationStatus === "error" ? "科学结论暂时无法读取；结果仍可查看。" : "解释仅适用于本次分析所使用的数据与证据。")}</p>}{evidence?.evidenceItems?.length ? <details className="research-evidence"><summary>依据 · {evidence.evidenceItems.length} 项</summary><ul>{evidence.evidenceItems.slice(0, 12).map((item) => { const target = resultArtifacts.find((artifact) => artifactReference(artifact) === item.sourceArtifactId); return <li key={item.evidenceItemId}><strong>{evidenceLabel(item.semanticRole)}</strong><span>{displayEvidenceValue(item.displayValue)}</span><small>已绑定本次分析的来源数据字段</small>{target ? <button type="button" className="product-link-button" onClick={() => { setHighlightedArtifactId(artifactReference(target)); window.requestAnimationFrame(() => document.getElementById(artifactDomId(target))?.scrollIntoView({ block: "center" })); }}>在结果中查看</button> : null}</li>; })}</ul></details> : null}<details><summary>来源与过程</summary><p>{interpretation ? "结论来自本次分析的已验证结果与依据。" : "分析方法、来源数据与输出记录可继续查看。"}</p></details><details><summary>技术详情</summary><p>运行与结果身份保存在审计记录中。</p></details></section>}</section>
+    <section className="live-results"><div className="result-heading"><h3>{state === "running" ? "本次分析" : "主要结果"}</h3><span>{resultArtifacts.length ? `${resultArtifacts.length} 个科学输出` : scope?.dataset_name || ""}</span></div>{primaryArtifact ? <ResearchArtifactFigure artifact={primaryArtifact} highlighted={artifactReference(primaryArtifact) === highlightedArtifactId} projectId={projectId} datasetId={datasetId} jobId={jobId} artifacts={artifacts} /> : <div className="result-empty">{state === "running" ? <>结果生成后会在这里显示。<br />当前使用：{scope?.dataset_name || "已选择的数据"}</> : "当前没有可展示的结果。"}</div>}{supportingArtifacts.length ? <details className="report-supporting-results"><summary>支持性结果 · {supportingArtifacts.length} 项</summary><div className="report-artifact-list">{supportingArtifacts.map((artifact) => <ResearchArtifactFigure key={artifact.artifactId || artifact.id} artifact={artifact} highlighted={artifactReference(artifact) === highlightedArtifactId} projectId={projectId} datasetId={datasetId} jobId={jobId} artifacts={artifacts} />)}</div></details> : null}{(state === "complete" || state === "partial") && <section className="finding-block"><h3>主要发现</h3>{interpretationStatus === "loading" ? <p role="status">正在整理科学结论…</p> : userFacingClaims(interpretation).length ? <ul className="research-findings">{userFacingClaims(interpretation).slice(0, 8).map((claim) => <li key={claim.claimId}><strong>{claim.claimType === "LIMITATION" ? "限制" : "观察"}</strong><p>{claim.renderedText}</p></li>)}</ul> : groundedNarrative.finding ? <p>{groundedNarrative.finding}</p> : <p>本次分析已生成可复核的图表与数据表；当前解释没有足够的用户级科学结论。</p>}<h3>限制</h3>{userFacingLimitations(interpretation).length ? <ul>{userFacingLimitations(interpretation).map((item) => <li key={item}>{item}</li>)}</ul> : <p>{groundedNarrative.limitation || (interpretationStatus === "error" ? "科学结论暂时无法读取；结果仍可查看。" : "解释仅适用于本次分析所使用的数据与证据。")}</p>}{evidence?.evidenceItems?.length ? <details className="research-evidence"><summary>依据 · {evidence.evidenceItems.length} 项</summary><ul>{evidence.evidenceItems.slice(0, 12).map((item) => { const target = resultArtifacts.find((artifact) => artifactReference(artifact) === item.sourceArtifactId); return <li key={item.evidenceItemId}><strong>{evidenceLabel(item.semanticRole)}</strong><span>{displayEvidenceValue(item.displayValue)}</span><small>已绑定本次分析的来源数据字段</small>{target ? <button type="button" className="product-link-button" onClick={() => { setHighlightedArtifactId(artifactReference(target)); window.requestAnimationFrame(() => document.getElementById(artifactDomId(target))?.scrollIntoView({ block: "center" })); }}>在结果中查看</button> : null}</li>; })}</ul></details> : null}<details><summary>来源与过程</summary><p>{interpretation ? "结论来自本次分析的已验证结果与依据。" : "分析方法、来源数据与输出记录可继续查看。"}</p></details><details className="research-technical-details"><summary>技术详情</summary><dl><div><dt>运行 ID</dt><dd><code>{compactTechnicalId(technical.runId)}</code></dd></div><div><dt>方案 ID</dt><dd><code>{compactTechnicalId(technical.planId)}</code></dd></div><div><dt>输出</dt><dd>{technical.outputCount ? `${technical.outputCount} 个可查看结果` : "暂无可查看结果"}</dd></div><div><dt>结构化数据</dt><dd>{technical.structuredOutputCount ? `${technical.structuredOutputCount} 个 JSON Artifact` : "当前运行没有可展示的结构化结果"}</dd></div></dl>{technical.structuredOutputCount ? <p className="research-technical-hint">可打开上方结果的“技术详情”查看有界 JSON；示例：{technical.structuredOutputLabel}。</p> : <p className="research-technical-hint">运行身份与结果状态仍保存在审计记录中；结构化数据会在结果成功加载后显示。</p>}</details></section>}</section>
   </div>;
 }
 

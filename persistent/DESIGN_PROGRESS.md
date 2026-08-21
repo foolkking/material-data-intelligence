@@ -3229,3 +3229,12 @@ behavior is unchanged. Implementation commit `3dccce8` passed current-HEAD CI
 run `32464949831`, including complete frontend tests, typecheck/build, current
 Phase 12 browser gates, Python unit tests, service-backed integration, and
 scientific replay on Linux and Windows.
+
+2026-08-21 Wave 5 in progress: global navigation controls now remain available
+on internal project routes. Account actions use a compact menu with explicit
+menu semantics, Escape/outside dismissal, keyboard traversal, and focus
+restoration; the mobile trigger and menu remain bounded at 390px. Scientific
+result fallback previews now expose bounded JSON with a type/count summary and
+honest empty/unavailable states. Research result technical details now show
+auditable run/plan identity and output availability, while payload loading and
+secret storage remain server-owned.

@@ -5427,3 +5427,18 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   the Workbench. This is a presentation response to a persisted job boundary,
   not a client-side claim that execution has completed or a browser execution
   authority transfer.
+
+## ADR: Global controls and bounded technical detail previews (2026-08-21)
+
+- Search, model settings, and account navigation are product-shell concerns;
+  they remain available on project-scoped Data, Research, and Report routes.
+  The account menu owns only presentation state and focus management; it does
+  not change authentication, BYOK persistence, or server execution authority.
+- Structured previews are projections of already-authorized Artifact content.
+  They are bounded by the existing JSON preview cap, summarize top-level shape,
+  and disclose empty/unavailable states instead of inventing a renderer or
+  silently displaying a blank panel.
+- Research technical details expose only audit metadata (run/plan identity,
+  output counts, and Artifact names). Payloads continue to load through the
+  validated Artifact viewer, so secrets and executable content do not enter the
+  page or its logs.

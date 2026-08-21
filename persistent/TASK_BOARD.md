@@ -3124,3 +3124,11 @@ archival remains withheld.
       keyboard focus movement and single-panel visibility assertions.
 - [x] Complete implementation commit `3dccce8`, push, current-HEAD CI run
       `32464949831`, result recording, and verified TASKS archival.
+
+## Continuous Product Quality — Global navigation and structured details Wave 5 — In progress
+
+- [x] Keep global search, model settings, and account actions available on project-scoped Data, Research, and Report routes.
+- [x] Consolidate account actions into an Escape/outside-click dismissible, keyboard-navigable menu with focus restoration and bounded mobile geometry.
+- [x] Replace blank structured-data previews with bounded JSON, top-level summaries, and explicit unavailable/empty states.
+- [x] Populate Research result technical details with auditable run/plan IDs, output counts, and structured Artifact availability without exposing payload secrets.
+- [ ] Complete full local gates, push, verify current-HEAD CI, and archive.

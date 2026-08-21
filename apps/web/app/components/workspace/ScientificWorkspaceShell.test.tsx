@@ -6,7 +6,7 @@ import { createHash } from "node:crypto";
 import { getWorkspace, patchWorkspace } from "../../lib/workspace-api";
 import { getPlannerArtifactContent, getPlannerInterpretationEvidence, getPlannerJobArtifacts, getPlannerJobInterpretations } from "../../lib/planner-api";
 import { ScientificWorkspaceShell } from "./ScientificWorkspaceShell";
-import { validateAndOrderArtifactMetadata } from "./WorkspaceArtifactGallery";
+import { structuredDataPreview, validateAndOrderArtifactMetadata } from "./WorkspaceArtifactGallery";
 import { workspaceSnapshotFixture } from "./workspace-test-fixture";
 import { encodeWorkspaceSelectionUrl, validateWorkspaceSelectionContext } from "./workspace-selection-contract";
 
@@ -53,6 +53,17 @@ beforeEach(() => {
 });
 
 describe("Phase 10M-2 ScientificWorkspaceShell", () => {
+  it("keeps structured technical details informative for populated, empty, and missing payloads", () => {
+    const populated = structuredDataPreview({ series: [1, 2], unit: "THz" });
+    expect(populated).toMatchObject({ state: "READY", summary: "对象 · 2 个顶层字段", truncated: false });
+    expect(populated.text).toContain('"series"');
+    expect(structuredDataPreview({})).toMatchObject({ state: "EMPTY", text: "{}" });
+    expect(structuredDataPreview(undefined)).toMatchObject({ state: "UNAVAILABLE", summary: "无可用内容" });
+    const bounded = structuredDataPreview({ values: "x".repeat(81_000) });
+    expect(bounded.truncated).toBe(true);
+    expect(bounded.text).toContain("完整内容仍保留在 Artifact 中");
+  });
+
   it("loads metadata-first and renders the sealed shell with one active panel", async () => {
     render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
     expect(screen.getByRole("heading", { name: "Loading Workspace" })).not.toBeNull();

@@ -275,7 +275,23 @@ function PlotFallback({ content, descriptor, workspace, onSelection }: Readonly<
 }
 
 function TextFallback({ content }: { content: unknown }) { return <section className="workspace-generic-renderer"><h5>文本结果</h5><pre>{typeof content === "string" ? content.slice(0, MAX_JSON_PREVIEW_CHARS) : "文本内容暂时无法读取。"}</pre></section>; }
-function JsonFallback({ content }: { content: unknown }) { const text = JSON.stringify(content, null, 2); return <section className="workspace-generic-renderer"><h5>结构化数据</h5><pre>{text.length > MAX_JSON_PREVIEW_CHARS ? `${text.slice(0, MAX_JSON_PREVIEW_CHARS)}\n[预览已限制]` : text}</pre></section>; }
+export function structuredDataPreview(content: unknown): { text: string; summary: string; state: "READY" | "EMPTY" | "UNAVAILABLE"; truncated: boolean } {
+  if (content === undefined) return { text: "当前 Artifact 未提供可预览的结构化内容。", summary: "无可用内容", state: "UNAVAILABLE", truncated: false };
+  let serialized: string;
+  try {
+    serialized = JSON.stringify(content, null, 2);
+  } catch {
+    return { text: "当前 Artifact 内容无法安全序列化；原始结果仍保留在持久化 Artifact 中。", summary: "预览不可用", state: "UNAVAILABLE", truncated: false };
+  }
+  if (serialized === undefined) return { text: "当前 Artifact 内容不是可预览的 JSON 值；原始结果仍保留在持久化 Artifact 中。", summary: "预览不可用", state: "UNAVAILABLE", truncated: false };
+  const topLevelCount = Array.isArray(content) ? content.length : content && typeof content === "object" ? Object.keys(content).length : 1;
+  const kind = Array.isArray(content) ? "数组" : content === null ? "空值" : typeof content === "object" ? "对象" : "标量";
+  const empty = content === null || serialized === "" || (typeof content === "object" && topLevelCount === 0);
+  const truncated = serialized.length > MAX_JSON_PREVIEW_CHARS;
+  const text = truncated ? `${serialized.slice(0, MAX_JSON_PREVIEW_CHARS)}\n[预览已限制；完整内容仍保留在 Artifact 中]` : serialized;
+  return { text, summary: `${kind} · ${topLevelCount} ${Array.isArray(content) ? "项" : "个顶层字段"}${truncated ? " · 有界预览" : ""}`, state: empty ? "EMPTY" : "READY", truncated };
+}
+function JsonFallback({ content }: { content: unknown }) { const preview = structuredDataPreview(content); return <section className="workspace-generic-renderer workspace-structured-preview" aria-label="结构化数据预览"><header><h5>结构化数据</h5><span>{preview.summary}</span></header>{preview.state === "EMPTY" ? <p className="workspace-structured-empty" role="note">该结果的结构化内容为空；下方保留精确 JSON 表示。</p> : null}<pre tabIndex={0} aria-label="结构化数据 JSON">{preview.text}</pre></section>; }
 function InertFallback({ artifact, reason }: { artifact: Artifact; reason: string }) { return <section className="workspace-generic-renderer" role="status"><h5>Inert Artifact fallback</h5><p>{reason}. No HTML, JavaScript, iframe, dynamic module, external URL or guessed renderer is executed.</p><dl><dt>Contract</dt><dd>{artifact.type || "unknown"}@{artifactVersion(artifact)}</dd><dt>Checksum</dt><dd>{compact(artifactChecksum(artifact), 20)}</dd></dl></section>; }
 function GalleryState({ title, message, error = false }: { title: string; message: string; error?: boolean }) { return <div className="workspace-gallery-state" role={error ? "alert" : "status"}><strong>{title}</strong><span>{message}</span></div>; }
 

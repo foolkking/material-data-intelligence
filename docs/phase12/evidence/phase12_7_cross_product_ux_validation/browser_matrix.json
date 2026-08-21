@@ -1,6 +1,7 @@
 {
   "canonicalJourneyCount": 11,
   "chromium": {
+    "accountMenuKeyboard": "PASS",
     "consoleErrors": [],
     "designSystem": {
       "accent": "#08756c",
@@ -11,6 +12,7 @@
     },
     "externalRequests": [],
     "failedResponses": [],
+    "globalNavigation": "PASS",
     "headings": [
       "\u7814\u7a76\u65f6\u95f4\u7ebf"
     ],
@@ -21,9 +23,10 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "1440x900",
-    "visibleControls": 18
+    "visibleControls": 19
   },
   "chromium1280x720": {
+    "accountMenuKeyboard": "PASS",
     "consoleErrors": [],
     "designSystem": {
       "accent": "#08756c",
@@ -34,6 +37,7 @@
     },
     "externalRequests": [],
     "failedResponses": [],
+    "globalNavigation": "PASS",
     "headings": [
       "\u7814\u7a76\u65f6\u95f4\u7ebf"
     ],
@@ -44,9 +48,10 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "1280x720",
-    "visibleControls": 18
+    "visibleControls": 19
   },
   "chromium390x844": {
+    "accountMenuKeyboard": "PASS",
     "consoleErrors": [],
     "designSystem": {
       "accent": "#08756c",
@@ -57,6 +62,7 @@
     },
     "externalRequests": [],
     "failedResponses": [],
+    "globalNavigation": "PASS",
     "headings": [
       "\u7814\u7a76\u65f6\u95f4\u7ebf"
     ],
@@ -67,9 +73,10 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "390x844",
-    "visibleControls": 14
+    "visibleControls": 15
   },
   "firefox": {
+    "accountMenuKeyboard": "PASS",
     "consoleErrors": [],
     "designSystem": {
       "accent": "#08756c",
@@ -80,6 +87,7 @@
     },
     "externalRequests": [],
     "failedResponses": [],
+    "globalNavigation": "PASS",
     "headings": [
       "\u7814\u7a76\u65f6\u95f4\u7ebf"
     ],
@@ -90,7 +98,7 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "1440x900",
-    "visibleControls": 18
+    "visibleControls": 19
   },
   "frontendScientificRecomputation": 0,
   "retainedCrossProductEvidence": [
@@ -103,6 +111,7 @@
   "screenshotNumericScientificAuthority": "NONE",
   "status": "PASS",
   "webkit": {
+    "accountMenuKeyboard": "PASS",
     "consoleErrors": [],
     "designSystem": {
       "accent": "#08756c",
@@ -113,6 +122,7 @@
     },
     "externalRequests": [],
     "failedResponses": [],
+    "globalNavigation": "PASS",
     "headings": [
       "\u7814\u7a76\u65f6\u95f4\u7ebf"
     ],
@@ -123,6 +133,6 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "1440x900",
-    "visibleControls": 16
+    "visibleControls": 17
   }
 }

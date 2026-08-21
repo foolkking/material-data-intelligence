@@ -69,6 +69,18 @@ async function inspect(page, name, viewport, touch = false) {
   const audit = attachAudit(page);
   await installReplay(page, audit);
   await page.goto(`${ORIGIN}${RESEARCH_PATH}`, { waitUntil: "networkidle" });
+  const searchTrigger = page.getByRole("button", { name: "搜索项目" });
+  const accountTrigger = page.getByRole("button", { name: /打开账户菜单/ });
+  if (!(await searchTrigger.isVisible()) || !(await accountTrigger.isVisible())) throw new Error(`${name}: internal route lost global navigation controls`);
+  await accountTrigger.click();
+  const settingsItem = page.getByRole("menuitem", { name: "模型设置" });
+  await settingsItem.waitFor({ state: "visible" });
+  if ((await page.locator(":focus").textContent())?.trim() !== "模型设置") throw new Error(`${name}: account menu did not receive focus`);
+  await page.keyboard.press("ArrowDown");
+  if ((await page.locator(":focus").textContent())?.trim() !== "退出登录") throw new Error(`${name}: account menu keyboard navigation failed`);
+  await page.keyboard.press("Escape");
+  if (await page.getByRole("menu", { name: "账户菜单" }).isVisible().catch(() => false)) throw new Error(`${name}: account menu did not close on Escape`);
+  if ((await page.locator(":focus").getAttribute("aria-controls")) !== "product-account-menu") throw new Error(`${name}: account menu did not restore trigger focus`);
   const metrics = await page.evaluate(({ touch }) => {
     const root = getComputedStyle(document.documentElement);
     const visible = [...document.querySelectorAll("button, input, select, textarea, a")].filter((item) => {
@@ -101,7 +113,7 @@ async function inspect(page, name, viewport, touch = false) {
   if ((await page.locator(":focus").getAttribute("id")) !== "research-primary-content") throw new Error(`${name}: skip target failed`);
   await page.screenshot({ path: path.join(OUT, `${name}.png`), fullPage: true });
   if (Object.values(audit).some((items) => items.length)) throw new Error(`${name}: ${JSON.stringify(audit)}`);
-  return { viewport, ...metrics, ...audit, keyboard: "PASS", status: "PASS" };
+  return { viewport, ...metrics, ...audit, globalNavigation: "PASS", accountMenuKeyboard: "PASS", keyboard: "PASS", status: "PASS" };
 }
 
 async function run(browserType, name, viewport, touch = false) {

@@ -66,9 +66,36 @@ import {
   mergeArtifacts,
   mergeJobEvents,
   ResearchPage,
+  researchTechnicalSummary,
   runProcessStepState,
   userFacingPlanStep,
 } from "./ResearchPages";
+
+it("summarizes structured result metadata without loading payloads", () => {
+  const summary = researchTechnicalSummary(
+    { ok: true, job_id: "job_1", plan_id: "plan_1" },
+    [
+      { artifactId: "plot_1", type: "plotly_json", name: "rdf_plot.json", contentType: "application/json" },
+      { artifactId: "table_1", type: "table_csv", name: "rdf.csv", contentType: "text/csv" },
+      { artifactId: "recipe_1", type: "recipe_json", name: "recipe.json" },
+    ],
+  );
+
+  expect(summary).toMatchObject({
+    runId: "job_1",
+    planId: "plan_1",
+    outputCount: 2,
+    structuredOutputCount: 2,
+    structuredOutputLabel: "rdf_plot.json、recipe.json",
+  });
+  expect(researchTechnicalSummary(null, [])).toMatchObject({
+    runId: null,
+    planId: null,
+    outputCount: 0,
+    structuredOutputCount: 0,
+    structuredOutputLabel: "暂无 JSON 输出",
+  });
+});
 
 beforeEach(() => {
   vi.clearAllMocks();
