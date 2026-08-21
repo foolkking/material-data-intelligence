@@ -5270,6 +5270,19 @@ body:has(.research-workbench) {
 .research-session-list span { color: var(--product-secondary); font-size: 12px; }
 .research-session-empty { margin: 0; padding: 20px 12px; color: var(--product-secondary); font-size: 13px; line-height: 1.55; text-align: center; }
 .conversation-history { align-content: start; }
+.conversation-stream { display: grid; align-content: start; gap: 18px; }
+.research-starter { display: grid; gap: 12px; padding: 4px 0 20px; border-bottom: 1px solid var(--product-border); }
+.research-starter .product-kicker { margin: 0; }
+.research-starter h2 { margin: 0; color: var(--product-ink); font-size: 20px; line-height: 1.35; }
+.research-starter > p:not(.product-kicker) { margin: 0; color: var(--product-secondary); font-size: 14px; line-height: 1.6; }
+.research-starter-directions { display: grid; gap: 6px; margin-top: 4px; }
+.research-starter-directions > strong { color: var(--product-secondary); font-size: 13px; font-weight: 600; }
+.research-starter-questions { display: grid; }
+.research-starter-questions button { width: 100%; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; border: 0; border-top: 1px solid var(--product-border); border-radius: 0; background: transparent; color: var(--product-ink); font: inherit; font-size: 14px; line-height: 1.45; text-align: left; cursor: pointer; }
+.research-starter-questions button:hover, .research-starter-questions button:focus-visible { color: var(--product-accent); background: var(--product-subtle); box-shadow: 0 0 0 8px var(--product-subtle); }
+.research-starter-questions button small { flex: 0 0 auto; color: var(--product-tertiary); font-size: 12px; }
+.research-starter-upload { justify-self: start; margin-top: 4px; }
+.research-starter-readonly { padding-top: 12px; border-top: 1px solid var(--product-border); color: var(--product-secondary); font-weight: 600; }
 .timeline-run-process { margin: 2px 0 4px; border-top: 1px solid var(--product-border); border-bottom: 1px solid var(--product-border); }
 .timeline-run-process summary { min-height: 42px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: var(--product-secondary); font-size: 13px; list-style: none; }
 .timeline-run-process summary::-webkit-details-marker { display: none; }

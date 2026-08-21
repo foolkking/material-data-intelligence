@@ -5442,3 +5442,21 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   output counts, and Artifact names). Payloads continue to load through the
   validated Artifact viewer, so secrets and executable content do not enter the
   page or its logs.
+
+## ADR: Research activation is an inert Project History projection (2026-08-22)
+
+- The empty conversation owns first-use activation because the left Research pane
+  already owns questions and continuity. The right workbench retains project-data
+  and recent-result context; it does not duplicate starter actions.
+- Starter questions are a bounded frontend projection of the already-authorized
+  Project History `datasetType`, `readyCapabilities`, and `semanticRoles`. The
+  projection is case-insensitive, deterministic, capped at three, and falls back
+  to a neutral project-data overview when the available facts are insufficient.
+- Selecting a starter or recovery question selects the conversation panel, then
+  fills and focuses the existing Composer. It cannot create a Session, Message,
+  Plan, Job, ToolCall, or Artifact until the user explicitly submits through the
+  unchanged Planner path.
+- Empty write-capable Projects route to the existing Upload page instead of
+  presenting a doomed Composer. Read-only Projects omit the action. No API,
+  schema, database, Planner, QueueWorkerRuntime, Tool Registry, Adapter, or
+  scientific authority changes.

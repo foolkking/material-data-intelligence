@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, it, vi } from "vitest";
 
-import type { InterpretationEvidenceResponse } from "../lib/planner-api";
+import type { InterpretationEvidenceResponse, ProjectHistory } from "../lib/planner-api";
 
 const mocks = vi.hoisted(() => ({
   createResearchMessage: vi.fn(),
@@ -66,10 +66,60 @@ import {
   mergeArtifacts,
   mergeJobEvents,
   ResearchPage,
+  researchStarterPrompts,
   researchTechnicalSummary,
   runProcessStepState,
   userFacingPlanStep,
 } from "./ResearchPages";
+
+function starterHistory(profiles: Array<ProjectHistory["datasets"][number]["profile"]>): ProjectHistory {
+  return {
+    schemaVersion: "ProjectHistoryView/1.0",
+    project: { id: "project_1", name: "研究项目", role: "owner" },
+    summary: { datasetCount: profiles.length, analysisCount: 0, completedAnalysisCount: 0, artifactCount: 0, workspaceCount: 0, reportCount: 0 },
+    datasets: profiles.map((profile, index) => ({
+      datasetId: `dataset_${index + 1}`,
+      name: `dataset-${index + 1}`,
+      status: "profile_ready",
+      analysisCount: 0,
+      process: [],
+      resultSummary: { artifactCount: 0, workspaceCount: 0, interpretationCount: 0, reportCount: 0, recipeCount: 0, artifactTypes: [] },
+      import: { fileCount: 1, files: [], resources: [], parseOutcome: "succeeded" },
+      profile,
+    })),
+    analyses: [],
+    activity: [],
+  };
+}
+
+it("derives at most three starter questions from normalized project capabilities", () => {
+  const prompts = researchStarterPrompts(starterHistory([{
+    datasetType: "Materials_Tabular_Dataset",
+    readyCapabilities: ["STRUCTURE.EXPERIMENTAL_XRD_COMPARISON", "trajectory_visualization", "phonon_visualization", "volumetric_visualization"],
+    semanticRoles: { formation_energy: 4, band_gap: 4 },
+  }]));
+
+  expect(prompts).toEqual([
+    { id: "experimental-xrd", question: "比较实验与理论 XRD" },
+    { id: "trajectory", question: "查看 AIMD 轨迹并概览结构演化" },
+    { id: "phonon", question: "查看声子能带与态密度" },
+  ]);
+});
+
+it("only offers the formation-energy relation when both exact semantics exist", () => {
+  const history = (semanticRoles: Record<string, number>) => starterHistory([{ semanticRoles }]);
+
+  expect(researchStarterPrompts(history({ formation_energy: 2, band_gap: 2 }))).toContainEqual({
+    id: "formation-energy-band-gap",
+    question: "比较 formation energy 与 band gap 的关系",
+  });
+  expect(researchStarterPrompts(history({ formation_energy: 2 }))).toEqual([
+    { id: "project-overview", question: "概览当前项目数据与可用分析" },
+  ]);
+  expect(researchStarterPrompts(history({ formation_energy_prediction: 2, band_gap_prediction: 2 }))).toEqual([
+    { id: "project-overview", question: "概览当前项目数据与可用分析" },
+  ]);
+});
 
 it("summarizes structured result metadata without loading payloads", () => {
   const summary = researchTechnicalSummary(
@@ -197,6 +247,63 @@ beforeEach(() => {
     ],
   });
   mocks.createPlannerJobInterpretation.mockResolvedValue({ ok: true });
+});
+
+it("puts a capability-aware starter question in the composer without submitting", async () => {
+  const user = userEvent.setup();
+  render(<ResearchPage projectId="project_1" />);
+
+  expect(await screen.findByRole("region", { name: "从 2 个项目数据集开始" })).toBeInTheDocument();
+  const suggestion = screen.getByRole("button", { name: /概览当前项目数据与可用分析/ });
+  await user.click(suggestion);
+  const composer = screen.getByLabelText("询问此项目中的数据");
+  expect(composer).toHaveValue("概览当前项目数据与可用分析");
+  await waitFor(() => expect(composer).toHaveFocus());
+  expect(mocks.createResearchSession).not.toHaveBeenCalled();
+  expect(mocks.createResearchMessage).not.toHaveBeenCalled();
+  expect(mocks.createPlannerJob).not.toHaveBeenCalled();
+  expect(screen.queryByText("可以尝试")).not.toBeInTheDocument();
+});
+
+it("replaces a doomed empty-project composer with the permitted upload action", async () => {
+  mocks.getProjectHistory.mockResolvedValue({
+    project: { id: "project_1", name: "空项目", role: "owner" },
+    datasets: [],
+    analyses: [],
+  });
+  render(<ResearchPage projectId="project_1" />);
+
+  expect(await screen.findByRole("heading", { name: "先为项目添加数据" })).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "上传数据" })).toHaveAttribute("href", "/projects/project_1/datasets/new");
+  expect(screen.queryByLabelText("询问此项目中的数据")).not.toBeInTheDocument();
+});
+
+it("keeps the no-data starter read-only for a viewer", async () => {
+  mocks.getProjectHistory.mockResolvedValue({
+    project: { id: "project_1", name: "共享空项目", role: "viewer" },
+    datasets: [],
+    analyses: [],
+  });
+  render(<ResearchPage projectId="project_1" />);
+
+  expect(await screen.findByRole("heading", { name: "这个项目还没有可研究的数据" })).toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: "上传数据" })).not.toBeInTheDocument();
+  expect(screen.queryByLabelText("询问此项目中的数据")).not.toBeInTheDocument();
+});
+
+it("does not show first-use guidance inside an existing conversation", async () => {
+  mocks.listResearchSessions.mockResolvedValue([{ id: "session_1", project_id: "project_1", title: "既有研究", status: "active" }]);
+  mocks.getResearchSession.mockResolvedValue({
+    id: "session_1",
+    project_id: "project_1",
+    title: "既有研究",
+    status: "active",
+    messages: [{ id: "message_1", session_id: "session_1", role: "user", content: "查看结构", created_at: "2026-08-22T00:00:00Z" }],
+  });
+  render(<ResearchPage projectId="project_1" sessionId="session_1" />);
+
+  expect(await screen.findByRole("article", { name: "你的消息" })).toHaveTextContent("查看结构");
+  expect(screen.queryByText("研究起点")).not.toBeInTheDocument();
 });
 
 it("persists the selected dataset in the same research session before creating a scoped job", async () => {
@@ -489,6 +596,7 @@ it("does not present a historical failed run as still running", async () => {
   render(<ResearchPage projectId="project_1" runId="job_failed" />);
 
   expect(await screen.findByText("分析未完成 · 查看过程")).toBeInTheDocument();
+  expect(screen.queryByText("研究起点")).not.toBeInTheDocument();
   expect(screen.queryByText("分析中 · 查看过程")).not.toBeInTheDocument();
   expect(
     screen.queryByText("结果生成后会在这里显示。"),
@@ -962,10 +1070,14 @@ it("turns a local-environment algorithm gap into an actionable clarification", a
     }),
   );
 
+  await user.click(screen.getByRole("tab", { name: "工作台" }));
+  expect(screen.getByRole("tab", { name: "工作台" })).toHaveAttribute("aria-selected", "true");
   await user.click(screen.getByRole("button", { name: "使用 CrystalNN" }));
   expect(composer).toHaveValue(
     "使用 CrystalNN 计算当前结构的径向分布并分析局部环境",
   );
+  expect(screen.getByRole("tab", { name: "对话" })).toHaveAttribute("aria-selected", "true");
+  await waitFor(() => expect(composer).toHaveFocus());
   expect(
     screen.queryByRole("heading", { name: "局部环境分析需要选择配位算法。" }),
   ).not.toBeInTheDocument();

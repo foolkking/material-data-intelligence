@@ -44,7 +44,7 @@ async function installReplay(page, audit) {
         datasetId: "dataset-ux", name: "材料数据夹具", status: "active", analysisCount: 0, process: [],
         resultSummary: { artifactCount: 0, workspaceCount: 0, interpretationCount: 0, reportCount: 0, recipeCount: 0, artifactTypes: [] },
         import: { fileCount: 1, files: [], resources: [], parseOutcome: "READY" },
-        profile: { datasetType: "materials_tabular_dataset", rowCount: 3, columnCount: 2, readyCapabilities: ["tabular_data"] },
+        profile: { datasetType: "materials_tabular_dataset", rowCount: 3, columnCount: 2, readyCapabilities: ["STRUCTURE.EXPERIMENTAL_XRD_COMPARISON", "trajectory_visualization", "phonon_visualization", "volumetric_visualization"] },
       }],
       analyses: [], activity: [],
     });
@@ -59,9 +59,14 @@ async function installReplay(page, audit) {
 }
 
 function attachAudit(page) {
-  const audit = { consoleErrors: [], pageErrors: [], failedResponses: [], externalRequests: [] };
+  const audit = { consoleErrors: [], pageErrors: [], failedResponses: [], externalRequests: [], mutatingApiRequests: [] };
   page.on("console", (message) => { if (message.type() === "error") audit.consoleErrors.push(message.text()); });
   page.on("pageerror", (error) => audit.pageErrors.push(String(error)));
+  page.on("request", (request) => {
+    const url = new URL(request.url());
+    const isApi = (url.origin === ORIGIN && url.pathname.startsWith("/api/")) || ((url.hostname === "localhost" || url.hostname === "127.0.0.1") && url.port === "8000");
+    if (isApi && !["GET", "HEAD", "OPTIONS"].includes(request.method())) audit.mutatingApiRequests.push(`${request.method()} ${url.pathname}`);
+  });
   return audit;
 }
 
@@ -69,6 +74,15 @@ async function inspect(page, name, viewport, touch = false) {
   const audit = attachAudit(page);
   await installReplay(page, audit);
   await page.goto(`${ORIGIN}${RESEARCH_PATH}`, { waitUntil: "networkidle" });
+  const starter = page.getByRole("region", { name: "从 1 个项目数据集开始" });
+  await starter.waitFor({ state: "visible" });
+  const starterQuestions = starter.getByRole("button");
+  if (await starterQuestions.count() !== 3) throw new Error(`${name}: capability-aware starter did not expose exactly three bounded questions`);
+  const selectedQuestion = "比较实验与理论 XRD";
+  await starter.getByRole("button", { name: new RegExp(selectedQuestion) }).click();
+  const composer = page.getByLabel("询问此项目中的数据");
+  if (await composer.inputValue() !== selectedQuestion || !(await composer.evaluate((element) => element === document.activeElement))) throw new Error(`${name}: starter question did not fill and focus the composer`);
+  if (audit.mutatingApiRequests.length) throw new Error(`${name}: selecting an inert starter question created a write request`);
   const searchTrigger = page.getByRole("button", { name: "搜索项目" });
   const accountTrigger = page.getByRole("button", { name: /打开账户菜单/ });
   if (!(await searchTrigger.isVisible()) || !(await accountTrigger.isVisible())) throw new Error(`${name}: internal route lost global navigation controls`);
@@ -106,6 +120,11 @@ async function inspect(page, name, viewport, touch = false) {
   }, { touch });
   if (metrics.horizontalOverflow || metrics.undersized.length) throw new Error(`${name}: ${JSON.stringify(metrics)}`);
   if (Object.values(metrics.designSystem).some((value) => !value)) throw new Error(`${name}: unresolved DS2 token`);
+  const panelVisibility = {
+    timeline: await page.getByRole("tabpanel", { name: "对话" }).isVisible(),
+    workbench: await page.getByRole("tabpanel", { name: "工作台" }).isVisible(),
+  };
+  if (touch && (!panelVisibility.timeline || panelVisibility.workbench)) throw new Error(`${name}: mobile Research did not retain one active conversation panel`);
   const skip = page.locator('.skip-link[href="#research-primary-content"]');
   await skip.focus();
   if (!(await skip.isVisible())) throw new Error(`${name}: skip link not visible on focus`);
@@ -113,7 +132,7 @@ async function inspect(page, name, viewport, touch = false) {
   if ((await page.locator(":focus").getAttribute("id")) !== "research-primary-content") throw new Error(`${name}: skip target failed`);
   await page.screenshot({ path: path.join(OUT, `${name}.png`), fullPage: true });
   if (Object.values(audit).some((items) => items.length)) throw new Error(`${name}: ${JSON.stringify(audit)}`);
-  return { viewport, ...metrics, ...audit, globalNavigation: "PASS", accountMenuKeyboard: "PASS", keyboard: "PASS", status: "PASS" };
+  return { viewport, ...metrics, ...audit, starterQuestionCount: 3, starterSelection: "FILLED_AND_FOCUSED_WITHOUT_WRITE", panelVisibility, globalNavigation: "PASS", accountMenuKeyboard: "PASS", keyboard: "PASS", status: "PASS" };
 }
 
 async function run(browserType, name, viewport, touch = false) {

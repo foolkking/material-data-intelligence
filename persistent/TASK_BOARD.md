@@ -1,5 +1,19 @@
 # TASK_BOARD
 
+## Continuous Product Quality — Research activation Wave 6 - In Progress
+
+- [x] Replace the blank Research conversation with a compact first-use state next
+      to the Composer while keeping the right workbench focused on data and recent
+      result context.
+- [x] Derive at most three stable starter questions from Project History dataset
+      type, ready capabilities, and semantic roles; never inspect Artifact payloads
+      or infer absent scientific meaning.
+- [x] Keep starter selection inert until explicit submit, remove the no-data doomed
+      Composer, and respect Project write/read-only roles.
+- [x] Verify focused and complete frontend tests, typecheck, production build, and
+      Phase 12-7 Chromium/Firefox/WebKit, 1280px, and 390px evidence locally.
+- [ ] Commit, push, and close the task only after current-HEAD CI is green.
+
 ## Continuous Product Quality — Research Timeline / Scientific Workbench Wave 2 - Completed
 
 - [x] Normalize the durable Research Session → Run association with project-scoped

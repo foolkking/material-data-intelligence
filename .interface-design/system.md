@@ -17,6 +17,7 @@ The product is neither a generic AI chat application nor a KPI dashboard. A Proj
 - Every view has exactly one primary focal point.
 - Data views prioritize the scientific object or table; navigation and metadata cannot compete with it.
 - Research shows the conversation and current work together on desktop. The right workbench owns the result and running state; the left pane owns the question and continuity.
+- An empty Research conversation owns activation: it shows the authorized project-data count and at most three capability-aware starter questions beside the Composer. Starter questions are derived only from Project History, select the conversation panel, fill and focus the Composer without submitting, and disappear once a conversation or Run exists. The right workbench retains data and recent-result context without duplicating starter actions.
 - Result views prioritize the Figure. Finding and limitation follow it in reading order.
 - Error, empty, clarification, and unsupported states lead with the scientific consequence and available next actions, never an internal lifecycle failure.
 - A card is a bounded repeated item, modal, or framed tool only. Page sections are bands, columns, documents, or workbench regions, not floating card collections.

@@ -18,7 +18,14 @@
     ],
     "horizontalOverflow": false,
     "keyboard": "PASS",
+    "mutatingApiRequests": [],
     "pageErrors": [],
+    "panelVisibility": {
+      "timeline": true,
+      "workbench": true
+    },
+    "starterQuestionCount": 3,
+    "starterSelection": "FILLED_AND_FOCUSED_WITHOUT_WRITE",
     "status": "PASS",
     "statusColorOnly": 0,
     "undersized": [],
@@ -43,7 +50,14 @@
     ],
     "horizontalOverflow": false,
     "keyboard": "PASS",
+    "mutatingApiRequests": [],
     "pageErrors": [],
+    "panelVisibility": {
+      "timeline": true,
+      "workbench": true
+    },
+    "starterQuestionCount": 3,
+    "starterSelection": "FILLED_AND_FOCUSED_WITHOUT_WRITE",
     "status": "PASS",
     "statusColorOnly": 0,
     "undersized": [],
@@ -68,12 +82,19 @@
     ],
     "horizontalOverflow": false,
     "keyboard": "PASS",
+    "mutatingApiRequests": [],
     "pageErrors": [],
+    "panelVisibility": {
+      "timeline": true,
+      "workbench": false
+    },
+    "starterQuestionCount": 3,
+    "starterSelection": "FILLED_AND_FOCUSED_WITHOUT_WRITE",
     "status": "PASS",
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "390x844",
-    "visibleControls": 15
+    "visibleControls": 18
   },
   "firefox": {
     "accountMenuKeyboard": "PASS",
@@ -93,7 +114,14 @@
     ],
     "horizontalOverflow": false,
     "keyboard": "PASS",
+    "mutatingApiRequests": [],
     "pageErrors": [],
+    "panelVisibility": {
+      "timeline": true,
+      "workbench": true
+    },
+    "starterQuestionCount": 3,
+    "starterSelection": "FILLED_AND_FOCUSED_WITHOUT_WRITE",
     "status": "PASS",
     "statusColorOnly": 0,
     "undersized": [],
@@ -128,7 +156,14 @@
     ],
     "horizontalOverflow": false,
     "keyboard": "PASS",
+    "mutatingApiRequests": [],
     "pageErrors": [],
+    "panelVisibility": {
+      "timeline": true,
+      "workbench": true
+    },
+    "starterQuestionCount": 3,
+    "starterSelection": "FILLED_AND_FOCUSED_WITHOUT_WRITE",
     "status": "PASS",
     "statusColorOnly": 0,
     "undersized": [],

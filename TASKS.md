@@ -1,4 +1,16 @@
 ---TASK---
+状态：处理中
+任务名称：Continuous Product Quality — Research activation and capability-aware guidance Wave 6
+开始时间：2026-08-22T01:32:45+08:00
+
+目标：修复 Research 首次进入时对话区空白、示例问题隐藏在工作台且与当前数据能力不匹配的问题。仅使用现有 Project History 的数据集类型、语义角色和 ready capabilities 生成最多三个确定性建议；选择建议只填入并聚焦 Composer，不自动提交或创建 Job。
+
+边界：不修改后端 API、数据库、共享 schema、AnalysisPlan、Planner、QueueWorkerRuntime、Tool Registry 或 Adapter；不恢复历史浏览器证据为独立 CI 门禁；不重开 Phase E；保留 `CODEX_HANDOFF.md` 且不纳入提交。
+
+验收：覆盖能力映射、fallback、权限、已有会话/Run 隐藏条件和无自动提交；验证桌面、1280px 与 390px Research 首次使用、键盘焦点、触控目标和无横向溢出；通过 focused/full frontend tests、typecheck、production build、Phase 12-7 browser/evidence checks、diff check 与 current-HEAD CI。
+---END---
+
+---TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00

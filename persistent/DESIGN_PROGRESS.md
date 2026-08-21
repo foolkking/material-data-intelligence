@@ -3240,3 +3240,20 @@ auditable run/plan identity and output availability, while payload loading and
 secret storage remain server-owned. Commit `e0b84e5` passed current-HEAD CI
 run `32473415268` across Unit, Frontend, Service-backed Integration, and
 Linux/Windows scientific replay.
+
+2026-08-22 Research activation Wave 6 implementation: the empty Research
+conversation now presents the authorized project-data count and up to three
+stable starter questions derived only from Project History `datasetType`,
+`readyCapabilities`, and `semanticRoles`. Suggestions fill and focus the
+existing Composer without creating a Session, Message, Plan, or Job. Exact
+formation-energy/band-gap comparison appears only when both semantics exist;
+unknown capability sets fall back to a neutral project-data overview. Empty
+write-capable Projects link to Upload instead of retaining a doomed Composer,
+while read-only Projects expose no write action. The right workbench now owns
+only project-data and recent-research context, eliminating duplicated static
+suggestions. Suggestions selected from a mobile Workbench recovery state return
+to the conversation panel before focusing the Composer. Local verification
+passed Research Vitest `32`, complete Vitest
+`84 files / 565 tests`, typecheck, production build, Phase 12-7 evidence
+integrity `5`, and Chromium/Firefox/WebKit plus 1280x720 and 390x844 browser
+checks. Current-HEAD CI remains pending before task closure.
