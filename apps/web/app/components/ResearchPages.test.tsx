@@ -220,6 +220,7 @@ it("persists the selected dataset in the same research session before creating a
     runId: "job_1",
   });
   expect(preRunCall?.[1]).not.toHaveProperty("steps");
+  expect(screen.getByRole("tab", { name: "工作台" })).toHaveAttribute("aria-selected", "true");
 });
 
 it("adjusts the conversation splitter with keyboard arrows", async () => {
@@ -422,9 +423,19 @@ it("provides a single-view mobile switch between conversation and workbench", as
   const timeline = await screen.findByRole("tab", { name: "对话" });
   const workbench = screen.getByRole("tab", { name: "工作台" });
   expect(timeline).toHaveAttribute("aria-selected", "true");
-  await user.click(workbench);
+  expect(timeline).toHaveAttribute("aria-controls", "research-timeline-panel");
+  expect(timeline).toHaveAttribute("tabindex", "0");
+  expect(workbench).toHaveAttribute("tabindex", "-1");
+  timeline.focus();
+  await user.keyboard("{ArrowRight}");
   expect(workbench).toHaveAttribute("aria-selected", "true");
   expect(timeline).toHaveAttribute("aria-selected", "false");
+  expect(workbench).toHaveFocus();
+  expect(workbench).toHaveAttribute("tabindex", "0");
+  expect(screen.getByRole("tabpanel", { name: "工作台" })).toHaveAttribute("id", "research-workbench-panel");
+  await user.keyboard("{Home}");
+  expect(timeline).toHaveFocus();
+  expect(timeline).toHaveAttribute("aria-selected", "true");
 });
 
 it("does not present a historical failed run as still running", async () => {

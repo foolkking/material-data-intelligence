@@ -101,6 +101,17 @@ async function mobile() {
     const audit = attachAudit(page);
     await installReplay(page, audit);
     await page.goto(`${ORIGIN}${RESEARCH_PATH}`, { waitUntil: "networkidle" });
+    const timelineTab = page.getByRole("tab", { name: "对话" });
+    const workbenchTab = page.getByRole("tab", { name: "工作台" });
+    if (await timelineTab.getAttribute("aria-controls") !== "research-timeline-panel") throw new Error("mobile: timeline tab is not bound to its panel");
+    if (await workbenchTab.getAttribute("aria-controls") !== "research-workbench-panel") throw new Error("mobile: workbench tab is not bound to its panel");
+    await timelineTab.focus();
+    await page.keyboard.press("ArrowRight");
+    if (await workbenchTab.getAttribute("aria-selected") !== "true" || await workbenchTab.getAttribute("tabindex") !== "0") throw new Error("mobile: keyboard navigation did not select the workbench tab");
+    if (await page.locator(":focus").getAttribute("id") !== "research-workbench-tab") throw new Error("mobile: keyboard navigation did not move focus");
+    if (await page.locator("#research-timeline-panel").isVisible() || !(await page.locator("#research-workbench-panel").isVisible())) throw new Error("mobile: single-panel visibility did not follow the selected tab");
+    await page.keyboard.press("Home");
+    if (await timelineTab.getAttribute("aria-selected") !== "true" || !(await page.locator("#research-timeline-panel").isVisible())) throw new Error("mobile: Home did not restore the conversation panel");
     const metrics = await page.evaluate(() => {
       const controls = [...document.querySelectorAll("button, input, select, textarea, a")].filter((item) => {
         const style = getComputedStyle(item);
@@ -113,7 +124,7 @@ async function mobile() {
     if (metrics.horizontalOverflow || metrics.undersized.length) throw new Error(`mobile: ${JSON.stringify(metrics)}`);
     await page.screenshot({ path: path.join(OUT, "mobile_chromium_390x844.png"), fullPage: true });
     if (Object.values(audit).some((items) => items.length)) throw new Error(`mobile audit: ${JSON.stringify(audit)}`);
-    return { viewport: "390x844", touchTargets: "PASS", reducedMotion: "PASS", ...metrics, ...audit };
+    return { viewport: "390x844", tabNavigation: "PASS", singlePanelVisibility: "PASS", touchTargets: "PASS", reducedMotion: "PASS", ...metrics, ...audit };
   } finally { await browser.close(); }
 }
 

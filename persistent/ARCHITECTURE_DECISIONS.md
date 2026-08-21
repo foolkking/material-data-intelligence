@@ -5416,3 +5416,14 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
 - Research history search is a bounded client-side projection of the already
   authorized session list. It creates no new query, execution, filesystem, or
   network authority and does not infer session ownership from message text.
+
+## ADR: Mobile Research selects the Workbench after Job creation (2026-08-21)
+
+- On mobile, the Research conversation and Workbench remain one mutually
+  exclusive presentation surface. The selected tab is represented with a
+  `tab`/`tabpanel` relationship and roving `tabIndex`; Arrow/Home/End changes
+  selection and focus without creating a second execution state.
+- After the server returns a validated Planner Job ID, the mobile view selects
+  the Workbench. This is a presentation response to a persisted job boundary,
+  not a client-side claim that execution has completed or a browser execution
+  authority transfer.
