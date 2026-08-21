@@ -13695,3 +13695,12 @@ Research/Product Vitest = 37 passed；`npm run typecheck`、compileall、`git di
 真实验收：使用已授权本地账号在 `http://localhost:3000` 完成 Run `job_07f702a3c9af42259ec5d14f`；Plan 仅含 `structure.coordination_crystalnn`、`structure.local_environment_polyhedra`、`structure.rdf`，完成 4 个科学输出并渲染 5 个 RDF 系列 / 400 个值。1280x720 实测全局栏、项目导航和 620 px 工作台无根滚动，长对话与结果独立滚动；Grounded finding/limitation 恢复成功。
 测试结果：完整 `pytest tests -q` = `1618 passed, 51 skipped, 90 warnings`；完整 Vitest = `82 files / 552 tests passed`；Research focused = `24 passed`；修复后的 Phase 13 composite capability/preflight + capability planner = `92 passed`；`npm run typecheck` PASS；`MDI_NEXT_DIST_DIR=.next-continuous-wave3 npm run build` PASS（仅既有 Plotly/glslify critical-dependency warnings）；`python -m compileall -q apps/api packages services tests` PASS；Alembic = `0014_research_session_run_bindings (head)`；`git diff --check` PASS。
 提交/CI：未提交、未推送；CI/GitHub Actions 未修改；未部署。真实硬件 screen reader 与浏览器中的非终态 incremental Artifact 仍未验证，本轮未重开 Phase E。
+
+---
+
+任务：Remaining Acceptance Closure + Evidence-Based CI Rationalization + Commit/Push
+状态：已完成
+完成时间：2026-08-21
+修改摘要：基于 workflow、仓库脚本、测试标记、路线文档和远程失败/成功运行记录，区分当前产品门禁与已封存历史证据。默认 Python 单元门禁排除明确标记且依赖忽略目录 `_qualification/` 的 qualification 模块；旧 Phase 13-4 Help 浏览器检查保留为历史证据但移出 push gate；17 个历史 Phase 10/12 浏览器步骤合并为一个手动 dispatch 编排步骤，仍逐项执行并在失败时停止。当前 Phase 12-6/12-7 改为验证项目级 Research 工作台，补齐 skip link、splitter 和确定性只读 fixture。未移除科学重放、跨平台、服务集成、迁移、完整前端、typecheck、build 或当前可访问性/UX 门禁。
+测试结果：本地默认 Python `1586 passed, 1 skipped, 82 deselected, 75 warnings`；qualification `30 passed`；Vitest `83 files / 554 tests`；typecheck PASS；production build PASS；Phase 12-6/12-7 Playwright PASS；Phase 12 evidence integrity `10 passed`；focused contract tests `16 passed`；`uv lock --check`、compileall、YAML parse、`git diff --check` PASS。
+提交/CI：`501313a`、`ef86945`、`0df1e97` 已推送；current HEAD `0df1e97ee21533e8f9d620d0810cea6129a71bd3` 的 GitHub Actions run `32454012102` 全部通过（Unit Tests、Scientific Replay Linux/Windows、Frontend、Service-backed Integration）。未部署或发布。用户临时/历史未跟踪文件未加入提交。

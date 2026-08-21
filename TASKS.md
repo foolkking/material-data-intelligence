@@ -1,25 +1,4 @@
 ---TASK---
-状态：处理中
-任务名称：Remaining Acceptance Closure + Evidence-Based CI Rationalization + Commit/Push
-开始时间：2026-08-21T09:54:49+08:00
-
-完成当前产品质量工作的剩余验收项：调查真实屏幕阅读器验证的可执行路径、
-非终态增量 Artifact 的浏览器观察路径，以及 Plotly/glslify production build
-警告；以当前代码、测试、运行时、历史 CI 和权威文档为证据决定修复、保留或
-明确限制，不得仅凭主观判断删除检查。
-
-完整审计 `.github/workflows`、仓库脚本、测试标记、依赖与历史 CI 记录，建立
-每个 CI 检查的当前产品合同、覆盖范围、重复/过时证据和处置结论。仅在证据
-证明检查已被当前等价或更强门禁替代、重复执行或不再对应当前路线时调整；
-保留科学正确性、安全、迁移、持久化、前后端、服务集成和可访问性门禁。
-
-完成必要修复、持久化文档与结果记录，运行 current-HEAD CI 等价检查。整理
-提交范围，排除凭据、日志、数据库 WAL/SHM、临时构建与诊断输出；提交并推送
-到当前远程分支，随后确认 current-HEAD 远程 CI 结果。未经证据不得降低覆盖，
-不得重开失败的 Phase E 资格任务，不得部署或发布。
----END---
-
----TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00

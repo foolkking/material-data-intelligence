@@ -3081,7 +3081,7 @@ archival remains withheld.
       Python/frontend/build/type/migration/static checks. CI and deployment remain
       unchanged.
 
-## Remaining Acceptance Closure + Evidence-Based CI Rationalization — Active
+## Remaining Acceptance Closure + Evidence-Based CI Rationalization — Completed
 
 - [x] Confirm incremental Artifact persistence ordering with the existing
       threaded runtime test and add frontend running-state rendering coverage.
@@ -3093,8 +3093,10 @@ archival remains withheld.
       logs and branch protection before changing CI.
 - [x] Make complete current frontend tests a push gate and move sealed
       phase-specific browser replay behind explicit manual dispatch.
-- [ ] Complete local current-HEAD gates, commit/push, and verify remote CI for
-      the pushed SHA before archiving the queue task. Current CI rationalization
-      is evidence-based: qualification-package tests are explicit local-only
-      marker tests, stale Phase 13-4 Help replay is historical-only, and sealed
-      Phase 10/12 replay is one manual orchestrated step.
+- [x] Complete local current-HEAD gates, commit/push, and verify remote CI for
+      the pushed SHA before archiving the queue task. Commits `501313a`,
+      `ef86945`, and `0df1e97` are pushed; current-HEAD run `32454012102`
+      passed Unit Tests, Scientific Replay on Linux/Windows, Frontend, and
+      Service-backed Integration. Qualification-package tests remain explicit
+      local-only marker tests, stale Phase 13-4 Help replay is historical-only,
+      and sealed Phase 10/12 replay is one manual orchestrated step.

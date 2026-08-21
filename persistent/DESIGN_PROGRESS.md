@@ -3194,3 +3194,12 @@ read-only boundary; keyboard skip navigation targets `research-primary-content`
 and the splitter assertion targets the Research workbench separator. The retired
 `/analysis` compatibility page is no longer treated as the current product
 surface.
+
+2026-08-21 acceptance and CI closure completed: local current-HEAD equivalents
+passed (default Python `1586 passed, 1 skipped, 82 deselected`, explicit
+qualification `30 passed`, Vitest `83 files / 554 tests`, typecheck, build,
+Phase 12 browser evidence, and evidence integrity). The pushed current HEAD
+`0df1e97` passed remote CI run `32454012102` across all five jobs. The workflow
+now keeps current product gates on push while exposing sealed Phase 10/12
+browser replays as one explicit manual orchestration step; no scientific,
+security, migration, service-backed, or accessibility coverage was removed.
