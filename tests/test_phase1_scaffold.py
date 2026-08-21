@@ -86,16 +86,18 @@ def test_phase1_next_workspace_shell_files_exist(repo_root):
     assert "No deterministic fallback used" in combined
 
 
-def test_active_planner_browser_replays_use_supported_analysis_route(repo_root):
-    replay_markers = {
+def test_browser_replays_use_their_declared_product_route(repo_root):
+    current_product_replays = {
+        "phase12-6-responsive-accessibility-browser-evidence.mjs": "`${ORIGIN}${RESEARCH_PATH}`",
+        "phase12-7-cross-product-browser-evidence.mjs": "`${ORIGIN}${RESEARCH_PATH}`",
+    }
+    historical_compatibility_replays = {
         "grounded-interpretation-browser-evidence.mjs": "`${ORIGIN}/analysis`",
         "natural-language-closure-browser-evidence.mjs": "`${ORIGIN}/analysis?phase10l5BrowserEvidence=",
         "workspace-shell-browser-evidence.mjs": "`${ORIGIN}/analysis`",
-        "phase12-6-responsive-accessibility-browser-evidence.mjs": "`${ORIGIN}/analysis`",
-        "phase12-7-cross-product-browser-evidence.mjs": "`${ORIGIN}/analysis`",
         "phase13-4-help-docs-browser-evidence.mjs": "`${ORIGIN}/analysis`",
     }
-    for name, marker in replay_markers.items():
+    for name, marker in {**current_product_replays, **historical_compatibility_replays}.items():
         script = (repo_root / "apps/web/test" / name).read_text(encoding="utf-8")
         assert marker in script
 
