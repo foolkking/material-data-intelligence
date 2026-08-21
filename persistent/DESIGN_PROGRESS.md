@@ -3230,11 +3230,13 @@ run `32464949831`, including complete frontend tests, typecheck/build, current
 Phase 12 browser gates, Python unit tests, service-backed integration, and
 scientific replay on Linux and Windows.
 
-2026-08-21 Wave 5 in progress: global navigation controls now remain available
+2026-08-21 Wave 5 completed: global navigation controls now remain available
 on internal project routes. Account actions use a compact menu with explicit
 menu semantics, Escape/outside dismissal, keyboard traversal, and focus
 restoration; the mobile trigger and menu remain bounded at 390px. Scientific
 result fallback previews now expose bounded JSON with a type/count summary and
 honest empty/unavailable states. Research result technical details now show
 auditable run/plan identity and output availability, while payload loading and
-secret storage remain server-owned.
+secret storage remain server-owned. Commit `e0b84e5` passed current-HEAD CI
+run `32473415268` across Unit, Frontend, Service-backed Integration, and
+Linux/Windows scientific replay.

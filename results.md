@@ -13724,3 +13724,13 @@ Research/Product Vitest = 37 passed；`npm run typecheck`、compileall、`git di
 修改摘要：完善移动 Research 的单面板交互：对话/工作台现在使用完整 tab/tabpanel 关联、roving tabindex、Arrow/Home/End 键盘导航和焦点迁移；服务端返回已验证 Planner Job 后自动切换到工作台，让用户立即看到真实运行过程和增量结果。桌面双栏、权限、Planner、Artifact 和 Report 执行边界不变。
 测试结果：Research focused Vitest `25 passed`；完整 Vitest `83 files / 554 tests passed`；typecheck PASS；独立 production build PASS；Phase 12-6 浏览器证据 Chromium/Firefox/WebKit PASS，Chromium 390x844 的 tabNavigation、singlePanelVisibility、touchTargets、reducedMotion 和无横向溢出全部 PASS；证据完整性 `5 passed`。
 提交/CI：实现提交 `3dccce8a71c5dbfe68a12c0a63af76f5b96a5a38` 已推送；current-HEAD GitHub Actions run `32464949831` 全部通过（Unit Tests、Scientific Replay Linux/Windows、Frontend、Service-backed Integration）。未部署或发布；用户未跟踪文件未加入提交。
+
+---
+
+任务：Continuous Product Quality — Global navigation and structured details Wave 5
+状态：已完成
+完成时间：2026-08-21
+修改文件：`apps/web/app/components/ProductShell.tsx`、`apps/web/app/components/ProductShell.test.tsx`、`apps/web/app/components/ResearchPages.tsx`、`apps/web/app/components/ResearchPages.test.tsx`、`apps/web/app/components/workspace/WorkspaceArtifactGallery.tsx`、`apps/web/app/components/workspace/ScientificWorkspaceShell.test.tsx`、`apps/web/app/globals.css`、`apps/web/test/phase12-7-cross-product-browser-evidence.mjs`、Phase 12-7 当前浏览器证据、`persistent/*.md`、`TASKS.md`。
+修改摘要：项目内 Data、Research、Report 路由持续显示全局搜索、模型设置和账户入口；账户操作收拢为支持 Escape、外部点击、Tab、Arrow/Home/End 与焦点恢复的菜单，并验证 390px 无横向溢出。Workspace/科学图表技术详情改为有界 JSON 预览，提供对象/数组摘要、截断提示和空/不可用状态。Research 结果页技术详情显示运行/方案身份、可查看输出数与 JSON Artifact 可用性，不加载或暴露密钥、BYOK 或可执行内容。历史科学、服务集成、迁移与当前 UX 门禁保持不变。
+测试结果：针对性 Vitest `54 passed`；完整 Vitest `84 files / 559 tests passed`；`npm run typecheck` PASS；独立 production build PASS（仅既有 Plotly/glslify warnings）；Phase 12-7 Chromium/Firefox/WebKit、1280x720 与 390x844 PASS；Phase 12-7 evidence integrity `5 passed`；`git diff --check` PASS。
+提交/CI：实现提交 `e0b84e5` 已推送；current-HEAD GitHub Actions run `32473415268` 全部通过（Unit Tests、Frontend Typecheck & Build、Service-backed Integration、Scientific Replay Linux/Windows）。未部署或发布；用户未跟踪文件未加入提交。
