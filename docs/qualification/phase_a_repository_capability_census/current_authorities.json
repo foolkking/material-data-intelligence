@@ -1,0 +1,47 @@
+{
+  "AnalysisIntent": "1.0",
+  "AnalysisPlanVersions": [
+    "0.1",
+    "0.2"
+  ],
+  "ArtifactRegistry": "Workspace renderer registry covers 42 shared Artifact types; no independent persisted registry version is defined",
+  "DataProfile": "2.4",
+  "EligibilityResolution": "1.0",
+  "FactModelHash": "92d8295c7d78467d8ce021dc8033a58326219372a5d8fa87c93377ed1275953a",
+  "InitialReleaseComplete": true,
+  "MaxLayoutRevisions": 128,
+  "MaxWorkspacePanels": 32,
+  "MigrationHead": "0007_phase10m1_workspace_domain",
+  "Phase12ProductBaselineHash": "29936236efe74a82ad97507385839aa4f5692d26b496292af3172940647973d4",
+  "Phase13State": "COMPLETE",
+  "ProviderPolicy": {
+    "keySource": "DEEPSEEK_KEY",
+    "models": [
+      "deepseek-v4-flash",
+      "deepseek-v4-pro"
+    ],
+    "provider": "DeepSeek only",
+    "realLlmCallsPhaseA": 0
+  },
+  "RecipeContracts": [
+    "RecipeReplayManifest/1.0"
+  ],
+  "Registry": 62,
+  "RegistryVersion": "0.1.0",
+  "RendererRegistry": "application-owned exact type/version registry; contract version 1",
+  "ReportContracts": [
+    "ReportCompositionRequest/1.0",
+    "ReportCompositionSnapshot/1.0",
+    "ReportExportManifest/1.0"
+  ],
+  "ScopeBaselineHash": "bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba",
+  "Workspace": "ScientificWorkspace/1.0",
+  "WorkspacePanel": "WorkspacePanel/1.0",
+  "WorkspaceSelectionContext": "WorkspaceSelectionContext/1.0",
+  "repositoryEvidenceRefs": [
+    "docs/phase13/final/initial_release_manifest.json",
+    "results.md",
+    "packages/schemas/mdi_schemas"
+  ],
+  "schemaVersion": "PhaseACurrentAuthorities/1.0"
+}

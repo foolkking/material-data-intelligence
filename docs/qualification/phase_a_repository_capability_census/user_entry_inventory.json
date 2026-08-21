@@ -1,0 +1,151 @@
+{
+  "entries": [
+    {
+      "DataProfileImpact": "creates or selects a durable Dataset whose current Profile is generated under DataProfile 2.4",
+      "archiveBehavior": "ZIP recursively dispatches safe members, max 100 files, 50 MiB uncompressed, depth 5",
+      "backendEndpoint": "POST /datasets/upload",
+      "countCaps": "one file in the current UI action; ZIP maxFiles=100",
+      "displayName": "Upload one supported material-data file",
+      "encodingRequirements": "text inputs must satisfy the selected parser; strict contracts require UTF-8",
+      "entryPathId": "ENTRY-UI-FILE-UPLOAD",
+      "frontendComponent": "PlannerWorkbench.handleUploadFile",
+      "importer/parser": "mdi_material_parsers.parse_file",
+      "knownLimitations": [
+        "support depends on format plus semantic contract, not extension alone"
+      ],
+      "normalizationBehavior": "parser emits immutable normalized object drafts with content hashes",
+      "persistenceTarget": "PostgreSQL metadata plus MinIO normalized source authority",
+      "repositoryEvidenceRefs": [
+        "apps/web/app/components/PlannerWorkbench.tsx",
+        "apps/web/app/lib/planner-api.ts",
+        "apps/api/mdi_api/phase2_runtime.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py"
+      ],
+      "requestContract": "UploadDatasetRequest / DatasetUploadRequest",
+      "requiredCompanionFiles": [],
+      "route": "/",
+      "singleOrMultiFile": "single file per UI action",
+      "sizeCaps": "format-specific; see file_format_inventory.json; no global upload byte cap is defined in DatasetUploadRequest",
+      "supportedExtensions": [
+        ".csv",
+        ".json",
+        ".cif",
+        ".xyz",
+        ".extxyz",
+        ".cube",
+        ".zip",
+        "POSCAR/CONTCAR",
+        "CHGCAR/CHG/LOCPOT/ELFCAR/PARCHG"
+      ],
+      "supportedMimeTypes": [
+        "container/content detected; MIME is not scientific authority"
+      ]
+    },
+    {
+      "DataProfileImpact": "creates or selects a durable Dataset whose current Profile is generated under DataProfile 2.4",
+      "archiveBehavior": "not accepted as the typed bundle declaration",
+      "backendEndpoint": "POST /datasets/upload",
+      "countCaps": "exactly one Band, one DOS, and one Structure in the UI bundle",
+      "displayName": "Import typed phonon Band and DOS with Structure context",
+      "encodingRequirements": "UTF-8 JSON plus supported structure encoding",
+      "entryPathId": "ENTRY-UI-TYPED-PHONON-BUNDLE",
+      "frontendComponent": "PlannerWorkbench.handleTypedPhononImport",
+      "importer/parser": "map_normalized_phonon_resource",
+      "knownLimitations": [
+        "SUPPORTED_WITH_LIMITS",
+        "supplied data only",
+        "generic phonon YAML/JSON remains MAPPING_ONLY"
+      ],
+      "normalizationBehavior": "explicit declared kind and exact contract version; no unit or q-path inference",
+      "persistenceTarget": "PostgreSQL metadata plus MinIO normalized source authority",
+      "repositoryEvidenceRefs": [
+        "apps/web/app/components/PlannerWorkbench.tsx",
+        "apps/web/app/lib/planner-api.ts",
+        "apps/api/mdi_api/phase2_runtime.py",
+        "packages/material-parsers/mdi_material_parsers/mapped_resources.py"
+      ],
+      "requestContract": "UploadDatasetRequest files[].importKind/contractVersion",
+      "requiredCompanionFiles": [
+        "one typed PhononBand JSON",
+        "one typed PhononDos JSON",
+        "one supported Structure file"
+      ],
+      "route": "/",
+      "singleOrMultiFile": "three-file product action",
+      "sizeCaps": "32,000,000 bytes per typed phonon JSON; Structure uses its parser authority",
+      "supportedExtensions": [
+        ".json",
+        ".cif",
+        "POSCAR/CONTCAR"
+      ],
+      "supportedMimeTypes": [
+        "application/json",
+        "structure parser dependent"
+      ]
+    },
+    {
+      "DataProfileImpact": "creates or selects a durable Dataset whose current Profile is generated under DataProfile 2.4",
+      "archiveBehavior": "N/A",
+      "backendEndpoint": "GET /datasets and GET /datasets/{dataset_id}/profile",
+      "countCaps": "one active Dataset context",
+      "displayName": "Select an existing durable Dataset",
+      "encodingRequirements": "N/A",
+      "entryPathId": "ENTRY-UI-DATASET-SELECTION",
+      "frontendComponent": "PlannerWorkbench dataset selector",
+      "importer/parser": "N/A; reuses persisted normalized resources",
+      "knownLimitations": [
+        "project scope and exact identity are mandatory",
+        "stale profiles remain typed failures"
+      ],
+      "normalizationBehavior": "no reparsing or latest/fuzzy rebinding",
+      "persistenceTarget": "PostgreSQL metadata plus MinIO normalized source authority",
+      "repositoryEvidenceRefs": [
+        "apps/web/app/components/PlannerWorkbench.tsx",
+        "apps/web/app/lib/planner-api.ts",
+        "apps/api/mdi_api/main.py"
+      ],
+      "requestContract": "exact Dataset ID selected from server inventory",
+      "requiredCompanionFiles": [],
+      "route": "/",
+      "singleOrMultiFile": "N/A",
+      "sizeCaps": "existing persisted resource caps",
+      "supportedExtensions": [],
+      "supportedMimeTypes": []
+    },
+    {
+      "DataProfileImpact": "creates or selects a durable Dataset whose current Profile is generated under DataProfile 2.4",
+      "archiveBehavior": "ZIP behavior is parser-owned",
+      "backendEndpoint": "POST /datasets/upload",
+      "countCaps": "DatasetUploadRequest.files has no schema max_items",
+      "displayName": "Upload supported inline files through the documented product API",
+      "encodingRequirements": "inline string content; parser/contract specific",
+      "entryPathId": "ENTRY-API-INLINE-UPLOAD",
+      "frontendComponent": "N/A (public product API)",
+      "importer/parser": "parse_dataset or explicit typed phonon mapper",
+      "knownLimitations": [
+        "filePaths is internal/runtime compatibility and is not documented as normal-user entry",
+        "request-level byte/item cap authority is not defined in the repository schema"
+      ],
+      "normalizationBehavior": "durable upload path writes normalized objects before profiling",
+      "persistenceTarget": "PostgreSQL metadata plus MinIO normalized source authority",
+      "repositoryEvidenceRefs": [
+        "apps/api/mdi_api/main.py",
+        "apps/api/mdi_api/phase2_runtime.py",
+        "docs/phase13/release/api-reference.md"
+      ],
+      "requestContract": "DatasetUploadRequest with InlineUploadFile records",
+      "requiredCompanionFiles": "semantic-kind dependent",
+      "route": "POST /datasets/upload",
+      "singleOrMultiFile": "multi-file request; repository schema defines no max_items",
+      "sizeCaps": "InlineUploadFile.content has no schema max_length; downstream parser/resource caps remain semantic-specific",
+      "supportedExtensions": [
+        "same parser allowlist as ENTRY-UI-FILE-UPLOAD"
+      ],
+      "supportedMimeTypes": [
+        "MIME alone is not authority"
+      ]
+    }
+  ],
+  "rowCount": 4,
+  "schemaVersion": "UserEntryInventory/1.0"
+}

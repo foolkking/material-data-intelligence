@@ -72,6 +72,7 @@ ARTIFACT_PROJECTOR_CONTRACTS: Mapping[tuple[str, str], ArtifactProjectorContract
     (contract.tool_id, contract.artifact_type): contract
     for contract in (
         ArtifactProjectorContract("table.numeric_summary", "table_json", "platform.table.numeric_summary", ("platform.table.numeric_summary.v1",)),
+        ArtifactProjectorContract("viz.correlation", "table_json", "platform.viz.correlation", ("platform.viz.correlation.v1",)),
         ArtifactProjectorContract(
             "dataset.materials_explorer",
             "table_json",
@@ -84,6 +85,12 @@ ARTIFACT_PROJECTOR_CONTRACTS: Mapping[tuple[str, str], ArtifactProjectorContract
             "table_json",
             "phase10k3.materials_ml_regression",
             ("phase10k3.materials_ml_regression.v1",),
+        ),
+        ArtifactProjectorContract(
+            "ml.outlier_table",
+            "table_json",
+            "phase10k3.ml_outlier_table",
+            ("phase10k3.ml_outlier_table.v1", "1"),
         ),
         ArtifactProjectorContract("structure.summary", "structure_json", "platform.structure.summary", ("platform.structure.summary.v1",)),
         ArtifactProjectorContract("structure.coordination_crystalnn", "table_json", "phase10n1.crystalnn_coordination", ("phase10n1.crystalnn_coordination.v1",)),
@@ -348,12 +355,16 @@ def project_artifact(source: InterpretationSource, candidate: ArtifactProjection
         return []
     if artifact_type == "table_json" and tool_id == "table.numeric_summary":
         return _project_numeric_summary(source, candidate)
+    if artifact_type == "table_json" and tool_id == "viz.correlation":
+        return _project_correlation_summary(source, candidate)
     if artifact_type == "table_json" and tool_id == "dataset.materials_explorer":
         return _project_dataset_materials_explorer(source, candidate)
     if artifact_type == "metrics_json" and tool_id == "ml.basic_metrics":
         return _project_ml_metrics(source, candidate)
     if artifact_type == "table_json" and tool_id == "ml.regression_evaluation":
         return _project_ml_regression_evaluation(source, candidate)
+    if artifact_type == "table_json" and tool_id == "ml.outlier_table":
+        return _project_ml_outlier_table(source, candidate)
     if artifact_type == "structure_json" and tool_id == "structure.summary":
         return _project_structure_summary(source, candidate)
     if artifact_type == "table_json" and tool_id in {"structure.coordination_crystalnn", "structure.coordination_voronoinn"}:
@@ -764,6 +775,38 @@ def _project_numeric_summary(source: InterpretationSource, candidate: ArtifactPr
     return items
 
 
+def _project_correlation_summary(source: InterpretationSource, candidate: ArtifactProjectionInput) -> list[ScientificEvidenceItem]:
+    payload = candidate.payload
+    columns = payload.get("columns")
+    matrix = payload.get("matrix")
+    if payload.get("chartType") != "correlation_heatmap" or not isinstance(columns, list) or not columns or len(columns) > 32:
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Correlation artifact columns are invalid.")
+    if not all(isinstance(column, str) and column.strip() for column in columns) or not isinstance(matrix, list) or len(matrix) != len(columns):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Correlation artifact matrix shape is invalid.")
+    if any(not isinstance(row, list) or len(row) != len(columns) for row in matrix):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Correlation artifact matrix shape is invalid.")
+    items: list[ScientificEvidenceItem] = []
+    for index, left in enumerate(columns):
+        for right in columns[index + 1:]:
+            value = matrix[index][columns.index(right)]
+            if not isinstance(value, (int, float)) or not math.isfinite(value) or value < -1 or value > 1:
+                raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Correlation values must be finite and bounded between -1 and 1.")
+            items.append(_item(
+                source,
+                candidate,
+                f"correlation.{left}.{right}",
+                EvidenceKind.scalar,
+                f"correlation:{left}:{right}",
+                "correlation",
+                value,
+                field=f"matrix[{index}][{columns.index(right)}]",
+                entity=f"{left}:{right}",
+            ))
+    if not items:
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Correlation artifact contains no pairwise values.")
+    return items
+
+
 def _project_ml_metrics(source: InterpretationSource, candidate: ArtifactProjectionInput) -> list[ScientificEvidenceItem]:
     payload = candidate.payload
     if not isinstance(payload, dict) or set(payload) != {"metrics", "targetColumn", "predictionColumn"} or not isinstance(payload["metrics"], dict):
@@ -979,6 +1022,76 @@ def _project_ml_regression_evaluation(
                 _item(source, candidate, "ml.high_error_sample_count", EvidenceKind.count, subject, "count", len(high_errors), field=f"evaluations.{group_id}.highErrorSamples.count", entity=group_id),
             ]
         )
+    return items
+
+
+def _project_ml_outlier_table(
+    source: InterpretationSource,
+    candidate: ArtifactProjectionInput,
+) -> list[ScientificEvidenceItem]:
+    """Project the bounded outlier table into auditable scalar/sample evidence.
+
+    Older persisted artifacts omitted the explicit contract fields, so version
+    ``1`` remains accepted while new exports carry the named v1 contract.
+    """
+    payload = candidate.payload
+    if not isinstance(payload, dict):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Outlier table contract is invalid.")
+    artifact_type = payload.get("artifactType")
+    schema_version = payload.get("schemaVersion")
+    if artifact_type is not None and artifact_type != "ml.outlier_table":
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Outlier table artifact type is invalid.")
+    if schema_version is not None and schema_version != "phase10k3.ml_outlier_table.v1":
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Outlier table schema version is invalid.")
+    target = payload.get("targetColumn")
+    prediction = payload.get("predictionColumn")
+    rows = payload.get("rows")
+    if (
+        not _safe_semantic_name(target)
+        or not _safe_semantic_name(prediction)
+        or target == prediction
+        or payload.get("sort") != "abs_error_desc"
+        or not isinstance(rows, list)
+        or not rows
+        or len(rows) > 100
+    ):
+        raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Outlier table columns, ordering, or row count are invalid.")
+
+    errors: list[float] = []
+    items: list[ScientificEvidenceItem] = [
+        _item(source, candidate, "ml.outlier_sample_count", EvidenceKind.count, "dataset", "count", len(rows), field="rows.count", entity=None),
+    ]
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Outlier table row is invalid.")
+        actual = row.get("y_true")
+        predicted = row.get("y_pred")
+        error = row.get("error")
+        absolute = row.get("abs_error")
+        if not all(_finite(value) for value in (actual, predicted, error, absolute)) or float(absolute) < 0:
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Outlier table row values are invalid.")
+        if abs(float(error) - (float(predicted) - float(actual))) > 1e-9 or abs(float(absolute) - abs(float(error))) > 1e-9:
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Outlier table error values are inconsistent.")
+        formula = row.get("formula")
+        if formula is not None and not _safe_semantic_name(formula):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Outlier table sample identity is invalid.")
+        errors.append(float(absolute))
+        subject = f"sample:{formula}" if isinstance(formula, str) else f"row:{index}"
+        items.extend(
+            [
+                _item(source, candidate, "ml.absolute_error", EvidenceKind.scalar, subject, "absolute_error", float(absolute), field=f"rows[{index}].abs_error", entity=subject),
+                _item(source, candidate, "ml.actual_value", EvidenceKind.scalar, subject, "observed_value", float(actual), field=f"rows[{index}].y_true", entity=subject),
+                _item(source, candidate, "ml.predicted_value", EvidenceKind.scalar, subject, "predicted_value", float(predicted), field=f"rows[{index}].y_pred", entity=subject),
+            ]
+        )
+    maximum = max(errors)
+    mean = sum(errors) / len(errors)
+    items.extend(
+        [
+            _item(source, candidate, "ml.max_absolute_error", EvidenceKind.scalar, "dataset", "absolute_error", maximum, field="rows.abs_error.max", entity=None),
+            _item(source, candidate, "ml.mean_absolute_error", EvidenceKind.scalar, "dataset", "absolute_error", mean, field="rows.abs_error.mean", entity=None),
+        ]
+    )
     return items
 
 
@@ -1739,6 +1852,14 @@ def _claim_semantics(item: ScientificEvidenceItem) -> tuple[ClaimPredicate, Clai
 
 
 def _render_item_claim(item: ScientificEvidenceItem, predicate: ClaimPredicate) -> str:
+    # Correlation evidence is intentionally rendered as a scientific sentence
+    # rather than exposing the internal ``correlation:<left>:<right>`` subject.
+    # The value remains the exact grounded scalar from the artifact; only the
+    # product-language projection changes.
+    if predicate == ClaimPredicate.has_value and item.semanticRole.startswith("correlation."):
+        pair = item.semanticRole.removeprefix("correlation.").split(".", 1)
+        if len(pair) == 2:
+            return f"{pair[0]} 与 {pair[1]} 的 Pearson 相关系数为 {item.displayValue}。"
     labels = {
         ClaimPredicate.has_range: "reported range",
         ClaimPredicate.has_count: "reported count",

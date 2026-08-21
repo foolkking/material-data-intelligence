@@ -52,11 +52,11 @@ export function MaterialsMlEvaluationPanel({ artifacts }: { artifacts: Artifact[
   if (!active) return null;
   if (!validation?.ok) {
     return <section className="panel materials-ml" data-testid="materials-ml-invalid" role="status" aria-label="Materials ML validation status">
-      <header className="panel-heading"><div><span>Profile 2.0 product</span><h2>Materials ML Evaluation unavailable</h2></div><span className="badge">Rejected</span></header>
-      {available.length > 1 ? <div className="materials-ml-selectors"><label>Product<select value={active.product.name} onChange={(event) => { setSelectedName(event.target.value); setSelectedTask(""); }}>{available.map((item) => <option key={item.product.name} value={item.product.name}>{item.product.label} ({item.state})</option>)}</select></label></div> : null}
-      <p>The artifact was rejected before product rendering. Inert JSON remains available.</p>
+      <header className="panel-heading"><div><span>Profile 2.0 产品</span><h2>材料模型评估暂时不可用</h2></div><span className="badge">未通过校验</span></header>
+      {available.length > 1 ? <div className="materials-ml-selectors"><label>产品<select value={active.product.name} onChange={(event) => { setSelectedName(event.target.value); setSelectedTask(""); }}>{available.map((item) => <option key={item.product.name} value={item.product.name}>{item.product.label}（{item.state}）</option>)}</select></label></div> : null}
+      <p>结果在产品渲染前未通过校验；结构化数据仍可查看。</p>
       <code>{validation?.reason || "MATERIALS_ML_ARTIFACT_INVALID"}</code>
-      <details><summary>Artifact JSON</summary><pre>{JSON.stringify(active.payload, null, 2)}</pre></details>
+      <details><summary>结构化数据</summary><pre>{JSON.stringify(active.payload, null, 2)}</pre></details>
     </section>;
   }
 
@@ -66,20 +66,20 @@ export function MaterialsMlEvaluationPanel({ artifacts }: { artifacts: Artifact[
   const dataset = record(payload.dataset);
   return <section className="panel materials-ml" data-testid="materials-ml-evaluation" aria-label="Materials ML Evaluation">
     <header className="panel-heading">
-      <div><span>Deterministic materials model diagnostics</span><h2>Materials ML Evaluation</h2></div>
+      <div><span>确定性材料模型诊断</span><h2>材料属性模型评估</h2></div>
       <span className="badge">{active.product.label}</span>
     </header>
     <dl className="mini-grid materials-ml-identity">
-      <Field label="Dataset" value={text(dataset.datasetId)} />
-      <Field label="Profile" value={text(dataset.profileId)} />
-      <Field label="Semantic contract" value={text(dataset.profileContractVersion)} />
-      <Field label="Residual" value={active.product.kind === "regression" ? text(payload.residualConvention) : "not applicable"} />
+      <Field label="数据集" value={text(dataset.datasetId)} />
+      <Field label="数据画像" value={text(dataset.profileId)} />
+      <Field label="语义契约" value={text(dataset.profileContractVersion)} />
+      <Field label="残差定义" value={active.product.kind === "regression" ? text(payload.residualConvention) : "不适用"} />
     </dl>
     <div className="materials-ml-selectors">
-      {available.length > 1 ? <label>Product<select value={active.product.name} onChange={(event) => { setSelectedName(event.target.value); setSelectedTask(""); }}>{available.map((item) => <option key={item.product.name} value={item.product.name}>{item.product.label} ({item.state})</option>)}</select></label> : null}
-      {evaluations.length > 1 ? <label>Task / model<select value={text(evaluation?.taskId)} onChange={(event) => setSelectedTask(event.target.value)}>{evaluations.map((item) => <option key={text(item.taskId)} value={text(item.taskId)}>{text(item.taskId)}</option>)}</select></label> : null}
+      {available.length > 1 ? <label>产品<select value={active.product.name} onChange={(event) => { setSelectedName(event.target.value); setSelectedTask(""); }}>{available.map((item) => <option key={item.product.name} value={item.product.name}>{item.product.label}（{item.state}）</option>)}</select></label> : null}
+      {evaluations.length > 1 ? <label>任务 / 模型<select value={text(evaluation?.taskId)} onChange={(event) => setSelectedTask(event.target.value)}>{evaluations.map((item) => <option key={text(item.taskId)} value={text(item.taskId)}>{text(item.taskId)}</option>)}</select></label> : null}
     </div>
-    {!evaluation ? <p className="empty-state">No bounded evaluation result.</p> : null}
+    {!evaluation ? <p className="empty-state">暂无可用的有界评估结果。</p> : null}
     {evaluation && active.product.kind === "regression" ? <RegressionView evaluation={evaluation} comparisons={records(payload.modelComparisons)} /> : null}
     {evaluation && active.product.kind === "uncertainty" ? <UncertaintyView evaluation={evaluation} /> : null}
     {evaluation && active.product.kind === "classification" ? <ClassificationView evaluation={evaluation} /> : null}
@@ -96,22 +96,22 @@ function RegressionView({ evaluation, comparisons }: { evaluation: JsonRecord; c
   const counts = numberList(histogram.counts);
   const highError = records(evaluation.highErrorSamples);
   return <div className="materials-ml-view" data-testid="materials-ml-regression">
-    <MetricGrid items={[
-      ["MAE", format(metrics.mae)], ["RMSE", format(metrics.rmse)], ["R2", metrics.r2 === null ? "undefined" : format(metrics.r2)],
-      ["Mean error", format(metrics.meanSignedError)], ["Evaluated", `${integer(coverage.evaluatedSamples)} / ${integer(coverage.totalSamples)}`], ["Unit", text(evaluation.unit) || "unavailable"],
+      <MetricGrid items={[
+      ["MAE", format(metrics.mae)], ["RMSE", format(metrics.rmse)], ["R²", metrics.r2 === null ? "未定义" : format(metrics.r2)],
+      ["平均误差", format(metrics.meanSignedError)], ["已评估", `${integer(coverage.evaluatedSamples)} / ${integer(coverage.totalSamples)}`], ["单位", text(evaluation.unit) || "未提供"],
     ]} />
     <div className="materials-ml-charts">
-      <ChartFrame title="Parity" note="Target x; prediction y; dashed line is y=x."><ScatterChart points={points} x="target" y="prediction" reference /></ChartFrame>
-      <ChartFrame title="Residual vs target" note="Residual = prediction - target; points use the same bounded evaluated-sample set."><ScatterChart points={points} x="target" y="residual" /></ChartFrame>
-      <ChartFrame title="Residual distribution" note="Residual = prediction - target."><Histogram counts={counts} /></ChartFrame>
+      <ChartFrame title="预测值与真实值" note="横轴为真实值，纵轴为预测值；虚线表示 y=x。"><ScatterChart points={points} x="target" y="prediction" reference /></ChartFrame>
+      <ChartFrame title="残差与目标属性" note="残差 = 预测值 − 真实值；点来自同一组有界样本。"><ScatterChart points={points} x="target" y="residual" /></ChartFrame>
+      <ChartFrame title="残差分布" note="残差 = 预测值 − 真实值。"><Histogram counts={counts} /></ChartFrame>
     </div>
-    <h3>Largest prediction errors</h3>
+    <h3>预测误差最大的样本</h3>
     <DataTable columns={["Sample key", "Sample", "Formula", "System", "Target", "Prediction", "Residual", "Absolute error", "Uncertainty"]} rows={highError.map((row) => [canonicalSampleKey(row), text(row.sampleRef), text(row.formula), text(row.chemicalSystem), format(row.target), format(row.prediction), format(row.residual), format(row.absoluteError), format(row.uncertainty)])} rowKeys={highError.map(canonicalSampleKey)} empty="No aligned high-error samples." testId="materials-ml-high-error-table" />
     <div className="materials-ml-columns">
-      <section><h3>Error by element</h3><p className="dataset-method-note">Element groups overlap; a material can appear in multiple rows.</p><GroupTable rows={records(chemistry.byElement)} /></section>
-      <section><h3>Error by chemical system</h3><p className="dataset-method-note">Small groups remain visible and are marked by sample count.</p><GroupTable rows={records(chemistry.byChemicalSystem)} /></section>
+      <section><h3>按元素统计误差</h3><p className="dataset-method-note">元素分组可以重叠，同一材料可能出现在多行。</p><GroupTable rows={records(chemistry.byElement)} /></section>
+      <section><h3>按化学体系统计误差</h3><p className="dataset-method-note">样本数较少的分组仍保留，并明确显示样本数。</p><GroupTable rows={records(chemistry.byChemicalSystem)} /></section>
     </div>
-    {comparisons.length ? <><h3>Model comparison</h3><DataTable columns={["Target", "Common samples", "Policy", "Models"]} rows={comparisons.map((item) => [text(item.targetColumn), integer(item.commonSampleCount), text(item.policy), records(item.models).map((model) => text(model.seriesId)).join(", ")])} empty="No multiple-model comparison." testId="materials-ml-model-comparison" /></> : null}
+    {comparisons.length ? <><h3>模型比较</h3><DataTable columns={["目标属性", "共同样本", "策略", "模型"]} rows={comparisons.map((item) => [text(item.targetColumn), integer(item.commonSampleCount), text(item.policy), records(item.models).map((model) => text(model.seriesId)).join(", ")])} empty="暂无多模型比较结果。" testId="materials-ml-model-comparison" /></> : null}
     <Warnings values={textList(evaluation.warnings)} />
   </div>;
 }
@@ -125,13 +125,13 @@ function UncertaintyView({ evaluation }: { evaluation: JsonRecord }) {
   return <div className="materials-ml-view" data-testid="materials-ml-uncertainty">
     <MetricGrid items={[["Pearson", format(association.pearson)], ["Spearman", format(association.spearman)], ["Evaluated", `${integer(coverage.evaluatedSamples)} / ${integer(coverage.totalSamples)}`], ["Uncertainty kind", text(evaluation.uncertaintyKind)]]} />
     <div className="materials-ml-charts">
-      <ChartFrame title="Uncertainty vs absolute error" note="Each point retains its stable material sample reference."><ScatterChart points={points} x="uncertainty" y="absoluteError" /></ChartFrame>
-      <ChartFrame title="Error decay" note="Retain the lowest-uncertainty samples first."><LineChart points={records(errorDecay.points)} x="retainedFraction" y="mae" /></ChartFrame>
+      <ChartFrame title="不确定性与绝对误差" note="每个点保留稳定的材料样本引用。"><ScatterChart points={points} x="uncertainty" y="absoluteError" /></ChartFrame>
+      <ChartFrame title="误差衰减" note="优先保留不确定性最低的样本。"><LineChart points={records(errorDecay.points)} x="retainedFraction" y="mae" /></ChartFrame>
     </div>
-    <h3>Equal-count reliability bins</h3>
-    <DataTable columns={["Bin", "Samples", "Mean uncertainty", "Mean absolute error"]} rows={records(reliability.bins).map((row) => [integer(row.bin), integer(row.sampleCount), format(row.meanUncertainty), format(row.meanAbsoluteError)])} empty="No reliability bins." testId="materials-ml-reliability-table" />
-    <h3>Highest uncertainty samples</h3>
-    <DataTable columns={["Sample key", "Sample", "Formula", "Uncertainty", "Absolute error"]} rows={records(evaluation.highUncertaintySamples).map((row) => [canonicalSampleKey(row), text(row.sampleRef), text(row.formula), format(row.uncertainty), format(row.absoluteError)])} rowKeys={records(evaluation.highUncertaintySamples).map(canonicalSampleKey)} empty="No aligned uncertainty samples." testId="materials-ml-high-uncertainty-table" />
+    <h3>等样本数可靠性分箱</h3>
+    <DataTable columns={["分箱", "样本数", "平均不确定性", "平均绝对误差"]} rows={records(reliability.bins).map((row) => [integer(row.bin), integer(row.sampleCount), format(row.meanUncertainty), format(row.meanAbsoluteError)])} empty="暂无可靠性分箱。" testId="materials-ml-reliability-table" />
+    <h3>不确定性最高的样本</h3>
+    <DataTable columns={["样本键", "样本", "化学式", "不确定性", "绝对误差"]} rows={records(evaluation.highUncertaintySamples).map((row) => [canonicalSampleKey(row), text(row.sampleRef), text(row.formula), format(row.uncertainty), format(row.absoluteError)])} rowKeys={records(evaluation.highUncertaintySamples).map(canonicalSampleKey)} empty="暂无匹配的不确定性样本。" testId="materials-ml-high-uncertainty-table" />
     <Warnings values={textList(evaluation.warnings)} />
   </div>;
 }

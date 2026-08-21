@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
 from mdi_api.report_composition import ReportCompositionDomainError, ReportCompositionService
-from mdi_api.routers.auth import CurrentUser, get_current_user_stub
+from mdi_api.routers.auth import CurrentUser, get_current_user_compat
 from mdi_api.routers.planner import _planner_read_repositories
 from mdi_api.routers.workspaces import _require_workspace_access
 from mdi_api.workspaces import WorkspaceDomainError
@@ -70,7 +70,7 @@ def _safe_http_error(exc: Exception) -> HTTPException:
 
 async def get_report_composition_sources(
     workspace_id: str,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> Response:
     try:
         service = _composition_service()
@@ -84,7 +84,7 @@ async def get_report_composition_sources(
 async def preview_report_composition(
     workspace_id: str,
     request: Request,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> Response:
     try:
         service = _composition_service()
@@ -101,7 +101,7 @@ async def preview_report_composition(
 async def finalize_report_composition(
     workspace_id: str,
     request: Request,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> Response:
     try:
         idempotency_key = request.headers.get("idempotency-key")
@@ -128,7 +128,7 @@ async def finalize_report_composition(
 
 async def list_report_compositions(
     workspace_id: str,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> dict[str, Any]:
     try:
         service = _composition_service()
@@ -141,7 +141,7 @@ async def list_report_compositions(
 async def get_report_composition(
     workspace_id: str,
     report_id: str,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> dict[str, Any]:
     try:
         service = _composition_service()
@@ -154,7 +154,7 @@ async def get_report_composition(
 async def get_report_composition_recipe(
     workspace_id: str,
     report_id: str,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> dict[str, Any]:
     try:
         service = _composition_service()
@@ -168,7 +168,7 @@ async def export_report_composition(
     workspace_id: str,
     report_id: str,
     format: str,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> Response:
     try:
         service = _composition_service()

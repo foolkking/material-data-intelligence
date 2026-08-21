@@ -13,6 +13,7 @@ export const WORKSPACE_ARTIFACT_TYPES = [
   "volumetric_payload_json", "volumetric_field_json", "volumetric_dataset_json",
   "volumetric_manifest_json", "volumetric_structure_overlay_json", "volumetric_binary",
   "metrics_json", "table_json", "table_csv", "quality_issues_json", "summary_md",
+  "electronic_band_json", "electronic_dos_json",
   "report_md", "report_html", "recipe_json", "analysis_plan_json",
 ] as const;
 
@@ -135,6 +136,8 @@ export const WORKSPACE_RENDERER_REGISTRY: readonly WorkspaceRendererDescriptor[]
   entry("volumetric_binary", "DOWNLOAD_ONLY", { classification: "METADATA_ONLY", payloadMode: "METADATA_ONLY", maximumPayloadBytes: BINARY_LIMIT, selectionOutputs: [] }),
   entry("metrics_json", "GENERIC_TABLE", { accessibilityFallback: "TABLE" }),
   entry("table_json", "GENERIC_TABLE", { selectionInputs: DATASET_SELECTIONS, accessibilityFallback: "TABLE" }),
+  entry("electronic_band_json", "ELECTRONIC", { payloadMode: "BUNDLE", heavy: true, webgl: true, accessibilityFallback: "TABLE" }),
+  entry("electronic_dos_json", "ELECTRONIC", { payloadMode: "BUNDLE", heavy: true, webgl: true, accessibilityFallback: "TABLE", bundleArtifactTypes: ["electronic_band_json", "electronic_dos_json"] as const }),
   entry("table_csv", "DOWNLOAD_ONLY", { classification: "INERT_FALLBACK", payloadMode: "DOWNLOAD_ONLY", security: "DOWNLOAD_ONLY", selectionInputs: [], selectionOutputs: [] }),
   entry("quality_issues_json", "GENERIC_TABLE", { accessibilityFallback: "TABLE" }),
   entry("summary_md", "TEXT", { payloadMode: "TEXT", selectionOutputs: [] }),

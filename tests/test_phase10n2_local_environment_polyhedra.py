@@ -132,6 +132,21 @@ def test_planner_preserves_explicit_n1_source_and_never_silently_selects_one() -
         assert [step.toolId for step in plan.steps] == [producer, "structure.local_environment_polyhedra"]
         assert all(step.inputRefs[0].ref == "structures" for step in plan.steps)
 
+    chinese = provider.generate_plan(
+        PlannerRequest(
+            user_prompt="使用 CrystalNN 分析当前结构的局部环境。",
+            dataset_id="dataset_n2",
+            profile_id="profile_n2",
+            tool_registry_version=registry.version,
+        ),
+        tools=tools,
+        data_profile=_profile(),
+    )
+    assert [step.toolId for step in AnalysisPlan.model_validate(chinese.raw_json).steps] == [
+        "structure.coordination_crystalnn",
+        "structure.local_environment_polyhedra",
+    ]
+
     ambiguous = provider.generate_plan(
         PlannerRequest(
             user_prompt="Analyze the local environment and construct coordination polyhedra.",

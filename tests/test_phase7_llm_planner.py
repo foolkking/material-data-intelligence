@@ -645,7 +645,9 @@ def test_historical_openai_provider_cannot_make_new_real_call(monkeypatch: pytes
     with pytest.raises(LLMProviderError) as exc:
         provider.generate_plan(req, tools=list(reg.tools), data_profile=_data_profile())
 
-    assert exc.value.code == "PROVIDER_NOT_ALLOWED"
+    # The generic adapter now reports the actionable configuration state; it
+    # does not claim that a provider is forbidden when no connection exists.
+    assert exc.value.code == "PROVIDER_NOT_CONFIGURED"
     assert "sk-phase9a-secret" not in str(exc.value)
     assert "MDI_LLM_API_KEY" not in str(exc.value)
 

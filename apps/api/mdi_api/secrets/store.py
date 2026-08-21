@@ -32,6 +32,7 @@ class InMemorySecretStore:
 
     def __init__(self) -> None:
         self._secrets: dict[str, SecretData] = {}
+        self._scopes: dict[str, str] = {}
         self._next_id = 1
 
     def create_secret(self, scope_id: str, provider: str, value: str) -> Secret:
@@ -39,6 +40,7 @@ class InMemorySecretStore:
         self._next_id += 1
         data = SecretData(id=secret_id, value=value, provider=provider)
         self._secrets[secret_id] = data
+        self._scopes[secret_id] = scope_id
         return Secret(
             id=secret_id,
             scope_type="user",
@@ -62,12 +64,13 @@ class InMemorySecretStore:
                 created_at=d.created_at,
             )
             for d in self._secrets.values()
-            # In a multi-tenant system, filter by scope_id
+            if self._scopes.get(d.id) == scope_id
         ]
 
-    def delete_secret(self, secret_id: str) -> bool:
-        if secret_id in self._secrets:
+    def delete_secret(self, secret_id: str, scope_id: str | None = None) -> bool:
+        if secret_id in self._secrets and (scope_id is None or self._scopes.get(secret_id) == scope_id):
             del self._secrets[secret_id]
+            self._scopes.pop(secret_id, None)
             return True
         return False
 

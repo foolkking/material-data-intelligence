@@ -263,6 +263,52 @@ def test_producer_failure_blocks_consumer_but_independent_real_adapter_continues
     )
 
 
+def test_two_step_artifact_ready_is_observable_before_terminal_event(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Observe the real artifact-ready contract without adding a delay."""
+    base = _plan()
+    two_step = base.model_copy(update={
+        "steps": [item for item in base.steps if item.stepId in {"step_band", "step_dos"}],
+        "expectedArtifacts": [item for item in base.expectedArtifacts if item.fromStepId in {"step_band", "step_dos"}],
+        "dependencyBindings": [],
+        "graphHash": compute_dependency_graph_hash([]),
+    })
+    repos, job_id, _ = _seed(two_step)
+    runtime = QueueWorkerRuntime(
+        repositories=repos,
+        registry=load_manifests(),
+        artifact_root=tmp_path / "adapter",
+    )
+    original_append = repos.job_events.append_event
+    observations: list[dict[str, Any]] = []
+
+    def observe(event_job_id: str, *, event_type: str, **kwargs: Any) -> Any:
+        result = original_append(event_job_id, event_type=event_type, **kwargs)
+        if event_job_id != job_id:
+            return result
+        if event_type == "artifact.ready":
+            artifact_id = str((kwargs.get("payload") or {}).get("artifactId") or "")
+            observations.append({
+                "event": event_type,
+                "artifactPersisted": any(str(item.get("id")) == artifact_id for item in repos.artifacts.list_for_job(job_id)),
+                "jobStatusAtEvent": repos.jobs.get(job_id).get("status"),
+            })
+        elif event_type == "dependency.execution_completed":
+            observations.append({"event": event_type, "jobStatusAtEvent": repos.jobs.get(job_id).get("status")})
+        return result
+
+    monkeypatch.setattr(repos.job_events, "append_event", observe)
+    result = runtime.handle_job(job_id, object_store=_object_store())
+
+    assert result.status == "completed"
+    assert [item["event"] for item in observations] == [
+        "artifact.ready", "artifact.ready", "dependency.execution_completed",
+    ]
+    assert all(item["artifactPersisted"] for item in observations[:2])
+    assert all(item["jobStatusAtEvent"] != "completed" for item in observations[:2])
+    assert observations[-1]["jobStatusAtEvent"] == "completed"
+    assert len(repos.artifacts.list_for_job(job_id)) == 2
+
+
 def test_consumer_failure_retains_upstream_artifacts_and_terminal_replay_is_idempotent(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

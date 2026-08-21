@@ -1,0 +1,1872 @@
+{
+  "requirements": [
+    {
+      "caseId": "Q-DATASET-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "CSV",
+        "JSON_LIMITED",
+        "ZIP"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-001",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "materials_tabular_dataset"
+    },
+    {
+      "caseId": "Q-COMPOSITION-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "CSV",
+        "JSON_LIMITED",
+        "ZIP"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-002",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "materials_tabular_dataset"
+    },
+    {
+      "caseId": "Q-TABLE-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "CSV",
+        "JSON_LIMITED",
+        "ZIP"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-003",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "materials_tabular_dataset"
+    },
+    {
+      "caseId": "Q-ML-REG-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "CSV",
+        "JSON_LIMITED"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-004",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "regression_result_table"
+    },
+    {
+      "caseId": "Q-ML-UNC-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "CSV",
+        "JSON_LIMITED"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-005",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "uncertainty_result_table"
+    },
+    {
+      "caseId": "Q-ML-CLASS-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "CSV",
+        "JSON_LIMITED"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-006",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "classification_result_table"
+    },
+    {
+      "caseId": "Q-STRUCTURE-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "CIF",
+        "EXTXYZ",
+        "JSON_LIMITED",
+        "POSCAR_CONTCAR",
+        "ZIP"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-007",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "crystal_structure"
+    },
+    {
+      "caseId": "Q-ATOMIC-VIEW-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "EXTXYZ",
+        "XYZ",
+        "ZIP"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-008",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "atomic_structure"
+    },
+    {
+      "caseId": "Q-COORD-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "CIF",
+        "EXTXYZ",
+        "JSON_LIMITED",
+        "POSCAR_CONTCAR",
+        "ZIP"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-009",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "crystal_structure"
+    },
+    {
+      "caseId": "Q-XRD-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "CIF",
+        "EXTXYZ",
+        "JSON_LIMITED",
+        "POSCAR_CONTCAR",
+        "ZIP"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-010",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "experimental_xrd"
+    },
+    {
+      "caseId": "Q-STRUCTURE-RDF-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "CIF",
+        "EXTXYZ",
+        "JSON_LIMITED",
+        "POSCAR_CONTCAR",
+        "ZIP"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-011",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "crystal_structure"
+    },
+    {
+      "caseId": "Q-TRAJECTORY-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "EXTXYZ",
+        "JSON_LIMITED",
+        "ZIP"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-012",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "trajectory"
+    },
+    {
+      "caseId": "Q-PHONON-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "CIF",
+        "EXTXYZ",
+        "JSON_LIMITED",
+        "POSCAR_CONTCAR",
+        "TYPED_PHONON_BAND_JSON",
+        "TYPED_PHONON_DOS_JSON",
+        "ZIP"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-013",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "phonon_band"
+    },
+    {
+      "caseId": "Q-PHONON-ANIM-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "GENERIC_PHONON_YAML_JSON (MAPPING_ONLY)"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-014",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "phonon_eigenvectors"
+    },
+    {
+      "caseId": "Q-VOLUME-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "GAUSSIAN_CUBE",
+        "VASP_VOLUMETRIC",
+        "ZIP"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-015",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "volumetric_field"
+    },
+    {
+      "caseId": "Q-ELECTRONIC-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "JSON_LIMITED"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-016",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "electronic_band"
+    },
+    {
+      "caseId": "Q-ARCHIVE-001",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "representative material appropriate to the repository-backed capability",
+      "mustBeRealPublicData": true,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "ZIP"
+      ],
+      "preferredSourceClass": [
+        "official public repository",
+        "peer-reviewed supplementary data",
+        "institutional scientific repository",
+        "standards/reference dataset"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "docs/phase13/reproducibility/manifest.json",
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "apps/web/app/components/workspace/workspace-renderer-registry.ts"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "primary source"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-017",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "contained_supported_resources"
+    },
+    {
+      "caseId": "N-UNSUPPORTED-INPUT",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-018",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-MAPPING-PHONON",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-019",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-MISSING-SEMANTIC",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-020",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-UNKNOWN-UNIT",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-021",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-AMBIGUOUS-TARGET",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-022",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-MISSING-PAIRED",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-023",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-STALE-RESOURCE",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-024",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-HASH-MISMATCH",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-025",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-WRONG-PROJECT",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-026",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-WRONG-JOB",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-027",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-CONTRACT-VERSION",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-028",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-XRD-WAVELENGTH",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-029",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-PANEL-CAP",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-030",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-REVISION-CAP",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-031",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-CLARIFICATION-CAP",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-032",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-PROVIDER-FAILURE",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-033",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-PARTIAL-EXECUTION",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-034",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-UNSUPPORTED-CAPABILITY",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-035",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    },
+    {
+      "caseId": "N-FUTURE-SCOPE",
+      "chemicalSystemPreference": "use a minimum diverse set across elemental, binary, oxide, metal, semiconductor, low-symmetry, and large-cell only where the capability applies",
+      "licenseRequirement": "explicit license permitting qualification use",
+      "materialClass": "N/A",
+      "mustBeRealPublicData": false,
+      "optionalFiles": [
+        "license/provenance metadata"
+      ],
+      "preferredFormats": [
+        "repository-authorized format for the negative boundary"
+      ],
+      "preferredSourceClass": [
+        "repository-derived negative fixture"
+      ],
+      "redistributionRequirement": "record whether redistribution is permitted; retain source provenance regardless",
+      "repositoryEvidenceRefs": [
+        "tests",
+        "docs/phase13/evidence/phase13_5_final_regression_release_acceptance"
+      ],
+      "requiredAtomCountRange": "capability-specific; below Registry resourceLimits",
+      "requiredElectronicReference": "source-supplied Fermi/reference for electronic cases; N/A otherwise",
+      "requiredEnergyUnit": "eV for electronic resources; N/A otherwise",
+      "requiredFiles": [
+        "minimal boundary-triggering source when data-dependent"
+      ],
+      "requiredPairedData": "exact paired/context resources declared by the case",
+      "requiredScientificCharacteristics": [
+        "explicit units and identities required by the current contract",
+        "sufficient non-degenerate content to exercise the declared viewer"
+      ],
+      "requiredSizeRange": "small enough for public redistribution plus one bounded stress representative",
+      "requiredTrajectoryLength": "enough frames/time for declared analysis; N/A otherwise",
+      "requiredWavelength": "exact current XRD-compatible wavelength for positive XRD; N/A otherwise",
+      "requirementId": "EDR-CASE-036",
+      "scientificTransformationsAllowed": [
+        "lossless container conversion only when identity/provenance and contract semantics are preserved",
+        "bounded extraction explicitly documented by source"
+      ],
+      "scientificTransformationsForbidden": [
+        "inventing values",
+        "unit guessing",
+        "q-path guessing",
+        "wavelength reprojection",
+        "scientific smoothing or interpolation not authorized by contract",
+        "fabricating missing companion data"
+      ],
+      "semanticDataKind": "boundary-specific"
+    }
+  ],
+  "rowCount": 36,
+  "schemaVersion": "ExternalQualificationDataRequirement/1.0"
+}

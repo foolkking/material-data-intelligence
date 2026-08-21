@@ -55,7 +55,7 @@ def test_phase10n1_postgres_redis_minio_coordination_artifact_closure(
         alembic_upgrade(config, "head")
         engine = create_engine(schema_url, future=True)
         with engine.connect() as connection:
-            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0008_phase_d_r1_namespace"
+            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0014_research_session_run_bindings"
 
         _redis_smoke(f"n1-{suffix}")
         registry = load_manifests()

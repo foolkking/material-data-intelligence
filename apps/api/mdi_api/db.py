@@ -36,6 +36,7 @@ users = Table(
     Column("id", String(64), primary_key=True),
     Column("email", String(320), nullable=False, unique=True),
     Column("display_name", String(160), nullable=False),
+    Column("password_hash", Text, nullable=True),
     Column("is_active", Boolean, nullable=False, server_default="true"),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
@@ -114,6 +115,19 @@ data_profiles = Table(
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     UniqueConstraint("dataset_id", "version", name="uq_data_profiles_dataset_version"),
 )
+
+auth_sessions = Table(
+    "auth_sessions",
+    metadata,
+    Column("id", String(64), primary_key=True),
+    Column("user_id", String(64), ForeignKey("users.id"), nullable=False),
+    Column("token_hash", String(64), nullable=False, unique=True),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("last_seen_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("revoked_at", DateTime(timezone=True), nullable=True),
+)
+Index("idx_auth_sessions_user_expires", auth_sessions.c.user_id, auth_sessions.c.expires_at)
 
 analysis_plans = Table(
     "analysis_plans",
@@ -211,6 +225,17 @@ jobs = Table(
     ),
 )
 
+research_session_runs = Table(
+    "research_session_runs",
+    metadata,
+    Column("session_id", String(64), ForeignKey("sessions.id"), primary_key=True),
+    Column("job_id", String(64), ForeignKey("jobs.id"), primary_key=True),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("job_id", name="uq_research_session_runs_job_id"),
+)
+
+Index("idx_research_session_runs_session_created", research_session_runs.c.session_id, research_session_runs.c.created_at)
+
 analysis_intent_executions = Table(
     "analysis_intent_executions",
     metadata,
@@ -271,7 +296,9 @@ capability_planning_executions = Table(
     "capability_planning_executions",
     metadata,
     Column("id", String(96), primary_key=True),
-    Column("decision_id", String(96), ForeignKey("capability_planning_decisions.id"), nullable=False, unique=True),
+    # A validated decision is reusable across multiple executions; plan and
+    # job identities remain unique for each execution.
+    Column("decision_id", String(96), ForeignKey("capability_planning_decisions.id"), nullable=False),
     Column("intent_id", String(96), ForeignKey("analysis_intents.id"), nullable=False),
     Column("plan_id", String(96), ForeignKey("analysis_plans.id"), nullable=False, unique=True),
     Column("job_id", String(64), ForeignKey("jobs.id"), nullable=False, unique=True),

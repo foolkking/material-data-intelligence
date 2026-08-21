@@ -196,6 +196,8 @@ def test_interpretation_api_create_read_is_idempotent_and_read_only(tmp_path: Pa
     listed = list_planner_job_interpretations("job_l4_api", repositories=repos)
     assert stored["interpretation"]["interpretationHash"] == first["interpretation"]["interpretationHash"]
     assert evidence["bundleHash"] == first["bundleHash"]
+    assert evidence["jobId"] == "job_l4_api"
+    assert evidence["planId"] == "plan_l4_api"
     assert listed["count"] == 1
 
 
@@ -329,7 +331,9 @@ def test_strict_provider_selection_failure_is_persisted_and_idempotent(tmp_path:
     assert first["outcome"] == "PROVIDER_FAILED"
     assert first["execution"] is not None
     assert first["execution"]["outcome"] == "PROVIDER_FAILED"
-    assert first["execution"]["provider"] == "deepseek"
+    # Strict provider selection is explicit: an unsupported provider is not
+    # silently rewritten to the historical DeepSeek default.
+    assert first["execution"]["provider"] == "unsupported-provider"
     assert first["execution"]["providerConfigHash"]
     assert first["execution"]["idempotencyKeyHash"] == hashlib.sha256(b"provider-failure-key").hexdigest()
     assert first["execution"]["executionRecordId"] == second["execution"]["executionRecordId"]
@@ -480,6 +484,65 @@ def test_large_unprojected_table_does_not_block_supported_evidence(tmp_path: Pat
         result["interpretationId"],
         repositories=repos,
     )
+
+    assert stored.size_bytes > 262_144
+    assert result["outcome"] == "INTERPRETATION_READY_WITH_LIMITS"
+    assert evidence["bundleLimitations"] == [
+        "1 artifact(s) have no approved structured evidence projector."
+    ]
+    assert result["claims"]
+
+
+def test_large_projectable_table_is_skipped_without_blocking_supported_evidence(tmp_path: Path) -> None:
+    repos, runtime, plan_hash = _seed_api_source(tmp_path / "large-projectable")
+    raw = json.dumps({"rows": ["x" * 1024] * 300}, separators=(",", ":")).encode("utf-8")
+    stored = runtime.artifact_storage.put_bytes(
+        "jobs/job_l4_api/large-numeric-summary.json",
+        raw,
+        content_type="application/json",
+    )
+    repos.tool_calls.save({
+        "id": "tool_call_l4_large_summary",
+        "jobId": "job_l4_api",
+        "stepId": "step_large_summary",
+        "toolId": "table.numeric_summary",
+        "status": "completed",
+        "params": {},
+        "artifactIds": ["artifact_l4_large_summary"],
+    })
+    repos.artifacts.save({
+        "id": "artifact_l4_large_summary",
+        "artifactId": "artifact_l4_large_summary",
+        "projectId": "project_l4_api",
+        "datasetId": "dataset_l4_api",
+        "jobId": "job_l4_api",
+        "toolCallId": "tool_call_l4_large_summary",
+        "type": "table_json",
+        "name": "large-numeric-summary",
+        "version": "1",
+        "storageKey": stored.storage_key,
+        "storageProvider": "local",
+        "sizeBytes": stored.size_bytes,
+        "contentType": stored.content_type,
+        "contentHash": stored.sha256,
+        "sha256": stored.sha256,
+        "metadata": {
+            "toolId": "table.numeric_summary",
+            "toolVersion": "0.1.0",
+            "adapterVersion": "0.1.0",
+            "inputHashes": [],
+            "createdAt": "2026-08-21T00:00:00Z",
+            "provenance": {"planId": "plan_l4_api", "planHash": plan_hash},
+        },
+    })
+
+    result = create_planner_job_interpretation(
+        "job_l4_api",
+        PlannerInterpretationRequest(expectedPlanHash=plan_hash),
+        repositories=repos,
+        queue_runtime=runtime,
+    )
+    evidence = get_planner_interpretation_evidence(result["interpretationId"], repositories=repos)
 
     assert stored.size_bytes > 262_144
     assert result["outcome"] == "INTERPRETATION_READY_WITH_LIMITS"

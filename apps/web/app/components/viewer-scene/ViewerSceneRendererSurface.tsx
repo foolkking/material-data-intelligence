@@ -49,6 +49,21 @@ const defaultEngineFactory: ViewerRendererEngineFactory = async (args) => {
 
 const DEFAULT_REPEAT: SupercellRepeat = Object.freeze([1,1,1]);
 
+function rendererStateLabel(state: ViewerRendererState) {
+  const labels: Record<string, string> = {
+    ready: "已准备",
+    initializing_renderer: "正在加载",
+    rendered: "已就绪",
+    unsupported: "暂不支持",
+    scene_over_renderer_cap: "超出交互范围",
+    renderer_failed: "加载失败",
+    chunk_load_failed: "加载失败",
+    context_lost: "渲染中断",
+    validation_failed: "数据校验失败",
+  };
+  return labels[state] ?? state;
+}
+
 export function ViewerSceneRendererSurface({ payload, capabilityOverride, engineFactory = defaultEngineFactory, downloads }: ViewerSceneRendererSurfaceProps) {
   const mapping = useMemo(() => mapViewerSceneForRenderer(payload), [payload]);
   const previousPayloadRef = useRef(payload);
@@ -80,9 +95,9 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const [exportError, setExportError] = useState<string | null>(null);
   const [exportRequest,setExportRequest]=useState<ViewerExportRequest>(DEFAULT_VIEWER_EXPORT_REQUEST);
   const [exportBusy,setExportBusy]=useState(false);
-  const [exportStatus,setExportStatus]=useState("No export prepared.");
+  const [exportStatus,setExportStatus]=useState("尚未准备导出。");
   const [exportBundle,setExportBundle]=useState<Readonly<{png:Blob;json:Blob;markdown:Blob;manifest:Blob}>|null>(null);
-  const [announcement, setAnnouncement] = useState("Viewer ready for a validated scene.");
+  const [announcement, setAnnouncement] = useState("已加载通过校验的结构场景。");
   const renderedRepeat = payloadChanged ? DEFAULT_REPEAT : repeat;
   const renderedNeighborSiteIndex = payloadChanged ? null : neighborSiteIndex;
   const derivation = useMemo(() => mapping.ok ? derivePeriodicSupercell(mapping.scene, renderedRepeat, renderedNeighborSiteIndex) : null, [mapping, renderedNeighborSiteIndex, renderedRepeat]);
@@ -104,21 +119,21 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const onViewChange = useCallback(() => {
     exportGenerationRef.current += 1;
     setExportBundle(null);
-    setExportStatus("Viewer state changed; prepare a new export.");
+    setExportStatus("查看状态已变化，请重新准备导出。");
   }, []);
 
   useEffect(() => { selectionRef.current = selection; }, [selection]);
 
   useEffect(() => {
     const active = selection.activeSite;
-    setAnnouncement(active ? `Selected site ${active.siteIndex} at image offset ${active.imageOffset.join(", ")}.` : "Selection cleared.");
+    setAnnouncement(active ? `已选择位点 ${active.siteIndex}，周期偏移 ${active.imageOffset.join(", ")}。` : "已清除选择。");
   }, [selection.activeSite]);
 
   useEffect(() => {
     if (previousPayloadRef.current === payload) return;
     previousPayloadRef.current = payload;
     setSelection(initialViewerSelection()); setSelectedBondId(null); setHistory([]); setCoordinateMode("displayed_positions");
-    exportGenerationRef.current+=1;setExportBundle(null);setExportStatus("No export prepared.");setExportBusy(false);
+    exportGenerationRef.current+=1;setExportBundle(null);setExportStatus("尚未准备导出。");setExportBusy(false);
     setRepeat(DEFAULT_REPEAT); setRepeatDraft(["1","1","1"]); setNeighborSiteIndex(null); setSupercellError(null); setShowCell(true); setShowSupercellBoundary(true); setShowLatticeAxes(false); setCameraPreset("default");
     if (mapping.ok) setClipState(initialViewerClipState(mapping.scene));
   }, [payload]);
@@ -173,7 +188,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       engine.setBondSelection(selectedBondId);
       setSnapshot(engine.snapshot());
       setState("rendered");
-      setAnnouncement(`Scene rendered with ${renderScene.atoms.length} displayed sites in ${performanceDecision.tier} mode.`);
+      setAnnouncement(`结构场景已渲染，共 ${renderScene.atoms.length} 个显示位点。`);
     }).catch((error: unknown) => {
       if (!cancelled) setState(error instanceof ViewerRendererError && error.code === "VIEWER_RENDERER_CHUNK_LOAD_FAILED" ? "chunk_load_failed" : "renderer_failed");
     });
@@ -275,19 +290,19 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
     if (kind === "unitCell") applyVisibility("cell", visible);
     if (kind === "supercellBoundary") applySupercellBoundaryVisibility(visible);
     if (kind === "latticeAxes") { exportGenerationRef.current+=1;setExportBundle(null);setShowLatticeAxes(visible); engineRef.current?.setLatticeAxesVisible(visible); if (engineRef.current) setSnapshot(engineRef.current.snapshot()); }
-    setAnnouncement(`${kind === "latticeAxes" ? "Lattice axes" : kind === "unitCell" ? "Unit cell" : "Supercell boundary"} ${visible ? "shown" : "hidden"}.`);
+    setAnnouncement(`${kind === "latticeAxes" ? "晶格轴" : kind === "unitCell" ? "晶胞边界" : "超晶胞边界"}${visible ? "已显示" : "已隐藏"}。`);
   };
   const updateClipState = (next: ViewerClipState) => { exportGenerationRef.current+=1;setExportBundle(null);setClipState(next); engineRef.current?.setClipState(next); if (engineRef.current) setSnapshot(engineRef.current.snapshot()); };
   const updateClipPlane = (axis: ViewerClipAxis, update: Readonly<{ enabled?: boolean; position?: number }>) => {
     const [min,max]=clipBounds[axis];
-    if (update.position !== undefined && (!Number.isFinite(update.position) || update.position < min || update.position > max)) { setAnnouncement(`Invalid ${axis.toUpperCase()} clipping position.`); return; }
+    if (update.position !== undefined && (!Number.isFinite(update.position) || update.position < min || update.position > max)) { setAnnouncement(`${axis.toUpperCase()} 裁剪位置无效。`); return; }
     const planes=clipState.planes.map((plane)=>plane.axis===axis?Object.freeze({...plane,...update}):plane);
     const next=Object.freeze({enabled:clipState.enabled,planes:Object.freeze(planes)}) as ViewerClipState;
     updateClipState(next);
     const active=next.enabled&&next.planes.find((plane)=>plane.axis===axis)?.enabled;
-    setAnnouncement(active ? `Clipping enabled. ${axis.toUpperCase()} plane at ${next.planes.find((plane)=>plane.axis===axis)!.position.toFixed(3)} angstrom.` : `${axis.toUpperCase()} clipping plane disabled.`);
+    setAnnouncement(active ? `已启用裁剪，${axis.toUpperCase()} 平面位置为 ${next.planes.find((plane)=>plane.axis===axis)!.position.toFixed(3)} Å。` : `已停用 ${axis.toUpperCase()} 裁剪平面。`);
   };
-  const applyCameraPreset = (preset: CameraPreset) => { exportGenerationRef.current+=1;setExportBundle(null);setCameraPreset(preset); engineRef.current?.setCameraPreset(preset); if(engineRef.current)setSnapshot(engineRef.current.snapshot()); setAnnouncement(`Camera preset: ${preset}.`); };
+  const applyCameraPreset = (preset: CameraPreset) => { exportGenerationRef.current+=1;setExportBundle(null);setCameraPreset(preset); engineRef.current?.setCameraPreset(preset); if(engineRef.current)setSnapshot(engineRef.current.snapshot()); setAnnouncement(`相机视角已切换为 ${preset}。`); };
   const reset = () => {
     invalidatePreparedExport();
     setCameraPreset("default");
@@ -310,29 +325,29 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       setSupercellError(checked.error);
       return;
     }
-    exportGenerationRef.current+=1;setExportBundle(null);setSupercellError(null); setRepeat(parsedRepeatDraft); setNeighborSiteIndex(null); clearSelection(); setHistory([]); setAnnouncement(`Supercell applied: ${parsedRepeatDraft.join(" by ")}, ${supercellEstimate.totalCells} cells, ${supercellEstimate.displayedAtoms} displayed atoms.`);
+    exportGenerationRef.current+=1;setExportBundle(null);setSupercellError(null); setRepeat(parsedRepeatDraft); setNeighborSiteIndex(null); clearSelection(); setHistory([]); setAnnouncement(`已应用 ${parsedRepeatDraft.join(" × ")} 超晶胞，共 ${supercellEstimate.totalCells} 个晶胞、显示 ${supercellEstimate.displayedAtoms} 个原子。`);
   };
-  const resetSupercell = () => { exportGenerationRef.current+=1;setExportBundle(null);setRepeatDraft(["1","1","1"]); setRepeat(DEFAULT_REPEAT); setNeighborSiteIndex(null); setSupercellError(null); clearSelection(); setHistory([]); setAnnouncement("Supercell reset to 1 by 1 by 1."); };
+  const resetSupercell = () => { exportGenerationRef.current+=1;setExportBundle(null);setRepeatDraft(["1","1","1"]); setRepeat(DEFAULT_REPEAT); setNeighborSiteIndex(null); setSupercellError(null); clearSelection(); setHistory([]); setAnnouncement("超晶胞已重置为 1 × 1 × 1。"); };
   const downloadSupercellState = () => { if (!mapping.ok) return; const artifact=buildViewerSupercellState(mapping.scene,{expansion:repeat,originPolicy:"positive_octant",showPrimaryCell:showCell,showSupercellBoundary,showInternalGrid:false}); downloadLocalBlob(jsonBlob(artifact),"viewer_supercell_state.json"); };
   const downloadViewState = () => { if (!renderScene || !snapshot) return; const artifact=buildViewerViewState(renderScene,clipState,{unitCell:showCell,supercellBoundary:showSupercellBoundary,latticeAxes:showLatticeAxes},cameraPreset,snapshot); downloadLocalBlob(jsonBlob(artifact),"viewer_view_state.json"); };
   const prepareExport = async () => {
-    if(exportBusy){setExportStatus("VIEWER_EXPORT_BUSY");return;}
+    if(exportBusy){setExportStatus("已有导出正在进行。");return;}
     setExportError(null);
     const engine=engineRef.current;const scene=renderScene;const currentSnapshot=engine?.snapshot();const version=exportGenerationRef.current;
     try {
       if (!engine || !scene || !currentSnapshot) throw new Error("VIEWER_EXPORT_SCENE_UNAVAILABLE");
       setExportBusy(true);
-      setExportStatus("Export started.");
-      setAnnouncement("Export started.");
+      setExportStatus("正在准备导出。");
+      setAnnouncement("正在准备导出。");
       const request=validateViewerExportRequest(exportRequest);const png=await engine.exportPng(request);
       if(version!==exportGenerationRef.current||renderSceneRef.current!==scene)throw new Error("VIEWER_EXPORT_STALE_SCENE");
       const refs=measurementDetails.refs.length?measurementDetails.refs:selection.selectedSites;const measurements=measurement?.ok&&request.includeMeasurements?[{result:measurement.result,refs}]:[];
       const inspectorSummary=selectedAtom?{siteIndex:selectedAtom.siteIndex,imageOffset:selectedAtom.ref.imageOffset,species:selectedAtom.species,displayedCartesian:selectedAtom.position}:undefined;
       const state=buildViewerExportState({scene,snapshot:currentSnapshot,request,clip:clipState,cameraPreset,showCell,showSupercellBoundary,showAxes:showLatticeAxes,showBonds,measurements,inspectorSummary});const json=jsonBlob(state);const markdown=markdownBlob(buildViewerExportMarkdown(scene,state));const manifestObject=await buildViewerExportManifest([{name:"viewer.png",mediaType:"image/png",blob:png},{name:"viewer_export_state.json",mediaType:"application/json",blob:json},{name:"viewer_export_summary.md",mediaType:"text/markdown",blob:markdown}]);
       if(version!==exportGenerationRef.current)throw new Error("VIEWER_EXPORT_STALE_SCENE");const manifest=jsonBlob(manifestObject);const bundle=Object.freeze({png,json,markdown,manifest});setExportBundle(bundle);
-      const selected=request.format==="png"?png:request.format==="json"?json:markdown;const suffix=request.format==="png"?"structure-viewer.png":request.format==="json"?"viewer-export-state.json":"viewer-export-summary.md";const filename=sanitizeViewerFilename(scene.formula,suffix);downloadLocalBlob(selected,filename);setExportStatus(`Export completed: ${filename}.`);setAnnouncement(`Export completed: ${filename}.`);
+      const selected=request.format==="png"?png:request.format==="json"?json:markdown;const suffix=request.format==="png"?"structure-viewer.png":request.format==="json"?"viewer-export-state.json":"viewer-export-summary.md";const filename=sanitizeViewerFilename(scene.formula,suffix);downloadLocalBlob(selected,filename);setExportStatus(`导出完成：${filename}。`);setAnnouncement(`导出完成：${filename}。`);
     } catch(error) {
-      const code=error instanceof Error&&/^VIEWER_EXPORT_/.test(error.message)?error.message:"VIEWER_EXPORT_FAILED";setExportError(`${code}. Existing scene artifacts remain available.`);setExportStatus(`Export failed: ${code}.`);setAnnouncement(`Export failed: ${code}.`);
+      const code=error instanceof Error&&/^VIEWER_EXPORT_/.test(error.message)?error.message:"VIEWER_EXPORT_FAILED";setExportError(code);setExportStatus("导出失败，当前结构仍可继续查看。");setAnnouncement("导出失败，当前结构仍可继续查看。");
     } finally {
       setExportBusy(false);
     }
@@ -377,104 +392,107 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   };
 
   return (
-    <section ref={surfaceRef} className="viewer-renderer-surface" role="region" tabIndex={0} aria-label="3D Structure Viewer" aria-describedby="viewer-scene-keyboard-help viewer-scene-semantic-summary" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Shift+ArrowLeft Shift+ArrowRight Shift+ArrowUp Shift+ArrowDown + - 0 R N B Backspace Escape" onKeyDown={onViewerKeyDown} data-testid="viewer-scene-renderer-surface">
-      <p id="viewer-scene-keyboard-help" className="sr-only">Arrow keys rotate. Shift plus arrow keys pan. Plus and minus zoom. N selects the next atom. B selects the next bond. Backspace undoes a point. Zero or R resets the camera. Escape clears selection.</p>
+    <section ref={surfaceRef} className="viewer-renderer-surface" role="region" tabIndex={0} aria-label="三维结构查看器" aria-describedby="viewer-scene-keyboard-help viewer-scene-semantic-summary" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Shift+ArrowLeft Shift+ArrowRight Shift+ArrowUp Shift+ArrowDown + - 0 R N B Backspace Escape" onKeyDown={onViewerKeyDown} data-testid="viewer-scene-renderer-surface">
+      <p id="viewer-scene-keyboard-help" className="sr-only">方向键旋转，Shift 加方向键平移，加号和减号缩放。N 选择下一个原子，B 选择下一条键，Backspace 撤销上一步，0 或 R 重置相机，Escape 清除选择。</p>
       <p className="sr-only" aria-live="polite" aria-atomic="true" data-testid="viewer-scene-accessibility-announcement">{announcement}</p>
       <div className="viewer-renderer-toolbar">
         <div>
-          <strong>3D Structure Viewer</strong>
-          <span role="status" aria-live="polite" data-testid="viewer-scene-renderer-state">{state}</span>
+          <strong>三维结构查看器</strong>
+          <span role="status" aria-live="polite" data-testid="viewer-scene-renderer-state">{rendererStateLabel(state)}</span>
         </div>
-        <div className="viewer-renderer-controls" aria-label="Viewer controls">
-          <button type="button" className="compact secondary" data-testid="viewer-scene-renderer-reset" onClick={reset} disabled={state !== "rendered"}>Reset camera</button>
-          <button type="button" className={`compact ${showBonds ? "active" : "secondary"}`} data-testid="viewer-scene-renderer-toggle-bonds" aria-pressed={showBonds} onClick={() => applyVisibility("bonds", !showBonds)}>Bonds</button>
+        <div className="viewer-renderer-controls" aria-label="查看器控制">
+          <button type="button" className="compact secondary" data-testid="viewer-scene-renderer-reset" onClick={reset} disabled={state !== "rendered"}>重置相机</button>
+          <button type="button" className={`compact ${showBonds ? "active" : "secondary"}`} data-testid="viewer-scene-renderer-toggle-bonds" aria-pressed={showBonds} onClick={() => applyVisibility("bonds", !showBonds)}>键合</button>
         </div>
       </div>
 
       {!mapping.ok ? (
         <div className="viewer-renderer-fallback" data-testid="viewer-scene-renderer-invalid">
-          <strong>Scene validation failed</strong>
-          <p>The renderer was not initialized. Review the inert JSON preview for contract errors.</p>
-          <code>{mapping.validation.errors.join(", ")}</code>
+          <strong>场景校验失败</strong>
+          <p>当前结构数据无法进入三维查看器，源数据仍然保留。</p>
+          <details><summary>技术详情</summary><code>{mapping.validation.errors.join(", ")}</code></details>
         </div>
       ) : null}
       {mapping.ok && state === "unsupported" ? (
         <div className="viewer-renderer-fallback" data-testid="viewer-scene-renderer-unavailable">
-          <strong>Interactive renderer unavailable</strong>
-          <p>This browser did not provide a usable WebGL context. The Scene JSON and Manifest views remain available.</p>
+          <strong>交互式渲染器不可用</strong>
+          <p>当前浏览器没有可用的图形环境；结构数据和来源记录仍然保留。</p>
         </div>
       ) : null}
       {mapping.ok && state === "scene_over_renderer_cap" ? (
         <div className="viewer-renderer-fallback" data-testid="viewer-scene-renderer-performance-refused">
-          <strong>Scene exceeds the interactive renderer budget</strong>
-          <p>No graphics context was created. Scene JSON remains available.</p>
-          <code>{performanceDecision?.reason}</code>
+          <strong>场景超出交互式渲染范围</strong>
+          <p>结构数据量超过当前交互式三维视图的安全范围，源数据仍然保留。</p>
+          <details><summary>技术详情</summary><code>{performanceDecision?.reason}</code></details>
         </div>
       ) : null}
       {mapping.ok && (state === "renderer_failed" || state === "chunk_load_failed" || state === "context_lost") ? (
         <div className="viewer-renderer-fallback" data-testid="viewer-scene-renderer-fallback">
-          <strong>{state === "context_lost" ? "Graphics context lost" : state === "chunk_load_failed" ? "Renderer module unavailable" : "Renderer initialization failed"}</strong>
-          <p>The artifact remains available as validated JSON. No artifact content was executed.</p>
-          {state === "chunk_load_failed" || state === "context_lost" ? <button type="button" className="compact secondary" onClick={retry}>Retry renderer</button> : null}
+          <strong>{state === "context_lost" ? "图形上下文已中断" : state === "chunk_load_failed" ? "渲染模块不可用" : "渲染器初始化失败"}</strong>
+          <p>已校验的结构数据仍然保留，未执行任何文件内容。</p>
+          {state === "chunk_load_failed" || state === "context_lost" ? <button type="button" className="compact secondary" onClick={retry}>重试渲染</button> : null}
         </div>
       ) : null}
-      {mapping.ok && state === "initializing_renderer" ? <p className="viewer-renderer-loading">Initializing local renderer...</p> : null}
+      {mapping.ok && state === "initializing_renderer" ? <p className="viewer-renderer-loading">正在加载本地渲染器……</p> : null}
       {mapping.ok && !["unsupported", "renderer_failed", "chunk_load_failed", "context_lost", "scene_over_renderer_cap"].includes(state) ? (
         <div ref={containerRef} className="viewer-renderer-canvas-host" data-testid="viewer-scene-renderer-valid">
-          <span className="sr-only">Interactive canvas showing {mapping.scene.atoms.length} sites, {new Set(mapping.scene.atoms.map((atom) => atom.species)).size} species, and {mapping.scene.bonds.length} bounded bonds.</span>
+          <span className="sr-only">交互式画布显示 {mapping.scene.atoms.length} 个位点、{new Set(mapping.scene.atoms.map((atom) => atom.species)).size} 种元素和 {mapping.scene.bonds.length} 条受限键。</span>
         </div>
       ) : null}
       {mapping.ok ? (
         <>
         <dl id="viewer-scene-semantic-summary" className="sr-only" data-testid="viewer-scene-semantic-summary">
-          <div><dt>Formula</dt><dd>{mapping.scene.formula}</dd></div>
-          <div><dt>Canonical sites</dt><dd>{mapping.scene.atoms.length}</dd></div>
-          <div><dt>Species</dt><dd>{new Set(mapping.scene.atoms.map((atom) => atom.species)).size}</dd></div>
-          <div><dt>Lattice</dt><dd>{mapping.scene.lattice.matrix.map((row) => `[${row.join(", ")}]`).join(" ")}</dd></div>
-          <div><dt>Canonical bonds</dt><dd>{mapping.scene.bonds.length}</dd></div>
-          <div><dt>Cross-boundary bonds</dt><dd>{topologySummary.crossBoundary}</dd></div>
-          <div><dt>Self-periodic bonds</dt><dd>{topologySummary.selfPeriodic}</dd></div>
-          <div><dt>Render mode</dt><dd>{performanceDecision?.tier ?? "unavailable"}</dd></div>
-          <div><dt>Supercell expansion</dt><dd>{repeat.join(" by ")}</dd></div>
-          <div><dt>Displayed sites</dt><dd>{renderScene?.atoms.length ?? 0}</dd></div>
-          <div><dt>Displayed bonds</dt><dd>{renderScene?.bonds.length ?? 0}</dd></div>
-          <div><dt>Selection</dt><dd>{selection.activeSite ? `${selection.activeSite.siteIndex}@[${selection.activeSite.imageOffset.join(",")}]` : "none"}</dd></div>
-          <div><dt>Selected bond</dt><dd>{selectedBondId ?? "none"}</dd></div>
-          <div><dt>Clipping</dt><dd>{clipState.enabled ? clipState.planes.filter((plane)=>plane.enabled).map((plane)=>`${plane.axis}=${plane.position.toFixed(3)}`).join(", ") || "enabled with no planes" : "disabled"}</dd></div>
-          <div><dt>Camera preset</dt><dd>{cameraPreset}</dd></div>
-          <div><dt>Lattice axes</dt><dd>{showLatticeAxes ? "shown" : "hidden"}</dd></div>
-          <div><dt>Warnings</dt><dd>{mapping.scene.warnings.length ? mapping.scene.warnings.join(", ") : "none"}</dd></div>
+          <div><dt>化学式</dt><dd>{mapping.scene.formula}</dd></div>
+          <div><dt>规范位点</dt><dd>{mapping.scene.atoms.length}</dd></div>
+          <div><dt>元素种类</dt><dd>{new Set(mapping.scene.atoms.map((atom) => atom.species)).size}</dd></div>
+          <div><dt>晶格</dt><dd>{mapping.scene.lattice.matrix.map((row) => `[${row.join(", ")}]`).join(" ")}</dd></div>
+          <div><dt>规范键合</dt><dd>{mapping.scene.bonds.length}</dd></div>
+          <div><dt>跨边界键合</dt><dd>{topologySummary.crossBoundary}</dd></div>
+          <div><dt>自周期键合</dt><dd>{topologySummary.selfPeriodic}</dd></div>
+          <div><dt>渲染模式</dt><dd>{performanceDecision?.tier ?? "不可用"}</dd></div>
+          <div><dt>超晶胞扩展</dt><dd>{repeat.join(" × ")}</dd></div>
+          <div><dt>显示位点</dt><dd>{renderScene?.atoms.length ?? 0}</dd></div>
+          <div><dt>显示键合</dt><dd>{renderScene?.bonds.length ?? 0}</dd></div>
+          <div><dt>选择</dt><dd>{selection.activeSite ? `${selection.activeSite.siteIndex}@[${selection.activeSite.imageOffset.join(",")}]` : "无"}</dd></div>
+          <div><dt>已选键合</dt><dd>{selectedBondId ?? "无"}</dd></div>
+          <div><dt>裁剪</dt><dd>{clipState.enabled ? clipState.planes.filter((plane)=>plane.enabled).map((plane)=>`${plane.axis}=${plane.position.toFixed(3)}`).join(", ") || "已启用但未设置平面" : "已停用"}</dd></div>
+          <div><dt>相机视角</dt><dd>{cameraPreset}</dd></div>
+          <div><dt>晶格轴</dt><dd>{showLatticeAxes ? "已显示" : "已隐藏"}</dd></div>
+          <div><dt>警告</dt><dd>{mapping.scene.warnings.length ? mapping.scene.warnings.join(", ") : "无"}</dd></div>
         </dl>
-        {performanceDecision?.warning ? <p className="notice" role="status" data-testid="viewer-scene-renderer-performance-warning">{performanceDecision.warning}: all validated atoms and bonds remain rendered with reduced pixel ratio and antialiasing.</p> : null}
+        {performanceDecision?.warning ? <p className="notice" role="status" data-testid="viewer-scene-renderer-performance-warning">当前结构较大，查看器已降低像素密度以保持交互；所有通过校验的原子与键合仍会显示。</p> : null}
         <ViewerSupercellControls draft={repeatDraft} applied={repeat} estimate={supercellError ? Object.freeze({...supercellEstimate,error:supercellError,mode:"refused" as const}) : supercellEstimate} onDraft={(axis,value)=>{const next=[...repeatDraft];next[axis]=value;setRepeatDraft(next);setSupercellError(null);}} onApply={applySupercell} onReset={resetSupercell} onPreset={(value)=>{setRepeatDraft(value.map(String));setSupercellError(null);}} onDownload={downloadSupercellState} />
-        <ViewerViewControls clip={clipState} bounds={clipBounds} display={{unitCell:showCell,supercellBoundary:showSupercellBoundary,latticeAxes:showLatticeAxes}} preset={cameraPreset} latticeLengths={latticeLengths} onClipEnabled={(enabled)=>{const next=Object.freeze({...clipState,enabled});updateClipState(next);setAnnouncement(enabled?"Clipping enabled.":"Clipping disabled.");}} onPlaneEnabled={(axis,enabled)=>updateClipPlane(axis,{enabled})} onPosition={(axis,position)=>updateClipPlane(axis,{position})} onResetClip={()=>{const next=renderScene?initialViewerClipState(renderScene):clipState;updateClipState(next);setAnnouncement("Clipping reset.");}} onDisplay={applyViewDisplay} onPreset={applyCameraPreset} onDownload={downloadViewState} />
-        <ViewerExportPanel request={exportRequest} busy={exportBusy||state!=="rendered"} status={exportStatus} bundleReady={Boolean(exportBundle)} onChange={(request)=>{setExportRequest(request);setExportBundle(null);setExportStatus("Export settings changed; prepare a new export.");}} onExport={()=>void prepareExport()} onDownload={downloadPrepared}/>
+        <ViewerViewControls clip={clipState} bounds={clipBounds} display={{unitCell:showCell,supercellBoundary:showSupercellBoundary,latticeAxes:showLatticeAxes}} preset={cameraPreset} latticeLengths={latticeLengths} onClipEnabled={(enabled)=>{const next=Object.freeze({...clipState,enabled});updateClipState(next);setAnnouncement(enabled?"已启用裁剪。":"已停用裁剪。");}} onPlaneEnabled={(axis,enabled)=>updateClipPlane(axis,{enabled})} onPosition={(axis,position)=>updateClipPlane(axis,{position})} onResetClip={()=>{const next=renderScene?initialViewerClipState(renderScene):clipState;updateClipState(next);setAnnouncement("已重置裁剪。");}} onDisplay={applyViewDisplay} onPreset={applyCameraPreset} onDownload={downloadViewState} />
+        <details className="viewer-progressive-details viewer-advanced-export"><summary>高级导出</summary><ViewerExportPanel request={exportRequest} busy={exportBusy||state!=="rendered"} status={exportStatus} bundleReady={Boolean(exportBundle)} onChange={(request)=>{setExportRequest(request);setExportBundle(null);setExportStatus("导出设置已变化，请重新准备导出。");}} onExport={()=>void prepareExport()} onDownload={downloadPrepared}/></details>
         <ViewerMeasurementPanel mode={selection.mode} selected={selection.selectedSites} coordinateMode={coordinateMode} resolvedRefs={measurementDetails.refs} evaluation={measurement} history={history} onMode={changeMode} onCoordinateMode={(mode) => { setCoordinateMode(mode); clearSelection(); }} onUndo={undoSelection} onClear={clearSelection} onDownload={downloadMeasurement} />
         <ViewerBondInspector bond={selectedBond} onClear={() => setSelectedBondId(null)} />
         <ViewerSiteInspector atom={selectedAtom} atoms={renderScene?.atoms ?? []} bonds={renderScene?.bonds ?? []} repeat={repeat} source={mapping.scene.source.filename || mapping.scene.source.resourceId} onClear={clearSelection} onJumpPrimary={() => selectedAtom && setSelection((current) => selectViewerSite(initialViewerSelection(current.mode), {siteIndex:selectedAtom.siteIndex,imageOffset:[0,0,0]}))} onShowNeighbors={() => selectedAtom && setNeighborSiteIndex(selectedAtom.siteIndex)} onClearNeighbors={() => setNeighborSiteIndex(null)} onHighlightNeighbor={(target)=>{if(!selectedAtom)return;engineRef.current?.setSelection([selectedAtom.ref,target]);if(engineRef.current)setSnapshot(engineRef.current.snapshot());}} />
-        <div className="viewer-artifact-downloads" aria-label="Viewer artifact downloads">
-          <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(jsonBlob(payload), "viewer_scene.json")}>Download scene JSON</button>
-          {downloads?.manifest ? <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(jsonBlob(downloads.manifest), "viewer_scene_manifest.json")}>Download manifest</button> : null}
-          {downloads?.summary ? <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(new Blob([downloads.summary ?? ""], { type: "text/markdown" }), "summary.md")}>Download summary</button> : null}
-          {downloads?.recipe ? <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(jsonBlob(downloads.recipe), "recipe.json")}>Download recipe</button> : null}
-        </div>
-        {exportError ? <p className="notice" role="alert" data-testid="viewer-scene-export-error">{exportError}</p> : null}
+        {exportError ? <p className="notice" role="alert" data-testid="viewer-scene-export-error">导出失败，当前结构和已生成文件仍然保留。</p> : null}
         <p className="viewer-renderer-scene-summary" data-testid="viewer-scene-renderer-summary">
-          Validated canonical scene: {mapping.scene.atoms.length} sites; current renderer-local view: {renderScene?.atoms.length ?? 0} sites, {new Set(mapping.scene.atoms.map((atom) => atom.species)).size} species, {renderScene?.bonds.length ?? 0} bounded same-cell bonds.
+          规范结构场景：{mapping.scene.atoms.length} 个位点；当前查看器视图：{renderScene?.atoms.length ?? 0} 个位点、{new Set(mapping.scene.atoms.map((atom) => atom.species)).size} 种元素、{renderScene?.bonds.length ?? 0} 条同晶胞键。
         </p>
-        <ul className="viewer-renderer-species-legend" aria-label="Species legend">
+        <ul className="viewer-renderer-species-legend" aria-label="元素图例">
           {[...new Map(mapping.scene.atoms.map((atom) => [atom.species, atom])).values()].map((atom) => <li key={atom.species}><span aria-hidden="true" style={{ backgroundColor: atom.color }} />{atom.species}</li>)}
         </ul>
-        <dl className="mini-grid viewer-renderer-audit" data-testid="viewer-scene-renderer-audit">
-          <div><dt>sites</dt><dd>{mapping.scene.atoms.length}</dd></div>
-          <div><dt>species</dt><dd>{new Set(mapping.scene.atoms.map((atom) => atom.species)).size}</dd></div>
-          <div><dt>bonds</dt><dd>{snapshot?.bondCount ?? mapping.scene.bonds.length}</dd></div>
-          <div><dt>cell edges</dt><dd>{snapshot?.latticeEdgeCount ?? 12}</dd></div>
-          <div><dt>graphics</dt><dd>{snapshot?.graphicsContext ?? "pending"}</dd></div>
-          <div><dt>renderer</dt><dd>{snapshot?.rendererVersion ? `Three r${snapshot.rendererVersion}` : "pending"}</dd></div>
-        </dl>
-        <output className="sr-only" data-testid="viewer-scene-renderer-metrics">{snapshot ? JSON.stringify(snapshot.metrics) : "metrics pending"}</output>
-        <output className="sr-only" data-testid="viewer-scene-renderer-performance-tier">{performanceDecision?.tier ?? "unavailable"}</output>
+        <details className="viewer-progressive-details viewer-technical-details"><summary>技术详情</summary>
+          {exportError ? <p>导出诊断：<code>{exportError}</code></p> : null}
+          <div className="viewer-artifact-downloads" aria-label="查看器技术文件">
+            <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(jsonBlob(payload), "viewer_scene.json")}>下载场景 JSON</button>
+            {downloads?.manifest ? <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(jsonBlob(downloads.manifest), "viewer_scene_manifest.json")}>下载清单</button> : null}
+            {downloads?.summary ? <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(new Blob([downloads.summary ?? ""], { type: "text/markdown" }), "summary.md")}>下载摘要</button> : null}
+            {downloads?.recipe ? <button type="button" className="compact secondary" onClick={() => downloadLocalBlob(jsonBlob(downloads.recipe), "recipe.json")}>下载复现信息</button> : null}
+          </div>
+          <dl className="mini-grid viewer-renderer-audit" data-testid="viewer-scene-renderer-audit">
+            <div><dt>位点</dt><dd>{mapping.scene.atoms.length}</dd></div>
+            <div><dt>元素种类</dt><dd>{new Set(mapping.scene.atoms.map((atom) => atom.species)).size}</dd></div>
+            <div><dt>键合</dt><dd>{snapshot?.bondCount ?? mapping.scene.bonds.length}</dd></div>
+            <div><dt>晶胞边</dt><dd>{snapshot?.latticeEdgeCount ?? 12}</dd></div>
+            <div><dt>图形环境</dt><dd>{snapshot?.graphicsContext ?? "等待中"}</dd></div>
+            <div><dt>渲染器</dt><dd>{snapshot?.rendererVersion ? `Three r${snapshot.rendererVersion}` : "等待中"}</dd></div>
+          </dl>
+          <output className="sr-only" data-testid="viewer-scene-renderer-metrics">{snapshot ? JSON.stringify(snapshot.metrics) : "性能指标等待中"}</output>
+          <output className="sr-only" data-testid="viewer-scene-renderer-performance-tier">{performanceDecision?.tier ?? "不可用"}</output>
+        </details>
         </>
       ) : null}
     </section>

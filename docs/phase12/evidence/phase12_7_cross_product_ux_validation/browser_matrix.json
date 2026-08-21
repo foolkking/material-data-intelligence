@@ -21,7 +21,7 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "1440x900",
-    "visibleControls": 29
+    "visibleControls": 28
   },
   "chromium1280x720": {
     "consoleErrors": [],
@@ -44,7 +44,7 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "1280x720",
-    "visibleControls": 29
+    "visibleControls": 28
   },
   "chromium390x844": {
     "consoleErrors": [],
@@ -67,7 +67,7 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "390x844",
-    "visibleControls": 28
+    "visibleControls": 27
   },
   "firefox": {
     "consoleErrors": [],
@@ -90,7 +90,7 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "1440x900",
-    "visibleControls": 29
+    "visibleControls": 28
   },
   "frontendScientificRecomputation": 0,
   "retainedCrossProductEvidence": [
@@ -123,6 +123,6 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "1440x900",
-    "visibleControls": 29
+    "visibleControls": 28
   }
 }

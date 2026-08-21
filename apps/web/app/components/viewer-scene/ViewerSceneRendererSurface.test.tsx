@@ -81,12 +81,12 @@ describe("ViewerSceneRendererSurface", () => {
   it("separates draft from applied state, uses presets, toggles the outer boundary, and downloads inert state",async()=>{
     const engine=fakeEngine(); const createUrl=vi.fn(()=>"blob:supercell"); Object.defineProperty(URL,"createObjectURL",{configurable:true,value:createUrl}); Object.defineProperty(URL,"revokeObjectURL",{configurable:true,value:vi.fn()}); const anchorClick=vi.spyOn(HTMLAnchorElement.prototype,"click").mockImplementation(()=>undefined);
     render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async()=>engine}/>);
-    await waitFor(()=>expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("rendered"));
-    await userEvent.click(screen.getByRole("button",{name:"2 x 2 x 1"}));
-    expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("Applied 1 by 1 by 1");
-    expect(screen.getByTestId("viewer-supercell-estimate").textContent).toContain("Draft 2 by 2 by 1");
+    await waitFor(()=>expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("已就绪"));
+    await userEvent.click(screen.getByRole("button",{name:"2 × 2 × 1"}));
+    expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("已应用 1 × 1 × 1");
+    expect(screen.getByTestId("viewer-supercell-estimate").textContent).toContain("草稿 2 × 2 × 1");
     await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
-    await waitFor(()=>expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("Applied 2 by 2 by 1"));
+    await waitFor(()=>expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("已应用 2 × 2 × 1"));
     await userEvent.click(screen.getByTestId("viewer-scene-renderer-toggle-supercell-boundary"));
     expect(engine.setSupercellBoundaryVisible).toHaveBeenLastCalledWith(false);
     await userEvent.click(screen.getByTestId("viewer-supercell-download"));
@@ -104,8 +104,8 @@ describe("ViewerSceneRendererSurface", () => {
     expect(screen.getByTestId("viewer-periodic-neighbor-offset").textContent).toContain("1, 0, 0");
     expect(screen.getByTestId("viewer-periodic-neighbor-distance").textContent).toBe("0.400000");
     expect(screen.getByTestId("viewer-periodic-neighbor-source").textContent).toBe("distance_cutoff");
-    expect(screen.getByText(/Periodic neighbor relationships/).tagName).toBe("CAPTION");
-    const neighborButton=screen.getByRole("button",{name:/Highlight bond to site 1/});
+    expect(screen.getByText(/周期相邻关系/).tagName).toBe("CAPTION");
+    const neighborButton=screen.getByRole("button",{name:/高亮指向位点 1/});
     await userEvent.click(neighborButton);
     expect(neighborButton.getAttribute("aria-pressed")).toBe("true");
     expect(engine.setSelection).toHaveBeenLastCalledWith([{siteIndex:0,imageOffset:[0,0,0]},{siteIndex:1,imageOffset:[1,0,0]}]);
@@ -120,7 +120,7 @@ describe("ViewerSceneRendererSurface", () => {
     fireEvent.change(screen.getByTestId("viewer-supercell-x"),{target:{value:"2"}}); await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
     await waitFor(()=>expect(vi.mocked(engine.replaceScene).mock.calls.at(-1)?.[0].bonds).toHaveLength(1));
     const expanded=vi.mocked(engine.replaceScene).mock.calls.at(-1)![0];
-    await userEvent.click(screen.getByRole("button",{name:"Distance"}));
+    await userEvent.click(screen.getByRole("button",{name:"距离"}));
     act(()=>args?.onBondPick?.(expanded.bonds[0].id));
     expect(screen.getByTestId("viewer-selected-bond-id").textContent).toBe(expanded.bonds[0].id);
     expect(screen.getByTestId("viewer-measurement-selection").textContent).toContain("0@[0,0,0]");
@@ -137,10 +137,10 @@ describe("ViewerSceneRendererSurface", () => {
     let args: Parameters<ViewerRendererEngineFactory>[0] | undefined;
     render(<ViewerSceneRendererSurface payload={boundary} capabilityOverride engineFactory={async (value) => { args=value; return fakeEngine(); }} />);
     await waitFor(() => expect(args).toBeTruthy());
-    await userEvent.click(screen.getByRole("button", {name:"Distance"}));
+    await userEvent.click(screen.getByRole("button", {name:"距离"}));
     act(() => { args?.onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}); args?.onSitePick?.({siteIndex:1,imageOffset:[0,0,0]}); });
     expect(screen.getByTestId("viewer-measurement-result").textContent).toContain("9.600");
-    await userEvent.click(screen.getByRole("button", {name:"Minimum image (periodic)"}));
+    await userEvent.click(screen.getByRole("button", {name:"最小周期像"}));
     act(() => { args?.onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}); args?.onSitePick?.({siteIndex:1,imageOffset:[0,0,0]}); });
     expect(screen.getByTestId("viewer-measurement-result").textContent).toContain("0.400");
     expect(screen.getByTestId("viewer-periodic-measurement-offsets").textContent).toContain("1@[1,0,0]");
@@ -161,7 +161,7 @@ describe("ViewerSceneRendererSurface", () => {
     act(()=>latest?.onSitePick?.(replica!.ref));
     expect(screen.getByTestId("viewer-selected-site-index").textContent).toBe("1");
     expect(screen.getByTestId("viewer-selected-site-image-offset").textContent).toContain("1, 0, 0");
-    expect(screen.getByText("Jump to primary image")).toBeTruthy();
+    expect(screen.getByText("跳转到主位点")).toBeTruthy();
   });
 
   it("refuses an over-cap derived supercell without replacing the current renderer", async () => {
@@ -173,8 +173,8 @@ describe("ViewerSceneRendererSurface", () => {
     await waitFor(() => expect(factory).toHaveBeenCalledOnce());
     for (const axis of ["x","y","z"] as const) fireEvent.change(screen.getByTestId(`viewer-supercell-${axis}`), {target:{value:"3"}});
     await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
-    expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("requested 6912 sites");
-    expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("limits are 2048");
+    expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("请求 6912 个位点");
+    expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("限制为 2048");
     expect(factory).toHaveBeenCalledOnce();
   });
 
@@ -190,7 +190,7 @@ describe("ViewerSceneRendererSurface", () => {
     await waitFor(() => expect(vi.mocked(engine.replaceScene)).toHaveBeenCalled());
     expect(vi.mocked(engine.replaceScene).mock.calls.at(-1)?.slice(1)).toEqual(["degraded",1]);
     expect(vi.mocked(engine.replaceScene).mock.calls.at(-1)?.[0].atoms).toHaveLength(1_728);
-    expect(screen.getByTestId("viewer-scene-renderer-performance-warning").textContent).toContain("VIEWER_RENDERER_DEGRADED_RESOURCE_MODE");
+    expect(screen.getByTestId("viewer-scene-renderer-performance-warning").textContent).toContain("当前结构较大");
   });
 
   it("disposes a stale asynchronous engine generation after a scene switch", async () => {
@@ -214,26 +214,26 @@ describe("ViewerSceneRendererSurface", () => {
     const factory = vi.fn(async () => engine) satisfies ViewerRendererEngineFactory;
     const user = userEvent.setup();
     render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={factory} />);
-    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("rendered"));
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("已就绪"));
     expect(factory).toHaveBeenCalledOnce();
-    expect((screen.getByRole("button", { name: "Reset camera" }) as HTMLButtonElement).disabled).toBe(false);
+    expect((screen.getByRole("button", { name: "重置相机" }) as HTMLButtonElement).disabled).toBe(false);
     await user.click(screen.getByTestId("viewer-scene-renderer-reset"));
     expect(engine.resetCamera).toHaveBeenCalledOnce();
     await user.click(screen.getByTestId("viewer-scene-renderer-toggle-cell"));
-    expect(screen.getByTestId("viewer-scene-renderer-audit").textContent).toContain("cell edges0");
+    expect(screen.getByTestId("viewer-scene-renderer-audit").textContent).toContain("晶胞边0");
     await user.click(screen.getByTestId("viewer-scene-renderer-toggle-bonds"));
-    expect(screen.getByTestId("viewer-scene-renderer-audit").textContent).toContain("bonds0");
+    expect(screen.getByTestId("viewer-scene-renderer-audit").textContent).toContain("键合0");
   });
 
   it("applies bounded clipping, lattice axes, and deterministic camera presets", async () => {
     const engine=fakeEngine();
     render(<ViewerSceneRendererSurface payload={multiSpeciesScene} capabilityOverride engineFactory={async()=>engine}/>);
-    await waitFor(()=>expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("rendered"));
+    await waitFor(()=>expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("已就绪"));
     await userEvent.click(screen.getByTestId("viewer-clipping-enabled"));
     await userEvent.click(screen.getByTestId("viewer-clip-x-enabled"));
     fireEvent.change(screen.getByTestId("viewer-clip-x-position"),{target:{value:"1"}});
     expect(engine.setClipState).toHaveBeenLastCalledWith(expect.objectContaining({enabled:true,planes:expect.arrayContaining([expect.objectContaining({axis:"x",position:1,enabled:true})])}));
-    expect(screen.getByTestId("viewer-clipping-status").textContent).toContain("X at 1.000 angstrom");
+    expect(screen.getByTestId("viewer-clipping-status").textContent).toContain("X 位于 1.000 Å");
     await userEvent.click(screen.getByTestId("viewer-lattice-axes"));
     expect(engine.setLatticeAxesVisible).toHaveBeenLastCalledWith(true);
     await userEvent.click(screen.getByTestId("viewer-camera-top"));
@@ -244,8 +244,8 @@ describe("ViewerSceneRendererSurface", () => {
   it("provides bounded keyboard camera controls without trapping form inputs", async () => {
     const engine = fakeEngine();
     render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={async () => engine} />);
-    const region = await screen.findByRole("region", {name:"3D Structure Viewer"});
-    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("rendered"));
+    const region = await screen.findByRole("region", {name:"三维结构查看器"});
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("已就绪"));
     region.focus();
     fireEvent.keyDown(region, {key:"ArrowLeft"});
     fireEvent.keyDown(region, {key:"ArrowUp", shiftKey:true});
@@ -274,11 +274,11 @@ describe("ViewerSceneRendererSurface", () => {
     act(() => onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}));
     expect(screen.getByTestId("viewer-selected-site-index").textContent).toContain("0");
     expect(screen.getByTestId("viewer-scene-semantic-summary").textContent).toContain("0@[0,0,0]");
-    expect(screen.getByTestId("viewer-scene-accessibility-announcement").textContent).toContain("Selected site 0");
+    expect(screen.getByTestId("viewer-scene-accessibility-announcement").textContent).toContain("已选择位点 0");
     expect(screen.getByTestId("viewer-selected-site-cartesian").textContent).toContain("0, 0, 0");
-    await user.click(screen.getByRole("button", { name: "Copy site JSON" }));
+    await user.click(screen.getByRole("button", { name: "复制位点 JSON" }));
     expect(writeText).toHaveBeenCalledOnce();
-    await user.click(screen.getByRole("button", { name: "Distance" }));
+    await user.click(screen.getByRole("button", { name: "距离" }));
     act(() => { onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}); onSitePick?.({siteIndex:1,imageOffset:[0,0,0]}); });
     await waitFor(() => expect(screen.getByTestId("viewer-measurement-result").textContent).toContain("distance"));
     expect(engine.setSelection).toHaveBeenLastCalledWith([{siteIndex:0,imageOffset:[0,0,0]}, {siteIndex:1,imageOffset:[0,0,0]}]);
@@ -294,7 +294,8 @@ describe("ViewerSceneRendererSurface", () => {
     Object.defineProperty(URL, "revokeObjectURL", { configurable: true, value: revokeUrl });
     const anchorClick = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined);
     const { rerender } = render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={factory} />);
-    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("rendered"));
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("已就绪"));
+    await userEvent.click(screen.getByText("高级导出"));
     await userEvent.click(screen.getByTestId("viewer-scene-export-png"));
     expect(engine.exportPng).toHaveBeenCalledOnce();
     expect(engine.exportPng).toHaveBeenCalledWith(expect.objectContaining({width:1600,height:1200,pixelRatio:1,background:"light"}));
@@ -313,12 +314,13 @@ describe("ViewerSceneRendererSurface", () => {
     const engine = fakeEngine();
     vi.mocked(engine.exportPng).mockImplementation(() => new Promise<Blob>((_resolve, reject) => { rejectExport = reject; }));
     render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={async () => engine} />);
-    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("rendered"));
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("已就绪"));
+    await userEvent.click(screen.getByText("高级导出"));
     await userEvent.click(screen.getByTestId("viewer-scene-export-png"));
     expect((screen.getByTestId("viewer-scene-export-png") as HTMLButtonElement).disabled).toBe(true);
     expect(engine.exportPng).toHaveBeenCalledOnce();
     act(() => rejectExport?.(new Error("private renderer details")));
-    await waitFor(() => expect(screen.getByTestId("viewer-scene-export-error").textContent).toContain("VIEWER_EXPORT_FAILED"));
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-export-error").textContent).toContain("导出失败"));
     expect(screen.getByTestId("viewer-scene-export-error").textContent).not.toContain("private renderer details");
     expect((screen.getByTestId("viewer-scene-export-png") as HTMLButtonElement).disabled).toBe(false);
   });
@@ -332,11 +334,12 @@ describe("ViewerSceneRendererSurface", () => {
     const changed = structuredClone(minimalScene) as Record<string, any>;
     changed.metadata.title = "Changed during export";
     const {rerender} = render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={async () => engine} />);
-    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("rendered"));
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("已就绪"));
+    await userEvent.click(screen.getByText("高级导出"));
     await userEvent.click(screen.getByTestId("viewer-scene-export-png"));
     rerender(<ViewerSceneRendererSurface payload={changed} capabilityOverride engineFactory={async () => engine} />);
     act(() => resolveExport?.(new Blob(["stale"], {type:"image/png"})));
-    await waitFor(() => expect(screen.getByTestId("viewer-export-status").textContent).toContain("VIEWER_EXPORT_STALE_SCENE"));
+    await waitFor(() => expect(screen.getByTestId("viewer-export-status").textContent).toContain("导出失败"));
     expect(createUrl).not.toHaveBeenCalled();
     delete (URL as unknown as { createObjectURL?: unknown }).createObjectURL;
   });
@@ -345,12 +348,12 @@ describe("ViewerSceneRendererSurface", () => {
     const engine=fakeEngine();let args:Parameters<ViewerRendererEngineFactory>[0]|undefined;
     const createUrl=vi.fn(()=>"blob:export");Object.defineProperty(URL,"createObjectURL",{configurable:true,value:createUrl});Object.defineProperty(URL,"revokeObjectURL",{configurable:true,value:vi.fn()});const anchorClick=vi.spyOn(HTMLAnchorElement.prototype,"click").mockImplementation(()=>undefined);
     render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={async(value)=>{args=value;return engine;}}/>);
-    await waitFor(()=>expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("rendered"));
+    await waitFor(()=>expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("已就绪"));
     await userEvent.click(screen.getByTestId("viewer-scene-export-png"));
-    await waitFor(()=>expect((screen.getByRole("button",{name:"Download export manifest"}) as HTMLButtonElement).disabled).toBe(false));
+    await waitFor(()=>expect((screen.getByRole("button",{name:"下载导出清单"}) as HTMLButtonElement).disabled).toBe(false));
     act(()=>args?.onViewChange?.());
-    expect((screen.getByRole("button",{name:"Download export manifest"}) as HTMLButtonElement).disabled).toBe(true);
-    expect(screen.getByTestId("viewer-export-status").textContent).toContain("Viewer state changed");
+    expect((screen.getByRole("button",{name:"下载导出清单"}) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByTestId("viewer-export-status").textContent).toContain("查看状态已变化");
     anchorClick.mockRestore();
   });
 
@@ -367,7 +370,7 @@ describe("ViewerSceneRendererSurface", () => {
   it("shows the unsupported fallback while preserving a validated audit", () => {
     const factory = vi.fn(async () => fakeEngine()) satisfies ViewerRendererEngineFactory;
     render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride={false} engineFactory={factory} />);
-    expect(screen.getByTestId("viewer-scene-renderer-unavailable").textContent).toContain("Scene JSON and Manifest views remain available");
+    expect(screen.getByTestId("viewer-scene-renderer-unavailable").textContent).toContain("结构数据和来源记录仍然保留");
     expect(factory).not.toHaveBeenCalled();
   });
 
@@ -395,10 +398,10 @@ describe("ViewerSceneRendererSurface", () => {
       return fakeEngine();
     };
     render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={factory} />);
-    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("rendered"));
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("已就绪"));
     fireEvent(window, new Event("noop"));
     loseContext();
-    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-fallback").textContent).toContain("Graphics context lost"));
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-fallback").textContent).toContain("图形上下文已中断"));
   });
 
   it("shows an accessible chunk failure fallback and retries the loader", async () => {
@@ -407,20 +410,20 @@ describe("ViewerSceneRendererSurface", () => {
       .mockResolvedValueOnce(fakeEngine()) as ViewerRendererEngineFactory;
     const user = userEvent.setup();
     render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={factory} />);
-    await waitFor(() => expect(screen.getByText("Renderer module unavailable")).toBeTruthy());
-    await user.click(screen.getByRole("button", { name: "Retry renderer" }));
-    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("rendered"));
+    await waitFor(() => expect(screen.getByText("渲染模块不可用")).toBeTruthy());
+    await user.click(screen.getByRole("button", { name: "重试渲染" }));
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("已就绪"));
     expect(factory).toHaveBeenCalledTimes(2);
   });
 
   it("exposes a textual scene summary, species legend, live status, and metrics", async () => {
     render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={async () => fakeEngine()} />);
-    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("rendered"));
-    expect(screen.getByRole("region", { name: "3D Structure Viewer" })).toBeTruthy();
-    expect(screen.getByTestId("viewer-scene-renderer-summary").textContent).toContain("1 sites");
-    expect(screen.getByRole("list", { name: "Species legend" }).textContent).toContain("Si");
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("已就绪"));
+    expect(screen.getByRole("region", { name: "三维结构查看器" })).toBeTruthy();
+    expect(screen.getByTestId("viewer-scene-renderer-summary").textContent).toContain("1 个位点");
+    expect(screen.getByRole("list", { name: "元素图例" }).textContent).toContain("Si");
     expect(screen.getByTestId("viewer-scene-renderer-metrics").textContent).toContain("instancedMeshCount");
-    expect(screen.getByTestId("viewer-scene-semantic-summary").textContent).toContain("Cross-boundary bonds");
+    expect(screen.getByTestId("viewer-scene-semantic-summary").textContent).toContain("跨边界键合");
   });
 
   it("disposes every renderer across twenty bounded artifact switches", async () => {

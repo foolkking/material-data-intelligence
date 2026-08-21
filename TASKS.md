@@ -1,95 +1,22 @@
 ---TASK---
-状态：已完成
-任务名称：Phase D R1.7 — Live Qualification Environment Re-Seal
-开始时间：2026-08-17T08:36:15+08:00
+状态：处理中
+任务名称：Remaining Acceptance Closure + Evidence-Based CI Rationalization + Commit/Push
+开始时间：2026-08-21T09:54:49+08:00
 
-针对当前 committed product state 与独立的
-`Phase_BC_R1_7_Qualification_Authority_Reconciled` 执行完整 Phase D。
-独立重跑 16 Case/26 analysis turns 的 cap-aware deterministic preflight，
-验证 Q-TRAJECTORY 新 fixture 的 Browser 正常用户导入和 Profile/resource-cap
-readiness，并验证 fresh database/migration、Redis、MinIO、backend、frontend、
-fresh Worker、Browser app shell、provider configuration/credential presence 及
-空 qualification namespace。不得提交任何 R1.7 正式分析问题，不得调用真实
-LLM，不得创建 qualification Job/ToolCall/Artifact/Report，不得启动 Phase E。
+完成当前产品质量工作的剩余验收项：调查真实屏幕阅读器验证的可执行路径、
+非终态增量 Artifact 的浏览器观察路径，以及 Plotly/glslify production build
+警告；以当前代码、测试、运行时、历史 CI 和权威文档为证据决定修复、保留或
+明确限制，不得仅凭主观判断删除检查。
 
-完成时间：2026-08-17T09:06:46+08:00
+完整审计 `.github/workflows`、仓库脚本、测试标记、依赖与历史 CI 记录，建立
+每个 CI 检查的当前产品合同、覆盖范围、重复/过时证据和处置结论。仅在证据
+证明检查已被当前等价或更强门禁替代、重复执行或不再对应当前路线时调整；
+保留科学正确性、安全、迁移、持久化、前后端、服务集成和可访问性门禁。
 
-修改文件：`apps/web/test/phase-e-r1-6-live-qualification.mjs`、
-`scripts/generate_phase_d_r1_7_evidence.py`、
-`_qualification/evidence/phase_d/attempt_10_r1_7_reseal/`、`TASKS.md`、
-`results.md` 与 persistent 项目状态文件。
-
-修改摘要：在 fresh PostgreSQL database 上执行正式 migration 至
-`0008_phase_d_r1_namespace`，启动当前 committed product 的 API、Worker 与
-frontend，并使用 Redis、MinIO 和 fresh qualification namespace 完成独立
-Phase D R1.7 re-seal。Browser 通过正常用户入口导入新轨迹 fixture，验证
-15 frames、516 atoms、0-1.05 ps、Cartesian/unwrapped、fixed cell、PBC 全开
-及 resource-cap readiness；未提交任何科学分析问题。
-
-测试结果：独立 16 Case/26 analysis-turn cap-aware preflight PASS；聚焦测试
-`31 passed`；更广当前 runtime/qualification 回归 `212 passed`；frontend
-Vitest `460/460`、typecheck 和 production build PASS；PostgreSQL/Redis/MinIO
-service-backed trajectory integration `1 passed`。完整 pytest 为
-`1534 passed, 20 failed, 51 skipped`，其中 20 项均为已披露历史 queue/evidence
-断言，未发现当前 R1.7 product/runtime/preflight 回归。Browser errors 0，
-`REAL_LLM_CALLS=0`，formal qualification executions/Jobs/ToolCalls/Artifacts=0。
-
-提交/CI：当前产品状态已提交且 production runtime-affecting uncommitted
-diffs 为 0；未推送、remote CI 未运行，完整仓库测试不声明全绿，因此本任务
-保留在 `TASKS.md` 等待归档核验。Phase E 未创建、未启动。
----END---
-
----TASK---
-状态：已完成
-任务名称：Phase B/C-R1.7 — Trajectory Resource-Cap Authority Reconciliation
-开始时间：2026-08-17T02:25:00+08:00
-
-依据 Reviewer 对 Phase E-R1.6 的 Q-TRAJECTORY authority blocker 决议执行。
-保留失败 Phase E-R1.6、其真实 Browser/Worker runtime cap 证据、R1.6 authority
-和全部 Phase D 历史。不得提高已发布 trajectory analytics frame/atom/pair/bin/
-lag/origin/fit/output caps，不得在 runtime 截断、重采样或删除 atoms。
-
-先审计当前 product trajectory resource/analytics contracts；优先复用仓库内
-真实、可溯源 fixture，或按预先定义、非结果驱动规则从原 650-frame 真实源
-选择连续、保留全部 atoms/species/cell/PBC/coordinates/timestamps 的新 source
-window。增强通用 qualification preflight，使其对所有 required Tools 检查
-实际 fixture、参数、依赖与运行资源 caps，并机械复现旧 650-frame Case 的
-pre-execution failure。不得用 caseId 特判。
-
-只有完整 16 Case、全部 executionTurns、expected rejection 和所有可机械
-评估 resource caps 均通过，才创建独立 R1.7 authority package；不得覆盖
-R1.6，不得生成 qualification checksum/digest manifests。随后创建并执行
-独立 Phase D R1.7 re-seal，验证 fresh DB/migration、Redis、MinIO、backend、
-frontend、fresh Worker、Browser import readiness、provider config/credential
-presence 和空 qualification namespace。R1.7 与 Phase D 期间 REAL_LLM_CALLS、
-formal qualification executions/Jobs/ToolCalls/Artifacts 均为 0。
-
-即使 R1.7 与 Phase D PASS，也不得创建或启动 Phase E。
-
-完成时间：2026-08-17T08:36:15+08:00
-
-修改文件：`packages/tool-registry/mdi_tool_registry/loader.py`、
-`scripts/phase_bc_r1_7_authority.py`、`scripts/phase_bc_r1_7_cap_preflight.py`、
-`tests/test_phase10n4_trajectory_analytics.py`、
-`tests/test_phase_bc_r1_7_cap_preflight.py`、R1.7 package/evidence 和队列记录。
-
-修改摘要：将 Registry trajectory analytics 资源上限元数据对齐既有 Adapter
-运行时上限；以真实 Cage-1 500 K AIMD 源的预先定义连续 frames 0-14 创建新
-15-frame/516-atom fixture；加入通用 required-Tool resource-cap preflight，
-机械复现旧 650-frame authority 的 pre-execution failure。R1.7 全 16 Case、
-26 analysis turns 和 expected rejection 均通过，15 个未变更 Case 内容逐文件
-字节相等。独立 package 位于
-`_qualification/inputs/Phase_BC_R1_7_Qualification_Authority_Reconciled.zip`。
-
-测试结果：轨迹 Adapter/Parser、Registry 与 R1.7 preflight 聚焦回归
-`31 passed`；全量 R1.7 deterministic preflight `16/16 Cases`、`26/26 turns`、
-resource-cap conflicts `0`、unpreflightable required Tools `0`。双 package
-构建直接字节相等。`REAL_LLM_CALLS=0`，正式 qualification 执行与新
-Job/ToolCall/Artifact 均为 0。
-
-提交/CI：产品与 R1.7 preflight 变更提交为
-`fix(registry): expose trajectory analytics runtime caps`；未推送，remote CI
-未运行。Phase D 由独立后续任务执行。
+完成必要修复、持久化文档与结果记录，运行 current-HEAD CI 等价检查。整理
+提交范围，排除凭据、日志、数据库 WAL/SHM、临时构建与诊断输出；提交并推送
+到当前远程分支，随后确认 current-HEAD 远程 CI 结果。未经证据不得降低覆盖，
+不得重开失败的 Phase E 资格任务，不得部署或发布。
 ---END---
 
 ---TASK---
@@ -159,26 +86,6 @@ Artifact/ToolCall/Report/Recipe。
 上限内的 Q-TRAJECTORY authority fixture，或单独批准 trajectory analytics
 资源上限/科学契约变更并创建新的 qualification authority。未生成
 16/16 PASS、未执行后续 Cases、未声明 Phase E 完成。
----END---
-
----TASK---
-状态：已完成
-任务名称：Q-TABLE Explicit Material-Property Target Intent Closure + Phase B/C-R1.6 Reconciliation + Phase D Re-Seal
-开始时间：2026-08-16T20:15:00+08:00
-
-依据 Reviewer 的 R1.6 授权，保留全部历史失败任务与证据，且不启动 Phase E。仅实现正常用户显式材料属性名称到当前 DataProfile 已认可 `material_property` 事实的精确、受限传递：AnalysisIntent、独立验证、Eligibility 与既有 Planner 参数绑定。严禁模糊/近似/首列/任意数值列目标猜测、DataProfile 词汇扩展、单位猜测、科学 Tool/算法、Plan cap、支持面或 ToolPlannerMetadata 放宽。
-
-在完成产品审计、回归测试并提交稳定生产候选后，以真实 JARVIS 材料表和四个自然语言 Q-TABLE turns 执行无 LLM、无 Job 的完整 16 Case/全部 analysis turn preflight。只有所有 preflight 均通过，才创建 R1.6 authority package（R1.3-R1.5 均为无 package 的历史 blocked attempts），随后重新执行完整 Phase D 环境 seal。Phase D 禁止 DeepSeek、正式 qualification submissions、Jobs、ToolCalls 与 Artifacts。任一新的 qualification authority conflict 必须如实失败并停止，不得生成 partial package 或开始 Phase E。
-
-完成时间：2026-08-16T23:49:21+08:00
-
-完成结果：`PHASE_BC_R1_6 = PASS / QUALIFICATION_AUTHORITY_PRODUCT_INTENT_ALIGNED_AND_REFROZEN`；R1.6 使用 AnalysisIntent 1.1 的当前 DataProfile 精确 material-property target 语义，保留 Q-TABLE 的四个自然语言 turns 和四个既有 required Tools。全量非 LLM、非正式执行预检为 16 Cases、26 analysis turns、0 conflicts；expected rejection contract PASS。R1.6 package 位于 `_qualification/inputs/Phase_BC_R1_6_Qualification_Authority_Reconciled.zip`，以 package inventory、schema、直接保护内容比较和双构建直接字节相等性建立 authority，不使用 qualification digest gate。
-
-Phase D 结果：`PASS / LIVE_QUALIFICATION_ENVIRONMENT_RESEALED`。fresh official migration namespace 在 `0008_phase_d_r1_namespace`，PostgreSQL、Redis、MinIO、API、fresh Worker、Browser app shell、provider configuration 与 credential presence 均通过；Browser 证明 Archive 二进制、XRD companion、Electronic Band/DOS companion 的正常用户输入路径与持久化。正式 namespace 的 Intent、Plan、Job、ToolCall、Artifact、Report、Recipe 均为 0，`REAL_LLM_CALLS=0`，`FORMAL_QUALIFICATION_EXECUTIONS=0`。未创建或启动 Phase E。
-
-修改文件：AnalysisIntent 1.1/Intent validation/Eligibility/Planner explicit target path 的 committed product source；R1.6 authority/evidence scripts、R1.6 package/evidence、Phase D evidence、qualification regression test、`persistent/*.md`、`docs/13_SHARED_SCHEMA_SPEC.md`、`docs/index.md`、`results.md` 与本队列记录。历史 R1.2、R1.3-R1.5 blocked attempts 和历史 Phase E evidence 均保留。
-
-测试结果：focused backend `159 passed`；focused product regression `124 passed`；frontend typecheck PASS；Vitest `460/460`；production build PASS（既有 Plotly/glslify warning）；sealed Docker-network durable namespace integration `1 passed`。全库 pytest 为 `1514 passed, 20 failed, 51 skipped`：19 个历史 queue-shape assertions 和 1 个既有 Phase13 evidence-size mismatch，分类为非 R1.6 product/runtime regression；不声明全库 CI PASS，未运行 remote CI。
 ---END---
 
 ---TASK---

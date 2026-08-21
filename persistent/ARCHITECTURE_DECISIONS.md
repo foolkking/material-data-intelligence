@@ -1,5 +1,16 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-19 — Historical Workspace routes inherit Project authorization
+
+- Workspace remains an internal result-projection model and compatibility
+  deep-link target, but its API routes now resolve the authenticated identity
+  through the same production-compatible dependency as Dataset, Planner and
+  Report routes.
+- Existing Workspace service checks continue to resolve Workspace -> Project
+  before reads or writes. Tests may retain the explicit compatibility identity
+  only under `PYTEST_CURRENT_TEST`; the production ASGI process requires the
+  server session cookie.
+
 ## 2026-08-17 — Stale capability resolution uses bounded provider repair
 
 `CAPABILITY_LLM_RESOLUTION_MISMATCH` is a repairable provider-output defect on
@@ -2129,6 +2140,7 @@ Phase 5 wired PostgreSQL/Redis/MinIO runtime configuration, but the actual live 
 Add 18 integration smoke tests under `tests/test_phase6_integration.py` gated behind `@pytest.mark.integration`. All tests skip cleanly when `MDI_RUN_INTEGRATION` is not set to `1` or when individual services (PostgreSQL, Redis, MinIO) are not reachable. Each test uses helper functions (`_pg_url()`, `_live_redis_client()`, `_minio_storage()`) that call `pytest.skip()` on connection failure.
 
 Integration test categories:
+
 - Docker compose services reachability (1 test): verify PG/Redis/MinIO are alive.
 - Alembic live migration (1 test): real `alembic.command.upgrade(alembic_cfg, "head")` against live PG with downgrade+reupgrade cycle and index existence checks.
 - PostgreSQL repository live (6 tests): CRUD, rollback, status transitions.
@@ -2139,6 +2151,7 @@ Integration test categories:
 - Service-backed product-loop (1 test): PG repos + queue + storage + real Tool Registry + BasicMetricsAdapter.
 
 Keep default unit tests Docker-free. Integration tests can be run with:
+
 ```bash
 MDI_RUN_INTEGRATION=1 DATABASE_URL=... REDIS_URL=... python -m pytest -q -m integration
 ```
@@ -3829,6 +3842,7 @@ Milestone 1 的完成标准定义为 scaffold 级可验证实现：
 - Phase 1 可以被 `python -m pytest -q`、`npm run typecheck` 和 `npm run build` 验证。
 - 后续可以在不改边界的情况下接入 PostgreSQL repository、Celery worker、SSE publisher 和对象存储。
 - 本阶段不把 stub route 误标为生产业务能力，避免与 Roadmap 后续 Milestone 混淆。
+
 ## ADR-09B-EVIDENCE: Official pymatviz examples evidence pack is demo evidence, not CI gate
 
 ### Context
@@ -4189,6 +4203,7 @@ Keep `official_pass_claim` and `official_pass_claims` false for every case and f
 - Expected contracts now carry candidate replay values suitable for future internal regression replay.
 - QueueWorkerRuntime, AnalysisPlanRepository, `/planner/jobs`, PlanValidator, Tool Registry semantics, adapter core semantics, and live LLM boundaries remain unchanged.
 - Full viewer, WebGL/Three.js renderer, phonon, notebooks, scripts, and external API workflows remain deferred.
+
 # 2026-07-09 Phase 10F-10 ADR: JSON-only viewer_scene preview before renderer work
 
 ## Decision
@@ -4575,6 +4590,7 @@ authorized.
 - DataProfile remains 2.1. Generic Artifact/Workspace/Report persistence and the
   existing API families are reused with no migration, dependency, lockfile, LLM,
   oxidation-state, bond-valence or Recipe execution authority.
+
 ## 2026-08-09 Phase 10N-3 ADR - Persisted Peak-Correspondence Authority
 
 - `structure.xrd@0.1.0` / `phase10e4.xrd_pattern.v1` remains the sole
@@ -4585,6 +4601,7 @@ authorized.
   definitive phase identification.
 - DataProfile 2.2 and Selection 1.0 evolve additively through existing generic
   persistence. No migration, API family, dependency or frontend science is added.
+
 ## 2026-08-09 Phase 10N-4 ADR - Persisted Trajectory Analytics Authority
 
 - `phase10g.trajectory.v1` remains the trajectory identity, frame, atom, coordinate, cell/PBC and time authority.
@@ -4592,6 +4609,7 @@ authorized.
 - MSD uses server-side fixed-cell unwrapping and multiple time origins. Wrapped browser coordinates have no scientific authority.
 - Diffusion consumes only exact persisted MSD through AnalysisPlan 0.2, requires an explicit fit window, and emits a qualified estimate only when frozen R-squared, alpha, duration, point and origin diagnostics pass.
 - DataProfile 2.3 is additive JSON readiness. No migration, API family, dependency, lockfile, arbitrary execution, automatic fit-window selection, variable-cell MSD, or N5 task is authorized.
+
 ## Phase 10N-5 Supplied Electronic Authority
 
 - Exactly two scientific Tools consume strict supplied electronic resources.
@@ -4606,6 +4624,7 @@ authorized.
 - Registry 62, DataProfile 2.4 and all N1-N5 scientific contracts remain sealed.
 - Closure uses multiple capability-specific Plans, never a run-everything Tool or mega-plan.
 - Evidence matrices are documentation artifacts and not runtime schemas.
+
 ## Phase 11-1 Decision
 
 Retained fixture bytes are reused by checksum and described through immutable provenance sidecars. Preparation does not create a new scientific authority, alter tolerances, or promote validation level.
@@ -4655,6 +4674,7 @@ surface/elevation, focus and motion, but never participates in scientific
 Artifact/Plan/Workspace identity. Existing aliases are temporary compatibility
 mappings; scientific trace/category colors and specialized viewer semantics are
 frozen for later owning phases.
+
 ## Phase 12-3 Workspace and Viewer Presentation
 
 Workspace navigation may group persisted Plan and Execution panels under the
@@ -4699,6 +4719,7 @@ The sealed Initial Release scope baseline is
 Its implementation authority is exact-SHA CI `31451202923` on
 `6217d042d0190c43144e402e4479aa9810b8e9d0`; it is release-governance identity,
 not scientific runtime identity.
+
 ## Phase 13-0 Clarification Projection Authority
 
 - Release and E2E documentation must inherit `AnalysisIntent 1.0` directly:
@@ -4740,6 +4761,7 @@ not scientific runtime identity.
 - The Fact Model remains `e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06`.
   Scope baseline `caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4`
   supersedes the historical prompt/fixture baseline for release governance only.
+
 ## Phase 13-2 Rerun Stop Decision
 
 The Level-D rerun must stop when a fresh production-runtime preflight exposes a
@@ -4779,6 +4801,7 @@ does not upgrade product support or scientific validation.
 - Level-D admission includes D0: real HTTP upload, SQL/MinIO persistence,
   natural-language Planner Job, Redis enqueue, uploader-state disposal, fresh
   Worker, first registered ToolCall and first persisted Artifact.
+
 ## Phase 13-2 Attempt 4 Forensic Boundary
 
 Attempt 4 adds no architecture authority. It confirms that a Demo contract may
@@ -4854,6 +4877,7 @@ production and scientific behavior may not change. A canonical PASS requires a
 real UI Finalize and paired inert Recipe for each Demo, while screenshot,
 browser, provider, Report inclusion, and Recipe existence remain explicitly
 non-scientific authorities. Phase 13-3 remains a reviewer-gated handoff.
+
 # Phase 13-3 Documentation Authority Decision
 
 The current Initial Release human documentation lives under
@@ -4969,6 +4993,7 @@ analytics cap. Qualification fixture derivation is permitted only when its rule
 is fixed before result inspection and preserves all atoms, coordinates, cells,
 PBC, species ordering, and physical timestamps. Runtime truncation, resampling,
 atom subsetting, and cap expansion remain forbidden without separate authority.
+
 ## ADR: Durable Project History and Selected Dataset Workbench (2026-08-17)
 
 - Project history is a read-only projection assembled from durable repositories,
@@ -4993,3 +5018,375 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   questions, fixtures, Tools, values, provenance, caps, Reports, or Recipes.
 - Cross-browser and cross-platform replay compares structured semantic state;
   volatile timing, DOM bytes, and digest metadata are excluded from correctness.
+
+## ADR: DeepSeek Provider Configuration Boundary (superseded 2026-08-18)
+
+- This records the earlier DeepSeek-only boundary. The generic connection
+  contract below supersedes it for user-configured compatible Providers; the
+  built-in server profile remains available for compatibility.
+- `.env.example` is the discoverable local configuration surface. Empty
+  `DEEPSEEK_KEY` intentionally keeps deterministic/replay workflows offline.
+- `/me/secrets` is currently an in-memory metadata API and is not wired to the
+  live provider; `secretId` is rejected by policy. Durable encrypted BYOK,
+  user/project secret ownership and worker-time resolution require a separate
+  backend capability and must not be implied by the current UI.
+
+## ADR: Generic Server-Hosted Provider Contract (2026-08-18)
+
+- Provider catalog/status/resolve/test responses use a provider-neutral profile
+  contract: provider id, provider kind, server-owned base URL, model allowlist,
+  execution capability, configuration source and redacted secret-source
+  category.
+- The catalog is code-owned and allowlisted. The browser may choose a catalog
+  id/model for display or resolution, but cannot submit a secret or endpoint.
+  Unknown `MDI_LLM_PROVIDER` values fail as `unsupported`; they do not fall
+  back silently to DeepSeek.
+- DeepSeek remains the only `execution=live` profile. This generalizes the API
+  contract without enabling an unreviewed provider transport or changing the
+  qualification authority.
+
+## ADR: Project/Research Discoverability Closure (2026-08-18)
+
+- The global search control is a real authenticated Project search dialog. It
+  reads the bounded Project list API and links to Project overview, Data, and
+  Research routes; it does not invent a cross-resource search API.
+- Completed Research runs expose a direct Run Report link; the default process
+  summary remains collapsed and expands to persisted scientific steps.
+- Unsupported Research suggestions repopulate the same session composer rather
+  than remaining inert. The Data viewer toolbar contains only the action
+  supported by the current page; an unimplemented overflow menu is not shown.
+- Project Overview dataset links are authoritative for the initial Data viewer
+  selection through the existing `?dataset=` query. Research session selection
+  updates the existing `/research/[sessionId]` route so refresh and sharing
+  recover the same persisted conversation.
+
+## ADR: Generic Provider Connection Configuration (2026-08-18)
+
+- Provider configuration uses an OpenAI-compatible contract (`baseUrl`, API
+  key, provider id and optional label). The API key is encrypted server-side
+  and never returned; replacement and deletion are the only later key actions.
+- `GET /planner/providers/{provider}/models` discovers bounded model ids from a
+  provider `/models` endpoint without exposing provider secrets to the browser.
+- Thinking depth is provider-neutral (`quick`, `standard`, `deep`). Server
+  adapters map it to bounded output budgets; provider-native reasoning fields
+  are not presented as a universal guarantee.
+- Other protocols require an explicit server adapter; the UI does not claim
+  that every vendor protocol is already supported.
+
+## ADR: Durable Scientific Source Viewer Recovery (2026-08-19)
+
+- Source viewer requests resolve persisted normalized exports whenever a
+  Dataset is not present in the process-local runtime, even when the local
+  API adapter is selected. Historical Projects therefore remain readable
+  after an API restart without weakening Project authorization.
+- Experimental XRD source payloads are projected into one bounded numeric
+  series (2theta/Intensity) and reuse the existing scientific plot renderer;
+  Atoms source objects reuse the Structure renderer.
+- Historical SQLite databases without `project_members` remain valid auth
+  stores: authenticated role resolution falls back to the owner role while
+  project-level authorization continues to enforce the `projects` table.
+- Non-test local API processes use the durable SQLite repository bundle for
+  Project History and Research reads; pytest retains the isolated in-memory
+  bundle so route tests do not depend on the developer database.
+
+## ADR: Bounded Research Intelligence Roles (2026-08-20)
+
+- Research Turn Orchestrator, Scientific Interpreter, and Report Composer are
+  product projection roles, not execution authorities. The existing validated
+  AnalysisPlan, Tool Registry, Job, Artifact, and grounded Interpretation
+  contracts remain authoritative.
+- `mdi_llm.research_roles` emits strict, bounded JSON projections. Provider
+  output is advisory and falls back to deterministic server-owned copy when it
+  fails validation. Private reasoning, credentials, machine identities, and
+  technical diagnostics are rejected before persistence.
+- Scientific findings and report references are fail-closed: every claim,
+  evidence item, figure, and supporting result must resolve to the persisted
+  Interpretation/Artifact source set. Reports therefore remain immutable and
+  auditable rather than becoming an LLM-generated execution or data authority.
+
+## ADR: Project-Inherited Authorization Closure (2026-08-20)
+
+- Every authenticated child-resource route resolves its Project and calls the
+  shared `require_project_access` boundary before returning or mutating data.
+- Legacy Phase 1 event streams and demo fixtures remain available only through
+  the authenticated Project boundary; pytest-only in-memory compatibility does
+  not weaken production authorization.
+- Project history synchronizes runtime projections only after authorization,
+  and unbound interpretation evidence is rejected rather than returned without
+  a resolvable source Job.
+- Legacy `/analysis?jobId=...` and `/workspaces/:workspaceId` links resolve their
+  server-authorized Project/Run and redirect into the Project Research surface;
+  unresolved links remain a non-disclosing compatibility state. Protected-route
+  redirects preserve only same-origin relative `returnTo` paths.
+
+## ADR: Phase 10 Scientific Presentation Closure (2026-08-20)
+
+- Phase 10 scientific objects reuse the shared viewer adapters and existing
+  renderer contracts. Source capabilities are reported honestly: normalized
+  volumetric source data currently presents a structured field/grid summary;
+  the validated 3D dataset/manifest renderer remains result-only until that
+  source contract exists. Brillouin-zone source ingestion is not inferred from
+  result artifacts.
+- User-facing scientific labels are Simplified Chinese; canonical identifiers,
+  formulas, units, schema names and source field names remain unchanged where
+  they carry scientific meaning. Generic plot projections localize only known
+  product labels and never rewrite numeric data.
+- Chrome evidence is UX acceptance evidence tied to the current working tree,
+  not a new qualification gate. Screenshot capture covers current desktop
+  production routes; mobile and 200% evidence retain the existing DOM/geometry
+  verification boundary where the Chrome bridge cannot set a separate viewport.
+- Structure Viewer product chrome is localized at the presentation boundary:
+  toolbar, controls, Inspector and accessibility copy are zh-CN. Canonical
+  formulas, units, scientific enum values, schema identifiers and diagnostic
+  codes remain unchanged so localization cannot alter scientific meaning or
+  renderer contracts.
+
+# 2026-08-19 — Research timeline and scientific result projection
+
+- Project access is enforced server-side through `mdi_api.access.require_project_access`; child resources must resolve to a Project before reads/writes. Historical owner rows remain readable, while membership roles provide the extension point for future collaboration.
+- Research sessions persist user messages and bounded assistant projections (`pre_run`, `clarification`, `unsupported`, `post_run`). Observable run steps are rebuilt from Job/Tool/Artifact facts and are not stored as synthetic message spam or hidden model reasoning.
+- Assistant projections that name a Run are now server-grounded and idempotent per `(ResearchSession, Run, phase)`: pre-run copy is projected only from the persisted validated AnalysisPlan, while post-run copy is projected only after a persisted Scientific Interpretation exists. Browser-supplied findings, limitations, and step text are not an authority for a durable assistant message.
+- Existing Report/Recipe composition remains the immutable report authority. Its browser client sends the authenticated session cookie and its routes use the production user dependency (with the established pytest compatibility fallback), so workspace-scoped Report reads and writes cannot bypass Project authorization.
+- The web result surface uses a shared `scientific-result-projection` mapping to assign primary/supporting figure/table roles. Data, Research, and Report views continue to reuse the existing Scientific Viewer renderer contracts.
+- `sessions` has no mutable `updated_at` column in the current schema; session recency is derived from the latest persisted message timestamp.
+
+## ADR: Scientific Human-Readable Plan Projection (2026-08-20)
+
+- Research Timeline step copy is derived from persisted `toolId` and approved
+  Registry capability semantics before considering plan purpose text. This
+  preserves meaningful labels for retained historical Plans without changing
+  machine AnalysisPlan facts or validation.
+- Unknown or newly registered capabilities use a Chinese scientific fallback;
+  internal tool, step, and job identities and machine contract wording are not
+  rendered as default user copy.
+
+## ADR: Incremental Artifact Observation Boundary (2026-08-20)
+
+- The production polling contract is observable at the persisted event boundary:
+  each real `artifact.ready` event is emitted only after its Artifact metadata
+  has been saved, while the terminal `dependency.execution_completed` event is
+  emitted after the final Job status is set.
+- A two-step registered-adapter regression test records this ordering and
+  confirms artifacts remain readable while the Job is still running. It uses no
+  artificial delay, timeout, fake progress, or worker semantic changes.
+- Current local browser golden paths remain unable to hold a live two-step Job
+  between those synchronous worker boundaries; therefore browser observation
+  is not claimed as a production incremental screenshot PASS. The automated
+  event/repository evidence is the authoritative verified boundary until a
+  real asynchronous worker run provides a safe observation window.
+
+## ADR: Production Semantic Accessibility Closure (2026-08-20)
+
+- Primary production surfaces expose explicit landmarks and names: the project
+  research workbench is labelled, conversation messages are articles with
+  user/assistant names inside a polite log, and session history has a labelled
+  dialog surface with Escape dismissal.
+- Loading, failure, and run-process error states use `status` or `alert` roles;
+  technical details remain progressively disclosed rather than becoming the
+  accessible primary error message.
+- The research splitter is keyboard reachable and exposes its bounded value
+  through separator semantics. Scientific property tables expose both an
+  accessible name and caption, with row selection retained through
+  `aria-selected`.
+- Real screen-reader hardware/software testing remains a separate
+  `NOT_VERIFIED` acceptance item; this closure covers source/DOM semantics and
+  focused browser-test assertions.
+
+## ADR: Structure Viewer Progressive Disclosure Closure (2026-08-20)
+
+- The default Structure Viewer surface prioritizes the scientific object,
+  selection, measurement, and view controls. Renderer version, graphics
+  context, performance metrics, raw scene/manifest/recipe downloads, and
+  export diagnostics are technical/reproducibility details, so they are
+  available under the collapsed `技术详情` section.
+- Scientific export remains available under the collapsed `高级导出` section;
+  it retains the existing bounded dimensions, formats, manifests, and local
+  download behavior without changing Three.js, scene validation, or data
+  contracts.
+- User-facing Structure Viewer status and measurement labels are Simplified
+  Chinese. Canonical formulas, units, renderer identifiers, schema names, and
+  diagnostic codes remain available only in the appropriate technical or
+  generated export artifact context.
+
+## ADR: Reversible Run Archive Projection (2026-08-20)
+
+- Run archival is a visibility projection, not a Job lifecycle state. The
+  validated Job status and all child records (Messages, ToolCalls, Artifacts,
+  Evidence, Interpretations and Reports) remain immutable and readable.
+- A project-scoped `archivedRunIds` list is stored in the existing
+  `project_configs.config_json` document, so archive/restore is reversible and
+  requires no destructive migration. The API verifies Project write access and
+  only permits archival after a terminal run state.
+- Project History always retains archived runs and marks them `archived`; the
+  default Reports projection filters them from the active list. A direct report
+  deep link remains readable and offers restore, preserving research continuity.
+
+## ADR: Batch scientific presentation closure and repeatable execution (2026-08-20)
+
+- Reusing one validated intent/decision for multiple immutable execution
+  records is supported by the 0012/0013 migrations. Each new Run retains its
+  own Job, ToolCall, Artifact, Interpretation, Evidence and Report lineage.
+- The 46-project browser batch was reconciled to 42 retained Projects: four
+  original empty projects and three empty projects created by test fixtures were
+  removed only after database backups and zero-child checks. No scientific
+  Project, Dataset, Run, Artifact, Message, Evidence, Interpretation or Report
+  was deleted. Superseded terminal Runs are reversibly archived through the
+  project-scoped `archivedRunIds` projection.
+- Grounded Evidence is the source for user-facing findings and limitations;
+  Research and Report projections reject client-supplied machine steps,
+  dangling references, and invented numeric claims. The Research Turn
+  Orchestrator and Report Composer remain bounded advisory/editorial roles and
+  cannot mutate validated execution contracts.
+
+## ADR: Project acceptance naming and capability discoverability (2026-08-20)
+
+- Qualification projects use `Case NN · Q-ID · Run NN`; genuine phase-owned
+  projects use `Phase NN · title · Run NN`; unrelated compatibility records use
+  `其他 · title · Run NN`. Capability lineage is not substituted for project
+  provenance in the primary name.
+- The human-readable Project description states the scientific capability and
+  its Phase 10 lineage. The Projects page groups Case, Phase and other records,
+  and searches names, Q-IDs and capability descriptions. This keeps Project as
+  the product boundary while making retained Phase 10 capabilities discoverable.
+
+# 2026-08-20 — Research and Report LLM roles remain advisory projections
+
+- The Research Turn Orchestrator is now invoked after a validated Planner Job
+  exists. It receives only the research question, selected Dataset name and
+  persisted user-facing Plan steps. Its strict JSON is validated before an
+  assistant message is persisted; provider failure or invalid output falls
+  back to the deterministic grounded projection. It cannot create or mutate an
+  AnalysisPlan, Job, ToolCall or Artifact.
+- Report finalization may invoke the configured Provider as an editorial role
+  over the deterministic `ReportComposerProjection`. Every finding, figure,
+  result, Evidence and source identity must be a subset of the grounded
+  projection, and new numeric statements are rejected. Invalid/unavailable LLM
+  output preserves the deterministic report. Running process labels remain
+  deterministic and use no LLM calls.
+
+## ADR: Project and Dataset management is a reversible, role-aware projection (2026-08-20)
+
+- Object lists remain navigation-first. One shared action menu is available by
+  right-click, a focusable `More` trigger, the keyboard context-menu command,
+  and a persistent touch target; right-click is never the sole discovery path.
+- Batch archive/restore requires an explicit selection mode and a transient
+  batch bar. Navigation is disabled only while that mode is active, preventing
+  row activation and selection from competing for the same click.
+- The server projects the actual Project membership role into Project History.
+  The frontend only shows mutation controls for explicit write-capable roles,
+  while every endpoint independently reauthorizes the Project boundary.
+- Project archive state uses `project_configs.archivedProject`; Dataset archive
+  preserves its exact former status in `metadata_json.archivedPreviousStatus`.
+  Owner-only physical deletion is restricted to server-proven empty objects and
+  never cascades through scientific history.
+
+## ADR: Research writes inherit Project write access (2026-08-20)
+
+- Creating a Research Session, posting a user Message, and persisting an
+  assistant projection are Project mutations and use `write=True` access
+  checks. Listing sessions, reading a session, resolving scope, and reading
+  existing results remain read operations.
+- The UI mirrors this contract: viewer members can inspect existing timeline,
+  results and reports, but receive no Composer, new-session, upload, or archive
+  controls. Direct deep links show an honest read-only state rather than a form
+  that is guaranteed to fail after submission.
+
+## ADR: Management focus and sparse-schema closure (2026-08-20)
+
+- Management dialogs capture the explicit opener and restore focus to that
+  connected control after Escape or completion. The scientific Inspector uses
+  the same contract for the selected row/site trigger, including a semantic
+  replacement lookup when a viewer rerenders the control.
+- Empty-object physical deletion remains owner-only, write-authorized, and
+  blocked whenever any durable child exists. Optional metadata tables
+  (`audit_logs`, `project_members`, `project_configs`) are checked against the
+  live schema before scan/delete so sparse historical SQLite databases remain
+  readable; this does not weaken blockers or cascade non-empty history.
+
+## ADR: Wave 1 product-state and scientific-unit safety (2026-08-20)
+
+- Scientific units are source/profile authority only. The Data property table never
+  derives `eV`, `g/cm³`, or any other unit from a column name; absent explicit metadata
+  is rendered as `未声明`.
+- Research route loading is a first-class state distinct from idle/empty. Failed project
+  or session reads expose a retry action and keep technical details progressively
+  disclosed rather than showing a misleading empty workbench.
+- At mobile widths, Research owns one active surface (`对话` or `工作台`) at a time.
+  This preserves the frozen timeline/workbench IA while avoiding nested primary scroll
+  regions and keeps the current scientific object reachable without a long stacked page.
+- Report reading is result-first: a validated primary figure is preferred, then a
+  validated primary table, followed by conclusion, limitations, supporting results,
+  method and provenance. This is a presentation ordering decision only; execution and
+  artifact contracts remain unchanged.
+
+## ADR: Viewer routing and companion failure boundaries (2026-08-20)
+
+- Source Data routing prefers validated normalized `objectType` values before names or profile text. Phonon contracts are checked before electronic band/DOS hints to prevent scientifically incorrect viewer selection.
+- A Scientific Result requires its selected Artifact; optional companions are loaded with best-effort semantics. Companion failure cannot erase a readable selected result.
+- Generic table previews disclose the source row total and bounded preview cap. Unknown source objects render an inert, user-readable unsupported state rather than a guessed JSON/recipe viewer.
+
+## ADR: Normalized Research Session → Run association (2026-08-21)
+
+- `research_session_runs` is the durable navigation projection for the owning
+  Research Session of a Planner Job. `job_id` is unique, and both Session and
+  Job must resolve to the same Project before a write is accepted.
+- Planner requests from the Research Composer carry the selected
+  `researchSessionId`; the secured server validates it before Job creation and
+  binds the returned Job after its persisted identity exists. Existing
+  `pre_run`/`post_run` assistant messages are the only migration backfill
+  evidence. No Message, Job, Artifact, Interpretation, Evidence, Report or
+  Recipe is deleted or rewritten.
+- Session list/detail and Project History expose bounded run references for
+  navigation. If no verified relation exists, Research shows an orphaned Run
+  state and never selects the first Session as a fallback. Legacy payload
+  lookup remains read-only compatibility evidence until migration 0014 is
+  applied.
+- Terminal interpretation reconciliation may append an idempotent post-run
+  projection through the owning Session. Failure to reconcile does not hide an
+  otherwise readable scientific interpretation; reopening the Session retries
+  the same server-grounded projection.
+
+## ADR: Exact composite Structure workflows and bounded evidence fallback (2026-08-21)
+
+- Explicit Structure requests are composed as the exact union of every named
+  dependency workflow. RDF is direct; local-environment polyhedra require an
+  explicit CrystalNN or VoronoiNN producer; experimental XRD comparison retains
+  both theoretical-XRD producer and comparison consumer. A missing coordination
+  algorithm returns `NEEDS_CLARIFICATION` before Plan/Job creation. Provider
+  output cannot remove or add tools outside this validated set.
+- A structured Artifact above the 262144-byte interpretation read cap is
+  omitted and counted as a limitation so other approved evidence remains
+  readable. Invalid size, checksum, media type, depth, or included payload
+  integrity still fails closed. This is a bounded evidence projection rule,
+  not permission to truncate or partially parse arbitrary content.
+- Desktop Research is a fixed dynamic-viewport workbench. The global shell
+  owns no page scroll; conversation history and scientific results are the two
+  explicit scroll owners. The conversation track is pointer/keyboard resizable
+  within 320-640 px, leaving at least 480 px for results. The <=960 px single
+  active-panel baseline remains unchanged and execution authority stays on the
+  persisted server-side Planner/Queue/Registry path.
+
+## ADR: Current CI gates versus sealed historical replay (2026-08-21)
+
+- Push and pull-request CI validates current source through the complete Python
+  non-integration suite, complete frontend Vitest suite, typecheck, production
+  build, current cross-browser accessibility/product checks, Phase 11
+  cross-platform scientific invariants, and service-backed zero-skip tests.
+- Phase 10L/M/N and Phase 12-5 browser evidence scripts remain executable but
+  are manual forensic revalidation. Their phases and exact-SHA evidence are
+  sealed; replaying all of them on every source change consumed most of the
+  frontend job while the complete frontend unit suite was not run.
+- Historical replay is enabled only by the explicit
+  `replay_historical_browser_evidence` workflow-dispatch input. This changes
+  CI scheduling, not Artifact, Recipe, Report, scientific, or qualification
+  authority.
+- Official GitHub Actions are kept on supported runtimes. The 2026-08-17
+  remote log explicitly deprecated the former Node 20 action runtimes, so the
+  workflow uses the official releases current at the 2026-08-21 audit,
+  including the verified `setup-uv@v10.0.1` tag.
+- The Plotly ScatterGL path remains production capability. Build-warning
+  suppression is limited to the two known glslify dynamic-require modules and
+  exact warning text; every other webpack warning remains visible.
+- Migration `0011` widens PostgreSQL's default Alembic version column before
+  recording its descriptive revision ID; this is required for clean-checkout
+  upgrades and does not change application or scientific schema authority.

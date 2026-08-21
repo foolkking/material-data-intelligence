@@ -34,6 +34,8 @@ class OutlierTableAdapter(BaseToolAdapter):
                     artifact_type=ArtifactType.table_json,
                     file_name="table.json",
                     content={
+                        "artifactType": "ml.outlier_table",
+                        "schemaVersion": "phase10k3.ml_outlier_table.v1",
                         "rows": records,
                         "targetColumn": prepared.target_column,
                         "predictionColumn": prepared.prediction_column,

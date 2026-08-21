@@ -14,11 +14,11 @@ describe("ElectronicStructurePanel", () => {
     render(<ElectronicStructurePanel artifacts={[band, dos]} selected={band} workspace={workspaceSnapshotFixture().workspace} onSelection={onSelection} />);
     expect(screen.getByTestId("electronic-band-plot")).toBeTruthy();
     expect(screen.getByTestId("electronic-dos-plot")).toBeTruthy();
-    expect(screen.getByText(/Exact compatible source/u)).toBeTruthy();
+    expect(screen.getByText(/数据源、能量参考、费米能级和自旋语义完全兼容/u)).toBeTruthy();
     expect(screen.getByText(/0\.6 eV/u)).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Select gap" }));
+    fireEvent.click(screen.getByRole("button", { name: "选择带隙" }));
     expect(onSelection).toHaveBeenCalledWith(expect.objectContaining({ primary: expect.objectContaining({ kind: "ELECTRONIC_BAND_GAP", electronicResourceId: "band_1", artifactId: "artifact_band", artifactChecksum: HASH }) }));
-    fireEvent.click(screen.getAllByRole("button", { name: "Select" })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: "选择" })[0]);
     expect(onSelection).toHaveBeenLastCalledWith(expect.objectContaining({ primary: expect.objectContaining({ kind: "ELECTRONIC_BAND_STATE", kpointId: "kp_g", bandId: "v1" }) }));
   });
 

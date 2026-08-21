@@ -49,7 +49,7 @@ DEMO_SPECS: tuple[dict[str, Any], ...] = (
         "fixtures": (("P13-DEMO-01-FIX-01", "tests/fixtures/tables/formulas.csv", "parse"),),
         "prompt": "Explore this materials table, summarize its quality, and show how the compositions are distributed.",
         "alternatePrompt": "What composition patterns and data-quality issues should I notice in this table?",
-        "expectedTools": ("dataset.materials_explorer",),
+        "expectedTools": ("composition.chem_sys_sunburst",),
     },
     {
         "demoId": "P13-DEMO-02",

@@ -3,6 +3,7 @@ from __future__ import annotations
 import html
 import hashlib
 import json
+import os
 import shutil
 import uuid
 from dataclasses import dataclass, field
@@ -1246,13 +1247,13 @@ def list_phase2_projects() -> list[dict[str, Any]]:
     return list_runtime_projects(get_phase2_runtime())
 
 
-def create_phase2_project(request: CreateProjectRequest) -> dict[str, Any]:
+def create_phase2_project(request: CreateProjectRequest, created_by: str = "user_local") -> dict[str, Any]:
     from mdi_api.durable_projects import persist_runtime_project
 
     runtime = get_phase2_runtime()
     project = runtime.create_project(request)
     try:
-        return persist_runtime_project(runtime, str(project["id"])) or project
+        return persist_runtime_project(runtime, str(project["id"]), created_by=created_by) or project
     except Exception:
         runtime.projects.pop(str(project["id"]), None)
         raise
@@ -1275,7 +1276,7 @@ def list_phase2_datasets() -> list[dict[str, Any]]:
 
 def get_phase2_dataset(dataset_id: str) -> dict[str, Any]:
     runtime = get_phase2_runtime()
-    if _runtime_backend_is_durable() and dataset_id not in runtime.datasets:
+    if dataset_id not in runtime.datasets:
         repositories = _durable_read_repositories()
         return _api_call(lambda: _durable_dataset_detail(dataset_id, repositories))
     return _api_call(lambda: runtime.get_dataset(dataset_id))
@@ -1364,7 +1365,7 @@ def cancel_phase2_upload_session(session_id: str) -> dict[str, Any]:
 
 def get_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
     runtime = get_phase2_runtime()
-    if _runtime_backend_is_durable() and dataset_id not in runtime.datasets:
+    if dataset_id not in runtime.datasets:
         repositories = _durable_read_repositories()
         return _api_call(lambda: _durable_dataset_profile(dataset_id, repositories))
     return _api_call(lambda: runtime.get_dataset_profile(dataset_id))
@@ -1373,7 +1374,10 @@ def get_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
 def _runtime_backend_is_durable() -> bool:
     from mdi_api.config import load_settings
 
-    return load_settings().runtime_backend == "postgresql"
+    settings = load_settings()
+    return settings.runtime_backend == "postgresql" or bool(
+        os.getenv("DATABASE_URL") or os.getenv("MDI_DATABASE_URL")
+    )
 
 
 def _durable_read_repositories() -> Any:
@@ -1440,17 +1444,31 @@ def _durable_dataset_detail(dataset_id: str, repositories: Any) -> dict[str, Any
 
 def get_phase2_dataset_object_store(dataset_id: str) -> dict[str, Any]:
     runtime = get_phase2_runtime()
-    if _runtime_backend_is_durable() and dataset_id not in runtime.datasets:
+    if dataset_id not in runtime.datasets:
+        from mdi_api.artifact_storage import create_artifact_storage_from_settings
+        from mdi_api.config import load_settings
+        from mdi_api.database import create_repository_factory
+        from mdi_workers.object_store import DurableObjectStoreResolver
+
         repositories = _durable_read_repositories()
-        dataset = _durable_dataset_record(dataset_id, repositories)
-        metadata = dataset.get("metadata") or {}
-        return dict(metadata.get("objectStore") or {})
+        _durable_dataset_record(dataset_id, repositories)
+        profiles = list(repositories.data_profiles.list_for_dataset(dataset_id))
+        profiles.sort(key=lambda item: str(item.get("createdAt") or item.get("profileId") or ""))
+        profile_id = str(profiles[-1].get("profileId")) if profiles else None
+        settings = load_settings()
+        resolved = DurableObjectStoreResolver(
+            repository_factory=create_repository_factory(settings),
+            artifact_storage=create_artifact_storage_from_settings(settings),
+        ).resolve(dataset_id, profile_id=profile_id)
+        if resolved is None:
+            raise LookupError(f"Normalized source resources are unavailable for dataset_id: {dataset_id}")
+        return dict(resolved)
     return runtime.get_dataset_object_store(dataset_id)
 
 
 def get_phase2_dataset_profile_model(dataset_id: str) -> DataProfile:
     runtime = get_phase2_runtime()
-    if _runtime_backend_is_durable() and dataset_id not in runtime.datasets:
+    if dataset_id not in runtime.datasets:
         repositories = _durable_read_repositories()
         return DataProfile.model_validate(_durable_dataset_profile(dataset_id, repositories))
     return runtime.get_dataset_profile_model(dataset_id)
@@ -1458,7 +1476,7 @@ def get_phase2_dataset_profile_model(dataset_id: str) -> DataProfile:
 
 def create_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
     runtime = get_phase2_runtime()
-    if _runtime_backend_is_durable() and dataset_id not in runtime.datasets:
+    if dataset_id not in runtime.datasets:
         repositories = _durable_read_repositories()
         return _api_call(lambda: {**_durable_dataset_profile(dataset_id, repositories), "profileGenerated": True})
     return _api_call(lambda: runtime.create_dataset_profile(dataset_id))
@@ -1776,14 +1794,12 @@ def _utc_now() -> str:
 
 
 def _runtime_record_id(prefix: str, sequence: int) -> str:
-    try:
-        from mdi_api.config import load_settings
-
-        if load_settings().runtime_backend == "postgresql":
-            return f"{prefix}_{uuid.uuid4().hex[:24]}"
-    except Exception:
-        pass
-    return f"{prefix}_{sequence:04d}"
+    # Product records may outlive a process restart even when the execution
+    # runtime is local. Sequence-only identifiers would restart at 0001 and
+    # collide with preserved projects/datasets from earlier browser runs.
+    # Keep the sequence suffix for diagnostics while adding process-independent
+    # uniqueness; tests and API consumers treat these identifiers as opaque.
+    return f"{prefix}_{sequence:04d}_{uuid.uuid4().hex[:16]}"
 
 
 _PHASE2_RUNTIME = Phase2ProductRuntime()

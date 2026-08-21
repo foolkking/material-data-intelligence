@@ -19,6 +19,11 @@ function record(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+function numericArrayTree(value: unknown): boolean {
+  if (!Array.isArray(value)) return typeof value === "number" || typeof value === "boolean" || value === null;
+  return value.every(numericArrayTree);
+}
+
 function finite(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
@@ -51,8 +56,17 @@ function scanInert(root: unknown, errors: Set<string>): void {
       const lowered = current.value.toLowerCase();
       if (forbidden.some((marker) => lowered.includes(marker))) errors.add("TRAJECTORY_EXTERNAL_REFERENCE_FORBIDDEN");
     }
-    if (Array.isArray(current.value)) current.value.forEach((value) => queue.push({value, depth: current.depth + 1, key: current.key}));
-    else if (record(current.value)) Object.entries(current.value).forEach(([key, value]) => queue.push({value, depth: current.depth + 1, key}));
+    if (Array.isArray(current.value)) {
+      // Coordinate matrices can legitimately contain millions of numeric
+      // leaves. They are already bounded by the contract checks above; walk
+      // only non-numeric members here so the inert/security scan remains
+      // proportional to metadata rather than scientific payload size.
+      if (numericArrayTree(current.value)) continue;
+      current.value.forEach((value) => {
+        if (typeof value === "number" || typeof value === "boolean" || value === null) return;
+        queue.push({value, depth: current.depth + 1, key: current.key});
+      });
+    } else if (record(current.value)) Object.entries(current.value).forEach(([key, value]) => queue.push({value, depth: current.depth + 1, key}));
   }
 }
 

@@ -36,17 +36,17 @@ describe("PhononBandDosPreviewPanel", () => {
     const downloadImage = vi.fn().mockResolvedValue(undefined);
     const view = render(<PhononBandDosPreviewPanel artifacts={artifacts()} plotlyLoader={async () => ({newPlot, purge, downloadImage})} />);
     expect(screen.getByTestId("phonon-band-dos-schema")).toHaveTextContent("phase10h.phonon_band_dos.v1");
-    expect(screen.getByTestId("phonon-band-dos-summary")).toHaveTextContent("compatible");
+    expect(screen.getByTestId("phonon-band-dos-summary")).toHaveTextContent("一致");
     await waitFor(() => expect(newPlot).toHaveBeenCalledTimes(1));
     const firstLayout = newPlot.mock.calls[0][2];
     expect(firstLayout.xaxis.domain).toEqual([0, 0.72]);
     expect(firstLayout.xaxis2.domain).toEqual([0.78, 1]);
-    expect(firstLayout.yaxis.title.text).toBe("Frequency (THz)");
+    expect(firstLayout.yaxis.title.text).toBe("频率（THz）");
     expect(newPlot.mock.calls[0][1]).toHaveLength(7);
     fireEvent.change(screen.getByTestId("phonon-band-dos-projection-selector"), {target: {value: "atom:0"}});
     await waitFor(() => expect(newPlot).toHaveBeenCalledTimes(2));
     expect(newPlot.mock.calls[1][1]).toHaveLength(8);
-    expect(screen.getByTestId("phonon-band-dos-live-status")).toHaveTextContent("one shared frequency axis");
+    expect(screen.getByTestId("phonon-band-dos-live-status")).toHaveTextContent("共享频率轴");
     fireEvent.click(screen.getByTestId("phonon-band-dos-download-png"));
     expect(downloadImage).toHaveBeenCalledWith(expect.any(HTMLElement), expect.objectContaining({format: "png", width: 1600, height: 1000}));
     view.unmount();
@@ -55,14 +55,14 @@ describe("PhononBandDosPreviewPanel", () => {
 
   it("keeps compatibility, bounded data, and JSON tabs keyboard accessible", async () => {
     render(<PhononBandDosPreviewPanel artifacts={artifacts()} plotlyLoader={async () => ({newPlot: vi.fn().mockResolvedValue(undefined), purge: vi.fn()})} />);
-    fireEvent.click(screen.getByRole("tab", {name: "Compatibility"}));
-    expect(screen.getByRole("table", {name: "Band and DOS compatibility checks"})).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("tab", {name: "一致性检查"}));
+    expect(screen.getByRole("table", {name: "色散与态密度一致性检查"})).toBeInTheDocument();
     expect(screen.getByTestId("phonon-band-dos-compatibility-status")).toHaveTextContent("compatible");
-    fireEvent.click(screen.getByRole("tab", {name: "Band data"}));
-    expect(screen.getByRole("table", {name: "Combined display band samples"})).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("tab", {name: "DOS data"}));
-    expect(screen.getByRole("table", {name: "Combined display DOS samples"})).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("tab", {name: "Artifact JSON"}));
+    fireEvent.click(screen.getByRole("tab", {name: "色散数据"}));
+    expect(screen.getByRole("table", {name: "组合色散采样"})).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("tab", {name: "态密度数据"}));
+    expect(screen.getByRole("table", {name: "组合态密度采样"})).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("tab", {name: "结构化数据"}));
     expect(screen.getByText("phonon_band_dos.json")).toBeInTheDocument();
     expect(screen.getByText("phonon_band_dos_manifest.json")).toBeInTheDocument();
   });
@@ -80,10 +80,10 @@ describe("PhononBandDosPreviewPanel", () => {
     const newPlot = vi.fn().mockResolvedValue(undefined);
     const loader = vi.fn().mockRejectedValueOnce(new Error("chunk missing")).mockResolvedValue({newPlot, purge: vi.fn()});
     render(<PhononBandDosPreviewPanel artifacts={artifacts()} plotlyLoader={loader} />);
-    await waitFor(() => expect(screen.getByTestId("phonon-band-dos-plot-fallback")).toHaveTextContent("PHONON_BAND_DOS_PLOT_LOAD_FAILED"));
-    fireEvent.click(screen.getByRole("button", {name: "Retry plot"}));
+    await waitFor(() => expect(screen.getByTestId("phonon-band-dos-plot-fallback")).toHaveTextContent("组合图暂时无法渲染"));
+    fireEvent.click(screen.getByRole("button", {name: "重试图表"}));
     await waitFor(() => expect(newPlot).toHaveBeenCalledTimes(1));
-    expect(screen.getByRole("tab", {name: "Compatibility"})).toBeEnabled();
+    expect(screen.getByRole("tab", {name: "一致性检查"})).toBeEnabled();
   });
 
   it("downloads combined JSON locally without a network request", () => {

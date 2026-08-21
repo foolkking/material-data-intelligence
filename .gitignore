@@ -36,6 +36,13 @@ material-data-intelligence-*.zip
 # Local databases
 *.sqlite
 *.db
+*.db-shm
+*.db-wal
+*.log
+
+# Local qualification workspaces and diagnostic output are not release source.
+_qualification/
+._diag_volume/
 
 # OS / editor
 .DS_Store

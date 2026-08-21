@@ -246,6 +246,7 @@ def test_rdf_registered_with_strict_schema_and_static_artifacts() -> None:
         "生成 RDF",
         "计算径向分布函数",
         "生成径向分布函数",
+        "查看当前结构的径向分布",
         "Generate radial distribution function",
         "Create an RDF plot for this structure",
         "Compute pair distribution g(r)",

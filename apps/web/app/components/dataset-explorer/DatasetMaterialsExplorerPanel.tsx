@@ -14,14 +14,14 @@ import {
 type ExplorerTab = "overview" | "composition" | "composition_space" | "structures" | "properties" | "model" | "quality" | "comparison" | "samples";
 
 const TABS: readonly { id: ExplorerTab; label: string }[] = [
-  { id: "overview", label: "Overview" },
-  { id: "composition", label: "Composition" },
-  { id: "structures", label: "Structures" },
-  { id: "properties", label: "Properties" },
-  { id: "model", label: "Model evaluation" },
-  { id: "quality", label: "Data quality" },
-  { id: "comparison", label: "Comparison" },
-  { id: "samples", label: "Samples" },
+  { id: "overview", label: "概览" },
+  { id: "composition", label: "组成" },
+  { id: "structures", label: "结构" },
+  { id: "properties", label: "性质" },
+  { id: "model", label: "模型评估" },
+  { id: "quality", label: "数据质量" },
+  { id: "comparison", label: "比较" },
+  { id: "samples", label: "样本" },
 ];
 
 const MAX_ROWS = 200;
@@ -53,17 +53,16 @@ export function DatasetMaterialsExplorerPanel({ artifacts, externalSampleKey, on
   const [selectedProperty, setSelectedProperty] = useState("");
   const [selectedSample, setSelectedSample] = useState("");
   const tabs = integration.hasCompatibleEmbeddedCompositionSpace
-    ? [...TABS.slice(0, 2), { id: "composition_space" as const, label: "Composition space" }, ...TABS.slice(2)]
+    ? [...TABS.slice(0, 2), { id: "composition_space" as const, label: "组成空间" }, ...TABS.slice(2)]
     : TABS;
 
   if (!artifact) return null;
   if (!validation.ok) {
     return (
-      <section className="panel dataset-explorer" data-testid="dataset-materials-explorer-invalid" role="status" aria-label="Dataset Materials Explorer validation status">
-        <header className="panel-heading"><div><span>Dataset product</span><h2>Dataset Materials Explorer unavailable</h2></div><span className="badge">Rejected</span></header>
-        <p>The artifact was rejected before product rendering. Inert JSON remains available.</p>
-        <code>{validation.reason}</code>
-        <details><summary>Artifact JSON</summary><pre>{JSON.stringify(payload, null, 2)}</pre></details>
+      <section className="panel dataset-explorer" data-testid="dataset-materials-explorer-invalid" role="status" aria-label="材料数据视图校验状态">
+        <header className="panel-heading"><div><span>材料数据</span><h2>当前结果无法使用专业视图显示</h2></div><span className="badge">不可用</span></header>
+        <p>结果未通过当前视图的结构校验；原始结构化内容仍可在技术详情中复核。</p>
+        <details><summary>技术详情</summary><code>{validation.reason}</code><pre>{JSON.stringify(payload, null, 2)}</pre></details>
       </section>
     );
   }
@@ -81,18 +80,18 @@ export function DatasetMaterialsExplorerPanel({ artifacts, externalSampleKey, on
   const activeSample = samples.find((item) => canonicalSampleKey(item) === (externalSampleKey ?? selectedSample));
 
   return (
-    <section className="panel dataset-explorer" data-testid="dataset-materials-explorer" aria-label="Dataset Materials Explorer">
+    <section className="panel dataset-explorer" data-testid="dataset-materials-explorer" aria-label="材料数据浏览器">
       <header className="panel-heading">
-        <div><span>Profile 2.0 product</span><h2>Dataset Materials Explorer</h2></div>
-        <span className="badge">{text(dataset.datasetType) || "materials dataset"}</span>
+        <div><span>材料数据</span><h2>材料数据浏览器</h2></div>
+        <span className="badge">{datasetTypeLabel(text(dataset.datasetType))}</span>
       </header>
-      <dl className="mini-grid dataset-explorer-identity">
-        <Field label="Dataset" value={text(dataset.datasetId)} testId="dataset-explorer-dataset-id" />
-        <Field label="Profile" value={text(dataset.profileId)} />
-        <Field label="Semantic contract" value={text(dataset.profileContractVersion)} />
-        <Field label="Semantic hash" value={compactHash(text(dataset.semanticHash))} />
-      </dl>
-      <div className="dataset-explorer-tabs" role="tablist" aria-label="Dataset explorer views">
+      <details className="dataset-explorer-technical"><summary>技术详情</summary><dl className="mini-grid dataset-explorer-identity">
+        <Field label="数据集标识" value={text(dataset.datasetId)} testId="dataset-explorer-dataset-id" />
+        <Field label="语义档案标识" value={text(dataset.profileId)} />
+        <Field label="语义合同" value={text(dataset.profileContractVersion)} />
+        <Field label="语义校验摘要" value={compactHash(text(dataset.semanticHash))} />
+      </dl></details>
+      <div className="dataset-explorer-tabs" role="tablist" aria-label="材料数据视图">
         {tabs.map((item) => (
           <button
             key={item.id}
@@ -131,16 +130,16 @@ export function DatasetMaterialsExplorerPanel({ artifacts, externalSampleKey, on
 function OverviewView({ overview, warnings }: { overview: JsonRecord; warnings: string[] }) {
   return <div data-testid="dataset-explorer-overview">
     <dl className="dataset-stat-grid">
-      <Metric label="Samples" value={numberText(overview.sampleCount)} />
-      <Metric label="Tables" value={numberText(overview.tableCount)} />
-      <Metric label="Structures" value={numberText(overview.structureCount)} />
-      <Metric label="Properties" value={numberText(overview.propertyCount)} />
+      <Metric label="样本" value={numberText(overview.sampleCount)} />
+      <Metric label="数据表" value={numberText(overview.tableCount)} />
+      <Metric label="结构" value={numberText(overview.structureCount)} />
+      <Metric label="性质" value={numberText(overview.propertyCount)} />
     </dl>
     <div className="dataset-explorer-columns">
-      <ListSection title="Available analyses" values={textList(overview.availableAnalyses)} empty="No executable analyses declared." />
-      <ListSection title="Unavailable analyses" values={textList(overview.unavailableAnalyses)} empty="No unavailable analyses declared." />
+      <ListSection title="可用分析" values={textList(overview.availableAnalyses).map(capabilityLabel)} empty="当前没有已声明的可执行分析。" />
+      <ListSection title="当前不可用" values={textList(overview.unavailableAnalyses).map(capabilityLabel)} empty="没有不可用的分析。" />
     </div>
-    <ListSection title="Warnings" values={warnings} empty="No bounded product warnings." />
+    <ListSection title="数据提示" values={warnings.map(warningLabel)} empty="没有需要提示的数据问题。" />
   </div>;
 }
 
@@ -150,32 +149,32 @@ function CompositionView({ composition }: { composition: JsonRecord }) {
   const maxCount = Math.max(1, ...elements.map((item) => number(item.materialsContainingElement)));
   return <div data-testid="dataset-explorer-composition">
     <dl className="mini-grid">
-      <Field label="Status" value={text(composition.status)} />
-      <Field label="Formula column" value={text(composition.formulaColumn)} />
-      <Field label="Unique formulas" value={numberText(composition.uniqueFormulaCount)} />
-      <Field label="Unique reduced formulas" value={numberText(composition.uniqueReducedFormulaCount)} />
+      <Field label="状态" value={statusLabel(text(composition.status))} />
+      <Field label="化学式字段" value={text(composition.formulaColumn)} />
+      <Field label="唯一化学式" value={numberText(composition.uniqueFormulaCount)} />
+      <Field label="唯一最简式" value={numberText(composition.uniqueReducedFormulaCount)} />
     </dl>
-    <h3>Element coverage</h3>
-    {!elements.length ? <p className="empty-state">Formula semantics are unavailable.</p> : (
+    <h3>元素覆盖</h3>
+    {!elements.length ? <p className="empty-state">当前数据没有可用的化学式语义。</p> : (
       <div className="dataset-bar-list" data-testid="dataset-element-bars">
         {elements.map((item) => <BarRow key={text(item.element)} label={text(item.element)} value={number(item.materialsContainingElement)} max={maxCount} />)}
       </div>
     )}
-    <h3>Chemical systems</h3>
-    <DataTable columns={["Chemical system", "Count"]} rows={systems.map((item) => [text(item.chemicalSystem), numberText(item.count)])} empty="No chemical systems." />
+    <h3>化学体系</h3>
+    <DataTable columns={["化学体系", "数量"]} rows={systems.map((item) => [text(item.chemicalSystem), numberText(item.count)])} empty="没有可展示的化学体系。" />
   </div>;
 }
 
 function StructuresView({ structures }: { structures: JsonRecord }) {
   const rows = records(structures.records).slice(0, MAX_ROWS);
   return <div data-testid="dataset-explorer-structures">
-    <dl className="mini-grid"><Field label="Status" value={text(structures.status)} /><Field label="Structures" value={numberText(structures.structureCount)} /></dl>
+    <dl className="mini-grid"><Field label="状态" value={statusLabel(text(structures.status))} /><Field label="结构" value={numberText(structures.structureCount)} /></dl>
     <DataTable
-      columns={["Resource", "Formula", "Sites", "Volume (A^3)", "Density (g/cm^3)", "Space group", "Crystal system"]}
+      columns={["来源对象", "化学式", "位点", "体积 (Å³)", "密度 (g/cm³)", "空间群", "晶系"]}
       rows={rows.map((item) => [text(item.objectId), text(item.formula), numberText(item.siteCount), format(item.volumeAngstrom3), format(item.densityGramCm3), text(item.spacegroup), text(item.crystalSystem)])}
-      empty="No canonical structures were bound."
+      empty="当前数据没有绑定可展示的标准结构。"
     />
-    <p className="dataset-method-note">Symmetry uses the fixed adapter policy. Exact structure duplicates require equal canonical normalized object hashes.</p>
+    <p className="dataset-method-note">对称性来自固定的结构适配策略；结构重复判断基于标准化对象的一致性。</p>
   </div>;
 }
 
@@ -184,23 +183,23 @@ function PropertiesView({ properties, active, onSelect }: { properties: JsonReco
   const counts = numberList(histogram.counts);
   const maxCount = Math.max(1, ...counts);
   return <div data-testid="dataset-explorer-properties">
-    {!properties.length ? <p className="empty-state">No Profile 2.0 material-property roles are available.</p> : <>
-      <label className="dataset-property-select">Property
+    {!properties.length ? <p className="empty-state">当前数据没有可展示的材料性质字段。</p> : <>
+      <label className="dataset-property-select">性质
         <select value={text(active?.column)} onChange={(event) => onSelect(event.target.value)}>
           {properties.map((item) => <option key={text(item.column)} value={text(item.column)}>{text(item.column)}{text(item.unit) ? ` (${text(item.unit)})` : ""}</option>)}
         </select>
       </label>
       <dl className="mini-grid">
-        <Field label="Count" value={numberText(active?.count)} />
-        <Field label="Missing" value={numberText(active?.missingCount)} />
-        <Field label="Non-finite" value={numberText(active?.nonFiniteCount)} />
-        <Field label="Unit" value={text(active?.unit) || "not declared"} />
+        <Field label="数量" value={numberText(active?.count)} />
+        <Field label="缺失" value={numberText(active?.missingCount)} />
+        <Field label="非有限值" value={numberText(active?.nonFiniteCount)} />
+        <Field label="单位" value={text(active?.unit) || "未声明"} />
       </dl>
       <Statistics statistics={record(active?.statistics)} />
       <div className="dataset-histogram" data-testid="dataset-property-histogram" aria-label={`${text(active?.column)} histogram`}>
         {counts.map((value, index) => <span key={index} style={{ height: `${Math.max(3, value / maxCount * 100)}%` }} title={`${value}`} />)}
       </div>
-      <p className="dataset-method-note">Outliers use the 1.5 IQR rule and are statistical candidates only.</p>
+      <p className="dataset-method-note">异常候选使用 1.5 IQR 规则，仅表示统计候选，不等同于科学异常结论。</p>
     </>}
   </div>;
 }
@@ -211,14 +210,14 @@ function ModelEvaluationView({ overview, products }: { overview: JsonRecord; pro
   const unavailable = textList(overview.unavailableAnalyses).filter((item) => capabilities.includes(item));
   const actual = products.filter((item) => ["regression", "uncertainty", "classification"].includes(item.id));
   return <div data-testid="dataset-explorer-model-evaluation">
-    {!available.length ? <p className="empty-state">No model-result semantics detected.</p> : <>
-      <h3>Profile-ready model evaluations</h3>
-      <ul>{available.map((item) => <li key={item}>{item}</li>)}</ul>
-      <p className="dataset-method-note">Profile readiness is the semantic authority. Produced diagnostics are shown only after exact dataset/Profile binding validation over stable material samples.</p>
+    {!available.length ? <p className="empty-state">当前数据没有检测到模型结果语义。</p> : <>
+      <h3>可用的模型评估</h3>
+      <ul>{available.map((item) => <li key={item}>{capabilityLabel(item)}</li>)}</ul>
+      <p className="dataset-method-note">只有通过数据与语义档案绑定校验的稳定材料样本才会展示模型诊断。</p>
     </>}
-    {unavailable.length ? <><h3>Unavailable for this dataset</h3><ul>{unavailable.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
-    <h3>Product execution state</h3>
-    <ul className="material-product-state-list">{actual.map((item) => <li key={item.id}><strong>{item.label}</strong><span className="badge">{item.state}</span>{item.state !== "PRODUCED" ? <code>{item.reason}</code> : null}</li>)}</ul>
+    {unavailable.length ? <><h3>当前数据不可用</h3><ul>{unavailable.map((item) => <li key={item}>{capabilityLabel(item)}</li>)}</ul></> : null}
+    <h3>结果生成状态</h3>
+    <ul className="material-product-state-list">{actual.map((item) => <li key={item.id}><strong>{item.label}</strong><span className="badge">{statusLabel(item.state)}</span>{item.state !== "PRODUCED" ? <details><summary>技术详情</summary><code>{item.reason}</code></details> : null}</li>)}</ul>
   </div>;
 }
 
@@ -227,37 +226,37 @@ function QualityView({ quality }: { quality: JsonRecord }) {
   const duplicates = records(quality.duplicateSampleIdentityValues).slice(0, MAX_ROWS);
   return <div data-testid="dataset-explorer-quality">
     <dl className="mini-grid">
-      <Field label="Invalid formulas" value={numberText(quality.invalidFormulaCount)} />
-      <Field label="Sample links" value={numberText(quality.sampleLinksMaterialized)} />
-      <Field label="Near duplicates" value={text(quality.nearDuplicateAnalysis)} />
+      <Field label="无效化学式" value={numberText(quality.invalidFormulaCount)} />
+      <Field label="可追溯样本" value={numberText(quality.sampleLinksMaterialized)} />
+      <Field label="近重复分析" value={statusLabel(text(quality.nearDuplicateAnalysis))} />
     </dl>
-    <h3>Column issues</h3>
-    <DataTable columns={["Column", "Missing", "Non-finite", "Ambiguities"]} rows={columnIssues.map((item) => [text(item.column), numberText(item.missingCount), numberText(item.nonFiniteCount), textList(item.ambiguities).join(", ") || "none"])} empty="No column issues." />
-    <h3>Duplicate identity values</h3>
-    <DataTable columns={["Column", "Value", "Count"]} rows={duplicates.map((item) => [text(item.column), text(item.value), numberText(item.count)])} empty="No duplicate explicit IDs." />
+    <h3>字段问题</h3>
+    <DataTable columns={["字段", "缺失", "非有限值", "歧义"]} rows={columnIssues.map((item) => [text(item.column), numberText(item.missingCount), numberText(item.nonFiniteCount), textList(item.ambiguities).join(", ") || "无"])} empty="没有字段问题。" />
+    <h3>重复标识值</h3>
+    <DataTable columns={["字段", "值", "数量"]} rows={duplicates.map((item) => [text(item.column), text(item.value), numberText(item.count)])} empty="没有重复的显式标识值。" />
   </div>;
 }
 
 function ComparisonView({ comparison }: { comparison: JsonRecord }) {
-  if (text(comparison.status) !== "READY") return <div data-testid="dataset-explorer-comparison"><p className="empty-state">No explicit dataset comparison was requested.</p></div>;
+  if (text(comparison.status) !== "READY") return <div data-testid="dataset-explorer-comparison"><p className="empty-state">当前没有请求数据集比较。</p></div>;
   const overlap = record(comparison.elementOverlap);
   const rows = records(comparison.propertyComparison).slice(0, MAX_PROPERTIES);
   return <div data-testid="dataset-explorer-comparison">
-    <dl className="mini-grid"><Field label="Mode" value={text(comparison.mode)} /><Field label="Binding" value={JSON.stringify(comparison.binding || {})} /></dl>
+    <dl className="mini-grid"><Field label="比较方式" value={text(comparison.mode)} /><details><summary>技术详情</summary><Field label="数据绑定" value={JSON.stringify(comparison.binding || {})} /></details></dl>
     <div className="dataset-explorer-columns">
-      <ListSection title="Shared elements" values={textList(overlap.shared)} empty="None" />
-      <ListSection title="Left only" values={textList(overlap.leftOnly)} empty="None" />
-      <ListSection title="Right only" values={textList(overlap.rightOnly)} empty="None" />
+      <ListSection title="共有元素" values={textList(overlap.shared)} empty="无" />
+      <ListSection title="仅左侧" values={textList(overlap.leftOnly)} empty="无" />
+      <ListSection title="仅右侧" values={textList(overlap.rightOnly)} empty="无" />
     </div>
-    <DataTable columns={["Property", "Unit", "Comparable", "Left median", "Right median"]} rows={rows.map((item) => [text(item.column), text(item.unit) || "-", String(Boolean(item.comparable)), format(record(item.left).median), format(record(item.right).median)])} empty="No comparable material properties." />
+    <DataTable columns={["性质", "单位", "可比较", "左侧中位数", "右侧中位数"]} rows={rows.map((item) => [text(item.column), text(item.unit) || "-", Boolean(item.comparable) ? "是" : "否", format(record(item.left).median), format(record(item.right).median)])} empty="没有可比较的材料性质。" />
     <p className="dataset-method-note">{text(comparison.semantics)}</p>
   </div>;
 }
 
 function SamplesView({ samples, active, onSelect }: { samples: JsonRecord[]; active?: JsonRecord; onSelect: (value: string) => void }) {
   return <div data-testid="dataset-explorer-samples">
-    {active ? <dl className="mini-grid dataset-sample-inspector" aria-live="polite" data-testid="dataset-sample-inspector"><Field label="Sample key" value={canonicalSampleKey(active)} /><Field label="Sample" value={text(active.sampleRef)} /><Field label="Formula" value={text(active.formula)} /><Field label="Reduced formula" value={text(active.reducedFormula)} /><Field label="Source" value={`${text(active.objectId)} row ${numberText(active.rowIndex)}`} /></dl> : <p className="empty-state">Select a stable sample reference to inspect its source row.</p>}
-    <div className="compact-table-wrap"><table className="compact-table"><caption>Bounded stable sample index</caption><thead><tr><th>Sample reference</th><th>Formula</th><th>Reduced formula</th><th>Object</th><th>Row</th></tr></thead><tbody>
+    {active ? <dl className="mini-grid dataset-sample-inspector" aria-live="polite" data-testid="dataset-sample-inspector"><Field label="样本键" value={canonicalSampleKey(active)} /><Field label="样本" value={text(active.sampleRef)} /><Field label="化学式" value={text(active.formula)} /><Field label="最简式" value={text(active.reducedFormula)} /><Field label="来源" value={`${text(active.objectId)} · 第 ${numberText(active.rowIndex)} 行`} /></dl> : <p className="empty-state">选择一个稳定样本以查看其来源行。</p>}
+    <div className="compact-table-wrap"><table className="compact-table"><caption>稳定样本索引</caption><thead><tr><th>样本引用</th><th>化学式</th><th>最简式</th><th>来源对象</th><th>行</th></tr></thead><tbody>
       {samples.map((item) => <tr key={canonicalSampleKey(item)}><td><button type="button" className="link-button" aria-label={`${text(item.sampleRef)} from ${text(item.objectId) || "legacy source"}`} onClick={() => onSelect(canonicalSampleKey(item))}>{text(item.sampleRef)}</button></td><td>{text(item.formula) || "-"}</td><td>{text(item.reducedFormula) || "-"}</td><td>{text(item.objectId)}</td><td>{numberText(item.rowIndex)}</td></tr>)}
     </tbody></table></div>
   </div>;
@@ -323,3 +322,7 @@ function numberList(value: unknown): number[] { return Array.isArray(value) ? va
 function numberText(value: unknown): string { const result = Number(value); return Number.isFinite(result) ? String(result) : "0"; }
 function format(value: unknown): string { const result = Number(value); return Number.isFinite(result) ? result.toLocaleString(undefined, { maximumFractionDigits: 5 }) : "-"; }
 function compactHash(value: string): string { return value.length > 20 ? `${value.slice(0, 12)}...${value.slice(-6)}` : value; }
+function datasetTypeLabel(value: string): string { return ({ mixed_material_dataset: "混合材料数据", materials_dataset: "材料数据" } as Record<string, string>)[value] || "材料数据"; }
+function statusLabel(value: string): string { return ({ READY: "可用", PRODUCED: "已生成", UNAVAILABLE: "不可用", NOT_IMPLEMENTED_BY_DESIGN: "当前未提供", NOT_REQUESTED: "未请求", REJECTED: "已拒绝" } as Record<string, string>)[value] || value; }
+function capabilityLabel(value: string): string { return ({ dataset_materials_explorer: "材料数据浏览", table_distribution: "数据分布", scatter: "散点关系", histogram: "直方分布", correlation: "相关分析", composition_summary: "组成概览", formula_statistics: "化学式统计", element_distribution: "元素分布", chemical_system_visualization: "化学体系可视化", composition_space: "组成空间", structure_summary: "结构概览", trajectory_visualization: "轨迹可视化", phonon_visualization: "声子可视化", volumetric_visualization: "体数据可视化", regression_evaluation: "回归评估", uncertainty_evaluation: "不确定性评估", classification_evaluation: "分类评估", dataset_structure_statistics: "数据结构统计" } as Record<string, string>)[value] || value.replaceAll("_", " "); }
+function warningLabel(value: string): string { return ({ FORMULA_VALUES_PARTIALLY_INVALID: "部分化学式无法解析，相关统计已限定在可用样本内。" } as Record<string, string>)[value] || "数据包含需要复核的限定信息。"; }

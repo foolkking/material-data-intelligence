@@ -25,13 +25,13 @@ describe("BrillouinZoneSurface",()=>{
     render(<BrillouinZoneSurface bundle={bundle} capabilityOverride engineFactory={async(value)=>{args=value;return engine;}}/>);
     await waitFor(()=>expect(screen.getByTestId("brillouin-zone-renderer-state")).toHaveTextContent("rendered"));
     expect(args?.scene.vertices[0].id).toBe(zone.vertices[0].vertex_id);
-    await userEvent.click(screen.getByRole("button",{name:"faces"}));expect(engine.setVisibility).toHaveBeenLastCalledWith(expect.objectContaining({faces:false}));
+    await userEvent.click(screen.getByRole("button",{name:"面"}));expect(engine.setVisibility).toHaveBeenLastCalledWith(expect.objectContaining({faces:false}));
     fireEvent.change(screen.getByTestId("brillouin-zone-opacity"),{target:{value:"0.4"}});expect(engine.setOpacity).toHaveBeenLastCalledWith(.4);
     await userEvent.selectOptions(screen.getByTestId("brillouin-zone-projection"),"orthographic");expect(engine.setProjection).toHaveBeenLastCalledWith("orthographic");
     await userEvent.selectOptions(screen.getByTestId("brillouin-zone-camera-preset"),"b1");expect(engine.setCameraPreset).toHaveBeenLastCalledWith("b1");
     act(()=>args?.onSelection({kind:"point",id:kpath.points[0].point_id}));
     expect(screen.getByTestId("brillouin-zone-selection-id")).toHaveTextContent(kpath.points[0].point_id);
-    expect(screen.getByTestId("brillouin-zone-inspector")).toHaveTextContent("Cartesian");
+    expect(screen.getByTestId("brillouin-zone-inspector")).toHaveTextContent("笛卡尔坐标");
     fireEvent.keyDown(screen.getByTestId("brillouin-zone-renderer-surface"),{key:"ArrowLeft"});expect(engine.keyboardCamera).toHaveBeenCalledWith("rotate_left");
   });
 
@@ -47,7 +47,7 @@ describe("BrillouinZoneSurface",()=>{
     const firstDispose=vi.fn();const secondDispose=vi.fn();const engines=[fakeEngine(firstDispose),fakeEngine(secondDispose),fakeEngine()];let args:Parameters<BZRendererEngineFactory>[0]|undefined;const factory=vi.fn(async(value:Parameters<BZRendererEngineFactory>[0])=>{args=value;return engines.shift()!;});
     const {rerender,unmount}=render(<BrillouinZoneSurface bundle={bundle} capabilityOverride engineFactory={factory}/>);await waitFor(()=>expect(factory).toHaveBeenCalledTimes(1));
     act(()=>args?.onContextLost());await waitFor(()=>expect(screen.getByTestId("brillouin-zone-renderer-state")).toHaveTextContent("context_lost"));expect(firstDispose).toHaveBeenCalledTimes(1);
-    await userEvent.click(screen.getByRole("button",{name:"Reinitialize renderer"}));await waitFor(()=>expect(factory).toHaveBeenCalledTimes(2));
+    await userEvent.click(screen.getByRole("button",{name:"重新初始化查看器"}));await waitFor(()=>expect(factory).toHaveBeenCalledTimes(2));
     const nextZone=structuredClone(zone);rerender(<BrillouinZoneSurface bundle={{...bundle,zone:nextZone}} capabilityOverride engineFactory={factory}/>);await waitFor(()=>expect(factory).toHaveBeenCalledTimes(3));expect(secondDispose).toHaveBeenCalledTimes(1);unmount();
   });
 
@@ -57,13 +57,13 @@ describe("BrillouinZoneSurface",()=>{
   });
 
   it("provides semantic controls, live status and non-canvas scientific tables",async()=>{
-    render(<BrillouinZoneSurface bundle={bundle} capabilityOverride={false}/>);expect(screen.getByLabelText("First Brillouin zone viewer")).not.toBeNull();expect(screen.getByTestId("brillouin-zone-live-region").getAttribute("aria-live")).toBe("polite");expect(screen.getByText(/High-symmetry points in canonical reciprocal coordinates/).tagName).toBe("CAPTION");expect(screen.getByRole("button",{name:"faces"}).getAttribute("aria-pressed")).toBe("true");expect(screen.getByTestId("brillouin-zone-opacity").getAttribute("aria-valuetext")).toContain("percent");
+    render(<BrillouinZoneSurface bundle={bundle} capabilityOverride={false}/>);expect(screen.getByLabelText("第一布里渊区查看器")).not.toBeNull();expect(screen.getByTestId("brillouin-zone-live-region").getAttribute("aria-live")).toBe("polite");expect(screen.getByText(/规范化倒易坐标中的高对称点/).tagName).toBe("CAPTION");expect(screen.getByRole("button",{name:"面"}).getAttribute("aria-pressed")).toBe("true");expect(screen.getByTestId("brillouin-zone-opacity").getAttribute("aria-valuetext")).toContain("%");
   });
 
   it("keeps one engine through repeated controls and disposes every stale engine across twenty artifact replacements",async()=>{
     const created:Array<ReturnType<typeof fakeEngine>>=[];const factory=vi.fn(async()=>{const engine=fakeEngine();created.push(engine);return engine;});
     const {rerender,unmount}=render(<BrillouinZoneSurface bundle={bundle} capabilityOverride engineFactory={factory}/>);await waitFor(()=>expect(factory).toHaveBeenCalledTimes(1));
-    for(let index=0;index<20;index+=1){fireEvent.click(screen.getByRole("button",{name:"labels"}));fireEvent.change(screen.getByTestId("brillouin-zone-projection"),{target:{value:index%2?"perspective":"orthographic"}});fireEvent.click(screen.getByTestId("brillouin-zone-reset"));}
+    for(let index=0;index<20;index+=1){fireEvent.click(screen.getByRole("button",{name:"标签"}));fireEvent.change(screen.getByTestId("brillouin-zone-projection"),{target:{value:index%2?"perspective":"orthographic"}});fireEvent.click(screen.getByTestId("brillouin-zone-reset"));}
     expect(factory).toHaveBeenCalledTimes(1);expect(created[0].dispose).not.toHaveBeenCalled();
     for(let index=0;index<20;index+=1){rerender(<BrillouinZoneSurface bundle={{...bundle,zone:structuredClone(zone)}} capabilityOverride engineFactory={factory}/>);await waitFor(()=>expect(factory).toHaveBeenCalledTimes(index+2));expect(created[index].dispose).toHaveBeenCalledTimes(1);}
     unmount();expect(created.at(-1)?.dispose).toHaveBeenCalledTimes(1);

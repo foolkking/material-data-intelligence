@@ -10,9 +10,9 @@ import {
 
 describe("Phase 10M-4 typed renderer registry", () => {
   it("covers every checked-in Artifact contract exactly once", () => {
-    expect(WORKSPACE_ARTIFACT_TYPES).toHaveLength(42);
-    expect(WORKSPACE_RENDERER_REGISTRY).toHaveLength(42);
-    expect(new Set(WORKSPACE_RENDERER_REGISTRY.map((item) => `${item.artifactType}:${item.artifactVersion}`)).size).toBe(42);
+    expect(WORKSPACE_ARTIFACT_TYPES).toHaveLength(44);
+    expect(WORKSPACE_RENDERER_REGISTRY).toHaveLength(44);
+    expect(new Set(WORKSPACE_RENDERER_REGISTRY.map((item) => `${item.artifactType}:${item.artifactVersion}`)).size).toBe(44);
     expect(WORKSPACE_RENDERER_REGISTRY.every((item) => item.lazyPolicy === "ACTIVE_ONLY")).toBe(true);
   });
 

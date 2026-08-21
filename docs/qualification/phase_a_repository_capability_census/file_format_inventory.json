@@ -1,0 +1,544 @@
+{
+  "formats": [
+    {
+      "encoding": "UTF-8/parser compatible",
+      "extensions": [
+        ".csv"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "CSV",
+      "maxBytes": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "maxEntries": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "mimeTypes": [
+        "text/csv",
+        "application/csv"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": "pandas.read_csv",
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "semanticKindsAccepted": [
+        "materials_tabular_dataset",
+        "regression_result_table",
+        "uncertainty_result_table",
+        "classification_result_table"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "classification_result_table": "SUPPORTED_WITH_LIMITS",
+        "materials_tabular_dataset": "SUPPORTED",
+        "regression_result_table": "SUPPORTED_WITH_LIMITS",
+        "uncertainty_result_table": "SUPPORTED_WITH_LIMITS"
+      },
+      "textOrBinary": "text"
+    },
+    {
+      "encoding": "UTF-8",
+      "extensions": [
+        ".json"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "JSON_LIMITED",
+      "maxBytes": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "maxEntries": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "mimeTypes": [
+        "application/json"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": "_parse_json_limited / strict resource validators",
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json",
+        "packages/material-parsers/mdi_material_parsers/trajectory.py"
+      ],
+      "semanticKindsAccepted": [
+        "materials_tabular_dataset",
+        "crystal_structure",
+        "trajectory",
+        "experimental_xrd",
+        "electronic_band",
+        "electronic_dos"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "crystal_structure": "SUPPORTED_WITH_LIMITS",
+        "electronic_band": "SUPPORTED_WITH_LIMITS",
+        "electronic_dos": "SUPPORTED_WITH_LIMITS",
+        "experimental_xrd": "SUPPORTED_WITH_LIMITS",
+        "materials_tabular_dataset": "SUPPORTED_WITH_LIMITS",
+        "trajectory": "SUPPORTED_WITH_LIMITS"
+      },
+      "textOrBinary": "text"
+    },
+    {
+      "encoding": "parser compatible",
+      "extensions": [
+        ".cif"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "CIF",
+      "maxBytes": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "maxEntries": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "mimeTypes": [
+        "chemical/x-cif",
+        "text/plain"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": "pymatgen.Structure.from_file",
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "semanticKindsAccepted": [
+        "crystal_structure"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "crystal_structure": "SUPPORTED"
+      },
+      "textOrBinary": "text"
+    },
+    {
+      "encoding": "parser compatible",
+      "extensions": [
+        "POSCAR",
+        "CONTCAR",
+        "POSCAR.*",
+        "CONTCAR.*"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "POSCAR_CONTCAR",
+      "maxBytes": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "maxEntries": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "mimeTypes": [
+        "text/plain"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": "pymatgen.Structure.from_file",
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "semanticKindsAccepted": [
+        "crystal_structure"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "crystal_structure": "SUPPORTED"
+      },
+      "textOrBinary": "text"
+    },
+    {
+      "encoding": "parser compatible",
+      "extensions": [
+        ".xyz"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "XYZ",
+      "maxBytes": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "maxEntries": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "mimeTypes": [
+        "chemical/x-xyz",
+        "text/plain"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": "ASE read",
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "semanticKindsAccepted": [
+        "atomic_structure"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "atomic_structure": "SUPPORTED_WITH_LIMITS"
+      },
+      "textOrBinary": "text"
+    },
+    {
+      "encoding": "UTF-8",
+      "extensions": [
+        ".extxyz",
+        ".xyz with Lattice/Properties"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "EXTXYZ",
+      "maxBytes": 64000000,
+      "maxEntries": {
+        "maxAtoms": 4096,
+        "maxFrames": 10000,
+        "maxTotalCoordinateValues": 12000000
+      },
+      "mimeTypes": [
+        "text/plain"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": "bounded trajectory parser / ASE single frame",
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json",
+        "packages/material-parsers/mdi_material_parsers/trajectory.py"
+      ],
+      "semanticKindsAccepted": [
+        "trajectory",
+        "crystal_structure"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "crystal_structure": "SUPPORTED_WITH_LIMITS",
+        "trajectory": "SUPPORTED_WITH_LIMITS"
+      },
+      "textOrBinary": "text"
+    },
+    {
+      "encoding": "parser compatible",
+      "extensions": [
+        "CHGCAR",
+        "CHG",
+        "LOCPOT",
+        "ELFCAR",
+        "PARCHG"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "VASP_VOLUMETRIC",
+      "maxBytes": 268435456,
+      "maxEntries": {
+        "maxAtoms": 100000,
+        "maxGridDimension": 512,
+        "maxParserVoxels": 2097152
+      },
+      "mimeTypes": [
+        "text/plain"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": "bounded VASP volumetric parser",
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json",
+        "packages/material-parsers/mdi_material_parsers/volumetric.py"
+      ],
+      "semanticKindsAccepted": [
+        "volumetric_field"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "volumetric_field": "SUPPORTED_WITH_LIMITS"
+      },
+      "textOrBinary": "text"
+    },
+    {
+      "encoding": "parser compatible",
+      "extensions": [
+        ".cube"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "GAUSSIAN_CUBE",
+      "maxBytes": 268435456,
+      "maxEntries": {
+        "maxGridDimension": 512,
+        "maxParserVoxels": 2097152
+      },
+      "mimeTypes": [
+        "text/plain"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": "bounded single-dataset CUBE parser",
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json",
+        "packages/material-parsers/mdi_material_parsers/volumetric.py"
+      ],
+      "semanticKindsAccepted": [
+        "volumetric_field"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "volumetric_field": "SUPPORTED_WITH_LIMITS"
+      },
+      "textOrBinary": "text"
+    },
+    {
+      "encoding": "N/A",
+      "extensions": [
+        ".zip"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "ZIP",
+      "maxBytes": {
+        "maxUncompressedBytes": 52428800
+      },
+      "maxEntries": {
+        "maxDepth": 5,
+        "maxFiles": 100
+      },
+      "mimeTypes": [
+        "application/zip"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": "safe recursive archive dispatcher",
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "semanticKindsAccepted": [
+        "contained_supported_resources"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "contained_supported_resources": "SUPPORTED_WITH_LIMITS"
+      },
+      "textOrBinary": "binary"
+    },
+    {
+      "encoding": "UTF-8",
+      "extensions": [
+        ".json"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "TYPED_PHONON_BAND_JSON",
+      "maxBytes": 32000000,
+      "maxEntries": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "mimeTypes": [
+        "application/json"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": "map_normalized_phonon_resource(kind=phonon_band)",
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json",
+        "packages/material-parsers/mdi_material_parsers/mapped_resources.py"
+      ],
+      "semanticKindsAccepted": [
+        "phonon_band"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "phonon_band": "SUPPORTED_WITH_LIMITS"
+      },
+      "textOrBinary": "text"
+    },
+    {
+      "encoding": "UTF-8",
+      "extensions": [
+        ".json"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "TYPED_PHONON_DOS_JSON",
+      "maxBytes": 32000000,
+      "maxEntries": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "mimeTypes": [
+        "application/json"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": "map_normalized_phonon_resource(kind=phonon_dos)",
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json",
+        "packages/material-parsers/mdi_material_parsers/mapped_resources.py"
+      ],
+      "semanticKindsAccepted": [
+        "phonon_dos"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "phonon_dos": "SUPPORTED_WITH_LIMITS"
+      },
+      "textOrBinary": "text"
+    },
+    {
+      "encoding": "UTF-8",
+      "extensions": [
+        ".yaml",
+        ".yml",
+        ".json"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "GENERIC_PHONON_YAML_JSON",
+      "maxBytes": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "maxEntries": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "mimeTypes": [
+        "text/yaml",
+        "application/json"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": "no generic execution-ready upload parser",
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "semanticKindsAccepted": [
+        "phonon_band",
+        "phonon_dos",
+        "phonon_eigenvectors"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "phonon_band": "MAPPING_ONLY",
+        "phonon_dos": "MAPPING_ONLY",
+        "phonon_eigenvectors": "MAPPING_ONLY"
+      },
+      "textOrBinary": "text"
+    },
+    {
+      "encoding": "N/A",
+      "extensions": [
+        ".xlsx",
+        ".xls"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "EXCEL",
+      "maxBytes": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "maxEntries": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "mimeTypes": [
+        "spreadsheet MIME"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": null,
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "semanticKindsAccepted": [
+        "materials_tabular_dataset"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "materials_tabular_dataset": "UNSUPPORTED"
+      },
+      "textOrBinary": "binary"
+    },
+    {
+      "encoding": "N/A",
+      "extensions": [
+        ".parquet"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "PARQUET",
+      "maxBytes": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "maxEntries": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "mimeTypes": [
+        "application/vnd.apache.parquet"
+      ],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": null,
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "semanticKindsAccepted": [
+        "materials_tabular_dataset"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "materials_tabular_dataset": "UNSUPPORTED"
+      },
+      "textOrBinary": "binary"
+    },
+    {
+      "encoding": "unknown",
+      "extensions": [
+        ".lammpstrj",
+        ".dump"
+      ],
+      "failureModes": [
+        "FORMAT_UNSUPPORTED",
+        "PARSE_FAILED",
+        "contract-specific typed failure"
+      ],
+      "formatId": "LAMMPS_TRAJECTORY",
+      "maxBytes": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "maxEntries": "UNKNOWN_REPOSITORY_AUTHORITY",
+      "mimeTypes": [],
+      "normalizationRules": "exact parser/contract validation and immutable content hash; no filename/MIME-only scientific authority",
+      "pairedFileRules": "typed phonon Band and DOS require Structure context; otherwise semantic contract specific",
+      "parser/importer": null,
+      "repositoryEvidenceRefs": [
+        "packages/material-parsers/mdi_material_parsers/detector.py",
+        "packages/material-parsers/mdi_material_parsers/parsers.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "semanticKindsAccepted": [
+        "trajectory"
+      ],
+      "supportDispositionPerSemanticKind": {
+        "trajectory": "UNSUPPORTED"
+      },
+      "textOrBinary": "text"
+    }
+  ],
+  "rowCount": 15,
+  "schemaVersion": "FileFormatInventory/1.0"
+}

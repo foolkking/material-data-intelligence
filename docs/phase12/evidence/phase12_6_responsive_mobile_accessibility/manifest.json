@@ -26,7 +26,7 @@
     },
     {
       "path": "browser_matrix.json",
-      "sha256": "f185aecf089c24d62f1376f947e5bfcef81b671f99df1bc8b7b1bda59d5bc1a8"
+      "sha256": "a71938a16aa95abf18bd974a3a982c2d790c3b22f4a5f39ca78bb7511dc2cf36"
     },
     {
       "path": "chart_accessibility_matrix.json",
@@ -46,15 +46,15 @@
     },
     {
       "path": "desktop_chromium_accessibility.png",
-      "sha256": "1a577d7046b9fe0c1d7ac40738efae2a59155618e8dccae8752659e69d24fa64"
+      "sha256": "bcb5753f11ec01d3dc5f655c227120ecf9257eb0affe12026b4ef7a9dec73c65"
     },
     {
       "path": "desktop_firefox_accessibility.png",
-      "sha256": "acf42ef4211390b82f5b24777a9bca84e0476c0f29e44138bd17280a4b099ca4"
+      "sha256": "c3d54554c38e12753d1b2081d20271adb87849573abe8f035c7926c253b36470"
     },
     {
       "path": "desktop_webkit_accessibility.png",
-      "sha256": "ac258a181a0e865820ba27d79d0c7242d6ca0a1c3cc1238b027e743af71d66b1"
+      "sha256": "851eef716d4854e21d9a52be40f53611e93013b89d4afde8ed31a3dcbbe79137"
     },
     {
       "path": "dialog_focus_matrix.json",
@@ -102,7 +102,7 @@
     },
     {
       "path": "mobile_chromium_390x844.png",
-      "sha256": "2224ab0f32e60cd0b5bfc731164f291c3c7b72a7a5ed4fea61edf7d66f68e9e1"
+      "sha256": "1ade3d1e2c898162789d8e45e3c1b2f4248280a908c340ca882bafcc77621ef8"
     },
     {
       "path": "mobile_findings_evidence.json",

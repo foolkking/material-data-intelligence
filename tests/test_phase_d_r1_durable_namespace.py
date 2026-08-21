@@ -4,6 +4,7 @@ from pathlib import Path
 
 from alembic import command as alembic_command
 from alembic.config import Config as AlembicConfig
+from alembic.script import ScriptDirectory
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, inspect, text
 
@@ -13,7 +14,6 @@ from mdi_api.main import create_app
 from mdi_api.phase2_runtime import reset_phase2_runtime
 
 
-CURRENT_HEAD = "0008_phase_d_r1_namespace"
 REQUIRED_DURABLE_NAMESPACE_TABLES = {
     "users",
     "organizations",
@@ -69,7 +69,8 @@ def _assert_durable_namespace_schema(path: Path) -> None:
         index["name"] for index in inspector.get_indexes("projects")
     }
     with engine.connect() as connection:
-        assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == CURRENT_HEAD
+        expected_head = ScriptDirectory.from_config(_config(path)).get_current_head()
+        assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == expected_head
     engine.dispose()
 
 

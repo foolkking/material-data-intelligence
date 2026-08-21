@@ -1,0 +1,51 @@
+[
+  {
+    "surface": "data-table",
+    "url": "http://127.0.0.1:3022/projects/project_0004_2e46750ab91b4b49/data?dataset=dataset_0004_7efdfd6b81ef46de",
+    "bytes": 75679,
+    "hasError": false,
+    "hasRawIds": false
+  },
+  {
+    "surface": "data-structure",
+    "url": "http://127.0.0.1:3022/projects/project_0008_483bdd8496be4bf3/data?dataset=dataset_0008_73d18c93e6664923",
+    "bytes": 67197,
+    "hasError": false,
+    "hasRawIds": false
+  },
+  {
+    "surface": "data-trajectory",
+    "url": "http://127.0.0.1:3022/projects/project_0013_39656d1ae6184a54/data?dataset=dataset_0013_a61b23010bcf4d70",
+    "bytes": 95496,
+    "hasError": false,
+    "hasRawIds": false
+  },
+  {
+    "surface": "data-phonon",
+    "url": "http://127.0.0.1:3022/projects/project_0020_f412b5ab307e44e7/data?dataset=dataset_0020_db8494e768d8492c",
+    "bytes": 60930,
+    "hasError": false,
+    "hasRawIds": false
+  },
+  {
+    "surface": "data-volumetric",
+    "url": "http://127.0.0.1:3022/projects/project_0015_7cd556b38e2c4890/data?dataset=dataset_0015_75d95b38901343e6",
+    "bytes": 36268,
+    "hasError": false,
+    "hasRawIds": false
+  },
+  {
+    "surface": "research-xrd",
+    "url": "http://127.0.0.1:3022/projects/project_0011_7f141fdd27524fd0/research?run=job_67bcceb9ea924991b270b35a",
+    "bytes": 66348,
+    "hasError": false,
+    "hasRawIds": false
+  },
+  {
+    "surface": "report-xrd",
+    "url": "http://127.0.0.1:3022/projects/project_0011_7f141fdd27524fd0/reports/job_67bcceb9ea924991b270b35a",
+    "bytes": 47667,
+    "hasError": false,
+    "hasRawIds": false
+  }
+]

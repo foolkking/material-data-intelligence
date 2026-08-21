@@ -42,7 +42,7 @@ def test_phase10n3_postgres_redis_minio_theoretical_xrd_comparison_closure(monke
         alembic_upgrade(config, "head")
         engine = create_engine(schema_url, future=True)
         with engine.connect() as connection:
-            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0008_phase_d_r1_namespace"
+            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0014_research_session_run_bindings"
         _redis_smoke(f"n3-{suffix}")
         execution, payload = _run(tmp_path / "adapter")
         table = next(item for item in execution.artifacts if item.type.value == "table_json")

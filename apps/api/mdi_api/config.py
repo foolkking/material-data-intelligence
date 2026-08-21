@@ -30,12 +30,19 @@ class ApiSettings:
     artifact_root: str = ".artifacts/phase2"
     # -- Test database for integration tests --
     test_database_url: str | None = None
+    auth_required: bool = True
+    auth_cookie_name: str = "mdi_session"
+    auth_session_hours: int = 168
     # -- Browser access for local/demo web workspaces --
     cors_origins: tuple[str, ...] = (
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:3001",
         "http://127.0.0.1:3001",
+        "http://localhost:3017",
+        "http://127.0.0.1:3017",
+        "http://localhost:3022",
+        "http://127.0.0.1:3022",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
     )
@@ -91,6 +98,9 @@ def load_settings() -> ApiSettings:
         artifact_backend=os.getenv("MDI_ARTIFACT_BACKEND", "local").lower(),
         artifact_root=os.getenv("MDI_ARTIFACT_ROOT", ApiSettings.artifact_root),
         test_database_url=test_database_url,
+        auth_required=_parse_bool(os.getenv("MDI_AUTH_REQUIRED", "true")),
+        auth_cookie_name=os.getenv("MDI_AUTH_COOKIE_NAME", ApiSettings.auth_cookie_name),
+        auth_session_hours=int(os.getenv("MDI_AUTH_SESSION_HOURS", str(ApiSettings.auth_session_hours))),
         cors_origins=_parse_csv(_env("MDI_CORS_ORIGINS", "CORS_ORIGINS", default=",".join(ApiSettings.cors_origins))),
     )
 

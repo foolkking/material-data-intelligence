@@ -25,6 +25,33 @@ describe("Phase 10G independent trajectory reference", () => {
     expect(load("unwrapped_diffusion.json").frames[2].positions[0][0]).toBeGreaterThan(1);
   });
 
+  it("accepts a bounded production-sized numeric trajectory without scan overflow", () => {
+    const source = load("fixed_lattice_md.json") as Record<string, unknown>;
+    const atoms = source.atoms as Record<string, unknown>;
+    const frames = source.frames as Array<Record<string, unknown>>;
+    const atomCount = Number(atoms.count);
+    const expanded = {
+      ...source,
+      atoms: {
+        ...atoms,
+        count: 516,
+        records: Array.from({ length: 516 }, (_, index) => ({ atom_id: index, label: `Si${index + 1}`, species: "Si", occupancy: 1 })),
+      },
+      frames: Array.from({ length: 15 }, (_, frameIndex) => ({
+        ...frames[frameIndex % frames.length],
+        frame_index: frameIndex,
+        atom_ids: Array.from({ length: 516 }, (_, index) => index),
+        positions: Array.from({ length: 516 }, (_, index) => [(index % 8) / 8, (Math.floor(index / 8) % 8) / 8, frameIndex / 20]),
+        velocities: Array.from({ length: 516 }, () => [0.005, 0, 0]),
+        forces: null,
+        time: frameIndex,
+        step: frameIndex,
+      })),
+    };
+    expect(atomCount).toBeGreaterThan(0);
+    expect(validateTrajectoryReference(expanded).valid).toBe(true);
+  });
+
   it("matches the committed frontend/backend comparison evidence", () => {
     const comparison = JSON.parse(readFileSync(resolve(process.cwd(), "../../docs/phase10g/evidence/phase10g_trajectory_contract/frontend_backend_validation_comparison.json"), "utf8"));
     for (const [name, expected] of Object.entries(comparison.fixtures) as Array<[string, {python_valid: boolean; typescript_expected_valid: boolean}]>) {

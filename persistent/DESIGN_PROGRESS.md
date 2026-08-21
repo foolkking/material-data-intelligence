@@ -1,5 +1,56 @@
 # DESIGN_PROGRESS
 
+## 2026-08-19 Scientific result projection closure
+
+- [x] Replaced persisted pre-run machine `purpose`/`reason` text with a bounded
+      tool-to-human Chinese step projection; raw execution contract remains in the
+      technical record only.
+- [x] Filtered persisted and displayed interpretation claims/limitations that
+      contain backend counters, artifact/projector/schema/contract identifiers.
+- [x] Added a compatibility display sanitizer for older retained assistant
+      messages; historical messages remain preserved while default UI hides legacy
+      machine leakage.
+- [x] Routed `structure.summary` and unregistered structured result objects to
+      a readable scientific table summary instead of the 3D viewer or raw JSON.
+- [x] Chrome rechecked the retained XRD Research Run and a new real structure
+      summary run: no raw plan/claim leakage, no scene validation error, and the
+      result/report show a readable verified-data table.
+- [x] Historical Workspace API reads/writes now resolve the authenticated
+      account through the shared Project authorization service; runtime-only
+      compatibility remains test-scoped.
+
+## 2026-08-19 Local browser service consistency
+
+- Browser API calls use the Web origin's `/api/*` rewrite; Next proxies to
+  `127.0.0.1:8000`, avoiding Chrome client blocking on direct cross-port calls
+  and keeping the session cookie same-origin.
+- The disposable local acceptance account owns the retained local projects;
+  Chrome verified login and protected `/console`; no production credentials or
+  CI configuration changed.
+
+## 2026-08-18 UX-V1.3 Design Documentation + High-Fidelity Prototype
+
+- [x] Reconcile the current Product Architecture Code Audit with the frozen
+      Project -> Data -> Research -> Run/Result product model and current backend
+      capability boundary.
+- [x] Perform browser-observed reference research for EnvForge, Linear, Hex,
+      VS Code, NOMAD, Materials Project documentation, GitHub Actions and eLife.
+- [x] Establish `.interface-design/system.md` as the durable Scientific
+      Research Workbench visual-system authority.
+- [x] Produce UX-V1.3 page, viewer, research-workbench, result/Inspector,
+      state, responsive/accessibility and design-reality documentation.
+- [x] Build and Chrome-review an isolated high-fidelity prototype; it is not
+      bundled into production and requires no production API, DB or Queue.
+- [x] Validate no default raw internal ID/infrastructure terminology, no fake
+      percent progress or fake streaming, and intentional incremental-result,
+      limitation and evidence presentation.
+- [x] Record the remaining Product Owner decisions without reopening any
+      qualification or changing production authority.
+
+No production frontend, backend, API, schema, parser, Planner, Tool Registry,
+Queue/Worker, route behavior, qualification authority, or deployment state was
+changed by UX-V1.3.
+
 ## 2026-08-17 R1.7 Capability Resolution Repair
 
 The capability planner now routes a provider-returned stale `resolutionId`
@@ -24,12 +75,12 @@ and explicit electronic Band/DOS selection behavior.
 
 - [x] Classify all seven R1.4 blockers before implementing corrections.
 - [x] Reconcile the ML fixture/question paths, XRD planned dependency model,
-  trajectory parser implementation defect, phonon ordering metadata, and the
-  stale seven-demo preflight expectation without scientific support expansion.
+      trajectory parser implementation defect, phonon ordering metadata, and the
+      stale seven-demo preflight expectation without scientific support expansion.
 - [x] Rerun the non-LLM all-16 Case/26-turn preflight: 15 Cases pass.
 - [ ] R1.5 refreeze and Phase D re-seal: blocked only by the Q-TABLE
-  normal-user material-property target-binding contract gap requiring Reviewer
-  authority.
+      normal-user material-property target-binding contract gap requiring Reviewer
+      authority.
 
 No live provider call, formal qualification Job, ToolCall, Artifact, Phase D,
 or Phase E execution occurred.
@@ -339,7 +390,7 @@ dependency, renderer, Planner capability, Runtime behavior, or LLM authority is 
 - Implementation `bfc43bd39d7cc2fa319b9e88f9a4d37eec57ee37` passed
   exact-SHA CI run `30693848581`: Unit Tests, Frontend typecheck/build/browser
   replay, and PostgreSQL/Redis/MinIO service-backed `36 passed, 0 skipped,
-  0 failed`. Completion record `e4b0a8f5619cbb1001ef64809db6400729a99d8d`
+0 failed`. Completion record `e4b0a8f5619cbb1001ef64809db6400729a99d8d`
   passed exact-SHA CI run `30694747664`. The verified queue-archive commit
   removes the completed task; Phase 10M-0 remains reviewer-gated.
 
@@ -347,7 +398,7 @@ dependency, renderer, Planner capability, Runtime behavior, or LLM authority is 
 
 - Corrected implementation `02a9e33b93f96aa99413dc49ca2dabca652679c9`
   passed exact-SHA CI run `30606774006`: unit `955 passed, 1 skipped,
-  32 deselected`, service-backed `31 passed, 0 skipped, 0 failed`, and
+32 deselected`, service-backed `31 passed, 0 skipped, 0 failed`, and
   Frontend typecheck/build plus committed Chromium/Firefox/WebKit/mobile replay.
 - The ML projector now validates the real six-field `ml.basic_metrics` payload
   (`n`, MAE, RMSE, R2, mean error, max absolute error) and a non-service real
@@ -411,7 +462,7 @@ dependency, renderer, Planner capability, Runtime behavior, or LLM authority is 
   exact-SHA CI run `30542844246`, including Unit, Frontend, service-backed,
   migration, and no-skipped. The completed L3 TASKS block is archived by the
   verified queue commit; Phase 10L-4 remains `REVIEWER_GATE / AWAITING
-  REVIEWER PROMPT` and has no executable task.
+REVIEWER PROMPT` and has no executable task.
 
 ## 2026-07-30 Phase 10L-2 Capability-Aware Planner Complete and Archived
 
@@ -1280,7 +1331,7 @@ Verification so far:
 - Closed the largest Phase 7 boundary: validated LLM AnalysisPlans now actually execute, instead of being discarded in favor of the deterministic plan.
 - `Phase2ProductRuntime.create_job` gained two parameters: `analysis_plan` (use this EXACT validated plan instead of `build_phase2_plan`) and `execute` (False = planned-only, no ToolCalls run).
 - `POST /planner/jobs` now: generates plan → validates → on success creates a job that executes the EXACT validated LLM plan; added an `execute` flag (default False = planned, True = run). Response includes `plan_source` and `executed`.
-- The runtime execution loop was unchanged — it already iterated `plan.steps` through Tool Registry + Adapter (`run_tool_call_job`). Only the plan *source* changed.
+- The runtime execution loop was unchanged — it already iterated `plan.steps` through Tool Registry + Adapter (`run_tool_call_job`). Only the plan _source_ changed.
 - MockLLMProvider's plan now references the conventional `ml_table` normalized object so the validated plan is executable end-to-end (no plan mutation/auto-repair by the bridge).
 - Deterministic `build_phase2_plan` preserved as fallback: when no `analysis_plan` is provided, create_job uses it (Phase 2/3 product loop unchanged).
 - **Key acceptance evidence**: `test_runtime_executes_exact_provided_plan_one_tool_call` proves a 1-step LLM plan produces EXACTLY 1 ToolCall (`ml.basic_metrics`, stepId `llm_step_1`), NOT the deterministic 5 ToolCalls. `test_runtime_deterministic_fallback_when_no_plan` proves fallback still works.
@@ -1741,6 +1792,7 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 ## 下一步
 
 下一步按 Roadmap 继续进入 Milestone 2 / Milestone 4 的交界：建立隔离依赖/锁文件，补齐 parser artifact storage、上传/对象存储边界、更多 ZIP / EXTXYZ 回归测试；随后接 Celery Job Queue、PostgreSQL ToolCall/Artifact 状态持久化和 SSE 事件流。
+
 ## 2026-07-04 Phase 9B Official pymatviz Examples Evidence Pack
 
 - Generated a global evidence pack for `C:\Users\86182\Desktop\pymatviz_official_examples_test_suite`.
@@ -2177,6 +2229,7 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   CI `31258820229`: backend 1196 passed, service-backed 44/44, browser matrix,
   typecheck and build passed.
 - Completion-record CI and verified queue archive remain. N3 is not executable.
+
 ## 2026-08-09 Phase 10N-3 Experimental XRD Comparison
 
 - Admitted one N3 task and reconciled the exact ten-ID acceptance registry.
@@ -2194,6 +2247,7 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   / CI `31288217113` remains immutable history; corrected completion
   `c7547903faef191c97f35ca0ae2ad1ad1678193f` / CI `31288792343` passed.
 - The N3 queue block is removed by the archive candidate; N4 remains reviewer-gated.
+
 ## 2026-08-09 Phase 10N-4 Trajectory RDF / MSD / Diffusion
 
 - Verified N3 archive `0a33d84e` and admitted one N4 task.
@@ -2204,6 +2258,7 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
 - Failed implementation candidate `3ae66528a7bffa596793fe6d72ea0e600819be8b` / CI `31298574230` retained immutable history: service-backed 46/46 and frontend/browser passed, while the unit job found Windows CRLF versus Linux LF evidence-manifest hashing. The correction canonicalizes evidence bytes to LF.
 - Corrected implementation `2965e585f22cb50ccae87f6d1e5860b5a1b5ba92` passed exact-SHA CI `31299086998`; the completion record is now the active lifecycle gate and the N4 task remains queued.
 - Completion record `ca5208feec772e45397f4afbb80419aa6263978f` passed exact-SHA CI `31299648506`; the queue-archive candidate removes the N4 task and leaves N5 at its reviewer gate.
+
 ## 2026-08-09 - Phase 10N-5 Implementation Candidate
 
 - Closed N5-R0 with 10/10 acceptance IDs and zero implementation-critical TBDs.
@@ -2238,6 +2293,7 @@ Phase 7: LLM JSON Planner + BYOK Secret Management — **通过 (PASS)**。90 pa
   skips/failures/errors, typecheck, build and all professional browser replays passed.
 - N6 is complete and retains its sole queue task while completion-record CI is pending;
   Phase 11 remains reviewer-gated and non-executable.
+
 ## Phase 11-2 Golden Benchmark Completion
 
 - Phase 11-3 admitted the eight invariant records and added locked Linux/Windows CI replay, exact identity/unit comparison, browser display-only variance, and a no-promotion Phase 11-4 handoff.
@@ -2383,12 +2439,12 @@ scientific algorithm. Exact-SHA CI remains required before completion.
 - Level C `7/7`, Level C2 `7/7`, and real service-backed D0 pass locally.
 - Implementation `88103ff61584ba81a01ab0e5ebf2adbbc09275e1` passed exact-SHA CI
   `31553972770`; completion is recorded and the active Fix-Forward #3 task is archived.
-Phase 13-2 Attempt 4 passed its current authority, C/C2 and fresh-worker D0
-entry gates, then failed on fresh Demo 1. The canonical prompt planned only
-`dataset.materials_explorer`, omitting sealed Composition Space, and the Plan
-0.1 Workspace was `LEGACY_READ_ONLY`, blocking real-user Report finalization.
-`P13-R4-001` and `P13-R4-002` are open reviewer-action P0 findings. No
-production or scientific behavior changed.
+  Phase 13-2 Attempt 4 passed its current authority, C/C2 and fresh-worker D0
+  entry gates, then failed on fresh Demo 1. The canonical prompt planned only
+  `dataset.materials_explorer`, omitting sealed Composition Space, and the Plan
+  0.1 Workspace was `LEGACY_READ_ONLY`, blocking real-user Report finalization.
+  `P13-R4-001` and `P13-R4-002` are open reviewer-action P0 findings. No
+  production or scientific behavior changed.
 
 Phase 13-1 Fix-Forward #4 is active. Seven canonical prompts now pass exact
 semantic capability coverage (`7/7`) using the existing Intent/Eligibility/
@@ -2439,6 +2495,7 @@ the six Phase 13-2 queue blocks remains.
 
 The separate archive lifecycle is complete: Phase 13-2 has zero TASK blocks,
 and Phase 13-3 remains an unqueued reviewer gate.
+
 # 2026-08-13 Phase 13-3 Documentation and Reproducibility
 
 Phase 13-2 Attempt 6 is verified and archived. Phase 13-3 is the sole active
@@ -2608,6 +2665,7 @@ execution and passes the replacement fixture. The full 16-Case/26-turn preflight
 and an independent Phase D rerun pass. Browser import readiness confirms the
 new trajectory Profile; no formal qualification execution or real LLM call was
 made. Phase E remains outside this task.
+
 ## 2026-08-17 Project History and Dataset Workbench
 
 - Added a durable ProjectHistoryView read model linking imported files and
@@ -2626,7 +2684,495 @@ made. Phase E remains outside this task.
 - [x] Replace live historical queue cardinality with current queue invariants.
 - [x] Replace obsolete evidence byte/release-digest gates with semantic checks.
 - [x] Pass backend `1563`, service-backed `50`, frontend `465`, typecheck/build,
-  all configured browser families, migration, compile, lock, and diff checks.
+      all configured browser families, migration, compile, lock, and diff checks.
 - [x] Preserve Phase E-R1.7 authority and historical qualification evidence.
 - [x] Push normally and verify all configured remote CI jobs in run `32024851926`.
 - [x] Finalize and archive Release Closure; deployment remains `NOT_STARTED`.
+
+## 2026-08-18 Production UI/UX Reconstruction
+
+- Production routes now follow Landing → Console → Project → Data / Research /
+  Reports while retaining compatibility entry points for historical Analysis
+  and Workspace links.
+- First-party session authentication and persistent Project research sessions
+  are wired through the production API and migrations 0009/0010.
+- The Data workbench uses the real upload pipeline, dense searchable scientific
+  table controls, keyboard selection, detected-content disclosure, and a
+  contextual Inspector without exposing internal IDs.
+- Research preserves validated Planner and Tool Registry execution, polls real
+  Job events and incremental Artifacts, restores historical runs, and exposes a
+  keyboard-adjustable 30–45% conversation/workbench split.
+- Current repository regression state: backend 1566 passed / 51 skipped,
+  frontend 467 passed, typecheck and production build passed.
+
+### Landing and responsive closure
+
+- Expanded the production Landing beyond the hero and short workflow labels with
+  full-width research-context and scientific-result bands using real material
+  terminology and a publication-style result surface.
+- Changed the Landing H1 to the product name (`材料智能平台`) while retaining
+  the research outcome in supporting copy; increased the login modal to a
+  560px desktop measure with 44px controls and a mobile-safe 24px inset.
+- Disabled the visible Next development indicator with `devIndicators: false`;
+  this is a development overlay setting and does not add product UI.
+- Chrome geometry evidence confirms no horizontal overflow at 1440/1280/390;
+  the final 1440 Landing screenshot was captured after these changes. A later
+  Chrome extension overlay blocked the modal recapture and is recorded as a
+  browser-tool verification limitation.
+- Completed the Research ambiguity continuation: normalized scope candidates,
+  persisted the user's selected dataset in the same session, and resumed the
+  existing single-dataset Planner contract with the selected Profile.
+- Report Reader now loads real run Artifacts and Interpretation
+  claims/limitations through the shared scientific viewer; the product remains
+  explicitly Run Report scoped.
+- Data Inspector focus/Escape restoration, selection semantics, fallback viewer
+  keyboard activation, and splitter ARIA/keyboard handling are covered by the
+  current frontend regression suite (`74` files / `467` tests).
+- Final Chrome evidence was recaptured after the extension overlay was dismissed:
+  `design/ux-v1.3/evidence/production/landing-production-1440.png` and
+  `landing-login-production-1440.png`. The login dialog measures about 560px
+  wide with 44px controls; focus enters the email field, `Shift+Tab` remains
+  inside the dialog, and `Escape` closes it with focus restored to the login
+  trigger. 1280/390 responsive acceptance remains represented by the previously
+  recorded geometry checks; the viewport override was not reliable for a new
+  mobile screenshot in this browser session.
+- Real local Browser golden-path checks then found and closed three production
+  issues: the durable object-store route now imports its repository factory and
+  resolves the configured artifact root; the Project Scope Resolver reads the
+  current `semanticColumns`/`resourceSemantics`/`analysisReadiness` profile
+  contract; and technical recipe/summary/CSV Artifacts are kept out of the
+  default Result and Report reading flow. Successful analysis now writes a
+  `run` deep-link, and refresh restores the completed run with its 3-row table
+  and no internal IDs in the primary UI.
+- 200% Chrome verification used an effective CSS viewport of approximately
+  915x411 with devicePixelRatio 2.1. Landing, Data, Research, Report Reader,
+  and the forced Login modal were checked for overflow, clipping, and readable
+  controls. The real zoom-only defect was the 899px breakpoint: Landing minimum
+  columns overflowed and the modal exceeded the short viewport. The responsive
+  breakpoint is now 960px and the modal is bounded and scrollable. Final
+  evidence is stored under
+  `design/ux-v1.3/evidence/production/zoom-200/`.
+- The user-provided Chrome device emulation was then directly claimed at a
+  real CSS viewport of `390x845` (DPR 2). Landing, Login, Data, Research, and
+  Run Report were visually checked with `scrollWidth=390`; the Data table and
+  Report table retain intentional local horizontal scrolling without page
+  overflow. Final mobile evidence is stored under
+  `design/ux-v1.3/evidence/production/mobile-390/`.
+- Scientific renderer acceptance was rechecked against the current source and
+  result contracts. Backend electronic/XRD/trajectory/volumetric/phonon
+  coverage passed `62` focused tests; frontend Electronic, Trajectory, Phonon,
+  Brillouin Zone, and Volumetric renderer coverage passed `30` focused tests.
+  Electronic, XRD, and Brillouin Zone source uploads remain intentionally
+  distinct from their derived Result Artifact contracts; the production Data
+  page does not claim a source viewer where only a validated result renderer
+  exists.
+- Console Quick Preview now loads the first real project source resource into
+  the shared Scientific Viewer adapter instead of a text-only placeholder.
+  Chrome evidence at the user-controlled `390x845` viewport shows the actual
+  three-row table, `scrollWidth=390`, and the full-width mobile viewer at
+  `design/ux-v1.3/evidence/production/mobile-390/console-quick-preview-390.png`.
+  The close/focus behavior has a unit regression and deferred post-render focus
+  restoration; repeated Chrome keyboard automation still returns focus to
+  `body`, so browser-level focus restoration remains `NOT_VERIFIED` rather than
+  being claimed as a PASS.
+- Frontend full regression after the Quick Preview change passed `75` files and
+  `469` tests. Typecheck and the focused ProductPages tests also pass.
+- Project/Research IA discoverability closure (2026-08-18): added an
+  authenticated global Project search dialog with Overview/Data/Research
+  destinations, exposed the server-owned model status path through the user
+  menu and Research configuration notice, made completed process history
+  expandable, made unsupported alternatives repopulate the same Research
+  composer, and added a direct Run Report link for completed runs. Removed the
+  inert Data overflow control. These changes reuse existing APIs and do not add
+  a new backend search or report contract.
+- Closed two deep-link gaps found in the same audit: Project Overview dataset
+  links now select the requested Data resource, and Research session switching
+  updates the existing session route for refresh/share recovery.
+- DeepSeek configuration audit (2026-08-18): the current process has a
+  server-side `DEEPSEEK_KEY`, and `/planner/providers/status` reports the
+  redacted provider state as `ready`. The live path is already wired through
+  `DeepSeekProvider` for Planner and strict Interpretation; it is not exposed
+  to the browser. `.env.example` now documents the optional server-only key,
+  allowlisted model, and disabled-by-default test-provider gate. The existing
+  `/me/secrets` in-memory API is not a live DeepSeek credential source because
+  provider requests reject `secretId`; durable encrypted BYOK remains an open
+  product/backend capability rather than being silently claimed as supported.
+- Provider configuration is now exposed through a generic server-owned profile
+  contract (`provider`, `kind`, `baseUrl`, model allowlist, status, execution,
+  and secret-source category). The catalog remains honest: DeepSeek is the only
+  `execution=live` profile today; unknown `MDI_LLM_PROVIDER` values report
+  `unsupported` instead of silently falling back. No browser key or arbitrary
+  endpoint is accepted.
+- Production research result closure (2026-08-18): `ml.outlier_table` now emits
+  an explicit versioned artifact contract and has a bounded Evidence projector
+  for sample count, error values, and maximum/mean absolute error. The Research
+  workbench loads persisted Interpretation and Evidence after terminal runs,
+  renders grounded claims/limitations, and keeps Artifact results visible if
+  interpretation is unavailable. The model service surface is a modal with
+  progressive API details; it remains server-owned and provider-agnostic at the
+  contract layer.
+- Model settings visual closure (2026-08-18): widened the desktop dialog to an
+  840px work surface with a two-column fact layout and responsive bottom-sheet
+  behavior. Unsupported-provider errors now describe the server catalog rather
+  than naming one vendor in the generic API contract. Default Evidence rows no
+  longer expose tool or field identifiers; those remain progressively disclosed.
+- Generic Provider configuration (2026-08-18): model settings now accepts a
+  provider id, Base URL and write-only API Key. Saved keys are encrypted on the
+  server and never returned; `/planner/providers/{provider}/models` discovers
+  model ids. Research conversations choose the concrete model and neutral
+  thinking depth (`quick`, `standard`, `deep`) per request.
+
+## 2026-08-19 Research intelligence projection correction
+
+Research now persists bounded server-owned assistant projections for pre-run,
+clarification, unsupported and post-run states. These are observable research
+messages and never hidden model reasoning. The default desktop composition puts
+the process projection in the left Research Timeline; the right workbench is
+reserved for context, data, result and report. Internal pages expose only a
+`返回主页` account boundary; explicit login/logout remains on Landing.
+
+The retained-data Viewer closure also resolves durable normalized source
+resources after process restart. Q-XRD experimental peaks are rendered as a
+single 2theta/Intensity scientific series, and non-periodic Atoms use the
+existing structure surface rather than a generic fallback.
+
+2026-08-19 compatibility closure: owner-only historical SQLite schemas without
+`project_members` now keep authenticated sessions valid with an owner fallback;
+server-side Project authorization remains enforced for protected data routes.
+The non-test local API now also selects the durable SQLite repository for
+Project History, so retained datasets appear in the new Data Navigator after
+an API restart.
+
+2026-08-19 incremental result contract closure: QueueWorkerRuntime persists
+each Tool output and emits `artifact.ready` before the next Tool starts and
+before the terminal Job event. Research Timeline step state now derives from
+persisted `tool.started` / `tool.completed` event step IDs instead of event
+counts; an already-ready Artifact remains readable while the Job is running.
+A two-step worker regression covers this running-plus-artifact state. This
+validates the server/frontend contract; a fresh Chrome observation of a live
+non-terminal production run remains separate evidence.
+
+2026-08-19 scientific viewer Chrome closure: fixed trajectory inert scanning so
+bounded numeric coordinate matrices are not counted leaf-by-leaf against the
+10,000-node metadata/security scan budget; scientific coordinate/value limits
+remain unchanged. Added a production-sized 516-atom/15-frame regression and
+verified `Q-TRAJECTORY-001` in Chrome with a real canvas, frame controls,
+playback and current-frame inspector. The retained phonon route also opened
+validated band and DOS panels; electronic source showed persisted eV band data;
+volumetric source showed its truthful 125 x 72 x 60 field summary because the
+full dataset/manifest 3D contract is not present.
+
+2026-08-19 research presentation closure: after restarting the API with the
+project's `uv run ... --app-dir apps/api` environment, a retained Q-TABLE
+dataset completed real Research runs through scope resolution, persisted
+assistant pre/post messages, Planner/Job/Artifact, strict interpretation and
+result presentation. The correlation artifact now projects grounded pairwise
+evidence into the user-facing sentence `formation_energy 与 band_gap 的
+Pearson 相关系数为 -0.575069。`; the result title no longer exposes the
+internal `correlation:<field>:<field>` subject. Chrome confirmed the chart,
+numeric table, finding, limitation and evidence section on the production
+route. Existing failed and completed turns remain preserved.
+
+2026-08-19 account authorization closure: Project-derived Dataset, upload
+session, Job, Artifact, Planner intent/plan/Interpretation, SSE stream and
+provider configuration routes now require the authenticated session and inherit
+`require_project_access`. `/me/secrets` is user-scoped in the in-memory store;
+listing or deleting another user's secret is rejected. Direct upload, profile
+generation and legacy demo entry points are authenticated as well. No data was
+deleted and CI was unchanged.
+
+2026-08-20 scientific presentation acceptance closure: the retained Phase 10
+viewer/result surfaces were rechecked against current production code in Chrome.
+Table selection and Inspector, 15-frame trajectory playback, persisted
+electronic Band/DOS source projections, the volumetric 125 x 72 x 60 field,
+phonon Band/DOS composite (54 band curves + 1 DOS series), Research
+complete state, Report Reader and the generic provider model dialog all rendered
+without horizontal overflow at the active desktop viewport. Electronic Viewer
+chrome and generic scientific plot labels were localized to Simplified Chinese
+while preserving canonical scientific identifiers and units. Final browser
+evidence is stored under `design/ux-v1.3/evidence/production/desktop/`.
+
+Current regression closure: full Python `1592 passed, 51 skipped`; full
+frontend Vitest `79 files, 510 tests passed`; focused authorization/Research/
+provider/interpretation/report suite `142 passed`; TypeScript, production build,
+compileall and `git diff --check` pass. Incremental-before-terminal remains a
+separate live observation debt. BZ source ingestion remains explicitly
+unsupported because no normalized BZ source object exists; source volumetric
+3D was subsequently closed by the final 2026-08-20 projection below.
+
+2026-08-20 Research intelligence role wiring: the Research pre-run assistant
+response now uses the configured Provider when requested by the production
+composer, with a strict validated JSON contract over only the question,
+selected Dataset and persisted human-readable Plan. Invalid/unavailable output
+falls back to deterministic grounded copy and never changes the executable
+Plan. Report finalization likewise runs an optional editorial Provider role;
+all result/Evidence/Figure references, source identities and numeric statements
+are checked against the deterministic Scientific Result projection before the
+editorial view is persisted. The new Report Reader consumes that persisted
+projection when available. Running remains deterministic with zero LLM calls.
+
+2026-08-20 final volumetric production closure: recognized normalized
+VolumetricData values are no longer truncated by the generic structured-preview
+list cap. Valid source payloads now project into the strict Phase 10J
+dataset/manifest/binary contracts and reuse the same Viewer as derived Results.
+Current Chrome rendered the retained Gaussian-cube field at 125 x 72 x 60 as a
+real isosurface (24,532 vertices / 47,242 triangles), an exact quantitative
+lattice slice, and a WebGL2 direct-volume view. Generic scalar fields no longer
+show an irrelevant unavailable charge/spin module or an internal error code;
+the visible Viewer controls, states, tables and accessibility labels use
+Simplified Chinese. Full regression after closure is Python `1599 passed, 51
+skipped` and frontend Vitest `79 files, 510 tests passed`; typecheck, compileall
+and the production build pass. After the final Research Turn / Report Composer
+role wiring, the full Python result is `1599 passed, 51 skipped`; the frontend
+remains `79 files, 510 tests passed`, with typecheck and build passing.
+
+2026-08-20 Structure Viewer language closure: the production 3D structure
+surface, controls, supercell, clipping, export, measurement and site/bond
+Inspector now use zh-CN product chrome while preserving formulas, units,
+scientific identifiers and contract codes. Fresh Chrome reload at the
+structure Data route confirmed a real WebGL canvas, no horizontal overflow,
+and no remaining primary English viewer labels. Evidence:
+`design/ux-v1.3/evidence/production/desktop/data-structure-1829-final.jpg`.
+Focused Structure Viewer regression is `25 tests passed`.
+
+2026-08-20 200% production acceptance closure: Chrome remained at browser
+zoom 200% while Data Table, row Inspector, Research Planning/Running,
+Research Complete, Structure Viewer, Report Reader, and Landing were opened
+from real production routes. Page-level `scrollWidth` matched `clientWidth`
+for the checked routes; deliberate table/document vertical scrolling remained
+available, essential controls stayed reachable, and the Research Complete
+view exposed one completion summary rather than a duplicate mobile/zoom
+summary. Evidence is stored under
+`design/ux-v1.3/evidence/production/zoom-200/`. The production title
+projection also strips internal `Current acceptance` labels and timestamp
+suffixes from ordinary Project/Data headings without changing stored names or
+audit identifiers.
+
+The 200% run was authenticated, so Landing opened in the logged-in state;
+fresh Login Modal interaction was not repeated in this pass to avoid logging
+out the active session. Existing modal implementation and focus evidence
+remain separate from this logged-in Landing check.
+
+2026-08-20 Phase 10 retained-data IA reachability audit: the current production
+routes were checked against the Phase 10F-N capability/evidence records and the
+new Project/Data/Research/Reports IA. Table/DataFrame, periodic Structure and
+non-periodic Atoms, Trajectory, experimental XRD, Electronic Band/DOS, and
+Phonon Band/DOS are reachable from Project > Data through the authenticated
+normalized-resource endpoint and shared ScientificViewerAdapter; companion
+objects remain grouped by their scientific context. Result-only capabilities
+(Trajectory analytics/RDF/MSD, XRD peak matching, coordination/local
+environment, BZ, Volumetric, Materials ML and Composition Space) are reachable
+from Research > scientific result through the persisted Artifact renderer
+registry, Inspector/Evidence and Report Reader. Interpretation, Evidence and
+Run Report are reachable from the Research result and Reports routes using the
+same persisted run/artifact identity.
+
+The audit found no route-level dead link requiring production code changes.
+Two capability boundaries remain intentionally explicit: Brillouin-zone data
+has no normalized source object type, so its source Data view is
+`NOT_SUPPORTED` while `brillouin_zone_json` result artifacts use the dedicated
+renderer; uploaded VolumetricData currently exposes the truthful bounded grid/
+field summary because it does not contain the strict Phase 10J
+`volumetric_dataset.v1` plus manifest bundle, while a validated result bundle
+uses the full VolumetricPreviewPanel. These are documented capability limits,
+not empty Viewer fallbacks. Historical Phase 10 evidence and qualification
+records remain unchanged; no CI or qualification campaign was modified.
+
+# 2026-08-19 — Scientific presentation and account-bound research closure
+
+- The production Data route now passes a dataset-scoped normalized resource bundle through the shared scientific viewer adapter. Atomic structures, Electronic Band/DOS, Phonon Band/DOS, and experimental XRD plus structure context reuse existing renderer contracts; raw volumetric source remains an explicit grid/field summary until its dataset/manifest renderer contract exists.
+- Research assistant messages are durable, bounded projections of persisted facts: pre-run copy is derived only from the validated plan and post-run copy only from a persisted scientific interpretation. Inline process remains a reconstruction of observable run state, never model private reasoning.
+- Report composition requests now carry the authenticated browser session and enforce the same project authorization boundary as the rest of the product. Result evidence that is bound to a rendered artifact provides a user-facing route back to that artifact, without inventing a row/site/peak highlight where the underlying selection contract is absent.
+- 2026-08-20 research intelligence closure: introduced strict Research Turn Orchestrator, Scientific Interpreter, and Report Composer projection contracts. They consume persisted scope/plan/interpretation/artifact facts only, reject private reasoning and credential-shaped text, and fail closed on dangling Evidence or result references. Existing Planner/Tool Registry execution remains unchanged.
+- 2026-08-20 Research Timeline copy closure: retained Plans now project human-readable Chinese step labels from persisted scientific tool metadata (including XRD, trajectory, electronic, phonon, volumetric, composition, ML, table, and visualization capabilities). Unknown capabilities use a non-technical Chinese fallback; machine Plan contract text remains hidden without modifying historical Plans.
+- 2026-08-20 incremental-result evidence closure: added an automated two-step registered-adapter observation that records persisted `artifact.ready` before terminal dependency completion, verifies the Artifact is readable at the event boundary, and confirms the Job is not yet terminal for those observations. No artificial delay or execution-semantic change was introduced; browser live observation remains unverified because the local worker completes synchronously.
+
+- 2026-08-20 final scientific Viewer/browser closure: removed the generic
+  100,000-item JSON truncation from recognized normalized volumetric channel
+  values while keeping ordinary resource lists bounded. The retained
+  `125 x 72 x 60` Gaussian-cube source now reaches the strict Phase 10J
+  dataset/manifest/binary projection and rendered a real WebGL isosurface in
+  the production Data route (24,532 vertices / 47,242 triangles). Source
+  metadata is consumed from its attached, validated source Artifact instead of
+  incorrectly requesting a synthetic `source-view` Job. Chrome 390 x 844
+  checks for Landing, Table Data, Table Inspector, Research Complete, Report
+  Reader, and Volumetric Data reported no page-level horizontal overflow;
+  Research Complete exposes exactly one completion summary and its retained
+  phonon result rendered three Plotly surfaces. A retained BZ result was also
+  reopened from the new Research support-output disclosure and rendered one
+  WebGL canvas. BZ source ingestion remains unsupported because no normalized
+  BZ source object exists; this is distinct from the verified result renderer.
+
+- 2026-08-20 Volumetric source Viewer closure: the Data SourceResourceAdapter
+  now deterministically projects bounded normalized `VolumetricData` payloads
+  (`shape`, affine origin/steps, boundary conditions, channels and finite
+  values) into the existing Phase 10J dataset/manifest/payload contracts.
+  Periodic VASP-like sources require the supplied structure/lattice hashes;
+  non-periodic Gaussian cube sources remain unbound and do not receive
+  fabricated structure metadata. The projection uses deterministic little-
+  endian float64 hashes, uses inline payloads up to 262,144 values and exact
+  hashed in-memory binary artifacts for larger retained fields within the
+  16 MiB browser budget, rejects mixed boundaries, singular grids, non-finite
+  values, unsafe metadata and browser-cap-exceeding voxel/value counts, then
+  reuses the existing `VolumetricPreviewPanel` for source Data, slice,
+  isosurface and volume modes. Focused adapter/contract coverage is `12 tests
+passed`; ProductPages, VolumetricPreviewPanel and adapter effects are `20
+tests passed` together; TypeScript typecheck passes. The prior raw grid/field
+  summary remains the honest fallback when a source payload cannot satisfy
+  this projection. The retained 125 x 72 x 60 source grid is covered by the
+  binary projection test rather than falling back solely because it exceeds
+  the inline-JSON cap.
+
+2026-08-20 final debt classification: semantic accessibility is verified by
+source and production-DOM audit, with the audit artifact at
+`design/ux-v1.3/evidence/production/accessibility/semantic-audit.md`.
+Real hardware screen-reader execution remains `NOT_VERIFIED`; this requires an
+available NVDA/VoiceOver-equivalent device. Non-terminal incremental Artifact
+ordering is verified by the two-step Worker regression but remains
+`NOT_OBSERVED` in Chrome because the local Worker completes synchronously.
+`npm run lint` remains an engineering-hygiene debt: the repository has no ESLint
+configuration or installed ESLint CLI and Next's deprecated `next lint` opens an
+interactive initializer. No product or accessibility defect is hidden behind
+that status, and no unrelated tooling migration was introduced.
+
+2026-08-20 batch acceptance closure: all 39 retained scientific Projects were
+opened through the production Research/Data/Report routes with the configured
+server-side provider. Current durable counts are 42 Projects, 39 Datasets,
+109 Jobs, 615 Artifacts, 208 Messages and 42 Interpretations. Latest usable
+Runs were kept visible; 35 superseded terminal Runs are reversibly archived.
+Batch browser evidence is under
+`design/ux-v1.3/evidence/production/batch-20260820/` and the companion JSON
+records `batch-20260820-*.json`. Table, Structure, Trajectory, XRD, Electronic,
+Phonon, Volumetric, Result and Report surfaces were inspected against retained
+data. The three expected unsupported atomic cases and one corrupt legacy
+dataset remain honest unsupported states rather than fabricated results.
+
+Acceptance debt remains explicit: automated two-step artifact ordering is
+verified but a non-terminal incremental result was not observable in Chrome
+because the local worker completes synchronously; semantic accessibility is
+verified while a physical screen-reader device is not available; BZ source
+ingestion is unsupported while BZ result rendering is supported; full Phase E
+live requalification is preserved historical evidence and was not reopened.
+
+2026-08-20 Project discoverability correction: the retained scientific
+Projects are qualification Case runs, not phase-owned Projects. Their primary
+names now follow `Case NN · Q-ID · Run NN`; three message-only sessions and one
+legacy dataset follow `其他 · title · Run NN`. Human-readable descriptions show
+the demonstrated capability and Phase 10 lineage, for example phonon
+dispersion/DOS/BZ linkage (`Phase 10H / 10I`) and volumetric isosurface/slice/
+direct-volume rendering (`Phase 10J`). The Projects page groups Case, genuine
+Phase and other records, sorts Case/Run names numerically, and searches names,
+Q-IDs and capability descriptions. Chrome verified 42 records and a
+`Phase 10H` search returning exactly the two Q-PHONON runs.
+
+2026-08-20 run-history closure: added reversible project-scoped Run archival as
+a visibility projection in the existing `project_configs` JSON document. Job,
+Artifact, Message, Evidence and Report records are never deleted or relabelled;
+Project History keeps archived Research runs reopenable and the default Reports
+list excludes only explicitly archived terminal runs. Archive and restore are
+authorized write endpoints. Focused `tests/test_project_history.py` passes 3.
+
+2026-08-20 Project/Dataset management UX in progress: Console and Projects now
+provide a single primary creation path with an immediate upload continuation.
+Project and Data Navigator rows share a low-noise action menu reachable by
+right-click, visible/focusable `More`, keyboard context-menu commands, and touch;
+explicit selection mode introduces the only batch toolbar. Rename, reversible
+archive/restore, and owner-only empty-object deletion are server-authorized.
+Read-only Project History now projects the true membership role and omits
+upload/mutation affordances. Focused backend access/history tests are 10/10,
+focused Product/upload Vitest tests are 11/11, typecheck passes, and the current
+full frontend suite is 80 files / 518 tests passed. Chrome validation awaits an
+authenticated session in the user-selected Chrome surface.
+
+2026-08-20 role-boundary closure: direct Dataset upload deep links now resolve
+the Project History role before rendering a file input; viewer members receive
+a readable read-only state instead of a doomed upload form. Research Session
+creation and message writes now require Project write access server-side, while
+read-only members retain timeline, result and report access. Research Composer,
+session-history creation, and report archive controls follow the same explicit
+role boundary. Focused Product/Research Vitest is 25/25, project access/history
+regression is 19 passed, and typecheck/build remain green. Final Chrome
+management evidence still requires a user-authenticated browser session.
+
+2026-08-20 Project/Dataset management Chrome closure: authenticated Chrome
+verified Console new-project modal entry and exact opener focus restoration;
+Projects grouping (42 records / 38 Case runs); the shared More/context menu via
+visible trigger, right-click, and Shift+F10; explicit selection mode with a
+transient batch bar; and safe management affordances. The Data route verified
+a real 64-row table, Dataset menu, row Inspector, Escape focus restoration,
+and no material desktop horizontal overflow. Empty-project deletion was
+exercised against a sparse historical schema; the server skips absent optional
+metadata tables while retaining owner/write checks and all child blockers. No
+non-empty scientific history was deleted. Full Vitest is now 80 files / 525
+tests; Python and browser-independent gates remain green. Final 390px Chrome
+verification also passed: Projects, the management bottom-sheet menu, the
+creation dialog, the real 64-row Data table, and the Inspector all stayed
+within the viewport; Inspector Escape restored the selected-row trigger.
+2026-08-20 continuous product quality Wave 1: corrected a scientific-safety defect in
+the Data property table so units are never inferred from field names; undeclared units
+now read “未声明” and semantic roles use a bounded Chinese label map. Research now has
+explicit loading/error/retry states instead of presenting a failed request as an empty
+permission view. Research Records moves focus into its popup, localizes session status,
+and restores the trigger on Escape. At <=960px Research uses one active panel at a time
+(`对话` / `工作台`) with one primary scroll owner; Data table controls and management
+targets are touch-safe and wrap without horizontal overflow. Reports now distinguish
+loading/error/empty states, prioritize PRIMARY_FIGURE then PRIMARY_TABLE, and put the
+primary result before conclusion/limitations in the reader. Focused frontend regression
+is 27/27 and typecheck passes. Fresh Chrome visual evidence is pending reconnection to
+the user Chrome tab after the local Web restart; no browser claim is made for this wave.
+2026-08-20 Wave 1 follow-up: validated object types now take precedence over filename/profile heuristics, so phonon band/DOS cannot be routed to the electronic viewer. Result loading treats the selected Artifact as required and companion Artifacts as best-effort; a failed optional sibling no longer hides a readable primary result. Generic table previews now disclose the total row count and preview cap, and unknown source objects use an explicit unsupported state instead of a guessed recipe/JSON renderer. Desktop Chrome rechecked the real Q-TABLE-001 route (64 rows, source-owned units not guessed) and the trajectory Research timeline. Final 390×845 Chrome acceptance passed: Research owns one active 对话/工作台 panel with no viewport overflow, the Data table owns its 594px horizontal canvas inside a 390px scroll region, row selection and Model Settings close controls are 44px, Inspector Escape restores the exact selected-row trigger, and Report list/reader remain within the viewport.
+
+2026-08-21 Continuous Product Quality Wave 2 closed: Research Run ownership is now a
+normalized, project-scoped `research_session_runs` projection with Alembic backfill
+from legacy assistant payloads, idempotent reassignment protection, and readable
+pre-migration fallback. Planner requests carry the validated `researchSessionId` and
+terminal interpretation reconciliation persists the post-run assistant projection
+server-side; failed runs are bounded and deduplicated. Historical Run reopening now
+keeps partial/error states honest, merges overlapping JobEvent/Artifact polling
+responses, prevents orphan Runs from attaching to the first session, and links Result
+to Data/Report/Research. Provider/session load failures expose retry states, while
+mobile Research remains a single active panel. Chrome verified retained Case 11 /
+Q-STRUCTURE-RDF-001 Run 02 at desktop and 390px: no document overflow, Data/Report
+links remained actionable, and the historical result restored after asynchronous
+loading. Full Vitest is 80 files / 539 tests; full Python is 1611 passed, 51 skipped;
+typecheck, build, compileall, Alembic head, and diff-check pass. Plotly warnings remain
+the existing dependency-level build warning; real screen-reader hardware and a
+non-terminal incremental browser snapshot remain explicitly NOT_VERIFIED.
+
+2026-08-21 Wave 2 copy refinement: the deterministic Research Turn projection now
+frames the selected dataset as `数据集“…”` and uses a neutral “以数据集为范围”
+sentence. The frontend also normalizes the same legacy pre-run prefix at display
+time, so retained sessions improve immediately without rewriting historical Messages.
+This keeps scientific dataset identifiers exact while removing awkward
+Chinese/English grammar mixing in retained assistant messages. Unsupported-state copy
+uses the same dataset framing.
+
+2026-08-21 exact Structure research and workbench closure: the Chinese request
+`查看当前结构的径向分布与局部环境` now stops before execution until the user
+chooses CrystalNN or VoronoiNN, then preserves the exact coordination producer,
+local-environment polyhedra consumer and RDF workflow. Composite local-environment
+plus experimental-XRD prompts retain both dependency chains. Oversized approved
+tables no longer erase smaller safe interpretation evidence; Research and Report
+present coordination coverage/ranges and algorithm limitations in user-facing
+Chinese. Authenticated browser acceptance created and completed real Run
+`job_07f702a3c9af42259ec5d14f` with exactly three validated steps and rendered
+5 RDF series / 400 values. Desktop geometry was measured at 1280x720: global bar
+0-56, project nav 56-100, workbench 100-720; conversation and result panes remain
+620 px high with independent scrolling and no root scroll. Pointer and keyboard
+splitter controls are bounded to 320-640 px. Full Python is 1618 passed / 51
+skipped; full Vitest is 82 files / 552 tests; build, typecheck, compileall,
+Alembic head and diff-check pass. Existing Plotly/glslify build warnings remain.
+
+2026-08-21 acceptance and CI closure in progress: Windows Narrator was started
+and an independently focused Chrome product page exposed named banner/nav/main,
+Research log, controls, adjustable separator, scientific chart region and live
+status semantics. Browser keyboard traversal followed the visual order through
+global/project navigation, Research records, completed runs, composer, model
+control, splitter, Data/Report links and numerical disclosure. The Windows
+automation safety layer could not retain a URL-qualified connection, so
+captured speech output remains an explicit verification boundary; no auditory
+claim is fabricated. A frontend regression now proves a persisted scientific
+Artifact renders while its Job remains `running`, complementing the existing
+threaded runtime test that proves `artifact.ready` precedes terminal completion.
+The design-system split contract is aligned to the measured 420 px default,
+320-640 px bounds and 480 px minimum result surface.

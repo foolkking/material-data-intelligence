@@ -17,6 +17,7 @@ from mdi_api.artifact_storage import create_artifact_storage_from_settings
 from mdi_api.database import create_repository_factory
 from mdi_api.repositories import InMemoryRepositoryBundle, compute_plan_hash
 from mdi_api.secrets import InMemorySecretStore
+from mdi_api.provider_connections import decrypt_api_key, get_connection, thinking_budget
 from mdi_llm import (
     ARTIFACT_PROJECTOR_CONTRACTS,
     AnalysisIntentError,
@@ -95,6 +96,7 @@ class PlannerPreviewRequest(BaseModel):
     temperature: float | None = None
     maxTokens: int | None = None
     timeoutSeconds: float | None = None
+    thinkingMode: Literal["quick", "standard", "deep"] = "standard"
 
 
 class PlannerValidateRequest(BaseModel):
@@ -115,10 +117,12 @@ class PlannerJobsRequest(BaseModel):
     temperature: float | None = None
     maxTokens: int | None = None
     timeoutSeconds: float | None = None
+    thinkingMode: Literal["quick", "standard", "deep"] = "standard"
     intentSchemaVersion: str | None = None
     intentId: str | None = None
     selectedResourceIds: list[str] = Field(default_factory=list, max_length=32)
     selectedTargetIds: list[str] = Field(default_factory=list, max_length=32)
+    researchSessionId: str | None = Field(default=None, min_length=1, max_length=64)
 
 
 class PlannerIntentCreateRequest(BaseModel):
@@ -136,6 +140,7 @@ class PlannerIntentCreateRequest(BaseModel):
     temperature: float | None = None
     maxTokens: int | None = None
     timeoutSeconds: float | None = None
+    thinkingMode: Literal["quick", "standard", "deep"] = "standard"
 
 
 class PlannerIntentClarificationRequest(BaseModel):
@@ -154,6 +159,7 @@ class PlannerInterpretationRequest(BaseModel):
     temperature: float | None = Field(default=None, ge=0, le=2)
     maxTokens: int | None = Field(default=None, ge=1, le=32_768)
     timeoutSeconds: float | None = Field(default=None, ge=1, le=120)
+    thinkingMode: Literal["quick", "standard", "deep"] = "standard"
 
 
 @dataclass
@@ -938,14 +944,16 @@ def _create_planner_job_interpretation_locked(
         provider_model = None
         provider_config_hash = None
         if request.mode == "STRICT_PROVIDER":
-            provider_identity = "deepseek"
-            provider_model = request.model or os.getenv("DEEPSEEK_MODEL") or DEEPSEEK_DEFAULT_MODEL
+            provider_identity = _requested_planner_provider_name(request.provider)
+            saved_connection = get_connection(provider_identity)
+            provider_model = request.model or (saved_connection.default_model if saved_connection else None) or os.getenv("DEEPSEEK_MODEL") or DEEPSEEK_DEFAULT_MODEL
             provider_config_hash = hashlib.sha256(json.dumps({
-                "provider": request.provider or "deepseek",
-                "baseUrl": "https://api.deepseek.com",
+                "provider": provider_identity,
+                "baseUrl": saved_connection.base_url if saved_connection else "https://api.deepseek.com",
                 "model": provider_model,
                 "temperature": 0,
                 "maxTokens": request.maxTokens,
+                "thinkingMode": request.thinkingMode,
                 "timeoutSeconds": request.timeoutSeconds,
             }, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
         if not bundle.evidenceItems:
@@ -1081,6 +1089,8 @@ def get_planner_interpretation_evidence(interpretation_id: str, *, repositories:
         "interpretationId": interpretation_id,
         "bundleId": bundle["bundleId"],
         "bundleHash": bundle["bundleHash"],
+        "jobId": bundle["jobId"],
+        "planId": bundle["planId"],
         "evidenceItems": bundle["evidenceItems"],
         "sourceArtifactIds": bundle["sourceArtifactIds"],
         "bundleWarnings": bundle["bundleWarnings"],
@@ -1319,8 +1329,11 @@ def _interpretation_artifact_candidates(
             unsupported_artifact_count += 1
             continue
         size = int(artifact.get("sizeBytes") or 0)
-        if size <= 0 or size > 262_144:
-            raise InterpretationError("EVIDENCE_CAP_EXCEEDED", "A structured interpretation artifact exceeds 262144 bytes.")
+        if size <= 0:
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Structured interpretation artifact size is invalid.")
+        if size > 262_144:
+            unsupported_artifact_count += 1
+            continue
         if str(artifact.get("contentType") or "").split(";", 1)[0].strip().lower() != "application/json":
             raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Structured interpretation artifacts require application/json media type.")
         storage_key = str(artifact.get("storageKey") or "")
@@ -1565,7 +1578,22 @@ def _planner_repositories_and_runtime(*, repositories: Any, queue_runtime: Queue
         return repositories, runtime
 
     settings = load_settings()
-    if "postgres" in settings.database_url:
+    # The repository layer is also used with SQLite in the supported local
+    # durable-runtime adapter; selecting it must follow runtime_backend, not
+    # only the database URL scheme.
+    # An explicit DATABASE_URL opts local development into the same durable
+    # repository path as PostgreSQL. The default no-env test runtime remains
+    # in-memory so isolated unit tests do not need a database schema.
+    explicit_database_url = bool(os.getenv("DATABASE_URL") or os.getenv("MDI_DATABASE_URL"))
+    use_durable_repository = (
+        "postgres" in settings.database_url
+        or settings.runtime_backend == "postgresql"
+        or explicit_database_url
+        # The local production API also owns a durable SQLite database. Keep
+        # only pytest's isolated route tests on the in-memory bundle.
+        or not os.getenv("PYTEST_CURRENT_TEST")
+    )
+    if use_durable_repository:
         factory = create_repository_factory(settings)
         repos = factory.create_repositories()
         artifact_storage = create_artifact_storage_from_settings(settings)
@@ -1908,8 +1936,10 @@ def _select_planner_provider(requested_provider: str | None, *, provider: Any = 
         return _LLM_PROVIDER
     if provider_name == "deepseek":
         return DeepSeekProvider()
+    if get_connection(provider_name) is not None:
+        return OpenAICompatibleProvider()
     raise LLMProviderError(
-        "New real LLM calls are restricted to DeepSeek.",
+        "所选 Provider 尚未配置或不在服务目录中。",
         code="PROVIDER_NOT_ALLOWED",
     )
 
@@ -1923,11 +1953,26 @@ def _test_providers_allowed() -> bool:
 
 
 def _planner_user_config_from_request(request: Any, *, selected_provider: Any = None) -> PlannerUserConfig | None:
-    fields = ("baseUrl", "model", "secretId", "temperature", "maxTokens", "timeoutSeconds")
-    if selected_provider is not None and not isinstance(selected_provider, DeepSeekProvider):
-        return None
+    fields = ("baseUrl", "model", "secretId", "temperature", "maxTokens", "timeoutSeconds", "thinkingMode")
     provider_name = _requested_planner_provider_name(getattr(request, "provider", None))
     has_explicit_config = any(getattr(request, field, None) not in (None, "") for field in fields)
+    connection = get_connection(provider_name)
+    if connection is not None:
+        requested_model = getattr(request, "model", None) or connection.default_model
+        if requested_model and connection.model_ids and requested_model not in connection.model_ids:
+            raise LLMProviderError("所选模型不在该 Provider 的模型目录中。", code="PROVIDER_MODEL_NOT_ALLOWED")
+        return PlannerUserConfig(
+            provider=connection.provider,
+            model=requested_model or "",
+            base_url=connection.base_url,
+            api_key=decrypt_api_key(connection),
+            timeout_seconds=float(getattr(request, "timeoutSeconds", None) or 120.0),
+            temperature=0.0,
+            max_tokens=thinking_budget(getattr(request, "thinkingMode", "standard"), int(getattr(request, "maxTokens", None) or 8192)),
+            thinking_mode=getattr(request, "thinkingMode", "standard"),
+        )
+    if selected_provider is not None and not isinstance(selected_provider, DeepSeekProvider):
+        return None
     if provider_name != "deepseek":
         return None
     if getattr(request, "baseUrl", None) or getattr(request, "secretId", None):
@@ -1949,7 +1994,8 @@ def _planner_user_config_from_request(request: Any, *, selected_provider: Any = 
         model=getattr(request, "model", None) or os.getenv("DEEPSEEK_MODEL") or DEEPSEEK_DEFAULT_MODEL,
         timeout_seconds=float(getattr(request, "timeoutSeconds", None) or 120.0),
         temperature=0.0,
-        max_tokens=int(getattr(request, "maxTokens", None) or 8192),
+        max_tokens=thinking_budget(getattr(request, "thinkingMode", "standard"), int(getattr(request, "maxTokens", None) or 8192)),
+        thinking_mode=getattr(request, "thinkingMode", "standard"),
     )
 
 

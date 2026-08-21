@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import os
+import threading
+import time
 import uuid
 from pathlib import Path
 from typing import Any
@@ -201,6 +203,50 @@ def test_worker_explicit_fallback_works_only_when_no_persisted_plan() -> None:
     assert explicit.status == "completed"
     assert explicit.tool_call_count == 1
     assert repos.tool_calls.list_for_job("job_explicit")[0]["stepId"] == "explicit_step"
+
+
+def test_worker_exposes_ready_artifact_before_later_step_reaches_terminal() -> None:
+    """A completed tool output is readable while the same Job is still running."""
+    repos = InMemoryRepositoryBundle.create()
+    repos.projects.save({"id": "project_incremental", "name": "Incremental"})
+    repos.datasets.save({"id": "dataset_incremental", "projectId": "project_incremental", "name": "Dataset"})
+    repos.jobs.save({"id": "job_incremental", "projectId": "project_incremental", "datasetId": "dataset_incremental", "status": "created"})
+    second_step_started = threading.Event()
+    release_second_step = threading.Event()
+
+    plan = _partial_plan()
+    plan["steps"].append({
+        "stepId": "explicit_step_2",
+        "toolId": "ml.basic_metrics",
+        "inputRefs": [],
+        "params": {"targetColumn": "y_true", "predictionColumn": "y_pred"},
+        "output": {"artifactTypes": ["metrics_json"]},
+    })
+
+    def staged_executor(request: Any, context: Any) -> QueueToolExecution:
+        if request.stepId == "explicit_step_2":
+            second_step_started.set()
+            assert release_second_step.wait(timeout=5), "test failed to release the second step"
+        return _fake_executor(request, context)
+
+    runtime = QueueWorkerRuntime(repositories=repos, tool_executor=staged_executor)
+    worker = threading.Thread(target=runtime.handle_job, args=("job_incremental",), kwargs={"plan": plan}, daemon=True)
+    worker.start()
+    deadline = time.monotonic() + 5
+    while not second_step_started.is_set() and time.monotonic() < deadline:
+        time.sleep(0.01)
+    assert second_step_started.is_set()
+
+    ready = repos.artifacts.list_for_job("job_incremental")
+    assert len(ready) == 1
+    assert repos.jobs.get("job_incremental")["status"] == "running"
+    assert any(event.eventType == "artifact.ready" for event in repos.job_events.list_for_job("job_incremental"))
+
+    release_second_step.set()
+    worker.join(timeout=5)
+    assert not worker.is_alive()
+    assert repos.jobs.get("job_incremental")["status"] == "completed"
+    assert len(repos.artifacts.list_for_job("job_incremental")) == 2
 
 
 def test_unknown_tool_rejected_before_persistence() -> None:

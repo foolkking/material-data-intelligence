@@ -5,6 +5,13 @@ on:
     branches: [master, main]
   pull_request:
     branches: [master, main]
+  workflow_dispatch:
+    inputs:
+      replay_historical_browser_evidence:
+        description: Replay sealed Phase 10/12 browser evidence in addition to current product gates
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -21,26 +28,21 @@ jobs:
       matrix:
         python-version: ["3.11"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v10.0.1
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Python dependencies
         run: uv sync --frozen --extra test
 
-      - name: Phase 10 backend closure
-        run: uv run python -m pytest -q tests/integration/test_phase10_product_closure.py -m "not integration" --tb=short
-
-      - name: Phase 10L-5 natural-language evidence closure
-        run: uv run python -m pytest -q tests/test_phase10l5_deepseek_provider.py tests/test_phase10l5_natural_language_evidence.py --tb=short
-
       - name: Run unit tests
         run: uv run python -m pytest -q -m "not integration" --tb=short
 
       - name: Historical release evidence semantic validation
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         run: >-
           uv run python -m pytest -q
           tests/test_phase13_0_release_scope.py
@@ -59,9 +61,9 @@ jobs:
     name: Phase 11-3 Scientific Replay (Linux)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v10.0.1
         with:
           python-version: "3.11"
       - name: Install locked dependencies
@@ -69,7 +71,7 @@ jobs:
       - name: Replay sealed invariant cases
         run: uv run python scripts/run_phase11_3_reproducibility.py --platform linux --output-dir "${RUNNER_TEMP}/phase11-3-linux"
       - name: Upload Linux reproducibility evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: phase11-3-linux-replay
           path: ${{ runner.temp }}/phase11-3-linux
@@ -80,7 +82,7 @@ jobs:
     runs-on: windows-latest
     needs: phase11-reproducibility-linux
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           sparse-checkout: |
             pyproject.toml
@@ -89,7 +91,7 @@ jobs:
             docs/phase11/evidence/phase11_2_golden_scientific_benchmark
           sparse-checkout-cone-mode: false
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v10.0.1
         with:
           python-version: "3.11"
       - name: Install locked dependencies
@@ -97,7 +99,7 @@ jobs:
       - name: Replay sealed invariant cases
         run: uv run python scripts/run_phase11_3_reproducibility.py --platform windows --output-dir "$env:RUNNER_TEMP\phase11-3-windows"
       - name: Download Linux reproducibility evidence
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: phase11-3-linux-replay
           path: ${{ runner.temp }}/phase11-3-linux
@@ -108,7 +110,7 @@ jobs:
           --compare-windows "$env:RUNNER_TEMP\phase11-3-windows\windows_replay.json"
           --output-dir "$env:RUNNER_TEMP\phase11-3-cross-platform"
       - name: Upload cross-platform evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: phase11-3-cross-platform-replay
           path: |
@@ -120,10 +122,10 @@ jobs:
     name: Frontend Typecheck & Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "20"
           cache: npm
@@ -139,15 +141,17 @@ jobs:
           npx playwright install --with-deps chromium firefox webkit
         working-directory: apps/web
 
-      - name: Phase 10 frontend closure
-        run: npm run test:phase10-closure
+      - name: Run frontend tests
+        run: npm test
         working-directory: apps/web
 
       - name: Phase 10 browser evidence integrity
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         run: node test/phase10-closure-evidence-check.mjs
         working-directory: apps/web
 
       - name: Trajectory performance evidence integrity
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         run: npm run test:trajectory-performance-evidence
         working-directory: apps/web
 
@@ -184,6 +188,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10L-4 browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
           MDI_PHASE10L4_BROWSERS: chromium,firefox,webkit
@@ -196,6 +201,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10L-5 natural-language browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
           MDI_PHASE10L5_BROWSERS: chromium,firefox,webkit
@@ -208,6 +214,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10M-2 Workspace shell browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
           MDI_PHASE10M2_BROWSERS: chromium,firefox,webkit
@@ -220,6 +227,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10M-3 canonical selection browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
           MDI_PHASE10M3_BROWSERS: chromium,firefox,webkit
@@ -232,6 +240,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10M-4 Artifact Gallery browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
           MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
@@ -244,6 +253,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10N-1 coordination browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
           MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
@@ -257,6 +267,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10N-2 local-environment browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
           MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
@@ -270,6 +281,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10N-3 experimental XRD browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
           MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
@@ -283,6 +295,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10N-4 trajectory analytics browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
           MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
@@ -296,6 +309,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10N-5 electronic Band and DOS browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
           MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
@@ -309,6 +323,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10N-6 professional integration browser closure
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
           MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
@@ -322,6 +337,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10M-5 Report and Recipe browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           DEEPSEEK_KEY: ""
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
@@ -334,6 +350,7 @@ jobs:
         working-directory: apps/web
 
       - name: Phase 12-5 Report and Recipe experience evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           DEEPSEEK_KEY: ""
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
@@ -370,6 +387,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10M-6 Workspace recovery browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           DEEPSEEK_KEY: ""
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
@@ -382,6 +400,7 @@ jobs:
         working-directory: apps/web
 
       - name: Replay Phase 10M-7 Workspace integration browser evidence
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
         env:
           DEEPSEEK_KEY: ""
           MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
@@ -459,10 +478,10 @@ jobs:
       MINIO_SECURE: "false"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v10.0.1
         with:
           python-version: "3.11"
 

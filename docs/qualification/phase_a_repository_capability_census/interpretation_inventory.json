@@ -1,0 +1,564 @@
+{
+  "rowCount": 18,
+  "rows": [
+    {
+      "capabilityFamilyId": "CAP-DATASET",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-COMPOSITION",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-TABLE",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-ML-REGRESSION",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-ML-UNCERTAINTY",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-ML-CLASSIFICATION",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-STRUCTURE-SUMMARY",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-STRUCTURE-VIEW",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-COORDINATION",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-XRD",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-STRUCTURE-RDF",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-TRAJECTORY-VIEW",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-TRAJECTORY-ANALYTICS",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-PHONON",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-PHONON-ANIMATION",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-RECIPROCAL",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-VOLUMETRIC",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    },
+    {
+      "capabilityFamilyId": "CAP-ELECTRONIC",
+      "evidenceProjector": "GroundedInterpretation projector over exact persisted Artifacts",
+      "forbiddenClaims": [
+        "unsupported causality",
+        "independent validation implied by availability",
+        "science executed by LLM/frontend"
+      ],
+      "interpretationSupported": true,
+      "mandatoryLimitations": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "noEvidenceBehavior": "typed unavailable; no claim",
+      "partialInterpretationBehavior": "INTERPRETATION_READY_WITH_LIMITS",
+      "repositoryEvidenceRefs": [
+        "packages/schemas/mdi_schemas/interpretation.py",
+        "apps/api/mdi_api/phase2_runtime.py"
+      ],
+      "requiredEvidence": [
+        "persisted Artifact facts",
+        "exact lineage"
+      ],
+      "supportedClaimTypes": [
+        "descriptive",
+        "comparison",
+        "limitation"
+      ],
+      "supportedPredicates": [
+        "artifact-contract-specific bounded predicates"
+      ]
+    }
+  ],
+  "schemaVersion": "InterpretationQualificationInventory/1.0"
+}

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from mdi_api.config import ApiSettings, load_settings
 from mdi_api.database import create_repository_factory
 
@@ -12,21 +14,24 @@ def persist_runtime_project(
     *,
     settings: ApiSettings | None = None,
     repository_factory: Any | None = None,
+    created_by: str = "user_local",
 ) -> dict[str, Any] | None:
     active_settings = settings or load_settings()
-    if active_settings.runtime_backend != "postgresql":
-        return None
-
     project = runtime.projects[project_id]
     factory = repository_factory or create_repository_factory(active_settings)
-    with factory.session() as session:
-        persisted = session.repositories.projects.save(
-            {
-                **project.summary(),
-                "createdBy": "user_local",
-                "organizationId": "org_local",
-            }
-        )
+    try:
+        with factory.session() as session:
+            persisted = session.repositories.projects.save(
+                {
+                    **project.summary(),
+                    "createdBy": created_by,
+                    "organizationId": "org_local",
+                }
+            )
+    except SQLAlchemyError:
+        if active_settings.runtime_backend == "postgresql":
+            raise
+        return None
     return _runtime_project_summary(project.summary(), persisted)
 
 
@@ -37,11 +42,14 @@ def list_runtime_projects(
     repository_factory: Any | None = None,
 ) -> list[dict[str, Any]]:
     active_settings = settings or load_settings()
-    if active_settings.runtime_backend != "postgresql":
-        return runtime.list_projects()
-
     factory = repository_factory or create_repository_factory(active_settings)
-    return [_durable_project_summary(project) for project in factory.create_repositories().projects.list()]
+    try:
+        durable = [_durable_project_summary(project) for project in factory.create_repositories().projects.list()]
+    except SQLAlchemyError:
+        if active_settings.runtime_backend == "postgresql":
+            raise
+        return runtime.list_projects()
+    return durable or runtime.list_projects()
 
 
 def hydrate_runtime_project(
@@ -57,11 +65,13 @@ def hydrate_runtime_project(
         return runtime.projects[project_id].summary()
 
     active_settings = settings or load_settings()
-    if active_settings.runtime_backend != "postgresql":
-        raise LookupError(f"Unknown project_id: {project_id}")
-
     factory = repository_factory or create_repository_factory(active_settings)
-    project = factory.create_repositories().projects.get(project_id)
+    try:
+        project = factory.create_repositories().projects.get(project_id)
+    except SQLAlchemyError:
+        if active_settings.runtime_backend == "postgresql":
+            raise
+        raise LookupError(f"Unknown project_id: {project_id}") from None
     return runtime.ensure_project(project_id, name=str(project["name"]))
 
 

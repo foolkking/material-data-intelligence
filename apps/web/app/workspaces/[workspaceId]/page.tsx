@@ -1,6 +1,6 @@
-import { ScientificWorkspaceShell } from "../../components/workspace/ScientificWorkspaceShell";
+import { LegacyWorkspaceCompatibility } from "../../components/LegacyCompatibilityPages";
 
 export default async function ScientificWorkspacePage({ params }: { params: Promise<{ workspaceId: string }> }) {
   const { workspaceId } = await params;
-  return <ScientificWorkspaceShell workspaceId={workspaceId} />;
+  return <LegacyWorkspaceCompatibility workspaceId={workspaceId} />;
 }

@@ -36,6 +36,7 @@ DEEPSEEK_ALLOWED_PURPOSES = frozenset(
         "CAPABILITY_PLAN_SELECTION",
         "MULTI_TOOL_COMPOSITION",
         "GROUNDED_INTERPRETATION",
+        "REPORT_COMPOSITION",
         "PROVIDER_CONNECTION_TEST",
     }
 )
@@ -61,6 +62,7 @@ class PlannerUserConfig:
     timeout_seconds: float = 30.0
     temperature: float = 0.2
     max_tokens: int = 4096
+    thinking_mode: str = "standard"
 
 
 @dataclass
@@ -450,11 +452,11 @@ class MockLLMProvider:
 
 
 class OpenAICompatibleProvider:
-    """Historical OpenAI-compatible provider retained for fake-test compatibility.
+    """Bounded OpenAI-compatible transport for configured providers.
 
-    Phase 10L-5 forbids this class from making a real network request. Existing
-    tests and historical replay may inject a bounded fake transport; new live
-    execution must use :class:`DeepSeekProvider`.
+    The same adapter serves OpenAI, DeepSeek-compatible gateways and other
+    services exposing ``/chat/completions``. Credentials are supplied only by
+    the server-side connection registry, never by browser payloads.
     """
 
     def __init__(self, *, transport: Any = None) -> None:
@@ -485,23 +487,33 @@ class OpenAICompatibleProvider:
         user_config: PlannerUserConfig | None = None,
         purpose: str | None = None,
     ) -> PlannerRawResponse:
-        """Use an injected fake transport for historical deterministic replay."""
+        """Use an injected fake transport or the server-resolved live endpoint."""
         if self._transport is None:
-            raise LLMProviderError(
-                "New real LLM calls must use the DeepSeek provider.",
-                code="PROVIDER_NOT_ALLOWED",
+            config = user_config or PlannerUserConfig()
+            resolved = _resolve_openai_config(config, prefer_config=True)
+            if not resolved["api_key"]:
+                raise LLMProviderError("Provider API Key 未配置。", code="PROVIDER_NOT_CONFIGURED")
+            response = _post_chat_completion(
+                base_url=resolved["base_url"],
+                api_key=resolved["api_key"],
+                model=resolved["model"],
+                messages=messages,
+                temperature=resolved["temperature"],
+                max_tokens=resolved["max_tokens"],
+                timeout_seconds=resolved["timeout_seconds"],
             )
-        config = user_config or PlannerUserConfig()
-        resolved = _resolve_openai_config(config, prefer_config=user_config is not None)
-        response = _call_fake_transport(
-            self._transport,
-            model=resolved["model"],
-            messages=messages,
-            temperature=resolved["temperature"],
-            max_tokens=resolved["max_tokens"],
-            timeout_seconds=resolved["timeout_seconds"],
-            response_format={"type": "json_object"},
-        )
+        else:
+            config = user_config or PlannerUserConfig()
+            resolved = _resolve_openai_config(config, prefer_config=user_config is not None)
+            response = _call_fake_transport(
+                self._transport,
+                model=resolved["model"],
+                messages=messages,
+                temperature=resolved["temperature"],
+                max_tokens=resolved["max_tokens"],
+                timeout_seconds=resolved["timeout_seconds"],
+                response_format={"type": "json_object"},
+            )
 
         choice = _first_choice(response)
         content = _choice_content(choice)
@@ -512,6 +524,33 @@ class OpenAICompatibleProvider:
             model=str(resolved["model"]),
             finish_reason=choice.get("finish_reason"),
         )
+
+    def generate_research_turn(
+        self,
+        *,
+        messages: list[dict[str, str]],
+        user_config: PlannerUserConfig | None = None,
+    ) -> PlannerRawResponse:
+        """Run the bounded Research Turn Orchestrator role.
+
+        The returned JSON is advisory and must be validated by
+        ``mdi_llm.research_roles`` before persistence. It cannot create or
+        mutate an AnalysisPlan or execution object.
+        """
+        return self.complete_json(messages=messages, user_config=user_config, purpose="INTENT_EXTRACTION")
+
+    def compose_report_json(
+        self,
+        *,
+        messages: list[dict[str, str]],
+        user_config: PlannerUserConfig | None = None,
+    ) -> PlannerRawResponse:
+        """Run the optional editorial Report Composer role.
+
+        Callers must provide only a bounded ScientificResultBundle projection;
+        the output still requires strict reference validation before storage.
+        """
+        return self.complete_json(messages=messages, user_config=user_config, purpose="REPORT_COMPOSITION")
 
     @property
     def meta(self) -> _ProviderMeta:
@@ -779,6 +818,7 @@ def _resolve_openai_config(config: PlannerUserConfig, *, prefer_config: bool = F
             "timeout_seconds": config.timeout_seconds,
             "max_tokens": config.max_tokens,
             "temperature": config.temperature,
+            "thinking_mode": config.thinking_mode,
         }
     return {
         "api_key": config.api_key or os.environ.get("MDI_LLM_API_KEY") or os.environ.get("OPENAI_API_KEY"),
@@ -787,6 +827,7 @@ def _resolve_openai_config(config: PlannerUserConfig, *, prefer_config: bool = F
         "timeout_seconds": _env_float("MDI_LLM_TIMEOUT_SECONDS", config.timeout_seconds),
         "max_tokens": _env_int("MDI_LLM_MAX_TOKENS", config.max_tokens),
         "temperature": _env_float("MDI_LLM_TEMPERATURE", config.temperature),
+        "thinking_mode": config.thinking_mode,
     }
 
 
@@ -1407,7 +1448,9 @@ def _select_local_environment_tools(
     if not _has_structure_input(data_profile) or not _has_tool(tools, "structure.local_environment_polyhedra"):
         return []
     prompt = request.user_prompt.casefold()
-    if not any(marker in prompt for marker in ("local environment", "coordination polyhed", "local geometry")):
+    if not any(marker in prompt for marker in (
+        "local environment", "coordination polyhed", "local geometry", "局部环境", "配位多面体", "局部几何",
+    )):
         return []
     if "crystalnn" in prompt:
         producer = "structure.coordination_crystalnn"
@@ -1933,6 +1976,7 @@ def _should_generate_rdf(
         "pair distribution g(r)",
         "pair distribution",
         "g(r)",
+        "径向分布",
         "径向分布函数",
     )
     return any(marker in prompt for marker in markers)

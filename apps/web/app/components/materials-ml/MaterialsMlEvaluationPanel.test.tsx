@@ -61,16 +61,16 @@ describe("MaterialsMlEvaluationPanel", () => {
     expect(screen.getByRole("img", { name: "target versus prediction" })).toBeTruthy();
     expect(screen.getByRole("img", { name: "target versus residual" })).toBeTruthy();
     expect(screen.getByTestId("materials-ml-high-error-table")).toHaveTextContent("s2");
-    expect(panel).toHaveTextContent("Element groups overlap");
+    expect(panel).toHaveTextContent("元素分组可以重叠");
     expect(screen.getByTestId("materials-ml-model-comparison")).toHaveTextContent("common_valid_samples");
   });
 
   it("switches between available bounded products and preserves explicit uncertainty policy", async () => {
     const user = userEvent.setup();
     render(<MaterialsMlEvaluationPanel artifacts={[artifact("materials_ml_regression.json", regression()), artifact("materials_ml_uncertainty.json", uncertainty())]} />);
-    await user.selectOptions(screen.getByRole("combobox", { name: "Product" }), "materials_ml_uncertainty.json");
+    await user.selectOptions(screen.getByRole("combobox", { name: "产品" }), "materials_ml_uncertainty.json");
     expect(screen.getByTestId("materials-ml-uncertainty")).toHaveTextContent("source_defined_uncertainty");
-    expect(screen.getByTestId("materials-ml-reliability-table")).toHaveTextContent("Mean uncertainty");
+    expect(screen.getByTestId("materials-ml-reliability-table")).toHaveTextContent("平均不确定性");
     expect(screen.getByTestId("materials-ml-high-uncertainty-table")).toHaveTextContent("s2");
   });
 
@@ -136,7 +136,7 @@ describe("MaterialsMlEvaluationPanel", () => {
       artifact("materials_ml_uncertainty.json", uncertainty()),
     ]} />);
     expect(screen.getByTestId("materials-ml-uncertainty")).toBeTruthy();
-    await user.selectOptions(screen.getByRole("combobox", { name: "Product" }), "materials_ml_regression.json");
+    await user.selectOptions(screen.getByRole("combobox", { name: "产品" }), "materials_ml_regression.json");
     expect(screen.getByTestId("materials-ml-invalid")).toHaveTextContent("MATERIALS_ML_SCHEMA_UNSUPPORTED");
   });
 });

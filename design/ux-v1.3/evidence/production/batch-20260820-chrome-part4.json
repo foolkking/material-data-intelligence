@@ -1,0 +1,100 @@
+[
+  {
+    "projectId": "project_0027_416f1b8a26b94365",
+    "datasetId": "dataset_0027_fe2a127e789f45d7",
+    "latestRun": "job_7c5aa72015a04b5bbc4e9c14",
+    "hasResult": false,
+    "hasAssistant": false
+  },
+  {
+    "projectId": "project_0028_ed96e32d254c4c9b",
+    "datasetId": "dataset_0028_e5d7d9f8fde048cc",
+    "latestRun": null,
+    "hasResult": true,
+    "hasAssistant": true
+  },
+  {
+    "projectId": "project_0029_1006c3bc6cd14710",
+    "datasetId": "dataset_0029_f8934bfde6db4c58",
+    "latestRun": "job_f47ca398e71a4c9daceb8f7c",
+    "hasResult": true,
+    "hasAssistant": true
+  },
+  {
+    "projectId": "project_0030_a30f217bb3ae4eb3",
+    "datasetId": "dataset_0030_c41bfa8dcd7244d9",
+    "latestRun": "job_63ac77ed755d4710af1b20d0",
+    "hasResult": true,
+    "hasAssistant": true
+  },
+  {
+    "projectId": "project_0031_0470c67e3aa04adb",
+    "datasetId": "dataset_0031_6d8c9a9186c04d57",
+    "latestRun": "job_0befb02650e6444cb5e99376",
+    "hasResult": false,
+    "hasAssistant": true
+  },
+  {
+    "projectId": "project_0032_1363d7b596cf4cd8",
+    "datasetId": "dataset_0032_03ca87671be3488d",
+    "latestRun": "job_d68c8e011fc24a3598fb62fe",
+    "hasResult": true,
+    "hasAssistant": true
+  },
+  {
+    "projectId": "project_0033_7acc76eaa3004923",
+    "datasetId": "dataset_0033_fb8ed095890440e3",
+    "latestRun": "job_169698960f2e4abeb2aabbed",
+    "hasResult": true,
+    "hasAssistant": true
+  },
+  {
+    "projectId": "project_0034_b0a14678c9814ee2",
+    "datasetId": "dataset_0034_24c51db7ff9d4833",
+    "latestRun": "job_bf79513de528456faa744f57",
+    "hasResult": true,
+    "hasAssistant": false
+  },
+  {
+    "projectId": "project_0035_7f30ae8b82a540ef",
+    "datasetId": "dataset_0035_dcf6cab97823449a",
+    "latestRun": "job_11c9d69d58994b9f9f7d4eaf",
+    "hasResult": true,
+    "hasAssistant": true
+  },
+  {
+    "projectId": "project_0036_5d13c90936b9446c",
+    "datasetId": "dataset_0036_6ed235828c0249e2",
+    "latestRun": "job_3b2b4e1d5ba746eb98b86f5c",
+    "hasResult": true,
+    "hasAssistant": true
+  },
+  {
+    "projectId": "project_0037_e3bc80c1eedf4b1b",
+    "datasetId": "dataset_0037_46171294a52741f1",
+    "latestRun": "job_41d6f949c75c4742abcc241c",
+    "hasResult": false,
+    "hasAssistant": false
+  },
+  {
+    "projectId": "project_0038_93eb4c96f456456f",
+    "datasetId": "dataset_0038_6241def60c844f29",
+    "latestRun": "job_4180fc6f6c1a49339e427b8e",
+    "hasResult": false,
+    "hasAssistant": false
+  },
+  {
+    "projectId": "project_0039_806b5cb364b34cd1",
+    "datasetId": "dataset_0039_8106dbf18b4f4bba",
+    "latestRun": "job_754181c66d924b9e8a3e1a6c",
+    "hasResult": true,
+    "hasAssistant": true
+  },
+  {
+    "projectId": "project_9dcda0df6e5a45be9483c8b4",
+    "datasetId": "dataset_0001",
+    "latestRun": "job_6c1d1649cd2d42a5ac5ec0c4",
+    "hasResult": true,
+    "hasAssistant": true
+  }
+]

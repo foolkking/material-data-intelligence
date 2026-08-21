@@ -27,7 +27,8 @@ export async function loadVolumetricJsonArtifact(
 ): Promise<unknown> {
   if (!artifact) throw new VolumetricViewerError("VOLUME_VIEWER_ARTIFACTS_MISSING", "Required volumetric metadata is missing.");
   const attached = artifact.content ?? artifact.payload ?? artifact.metadata?.preview;
-  const retrievable = Boolean(artifact.jobId && (artifact.id ?? artifact.artifactId));
+  const sourceResource = Boolean(artifact.metadata?.sourceObjectType);
+  const retrievable = Boolean(!sourceResource && artifact.jobId && (artifact.id ?? artifact.artifactId));
   if (!retrievable && attached !== undefined) return parseAttachedJson(attached);
   const maximumBytes = Math.min(options.maximumBytes ?? 4_194_304, 4_194_304);
   const bytes = await (options.loader ?? defaultVolumetricByteLoader)(artifact, { signal: options.signal, maximumBytes });

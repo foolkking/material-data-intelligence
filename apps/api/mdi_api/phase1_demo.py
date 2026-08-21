@@ -370,6 +370,12 @@ def get_phase1_job_events(job_id: str) -> list[dict[str, Any]]:
     return [event.model_dump(mode="json") for event in result.events]
 
 
+def get_phase1_job_project_id(job_id: str) -> str | None:
+    """Return the Project boundary for the legacy in-memory job stream."""
+    result = _PHASE1_RESULTS.get(job_id)
+    return result.project_id if result is not None else None
+
+
 def get_phase1_job_artifacts(job_id: str) -> list[dict[str, Any]]:
     result = _PHASE1_RESULTS.get(job_id)
     if result is None:

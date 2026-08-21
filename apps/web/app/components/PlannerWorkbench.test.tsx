@@ -992,7 +992,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     await waitForViewerArtifacts();
     expect(screen.getByText("plan_1")).not.toBeNull();
     expect(screen.getByText("hash_1")).not.toBeNull();
-    await waitFor(() => expect(eventSources[0]?.url).toBe("http://localhost:8000/planner/jobs/job_1/events/stream?after_seq=8"));
+    await waitFor(() => expect(eventSources[0]?.url).toBe("/api/planner/jobs/job_1/events/stream?after_seq=8"));
 
     await openAgentTab(user);
     expect(screen.getByTestId("agent-process-tab")).not.toBeNull();
@@ -1217,14 +1217,14 @@ describe("Phase 9C PlannerWorkbench", () => {
     await openResultsTab(user);
 
     const panel = screen.getByTestId("brillouin-zone-preview-panel");
-    expect(within(panel).getByText("Standalone reciprocal-space product")).not.toBeNull();
+    expect(within(panel).getByText("独立倒易空间视图")).not.toBeNull();
     expect(within(panel).getByTestId("brillouin-zone-renderer-state")).toHaveTextContent("unsupported");
     expect(within(panel).getByTestId("brillouin-zone-renderer-fallback")).toHaveTextContent("BZ_RENDERER_UNSUPPORTED");
     expect(within(panel).getByTestId("brillouin-zone-summary").textContent).toContain("8");
     expect(within(panel).getByTestId("brillouin-zone-summary").textContent).toContain("6");
-    await user.click(within(panel).getByRole("tab", { name: "Scientific data" }));
-    expect(within(panel).getByText("K-path").parentElement?.textContent).toContain("phase10i.kpath.v1");
-    await user.click(within(panel).getByRole("tab", { name: "Manifest" }));
+    await user.click(within(panel).getByRole("tab", { name: "科学数据" }));
+    expect(within(panel).getByText("k 路径").parentElement?.textContent).toContain("phase10i.kpath.v1");
+    await user.click(within(panel).getByRole("tab", { name: "数据清单" }));
     expect(within(panel).getByTestId("brillouin-zone-manifest-json").textContent).toContain("phase10i.brillouin_zone_manifest.v1");
     expect(container.querySelector("canvas")).toBeNull();
     expect(container.querySelector("iframe")).toBeNull();
@@ -1369,7 +1369,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     const results = screen.getByTestId("results-export-tab");
     expect(within(results).getByRole("tab", { name: "Scene JSON" }).getAttribute("aria-selected")).toBe("true");
     await user.click(within(results).getByRole("tab", { name: "3D Renderer" }));
-    expect((await within(results).findByTestId("viewer-scene-renderer-unavailable")).textContent).toContain("Scene JSON and Manifest views remain available");
+    expect((await within(results).findByTestId("viewer-scene-renderer-unavailable")).textContent).toContain("结构数据和来源记录仍然保留");
     expect(container.querySelector("canvas")).toBeNull();
     await user.click(within(results).getByRole("tab", { name: "Scene JSON" }));
     expect(within(results).getByTestId("viewer-scene-json-preview")).not.toBeNull();

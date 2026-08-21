@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { loadDecodedVolumetricField, sha256Hex } from "./volumetricPayloadLoader";
+import { loadDecodedVolumetricField, loadVolumetricJsonArtifact, sha256Hex } from "./volumetricPayloadLoader";
 import type { ValidatedVolumetricField, ValidatedVolumetricPayload } from "./volumetricViewerTypes";
 
 const field = { fieldId: "field:test", fieldName: "density", contentHash: "a".repeat(64) } as ValidatedVolumetricField;
@@ -26,5 +26,17 @@ describe("volumetric payload loader", () => {
   it("rejects a logical hash mismatch without returning field bytes", async () => {
     const payload = { ...payloadBase, encoding: "inline_json", dtype: "float32", inlineValues: [1], valueCount: 1, uncompressedBytes: 4, logicalSha256: "0".repeat(64) } as ValidatedVolumetricPayload;
     await expect(loadDecodedVolumetricField({ field, payload, artifacts: [] })).rejects.toMatchObject({ code: "VOLUME_VIEWER_PAYLOAD_HASH_MISMATCH" });
+  });
+
+  it("uses attached source-resource JSON instead of requesting the synthetic source job", async () => {
+    const artifact = {
+      jobId: "source-view",
+      id: "source:volume:dataset",
+      metadata: { sourceObjectType: "VolumetricData" },
+      content: { schema_version: "phase10j.volumetric_dataset.v1" },
+    } as never;
+    const loader = vi.fn();
+    await expect(loadVolumetricJsonArtifact(artifact, { loader })).resolves.toMatchObject({ schema_version: "phase10j.volumetric_dataset.v1" });
+    expect(loader).not.toHaveBeenCalled();
   });
 });

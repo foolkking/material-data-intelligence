@@ -1,0 +1,905 @@
+{
+  "capabilityFamilies": [
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-DATASET",
+      "capabilityNeed": [
+        "comparison_groups",
+        "composition_data",
+        "material_property_data",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "description": "User-level qualification family backed by 2 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "comparison",
+        "downloadable_artifact",
+        "linked_samples",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Dataset intelligence",
+      "domain": "dataset",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "dataset.materials_explorer",
+        "dataset.composition_space"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "comparison_groups",
+        "composition_data",
+        "material_property_data",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "requiredInputs": [
+        "materials_tabular_dataset"
+      ],
+      "requiredProfileFacts": [
+        "comparison_groups",
+        "composition_data",
+        "material_property_data",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "supportDisposition": "SUPPORTED",
+      "supportedSemanticKinds": [
+        "materials_tabular_dataset"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-COMPOSITION",
+      "capabilityNeed": [
+        "composition_data",
+        "structure_resource"
+      ],
+      "description": "User-level qualification family backed by 7 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Composition statistics and chemistry views",
+      "domain": "composition",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "composition.chem_sys_sunburst",
+        "composition.chem_sys_treemap",
+        "composition.elements_hist",
+        "composition.formula_statistics",
+        "composition.ptable_heatmap",
+        "composition.summary",
+        "structure.composition_from_structure"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "composition_data",
+        "structure_resource"
+      ],
+      "requiredInputs": [
+        "materials_tabular_dataset",
+        "crystal_structure"
+      ],
+      "requiredProfileFacts": [
+        "composition_data",
+        "structure_resource"
+      ],
+      "supportDisposition": "SUPPORTED",
+      "supportedSemanticKinds": [
+        "materials_tabular_dataset",
+        "crystal_structure"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-TABLE",
+      "capabilityNeed": [
+        "material_property_data",
+        "tabular_data"
+      ],
+      "description": "User-level qualification family backed by 5 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Generic tabular summaries and plots",
+      "domain": "table",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "table.distribution_summary",
+        "table.numeric_summary",
+        "viz.correlation",
+        "viz.histogram",
+        "viz.scatter"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "material_property_data",
+        "tabular_data"
+      ],
+      "requiredInputs": [
+        "materials_tabular_dataset"
+      ],
+      "requiredProfileFacts": [
+        "material_property_data",
+        "tabular_data"
+      ],
+      "supportDisposition": "SUPPORTED",
+      "supportedSemanticKinds": [
+        "materials_tabular_dataset"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-ML-REGRESSION",
+      "capabilityNeed": [
+        "comparison_groups",
+        "composition_data",
+        "material_property_data",
+        "regression_semantics",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "description": "User-level qualification family backed by 5 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "linked_samples",
+        "metrics",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Supplied materials regression evaluation",
+      "domain": "ml",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "ml.basic_metrics",
+        "ml.density_scatter",
+        "ml.error_distribution",
+        "ml.outlier_table",
+        "ml.regression_evaluation"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "comparison_groups",
+        "composition_data",
+        "material_property_data",
+        "regression_semantics",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "requiredInputs": [
+        "regression_result_table"
+      ],
+      "requiredProfileFacts": [
+        "comparison_groups",
+        "composition_data",
+        "material_property_data",
+        "regression_semantics",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS",
+      "supportedSemanticKinds": [
+        "regression_result_table"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-ML-UNCERTAINTY",
+      "capabilityNeed": [
+        "material_property_data",
+        "regression_semantics",
+        "sample_identity",
+        "tabular_data",
+        "uncertainty_semantics"
+      ],
+      "description": "User-level qualification family backed by 1 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "linked_samples",
+        "metrics",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Supplied uncertainty evaluation",
+      "domain": "ml",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "ml.uncertainty_evaluation"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "material_property_data",
+        "regression_semantics",
+        "sample_identity",
+        "tabular_data",
+        "uncertainty_semantics"
+      ],
+      "requiredInputs": [
+        "uncertainty_result_table"
+      ],
+      "requiredProfileFacts": [
+        "material_property_data",
+        "regression_semantics",
+        "sample_identity",
+        "tabular_data",
+        "uncertainty_semantics"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS",
+      "supportedSemanticKinds": [
+        "uncertainty_result_table"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-ML-CLASSIFICATION",
+      "capabilityNeed": [
+        "classification_semantics",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "description": "User-level qualification family backed by 1 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "linked_samples",
+        "metrics",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Supplied classification evaluation",
+      "domain": "ml",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "ml.classification_evaluation"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "classification_semantics",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "requiredInputs": [
+        "classification_result_table"
+      ],
+      "requiredProfileFacts": [
+        "classification_semantics",
+        "sample_identity",
+        "tabular_data"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS",
+      "supportedSemanticKinds": [
+        "classification_result_table"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-STRUCTURE-SUMMARY",
+      "capabilityNeed": [
+        "structure_resource"
+      ],
+      "description": "User-level qualification family backed by 4 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Structure summary and crystallography",
+      "domain": "structure",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "structure.summary",
+        "structure.lattice_summary",
+        "structure.spacegroup_summary",
+        "structure.preview_metadata"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "structure_resource"
+      ],
+      "requiredInputs": [
+        "crystal_structure"
+      ],
+      "requiredProfileFacts": [
+        "structure_resource"
+      ],
+      "supportDisposition": "SUPPORTED",
+      "supportedSemanticKinds": [
+        "crystal_structure"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-STRUCTURE-VIEW",
+      "capabilityNeed": [
+        "structure_resource"
+      ],
+      "description": "User-level qualification family backed by 3 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "three_dimensional_view",
+        "warnings"
+      ],
+      "displayName": "Structure visualization",
+      "domain": "structure",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "structure.structure_3d",
+        "structure.viewer_3d",
+        "structure.viewer_scene"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "structure_resource"
+      ],
+      "requiredInputs": [
+        "crystal_structure",
+        "atomic_structure"
+      ],
+      "requiredProfileFacts": [
+        "structure_resource"
+      ],
+      "supportDisposition": "SUPPORTED",
+      "supportedSemanticKinds": [
+        "crystal_structure",
+        "atomic_structure"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-COORDINATION",
+      "capabilityNeed": [
+        "structure_resource"
+      ],
+      "description": "User-level qualification family backed by 4 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Coordination and local-environment polyhedra",
+      "domain": "structure",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "structure.coordination_crystalnn",
+        "structure.coordination_voronoinn",
+        "structure.coordination_hist",
+        "structure.local_environment_polyhedra"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "structure_resource"
+      ],
+      "requiredInputs": [
+        "crystal_structure"
+      ],
+      "requiredProfileFacts": [
+        "structure_resource"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS",
+      "supportedSemanticKinds": [
+        "crystal_structure"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-XRD",
+      "capabilityNeed": [
+        "structure_resource",
+        "tabular_data"
+      ],
+      "description": "User-level qualification family backed by 2 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Theoretical XRD and experimental peak comparison",
+      "domain": "structure",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "structure.xrd",
+        "structure.experimental_xrd_comparison"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "structure_resource",
+        "tabular_data"
+      ],
+      "requiredInputs": [
+        "crystal_structure",
+        "experimental_xrd"
+      ],
+      "requiredProfileFacts": [
+        "structure_resource",
+        "tabular_data"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS",
+      "supportedSemanticKinds": [
+        "crystal_structure",
+        "experimental_xrd"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-STRUCTURE-RDF",
+      "capabilityNeed": [
+        "structure_resource"
+      ],
+      "description": "User-level qualification family backed by 1 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Structure radial distribution",
+      "domain": "structure",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "structure.rdf"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "structure_resource"
+      ],
+      "requiredInputs": [
+        "crystal_structure"
+      ],
+      "requiredProfileFacts": [
+        "structure_resource"
+      ],
+      "supportDisposition": "SUPPORTED",
+      "supportedSemanticKinds": [
+        "crystal_structure"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-TRAJECTORY-VIEW",
+      "capabilityNeed": [
+        "trajectory_resource"
+      ],
+      "description": "User-level qualification family backed by 1 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "summary",
+        "three_dimensional_view",
+        "warnings"
+      ],
+      "displayName": "Trajectory visualization",
+      "domain": "trajectory",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "structure.trajectory_viewer"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "trajectory_resource"
+      ],
+      "requiredInputs": [
+        "trajectory"
+      ],
+      "requiredProfileFacts": [
+        "trajectory_resource"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS",
+      "supportedSemanticKinds": [
+        "trajectory"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-TRAJECTORY-ANALYTICS",
+      "capabilityNeed": [
+        "trajectory_resource"
+      ],
+      "description": "User-level qualification family backed by 3 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Trajectory RDF, MSD, and diffusion estimate",
+      "domain": "trajectory",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "trajectory.rdf",
+        "trajectory.msd",
+        "trajectory.diffusion"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "trajectory_resource"
+      ],
+      "requiredInputs": [
+        "trajectory"
+      ],
+      "requiredProfileFacts": [
+        "trajectory_resource"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS",
+      "supportedSemanticKinds": [
+        "trajectory"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-PHONON",
+      "capabilityNeed": [
+        "phonon_resource"
+      ],
+      "description": "User-level qualification family backed by 3 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Supplied phonon Band, DOS, and combined view",
+      "domain": "phonon",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "phonon.band",
+        "phonon.dos",
+        "phonon.band_dos"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "phonon_resource"
+      ],
+      "requiredInputs": [
+        "phonon_band",
+        "phonon_dos",
+        "crystal_structure"
+      ],
+      "requiredProfileFacts": [
+        "phonon_resource"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS",
+      "supportedSemanticKinds": [
+        "phonon_band",
+        "phonon_dos",
+        "crystal_structure"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-PHONON-ANIMATION",
+      "capabilityNeed": [
+        "phonon_resource"
+      ],
+      "description": "User-level qualification family backed by 1 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "three_dimensional_view"
+      ],
+      "displayName": "Supplied phonon mode animation",
+      "domain": "phonon",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "phonon.animation"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "phonon_resource"
+      ],
+      "requiredInputs": [
+        "phonon_band",
+        "phonon_eigenvectors",
+        "crystal_structure"
+      ],
+      "requiredProfileFacts": [
+        "phonon_resource"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS",
+      "supportedSemanticKinds": [
+        "phonon_band",
+        "phonon_eigenvectors",
+        "crystal_structure"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-RECIPROCAL",
+      "capabilityNeed": [
+        "reciprocal_space_resource",
+        "structure_resource"
+      ],
+      "description": "User-level qualification family backed by 1 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "three_dimensional_view",
+        "warnings"
+      ],
+      "displayName": "Brillouin-zone and reciprocal-space context",
+      "domain": "structure",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "structure.brillouin_zone"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "reciprocal_space_resource",
+        "structure_resource"
+      ],
+      "requiredInputs": [
+        "crystal_structure",
+        "reciprocal_space_context"
+      ],
+      "requiredProfileFacts": [
+        "reciprocal_space_resource",
+        "structure_resource"
+      ],
+      "supportDisposition": "SUPPORTED",
+      "supportedSemanticKinds": [
+        "crystal_structure",
+        "reciprocal_space_context"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-VOLUMETRIC",
+      "capabilityNeed": [
+        "volumetric_resource"
+      ],
+      "description": "User-level qualification family backed by 1 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "three_dimensional_view",
+        "warnings"
+      ],
+      "displayName": "Persisted volumetric field views",
+      "domain": "volumetric",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "structure.volumetric_data"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "volumetric_resource"
+      ],
+      "requiredInputs": [
+        "volumetric_field"
+      ],
+      "requiredProfileFacts": [
+        "volumetric_resource"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS",
+      "supportedSemanticKinds": [
+        "volumetric_field"
+      ]
+    },
+    {
+      "canonicalQuestions": [],
+      "capabilityFamilyId": "CAP-ELECTRONIC",
+      "capabilityNeed": [
+        "electronic_resource"
+      ],
+      "description": "User-level qualification family backed by 2 current Planner-available Registry Tool(s).",
+      "desiredOutputs": [
+        "downloadable_artifact",
+        "plot",
+        "recipe",
+        "summary",
+        "table",
+        "warnings"
+      ],
+      "displayName": "Supplied electronic Band and DOS analysis",
+      "domain": "electronic",
+      "knownLimits": [
+        "Tool availability is not independent scientific reference validation"
+      ],
+      "optionalInputs": [
+        "exact auxiliary resources where declared by a Tool"
+      ],
+      "registryTools": [
+        "electronic.band_structure",
+        "electronic.dos"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "requiredEligibilityFacts": [
+        "electronic_resource"
+      ],
+      "requiredInputs": [
+        "electronic_band",
+        "electronic_dos"
+      ],
+      "requiredProfileFacts": [
+        "electronic_resource"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS",
+      "supportedSemanticKinds": [
+        "electronic_band",
+        "electronic_dos"
+      ]
+    }
+  ],
+  "rowCount": 18,
+  "schemaVersion": "CapabilityFamily/1.0"
+}

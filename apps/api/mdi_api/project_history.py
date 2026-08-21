@@ -10,8 +10,9 @@ PROJECT_HISTORY_SCHEMA_VERSION = "ProjectHistoryView/1.0"
 class ProjectHistoryService:
     """Build a bounded user-facing audit view from persisted product records."""
 
-    def __init__(self, repositories: Any) -> None:
+    def __init__(self, repositories: Any, *, archived_run_ids: set[str] | None = None) -> None:
         self.repositories = repositories
+        self.archived_run_ids = set(archived_run_ids or ())
 
     def build(self, project_id: str) -> dict[str, Any]:
         project = _record(self.repositories.projects.get(project_id))
@@ -193,6 +194,10 @@ class ProjectHistoryService:
             "recipeCount": len(recipes_by_job.get(job_id, [])),
             "workspaceId": workspace.get("workspaceId") if workspace else None,
             "workspaceTitle": workspace.get("title") if workspace else None,
+            # Archival is a reversible product-visibility projection. The Job
+            # terminal status and every scientific child record remain intact.
+            "archived": job_id in self.archived_run_ids,
+            "visibleInReports": job_id not in self.archived_run_ids,
         }
 
     @staticmethod
@@ -224,6 +229,7 @@ class ProjectHistoryService:
                 "title": str(analysis.get("userQuestion") or "分析运行"),
                 "detail": f"{analysis.get('artifactCount', 0)} 个结果 · {analysis.get('reportCount', 0)} 份报告",
                 "status": analysis.get("status"),
+                "archived": bool(analysis.get("archived")),
                 "occurredAt": analysis.get("updatedAt") or analysis.get("createdAt"),
                 "datasetId": analysis.get("datasetId"),
                 "jobId": job_id,

@@ -1,0 +1,2 @@
+import { ResearchPage } from "../../../../components/ResearchPages";
+export default async function ResearchSessionRoute({ params, searchParams }: { params: Promise<{ projectId: string; sessionId: string }>; searchParams: Promise<{ run?: string }> }) { const [{ projectId, sessionId }, query] = await Promise.all([params, searchParams]); return <ResearchPage projectId={projectId} sessionId={sessionId} runId={query.run} />; }

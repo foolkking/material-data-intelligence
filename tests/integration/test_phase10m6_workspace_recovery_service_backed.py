@@ -55,7 +55,7 @@ def test_phase10m6_postgres_redis_minio_workspace_save_reload_recovery(
         engine = create_engine(schema_url, future=True)
         assert inspect(engine).get_table_names()
         with engine.connect() as connection:
-            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0008_phase_d_r1_namespace"
+            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0014_research_session_run_bindings"
 
         _redis_smoke(f"m6-{suffix}")
         minio, bucket = _minio_client()

@@ -1,0 +1,703 @@
+{
+  "rowCount": 15,
+  "schemaVersion": "SemanticDataKindInventory/1.0",
+  "semanticKinds": [
+    {
+      "canonicalName": "Materials tabular dataset",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "CSV",
+        "limited JSON table"
+      ],
+      "limitations": [
+        "column metadata may leave units unknown"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "stable sample identity when sample-linked products are requested"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "semantic columns or resources",
+        "stable sample identity when sample-linked products are requested"
+      ],
+      "requiredUnits": [],
+      "semanticKindId": "materials_tabular_dataset",
+      "sourceContracts": [
+        "DataFrame"
+      ],
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "canonicalName": "Supplied regression result table",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "CSV",
+        "limited JSON table"
+      ],
+      "limitations": [
+        "evaluation only; no training or generalization claim"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "target/model identity",
+        "sample identity"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "regression_target",
+        "regression_prediction",
+        "target/model identity",
+        "sample identity"
+      ],
+      "requiredUnits": [],
+      "semanticKindId": "regression_result_table",
+      "sourceContracts": [
+        "DataFrame + Profile roles"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "canonicalName": "Supplied uncertainty result table",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "CSV",
+        "limited JSON table"
+      ],
+      "limitations": [
+        "uncertainty evaluation only"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "model identity",
+        "sample identity"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "regression_target",
+        "regression_prediction",
+        "regression_uncertainty",
+        "model identity",
+        "sample identity"
+      ],
+      "requiredUnits": [],
+      "semanticKindId": "uncertainty_result_table",
+      "sourceContracts": [
+        "DataFrame + Profile roles"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "canonicalName": "Supplied classification result table",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "CSV",
+        "limited JSON table"
+      ],
+      "limitations": [
+        "classification evaluation only"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "class/model identity",
+        "sample identity"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "classification_target",
+        "classification_prediction",
+        "class/model identity",
+        "sample identity"
+      ],
+      "requiredUnits": [],
+      "semanticKindId": "classification_result_table",
+      "sourceContracts": [
+        "DataFrame + Profile roles"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "canonicalName": "Periodic crystal structure",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "CIF",
+        "POSCAR/CONTCAR",
+        "limited JSON structure",
+        "periodic EXTXYZ"
+      ],
+      "limitations": [
+        "capability-specific periodicity and atom caps"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "immutable structure hash",
+        "stable site identity"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "immutable structure hash",
+        "stable site identity",
+        "periodic lattice where required"
+      ],
+      "requiredUnits": [],
+      "semanticKindId": "crystal_structure",
+      "sourceContracts": [
+        "Structure"
+      ],
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "canonicalName": "Non-periodic atomic structure",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "XYZ",
+        "EXTXYZ single frame"
+      ],
+      "limitations": [
+        "periodic-only tools remain ineligible"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "immutable object hash"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "immutable object hash",
+        "stable atom ordinal"
+      ],
+      "requiredUnits": [],
+      "semanticKindId": "atomic_structure",
+      "sourceContracts": [
+        "Atoms/Structure"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "canonicalName": "Atomic trajectory",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "canonical JSON",
+        "multi-frame EXTXYZ"
+      ],
+      "limitations": [
+        "plain XYZ and LAMMPS trajectories are unsupported"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "stable atom/species order",
+        "coordinates and units",
+        "cell/PBC",
+        "monotonic physical time for MSD/diffusion"
+      ],
+      "requiredUnits": [
+        "coordinates and units"
+      ],
+      "semanticKindId": "trajectory",
+      "sourceContracts": [
+        "phase10g.trajectory.v1"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "canonicalName": "Experimental XRD resource",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "strict JSON"
+      ],
+      "limitations": [
+        "wavelength mismatch is rejected; no reprojection or refinement"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "resource hash"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "2theta axis",
+        "angstrom wavelength",
+        "finite intensity array",
+        "resource hash"
+      ],
+      "requiredUnits": [
+        "angstrom wavelength"
+      ],
+      "semanticKindId": "experimental_xrd",
+      "sourceContracts": [
+        "phase10n3.experimental_xrd_resource.v1"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "canonicalName": "Supplied phonon Band resource",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "explicit typed JSON import"
+      ],
+      "limitations": [
+        "no phonon calculation or q-path inference"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "resource hash",
+        "q-point/path identity"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "resource hash",
+        "frequency unit",
+        "q-point/path identity",
+        "structure compatibility"
+      ],
+      "requiredUnits": [
+        "frequency unit"
+      ],
+      "semanticKindId": "phonon_band",
+      "sourceContracts": [
+        "phase10h.phonon_band.v1"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "canonicalName": "Supplied phonon DOS resource",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "explicit typed JSON import"
+      ],
+      "limitations": [
+        "no unit inference; generic JSON/YAML is mapping-only"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "resource hash"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "resource hash",
+        "frequency/DOS units",
+        "projection semantics",
+        "structure compatibility"
+      ],
+      "requiredUnits": [
+        "frequency/DOS units"
+      ],
+      "semanticKindId": "phonon_dos",
+      "sourceContracts": [
+        "phase10h.phonon_dos.v1"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "canonicalName": "Supplied phonon eigenvectors",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "normalized mapped resource only"
+      ],
+      "limitations": [
+        "no current explicit normal-user typed import"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "mode identity"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "mode identity",
+        "structure",
+        "Band binding",
+        "displacement convention"
+      ],
+      "requiredUnits": [],
+      "semanticKindId": "phonon_eigenvectors",
+      "sourceContracts": [
+        "phase10h eigenvector contract"
+      ],
+      "supportDisposition": "MAPPING_ONLY"
+    },
+    {
+      "canonicalName": "Bounded volumetric scalar field",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "VASP volumetric",
+        "single-dataset Gaussian CUBE"
+      ],
+      "limitations": [
+        "no Bader/topological extraction; CUBE multi-orbital unsupported"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "source hash",
+        "field identity"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "grid/lattice",
+        "quantity",
+        "unit",
+        "source hash",
+        "field identity"
+      ],
+      "requiredUnits": [
+        "unit"
+      ],
+      "semanticKindId": "volumetric_field",
+      "sourceContracts": [
+        "volumetric-field/v1"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "canonicalName": "Supplied electronic Band resource",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "strict JSON"
+      ],
+      "limitations": [
+        "unknown units are ineligible; no DFT execution"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "calculation identity",
+        "k-point/band identity"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "calculation identity",
+        "eV unit",
+        "energy reference",
+        "source-supplied Fermi",
+        "k-point/band identity"
+      ],
+      "requiredUnits": [
+        "eV unit"
+      ],
+      "semanticKindId": "electronic_band",
+      "sourceContracts": [
+        "phase10n5.electronic_band_resource.v1"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "canonicalName": "Supplied electronic DOS resource",
+      "importRoutes": [
+        "POST /datasets/upload"
+      ],
+      "inputFormats": [
+        "strict JSON"
+      ],
+      "limitations": [
+        "PDOS completeness is COMPLETE/PARTIAL/UNKNOWN"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [
+        "calculation identity",
+        "channel/projection identity"
+      ],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "calculation identity",
+        "eV unit",
+        "energy reference",
+        "source-supplied Fermi",
+        "channel/projection identity"
+      ],
+      "requiredUnits": [
+        "eV unit"
+      ],
+      "semanticKindId": "electronic_dos",
+      "sourceContracts": [
+        "phase10n5.electronic_dos_resource.v1"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "canonicalName": "Brillouin-zone and reciprocal-space context",
+      "importRoutes": [],
+      "inputFormats": [
+        "N/A derived product"
+      ],
+      "limitations": [
+        "generated context is structure-bound; no standalone upload route"
+      ],
+      "negativeConditions": [
+        "missing required Profile fact",
+        "unknown required unit",
+        "stale/hash/project mismatch",
+        "unsupported contract version"
+      ],
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/material-parsers/mdi_material_parsers/profile.py",
+        "packages/material-parsers/mdi_material_parsers/semantic_profile.py",
+        "docs/phase11/evidence/phase11_0_validation_baseline_reconciliation/input_support_matrix.json"
+      ],
+      "requiredContextResources": [
+        "case-specific; N/A when independent"
+      ],
+      "requiredIdentifiers": [],
+      "requiredPairedResources": [
+        "case-specific exact bindings"
+      ],
+      "requiredProfileFacts": [
+        "ordered non-magnetic 3D periodic Structure"
+      ],
+      "requiredUnits": [],
+      "semanticKindId": "reciprocal_space_context",
+      "sourceContracts": [
+        "derived from exact periodic Structure"
+      ],
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    }
+  ]
+}

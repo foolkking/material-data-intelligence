@@ -4,6 +4,7 @@ import json
 from types import SimpleNamespace
 
 from mdi_api.project_history import ProjectHistoryService
+from mdi_api.routers.project_history import _archived_run_ids_from_config
 
 
 class Records:
@@ -174,3 +175,24 @@ def test_project_history_links_persisted_import_analysis_and_results() -> None:
     assert "storageKey" not in serialized
     assert "sha256" not in serialized
     assert "private/" not in serialized
+
+
+def test_project_history_marks_archived_run_without_changing_execution_facts() -> None:
+    repositories = SimpleNamespace(
+        projects=Records([{"id": "project_1", "projectId": "project_1", "name": "Project"}]),
+        datasets=Records([]), data_profiles=Records([]),
+        jobs=Records([{"id": "job_1", "jobId": "job_1", "projectId": "project_1", "status": "completed", "createdAt": "2026-08-17T03:00:00Z"}]),
+        tool_calls=Records([]), artifacts=Records([]), workspaces=Records([]), reports=Records([]),
+        recipes=Records([]), interpretations=Records([]), analysis_intents=IntentRecords([]), analysis_plans=PlanRecords([]),
+    )
+    result = ProjectHistoryService(repositories, archived_run_ids={"job_1"}).build("project_1")
+    analysis = result["analyses"][0]
+    assert analysis["status"] == "completed"
+    assert analysis["archived"] is True
+    assert analysis["visibleInReports"] is False
+    assert result["activity"][0]["archived"] is True
+
+
+def test_archive_projection_config_is_bounded_and_ignores_malformed_values() -> None:
+    assert _archived_run_ids_from_config({"archivedRunIds": ["job_1", "", 42, None, "job_1"]}) == {"job_1"}
+    assert _archived_run_ids_from_config(None) == set()

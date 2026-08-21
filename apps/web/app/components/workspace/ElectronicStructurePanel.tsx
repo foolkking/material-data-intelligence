@@ -8,40 +8,40 @@ type Payload = Record<string, unknown> & { artifactType: "electronic.band_struct
 
 export function ElectronicStructurePanel({ artifacts, selected, workspace, onSelection }: Readonly<{ artifacts: Artifact[]; selected: Artifact; workspace: ScientificWorkspace; onSelection: (selection: WorkspaceSelectionContext) => void }>) {
   const current = parse(selected);
-  if (!current) return <section className="workspace-generic-renderer" role="alert"><h5>Electronic Structure Artifact unavailable</h5><p>N5_ELECTRONIC_CONTRACT_INVALID</p></section>;
+  if (!current) return <section className="workspace-generic-renderer" role="alert"><h5>电子结构结果不可用</h5><p>N5_ELECTRONIC_CONTRACT_INVALID</p></section>;
   const parsed = artifacts.map((artifact) => ({ artifact, payload: parse(artifact) })).filter((item): item is { artifact: Artifact; payload: Payload } => item.payload !== null);
   const band = parsed.find((item) => item.payload.artifactType === "electronic.band_structure") ?? (current.artifactType === "electronic.band_structure" ? { artifact: selected, payload: current } : null);
   const dos = parsed.find((item) => item.payload.artifactType === "electronic.dos") ?? (current.artifactType === "electronic.dos" ? { artifact: selected, payload: current } : null);
   const compatible = band && dos ? compatibility(band.payload, dos.payload) : null;
-  return <section className="workspace-generic-renderer" aria-label="Electronic Structure" data-testid="electronic-structure-panel">
-    <header><h5>Electronic Structure</h5><p>Persisted supplied-output analysis. The platform does not perform DFT or GW calculations.</p></header>
-    {band ? <BandView artifact={band.artifact} payload={band.payload} workspace={workspace} onSelection={onSelection} /> : <p role="status">Band Structure Artifact not available.</p>}
-    {dos ? <DosView artifact={dos.artifact} payload={dos.payload} workspace={workspace} onSelection={onSelection} /> : <p role="status">DOS Artifact not available.</p>}
-    <section aria-label="Band and DOS combined compatibility" data-testid="electronic-combined-status">
-      <h6>Band + DOS</h6>
-      <p role="status">{compatible === null ? "Combined view requires both persisted Artifacts." : compatible ? "Exact compatible source, energy-reference, Fermi and spin semantics." : "DO_NOT_COMBINE: electronic source semantics are incompatible."}</p>
+  return <section className="workspace-generic-renderer" aria-label="电子结构" data-testid="electronic-structure-panel">
+    <header><h5>电子结构</h5><p>基于已保存供应方输出的分析结果。平台不会执行 DFT 或 GW 计算。</p></header>
+    {band ? <BandView artifact={band.artifact} payload={band.payload} workspace={workspace} onSelection={onSelection} /> : <p role="status">能带结构结果不可用。</p>}
+    {dos ? <DosView artifact={dos.artifact} payload={dos.payload} workspace={workspace} onSelection={onSelection} /> : <p role="status">态密度结果不可用。</p>}
+    <section aria-label="能带与态密度组合一致性" data-testid="electronic-combined-status">
+      <h6>能带 + 态密度</h6>
+      <p role="status">{compatible === null ? "组合视图需要同时存在已保存的能带和态密度结果。" : compatible ? "数据源、能量参考、费米能级和自旋语义完全兼容。" : "DO_NOT_COMBINE：电子结构来源语义不兼容。"}</p>
     </section>
-    <h6>Inspector provenance</h6>
-    <dl><dt>Tool</dt><dd>{String(record(current.tool)?.toolId)}@{String(record(current.tool)?.toolVersion)}</dd><dt>Resource</dt><dd><code>{String(current.sourceResource.resourceHash)}</code></dd><dt>Calculation</dt><dd>{String(current.sourceResource.calculationIdentity)}</dd><dt>Contract</dt><dd>{current.schemaVersion}</dd></dl>
-    {current.warnings.length > 0 && <p role="status">Warnings: {current.warnings.join(", ")}</p>}
+    <h6>检查器来源</h6>
+    <dl><dt>工具</dt><dd>{String(record(current.tool)?.toolId)}@{String(record(current.tool)?.toolVersion)}</dd><dt>资源</dt><dd><code>{String(current.sourceResource.resourceHash)}</code></dd><dt>计算</dt><dd>{String(current.sourceResource.calculationIdentity)}</dd><dt>契约</dt><dd>{current.schemaVersion}</dd></dl>
+    {current.warnings.length > 0 && <p role="status">警告：{current.warnings.join(", ")}</p>}
     <ul>{current.limitations.map((item) => <li key={item}>{item}</li>)}</ul>
   </section>;
 }
 
 function BandView({ artifact, payload, workspace, onSelection }: PanelItemProps) {
   const gap = record(payload.gap), bands = records(payload.bands), kpoints = records(payload.kpoints), states = records(payload.states);
-  return <section aria-label="Electronic band structure" data-testid="electronic-band-view"><h6>Band Structure</h6>
-    <p><strong>Sampled gap:</strong> {gap?.valueEv === null || gap?.valueEv === undefined ? "Unavailable" : `${String(gap.valueEv)} eV`} · {String(gap?.directness)} · {String(gap?.classification)} <button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_GAP", {}, onSelection)}>Select gap</button></p>
-    <svg viewBox="0 0 640 220" role="img" aria-label="Supplied band curves; numeric values are available in the table" data-testid="electronic-band-plot"><title>Supplied electronic band curves</title>{bands.slice(0, 48).map((band, index) => <polyline key={String(band.bandIdentity)} fill="none" stroke={String(band.spinChannel) === "down" ? "#b42318" : "#176b87"} strokeDasharray={String(band.spinChannel) === "down" ? "6 4" : undefined} strokeWidth="2" points={polyline(numbers(band.energiesEv), index, bands)} />)}</svg>
-    <div className="workspace-table-scroll"><table><caption>Band state numeric alternative</caption><thead><tr><th>Selection</th><th>Spin</th><th>Band</th><th>k-point</th><th>Coordinate</th><th>Energy (eV)</th></tr></thead><tbody>{states.slice(0, 500).map((state) => { const point = kpoints.find((item) => item.kpointId === state.kpointId); return <tr key={String(state.stateId)}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_STATE", { spinChannelId: state.spinChannel, bandId: state.bandId, kpointId: state.kpointId, bandStateId: state.stateId }, onSelection)}>Select</button></td><td>{String(state.spinChannel)}</td><td>{String(state.bandId)}</td><td>{String(state.kpointId)}</td><td>{Array.isArray(point?.fractionalCoordinates) ? point.fractionalCoordinates.join(", ") : ""}</td><td>{String(state.energyEv)}</td></tr>; })}</tbody></table></div>
+  return <section aria-label="电子能带结构" data-testid="electronic-band-view"><h6>电子能带</h6>
+    <p><strong>采样带隙：</strong> {gap?.valueEv === null || gap?.valueEv === undefined ? "不可用" : `${String(gap.valueEv)} eV`} · {String(gap?.directness)} · {String(gap?.classification)} <button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_GAP", {}, onSelection)}>选择带隙</button></p>
+    <svg viewBox="0 0 640 220" role="img" aria-label="供应方能带曲线；数值可在表格中查看" data-testid="electronic-band-plot"><title>供应方电子能带曲线</title>{bands.slice(0, 48).map((band, index) => <polyline key={String(band.bandIdentity)} fill="none" stroke={String(band.spinChannel) === "down" ? "#b42318" : "#176b87"} strokeDasharray={String(band.spinChannel) === "down" ? "6 4" : undefined} strokeWidth="2" points={polyline(numbers(band.energiesEv), index, bands)} />)}</svg>
+    <div className="workspace-table-scroll"><table><caption>能带状态数值表</caption><thead><tr><th>选择</th><th>自旋</th><th>能带</th><th>k 点</th><th>坐标</th><th>能量（eV）</th></tr></thead><tbody>{states.slice(0, 500).map((state) => { const point = kpoints.find((item) => item.kpointId === state.kpointId); return <tr key={String(state.stateId)}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_STATE", { spinChannelId: state.spinChannel, bandId: state.bandId, kpointId: state.kpointId, bandStateId: state.stateId }, onSelection)}>选择</button></td><td>{String(state.spinChannel)}</td><td>{String(state.bandId)}</td><td>{String(state.kpointId)}</td><td>{Array.isArray(point?.fractionalCoordinates) ? point.fractionalCoordinates.join(", ") : ""}</td><td>{String(state.energyEv)}</td></tr>; })}</tbody></table></div>
   </section>;
 }
 
 function DosView({ artifact, payload, workspace, onSelection }: PanelItemProps) {
   const energies = numbers(payload.energiesEv), points = strings(payload.energyPointIds), total = records(payload.totalDos), projections = records(payload.projections), channels = [...total, ...projections];
-  return <section aria-label="Electronic density of states" data-testid="electronic-dos-view"><h6>Density of States</h6><p><strong>Projection coverage:</strong> {String(payload.projectionCompleteness)} · <strong>Unit:</strong> {String(payload.dosUnitSemantic)}</p>
-    <svg viewBox="0 0 640 220" role="img" aria-label="Supplied DOS channels; numeric values are available in the table" data-testid="electronic-dos-plot"><title>Supplied electronic DOS</title>{channels.slice(0, 24).map((channel, index) => <polyline key={String(channel.channelIdentity)} fill="none" stroke={String(channel.spinChannel) === "down" ? "#b42318" : index === 0 ? "#176b87" : "#627d32"} strokeDasharray={String(channel.spinChannel) === "down" ? "6 4" : undefined} strokeWidth="2" points={polyline(numbers(channel.values), index, channels)} />)}</svg>
-    <div className="workspace-table-scroll"><table><caption>DOS numeric alternative</caption><thead><tr><th>Selection</th><th>Channel</th><th>Spin</th><th>Energy (eV)</th><th>DOS</th></tr></thead><tbody>{channels.flatMap((channel) => energies.slice(0, 500).map((energy, index) => <tr key={`${String(channel.channelIdentity)}:${points[index]}`}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_DOS_POINT", { spinChannelId: channel.spinChannel, dosChannelId: channel.channelId, projectionId: channel.projectionKind ? channel.channelIdentity : undefined, energyPointId: points[index] }, onSelection)}>Select</button></td><td>{String(channel.label ?? channel.channelId)}</td><td>{String(channel.spinChannel)}</td><td>{energy}</td><td>{numbers(channel.values)[index]}</td></tr>))}</tbody></table></div>
+  return <section aria-label="电子态密度" data-testid="electronic-dos-view"><h6>电子态密度（DOS）</h6><p><strong>投影覆盖：</strong> {String(payload.projectionCompleteness)} · <strong>单位：</strong> {String(payload.dosUnitSemantic)}</p>
+    <svg viewBox="0 0 640 220" role="img" aria-label="供应方态密度通道；数值可在表格中查看" data-testid="electronic-dos-plot"><title>供应方电子态密度</title>{channels.slice(0, 24).map((channel, index) => <polyline key={String(channel.channelIdentity)} fill="none" stroke={String(channel.spinChannel) === "down" ? "#b42318" : index === 0 ? "#176b87" : "#627d32"} strokeDasharray={String(channel.spinChannel) === "down" ? "6 4" : undefined} strokeWidth="2" points={polyline(numbers(channel.values), index, channels)} />)}</svg>
+    <div className="workspace-table-scroll"><table><caption>态密度数值表</caption><thead><tr><th>选择</th><th>通道</th><th>自旋</th><th>能量（eV）</th><th>DOS</th></tr></thead><tbody>{channels.flatMap((channel) => energies.slice(0, 500).map((energy, index) => <tr key={`${String(channel.channelIdentity)}:${points[index]}`}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_DOS_POINT", { spinChannelId: channel.spinChannel, dosChannelId: channel.channelId, projectionId: channel.projectionKind ? channel.channelIdentity : undefined, energyPointId: points[index] }, onSelection)}>选择</button></td><td>{String(channel.label ?? channel.channelId)}</td><td>{String(channel.spinChannel)}</td><td>{energy}</td><td>{numbers(channel.values)[index]}</td></tr>))}</tbody></table></div>
   </section>;
 }
 

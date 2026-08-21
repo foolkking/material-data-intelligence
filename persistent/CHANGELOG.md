@@ -2705,3 +2705,169 @@ was created.
 
 - Pushed completion commit `f4e2bb324ec4c248869cdc022f926d6f40448522`
   and archived the verified Phase 13-3 queue block.
+
+## 2026-08-18 - DeepSeek configuration discoverability
+
+- Audited the existing DeepSeek-only Planner/strict Interpretation call path,
+  provider status/test routes, and secret boundary without making a live model
+  request.
+- Added server-only `DEEPSEEK_KEY`, allowlisted model, and test-provider gate
+  guidance to `.env.example`; no credential value was added.
+- Generalized the server-hosted Provider catalog/status/resolve/test metadata
+  contract (`kind`, `baseUrl`, execution capability, model allowlist and
+  redacted secret-source category) while retaining DeepSeek as the only live
+  profile and rejecting unknown provider selections.
+
+## 2026-08-18 - Project/Research IA discoverability closure
+
+- Added authenticated Project search with direct Overview, Data, and Research
+  destinations.
+- Added a Research configuration notice when the server-owned provider is not
+  ready, an expandable completed process, actionable unsupported suggestions,
+  and a direct Run Report link.
+- Removed the inert Data overflow action; no new backend endpoint was invented.
+- Project Overview dataset links now select the requested Data viewer resource,
+  and Research session changes now update the stable session route.
+
+## 2026-08-18 - Scientific result interpretation closure
+
+- Added a versioned `ml.outlier_table` artifact contract and strict bounded
+  Evidence projection for persisted sample/error values.
+- Research terminal runs now hydrate Interpretation and Evidence and expose
+  grounded claims, limitations, and source/process context in the new workbench.
+- Historical owner-only SQLite auth schemas without `project_members` now keep
+  authenticated sessions valid with an owner fallback; protected source Viewer
+  requests remain readable after login.
+- Local production API reads now use the durable SQLite repository bundle for
+  Project History, preserving historical Datasets after process restart.
+- Reframed model settings as a modal with generic server-owned Provider API
+  details; browser credentials and arbitrary endpoints remain prohibited.
+
+## 2026-08-18 - Model settings and provider contract refinement
+
+- Expanded the model settings modal for desktop fact layout and responsive
+  bottom-sheet behavior.
+- Kept provider metadata generic and changed unsupported-provider messaging to
+  reference the server-owned catalog rather than a vendor-specific contract.
+- Removed raw tool/field identifiers from default Evidence presentation.
+
+## 2026-08-18 - Generic Provider configuration
+
+- Added server-side encrypted Provider connections with write-only API Key
+  handling, Base URL validation, replacement and deletion.
+- Added bounded `/planner/providers/{provider}/models` discovery for
+  OpenAI-compatible services.
+- Added per-conversation model selection and provider-neutral thinking depth
+  controls (`quick`, `standard`, `deep`).
+- Added model-group selection in the settings modal: `/models` is initially
+  fully selected, and the selected catalog can be saved without re-entering
+  the write-only API Key.
+## 2026-08-19
+
+- Added a project-authorized assistant-projection endpoint for durable Research
+  Timeline pre-run, clarification, unsupported and post-run messages.
+- Unified Research project checks through the membership-aware access helper.
+- Moved running process presentation into the conversation timeline and kept
+  the Scientific Workbench focused on data/results.
+- Kept account actions on Landing; internal pages now expose `返回主页` only.
+- Historical normalized Dataset exports now hydrate the source Viewer when
+  they are absent from the process-local runtime. Experimental XRD payloads
+  render as one numeric series and Atoms use the Structure renderer.
+
+## 2026-08-20 — Phase 10 retained-data IA reachability audit
+
+- Reconciled Phase 10F-N retained capability records with the current
+  Project/Data/Research/Reports product IA. Source Data routes reach the
+  shared normalized-resource Viewer for tables, structures/atoms, trajectories,
+  experimental XRD, electronic Band/DOS, and phonon Band/DOS. Result-only
+  capabilities (analytics, XRD matching, coordination/local environment, BZ,
+  volumetric, ML and composition) reach the persisted Artifact renderer,
+  Inspector/Evidence and Report Reader from Research/Reports.
+- Kept explicit limits instead of presenting false source support: BZ has no
+  normalized source object type. The historical VolumetricData summary-only
+  limitation in this audit was superseded by the final source Viewer closure
+  below; invalid payloads still fail closed to a structured summary.
+  No production route, CI workflow, or historical qualification evidence was
+  changed by this audit.
+
+## 2026-08-20 — 200% browser acceptance and product title cleanup
+
+- Rechecked the production Data Table, Inspector, Research planning/running,
+  Research complete, Structure Viewer, Report Reader, and Landing at browser
+  zoom 200% in Chrome. Final screenshots are under
+  `design/ux-v1.3/evidence/production/zoom-200/`.
+- Removed internal `Current acceptance` and timestamp suffixes from ordinary
+  Project/Data headings at the presentation layer only; stored dataset and
+  audit identities remain unchanged.
+
+## 2026-08-20 — Volumetric source Viewer closure
+
+- Normalized `VolumetricData` source payloads now receive a bounded deterministic
+  projection into the existing Phase 10J dataset/manifest/payload contracts.
+  Periodic sources require real structure/lattice hashes; non-periodic Gaussian
+  cube data remains explicitly unbound. Finite-value, affine-grid, security and
+  browser-cap checks fail closed, and valid projections reuse the existing
+  source Volumetric Viewer. No parser, CI workflow, migration or historical
+  qualification evidence was changed.
+
+## 2026-08-20 — Final production scientific presentation acceptance
+
+- Fixed the normalized-resource API so recognized volumetric channel values
+  retain every voxel up to the existing Phase 10J browser limit; unrelated
+  lists remain bounded at the existing generic limit.
+- Fixed source Volumetric metadata loading so attached, validated source
+  Artifacts are not mistaken for retrievable Planner Job Artifacts. The
+  retained 125 x 72 x 60 Gaussian-cube field now renders its real isosurface
+  through the shared Data/Result/Report Viewer stack.
+- Localized BZ result download actions and removed renderer diagnostic JSON
+  from the accessibility tree while preserving its test-only DOM evidence.
+- Localized the Volumetric isosurface, lattice-slice and direct-volume controls,
+  statuses and semantic labels; generic scalar data no longer displays an
+  irrelevant unavailable charge/spin module or internal product error code.
+- Added fresh 390 x 844 production screenshots for Landing, Table Data,
+  Inspector, Research Complete, Report Reader, and Volumetric Data. All checked
+  routes had no page-level horizontal overflow; the same retained BZ output is
+  discoverable and rendered from Research supporting results.
+- Connected the bounded Research Turn Orchestrator to the configured Provider
+  after Planner validation, with strict JSON validation and deterministic
+  fallback. Connected Report Composer to finalization as an editorial-only
+  role whose references, source identities and numeric facts must remain a
+  subset of the grounded Scientific Result; Report Reader now consumes the
+  persisted editorial projection when it exists.
+
+## 2026-08-20 — 46-project production presentation batch
+
+- Ran all 39 retained scientific Projects through the production Data,
+  Research, Result and Report routes with fresh server-side provider
+  executions. Conversation, Job, ToolCall, Artifact, Interpretation, Evidence
+  and Report history remains preserved.
+- Added browser evidence under
+  `design/ux-v1.3/evidence/production/batch-20260820/` for Table, Structure,
+  Trajectory, Phonon, Volumetric, Research, Report and latest-only Reports.
+- Reconciled superseded terminal Runs using reversible project-scoped archival;
+  physically removed only seven verified zero-child empty/test Projects after
+  SQLite backups. CI and deployment remain unchanged.
+
+## 2026-08-20 — Project capability discoverability correction
+
+- Corrected retained acceptance names to `Case NN · Q-ID · Run NN` instead of
+  misclassifying Case projects as Phase projects. Other compatibility records
+  use `其他 · title · Run NN`; genuine Phase projects retain their own category.
+- Added Chinese capability descriptions with Phase 10 lineage, numeric Case/Run
+  sorting, category sections and Project/Case/Q-ID/capability search on the
+  Projects page. Chrome verified that searching `Phase 10H` returns the two
+  retained phonon Case runs with their scientific capability descriptions.
+
+## 2026-08-21 — Exact Structure research and workbench closure
+
+- Added exact Chinese RDF/local-environment routing with an actionable
+  CrystalNN/VoronoiNN clarification before any Plan or Job is created.
+- Preserved all explicitly requested Structure dependency chains, including
+  local-environment plus experimental-XRD composite workflows.
+- Kept bounded interpretation available when an oversized approved Artifact is
+  skipped, and replaced generic coordination ranges with grounded Chinese
+  findings and limitations.
+- Stabilized desktop Research as a dynamic-viewport workbench with independent
+  conversation/result scrolling and a 320-640 px pointer/keyboard splitter.
+- Verified a real three-step CrystalNN/local-environment/RDF run and completed
+  full Python, frontend, production-build, type, migration and static checks.

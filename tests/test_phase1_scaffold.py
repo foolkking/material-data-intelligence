@@ -71,7 +71,10 @@ def test_phase1_next_workspace_shell_files_exist(repo_root):
     analysis_page = (web_root / "app" / "analysis" / "page.tsx").read_text(encoding="utf-8")
     workbench = (web_root / "app" / "components" / "PlannerWorkbench.tsx").read_text(encoding="utf-8")
     combined = f"{analysis_page}\n{workbench}"
-    assert "ProjectHome" in page
+    # The public root now owns the product landing boundary; the historical
+    # ProjectHome shell remains covered through its compatibility route.
+    assert "LandingPage" in page
+    assert "ProjectHome" not in page
     assert "PlannerWorkbench" in analysis_page
     assert "Analysis Planner" in combined
     assert "Validated Plan Preview" in combined

@@ -14,7 +14,7 @@
     },
     {
       "path": "browser_matrix.json",
-      "sha256": "cacee3685b210c09eff6c05305da513ec65a36ead385fff182b4755f9867f5ac"
+      "sha256": "832df1ec616740ef6af7871a30739e2a60a412e2fad7ad69cb55f512ca3fd1b6"
     },
     {
       "path": "canonical_journey_registry.json",
@@ -30,15 +30,15 @@
     },
     {
       "path": "chromium_1280.png",
-      "sha256": "479d4a18408dc1f48819446a9c5512c7e4f1fc578c219e2661368a2c583b40ef"
+      "sha256": "6d68de99547718de8506eee097bb97f919564336dd19a63e257198d42f5cdd35"
     },
     {
       "path": "chromium_1440.png",
-      "sha256": "24bce8f144b6fbdb9d5ad5f9919f4186934cdf3cb8449f49748fbefe7764805a"
+      "sha256": "2ecefef33a75e111a31a89f8c1518539d095fa13e3569cfeaaa884d56711d913"
     },
     {
       "path": "chromium_mobile_390.png",
-      "sha256": "11bd7bbcaf1860d49647735c51df3eca88798b283a5aa6042892fab2815c0eec"
+      "sha256": "c91756e08eae130aede849d274dc6d31543cde51ac7851aefeb78f66c5a4d341"
     },
     {
       "path": "contrast_matrix.json",
@@ -62,7 +62,7 @@
     },
     {
       "path": "firefox_1440.png",
-      "sha256": "840f806c0de16d174d4458df6b34a46631ec1385ca3a82fd9840331d55774bb3"
+      "sha256": "2807ecbfd9b2d89eff90abc8d242125f031ee87d975f02c9c417d6f81a789180"
     },
     {
       "path": "frontend_recomputation_audit.md",
@@ -238,7 +238,7 @@
     },
     {
       "path": "webkit_1440.png",
-      "sha256": "cf0e4bd31ffe413b898190d66c352bfe7e7cff9f5c6488aac54422b05ccc378a"
+      "sha256": "ba0bc4d0e43c8d1c9b223e4002555b2c554e410316eda58231df1ecdf7489c36"
     },
     {
       "path": "workspace_authority_nonchange.json",

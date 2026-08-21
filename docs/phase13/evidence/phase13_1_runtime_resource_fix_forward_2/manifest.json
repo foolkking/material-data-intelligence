@@ -19,8 +19,8 @@
     },
     {
       "path": "canonical_entry_slice_regression.json",
-      "sha256": "e0f660d36378535d7506e73753e1d5ef6734bd15e5bf5baa370bd97edc08af10",
-      "size": 17555
+      "sha256": "eccd48a4fc5c4fb6aa1b8706431e027ac07b6686e25f5190191b90a40fd74afd",
+      "size": 17507
     },
     {
       "path": "canonical_execution_preflight_contract.json",
@@ -34,8 +34,8 @@
     },
     {
       "path": "demo1_c2_preflight.json",
-      "sha256": "1ec92c9ef718883cab0ee99a9b3e434516bf1d840541de80fbc54816effd9b8a",
-      "size": 712
+      "sha256": "c7153cd3ac2b5e51052c54725097260ca63166d462cb30036cbe18e383113ba4",
+      "size": 699
     },
     {
       "path": "demo2_c2_preflight.json",

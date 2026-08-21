@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 import json
+import os
 from typing import Any, Mapping
 
 from mdi_api.artifact_storage import ArtifactStorage, create_artifact_storage_from_settings
@@ -30,14 +31,15 @@ def persist_phase2_upload(
 ) -> DurableUploadResult | None:
     """Persist a parsed Phase 2 upload for reconstruction by a fresh worker.
 
-    Local development keeps the original in-memory product loop. PostgreSQL
-    runtime mode copies the already-normalized source objects into the existing
-    ArtifactStorage authority and stores their exact manifest plus DataProfile
-    in the existing repositories.
+    The no-database local test loop remains in memory. PostgreSQL and an
+    explicitly configured local database copy already-normalized source objects
+    into the existing ArtifactStorage authority and persist their exact manifest
+    plus DataProfile in the existing repositories.
     """
 
     active_settings = settings or load_settings()
-    if active_settings.runtime_backend != "postgresql":
+    explicit_database_url = bool(os.getenv("DATABASE_URL") or os.getenv("MDI_DATABASE_URL"))
+    if active_settings.runtime_backend != "postgresql" and not explicit_database_url:
         return None
 
     record = runtime.datasets[dataset_id]

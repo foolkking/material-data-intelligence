@@ -243,6 +243,20 @@ def test_secret_list_never_returns_plaintext_key() -> None:
     assert created["status"] == "active"
 
 
+def test_secret_store_isolated_by_user_scope_and_delete_cannot_cross_scope() -> None:
+    from mdi_api.secrets import InMemorySecretStore
+
+    store = InMemorySecretStore()
+    first = store.create_secret("user-a", "provider-a", "secret-a")
+    second = store.create_secret("user-b", "provider-b", "secret-b")
+
+    assert [item.id for item in store.list_secrets("user-a")] == [first.id]
+    assert [item.id for item in store.list_secrets("user-b")] == [second.id]
+    assert store.delete_secret(second.id, scope_id="user-a") is False
+    assert store.get_secret(second.id) is not None
+    assert store.delete_secret(second.id, scope_id="user-b") is True
+
+
 def test_deepseek_provider_test_fake_success_and_redaction() -> None:
     def fake_transport(**_: object) -> dict[str, object]:
         return {"choices": [{"message": {"content": '{"status":"ok"}'}, "finish_reason": "stop"}]}

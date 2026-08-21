@@ -1,5 +1,29 @@
 # Task Results
 
+## Production Object Management UX — 2026-08-20
+
+状态：已完成
+
+完成时间：2026-08-20
+
+修改摘要：完成 Console 新建项目、Project/Data Navigator 右键与更多菜单、键盘/触摸等价入口、显式多选批量归档/恢复、可逆归档与空对象安全删除；补齐上传深链、Research Composer、Session/Message 写接口和 Report 归档的 Project 角色授权。只读成员仍可查看数据、研究结果和报告，但不会看到会失败的写入控件。
+
+测试结果：完整 Python `1607 passed, 51 skipped, 75 warnings`；完整 Vitest `80 files / 525 tests passed`；聚焦管理/研究 `25 passed`；Project access/history `19 passed`；`npm run typecheck`、production build、compileall、`git diff --check` PASS。Chrome 已登录验收 Console 新建、Projects 分组/右键/Shift+F10/多选、Data 64 行真实表格、Dataset 菜单、Inspector 与焦点恢复；390px 验收同样通过，项目页、菜单、创建弹窗、数据表和 Inspector 均无横向溢出。
+
+提交/CI：未提交；CI/GitHub Actions 未修改；未部署。
+
+## Production UI/UX Reconstruction — 2026-08-19 continuation
+
+状态：处理中（核心闭环继续收敛）
+
+完成时间：2026-08-19
+
+修改摘要：修复 trajectory contract 对生产级数值矩阵的扫描误判；为 `viz.correlation` 增加严格、可审计的 pairwise evidence projector；将相关性 claim 投影为中文科研用户文案并将内部 correlation subject 从结果标题隐藏；重启 API 使用项目正确的 `uv run`/`--app-dir apps/api` 环境，完成真实 Q-TABLE Research Chrome 路径验证。保留了此前失败 turn、消息、Job、Artifact、Interpretation 和调用记录。
+
+测试结果：`pytest tests/ -q` = 1584 passed, 51 skipped, 90 warnings；`npm run test -- --run` = 79 files / 494 tests passed；`npm run typecheck` PASS；`npm run build` PASS（仅既有 Plotly/glslify critical-dependency warnings）；`python -m compileall -q apps/api packages services tests` PASS；`git diff --check` 无 whitespace error。Chrome production route 实际确认：图表、数值表、中文 Pearson 相关系数发现、限制、依据和报告入口均可见，默认页面无 raw Plan/Tool/Job IDs。
+
+CI/提交状态：未修改 `.github/workflows/**`，未部署；任务保持处理中，直至剩余科学 Viewer、增量结果浏览器观察、可访问性和最终产品验收债务关闭。
+
 本文件按完成顺序保存 `TASKS.md` 中各任务的最终结果。只追加，不覆盖历史记录。
 
 # Phase 10K-0 Material Intelligence Capability Gap Audit Result
@@ -13404,6 +13428,20 @@ trajectory integration `1 passed`。完整 pytest 为
 
 ---
 
+任务：Account → Project Authorization Contract Closure（2026-08-20）
+状态：已完成
+完成时间：2026-08-20
+修改文件：`apps/api/mdi_api/access.py`（复用既有统一边界）、`apps/api/mdi_api/routers/project_history.py`、`apps/api/mdi_api/routers/secured_runtime.py`、`apps/api/mdi_api/phase1_demo.py`、`apps/api/mdi_api/main.py`、`apps/api/mdi_api/routers/secured_planner.py`、`tests/test_project_access.py`、`persistent/ARCHITECTURE_DECISIONS.md`
+修改摘要：项目历史在同步前授权；旧 Phase 1 事件流、Demo 数据和解释 Evidence 均继承 Project 授权；项目列表按 owner/member 返回且不泄露私有项目；补充 viewer 写拒绝、跨用户列表过滤和过期会话拒绝测试。未修改 CI、迁移或历史数据。
+测试结果：授权/历史/Planner/legacy demo 相关测试 `23 passed`；新增授权测试 `4 passed`；无失败。
+提交/CI：未提交；CI 未修改。
+
+补充：新版 Console 增加可发现的项目搜索入口；受保护深链首次未登录时保留安全的
+同源 `returnTo`；历史 `/analysis` 与 `/workspaces` 先完成服务端授权解析，再跳转
+新版 Project Research；无法解析时只给非泄露兼容状态。`npm run typecheck` PASS；
+`npm run test -- --run app/components/ProductPages.test.tsx` = 3 passed；未修改 CI、
+迁移或数据。
+
 任务名称：Phase E-R1.7 — Canonical Live-Agent Browser Qualification Restart
 状态：已完成
 完成时间：2026-08-17T15:55:43+08:00
@@ -13455,3 +13493,205 @@ production runtime-affecting release-owned uncommitted diffs 为 0；已分类�
 历史 qualification/evidence 与用户工作区改动保持未提交且未改写。
 
 部署：`NOT_STARTED`。`READY_FOR_DEPLOYMENT_REVIEW=YES`，开放 Release blockers 0。
+
+---
+
+任务名称：UX-V1.3 — Design Documentation + High-Fidelity Prototype
+状态：已完成
+完成时间：2026-08-18T01:11:04+08:00
+
+修改摘要：在 `design/ux-v1.3/` 创建正式 UX-V1.3 设计资产、Chrome reference
+research、Design Reality Matrix、状态/响应式/可访问性规范和隔离高保真原型；
+在 `.interface-design/system.md` 建立长期 Scientific Research Workbench 视觉系统。
+Prototype 覆盖 Landing、Console、Projects、Project Overview、Project Data 的
+Table/Structure/Trajectory/XRD/Electronic/Volumetric/Archive/Unsupported 状态、
+Research 的九种状态、增量结果、Inspector、Quick Preview、Reports 与 Report Reader。
+
+修改文件：`.interface-design/system.md`、`design/ux-v1.3/**`、
+`persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`、`TASKS.md`、
+`results.md`。
+
+测试结果：`node --check design/ux-v1.3/prototype/prototype.js` PASS；Chrome
+实际审阅 1920x1080、1440x900、1280x800 和约 391x844 CSS viewport；关键 Research
+states、Data/Inspector、Quick Preview、Escape/focus restoration、图标 accessible
+name、字体加载和默认内部术语泄漏检查 PASS。`git diff --check` PASS。移动截图通道
+出现工具层拼贴异常，已通过 Chrome DOM 尺寸、滚动/overflow 和 Inspector geometry
+复核并记录为验证限制；未运行 production build/test，因为本任务未改生产代码。
+
+提交/CI：未提交、未推送、未运行 remote CI；本任务是设计资产和隔离 prototype，
+不触发 release/deploy 生命周期。部署：NOT_STARTED。
+
+---
+
+任务名称：Current Product Acceptance — 16-Case Chrome UI Verification
+状态：已完成（16/16 最终补测通过，原始失败记录保留）
+完成时间：2026-08-18
+
+使用本机 Google Chrome 真实执行上传、项目创建、研究问题提交、等待分析、截图和
+结果采集。两次完整 16-case 运行分别保留在
+`_qualification/evidence/current_product_acceptance_16_cases/run_2026-08-18T14-18-48-070Z/`
+和 `run_2026-08-18T14-32-02-801Z/`；首轮与第二轮的失败均未删除。随后对
+Q-ATOMIC-VIEW-001、Q-ML-REG-001、Q-PHONON-001、Q-COMPOSITION-001、
+Q-COORD-001、Q-TRAJECTORY-001 逐案进行新增 Chrome 补测，最终均为
+`PASS_OR_RECORDED`，索引见
+`_qualification/evidence/current_product_acceptance_16_cases/FINAL_RECONCILIATION.json`。
+
+修改摘要：验收 runner 将 `INTENT_UNSUPPORTED` 纳入合法预期拒绝；上传页面根据
+声子 band/DOS 文件名绑定 typed phonon companion import 与 schema contract，修复
+Q-PHONON 在真实 UI 上传链中的 bundle 解析失败；补充对应前端回归测试。未删除任何
+项目、Dataset、Conversation、Job、ToolCall、Artifact、Report 或历史 qualification
+evidence，Phase E-R1.7 未重开。
+
+测试结果：完整 Python `1576 passed, 51 skipped, 0 failed`；frontend Vitest
+`475 passed`；TypeScript typecheck PASS；production build PASS（仅既有 Plotly/
+glslify critical-dependency warning）；`python -m compileall -q apps/api/mdi_api`
+PASS；`git diff --check` PASS。API 持久化核验确认本次项目、Dataset、analysis、Job、
+ToolCall 和 Artifact 仍可读取。部署：NOT_STARTED；CI：未修改。
+---
+
+任务：Production UI/UX Reconstruction — Full Production Completion（2026-08-19 研究结果闭环续作）
+状态：处理中（核心产品验收仍有明确债务）
+完成时间：2026-08-19
+修改摘要：修复 correlation heatmap 的结构化 Evidence 投影；真实 Q-TABLE Research 运行已完成并保留失败/成功轮次、助手前后消息、Job、ToolCall、Artifact、Interpretation 与结果引用；结果标题和主要发现不再暴露内部 correlation subject 或 raw machine wording；记录 API 重启时必须使用 `uv run ... --app-dir apps/api`，避免 `mdi_adapters` 导入失败造成误报 500。补充 bounded numeric trajectory scan、source viewer 与持久化投影相关验证记录。
+测试结果：`pytest tests/ -q` = 1584 passed, 51 skipped, 75 warnings；`npm run test -- --run` = 79 files / 494 tests passed；`npm run typecheck` PASS；独立输出目录 `MDI_NEXT_DIST_DIR=.next-acceptance npm run build` PASS，仅保留既有 Plotly/glslify critical-dependency warnings；`python -m compileall -q apps/api packages services tests` PASS；`git diff --check` 无 whitespace error。
+提交/CI：未提交；CI/GitHub Actions 未修改；未部署。
+
+---
+
+任务：Production UX Correction — 46-project scientific presentation batch
+状态：已完成（保留明确验收债务）
+完成时间：2026-08-20
+修改摘要：使用生产 Chrome 路由和已配置服务端 Provider 批量复核 39 个保留科学
+Project 的 Data、Research、Result、Evidence 与 Report 展示；统一 Project 命名为
+`Case NN · Q-ID · Run NN`；对 35 个过时终态 Run 使用可逆 project-scoped archive，
+Reports 默认只显示最新高可用 Run。四个原始空 Project 与三个测试产生的零子对象
+Project 在 SQLite 备份后物理删除；没有删除任何科学数据链或历史 qualification evidence。
+新增/更新批量 Chrome 证据位于
+`design/ux-v1.3/evidence/production/batch-20260820/`。
+测试结果：42 Projects / 39 Datasets / 109 Jobs / 615 Artifacts / 208 Messages /
+42 Interpretations；Python `1603 passed, 51 skipped`；Vitest `79 files / 511 tests`；
+`npm run typecheck` PASS；production build PASS；`python -m compileall -q apps/api services packages tests`
+PASS；`git diff --check` PASS。增量非终态结果 Chrome 观测为 NOT_OBSERVED，真实读屏设备
+为 NOT_VERIFIED，BZ source ingestion 与 BYOK 为明确非本轮范围。提交/CI：未提交；
+CI/GitHub Actions 未修改；未部署。
+
+---
+
+任务：Production UX Correction — Project 命名与 Phase 10 能力可发现性修正
+状态：已完成
+完成时间：2026-08-20
+修改摘要：依据批处理前 46-Project 备份重新判定 provenance；38 个 Q-ID 科学项目
+统一为 `Case NN · Q-ID · Run NN`，3 个历史会话与 1 个历史数据项目使用
+`其他 · ... · Run NN`。未把 Case 项目错误伪装为 Phase 项目。为所有 Case 增加中文
+科学能力说明和真实 Phase 10 能力来源；Projects 页面新增 Case/Phase/其他分组、自然
+数值排序及按名称、Q-ID、Phase、能力说明搜索。数据库改名前备份为
+`mdi_phase5.db.pre-phase10-discoverability-20260820.sqlite`，未修改或删除 Dataset、Job、
+Artifact、Message、Evidence、Interpretation 或 Report。
+测试结果：ProductPages Vitest `5 passed`；TypeScript typecheck PASS；focused
+`git diff --check` PASS；Chrome `/projects` 实际显示 42 个项目，搜索 `Phase 10H`
+仅返回 Q-PHONON 的 Run 01/02，中文能力说明和 Phase 10H/10I 来源可见。
+提交/CI：未提交；CI/GitHub Actions 未修改；未部署。
+
+---
+
+任务：Production UX Correction — Remaining debt classification（2026-08-20）
+状态：已完成（无可自行消解的产品债务）
+完成时间：2026-08-20
+修改摘要：补充语义可访问性审计证据，标明真实硬件读屏与浏览器非终态 Artifact 截图的工具/执行时序限制，并将旧 Chrome 网络和 Volumetric 说明标为历史。`next lint` 已实际尝试，因缺少 ESLint 配置而进入 Next 弃用的交互式初始化；该项保留为工程卫生债务，不通过修改脚本伪造 PASS。BYOK、多 Dataset Job、ZIP 持久目录和完整 Phase E live campaign 继续按既定范围排除。
+测试结果：`npm run lint` = `ENGINEERING_DEBT`（交互式初始化，未产生代码检查结果）；`python -m compileall -q apps/api packages services tests` PASS；此前完整 Python `1599 passed, 51 skipped`、Vitest `79 files / 510 tests`、typecheck/build PASS；`git diff --check` PASS。
+提交/CI：未提交；CI/GitHub Actions 未修改；未部署。
+
+---
+
+任务：Production UX Correction — Scientific presentation and Phase 10 closure（2026-08-20）
+状态：已完成（核心生产闭环已实现；明确验收债务保留）
+完成时间：2026-08-20
+修改摘要：完成共享 Scientific Viewer adapter/registry 的源数据与结果投影收拢；修复声子组合结果优先级与重复输出、通用科学曲线的极值保真抽样、轨迹/布里渊区/材料模型/电子结构用户文案；Research roles、Project authorization、Evidence/Report projection 继续沿用服务端事实与现有执行内核。新增当前生产 Chrome 证据至 `design/ux-v1.3/evidence/production/desktop/`，未删除历史 qualification 数据、项目、Dataset、Conversation、Job、ToolCall、Artifact、Report 或历史 evidence。
+测试结果：完整 Python `1592 passed, 51 skipped, 90 warnings`；Vitest `79 files / 503 tests passed`；授权/Research/Provider/Interpretation/Report 聚焦集 `142 passed`；`npm run typecheck` PASS；production build PASS（仅既有 Plotly/glslify critical-dependency warnings）；`python -m compileall -q apps/api packages services tests` PASS；`git diff --check` PASS。Chrome 复核 Table/Inspector、Trajectory、Electronic、Volumetric summary、Phonon result、Report Reader、Model Settings modal 均无横向溢出；截图桥接可用并已保存桌面证据。
+提交/CI：未提交；CI/GitHub Actions 未修改；未部署。仍保留真实边界：增量结果在非终态前的 Chrome 观测为 `NOT_OBSERVED`；Volumetric source 3D 与 BZ source ingestion 为 `NOT_SUPPORTED`；真实读屏设备未验证；完整 Phase E live 16-case 不重开。
+
+---
+
+任务：Production UX Correction — Structure Viewer language closure（2026-08-20）
+状态：已完成
+完成时间：2026-08-20
+修改摘要：将三维结构查看器的工具栏、键盘辅助说明、超晶胞、裁剪、相机、导出、测量、位点/键合检查器和可访问语义摘要统一为 zh-CN；保留公式、Å、schema、诊断码等 canonical scientific content。Chrome 刷新验证真实 WebGL canvas、无横向溢出、无主要英文 Viewer labels，保存最终结构证据。
+测试结果：Structure Viewer focused Vitest `25 passed`；前端 typecheck PASS；Chrome structure route layout `scrollWidth === clientWidth`，canvas present，English primary-label scan empty；`git diff --check` PASS。
+提交/CI：未提交；CI/GitHub Actions 未修改；未部署。
+
+---
+
+任务：Production UX Correction — Semantic accessibility closure（2026-08-20）
+状态：已完成（源码/DOM 语义闭环；真实读屏设备仍未验证）
+完成时间：2026-08-20
+修改摘要：为生产 Research Timeline 增加工作台、对话消息和会话记录语义；补齐搜索弹窗 Tab 循环、Escape 关闭与状态/错误角色；为 Data loading/error/scientific table 增加 status/alert、可访问表名和 caption；研究 splitter 纳入键盘 Tab 顺序并保持 aria-valuenow 边界。新增 Research/Product focused accessibility assertions。
+测试结果：`npm test -- --run app/components/ResearchPages.test.tsx app/components/ProductPages.test.tsx` = 2 files / 11 tests passed；`npm run typecheck` PASS；`git diff --check` PASS。
+提交/CI：未提交；CI/GitHub Actions 未修改；未部署。真实 screen-reader device = NOT_VERIFIED。
+
+---
+
+任务：Production UX Correction — Structure Viewer ordinary-user projection closure（2026-08-20）
+状态：已完成（普通用户层级清理；技术详情和高级导出保留）
+完成时间：2026-08-20
+修改文件：`apps/web/app/components/viewer-scene/ViewerSceneRendererSurface.tsx`、`ViewerExportPanel.tsx`、`ViewerMeasurementPanel.tsx`、`ViewerSceneRendererSurface.test.tsx`、`apps/web/app/globals.css`、`persistent/ARCHITECTURE_DECISIONS.md`
+修改摘要：默认隐藏/折叠 renderer/version、图形性能指标、原始 scene/manifest/recipe 下载和导出诊断；新增“高级导出”“技术详情”渐进披露；将 Formula/Species/Lattice、Export size presets、Measurement coordinate mode、导出状态和失败文案统一为 zh-CN；不改变 Three.js、结构数据、校验、导出 contract 或执行内核。
+测试结果：viewer-scene 全量 focused Vitest `14 files / 91 tests passed`；单独 `ViewerSceneRendererSurface.test.tsx` `23 passed`；`git diff --check` PASS。`npm run typecheck` 当前被共享工作树中未提交的 `apps/web/app/components/ResearchPages.tsx` 语法错误阻断（该文件非本任务修改，需主任务合并前修复）。
+提交/CI：未提交；CI/GitHub Actions 未修改；未部署。
+
+---
+
+任务：Production UI/UX Reconstruction — Full Production Completion（最终闭合）
+状态：已完成
+完成时间：2026-08-20
+修改摘要：完成账号到 Project 的服务端授权边界、Research Timeline 与持久化助手前后消息、可信运行过程投影、Scientific Interpretation/Result/Report 投影、共享 Scientific Viewer Registry，以及 Table、Structure/Atoms、Trajectory、XRD、Electronic、Phonon、BZ Result、Volumetric、ZIP detected-content 和 Generic fallback 在新版 IA 中的接入。最后修复 Volumetric source channel 的通用列表截断、严格 Phase 10J source projection、attached source payload 加载、125×72×60 Gaussian-cube 等值面/精确切片/直接体渲染、通用标量错误模块投影和中文产品文案。保留历史项目、Dataset、Conversation、Job、ToolCall、Artifact、Report 与 qualification evidence；未重开 Phase E。
+测试结果：完整 Python `1599 passed, 51 skipped, 90 warnings`；完整 Vitest `79 files / 510 tests passed`；`npm run typecheck` PASS；`MDI_NEXT_DIST_DIR=.next-acceptance-final-4 npm run build` PASS（仅既有 Plotly/glslify critical-dependency warnings）；`python -m compileall -q apps/api services` PASS；`git diff --check` PASS。Chrome 真实验证保留的 Volumetric 125×72×60 source 可渲染 24,532 顶点/47,242 三角形等值面、精确晶格切片和 WebGL2 直接体渲染；BZ supporting result 真实渲染；390 与 200% 证据保存在 `design/ux-v1.3/evidence/production/`。
+验收边界：增量 Artifact 的非终态事件顺序由真实两步 Adapter 自动化验证，因当前本地 Worker 同步完成而没有浏览器中间态截图；真实硬件屏幕阅读器未运行，但源码与 Chrome DOM 语义审计通过；BZ 无 normalized source object，因此 Source View 为 NOT_SUPPORTED、Result View 为 VERIFIED；BYOK、CI modernization、完整 16-case live requalification 均不属于本任务。
+LLM 角色闭合：Research Turn Orchestrator 已接入可选真实 Provider，输入边界为问题/数据集/已验证 Plan，严格 JSON 失败时 grounded fallback；Report Composer 已接入 finalize，引用、来源身份和数值事实均经 Scientific Result 校验后才持久化；运行过程仍为零 LLM 调用。
+提交/CI：未提交、未推送；CI/GitHub Actions 未修改；未部署。
+
+---
+
+任务：Production UX Correction — Final documentation reconciliation（2026-08-20）
+状态：已完成
+完成时间：2026-08-20
+修改摘要：将 `persistent/TASK_BOARD.md` 的生产重构条目标记为“已完成（明确验收边界）”，并在 `persistent/OPEN_QUESTIONS.md` 中关闭已由当前 Research Turn/Report Composer 严格角色合同取代的旧问题描述。未改变历史 Phase 证据、数据库、CI 或运行时行为。
+测试结果：`python -m compileall -q apps/api packages services tests` PASS；Model Settings Vitest `5 passed`；此前最终全量 Python `1599 passed, 51 skipped`、Vitest `79 files / 510 tests`、typecheck/build PASS；`git diff --check` 无 whitespace error。
+提交/CI：未提交；CI/GitHub Actions 未修改；未部署。
+
+---
+
+任务：Continuous Product Quality — Global UX / Scientific Capability / Accessibility Improvement Wave 1
+状态：已完成
+完成时间：2026-08-20T22:52:15+08:00
+修改摘要：修复 Data 科学表格的单位猜测问题，改为仅显示未声明单位并使用中文语义标签；为 Research 增加初始加载/错误/重试状态、研究记录弹层焦点恢复与中文会话状态；在移动端加入 Research 对话/工作台单面板切换并降低滚动冲突；将 Reports 列表和 Report Reader 改为显式加载/错误/结果优先层级，并优先 PRIMARY_FIGURE / PRIMARY_TABLE 作为主结果。
+测试结果：`npm test -- --run app/components/ResearchPages.test.tsx app/components/ProductPages.test.tsx` = 2 files / 27 tests passed；`npm run typecheck` PASS；`npm ci` in apps/web PASS after removing a locked Next process.
+提交/CI：未提交；CI/GitHub Actions 未修改；未部署。Chrome 真实视觉证据待重连用户 Chrome 标签页后补验。
+
+Wave 1 follow-up（2026-08-20）：补齐 validated objectType 优先路由，修复 phonon→electronic 误判；结果加载改为 selected Artifact 必需、伴随 Artifact best-effort；通用表格披露完整行数与 preview cap；未知 source object 使用诚实 unsupported 状态。Focused `ProductPages` + `ScientificViewerAdapter.effect` = 19 passed；typecheck PASS；Chrome 桌面复查 Q-TABLE-001（64 行）和 Q-TRAJECTORY-001 Research 时间线 PASS。390px 视口仍待用户实际调整后验收。
+追加回归：完整 `pytest tests/ -q` = 1607 passed, 51 skipped, 90 warnings（239.24s）；完整 Vitest = 80 files / 529 tests passed；无失败。最终 Chrome 390×845 验收 PASS：Research 对话/工作台单面板切换且 viewport scrollWidth=390；Data 页面无 viewport 横溢出，表格使用独立横向滚动；行选择与模型设置关闭按钮均为 44px；Inspector Escape 恢复“选择第 1 行”；Report 列表与 Reader 无 viewport 横溢出。
+
+---
+
+任务：Continuous Product Quality — Research Timeline / Scientific Workbench Wave 2
+状态：已完成
+完成时间：2026-08-21
+修改文件：`apps/api/mdi_api/db.py`、`apps/api/alembic/versions/0014_research_session_run_bindings.py`、`apps/api/mdi_api/routers/research.py`、`apps/api/mdi_api/routers/secured_planner.py`、`apps/api/mdi_api/routers/planner.py`、`apps/api/mdi_api/routers/project_history.py`、`apps/web/app/lib/planner-api.ts`、`apps/web/app/lib/product-api.ts`、`apps/web/app/components/ResearchPages.tsx`、`apps/web/app/components/ResearchPages.test.tsx`、`apps/web/app/components/workspace/WorkspaceGenericPlot.tsx`、`tests/test_project_access.py`、`tests/test_research_session_run_migration.py`、`docs/13_SHARED_SCHEMA_SPEC.md`、`persistent/ARCHITECTURE_DECISIONS.md`、`persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`。
+修改摘要：将 Research Session → Planner Run 关联正规化为项目级、一个 Job 只能归属一个 Session 的可审计投影；迁移从旧 assistant payload 回填且不删除历史记录，旧数据库在迁移窗口保持可读并明确标记 `migration_required`。Planner 请求携带经授权校验的 `researchSessionId`，解释完成后服务端自动补齐 post-run 助手投影；failed 投影有幂等保护。历史 Run 恢复增加部分加载保留、事件/Artifact 合并去重、孤立 Run 不自动挂入首个会话，以及 Data/Report/Research 互链。Provider 与 Session 读取失败均有可重试状态；图表超限提示不再重复出现在无障碍树中。
+测试结果：完整 Vitest `80 files / 539 tests passed`；完整 `pytest tests/ -q` `1611 passed, 51 skipped, 90 warnings`；`npm run typecheck` PASS；`MDI_NEXT_DIST_DIR=.next-wave2-build npm run build` PASS（仅既有 Plotly/glslify critical-dependency warnings）；`python -m compileall -q apps/api packages services tests` PASS；Alembic `0014_research_session_run_bindings (head)`；`git diff --check` PASS。针对性新增/更新 Research、授权与迁移回归全部通过。
+Chrome 验收：真实保留项目 `Case 11 · Q-STRUCTURE-RDF-001 · Run 02` 在 Chrome 桌面双栏与 390px 单面板下通过；历史结果经异步加载恢复，Data/Report 回链可用，移动 `scrollWidth === clientWidth`。提交/CI：未提交；CI/GitHub Actions 未修改；未部署。已知限制：本地 Worker 同步完成导致非终态 incremental Artifact 未在浏览器中观测；真实硬件 screen-reader 未运行；Plotly 构建警告仍属依赖层既有问题。
+
+Wave 2 follow-up（2026-08-21）：将 Research Turn 的确定性用户文案从“我会使用 …”
+调整为“本次分析将以数据集“…”为范围”，并统一 unsupported 文案的数据集边界表达，
+并在前端展示层兼容旧的 pre-run 前缀，因此无需重写历史 Message。保留原始科学数据集名称不做翻译或猜测。`tests/test_product_research_scope.py` = 9 passed；
+Research/Product Vitest = 37 passed；`npm run typecheck`、compileall、`git diff --check` PASS。
+
+---
+
+任务：Continuous Product Quality — Exact Structure Planning / Evidence / Workbench Closure
+状态：已完成
+完成时间：2026-08-21T09:47:57+08:00
+修改文件：`services/llm/mdi_llm/capability_planner.py`、`services/llm/mdi_llm/providers.py`、`apps/api/mdi_api/routers/planner.py`、`apps/api/mdi_api/routers/research.py`、`apps/web/app/components/ResearchPages.tsx`、`apps/web/app/components/ResearchPages.test.tsx`、`apps/web/app/globals.css`、相关 Python capability/evidence/research tests、`persistent/*.md`。
+修改摘要：补齐中文“径向分布+局部环境”的精确识别与 CrystalNN/VoronoiNN 操作型澄清；算法确认后严格生成配位 producer、局部环境 consumer 与 RDF 三步计划，并保留局部环境+实验 XRD 的四工具组合合同。超出 262144-byte 读取上限的已支持 Artifact 改为有界跳过并披露限制，不再阻断其余安全 Evidence；Research/Report 将配位覆盖率、范围和算法限制转成用户可读中文。桌面 Research 改为动态视口固定壳体、左右独立滚动、320-640 px 鼠标/触控/键盘 splitter，进入路由时归零根滚动。
+真实验收：使用已授权本地账号在 `http://localhost:3000` 完成 Run `job_07f702a3c9af42259ec5d14f`；Plan 仅含 `structure.coordination_crystalnn`、`structure.local_environment_polyhedra`、`structure.rdf`，完成 4 个科学输出并渲染 5 个 RDF 系列 / 400 个值。1280x720 实测全局栏、项目导航和 620 px 工作台无根滚动，长对话与结果独立滚动；Grounded finding/limitation 恢复成功。
+测试结果：完整 `pytest tests -q` = `1618 passed, 51 skipped, 90 warnings`；完整 Vitest = `82 files / 552 tests passed`；Research focused = `24 passed`；修复后的 Phase 13 composite capability/preflight + capability planner = `92 passed`；`npm run typecheck` PASS；`MDI_NEXT_DIST_DIR=.next-continuous-wave3 npm run build` PASS（仅既有 Plotly/glslify critical-dependency warnings）；`python -m compileall -q apps/api packages services tests` PASS；Alembic = `0014_research_session_run_bindings (head)`；`git diff --check` PASS。
+提交/CI：未提交、未推送；CI/GitHub Actions 未修改；未部署。真实硬件 screen reader 与浏览器中的非终态 incremental Artifact 仍未验证，本轮未重开 Phase E。

@@ -326,16 +326,16 @@ program, deployment product, or plugin marketplace.
 
 ### Core Stack
 
-* pymatgen for materials semantics and reviewed scientific transformations.
-* ASE for Atoms and trajectory interoperability.
-* phonopy for phonon semantics and source conventions.
-* pymatviz and Plotly for materials/scientific visualization.
-* MatterViz as a selective browser capability source.
-* Existing application-owned Three.js/WebGL renderers for structure,
+- pymatgen for materials semantics and reviewed scientific transformations.
+- ASE for Atoms and trajectory interoperability.
+- phonopy for phonon semantics and source conventions.
+- pymatviz and Plotly for materials/scientific visualization.
+- MatterViz as a selective browser capability source.
+- Existing application-owned Three.js/WebGL renderers for structure,
   trajectory, phonon, BZ, and volumetric products.
-* LLM Agent for intent, planning, bounded interpretation, and recommendations.
-* Tool Registry and Adapters as the strict executable boundary.
-* Artifact, Recipe, and Report for provenance, audit, export, and replay.
+- LLM Agent for intent, planning, bounded interpretation, and recommendations.
+- Tool Registry and Adapters as the strict executable boundary.
+- Artifact, Recipe, and Report for provenance, audit, export, and replay.
 
 ### Core User Journey
 
@@ -402,11 +402,11 @@ reviewer-gated.
 
 Canonical authority:
 
-* `docs/ROADMAP.md`
-* `docs/01_PRODUCT_REQUIREMENTS.md`
-* `docs/CAPABILITY_STATUS_MATRIX.md`
-* `docs/FUTURE_SCOPE.md`
-* `docs/NOT_PLANNED_SCOPE.md`
+- `docs/ROADMAP.md`
+- `docs/01_PRODUCT_REQUIREMENTS.md`
+- `docs/CAPABILITY_STATUS_MATRIX.md`
+- `docs/FUTURE_SCOPE.md`
+- `docs/NOT_PLANNED_SCOPE.md`
 
 The historical detail below is retained for implementation context. Where it
 conflicts with the canonical documents above, the canonical documents govern.
@@ -508,12 +508,12 @@ Registry, and Adapter execution.
 
 ## 默认技术栈
 
-| 层 | 默认选择 |
-|---|---|
-| 前端 | Next.js、React、TypeScript、Tailwind CSS、shadcn/ui、Plotly.js、MatterViz、TanStack Query、Zustand/Jotai、WebSocket/SSE |
-| 后端 | FastAPI 或 NestJS、PostgreSQL、Redis、S3/MinIO、Celery/Dramatiq/Temporal |
-| Python 材料服务 | pymatviz、pymatgen、ASE、phonopy、matminer、pandas、numpy、scikit-learn、plotly |
-| Agent / LLM | OpenAI-compatible API、BYOK、Tool Calling、JSON Schema Validation、内部工具文档 RAG |
+| 层              | 默认选择                                                                                                                |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 前端            | Next.js、React、TypeScript、Tailwind CSS、shadcn/ui、Plotly.js、MatterViz、TanStack Query、Zustand/Jotai、WebSocket/SSE |
+| 后端            | FastAPI 或 NestJS、PostgreSQL、Redis、S3/MinIO、Celery/Dramatiq/Temporal                                                |
+| Python 材料服务 | pymatviz、pymatgen、ASE、phonopy、matminer、pandas、numpy、scikit-learn、plotly                                         |
+| Agent / LLM     | OpenAI-compatible API、BYOK、Tool Calling、JSON Schema Validation、内部工具文档 RAG                                     |
 
 ## 长期约束
 
@@ -538,6 +538,7 @@ archived by verified queue commit `a9319c2d`. Phase 10N-2 corrected implementati
 `2b4dacf4` passed exact-SHA CI `31258820229`; its active task remains while the
 completion-record and queue-archive gates close. Phase 10N-3 remains a reviewer
 gate and is not queued or executable.
+
 ## Phase 10N-5 Active Scope (2026-08-09)
 
 N5 is the one active authorized task. It adds supplied-output-only Band and DOS
@@ -554,6 +555,7 @@ Profile versions, migrations, APIs or dependencies. Phase 11 is not queued.
 Corrected N6 implementation `eda7cda4d14207abaf97a0a88cc263b0d1ad3319`
 passed exact-SHA CI `31316556495`. The task remains only for completion-record and
 verified queue-archive CI; Phase 11 remains non-executable.
+
 ## Phase 11-1 State
 
 Phase 11-1 provenance and fixture consolidation is complete after implementation CI success. Phase 11-2 golden benchmark execution is now active using the sealed handoff. It preserves Registry 62, DataProfile 2.4, and the sealed scientific contracts.
@@ -667,6 +669,7 @@ Implementation `2e47263ac3042663cf901a7fcb8f44e203143e2e` passed exact-SHA CI
 `31493208538`; completion is recorded and the queue archive is complete. Phase 13-2
 remains failed historical, unexecuted and separately reviewer-gated. The
 fix-forward queue block is now archived; the failed Phase 13-2 block is retained.
+
 ## Phase 13-2 Rerun Status
 
 The second Phase 13-2 attempt is blocked by three newly observed release-critical
@@ -885,6 +888,7 @@ state. All 16 Cases and 26 analysis turns pass deterministic executability and
 resource-cap preflight; PostgreSQL, Redis, MinIO, API, frontend, Worker, Browser
 import readiness, provider configuration, and the empty durable namespace are
 healthy. `READY_FOR_PHASE_E=YES`, but Phase E has not been created or started.
+
 ## Current Web Product Surface
 
 The primary web entry is a project/history index. Selecting a dataset opens a
@@ -902,3 +906,14 @@ reopen it. The repository now has zero active local test failures: backend
 `465 passed`, and typecheck/build/browser/static/security gates PASS. Twenty-one
 stale historical queue/evidence/route assertions were reconciled without a
 product or scientific-authority change. Normal push and remote CI are pending.
+
+## 2026-08-21 Current CI Authority
+
+The default CI contract now prioritizes current product regressions: complete
+backend and frontend suites, locked dependencies, production build, current
+three-browser accessibility/product checks, cross-platform scientific replay,
+and zero-skip service integration. Sealed phase-specific browser scripts remain
+available through an explicit manual workflow input and no longer dominate
+every push. This policy is documented in `docs/CI.md` and changes no product,
+scientific, qualification, Planner, Registry, Worker, Artifact, Recipe, or
+Report authority.

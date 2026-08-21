@@ -6,9 +6,11 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from pydantic import BaseModel, Field
+from fastapi import Depends
 
 from mdi_api.secrets import InMemorySecretStore, Secret, SecretData
 from mdi_llm import is_credential_key, redact_credential_values
+from mdi_api.routers.auth import CurrentUser, get_current_user_compat
 
 
 class CreateSecretRequest(BaseModel):
@@ -32,25 +34,28 @@ class SecretSummary:
 
 
 _store = InMemorySecretStore()
-_CURRENT_USER_ID = "user_local"
 _SECRET_ALIASES: dict[str, str] = {}
 _SECRET_LAST_USED: dict[str, str] = {}
 
 
-def create_secret(request: CreateSecretRequest) -> SecretSummary:
-    sec = _store.create_secret(scope_id=_CURRENT_USER_ID, provider=request.provider, value=request.value)
+def create_secret(request: CreateSecretRequest, current_user: CurrentUser = Depends(get_current_user_compat)) -> SecretSummary:
+    sec = _store.create_secret(scope_id=current_user.id, provider=request.provider, value=request.value)
     _SECRET_ALIASES[sec.id] = request.alias or f"{request.provider} API Key"
     return _secret_summary(sec)
 
 
-def list_secrets() -> list[SecretSummary]:
-    return [_secret_summary(s) for s in _store.list_secrets(scope_id=_CURRENT_USER_ID)]
+def list_secrets(current_user: CurrentUser = Depends(get_current_user_compat)) -> list[SecretSummary]:
+    return [_secret_summary(s) for s in _store.list_secrets(scope_id=current_user.id)]
 
 
-def delete_secret(secret_id: str) -> bool:
+def delete_secret(secret_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> bool:
+    # Scope the mutation before removing presentation metadata. A caller must
+    # never be able to delete another user's secret by guessing its id.
+    if not _store.delete_secret(secret_id, scope_id=current_user.id):
+        return False
     _SECRET_ALIASES.pop(secret_id, None)
     _SECRET_LAST_USED.pop(secret_id, None)
-    return _store.delete_secret(secret_id)
+    return True
 
 
 def get_secret_value(secret_id: str) -> str | None:

@@ -12,12 +12,12 @@ describe("ExperimentalXrdComparisonPanel", () => {
     const artifact = xrdArtifact();
     const onSelection = vi.fn();
     render(<ExperimentalXrdComparisonPanel artifacts={[artifact]} selected={artifact} workspace={workspaceSnapshotFixture().workspace} onSelection={onSelection} />);
-    expect(screen.getByRole("heading", { name: "Experimental XRD comparison" })).toBeTruthy();
-    expect(screen.getByRole("img", { name: /detected experimental peaks/u })).toBeTruthy();
-    expect(screen.getByText(/not Rietveld refinement or definitive phase identification/u)).toBeTruthy();
-    fireEvent.click(screen.getAllByRole("button", { name: "Select" })[0]);
+    expect(screen.getByRole("heading", { name: "实验与理论 XRD 峰位比较" })).toBeTruthy();
+    expect(screen.getByRole("img", { name: /实验峰.*理论峰.*匹配/u })).toBeTruthy();
+    expect(screen.getByText(/不是 Rietveld 精修/u)).toBeTruthy();
+    fireEvent.click(screen.getAllByRole("button", { name: /选择第/u })[0]);
     expect(onSelection).toHaveBeenCalledWith(expect.objectContaining({ primary: expect.objectContaining({ kind: "XRD_MATCH", matchId: "xrd-match:1", experimentalResourceId: "experimental_xrd_1", theoreticalArtifactId: "artifact_theory" }) }));
-    fireEvent.click(screen.getAllByRole("button", { name: "Select" })[1]);
+    fireEvent.click(screen.getAllByRole("button", { name: /选择第/u })[1]);
     expect(onSelection).toHaveBeenLastCalledWith(expect.objectContaining({ primary: expect.objectContaining({ kind: "EXPERIMENTAL_XRD_PEAK", peakId: "experimental-peak:2" }) }));
   });
 
@@ -25,7 +25,7 @@ describe("ExperimentalXrdComparisonPanel", () => {
     const artifact = xrdArtifact();
     artifact.content = { ...(artifact.content as Record<string, unknown>), limitations: ["javascript:alert(1)"] };
     render(<ExperimentalXrdComparisonPanel artifacts={[artifact]} selected={artifact} workspace={workspaceSnapshotFixture().workspace} onSelection={vi.fn()} />);
-    expect(screen.getByRole("alert")).toHaveTextContent("N3_XRD_CONTRACT_INVALID");
+    expect(screen.getByRole("alert")).toHaveTextContent("结果格式未通过安全校验");
   });
 });
 

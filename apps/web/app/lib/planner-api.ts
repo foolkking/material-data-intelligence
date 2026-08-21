@@ -11,10 +11,12 @@ export type PlannerJobRequest = {
   temperature?: number;
   maxTokens?: number;
   timeoutSeconds?: number;
+  thinkingMode?: "quick" | "standard" | "deep";
   intentSchemaVersion?: "1.0";
   intentId?: string;
   selectedResourceIds?: string[];
   selectedTargetIds?: string[];
+  researchSessionId?: string;
 };
 
 export const SUPPORTED_DATA_PROFILE_CONTRACT_VERSIONS = ["2.0", "2.1", "2.2", "2.3", "2.4"] as const;
@@ -624,6 +626,14 @@ export type DatasetDetail = DatasetOption & {
   files?: Array<Record<string, unknown>>;
 };
 
+export type DatasetSourceResource = {
+  objectId: string;
+  objectType: string;
+  objectHash?: string;
+  datasetId: string;
+  payload: unknown;
+};
+
 export type ProjectSummary = {
   id: string;
   projectId?: string;
@@ -706,6 +716,9 @@ export type ProjectHistory = {
     recipeCount: number;
     workspaceId?: string | null;
     workspaceTitle?: string | null;
+    archived?: boolean;
+    visibleInReports?: boolean;
+    researchSessionId?: string;
   }>;
   activity: Array<{
     activityId: string;
@@ -799,19 +812,37 @@ export type ProviderOption = {
   id: string;
   label: string;
   provider: string;
+  kind?: string;
   baseUrl?: string;
   defaultModel?: string;
+  allowedModels?: string[];
   requiresSecret?: boolean;
+  secretSource?: string;
+  execution?: "live" | "offline" | "unavailable" | string;
   description?: string;
+  configurationSource?: string;
+  developerOnly?: boolean;
+  models?: string[];
+  secretConfigured?: boolean;
+  thinkingModes?: Array<{ id: string; label: string; description?: string }>;
 };
 
 export type ProviderStatus = {
   ok?: boolean;
   provider?: string;
+  kind?: string;
+  baseUrl?: string | null;
   model?: string;
   status?: string;
   message?: string;
   redacted?: boolean;
+  configurationSource?: string;
+  secretSource?: string | null;
+  execution?: "live" | "offline" | "unavailable" | string;
+  allowedModels?: string[];
+  errorType?: string | null;
+  configured?: boolean;
+  thinkingModes?: Array<{ id: string; label: string; description?: string }>;
 };
 
 export type ProviderResolveRequest = {
@@ -845,6 +876,8 @@ export type ProviderTestRequest = {
 export type ProviderTestResult = {
   ok: boolean;
   provider?: string;
+  kind?: string;
+  baseUrl?: string | null;
   model?: string;
   latencyMs?: number;
   validated?: boolean;
@@ -853,6 +886,24 @@ export type ProviderTestResult = {
   safeDetails?: string;
   suggestions?: string[];
   redacted?: boolean;
+};
+
+export type ProviderConfigureRequest = {
+  provider: string;
+  label?: string;
+  kind?: "openai_compatible";
+  baseUrl: string;
+  apiKey?: string;
+  defaultModel?: string;
+  modelIds?: string[];
+};
+
+export type ProviderModelList = {
+  ok: boolean;
+  provider: string;
+  models: string[];
+  source?: string;
+  message?: string;
 };
 
 export type SecretSummary = {
@@ -932,7 +983,7 @@ export class PlannerApiError extends Error {
   }
 }
 
-const API_BASE = normalizeBaseUrl(process.env.NEXT_PUBLIC_MDI_API_BASE_URL || "http://localhost:8000");
+const API_BASE = normalizeBaseUrl(process.env.NEXT_PUBLIC_MDI_API_BASE_URL || (typeof window === "undefined" ? "http://127.0.0.1:8000" : "/api"));
 
 export async function createPlannerJob(payload: PlannerJobRequest): Promise<PlannerJobCreateResult> {
   return apiFetch<PlannerJobCreateResult>("/planner/jobs", {
@@ -1030,7 +1081,7 @@ export async function getPlannerArtifactContent(
   }
   const response = await fetch(
     `${API_BASE}/planner/jobs/${encodeURIComponent(jobId)}/artifacts/${encodeURIComponent(artifactId)}/content`,
-    { method: "GET", signal: options.signal, credentials: "omit" },
+    { method: "GET", signal: options.signal, credentials: "include" },
   );
   if (!response.ok) throw new Error("ARTIFACT_CONTENT_LOAD_FAILED");
   const declared = Number(response.headers.get("content-length") ?? response.headers.get("x-content-length-validated"));
@@ -1073,12 +1124,76 @@ export async function createProject(name: string): Promise<ProjectSummary> {
   });
 }
 
+export async function updateProject(
+  projectId: string,
+  changes: Readonly<{ name?: string; description?: string; archived?: boolean }>,
+): Promise<ProjectSummary> {
+  return apiFetch<ProjectSummary>(`/projects/${encodeURIComponent(projectId)}`, {
+    method: "PATCH",
+    body: JSON.stringify(changes),
+  });
+}
+
+export async function bulkProjectAction(
+  projectIds: string[],
+  action: "archive" | "restore",
+): Promise<{ action: "archive" | "restore"; projectIds: string[]; count: number }> {
+  return apiFetch("/projects/bulk", {
+    method: "POST",
+    body: JSON.stringify({ projectIds, action }),
+  });
+}
+
+export async function deleteEmptyProject(projectId: string): Promise<{ projectId: string; deleted: boolean }> {
+  return apiFetch(`/projects/${encodeURIComponent(projectId)}`, { method: "DELETE" });
+}
+
 export async function getProjectHistory(projectId: string): Promise<ProjectHistory> {
   return apiFetch<ProjectHistory>("/projects/" + encodeURIComponent(projectId) + "/history");
 }
 
+export async function archiveProjectRun(projectId: string, jobId: string): Promise<{ projectId: string; jobId: string; archived: boolean }> {
+  return apiFetch(`/projects/${encodeURIComponent(projectId)}/runs/${encodeURIComponent(jobId)}/archive`, { method: "POST" });
+}
+
+export async function restoreProjectRun(projectId: string, jobId: string): Promise<{ projectId: string; jobId: string; archived: boolean }> {
+  return apiFetch(`/projects/${encodeURIComponent(projectId)}/runs/${encodeURIComponent(jobId)}/archive`, { method: "DELETE" });
+}
+
 export async function getDataset(datasetId: string): Promise<DatasetDetail> {
   return apiFetch<DatasetDetail>(`/datasets/${encodeURIComponent(datasetId)}`);
+}
+
+export async function updateDataset(
+  datasetId: string,
+  changes: Readonly<{ name?: string; archived?: boolean }>,
+): Promise<DatasetDetail> {
+  return apiFetch<DatasetDetail>(`/datasets/${encodeURIComponent(datasetId)}`, {
+    method: "PATCH",
+    body: JSON.stringify(changes),
+  });
+}
+
+export async function bulkDatasetAction(
+  datasetIds: string[],
+  action: "archive" | "restore",
+): Promise<{ action: "archive" | "restore"; datasetIds: string[]; count: number }> {
+  return apiFetch("/datasets/bulk", {
+    method: "POST",
+    body: JSON.stringify({ datasetIds, action }),
+  });
+}
+
+export async function deleteEmptyDataset(datasetId: string): Promise<{ datasetId: string; deleted: boolean }> {
+  return apiFetch(`/datasets/${encodeURIComponent(datasetId)}`, { method: "DELETE" });
+}
+
+export async function getDatasetSourceResources(datasetId: string, signal?: AbortSignal): Promise<DatasetSourceResource[]> {
+  const result = await apiFetch<{ datasetId: string; resources: DatasetSourceResource[] }>(
+    `/datasets/${encodeURIComponent(datasetId)}/object-store`,
+    { signal },
+  );
+  return result.resources;
 }
 
 export async function loadDemoDataset(): Promise<DemoDatasetResult> {
@@ -1129,7 +1244,7 @@ export async function uploadDatasetFiles(
           method: "PUT",
           headers: { "Content-Type": "application/octet-stream" },
           body: item.file,
-          credentials: "omit",
+          credentials: "include",
         },
       );
       if (!response.ok) {
@@ -1182,6 +1297,28 @@ export async function testPlannerProvider(payload: ProviderTestRequest): Promise
   });
 }
 
+export async function configurePlannerProvider(payload: ProviderConfigureRequest): Promise<{ ok: boolean; provider: ProviderOption; message?: string }> {
+  return apiFetch<{ ok: boolean; provider: ProviderOption; message?: string }>("/planner/providers/configure", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updatePlannerProviderModels(provider: string, modelIds: string[], defaultModel?: string): Promise<{ ok: boolean; provider: ProviderOption; message?: string }> {
+  return apiFetch<{ ok: boolean; provider: ProviderOption; message?: string }>(`/planner/providers/${encodeURIComponent(provider)}/models`, {
+    method: "PATCH",
+    body: JSON.stringify({ modelIds, defaultModel }),
+  });
+}
+
+export async function listProviderModels(provider: string): Promise<ProviderModelList> {
+  return apiFetch<ProviderModelList>(`/planner/providers/${encodeURIComponent(provider)}/models`);
+}
+
+export async function removePlannerProvider(provider: string): Promise<{ ok: boolean; provider: string }> {
+  return apiFetch<{ ok: boolean; provider: string }>(`/planner/providers/${encodeURIComponent(provider)}`, { method: "DELETE" });
+}
+
 export async function createSecret(payload: CreateSecretRequest): Promise<SecretSummary> {
   return apiFetch<SecretSummary>("/me/secrets", {
     method: "POST",
@@ -1201,6 +1338,7 @@ export async function deleteSecret(secretId: string): Promise<boolean> {
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     ...init,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       ...(init?.headers || {})
@@ -1209,6 +1347,9 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const text = await response.text();
   const body = text ? safeParseJson(text) : null;
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("mdi:session-expired"));
+    }
     const message = errorMessage(body) || `Request failed with status ${response.status}`;
     throw new PlannerApiError(message, response.status, body);
   }
@@ -1253,6 +1394,9 @@ function errorMessage(value: unknown): string | null {
     const detail = value.detail;
     if (typeof detail === "string") {
       return detail;
+    }
+    if (detail && typeof detail === "object" && "message" in detail && typeof detail.message === "string") {
+      return detail.message;
     }
     if (Array.isArray(detail) && detail[0] && typeof detail[0] === "object" && "msg" in detail[0]) {
       return String((detail[0] as { msg?: unknown }).msg);

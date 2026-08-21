@@ -58,7 +58,7 @@ def test_phase_d_r1_project_namespace_survives_runtime_recreation(
         engine = create_engine(schema_url, future=True)
         with engine.connect() as connection:
             assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-                "0008_phase_d_r1_namespace"
+                "0014_research_session_run_bindings"
             )
 
         reset_phase2_runtime(tmp_path / "before-restart")

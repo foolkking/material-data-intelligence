@@ -54,7 +54,7 @@ export async function createVolumetricVolumeRendererEngine(args: Readonly<{
   renderer.autoClear = false;
   renderer.localClippingEnabled = true;
   renderer.domElement.dataset.testid = "volumetric-volume-canvas";
-  renderer.domElement.setAttribute("aria-label", "WebGL2 direct volume renderer");
+  renderer.domElement.setAttribute("aria-label", "WebGL2 直接体渲染");
   renderer.domElement.setAttribute("role", "img");
   container.appendChild(renderer.domElement);
 

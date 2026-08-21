@@ -74,13 +74,13 @@
     },
     {
       "path": "level_c2_regression.json",
-      "sha256": "f12ad0d0b144de311b498ccacc3d4dd60f11ca96875f704da8c9ca54ed75c534",
-      "size": 6230
+      "sha256": "9e8d2e6964df39544a08edcff4cf01a78c79a8749511f51d67150a2ecf3c6b53",
+      "size": 6213
     },
     {
       "path": "level_c_regression.json",
-      "sha256": "1a2a4532953dc2abca120e8a74115e199432cc426fcf7b6c29917ed78ac73319",
-      "size": 17517
+      "sha256": "33e830b31d01f016282b997b69d21b1261c21ade6762caa6fb884c36b736dfad",
+      "size": 17469
     },
     {
       "path": "no_manual_preload_audit.json",

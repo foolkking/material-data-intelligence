@@ -6,15 +6,14 @@
   "planSchemaVersion": "0.1",
   "planValidated": true,
   "plannedTools": [
-    "dataset.materials_explorer"
+    "composition.chem_sys_sunburst"
   ],
   "profileContractVersion": "2.0",
   "profileId": "profile_phase13_entry_p13_demo_01_v2",
   "rootResourceRefs": [
-    "obj_dataframe_2b3a36cebe19",
-    "profile"
+    "obj_dataframe_2b3a36cebe19"
   ],
-  "rootResourcesResolved": 2,
+  "rootResourcesResolved": 1,
   "runtimeResolver": "production exact source-resource index",
   "scientificCompatibilityChecks": [],
   "status": "READY_FOR_FULL_E2E"

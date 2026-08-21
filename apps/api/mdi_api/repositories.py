@@ -525,7 +525,7 @@ class InMemoryDataProfileRepository(_InMemoryRecordRepository):
 class InMemoryAnalysisIntentRepository(_InMemoryRecordRepository):
     def __init__(self) -> None:
         super().__init__()
-        self.executions: dict[str, dict[str, Any]] = {}
+        self.executions: dict[tuple[str, str, str], dict[str, Any]] = {}
 
     def save_intent(self, record: Mapping[str, Any]) -> dict[str, Any]:
         normalized = _normalize_analysis_intent_record(record)
@@ -542,21 +542,19 @@ class InMemoryAnalysisIntentRepository(_InMemoryRecordRepository):
 
     def attach_execution(self, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
         self.get_intent(intent_id)
-        current = self.executions.get(intent_id)
+        key = (intent_id, plan_id, job_id)
         binding = {
-            "id": f"intent_exec_{intent_id.removeprefix('intent_')[:16]}",
+            "id": f"intent_exec_{intent_id.removeprefix('intent_')[:12]}_{plan_id.removeprefix('plan_')[:12]}_{job_id.removeprefix('job_')[:12]}",
             "intentId": intent_id,
             "planId": plan_id,
             "jobId": job_id,
             "createdAt": _utc_now(),
         }
-        if current is not None and (current["planId"] != plan_id or current["jobId"] != job_id):
-            raise ValueError("AnalysisIntent execution association is immutable")
-        self.executions[intent_id] = current or binding
-        return _json_copy(self.executions[intent_id])
+        self.executions.setdefault(key, binding)
+        return _json_copy(self.executions[key])
 
     def get_execution(self, intent_id: str) -> dict[str, Any] | None:
-        value = self.executions.get(intent_id)
+        value = next((item for item in self.executions.values() if item["intentId"] == intent_id), None)
         return _json_copy(value) if value is not None else None
 
     def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
@@ -568,7 +566,7 @@ class InMemoryCapabilityPlanningRepository:
     def __init__(self) -> None:
         self.resolutions: dict[str, dict[str, Any]] = {}
         self.decisions: dict[str, dict[str, Any]] = {}
-        self.executions: dict[str, dict[str, Any]] = {}
+        self.executions: dict[tuple[str, str, str], dict[str, Any]] = {}
 
     def save_resolution(self, record: Mapping[str, Any]) -> dict[str, Any]:
         normalized = _normalize_capability_resolution_record(record)
@@ -606,21 +604,16 @@ class InMemoryCapabilityPlanningRepository:
         if decision["intentId"] != intent_id or decision["outcome"] != "PLAN_READY":
             raise ValueError("Only a matching PLAN_READY decision can be attached to execution")
         binding = {
-            "id": f"cap_exec_{decision_id.removeprefix('decision_')[:16]}",
+            "id": f"cap_exec_{decision_id.removeprefix('decision_')[:12]}_{plan_id.removeprefix('plan_')[:12]}_{job_id.removeprefix('job_')[:12]}",
             "decisionId": decision_id,
             "intentId": intent_id,
             "planId": plan_id,
             "jobId": job_id,
             "createdAt": _utc_now(),
         }
-        current = self.executions.get(decision_id)
-        if current is not None and current != binding:
-            comparable = {key: value for key, value in current.items() if key != "createdAt"}
-            requested = {key: value for key, value in binding.items() if key != "createdAt"}
-            if comparable != requested:
-                raise ValueError("Capability Planning execution association is immutable")
-        self.executions.setdefault(decision_id, binding)
-        return _json_copy(self.executions[decision_id])
+        key = (decision_id, plan_id, job_id)
+        self.executions.setdefault(key, binding)
+        return _json_copy(self.executions[key])
 
     def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
         value = next((item for item in self.executions.values() if item["jobId"] == job_id), None)
@@ -1569,34 +1562,34 @@ class SqlAlchemyAnalysisIntentRepository(_SqlAlchemyRepository):
         )
 
     def attach_execution(self, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
-        binding_id = f"intent_exec_{intent_id.removeprefix('intent_')[:16]}"
+        binding_id = f"intent_exec_{intent_id.removeprefix('intent_')[:12]}_{plan_id.removeprefix('plan_')[:12]}_{job_id.removeprefix('job_')[:12]}"
 
         def run(connection: Connection) -> None:
-            existing = connection.execute(
+            exact = connection.execute(
+                select(analysis_intent_executions).where(
+                    analysis_intent_executions.c.intent_id == intent_id,
+                    analysis_intent_executions.c.plan_id == plan_id,
+                    analysis_intent_executions.c.job_id == job_id,
+                )
+            ).mappings().first()
+            if exact is not None:
+                return
+            conflict = connection.execute(
                 select(analysis_intent_executions).where(
                     or_(
-                        analysis_intent_executions.c.intent_id == intent_id,
                         analysis_intent_executions.c.plan_id == plan_id,
                         analysis_intent_executions.c.job_id == job_id,
                     )
                 )
             ).mappings().first()
-            if existing is None:
-                connection.execute(
-                    insert(analysis_intent_executions).values(
-                        id=binding_id,
-                        intent_id=intent_id,
-                        plan_id=plan_id,
-                        job_id=job_id,
-                    )
-                )
-                return
-            current = _row_to_json_dict(existing)
-            if current["intent_id"] != intent_id or current["plan_id"] != plan_id or current["job_id"] != job_id:
+            if conflict is not None:
                 raise ValueError("AnalysisIntent execution association is immutable")
+            connection.execute(insert(analysis_intent_executions).values(
+                id=binding_id, intent_id=intent_id, plan_id=plan_id, job_id=job_id,
+            ))
 
         self._with_connection(run)
-        result = self.get_execution(intent_id)
+        result = self.get_execution_for_job(job_id)
         if result is None:
             raise LookupError(f"Unknown AnalysisIntent execution association: {intent_id}")
         return result
@@ -1675,37 +1668,33 @@ class SqlAlchemyCapabilityPlanningRepository(_SqlAlchemyRepository):
         decision = self.get_decision(decision_id)
         if decision["intentId"] != intent_id or decision["outcome"] != "PLAN_READY":
             raise ValueError("Only a matching PLAN_READY decision can be attached to execution")
-        binding_id = f"cap_exec_{decision_id.removeprefix('decision_')[:16]}"
+        binding_id = f"cap_exec_{decision_id.removeprefix('decision_')[:12]}_{plan_id.removeprefix('plan_')[:12]}_{job_id.removeprefix('job_')[:12]}"
 
         def run(connection: Connection) -> None:
-            existing = connection.execute(
+            exact = connection.execute(
+                select(capability_planning_executions).where(
+                    capability_planning_executions.c.decision_id == decision_id,
+                    capability_planning_executions.c.intent_id == intent_id,
+                    capability_planning_executions.c.plan_id == plan_id,
+                    capability_planning_executions.c.job_id == job_id,
+                )
+            ).mappings().first()
+            if exact is not None:
+                return
+            conflict = connection.execute(
                 select(capability_planning_executions).where(
                     or_(
-                        capability_planning_executions.c.decision_id == decision_id,
                         capability_planning_executions.c.plan_id == plan_id,
                         capability_planning_executions.c.job_id == job_id,
                     )
                 )
             ).mappings().first()
-            if existing is None:
-                connection.execute(
-                    insert(capability_planning_executions).values(
-                        id=binding_id,
-                        decision_id=decision_id,
-                        intent_id=intent_id,
-                        plan_id=plan_id,
-                        job_id=job_id,
-                    )
-                )
-                return
-            current = _row_to_json_dict(existing)
-            if (
-                current["decision_id"] != decision_id
-                or current["intent_id"] != intent_id
-                or current["plan_id"] != plan_id
-                or current["job_id"] != job_id
-            ):
+            if conflict is not None:
                 raise ValueError("Capability Planning execution association is immutable")
+            connection.execute(insert(capability_planning_executions).values(
+                id=binding_id, decision_id=decision_id, intent_id=intent_id,
+                plan_id=plan_id, job_id=job_id,
+            ))
 
         self._with_connection(run)
         result = self.get_execution_for_job(job_id)

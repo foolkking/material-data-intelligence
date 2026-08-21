@@ -2203,3 +2203,95 @@ sole turn question for single-turn Cases. An `EXPECTED_REJECTION` Case submits
 its canonical question and must terminate before Plan, Job, ToolCall, Artifact,
 Report, or Recipe creation. These rules add no product schema or execution
 authority.
+# Research Assistant projection contract (2026-08-19)
+
+`POST /research-sessions/{session_id}/assistant-projections` persists a bounded, user-facing assistant message without exposing model chain-of-thought or machine execution identifiers in normal product copy.
+
+```json
+{
+  "phase": "pre_run | clarification | unsupported | post_run",
+  "datasetName": "optional display name",
+  "datasetId": "optional server-validated dataset id",
+  "runId": "optional server-validated run reference",
+  "steps": ["human-readable scientific step"],
+  "findings": ["grounded finding text"],
+  "limitations": ["grounded limitation text"],
+  "candidates": ["clarification candidate display names"]
+}
+```
+
+The server stores `messages.role = agent` and a payload source of `research_assistant_projection`. Job/Tool/Artifact events remain the source of truth for inline process state; the projection is only the persisted research narrative.
+
+# ResearchSessionRunReference 1.0 (2026-08-21)
+
+`research_session_runs` is the additive, project-scoped history projection that
+binds one persisted Planner Job to the Research Session in which the user
+started it:
+
+```json
+{
+  "sessionId": "research-session-id",
+  "jobId": "job-id",
+  "createdAt": "2026-08-21T00:00:00Z"
+}
+```
+
+`jobId` is unique in this relation, so a Run cannot silently move between
+Conversations. The server validates that the Session and Job belong to the
+same Project and that the current user has Project write access before adding
+the row. `GET /projects/{projectId}/research-sessions` and
+`GET /research-sessions/{sessionId}` expose `runIds` and bounded
+`runReferences`; Project History may expose `researchSessionId` on an analysis
+for navigation. These fields are user-facing navigation projections, not new
+execution authority and not a replacement for Job, Plan, Artifact,
+Interpretation, Evidence, Report or Recipe identity.
+
+Migration `0014_research_session_run_bindings` backfills only from existing
+server-owned assistant projection payloads whose `runId` belongs to the same
+Project. It never deletes or rewrites Messages, Jobs or scientific records.
+Runs without a verified relation remain readable as orphaned history; clients
+must not attach them to the first available Session.
+
+# Project History run-archive projection (2026-08-20)
+
+Project History analyses may expose two additive presentation fields:
+
+```json
+{
+  "archived": true,
+  "visibleInReports": false
+}
+```
+
+They do not extend `JobStatus` and do not alter execution truth. The reversible
+set of archived Job identities is project-scoped presentation metadata under
+`project_configs.config_json.archivedRunIds`. Research History retains and can
+reopen these Runs; the default Reports list omits only explicitly archived
+ones. Messages, ToolCalls, Artifacts, Interpretations, Evidence, Reports and
+Recipes are never deleted by archive or restore.
+
+# Project and Dataset management projection (2026-08-20)
+
+Project and Dataset management is server-authorized and additive to the
+existing scientific contracts. `PATCH /projects/{projectId}` updates the
+human-readable name/description and the reversible Project archive projection.
+`POST /projects/bulk` applies `archive | restore` only after every requested
+Project has passed write authorization. Project archive state is stored as
+`project_configs.config_json.archivedProject`; it is not a scientific or Job
+lifecycle state.
+
+`PATCH /datasets/{datasetId}` updates the human-readable name or reversible
+archive state. `POST /datasets/bulk` applies `archive | restore` atomically
+after every Dataset resolves through its Project authorization boundary. The
+pre-archive Dataset status is preserved in
+`datasets.metadata_json.archivedPreviousStatus` and restored exactly; the API
+must not turn failed or incomplete data into `profile_ready`.
+
+`DELETE /projects/{projectId}` and `DELETE /datasets/{datasetId}` are physical,
+owner-only empty-object operations. The server scans durable child tables and
+returns `409` with bounded blocker counts when scientific data, runs, messages,
+artifacts, evidence, reports, profiles, files, or other owned records exist.
+These endpoints never cascade-delete non-empty research history. List and
+Project History projections expose the current membership role so clients can
+omit mutation controls, while the server remains the authority for every
+request.

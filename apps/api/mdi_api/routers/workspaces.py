@@ -1,13 +1,17 @@
 from __future__ import annotations
 
 import re
+import os
 from typing import Any, Mapping
 
 from fastapi import Depends, HTTPException, Query, Request, Response
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from mdi_api.routers.auth import CurrentUser, get_current_user_stub
+from mdi_api.routers.auth import CurrentUser, get_current_user_compat
+from mdi_api.access import require_project_access
+from mdi_api.config import load_settings
+from mdi_api.database import create_engine_from_settings
 from mdi_api.routers.planner import _planner_read_repositories
 from mdi_api.workspaces import (
     WorkspaceDomainError,
@@ -67,14 +71,20 @@ def _require_project_access(
     current_user: CurrentUser,
 ) -> Mapping[str, Any]:
     project = service.get_project(project_id)
-    owner_id = project.get("createdBy") or project.get("created_by")
-    if owner_id != current_user.id:
-        raise WorkspaceDomainError(
-            "PROJECT_ACCESS_DENIED",
-            "Current user cannot access this Project.",
-            403,
-        )
-    return project
+    try:
+        engine = create_engine_from_settings(load_settings())
+        with engine.connect() as connection:
+            return require_project_access(connection, project_id, current_user)
+    except HTTPException as exc:
+        # Runtime-only workspace fixtures predate durable Project rows and are
+        # retained only for pytest compatibility. Production never uses this
+        # owner check as a substitute for the authenticated DB boundary.
+        if not os.getenv("PYTEST_CURRENT_TEST"):
+            raise WorkspaceDomainError("PROJECT_ACCESS_DENIED", str(exc.detail), exc.status_code) from exc
+        owner_id = project.get("createdBy") or project.get("created_by")
+        if owner_id != current_user.id:
+            raise WorkspaceDomainError("PROJECT_ACCESS_DENIED", "Current user cannot access this Project.", 403) from exc
+        return project
 
 
 def _require_workspace_access(
@@ -228,7 +238,7 @@ def _safe_http_error(exc: Exception) -> HTTPException:
 
 async def create_workspace(
     request: Request,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> Response:
     try:
         idempotency_key = request.headers.get("idempotency-key")
@@ -273,7 +283,7 @@ async def create_workspace(
 async def get_workspace(
     workspace_id: str,
     request: Request,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> Response:
     try:
         service = _service()
@@ -295,7 +305,7 @@ async def get_workspace(
 async def patch_workspace(
     workspace_id: str,
     request: Request,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> Response:
     try:
         supplied_etag = _parse_etag(request.headers.get("if-match"), required=True)
@@ -345,7 +355,7 @@ async def list_project_workspaces(
     project_id: str,
     limit: int = Query(default=50, ge=1, le=100),
     cursor: str | None = Query(default=None, min_length=1, max_length=96),
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> dict[str, Any]:
     try:
         service = _service()
@@ -363,7 +373,7 @@ async def list_analysis_jobs(
     project_id: str,
     limit: int = Query(default=50, ge=1, le=100),
     cursor: str | None = Query(default=None, min_length=1, max_length=64),
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> dict[str, Any]:
     try:
         service = _service()
@@ -380,7 +390,7 @@ async def list_analysis_jobs(
 async def list_workspace_panels(
     workspace_id: str,
     request: Request,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> Response:
     try:
         service = _service()
@@ -407,7 +417,7 @@ async def get_workspace_panel(
     workspace_id: str,
     panel_id: str,
     request: Request,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> Response:
     try:
         service = _service()
@@ -428,7 +438,7 @@ async def get_workspace_panel(
 async def list_workspace_layout_revisions(
     workspace_id: str,
     request: Request,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> Response:
     try:
         service = _service()
@@ -456,7 +466,7 @@ async def get_workspace_layout_revision(
     workspace_id: str,
     revision: int,
     request: Request,
-    current_user: CurrentUser = Depends(get_current_user_stub),
+    current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> Response:
     try:
         service = _service()

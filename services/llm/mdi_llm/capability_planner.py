@@ -56,6 +56,21 @@ _PROFILE_INPUT_TOOL_IDS = frozenset({
     "ml.uncertainty_evaluation",
     "ml.classification_evaluation",
 })
+_STRUCTURE_RDF_MARKERS = (
+    "rdf",
+    "radial distribution",
+    "pair distribution",
+    "径向分布",
+)
+_LOCAL_ENVIRONMENT_MARKERS = (
+    "local environment",
+    "local-environment",
+    "coordination polyhed",
+    "local geometry",
+    "局部环境",
+    "配位多面体",
+    "局部几何",
+)
 
 
 class CapabilityPlanningError(RuntimeError):
@@ -485,27 +500,6 @@ def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandida
                 code="XRD_COMPARISON_SOURCE_NOT_ELIGIBLE",
                 outcome=CapabilityPlanningOutcome.capability_mismatch,
             )
-    if any(marker in goal for marker in ("local environment", "local-environment", "coordination polyhed", "local geometry")):
-        n2 = "structure.local_environment_polyhedra"
-        if "crystalnn" in goal:
-            producer = "structure.coordination_crystalnn"
-        elif "voronoinn" in goal or "voronoi nn" in goal:
-            producer = "structure.coordination_voronoinn"
-        else:
-            raise CapabilityPlanningError(
-                "Local-environment analysis requires an explicit CrystalNN or VoronoiNN coordination source.",
-                code="COORDINATION_ALGORITHM_CLARIFICATION_REQUIRED",
-                outcome=CapabilityPlanningOutcome.capability_mismatch,
-            )
-        eligible = {item.toolId for item in projection.candidates}
-        if {producer, n2}.issubset(eligible):
-            dependency_requests.extend([producer, n2])
-        else:
-            raise CapabilityPlanningError(
-                "The requested local-environment dependency chain is not eligible.",
-                code="DEPENDENCY_PRODUCER_NOT_ELIGIBLE",
-                outcome=CapabilityPlanningOutcome.capability_mismatch,
-            )
     if dependency_requests:
         return sorted(set(dependency_requests))
     if ScientificIntent.trajectory_analysis in intent.scientificIntents:
@@ -641,10 +635,31 @@ def _explicit_structure_selection(
     if "structure_resource" not in intent.requiredCapabilityNeeds:
         return None
     goal = intent.rawGoal.casefold()
-    if any(marker in goal for marker in ("xrd", "coordination", "local environment", "local-environment", "volumetric", "trajectory")):
+    if _goal_requests_local_environment(goal):
+        producer = _local_environment_producer(goal)
+        if producer is None:
+            raise CapabilityPlanningError(
+                "Local-environment analysis requires an explicit CrystalNN or VoronoiNN coordination source.",
+                code="COORDINATION_ALGORITHM_CLARIFICATION_REQUIRED",
+                outcome=CapabilityPlanningOutcome.needs_clarification,
+            )
+        requested = [producer, "structure.local_environment_polyhedra"]
+        if _goal_requests_structure_rdf(goal):
+            requested.append("structure.rdf")
+        if _goal_requests_experimental_xrd_comparison(goal):
+            requested.extend(["structure.xrd", "structure.experimental_xrd_comparison"])
+        selected = sorted(set(requested))
+        if not set(selected).issubset({item.toolId for item in projection.candidates}):
+            raise CapabilityPlanningError(
+                "The requested local-environment workflow is not eligible for the exact Structure resource.",
+                code="DEPENDENCY_PRODUCER_NOT_ELIGIBLE",
+                outcome=CapabilityPlanningOutcome.capability_mismatch,
+            )
+        return selected
+    if any(marker in goal for marker in ("xrd", "coordination", "配位", "volumetric", "trajectory")):
         return None
     requested: str | None = None
-    if any(marker in goal for marker in ("rdf", "radial distribution", "pair distribution")):
+    if _goal_requests_structure_rdf(goal):
         requested = "structure.rdf"
     elif "lattice" in goal:
         requested = "structure.lattice_summary"
@@ -665,6 +680,26 @@ def _explicit_structure_selection(
             outcome=CapabilityPlanningOutcome.capability_mismatch,
         )
     return [requested]
+
+
+def _goal_requests_structure_rdf(goal: str) -> bool:
+    return any(marker in goal for marker in _STRUCTURE_RDF_MARKERS)
+
+
+def _goal_requests_local_environment(goal: str) -> bool:
+    return any(marker in goal for marker in _LOCAL_ENVIRONMENT_MARKERS)
+
+
+def _goal_requests_experimental_xrd_comparison(goal: str) -> bool:
+    return "xrd" in goal and any(marker in goal for marker in ("experimental", "match", "correspond", "comparison"))
+
+
+def _local_environment_producer(goal: str) -> str | None:
+    if "crystalnn" in goal:
+        return "structure.coordination_crystalnn"
+    if "voronoinn" in goal or "voronoi nn" in goal:
+        return "structure.coordination_voronoinn"
+    return None
 
 
 def _explicit_trajectory_selection(
@@ -1198,17 +1233,17 @@ def _validate_minimal_provider_selection(
 def _is_required_dependency_selection(intent: AnalysisIntent, selected_tool_ids: list[str]) -> bool:
     goal = intent.rawGoal.casefold()
     selected = set(selected_tool_ids)
-    if "xrd" in goal and any(marker in goal for marker in ("experimental", "match", "correspond", "comparison")):
-        return selected == {"structure.xrd", "structure.experimental_xrd_comparison"}
-    if any(marker in goal for marker in ("local environment", "local-environment", "coordination polyhed", "local geometry")):
-        if "crystalnn" in goal:
-            producer = "structure.coordination_crystalnn"
-        elif "voronoinn" in goal or "voronoi nn" in goal:
-            producer = "structure.coordination_voronoinn"
-        else:
+    required: set[str] = set()
+    if _goal_requests_experimental_xrd_comparison(goal):
+        required.update({"structure.xrd", "structure.experimental_xrd_comparison"})
+    if _goal_requests_local_environment(goal):
+        producer = _local_environment_producer(goal)
+        if producer is None:
             return False
-        return selected == {producer, "structure.local_environment_polyhedra"}
-    return False
+        required.update({producer, "structure.local_environment_polyhedra"})
+        if _goal_requests_structure_rdf(goal):
+            required.add("structure.rdf")
+    return bool(required) and selected == required
 
 
 def _validate_explicit_visual_form(

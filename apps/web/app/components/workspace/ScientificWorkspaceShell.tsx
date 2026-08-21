@@ -449,9 +449,9 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
       <a className="skip-link" href="#workspace-primary-content">Skip to active scientific result</a>
       <header className="workspace-header">
         <div className="workspace-header-title">
-          <a className="workspace-back-link" href={"/analysis?jobId=" + encodeURIComponent(workspace.sourceJobId)} aria-label="Back to PlannerWorkbench" onClick={(event) => {
+          <a className="workspace-back-link" href={"/projects/" + encodeURIComponent(workspace.projectId) + "/research?run=" + encodeURIComponent(workspace.sourceJobId)} aria-label="返回项目研究" onClick={(event) => {
             if ((workspaceDirty || reportDraftDirty) && !window.confirm("Leave Workspace and discard unsaved changes?")) event.preventDefault();
-          }}>Back to planner</a>
+          }}>← 返回项目研究</a>
           <span className="eyebrow">Scientific Workspace 1.0</span>
           <h1>{workspace.title}</h1>
           <p>{workspaceGoalSummary(workspace)} · Job {compactIdentity(workspace.sourceJobId)}</p>

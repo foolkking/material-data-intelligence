@@ -1,0 +1,34 @@
+{
+  "QUALIFICATION_DATA_RESEARCH_READY": "YES",
+  "blockers": [],
+  "criteria": {
+    "allInputRoutesInventoried": true,
+    "allProposedCasesHaveExternalDataRequirements": true,
+    "allRegistryToolsInventoried": true,
+    "allReleaseRelevantArtifactsInventoried": true,
+    "allReleaseRelevantCapabilitiesInventoried": true,
+    "allRendererDispositionsInventoried": true,
+    "unresolvedP0P1AuthorityConflicts": 0
+  },
+  "externalDataRequirementIds": [
+    "EDR-CASE-001",
+    "EDR-CASE-002",
+    "EDR-CASE-003",
+    "EDR-CASE-004",
+    "EDR-CASE-005",
+    "EDR-CASE-006",
+    "EDR-CASE-007",
+    "EDR-CASE-008",
+    "EDR-CASE-009",
+    "EDR-CASE-010",
+    "EDR-CASE-011",
+    "EDR-CASE-012",
+    "EDR-CASE-013",
+    "EDR-CASE-015",
+    "EDR-CASE-016",
+    "EDR-CASE-017"
+  ],
+  "phaseBExternalDataDownloaded": 0,
+  "phaseBExternalDataResearchExecuted": false,
+  "schemaVersion": "QualificationReadiness/1.0"
+}

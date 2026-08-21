@@ -19,6 +19,24 @@ uv run python -m alembic -c apps/api/alembic.ini upgrade head
 uv run uvicorn mdi_api.main:app --app-dir apps/api --host 127.0.0.1 --port 8000
 ```
 
+The default deterministic/replay workflow does not need a live model. To
+enable the optional server-side DeepSeek Planner and strict Interpretation
+path, set the variables in the API process environment before starting
+Uvicorn; do not put a real key in Git, frontend env, request JSON, or browser
+storage:
+
+```powershell
+$env:DEEPSEEK_KEY = "<DEEPSEEK_KEY>"
+$env:MDI_LLM_PROVIDER = "deepseek"
+$env:DEEPSEEK_MODEL = "deepseek-v4-flash"
+uv run uvicorn mdi_api.main:app --app-dir apps/api --host 127.0.0.1 --port 8000
+```
+
+The API reports only redacted readiness through `/planner/providers/status`.
+The browser-facing model settings page can run a bounded connection test, but
+never accepts or stores the key. The allowlisted model names are owned by
+`services/llm/mdi_llm/providers.py`.
+
 In another PowerShell:
 
 ```powershell
@@ -27,7 +45,10 @@ npm --prefix apps/web run dev
 
 Open `http://localhost:3000`. API health is `http://localhost:8000/health`.
 
-Linux uses the same commands except `cp .env.example .env` and `export DATABASE_URL=...`.
+Linux uses the same commands except `cp .env.example .env`, `export DATABASE_URL=...`,
+and, for the optional live provider, `export MDI_LLM_PROVIDER=deepseek`,
+`export DEEPSEEK_KEY=...` and
+`export DEEPSEEK_MODEL=deepseek-v4-flash` before launching Uvicorn.
 
 ## Verify
 

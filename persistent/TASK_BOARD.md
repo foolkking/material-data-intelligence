@@ -1,5 +1,38 @@
 # TASK_BOARD
 
+## Continuous Product Quality — Research Timeline / Scientific Workbench Wave 2 - Completed
+
+- [x] Normalize the durable Research Session → Run association with project-scoped
+      authorization, migration backfill, idempotent ownership, and legacy read fallback.
+- [x] Persist truthful pre-run/post-run/failed assistant projections from observable
+      Planner/Job/Artifact facts without exposing hidden reasoning or changing execution
+      authority.
+- [x] Restore historical Runs with honest partial/error/loading states, deduplicate
+      overlapping events and Artifacts, prevent orphan reassignment, and link Data,
+      Result, Report, and Research surfaces.
+- [x] Verify the retained Case 11 Q-STRUCTURE-RDF-001 Run 02 in Chrome desktop and
+      390px single-panel Research; keep the known non-terminal browser and hardware
+      screen-reader limits explicit.
+- [x] Full tests/build/typecheck/compileall/Alembic head and targeted regression
+      coverage are green; no CI, deployment, Planner, Worker, Tool Registry, or history
+      deletion changes were made.
+
+## UX-V1.3 Design Documentation + High-Fidelity Prototype - Completed
+
+- [x] Preserve production implementation and work only in isolated design assets.
+- [x] Record current code reality, frozen product decisions, reference research,
+      visual system, page/viewer/workbench specs, states, responsive/accessibility,
+      and design-reality boundary.
+- [x] Provide a Chrome-reviewed isolated prototype for Landing, Console,
+      Projects, Project Overview, Data, Research, Result, Inspector, Reports and
+      Report Reader.
+- [x] Complete design-review and design-deslop remediation, including user-facing
+      error language, focus restoration, icon accessibility and responsive geometry.
+- [x] Keep Workspace hidden in primary UX; preserve it as an internal capability.
+
+Production implementation remains a later approved task. UX-V1.3 creates no
+production code or release/deployment action.
+
 ## Q-TABLE Property-Target Closure / R1.6 / Phase D R1.6 - Completed
 
 - [x] Implement exact normal-user material-property targets using current DataProfile authority only.
@@ -13,10 +46,10 @@
 
 - [x] Record a complete seven-blocker triage before making changes.
 - [x] Close six evidence-backed fixture, preflight, implementation, and stale
-  test-expectation paths without changing scientific support authority.
+      test-expectation paths without changing scientific support authority.
 - [x] Re-run all 16 Cases and 26 turns in non-LLM preflight: 15 Cases pass.
 - [ ] Freeze R1.5 and run Phase D: blocked by the Q-TABLE normal-user explicit
-  material-property target-binding contract gap.
+      material-property target-binding contract gap.
 
 No partial authority package exists. Phase E remains stopped pending Reviewer
 resolution of Q-TABLE.
@@ -78,14 +111,13 @@ and typed phonon species-order validation. No Phase E work is authorized.
 ## Phase 13-2 Attempt 6 - Active
 
 - [x] Verify FF6 lifecycle, closed findings, current Fact/Scope/Phase12 hashes,
-  support matrix, panel cap, semantic coverage, ingestion fidelity, C/C2/D0,
-  Demo1/4/5 closure dependencies, services, and browser runtimes.
+      support matrix, panel cap, semantic coverage, ingestion fidelity, C/C2/D0,
+      Demo1/4/5 closure dependencies, services, and browser runtimes.
 - [x] Admit exactly one Attempt 6 task; retain Attempts 1-5 as failed history.
 - [ ] Execute seven fully fresh service-backed real-user demos and per-demo audits.
 - [ ] Execute negative/provider/browser/scientific/P13X2 reconciliation.
 - [ ] Run full regressions, service/cross-platform/security/hash gates.
 - [ ] Package evidence and handoff, then complete exact-SHA CI lifecycle.
-
 
 ## Completed: Phase 12-5
 
@@ -158,12 +190,12 @@ and typed phonon species-order validation. No Phase E work is authorized.
 - [x] Verify M6 implementation/completion/archive exact-SHA CI and clean entry.
 - [x] Reconcile the exact eight-entry M7 acceptance registry.
 - [x] Close retained DeepSeek identity replay through Workspace, Save/reopen,
-  and Report/Recipe without provider or Adapter execution.
+      and Report/Recipe without provider or Adapter execution.
 - [x] Add browser, service-backed, performance, security, evidence, and Phase
-  10M final documentation gates.
+      10M final documentation gates.
 - [x] Pass focused M7 tests and four-target local browser replay.
 - [x] Pass full local regression and implementation exact-SHA CI
-  `31065250027` attempt 2 for `21ea4559e097cec649515b35c7f45b63f8eb8511`.
+      `31065250027` attempt 2 for `21ea4559e097cec649515b35c7f45b63f8eb8511`.
 - [x] Append completion record only after implementation CI succeeds.
 - [ ] Archive the M7 task only after completion-record CI succeeds.
 - [x] Keep Phase 10N-0 reviewer-gated and absent from the executable queue.
@@ -171,13 +203,13 @@ and typed phonon species-order validation. No Phase E work is authorized.
 ## 2026-08-05 Phase 10M-6 Complete, Awaiting Verified Archive
 
 - [x] Verify M5 corrected implementation/completion/archive and admit M6 as
-  the sole active executable task.
+      the sole active executable task.
 - [x] Complete state-ownership, Save/reload/recovery, API, Job/source,
-  Report/Recipe, responsive, accessibility, cancellation, and lifecycle audit.
+      Report/Recipe, responsive, accessibility, cancellation, and lifecycle audit.
 - [x] Implement explicit Save, no-op, conflict/cap, bounded Job observation,
-  draft honesty, mobile/focus, tests, browser runner, evidence, and docs.
+      draft honesty, mobile/focus, tests, browser runner, evidence, and docs.
 - [x] Pass focused frontend `34 passed`, full frontend `411 passed`, evidence `4 passed`, and Chromium/
-  Firefox/WebKit/390x844 local browser replay.
+      Firefox/WebKit/390x844 local browser replay.
 - [x] Pass full backend/frontend/typecheck/build/local integrity regression.
 - [x] Pass implementation exact-SHA CI `31020968546` for `65e80ba915140e29db08dc053c1d218206daaa03`.
 - [ ] Pass completion-record and queue-archive exact-SHA CI.
@@ -187,7 +219,7 @@ and typed phonon species-order validation. No Phase E work is authorized.
 
 - [x] Verify M4 archive and admit M5 as the sole active task.
 - [x] Implement contracts, source projector, deterministic Report/Recipe,
-  existing persistence integration, APIs, UI, export, tests, and evidence.
+      existing persistence integration, APIs, UI, export, tests, and evidence.
 - [x] Pass focused backend/frontend and Chromium/Firefox/WebKit/mobile replay.
 - [ ] Pass full local regression and implementation exact-SHA CI.
 - [ ] Record completion and archive only after their exact-SHA CI succeeds.
@@ -197,86 +229,86 @@ and typed phonon species-order validation. No Phase E work is authorized.
 
 - [x] M3 verified archive restored and M4 admitted as the sole active task.
 - [x] Exact renderer registry, metadata-first Gallery, payload loader, generic
-  fallbacks, existing scientific viewer adapters, M3 selection reuse, and
-  one-active-heavy-viewer lifecycle are implemented locally.
+      fallbacks, existing scientific viewer adapters, M3 selection reuse, and
+      one-active-heavy-viewer lifecycle are implemented locally.
 - [x] Local focused tests, TypeScript checks, and Chromium/Firefox/WebKit/
-  390x844 product replay pass for the implemented surfaces.
+      390x844 product replay pass for the implemented surfaces.
 - [x] Complete exact claim/evidence/lineage navigation acceptance and the final
-  sanitized evidence manifest.
+      sanitized evidence manifest.
 - [x] Run final full regression and PostgreSQL/Redis/MinIO zero-skipped gate.
 - [x] Corrected implementation `6287785c` passed exact-SHA CI `30751689618`;
-  service-backed integration is `39 passed, 0 skipped`.
+      service-backed integration is `39 passed, 0 skipped`.
 - [ ] Complete completion-record and queue-archive exact-SHA CI before marking
-  M4 archived.
+      M4 archived.
 - [ ] Phase 10M-5 remains reviewer-gated; no executable M5 task is authorized.
 
 ## 2026-08-02 Phase 10M-3 Complete, Awaiting Verified Archive
 
 - [x] Strict contract runtime, URL codec, store, declarations, compatibility,
-  propagation, Inspector, explicit Pin, browser runner, and sanitized evidence
-  are implemented locally.
+      propagation, Inspector, explicit Pin, browser runner, and sanitized evidence
+      are implemented locally.
 - [x] Focused frontend `38 passed`, focused backend/evidence `10 passed`,
-  full backend `1111 passed`, full frontend `376 passed`,
-  Chromium/Firefox/WebKit/mobile, typecheck, and build pass.
+      full backend `1111 passed`, full frontend `376 passed`,
+      Chromium/Firefox/WebKit/mobile, typecheck, and build pass.
 - [x] Corrected implementation `fe5353f` passed exact-SHA CI `30734974889`,
-  including PostgreSQL/Redis/MinIO `39 passed, 0 skipped`.
+      including PostgreSQL/Redis/MinIO `39 passed, 0 skipped`.
 - [ ] Completion-record and verified queue archive remain.
 - [ ] Phase 10M-4 is reviewer-gated and has no executable task.
 
 ## 2026-08-02 Phase 10M-2 Complete, Awaiting Verified Archive
 
 - [x] Route, metadata loader, sealed IA, active-panel URL, state surfaces,
-  Planner history/transition, responsive shell, tests, browser runner, and
-  service-backed gate are implemented.
+      Planner history/transition, responsive shell, tests, browser runner, and
+      service-backed gate are implemented.
 - [x] Full local regression, sanitized evidence manifest, and corrected
-  implementation exact-SHA CI `30729180057` pass at `d180971`, including
-  service-backed `38 passed, 0 skipped, 0 failed, 0 errors`.
+      implementation exact-SHA CI `30729180057` pass at `d180971`, including
+      service-backed `38 passed, 0 skipped, 0 failed, 0 errors`.
 - [ ] Completion-record CI and verified queue archive remain required.
 - [ ] The user-supplied M3 task remains pending until M2 archive verification;
-  no M3 source work is included in the M2 implementation.
+      no M3 source work is included in the M2 implementation.
 
 ## 2026-08-01 Phase 10M-1 Complete, Awaiting Verified Archive
 
 - [x] Phase 10M-1 implementation is complete and remains the sole `TASKS.md`
-  block pending verified archive. Corrected implementation `27c5aa9` passed
-  exact-SHA CI `30705503707`, including service-backed `37 passed, 0 skipped,
-  0 failed, 0 errors`. Completion-record and queue-archive CI remain required.
+      block pending verified archive. Corrected implementation `27c5aa9` passed
+      exact-SHA CI `30705503707`, including service-backed `37 passed, 0 skipped,
+0 failed, 0 errors`. Completion-record and queue-archive CI remain required.
 - [ ] Phase 10M-2 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT`; no
-  executable M2 task exists.
+      executable M2 task exists.
 
 ## Current Approved Work
 
 - [x] Phase 10M-0 is a `REVIEWER_AUTHORIZED_DIRECT_AUDIT`, not a TASKS queue
-  item. Its documentation/evidence seal is complete at audit/planning commit
-  `4c5d25e` with exact-SHA CI run `30698489359` success. The separate
-  completion record is accepted only after its exact-SHA CI succeeds and is
-  identified in the final reviewer return. Production source is unchanged.
-  Phase 10M-1 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
-  `TASK_BLOCK_COUNT = 0` and no executable Phase 10M task exists.
+      item. Its documentation/evidence seal is complete at audit/planning commit
+      `4c5d25e` with exact-SHA CI run `30698489359` success. The separate
+      completion record is accepted only after its exact-SHA CI succeeds and is
+      identified in the final reviewer return. Production source is unchanged.
+      Phase 10M-1 remains `REVIEWER_GATE / AWAITING REVIEWER PROMPT`.
+      `TASK_BLOCK_COUNT = 0` and no executable Phase 10M task exists.
 
 - [x] Phase 10L-2 Capability-Aware Planner + Eligibility Resolver is
-  `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`: corrected
-  implementation `9786e405` passed exact-SHA CI run `30511654404`, including
-  service-backed `27 passed, 0 skipped, 0 failed`; completion record `f62630b`
-  passed exact-SHA CI run `30513319990`. Its verified TASKS block is archived.
+      `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`: corrected
+      implementation `9786e405` passed exact-SHA CI run `30511654404`, including
+      service-backed `27 passed, 0 skipped, 0 failed`; completion record `f62630b`
+      passed exact-SHA CI run `30513319990`. Its verified TASKS block is archived.
 - [x] Phase 10L-3 Bounded Multi-Tool Analysis + Typed Artifact Dependency
-  Execution is `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
-  Implementation `d395db2` passed exact-SHA CI run `30542148803`, including
-  Unit, Frontend, PostgreSQL/Redis/MinIO migration/integration, 28 selected
-  service tests with zero skips, and evidence integrity. Completion record
-  `2bd06f2` passed exact-SHA CI run `30542844246`; its TASKS block is archived.
+      Execution is `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
+      Implementation `d395db2` passed exact-SHA CI run `30542148803`, including
+      Unit, Frontend, PostgreSQL/Redis/MinIO migration/integration, 28 selected
+      service tests with zero skips, and evidence integrity. Completion record
+      `2bd06f2` passed exact-SHA CI run `30542844246`; its TASKS block is archived.
 - [x] Phase 10L-4 Grounded Scientific Result Interpretation is
-  `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`. Corrected implementation
-  `02a9e33` passed exact-SHA CI run `30606774006`, including Unit, Frontend,
-  browser replay, PostgreSQL/Redis/MinIO migration/integration, and service
-  `31 passed, 0 skipped, 0 failed`. Completion record `45af09e` passed
-  exact-SHA CI run `30607509775`; archive `58ee943` passed exact-SHA CI run
-  `30608078520` and removed only the completed L4 block.
+      `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`. Corrected implementation
+      `02a9e33` passed exact-SHA CI run `30606774006`, including Unit, Frontend,
+      browser replay, PostgreSQL/Redis/MinIO migration/integration, and service
+      `31 passed, 0 skipped, 0 failed`. Completion record `45af09e` passed
+      exact-SHA CI run `30607509775`; archive `58ee943` passed exact-SHA CI run
+      `30608078520` and removed only the completed L4 block.
 - [x] Phase 10L-5 is `COMPLETE / ARCHIVED_BY_VERIFIED_QUEUE_COMMIT`.
-  Implementation `bfc43bd` passed exact-SHA CI run `30693848581`; completion
-  record `e4b0a8f` passed exact-SHA CI run `30694747664`. The archive commit
-  removes the completed task block. Phase 10M-0 is now a directly authorized
-  audit with no TASKS block.
+      Implementation `bfc43bd` passed exact-SHA CI run `30693848581`; completion
+      record `e4b0a8f` passed exact-SHA CI run `30694747664`. The archive commit
+      removes the completed task block. Phase 10M-0 is now a directly authorized
+      audit with no TASKS block.
 
 Live evidence progress: all five required DeepSeek cases pass with verification
 suite `deepseek_suite_ee5a0e9700d1a70787fc060fda274171`; the supplemental
@@ -285,47 +317,47 @@ historical replay passes 40/40 with suite
 `COMPLETE / READY_WITH_EXPLICIT_LIMITS`; no Phase 10M executable task exists.
 
 - [x] Phase 10L-1 Analysis Intent Contract + Bounded Clarification implementation
-  `844eb149` and completion record `b4cd656` passed exact-SHA CI runs
-  `30425804801` and `30426248141`, including Unit, Frontend,
-  PostgreSQL/Redis/MinIO service-backed integration, migration, and no-skipped.
-  The verified completed TASKS block is archived.
+      `844eb149` and completion record `b4cd656` passed exact-SHA CI runs
+      `30425804801` and `30426248141`, including Unit, Frontend,
+      PostgreSQL/Redis/MinIO service-backed integration, migration, and no-skipped.
+      The verified completed TASKS block is archived.
 
 - [x] Phase 10J-6 implementation, completion record, exact-SHA CI, result
-  retention, evidence integrity, and queue archive are closed.
+      retention, evidence integrity, and queue archive are closed.
 - [x] Gate J6-R replaces the superseded J-7 through J-12 plan with the canonical
-  product-centered 10K through 12 roadmap and separates Initial, Future, and Not
-  Planned scope.
+      product-centered 10K through 12 roadmap and separates Initial, Future, and Not
+      Planned scope.
 - [x] Phase 10K-0 Material Intelligence Capability Gap Audit is complete at
-  audit commit `cada6fb` and completion record `ab5a69a`; exact-SHA CI runs
-  `30270323576` and `30270636913` passed. Its verified queue block is archived.
+      audit commit `cada6fb` and completion record `ab5a69a`; exact-SHA CI runs
+      `30270323576` and `30270636913` passed. Its verified queue block is archived.
 - [x] Phase 10K-1 Material Data Profile 2.0 implementation `92a8e98` and
-  completion record `b5a464e` passed exact-SHA CI runs `30346512968` and
-  `30346686652`, including service-backed/no-skipped. The result is retained and
-  the verified queue block is archived.
+      completion record `b5a464e` passed exact-SHA CI runs `30346512968` and
+      `30346686652`, including service-backed/no-skipped. The result is retained and
+      the verified queue block is archived.
 - [x] Phase 10K-2 Dataset Materials Explorer implementation HEAD `35c0fc6`
-  passed exact-SHA CI run `30355075439`; completion record `8dc2545` passed
-  exact-SHA CI run `30355282590`, including service-backed/no-skipped. The
-  permanent result is retained and the verified queue block is archived.
+      passed exact-SHA CI run `30355075439`; completion record `8dc2545` passed
+      exact-SHA CI run `30355282590`, including service-backed/no-skipped. The
+      permanent result is retained and the verified queue block is archived.
 - [x] Phase 10K-3 Materials ML Evaluation implementation/evidence-closure HEAD
-  `a1e05ee` and completion record `c5483d6` passed exact-SHA CI runs
-  `30363719393` and `30364098180`, including service-backed/no-skipped. The
-  result and evidence are retained and the verified queue block is archived.
+      `a1e05ee` and completion record `c5483d6` passed exact-SHA CI runs
+      `30363719393` and `30364098180`, including service-backed/no-skipped. The
+      result and evidence are retained and the verified queue block is archived.
 - [x] Phase 10K-4 Composition Space / Embedding / Clustering implementation and
-  evidence HEAD `fb9d720` and completion record `97a0781` passed exact-SHA CI
-  runs `30372914960` and `30373474557`, including Unit, Frontend,
-  service-backed integration, and no-skipped. The permanent result/evidence are
-  retained and the verified queue block is archived.
+      evidence HEAD `fb9d720` and completion record `97a0781` passed exact-SHA CI
+      runs `30372914960` and `30373474557`, including Unit, Frontend,
+      service-backed integration, and no-skipped. The permanent result/evidence are
+      retained and the verified queue block is archived.
 - [x] Phase 10K-5 Material Intelligence Integration + Browser/API Evidence
-  implementation `e4639a1` and completion record `81d4446` passed exact-SHA CI
-  runs `30382233569` and `30382583135`, including Unit, Frontend,
-  service-backed integration, and no-skipped. The permanent result/evidence are
-  retained and the verified queue block is archived.
+      implementation `e4639a1` and completion record `81d4446` passed exact-SHA CI
+      runs `30382233569` and `30382583135`, including Unit, Frontend,
+      service-backed integration, and no-skipped. The permanent result/evidence are
+      retained and the verified queue block is archived.
 - [x] Phase 10L-0 Agent / Planner Capability Audit is complete at audit commit
-  `a7f8b14`; exact-SHA CI run `30414233888` passed Unit, Frontend,
-  service-backed integration, and no-skipped. Completion record `ee86745`
-  passed exact-SHA CI run `30414599167`; the permanent result is retained and
-  the verified queue block is archived. Phase 10L-1 subsequently entered its
-  reviewer-approved implementation task as recorded above.
+      `a7f8b14`; exact-SHA CI run `30414233888` passed Unit, Frontend,
+      service-backed integration, and no-skipped. Completion record `ee86745`
+      passed exact-SHA CI run `30414599167`; the permanent result is retained and
+      the verified queue block is archived. Phase 10L-1 subsequently entered its
+      reviewer-approved implementation task as recorded above.
 
 The statement below belonged to the earlier M0 closure. Current queue authority
 is the single Phase 10M-3 block described at the top of this file; Future Scope
@@ -339,7 +371,7 @@ current board above.
 - [x] Verify J-6 implementation, result, evidence, completion-record exact-SHA CI, archive commit, and archive exact-SHA CI.
 - [x] Audit electronic band/DOS and Fermi Surface implementation, contracts, tools, routes, frontend, and tests; all remain not implemented apart from explicit negative guards and future planning.
 - [x] The temporary J-7 through J-12 roadmap was committed and passed CI, then
-  explicitly superseded by Gate J6-R. Actual J-5/J-6 identities remain intact.
+      explicitly superseded by Gate J6-R. Actual J-5/J-6 identities remain intact.
 
 ## Phase 10J-6 Volumetric Slice / Volume Rendering Completed
 
@@ -1928,6 +1960,7 @@ current board above.
 ## Deferred
 
 无。
+
 ## 2026-07-04 Phase 9B Official Examples Evidence Pack
 
 ### Done
@@ -2293,6 +2326,7 @@ current board above.
 ## 2026-07-12 Phase 10F-16 Scientific Structure Inspection
 
 ### Done
+
 - [x] Instanced atom picking and canonical site inspector.
 - [x] Distance, angle, signed dihedral, bounded history and overlays.
 - [x] Local bounded PNG and scene/manifest/summary/recipe downloads.
@@ -2300,6 +2334,7 @@ current board above.
 - [x] Seven-finding npm audit disposition.
 
 ### Remaining
+
 - [x] Minimum-image periodic measurement and periodic image selection completed in Phase 10F-17.
 - [x] Bounded renderer-local supercell completed in Phase 10F-17.
 - [ ] Advanced neighbor inference, trajectory, phonon, Brillouin and volumetric capabilities.
@@ -2307,83 +2342,97 @@ current board above.
 ## 2026-07-12 Phase 10F-17 Periodic Crystal Inspection
 
 ### Done
+
 - [x] Periodic site identity and replica picking.
 - [x] Triclinic-validated bounded minimum-image distance, periodic angle, and periodic dihedral.
 - [x] Renderer-local bounded `1x1x1` to `3x3x3` supercells and derived caps.
 - [x] Live browser, mobile, performance, network, and security evidence.
 
 ### Remaining
+
 - [ ] Canonical cross-boundary bond endpoint representation.
 - [ ] Authoritative neighbor inference, trajectory, phonon, Brillouin, and volumetric capabilities.
 
 ## 2026-07-12 Phase 10F-18 Periodic Bond Topology
 
 ### Done
+
 - [x] `viewer_scene.v2` periodic endpoint contract and v1 compatibility.
 - [x] Bounded deterministic adapter topology for both formal viewer tools.
 - [x] Cross-boundary/supercell rendering and periodic neighbor inspector.
 - [x] Live API/browser/performance/network/security evidence.
 
 ### Remaining
+
 - [ ] Authoritative CrystalNN/VoronoiNN coordination and bond order.
 - [ ] Trajectory, phonon, Brillouin, volumetric, defects, and surfaces.
 
 ## 2026-07-12 Phase 10F-19 Periodic Scene Integration
 
 ### Done
+
 - [x] Additive v2 capability metadata and overclaim validation.
 - [x] Manifest v2 periodic topology/no-renderer metadata.
 - [x] JSON preview topology/security/consumer status.
 - [x] Orthogonal, triclinic, self-periodic integration evidence.
 
 ### Remaining
+
 - [ ] Renderer work remains outside this phase.
 - [ ] Trajectory, phonon, Brillouin, volumetric, defects, surfaces, and slabs remain deferred.
 
 ## 2026-07-12 Phase 10F-20 Legacy Viewer Schema Compatibility
 
 ### Done
+
 - [x] Encode scene and manifest lifecycle inventory in application code.
 - [x] Gate Phase 10D before renderer mapping and preserve v1 same-cell semantics.
 - [x] Redirect planner legacy requests to current v2 production paths.
 - [x] Add preview warnings, tests, evidence, security, and deprecation policy.
 
 ### Remaining
+
 - [ ] Legacy removal awaits retention and regeneration policy.
 - [ ] Viewer performance hardening is the next eligible scope.
 
 ## 2026-07-13 Phase 10F-21 Viewer Performance Hardening
 
 ### Done
+
 - [x] Centralized draw, geometry, material, displayed-site, and displayed-bond budgets.
 - [x] Added degraded GPU policy and refusal before renderer initialization.
 - [x] Added generation-based stale completion protection and context-loss retry.
 - [x] Added unit, lifecycle, build, and three-browser performance evidence.
 
 ### Remaining
+
 - [ ] Phase 10F-22 accessibility, mobile, and cross-browser interaction hardening.
 
 ## 2026-07-13 Phase 10F-22 Viewer Accessibility and Mobile Hardening
 
 ### Done
+
 - [x] Focusable viewer region and bounded keyboard camera contract.
 - [x] Semantic scene summary, live selection status, and accessible periodic-neighbor table.
 - [x] Mobile touch/scroll/target-size/orientation and visual preference policies.
 - [x] Unit, build, and Chromium/Firefox/WebKit browser evidence.
 
 ### Remaining
+
 - [ ] Physical screen-reader and broad physical-device GPU/touch lab coverage.
 - [ ] Advanced picking and measurement remains a separately reviewed phase.
 
 ## 2026-07-13 Phase 10F-23 Advanced Picking and Measurement
 
 ### Done
+
 - [x] Canonical periodic atom and bond picking identities.
 - [x] Bounded ordered selection, undo, keyboard and mobile measurement.
 - [x] Distance, angle, signed dihedral, explicit-image and exact minimum-image policies.
 - [x] Inert local measurement JSON and three-browser evidence.
 
 ### Remaining
+
 - [ ] Persisted annotation/history, lasso/box selection, clipping, and vector export.
 - [ ] Supercell productization remains the next queued scope.
 
@@ -2439,6 +2488,7 @@ current board above.
 - [x] Production bounded VASP/CUBE parsers and `structure.volumetric_data` adapter integration completed in Phase 10J-1.
 - [ ] Isosurface, slice, and volume rendering remain separately reviewed future phases.
 - [ ] Review Phase 10J-2 only as a consumer of validated canonical artifacts; do not weaken parser caps or execute artifact code.
+
 # Phase 10J-2 Isosurface Renderer Completed
 
 - Status: completed and verified; implementation commit `f6edcac347f2f7fffdbda47b1f72ad493c8edae8` passed CI run `29744316126`, completion record `c7669619b1444076bc47e8f084ddc2d5df5ce783` passed CI run `29745406355`, and the queue block is archived in `results.md`.
@@ -2481,15 +2531,15 @@ current board above.
 
 - [x] N1-R0 contract closure and exact ten-entry acceptance registry.
 - [x] Add exactly two tools: `structure.coordination_crystalnn@0.1.0` and
-  `structure.coordination_voronoinn@0.1.0`; final Registry count 55.
+      `structure.coordination_voronoinn@0.1.0`; final Registry count 55.
 - [x] Implement independent locked-pymatgen Adapters, exact identities,
-  periodic-image relations, bounded artifacts, Planner/Runtime and Workspace surface.
+      periodic-image relations, bounded artifacts, Planner/Runtime and Workspace surface.
 - [x] Add unit, frontend, browser fixture, security and evidence integrity coverage.
 - [x] Complete implementation, completion-record and queue-archive exact-SHA CI.
 - [x] Implementation commit `08b5eec39bed4fcc93d0a4ef36eb385ba0e9ecc4` passed
-  exact-SHA CI `31147539225`.
+      exact-SHA CI `31147539225`.
 - [x] Completion record `3c937c4ecf98358e44687538396facc827ec3a4b` and
-  verified archive `a9319c2da44f8794ef7a66347d8f7a0dffe4aa5b` passed exact-SHA CI.
+      verified archive `a9319c2da44f8794ef7a66347d8f7a0dffe4aa5b` passed exact-SHA CI.
 
 ## Phase 10N-2 Local Environment + Coordination Polyhedra
 
@@ -2500,10 +2550,10 @@ current board above.
 - [x] Integrate Runtime, Artifact, Workspace, selection, Inspector, interpretation and Report/Recipe authorities.
 - [x] Capture Chromium/Firefox/WebKit/390x844 and 50-cycle lifecycle evidence.
 - [x] Corrected implementation `2b4dacf400400f5d1a68352d358346b4638d6cb9`
-  passed exact-SHA CI `31258820229` with 44/44 service-backed checks.
+      passed exact-SHA CI `31258820229` with 44/44 service-backed checks.
 - [x] Completion record `3ffe6c5b85aca61402e4582654b0adfc0482a36b`
-  and corrected archive `4f5fa88354027a7b26842e9c71082fe567c84e13`
-  passed exact-SHA CI.
+      and corrected archive `4f5fa88354027a7b26842e9c71082fe567c84e13`
+      passed exact-SHA CI.
 - [x] N3 remained reviewer-gated until its explicit reviewer authorization.
 
 ## Phase 10N-3 Experimental XRD Comparison + Peak Matching
@@ -2514,12 +2564,13 @@ current board above.
 - [x] Reuse exact persisted `structure.xrd` authority through Plan 0.2.
 - [x] Implement bounded Workspace, selection, interpretation and Report/Recipe projections.
 - [x] Verify corrected implementation `5aef027d312f462eea72a1ced10b33e4f4664a50`
-  with exact-SHA CI `31270117864` (45/45 service-backed, zero skipped).
+      with exact-SHA CI `31270117864` (45/45 service-backed, zero skipped).
 - [x] Verify corrected completion record `c7547903faef191c97f35ca0ae2ad1ad1678193f`
-  with exact-SHA CI `31288792343`.
+      with exact-SHA CI `31288792343`.
 - [x] Remove only the completed N3 queue block; retain the N4 reviewer gate.
 - [ ] Verify the queue-archive candidate exact-SHA CI.
 - [x] Keep Phase 10N-4 reviewer-gated and non-executable.
+
 ## Phase 10N-5 Electronic Band Structure + DOS
 
 - [x] Admit exactly one N5 task; keep N6 non-executable.
@@ -2536,8 +2587,9 @@ current board above.
 - [x] Freeze the nine-Tool capability, dependency, Artifact, identity and unit matrices.
 - [x] Verify N1-N5 aggregate backend, service-backed and browser closure.
 - [x] Verify corrected implementation `eda7cda4d14207abaf97a0a88cc263b0d1ad3319`
-  in exact-SHA CI `31316556495`.
+      in exact-SHA CI `31316556495`.
 - [ ] Verify completion-record and queue-archive exact-SHA CI.
+
 ## Phase 11-1
 
 - [x] Phase 11-1 Reference Provenance + Safe Fixture Consolidation completed and archived.
@@ -2557,16 +2609,16 @@ current board above.
 - [x] Seal experience principles, IA decisions, Phase 12 backlog and execution lock.
 - [x] Preserve Registry 62, DataProfile 2.4 and all Phase 11 scientific authority.
 - [x] Verify implementation `0ea893bb85d6abd90ab89bc81e1606b378ea1e7f`
-  with exact-SHA CI `31354589883`; keep Phase 12-1 reviewer-gated.
+      with exact-SHA CI `31354589883`; keep Phase 12-1 reviewer-gated.
 
 ## Phase 12-1
 
 - [x] Implement DS2 semantic tokens, typography, spacing/density, surfaces,
-  status variants, focus and reduced-motion foundations.
+      status variants, focus and reduced-motion foundations.
 - [x] Migrate shared product presentation without altering navigation, Workspace
-  IA, Planner flows, scientific values or backend behavior.
+      IA, Planner flows, scientific values or backend behavior.
 - [x] Close `UX-007` and retain all other Phase 12 owners; keep Phase 12-2 and
-  Phase 13 non-executable.
+      Phase 13 non-executable.
 
 - Implementation `60269556f70f07014224a801150f214887a56ee5` passed exact-SHA CI
   `31358512349`.
@@ -2578,18 +2630,19 @@ current board above.
 
 - [x] Implement the sealed Global Navigation and Planner / Agent presentation scope.
 - [x] Preserve existing route, AnalysisIntent, Eligibility, AnalysisPlan,
-  Runtime, Workspace, selection and provider authorities.
+      Runtime, Workspace, selection and provider authorities.
 - [x] Close only `UX-001` and `UX-008`; retain Phase 12-3 as the next reviewer-gated task.
 
 - Implementation `d046acfcb7ea7741d7cc3567565c2cce9bcb6722` passed exact-SHA CI
   `31365743510`. Completion and Phase 12-2 queue archive follow without a
   further CI wait.
+
 ## Phase 12-3
 
 - [x] Implement result-first Scientific Workspace presentation and shared
-  scientific viewer chrome.
+      scientific viewer chrome.
 - [x] Preserve exact panel URL, Artifact, Selection, Workspace and scientific
-  payload authorities; close only `UX-002` and `UX-003`.
+      payload authorities; close only `UX-002` and `UX-003`.
 
 - Implementation `9b38a753bda134e9c27425e1193d2980a0790731` passed exact-SHA
   CI `31370240101`. Phase 12-4 remains reviewer-gated and unqueued.
@@ -2597,9 +2650,9 @@ current board above.
 ## Phase 12-4
 
 - [x] Implement persisted Finding to exact Evidence, source Artifact and
-  Tool/version trust paths plus the three-layer Inspector.
+      Tool/version trust paths plus the three-layer Inspector.
 - [x] Preserve interpretation, evidence, Artifact, Workspace, Selection,
-  Report/Recipe and scientific authorities; close only `UX-004`.
+      Report/Recipe and scientific authorities; close only `UX-004`.
 - Implementation `9fac62bbb2cc9069da62370ee9d02cf3150e987a` passed exact-SHA
   CI `31379672528`. Phase 12-5 remains reviewer-gated and unqueued.
 
@@ -2607,15 +2660,15 @@ current board above.
 
 - [x] Implement Report/Recipe experience and close `UX-005`.
 - [x] Verify implementation `d20d0a1437844a9a69e71fba52cdf57dfd5144db`
-  with exact-SHA CI `31386432220`; archive directly afterward.
+      with exact-SHA CI `31386432220`; archive directly afterward.
 
 ## Phase 12-6
 
 - [x] Implement responsive/mobile and primitive accessibility closure.
 - [x] Close only `UX-006` and `UX-009`; keep `UX-010` with Phase 12-7.
 - [x] Verify implementation `e2beacb0d1e60e5bfccbcd07271f47f5736a221d`
-  in exact-SHA CI `31393608850`; record completion and archive the sole task
-  without creating Phase 12-7.
+      in exact-SHA CI `31393608850`; record completion and archive the sole task
+      without creating Phase 12-7.
 
 ## Phase 12-7
 
@@ -2624,8 +2677,8 @@ current board above.
 - [x] Close `UX-010` with cross-product density/toolbar consistency evidence.
 - [x] Generate the deterministic Phase 12 baseline and Phase 13 handoff.
 - [x] Verify implementation `8fb5dcbe54fbbcd32677107abb5f4117bd04948d`
-  in exact-SHA CI `31397995499`; record completion and archive only the Phase
-  12-7 queue block without creating Phase 13.
+      in exact-SHA CI `31397995499`; record completion and archive only the Phase
+      12-7 queue block without creating Phase 13.
 
 ## Phase 13-0
 
@@ -2635,13 +2688,13 @@ current board above.
 - [x] Seal exactly seven real-user E2E contracts and checksummed retained fixtures.
 - [x] Seal 56 Phase 13 acceptance IDs, lifecycle and no-injection governance.
 - [x] Verify implementation `6217d042d0190c43144e402e4479aa9810b8e9d0`
-  by exact-SHA CI `31451202923`; record completion and archive only Phase 13-0
-  without creating Phase 13-1 or Phase 13-2 tasks.
+      by exact-SHA CI `31451202923`; record completion and archive only Phase 13-0
+      without creating Phase 13-1 or Phase 13-2 tasks.
 
 ## Phase 13-0 Clarification Fact Correction
 
 - [x] Verify implementation `abe4bd68363f9eb9c357a840b17d0f2c216ebfee`
-  by exact-SHA CI `31455125693`.
+      by exact-SHA CI `31455125693`.
 - [x] Preserve AnalysisIntent 1.0 production behavior and all scientific authority.
 - [x] Regenerate the affected scope baseline; retain the Fact Model hash.
 - [x] Keep Phase 13-1 reviewer-gated and Phase 13-2 unqueued.
@@ -2652,18 +2705,18 @@ current board above.
 - [x] Classify 30 integration seams with no unclassified or discovered gap.
 - [x] Verify 11 retained fixture identities and all seven demo preflight paths.
 - [x] Verify implementation `d1a60955a77aec000f1e6fd630f0770db545421d`
-  by exact-SHA CI `31460352586`; record completion and archive only Phase 13-1.
+      by exact-SHA CI `31460352586`; record completion and archive only Phase 13-1.
 
 ## Phase 13-2
 
 - [x] Verify the Phase 13-1 handoff, corrected fact/scope hashes, 11 fixtures,
-  seven demo contracts and no-injection policy.
+      seven demo contracts and no-injection policy.
 - [x] Reproduce current parser/Profile/Intent/Eligibility/Planner outcomes for
-  all canonical and alternate demo prompts.
+      all canonical and alternate demo prompts.
 - [ ] Execute seven real-user service-backed E2E demonstrations. Blocked by
-  `P13-RF-001`, `P13-RF-002` and `P13-RF-003` before real Job creation.
+      `P13-RF-001`, `P13-RF-002` and `P13-RF-003` before real Job creation.
 - [ ] Close Phase 13-2. Reviewer-authorized integration correction is required;
-  production changes are outside the current phase authority.
+      production changes are outside the current phase authority.
 
 ## Phase 13-1 Product-Entry Fix-Forward
 
@@ -2673,8 +2726,9 @@ current board above.
 - [x] Verify `7/7 READY`, correct Tool families and zero persistence side effects.
 - [x] Regenerate the superseding deterministic scope baseline; keep Fact Model unchanged.
 - [x] Verify remediation implementation `2e47263ac3042663cf901a7fcb8f44e203143e2e`
-  by exact-SHA CI `31493208538` and record completion.
+      by exact-SHA CI `31493208538` and record completion.
 - [x] Archive only this fix-forward task while retaining the failed Phase 13-2 block.
+
 ## Phase 13-2 Rerun
 
 The authorized full rerun is `FAILED_RERUN / REVIEWER_ACTION_REQUIRED`. Fresh
@@ -2690,8 +2744,8 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Preserve strict XRD wavelength mismatch rejection through Branch B1.
 - [x] Keep Level C at `7/7` and establish Level C2 at `7/7` with zero execution state growth.
 - [x] Verify implementation `bc6a6f525515c256c6807c71c5a5f2591607abab`
-  by exact-SHA CI `31504920945`, record completion,
-  and archive only this active block while retaining both failed Phase 13-2 blocks.
+      by exact-SHA CI `31504920945`, record completion,
+      and archive only this active block while retaining both failed Phase 13-2 blocks.
 - [x] Queue archive complete: two failed Phase 13-2 blocks retained, zero executable tasks.
 
 ## Phase 13-2 Attempt 3 - Failed
@@ -2709,8 +2763,9 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Persist exact normalized source manifests and DataProfile 2.4 automatically.
 - [x] Pass Level C `7/7`, Level C2 `7/7`, and real service-backed D0.
 - [x] Implementation `88103ff61584ba81a01ab0e5ebf2adbbc09275e1` passed exact-SHA CI
-  `31553972770`; completion was recorded and only the active Fix-Forward #3 task
-  was archived.
+      `31553972770`; completion was recorded and only the active Fix-Forward #3 task
+      was archived.
+
 ## Phase 13-2 Attempt 4
 
 - Status: FAILED / REVIEWER_ACTION_REQUIRED
@@ -2727,14 +2782,14 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Separate Plan 0.1 scientific read-only state from exact Report actions.
 - [x] Pass fresh Demo 1 PostgreSQL/Redis/MinIO/fresh Worker/Chromium closure smoke.
 - [x] Pass full regression and implementation
-  71985085ac0ab0dbe36b141b88c0251d76892689 exact-SHA CI 31597787296,
-  record completion, and archive only the Fix-Forward #4 task.
+      71985085ac0ab0dbe36b141b88c0251d76892689 exact-SHA CI 31597787296,
+      record completion, and archive only the Fix-Forward #4 task.
 - [x] Final queue: four failed Phase 13-2 blocks retained, zero executable tasks.
 
 ## Phase 13-2 Attempt 5 - Failed
 
 - [x] Verify Fix-Forward #4, semantic coverage, Level C/C2, D0, current hashes,
-  and real PostgreSQL/Redis/MinIO entry authority.
+      and real PostgreSQL/Redis/MinIO entry authority.
 - [x] Complete fresh Demos 1-3 through Chromium UI Report Finalize and Recipe.
 - [x] Record `P13-R5-001` at Demo 4 Workspace Report source eligibility.
 - [x] Record `P13-R5-002` at Demo 5 upload/Profile-to-Intent capability handoff.
@@ -2749,9 +2804,9 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Audit Phase 11 phonon input support and all user-visible entry paths.
 - [x] Select R5-002 Branch C without promoting mapping-only support.
 - [ ] Reviewer authority is required for bounded typed phonon input support or
-  Demo 5 initial-release scope revision.
+      Demo 5 initial-release scope revision.
 - [ ] Fresh Demo 4/5 closure, full regression, completion and archive were not
-  executed after the Branch C hard stop.
+      executed after the Branch C hard stop.
 
 ## Phase 13-1 Release Scope Exception #1 - Failed
 
@@ -2770,12 +2825,12 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 - [x] Seal the two authorized typed phonon input rows; generic phonon remains mapping-only.
 - [x] Generate deterministic Fact/Scope authorities and Attempt 6 handoff.
 - [x] Full regression passed: backend 1432, frontend 460, Phase13 focused 113,
-  service-backed 7 with zero required skips, and four-browser matrix 4/4.
+      service-backed 7 with zero required skips, and four-browser matrix 4/4.
 - [x] Implementation `0867a69a587bf8e0ddb5aaeec7a177808a69e6f1` passed
-  exact-SHA CI `31667748439`; completion is recorded.
+      exact-SHA CI `31667748439`; completion is recorded.
 - [x] Archive the resolved FF5, failed Exception #1, and completed FF6 queue
-  blocks while retaining Attempts 1-5. Attempt 6 remains reviewer-gated and
-  unqueued.
+      blocks while retaining Attempts 1-5. Attempt 6 remains reviewer-gated and
+      unqueued.
 
 ## Phase 13-2 Attempt 6 - Completed
 
@@ -2791,6 +2846,7 @@ rerun remain retained in `TASKS.md`; there is no executable pending task.
 Phase 13-2 queue archive is complete. Historical Attempt1-5 failures and the
 Attempt6 PASS remain in `results.md` and evidence; `TASK_BLOCK_COUNT = 0`.
 Phase 13-3 is reviewer-gated and unqueued.
+
 # Phase 13-3 Documentation + Reproducibility Package - Completed and Archived
 
 Implementation `c3aabd055e067c5a52a0c0238c625dbc035a96f0` passed exact-SHA
@@ -2917,22 +2973,125 @@ Current gate: `READY_FOR_PHASE_E = YES`. Phase E is not queued or running.
 Remote CI was not run and the complete repository pytest remains not fully green
 because of 20 disclosed historical queue/evidence assertions, so completed task
 archival remains withheld.
+
 ## Project History and Data Workbench Remediation - In Progress
 
 - [x] Add a durable project-history projection over persisted product records.
 - [x] Add a selected-dataset workbench with import/Profile/analysis/result
-  process status and result summary.
+      process status and result summary.
 - [x] Remove duplicate run controls and replace repeated example labels with
-  distinct natural-language choices.
+      distinct natural-language choices.
 - [ ] Continue the active qualification queue task and preserve its status and
-  evidence; this UX remediation does not claim Phase E completion.
+      evidence; this UX remediation does not claim Phase E completion.
 
 ## Release Closure — Completed
 
 - [x] Local backend, service-backed, frontend, browser, migration, static,
-  secret, and private-path gates pass with `REAL_LLM_CALLS=0`.
+      secret, and private-path gates pass with `REAL_LLM_CALLS=0`.
 - [x] Former 28 stale historical tests reconciled; real current-product defects found: 0.
 - [x] Release-owned changes separated from qualification and user worktree data.
 - [x] Commit and push the stable product state through the normal workflow.
 - [x] All configured jobs passed in remote CI run `32024851926`; archive the task.
 - [x] Deployment remains `NOT_STARTED`; ready for deployment review only.
+
+## Production Object Management UX — In Progress
+
+- [x] Add server-authorized Project and Dataset rename/archive/restore and
+      owner-only empty-object deletion without cascading scientific history.
+- [x] Add Console project creation with direct upload continuation.
+- [x] Add shared right-click/More/keyboard/touch object menus and explicit
+      multi-selection with transient batch actions.
+- [x] Project real membership roles into History and omit write affordances for
+      read-only members.
+- [ ] Complete authenticated Chrome validation at desktop and 390px, then run
+      the final build and record the finished task in `results.md`.
+
+## Production UI/UX Reconstruction — Completed With Explicit Acceptance Limits
+
+- [x] Product shell, authentication, Project routes, persistent research
+      sessions, upload entry, Data workbench, Research workbench, Reports, and
+      historical route compatibility are implemented.
+- [x] Backend full suite, frontend full suite, typecheck, and build are green.
+- [x] Complete service-backed and real-browser production acceptance for every
+      supported source/result renderer and the real Planner → Worker → Artifact →
+      Interpretation → Report path. The remaining limits are explicit rather than
+      hidden: browser observation of a non-terminal incremental Artifact is
+      `NOT_OBSERVED` because the local worker completes synchronously; BZ source
+      ingestion has no normalized source contract; a hardware screen-reader run is
+      `NOT_VERIFIED`.
+- [x] Expand Landing content, enlarge the login modal, remove the visible Next
+      development indicator, and validate responsive geometry with Chrome evidence.
+- [x] Complete session-integrated Dataset clarification, real Run Report
+      artifact/interpretation rendering, Inspector focus restoration, and keyboard
+      splitter/fallback viewer semantics.
+- [x] Close Browser-found production regressions in durable source-resource
+      loading, current-profile scope semantics, technical Artifact disclosure, and
+      Research run deep-link refresh recovery; verify a real table analysis through
+      Job/ToolCall/Artifact/Interpretation polling and Run Report rendering.
+- [x] Re-run the login-modal screenshot after the Chrome extension UI was
+      dismissed; final 1440 Landing and modal evidence is stored under
+      `design/ux-v1.3/evidence/production/`, with keyboard focus/escape restoration
+      verified. The user-provided 390 device-emulation tab was subsequently
+      claimed and final mobile screenshots were captured under
+      `design/ux-v1.3/evidence/production/mobile-390/`.
+- [x] Verify production layout at the user-adjusted 200% Chrome zoom; fix the
+      effective 915px viewport overflow/clipping and store final Landing, Data,
+      Research, Report, and Login evidence under
+      `design/ux-v1.3/evidence/production/zoom-200/`.
+- [x] Directly claim the user's Chrome `390x844` device-emulation page and
+      capture final mobile Landing, Login, Data, Research, and Run Report evidence
+      with no document-level horizontal overflow.
+- [x] Re-run focused backend and frontend scientific renderer contracts. Source
+      uploads remain honest where only a derived Result Artifact renderer exists;
+      no unsupported source capability was fabricated.
+- [x] Connect Console Quick Preview to a real source-resource Scientific Viewer
+      and capture the 390px mobile evidence; preserve the honest source-vs-derived
+      viewer boundary.
+- [x] Add deferred focus restoration and regression coverage for Preview close;
+      browser automation focus restoration remains explicitly `NOT_VERIFIED` due to
+      Chrome control instability after repeated keyboard events.
+- [x] Audit DeepSeek provider configuration and document the server-only
+      `DEEPSEEK_KEY`/allowlisted-model setup in `.env.example`; no live provider
+      call was made and the existing `/planner/providers*` status/test routes remain
+      the configuration interface.
+- [x] Generalize the server-hosted Provider catalog/status/test DTO with
+      provider kind, base URL, execution capability and redacted secret-source
+      metadata; retain DeepSeek as the only live profile and reject unknown
+      provider selections without browser endpoint/key injection.
+- [x] Close Project/Research IA discoverability gaps: global Project search,
+      model-settings notice, expandable completed process, actionable unsupported
+      suggestions, direct Run Report link, and removal of the inert Data overflow
+      action.
+- [x] Preserve Data `?dataset=` selection and Research `/research/[sessionId]`
+      deep links when users enter those surfaces from the new IA.
+
+## Continuous Product Quality — Exact Structure Research + Workbench — Complete
+
+- [x] Route Chinese RDF/local-environment requests through exact capability
+      selection and require an explicit CrystalNN/VoronoiNN choice before execution.
+- [x] Preserve composite local-environment and experimental-XRD dependency
+      workflows without provider drift or duplicate tools.
+- [x] Keep safe interpretation evidence readable when another approved Artifact
+      exceeds the bounded read cap, while retaining strict integrity failures.
+- [x] Replace generic coordination ranges with grounded Chinese findings and
+      explicit algorithm/input limitations in Research and Report.
+- [x] Constrain desktop Research to the dynamic viewport, assign independent
+      scroll owners, and add bounded pointer/keyboard conversation resizing.
+- [x] Complete authenticated real-Provider browser acceptance and all local
+      Python/frontend/build/type/migration/static checks. CI and deployment remain
+      unchanged.
+
+## Remaining Acceptance Closure + Evidence-Based CI Rationalization — Active
+
+- [x] Confirm incremental Artifact persistence ordering with the existing
+      threaded runtime test and add frontend running-state rendering coverage.
+- [x] Run Narrator-backed Chrome semantics and keyboard-order inspection;
+      retain the unavailable captured-speech boundary explicitly.
+- [x] Restrict Plotly build-warning suppression to the two known glslify
+      dynamic-require warnings and add a policy regression.
+- [x] Audit remote job timing, roadmap/release authority, action deprecation
+      logs and branch protection before changing CI.
+- [x] Make complete current frontend tests a push gate and move sealed
+      phase-specific browser replay behind explicit manual dispatch.
+- [ ] Complete local current-HEAD gates, commit/push, and verify remote CI for
+      the pushed SHA before archiving the queue task.

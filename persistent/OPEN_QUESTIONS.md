@@ -1,5 +1,21 @@
 # OPEN_QUESTIONS
 
+## 2026-08-19 Scientific result presentation
+
+- `structure.summary` and generic structured artifacts now have a safe table
+  projection. Rich semantic figure grammar for each remaining artifact class
+  is still a product-quality follow-up, not a reason to expose raw JSON or a
+  mismatched 3D renderer in the default result UI.
+- The retained historical messages remain immutable. The new compatibility
+  projection suppresses their obsolete machine copy in user-facing Timeline
+  rendering while retaining technical provenance in the backend record.
+
+## 2026-08-19 Local browser service consistency
+
+- The local `Failed to fetch` path is closed with a same-origin `/api/*`
+  rewrite. Direct Chrome access to port 8000 can still be blocked by the
+  extension, but normal product flows no longer require it.
+
 ## Phase 12-5
 
 - No implementation-critical open question. Phase 12-6 retains the approved responsive/accessibility closure scope for `UX-006` and `UX-009`.
@@ -1308,3 +1324,82 @@ is the only remaining work.
 - No release-critical documentation authority conflict is open.
 - Targeted presentation candidates are retained only in the reviewer-gated
   Phase 13-4 handoff; no Phase 13-4 task is queued.
+
+## DeepSeek Configuration Follow-up (2026-08-18, superseded by 2026-08-20 closure)
+
+- Current live configuration is environment-only (`DEEPSEEK_KEY` plus the
+  allowlisted `DEEPSEEK_MODEL`); the running local process reports a redacted
+  ready status, but no live call was made during this audit.
+- Decide separately whether to implement durable encrypted BYOK. The existing
+  `/me/secrets` store is in-memory and the live DeepSeek resolver deliberately
+  ignores/rejects `secretId`; connecting it without ownership, encryption,
+  rotation, audit and worker isolation would be unsafe.
+
+## Production UX Correction Role Closure (2026-08-20)
+
+- Research Turn Orchestrator and Report Composer now have bounded, strict
+  provider contracts with grounded deterministic fallback. They are optional
+  editorial/projection roles over persisted facts and do not replace Planner,
+  Tool Registry, Worker, Scientific Interpreter validation or execution
+  authority.
+- System-hosted provider configuration is now generic OpenAI-compatible
+  connection metadata plus server-held credentials; persistent user BYOK
+  remains a future capability and is not represented as implemented.
+
+## Production UX Correction Evidence Reconciliation (2026-08-20)
+
+- The earlier Chrome extension/network-policy note is historical. After the
+  extension state was cleared, current production Chrome evidence was captured
+  for the authenticated Data, Research, Report, 390px and 200% routes.
+- The earlier volumetric source-summary note is superseded by the strict
+  Phase 10J source projection and the retained `125 x 72 x 60` Gaussian-cube
+  isosurface, slice and WebGL2 direct-volume evidence.
+- Remaining verification limits are intentionally narrow: a real hardware
+  screen-reader session and a browser screenshot taken between two Worker
+  steps. The former requires assistive-technology availability; the latter is
+  not observable with the current synchronous local Worker and must not be
+  manufactured with a fake delay.
+# 2026-08-19 — Production acceptance notes
+
+- Chrome captured the final Landing/Login composition at 1830×878 and the modal sizing is readable. The local browser extension blocked the cross-origin `127.0.0.1:8000` request (`ERR_BLOCKED_BY_CLIENT` / `Failed to fetch`) even though the same authenticated request succeeds from a local HTTP client with CORS headers; authenticated Chrome Console/Data/Research visual acceptance therefore remains `NOT_VERIFIED` until the browser network policy is cleared.
+- Current source viewer acceptance is intentionally differentiated: Volumetric source is a truthful grid/field summary while the full 3D viewer remains derived-artifact-only; BZ has no persisted source object and remains result-only. These are capability boundaries, not empty-result UI defects.
+- Research currently uses Planner plus strict Scientific Interpreter and deterministic, immutable Report Composition. A separate LLM Turn Orchestrator/Report Composer is not introduced because doing so would require a new grounded schema and lifecycle contract; no private reasoning is exposed.
+- 2026-08-19: Incremental Artifact timing is covered by a QueueWorker two-step
+  regression: the first Artifact is persisted and queryable while a later step
+  is still running. The browser contract uses persisted event `stepId` values
+  for process state. A fresh live Chrome run with a non-terminal Artifact is
+  still `NOT_OBSERVED` and must not be represented as a visual PASS without a
+  captured production run.
+
+## 2026-08-19 Viewer verification update
+
+- Trajectory source viewer is browser-verified after fixing the false scan
+  rejection for large numeric matrices.
+- Remaining boundaries are unchanged: volumetric source is a truthful
+  structured summary (derived 3D remains supported), BZ has no persisted source
+  object, and fresh non-terminal incremental Artifact browser observation is
+  still `NOT_OBSERVED`.
+
+## 2026-08-19 Research result closure update
+
+- API 8000 was restarted with the repository's `uv run` environment after a
+  stale process caused a one-off 500 during interpretation projection. A new
+  production Chrome run completed successfully and produced persisted
+  correlation evidence, a Chinese grounded finding, a limitation, a chart and
+  a numeric table. The previous failed turn was retained in the same research
+  session and remains visible for audit.
+- The current acceptance debt is not the Research success path; it is the
+  separately tracked fresh non-terminal incremental Artifact browser capture,
+  full volumetric source 3D contract, BZ source ingestion, and a real device
+  screen-reader run.
+
+## 2026-08-19 Account authorization audit
+
+- Closed the high-risk child-resource gaps found in the production route map:
+  upload-session writes/completion/cancellation, direct upload, profile
+  generation, Planner intent/plan/Interpretation reads and event streams now
+  resolve through the authenticated Project boundary.
+- `/me/secrets` now filters and mutates by the authenticated user scope. The
+  remaining provider/catalog endpoints are authenticated metadata operations;
+  persistent user BYOK remains out of scope and server-hosted provider secrets
+  remain server-owned.

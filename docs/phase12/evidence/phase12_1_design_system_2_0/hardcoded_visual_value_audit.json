@@ -4,7 +4,7 @@
     "specializedExceptions": "scientific viewer/geometry and preserved series presentation",
     "tokenDefinitions": "DS2 primitive values"
   },
-  "literalOccurrences": 169,
+  "literalOccurrences": 205,
   "nonDesignSemanticValue": [
     "canvas dimensions",
     "plot geometry",

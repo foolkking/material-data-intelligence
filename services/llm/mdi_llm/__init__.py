@@ -56,6 +56,17 @@ from .grounded_interpretation import (
     strict_provider_interpret,
     validate_grounded_interpretation,
 )
+from .research_roles import (
+    ReportComposerProjection,
+    ResearchTurnProjection,
+    ScientificFindingProjection,
+    ScientificInterpreterProjection,
+    canonical_role_json,
+    compose_grounded_report,
+    orchestrate_research_turn,
+    validate_report_composer_projection,
+    project_grounded_interpretation,
+)
 
 __all__ = [
     "ARTIFACT_PROJECTOR_CONTRACTS",
@@ -106,4 +117,13 @@ __all__ = [
     "strict_provider_interpret",
     "validate_grounded_interpretation",
     "normalize_analysis_goal",
+    "ReportComposerProjection",
+    "ResearchTurnProjection",
+    "ScientificFindingProjection",
+    "ScientificInterpreterProjection",
+    "canonical_role_json",
+    "compose_grounded_report",
+    "orchestrate_research_turn",
+    "validate_report_composer_projection",
+    "project_grounded_interpretation",
 ]

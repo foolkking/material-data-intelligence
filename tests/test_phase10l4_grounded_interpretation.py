@@ -112,6 +112,22 @@ def _numeric_candidate() -> ArtifactProjectionInput:
     )
 
 
+def _correlation_candidate() -> ArtifactProjectionInput:
+    return _candidate(
+        {"chartType": "correlation_heatmap", "columns": ["formation_energy", "band_gap"], "matrix": [[1.0, -0.575], [-0.575, 1.0]], "method": "pearson", "pairCount": 1, "warnings": []},
+        artifact_type="table_json",
+        tool_id="viz.correlation",
+        suffix="correlation",
+    )
+
+
+def test_correlation_artifact_is_grounded_as_pairwise_evidence() -> None:
+    bundle = build_scientific_evidence_bundle(_source(), [_correlation_candidate()])
+    assert len(bundle.evidenceItems) == 1
+    assert bundle.evidenceItems[0].semanticRole == "correlation.formation_energy.band_gap"
+    assert bundle.evidenceItems[0].displayValue == "-0.575"
+
+
 def _ml_candidate() -> ArtifactProjectionInput:
     return _candidate(
         {
@@ -130,6 +146,32 @@ def _ml_candidate() -> ArtifactProjectionInput:
         tool_id="ml.basic_metrics",
         suffix="ml",
     )
+
+
+def _outlier_candidate() -> ArtifactProjectionInput:
+    return _candidate(
+        {
+            "artifactType": "ml.outlier_table",
+            "schemaVersion": "phase10k3.ml_outlier_table.v1",
+            "rows": [
+                {"formula": "Fe2O3", "y_true": 2.2, "y_pred": 2.5, "error": 0.3, "abs_error": 0.3},
+                {"formula": "LiFePO4", "y_true": 3.1, "y_pred": 2.9, "error": -0.2, "abs_error": 0.2},
+            ],
+            "targetColumn": "y_true",
+            "predictionColumn": "y_pred",
+            "sort": "abs_error_desc",
+        },
+        artifact_type="table_json",
+        tool_id="ml.outlier_table",
+        suffix="outlier",
+    )
+
+
+def test_outlier_table_projects_sample_and_error_evidence() -> None:
+    bundle = build_scientific_evidence_bundle(_source(), [_outlier_candidate()])
+    roles = {item.semanticRole for item in bundle.evidenceItems}
+    assert {"ml.outlier_sample_count", "ml.absolute_error", "ml.max_absolute_error"}.issubset(roles)
+    assert bundle.sourceArtifactIds == ["artifact_outlier"]
 
 
 def _structure_candidate() -> ArtifactProjectionInput:

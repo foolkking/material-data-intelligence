@@ -225,6 +225,21 @@ export type ReportHistoryItem = {
   exportFormats: Array<"json" | "markdown">;
 };
 
+export type ReportEditorialProjection = {
+  schemaVersion: "1.0";
+  reportTitle: string;
+  researchQuestion: string;
+  summary: string;
+  findingRefs: string[];
+  primaryFigureRefs: string[];
+  supportingResultRefs: string[];
+  evidenceRefs: string[];
+  limitations: string[];
+  methodSummary: string[];
+  sourceBundleId: string;
+  sourceJobId: string;
+};
+
 export class ReportCompositionApiError extends Error {
   readonly status: number;
   readonly code: string;
@@ -237,7 +252,7 @@ export class ReportCompositionApiError extends Error {
   }
 }
 
-const API_BASE = (process.env.NEXT_PUBLIC_MDI_API_BASE_URL || "http://localhost:8000").replace(/\/$/u, "");
+const API_BASE = (process.env.NEXT_PUBLIC_MDI_API_BASE_URL || (typeof window === "undefined" ? "http://127.0.0.1:8000" : "/api")).replace(/\/$/u, "");
 
 export async function getReportCompositionSources(workspaceId: string, signal?: AbortSignal): Promise<ReportSourceInventory> {
   return requestJson(`/workspaces/${encodeURIComponent(workspaceId)}/report-composition/sources`, { method: "GET", signal });
@@ -255,7 +270,7 @@ export async function listReportCompositions(workspaceId: string, signal?: Abort
   return requestJson(`/workspaces/${encodeURIComponent(workspaceId)}/report-compositions`, { method: "GET", signal });
 }
 
-export async function getReportComposition(workspaceId: string, reportId: string, signal?: AbortSignal): Promise<{ legacyReadOnly: boolean; report: ReportCompositionSnapshot | Record<string, unknown>; recipeId?: string }> {
+export async function getReportComposition(workspaceId: string, reportId: string, signal?: AbortSignal): Promise<{ legacyReadOnly: boolean; report: ReportCompositionSnapshot | Record<string, unknown>; recipeId?: string; editorialProjection?: ReportEditorialProjection | null }> {
   return requestJson(`/workspaces/${encodeURIComponent(workspaceId)}/report-compositions/${encodeURIComponent(reportId)}`, { method: "GET", signal });
 }
 
@@ -264,7 +279,7 @@ export async function getReportCompositionRecipe(workspaceId: string, reportId: 
 }
 
 export async function downloadReportComposition(workspaceId: string, reportId: string, format: "json" | "markdown", signal?: AbortSignal): Promise<{ blob: Blob; filename: string; exportHash: string | null }> {
-  const response = await fetch(`${API_BASE}/workspaces/${encodeURIComponent(workspaceId)}/report-compositions/${encodeURIComponent(reportId)}/exports/${format}`, { method: "GET", credentials: "omit", signal });
+  const response = await fetch(`${API_BASE}/workspaces/${encodeURIComponent(workspaceId)}/report-compositions/${encodeURIComponent(reportId)}/exports/${format}`, { method: "GET", credentials: "include", signal });
   if (!response.ok) await throwApiError(response);
   return {
     blob: await response.blob(),
@@ -276,7 +291,7 @@ export async function downloadReportComposition(workspaceId: string, reportId: s
 async function requestJson<T>(path: string, init: RequestInit): Promise<T> {
   const headers = new Headers(init.headers);
   if (init.body !== undefined) headers.set("Content-Type", "application/json");
-  const response = await fetch(`${API_BASE}${path}`, { ...init, credentials: "omit", headers });
+  const response = await fetch(`${API_BASE}${path}`, { ...init, credentials: "include", headers });
   if (!response.ok) await throwApiError(response);
   return await response.json() as T;
 }

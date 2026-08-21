@@ -165,7 +165,7 @@ def test_phase10m1_postgres_redis_minio_workspace_domain_persistence(
         }.issubset(db_inspector.get_table_names())
         with engine.connect() as connection:
             assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-                "0008_phase_d_r1_namespace"
+                "0014_research_session_run_bindings"
             )
 
         workspace_foreign_keys = db_inspector.get_foreign_keys("scientific_workspaces")
@@ -193,7 +193,7 @@ def test_phase10m1_postgres_redis_minio_workspace_domain_persistence(
         }.issubset(upgraded_inspector.get_table_names())
         with engine.connect() as connection:
             assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-                "0008_phase_d_r1_namespace"
+                "0014_research_session_run_bindings"
             )
 
         _redis_smoke(suffix)
@@ -509,7 +509,7 @@ def test_phase10m2_postgres_redis_minio_workspace_shell_api_contract(
         with engine.connect() as connection:
             assert connection.execute(text("SELECT current_schema()")).scalar_one() == schema_name
             assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-                "0008_phase_d_r1_namespace"
+                "0014_research_session_run_bindings"
             )
 
         _redis_smoke(f"m2-{suffix}")

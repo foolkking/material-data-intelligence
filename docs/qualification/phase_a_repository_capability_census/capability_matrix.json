@@ -1,0 +1,706 @@
+{
+  "rowCount": 70,
+  "rows": [
+    {
+      "capabilityFamily": "CAP-DATASET",
+      "registryTool": "dataset.materials_explorer",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-DATASET",
+      "registryTool": "dataset.composition_space",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "composition.chem_sys_sunburst",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "composition.chem_sys_sunburst",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "composition.chem_sys_treemap",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "composition.chem_sys_treemap",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "composition.elements_hist",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "composition.elements_hist",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "composition.formula_statistics",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "composition.formula_statistics",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "composition.ptable_heatmap",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "composition.ptable_heatmap",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "composition.summary",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "composition.summary",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "structure.composition_from_structure",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COMPOSITION",
+      "registryTool": "structure.composition_from_structure",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-TABLE",
+      "registryTool": "table.distribution_summary",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-TABLE",
+      "registryTool": "table.numeric_summary",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-TABLE",
+      "registryTool": "viz.correlation",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-TABLE",
+      "registryTool": "viz.histogram",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-TABLE",
+      "registryTool": "viz.scatter",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "materials_tabular_dataset",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-ML-REGRESSION",
+      "registryTool": "ml.basic_metrics",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "regression_result_table",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-ML-REGRESSION",
+      "registryTool": "ml.density_scatter",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "regression_result_table",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-ML-REGRESSION",
+      "registryTool": "ml.error_distribution",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "regression_result_table",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-ML-REGRESSION",
+      "registryTool": "ml.outlier_table",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "regression_result_table",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-ML-REGRESSION",
+      "registryTool": "ml.regression_evaluation",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "regression_result_table",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-ML-UNCERTAINTY",
+      "registryTool": "ml.uncertainty_evaluation",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "uncertainty_result_table",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-ML-CLASSIFICATION",
+      "registryTool": "ml.classification_evaluation",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "classification_result_table",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-STRUCTURE-SUMMARY",
+      "registryTool": "structure.summary",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-STRUCTURE-SUMMARY",
+      "registryTool": "structure.lattice_summary",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-STRUCTURE-SUMMARY",
+      "registryTool": "structure.spacegroup_summary",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-STRUCTURE-SUMMARY",
+      "registryTool": "structure.preview_metadata",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-STRUCTURE-VIEW",
+      "registryTool": "structure.structure_3d",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-STRUCTURE-VIEW",
+      "registryTool": "structure.structure_3d",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "atomic_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-STRUCTURE-VIEW",
+      "registryTool": "structure.viewer_3d",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-STRUCTURE-VIEW",
+      "registryTool": "structure.viewer_3d",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "atomic_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-STRUCTURE-VIEW",
+      "registryTool": "structure.viewer_scene",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-STRUCTURE-VIEW",
+      "registryTool": "structure.viewer_scene",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "atomic_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-COORDINATION",
+      "registryTool": "structure.coordination_crystalnn",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-COORDINATION",
+      "registryTool": "structure.coordination_voronoinn",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-COORDINATION",
+      "registryTool": "structure.coordination_hist",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-COORDINATION",
+      "registryTool": "structure.local_environment_polyhedra",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-XRD",
+      "registryTool": "structure.xrd",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-XRD",
+      "registryTool": "structure.xrd",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "experimental_xrd",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-XRD",
+      "registryTool": "structure.experimental_xrd_comparison",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-XRD",
+      "registryTool": "structure.experimental_xrd_comparison",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "experimental_xrd",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-STRUCTURE-RDF",
+      "registryTool": "structure.rdf",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-TRAJECTORY-VIEW",
+      "registryTool": "structure.trajectory_viewer",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "trajectory",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-TRAJECTORY-ANALYTICS",
+      "registryTool": "trajectory.rdf",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "trajectory",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-TRAJECTORY-ANALYTICS",
+      "registryTool": "trajectory.msd",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "trajectory",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-TRAJECTORY-ANALYTICS",
+      "registryTool": "trajectory.diffusion",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "trajectory",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-PHONON",
+      "registryTool": "phonon.band",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "phonon_band",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-PHONON",
+      "registryTool": "phonon.band",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "phonon_dos",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-PHONON",
+      "registryTool": "phonon.band",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-PHONON",
+      "registryTool": "phonon.dos",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "phonon_band",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-PHONON",
+      "registryTool": "phonon.dos",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "phonon_dos",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-PHONON",
+      "registryTool": "phonon.dos",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-PHONON",
+      "registryTool": "phonon.band_dos",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "phonon_band",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-PHONON",
+      "registryTool": "phonon.band_dos",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "phonon_dos",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-PHONON",
+      "registryTool": "phonon.band_dos",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-PHONON-ANIMATION",
+      "registryTool": "phonon.animation",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "phonon_band",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-PHONON-ANIMATION",
+      "registryTool": "phonon.animation",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "phonon_eigenvectors",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-PHONON-ANIMATION",
+      "registryTool": "phonon.animation",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-RECIPROCAL",
+      "registryTool": "structure.brillouin_zone",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "crystal_structure",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-RECIPROCAL",
+      "registryTool": "structure.brillouin_zone",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "reciprocal_space_context",
+      "supportDisposition": "SUPPORTED"
+    },
+    {
+      "capabilityFamily": "CAP-VOLUMETRIC",
+      "registryTool": "structure.volumetric_data",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "volumetric_field",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-ELECTRONIC",
+      "registryTool": "electronic.band_structure",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "electronic_band",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-ELECTRONIC",
+      "registryTool": "electronic.band_structure",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "electronic_dos",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-ELECTRONIC",
+      "registryTool": "electronic.dos",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "electronic_band",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    },
+    {
+      "capabilityFamily": "CAP-ELECTRONIC",
+      "registryTool": "electronic.dos",
+      "repositoryEvidenceRefs": [
+        "packages/tool-registry/mdi_tool_registry/loader.py",
+        "packages/tool-registry/mdi_tool_registry/planner_metadata.py"
+      ],
+      "semanticDataKind": "electronic_dos",
+      "supportDisposition": "SUPPORTED_WITH_LIMITS"
+    }
+  ],
+  "schemaVersion": "CapabilityMatrix/1.0"
+}

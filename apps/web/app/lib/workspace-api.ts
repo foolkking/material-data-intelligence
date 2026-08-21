@@ -385,7 +385,7 @@ export class WorkspaceApiError extends Error {
 }
 
 const API_BASE = normalizeBaseUrl(
-  process.env.NEXT_PUBLIC_MDI_API_BASE_URL || "http://localhost:8000",
+  process.env.NEXT_PUBLIC_MDI_API_BASE_URL || (typeof window === "undefined" ? "http://127.0.0.1:8000" : "/api"),
 );
 
 export async function createWorkspace(
@@ -522,7 +522,7 @@ async function workspaceFetch<T>(
   }
   const response = await fetch(`${API_BASE}${path}`, {
     ...init,
-    credentials: "omit",
+    credentials: "include",
     headers,
   });
   const etag = response.headers.get("etag");
@@ -535,6 +535,9 @@ async function workspaceFetch<T>(
   const text = await response.text();
   const body = text ? safeParseJson(text) : null;
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("mdi:session-expired"));
+    }
     const detail = errorDetail(body);
     throw new WorkspaceApiError(
       detail?.message || `Workspace request failed with status ${response.status}`,

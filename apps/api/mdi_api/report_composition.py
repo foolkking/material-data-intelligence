@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from contextlib import contextmanager
 from copy import deepcopy
@@ -36,6 +37,7 @@ from mdi_schemas import (
     deterministic_report_composition_id,
     report_composition_semantic_hash,
 )
+from mdi_llm.research_roles import compose_grounded_report, project_grounded_interpretation, validate_report_composer_projection
 
 
 _M5_RECORD_VERSION = "m5.1.0"
@@ -44,6 +46,43 @@ _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _PRIVATE_PATH = re.compile(r"(?:[A-Za-z]:[\\/]|/(?:home|Users|var|tmp|etc)/)")
 _CREDENTIAL_KEY = re.compile(r"(?:api[_-]?key|authorization|password|secret|credential|access[_-]?token)", re.IGNORECASE)
 _EXTERNAL_AUTHORITY = re.compile(r"(?:https?://|file:|javascript:|data:)", re.IGNORECASE)
+
+
+def _provider_report_projection(grounded):
+    """Apply optional editorial wording without weakening grounded refs.
+
+    Finalization remains available when the configured model is unavailable;
+    only a strictly validated provider result replaces the deterministic view.
+    """
+
+    if os.getenv("PYTEST_CURRENT_TEST") and os.getenv("MDI_TEST_LLM_ROLES") != "1":
+        return grounded
+    try:
+        from mdi_api.routers.planner import _select_planner_provider
+
+        provider = _select_planner_provider(None)
+        response = provider.compose_report_json(
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "你是科学报告编辑。仅返回与输入 schema 相同的 JSON。"
+                        "可以改善标题、摘要、限制和方法的中文表达，但不得新增或修改任何数值、单位、"
+                        "finding/figure/result/evidence 引用或 source identity，不得输出隐藏推理。"
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": json.dumps(grounded.model_dump(mode="json"), ensure_ascii=False, separators=(",", ":")),
+                },
+            ],
+            user_config=None,
+        )
+        if not isinstance(response.raw_json, Mapping):
+            raise ValueError("Report Composer did not return a JSON object")
+        return validate_report_composer_projection(response.raw_json, grounded=grounded)
+    except Exception:
+        return grounded
 
 
 # This is the backend report-role projection of the complete M4 42-contract registry.
@@ -667,6 +706,7 @@ class ReportCompositionService:
             recipe_id=recipe_id,
             preview=False,
         )
+        editorial_projection = self._build_editorial_projection(context, report)
         report_record = {
             "id": report.reportId,
             "reportId": report.reportId,
@@ -688,6 +728,7 @@ class ReportCompositionService:
             "createdBy": created_by,
             "createdAt": report.createdAt.isoformat(),
             "executionAuthorized": False,
+            "editorialProjection": editorial_projection.model_dump(mode="json") if editorial_projection else None,
         }
         recipe_record = {
             "id": recipe.recipeId,
@@ -714,6 +755,45 @@ class ReportCompositionService:
         persisted_recipe = self.repositories.recipes.get(recipe_id)
         self._validate_persisted_pair(persisted_report, persisted_recipe, context.workspace)
         return self._finalize_response(persisted_report, persisted_recipe, replayed=False)
+
+    @staticmethod
+    def _build_editorial_projection(context: _CompositionContext, report: ReportCompositionSnapshot):
+        """Persist a bounded Report Composer view alongside the immutable report.
+
+        The canonical Report snapshot remains deterministic and authoritative;
+        this projection only carries reader-oriented references that have
+        already passed the Workspace source projector's scope/checksum checks.
+        """
+        if not context.interpretation_records:
+            return None
+        stored = context.interpretation_records[-1]
+        interpretation = stored.get("interpretation") if isinstance(stored, Mapping) else None
+        if not isinstance(interpretation, Mapping):
+            return None
+        evidence_items = list(context.evidence_by_id.values())
+        artifact_ids = [str(value) for value in context.artifact_by_id]
+        try:
+            projected = project_grounded_interpretation(
+                interpretation,
+                evidence_items=evidence_items,
+                artifact_ids=artifact_ids,
+                title=report.title,
+            )
+            figure_ids = [
+                item.sourceId
+                for item in context.sources
+                if item.sourceKind == "ARTIFACT" and item.role == ReportSourceRole.REPORT_FIGURE_SOURCE
+            ]
+            grounded = compose_grounded_report(
+                research_question=report.analysisGoal,
+                interpretation=projected,
+                artifact_ids=artifact_ids,
+                figure_ids=figure_ids,
+                method_summary=[section.items[0] for section in report.sections if section.sectionId == "METHODS_PLAN" and section.items],
+            )
+            return _provider_report_projection(grounded)
+        except (ValueError, TypeError):
+            return None
 
     def list_history(self, workspace_id: str) -> dict[str, Any]:
         context = self.projector.project(workspace_id)
@@ -756,7 +836,12 @@ class ReportCompositionService:
             report = ReportCompositionSnapshot.model_validate(record.get("composition"))
         except Exception as exc:
             raise ReportCompositionDomainError("REPORT_SOURCE_INTEGRITY_FAILED", "The persisted Report snapshot failed strict validation.", 409) from exc
-        return {"legacyReadOnly": False, "report": report.model_dump(mode="json"), "recipeId": record.get("recipeId")}
+        return {
+            "legacyReadOnly": False,
+            "report": report.model_dump(mode="json"),
+            "recipeId": record.get("recipeId"),
+            "editorialProjection": record.get("editorialProjection"),
+        }
 
     def get_recipe(self, workspace_id: str, report_id: str) -> dict[str, Any]:
         report_detail = self.get_report(workspace_id, report_id)

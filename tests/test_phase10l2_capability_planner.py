@@ -9,9 +9,9 @@ from alembic.command import downgrade as alembic_downgrade
 from alembic.command import stamp as alembic_stamp
 from alembic.command import upgrade as alembic_upgrade
 from alembic.config import Config as AlembicConfig
-from sqlalchemy import create_engine, inspect, text
+from sqlalchemy import create_engine, inspect, select, text
 
-from mdi_api.db import metadata
+from mdi_api.db import capability_planning_executions, metadata
 from mdi_api.repositories import InMemoryRepositoryBundle, SqlAlchemyRepositoryBundle
 from mdi_api.routers.planner import PlannerJobsRequest, get_planner_job, planner_jobs
 from mdi_llm import (
@@ -377,6 +377,124 @@ def test_coordination_questions_preserve_required_dependency_producer(
     )
     assert result.outcome.value == "PLAN_READY"
     assert [item.toolId for item in result.decision.selections] == expected_tools
+
+
+def test_chinese_rdf_and_local_environment_request_requires_algorithm_clarification() -> None:
+    profile = _resource_profile(
+        object_id="structure_exact",
+        object_type="Structure",
+        kind="structure",
+        capabilities=["structure"],
+    )
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request("查看当前结构的径向分布与局部环境。", selected_resource_ids=("structure_exact",)),
+        profile=profile,
+    )
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=MockLLMProvider(),
+    )
+
+    assert result.outcome.value == "NEEDS_CLARIFICATION"
+    assert result.plan is None
+    assert result.decision.diagnostics[0].code == "COORDINATION_ALGORITHM_CLARIFICATION_REQUIRED"
+
+
+@pytest.mark.parametrize(
+    ("algorithm", "producer"),
+    [
+        ("CrystalNN", "structure.coordination_crystalnn"),
+        ("VoronoiNN", "structure.coordination_voronoinn"),
+    ],
+)
+def test_chinese_rdf_and_local_environment_request_preserves_complete_workflow(
+    algorithm: str,
+    producer: str,
+) -> None:
+    profile = _resource_profile(
+        object_id="structure_exact",
+        object_type="Structure",
+        kind="structure",
+        capabilities=["structure"],
+    )
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request(
+            f"使用 {algorithm} 计算当前结构的径向分布并分析局部环境。",
+            selected_resource_ids=("structure_exact",),
+        ),
+        profile=profile,
+    )
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=MockLLMProvider(),
+    )
+
+    expected = sorted([producer, "structure.local_environment_polyhedra", "structure.rdf"])
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == expected
+    assert result.plan is not None
+    assert [step.toolId for step in result.plan.steps] == expected
+
+
+def test_local_environment_and_experimental_xrd_preserve_both_dependency_workflows() -> None:
+    resources = [
+        {"objectId": "experimental", "objectType": "DataFrame", "objectHash": "1" * 64, "kind": "dataframe", "capabilities": ["table"]},
+        {"objectId": "structure_composite", "objectType": "Structure", "objectHash": "2" * 64, "kind": "structure", "capabilities": ["structure"]},
+    ]
+    profile_payload = _profile(resources=resources, targets=(), uncertainty=False).model_dump(mode="json")
+    profile_payload["experimentalXrdReadiness"] = {
+        "contractVersion": "1.0",
+        "experimentalXrdPresent": True,
+        "eligibleResourceCount": 1,
+        "resources": [{
+            "objectId": "experimental",
+            "objectHash": "1" * 64,
+            "resourceId": "experimental_xrd",
+            "resourceHash": "3" * 64,
+            "xAxisKind": "two_theta",
+            "xAxisUnit": "degree",
+            "intensitySemantic": "counts",
+            "wavelengthPresent": True,
+            "wavelengthUnit": "angstrom",
+            "pointCount": 10,
+            "axisMonotonicity": "STRICTLY_INCREASING",
+            "status": "READY",
+            "reasons": [],
+        }],
+        "status": "READY",
+        "reasons": [],
+    }
+    profile = type(_profile()).model_validate(profile_payload)
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request(
+            "Map the CrystalNN local environment and compare experimental XRD peaks with the theoretical pattern.",
+            selected_resource_ids=("experimental", "structure_composite"),
+        ),
+        profile=profile,
+    )
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=MockLLMProvider(),
+    )
+
+    expected = sorted([
+        "structure.coordination_crystalnn",
+        "structure.experimental_xrd_comparison",
+        "structure.local_environment_polyhedra",
+        "structure.xrd",
+    ])
+    assert result.outcome.value == "PLAN_READY"
+    assert result.plan is not None
+    assert [step.toolId for step in result.plan.steps] == expected
 
 
 def test_explicit_trajectory_analytics_exclude_the_trajectory_viewer() -> None:
@@ -1292,6 +1410,61 @@ def test_phase10l2_migration_upgrades_downgrades_and_reupgrades(tmp_path: Path) 
     assert expected.isdisjoint(inspect(engine).get_table_names())
     alembic_upgrade(config, "0004_phase10l2_capability")
     assert expected.issubset(inspect(engine).get_table_names())
+    engine.dispose()
+
+
+def test_same_validated_intent_can_back_multiple_distinct_sql_executions() -> None:
+    engine = create_engine("sqlite:///:memory:")
+    metadata.create_all(engine)
+    repos = SqlAlchemyRepositoryBundle.create(engine)
+    profile = _profile()
+    repos.projects.save({"projectId": "project_repeat", "name": "Repeated research", "createdBy": "user_1"})
+    repos.datasets.save({"datasetId": profile.datasetId, "projectId": "project_repeat", "name": "Dataset", "createdBy": "user_1"})
+    repos.data_profiles.save(profile)
+    request = PlannerJobsRequest(
+        userPrompt="Analyze this dataset composition distribution and anomaly candidates.",
+        projectId="project_repeat",
+        datasetId=profile.datasetId,
+        profileId=profile.profileId,
+        intentSchemaVersion="1.0",
+        provider="mock",
+    )
+
+    first = planner_jobs(request, provider=MockLLMProvider(), repositories=repos)
+    second = planner_jobs(
+        request.model_copy(update={"intentId": first.intent_id}),
+        provider=MockLLMProvider(),
+        repositories=repos,
+    )
+
+    assert first.ok is True and second.ok is True
+    assert first.intent_id == second.intent_id
+    assert first.plan_id != second.plan_id
+    assert first.job_id != second.job_id
+    assert first.capability_decision and second.capability_decision
+    assert first.capability_decision["decisionId"] == second.capability_decision["decisionId"]
+    with engine.connect() as connection:
+        rows = connection.execute(
+            select(capability_planning_executions).where(
+                capability_planning_executions.c.decision_id == first.capability_decision["decisionId"]
+            )
+        ).mappings().all()
+    assert len(rows) == 2
+    assert {row["job_id"] for row in rows} == {first.job_id, second.job_id}
+    engine.dispose()
+
+
+def test_current_head_does_not_restore_decision_only_execution_uniqueness(tmp_path: Path) -> None:
+    database = tmp_path / "reusable-execution-head.sqlite"
+    config = AlembicConfig("apps/api/alembic.ini")
+    config.set_main_option("script_location", "apps/api/alembic")
+    config.set_main_option("sqlalchemy.url", f"sqlite:///{database.as_posix()}")
+    alembic_upgrade(config, "head")
+    engine = create_engine(f"sqlite:///{database.as_posix()}")
+    constraints = inspect(engine).get_unique_constraints("capability_planning_executions")
+    columns = {tuple(item["column_names"]) for item in constraints}
+    assert ("decision_id",) not in columns
+    assert ("decision_id", "intent_id", "plan_id", "job_id") in columns
     engine.dispose()
 
 

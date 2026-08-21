@@ -4,7 +4,7 @@ import type { Viewport } from "next";
 
 export const metadata = {
   title: "Material Data Intelligence",
-  description: "Materials analysis workspace shell"
+  description: "材料数据、科学分析与可追溯研究结果"
 };
 
 export const viewport: Viewport = {
@@ -15,7 +15,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="zh-CN">
       <body>{children}</body>
     </html>
   );

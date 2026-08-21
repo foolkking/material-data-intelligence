@@ -35,13 +35,13 @@ afterEach(() => vi.unstubAllGlobals());
 describe("Phase 10J-6 product surface", () => {
   it("loads a validated field and exposes exact Slice metadata with accessible controls", async () => {
     render(<VolumetricSliceVolumeSurface artifacts={artifacts} mode="slice" byteLoader={byteLoader} sliceWorkerFactory={sliceWorker} />);
-    await waitFor(() => expect(screen.getByTestId("volumetric-slice-volume-state")).toHaveTextContent("ready"));
-    expect(screen.getByRole("region", { name: "Canonical lattice slice controls" })).toHaveTextContent("exact_grid_plane");
-    expect(screen.getByTestId("volumetric-slice-axis")).toHaveAccessibleName("Axis");
-    expect(screen.getByTestId("volumetric-slice-heatmap")).toHaveAccessibleName(/Quantitative two-dimensional lattice slice heatmap/);
-    expect(screen.getByTestId("volumetric-display-window")).toHaveTextContent("source values unchanged");
+    await waitFor(() => expect(screen.getByTestId("volumetric-slice-volume-state")).toHaveTextContent("已就绪"));
+    expect(screen.getByRole("region", { name: "晶格切片控制" })).toHaveTextContent("精确网格切面");
+    expect(screen.getByTestId("volumetric-slice-axis")).toHaveAccessibleName("轴");
+    expect(screen.getByTestId("volumetric-slice-heatmap")).toHaveAccessibleName(/定量二维晶格切片热图/);
+    expect(screen.getByTestId("volumetric-display-window")).toHaveTextContent("源数据保持不变");
     expect(screen.getByTestId("volumetric-slice-legend")).toHaveTextContent("electron/angstrom^3");
-    expect(screen.getByTestId("volumetric-slice-value-table")).toHaveAccessibleName("Accessible slice value table");
+    expect(screen.getByTestId("volumetric-slice-value-table")).toHaveAccessibleName("切片数值表");
     fireEvent.keyDown(screen.getByTestId("volumetric-slice-heatmap"), { key: "ArrowRight" });
     expect(screen.getByTestId("volumetric-slice-probe")).toHaveTextContent("display normalized");
   });
@@ -49,8 +49,8 @@ describe("Phase 10J-6 product surface", () => {
   it("shows a typed volume fallback without creating a canvas when WebGL2 is unavailable", async () => {
     const { container } = render(<VolumetricSliceVolumeSurface artifacts={artifacts} mode="volume" capabilityOverride="unsupported" byteLoader={byteLoader} sliceWorkerFactory={sliceWorker} />);
     await waitFor(() => expect(screen.getByTestId("volumetric-slice-volume-state")).toHaveTextContent("unsupported"));
-    expect(screen.getByTestId("volumetric-slice-volume-status")).toHaveTextContent("Slice and Isosurface remain available");
+    expect(screen.getByTestId("volumetric-slice-volume-status")).toHaveTextContent("仍可查看切片和等值面");
     expect(container.querySelector("canvas, iframe, script")).toBeNull();
-    expect(screen.getByTestId("volumetric-volume-metrics")).toHaveTextContent("width=nz, height=ny, depth=nx");
+    expect(screen.getByTestId("volumetric-volume-metrics")).toHaveTextContent("宽=nz，高=ny，深=nx");
   });
 });

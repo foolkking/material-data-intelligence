@@ -36,24 +36,24 @@ describe("DatasetMaterialsExplorerPanel", () => {
     expect(screen.getByTestId("dataset-materials-explorer")).toBeTruthy();
     expect(screen.getByTestId("dataset-explorer-dataset-id")).toHaveTextContent("dataset_demo");
     const overview = screen.getByTestId("dataset-explorer-overview");
-    expect(overview).toHaveTextContent("Samples");
-    expect(overview).toHaveTextContent("dataset_materials_explorer");
-    expect(overview).toHaveTextContent("FORMULA_VALUES_PARTIALLY_INVALID");
+    expect(overview).toHaveTextContent("样本");
+    expect(overview).toHaveTextContent("材料数据浏览");
+    expect(overview).toHaveTextContent("部分化学式无法解析");
   });
 
   it("supports composition, property and stable sample inspection without executing code", async () => {
     const user = userEvent.setup();
     const { container } = render(<DatasetMaterialsExplorerPanel artifacts={[artifact()]} />);
-    await user.click(screen.getByRole("tab", { name: "Composition" }));
+    await user.click(screen.getByRole("tab", { name: "组成" }));
     expect(screen.getByTestId("dataset-element-bars")).toHaveTextContent("Si");
     expect(screen.getByTestId("dataset-explorer-composition")).toHaveTextContent("Cl-Na");
 
-    await user.click(screen.getByRole("tab", { name: "Properties" }));
-    await user.selectOptions(screen.getByRole("combobox", { name: "Property" }), "density");
+    await user.click(screen.getByRole("tab", { name: "性质" }));
+    await user.selectOptions(screen.getByRole("combobox", { name: "性质" }), "density");
     expect(screen.getByTestId("dataset-explorer-properties")).toHaveTextContent("g/cm^3");
     expect(screen.getByTestId("dataset-property-histogram").children).toHaveLength(3);
 
-    await user.click(screen.getByRole("tab", { name: "Samples" }));
+    await user.click(screen.getByRole("tab", { name: "样本" }));
     await user.click(screen.getByRole("button", { name: "sample-2 from obj_table" }));
     expect(screen.getByTestId("dataset-sample-inspector")).toHaveTextContent("NaCl");
     expect(container.querySelector("script")).toBeNull();
@@ -64,11 +64,11 @@ describe("DatasetMaterialsExplorerPanel", () => {
   it("shows explicit comparison provenance", async () => {
     const user = userEvent.setup();
     render(<DatasetMaterialsExplorerPanel artifacts={[artifact()]} />);
-    await user.click(screen.getByRole("tab", { name: "Comparison" }));
+    await user.click(screen.getByRole("tab", { name: "比较" }));
     const view = screen.getByTestId("dataset-explorer-comparison");
     expect(view).toHaveTextContent("split");
     expect(view).toHaveTextContent("no row-order inference");
-    expect(view).toHaveTextContent("Left median");
+    expect(view).toHaveTextContent("左侧中位数");
   });
 
   it("keeps partial and empty capabilities explicit and accessible", async () => {
@@ -81,18 +81,18 @@ describe("DatasetMaterialsExplorerPanel", () => {
     partial.comparison = { ...partial.comparison, status: "NOT_REQUESTED", mode: "none" };
     partial.sampleIndex = [];
     render(<DatasetMaterialsExplorerPanel artifacts={[artifact(partial)]} />);
-    expect(screen.getByLabelText("Dataset Materials Explorer")).toBeTruthy();
+    expect(screen.getByLabelText("材料数据浏览器")).toBeTruthy();
     expect(screen.getAllByRole("tab")).toHaveLength(8);
-    await user.click(screen.getByRole("tab", { name: "Composition" }));
-    expect(screen.getByText("Formula semantics are unavailable.")).toBeTruthy();
-    await user.click(screen.getByRole("tab", { name: "Structures" }));
-    expect(screen.getByText("No canonical structures were bound.")).toBeTruthy();
-    await user.click(screen.getByRole("tab", { name: "Properties" }));
-    expect(screen.getByText("No Profile 2.0 material-property roles are available.")).toBeTruthy();
-    await user.click(screen.getByRole("tab", { name: "Comparison" }));
-    expect(screen.getByText("No explicit dataset comparison was requested.")).toBeTruthy();
-    await user.click(screen.getByRole("tab", { name: "Model evaluation" }));
-    expect(screen.getByText("No model-result semantics detected.")).toBeTruthy();
+    await user.click(screen.getByRole("tab", { name: "组成" }));
+    expect(screen.getByText("当前数据没有可用的化学式语义。")).toBeTruthy();
+    await user.click(screen.getByRole("tab", { name: "结构" }));
+    expect(screen.getByText("当前数据没有绑定可展示的标准结构。")).toBeTruthy();
+    await user.click(screen.getByRole("tab", { name: "性质" }));
+    expect(screen.getByText("当前数据没有可展示的材料性质字段。")).toBeTruthy();
+    await user.click(screen.getByRole("tab", { name: "比较" }));
+    expect(screen.getByText("当前没有请求数据集比较。")).toBeTruthy();
+    await user.click(screen.getByRole("tab", { name: "模型评估" }));
+    expect(screen.getByText("当前数据没有检测到模型结果语义。")).toBeTruthy();
   });
 
   it("links Profile-ready model semantics to the Materials ML product", async () => {
@@ -100,11 +100,11 @@ describe("DatasetMaterialsExplorerPanel", () => {
     const ready = payload();
     ready.overview.availableAnalyses.push("regression_evaluation", "uncertainty_evaluation");
     render(<DatasetMaterialsExplorerPanel artifacts={[artifact(ready)]} />);
-    await user.click(screen.getByRole("tab", { name: "Model evaluation" }));
+    await user.click(screen.getByRole("tab", { name: "模型评估" }));
     const view = screen.getByTestId("dataset-explorer-model-evaluation");
-    expect(view).toHaveTextContent("regression_evaluation");
-    expect(view).toHaveTextContent("uncertainty_evaluation");
-    expect(view).toHaveTextContent("stable material samples");
+    expect(view).toHaveTextContent("回归评估");
+    expect(view).toHaveTextContent("不确定性评估");
+    expect(view).toHaveTextContent("稳定材料样本");
   });
 
   it("integrates Composition Space as a dataset tab when both artifacts are present", async () => {
@@ -114,7 +114,7 @@ describe("DatasetMaterialsExplorerPanel", () => {
     explorer.overview.availableAnalyses.push("composition_space");
     render(<DatasetMaterialsExplorerPanel artifacts={[artifact(explorer), compositionSpaceArtifact()]} />);
     expect(screen.getAllByRole("tab")).toHaveLength(9);
-    await user.click(screen.getByRole("tab", { name: "Composition space" }));
+    await user.click(screen.getByRole("tab", { name: "组成空间" }));
     expect(screen.getByRole("tabpanel")).toHaveTextContent("Backend-computed atomic-fraction PCA");
     expect(screen.getByRole("img", { name: "PCA composition scatter colored by cluster" })).toBeTruthy();
   });
@@ -127,7 +127,7 @@ describe("DatasetMaterialsExplorerPanel", () => {
       { sampleKey: "obj_b:shared", sampleRef: "shared", objectId: "obj_b", rowIndex: 0, formula: "NaCl", reducedFormula: "NaCl" },
     ];
     render(<DatasetMaterialsExplorerPanel artifacts={[artifact(duplicate)]} />);
-    await user.click(screen.getByRole("tab", { name: "Samples" }));
+    await user.click(screen.getByRole("tab", { name: "样本" }));
     await user.click(screen.getByRole("button", { name: "shared from obj_b" }));
     expect(screen.getByTestId("dataset-sample-inspector")).toHaveTextContent("obj_b:shared");
     expect(screen.getByTestId("dataset-sample-inspector")).toHaveTextContent("NaCl");
@@ -138,7 +138,7 @@ describe("DatasetMaterialsExplorerPanel", () => {
     const malicious = payload();
     malicious.composition.elements[0].element = "<img src=x onerror=alert(1)>";
     const { container } = render(<DatasetMaterialsExplorerPanel artifacts={[artifact(malicious)]} />);
-    await user.click(screen.getByRole("tab", { name: "Composition" }));
+    await user.click(screen.getByRole("tab", { name: "组成" }));
     expect(screen.getByTestId("dataset-element-bars")).toHaveTextContent("<img src=x onerror=alert(1)>");
     expect(container.querySelector("img")).toBeNull();
   });
@@ -161,6 +161,6 @@ describe("DatasetMaterialsExplorerPanel", () => {
     rerender(<DatasetMaterialsExplorerPanel artifacts={[artifact(overCap)]} />);
     const fallback = screen.getByTestId("dataset-materials-explorer-invalid");
     expect(fallback).toHaveTextContent("DATASET_EXPLORER_PREVIEW_CAP_EXCEEDED");
-    expect(within(fallback).getByText("Artifact JSON")).toBeTruthy();
+    expect(within(fallback).getByText("技术详情")).toBeTruthy();
   });
 });
