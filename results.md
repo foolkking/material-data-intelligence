@@ -13704,3 +13704,13 @@ Research/Product Vitest = 37 passed；`npm run typecheck`、compileall、`git di
 修改摘要：基于 workflow、仓库脚本、测试标记、路线文档和远程失败/成功运行记录，区分当前产品门禁与已封存历史证据。默认 Python 单元门禁排除明确标记且依赖忽略目录 `_qualification/` 的 qualification 模块；旧 Phase 13-4 Help 浏览器检查保留为历史证据但移出 push gate；17 个历史 Phase 10/12 浏览器步骤合并为一个手动 dispatch 编排步骤，仍逐项执行并在失败时停止。当前 Phase 12-6/12-7 改为验证项目级 Research 工作台，补齐 skip link、splitter 和确定性只读 fixture。未移除科学重放、跨平台、服务集成、迁移、完整前端、typecheck、build 或当前可访问性/UX 门禁。
 测试结果：本地默认 Python `1586 passed, 1 skipped, 82 deselected, 75 warnings`；qualification `30 passed`；Vitest `83 files / 554 tests`；typecheck PASS；production build PASS；Phase 12-6/12-7 Playwright PASS；Phase 12 evidence integrity `10 passed`；focused contract tests `16 passed`；`uv lock --check`、compileall、YAML parse、`git diff --check` PASS。
 提交/CI：`501313a`、`ef86945`、`0df1e97` 已推送；current HEAD `0df1e97ee21533e8f9d620d0810cea6129a71bd3` 的 GitHub Actions run `32454012102` 全部通过（Unit Tests、Scientific Replay Linux/Windows、Frontend、Service-backed Integration）。未部署或发布。用户临时/历史未跟踪文件未加入提交。
+
+---
+
+任务：Continuous Product Quality — Research history navigation Wave 3
+状态：已完成
+完成时间：2026-08-21T16:30:12+08:00
+修改文件：`apps/web/app/components/ResearchPages.tsx`、`apps/web/app/components/ResearchPages.test.tsx`、`apps/web/app/globals.css`、`persistent/ARCHITECTURE_DECISIONS.md`、`persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`、`TASKS.md`、`results.md`。
+修改摘要：将 Research 记录浮层补全为高频历史导航：本地标题搜索、记录数量、空/无匹配状态、长列表滚动边界、当前记录标识、Escape/外部点击/选择关闭与焦点恢复。移动搜索输入固定为 16px。依据数据库事实将 `sessions.status=active` 从误导性的“进行中”改为“可继续”，并保留 queued/running Planner Job 的“进行中”语义；未改变会话归属、Planner、Artifact、Report 或执行权限。
+测试结果：Research focused Vitest `25 passed`；完整 Vitest `83 files / 554 tests passed`；`npm run typecheck` PASS；独立 production build PASS。真实已授权 Structure/RDF 项目在 1280x720 验证搜索自动聚焦、无匹配反馈、外部关闭、`active` 显示“可继续”、面板边界和文档无横向溢出。
+提交/CI：实现提交 `ca8a8b4bcab8de4ad6c094c8cd6f9641200a969b` 已推送；current-HEAD GitHub Actions run `32463181783` 全部通过（Unit Tests、Scientific Replay Linux/Windows、Frontend、Service-backed Integration）。未部署或发布；用户未跟踪文件未加入提交。

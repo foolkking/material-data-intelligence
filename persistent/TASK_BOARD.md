@@ -3101,7 +3101,7 @@ archival remains withheld.
       local-only marker tests, stale Phase 13-4 Help replay is historical-only,
       and sealed Phase 10/12 replay is one manual orchestrated step.
 
-## Continuous Product Quality — Research history navigation Wave 3 — Active
+## Continuous Product Quality — Research history navigation Wave 3 — Completed
 
 - [x] Add title search, result count, empty/no-match states and bounded scrolling
       to the Research history popover without changing server-owned history.
@@ -3111,5 +3111,5 @@ archival remains withheld.
       Job execution status (`queued`/`running` = 进行中).
 - [x] Verify the retained authenticated Research project in the browser at
       1280x720 with no document overflow and a correctly focused search field.
-- [ ] Complete implementation commit/push, current-HEAD CI, result recording,
-      and verified TASKS archival.
+- [x] Complete implementation commit `ca8a8b4`, push, current-HEAD CI run
+      `32463181783`, result recording, and verified TASKS archival.
