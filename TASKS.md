@@ -1,13 +1,22 @@
 ---TASK---
-状态：处理中
+状态：已完成
 任务名称：Continuous Product Quality — Research activation and capability-aware guidance Wave 6
 开始时间：2026-08-22T01:32:45+08:00
+完成时间：2026-08-22T02:41:38+08:00
 
 目标：修复 Research 首次进入时对话区空白、示例问题隐藏在工作台且与当前数据能力不匹配的问题。仅使用现有 Project History 的数据集类型、语义角色和 ready capabilities 生成最多三个确定性建议；选择建议只填入并聚焦 Composer，不自动提交或创建 Job。
 
 边界：不修改后端 API、数据库、共享 schema、AnalysisPlan、Planner、QueueWorkerRuntime、Tool Registry 或 Adapter；不恢复历史浏览器证据为独立 CI 门禁；不重开 Phase E；保留 `CODEX_HANDOFF.md` 且不纳入提交。
 
 验收：覆盖能力映射、fallback、权限、已有会话/Run 隐藏条件和无自动提交；验证桌面、1280px 与 390px Research 首次使用、键盘焦点、触控目标和无横向溢出；通过 focused/full frontend tests、typecheck、production build、Phase 12-7 browser/evidence checks、diff check 与 current-HEAD CI。
+
+修改文件：`.interface-design/system.md`、`apps/web/app/components/ResearchPages.tsx`、`apps/web/app/components/ResearchPages.test.tsx`、`apps/web/app/globals.css`、`apps/web/test/phase12-7-cross-product-browser-evidence.mjs`、`docs/phase12/evidence/phase12_7_cross_product_ux_validation/*`、`persistent/ARCHITECTURE_DECISIONS.md`、`persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`、`TASKS.md`、`results.md`。
+
+修改摘要：Research 空白对话增加基于 Project History 的有界首次研究区；无数据时按权限提供 Upload 或只读说明；建议只填充并聚焦 Composer，右侧工作台不再重复静态建议。未改变后端、共享 schema、Planner、Worker、Tool Registry、Adapter 或 CI 门禁。
+
+测试结果：Research Vitest `32 passed`；完整 Vitest `84 files / 565 tests passed`；typecheck、production build、Phase 12-7 Chromium/Firefox/WebKit 与 1280x720/390x844 浏览器验证、证据完整性 `5 passed`、`git diff --check` 均通过。`npm run lint` 因仓库脚本仍调用未配置且交互式的 `next lint` 无法独立执行；Next production build 的 lint/type validity 阶段与远端 Frontend job 均通过。
+
+提交/CI：实现提交 `1032d10a4e0a9111c02246c95cc55f34d6711370` 已推送；current-HEAD GitHub Actions run `32514219078` 的 Unit、Frontend、Service-backed Integration 与 Linux/Windows Scientific Replay 全部成功。未部署或发布；`CODEX_HANDOFF.md` 未纳入提交。
 ---END---
 
 ---TASK---

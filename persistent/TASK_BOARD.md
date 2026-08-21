@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-## Continuous Product Quality — Research activation Wave 6 - In Progress
+## Continuous Product Quality — Research activation Wave 6 - Completed
 
 - [x] Replace the blank Research conversation with a compact first-use state next
       to the Composer while keeping the right workbench focused on data and recent
@@ -12,7 +12,8 @@
       Composer, and respect Project write/read-only roles.
 - [x] Verify focused and complete frontend tests, typecheck, production build, and
       Phase 12-7 Chromium/Firefox/WebKit, 1280px, and 390px evidence locally.
-- [ ] Commit, push, and close the task only after current-HEAD CI is green.
+- [x] Commit `1032d10`, push, and close the implementation only after
+      current-HEAD CI run `32514219078` passed all five retained jobs.
 
 ## Continuous Product Quality — Research Timeline / Scientific Workbench Wave 2 - Completed
 

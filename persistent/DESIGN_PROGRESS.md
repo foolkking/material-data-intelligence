@@ -3256,4 +3256,6 @@ to the conversation panel before focusing the Composer. Local verification
 passed Research Vitest `32`, complete Vitest
 `84 files / 565 tests`, typecheck, production build, Phase 12-7 evidence
 integrity `5`, and Chromium/Firefox/WebKit plus 1280x720 and 390x844 browser
-checks. Current-HEAD CI remains pending before task closure.
+checks. Implementation commit `1032d10` passed current-HEAD CI run
+`32514219078` across Unit, Frontend, Service-backed Integration, and
+Linux/Windows scientific replay.
