@@ -212,13 +212,12 @@ export function ResearchPage({ projectId, sessionId, runId }: { projectId: strin
 
   useEffect(() => {
     if (!sessionHistoryOpen) return;
-    const frame = window.requestAnimationFrame(() => sessionHistoryRef.current?.focus());
-    return () => window.cancelAnimationFrame(frame);
+    sessionHistoryRef.current?.focus();
   }, [sessionHistoryOpen]);
 
   function closeSessionHistory() {
     setSessionHistoryOpen(false);
-    window.requestAnimationFrame(() => sessionHistoryTriggerRef.current?.focus());
+    sessionHistoryTriggerRef.current?.focus();
   }
 
   useEffect(() => {

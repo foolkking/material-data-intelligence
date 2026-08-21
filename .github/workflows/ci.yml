@@ -38,6 +38,11 @@ jobs:
       - name: Install Python dependencies
         run: uv sync --frozen --extra test
 
+      - name: Initialize default SQLite schema for application unit tests
+        run: uv run python -m alembic -c apps/api/alembic.ini upgrade head
+        env:
+          DATABASE_URL: sqlite:///./mdi_phase5.db
+
       - name: Run unit tests
         run: uv run python -m pytest -q -m "not integration" --tb=short
 

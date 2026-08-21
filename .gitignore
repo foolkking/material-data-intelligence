@@ -27,6 +27,8 @@ build/
 # Runtime data
 uploads/
 storage/
+# Generated runtime artifact stores stay ignored by default. Checked-in phase
+# evidence may opt in with `git add -f` when tests and audit docs reference it.
 artifacts/
 .artifacts/
 tmp/
