@@ -3113,7 +3113,7 @@ archival remains withheld.
       1280x720 with no document overflow and a correctly focused search field.
 - [x] Complete implementation commit `ca8a8b4`, push, current-HEAD CI run
       `32463181783`, result recording, and verified TASKS archival.
-## Continuous Product Quality — Mobile Research navigation Wave 4 — Active
+## Continuous Product Quality — Mobile Research navigation Wave 4 — Completed
 
 - [x] Add complete tab/tabpanel relationships, roving tabindex and keyboard
       Arrow/Home/End navigation to the mobile Research single-panel switcher.
@@ -3122,5 +3122,5 @@ archival remains withheld.
       visible.
 - [x] Extend Phase 12-6 Chromium 390x844 evidence with tab semantics,
       keyboard focus movement and single-panel visibility assertions.
-- [ ] Complete implementation commit/push, current-HEAD CI, result recording,
-      and verified TASKS archival.
+- [x] Complete implementation commit `3dccce8`, push, current-HEAD CI run
+      `32464949831`, result recording, and verified TASKS archival.

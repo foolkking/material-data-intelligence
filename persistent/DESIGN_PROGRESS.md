@@ -3219,10 +3219,13 @@ including complete frontend tests, typecheck/build, current Phase 12 browser
 gates, Python unit tests, service-backed integration, and scientific replay on
 Linux and Windows.
 
-2026-08-21 Mobile Research navigation Wave 4 in progress: the single-panel
- mobile switcher now has explicit tab/tabpanel IDs, roving tabindex, Arrow/Home/
- End navigation and focus movement. A validated Planner job moves the mobile
- view to the Workbench immediately after creation, so users see the real running
- process instead of remaining on the composer. Phase 12-6 Chromium 390x844
- evidence now asserts these semantics and confirms only one panel is visible;
- desktop dual-pane behavior is unchanged.
+2026-08-21 Mobile Research navigation Wave 4 completed: the single-panel mobile
+switcher now has explicit tab/tabpanel IDs, roving tabindex, Arrow/Home/End
+navigation and focus movement. A validated Planner job moves the mobile view to
+the Workbench immediately after creation, so users see the real running process
+instead of remaining on the composer. Phase 12-6 Chromium 390x844 evidence
+asserts these semantics and confirms only one panel is visible; desktop dual-pane
+behavior is unchanged. Implementation commit `3dccce8` passed current-HEAD CI
+run `32464949831`, including complete frontend tests, typecheck/build, current
+Phase 12 browser gates, Python unit tests, service-backed integration, and
+scientific replay on Linux and Windows.
