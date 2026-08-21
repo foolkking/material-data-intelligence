@@ -199,4 +199,3 @@ CASE_POLICIES: dict[str, dict[str, Any]] = {
 
 def all_primary_case_ids() -> list[str]:
     return list(CASE_POLICIES)
-

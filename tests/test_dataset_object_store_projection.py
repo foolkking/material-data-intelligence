@@ -20,4 +20,3 @@ def test_generic_source_lists_remain_bounded():
 
     assert isinstance(projected, list)
     assert len(projected) == 100_000
-
