@@ -1,4 +1,16 @@
 ---TASK---
+状态：处理中
+任务名称：Continuous Product Quality — Research history navigation Wave 3
+开始时间：2026-08-21T14:55:00+08:00
+
+优化 Research 记录面板的高频恢复路径：为长会话列表增加本地搜索、空结果
+状态、稳定滚动边界和完整键盘/点击外部关闭行为；保持会话、运行和权限事实
+由服务端决定，不改变 Planner、Artifact、Report 或执行边界。补齐 focused
+frontend regression、设计文档和结果记录，并运行相关测试、typecheck、build
+及 current-HEAD CI 后再归档。
+---END---
+
+---TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00

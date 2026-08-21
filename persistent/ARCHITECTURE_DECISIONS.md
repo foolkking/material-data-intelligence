@@ -5405,3 +5405,14 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   read-only browser fixture: it cannot create Planner jobs or execute scientific
   tools. The legacy `/analysis` compatibility page is excluded from current UX
   assertions because it intentionally only redirects historical links.
+
+## ADR: Research session availability is not Job execution state (2026-08-21)
+
+- `sessions.status=active` means the durable conversation remains available for
+  another research turn. It does not assert that any bound Planner Job is active.
+- Planner execution status remains owned by persisted `jobs.status` and the
+  normalized `research_session_runs` association. The UI may label `active`
+  sessions as “可继续”, while only queued/running Planner states use “进行中”.
+- Research history search is a bounded client-side projection of the already
+  authorized session list. It creates no new query, execution, filesystem, or
+  network authority and does not infer session ownership from message text.

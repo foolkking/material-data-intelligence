@@ -3203,3 +3203,14 @@ Phase 12 browser evidence, and evidence integrity). The pushed current HEAD
 now keeps current product gates on push while exposing sealed Phase 10/12
 browser replays as one explicit manual orchestration step; no scientific,
 security, migration, service-backed, or accessibility coverage was removed.
+
+2026-08-21 Research history navigation Wave 3 in progress: the Research record
+popover now supports local title search, bounded scrolling, explicit empty and
+no-match states, a visible result count, current-session semantics, and robust
+focus/close behavior for Escape, outside pointer input, and navigation. Mobile
+search text is 16px. The UI now presents `sessions.status=active` as “可继续”
+rather than incorrectly implying that a Planner Job is still running; actual
+queued/running Job states continue to use “进行中”. The authenticated retained
+Structure/RDF project was inspected at 1280x720: the overlay stayed within the
+viewport, search received focus, no-match feedback was exposed, outside-click
+closed the overlay, and document width remained 1280px.

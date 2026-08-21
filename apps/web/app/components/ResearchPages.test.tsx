@@ -376,15 +376,31 @@ it("focuses and closes the research history popover with localized status", asyn
       title: "声子色散分析",
       status: "completed",
     },
+    {
+      id: "session_running",
+      project_id: "project_1",
+      title: "结构局部环境",
+      status: "active",
+    },
   ]);
   render(<ResearchPage projectId="project_1" />);
 
   const trigger = await screen.findByRole("button", { name: "研究记录" });
   await user.click(trigger);
   const dialog = await screen.findByRole("dialog", { name: "研究记录" });
-  await waitFor(() => expect(document.activeElement).toBe(dialog));
+  const search = screen.getByRole("searchbox", { name: "搜索研究记录" });
+  await waitFor(() => expect(document.activeElement).toBe(search));
+  expect(dialog).toHaveTextContent("2 项");
   expect(dialog).toHaveTextContent("已完成");
+  expect(dialog).toHaveTextContent("可继续");
+  expect(dialog).not.toHaveTextContent("进行中");
   expect(dialog).not.toHaveTextContent("completed");
+  await user.type(search, "局部");
+  expect(dialog).toHaveTextContent("结构局部环境");
+  expect(dialog).not.toHaveTextContent("声子色散分析");
+  await user.clear(search);
+  await user.type(search, "不存在的标题");
+  expect(dialog).toHaveTextContent("没有匹配“不存在的标题”的研究记录。");
   await user.keyboard("{Escape}");
   await waitFor(() =>
     expect(
@@ -392,6 +408,11 @@ it("focuses and closes the research history popover with localized status", asyn
     ).not.toBeInTheDocument(),
   );
   expect(document.activeElement).toBe(trigger);
+
+  await user.click(trigger);
+  expect(await screen.findByRole("searchbox", { name: "搜索研究记录" })).toHaveValue("");
+  await user.click(screen.getByRole("heading", { name: "研究时间线" }));
+  expect(screen.queryByRole("dialog", { name: "研究记录" })).not.toBeInTheDocument();
 });
 
 it("provides a single-view mobile switch between conversation and workbench", async () => {

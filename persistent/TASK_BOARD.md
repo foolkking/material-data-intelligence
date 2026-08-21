@@ -3100,3 +3100,16 @@ archival remains withheld.
       Service-backed Integration. Qualification-package tests remain explicit
       local-only marker tests, stale Phase 13-4 Help replay is historical-only,
       and sealed Phase 10/12 replay is one manual orchestrated step.
+
+## Continuous Product Quality — Research history navigation Wave 3 — Active
+
+- [x] Add title search, result count, empty/no-match states and bounded scrolling
+      to the Research history popover without changing server-owned history.
+- [x] Complete focus entry/restoration, Escape, outside-click and selection
+      dismissal behavior; retain an explicit current-session marker.
+- [x] Separate durable session availability (`active` = 可继续) from Planner
+      Job execution status (`queued`/`running` = 进行中).
+- [x] Verify the retained authenticated Research project in the browser at
+      1280x720 with no document overflow and a correctly focused search field.
+- [ ] Complete implementation commit/push, current-HEAD CI, result recording,
+      and verified TASKS archival.

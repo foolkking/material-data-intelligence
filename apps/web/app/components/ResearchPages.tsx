@@ -61,6 +61,7 @@ export function ResearchPage({ projectId, sessionId, runId }: { projectId: strin
   const [error, setError] = useState("");
   const [conversationWidth, setConversationWidth] = useState(420);
   const [sessionHistoryOpen, setSessionHistoryOpen] = useState(false);
+  const [sessionHistoryQuery, setSessionHistoryQuery] = useState("");
   const [mobilePanel, setMobilePanel] = useState<"timeline" | "workbench">(runId ? "workbench" : "timeline");
   const [pageLoadState, setPageLoadState] = useState<"loading" | "ready" | "error">("loading");
   const [pageLoadError, setPageLoadError] = useState("");
@@ -80,6 +81,7 @@ export function ResearchPage({ projectId, sessionId, runId }: { projectId: strin
   const workbenchRef = useRef<HTMLElement | null>(null);
   const sessionHistoryTriggerRef = useRef<HTMLButtonElement | null>(null);
   const sessionHistoryRef = useRef<HTMLDivElement | null>(null);
+  const sessionHistorySearchRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -212,12 +214,29 @@ export function ResearchPage({ projectId, sessionId, runId }: { projectId: strin
 
   useEffect(() => {
     if (!sessionHistoryOpen) return;
-    sessionHistoryRef.current?.focus();
+    sessionHistorySearchRef.current?.focus();
+    const closeOnPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null;
+      if (!target || sessionHistoryRef.current?.contains(target) || sessionHistoryTriggerRef.current?.contains(target)) return;
+      closeSessionHistory();
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      closeSessionHistory();
+    };
+    document.addEventListener("pointerdown", closeOnPointerDown);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnPointerDown);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
   }, [sessionHistoryOpen]);
 
-  function closeSessionHistory() {
+  function closeSessionHistory(restoreFocus = true) {
     setSessionHistoryOpen(false);
-    sessionHistoryTriggerRef.current?.focus();
+    setSessionHistoryQuery("");
+    if (restoreFocus) sessionHistoryTriggerRef.current?.focus();
   }
 
   useEffect(() => {
@@ -465,11 +484,15 @@ export function ResearchPage({ projectId, sessionId, runId }: { projectId: strin
   const messages = session?.messages || [];
   const historicalRuns = (history?.analyses || []).filter((item) => item.jobId !== job?.job_id);
   const canResearch = canWriteProject(history?.project?.role);
+  const normalizedSessionQuery = sessionHistoryQuery.trim().toLocaleLowerCase("zh-CN");
+  const filteredSessions = normalizedSessionQuery
+    ? sessions.filter((item) => item.title.toLocaleLowerCase("zh-CN").includes(normalizedSessionQuery))
+    : sessions;
   if (pageLoadState === "loading") return <RequireProductAuth><ProductShell projectId={projectId}><main className="research-route-state" aria-busy="true"><div className="product-loading" role="status" aria-live="polite">正在加载研究时间线与项目数据…</div></main></ProductShell></RequireProductAuth>;
   if (pageLoadState === "error") return <RequireProductAuth><ProductShell projectId={projectId}><main className="research-route-state"><div className="product-state" role="alert"><h1>研究内容暂时无法加载</h1><p>项目数据和研究记录没有丢失。请检查服务连接后重试。</p><button type="button" className="product-primary-action" onClick={() => setReloadKey((value) => value + 1)}>重新加载</button>{pageLoadError ? <details><summary>技术详情</summary><p>{pageLoadError}</p></details> : null}</div></main></ProductShell></RequireProductAuth>;
   return <RequireProductAuth><ProductShell projectId={projectId}><a className="skip-link" href="#research-primary-content">跳到研究工作台</a><section ref={workbenchRef} id="research-primary-content" tabIndex={-1} className="research-workbench" aria-label="项目研究工作台" style={{ "--research-conversation-width": conversationWidth + "px" } as CSSProperties}>
     <nav className="research-mobile-tabs" role="tablist" aria-label="研究页面视图"><button type="button" role="tab" aria-selected={mobilePanel === "timeline"} onClick={() => setMobilePanel("timeline")}>对话</button><button type="button" role="tab" aria-selected={mobilePanel === "workbench"} onClick={() => setMobilePanel("workbench")}>工作台</button></nav>
-    <aside className={`conversation-pane ${mobilePanel === "timeline" ? "mobile-panel-active" : "mobile-panel-inactive"}`}><header><div><p className="product-kicker">项目研究</p><h1>研究时间线</h1></div><button ref={sessionHistoryTriggerRef} type="button" className="product-secondary-action" aria-expanded={sessionHistoryOpen} aria-controls="research-session-history" onClick={() => setSessionHistoryOpen((value) => !value)}>研究记录</button>{sessionHistoryOpen && <div ref={sessionHistoryRef} id="research-session-history" className="research-session-history" role="dialog" aria-modal="false" aria-labelledby="research-session-history-title" tabIndex={-1} onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); closeSessionHistory(); } }}><h2 id="research-session-history-title" className="sr-only">研究记录</h2>{canResearch ? <Link href={`/projects/${projectId}/research`} onClick={() => setSessionHistoryOpen(false)}>+ 新研究</Link> : null}{sessions.map((item) => <Link key={item.id} className={item.id === session?.id ? "active" : ""} href={`/projects/${projectId}/research/${item.id}`} onClick={() => setSessionHistoryOpen(false)}><strong>{item.title}</strong><span>{researchSessionStatusLabel(item.status)}</span></Link>)}</div>}</header>
+    <aside className={`conversation-pane ${mobilePanel === "timeline" ? "mobile-panel-active" : "mobile-panel-inactive"}`}><header><div><p className="product-kicker">项目研究</p><h1>研究时间线</h1></div><button ref={sessionHistoryTriggerRef} type="button" className="product-secondary-action" aria-expanded={sessionHistoryOpen} aria-controls="research-session-history" onClick={() => { if (sessionHistoryOpen) closeSessionHistory(); else setSessionHistoryOpen(true); }}>研究记录</button>{sessionHistoryOpen && <div ref={sessionHistoryRef} id="research-session-history" className="research-session-history" role="dialog" aria-modal="false" aria-labelledby="research-session-history-title"><div className="research-session-history-heading"><div><h2 id="research-session-history-title">研究记录</h2><span>{sessions.length} 项</span></div>{canResearch ? <Link href={`/projects/${projectId}/research`} onClick={() => closeSessionHistory(false)}>新建研究</Link> : null}</div><label className="research-session-search"><span className="sr-only">搜索研究记录</span><input ref={sessionHistorySearchRef} type="search" value={sessionHistoryQuery} onChange={(event) => setSessionHistoryQuery(event.target.value)} placeholder="搜索研究标题" autoComplete="off" /></label><div className="research-session-list" aria-live="polite">{filteredSessions.map((item) => <Link key={item.id} className={item.id === session?.id ? "active" : ""} aria-current={item.id === session?.id ? "page" : undefined} href={`/projects/${projectId}/research/${item.id}`} onClick={() => closeSessionHistory(false)}><strong>{item.title}</strong><span>{researchSessionStatusLabel(item.status)}</span></Link>)}{!sessions.length ? <p className="research-session-empty">还没有研究记录。新建研究后会保存在这里。</p> : !filteredSessions.length ? <p className="research-session-empty">没有匹配“{sessionHistoryQuery.trim()}”的研究记录。</p> : null}</div></div>}</header>
       <div className="conversation-history" role="log" aria-label="研究对话" aria-live="polite">{sessionLoadState === "loading" ? <p className="conversation-load-state" role="status">正在恢复研究对话…</p> : null}{sessionLoadState === "error" ? <div className="conversation-load-state error" role="alert"><strong>研究对话暂时无法读取</strong><p>已有分析结果没有丢失，请重新加载当前会话。</p><button type="button" className="product-secondary-action" onClick={() => setReloadKey((value) => value + 1)}>重新加载对话</button>{sessionLoadError ? <details><summary>技术详情</summary><p>{sessionLoadError}</p></details> : null}</div> : null}{runId && !session && sessionLoadState === "ready" ? <div className="conversation-load-state" role="note"><strong>这次历史分析没有关联到可恢复的研究对话</strong><p>右侧结果仍可查看；系统不会把它归入其他会话。</p></div> : null}{messages.map((message) => <article key={message.id} className={"conversation-message " + message.role} aria-label={message.role === "user" ? "你的消息" : "研究助手消息"}><span>{message.role === "user" ? "你" : "研究助手"}</span><p>{displayResearchMessage(message)}</p></article>)}{state !== "idle" && <InlineRunProcess state={state} scope={scope} job={job} events={events} artifacts={artifacts} error={error} />}{historicalRuns.length ? <section className="timeline-past-runs" aria-label="已完成研究">{historicalRuns.slice(0, 6).map((run) => <Link key={run.jobId} href={researchRunHref(projectId, run.jobId, sessions, run.researchSessionId)} className="timeline-past-run"><span>{run.archived ? "已归档" : run.status === "completed" ? "✓ 分析完成" : run.status === "partial_success" ? "部分完成" : "查看运行"}</span><strong>{researchRunTitle(run)}</strong><small>{run.stepCount} 个步骤 · 查看结果</small></Link>)}</section> : null}</div>
       {history && canResearch && sessionLoadState !== "error" ? <form className="research-composer" onSubmit={(event) => { event.preventDefault(); void submitQuestion(); }}><label htmlFor="research-question">询问此项目中的数据</label><textarea ref={questionInputRef} id="research-question" value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="例如：比较 formation energy 与 band gap 的关系" rows={3} /><div className="research-composer-footer"><span>项目数据</span><details className="research-model-menu"><summary>{providerLoadState === "loading" ? "正在读取模型" : selectedModel || selectedProviderOption?.label || "模型"} · {thinkingMode === "deep" ? "深入" : thinkingMode === "quick" ? "快速" : "标准"}</summary><div className="research-model-controls"><label>模型<select aria-label="本次分析模型" value={selectedModel} onChange={(event) => setSelectedModel(event.target.value)} disabled={!selectedModels.length}>{selectedModels.length ? selectedModels.map((item) => <option key={item} value={item}>{item}</option>) : <option value="">由 Provider 决定</option>}</select></label><label>思考深度<select aria-label="思考深度" value={thinkingMode} onChange={(event) => setThinkingMode(event.target.value as "quick" | "standard" | "deep")}><option value="quick">快速</option><option value="standard">标准</option><option value="deep">深入</option></select></label></div></details><button className="product-primary-action" disabled={!question.trim() || state === "planning" || state === "running"}>{state === "planning" ? "正在准备…" : "开始分析"}</button></div>{providerLoadState === "error" ? <div className="research-provider-notice" role="alert"><span>模型状态暂时无法读取；提交时会由服务端再次验证。</span><button type="button" className="product-link-button" onClick={() => setProviderReloadKey((value) => value + 1)}>重试</button></div> : providerStatus && providerStatus.status !== "ready" && !providerOptions.some((item) => item.secretConfigured) ? <Link className="research-provider-notice" href="/console?settings=models">研究助手尚未配置 · 打开模型设置</Link> : null}</form> : history ? <div className="research-composer research-composer-readonly" role="note"><strong>{sessionLoadState === "error" ? "研究对话暂时不可写" : "此项目为只读"}</strong><p>{sessionLoadState === "error" ? "重新加载对话后可继续研究，避免把内容写入错误会话。" : "你可以查看已有对话、分析过程和科学结果，但不能发起新的研究。"}</p></div> : <div className="research-composer research-composer-readonly" role="status">正在确认项目权限…</div>}
     </aside><button type="button" tabIndex={0} className="research-splitter" role="separator" aria-label="调整研究对话宽度" aria-orientation="vertical" aria-valuemin={320} aria-valuemax={640} aria-valuenow={conversationWidth} aria-valuetext={`${conversationWidth} 像素对话宽度`} onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); setConversationWidth(clampConversationWidth(event.clientX - (workbenchRef.current?.getBoundingClientRect().left || 0))); }} onPointerMove={(event) => { if (event.currentTarget.hasPointerCapture(event.pointerId)) setConversationWidth(clampConversationWidth(event.clientX - (workbenchRef.current?.getBoundingClientRect().left || 0))); }} onPointerUp={(event) => { if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); }} onKeyDown={(event) => { if (event.key === "ArrowLeft") { event.preventDefault(); setConversationWidth((value) => clampConversationWidth(value - 16)); } if (event.key === "ArrowRight") { event.preventDefault(); setConversationWidth((value) => clampConversationWidth(value + 16)); } if (event.key === "Home") { event.preventDefault(); setConversationWidth(clampConversationWidth(320)); } if (event.key === "End") { event.preventDefault(); setConversationWidth(clampConversationWidth(640)); } }} />
@@ -641,7 +664,8 @@ function plannerFailureCode(result: PlannerJobCreateResult) {
 
 function researchSessionStatusLabel(status?: string | null) {
   const normalized = String(status || "").toLowerCase();
-  if (normalized === "active") return "进行中";
+  if (normalized === "active") return "可继续";
+  if (["queued", "running", "planning"].includes(normalized)) return "进行中";
   if (["completed", "complete", "succeeded", "success"].includes(normalized)) return "已完成";
   if (normalized === "partial_success" || normalized === "partial") return "部分完成";
   if (normalized === "failed") return "未完成";
