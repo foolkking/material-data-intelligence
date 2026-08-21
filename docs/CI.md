@@ -10,9 +10,9 @@ path for sealed historical browser evidence.
 
 | Job                               | Current contract                                                                                                                                               |
 | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unit Tests                        | Locked Python 3.11 environment, every non-integration pytest, and lock consistency.                                                                            |
+| Unit Tests                        | Locked Python 3.11 environment, every current non-integration pytest (excluding explicitly marked historical `qualification` tests), and lock consistency.       |
 | Scientific Replay (Linux/Windows) | The sealed Phase 11 numeric and identity invariants replay on both supported runner families and are compared.                                                 |
-| Frontend                          | The complete Vitest suite, TypeScript check, production build, current Help smoke, three-browser responsive/accessibility checks, and cross-product UX checks. |
+| Frontend                          | The complete Vitest suite, TypeScript check, production build, three-browser responsive/accessibility checks, and cross-product UX checks.                    |
 | Service-backed Integration        | PostgreSQL, Redis, MinIO, migration/index verification, all integration tests, and a hard zero-skip assertion.                                                 |
 
 Live provider calls and deployment are not CI gates. `DEEPSEEK_KEY` remains
@@ -24,7 +24,9 @@ Phase 10L/M/N and Phase 12-5 browser scripts are retained because they are
 auditable reproduction tools for their sealed evidence. They are not run on
 every push. Start the `CI` workflow manually with
 `replay_historical_browser_evidence=true` when a reviewer explicitly needs to
-revalidate those historical contracts.
+revalidate those historical contracts. The workflow exposes them as one
+`Replay sealed historical browser evidence (manual)` step; the orchestrator
+still runs every retained script and fails on the first failed contract.
 
 This distinction is evidence-based:
 
@@ -36,8 +38,34 @@ This distinction is evidence-based:
 - Remote run `32026543339` spent about 12 of its 15 frontend minutes installing
   browsers and replaying 17 phase-specific scripts. The current Vitest suite
   was not run; only one Phase 10 closure file was executed.
-- Current product changes are now guarded by the complete frontend test suite
-  plus the retained three-browser Phase 12-6 and Phase 12-7 product checks.
+- Run `32441155365` failed frontend Vitest on a missing ignored Phase 10H
+  fixture and one Research focus-timing assertion, and failed Python only when
+  clean-checkout qualification tests attempted to read `_qualification/`.
+- Run `32442770446` passed frontend Vitest, typecheck, and build, then isolated
+  the remaining frontend failure to the stale Phase 13-4 Help selector
+  (`.top-settings`) on the compatibility `/analysis` route; Python again
+  failed only on clean-checkout qualification tests. Neither run is treated
+  as proof of later gates it did not reach. The Help script remains available
+  as historical evidence but is no longer a current product gate.
+- Current product changes are guarded by the complete frontend test suite plus
+  the retained three-browser Phase 12-6 and Phase 12-7 product checks.
+
+## Qualification Package Tests
+
+The historical qualification-package tests are marked `qualification`.
+Several require the deliberately ignored local `_qualification/` workspace and
+therefore cannot be a truthful clean-checkout push gate. They remain runnable
+for an explicit local qualification audit:
+
+```powershell
+uv run python -m pytest -q -m qualification --tb=short
+```
+
+The default unit equivalent intentionally excludes them:
+
+```powershell
+uv run python -m pytest -q -m "not integration and not qualification" --tb=short
+```
 
 ## Action Runtime Policy
 
@@ -52,7 +80,7 @@ the application build; the warning concerned the actions' own runtime.
 
 ```powershell
 uv sync --frozen --extra test
-uv run python -m pytest -q -m "not integration" --tb=short
+uv run python -m pytest -q -m "not integration and not qualification" --tb=short
 uv lock --check
 
 Set-Location apps/web

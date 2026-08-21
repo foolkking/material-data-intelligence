@@ -59,7 +59,9 @@ def test_n3_evidence_manifest_is_complete_hashed_and_inert() -> None:
 
 def test_n3_ci_registers_browser_and_zero_skip_service_closure() -> None:
     workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
-    assert "--n3-experimental-xrd-only" in workflow
+    replay = (ROOT / "apps/web/test/replay-sealed-browser-evidence.mjs").read_text(encoding="utf-8")
+    assert "replay-sealed-browser-evidence.mjs" in workflow
+    assert "--n3-experimental-xrd-only" in replay
     assert "test_phase10n3_experimental_xrd_service_backed.py" in workflow
     assert "test_phase10n3_postgres_redis_minio_theoretical_xrd_comparison_closure" in workflow
     threshold = re.search(r'if \[ "\$\{PASSED:-0\}" -lt (\d+) \]; then', workflow)

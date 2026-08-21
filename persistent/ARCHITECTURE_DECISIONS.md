@@ -5390,3 +5390,12 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
 - Migration `0011` widens PostgreSQL's default Alembic version column before
   recording its descriptive revision ID; this is required for clean-checkout
   upgrades and does not change application or scientific schema authority.
+- Historical qualification-package pytest modules are explicitly marked
+  `qualification`; the default clean-checkout unit gate excludes that marker
+  because `_qualification/` is intentionally ignored and is not current product
+  input. The modules remain available for an explicit local qualification audit.
+- The stale Phase 13-4 Help browser script remains preserved as sealed evidence,
+  but is removed from the current push gate because it targets the retired
+  `.top-settings` structure on the compatibility `/analysis` route. Retained
+  Phase 10/12 historical browser scripts are invoked by one manual orchestrator,
+  preserving coverage while reducing workflow-step noise and repeated setup.

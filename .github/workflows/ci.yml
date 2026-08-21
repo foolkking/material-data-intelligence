@@ -44,7 +44,7 @@ jobs:
           DATABASE_URL: sqlite:///./mdi_phase5.db
 
       - name: Run unit tests
-        run: uv run python -m pytest -q -m "not integration" --tb=short
+        run: uv run python -m pytest -q -m "not integration and not qualification" --tb=short
 
       - name: Historical release evidence semantic validation
         if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
@@ -150,16 +150,6 @@ jobs:
         run: npm test
         working-directory: apps/web
 
-      - name: Phase 10 browser evidence integrity
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        run: node test/phase10-closure-evidence-check.mjs
-        working-directory: apps/web
-
-      - name: Trajectory performance evidence integrity
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        run: npm run test:trajectory-performance-evidence
-        working-directory: apps/web
-
       - name: Typecheck
         run: npm run typecheck
         working-directory: apps/web
@@ -168,205 +158,9 @@ jobs:
         run: npm run build
         working-directory: apps/web
 
-      - name: Verify Phase 13-4 Help documentation polish
-        env:
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE13_4_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE13_4_EXPECT: after
-          MDI_PHASE13_4_ORIGIN: http://127.0.0.1:3464
-          MDI_PHASE13_4_OUTPUT_DIR: ${{ runner.temp }}/phase13-4-browser
-        run: |
-          npm run start -- --hostname 127.0.0.1 --port 3464 > "${RUNNER_TEMP}/phase13-4-next.log" 2>&1 &
-          SERVER_PID=$!
-          trap 'kill ${SERVER_PID}' EXIT
-          for attempt in $(seq 1 60); do
-            if curl --fail --silent http://127.0.0.1:3464 >/dev/null; then
-              break
-            fi
-            if [ "${attempt}" = "60" ]; then
-              cat "${RUNNER_TEMP}/phase13-4-next.log"
-              exit 1
-            fi
-            sleep 1
-          done
-          node test/phase13-4-help-docs-browser-evidence.mjs
-        working-directory: apps/web
-
-      - name: Replay Phase 10L-4 browser evidence
+      - name: Replay sealed historical browser evidence (manual)
         if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10L4_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10L4_EVIDENCE_PORT: "3222"
-        run: |
-          node test/grounded-interpretation-browser-evidence.mjs --validate-fixtures
-          node test/grounded-interpretation-browser-evidence.mjs \
-            --output-dir "${RUNNER_TEMP}/phase10l4-browser-replay" \
-            --compare-with "${GITHUB_WORKSPACE}/docs/phase10l/evidence/phase10l4_grounded_interpretation/browser_semantic_contract.json"
-        working-directory: apps/web
-
-      - name: Replay Phase 10L-5 natural-language browser evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10L5_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10L5_EVIDENCE_PORT: "3223"
-        run: |
-          node test/natural-language-closure-browser-evidence.mjs --validate-fixtures
-          node test/natural-language-closure-browser-evidence.mjs \
-            --output-dir "${RUNNER_TEMP}/phase10l5-browser-replay" \
-            --compare-with "${GITHUB_WORKSPACE}/docs/phase10l/evidence/phase10l5_natural_language_closure/browser_semantic_contract.json"
-        working-directory: apps/web
-
-      - name: Replay Phase 10M-2 Workspace shell browser evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M2_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10M2_EVIDENCE_PORT: "3224"
-        run: |
-          node test/workspace-shell-browser-evidence.mjs --validate-fixtures
-          node test/workspace-shell-browser-evidence.mjs \
-            --output-dir "${RUNNER_TEMP}/phase10m2-browser-replay" \
-            --compare-with "${GITHUB_WORKSPACE}/docs/phase10m/evidence/phase10m2_workspace_shell/browser_semantic_contract.json"
-        working-directory: apps/web
-
-      - name: Replay Phase 10M-3 canonical selection browser evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M3_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10M3_EVIDENCE_PORT: "3225"
-        run: |
-          node test/workspace-selection-browser-evidence.mjs --validate-fixtures
-          node test/workspace-selection-browser-evidence.mjs \
-            --output-dir "${RUNNER_TEMP}/phase10m3-browser-replay" \
-            --compare-with "${GITHUB_WORKSPACE}/docs/phase10m/evidence/phase10m3_canonical_selection/browser_semantic_contract.json"
-        working-directory: apps/web
-
-      - name: Replay Phase 10M-4 Artifact Gallery browser evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10M4_EVIDENCE_PORT: "3226"
-          MDI_PHASE10M4_HEADLESS: "false"
-        run: |
-          node test/workspace-artifact-gallery-browser-evidence.mjs --validate-fixtures
-          xvfb-run --auto-servernum node test/workspace-artifact-gallery-browser-evidence.mjs \
-            --output-dir "${RUNNER_TEMP}/phase10m4-browser-replay"
-        working-directory: apps/web
-
-      - name: Replay Phase 10N-1 coordination browser evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10M4_EVIDENCE_PORT: "3229"
-          MDI_PHASE10M4_HEADLESS: "false"
-        run: |
-          node test/workspace-artifact-gallery-browser-evidence.mjs --validate-fixtures --n1-coordination-only
-          xvfb-run --auto-servernum node test/workspace-artifact-gallery-browser-evidence.mjs \
-            --n1-coordination-only \
-            --output-dir "${RUNNER_TEMP}/phase10n1-coordination-browser-replay"
-        working-directory: apps/web
-
-      - name: Replay Phase 10N-2 local-environment browser evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10M4_EVIDENCE_PORT: "3230"
-          MDI_PHASE10M4_HEADLESS: "false"
-        run: |
-          node test/workspace-artifact-gallery-browser-evidence.mjs --validate-fixtures --n2-local-environment-only
-          xvfb-run --auto-servernum node test/workspace-artifact-gallery-browser-evidence.mjs \
-            --n2-local-environment-only \
-            --output-dir "${RUNNER_TEMP}/phase10n2-local-environment-browser-replay"
-        working-directory: apps/web
-
-      - name: Replay Phase 10N-3 experimental XRD browser evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10M4_EVIDENCE_PORT: "3231"
-          MDI_PHASE10M4_HEADLESS: "false"
-        run: |
-          node test/workspace-artifact-gallery-browser-evidence.mjs --validate-fixtures --n3-experimental-xrd-only
-          xvfb-run --auto-servernum node test/workspace-artifact-gallery-browser-evidence.mjs \
-            --n3-experimental-xrd-only \
-            --output-dir "${RUNNER_TEMP}/phase10n3-experimental-xrd-browser-replay"
-        working-directory: apps/web
-
-      - name: Replay Phase 10N-4 trajectory analytics browser evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10M4_EVIDENCE_PORT: "3232"
-          MDI_PHASE10M4_HEADLESS: "false"
-        run: |
-          node test/workspace-artifact-gallery-browser-evidence.mjs --validate-fixtures --n4-trajectory-analytics-only
-          xvfb-run --auto-servernum node test/workspace-artifact-gallery-browser-evidence.mjs \
-            --n4-trajectory-analytics-only \
-            --output-dir "${RUNNER_TEMP}/phase10n4-trajectory-analytics-browser-replay"
-        working-directory: apps/web
-
-      - name: Replay Phase 10N-5 electronic Band and DOS browser evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10M4_EVIDENCE_PORT: "3233"
-          MDI_PHASE10M4_HEADLESS: "false"
-        run: |
-          node test/workspace-artifact-gallery-browser-evidence.mjs --validate-fixtures --n5-electronic-only
-          xvfb-run --auto-servernum node test/workspace-artifact-gallery-browser-evidence.mjs \
-            --n5-electronic-only \
-            --output-dir "${RUNNER_TEMP}/phase10n5-electronic-browser-replay"
-        working-directory: apps/web
-
-      - name: Replay Phase 10N-6 professional integration browser closure
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M4_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10M4_EVIDENCE_PORT: "3234"
-          MDI_PHASE10M4_HEADLESS: "false"
-        run: |
-          node test/workspace-artifact-gallery-browser-evidence.mjs --validate-fixtures --n6-professional-closure-only
-          xvfb-run --auto-servernum node test/workspace-artifact-gallery-browser-evidence.mjs \
-            --n6-professional-closure-only \
-            --output-dir "${RUNNER_TEMP}/phase10n6-professional-browser-replay"
-        working-directory: apps/web
-
-      - name: Replay Phase 10M-5 Report and Recipe browser evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          DEEPSEEK_KEY: ""
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M5_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10M5_EVIDENCE_PORT: "3227"
-        run: |
-          node test/workspace-report-recipe-browser-evidence.mjs --validate-fixtures
-          node test/workspace-report-recipe-browser-evidence.mjs \
-            --output-dir "${RUNNER_TEMP}/phase10m5-browser-replay"
-        working-directory: apps/web
-
-      - name: Phase 12-5 Report and Recipe experience evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          DEEPSEEK_KEY: ""
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M5_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10M5_EVIDENCE_PORT: "3239"
-        run: |
-          node test/workspace-report-recipe-browser-evidence.mjs --validate-fixtures
-          node test/workspace-report-recipe-browser-evidence.mjs \
-            --output-dir "${GITHUB_WORKSPACE}/docs/phase12/evidence/phase12_5_report_recipe_experience"
-          cd ../..
-          python scripts/generate_phase12_5_report_recipe_evidence.py
+        run: node test/replay-sealed-browser-evidence.mjs
         working-directory: apps/web
 
       - name: Phase 12-6 responsive and accessibility evidence
@@ -389,31 +183,6 @@ jobs:
           node test/phase12-7-cross-product-browser-evidence.mjs
           cd ../..
           python scripts/generate_phase12_7_cross_product_evidence.py
-        working-directory: apps/web
-
-      - name: Replay Phase 10M-6 Workspace recovery browser evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          DEEPSEEK_KEY: ""
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M6_BROWSERS: chromium,firefox,webkit
-          MDI_PHASE10M6_EVIDENCE_PORT: "3228"
-        run: |
-          node test/workspace-recovery-browser-evidence.mjs --validate-fixtures
-          node test/workspace-recovery-browser-evidence.mjs \
-            --output-dir "${RUNNER_TEMP}/phase10m6-browser-replay"
-        working-directory: apps/web
-
-      - name: Replay Phase 10M-7 Workspace integration browser evidence
-        if: github.event_name == 'workflow_dispatch' && inputs.replay_historical_browser_evidence
-        env:
-          DEEPSEEK_KEY: ""
-          MDI_PLAYWRIGHT_MODULE: ${{ github.workspace }}/apps/web/node_modules/playwright/index.mjs
-          MDI_PHASE10M7_EVIDENCE_PORT: "3229"
-        run: |
-          node test/workspace-integration-browser-evidence.mjs --validate-fixtures
-          node test/workspace-integration-browser-evidence.mjs \
-            --output-dir "${RUNNER_TEMP}/phase10m7-browser-replay"
         working-directory: apps/web
 
   # ── Service-backed integration tests ───────────────────────────────

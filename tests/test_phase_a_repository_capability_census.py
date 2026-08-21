@@ -4,6 +4,11 @@ import hashlib
 import json
 from pathlib import Path
 
+import pytest
+
+
+pytestmark = pytest.mark.qualification
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docs" / "qualification" / "phase_a_repository_capability_census"

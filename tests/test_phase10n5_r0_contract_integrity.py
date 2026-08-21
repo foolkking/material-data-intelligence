@@ -157,7 +157,9 @@ def test_n5_queue_state_remains_compatible_through_n6_archive() -> None:
 
 def test_n5_ci_requires_browser_and_service_closure() -> None:
     workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
-    assert "--n5-electronic-only" in workflow
+    replay = (ROOT / "apps/web/test/replay-sealed-browser-evidence.mjs").read_text(encoding="utf-8")
+    assert "replay-sealed-browser-evidence.mjs" in workflow
+    assert "--n5-electronic-only" in replay
     assert "tests/integration/test_phase10n5_electronic_service_backed.py" in workflow
     assert "test_phase10n5_postgres_redis_minio_band_dos_closure" in workflow
     threshold = re.search(r'if \[ "\$\{PASSED:-0\}" -lt (\d+) \]; then', workflow)

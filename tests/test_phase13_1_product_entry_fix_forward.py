@@ -206,7 +206,7 @@ def test_current_docs_and_ci_use_the_fix_forward_authority() -> None:
     assert "tests/test_phase13_0_release_scope.py" in workflow
     assert "verify_phase13_1_fix_forward_hash.py" not in workflow
     assert "generate_phase13_2_blocker_evidence.py" not in workflow
-    assert 'python -m pytest -q -m "not integration"' in workflow
+    assert 'python -m pytest -q -m "not integration and not qualification"' in workflow
 
 
 def test_phase13_2_remains_failed_unexecuted_and_reviewer_gated() -> None:

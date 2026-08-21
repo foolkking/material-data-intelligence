@@ -3176,3 +3176,12 @@ Artifact renders while its Job remains `running`, complementing the existing
 threaded runtime test that proves `artifact.ready` precedes terminal completion.
 The design-system split contract is aligned to the measured 420 px default,
 320-640 px bounds and 480 px minimum result surface.
+
+2026-08-21 CI experience refinement: current push gates now separate live
+product protection from sealed qualification evidence. The default Python gate
+excludes explicit `qualification` modules that require the ignored local
+`_qualification/` workspace; those tests remain runnable on demand. The old
+Phase 13-4 Help browser selector was removed from current gating after clean CI
+showed it targeted the retired `/analysis` compatibility structure. All retained
+Phase 10/12 historical browser replays are still available behind one manual
+orchestrated step, reducing CI navigation noise without deleting evidence.

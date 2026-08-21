@@ -3094,4 +3094,7 @@ archival remains withheld.
 - [x] Make complete current frontend tests a push gate and move sealed
       phase-specific browser replay behind explicit manual dispatch.
 - [ ] Complete local current-HEAD gates, commit/push, and verify remote CI for
-      the pushed SHA before archiving the queue task.
+      the pushed SHA before archiving the queue task. Current CI rationalization
+      is evidence-based: qualification-package tests are explicit local-only
+      marker tests, stale Phase 13-4 Help replay is historical-only, and sealed
+      Phase 10/12 replay is one manual orchestrated step.
