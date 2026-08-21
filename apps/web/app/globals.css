@@ -476,7 +476,8 @@ button:disabled {
 }
 
 #planner-primary-content:focus,
-#workspace-primary-content:focus {
+#workspace-primary-content:focus,
+#research-primary-content:focus {
   outline: none;
 }
 

@@ -5399,3 +5399,9 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   `.top-settings` structure on the compatibility `/analysis` route. Retained
   Phase 10/12 historical browser scripts are invoked by one manual orchestrator,
   preserving coverage while reducing workflow-step noise and repeated setup.
+- Current Phase 12-6/12-7 browser gates target the project-scoped Research
+  workbench (`/projects/:projectId/research`) with deterministic auth, history,
+  session, dataset, and Provider fixtures. Their Playwright interception is a
+  read-only browser fixture: it cannot create Planner jobs or execute scientific
+  tools. The legacy `/analysis` compatibility page is excluded from current UX
+  assertions because it intentionally only redirects historical links.

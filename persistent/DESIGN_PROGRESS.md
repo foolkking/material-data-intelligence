@@ -3185,3 +3185,12 @@ Phase 13-4 Help browser selector was removed from current gating after clean CI
 showed it targeted the retired `/analysis` compatibility structure. All retained
 Phase 10/12 historical browser replays are still available behind one manual
 orchestrated step, reducing CI navigation noise without deleting evidence.
+
+2026-08-21 current browser-gate correction: Phase 12-6 responsive/accessibility
+and Phase 12-7 cross-product checks were aligned with the shipped project-scoped
+Research workbench. Their deterministic browser fixtures now satisfy auth,
+project history, session, dataset, and Provider reads while preserving the
+read-only boundary; keyboard skip navigation targets `research-primary-content`
+and the splitter assertion targets the Research workbench separator. The retired
+`/analysis` compatibility page is no longer treated as the current product
+surface.

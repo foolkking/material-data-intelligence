@@ -9,6 +9,8 @@ const OUT = path.join(ROOT, "docs/phase12/evidence/phase12_7_cross_product_ux_va
 const PLAYWRIGHT = process.env.MDI_PLAYWRIGHT_MODULE || path.join(ROOT, "apps/web/node_modules/playwright/index.mjs");
 const PORT = Number(process.env.MDI_PHASE12_7_PORT || "3461");
 const ORIGIN = `http://127.0.0.1:${PORT}`;
+const PROJECT_ID = "phase12-ux-project";
+const RESEARCH_PATH = `/projects/${PROJECT_ID}/research`;
 const { chromium, firefox, webkit } = await import(pathToFileURL(PLAYWRIGHT).href);
 
 async function waitForServer() {
@@ -23,17 +25,35 @@ async function installReplay(page, audit) {
   await page.route("**/*", async (route) => {
     const request = route.request();
     const url = new URL(request.url());
-    if (url.origin === ORIGIN) return route.continue();
-    if (url.hostname !== "localhost" || url.port !== "8000") {
+    const sameOriginApi = url.origin === ORIGIN && url.pathname.startsWith("/api/");
+    const directApi = (url.hostname === "localhost" || url.hostname === "127.0.0.1") && url.port === "8000";
+    if (!sameOriginApi && !directApi) {
+      if (url.origin === ORIGIN) return route.continue();
       audit.externalRequests.push(request.url());
       return route.abort();
     }
-    if (url.pathname === "/health/runtime") return route.fulfill({ json: { api: { status: "ok" }, database: { status: "mock" }, redis: { status: "mock" }, artifactStorage: { status: "mock" }, worker: { status: "mock" }, llmProvider: { status: "mock" } } });
-    if (url.pathname === "/datasets" && request.method() === "GET") return route.fulfill({ json: [] });
-    if (url.pathname === "/planner/providers") return route.fulfill({ json: { providers: [{ id: "mock", label: "Mock planner", provider: "mock", defaultModel: "mock", requiresSecret: false }] } });
-    if (url.pathname.startsWith("/planner/providers/")) return route.fulfill({ json: { ok: true, provider: "mock", mode: "mock", secretConfigured: false } });
-    if (url.pathname === "/me/secrets") return route.fulfill({ json: [] });
-    audit.failedResponses.push(`${request.method()} ${url.pathname}`);
+    const pathname = sameOriginApi ? url.pathname.slice("/api".length) : url.pathname;
+    const json = (payload, status = 200) => route.fulfill({ status, contentType: "application/json", body: JSON.stringify(payload) });
+    if (pathname === "/auth/me") return json({ id: "ci-user", displayName: "CI Reviewer", email: "ci@example.invalid", roles: ["researcher"] });
+    if (pathname === `/projects/${PROJECT_ID}/research-sessions`) return json([]);
+    if (pathname === `/projects/${PROJECT_ID}/history`) return json({
+      schemaVersion: "1.0",
+      project: { id: PROJECT_ID, projectId: PROJECT_ID, name: "响应式验收项目", role: "owner", description: "当前 Research 工作台的浏览器验收夹具" },
+      summary: { datasetCount: 1, analysisCount: 0, completedAnalysisCount: 0, artifactCount: 0, workspaceCount: 0, reportCount: 0 },
+      datasets: [{
+        datasetId: "dataset-ux", name: "材料数据夹具", status: "active", analysisCount: 0, process: [],
+        resultSummary: { artifactCount: 0, workspaceCount: 0, interpretationCount: 0, reportCount: 0, recipeCount: 0, artifactTypes: [] },
+        import: { fileCount: 1, files: [], resources: [], parseOutcome: "READY" },
+        profile: { datasetType: "materials_tabular_dataset", rowCount: 3, columnCount: 2, readyCapabilities: ["tabular_data"] },
+      }],
+      analyses: [], activity: [],
+    });
+    if (pathname === "/planner/providers/status") return json({ ok: true, provider: "mock", model: "mock-model", status: "ready", execution: "live", configured: true, allowedModels: ["mock-model"] });
+    if (pathname === "/planner/providers") return json({ providers: [{ id: "mock", label: "Mock planner", provider: "mock", defaultModel: "mock-model", models: ["mock-model"], requiresSecret: false, execution: "live", secretConfigured: false }] });
+    if (pathname === "/health/runtime") return json({ api: { status: "ok" }, database: { status: "mock" }, redis: { status: "mock" }, artifactStorage: { status: "mock" }, worker: { status: "mock" }, llmProvider: { status: "mock" } });
+    if (pathname === "/datasets" && request.method() === "GET") return json([]);
+    if (pathname === "/me/secrets") return json([]);
+    audit.failedResponses.push(`${request.method()} ${pathname}`);
     return route.fulfill({ status: 404, json: { detail: "Phase 12-7 local replay route not found" } });
   });
 }
@@ -48,7 +68,7 @@ function attachAudit(page) {
 async function inspect(page, name, viewport, touch = false) {
   const audit = attachAudit(page);
   await installReplay(page, audit);
-  await page.goto(`${ORIGIN}/analysis`, { waitUntil: "networkidle" });
+  await page.goto(`${ORIGIN}${RESEARCH_PATH}`, { waitUntil: "networkidle" });
   const metrics = await page.evaluate(({ touch }) => {
     const root = getComputedStyle(document.documentElement);
     const visible = [...document.querySelectorAll("button, input, select, textarea, a")].filter((item) => {
@@ -74,11 +94,11 @@ async function inspect(page, name, viewport, touch = false) {
   }, { touch });
   if (metrics.horizontalOverflow || metrics.undersized.length) throw new Error(`${name}: ${JSON.stringify(metrics)}`);
   if (Object.values(metrics.designSystem).some((value) => !value)) throw new Error(`${name}: unresolved DS2 token`);
-  const skip = page.locator('.skip-link[href="#planner-primary-content"]');
+  const skip = page.locator('.skip-link[href="#research-primary-content"]');
   await skip.focus();
   if (!(await skip.isVisible())) throw new Error(`${name}: skip link not visible on focus`);
   await page.keyboard.press("Enter");
-  if ((await page.locator(":focus").getAttribute("id")) !== "planner-primary-content") throw new Error(`${name}: skip target failed`);
+  if ((await page.locator(":focus").getAttribute("id")) !== "research-primary-content") throw new Error(`${name}: skip target failed`);
   await page.screenshot({ path: path.join(OUT, `${name}.png`), fullPage: true });
   if (Object.values(audit).some((items) => items.length)) throw new Error(`${name}: ${JSON.stringify(audit)}`);
   return { viewport, ...metrics, ...audit, keyboard: "PASS", status: "PASS" };

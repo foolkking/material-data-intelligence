@@ -12,7 +12,7 @@
     "externalRequests": [],
     "failedResponses": [],
     "headings": [
-      "\u6750\u6599\u6570\u636e\u667a\u80fd\u5206\u6790\u5de5\u4f5c\u53f0"
+      "\u7814\u7a76\u65f6\u95f4\u7ebf"
     ],
     "horizontalOverflow": false,
     "keyboard": "PASS",
@@ -21,7 +21,7 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "1440x900",
-    "visibleControls": 28
+    "visibleControls": 18
   },
   "chromium1280x720": {
     "consoleErrors": [],
@@ -35,7 +35,7 @@
     "externalRequests": [],
     "failedResponses": [],
     "headings": [
-      "\u6750\u6599\u6570\u636e\u667a\u80fd\u5206\u6790\u5de5\u4f5c\u53f0"
+      "\u7814\u7a76\u65f6\u95f4\u7ebf"
     ],
     "horizontalOverflow": false,
     "keyboard": "PASS",
@@ -44,7 +44,7 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "1280x720",
-    "visibleControls": 28
+    "visibleControls": 18
   },
   "chromium390x844": {
     "consoleErrors": [],
@@ -58,7 +58,7 @@
     "externalRequests": [],
     "failedResponses": [],
     "headings": [
-      "\u6750\u6599\u6570\u636e\u667a\u80fd\u5206\u6790\u5de5\u4f5c\u53f0"
+      "\u7814\u7a76\u65f6\u95f4\u7ebf"
     ],
     "horizontalOverflow": false,
     "keyboard": "PASS",
@@ -67,7 +67,7 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "390x844",
-    "visibleControls": 27
+    "visibleControls": 14
   },
   "firefox": {
     "consoleErrors": [],
@@ -81,7 +81,7 @@
     "externalRequests": [],
     "failedResponses": [],
     "headings": [
-      "\u6750\u6599\u6570\u636e\u667a\u80fd\u5206\u6790\u5de5\u4f5c\u53f0"
+      "\u7814\u7a76\u65f6\u95f4\u7ebf"
     ],
     "horizontalOverflow": false,
     "keyboard": "PASS",
@@ -90,7 +90,7 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "1440x900",
-    "visibleControls": 28
+    "visibleControls": 18
   },
   "frontendScientificRecomputation": 0,
   "retainedCrossProductEvidence": [
@@ -114,7 +114,7 @@
     "externalRequests": [],
     "failedResponses": [],
     "headings": [
-      "\u6750\u6599\u6570\u636e\u667a\u80fd\u5206\u6790\u5de5\u4f5c\u53f0"
+      "\u7814\u7a76\u65f6\u95f4\u7ebf"
     ],
     "horizontalOverflow": false,
     "keyboard": "PASS",
@@ -123,6 +123,6 @@
     "statusColorOnly": 0,
     "undersized": [],
     "viewport": "1440x900",
-    "visibleControls": 28
+    "visibleControls": 16
   }
 }

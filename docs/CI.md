@@ -12,7 +12,7 @@ path for sealed historical browser evidence.
 | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Unit Tests                        | Locked Python 3.11 environment, every current non-integration pytest (excluding explicitly marked historical `qualification` tests), and lock consistency.       |
 | Scientific Replay (Linux/Windows) | The sealed Phase 11 numeric and identity invariants replay on both supported runner families and are compared.                                                 |
-| Frontend                          | The complete Vitest suite, TypeScript check, production build, three-browser responsive/accessibility checks, and cross-product UX checks.                    |
+| Frontend                          | The complete Vitest suite, TypeScript check, production build, three-browser responsive/accessibility checks on the current Research workbench, and cross-product UX checks. |
 | Service-backed Integration        | PostgreSQL, Redis, MinIO, migration/index verification, all integration tests, and a hard zero-skip assertion.                                                 |
 
 Live provider calls and deployment are not CI gates. `DEEPSEEK_KEY` remains
@@ -49,6 +49,11 @@ This distinction is evidence-based:
   as historical evidence but is no longer a current product gate.
 - Current product changes are guarded by the complete frontend test suite plus
   the retained three-browser Phase 12-6 and Phase 12-7 product checks.
+- Phase 12-6 and Phase 12-7 open the current project-scoped Research route with
+  deterministic auth/history/provider fixtures. They no longer target the
+  retired `/analysis` compatibility route, while still checking keyboard skip
+  navigation, the Research splitter, design tokens, touch targets, overflow,
+  reduced motion, forced colors, and cross-browser error-free rendering.
 
 ## Qualification Package Tests
 
