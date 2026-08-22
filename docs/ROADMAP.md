@@ -351,3 +351,6 @@ scientific families. It stops before Job creation and execution. Phase 4
 execution integration is not queued by this roadmap entry. Exact-version
 ScientificObject outputs from historical Results are reusable; artifact-only
 historical binding and full Tool coverage remain explicit open boundaries.
+Implementation `855fe3f` passed current-HEAD CI run `32580235322`; Phase 3 is
+complete. Phase 4 execution integration remains unqueued and is the only next
+Agent 2.0 phase permitted by this boundary.

@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-## Agent 2.0 Phase 3 - Scientific Capability Resolution and Planning - In progress
+## Agent 2.0 Phase 3 - Scientific Capability Resolution and Planning - Completed
 
 - [x] Add migration 0019, immutable resolution/plan evidence and PLAN_READY.
 - [x] Register five canonical capability families and deterministic eligibility.
@@ -8,7 +8,8 @@
 - [x] Bind and validate AnalysisPlan 0.2 without Job, ToolCall or Artifact creation.
 - [x] Add focused Phase 3 state/resolution/DAG/binder/idempotency tests.
 - [x] Complete full local, PostgreSQL/Redis service-backed and live DeepSeek gates.
-- [ ] Complete current-HEAD CI closure and archive the TASKS block.
+- [x] Push implementation `855fe3f`, pass current-HEAD CI run `32580235322`,
+      record the result, and archive the completed TASKS block.
 
 ## Agent 2.0 Phase 2 - Research Turn Orchestration - Completed
 

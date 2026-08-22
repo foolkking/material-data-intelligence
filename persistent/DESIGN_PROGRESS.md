@@ -3291,7 +3291,7 @@ evaluation. Focused, SQLite migration, isolated PostgreSQL/Redis, live DeepSeek,
 complete backend/frontend regression and current-HEAD CI run `32573620585` pass;
 the Phase 2 TASKS block is archived in `results.md`.
 
-2026-08-22 Agent 2.0 Phase 3 local acceptance checkpoint: `PLAN_READY`,
+2026-08-22 Agent 2.0 Phase 3 completed: `PLAN_READY`,
 immutable CapabilityResolution/CapabilityPlan evidence, nine capability
 manifests, deterministic eligibility, real XRD/trajectory planned-output ports,
 typed provider-facing port contracts, bounded alternative-strategy planning,
@@ -3300,5 +3300,7 @@ Current Result bundles can be reused only through authorized exact-version
 ScientificObject outputs. Deterministic, full backend, frontend, isolated
 PostgreSQL/Redis and live DeepSeek gates pass; an end-to-end processor test
 proves one Plan and zero Job/ToolCall/Artifact rows with duplicate delivery as
-a NOOP. Current-HEAD CI closure remains pending; the user-facing execution
-state is unchanged until Phase 4.
+a NOOP. Implementation `855fe3f` passed current-HEAD CI run `32580235322`
+across Unit, PostgreSQL/Redis/MinIO integration, Frontend with Phase 12-6/12-7,
+and Linux/Windows scientific replay. The user-facing execution state remains
+unchanged until Phase 4.

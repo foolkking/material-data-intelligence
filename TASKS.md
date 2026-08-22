@@ -1,16 +1,4 @@
 ---TASK---
-状态：处理中
-任务名称：Agent-2.0 Phase 3 — Scientific Capability Resolution & Planning
-开始时间：2026-08-22T20:58:00+08:00
-
-目标：从 READY_TO_PLAN 增量实现 PLAN_READY、不可变 CapabilityResolution/CapabilityPlan、确定性 eligibility 与 fast path、受限 StructuredLLM capability planning、严格 DAG/port/constraint validation、Capability-to-Tool deterministic binding、现有 AnalysisPlan 0.2 persistence/PlanValidator 集成，以及 P3-C01 至 P3-C20 评估。
-
-边界：Phase 3 不创建 Job、ToolCall 或 Artifact，不 enqueue/执行现有 Worker，不实现 Execution Supervisor、ScientificResult projector、Scientific Interpreter、Report Composer、Data mutation、长会话语义记忆或 ORCHESTRATING lease/reaper。LLM 只选择已供应 Capability opaque refs，不接触完整 Tool Registry 或 ToolBinding；Tool 选择由系统确定性完成。
-
-验收：按真实 Alembic head新增 capability planning migration；五类 canonical capability family、precondition registry、resolution/plan fingerprint、PLAN_READY 状态机、幂等/并发 planning processor、Provider 事务外调用、一次 repair、现有 PlanValidator 与 no-execution invariant 全部有 deterministic/service-backed tests。运行 gated live DeepSeek、完整后端/前端回归、migration、typecheck/build、current-HEAD CI；更新 `docs/agent2/`、共享 schema、persistent、`AGENT2_PHASE3_RESULTS.md` 与 `results.md`。仅在所有 Phase 3 acceptance gate 通过后标记 COMPLETE 并归档。
----END---
-
----TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00
