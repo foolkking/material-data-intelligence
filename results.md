@@ -13778,3 +13778,28 @@ Research/Product Vitest = 37 passed；`npm run typecheck`、compileall、`git di
 测试结果：Phase 3 deterministic `19 passed, 1 deselected`，P3-C01 至 P3-C20 全覆盖；live DeepSeek `1 passed`；combined Agent2 `69 passed, 5 deselected`；完整 backend `1657 passed, 1 skipped, 90 deselected`；隔离 PostgreSQL/Redis service-backed Agent2 Phase 1/2/3 `3 passed`；frontend Vitest `84 files / 565 passed`；typecheck、隔离 production build、compileall、Alembic `0019` head、SQLite migration round-trip、`uv lock --check` 与 `git diff --check` 通过。现有 `npm run lint` 仍调用交互式、已弃用的 `next lint`，因此未虚报独立 lint PASS。
 提交/CI：实现提交 `855fe3f46298882971227bda684f2529a5823469` 已推送；current-HEAD GitHub Actions run `32580235322` 的 Unit Tests、Service-backed Integration、Frontend Typecheck & Build（含 Phase 12-6/12-7）和 Linux/Windows Scientific Replay 五个 jobs 全部成功。未部署或发布；`CODEX_HANDOFF.md`、`docs/agent2.zip` 与无关 Phase 12 evidence 修改未纳入提交。
 明确未实施：Job creation/attachment、queue execution、Execution Supervisor、`PLAN_READY → QUEUED`、Job/ToolCall progress、incremental/production ScientificResult projection、Scientific Interpreter/final scientific answer、long-session semantic memory、Report Composer、Data Management execution、professional Viewer integration、全 62-Tool Agent2 mapping 与 Tool Pack/plugin ecosystem。
+---RESULT---
+任务名称：Agent-2.0 Phase 4 — Execution Integration & Scientific Progress Projection
+状态：已完成
+完成时间：2026-08-23T03:09:53+08:00
+
+修改摘要：从持久化 `PLAN_READY` ResearchTurn 接入既有 Job、QueueWorkerRuntime、
+ToolCall、Artifact 与 JobEvent 执行内核；新增 `CANCELING`、`RESULT_PENDING`、
+不可变 ExecutionSummary、确定性 capability-level 进度、增量 Artifact 输出、
+取消竞态收敛、授权 API/SSE 和紧凑响应式 Research activity。Worker 仅凭
+`job_id` 从 PostgreSQL/MinIO 恢复 exact-version 输入；执行阶段 LLM 调用为 0，
+成功/部分成功均停在 `RESULT_PENDING`，不提前创建 ScientificResult 或助手最终回答。
+
+测试结果：focused Phase 4/API/exact-source `21 passed`；Phase 2 context/processor
+回归 `27 passed`；完整非 integration backend `1671 passed, 6 skipped,
+86 deselected`；fresh PostgreSQL/Redis/MinIO selection `54 passed,
+14 deselected` 且 selected skip 为 0；frontend `85 files, 568 passed`；
+typecheck、production build、compileall、`uv lock --check`、科学重放、
+Alembic head、浏览器 1440x900/390x844 与 `git diff --check` 均通过。
+真实两步 XRD fresh Worker 在 Job 非终态时已观测 step 1 Artifact 和增量输出。
+`npm run lint` 仍调用废弃的交互式 `next lint`，未声明独立 lint 通过。
+
+提交/CI：实现提交 `4384db3ae0e92bdd604b8486b738f400eb8b4a97` 已推送；
+current-HEAD GitHub Actions run `32592517424` 的 Unit、service-backed integration、
+Frontend Typecheck & Build、Linux/Windows scientific replay 五个 job 全部成功。
+---END---

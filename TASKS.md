@@ -1,20 +1,4 @@
 ---TASK---
-状态：处理中
-任务名称：Agent-2.0 Phase 4 — Execution Integration & Scientific Progress Projection
-开始时间：2026-08-23T00:00:00+08:00
-
-从 Phase 3 的 PLAN_READY 边界继续实现执行桥接：复用现有 Job、QueueWorkerRuntime、JobEvent、ToolCall 与 Artifact，增加 ResearchTurn 的 QUEUED/RUNNING/CANCELING/RESULT_PENDING 生命周期、不可变 ExecutionSummary、确定性科学进度投影、增量产物事件、取消竞态处理、授权 API/SSE 与最小 Research UI 接入。禁止重新规划、重复创建 Agent2 执行实体、LLM 参与执行、提前生成 ScientificResult 或助手最终科学回答。
-
-验收重点：
-- PLAN_READY 仅使用已持久化且已验证的 AnalysisPlan；重复/并发 dispatch 至多一个既有 Job。
-- Redis/RQ 仅传 job identity，发布在数据库事务之外；fresh Worker 可从 PostgreSQL 恢复执行。
-- 真实 Job/ToolCall/Artifact/JobEvent 投影为 ExecutionSummary 与 capability-level progress；至少验证多步骤 Job 在 terminal 前出现真实 Artifact output。
-- QUEUED/RUNNING 取消使用 CANCELING，依据 Job runtime 的真实终态收敛；RESULT_PENDING 不伪装为 COMPLETED。
-- 新 endpoint 与 SSE 重新执行项目授权；产品 DTO 不暴露 Tool/Job/Worker/Provider 内部标识。
-- 保留 legacy Planner/Worker/Artifact/ResearchSession 与 Phase 1–3 回归。
-
----END---
----TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00

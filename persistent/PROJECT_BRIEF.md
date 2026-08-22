@@ -977,4 +977,5 @@ capability metadata. Successful and partial executions stop at
 `RESULT_PENDING`, with an immutable ExecutionSummary but no ScientificResult
 projection, interpretation or assistant final answer. `CANCELING` separates a
 cancel request from the Job runtime's confirmed terminal outcome. Phase 5 owns
-production scientific-result projection.
+production scientific-result projection. Implementation `4384db3` passed
+current-HEAD GitHub Actions run `32592517424`; Phase 4 is complete.
