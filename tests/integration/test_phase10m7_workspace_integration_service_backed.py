@@ -9,6 +9,7 @@ import uuid
 from alembic.command import upgrade as alembic_upgrade
 from alembic.config import Config as AlembicConfig
 import pytest
+from tests.integration.alembic_helpers import current_alembic_head
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.schema import CreateSchema, DropSchema
 
@@ -50,7 +51,7 @@ def test_phase10m7_postgres_redis_minio_workspace_integration_closure(
 
         engine = create_engine(schema_url, future=True)
         with engine.connect() as connection:
-            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0014_research_session_run_bindings"
+            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == current_alembic_head()
         tables = set(inspect(engine).get_table_names())
         assert {
             "data_profiles", "analysis_intents", "capability_eligibility_resolutions",

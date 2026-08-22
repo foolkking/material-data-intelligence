@@ -6,6 +6,7 @@ import os
 import uuid
 
 import pytest
+from tests.integration.alembic_helpers import current_alembic_head
 from fastapi.testclient import TestClient
 from alembic.command import downgrade as alembic_downgrade
 from alembic.command import upgrade as alembic_upgrade
@@ -165,7 +166,7 @@ def test_phase10m1_postgres_redis_minio_workspace_domain_persistence(
         }.issubset(db_inspector.get_table_names())
         with engine.connect() as connection:
             assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-                "0014_research_session_run_bindings"
+                current_alembic_head()
             )
 
         workspace_foreign_keys = db_inspector.get_foreign_keys("scientific_workspaces")
@@ -193,7 +194,7 @@ def test_phase10m1_postgres_redis_minio_workspace_domain_persistence(
         }.issubset(upgraded_inspector.get_table_names())
         with engine.connect() as connection:
             assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-                "0014_research_session_run_bindings"
+                current_alembic_head()
             )
 
         _redis_smoke(suffix)
@@ -509,7 +510,7 @@ def test_phase10m2_postgres_redis_minio_workspace_shell_api_contract(
         with engine.connect() as connection:
             assert connection.execute(text("SELECT current_schema()")).scalar_one() == schema_name
             assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-                "0014_research_session_run_bindings"
+                current_alembic_head()
             )
 
         _redis_smoke(f"m2-{suffix}")

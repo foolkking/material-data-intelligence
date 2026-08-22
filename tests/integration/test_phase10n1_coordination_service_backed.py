@@ -10,6 +10,7 @@ from alembic.config import Config as AlembicConfig
 from fastapi.testclient import TestClient
 from pymatgen.core import Lattice, Structure
 import pytest
+from tests.integration.alembic_helpers import current_alembic_head
 from sqlalchemy import create_engine, text
 from sqlalchemy.schema import CreateSchema, DropSchema
 
@@ -55,7 +56,7 @@ def test_phase10n1_postgres_redis_minio_coordination_artifact_closure(
         alembic_upgrade(config, "head")
         engine = create_engine(schema_url, future=True)
         with engine.connect() as connection:
-            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0014_research_session_run_bindings"
+            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == current_alembic_head()
 
         _redis_smoke(f"n1-{suffix}")
         registry = load_manifests()

@@ -9,6 +9,7 @@ from alembic.command import upgrade as alembic_upgrade
 from alembic.config import Config as AlembicConfig
 from fastapi.testclient import TestClient
 import pytest
+from tests.integration.alembic_helpers import current_alembic_head
 from sqlalchemy import create_engine, text
 from sqlalchemy.schema import CreateSchema, DropSchema
 
@@ -40,7 +41,7 @@ def test_phase10n4_postgres_redis_minio_msd_diffusion_dependency_closure(monkeyp
         alembic_upgrade(config, "head")
         engine = create_engine(schema_url, future=True)
         with engine.connect() as connection:
-            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0014_research_session_run_bindings"
+            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == current_alembic_head()
         _redis_smoke(f"n4-{suffix}")
 
         msd_root = tmp_path / "msd"

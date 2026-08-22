@@ -7,6 +7,7 @@ from alembic.command import upgrade as alembic_upgrade
 from alembic.config import Config as AlembicConfig
 from fastapi.testclient import TestClient
 import pytest
+from tests.integration.alembic_helpers import current_alembic_head
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import make_url
 from sqlalchemy.schema import CreateSchema, DropSchema
@@ -58,7 +59,7 @@ def test_phase_d_r1_project_namespace_survives_runtime_recreation(
         engine = create_engine(schema_url, future=True)
         with engine.connect() as connection:
             assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-                "0014_research_session_run_bindings"
+                current_alembic_head()
             )
 
         reset_phase2_runtime(tmp_path / "before-restart")

@@ -9,6 +9,7 @@ from alembic.command import upgrade as alembic_upgrade
 from alembic.config import Config as AlembicConfig
 from fastapi.testclient import TestClient
 import pytest
+from tests.integration.alembic_helpers import current_alembic_head
 from sqlalchemy import create_engine, text
 from sqlalchemy.schema import CreateSchema, DropSchema
 
@@ -42,7 +43,7 @@ def test_phase10n3_postgres_redis_minio_theoretical_xrd_comparison_closure(monke
         alembic_upgrade(config, "head")
         engine = create_engine(schema_url, future=True)
         with engine.connect() as connection:
-            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0014_research_session_run_bindings"
+            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == current_alembic_head()
         _redis_smoke(f"n3-{suffix}")
         execution, payload = _run(tmp_path / "adapter")
         table = next(item for item in execution.artifacts if item.type.value == "table_json")

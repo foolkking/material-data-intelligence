@@ -9,6 +9,7 @@ from alembic.command import upgrade as alembic_upgrade
 from alembic.config import Config as AlembicConfig
 from fastapi.testclient import TestClient
 import pytest
+from tests.integration.alembic_helpers import current_alembic_head
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.schema import CreateSchema, DropSchema
 
@@ -55,7 +56,7 @@ def test_phase10m6_postgres_redis_minio_workspace_save_reload_recovery(
         engine = create_engine(schema_url, future=True)
         assert inspect(engine).get_table_names()
         with engine.connect() as connection:
-            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0014_research_session_run_bindings"
+            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == current_alembic_head()
 
         _redis_smoke(f"m6-{suffix}")
         minio, bucket = _minio_client()
