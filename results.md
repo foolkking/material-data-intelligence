@@ -13745,3 +13745,14 @@ Research/Product Vitest = 37 passed；`npm run typecheck`、compileall、`git di
 测试结果：Research focused Vitest `32 passed`；完整 Vitest `84 files / 565 tests passed`；`npm run typecheck` PASS；`npm run build` PASS；Phase 12-7 Chromium/Firefox/WebKit、1280x720、390x844 浏览器验证 PASS；Phase 12-7 evidence integrity `5 passed`；`git diff --check` PASS。`npm run lint` 因现有脚本调用未配置且交互式的 `next lint` 无法独立运行；production build 的 lint/type validity 阶段与远端 Frontend job 均通过。
 设计验收：Senior Designer 适用检查项 `43/43`；首次路径、加载/错误/空/只读/历史状态、键盘焦点、44px 触控、移动单面板、reduced-motion 与无横向溢出均有实现或浏览器证据。
 提交/CI：实现提交 `1032d10a4e0a9111c02246c95cc55f34d6711370` 与完成记录提交 `c1a5a242cbb8f1293c12bc9a6f48001334ad39fa` 已推送；current-HEAD GitHub Actions runs `32514219078`、`32514730110` 的五个 jobs 全部成功（Unit Tests、Frontend Typecheck & Build、Service-backed Integration、Scientific Replay Linux/Windows）。未部署或发布；`CODEX_HANDOFF.md` 保持未跟踪且未纳入提交。
+
+---
+
+任务：Agent-2.0 Phase 1 — Core Domain Foundation
+状态：已完成
+完成时间：2026-08-22T18:41:46+08:00
+修改文件：`apps/api/alembic/versions/0015_agent2_scientific_objects.py`、`0016_agent2_research_turns.py`、`0017_agent2_scientific_results.py`；`apps/api/mdi_api/agent2_errors.py`、`agent2_repositories.py`、`db.py`、`main.py`、`access.py`、`routers/agent2.py`；`apps/api/mdi_api/scientific_objects/`、`research_agent/`、`scientific_results/`；Agent2 unit/API/migration/domain/service-backed tests；integration Alembic helper及现有 integration fixtures；`.github/workflows/ci.yml`；`docs/agent2/`、共享 schema/index/roadmap 与 persistent 权威记录；`AGENT2_PHASE1_RESULTS.md`。
+修改摘要：在实际 Alembic head `0014` 后按顺序加入 Scientific Object、Research Turn 与 Scientific Result Snapshot 三个迁移；实现稳定逻辑对象与不可变版本、精确历史引用、项目隔离、原子版本/Turn sequence 分配、CAS 状态机、不可变上下文快照、独立 Registry skeleton、严格 Pydantic contracts、Result Snapshot persistence、授权 REST/SSE 和只读 Scientific Object API。POST Turn 只持久化现有 USER Message、RECEIVED Turn 与 TURN_RECEIVED event，不调用 LLM/Planner，不创建 AnalysisPlan/Job/ToolCall。现有执行内核、62 Tool、Adapter、Viewer 与前端保持增量兼容。
+测试结果：Agent2 focused `21 passed`；SQLite migration upgrade/downgrade/re-upgrade `2 passed`；隔离 PostgreSQL migration/concurrency/receive `1 passed`；完整非 integration Python `1607 passed, 1 skipped, 83 deselected`；完整 Vitest `84 files / 565 passed`；typecheck、独立 production build、compileall、`git diff --check` PASS。Current-HEAD CI service integration `51 passed, 0 skipped, 0 failed, 0 errors`，其余 Unit、Frontend/Phase 12-6/12-7、Linux/Windows scientific replay 全部成功。
+提交/CI：实现提交 `1553183be2fb561f2ca5e71c2e3d9be2ed31db30` 和 integration compatibility 修复 `9af205b8b411e87e05cce4a05067f676c87bfb23` 已推送；current-HEAD GitHub Actions run `32567895104` 五个 jobs 全部成功。未部署或发布；`CODEX_HANDOFF.md` 保持未跟踪且未纳入提交。
+明确未实施：Phase 2 的 Orchestrator LLM、ResearchTurnDecision、语义引用解析、Capability eligibility/planner、Capability→AnalysisPlan binding、Job attachment、production Result projector、Scientific Interpreter、grounding validator、assistant scientific response、Report Composer、全量 Data backfill 与 Viewer integration。

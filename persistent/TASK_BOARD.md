@@ -3147,3 +3147,19 @@ archival remains withheld.
 - [x] Replace blank structured-data previews with bounded JSON, top-level summaries, and explicit unavailable/empty states.
 - [x] Populate Research result technical details with auditable run/plan IDs, output counts, and structured Artifact availability without exposing payload secrets.
 - [x] Complete full local gates, push, verify current-HEAD CI, result recording, and archive.
+
+## Agent 2.0 Phase 1 — Core Domain Foundation — Completed
+
+- [x] Add the ordered Scientific Object, Research Turn, and Scientific Result
+      Snapshot migrations after the verified `0014` Alembic head.
+- [x] Implement strict contracts, independent registries, repository/service
+      boundaries, immutable version/context rules, and CAS Turn transitions.
+- [x] Add authorized Turn REST/SSE and read-only Scientific Object APIs while
+      preserving the existing Session/Message, Planner, Job, Worker, Artifact,
+      Tool Registry, and Adapter authorities.
+- [x] Prove PostgreSQL/SQLite migrations, version/sequence/status concurrency,
+      no-LLM/no-Job receive behavior, authorization, snapshot round-trip, and
+      existing backend/frontend/scientific regressions.
+- [x] Push `1553183b` and `9af205b8`; current-HEAD GitHub Actions run
+      `32567895104` passed all five jobs, including service integration `51
+      passed, 0 skipped`.

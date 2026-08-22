@@ -1,7 +1,7 @@
 # Agent 2.0 Phase 1 Results
 
 Date: 2026-08-22
-Verdict: `PARTIAL` pending current-HEAD CI and archival closure
+Verdict: `COMPLETE`
 
 ## Scope
 
@@ -98,6 +98,7 @@ capabilities.
 | Focused Agent2 contracts/migrations/domain/API | 21 passed |
 | SQLite migration upgrade/downgrade/re-upgrade | 2 passed |
 | Isolated PostgreSQL migration + service-backed concurrency/receive | 1 passed |
+| Current CI PostgreSQL/Redis/MinIO integration | 51 passed, 0 skipped |
 | Full Python non-integration regression | 1607 passed, 1 skipped |
 | Full frontend Vitest suite | 84 files, 565 passed |
 | Frontend typecheck | passed |
@@ -119,6 +120,13 @@ Legacy Research Session, Message, Planner, Job, Worker, Tool Registry, Artifact,
 authorization, and scientific tests remain in the full suite. Existing API
 routes and execution authority were not removed or redirected.
 
+Implementation commit `1553183be2fb561f2ca5e71c2e3d9be2ed31db30` and the
+dynamic-Alembic-head integration compatibility correction
+`9af205b8b411e87e05cce4a05067f676c87bfb23` are pushed. GitHub Actions run
+`32567895104` passed all five current-HEAD jobs: Unit Tests, Frontend Typecheck
+& Build (including current Phase 12-6/12-7 browser gates), PostgreSQL/Redis/
+MinIO Service-backed Integration, and Linux/Windows Scientific Replay.
+
 ## Explicitly not implemented in Phase 1
 
 `NOT IMPLEMENTED IN PHASE 1`: Orchestrator LLM; ResearchTurnDecision;
@@ -130,14 +138,14 @@ backfill; and professional Viewer integration.
 
 ## Risks / open items
 
-- Current CI must run the newly included service-backed test on the pushed HEAD.
-- Task archival is intentionally deferred until current-HEAD CI is green and
-  the results record is committed.
 - The compatibility branch for partial SQLite fixtures deliberately does not
   invent legacy parent tables; a fully upgraded production database retains
   the complete FK set.
+- Agent-2.0 Phase 2 capabilities remain intentionally absent as listed above;
+  their absence is a Phase boundary, not an incomplete Phase 1 fallback.
 
 ## Verdict
 
-`PARTIAL` — implementation and local verification are complete; CI/push and
-TASKS archival remain open acceptance steps.
+`COMPLETE` — all Phase 1 implementation, migration, deterministic-domain,
+authorization, local regression, service-backed, push, and current-HEAD CI
+acceptance gates are closed.

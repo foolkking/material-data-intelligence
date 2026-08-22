@@ -926,5 +926,7 @@ The repository contains an additive deterministic Agent 2.0 foundation.
 `0014`; contracts, registries, repositories, services, CAS transitions, and
 authorized REST/SSE APIs are documented in `docs/agent2/`. Phase 1 deliberately
 does not add an LLM, Planner, Job, ToolCall, Artifact, Viewer, or Report
-execution path. See `AGENT2_PHASE1_RESULTS.md` for exact verification and open
-items.
+execution path. See `AGENT2_PHASE1_RESULTS.md` for exact verification and
+explicit Phase 2 boundaries. Implementation `1553183b` plus compatibility correction
+`9af205b8` passed current-HEAD GitHub Actions run `32567895104`; Phase 1 is
+complete and Phase 2 remains unimplemented.

@@ -1,18 +1,4 @@
 ---TASK---
-状态：处理中
-任务名称：Agent-2.0 Phase 1 — Core Domain Foundation
-开始时间：2026-08-22T03:03:00+08:00
-
-目标：在现有 Project、Research Session/Message、Planner、Job、Tool Registry、Queue Runtime、Artifact 与 PostgreSQL 权威之上，增量实现 Scientific Object、ResearchTurn、Research Context Snapshot、Scientific Result Snapshot、严格 Pydantic contracts、Registry skeleton、CAS state machine、Repository/Service 和授权 REST/SSE API。
-
-迁移顺序：按实际 Alembic head 顺延并保持 `agent2_scientific_objects` → `agent2_research_turns` → `agent2_scientific_results`。不得复制 Research Session/Message 模型，不破坏 SQLite/PostgreSQL migration 路径。
-
-边界：不接 Agent-2.0 LLM/Provider，不实现 Orchestrator、Planner 2.0、Capability planner、Job attachment 或生产 Result projector；不重写 AnalysisIntent/AnalysisPlan/Job/ToolCall/JobEvent/Artifact/Worker/Tool Registry/Adapter；不进行前端大改或科学能力扩张。POST Turn 必须只创建一条 USER Message、一条 RECEIVED Turn 和一条 TURN_RECEIVED event，并保持 AnalysisPlan/Job/ToolCall 增量为零。
-
-验收：三项迁移、不可变 ScientificObjectVersion、项目隔离、并发版本/Turn sequence、CAS transition、Registry startup validation、Result fixture round-trip、授权 REST/SSE、No-LLM/No-Job 和现有核心回归均有真实测试证据；更新 `docs/agent2/`、共享 schema、persistent 与 `AGENT2_PHASE1_RESULTS.md`。只有全部 acceptance gate 通过才能标记 COMPLETE。
----END---
-
----TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00
