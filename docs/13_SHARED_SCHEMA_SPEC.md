@@ -2272,6 +2272,23 @@ Message, one `RECEIVED` Turn, and one `TURN_RECEIVED` event with zero LLM,
 Planner, Job, ToolCall, or Artifact side effects. Full contracts are in
 `docs/agent2/` and `AGENT2_PHASE1_RESULTS.md`.
 
+# Agent 2.0 orchestration decision contracts (2026-08-22)
+
+Revision `0018_agent2_orchestration_decisions` adds
+`research_turn_decisions`, unique by `research_turn_id`. The row stores the
+validated `ResearchTurnDecision 1.0`, exact input context fingerprint, prompt
+version, bounded internal provider/model metadata, repair flag, validation
+status, and independent downstream dispatch status. Failed provider attempts
+are not accepted decision rows.
+
+The Pydantic authorities are `ReferenceCandidate`,
+`ResearchContextCandidateBundle`, `CompactResearchContext`,
+`ResearchOrchestratorInput`, `ProposedRequirement`, `ClarificationRequest`, and
+`ResearchTurnDecision`. All reject extra fields. Provider output can select
+only server-issued opaque keys and registered Scientific Requirement IDs. The
+accepted decision creates no AnalysisPlan, Job, ToolCall, Artifact, Report, or
+data mutation in Phase 2.
+
 # Project History run-archive projection (2026-08-20)
 
 Project History analyses may expose two additive presentation fields:

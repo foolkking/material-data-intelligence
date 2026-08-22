@@ -1,4 +1,16 @@
 ---TASK---
+状态：处理中
+任务名称：Agent-2.0 Phase 2 — Research Turn Orchestration & Context Resolution
+开始时间：2026-08-22T19:03:00+08:00
+
+目标：在 Phase 1 deterministic foundation 上增量实现 bounded context candidate assembly、reference resolution、immutable context compilation/fingerprint、StructuredLLMClient/DeepSeek adapter、ResearchTurnDecision 1.0、一次有界 repair、decision persistence、action validation/routing、AgentTurnProcessor 以及 canonical/paraphrase/live evaluation。
+
+边界：Conversation understanding 与 Planner/Tool execution 严格分离。Phase 2 不实现 Capability Resolver/Planner，不创建 AnalysisPlan、Job 或 ToolCall，不执行 Tool/Interpreter/Report Composer/Data mutation，不重构现有 Planner/Worker/Tool Registry/Adapter。Redis 仅可传 `turn_id`，PostgreSQL 保持 canonical authority；Provider 调用期间不得持有数据库事务；不存储 secret、provider transcript 或 chain-of-thought。
+
+验收：按实际 Alembic head新增不可变 orchestration decision migration；授权候选优先级、歧义澄清、历史 stale/result ref、opaque key、Requirement/constraint validation、一次 repair、事务边界、幂等/并发 processor、assistant message与事件、REST/SSE projection及所有 action 分类均有 deterministic tests。运行 gated live DeepSeek canonical evaluation（仅从 `DEEPSEEK_KEY` 读取密钥），完整回归、service-backed PostgreSQL、typecheck/build与 current-HEAD CI；更新 `docs/agent2/`、共享 schema、persistent、`AGENT2_PHASE2_RESULTS.md` 和 `results.md`。只有全部 Phase 2 acceptance gate 通过才能标记 COMPLETE。
+---END---
+
+---TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00

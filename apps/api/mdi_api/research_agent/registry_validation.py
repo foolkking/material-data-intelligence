@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any
+from jsonschema import Draft202012Validator
 
 from mdi_api.agent2_errors import RegistryValidationError
 from mdi_api.research_agent.capabilities.registry import InMemoryCapabilityRegistry
-from mdi_api.research_agent.requirements.registry import InMemoryScientificRequirementRegistry
+from mdi_api.research_agent.requirements.registry import InMemoryScientificRequirementRegistry, build_default_requirement_registry
 from mdi_api.research_agent.schemas import CapabilityStatus
 from mdi_api.research_agent.progress.registry import InMemoryScientificProgressProjectorRegistry
 from mdi_api.scientific_objects.registry import InMemoryObjectTypeRegistry, build_default_object_type_registry
@@ -24,7 +25,7 @@ class Agent2Registries:
 def build_default_agent2_registries() -> Agent2Registries:
     return Agent2Registries(
         object_types=build_default_object_type_registry(),
-        requirements=InMemoryScientificRequirementRegistry(),
+        requirements=build_default_requirement_registry(),
         capabilities=InMemoryCapabilityRegistry(),
         result_projectors=InMemoryScientificResultProjectorRegistry(),
         progress_projectors=InMemoryScientificProgressProjectorRegistry(),
@@ -36,6 +37,15 @@ DEFAULT_AGENT2_REGISTRIES = build_default_agent2_registries()
 
 def validate_agent2_registries(registries: Agent2Registries, tool_registry: Any) -> None:
     """Validate only registered capability manifests; Phase 1 registers none by default."""
+
+    for requirement in registries.requirements.list_active():
+        for object_type in requirement.accepted_object_types:
+            if registries.object_types.get(object_type) is None:
+                raise RegistryValidationError(f"Unknown requirement object type: {object_type}")
+        try:
+            Draft202012Validator.check_schema(requirement.constraint_schema)
+        except Exception as exc:
+            raise RegistryValidationError(f"Invalid requirement constraint schema: {requirement.requirement_id}") from exc
 
     for capability in registries.capabilities.list_all():
         for requirement_id in capability.satisfies_requirements:

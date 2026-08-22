@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from uuid import uuid4
+from typing import Any
+from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
@@ -11,6 +13,9 @@ from sqlalchemy.pool import StaticPool
 from mdi_api.db import metadata, organizations, project_members, projects, sessions, users
 from mdi_api.main import create_app
 from mdi_api.research_agent.service import ResearchTurnService
+from mdi_api.research_agent.llm.schemas import StructuredLLMResult
+from mdi_api.research_agent.orchestration.processor import AgentTurnProcessor
+from mdi_api.research_agent.registry_validation import build_default_agent2_registries
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_api.scientific_objects.registry import build_default_object_type_registry
 from mdi_api.scientific_objects.schemas import ScientificObjectKind, ScientificObjectRef, StorageRef
@@ -187,3 +192,62 @@ def test_sse_orders_events_reconnects_without_duplicates_and_checks_authority(ap
     active["value"] = stranger
     assert client.get(f"/api/research/turns/{turn['turn_id']}/events").status_code == 403
     active["value"] = owner
+
+
+def test_phase2_sse_projects_product_events_without_internal_provider_details(api):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    ref = create_ref(objects, "project")
+    created = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json={
+            "message": "What is RDF?",
+            "ui_context": {"active_object_refs": [ref.model_dump(mode="json")], "selection_refs": []},
+        },
+    ).json()
+
+    class AnswerClient:
+        async def generate_structured(self, **_kwargs: Any) -> StructuredLLMResult:
+            return StructuredLLMResult(
+                provider="fake-internal-provider",
+                model="fixture-model",
+                parsed={
+                    "contract_version": "1.0",
+                    "action": "ANSWER",
+                    "assistant_message": "RDF describes the distribution of pair distances.",
+                    "research_objective": None,
+                    "selected_scope_ref_keys": [],
+                    "scientific_requirements": [],
+                    "reusable_result_ref_keys": [],
+                    "clarification": None,
+                    "confidence": "HIGH",
+                },
+                latency_ms=1,
+                usage={"input_tokens": 1},
+                prompt_version="research-orchestrator/1.0",
+            )
+
+    result = asyncio.run(AgentTurnProcessor(
+        repository_factory=objects.repository_factory,
+        registries=build_default_agent2_registries(),
+        llm_client=AnswerClient(),
+    ).process(UUID(created["turn_id"])))
+    assert result.status == "ANSWERED"
+    detail = client.get(f"/api/research/turns/{created['turn_id']}").json()
+    assert detail["orchestration"] == {"decision_available": True, "action_dispatch_status": "COMPLETED"}
+    serialized = str(detail)
+    assert "fake-internal-provider" not in serialized
+    assert "fixture-model" not in serialized
+    assert "input_tokens" not in serialized
+
+    stream = client.get(f"/api/research/turns/{created['turn_id']}/events")
+    event_names = [line.removeprefix("event: ") for line in stream.text.splitlines() if line.startswith("event: ")]
+    assert event_names == [
+        "turn.accepted",
+        "context.resolving",
+        "context.ready",
+        "assistant.preparing",
+        "turn.status.changed",
+        "assistant.message",
+        "turn.answered",
+    ]
+    assert "fake-internal-provider" not in stream.text

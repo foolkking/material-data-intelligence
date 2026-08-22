@@ -900,6 +900,36 @@ scientific_result_snapshots = Table(
     ),
 )
 
+research_turn_decisions = Table(
+    "research_turn_decisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "research_turn_id",
+        Uuid,
+        ForeignKey("research_turns.id", name="fk_rtd_turn", ondelete="RESTRICT"),
+        nullable=False,
+        unique=True,
+    ),
+    Column("contract_version", String(32), nullable=False),
+    Column("action", String(32), nullable=False),
+    Column("decision_json", JSON, nullable=False),
+    Column("input_context_fingerprint", String(128), nullable=False),
+    Column("prompt_version", String(64), nullable=False),
+    Column("provider", String(64), nullable=False),
+    Column("model", String(128), nullable=False),
+    Column("provider_request_id", String(128), nullable=True),
+    Column("repair_attempted", Boolean, nullable=False, server_default="false"),
+    Column("validation_status", String(32), nullable=False),
+    Column("action_dispatch_status", String(32), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint("validation_status = 'VALIDATED'", name=conv("ck_rtd_validation")),
+    CheckConstraint(
+        "action_dispatch_status in ('COMPLETED', 'READY_FOR_DOWNSTREAM')",
+        name=conv("ck_rtd_dispatch"),
+    ),
+)
+
 Index("idx_projects_org_created", projects.c.organization_id, projects.c.created_at)
 Index("idx_project_members_user", project_members.c.user_id)
 Index("idx_datasets_project_created", datasets.c.project_id, datasets.c.created_at)
@@ -942,6 +972,8 @@ Index("idx_research_turn_events_turn", research_turn_events.c.turn_id)
 Index("idx_scientific_result_snapshots_turn", scientific_result_snapshots.c.research_turn_id)
 Index("idx_scientific_result_snapshots_job", scientific_result_snapshots.c.job_id)
 Index("idx_scientific_result_snapshots_project_created", scientific_result_snapshots.c.project_id, scientific_result_snapshots.c.created_at)
+Index("idx_research_turn_decisions_action_created", research_turn_decisions.c.action, research_turn_decisions.c.created_at)
+Index("idx_research_turn_decisions_fingerprint", research_turn_decisions.c.input_context_fingerprint)
 
 
 PHASE1_TABLES = (

@@ -26,6 +26,8 @@ class ApiSettings:
     # -- Phase 5: runtime backend selection --
     runtime_backend: str = "local"  # "local" | "postgresql"
     queue_backend: str = "local"    # "local" | "redis"
+    agent2_orchestration_enabled: bool = False
+    agent2_queue_name: str = "mdi-agent-turns"
     artifact_backend: str = "local"  # "local" | "minio"
     artifact_root: str = ".artifacts/phase2"
     # -- Test database for integration tests --
@@ -95,6 +97,8 @@ def load_settings() -> ApiSettings:
         minio_secure=_parse_bool(_env("MINIO_SECURE", "MDI_MINIO_SECURE", default="false")),
         runtime_backend=os.getenv("MDI_RUNTIME_BACKEND", "local").lower(),
         queue_backend=os.getenv("MDI_QUEUE_BACKEND", "local").lower(),
+        agent2_orchestration_enabled=_parse_bool(os.getenv("MDI_AGENT2_ORCHESTRATION_ENABLED", "false")),
+        agent2_queue_name=os.getenv("MDI_AGENT2_QUEUE_NAME", ApiSettings.agent2_queue_name),
         artifact_backend=os.getenv("MDI_ARTIFACT_BACKEND", "local").lower(),
         artifact_root=os.getenv("MDI_ARTIFACT_ROOT", ApiSettings.artifact_root),
         test_database_url=test_database_url,

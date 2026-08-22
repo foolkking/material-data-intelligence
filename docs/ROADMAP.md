@@ -326,3 +326,17 @@ registries, repositories, CAS transitions, and authorized REST/SSE/object
 reads. It does not add LLM calls, replace the existing execution kernel, or
 move execution into the browser. `AGENT2_PHASE1_RESULTS.md` and `docs/agent2/`
 are authoritative for exact implementation, tests, and deferred work.
+
+## Agent 2.0 Phase 2 Orchestration (2026-08-22)
+
+Phase 2 is the additive ResearchTurn context and decision layer. It implements
+deterministic authorized candidate assembly, exact opaque reference keys,
+immutable context snapshots, `ResearchTurnDecision 1.0`, bounded DeepSeek
+structured output with one repair, action routing, decision persistence, Redis
+Turn wakeup, product-facing SSE projection, and C01-C15 evaluation fixtures.
+
+The phase boundary stops `ANALYZE` and `CONTINUE_ANALYSIS` at `READY_TO_PLAN`.
+Capability Resolver, CapabilityPlan, AnalysisPlan binding, Job/Tool execution,
+Scientific Interpreter, Report Composer, Data Management execution, full
+research memory, Viewer integration, and 62-Tool capability mapping remain the
+only Agent 2.0 Phase 3+ direction and are not executable queue items here.

@@ -5475,3 +5475,22 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
 - New object/result refs are server-authorized by Project and exact version;
   UUIDs from the browser are never trusted merely because their embedded
   project ID matches.
+
+## ADR: Agent 2.0 Phase 2 separates context, decision and execution (2026-08-22)
+
+- Product Conversation, immutable ResearchContextSnapshot and bounded Provider
+  Transcript are separate authorities. Provider transcripts never reconstruct
+  user history.
+- Reference candidates are authorized before provider use and represented by
+  opaque keys. Source precedence is deterministic and revalidated with the
+  accepted action; lower-priority selection and unknown keys fail closed.
+- The provider sees Scientific Requirements, not Tool manifests. One validated
+  ResearchTurnDecision is persisted per Turn; rerunning requires a new Turn.
+- Database transactions end before DeepSeek starts. A second transaction
+  reauthorizes refs and atomically persists decision, user-visible Message,
+  action/status projection and events.
+- Redis/RQ is only a wakeup mechanism with a sole `turn_id` argument. Local and
+  default CI do not enable live orchestration. Repeated delivery is a CAS NOOP.
+- Phase 2 may finish an answer or clarification and may prepare a future
+  analysis, but it cannot create an AnalysisPlan, Job, ToolCall, scientific
+  Result, interpretation, Report, export, or destructive data operation.

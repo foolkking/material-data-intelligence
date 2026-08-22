@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from enum import Enum
 import re
-from typing import Any
+from typing import Any, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -228,6 +228,10 @@ class RequirementManifest(BaseModel):
     requirement_id: str
     display_name: str = Field(min_length=1, max_length=160)
     description: str = Field(min_length=1, max_length=1024)
+    scientific_domain: str = Field(default="generic", min_length=1, max_length=96)
+    accepted_object_types: list[str] = Field(default_factory=list)
+    constraint_schema: dict[str, Any] = Field(default_factory=lambda: {"type": "object", "additionalProperties": False})
+    status: Literal["ACTIVE", "EXPERIMENTAL", "DEPRECATED"] = "ACTIVE"
 
     @field_validator("requirement_id")
     @classmethod
@@ -262,8 +266,8 @@ class CapabilityManifest(BaseModel):
 class ResearchTurnUIContext(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    active_object_refs: list[ScientificObjectRef] = Field(default_factory=list)
-    selection_refs: list[ScientificObjectRef] = Field(default_factory=list)
+    active_object_refs: list[ScientificObjectRef] = Field(default_factory=list, max_length=64)
+    selection_refs: list[ScientificObjectRef] = Field(default_factory=list, max_length=16)
 
 
 class CreateResearchTurnRequest(BaseModel):

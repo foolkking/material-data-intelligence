@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from typing import Any, Iterator
 from uuid import UUID
 
@@ -20,6 +21,12 @@ from mdi_api.agent2_errors import (
     UnauthorizedScientificObjectReference,
 )
 from mdi_api.database import create_repository_factory
+from mdi_api.config import load_settings
+from mdi_api.research_agent.orchestration.queue import (
+    AgentTurnQueue,
+    DisabledAgentTurnQueue,
+    RedisRQAgentTurnQueue,
+)
 from mdi_api.research_agent.registry_validation import DEFAULT_AGENT2_REGISTRIES
 from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchTurnStatus, TERMINAL_TURN_STATUSES
 from mdi_api.research_agent.service import ResearchTurnService
@@ -28,12 +35,22 @@ from mdi_api.scientific_objects.schemas import ScientificObjectKind, ScientificO
 from mdi_api.scientific_objects.service import ScientificObjectService
 
 
+logger = logging.getLogger(__name__)
+
+
 def get_research_turn_service() -> ResearchTurnService:
     return ResearchTurnService(create_repository_factory())
 
 
 def get_scientific_object_service() -> ScientificObjectService:
     return ScientificObjectService(create_repository_factory(), DEFAULT_AGENT2_REGISTRIES.object_types)
+
+
+def get_agent_turn_queue() -> AgentTurnQueue:
+    settings = load_settings()
+    if settings.agent2_orchestration_enabled and settings.queue_backend == "redis":
+        return RedisRQAgentTurnQueue(redis_url=settings.redis_url, queue_name=settings.agent2_queue_name)
+    return DisabledAgentTurnQueue()
 
 
 def create_research_turn(
@@ -49,6 +66,18 @@ def create_research_turn(
             request=request,
             current_user=current_user,
         )
+        try:
+            queued = get_agent_turn_queue().enqueue_turn(result.turn_id)
+            logger.info("research_turn_wakeup", extra={
+                "turn_id": str(result.turn_id),
+                "backend": queued.backend,
+                "enqueued": queued.enqueued,
+            })
+        except Exception as queue_error:
+            logger.warning("research_turn_wakeup_failed", extra={
+                "turn_id": str(result.turn_id),
+                "error_type": type(queue_error).__name__,
+            })
         return JSONResponse(status_code=202, content=jsonable_encoder(result))
     except Exception as exc:
         raise _http_error(exc) from exc
@@ -200,8 +229,14 @@ def _authorize_object_project(service: ScientificObjectService, project_id: str,
 def _sse_event_name(event_type: str) -> str:
     return {
         "TURN_RECEIVED": "turn.accepted",
-        "CONTEXT_RESOLUTION_STARTED": "context.resolution.started",
+        "CONTEXT_RESOLUTION_STARTED": "context.resolving",
         "CONTEXT_RESOLVED": "context.ready",
+        "CONTEXT_AMBIGUOUS": "assistant.preparing",
+        "ORCHESTRATION_STARTED": "assistant.preparing",
+        "DIRECT_ANSWER_READY": "assistant.message",
+        "CLARIFICATION_REQUESTED": "assistant.clarification",
+        "PLAN_REQUESTED": "analysis.ready_to_plan",
+        "TURN_COMPLETED": "turn.answered",
         "TURN_CANCELED": "turn.canceled",
         "TURN_FAILED": "turn.failed",
     }.get(event_type, "turn.status.changed")

@@ -930,3 +930,16 @@ execution path. See `AGENT2_PHASE1_RESULTS.md` for exact verification and
 explicit Phase 2 boundaries. Implementation `1553183b` plus compatibility correction
 `9af205b8` passed current-HEAD GitHub Actions run `32567895104`; Phase 1 is
 complete and Phase 2 remains unimplemented.
+
+## Agent 2.0 Phase 2 orchestration
+
+Phase 2 adds deterministic bounded context assembly and a validated
+conversation-understanding boundary above Phase 1. PostgreSQL remains
+canonical; Redis carries only `turn_id`. DeepSeek receives opaque object/result
+keys, compact authorized summaries, and registered Scientific Requirement IDs,
+never Tool schemas, credentials, Artifact payloads, or execution authority.
+
+`ANSWER` and `CLARIFY` are completed directly; `ANALYZE` and
+`CONTINUE_ANALYSIS` stop at `READY_TO_PLAN`. Result interpretation, report,
+data, object-open, and export actions are classification-only. No Phase 2 path
+creates an AnalysisPlan, Job, ToolCall, Artifact, Report, or data mutation.

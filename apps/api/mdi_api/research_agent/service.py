@@ -86,6 +86,8 @@ class ResearchTurnService:
                     parent = unit.agent2.research_turns.get(parent_turn_id)
                     if parent["project_id"] != project_id or parent["research_session_id"] != session_id:
                         raise ResearchSessionProjectMismatch("reply_to_turn_id is outside the Research Session")
+                    if parent["status"] != ResearchTurnStatus.NEEDS_CLARIFICATION.value:
+                        raise InvalidResearchTurnTransition("reply_to_turn_id must reference NEEDS_CLARIFICATION")
                 self._authorize_ui_context(unit, project_id, request)
                 now = datetime.now(timezone.utc)
                 message_id = f"message_{uuid4().hex}"
@@ -339,6 +341,7 @@ class ResearchTurnService:
             "created_at": row["created_at"],
         } for row in message_rows]
         snapshot = session.agent2.research_context_snapshots.get_for_turn(turn["id"])
+        decision = session.agent2.research_turn_decisions.get_for_turn(turn["id"])
         summary = None if snapshot is None else {
             "id": snapshot["id"],
             "schema_version": snapshot["snapshot_schema_version"],
@@ -356,6 +359,14 @@ class ResearchTurnService:
             "status": turn["status"],
             "messages": messages_view,
             "context_snapshot_summary": summary,
+            "context": None if snapshot is None else {
+                "scope": snapshot["active_scope_refs_json"] or [],
+                "selection": snapshot["selection_refs_json"] or [],
+            },
+            "orchestration": {
+                "decision_available": decision is not None,
+                "action_dispatch_status": None if decision is None else decision["action_dispatch_status"],
+            },
             "result_available": session.agent2.scientific_result_snapshots.exists_for_turn(turn["id"]),
             "created_at": turn["created_at"],
             "updated_at": turn["updated_at"],

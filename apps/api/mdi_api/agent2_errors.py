@@ -59,3 +59,25 @@ class RequirementNotRegistered(RegistryValidationError):
 
 class ScientificResultSnapshotNotFound(Agent2DomainError):
     pass
+
+
+class ResearchTurnDecisionNotFound(Agent2DomainError):
+    pass
+
+
+class InvalidResearchTurnDecision(Agent2DomainError):
+    def __init__(self, message: str, *, code: str = "ORCHESTRATOR_INVALID_OUTPUT") -> None:
+        super().__init__(message)
+        self.code = code
+
+
+class OrchestratorProviderUnavailable(Agent2DomainError):
+    pass
+
+
+class OrchestratorTimeout(Agent2DomainError):
+    pass
+
+
+class ContextAssemblyFailed(Agent2DomainError):
+    pass

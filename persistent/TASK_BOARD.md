@@ -1,5 +1,18 @@
 # TASK_BOARD
 
+## Agent 2.0 Phase 2 - Research Turn Orchestration - In progress
+
+- [x] Context candidate assembly, priority, authorization and fingerprint.
+- [x] Structured DeepSeek client, versioned prompt and one bounded repair.
+- [x] `ResearchTurnDecision 1.0` validation and immutable migration 0018.
+- [x] ANSWER/CLARIFY/ANALYZE/CONTINUE routing with zero execution objects.
+- [x] Classification-only downstream actions and product SSE projections.
+- [x] Redis `turn_id` wakeup, processor idempotency and transaction boundary.
+- [x] C01-C15 deterministic and gated live DeepSeek qualification.
+- [x] Complete full backend/frontend regression and production build.
+- [ ] Push implementation and wait for all current-HEAD GitHub Actions jobs.
+- [ ] Mark result COMPLETE and archive the Phase 2 TASKS block.
+
 ## Continuous Product Quality — Research activation Wave 6 - Completed
 
 - [x] Replace the blank Research conversation with a compact first-use state next

@@ -84,6 +84,19 @@ These documents describe the additive deterministic layer only; they do not
 override existing Planner, Worker, Tool Registry, Artifact, Report, or
 qualification authorities.
 
+## Agent 2.0 Phase 2 Orchestration
+
+- [`agent2/research-context-contract-v1.md`](agent2/research-context-contract-v1.md)
+- [`agent2/research-orchestrator-contract-v1.md`](agent2/research-orchestrator-contract-v1.md)
+- [`agent2/research-turn-decision-v1.md`](agent2/research-turn-decision-v1.md)
+- [`agent2/agent2-phase2-state-flow.md`](agent2/agent2-phase2-state-flow.md)
+- [`agent2/agent2-evaluation-contract-v1.md`](agent2/agent2-evaluation-contract-v1.md)
+- [`../AGENT2_PHASE2_RESULTS.md`](../AGENT2_PHASE2_RESULTS.md)
+
+Phase 2 ends at a validated decision or typed downstream handoff. It does not
+implement Capability resolution, AnalysisPlan creation, Job execution,
+scientific interpretation, Report composition, or Data mutation.
+
 Historical phase planning and evidence are retained below. They are not
 authoritative for future scope when they conflict with `ROADMAP.md`.
 

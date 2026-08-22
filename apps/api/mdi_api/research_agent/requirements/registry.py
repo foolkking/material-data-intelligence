@@ -10,6 +10,7 @@ class ScientificRequirementRegistry(Protocol):
     def register(self, manifest: RequirementManifest) -> None: ...
     def require(self, requirement_id: str) -> RequirementManifest: ...
     def contains(self, requirement_id: str) -> bool: ...
+    def list_active(self) -> list[RequirementManifest]: ...
 
 
 class InMemoryScientificRequirementRegistry:
@@ -29,3 +30,43 @@ class InMemoryScientificRequirementRegistry:
 
     def contains(self, requirement_id: str) -> bool:
         return requirement_id in self._manifests
+
+    def list_active(self) -> list[RequirementManifest]:
+        return sorted(
+            (item for item in self._manifests.values() if item.status == "ACTIVE"),
+            key=lambda item: item.requirement_id,
+        )
+
+
+def build_default_requirement_registry() -> InMemoryScientificRequirementRegistry:
+    registry = InMemoryScientificRequirementRegistry()
+    object_constraints = {"type": "object", "additionalProperties": False}
+    rdf_constraints = {
+        "type": "object",
+        "properties": {"cutoff_angstrom": {"type": "number", "exclusiveMinimum": 0}},
+        "additionalProperties": False,
+    }
+    manifests = (
+        ("structure.inspect", "Inspect structure", "Inspect an authorized crystal structure.", "structure", ["structure.crystal"], object_constraints),
+        ("structure.compute_rdf", "Compute RDF", "Compute a radial distribution function for a crystal structure.", "structure", ["structure.crystal"], rdf_constraints),
+        ("structure.inspect_coordination", "Inspect coordination", "Characterize local atomic coordination.", "structure", ["structure.crystal"], object_constraints),
+        ("diffraction.generate_theoretical_pattern", "Generate theoretical XRD", "Generate a theoretical diffraction pattern.", "diffraction", ["structure.crystal"], object_constraints),
+        ("diffraction.compare_experimental_theoretical", "Compare XRD patterns", "Compare authorized experimental and theoretical diffraction data.", "diffraction", ["diffraction.xrd.experimental", "diffraction.xrd.theoretical", "structure.crystal"], object_constraints),
+        ("trajectory.compute_msd", "Compute MSD", "Compute mean-squared displacement from an atomic trajectory.", "trajectory", ["trajectory.atomic"], object_constraints),
+        ("trajectory.estimate_diffusion", "Estimate diffusion", "Estimate diffusion from trajectory-derived displacement evidence.", "trajectory", ["trajectory.atomic"], object_constraints),
+        ("ml.evaluate_regression", "Evaluate regression", "Evaluate a materials regression result.", "machine_learning", ["materials.dataset"], object_constraints),
+        ("phonon.inspect_band", "Inspect phonon band", "Inspect an authorized phonon band structure.", "phonon", ["phonon.band_structure"], object_constraints),
+        ("phonon.inspect_dos", "Inspect phonon DOS", "Inspect an authorized phonon density of states.", "phonon", ["phonon.dos"], object_constraints),
+        ("data.query", "Query data", "Query authorized project scientific data without mutation.", "data", ["materials.dataset"], object_constraints),
+        ("report.compose", "Compose report", "Prepare authorized result references for report composition.", "report", [], object_constraints),
+    )
+    for requirement_id, display_name, description, domain, accepted, constraints in manifests:
+        registry.register(RequirementManifest(
+            requirement_id=requirement_id,
+            display_name=display_name,
+            description=description,
+            scientific_domain=domain,
+            accepted_object_types=accepted,
+            constraint_schema=constraints,
+        ))
+    return registry

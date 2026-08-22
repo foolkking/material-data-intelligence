@@ -17,6 +17,7 @@ from mdi_api.agent2_errors import (
 from mdi_api.db import (
     messages,
     research_context_snapshots,
+    research_turn_decisions,
     research_turn_events,
     research_turns,
     scientific_object_relationships,
@@ -203,6 +204,27 @@ class ResearchTurnRepository(_Repository):
         statement = statement.order_by(research_turns.c.sequence_no.asc()).limit(limit)
         return self._run(lambda connection: [dict(row) for row in connection.execute(statement).mappings().all()])
 
+    def list_recent_before(self, session_id: str, sequence_no: int, *, limit: int = 6) -> list[dict[str, Any]]:
+        terminal_statuses = (
+            "NEEDS_CLARIFICATION", "ANSWERED", "UNSUPPORTED", "PLAN_REJECTED",
+            "COMPLETED", "PARTIAL", "FAILED", "CANCELED",
+        )
+        statement = (
+            select(research_turns)
+            .where(and_(
+                research_turns.c.research_session_id == session_id,
+                research_turns.c.sequence_no < sequence_no,
+                research_turns.c.status.in_(terminal_statuses),
+            ))
+            .order_by(research_turns.c.sequence_no.desc())
+            .limit(limit)
+        )
+        return self._run(lambda connection: [dict(row) for row in connection.execute(statement).mappings().all()])
+
+    def get_message(self, message_id: str) -> dict[str, Any]:
+        statement = select(messages).where(messages.c.id == message_id)
+        return self._run(lambda connection: dict(connection.execute(statement).mappings().one()))
+
     def compare_and_set_status(
         self,
         turn_id: UUID,
@@ -266,6 +288,47 @@ class ResearchTurnRepository(_Repository):
             result = connection.execute(update(research_turns).where(research_turns.c.id == turn_id).values(**values))
             if result.rowcount != 1:
                 raise ResearchTurnNotFound(str(turn_id))
+            return self._row(connection, turn_id)
+        return self._run(run)
+
+    def apply_decision_projection(
+        self,
+        turn_id: UUID,
+        *,
+        expected_version: int,
+        action_type: str,
+        target_status: str,
+        assistant_pre_message_id: str | None = None,
+        assistant_final_message_id: str | None = None,
+        continuation_of_turn_id: UUID | None = None,
+        completed_at: datetime | None = None,
+    ) -> dict[str, Any]:
+        values: dict[str, Any] = {
+            "action_type": action_type,
+            "status": target_status,
+            "assistant_pre_message_id": assistant_pre_message_id,
+            "assistant_final_message_id": assistant_final_message_id,
+            "row_version": research_turns.c.row_version + 1,
+            "updated_at": datetime.now(timezone.utc),
+        }
+        if continuation_of_turn_id is not None:
+            values["continuation_of_turn_id"] = continuation_of_turn_id
+        if completed_at is not None:
+            values["completed_at"] = completed_at
+
+        def run(connection: Connection) -> dict[str, Any]:
+            result = connection.execute(
+                update(research_turns)
+                .where(and_(
+                    research_turns.c.id == turn_id,
+                    research_turns.c.status == "ORCHESTRATING",
+                    research_turns.c.row_version == expected_version,
+                    research_turns.c.action_type.is_(None),
+                ))
+                .values(**values)
+            )
+            if result.rowcount != 1:
+                raise ConcurrentTurnModification(str(turn_id))
             return self._row(connection, turn_id)
         return self._run(run)
 
@@ -349,6 +412,15 @@ class ScientificResultSnapshotRepository(_Repository):
         ))
         return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
 
+    def get(self, snapshot_id: UUID) -> dict[str, Any]:
+        statement = select(scientific_result_snapshots).where(scientific_result_snapshots.c.id == snapshot_id)
+        def run(connection: Connection) -> dict[str, Any]:
+            row = connection.execute(statement).mappings().first()
+            if row is None:
+                raise ScientificResultSnapshotNotFound(str(snapshot_id))
+            return dict(row)
+        return self._run(run)
+
     def list_for_turn(self, turn_id: UUID) -> list[dict[str, Any]]:
         statement = select(scientific_result_snapshots).where(
             scientific_result_snapshots.c.research_turn_id == turn_id
@@ -359,6 +431,39 @@ class ScientificResultSnapshotRepository(_Repository):
         statement = select(scientific_result_snapshots.c.id).where(scientific_result_snapshots.c.research_turn_id == turn_id).limit(1)
         return self._run(lambda connection: connection.execute(statement).first() is not None)
 
+    def list_recent_for_session(
+        self,
+        session_id: str,
+        *,
+        before_sequence: int,
+        limit: int = 6,
+    ) -> list[dict[str, Any]]:
+        statement = (
+            select(scientific_result_snapshots, research_turns.c.sequence_no)
+            .join(research_turns, scientific_result_snapshots.c.research_turn_id == research_turns.c.id)
+            .where(and_(
+                research_turns.c.research_session_id == session_id,
+                research_turns.c.sequence_no < before_sequence,
+            ))
+            .order_by(research_turns.c.sequence_no.desc(), scientific_result_snapshots.c.created_at.desc())
+            .limit(limit)
+        )
+        return self._run(lambda connection: [dict(row) for row in connection.execute(statement).mappings().all()])
+
+
+class ResearchTurnDecisionRepository(_Repository):
+    def add(self, values: Mapping[str, Any]) -> dict[str, Any]:
+        def run(connection: Connection) -> dict[str, Any]:
+            connection.execute(insert(research_turn_decisions).values(**values))
+            return dict(connection.execute(
+                select(research_turn_decisions).where(research_turn_decisions.c.id == values["id"])
+            ).mappings().one())
+        return self._run(run)
+
+    def get_for_turn(self, turn_id: UUID) -> dict[str, Any] | None:
+        statement = select(research_turn_decisions).where(research_turn_decisions.c.research_turn_id == turn_id)
+        return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
+
 
 @dataclass(frozen=True)
 class Agent2RepositoryBundle:
@@ -367,6 +472,7 @@ class Agent2RepositoryBundle:
     research_context_snapshots: ResearchContextSnapshotRepository
     research_turn_events: ResearchTurnEventRepository
     scientific_result_snapshots: ScientificResultSnapshotRepository
+    research_turn_decisions: ResearchTurnDecisionRepository
 
     @classmethod
     def create(cls, bind: Engine | Connection) -> "Agent2RepositoryBundle":
@@ -376,6 +482,7 @@ class Agent2RepositoryBundle:
             research_context_snapshots=ResearchContextSnapshotRepository(bind),
             research_turn_events=ResearchTurnEventRepository(bind),
             scientific_result_snapshots=ScientificResultSnapshotRepository(bind),
+            research_turn_decisions=ResearchTurnDecisionRepository(bind),
         )
 
 

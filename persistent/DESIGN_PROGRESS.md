@@ -3279,3 +3279,14 @@ with current Phase 12-6/12-7 gates, PostgreSQL/Redis/MinIO integration (`51
 passed, 0 skipped`), and Linux/Windows scientific replay. The deterministic
 foundation is complete; no Phase 2 LLM, orchestration, capability planning,
 production result projection, interpretation, or Viewer work was introduced.
+
+2026-08-22 Agent 2.0 Phase 2 orchestration candidate: added deterministic
+candidate assembly from exact UI scope, recent terminal context and persisted
+Results; immutable context compilation/fingerprint; opaque reference keys;
+fixed source priority; pre-provider ambiguity clarification; versioned
+`research-orchestrator/1.0`; existing-transport DeepSeek structured output;
+one bounded repair; typed failure; immutable decision persistence; honest
+action routing; Redis `turn_id` wakeup; product SSE; and strict C01-C15
+evaluation. Focused, SQLite migration, isolated PostgreSQL/Redis and live
+DeepSeek gates pass. Full regression and current-HEAD CI remain required before
+completion/archive.

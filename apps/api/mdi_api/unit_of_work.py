@@ -1,11 +1,21 @@
 from __future__ import annotations
 
 from types import TracebackType
+from contextvars import ContextVar, Token
 
 from sqlalchemy.engine import Connection, Engine, Transaction
 
 from mdi_api.agent2_repositories import Agent2RepositoryBundle
 from mdi_api.repositories import SqlAlchemyRepositoryBundle
+
+
+_TRANSACTION_DEPTH: ContextVar[int] = ContextVar("mdi_transaction_depth", default=0)
+
+
+def transaction_active() -> bool:
+    """Return whether the current execution context owns an open repository transaction."""
+
+    return _TRANSACTION_DEPTH.get() > 0
 
 
 class RepositorySession:
@@ -15,6 +25,7 @@ class RepositorySession:
         self._transaction: Transaction | None = None
         self._repositories: SqlAlchemyRepositoryBundle | None = None
         self._agent2_repositories: Agent2RepositoryBundle | None = None
+        self._transaction_token: Token[int] | None = None
 
     @property
     def repositories(self) -> SqlAlchemyRepositoryBundle:
@@ -39,6 +50,7 @@ class RepositorySession:
             raise RuntimeError("RepositorySession is already active")
         self._connection = self._engine.connect()
         self._transaction = self._connection.begin()
+        self._transaction_token = _TRANSACTION_DEPTH.set(_TRANSACTION_DEPTH.get() + 1)
         self._repositories = SqlAlchemyRepositoryBundle.create(self._connection)
         self._agent2_repositories = Agent2RepositoryBundle.create(self._connection)
         return self
@@ -63,6 +75,9 @@ class RepositorySession:
         self._connection = None
         self._repositories = None
         self._agent2_repositories = None
+        if self._transaction_token is not None:
+            _TRANSACTION_DEPTH.reset(self._transaction_token)
+            self._transaction_token = None
 
     def __enter__(self) -> "RepositorySession":
         return self.begin()
