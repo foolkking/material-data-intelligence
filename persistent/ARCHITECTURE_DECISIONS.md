@@ -5460,3 +5460,18 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   presenting a doomed Composer. Read-only Projects omit the action. No API,
   schema, database, Planner, QueueWorkerRuntime, Tool Registry, Adapter, or
   scientific authority changes.
+
+## ADR: Agent 2.0 Phase 1 is an additive deterministic foundation (2026-08-22)
+
+- `ScientificObject` is a stable logical identity; `ScientificObjectVersion`
+  is immutable content. Historical refs retain their exact version and never
+  silently upgrade to `current_version_id`.
+- `ResearchTurn` is a user action, not a Job. Receive persists one existing
+  Research Message, one Turn, and one event in a short transaction; it does
+  not call an LLM, Planner, worker, Tool Registry, or Artifact runtime.
+- PostgreSQL is canonical for object, turn, context, event, and result
+  snapshot state. CAS transitions require expected status and row version.
+  Existing Session/Message/Planner/Job schemas remain authoritative.
+- New object/result refs are server-authorized by Project and exact version;
+  UUIDs from the browser are never trusted merely because their embedded
+  project ID matches.

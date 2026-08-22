@@ -154,6 +154,18 @@ from mdi_api.routers.secrets import (
     list_secrets,
 )
 from mdi_api.routers.tools import list_mvp_tools, list_tools
+from mdi_api.routers.agent2 import (
+    cancel_research_turn,
+    create_research_turn,
+    get_research_turn,
+    get_scientific_object,
+    get_scientific_object_version,
+    list_research_turns,
+    list_scientific_object_relationships,
+    list_scientific_object_versions,
+    list_scientific_objects,
+    stream_research_turn_events,
+)
 from mdi_api.routers.workspaces import (
     create_workspace,
     get_workspace,
@@ -194,6 +206,16 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/research-sessions/{session_id}", get_session, ("GET",), ("research",)),
     RouteSpec("/research-sessions/{session_id}/messages", create_message, ("POST",), ("research",)),
     RouteSpec("/research-sessions/{session_id}/assistant-projections", create_assistant_projection, ("POST",), ("research",)),
+    RouteSpec("/api/projects/{project_id}/research/sessions/{session_id}/turns", create_research_turn, ("POST",), ("agent2", "research")),
+    RouteSpec("/api/projects/{project_id}/research/sessions/{session_id}/turns", list_research_turns, ("GET",), ("agent2", "research")),
+    RouteSpec("/api/research/turns/{turn_id}", get_research_turn, ("GET",), ("agent2", "research")),
+    RouteSpec("/api/research/turns/{turn_id}/cancel", cancel_research_turn, ("POST",), ("agent2", "research")),
+    RouteSpec("/api/research/turns/{turn_id}/events", stream_research_turn_events, ("GET",), ("agent2", "research")),
+    RouteSpec("/api/projects/{project_id}/scientific-objects", list_scientific_objects, ("GET",), ("agent2", "scientific-objects")),
+    RouteSpec("/api/scientific-objects/{object_id}", get_scientific_object, ("GET",), ("agent2", "scientific-objects")),
+    RouteSpec("/api/scientific-objects/{object_id}/versions", list_scientific_object_versions, ("GET",), ("agent2", "scientific-objects")),
+    RouteSpec("/api/scientific-objects/{object_id}/versions/{version_id}", get_scientific_object_version, ("GET",), ("agent2", "scientific-objects")),
+    RouteSpec("/api/scientific-objects/{object_id}/relationships", list_scientific_object_relationships, ("GET",), ("agent2", "scientific-objects")),
     RouteSpec("/projects/{project_id}/research-scope", resolve_scope, ("POST",), ("research",)),
     RouteSpec("/projects", list_projects_secured, ("GET",), ("projects",), list[ProjectSummary]),
     RouteSpec("/projects", create_project_secured, ("POST",), ("projects",)),
@@ -298,31 +320,41 @@ def create_app() -> Any:
     try:
         from fastapi import FastAPI
         from fastapi.middleware.cors import CORSMiddleware
-
-        app = FastAPI(
-            title=settings.app_name,
-            version="0.1.0",
-            description="Controlled API boundary for material data intelligence workflows.",
-        )
-        app.add_middleware(
-            CORSMiddleware,
-            allow_origins=list(settings.cors_origins),
-            allow_credentials=True,
-            allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-            allow_headers=["*"],
-            expose_headers=["ETag", "X-Idempotent-Replay"],
-        )
-        for route in ROUTES:
-            app.add_api_route(
-                route.path,
-                route.endpoint,
-                methods=list(route.methods),
-                tags=list(route.tags),
-                response_model=route.response_model,
-            )
-        return app
-    except Exception:
+    except ImportError:
         return AppSpec(title=settings.app_name, version="0.1.0", routes=ROUTES)
+
+    # Registry validation is intentionally outside the compatibility fallback:
+    # a malformed registered manifest must fail startup, not silently degrade
+    # into an AppSpec shell.
+    from mdi_api.research_agent.registry_validation import DEFAULT_AGENT2_REGISTRIES, validate_agent2_registries
+    from mdi_tool_registry import ToolRegistry, list_tools as list_registered_tools
+
+    validate_agent2_registries(
+        DEFAULT_AGENT2_REGISTRIES,
+        ToolRegistry(version="agent2-startup", tools=tuple(list_registered_tools())),
+    )
+    app = FastAPI(
+        title=settings.app_name,
+        version="0.1.0",
+        description="Controlled API boundary for material data intelligence workflows.",
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=list(settings.cors_origins),
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["*"],
+        expose_headers=["ETag", "X-Idempotent-Replay"],
+    )
+    for route in ROUTES:
+        app.add_api_route(
+            route.path,
+            route.endpoint,
+            methods=list(route.methods),
+            tags=list(route.tags),
+            response_model=route.response_model,
+        )
+    return app
 
 
 app = create_app()

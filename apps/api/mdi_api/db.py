@@ -16,8 +16,10 @@ from sqlalchemy import (
     Table,
     Text,
     UniqueConstraint,
+    Uuid,
     func,
 )
+from sqlalchemy.schema import conv
 
 
 naming_convention = {
@@ -704,6 +706,200 @@ audit_logs = Table(
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
 
+# Agent 2.0 deterministic domain foundation. New domain identities use
+# portable UUID columns; references to established domains retain their real
+# String key types.
+scientific_objects = Table(
+    "scientific_objects",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("project_id", String(64), ForeignKey("projects.id", name="fk_so_project", ondelete="RESTRICT"), nullable=False),
+    Column("kind", String(32), nullable=False),
+    Column("object_type", String(128), nullable=False),
+    Column("display_name", String(512), nullable=False),
+    Column("lifecycle_status", String(32), nullable=False, server_default="ACTIVE"),
+    Column(
+        "current_version_id",
+        Uuid,
+        ForeignKey(
+            "scientific_object_versions.id",
+            name="fk_so_current_version",
+            use_alter=True,
+            ondelete="RESTRICT",
+        ),
+        nullable=True,
+    ),
+    Column("created_by_user_id", String(64), ForeignKey("users.id", name="fk_so_creator", ondelete="SET NULL"), nullable=True),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("archived_at", DateTime(timezone=True), nullable=True),
+    Column("row_version", Integer, nullable=False, server_default="1"),
+    CheckConstraint("row_version >= 1", name=conv("ck_so_row_version")),
+    CheckConstraint(
+        "lifecycle_status in ('ACTIVE', 'ARCHIVED', 'INVALIDATED')",
+        name=conv("ck_so_lifecycle"),
+    ),
+)
+
+scientific_object_versions = Table(
+    "scientific_object_versions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("scientific_object_id", Uuid, ForeignKey("scientific_objects.id", name="fk_sov_object", ondelete="RESTRICT"), nullable=False),
+    Column("version_no", Integer, nullable=False),
+    Column("object_type", String(128), nullable=False),
+    Column("object_schema_version", String(32), nullable=False),
+    Column("source_resource_refs_json", JSON, nullable=False),
+    Column("parent_object_version_refs_json", JSON, nullable=False),
+    Column("semantic_profile_ref_json", JSON, nullable=True),
+    Column("normalized_payload_ref_json", JSON, nullable=False),
+    Column("content_hash", String(128), nullable=False),
+    Column("semantic_hash", String(128), nullable=False),
+    Column("canonical_metadata_json", JSON, nullable=False),
+    Column("availability_status", String(32), nullable=False),
+    Column("created_by_user_id", String(64), ForeignKey("users.id", name="fk_sov_creator", ondelete="SET NULL"), nullable=True),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("scientific_object_id", "version_no", name="uq_scientific_object_versions_object_version"),
+    CheckConstraint("version_no >= 1", name=conv("ck_sov_version_no")),
+    CheckConstraint(
+        "availability_status in ('AVAILABLE', 'PARTIALLY_AVAILABLE', 'SOURCE_MISSING', 'INVALID')",
+        name=conv("ck_sov_availability"),
+    ),
+)
+
+scientific_object_relationships = Table(
+    "scientific_object_relationships",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("project_id", String(64), ForeignKey("projects.id", name="fk_sor_project", ondelete="RESTRICT"), nullable=False),
+    Column("source_version_id", Uuid, ForeignKey("scientific_object_versions.id", name="fk_sor_source", ondelete="RESTRICT"), nullable=False),
+    Column("target_version_id", Uuid, ForeignKey("scientific_object_versions.id", name="fk_sor_target", ondelete="RESTRICT"), nullable=False),
+    Column("relation_type", String(128), nullable=False),
+    Column("metadata_json", JSON, nullable=False),
+    Column("created_by_user_id", String(64), ForeignKey("users.id", name="fk_sor_creator", ondelete="SET NULL"), nullable=True),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint(
+        "source_version_id",
+        "target_version_id",
+        "relation_type",
+        name="uq_scientific_object_relationship_edge",
+    ),
+    CheckConstraint("source_version_id <> target_version_id", name=conv("ck_sor_not_self")),
+)
+
+research_turns = Table(
+    "research_turns",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("project_id", String(64), ForeignKey("projects.id", name="fk_rt_project", ondelete="RESTRICT"), nullable=False),
+    Column("research_session_id", String(64), ForeignKey("sessions.id", name="fk_rt_session", ondelete="RESTRICT"), nullable=False),
+    Column("sequence_no", Integer, nullable=False),
+    Column("parent_turn_id", Uuid, ForeignKey("research_turns.id", name="fk_rt_parent", ondelete="RESTRICT"), nullable=True),
+    Column("continuation_of_turn_id", Uuid, ForeignKey("research_turns.id", name="fk_rt_continuation", ondelete="RESTRICT"), nullable=True),
+    Column("user_message_id", String(64), ForeignKey("messages.id", name="fk_rt_user_message", ondelete="RESTRICT"), nullable=False, unique=True),
+    Column("assistant_pre_message_id", String(64), ForeignKey("messages.id", name="fk_rt_pre_message", ondelete="SET NULL"), nullable=True),
+    Column("assistant_final_message_id", String(64), ForeignKey("messages.id", name="fk_rt_final_message", ondelete="SET NULL"), nullable=True),
+    Column("action_type", String(32), nullable=True),
+    Column("status", String(32), nullable=False),
+    Column(
+        "context_snapshot_id",
+        Uuid,
+        ForeignKey(
+            "research_context_snapshots.id",
+            name="fk_rt_context",
+            use_alter=True,
+            ondelete="RESTRICT",
+        ),
+        nullable=True,
+    ),
+    Column("analysis_intent_id", String(96), ForeignKey("analysis_intents.id", name="fk_rt_intent", ondelete="RESTRICT"), nullable=True),
+    Column("analysis_plan_id", String(96), ForeignKey("analysis_plans.id", name="fk_rt_plan", ondelete="RESTRICT"), nullable=True),
+    Column("job_id", String(64), ForeignKey("jobs.id", name="fk_rt_job", ondelete="RESTRICT"), nullable=True),
+    Column("interpretation_id", String(96), ForeignKey("scientific_interpretations.id", name="fk_rt_interpretation", ondelete="RESTRICT"), nullable=True),
+    Column("report_id", String(96), ForeignKey("reports.id", name="fk_rt_report", ondelete="RESTRICT"), nullable=True),
+    Column("error_code", String(96), nullable=True),
+    Column("error_summary", Text, nullable=True),
+    Column("row_version", Integer, nullable=False, server_default="1"),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("started_at", DateTime(timezone=True), nullable=True),
+    Column("completed_at", DateTime(timezone=True), nullable=True),
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("research_session_id", "sequence_no", name="uq_research_turns_session_sequence"),
+    CheckConstraint("sequence_no >= 1", name=conv("ck_rt_sequence_no")),
+    CheckConstraint("row_version >= 1", name=conv("ck_rt_row_version")),
+    CheckConstraint(
+        "action_type is null or action_type in ('ANSWER', 'CLARIFY', 'ANALYZE', 'CONTINUE_ANALYSIS', 'INTERPRET_RESULT', 'QUERY_DATA', 'MANAGE_DATA', 'OPEN_OBJECT', 'CREATE_REPORT', 'UPDATE_REPORT', 'EXPORT')",
+        name=conv("ck_rt_action"),
+    ),
+    CheckConstraint(
+        "status in ('RECEIVED', 'RESOLVING_CONTEXT', 'ORCHESTRATING', 'NEEDS_CLARIFICATION', 'ANSWERED', 'UNSUPPORTED', 'READY_TO_PLAN', 'PLANNING', 'PLAN_REJECTED', 'QUEUED', 'RUNNING', 'INTERPRETING', 'COMPLETED', 'PARTIAL', 'FAILED', 'CANCELED')",
+        name=conv("ck_rt_status"),
+    ),
+)
+
+research_context_snapshots = Table(
+    "research_context_snapshots",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("project_id", String(64), ForeignKey("projects.id", name="fk_rcs_project", ondelete="RESTRICT"), nullable=False),
+    Column("research_session_id", String(64), ForeignKey("sessions.id", name="fk_rcs_session", ondelete="RESTRICT"), nullable=False),
+    Column("research_turn_id", Uuid, ForeignKey("research_turns.id", name="fk_rcs_turn", ondelete="RESTRICT"), nullable=False, unique=True),
+    Column("snapshot_schema_version", String(32), nullable=False),
+    Column("active_scope_refs_json", JSON, nullable=False),
+    Column("selection_refs_json", JSON, nullable=False),
+    Column("resolved_references_json", JSON, nullable=False),
+    Column("referenced_result_refs_json", JSON, nullable=False),
+    Column("relevant_finding_refs_json", JSON, nullable=False),
+    Column("effective_constraints_json", JSON, nullable=False),
+    Column("research_goal", Text, nullable=True),
+    Column("unresolved_questions_json", JSON, nullable=False),
+    Column("context_fingerprint", String(128), nullable=False),
+    Column("compiler_version", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+research_turn_events = Table(
+    "research_turn_events",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("turn_id", Uuid, ForeignKey("research_turns.id", name="fk_rte_turn", ondelete="CASCADE"), nullable=False),
+    Column("sequence_no", Integer, nullable=False),
+    Column("event_type", String(96), nullable=False),
+    Column("payload_json", JSON, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("turn_id", "sequence_no", name="uq_research_turn_events_turn_sequence"),
+    CheckConstraint("sequence_no >= 1", name=conv("ck_rte_sequence_no")),
+)
+
+scientific_result_snapshots = Table(
+    "scientific_result_snapshots",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("project_id", String(64), ForeignKey("projects.id", name="fk_srs_project", ondelete="RESTRICT"), nullable=False),
+    Column("research_turn_id", Uuid, ForeignKey("research_turns.id", name="fk_srs_turn", ondelete="RESTRICT"), nullable=False),
+    Column("job_id", String(64), ForeignKey("jobs.id", name="fk_srs_job", ondelete="RESTRICT"), nullable=True),
+    Column("schema_version", String(32), nullable=False),
+    Column("projection_version", String(64), nullable=False),
+    Column("execution_status", String(32), nullable=False),
+    Column("relevance_status", String(32), nullable=False),
+    Column("source_fingerprint", String(128), nullable=False),
+    Column("bundle_json", JSON, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint(
+        "research_turn_id",
+        "projection_version",
+        "source_fingerprint",
+        name="uq_scientific_result_snapshot_projection",
+    ),
+    CheckConstraint(
+        "execution_status in ('SUCCESS', 'PARTIAL', 'FAILED')",
+        name=conv("ck_srs_execution_status"),
+    ),
+    CheckConstraint(
+        "relevance_status in ('CURRENT', 'STALE', 'SOURCE_MISSING', 'INVALIDATED')",
+        name=conv("ck_srs_relevance_status"),
+    ),
+)
+
 Index("idx_projects_org_created", projects.c.organization_id, projects.c.created_at)
 Index("idx_project_members_user", project_members.c.user_id)
 Index("idx_datasets_project_created", datasets.c.project_id, datasets.c.created_at)
@@ -725,6 +921,27 @@ Index("idx_scientific_interpretation_runs_job", scientific_interpretation_runs.c
 Index("idx_scientific_interpretations_job", scientific_interpretations.c.job_id)
 Index("idx_scientific_interpretations_bundle", scientific_interpretations.c.bundle_id)
 Index("idx_audit_logs_project_created", audit_logs.c.project_id, audit_logs.c.created_at)
+Index("idx_scientific_objects_project_lifecycle", scientific_objects.c.project_id, scientific_objects.c.lifecycle_status)
+Index("idx_scientific_objects_project_kind", scientific_objects.c.project_id, scientific_objects.c.kind)
+Index("idx_scientific_objects_project_type", scientific_objects.c.project_id, scientific_objects.c.object_type)
+Index("idx_scientific_objects_current_version", scientific_objects.c.current_version_id)
+Index("idx_scientific_object_versions_object", scientific_object_versions.c.scientific_object_id)
+Index("idx_scientific_object_versions_type", scientific_object_versions.c.object_type)
+Index("idx_scientific_object_versions_content_hash", scientific_object_versions.c.content_hash)
+Index("idx_scientific_object_versions_semantic_hash", scientific_object_versions.c.semantic_hash)
+Index("idx_scientific_object_relationships_project", scientific_object_relationships.c.project_id)
+Index("idx_scientific_object_relationships_source", scientific_object_relationships.c.source_version_id)
+Index("idx_scientific_object_relationships_target", scientific_object_relationships.c.target_version_id)
+Index("idx_research_turns_project_created", research_turns.c.project_id, research_turns.c.created_at)
+Index("idx_research_turns_session_sequence", research_turns.c.research_session_id, research_turns.c.sequence_no)
+Index("idx_research_turns_status_updated", research_turns.c.status, research_turns.c.updated_at)
+Index("idx_research_turns_job", research_turns.c.job_id)
+Index("idx_research_turns_plan", research_turns.c.analysis_plan_id)
+Index("idx_research_context_snapshots_session", research_context_snapshots.c.research_session_id)
+Index("idx_research_turn_events_turn", research_turn_events.c.turn_id)
+Index("idx_scientific_result_snapshots_turn", scientific_result_snapshots.c.research_turn_id)
+Index("idx_scientific_result_snapshots_job", scientific_result_snapshots.c.job_id)
+Index("idx_scientific_result_snapshots_project_created", scientific_result_snapshots.c.project_id, scientific_result_snapshots.c.created_at)
 
 
 PHASE1_TABLES = (

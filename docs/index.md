@@ -72,6 +72,18 @@ Initial Release records remain immutable historical evidence at migration 0007.
 - [`NOT_PLANNED_SCOPE.md`](NOT_PLANNED_SCOPE.md): capabilities outside the
   current product definition.
 
+## Agent 2.0 Phase 1 Foundation
+
+- [`agent2/scientific-object-contract-v1.md`](agent2/scientific-object-contract-v1.md)
+- [`agent2/research-turn-contract-v1.md`](agent2/research-turn-contract-v1.md)
+- [`agent2/scientific-result-contract-v1.md`](agent2/scientific-result-contract-v1.md)
+- [`agent2/agent2-phase1-state-machine.md`](agent2/agent2-phase1-state-machine.md)
+- [`../AGENT2_PHASE1_RESULTS.md`](../AGENT2_PHASE1_RESULTS.md)
+
+These documents describe the additive deterministic layer only; they do not
+override existing Planner, Worker, Tool Registry, Artifact, Report, or
+qualification authorities.
+
 Historical phase planning and evidence are retained below. They are not
 authoritative for future scope when they conflict with `ROADMAP.md`.
 

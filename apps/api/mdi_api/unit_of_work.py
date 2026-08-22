@@ -4,6 +4,7 @@ from types import TracebackType
 
 from sqlalchemy.engine import Connection, Engine, Transaction
 
+from mdi_api.agent2_repositories import Agent2RepositoryBundle
 from mdi_api.repositories import SqlAlchemyRepositoryBundle
 
 
@@ -13,6 +14,7 @@ class RepositorySession:
         self._connection: Connection | None = None
         self._transaction: Transaction | None = None
         self._repositories: SqlAlchemyRepositoryBundle | None = None
+        self._agent2_repositories: Agent2RepositoryBundle | None = None
 
     @property
     def repositories(self) -> SqlAlchemyRepositoryBundle:
@@ -20,12 +22,25 @@ class RepositorySession:
             raise RuntimeError("RepositorySession.begin() must be called before accessing repositories")
         return self._repositories
 
+    @property
+    def agent2(self) -> Agent2RepositoryBundle:
+        if self._agent2_repositories is None:
+            raise RuntimeError("RepositorySession.begin() must be called before accessing Agent 2.0 repositories")
+        return self._agent2_repositories
+
+    @property
+    def connection(self) -> Connection:
+        if self._connection is None:
+            raise RuntimeError("RepositorySession.begin() must be called before accessing the connection")
+        return self._connection
+
     def begin(self) -> "RepositorySession":
         if self._connection is not None:
             raise RuntimeError("RepositorySession is already active")
         self._connection = self._engine.connect()
         self._transaction = self._connection.begin()
         self._repositories = SqlAlchemyRepositoryBundle.create(self._connection)
+        self._agent2_repositories = Agent2RepositoryBundle.create(self._connection)
         return self
 
     def commit(self) -> None:
@@ -47,6 +62,7 @@ class RepositorySession:
             self._connection.close()
         self._connection = None
         self._repositories = None
+        self._agent2_repositories = None
 
     def __enter__(self) -> "RepositorySession":
         return self.begin()

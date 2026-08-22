@@ -315,3 +315,14 @@ reviewer-authorized Phase 13-6 deterministic final archive and presentation
 seal. Phase 13 is `COMPLETE / INITIAL_RELEASE_COMPLETE`; production and
 scientific authorities remain frozen, all eight known limitations remain
 explicit, and no Phase 14 or other executable future phase is created.
+
+## Agent 2.0 Phase 1 Foundation (2026-08-22)
+
+The additive deterministic foundation is implemented through migrations
+`0015_agent2_scientific_objects`, `0016_agent2_research_turns`, and
+`0017_agent2_scientific_results`. It adds ScientificObject identity/version
+contracts, ResearchTurn/context/event persistence, typed result snapshots,
+registries, repositories, CAS transitions, and authorized REST/SSE/object
+reads. It does not add LLM calls, replace the existing execution kernel, or
+move execution into the browser. `AGENT2_PHASE1_RESULTS.md` and `docs/agent2/`
+are authoritative for exact implementation, tests, and deferred work.

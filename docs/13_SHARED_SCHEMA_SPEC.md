@@ -2252,6 +2252,26 @@ Project. It never deletes or rewrites Messages, Jobs or scientific records.
 Runs without a verified relation remain readable as orphaned history; clients
 must not attach them to the first available Session.
 
+# Agent 2.0 deterministic foundation (2026-08-22)
+
+The additive foundation follows the pre-existing
+`0014_research_session_run_bindings` head:
+
+| Revision | Tables | Authority |
+|---|---|---|
+| `0015_agent2_scientific_objects` | `scientific_objects`, `scientific_object_versions`, `scientific_object_relationships` | Stable logical object, immutable version, exact relationship refs |
+| `0016_agent2_research_turns` | `research_turns`, `research_context_snapshots`, `research_turn_events` | User research lifecycle, immutable explicit context, persisted events |
+| `0017_agent2_scientific_results` | `scientific_result_snapshots` | Deterministic projection snapshot only |
+
+The implementation reuses existing `projects`, `sessions`, `messages`,
+`analysis_intents`, `analysis_plans`, `jobs`, `scientific_interpretations`,
+and `reports`; it never creates a second Session/Message model. New domain
+identities use UUID primary keys while established project/session/user keys
+retain their string types. The receive endpoint persists one existing user
+Message, one `RECEIVED` Turn, and one `TURN_RECEIVED` event with zero LLM,
+Planner, Job, ToolCall, or Artifact side effects. Full contracts are in
+`docs/agent2/` and `AGENT2_PHASE1_RESULTS.md`.
+
 # Project History run-archive projection (2026-08-20)
 
 Project History analyses may expose two additive presentation fields:

@@ -52,14 +52,18 @@ def require_project_access(
         raise HTTPException(status_code=404, detail="项目不存在。")
 
     try:
-        membership = connection.execute(
-            select(project_members.c.role).where(
-                and_(
-                    project_members.c.project_id == project_id,
-                    project_members.c.user_id == current_user.id,
+        # PostgreSQL marks the whole transaction failed after a missing-table
+        # query. Keep the owner-only compatibility probe inside a savepoint so
+        # callers can continue their authoritative transaction safely.
+        with connection.begin_nested():
+            membership = connection.execute(
+                select(project_members.c.role).where(
+                    and_(
+                        project_members.c.project_id == project_id,
+                        project_members.c.user_id == current_user.id,
+                    )
                 )
-            )
-        ).scalar_one_or_none()
+            ).scalar_one_or_none()
     except SQLAlchemyError:
         # Current production migrations are owner-only. The metadata contract
         # already reserves memberships; until that table is migrated, a

@@ -917,3 +917,14 @@ available through an explicit manual workflow input and no longer dominate
 every push. This policy is documented in `docs/CI.md` and changes no product,
 scientific, qualification, Planner, Registry, Worker, Artifact, Recipe, or
 Report authority.
+
+## Agent 2.0 Phase 1 foundation
+
+The repository contains an additive deterministic Agent 2.0 foundation.
+`ScientificObject`/immutable versions, `ResearchTurn`/context/events, and
+`ScientificResultSnapshot` are persisted after the existing Alembic head
+`0014`; contracts, registries, repositories, services, CAS transitions, and
+authorized REST/SSE APIs are documented in `docs/agent2/`. Phase 1 deliberately
+does not add an LLM, Planner, Job, ToolCall, Artifact, Viewer, or Report
+execution path. See `AGENT2_PHASE1_RESULTS.md` for exact verification and open
+items.

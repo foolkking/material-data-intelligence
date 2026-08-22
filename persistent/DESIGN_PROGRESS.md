@@ -3259,3 +3259,15 @@ integrity `5`, and Chromium/Firefox/WebKit plus 1280x720 and 390x844 browser
 checks. Implementation commit `1032d10` passed current-HEAD CI run
 `32514219078` across Unit, Frontend, Service-backed Integration, and
 Linux/Windows scientific replay.
+
+2026-08-22 Agent 2.0 Phase 1 foundation: verified the prior Alembic head was
+`0014_research_session_run_bindings` and added ordered `0015`/`0016`/`0017`
+migrations for Scientific Objects, Research Turns, and Result Snapshots. Added
+typed Pydantic contracts, explicit registries, repository/service boundaries,
+immutable context snapshots, CAS state machine, authorized REST/SSE/object
+reads, and receive-boundary No-LLM/No-Job tests. An isolated PostgreSQL
+container passed `0014 -> 0017 -> 0014 -> 0017`, migration constraints,
+version/turn concurrency, and service-backed receive. A compatibility defect
+where old partial SQLite fixtures omit interpretation/report tables was fixed by
+making legacy FKs conditional on real parent tables; complete production
+schemas keep all applicable FKs.
