@@ -943,3 +943,5 @@ never Tool schemas, credentials, Artifact payloads, or execution authority.
 `CONTINUE_ANALYSIS` stop at `READY_TO_PLAN`. Result interpretation, report,
 data, object-open, and export actions are classification-only. No Phase 2 path
 creates an AnalysisPlan, Job, ToolCall, Artifact, Report, or data mutation.
+Implementation commit `9285e0e` passed current-HEAD CI run `32573620585` and
+Phase 2 is complete; Phase 3 capability resolution remains unimplemented.
