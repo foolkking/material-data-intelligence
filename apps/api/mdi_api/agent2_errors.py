@@ -81,3 +81,23 @@ class OrchestratorTimeout(Agent2DomainError):
 
 class ContextAssemblyFailed(Agent2DomainError):
     pass
+
+
+class CapabilityResolutionFailed(Agent2DomainError):
+    pass
+
+
+class CapabilityRequirementUnsatisfied(CapabilityResolutionFailed):
+    pass
+
+
+class CapabilityPlanInvalid(Agent2DomainError):
+    def __init__(self, message: str, *, code: str = "CAPABILITY_PLAN_INVALID") -> None:
+        super().__init__(message)
+        self.code = code
+
+
+class CapabilityBindingFailed(Agent2DomainError):
+    def __init__(self, message: str, *, code: str = "CAPABILITY_BINDING_FAILED") -> None:
+        super().__init__(message)
+        self.code = code

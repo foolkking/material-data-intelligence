@@ -39,6 +39,7 @@ from mdi_api.research_agent.orchestration.validator import ResearchTurnDecisionV
 from mdi_api.research_agent.registry_validation import Agent2Registries
 from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus, TERMINAL_TURN_STATUSES
 from mdi_api.unit_of_work import RepositoryFactory, transaction_active
+from mdi_api.research_agent.planning.queue import DisabledCapabilityPlanningQueue
 
 
 logger = logging.getLogger(__name__)
@@ -69,11 +70,13 @@ class AgentTurnProcessor:
         repository_factory: RepositoryFactory,
         registries: Agent2Registries,
         llm_client: StructuredLLMClient,
+        planning_queue: Any | None = None,
         timeout_seconds: float = 60.0,
     ) -> None:
         self.repository_factory = repository_factory
         self.registries = registries
         self.llm_client = llm_client
+        self.planning_queue = planning_queue or DisabledCapabilityPlanningQueue()
         self.timeout_seconds = timeout_seconds
         self.assembler = ResearchContextCandidateAssembler()
         self.compiler = ResearchContextCompiler()
@@ -145,6 +148,8 @@ class AgentTurnProcessor:
             candidate_bundle=prepared.bundle,
             provider_result=provider_result,
         )
+        if routed.turn_status == ResearchTurnStatus.READY_TO_PLAN.value:
+            self.planning_queue.enqueue_turn(turn_id)
         logger.info("research_turn_orchestrated", extra={
             "turn_id": str(turn_id),
             "action": decision.action.value,

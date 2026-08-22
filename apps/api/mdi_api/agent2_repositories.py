@@ -18,6 +18,8 @@ from mdi_api.db import (
     messages,
     research_context_snapshots,
     research_turn_decisions,
+    research_capability_resolutions,
+    research_capability_plans,
     research_turn_events,
     research_turns,
     scientific_object_relationships,
@@ -291,6 +293,18 @@ class ResearchTurnRepository(_Repository):
             return self._row(connection, turn_id)
         return self._run(run)
 
+    def attach_analysis_plan(self, turn_id: UUID, plan_id: str) -> dict[str, Any]:
+        def run(connection: Connection) -> dict[str, Any]:
+            result = connection.execute(
+                update(research_turns)
+                .where(and_(research_turns.c.id == turn_id, research_turns.c.analysis_plan_id.is_(None)))
+                .values(analysis_plan_id=plan_id, row_version=research_turns.c.row_version + 1, updated_at=datetime.now(timezone.utc))
+            )
+            if result.rowcount != 1:
+                raise ConcurrentTurnModification(str(turn_id))
+            return self._row(connection, turn_id)
+        return self._run(run)
+
     def apply_decision_projection(
         self,
         turn_id: UUID,
@@ -465,6 +479,30 @@ class ResearchTurnDecisionRepository(_Repository):
         return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
 
 
+class ResearchCapabilityResolutionRepository(_Repository):
+    def add(self, values: Mapping[str, Any]) -> dict[str, Any]:
+        def run(connection: Connection) -> dict[str, Any]:
+            connection.execute(insert(research_capability_resolutions).values(**values))
+            return dict(connection.execute(select(research_capability_resolutions).where(research_capability_resolutions.c.id == values["id"])).mappings().one())
+        return self._run(run)
+
+    def get_for_turn(self, turn_id: UUID) -> dict[str, Any] | None:
+        statement = select(research_capability_resolutions).where(research_capability_resolutions.c.research_turn_id == turn_id)
+        return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
+
+
+class ResearchCapabilityPlanRepository(_Repository):
+    def add(self, values: Mapping[str, Any]) -> dict[str, Any]:
+        def run(connection: Connection) -> dict[str, Any]:
+            connection.execute(insert(research_capability_plans).values(**values))
+            return dict(connection.execute(select(research_capability_plans).where(research_capability_plans.c.id == values["id"])).mappings().one())
+        return self._run(run)
+
+    def get_for_turn(self, turn_id: UUID) -> dict[str, Any] | None:
+        statement = select(research_capability_plans).where(research_capability_plans.c.research_turn_id == turn_id)
+        return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
+
+
 @dataclass(frozen=True)
 class Agent2RepositoryBundle:
     scientific_objects: ScientificObjectRepository
@@ -473,6 +511,8 @@ class Agent2RepositoryBundle:
     research_turn_events: ResearchTurnEventRepository
     scientific_result_snapshots: ScientificResultSnapshotRepository
     research_turn_decisions: ResearchTurnDecisionRepository
+    research_capability_resolutions: ResearchCapabilityResolutionRepository
+    research_capability_plans: ResearchCapabilityPlanRepository
 
     @classmethod
     def create(cls, bind: Engine | Connection) -> "Agent2RepositoryBundle":
@@ -483,6 +523,8 @@ class Agent2RepositoryBundle:
             research_turn_events=ResearchTurnEventRepository(bind),
             scientific_result_snapshots=ScientificResultSnapshotRepository(bind),
             research_turn_decisions=ResearchTurnDecisionRepository(bind),
+            research_capability_resolutions=ResearchCapabilityResolutionRepository(bind),
+            research_capability_plans=ResearchCapabilityPlanRepository(bind),
         )
 
 

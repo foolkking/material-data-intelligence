@@ -5494,3 +5494,23 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
 - Phase 2 may finish an answer or clarification and may prepare a future
   analysis, but it cannot create an AnalysisPlan, Job, ToolCall, scientific
   Result, interpretation, Report, export, or destructive data operation.
+
+## ADR: Agent 2.0 Phase 3 separates capability choice from Tool binding (2026-08-22)
+
+- Requirements resolve deterministically to registered capabilities before an
+  optional planner provider sees any choice. Eligibility, authorization,
+  producer paths and Tool-version availability are server-owned facts.
+- Unique strategies use a zero-provider deterministic plan. Alternative
+  strategies expose only opaque capability/source/result keys to a bounded
+  planner with one repair; typed input/output port views prevent compact string
+  encodings from shifting scientific contract fields. Tool IDs remain hidden.
+- The system, not the LLM, selects an exact compatible ToolBinding and runs the
+  existing dependency validator and PlanValidator. AnalysisPlan 0.2 remains
+  the sole executable contract.
+- `PLAN_READY` means a validated AnalysisPlan is attached but no Job exists.
+  Only Phase 4 may create a Job and move the Turn to `QUEUED`.
+- Historical Result reuse is permitted only when the immutable Result bundle
+  exposes an authorized exact-version ScientificObject output. Artifact-only
+  cross-Job reuse is not forged: current AnalysisPlan 0.2 has no non-runtime
+  source-binding contract for it, so Phase 3 keeps that compatibility boundary
+  rather than inserting Artifact IDs or silently recomputing.

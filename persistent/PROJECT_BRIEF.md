@@ -929,7 +929,7 @@ does not add an LLM, Planner, Job, ToolCall, Artifact, Viewer, or Report
 execution path. See `AGENT2_PHASE1_RESULTS.md` for exact verification and
 explicit Phase 2 boundaries. Implementation `1553183b` plus compatibility correction
 `9af205b8` passed current-HEAD GitHub Actions run `32567895104`; Phase 1 is
-complete and Phase 2 remains unimplemented.
+complete. Phase 2 is implemented by the later additive layer below.
 
 ## Agent 2.0 Phase 2 orchestration
 
@@ -944,4 +944,20 @@ never Tool schemas, credentials, Artifact payloads, or execution authority.
 data, object-open, and export actions are classification-only. No Phase 2 path
 creates an AnalysisPlan, Job, ToolCall, Artifact, Report, or data mutation.
 Implementation commit `9285e0e` passed current-HEAD CI run `32573620585` and
-Phase 2 is complete; Phase 3 capability resolution remains unimplemented.
+Phase 2 is complete. Phase 3 implementation is described below and remains
+subject to its own regression/current-HEAD closure evidence.
+
+## Agent 2.0 Phase 3 capability planning
+
+Phase 3 begins only at `READY_TO_PLAN`. It deterministically resolves validated
+Scientific Requirements to nine registered capabilities across five canonical
+families, persists immutable resolution evidence, chooses a deterministic fast
+path or bounded structured planner, validates typed capability dependencies,
+and binds them through the existing Tool Registry and AnalysisPlan 0.2
+validators. `PLAN_READY` is explicitly pre-Job: no Job, ToolCall, Artifact or
+Worker action exists. Exact source versions and user constraints remain
+authoritative. Result reuse requires an authorized exact-version
+ScientificObject output; artifact-only historical results are not converted to
+runtime identities. Full 62-Tool mapping and execution remain outside this
+phase. Local deterministic, full regression, service-backed and live DeepSeek
+gates pass; current-HEAD CI remains the closure authority.

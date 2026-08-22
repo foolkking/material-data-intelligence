@@ -3290,3 +3290,15 @@ action routing; Redis `turn_id` wakeup; product SSE; and strict C01-C15
 evaluation. Focused, SQLite migration, isolated PostgreSQL/Redis, live DeepSeek,
 complete backend/frontend regression and current-HEAD CI run `32573620585` pass;
 the Phase 2 TASKS block is archived in `results.md`.
+
+2026-08-22 Agent 2.0 Phase 3 local acceptance checkpoint: `PLAN_READY`,
+immutable CapabilityResolution/CapabilityPlan evidence, nine capability
+manifests, deterministic eligibility, real XRD/trajectory planned-output ports,
+typed provider-facing port contracts, bounded alternative-strategy planning,
+exact Tool binding and existing AnalysisPlan 0.2 validation are implemented.
+Current Result bundles can be reused only through authorized exact-version
+ScientificObject outputs. Deterministic, full backend, frontend, isolated
+PostgreSQL/Redis and live DeepSeek gates pass; an end-to-end processor test
+proves one Plan and zero Job/ToolCall/Artifact rows with duplicate delivery as
+a NOOP. Current-HEAD CI closure remains pending; the user-facing execution
+state is unchanged until Phase 4.

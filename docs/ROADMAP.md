@@ -340,3 +340,14 @@ Capability Resolver, CapabilityPlan, AnalysisPlan binding, Job/Tool execution,
 Scientific Interpreter, Report Composer, Data Management execution, full
 research memory, Viewer integration, and 62-Tool capability mapping remain the
 only Agent 2.0 Phase 3+ direction and are not executable queue items here.
+
+## Agent 2.0 Phase 3 Capability Planning (2026-08-22)
+
+Phase 3 is the additive `READY_TO_PLAN -> PLANNING -> PLAN_READY` layer. It
+implements deterministic capability eligibility, immutable resolution and
+CapabilityPlan evidence, bounded alternative-strategy planning, deterministic
+Tool binding and existing AnalysisPlan 0.2 validation for five canonical
+scientific families. It stops before Job creation and execution. Phase 4
+execution integration is not queued by this roadmap entry. Exact-version
+ScientificObject outputs from historical Results are reusable; artifact-only
+historical binding and full Tool coverage remain explicit open boundaries.

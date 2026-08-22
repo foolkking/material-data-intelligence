@@ -1,0 +1,66 @@
+from __future__ import annotations
+
+import asyncio
+from pathlib import Path
+from typing import Any
+
+from pydantic import ValidationError
+
+from mdi_api.agent2_errors import CapabilityPlanInvalid
+from mdi_api.research_agent.capabilities.schemas import CapabilityPlan, CapabilityPlannerInput, CapabilityResolution
+from mdi_api.research_agent.llm.structured_client import StructuredLLMClient
+from mdi_api.research_agent.orchestration.schemas import ResearchTurnDecision
+from mdi_api.research_agent.planning.deterministic import build_deterministic_capability_plan
+from mdi_api.research_agent.planning.validator import CapabilityPlanValidator
+from mdi_api.unit_of_work import transaction_active
+
+
+PROMPT_VERSION = "scientific-capability-planner/1.0"
+
+
+def load_capability_planner_prompt() -> str:
+    return (Path(__file__).parent / "prompts" / "scientific_capability_planner_v1.txt").read_text(encoding="utf-8")
+
+
+def requires_llm_planning(resolution: CapabilityResolution, decision: ResearchTurnDecision) -> bool:
+    for requirement in decision.scientific_requirements:
+        options = [candidate for candidate in resolution.candidates if requirement.requirement_id in candidate.satisfies_requirement_ids and candidate.eligibility.value in {"ELIGIBLE", "CONDITIONAL"}]
+        if len(options) > 1:
+            return True
+    for candidate in resolution.candidates:
+        if any(len(values) > 1 for values in candidate.possible_producers.values()):
+            return True
+        if any(len(values) > 1 for values in candidate.reusable_result_bindings.values()):
+            return True
+    return False
+
+
+class ScientificCapabilityPlanner:
+    def __init__(self, *, registry: Any, llm_client: StructuredLLMClient | None = None, timeout_seconds: float = 60.0) -> None:
+        self.registry = registry
+        self.llm_client = llm_client
+        self.timeout_seconds = timeout_seconds
+
+    async def plan(self, *, decision: ResearchTurnDecision, resolution: CapabilityResolution, planner_input: CapabilityPlannerInput, context: dict[str, Any]) -> tuple[CapabilityPlan, str, Any | None]:
+        if not requires_llm_planning(resolution, decision):
+            plan = build_deterministic_capability_plan(decision=decision, resolution=resolution, registry=self.registry)
+            return CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=decision, context=context, registry=self.registry), "DETERMINISTIC", None
+        if self.llm_client is None:
+            raise CapabilityPlanInvalid("ambiguous capability strategy requires the bounded planner")
+        first_error: Exception | None = None
+        for attempt in range(2):
+            if transaction_active():
+                raise RuntimeError("Capability Planner provider boundary retained an open transaction")
+            result = await asyncio.wait_for(self.llm_client.generate_structured(
+                role="scientific_capability_planner", system_prompt=load_capability_planner_prompt(),
+                input_payload=planner_input.model_dump(mode="json"), output_schema=CapabilityPlan.model_json_schema(),
+                timeout_seconds=self.timeout_seconds,
+                request_context={"prompt_version": PROMPT_VERSION, "repair_attempted": attempt == 1, "repair": None if attempt == 0 else {"validation_error": str(first_error)[:1000], "legal_capability_contracts": [item.model_dump(mode="json") for item in planner_input.candidates], "legal_source_keys": [item.ref_key for item in planner_input.source_bindings], "legal_result_keys": [item.ref_key for item in planner_input.reusable_results]}},
+            ), timeout=self.timeout_seconds)
+            try:
+                plan = CapabilityPlan.model_validate(result.parsed)
+                plan = CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=decision, context=context, registry=self.registry)
+                return plan, "LLM", result
+            except (CapabilityPlanInvalid, ValidationError, ValueError) as exc:
+                first_error = exc
+        raise CapabilityPlanInvalid(str(first_error or "invalid capability plan"))

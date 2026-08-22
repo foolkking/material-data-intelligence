@@ -34,6 +34,7 @@ class ResearchTurnStatus(str, Enum):
     UNSUPPORTED = "UNSUPPORTED"
     READY_TO_PLAN = "READY_TO_PLAN"
     PLANNING = "PLANNING"
+    PLAN_READY = "PLAN_READY"
     PLAN_REJECTED = "PLAN_REJECTED"
     QUEUED = "QUEUED"
     RUNNING = "RUNNING"
@@ -66,6 +67,14 @@ class ResearchTurnEventType(str, Enum):
     CLARIFICATION_REQUESTED = "CLARIFICATION_REQUESTED"
     DIRECT_ANSWER_READY = "DIRECT_ANSWER_READY"
     PLAN_REQUESTED = "PLAN_REQUESTED"
+    CAPABILITY_RESOLUTION_STARTED = "CAPABILITY_RESOLUTION_STARTED"
+    CAPABILITY_RESOLUTION_COMPLETED = "CAPABILITY_RESOLUTION_COMPLETED"
+    CAPABILITY_UNSUPPORTED = "CAPABILITY_UNSUPPORTED"
+    CAPABILITY_PLANNING_STARTED = "CAPABILITY_PLANNING_STARTED"
+    CAPABILITY_PLAN_CREATED = "CAPABILITY_PLAN_CREATED"
+    CAPABILITY_PLAN_REJECTED = "CAPABILITY_PLAN_REJECTED"
+    ANALYSIS_PLAN_BOUND = "ANALYSIS_PLAN_BOUND"
+    PLAN_READY = "PLAN_READY"
     PLAN_ATTACHED = "PLAN_ATTACHED"
     PLAN_REJECTED = "PLAN_REJECTED"
     JOB_ATTACHED = "JOB_ATTACHED"
@@ -206,7 +215,29 @@ class CapabilityOutputSlot(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     name: str = Field(min_length=1, max_length=96)
-    object_type: str = Field(min_length=3, max_length=128)
+    result_type: str = Field(default="generic.result", min_length=3, max_length=128)
+    scientific_object_type: str | None = Field(default=None, min_length=3, max_length=128)
+    # `object_type` is retained as a read/construct compatibility alias for
+    # Phase 1 manifests; new manifests should use scientific_object_type.
+    object_type: str | None = Field(default=None, min_length=3, max_length=128)
+    required: bool = True
+    cardinality: Literal["ONE", "MANY"] = "ONE"
+
+    @model_validator(mode="after")
+    def normalize_object_type(self) -> "CapabilityOutputSlot":
+        if self.scientific_object_type is None and self.object_type is not None:
+            object.__setattr__(self, "scientific_object_type", self.object_type)
+        if self.object_type is None:
+            object.__setattr__(self, "object_type", self.scientific_object_type)
+        return self
+
+
+class CapabilityPrecondition(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    predicate_id: str = Field(pattern=r"^[a-z][a-z0-9_.-]{2,127}$")
+    input_slot: str | None = Field(default=None, min_length=1, max_length=96)
+    parameters: dict[str, Any] = Field(default_factory=dict)
     required: bool = True
 
 
@@ -252,7 +283,7 @@ class CapabilityManifest(BaseModel):
     satisfies_requirements: list[str]
     input_slots: list[CapabilityInputSlot]
     output_slots: list[CapabilityOutputSlot]
-    preconditions: list[str]
+    preconditions: list[CapabilityPrecondition]
     limitations: list[str]
     tool_bindings: list[ToolBinding]
     viewer_bindings: list[str]
@@ -261,6 +292,8 @@ class CapabilityManifest(BaseModel):
     report_projector: str | None
     progress_projector: str = Field(min_length=1, max_length=128)
     status: CapabilityStatus
+    planning_priority: int = Field(default=100, ge=0, le=10_000)
+    manifest_schema_version: Literal["1.1"] = "1.1"
 
 
 class ResearchTurnUIContext(BaseModel):

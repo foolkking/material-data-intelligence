@@ -51,6 +51,8 @@ _STATUS_EVENTS = {
     ResearchTurnStatus.ANSWERED: ResearchTurnEventType.DIRECT_ANSWER_READY,
     ResearchTurnStatus.UNSUPPORTED: ResearchTurnEventType.TURN_UNSUPPORTED,
     ResearchTurnStatus.READY_TO_PLAN: ResearchTurnEventType.PLAN_REQUESTED,
+    ResearchTurnStatus.PLANNING: ResearchTurnEventType.CAPABILITY_PLANNING_STARTED,
+    ResearchTurnStatus.PLAN_READY: ResearchTurnEventType.PLAN_READY,
     ResearchTurnStatus.PLAN_REJECTED: ResearchTurnEventType.PLAN_REJECTED,
     ResearchTurnStatus.RUNNING: ResearchTurnEventType.JOB_STARTED,
     ResearchTurnStatus.INTERPRETING: ResearchTurnEventType.INTERPRETATION_STARTED,
@@ -342,6 +344,8 @@ class ResearchTurnService:
         } for row in message_rows]
         snapshot = session.agent2.research_context_snapshots.get_for_turn(turn["id"])
         decision = session.agent2.research_turn_decisions.get_for_turn(turn["id"])
+        capability_resolution = session.agent2.research_capability_resolutions.get_for_turn(turn["id"])
+        capability_plan = session.agent2.research_capability_plans.get_for_turn(turn["id"])
         summary = None if snapshot is None else {
             "id": snapshot["id"],
             "schema_version": snapshot["snapshot_schema_version"],
@@ -366,6 +370,12 @@ class ResearchTurnService:
             "orchestration": {
                 "decision_available": decision is not None,
                 "action_dispatch_status": None if decision is None else decision["action_dispatch_status"],
+            },
+            "planning": {
+                "status": turn["status"],
+                "plan_available": turn["status"] == ResearchTurnStatus.PLAN_READY.value and turn.get("analysis_plan_id") is not None,
+                "resolution_available": capability_resolution is not None,
+                "capability_plan_available": capability_plan is not None,
             },
             "result_available": session.agent2.scientific_result_snapshots.exists_for_turn(turn["id"]),
             "created_at": turn["created_at"],

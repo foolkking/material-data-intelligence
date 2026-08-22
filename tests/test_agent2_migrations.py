@@ -25,6 +25,7 @@ def test_agent2_migrations_upgrade_from_previous_head_and_preserve_order(tmp_pat
         "scientific_objects", "scientific_object_versions", "scientific_object_relationships",
         "research_turns", "research_context_snapshots", "research_turn_events", "scientific_result_snapshots",
         "research_turn_decisions",
+        "research_capability_resolutions", "research_capability_plans",
     }
     assert expected.issubset(set(inspector.get_table_names()))
     assert {item["name"] for item in inspector.get_unique_constraints("scientific_object_versions")} >= {"uq_scientific_object_versions_object_version"}
@@ -38,6 +39,8 @@ def test_agent2_migrations_upgrade_from_previous_head_and_preserve_order(tmp_pat
     assert {item["name"] for item in inspector.get_indexes("research_turn_decisions")} >= {
         "idx_research_turn_decisions_action_created", "idx_research_turn_decisions_fingerprint",
     }
+    assert {item["name"] for item in inspector.get_unique_constraints("research_capability_resolutions")} >= {"uq_research_capability_resolutions_turn"}
+    assert {item["name"] for item in inspector.get_unique_constraints("research_capability_plans")} >= {"uq_research_capability_plans_turn"}
     fk_tables = {item["referred_table"] for item in inspector.get_foreign_keys("research_turns")}
     assert {"projects", "sessions", "messages", "analysis_intents", "analysis_plans", "jobs"}.issubset(fk_tables)
     engine.dispose()

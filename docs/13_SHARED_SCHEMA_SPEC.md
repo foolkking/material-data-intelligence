@@ -2332,3 +2332,22 @@ These endpoints never cascade-delete non-empty research history. List and
 Project History projections expose the current membership role so clients can
 omit mutation controls, while the server remains the authority for every
 request.
+
+# Agent 2.0 capability planning contracts (2026-08-22)
+
+Revision `0019_agent2_capability_planning` follows `0018` and adds one
+immutable `research_capability_resolutions` row and one immutable
+`research_capability_plans` row per ResearchTurn. Resolution stores the exact
+requirement snapshot, registry fingerprint and deterministic
+`ELIGIBLE | CONDITIONAL | INELIGIBLE` evidence. Plan storage records the typed
+CapabilityPlan, input fingerprint and `DETERMINISTIC | LLM` planner mode.
+
+`ResearchTurnStatus.PLAN_READY` is additive and distinct from `QUEUED`:
+`PLAN_READY` requires an attached, persisted AnalysisPlan 0.2 that passed the
+existing dependency validator and PlanValidator, while Job/ToolCall/Artifact
+counts remain unchanged. Dependency identity is derived only from typed
+`PLANNED_OUTPUT` bindings. Source bindings retain exact
+ScientificObjectVersion identity. `PREVIOUS_RESULT` is valid only when the
+immutable Result bundle exposes an authorized exact-version ScientificObject
+output compatible with the target input slot; artifact-only runtime IDs are
+not accepted as planning authority.

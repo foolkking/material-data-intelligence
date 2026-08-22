@@ -831,7 +831,7 @@ research_turns = Table(
         name=conv("ck_rt_action"),
     ),
     CheckConstraint(
-        "status in ('RECEIVED', 'RESOLVING_CONTEXT', 'ORCHESTRATING', 'NEEDS_CLARIFICATION', 'ANSWERED', 'UNSUPPORTED', 'READY_TO_PLAN', 'PLANNING', 'PLAN_REJECTED', 'QUEUED', 'RUNNING', 'INTERPRETING', 'COMPLETED', 'PARTIAL', 'FAILED', 'CANCELED')",
+        "status in ('RECEIVED', 'RESOLVING_CONTEXT', 'ORCHESTRATING', 'NEEDS_CLARIFICATION', 'ANSWERED', 'UNSUPPORTED', 'READY_TO_PLAN', 'PLANNING', 'PLAN_READY', 'PLAN_REJECTED', 'QUEUED', 'RUNNING', 'INTERPRETING', 'COMPLETED', 'PARTIAL', 'FAILED', 'CANCELED')",
         name=conv("ck_rt_status"),
     ),
 )
@@ -930,6 +930,38 @@ research_turn_decisions = Table(
     ),
 )
 
+research_capability_resolutions = Table(
+    "research_capability_resolutions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("research_turn_id", Uuid, ForeignKey("research_turns.id", name="fk_rcr_turn", ondelete="RESTRICT"), nullable=False, unique=True),
+    Column("contract_version", String(32), nullable=False),
+    Column("requirement_snapshot_json", JSON, nullable=False),
+    Column("resolution_json", JSON, nullable=False),
+    Column("registry_fingerprint", String(128), nullable=False),
+    Column("resolver_version", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+research_capability_plans = Table(
+    "research_capability_plans",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("research_turn_id", Uuid, ForeignKey("research_turns.id", name="fk_rcp_turn", ondelete="RESTRICT"), nullable=False, unique=True),
+    Column("capability_resolution_id", Uuid, ForeignKey("research_capability_resolutions.id", name="fk_rcp_resolution", ondelete="RESTRICT"), nullable=False),
+    Column("contract_version", String(32), nullable=False),
+    Column("plan_json", JSON, nullable=False),
+    Column("input_fingerprint", String(128), nullable=False),
+    Column("planner_mode", String(16), nullable=False),
+    Column("prompt_version", String(64), nullable=True),
+    Column("provider", String(64), nullable=True),
+    Column("model", String(128), nullable=True),
+    Column("provider_request_id", String(128), nullable=True),
+    Column("repair_attempted", Boolean, nullable=False, server_default="false"),
+    Column("validation_status", String(32), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
 Index("idx_projects_org_created", projects.c.organization_id, projects.c.created_at)
 Index("idx_project_members_user", project_members.c.user_id)
 Index("idx_datasets_project_created", datasets.c.project_id, datasets.c.created_at)
@@ -974,6 +1006,9 @@ Index("idx_scientific_result_snapshots_job", scientific_result_snapshots.c.job_i
 Index("idx_scientific_result_snapshots_project_created", scientific_result_snapshots.c.project_id, scientific_result_snapshots.c.created_at)
 Index("idx_research_turn_decisions_action_created", research_turn_decisions.c.action, research_turn_decisions.c.created_at)
 Index("idx_research_turn_decisions_fingerprint", research_turn_decisions.c.input_context_fingerprint)
+Index("idx_research_capability_resolutions_fingerprint", research_capability_resolutions.c.registry_fingerprint)
+Index("idx_research_capability_plans_resolution", research_capability_plans.c.capability_resolution_id)
+Index("idx_research_capability_plans_fingerprint", research_capability_plans.c.input_fingerprint)
 
 
 PHASE1_TABLES = (
