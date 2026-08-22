@@ -20,6 +20,7 @@ from mdi_api.db import (
     research_turn_decisions,
     research_capability_resolutions,
     research_capability_plans,
+    research_execution_summaries,
     research_turn_events,
     research_turns,
     scientific_object_relationships,
@@ -166,6 +167,10 @@ class ScientificObjectRepository(_Repository):
 
 
 class ResearchTurnRepository(_Repository):
+    def get_session(self, session_id: str) -> dict[str, Any] | None:
+        statement = select(sessions).where(sessions.c.id == session_id)
+        return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
+
     def lock_session(self, session_id: str) -> dict[str, Any] | None:
         statement = select(sessions).where(sessions.c.id == session_id).with_for_update()
         return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
@@ -198,6 +203,12 @@ class ResearchTurnRepository(_Repository):
 
     def get_for_update(self, turn_id: UUID) -> dict[str, Any]:
         return self.get(turn_id, for_update=True)
+
+    def get_for_job(self, job_id: str, *, for_update: bool = False) -> dict[str, Any] | None:
+        statement = select(research_turns).where(research_turns.c.job_id == job_id)
+        if for_update:
+            statement = statement.with_for_update()
+        return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
 
     def list_for_session(self, session_id: str, *, cursor: int | None = None, limit: int = 50) -> list[dict[str, Any]]:
         statement = select(research_turns).where(research_turns.c.research_session_id == session_id)
@@ -301,6 +312,22 @@ class ResearchTurnRepository(_Repository):
                 .values(analysis_plan_id=plan_id, row_version=research_turns.c.row_version + 1, updated_at=datetime.now(timezone.utc))
             )
             if result.rowcount != 1:
+                raise ConcurrentTurnModification(str(turn_id))
+            return self._row(connection, turn_id)
+        return self._run(run)
+
+    def attach_job(self, turn_id: UUID, job_id: str) -> dict[str, Any]:
+        """Attach exactly one existing Job to a Turn using a compare-safe write."""
+        def run(connection: Connection) -> dict[str, Any]:
+            result = connection.execute(
+                update(research_turns)
+                .where(and_(research_turns.c.id == turn_id, research_turns.c.job_id.is_(None)))
+                .values(job_id=job_id, row_version=research_turns.c.row_version + 1, updated_at=datetime.now(timezone.utc))
+            )
+            if result.rowcount != 1:
+                current = self._row(connection, turn_id)
+                if str(current.get("job_id") or "") == str(job_id):
+                    return current
                 raise ConcurrentTurnModification(str(turn_id))
             return self._row(connection, turn_id)
         return self._run(run)
@@ -503,6 +530,36 @@ class ResearchCapabilityPlanRepository(_Repository):
         return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
 
 
+class ResearchExecutionSummaryRepository(_Repository):
+    """Immutable projection of terminal Job/ToolCall/Artifact facts."""
+
+    def add(self, values: Mapping[str, Any]) -> dict[str, Any]:
+        def run(connection: Connection) -> dict[str, Any]:
+            existing = connection.execute(
+                select(research_execution_summaries).where(
+                    research_execution_summaries.c.research_turn_id == values["research_turn_id"]
+                )
+            ).mappings().first()
+            if existing is not None:
+                if str(existing["source_fingerprint"]) != str(values["source_fingerprint"]):
+                    from mdi_api.research_agent.execution.errors import ExecutionSummaryConflict
+                    raise ExecutionSummaryConflict("terminal execution facts changed for an immutable ResearchTurn")
+                return dict(existing)
+            connection.execute(insert(research_execution_summaries).values(**values))
+            return dict(connection.execute(
+                select(research_execution_summaries).where(research_execution_summaries.c.id == values["id"])
+            ).mappings().one())
+        return self._run(run)
+
+    def get_for_turn(self, turn_id: UUID) -> dict[str, Any] | None:
+        statement = select(research_execution_summaries).where(research_execution_summaries.c.research_turn_id == turn_id)
+        return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
+
+    def get_for_job(self, job_id: str) -> dict[str, Any] | None:
+        statement = select(research_execution_summaries).where(research_execution_summaries.c.job_id == job_id)
+        return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
+
+
 @dataclass(frozen=True)
 class Agent2RepositoryBundle:
     scientific_objects: ScientificObjectRepository
@@ -513,6 +570,7 @@ class Agent2RepositoryBundle:
     research_turn_decisions: ResearchTurnDecisionRepository
     research_capability_resolutions: ResearchCapabilityResolutionRepository
     research_capability_plans: ResearchCapabilityPlanRepository
+    research_execution_summaries: ResearchExecutionSummaryRepository
 
     @classmethod
     def create(cls, bind: Engine | Connection) -> "Agent2RepositoryBundle":
@@ -525,6 +583,7 @@ class Agent2RepositoryBundle:
             research_turn_decisions=ResearchTurnDecisionRepository(bind),
             research_capability_resolutions=ResearchCapabilityResolutionRepository(bind),
             research_capability_plans=ResearchCapabilityPlanRepository(bind),
+            research_execution_summaries=ResearchExecutionSummaryRepository(bind),
         )
 
 

@@ -156,8 +156,10 @@ from mdi_api.routers.secrets import (
 from mdi_api.routers.tools import list_mvp_tools, list_tools
 from mdi_api.routers.agent2 import (
     cancel_research_turn,
+    dispatch_research_turn,
     create_research_turn,
     get_research_turn,
+    get_research_turn_progress,
     get_scientific_object,
     get_scientific_object_version,
     list_research_turns,
@@ -210,6 +212,8 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/api/projects/{project_id}/research/sessions/{session_id}/turns", list_research_turns, ("GET",), ("agent2", "research")),
     RouteSpec("/api/research/turns/{turn_id}", get_research_turn, ("GET",), ("agent2", "research")),
     RouteSpec("/api/research/turns/{turn_id}/cancel", cancel_research_turn, ("POST",), ("agent2", "research")),
+    RouteSpec("/api/research/turns/{turn_id}/dispatch", dispatch_research_turn, ("POST",), ("agent2", "research")),
+    RouteSpec("/api/research/turns/{turn_id}/progress", get_research_turn_progress, ("GET",), ("agent2", "research")),
     RouteSpec("/api/research/turns/{turn_id}/events", stream_research_turn_events, ("GET",), ("agent2", "research")),
     RouteSpec("/api/projects/{project_id}/scientific-objects", list_scientific_objects, ("GET",), ("agent2", "scientific-objects")),
     RouteSpec("/api/scientific-objects/{object_id}", get_scientific_object, ("GET",), ("agent2", "scientific-objects")),

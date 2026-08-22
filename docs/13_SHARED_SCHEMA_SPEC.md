@@ -2351,3 +2351,28 @@ ScientificObjectVersion identity. `PREVIOUS_RESULT` is valid only when the
 immutable Result bundle exposes an authorized exact-version ScientificObject
 output compatible with the target input slot; artifact-only runtime IDs are
 not accepted as planning authority.
+
+# Agent 2.0 execution integration contracts (2026-08-23)
+
+Revision `0020_agent2_execution_integration` follows `0019` and adds the
+immutable `research_execution_summaries` terminal projection. Exactly one
+summary may belong to a ResearchTurn and one existing Job. The summary stores
+the deterministic `SUCCESS | PARTIAL | FAILED | CANCELED` execution outcome,
+step facts, declared Artifact references, a stable source fingerprint and the
+projector version. Job, ToolCall, Artifact and JobEvent remain the execution
+authorities; the summary does not replace or reinterpret them.
+
+`ResearchTurnStatus.CANCELING` and `RESULT_PENDING` are additive. `QUEUED` and
+`RUNNING` may enter `CANCELING`, but the Turn becomes `CANCELED` only after the
+existing Job runtime confirms cancellation. A cancellation race may instead
+end at `RESULT_PENDING` when committed execution facts prove a successful or
+partial terminal outcome. `RESULT_PENDING` requires a terminal Job and an
+immutable ExecutionSummary, while `assistant_final_message_id` and the Agent 2.0
+ScientificResultSnapshot remain absent.
+
+Redis/RQ carries only the existing Job identity. The Worker reloads the
+persisted AnalysisPlan and exact ScientificObjectVersion-backed source from
+PostgreSQL and ArtifactStorage. Product progress is a deterministic projection
+of CapabilityPlan steps, AnalysisPlan steps, JobEvents, ToolCalls and declared
+Artifacts; it does not expose Tool, Job, queue, worker or provider internals and
+does not contain scientific interpretation.

@@ -29,6 +29,16 @@ from mdi_api.research_agent.orchestration.queue import (
 )
 from mdi_api.research_agent.registry_validation import DEFAULT_AGENT2_REGISTRIES
 from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchTurnStatus, TERMINAL_TURN_STATUSES
+from mdi_api.research_agent.execution.dispatcher import ResearchExecutionDispatcher
+from mdi_api.research_agent.execution.supervisor import ResearchExecutionSupervisor
+from mdi_api.research_agent.execution.errors import (
+    ExecutionCancelRequestFailed,
+    ExecutionPlanIdentityMismatch,
+    ExecutionPlanNotReady,
+    ExecutionQueuePublishFailed,
+    ExecutionSourceUnavailable,
+    ExecutionSummaryConflict,
+)
 from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_api.scientific_objects.schemas import ScientificObjectKind, ScientificObjectLifecycle
@@ -114,6 +124,41 @@ def cancel_research_turn(turn_id: UUID, current_user: CurrentUser = Depends(get_
     try:
         turn = get_research_turn_service().cancel_turn(turn_id, current_user)
         return {"turn_id": turn["id"], "status": turn["status"], "updated_at": turn["updated_at"]}
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def dispatch_research_turn(turn_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> JSONResponse:
+    try:
+        factory = create_repository_factory()
+        with factory.session() as session:
+            turn = session.agent2.research_turns.get(turn_id)
+            require_project_access(session.connection, str(turn["project_id"]), current_user, write=True)
+        result = ResearchExecutionDispatcher(factory).dispatch_turn(turn_id)
+        return JSONResponse(status_code=202, content=jsonable_encoder({
+            "turn_id": str(result.turn_id), "job_attached": True, "status": "QUEUED",
+            "queue_backend": result.queue_backend, "queued": result.queued,
+        }))
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
+    try:
+        factory = create_repository_factory()
+        with factory.session() as session:
+            turn = session.agent2.research_turns.get(turn_id)
+            require_project_access(session.connection, str(turn["project_id"]), current_user)
+            job_id = str(turn.get("job_id") or "")
+        if not job_id:
+            return {
+                "contract_version": "1.0", "turn_id": str(turn_id), "status": turn["status"],
+                "plan_title": None, "steps": [], "active_step_ids": [], "completed_step_count": 0,
+                "total_step_count": 0, "incremental_outputs": [], "warnings": [],
+                "execution_outcome": None, "result_projection_pending": False,
+            }
+        view = ResearchExecutionSupervisor(factory).sync_for_job(job_id)
+        return jsonable_encoder(view.model_dump(mode="json") if hasattr(view, "model_dump") else view)
     except Exception as exc:
         raise _http_error(exc) from exc
 
@@ -246,6 +291,21 @@ def _sse_event_name(event_type: str) -> str:
         "TURN_COMPLETED": "turn.answered",
         "TURN_CANCELED": "turn.canceled",
         "TURN_FAILED": "turn.failed",
+        "EXECUTION_DISPATCH_STARTED": "analysis.queued",
+        "JOB_ATTACHED": "analysis.queued",
+        "JOB_QUEUE_PUBLISHED": "analysis.queued",
+        "JOB_STARTED": "analysis.started",
+        "EXECUTION_STEP_STARTED": "analysis.step.started",
+        "EXECUTION_STEP_COMPLETED": "analysis.step.completed",
+        "EXECUTION_STEP_FAILED": "analysis.step.failed",
+        "EXECUTION_STEP_SKIPPED": "analysis.step.failed",
+        "EXECUTION_OUTPUT_AVAILABLE": "analysis.output.available",
+        "CANCELLATION_REQUESTED": "analysis.canceling",
+        "EXECUTION_CANCELED": "analysis.canceled",
+        "EXECUTION_SUCCEEDED": "analysis.execution.completed",
+        "EXECUTION_PARTIAL": "analysis.execution.partial",
+        "EXECUTION_FAILED": "analysis.failed",
+        "RESULT_PENDING": "result.pending",
     }.get(event_type, "turn.status.changed")
 
 
@@ -261,4 +321,17 @@ def _http_error(exc: Exception) -> HTTPException:
         return HTTPException(status_code=409, detail={"code": code, "summary": str(exc)})
     if isinstance(exc, InvalidScientificObjectVersion):
         return HTTPException(status_code=422, detail=str(exc))
+    execution_codes = {
+        ExecutionPlanNotReady: "EXECUTION_PLAN_NOT_READY",
+        ExecutionPlanIdentityMismatch: "EXECUTION_PLAN_IDENTITY_MISMATCH",
+        ExecutionSourceUnavailable: "EXECUTION_SOURCE_UNAVAILABLE",
+        ExecutionSummaryConflict: "EXECUTION_SUMMARY_CONFLICT",
+    }
+    for error_type, code in execution_codes.items():
+        if isinstance(exc, error_type):
+            return HTTPException(status_code=409, detail={"code": code, "summary": str(exc)})
+    if isinstance(exc, ExecutionQueuePublishFailed):
+        return HTTPException(status_code=503, detail={"code": "EXECUTION_QUEUE_PUBLISH_FAILED", "summary": str(exc)})
+    if isinstance(exc, ExecutionCancelRequestFailed):
+        return HTTPException(status_code=503, detail={"code": "EXECUTION_CANCEL_REQUEST_FAILED", "summary": str(exc)})
     return HTTPException(status_code=500, detail="Agent 2.0 请求处理失败。")

@@ -11,6 +11,19 @@ from mdi_api.research_agent.schemas import (
 from mdi_api.research_agent.capabilities.registry import InMemoryCapabilityRegistry
 
 
+_DISPLAY_NAMES = {
+    "structure.rdf": "计算径向分布函数",
+    "diffraction.theoretical_xrd": "生成理论 XRD 图谱",
+    "diffraction.experimental_theoretical_comparison": "比较实验与理论 XRD 峰",
+    "ml.regression_evaluation": "评估回归模型",
+    "trajectory.msd": "计算均方位移",
+    "trajectory.diffusion": "估算扩散性质",
+    "phonon.band": "检查声子能带",
+    "phonon.dos": "检查声子态密度",
+    "phonon.band_dos": "组合声子能带与态密度",
+}
+
+
 def _manifest(
     capability_id: str,
     purpose: str,
@@ -25,7 +38,7 @@ def _manifest(
         capability_id=capability_id,
         version="1.0",
         domain=capability_id.split(".", 1)[0],
-        display_name=capability_id.replace(".", " ").title(),
+        display_name=_DISPLAY_NAMES.get(capability_id, capability_id.replace(".", " ").title()),
         scientific_purpose=purpose,
         satisfies_requirements=requirements,
         input_slots=inputs,

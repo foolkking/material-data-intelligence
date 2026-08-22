@@ -14,6 +14,7 @@ from mdi_api.scientific_objects.registry import InMemoryObjectTypeRegistry, buil
 from mdi_api.scientific_results.projectors.registry import InMemoryScientificResultProjectorRegistry
 from mdi_api.research_agent.capabilities.preconditions import build_default_precondition_registry
 from mdi_api.research_agent.capabilities.versions import version_satisfies
+from mdi_api.research_agent.execution.progress import GenericScientificProgressProjector
 
 
 @dataclass(frozen=True)
@@ -29,7 +30,7 @@ def build_default_agent2_registries() -> Agent2Registries:
     result_projectors = InMemoryScientificResultProjectorRegistry()
     result_projectors.register("agent2.fixture.result", lambda *_args, **_kwargs: None)
     progress_projectors = InMemoryScientificProgressProjectorRegistry()
-    progress_projectors.register("agent2.fixture.progress", lambda *_args, **_kwargs: None)
+    progress_projectors.register("agent2.fixture.progress", GenericScientificProgressProjector())
     return Agent2Registries(
         object_types=build_default_object_type_registry(),
         requirements=build_default_requirement_registry(),

@@ -824,6 +824,7 @@ research_turns = Table(
     Column("completed_at", DateTime(timezone=True), nullable=True),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     UniqueConstraint("research_session_id", "sequence_no", name="uq_research_turns_session_sequence"),
+    UniqueConstraint("job_id", name="uq_research_turns_job_id"),
     CheckConstraint("sequence_no >= 1", name=conv("ck_rt_sequence_no")),
     CheckConstraint("row_version >= 1", name=conv("ck_rt_row_version")),
     CheckConstraint(
@@ -831,7 +832,7 @@ research_turns = Table(
         name=conv("ck_rt_action"),
     ),
     CheckConstraint(
-        "status in ('RECEIVED', 'RESOLVING_CONTEXT', 'ORCHESTRATING', 'NEEDS_CLARIFICATION', 'ANSWERED', 'UNSUPPORTED', 'READY_TO_PLAN', 'PLANNING', 'PLAN_READY', 'PLAN_REJECTED', 'QUEUED', 'RUNNING', 'INTERPRETING', 'COMPLETED', 'PARTIAL', 'FAILED', 'CANCELED')",
+        "status in ('RECEIVED', 'RESOLVING_CONTEXT', 'ORCHESTRATING', 'NEEDS_CLARIFICATION', 'ANSWERED', 'UNSUPPORTED', 'READY_TO_PLAN', 'PLANNING', 'PLAN_READY', 'PLAN_REJECTED', 'QUEUED', 'RUNNING', 'CANCELING', 'RESULT_PENDING', 'INTERPRETING', 'COMPLETED', 'PARTIAL', 'FAILED', 'CANCELED')",
         name=conv("ck_rt_status"),
     ),
 )
@@ -962,6 +963,23 @@ research_capability_plans = Table(
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
 
+research_execution_summaries = Table(
+    "research_execution_summaries",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("research_turn_id", Uuid, ForeignKey("research_turns.id", name="fk_res_turn", ondelete="RESTRICT"), nullable=False),
+    Column("job_id", String(64), ForeignKey("jobs.id", name="fk_res_job", ondelete="RESTRICT"), nullable=False),
+    Column("contract_version", String(32), nullable=False),
+    Column("execution_outcome", String(32), nullable=False),
+    Column("summary_json", JSON, nullable=False),
+    Column("source_fingerprint", String(128), nullable=False),
+    Column("projector_version", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("research_turn_id", name="uq_research_execution_summaries_turn"),
+    UniqueConstraint("job_id", name="uq_research_execution_summaries_job"),
+    CheckConstraint("execution_outcome in ('SUCCESS', 'PARTIAL', 'FAILED', 'CANCELED')", name="ck_res_execution_outcome"),
+)
+
 Index("idx_projects_org_created", projects.c.organization_id, projects.c.created_at)
 Index("idx_project_members_user", project_members.c.user_id)
 Index("idx_datasets_project_created", datasets.c.project_id, datasets.c.created_at)
@@ -1009,6 +1027,8 @@ Index("idx_research_turn_decisions_fingerprint", research_turn_decisions.c.input
 Index("idx_research_capability_resolutions_fingerprint", research_capability_resolutions.c.registry_fingerprint)
 Index("idx_research_capability_plans_resolution", research_capability_plans.c.capability_resolution_id)
 Index("idx_research_capability_plans_fingerprint", research_capability_plans.c.input_fingerprint)
+Index("idx_research_execution_summaries_turn", research_execution_summaries.c.research_turn_id)
+Index("idx_research_execution_summaries_job", research_execution_summaries.c.job_id)
 
 
 PHASE1_TABLES = (
@@ -1036,3 +1056,14 @@ PHASE1_TABLES = (
 )
 
 PHASE3_TABLES = PHASE1_TABLES
+
+PHASE4_TABLES = PHASE3_TABLES + (
+    "research_turns",
+    "research_context_snapshots",
+    "research_turn_events",
+    "scientific_result_snapshots",
+    "research_turn_decisions",
+    "research_capability_resolutions",
+    "research_capability_plans",
+    "research_execution_summaries",
+)

@@ -1,5 +1,17 @@
 # TASK_BOARD
 
+## Agent 2.0 Phase 4 - Execution Integration and Scientific Progress - In Progress
+
+- [x] Add migration 0020, `CANCELING`/`RESULT_PENDING`, and immutable execution summaries.
+- [x] Dispatch exactly one existing Job from the exact attached AnalysisPlan.
+- [x] Reuse QueueWorkerRuntime with identity-only payload and recoverable publish.
+- [x] Hydrate exact ScientificObjectVersion sources in a fresh Worker.
+- [x] Project deterministic step progress and incremental declared Artifacts.
+- [x] Bridge cancellation through the existing Job contract without fake terminal state.
+- [x] Add bounded progress API/SSE and compact responsive Research activity UI.
+- [x] Add focused, API, browser and fresh PostgreSQL/Redis/MinIO/Worker coverage.
+- [ ] Complete full regression, push current HEAD, and close only after all CI jobs pass.
+
 ## Agent 2.0 Phase 3 - Scientific Capability Resolution and Planning - Completed
 
 - [x] Add migration 0019, immutable resolution/plan evidence and PLAN_READY.

@@ -213,6 +213,9 @@ class DependencyExecutionRepository(Protocol):
 
 
 class JobRepository(Protocol):
+    def create(self, job: Mapping[str, Any]) -> dict[str, Any]:
+        ...
+
     def save(self, job: Mapping[str, Any]) -> dict[str, Any]:
         ...
 
@@ -735,6 +738,14 @@ class InMemoryAnalysisPlanRepository(_InMemoryRecordRepository):
 
 
 class InMemoryJobRepository(_InMemoryRecordRepository):
+    def create(self, job: Mapping[str, Any]) -> dict[str, Any]:
+        record = _json_copy(job)
+        job_id = _required_id(record, "jobId")
+        if job_id in self.records:
+            return self.get(job_id)
+        record["status"] = validate_job_status(record.get("status") or JobStatus.created.value)
+        return self._save(record, record_id=job_id)
+
     def save(self, job: Mapping[str, Any]) -> dict[str, Any]:
         record = _json_copy(job)
         record["status"] = validate_job_status(record.get("status") or JobStatus.created.value)
@@ -1907,6 +1918,30 @@ class SqlAlchemyAnalysisPlanRepository(_SqlAlchemyRepository):
 
 
 class SqlAlchemyJobRepository(_SqlAlchemyRepository):
+    def create(self, job: Mapping[str, Any]) -> dict[str, Any]:
+        job_id = _required_id(job, "jobId")
+        created_by = str(job.get("createdBy") or job.get("created_by") or "user_local")
+        status = validate_job_status(job.get("status") or JobStatus.created.value)
+        values = {
+            "id": job_id,
+            "project_id": str(job["projectId"]),
+            "dataset_id": job.get("datasetId") or job.get("dataset_id"),
+            "plan_id": job.get("planId") or job.get("plan_id"),
+            "kind": str(job.get("kind") or "analysis"),
+            "status": status,
+            "created_by": created_by,
+        }
+
+        def run(connection: Connection) -> None:
+            existing = connection.execute(select(jobs.c.id).where(jobs.c.id == job_id)).scalar_one_or_none()
+            if existing is not None:
+                return
+            _ensure_user(connection, user_id=created_by)
+            connection.execute(insert(jobs).values(**values))
+
+        self._with_connection(run)
+        return self.get(job_id)
+
     def save(self, job: Mapping[str, Any]) -> dict[str, Any]:
         job_id = _required_id(job, "jobId")
         created_by = str(job.get("createdBy") or job.get("created_by") or "user_local")

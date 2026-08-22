@@ -129,6 +129,9 @@ The canonical result ordering is:
 - Running uses real discrete facts: data selected, plan prepared, data loaded, a specific scientific operation active, artifact available, result interpretation available after terminal lifecycle.
 - Never show invented percentages, "almost done," token-stream mimicry, or fake real-time logs.
 - Incremental artifacts appear only after the corresponding tool/artifact event exists. The user can read the artifact while a later real step remains active.
+- Agent 2.0 execution activity stays directly below the pre-run assistant message. It uses one compact scientific-step list, one bounded important-status announcement, and declared incremental outputs; it never becomes a Job/Tool/queue diagnostics panel.
+- `RESULT_PENDING` says that execution is complete and scientific results are being prepared. It must not use final-success language until result projection and interpretation exist.
+- `CANCELING` remains visibly pending until the existing runtime confirms the terminal outcome. A cancel request must never be styled as already canceled.
 - **Running** is process plus emerging result: Activity stays visible beside live scientific output. **Complete** is result-first: collapse the completed activity to a compact summary and reveal full history on demand. **Partial** and **Failed** keep process more visible because completed, failed, and remaining work must be understood together.
 - `Unsupported`: say which scientific requirement is absent, list available properties, offer supported alternatives, and tuck technical detail behind a disclosure.
 - `Clarification`: ask the smallest question that changes scientific scope.

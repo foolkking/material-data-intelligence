@@ -3304,3 +3304,27 @@ a NOOP. Implementation `855fe3f` passed current-HEAD CI run `32580235322`
 across Unit, PostgreSQL/Redis/MinIO integration, Frontend with Phase 12-6/12-7,
 and Linux/Windows scientific replay. The user-facing execution state remains
 unchanged until Phase 4.
+
+## 2026-08-23 Agent 2.0 Phase 4 execution activity
+
+- Added a compact Research activity surface for `QUEUED`, `RUNNING`,
+  `CANCELING`, `RESULT_PENDING`, `FAILED` and `CANCELED` without turning the
+  conversation into a backend status wall.
+- Scientific step labels come from registered capability metadata and actual
+  runtime state. Product payloads omit Job, ToolCall, Tool, queue, worker and
+  provider identifiers.
+- Persisted, declared Artifacts may appear as incremental outputs before the
+  Job is terminal; their presence never implies scientific interpretation.
+- `RESULT_PENDING` uses explicit copy that execution has finished and
+  scientific results are being prepared. It is not rendered as final research
+  completion.
+- The cancel control remains keyboard reachable with a 44px touch target;
+  important status updates use bounded `aria-live` output and never steal
+  focus from the composer.
+- Browser evidence covers 1440x900 and 390x844, with no horizontal overflow,
+  a single mobile panel, visible real-step state and stable composer ownership.
+- Local Phase 4 verification now includes `1671 passed` non-integration backend
+  tests, `54 passed` fresh PostgreSQL/Redis/MinIO service tests, and `568 passed`
+  frontend tests. A real two-step XRD fresh Worker was paused after its first
+  committed Artifact notification; the parent observed the Job still running
+  and the incremental output already available before allowing step 2 to run.

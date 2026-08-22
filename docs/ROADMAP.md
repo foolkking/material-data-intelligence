@@ -354,3 +354,18 @@ historical binding and full Tool coverage remain explicit open boundaries.
 Implementation `855fe3f` passed current-HEAD CI run `32580235322`; Phase 3 is
 complete. Phase 4 execution integration remains unqueued and is the only next
 Agent 2.0 phase permitted by this boundary.
+
+## Agent 2.0 Phase 4 Execution Integration (2026-08-23)
+
+Phase 4 begins at `PLAN_READY`, attaches exactly one existing Job to the exact
+persisted AnalysisPlan, publishes only `job_id`, and lets a fresh existing
+Worker recover exact ScientificObjectVersion inputs from PostgreSQL and MinIO.
+Deterministic supervisor/progress projection advances real execution through
+`QUEUED`, `RUNNING`, `CANCELING`, and `RESULT_PENDING`; it never calls an LLM or
+turns Artifact payloads into scientific conclusions. Revision
+`0020_agent2_execution_integration` adds the immutable ExecutionSummary.
+
+Phase 5 is the only next Agent 2.0 scope: production ScientificResult
+projection from a `RESULT_PENDING` Turn. Interpreter, final assistant response,
+Report composition, full memory, and expanded capability mapping remain later
+scope and are not silently added to the active queue.

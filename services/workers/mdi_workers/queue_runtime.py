@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -42,6 +43,8 @@ from .object_store import DurableObjectStoreResolver
 
 ToolExecutor = Callable[[ToolExecutionRequest, "QueueWorkerContext"], Any]
 ObjectStoreResolver = Callable[[str], Mapping[str, Any] | None]
+
+logger = logging.getLogger(__name__)
 
 
 class DependencyBindingError(ValueError):
@@ -176,6 +179,10 @@ class QueueWorkerRuntime:
         repos = self._repositories()
         job = repos.jobs.get(job_id)
         status = str(job.get("status") or JobStatus.created.value)
+        if status == JobStatus.cancel_requested.value:
+            repos.jobs.set_status(job_id, JobStatus.cancelled)
+            repos.job_events.append_event(job_id, event_type="job.cancelled", status="success", message="Job cancellation confirmed before execution.", progress=1.0)
+            return self._result(repos, job_id, message="job canceled")
         if status in {JobStatus.completed.value, JobStatus.partial_success.value}:
             return self._result(repos, job_id, message="job already completed")
         if status == JobStatus.failed.value:
@@ -191,6 +198,7 @@ class QueueWorkerRuntime:
                 )
 
         job = self._start_job(repos, job)
+        self._notify_agent2_progress(job_id)
         plan_payload, plan_record = self._load_execution_plan(repos, job, explicit_plan=plan)
         steps = list((plan_payload or {}).get("steps") or [])
         if not steps:
@@ -203,6 +211,13 @@ class QueueWorkerRuntime:
             effective_object_store = dict(
                 object_store or self._resolve_object_store(repos, job, profile_id=expected_profile_id)
             )
+            hydrate_agent2_sources = getattr(self.object_store_resolver, "hydrate_agent2_sources", None)
+            if callable(hydrate_agent2_sources):
+                effective_object_store = dict(hydrate_agent2_sources(
+                    effective_object_store,
+                    job=job,
+                    plan_payload=plan_payload or {},
+                ))
             _validate_profile_binding(
                 effective_object_store,
                 dataset_id=str(job.get("datasetId") or job.get("dataset_id") or ""),
@@ -217,7 +232,13 @@ class QueueWorkerRuntime:
                     object_store=effective_object_store,
                 )
             for index, step in enumerate(steps, start=1):
+                if self._cancel_requested(repos, str(job.get("jobId") or job["id"])):
+                    repos.jobs.set_status(job_id, JobStatus.cancelled)
+                    repos.job_events.append_event(job_id, event_type="job.cancelled", status="success", message="Job cancellation confirmed.", progress=1.0)
+                    self._notify_agent2_progress(job_id)
+                    return self._result(repos, job_id, message="job canceled", plan_record=plan_record)
                 self._run_step(repos, job, step, index=index, object_store=effective_object_store, plan_record=plan_record)
+                self._notify_agent2_progress(str(job.get("jobId") or job["id"]))
         except Exception as exc:
             repos.job_events.append_event(
                 job_id,
@@ -230,6 +251,11 @@ class QueueWorkerRuntime:
             repos.jobs.set_status(job_id, JobStatus.failed)
             return self._result(repos, job_id, message=f"job failed: {exc}", plan_record=plan_record)
 
+        if self._cancel_requested(repos, job_id):
+            repos.jobs.set_status(job_id, JobStatus.cancelled)
+            repos.job_events.append_event(job_id, event_type="job.cancelled", status="success", message="Job cancellation confirmed.", progress=1.0)
+            self._notify_agent2_progress(job_id)
+            return self._result(repos, job_id, message="job canceled", plan_record=plan_record)
         repos.job_events.append_event(
             job_id,
             event_type="job.completed",
@@ -297,6 +323,11 @@ class QueueWorkerRuntime:
         ports = build_artifact_port_inventory(self.registry)
 
         for index, step_id in enumerate(dependency_validation.topological_order, start=1):
+            if self._cancel_requested(repos, job_id):
+                repos.jobs.set_status(job_id, JobStatus.cancelled)
+                repos.job_events.append_event(job_id, event_type="job.cancelled", status="success", message="Job cancellation confirmed.", progress=1.0)
+                self._notify_agent2_progress(job_id)
+                return self._result(repos, job_id, message="job canceled", plan_record=plan_record)
             step = step_by_id[step_id]
             blocked_by = sorted(
                 parent for parent in parents[step_id]
@@ -442,6 +473,7 @@ class QueueWorkerRuntime:
                         ports=ports,
                     )
                     repos.dependency_execution.save_lineage(lineage.model_dump(mode="json"))
+                self._notify_agent2_progress(job_id)
             except Exception as exc:
                 states[step_id] = DependencyStepExecution(
                     stepId=step_id,
@@ -688,6 +720,31 @@ class QueueWorkerRuntime:
             raise RuntimeError("QueueWorkerRuntime is missing repositories.")
         return self.repositories
 
+    @staticmethod
+    def _cancel_requested(repos: Any, job_id: str) -> bool:
+        try:
+            return str(repos.jobs.get(job_id).get("status")) == JobStatus.cancel_requested.value
+        except Exception:
+            return False
+
+    @staticmethod
+    def _notify_agent2_progress(job_id: str) -> None:
+        """Wake the deterministic ResearchTurn projector after committed step output.
+
+        The hook is deliberately best-effort: the existing Worker remains the
+        execution authority, and a projector outage must never roll back a
+        successfully persisted ToolCall or Artifact.
+        """
+        try:
+            from mdi_api.research_agent.execution.supervisor import ResearchExecutionSupervisor
+            from mdi_api.database import create_repository_factory
+            ResearchExecutionSupervisor(create_repository_factory()).sync_for_job(job_id)
+        except Exception as exc:
+            logger.warning(
+                "agent2_progress_projection_failed",
+                extra={"job_id": job_id, "error_type": type(exc).__name__},
+            )
+
     def _start_job(self, repos: Any, job: Mapping[str, Any]) -> dict[str, Any]:
         job_id = str(job.get("jobId") or job["id"])
         status = str(job.get("status") or JobStatus.created.value)
@@ -844,6 +901,7 @@ class QueueWorkerRuntime:
             payload={"toolCallId": tool_call_id, "toolId": tool_id, "stepId": step_id, **_plan_provenance(plan_record)},
             progress=0.0,
         )
+        self._notify_agent2_progress(job_id)
 
         try:
             execution = self._execute_tool(
@@ -1136,7 +1194,10 @@ def create_queue_worker_runtime_from_settings() -> QueueWorkerRuntime:
 
 
 def run_queued_job(job_id: str) -> QueueWorkerResult:
-    return create_queue_worker_runtime_from_settings().handle_job(job_id)
+    runtime = create_queue_worker_runtime_from_settings()
+    result = runtime.handle_job(job_id)
+    runtime._notify_agent2_progress(job_id)
+    return result
 
 
 def _find_tool_call(repos: Any, *, job_id: str, step_id: str) -> dict[str, Any] | None:

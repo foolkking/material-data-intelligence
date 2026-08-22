@@ -5514,3 +5514,25 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   cross-Job reuse is not forged: current AnalysisPlan 0.2 has no non-runtime
   source-binding contract for it, so Phase 3 keeps that compatibility boundary
   rather than inserting Artifact IDs or silently recomputing.
+
+## ADR: Agent 2.0 Phase 4 bridges immutable plans to existing execution (2026-08-23)
+
+- Phase 4 consumes only the exact persisted `research_turn.analysis_plan_id`.
+  It never reruns orchestration or planning and never changes Capability,
+  Tool, source version or parameters after `PLAN_READY`.
+- An Agent2 Turn attaches at most one existing Job. Job creation and Turn
+  attachment commit before Redis/RQ publish; repeated or recovered delivery
+  reuses the same Job identity. Redis remains a wakeup mechanism.
+- Fresh Workers reconstruct normalized sources from the exact authorized
+  ScientificObjectVersion and ArtifactStorage checksum. A later logical current
+  version is never substituted, and missing or tampered sources fail closed.
+- Job, ToolCall, Artifact and JobEvent remain runtime authorities. An immutable
+  ExecutionSummary is a terminal deterministic projection, not a replacement
+  for runtime facts and not a ScientificResult.
+- Product progress projects registered capability steps onto committed runtime
+  facts and exposes only declared output Artifacts. It does not use an LLM and
+  does not expose Tool, queue, worker or provider internals.
+- Successful or partial execution ends at `RESULT_PENDING`; Phase 4 creates no
+  ScientificResultSnapshot, interpretation or assistant final answer.
+  `CANCELING` records intent until the Job runtime confirms cancellation or a
+  terminal success/partial race is reconciled.

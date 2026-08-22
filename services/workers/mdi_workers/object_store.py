@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from typing import Any, Mapping
+from uuid import UUID
 
 import pandas as pd
 
@@ -157,6 +158,86 @@ class DurableObjectStoreResolver:
             object_store.setdefault("ml_table", dataframes[0])
         return object_store or None
 
+    def hydrate_agent2_sources(
+        self,
+        object_store: Mapping[str, Any],
+        *,
+        job: Mapping[str, Any],
+        plan_payload: Mapping[str, Any],
+    ) -> Mapping[str, Any]:
+        """Hydrate exact ScientificObjectVersion refs used by Agent 2.0 plans.
+
+        The persisted version id is the execution identity. This method never
+        follows ``ScientificObject.current_version_id`` and never aliases a
+        missing historical version to a newer payload.
+        """
+        version_refs = _agent2_version_refs(plan_payload)
+        if not version_refs:
+            return object_store
+        if self.repository_factory is None:
+            raise ValueError("Exact ScientificObjectVersion hydration requires RepositoryFactory.")
+
+        project_id = str(job.get("projectId") or job.get("project_id") or "")
+        dataset_id = str(job.get("datasetId") or job.get("dataset_id") or "")
+        if not project_id or not dataset_id:
+            raise ValueError("Agent 2.0 execution requires persisted project and dataset scope.")
+
+        records: list[tuple[str, str, dict[str, Any], dict[str, Any]]] = []
+        with self.repository_factory.session() as session:
+            for version_id, executable_type in version_refs:
+                version = session.agent2.scientific_objects.get_version(UUID(version_id))
+                logical = session.agent2.scientific_objects.get_object(version["scientific_object_id"])
+                if str(logical["project_id"]) != project_id:
+                    raise ValueError("ScientificObjectVersion belongs to another Project.")
+                if str(version["scientific_object_id"]) != str(logical["id"]):
+                    raise ValueError("ScientificObjectVersion identity is inconsistent.")
+                if str(version.get("availability_status")) not in {"AVAILABLE", "PARTIALLY_AVAILABLE"}:
+                    raise ValueError("Exact ScientificObjectVersion is unavailable.")
+                records.append((version_id, executable_type, dict(logical), dict(version)))
+
+        hydrated = dict(object_store)
+        for version_id, executable_type, _logical, version in records:
+            storage_ref = dict(version.get("normalized_payload_ref_json") or {})
+            storage_key = str(storage_ref.get("object_key") or "")
+            expected_checksum = _sha256_identity(
+                storage_ref.get("checksum"),
+                version.get("content_hash"),
+            )
+            if not storage_key or expected_checksum is None:
+                raise ValueError("Exact ScientificObjectVersion payload lacks a verifiable SHA-256 identity.")
+            max_bytes = int(storage_ref.get("byte_size") or 268_435_456)
+            if max_bytes < 0 or max_bytes > 268_435_456:
+                raise ValueError("Exact ScientificObjectVersion payload size is outside the execution limit.")
+            bounded_reader = getattr(self.artifact_storage, "get_bytes_bounded", None)
+            try:
+                payload_bytes = (
+                    bounded_reader(storage_key, max_bytes=max_bytes)
+                    if callable(bounded_reader)
+                    else self.artifact_storage.get_bytes(storage_key)
+                )
+            except Exception as exc:
+                raise ValueError("Exact ScientificObjectVersion payload is unavailable.") from exc
+            if len(payload_bytes) > max_bytes or hashlib.sha256(payload_bytes).hexdigest() != expected_checksum:
+                raise ValueError("Exact ScientificObjectVersion payload checksum mismatch.")
+            try:
+                payload = json.loads(payload_bytes.decode("utf-8"))
+            except Exception as exc:
+                raise ValueError("Exact ScientificObjectVersion payload is not strict JSON.") from exc
+            value = _materialize_agent2_payload(
+                payload,
+                executable_type=executable_type,
+                canonical_metadata=version.get("canonical_metadata_json") or {},
+            )
+            register_runtime_source_resource(
+                hydrated,
+                object_id=version_id,
+                object_type=executable_type,
+                object_hash=expected_checksum,
+                dataset_id=dataset_id,
+                value=value,
+            )
+        return hydrated
+
     def _repositories_from_factory(self) -> Any | None:
         if self.repository_factory is None:
             return None
@@ -177,3 +258,49 @@ def _experimental_xrd_resource(dataframe: pd.DataFrame, metadata: Mapping[str, A
         "intensity": [float(item) for item in dataframe["intensity"].tolist()],
         "intensitySemantic": metadata["intensitySemantic"], "wavelength": metadata["wavelength"],
     }
+
+
+def _agent2_version_refs(plan_payload: Mapping[str, Any]) -> list[tuple[str, str]]:
+    refs: dict[str, str] = {}
+    for step in plan_payload.get("steps") or []:
+        for input_ref in step.get("inputRefs") or []:
+            if input_ref.get("refType") != "normalized_object":
+                continue
+            value = str(input_ref.get("ref") or "")
+            try:
+                UUID(value)
+            except (TypeError, ValueError):
+                continue
+            object_type = str(input_ref.get("objectType") or "")
+            if not object_type:
+                raise ValueError("Exact ScientificObjectVersion binding is missing objectType.")
+            existing = refs.get(value)
+            if existing is not None and existing != object_type:
+                raise ValueError("Exact ScientificObjectVersion is bound with conflicting execution types.")
+            refs[value] = object_type
+    return sorted(refs.items())
+
+
+def _sha256_identity(*values: Any) -> str | None:
+    for value in values:
+        candidate = str(value or "").lower()
+        if len(candidate) == 64 and all(character in "0123456789abcdef" for character in candidate):
+            return candidate
+    return None
+
+
+def _materialize_agent2_payload(
+    payload: Any,
+    *,
+    executable_type: str,
+    canonical_metadata: Mapping[str, Any],
+) -> Any:
+    if executable_type == MaterialObjectType.DataFrame.value:
+        dataframe = pd.DataFrame(payload)
+        experimental_xrd = canonical_metadata.get("experimentalXrd")
+        return (
+            _experimental_xrd_resource(dataframe, experimental_xrd)
+            if isinstance(experimental_xrd, Mapping)
+            else dataframe
+        )
+    return payload

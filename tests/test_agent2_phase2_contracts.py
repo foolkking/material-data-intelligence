@@ -8,6 +8,7 @@ from pydantic import ValidationError
 
 from mdi_api.agent2_errors import InvalidResearchTurnDecision
 from mdi_api.research_agent.context.compiler import ResearchContextCompiler
+from mdi_api.research_agent.context.resolver import DeterministicReferenceResolver
 from mdi_api.research_agent.context.schemas import (
     CompactMessage,
     ReferenceCandidate,
@@ -57,6 +58,37 @@ def test_reference_candidate_is_strict_opaque_and_cross_field_validated():
             candidate_key="result_1", ref_type="SCIENTIFIC_RESULT",
             source=ReferenceCandidateSource.PREVIOUS_TURN_RESULT, display_label="RDF", recency_rank=0,
         )
+
+
+def test_multiple_explicit_ui_selections_form_one_authorized_scope():
+    candidates = [
+        ReferenceCandidate(
+            candidate_key=f"obj_{index}",
+            ref_type="SCIENTIFIC_OBJECT",
+            object_ref=object_ref(),
+            source=ReferenceCandidateSource.UI_SELECTION,
+            display_label=f"Selected {index}",
+            recency_rank=index - 1,
+        )
+        for index in (1, 2)
+    ]
+    bundle = ResearchContextCandidateBundle(
+        project_id="project",
+        research_session_id="session",
+        research_turn_id=uuid4(),
+        active_object_candidates=candidates,
+        result_candidates=[],
+        finding_candidates=[],
+        explicit_constraints=[],
+        current_research_goal=None,
+        unresolved_questions=[],
+        recent_messages=[],
+    )
+
+    resolution = DeterministicReferenceResolver().resolve(bundle)
+
+    assert resolution.selected_object_keys == ("obj_1", "obj_2")
+    assert resolution.ambiguous_object_keys == ()
 
 
 def test_compact_message_is_bounded_and_candidate_keys_are_unique():

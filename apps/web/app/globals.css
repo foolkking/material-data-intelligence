@@ -5284,6 +5284,20 @@ body:has(.research-workbench) {
 .research-starter-upload { justify-self: start; margin-top: 4px; }
 .research-starter-readonly { padding-top: 12px; border-top: 1px solid var(--product-border); color: var(--product-secondary); font-weight: 600; }
 .timeline-run-process { margin: 2px 0 4px; border-top: 1px solid var(--product-border); border-bottom: 1px solid var(--product-border); }
+.research-execution-activity { margin: 4px 0 12px; padding: 12px 14px; border: 1px solid var(--product-border); background: var(--product-subtle); border-radius: 6px; }
+.research-execution-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; color: var(--product-ink); font-size: 13px; }
+.research-execution-heading > div { display: flex; align-items: center; gap: 10px; }
+.research-execution-heading span { color: var(--product-secondary); font-size: 12px; }
+.research-execution-cancel { min-width: 44px; min-height: 44px; }
+.research-execution-steps { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.research-execution-step { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: start; gap: 7px; color: var(--product-secondary); font-size: 13px; line-height: 1.45; }
+.research-execution-step.status-succeeded { color: var(--product-accent); }
+.research-execution-step.status-running { color: var(--product-ink); }
+.research-execution-step.status-failed { color: var(--product-danger, #a43d3d); }
+.research-execution-marker { font-weight: 700; text-align: center; }
+.research-execution-step small { color: var(--product-tertiary); font-size: 11px; white-space: nowrap; }
+.research-execution-output-note, .research-execution-warnings { margin: 10px 0 0; color: var(--product-secondary); font-size: 12px; line-height: 1.5; }
+.research-execution-warnings { padding-left: 18px; }
 .timeline-run-process summary { min-height: 42px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: var(--product-secondary); font-size: 13px; list-style: none; }
 .timeline-run-process summary::-webkit-details-marker { display: none; }
 .timeline-run-process[open] summary { color: var(--product-ink); }

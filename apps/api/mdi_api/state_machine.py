@@ -29,7 +29,9 @@ JOB_TRANSITIONS: dict[str, set[str]] = {
     "running": {"partial_success", "completed", "failed", "cancel_requested"},
     "partial_success": {"completed", "failed"},
     "failed": {"queued"},
-    "cancel_requested": {"cancelled"},
+    # Cancellation is a request, not a fabricated terminal fact. A worker may
+    # commit its real terminal outcome before observing the request.
+    "cancel_requested": {"cancelled", "partial_success", "completed", "failed"},
     "completed": set(),
     "cancelled": set(),
 }

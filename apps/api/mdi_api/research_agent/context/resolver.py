@@ -38,4 +38,8 @@ class DeterministicReferenceResolver:
         best = [item for item in objects if candidate_source_priority(item.source) == best_priority]
         if len(best) == 1:
             return ReferenceResolution((best[0].candidate_key,), ())
+        # Multiple exact UI selections are an explicit bounded scope, not a
+        # natural-language guess between equally ranked candidates.
+        if all(item.source == ReferenceCandidateSource.UI_SELECTION for item in best):
+            return ReferenceResolution(tuple(item.candidate_key for item in best), ())
         return ReferenceResolution((), tuple(item.candidate_key for item in best))

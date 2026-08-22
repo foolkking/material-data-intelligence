@@ -312,6 +312,7 @@ jobs:
               'research_turn_decisions',
               'research_capability_resolutions',
               'research_capability_plans',
+              'research_execution_summaries',
           }
           missing = expected - tables
           assert not missing, f'Missing tables after alembic upgrade: {missing}'
@@ -358,6 +359,8 @@ jobs:
               'idx_scientific_result_snapshots_turn',
               'idx_research_turn_decisions_action_created',
               'idx_research_turn_decisions_fingerprint',
+              'idx_research_execution_summaries_turn',
+              'idx_research_execution_summaries_job',
               'idx_scientific_evidence_job',
               'idx_scientific_interpretation_runs_job',
               'idx_scientific_interpretations_job',
@@ -394,7 +397,7 @@ jobs:
       - name: Run integration tests (capture output)
         run: |
           set +e
-          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py tests/integration/test_phase10l2_capability_planner_service_backed.py tests/integration/test_phase10l3_dependency_service_backed.py tests/integration/test_phase10l4_interpretation_service_backed.py tests/integration/test_phase10l5_natural_language_service_backed.py tests/integration/test_phase10m1_workspace_service_backed.py tests/integration/test_phase10m5_report_recipe_service_backed.py tests/integration/test_phase10m6_workspace_recovery_service_backed.py tests/integration/test_phase10m7_workspace_integration_service_backed.py tests/integration/test_phase10n1_coordination_service_backed.py tests/integration/test_phase10n2_local_environment_service_backed.py tests/integration/test_phase10n3_experimental_xrd_service_backed.py tests/integration/test_phase10n4_trajectory_analytics_service_backed.py tests/integration/test_phase10n5_electronic_service_backed.py tests/integration/test_phase10n6_professional_closure_service_backed.py tests/integration/test_phase13_1_c2_resource_preflight_service_backed.py tests/integration/test_phase13_2_attempt3_service_backed.py tests/integration/test_agent2_phase1_service_backed.py tests/integration/test_agent2_phase2_service_backed.py tests/integration/test_agent2_phase3_service_backed.py -vv -m integration \
+          uv run python -m pytest tests/test_phase6_integration.py tests/test_phase8b_persisted_plan_queue.py tests/integration/test_phase10_product_closure.py tests/integration/test_phase10l1_analysis_intent_service_backed.py tests/integration/test_phase10l2_capability_planner_service_backed.py tests/integration/test_phase10l3_dependency_service_backed.py tests/integration/test_phase10l4_interpretation_service_backed.py tests/integration/test_phase10l5_natural_language_service_backed.py tests/integration/test_phase10m1_workspace_service_backed.py tests/integration/test_phase10m5_report_recipe_service_backed.py tests/integration/test_phase10m6_workspace_recovery_service_backed.py tests/integration/test_phase10m7_workspace_integration_service_backed.py tests/integration/test_phase10n1_coordination_service_backed.py tests/integration/test_phase10n2_local_environment_service_backed.py tests/integration/test_phase10n3_experimental_xrd_service_backed.py tests/integration/test_phase10n4_trajectory_analytics_service_backed.py tests/integration/test_phase10n5_electronic_service_backed.py tests/integration/test_phase10n6_professional_closure_service_backed.py tests/integration/test_phase13_1_c2_resource_preflight_service_backed.py tests/integration/test_phase13_2_attempt3_service_backed.py tests/integration/test_agent2_phase1_service_backed.py tests/integration/test_agent2_phase2_service_backed.py tests/integration/test_agent2_phase3_service_backed.py tests/integration/test_agent2_phase4_service_backed.py -vv -m integration \
             --tb=long --color=yes 2>&1 | tee integration.log
           PYTEST_EXIT=${PIPESTATUS[0]}
           set -e
@@ -451,6 +454,7 @@ jobs:
 
           for REQUIRED_TEST in \
             test_agent2_phase3_postgresql_planning_is_idempotent_and_never_executes \
+            test_agent2_phase4_fresh_worker_executes_exact_plan_and_stops_at_result_pending \
             test_agent2_phase2_postgresql_orchestration_and_redis_wakeup_boundary \
             test_phase10l4_postgres_redis_minio_phonon_chain_interpretation \
             test_phase10l4_postgres_redis_minio_single_tool_interpretation \

@@ -100,6 +100,14 @@ qualification authorities.
 - [`agent2/capability-binder-v1.md`](agent2/capability-binder-v1.md)
 - [`agent2/agent2-phase3-state-flow.md`](agent2/agent2-phase3-state-flow.md)
 - [`agent2/agent2-phase3-evaluation-contract.md`](agent2/agent2-phase3-evaluation-contract.md)
+
+## Agent 2.0 Phase 4 Execution Integration
+
+- [`agent2/execution-summary-v1.md`](agent2/execution-summary-v1.md)
+- [`agent2/scientific-progress-v1.md`](agent2/scientific-progress-v1.md)
+- [`agent2/execution-supervisor-v1.md`](agent2/execution-supervisor-v1.md)
+- [`agent2/agent2-phase4-state-flow.md`](agent2/agent2-phase4-state-flow.md)
+- [`agent2/agent2-phase4-evaluation-contract.md`](agent2/agent2-phase4-evaluation-contract.md)
 - [`../AGENT2_PHASE2_RESULTS.md`](../AGENT2_PHASE2_RESULTS.md)
 
 Phase 2 ends at a validated decision or typed downstream handoff. It does not

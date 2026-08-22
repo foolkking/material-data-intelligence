@@ -50,6 +50,7 @@ def api(monkeypatch):
     object_service = ScientificObjectService(factory, build_default_object_type_registry())
     monkeypatch.setattr("mdi_api.routers.agent2.get_research_turn_service", lambda: turn_service)
     monkeypatch.setattr("mdi_api.routers.agent2.get_scientific_object_service", lambda: object_service)
+    monkeypatch.setattr("mdi_api.routers.agent2.create_repository_factory", lambda: factory)
     app = create_app()
     active_user = {"value": owner}
     app.dependency_overrides[get_current_user] = lambda: active_user["value"]
@@ -251,3 +252,64 @@ def test_phase2_sse_projects_product_events_without_internal_provider_details(ap
         "turn.answered",
     ]
     assert "fake-internal-provider" not in stream.text
+
+
+def test_phase4_progress_and_dispatch_are_project_authorized(api):
+    client, active, owner, _viewer, stranger, _objects = api
+    turn = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json={"message": "Prepare an analysis"},
+    ).json()
+    progress = client.get(f"/api/research/turns/{turn['turn_id']}/progress")
+    assert progress.status_code == 200
+    assert progress.json() == {
+        "contract_version": "1.0",
+        "turn_id": turn["turn_id"],
+        "status": "RECEIVED",
+        "plan_title": None,
+        "steps": [],
+        "active_step_ids": [],
+        "completed_step_count": 0,
+        "total_step_count": 0,
+        "incremental_outputs": [],
+        "warnings": [],
+        "execution_outcome": None,
+        "result_projection_pending": False,
+    }
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn['turn_id']}/progress").status_code == 403
+    assert client.post(f"/api/research/turns/{turn['turn_id']}/dispatch").status_code == 403
+    active["value"] = owner
+
+
+def test_phase4_sse_reconnect_does_not_repeat_execution_events(api):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    turn = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json={"message": "Stream execution"},
+    ).json()
+    turn_id = UUID(turn["turn_id"])
+    with objects.repository_factory.unit_of_work() as unit:
+        for event_type, payload in (
+            ("JOB_STARTED", {"status": "RUNNING"}),
+            ("EXECUTION_STEP_STARTED", {"step_id": "step_1", "label": "正在计算径向分布函数"}),
+            ("EXECUTION_OUTPUT_AVAILABLE", {"step_id": "step_1", "label": "径向分布函数输出已生成"}),
+        ):
+            unit.agent2.research_turn_events.append_turn_event({
+                "id": uuid4(),
+                "turn_id": turn_id,
+                "sequence_no": unit.agent2.research_turn_events.next_sequence_no(turn_id),
+                "event_type": event_type,
+                "payload_json": payload,
+            })
+    first = client.get(f"/api/research/turns/{turn['turn_id']}/events")
+    assert "event: analysis.started" in first.text
+    assert "event: analysis.step.started" in first.text
+    assert "event: analysis.output.available" in first.text
+    replay = client.get(
+        f"/api/research/turns/{turn['turn_id']}/events",
+        headers={"Last-Event-ID": "2"},
+    )
+    assert "analysis.started" not in replay.text
+    assert "analysis.step.started" in replay.text
+    assert "analysis.output.available" in replay.text

@@ -42,12 +42,27 @@ orchestration, and planning states. Clarification, answer, unsupported,
 plan-rejected, completed, partial, failed, and canceled states are terminal.
 A clarification is a new child turn, never a revival of the old turn.
 
+Phase 4 extends the execution path to:
+
+```text
+PLAN_READY -> QUEUED -> RUNNING -> RESULT_PENDING
+                     \-> CANCELING -> CANCELED
+```
+
+`QUEUED` requires an attached existing Job. `RUNNING` requires a real Job
+runtime state. `RESULT_PENDING` requires terminal SUCCESS/PARTIAL execution and
+an immutable ExecutionSummary, while `ScientificResultSnapshot` and assistant
+final message remain absent. `CANCELING` is a request state; it becomes
+`CANCELED` only after Job runtime confirmation.
+
 ## Read and event API
 
 - `GET /api/research/turns/{turn_id}`
 - `GET /api/projects/{project_id}/research/sessions/{session_id}/turns?cursor=&limit=`
 - `POST /api/research/turns/{turn_id}/cancel`
 - `GET /api/research/turns/{turn_id}/events`
+- `POST /api/research/turns/{turn_id}/dispatch`
+- `GET /api/research/turns/{turn_id}/progress`
 
 Turn reads return bounded messages, context summary, result availability, and
 timestamps. SSE re-authorizes on every connection and emits persisted turn

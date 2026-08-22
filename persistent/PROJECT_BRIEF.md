@@ -962,3 +962,19 @@ runtime identities. Full 62-Tool mapping and execution remain outside this
 phase. Local deterministic, full regression, service-backed and live DeepSeek
 gates pass. Implementation `855fe3f` passed current-HEAD CI run `32580235322`;
 Phase 3 is complete.
+
+## Agent 2.0 Phase 4 execution integration
+
+Phase 4 begins only from a persisted `PLAN_READY` ResearchTurn and executes the
+exact attached AnalysisPlan through the existing Job, QueueWorkerRuntime,
+ToolCall and Artifact path. Redis is a wakeup mechanism carrying only `job_id`;
+the fresh Worker reconstructs exact-version normalized inputs from PostgreSQL
+and existing ArtifactStorage. The execution bridge cannot re-orchestrate,
+re-plan, choose a different Tool, alter parameters or call an LLM.
+
+User-visible progress is derived from committed runtime facts and registered
+capability metadata. Successful and partial executions stop at
+`RESULT_PENDING`, with an immutable ExecutionSummary but no ScientificResult
+projection, interpretation or assistant final answer. `CANCELING` separates a
+cancel request from the Job runtime's confirmed terminal outcome. Phase 5 owns
+production scientific-result projection.

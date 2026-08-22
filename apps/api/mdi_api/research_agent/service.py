@@ -282,10 +282,11 @@ class ResearchTurnService:
             turn = session.agent2.research_turns.get(turn_id)
             require_project_access(session.connection, str(turn["project_id"]), current_user, write=True)
         status = ResearchTurnStatus(str(turn["status"]))
-        if status in TERMINAL_TURN_STATUSES:
+        if status in TERMINAL_TURN_STATUSES or status == ResearchTurnStatus.RESULT_PENDING:
             raise InvalidResearchTurnTransition("TURN_TERMINAL")
         if turn.get("job_id"):
-            raise InvalidResearchTurnTransition("existing Job cancel contract is not exposed by this runtime")
+            from mdi_api.research_agent.execution.supervisor import ResearchExecutionSupervisor
+            return ResearchExecutionSupervisor(self.repository_factory).request_cancel(turn_id)
         return self.transition(
             turn_id=turn_id,
             expected_status=status,
@@ -346,6 +347,7 @@ class ResearchTurnService:
         decision = session.agent2.research_turn_decisions.get_for_turn(turn["id"])
         capability_resolution = session.agent2.research_capability_resolutions.get_for_turn(turn["id"])
         capability_plan = session.agent2.research_capability_plans.get_for_turn(turn["id"])
+        execution_summary = session.agent2.research_execution_summaries.get_for_turn(turn["id"])
         summary = None if snapshot is None else {
             "id": snapshot["id"],
             "schema_version": snapshot["snapshot_schema_version"],
@@ -373,9 +375,14 @@ class ResearchTurnService:
             },
             "planning": {
                 "status": turn["status"],
-                "plan_available": turn["status"] == ResearchTurnStatus.PLAN_READY.value and turn.get("analysis_plan_id") is not None,
+                "plan_available": turn["status"] in {ResearchTurnStatus.PLAN_READY.value, ResearchTurnStatus.QUEUED.value, ResearchTurnStatus.RUNNING.value, ResearchTurnStatus.CANCELING.value, ResearchTurnStatus.RESULT_PENDING.value} and turn.get("analysis_plan_id") is not None,
                 "resolution_available": capability_resolution is not None,
                 "capability_plan_available": capability_plan is not None,
+            },
+            "execution": {
+                "job_attached": turn.get("job_id") is not None,
+                "progress_available": turn.get("job_id") is not None,
+                "outcome": None if execution_summary is None else execution_summary.get("execution_outcome"),
             },
             "result_available": session.agent2.scientific_result_snapshots.exists_for_turn(turn["id"]),
             "created_at": turn["created_at"],
