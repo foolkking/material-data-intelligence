@@ -31,7 +31,7 @@ from mdi_api.research_agent.orchestration.queue import (
     RedisRQAgentTurnQueue,
 )
 from mdi_api.research_agent.registry_validation import DEFAULT_AGENT2_REGISTRIES
-from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchTurnStatus, TERMINAL_TURN_STATUSES
+from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchAction, ResearchTurnStatus, TERMINAL_TURN_STATUSES
 from mdi_api.research_agent.execution.dispatcher import ResearchExecutionDispatcher
 from mdi_api.research_agent.execution.supervisor import ResearchExecutionSupervisor
 from mdi_api.research_agent.execution.errors import (
@@ -50,6 +50,8 @@ from mdi_api.scientific_results.schemas import ScientificResultBundle
 from mdi_api.scientific_results.relevance import ScientificResultRelevanceEvaluator
 from mdi_api.scientific_results.service import ScientificResultProjectionService
 from mdi_api.artifact_storage import create_artifact_storage_from_settings
+from mdi_api.interpretation.service import InterpretationFailure
+from mdi_api.interpretation.queue import RedisRQInterpretationQueue
 
 
 logger = logging.getLogger(__name__)
@@ -176,7 +178,12 @@ def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(
         with factory.session() as session:
             turn = session.agent2.research_turns.get(turn_id)
             require_project_access(session.connection, str(turn["project_id"]), current_user)
-            if str(turn["status"]) != ResearchTurnStatus.RESULT_READY.value:
+            if str(turn["status"]) not in {
+                ResearchTurnStatus.RESULT_READY.value,
+                ResearchTurnStatus.INTERPRETING.value,
+                ResearchTurnStatus.COMPLETED.value,
+                ResearchTurnStatus.PARTIAL.value,
+            }:
                 raise ScientificResultNotReady(str(turn_id))
             row = session.agent2.scientific_result_snapshots.get_latest_for_turn(turn_id)
             bundle = ScientificResultBundle.model_validate(row["bundle_json"])
@@ -221,6 +228,51 @@ def project_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depe
         )
         row = service.project_turn(turn_id)
         return JSONResponse(status_code=200, content=jsonable_encoder({"turn_id": str(turn_id), "status": "RESULT_READY", "snapshot_id": str(row["id"])}))
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def interpret_research_turn(turn_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> JSONResponse:
+    """Authorized recovery hook; normal RESULT_READY turns are auto-queued."""
+    try:
+        factory = create_repository_factory()
+        with factory.session() as session:
+            turn = session.agent2.research_turns.get(turn_id)
+            require_project_access(session.connection, str(turn["project_id"]), current_user, write=True)
+            status = str(turn["status"])
+            existing_result_handoff = (
+                status == ResearchTurnStatus.ORCHESTRATING.value
+                and str(turn.get("action_type") or "") == ResearchAction.INTERPRET_RESULT.value
+            )
+            if status not in {ResearchTurnStatus.RESULT_READY.value, ResearchTurnStatus.INTERPRETING.value} and not existing_result_handoff:
+                raise InterpretationFailure("INTERPRETATION_NOT_READY", f"turn status {status} cannot be interpreted")
+        settings = load_settings()
+        if not settings.agent2_interpretation_enabled or settings.queue_backend != "redis":
+            raise InterpretationFailure("INTERPRETATION_QUEUE_DISABLED", "interpretation recovery queue is unavailable")
+        queued = RedisRQInterpretationQueue(
+            redis_url=settings.redis_url,
+            queue_name=settings.agent2_interpretation_queue_name,
+        ).enqueue_turn(turn_id)
+        return JSONResponse(status_code=202, content=jsonable_encoder({
+            "turn_id": str(turn_id),
+            "status": status,
+            "accepted": queued.enqueued or queued.message == "turn already queued",
+        }))
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def get_research_turn_interpretation(turn_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
+    try:
+        factory = create_repository_factory()
+        with factory.session() as session:
+            turn = session.agent2.research_turns.get(turn_id)
+            require_project_access(session.connection, str(turn["project_id"]), current_user)
+            row = session.agent2.interpretations.get_for_turn(turn_id)
+            if row is None:
+                raise ScientificResultNotReady(str(turn_id))
+            payload = dict(row["output_json"] or {})
+            return {"interpretation_id": str(row["id"]), "research_turn_id": str(turn_id), "status": row["grounding_status"], "title": (payload.get("interpretation") or {}).get("title"), "message": payload.get("message"), "execution_status": payload.get("execution_status")}
     except Exception as exc:
         raise _http_error(exc) from exc
 
@@ -372,6 +424,9 @@ def _sse_event_name(event_type: str) -> str:
         "RESULT_PROJECTION_FAILED": "result.failed",
         "RESULT_PROJECTED": "result.projecting",
         "RESULT_READY": "result.ready",
+        "INTERPRETATION_STARTED": "assistant.interpreting",
+        "INTERPRETATION_READY": "assistant.message",
+        "TURN_PARTIAL": "turn.partial",
     }.get(event_type, "turn.status.changed")
 
 
@@ -389,6 +444,8 @@ def _http_error(exc: Exception) -> HTTPException:
         return HTTPException(status_code=422, detail=str(exc))
     if isinstance(exc, ScientificResultNotReady):
         return HTTPException(status_code=409, detail={"code": "SCIENTIFIC_RESULT_NOT_READY", "summary": str(exc)})
+    if isinstance(exc, InterpretationFailure):
+        return HTTPException(status_code=409, detail={"code": exc.code, "summary": str(exc)})
     if isinstance(exc, (ScientificResultProjectionConflict, ScientificResultProjectionFailed)):
         return HTTPException(status_code=409, detail={"code": getattr(exc, "code", "RESULT_PROJECTION_FAILED"), "summary": str(exc)})
     execution_codes = {

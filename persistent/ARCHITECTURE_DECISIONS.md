@@ -5555,3 +5555,17 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
 - `RESULT_READY` is a result-projection boundary, not an interpretation or
   assistant-response boundary. Phase 6 remains the only owner of grounded
   scientific prose and final assistant messages.
+
+## ADR: Agent 2.0 Phase 6 keeps interpretation below the result fact boundary (2026-08-23)
+
+- The interpreter receives only a bounded `ScientificResultBundle` envelope
+  with effective relevance; raw Artifact bytes, large arrays, prompts and
+  hidden reasoning never enter the provider input.
+- `ScientificInterpretationOutput 1.0` becomes product prose only after
+  deterministic reference, numeric, unit, answer-lead and execution-status
+  validation. One bounded repair is the maximum.
+- `RESULT_READY` is claimed as `INTERPRETING` before the provider call, and the
+  provider runs outside an open database transaction. Interpretation and the
+  final ResearchMessage are immutable and exactly-once per Turn.
+- Previous-result interpretation reuses the authorized immutable snapshot and
+  creates zero AnalysisPlan, Job, ToolCall, Artifact or ScientificResult rows.

@@ -71,12 +71,14 @@ class AgentTurnProcessor:
         registries: Agent2Registries,
         llm_client: StructuredLLMClient,
         planning_queue: Any | None = None,
+        interpretation_queue: Any | None = None,
         timeout_seconds: float = 60.0,
     ) -> None:
         self.repository_factory = repository_factory
         self.registries = registries
         self.llm_client = llm_client
         self.planning_queue = planning_queue or DisabledCapabilityPlanningQueue()
+        self.interpretation_queue = interpretation_queue
         self.timeout_seconds = timeout_seconds
         self.assembler = ResearchContextCandidateAssembler()
         self.compiler = ResearchContextCompiler()
@@ -150,6 +152,8 @@ class AgentTurnProcessor:
         )
         if routed.turn_status == ResearchTurnStatus.READY_TO_PLAN.value:
             self.planning_queue.enqueue_turn(turn_id)
+        elif decision.action == ResearchAction.INTERPRET_RESULT and self.interpretation_queue is not None:
+            self.interpretation_queue.enqueue_turn(turn_id)
         logger.info("research_turn_orchestrated", extra={
             "turn_id": str(turn_id),
             "action": decision.action.value,

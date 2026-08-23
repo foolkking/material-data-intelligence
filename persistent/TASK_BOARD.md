@@ -3212,5 +3212,15 @@ archival remains withheld.
 - [x] Add dedicated fresh service-backed RDF/XRD result-projection and browser
       qualification before upgrading the Phase 5 verdict from PARTIAL.
 - [x] Push closure implementation `1fd18bf995ee6ffc38cbfacf6f5af1fca54a7b9f`;
-      authoritative current-head CI run `32616753779` passed all five jobs.
+      authoritative current-head CI run `32617347658` passed all five jobs.
       Phase 5 verdict is COMPLETE and the queue task is archived.
+
+## Agent 2.0 Phase 6 — Grounded Scientific Interpretation — In Progress
+
+- [x] Implement bounded result-only interpreter input and structured output.
+- [x] Add deterministic reference, quantitative, unit, answer-lead, and status grounding gates.
+- [x] Persist immutable grounded interpretations and exactly one final ResearchMessage per turn.
+- [x] Automatically publish identity-only interpretation work after RESULT_READY commit.
+- [x] Close existing-result interpretation with zero execution/result mutation.
+- [x] Pass deterministic, live DeepSeek, fresh RDF/XRD service-backed, full backend, frontend, build, migration, and browser gates.
+- [ ] Push the implementation and verify current-head CI before archiving the TASKS entry.

@@ -348,6 +348,7 @@ class ResearchTurnService:
         capability_resolution = session.agent2.research_capability_resolutions.get_for_turn(turn["id"])
         capability_plan = session.agent2.research_capability_plans.get_for_turn(turn["id"])
         execution_summary = session.agent2.research_execution_summaries.get_for_turn(turn["id"])
+        interpretation = session.agent2.interpretations.get_for_turn(turn["id"])
         summary = None if snapshot is None else {
             "id": snapshot["id"],
             "schema_version": snapshot["snapshot_schema_version"],
@@ -375,7 +376,17 @@ class ResearchTurnService:
             },
             "planning": {
                 "status": turn["status"],
-                "plan_available": turn["status"] in {ResearchTurnStatus.PLAN_READY.value, ResearchTurnStatus.QUEUED.value, ResearchTurnStatus.RUNNING.value, ResearchTurnStatus.CANCELING.value, ResearchTurnStatus.RESULT_PENDING.value} and turn.get("analysis_plan_id") is not None,
+                "plan_available": turn["status"] in {
+                    ResearchTurnStatus.PLAN_READY.value,
+                    ResearchTurnStatus.QUEUED.value,
+                    ResearchTurnStatus.RUNNING.value,
+                    ResearchTurnStatus.CANCELING.value,
+                    ResearchTurnStatus.RESULT_PENDING.value,
+                    ResearchTurnStatus.RESULT_READY.value,
+                    ResearchTurnStatus.INTERPRETING.value,
+                    ResearchTurnStatus.COMPLETED.value,
+                    ResearchTurnStatus.PARTIAL.value,
+                } and turn.get("analysis_plan_id") is not None,
                 "resolution_available": capability_resolution is not None,
                 "capability_plan_available": capability_plan is not None,
             },
@@ -385,6 +396,10 @@ class ResearchTurnService:
                 "outcome": None if execution_summary is None else execution_summary.get("execution_outcome"),
             },
             "result_available": session.agent2.scientific_result_snapshots.exists_for_turn(turn["id"]),
+            "interpretation": {
+                "available": interpretation is not None,
+                "grounding_status": None if interpretation is None else interpretation.get("grounding_status"),
+            },
             "created_at": turn["created_at"],
             "updated_at": turn["updated_at"],
             "completed_at": turn["completed_at"],

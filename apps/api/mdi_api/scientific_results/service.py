@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import Any, Callable
 from uuid import UUID, uuid4
 
@@ -19,6 +20,7 @@ from mdi_api.unit_of_work import RepositoryFactory
 
 
 ArtifactLoader = Callable[[dict[str, Any]], Any]
+logger = logging.getLogger(__name__)
 
 
 class ScientificResultSnapshotService:
@@ -111,8 +113,11 @@ class ScientificResultProjectionService:
             if str(existing["source_fingerprint"]) != source_fingerprint:
                 raise ScientificResultProjectionConflict("immutable result projection fingerprint changed")
             self._reconcile_ready(turn_id)
+            self._enqueue_interpretation(turn_id)
             return existing
-        return self._persist(turn_id, bundle, source_fingerprint, context.execution_summary.get("job_id"))
+        row = self._persist(turn_id, bundle, source_fingerprint, context.execution_summary.get("job_id"))
+        self._enqueue_interpretation(turn_id)
+        return row
 
     def project_context(self, context: ScientificResultProjectionContext) -> ScientificResultBundle:
         projector_ids = self._projector_ids(context)
@@ -295,6 +300,22 @@ class ScientificResultProjectionService:
                 expected_version=int(turn["row_version"]), target_status=ResearchTurnStatus.RESULT_READY.value,
             )
             self._event(unit, turn_id, ResearchTurnEventType.RESULT_READY, {"status": updated["status"]})
+
+    @staticmethod
+    def _enqueue_interpretation(turn_id: UUID) -> None:
+        """Publish only after RESULT_READY commit; failures remain recoverable."""
+        try:
+            from mdi_api.config import load_settings
+            from mdi_api.interpretation.queue import RedisRQInterpretationQueue
+
+            settings = load_settings()
+            if not settings.agent2_interpretation_enabled or settings.queue_backend != "redis":
+                return
+            RedisRQInterpretationQueue(redis_url=settings.redis_url, queue_name=settings.agent2_interpretation_queue_name).enqueue_turn(turn_id)
+        except Exception as exc:
+            # RESULT_READY is the durable authority. A reconciler/manual retry
+            # can republish the identity without changing execution facts.
+            logger.warning("interpretation_wakeup_failed", extra={"turn_id": str(turn_id), "error_type": type(exc).__name__})
 
     @staticmethod
     def _event(unit: Any, turn_id: UUID, event_type: ResearchTurnEventType, payload: dict[str, Any]) -> None:

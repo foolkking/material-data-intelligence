@@ -32,6 +32,14 @@ describe("ResearchExecutionActivity", () => {
     expect(screen.getByText("科学结果已准备")).toBeInTheDocument();
   });
 
+  it("distinguishes interpretation progress and partial final interpretation", () => {
+    const base = { contract_version: "1.0" as const, turn_id: "turn-4", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: "PARTIAL" as const, result_projection_pending: false };
+    const { rerender } = render(<ResearchExecutionActivity progress={{ ...base, status: "INTERPRETING" }} />);
+    expect(screen.getByText("正在生成科学解释")).toBeInTheDocument();
+    rerender(<ResearchExecutionActivity progress={{ ...base, status: "PARTIAL" }} />);
+    expect(screen.getByText("部分科学解释已准备")).toBeInTheDocument();
+  });
+
   it("offers one keyboard-accessible cancel command only while execution is active", () => {
     const onCancel = vi.fn();
     render(<ResearchExecutionActivity onCancel={onCancel} progress={{ contract_version: "1.0", turn_id: "turn-3", status: "RUNNING", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: null, result_projection_pending: false }} />);

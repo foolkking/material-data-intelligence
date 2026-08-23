@@ -15,6 +15,7 @@ ALLOWED_TRANSITIONS: dict[ResearchTurnStatus, frozenset[ResearchTurnStatus]] = {
         ResearchTurnStatus.ANSWERED,
         ResearchTurnStatus.UNSUPPORTED,
         ResearchTurnStatus.READY_TO_PLAN,
+        ResearchTurnStatus.INTERPRETING,
         _FAILED,
         _CANCELED,
     }),

@@ -110,6 +110,14 @@ qualification authorities.
 - [`agent2/agent2-phase4-evaluation-contract.md`](agent2/agent2-phase4-evaluation-contract.md)
 - [`../AGENT2_PHASE2_RESULTS.md`](../AGENT2_PHASE2_RESULTS.md)
 
+## Agent 2.0 Phase 5-6 Result and Interpretation
+
+- [`agent2/scientific-result-v1.md`](agent2/scientific-result-v1.md)
+- [`agent2/result-projection.md`](agent2/result-projection.md)
+- [`agent2/scientific-interpretation.md`](agent2/scientific-interpretation.md)
+- [`../AGENT2_PHASE5_RESULTS.md`](../AGENT2_PHASE5_RESULTS.md)
+- [`../AGENT2_PHASE6_RESULTS.md`](../AGENT2_PHASE6_RESULTS.md)
+
 Phase 2 ends at a validated decision or typed downstream handoff. It does not
 implement Capability resolution, AnalysisPlan creation, Job execution,
 scientific interpretation, Report composition, or Data mutation.

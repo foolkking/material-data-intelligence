@@ -184,7 +184,7 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId }: { pr
       void getAgent2ExecutionProgress(agent2TurnId).then((next) => {
         if (!active) return;
         setAgent2Progress(next);
-        if (["PLAN_READY", "QUEUED", "RUNNING", "CANCELING", "RESULT_PENDING"].includes(next.status)) timer = setTimeout(refresh, 1800);
+        if (["PLAN_READY", "QUEUED", "RUNNING", "CANCELING", "RESULT_PENDING", "RESULT_READY", "INTERPRETING"].includes(next.status)) timer = setTimeout(refresh, 1800);
       }).catch(() => { if (active) setAgent2Progress(null); });
     };
     refresh();

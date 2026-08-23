@@ -3365,5 +3365,25 @@ unchanged until Phase 4.
   backend non-integration `1691 passed, 6 skipped, 88 deselected`; frontend
   `569 passed`; typecheck/build/compileall/lock/diff-check/migration passed.
   Closure implementation `1fd18bf995ee6ffc38cbfacf6f5af1fca54a7b9f`
-  passed authoritative current-head CI run `32616753779`; all five jobs
+  passed authoritative pre-Phase-6 current-head CI run `32617347658`; all five jobs
   succeeded. Phase 5 closure verdict is COMPLETE.
+
+## 2026-08-23 Agent 2.0 Phase 6 grounded interpretation
+
+- Added bounded `ScientificInterpretationOutput 1.0` processing from
+  `RESULT_READY` through deterministic grounding to the final assistant
+  ResearchMessage. Raw Artifact content and hidden reasoning stay outside the
+  interpreter input.
+- Added exact fact/evidence/result-item reference validation, numeric value and
+  unit grounding, one bounded repair, mandatory PARTIAL/relevance notices,
+  immutable interpretation persistence, and previous-result zero-execution
+  routing.
+- Added automatic identity-only interpretation queueing and a fresh worker
+  entry point. Fresh PostgreSQL/Redis/MinIO RDF and two-step XRD qualification
+  passed with independent execution, result, and interpretation workers.
+- Phase 6 local gates passed: deterministic `8 passed, 1 skipped`; Agent2
+  focused `89 passed, 6 skipped`; live DeepSeek `1 passed`; service-backed `2
+  passed` with zero selected skips; full backend `1731 passed, 65 skipped`;
+  frontend `85 files / 570 passed`; typecheck, production build, compileall,
+  lock, migration round-trip, diff-check, and authenticated 390x844 browser
+  overflow verification passed. Current-head CI remains the closure gate.

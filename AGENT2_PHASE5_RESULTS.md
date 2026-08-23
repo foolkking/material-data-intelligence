@@ -113,7 +113,7 @@ Dedicated marker: `agent2_phase5_service`.
 - `npm run lint`: not claimed; the repository still invokes deprecated
   interactive `next lint`.
 - Closure implementation commit: `1fd18bf995ee6ffc38cbfacf6f5af1fca54a7b9f`.
-- Authoritative current-head CI run: `32616753779`; Unit, Service-backed
+- Authoritative pre-Phase-6 closure current-head CI run: `32617347658`; Unit, Service-backed
   Integration, Frontend Typecheck & Build, and Linux/Windows Scientific Replay
   all succeeded.
 

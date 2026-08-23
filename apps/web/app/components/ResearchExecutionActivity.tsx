@@ -9,12 +9,15 @@ const statusLabel: Record<Agent2ProgressView["status"], string> = {
   CANCELING: "正在取消分析",
   RESULT_PENDING: "执行已完成，正在整理科学结果",
   RESULT_READY: "科学结果已准备",
+  INTERPRETING: "正在生成科学解释",
+  COMPLETED: "科学解释已准备",
+  PARTIAL: "部分科学解释已准备",
   FAILED: "分析未能完成",
   CANCELED: "分析已取消",
 };
 
 export function ResearchExecutionActivity({ progress, onCancel, cancelPending = false }: { progress: Agent2ProgressView; onCancel?: () => void; cancelPending?: boolean }) {
-  const importantStatus = progress.status === "FAILED" || progress.status === "CANCELED" || progress.status === "RESULT_PENDING" || progress.status === "RESULT_READY";
+  const importantStatus = progress.status === "FAILED" || progress.status === "CANCELED" || progress.status === "RESULT_PENDING" || progress.status === "RESULT_READY" || progress.status === "INTERPRETING" || progress.status === "COMPLETED" || progress.status === "PARTIAL";
   const cancelable = progress.status === "QUEUED" || progress.status === "RUNNING";
   return (
     <section className="research-execution-activity" aria-label="分析进度">

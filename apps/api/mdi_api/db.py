@@ -980,6 +980,26 @@ research_execution_summaries = Table(
     CheckConstraint("execution_outcome in ('SUCCESS', 'PARTIAL', 'FAILED', 'CANCELED')", name="ck_res_execution_outcome"),
 )
 
+agent2_scientific_interpretations = Table(
+    "agent2_scientific_interpretations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("research_turn_id", Uuid, ForeignKey("research_turns.id", ondelete="RESTRICT"), nullable=False, unique=True),
+    Column("result_snapshot_id", Uuid, ForeignKey("scientific_result_snapshots.id", ondelete="RESTRICT"), nullable=False),
+    Column("project_id", String(64), ForeignKey("projects.id", ondelete="RESTRICT"), nullable=False),
+    Column("contract_version", String(16), nullable=False),
+    Column("prompt_version", String(64), nullable=False),
+    Column("provider", String(64), nullable=False),
+    Column("model", String(128), nullable=False),
+    Column("provider_request_id", String(128), nullable=True),
+    Column("repair_attempted", Boolean, nullable=False, server_default="false"),
+    Column("input_fingerprint", String(128), nullable=False),
+    Column("grounding_status", String(32), nullable=False),
+    Column("output_json", JSON, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint("grounding_status = 'VALID'", name="ck_agent2_interpretation_grounding"),
+)
+
 Index("idx_projects_org_created", projects.c.organization_id, projects.c.created_at)
 Index("idx_project_members_user", project_members.c.user_id)
 Index("idx_datasets_project_created", datasets.c.project_id, datasets.c.created_at)
@@ -1029,6 +1049,7 @@ Index("idx_research_capability_plans_resolution", research_capability_plans.c.ca
 Index("idx_research_capability_plans_fingerprint", research_capability_plans.c.input_fingerprint)
 Index("idx_research_execution_summaries_turn", research_execution_summaries.c.research_turn_id)
 Index("idx_research_execution_summaries_job", research_execution_summaries.c.job_id)
+Index("idx_agent2_interpretations_project_created", agent2_scientific_interpretations.c.project_id, agent2_scientific_interpretations.c.created_at)
 
 
 PHASE1_TABLES = (
