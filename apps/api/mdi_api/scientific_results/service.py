@@ -95,7 +95,7 @@ class ScientificResultProjectionService:
             except KeyError as exc:
                 raise ScientificResultProjectionFailed(f"result projector is not registered: {projector_id}", code="RESULT_PROJECTOR_NOT_REGISTERED") from exc
             projections.append(projector.project(self._context_for_projector(context, projector_id)))
-        bundle = self._merge_projections(context, projections)
+        bundle = self._merge_projections(context, projections).bundle
         source_fingerprint = ScientificResultSourceFingerprint.compute(
             research_turn_id=context.research_turn_id,
             execution_summary=context.execution_summary,
@@ -136,7 +136,7 @@ class ScientificResultProjectionService:
         return self._load_artifact_payloads(context), existing
 
     def _context_from_rows(self, session: Any, turn: dict[str, Any], summary: dict[str, Any]) -> ScientificResultProjectionContext:
-        plan = session.repositories.analysis_plans.get(str(turn.get("analysis_plan_id")))
+        plan = session.repositories.analysis_plans.get_plan(str(turn.get("analysis_plan_id")))
         cap = session.agent2.research_capability_plans.get_for_turn(turn["id"])
         resolution = session.agent2.research_capability_resolutions.get_for_turn(turn["id"])
         if cap is None:
@@ -285,7 +285,6 @@ class ScientificResultProjectionService:
         if str(turn["status"]) == ResearchTurnStatus.RESULT_PENDING.value:
             unit.agent2.research_turns.compare_and_set_status(turn["id"], expected_status=ResearchTurnStatus.RESULT_PENDING.value, expected_version=int(turn["row_version"]), target_status=ResearchTurnStatus.RESULT_READY.value)
 
-    @staticmethod
     def _reconcile_ready(self, turn_id: UUID) -> None:
         with self.repository_factory.unit_of_work() as unit:
             turn = unit.agent2.research_turns.get_for_update(turn_id)

@@ -738,10 +738,17 @@ class QueueWorkerRuntime:
         try:
             from mdi_api.research_agent.execution.supervisor import ResearchExecutionSupervisor
             from mdi_api.database import create_repository_factory
-            ResearchExecutionSupervisor(create_repository_factory()).sync_for_job(job_id)
+            view = ResearchExecutionSupervisor(create_repository_factory()).sync_for_job(job_id)
+            view_status = getattr(view, "status", None) if view is not None else None
+            if getattr(view_status, "value", view_status) == "RESULT_PENDING":
+                from uuid import UUID
+                from mdi_api.scientific_results.queue import result_projection_queue_from_settings
+
+                settings = load_settings()
+                result_projection_queue_from_settings(settings).enqueue_turn(UUID(str(view.turn_id)))
         except Exception as exc:
             logger.warning(
-                "agent2_progress_projection_failed",
+                "agent2_progress_or_result_wakeup_failed",
                 extra={"job_id": job_id, "error_type": type(exc).__name__},
             )
 

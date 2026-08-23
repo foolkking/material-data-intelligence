@@ -28,6 +28,8 @@ class ApiSettings:
     queue_backend: str = "local"    # "local" | "redis"
     agent2_orchestration_enabled: bool = False
     agent2_queue_name: str = "mdi-agent-turns"
+    agent2_result_projection_enabled: bool = True
+    agent2_result_queue_name: str = "mdi-agent-results"
     artifact_backend: str = "local"  # "local" | "minio"
     artifact_root: str = ".artifacts/phase2"
     # -- Test database for integration tests --
@@ -99,6 +101,8 @@ def load_settings() -> ApiSettings:
         queue_backend=os.getenv("MDI_QUEUE_BACKEND", "local").lower(),
         agent2_orchestration_enabled=_parse_bool(os.getenv("MDI_AGENT2_ORCHESTRATION_ENABLED", "false")),
         agent2_queue_name=os.getenv("MDI_AGENT2_QUEUE_NAME", ApiSettings.agent2_queue_name),
+        agent2_result_projection_enabled=_parse_bool(os.getenv("MDI_AGENT2_RESULT_PROJECTION_ENABLED", "true")),
+        agent2_result_queue_name=os.getenv("MDI_AGENT2_RESULT_QUEUE_NAME", ApiSettings.agent2_result_queue_name),
         artifact_backend=os.getenv("MDI_ARTIFACT_BACKEND", "local").lower(),
         artifact_root=os.getenv("MDI_ARTIFACT_ROOT", ApiSettings.artifact_root),
         test_database_url=test_database_url,

@@ -44,6 +44,7 @@ from mdi_artifact_core import content_hash, stable_json_dumps
 
 
 ROOT = Path(__file__).resolve().parents[2]
+LAST_PHASE4_SERVICE_EVIDENCE: dict[str, Any] = {}
 
 
 class RdfOrchestratorFixture:
@@ -317,7 +318,7 @@ def test_agent2_phase4_fresh_worker_executes_exact_plan_and_stops_at_result_pend
         [
             sys.executable,
             "-c",
-            "from mdi_workers.queue_runtime import run_queued_job; import sys; result = run_queued_job(sys.argv[1]); print(result.status)",
+            "from mdi_workers.queue_runtime import run_queued_job; import os, sys; print(f'EXECUTION_WORKER_PID={os.getpid()}'); result = run_queued_job(sys.argv[1]); print(result.status)",
             dispatched.job_id,
         ],
         cwd=ROOT,
@@ -329,6 +330,8 @@ def test_agent2_phase4_fresh_worker_executes_exact_plan_and_stops_at_result_pend
     )
     assert process.returncode == 0, process.stderr[-4000:]
     assert process.stdout.strip().endswith("completed")
+    rdf_worker_pid = int(next(line.split("=", 1)[1] for line in process.stdout.splitlines() if line.startswith("EXECUTION_WORKER_PID=")))
+    assert rdf_worker_pid != os.getpid()
 
     with engine.connect() as connection:
         turn = connection.execute(select(research_turns).where(research_turns.c.id == received.turn_id)).mappings().one()
@@ -443,7 +446,10 @@ def test_agent2_phase4_fresh_worker_executes_exact_plan_and_stops_at_result_pend
 from pathlib import Path
 import sys
 import time
+import os
 from mdi_workers.queue_runtime import QueueWorkerRuntime, run_queued_job
+
+print(f"EXECUTION_WORKER_PID={os.getpid()}")
 
 signal_path = Path(sys.argv[2])
 release_path = Path(sys.argv[3])
@@ -498,6 +504,8 @@ print(result.status)
         stdout, stderr = process.communicate(timeout=180)
         assert process.returncode == 0, stderr[-4000:]
         assert stdout.strip().endswith("completed")
+        xrd_worker_pid = int(next(line.split("=", 1)[1] for line in stdout.splitlines() if line.startswith("EXECUTION_WORKER_PID=")))
+        assert xrd_worker_pid != os.getpid()
 
     with engine.connect() as connection:
         xrd_turn = connection.execute(select(research_turns).where(research_turns.c.id == xrd_received.turn_id)).mappings().one()
@@ -521,6 +529,15 @@ print(result.status)
     ]
     xrd_event_types = [item["event_type"] for item in xrd_events]
     assert xrd_event_types.index("EXECUTION_OUTPUT_AVAILABLE") < xrd_event_types.index("RESULT_PENDING")
+
+    LAST_PHASE4_SERVICE_EVIDENCE.clear()
+    LAST_PHASE4_SERVICE_EVIDENCE.update({
+        "api_fixture_pid": os.getpid(),
+        "rdf": {"turn_id": str(received.turn_id), "job_id": dispatched.job_id, "execution_worker_pid": rdf_worker_pid},
+        "xrd": {"turn_id": str(xrd_received.turn_id), "job_id": xrd_dispatch.job_id, "execution_worker_pid": xrd_worker_pid},
+        "owner": {"id": owner.id, "email": owner.email},
+        "project_id": project_id,
+    })
 
     queued_job.delete()
     queued_xrd_job = xrd_queue.fetch_job(xrd_dispatch.job_id)

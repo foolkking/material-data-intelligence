@@ -1,19 +1,23 @@
 ---TASK---
-状态：失败
-任务名称：Agent-2.0 Phase 5 — Production Scientific Result Projection
+状态：处理中
+任务名称：Agent-2.0 Phase 5 Closure — Production Result Qualification & Canonical Projector Specialization
 开始时间：2026-08-23T00:00:00+08:00
 
 从 Agent-2.0 Phase 4 的 RESULT_PENDING 闭环实现确定性的 ScientificResultBundle 投影、不可变快照、relevance 评估、结果 API、canonical projector registry、测试与文档。不得调用 LLM、创建 Job/ToolCall 或修改既有执行事实。
 
-失败时间：2026-08-23T10:02:00+08:00
+最近更新：2026-08-23
 
-失败原因：Phase 5 deterministic foundation、迁移、API、九个 canonical projector 注册、完整本地回归及 current-HEAD CI 已完成，但完整 acceptance 仍缺少 Phase 5 专属 fresh PostgreSQL/Redis/MinIO RDF/XRD 投影 qualification、浏览器 390px 结果状态证据，以及针对各 production Artifact contract 的完整领域 metric/figure/table projector 映射。`AGENT2_PHASE5_RESULTS.md` 判定为 `PARTIAL`，不得标记 COMPLETE。
+当前闭环进度：专属 fresh PostgreSQL/Redis/MinIO RDF/XRD 投影 qualification、
+自动 result-worker trigger、九个 production Artifact contract 的 typed
+projector coverage，以及 ChatGPT 内置浏览器 390x844 结果状态证据均已完成。
+本地回归已通过；仍需 push 后确认唯一 authoritative current-head CI run，
+再将 `AGENT2_PHASE5_RESULTS.md` 与本任务归档为 COMPLETE。
 
 修改文件：migration 0021；Agent2 result schemas/fingerprint/relevance/projector registry/service/router/state machine；Research minimal RESULT_READY UI；Phase 5 tests/docs/report；persistent/task records。
 
 修改摘要：实现 RESULT_PENDING → RESULT_READY、复用 immutable scientific_result_snapshots、typed bundle components、artifact-locator quantitative fact grounding、image-only hallucination guard、deterministic fingerprint、exact-version relevance、authorized result API、fail-closed projector registry/conflict handling。Artifact payload 读取在 DB transaction 外，多 capability projection 按 step/tool-call/artifact lineage 隔离。无 LLM、Job、ToolCall 或 assistant final message。
 
-测试结果：Phase 5 deterministic 5 passed；focused closure 55 passed, 1 skipped；migration 1 passed；完整 non-integration backend 1706 passed, 6 skipped, 56 deselected；frontend 569 passed；typecheck/compileall/diff-check 通过；current-HEAD CI 32611474526 五个 jobs 全部成功，含 PostgreSQL/Redis/MinIO integration 无 skip。
+测试结果：Phase 5 deterministic 15 passed；queue/自动触发 closure 5 passed；Agent2 focused 105 passed, 5 skipped；fresh service-backed RDF/XRD 2 passed, selected skip 0；migration 1 passed；完整 non-integration backend 1691 passed, 6 skipped, 88 deselected；frontend 569 passed；typecheck、production build、compileall、uv lock --check、git diff --check 通过；current-head CI 待 closure push 后记录。
 
 ---END---
 

@@ -416,8 +416,22 @@ class ResearchTurnEventRepository(_Repository):
         return self._run(run)
 
     def next_sequence_no(self, turn_id: UUID) -> int:
-        statement = select(func.coalesce(func.max(research_turn_events.c.sequence_no), 0) + 1).where(research_turn_events.c.turn_id == turn_id)
-        return self._run(lambda connection: int(connection.execute(statement).scalar_one()))
+        def run(connection: Connection) -> int:
+            # Event append is intentionally a separate repository operation in
+            # several lifecycle services. Serialize sequence allocation on the
+            # authoritative turn row so concurrent transactions cannot both
+            # observe the same MAX(sequence_no).
+            connection.execute(
+                select(research_turns.c.id)
+                .where(research_turns.c.id == turn_id)
+                .with_for_update()
+            ).scalar_one()
+            statement = select(func.coalesce(func.max(research_turn_events.c.sequence_no), 0) + 1).where(
+                research_turn_events.c.turn_id == turn_id
+            )
+            return int(connection.execute(statement).scalar_one())
+
+        return self._run(run)
 
     def list_for_turn(self, turn_id: UUID, *, after_sequence: int = 0) -> list[dict[str, Any]]:
         statement = select(research_turn_events).where(and_(

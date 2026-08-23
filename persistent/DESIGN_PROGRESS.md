@@ -3346,3 +3346,22 @@ unchanged until Phase 4.
   projection persistence, and the minimal `RESULT_READY` Research activity.
 - Phase 5 still does not interpret results, call an LLM, create Jobs or
   ToolCalls, or generate an assistant final answer.
+
+## 2026-08-23 Agent 2.0 Phase 5 closure qualification
+
+- Added automatic identity-only Redis/RQ result projection after the committed
+  Phase 4 `ExecutionSummary + RESULT_PENDING` boundary. A fresh result worker
+  reloads PostgreSQL/MinIO authority and is recoverable by `turn_id`; the
+  manual projection endpoint is no longer the normal production trigger.
+- Replaced generic canonical payload wrapping with typed adapters for the nine
+  current RDF, XRD, ML regression, trajectory and phonon production schemas.
+  Numeric facts are restricted to declared summary fields with committed
+  Artifact locators; curves remain structured Figure/Table data.
+- Dedicated PostgreSQL/Redis/MinIO fresh-process qualification passed RDF and
+  two-step XRD with zero selected skips, concurrent delivery convergence,
+  owner/outsider API authorization, zero projection LLM/Job/ToolCall delta,
+  and a 390x844 browser result-ready/no-overflow evidence capture.
+- Local closure gates passed: Agent2 focused `105 passed, 5 skipped`; full
+  backend non-integration `1691 passed, 6 skipped, 88 deselected`; frontend
+  `569 passed`; typecheck/build/compileall/lock/diff-check/migration passed.
+  Final current-head CI is recorded after the closure push.

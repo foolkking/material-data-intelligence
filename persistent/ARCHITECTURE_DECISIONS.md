@@ -5536,3 +5536,22 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   ScientificResultSnapshot, interpretation or assistant final answer.
   `CANCELING` records intent until the Job runtime confirms cancellation or a
   terminal success/partial race is reconciled.
+
+## ADR: Agent 2.0 Phase 5 closes result projection at the persistence boundary (2026-08-23)
+
+- The existing immutable `scientific_result_snapshots` table remains the only
+  ScientificResult authority. A committed Phase 4 `ExecutionSummary` and
+  `RESULT_PENDING` transition publish a best-effort identity-only
+  `{"turn_id": "..."}` wakeup outside the database transaction.
+- A fresh result worker reloads PostgreSQL/MinIO facts and registered code;
+  Redis/RQ never carries Artifact, Plan, ToolCall or ResultBundle payloads.
+  Publication failure leaves execution facts and `RESULT_PENDING` recoverable;
+  duplicate and concurrent deliveries converge on one fingerprint-checked
+  immutable snapshot.
+- The nine current canonical capabilities use typed production Artifact
+  adapters. Projectors map declared scientific summaries with resolvable
+  Artifact locators, preserve units, keep curves/tables structured, and never
+  infer numeric facts from images, filenames or prose.
+- `RESULT_READY` is a result-projection boundary, not an interpretation or
+  assistant-response boundary. Phase 6 remains the only owner of grounded
+  scientific prose and final assistant messages.
