@@ -3331,3 +3331,18 @@ unchanged until Phase 4.
 - Implementation `4384db3` passed current-HEAD GitHub Actions run
   `32592517424` across Unit, PostgreSQL/Redis/MinIO integration, Frontend with
   Phase 12-6/12-7, and Linux/Windows scientific replay. Phase 4 is complete.
+
+## 2026-08-23 Agent 2.0 Phase 5 result projection
+
+- Added `RESULT_READY` after `RESULT_PENDING` and migration
+  `0021_agent2_scientific_result_projection`; the existing snapshot table
+  remains the only Agent 2 result authority.
+- Replaced fixture result-projector registration with deterministic canonical
+  projector registrations for RDF, XRD, ML regression, trajectory and phonon
+  families. Numeric facts require committed artifact locators; image artifacts
+  can only produce figures.
+- Added immutable typed bundle components, source fingerprinting, relevance
+  evaluation, authorized projection/result APIs, idempotent conflict-closed
+  projection persistence, and the minimal `RESULT_READY` Research activity.
+- Phase 5 still does not interpret results, call an LLM, create Jobs or
+  ToolCalls, or generate an assistant final answer.

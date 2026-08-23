@@ -7,6 +7,7 @@ class ScientificResultProjectorRegistry(Protocol):
     def register(self, projector_id: str, projector: Callable[..., Any]) -> None: ...
     def require(self, projector_id: str) -> Callable[..., Any]: ...
     def contains(self, projector_id: str) -> bool: ...
+    def fingerprint(self) -> list[tuple[str, str]]: ...
 
 
 class InMemoryScientificResultProjectorRegistry:
@@ -26,3 +27,15 @@ class InMemoryScientificResultProjectorRegistry:
 
     def contains(self, projector_id: str) -> bool:
         return projector_id in self._projectors
+
+    def fingerprint(self) -> list[tuple[str, str]]:
+        return sorted((key, str(getattr(value, "version", "1.0"))) for key, value in self._projectors.items())
+
+
+def build_default_result_projector_registry() -> InMemoryScientificResultProjectorRegistry:
+    from mdi_api.scientific_results.projectors.canonical import build_canonical_result_projectors
+
+    registry = InMemoryScientificResultProjectorRegistry()
+    for projector in build_canonical_result_projectors():
+        registry.register(projector.projector_id, projector)
+    return registry

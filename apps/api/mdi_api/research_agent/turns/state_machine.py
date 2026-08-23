@@ -24,7 +24,8 @@ ALLOWED_TRANSITIONS: dict[ResearchTurnStatus, frozenset[ResearchTurnStatus]] = {
     ResearchTurnStatus.QUEUED: frozenset({ResearchTurnStatus.RUNNING, ResearchTurnStatus.RESULT_PENDING, ResearchTurnStatus.CANCELING, _FAILED}),
     ResearchTurnStatus.RUNNING: frozenset({ResearchTurnStatus.RESULT_PENDING, ResearchTurnStatus.CANCELING, ResearchTurnStatus.INTERPRETING, _FAILED}),
     ResearchTurnStatus.CANCELING: frozenset({_CANCELED, ResearchTurnStatus.RESULT_PENDING, _FAILED}),
-    ResearchTurnStatus.RESULT_PENDING: frozenset({ResearchTurnStatus.INTERPRETING, _FAILED}),
+    ResearchTurnStatus.RESULT_PENDING: frozenset({ResearchTurnStatus.RESULT_READY, _FAILED}),
+    ResearchTurnStatus.RESULT_READY: frozenset({ResearchTurnStatus.INTERPRETING, _FAILED}),
     ResearchTurnStatus.INTERPRETING: frozenset({ResearchTurnStatus.COMPLETED, ResearchTurnStatus.PARTIAL, _FAILED, _CANCELED}),
 }
 

@@ -27,6 +27,11 @@ describe("ResearchExecutionActivity", () => {
     expect(screen.queryByText("研究完成")).toBeNull();
   });
 
+  it("shows RESULT_READY as a result-ready state", () => {
+    render(<ResearchExecutionActivity progress={{ contract_version: "1.0", turn_id: "turn-3", status: "RESULT_READY", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: "SUCCESS", result_projection_pending: false }} />);
+    expect(screen.getByText("科学结果已准备")).toBeInTheDocument();
+  });
+
   it("offers one keyboard-accessible cancel command only while execution is active", () => {
     const onCancel = vi.fn();
     render(<ResearchExecutionActivity onCancel={onCancel} progress={{ contract_version: "1.0", turn_id: "turn-3", status: "RUNNING", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: null, result_projection_pending: false }} />);

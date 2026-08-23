@@ -101,3 +101,47 @@ class CapabilityBindingFailed(Agent2DomainError):
     def __init__(self, message: str, *, code: str = "CAPABILITY_BINDING_FAILED") -> None:
         super().__init__(message)
         self.code = code
+
+
+class ScientificResultNotReady(Agent2DomainError):
+    pass
+
+
+class ScientificResultProjectionNotSupported(Agent2DomainError):
+    pass
+
+
+class ScientificResultProjectionFailed(Agent2DomainError):
+    def __init__(self, message: str, *, code: str = "RESULT_PROJECTION_FAILED") -> None:
+        super().__init__(message)
+        self.code = code
+
+
+class ScientificResultProjectionConflict(ScientificResultProjectionFailed):
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="RESULT_PROJECTION_CONFLICT")
+
+
+class ScientificResultSourceUnavailable(ScientificResultProjectionFailed):
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="RESULT_SOURCE_UNAVAILABLE")
+
+
+class InvalidScientificResultBundle(ScientificResultProjectionFailed):
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="INVALID_SCIENTIFIC_RESULT_BUNDLE")
+
+
+class InvalidScientificFactSource(ScientificResultProjectionFailed):
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="INVALID_SCIENTIFIC_FACT_SOURCE")
+
+
+class UnauthorizedScientificResultReference(ScientificResultProjectionFailed):
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="UNAUTHORIZED_SCIENTIFIC_RESULT_REFERENCE")
+
+
+class ResultProjectorNotRegistered(ScientificResultProjectionFailed):
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="RESULT_PROJECTOR_NOT_REGISTERED")

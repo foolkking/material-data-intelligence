@@ -11,7 +11,7 @@ from mdi_api.research_agent.requirements.registry import InMemoryScientificRequi
 from mdi_api.research_agent.schemas import CapabilityStatus
 from mdi_api.research_agent.progress.registry import InMemoryScientificProgressProjectorRegistry
 from mdi_api.scientific_objects.registry import InMemoryObjectTypeRegistry, build_default_object_type_registry
-from mdi_api.scientific_results.projectors.registry import InMemoryScientificResultProjectorRegistry
+from mdi_api.scientific_results.projectors.registry import build_default_result_projector_registry
 from mdi_api.research_agent.capabilities.preconditions import build_default_precondition_registry
 from mdi_api.research_agent.capabilities.versions import version_satisfies
 from mdi_api.research_agent.execution.progress import GenericScientificProgressProjector
@@ -27,8 +27,7 @@ class Agent2Registries:
 
 
 def build_default_agent2_registries() -> Agent2Registries:
-    result_projectors = InMemoryScientificResultProjectorRegistry()
-    result_projectors.register("agent2.fixture.result", lambda *_args, **_kwargs: None)
+    result_projectors = build_default_result_projector_registry()
     progress_projectors = InMemoryScientificProgressProjectorRegistry()
     progress_projectors.register("agent2.fixture.progress", GenericScientificProgressProjector())
     return Agent2Registries(

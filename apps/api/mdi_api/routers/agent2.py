@@ -19,6 +19,9 @@ from mdi_api.agent2_errors import (
     ScientificObjectNotFound,
     ScientificObjectVersionNotFound,
     UnauthorizedScientificObjectReference,
+    ScientificResultNotReady,
+    ScientificResultProjectionConflict,
+    ScientificResultProjectionFailed,
 )
 from mdi_api.database import create_repository_factory
 from mdi_api.config import load_settings
@@ -43,6 +46,10 @@ from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_api.scientific_objects.schemas import ScientificObjectKind, ScientificObjectLifecycle
 from mdi_api.scientific_objects.service import ScientificObjectService
+from mdi_api.scientific_results.schemas import ScientificResultBundle
+from mdi_api.scientific_results.relevance import ScientificResultRelevanceEvaluator
+from mdi_api.scientific_results.service import ScientificResultProjectionService
+from mdi_api.artifact_storage import create_artifact_storage_from_settings
 
 
 logger = logging.getLogger(__name__)
@@ -159,6 +166,55 @@ def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depend
             }
         view = ResearchExecutionSupervisor(factory).sync_for_job(job_id)
         return jsonable_encoder(view.model_dump(mode="json") if hasattr(view, "model_dump") else view)
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
+    try:
+        factory = create_repository_factory()
+        with factory.session() as session:
+            turn = session.agent2.research_turns.get(turn_id)
+            require_project_access(session.connection, str(turn["project_id"]), current_user)
+            if str(turn["status"]) != ResearchTurnStatus.RESULT_READY.value:
+                raise ScientificResultNotReady(str(turn_id))
+            row = session.agent2.scientific_result_snapshots.get_latest_for_turn(turn_id)
+            bundle = ScientificResultBundle.model_validate(row["bundle_json"])
+            objects: dict[str, dict[str, Any]] = {}
+            versions: dict[str, dict[str, Any]] = {}
+            for ref in bundle.source_object_refs:
+                try:
+                    objects[str(ref.object_id)] = session.agent2.scientific_objects.get_object(ref.object_id)
+                    versions[str(ref.version_id)] = session.agent2.scientific_objects.get_version(ref.version_id)
+                except Exception:
+                    pass
+            relevance = ScientificResultRelevanceEvaluator().evaluate(bundle.source_object_refs, objects=objects, versions=versions)
+            return {
+                "result_id": str(bundle.result_id), "research_turn_id": str(bundle.research_turn_id),
+                "research_question": bundle.research_question, "execution_status": bundle.execution_status.value,
+                "relevance_status": relevance.value, "result_items": [item.model_dump(mode="json") for item in bundle.result_items],
+                "figures": [item.model_dump(mode="json") for item in bundle.figures],
+                "tables": [item.model_dump(mode="json") for item in bundle.tables],
+                "limitations": [item.model_dump(mode="json") for item in bundle.limitations],
+                "warnings": [item.model_dump(mode="json") for item in bundle.warnings],
+            }
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def project_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> JSONResponse:
+    try:
+        factory = create_repository_factory()
+        with factory.session() as session:
+            turn = session.agent2.research_turns.get(turn_id)
+            require_project_access(session.connection, str(turn["project_id"]), current_user, write=True)
+        storage = create_artifact_storage_from_settings(load_settings())
+        service = ScientificResultProjectionService(
+            factory,
+            artifact_loader=lambda artifact: storage.get_json(str(artifact.get("storageKey") or artifact.get("storage_key"))),
+        )
+        row = service.project_turn(turn_id)
+        return JSONResponse(status_code=200, content=jsonable_encoder({"turn_id": str(turn_id), "status": "RESULT_READY", "snapshot_id": str(row["id"])}))
     except Exception as exc:
         raise _http_error(exc) from exc
 
@@ -306,6 +362,10 @@ def _sse_event_name(event_type: str) -> str:
         "EXECUTION_PARTIAL": "analysis.execution.partial",
         "EXECUTION_FAILED": "analysis.failed",
         "RESULT_PENDING": "result.pending",
+        "RESULT_PROJECTION_STARTED": "result.projecting",
+        "RESULT_PROJECTION_FAILED": "result.failed",
+        "RESULT_PROJECTED": "result.projecting",
+        "RESULT_READY": "result.ready",
     }.get(event_type, "turn.status.changed")
 
 
@@ -321,6 +381,10 @@ def _http_error(exc: Exception) -> HTTPException:
         return HTTPException(status_code=409, detail={"code": code, "summary": str(exc)})
     if isinstance(exc, InvalidScientificObjectVersion):
         return HTTPException(status_code=422, detail=str(exc))
+    if isinstance(exc, ScientificResultNotReady):
+        return HTTPException(status_code=409, detail={"code": "SCIENTIFIC_RESULT_NOT_READY", "summary": str(exc)})
+    if isinstance(exc, (ScientificResultProjectionConflict, ScientificResultProjectionFailed)):
+        return HTTPException(status_code=409, detail={"code": getattr(exc, "code", "RESULT_PROJECTION_FAILED"), "summary": str(exc)})
     execution_codes = {
         ExecutionPlanNotReady: "EXECUTION_PLAN_NOT_READY",
         ExecutionPlanIdentityMismatch: "EXECUTION_PLAN_IDENTITY_MISMATCH",

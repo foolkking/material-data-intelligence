@@ -2376,3 +2376,13 @@ PostgreSQL and ArtifactStorage. Product progress is a deterministic projection
 of CapabilityPlan steps, AnalysisPlan steps, JobEvents, ToolCalls and declared
 Artifacts; it does not expose Tool, Job, queue, worker or provider internals and
 does not contain scientific interpretation.
+### Agent 2.0 Phase 5 ScientificResultBundle 1.0
+
+`ScientificResultBundle` is an immutable deterministic projection of committed
+execution facts. Its typed components are `ScientificResultItem`,
+`ScientificFact`, `ScientificFigure`, `ScientificTable`, `EvidenceItem`,
+`MethodRecord`, `ScientificLimitation`, `ScientificWarning`, and
+`ProvenanceRecord`. Quantitative facts require a concrete artifact/tool/object
+locator; image-only artifacts cannot produce numeric facts. Execution status
+(`SUCCESS`/`PARTIAL`/`FAILED`) is independent from relevance status
+(`CURRENT`/`STALE`/`SOURCE_MISSING`/`INVALIDATED`).

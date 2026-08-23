@@ -3200,3 +3200,12 @@ archival remains withheld.
 - [x] Push `1553183b` and `9af205b8`; current-HEAD GitHub Actions run
       `32567895104` passed all five jobs, including service integration `51
       passed, 0 skipped`.
+
+## Agent 2.0 Phase 5 — Production Scientific Result Projection — In progress
+
+- [x] Add immutable typed ScientificResultBundle projection contracts and
+      deterministic canonical projector registry.
+- [x] Add RESULT_READY lifecycle, migration 0021, source fingerprinting,
+      relevance evaluation, authorized result API and minimal UI state.
+- [ ] Complete full local/service-backed regression, report, commit, current-
+      HEAD CI verification and task archival.

@@ -1,4 +1,13 @@
 ---TASK---
+状态：处理中
+任务名称：Agent-2.0 Phase 5 — Production Scientific Result Projection
+开始时间：2026-08-23T00:00:00+08:00
+
+从 Agent-2.0 Phase 4 的 RESULT_PENDING 闭环实现确定性的 ScientificResultBundle 投影、不可变快照、relevance 评估、结果 API、canonical projector registry、测试与文档。不得调用 LLM、创建 Job/ToolCall 或修改既有执行事实。
+
+---END---
+
+---TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00
