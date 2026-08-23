@@ -13854,3 +13854,41 @@ selected skip 0`；完整 non-integration backend `1691 passed, 6 skipped,
 已推送；该实现的 authoritative exact-SHA GitHub Actions run `32616753779`
 五个 jobs 全部成功。未部署或发布；无关工作树文件未纳入提交。
 ---END---
+
+---RESULT---
+任务名称：Agent-2.0 Phase 6 — Grounded Scientific Interpretation & Assistant Final Response
+状态：已完成
+完成时间：2026-08-23T13:56:37+08:00
+
+修改摘要：实现 `RESULT_READY → INTERPRETING → COMPLETED/PARTIAL` 自动生产路径；
+复用 server-managed DeepSeek structured transport、ResearchTurn、immutable
+ScientificResultSnapshot 与 existing ASSISTANT ResearchMessage。新增 bounded
+result-only Interpreter input、ScientificInterpretationOutput 1.0、不可变 grounded
+interpretation、Fact/Evidence/ResultItem 引用校验、定量值/单位/answer-lead grounding、
+一次 bounded repair、deterministic AssistantResponseProjector、identity-only Redis/RQ
+队列、fresh interpretation worker、授权 API/SSE，以及 Phase 2 existing-result
+interpretation 的 zero-execution handoff。PARTIAL、STALE、SOURCE_MISSING、INVALIDATED
+由代码注入必要状态说明；raw Artifact 与未验证模型输出不能进入最终消息。
+
+测试结果：Phase 6 deterministic `8 passed, 1 skipped`；Agent2 Phase 2-6 focused
+`89 passed, 6 skipped`；live DeepSeek `1 passed, 8 deselected`；fresh
+PostgreSQL/Redis/MinIO RDF/XRD `2 passed, selected skip 0`；完整 backend
+non-integration `1731 passed, 65 skipped`；frontend `85 files / 570 passed`；
+typecheck、production build、compileall、`uv lock --check`、SQLite migration
+`0022 → 0021 → 0022`、clean PostgreSQL migration、`git diff --check` 和 authenticated
+390x844 no-overflow browser verification 均通过。Phase 6 阶段 AnalysisPlan、Job、
+ToolCall、Artifact、ScientificResultSnapshot delta 均为 0；正常 provider call 为 1，
+最多一次 repair；未知引用、幻觉数字与单位转换均被 deterministic gate 拒绝。
+`npm run lint` 仍指向 deprecated interactive `next lint`，未声明独立 lint PASS。
+
+提交/CI：实现提交 `2b9ad6155a7c63dfd3efe15868aeaae72e172116` 已推送；
+authoritative exact-SHA GitHub Actions run `32621337675` 的 Unit Tests、Frontend
+Typecheck & Build、PostgreSQL/Redis/MinIO Service-backed Integration 和 Linux/Windows
+Scientific Replay 五个 jobs 全部成功。未部署或发布；用户既有 working-tree 修改
+未纳入提交。
+
+明确未实施：full multi-turn Research Memory、semantic long-session retrieval、
+general continuation/re-analysis memory、Report Composer、Data Management mutations、
+full 62-tool capability mapping、professional Viewer expansion、Viewer linked-selection、
+Tool/plugin ecosystem 和 Phase 2 ORCHESTRATING lease/reaper。
+---END---

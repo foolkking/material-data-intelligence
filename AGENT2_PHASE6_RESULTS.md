@@ -2,11 +2,10 @@
 
 ## Verdict
 
-**PARTIAL - current-head CI pending**
+**COMPLETE**
 
-All local implementation, deterministic, live-provider, service-backed,
-browser, migration, backend, and frontend gates pass. The only remaining
-closure item is the pushed current-head GitHub Actions result.
+All implementation, deterministic, live-provider, service-backed, browser,
+migration, backend, frontend, and pushed current-head CI gates pass.
 
 ## Starting State
 
@@ -99,8 +98,13 @@ new ResearchTurns and verifies the same zero-delta contract.
 
 ## Current-Head CI
 
-Pending the implementation push. This section and the verdict must be updated
-only after the exact pushed SHA has passed all current workflow jobs.
+- Implementation commit:
+  `2b9ad6155a7c63dfd3efe15868aeaae72e172116`.
+- Authoritative exact-SHA GitHub Actions run: `32621337675`.
+- Unit Tests, Frontend Typecheck & Build, PostgreSQL/Redis/MinIO
+  Service-backed Integration, and Linux/Windows Scientific Replay all passed.
+- The service-backed job included the dedicated Phase 6 RDF and two-step XRD
+  fresh-process qualification and asserted zero selected integration skips.
 
 ## Not Implemented In Phase 6
 

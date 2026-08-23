@@ -1,12 +1,4 @@
 ---TASK---
-状态：处理中
-任务名称：Agent-2.0 Phase 6 — Grounded Scientific Interpretation & Assistant Final Response
-开始时间：2026-08-23T12:30:00+08:00
-
-实现 RESULT_READY → INTERPRETING → COMPLETED/PARTIAL 的自动生产路径；复用 server-managed DeepSeek structured transport、ResearchTurn、ScientificResultSnapshot 与 ResearchMessage，增加 bounded Interpreter input、不可变 grounded interpretation、引用/定量 grounding validator、AssistantResponseProjector、identity-only interpretation queue、fresh worker、previous-result interpretation、授权/API/SSE、deterministic/live/service-backed/frontend qualification，并保持 Phase 1–5 与 legacy runtime 不回归。Phase 6 不创建新的科学计算、Job、ToolCall、Artifact、ScientificResultSnapshot 或 Report。
----END---
-
----TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00
