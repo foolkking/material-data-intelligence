@@ -9,7 +9,7 @@ import uuid
 
 from fastapi import Depends, HTTPException, Request, Response
 from pydantic import BaseModel, Field
-from sqlalchemy import and_, insert, select, update
+from sqlalchemy import and_, insert, inspect, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
 from mdi_api.config import load_settings
@@ -69,9 +69,12 @@ def get_current_user(request: Request) -> CurrentUser:
             raise HTTPException(status_code=401, detail="登录状态已失效。")
         connection.execute(update(auth_sessions).where(auth_sessions.c.id == row["id"]).values(last_seen_at=now))
         try:
-            roles = [item[0] for item in connection.execute(
-                select(project_members.c.role).where(project_members.c.user_id == row["user_id"]).distinct()
-            ).all()]
+            if project_members.name not in inspect(connection).get_table_names():
+                roles = []
+            else:
+                roles = [item[0] for item in connection.execute(
+                    select(project_members.c.role).where(project_members.c.user_id == row["user_id"]).distinct()
+                ).all()]
         except SQLAlchemyError:
             # Historical owner-only databases predate project_members. The
             # authenticated identity remains valid; authorization helpers

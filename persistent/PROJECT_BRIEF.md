@@ -979,3 +979,14 @@ projection, interpretation or assistant final answer. `CANCELING` separates a
 cancel request from the Job runtime's confirmed terminal outcome. Phase 5 owns
 production scientific-result projection. Implementation `4384db3` passed
 current-HEAD GitHub Actions run `32592517424`; Phase 4 is complete.
+
+## Agent 2.0 Phase 7 closure
+
+Phase 7 is complete at `99614060f8c8c4f88d5a47913585b0fd63d5010e` with
+current-head CI `32655477520`. Durable ResearchSession memory, bounded opaque
+reference resolution, previous-result reuse, exact-version stale handling and
+new-Turn continuation were qualified through fresh PostgreSQL/Redis/MinIO
+processes. The Windows isolated-service fixture records worker readiness
+separately from the unchanged scientific execution timeout, and the Phase 6
+interpretation validator remained strict. Phase 8/Report Composer is not started
+by this record.

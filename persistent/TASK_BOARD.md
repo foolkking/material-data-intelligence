@@ -3228,7 +3228,7 @@ archival remains withheld.
       dedicated fresh-process Phase 6 service qualification with zero skips.
 - [x] Record the COMPLETE result and archive the completed TASKS entry.
 
-## Agent 2.0 Phase 7 — Multi-turn Research Memory — In Progress
+## Agent 2.0 Phase 7 — Multi-turn Research Memory — Completed
 
 - [x] Add durable ResearchSession state, auditable constraints and pinning.
 - [x] Add deterministic bounded long-session result/finding candidate assembly.
@@ -3237,9 +3237,15 @@ archival remains withheld.
       continuation on a new immutable ResearchTurn.
 - [x] Pass full backend, frontend, typecheck/build, migration, and authenticated
       desktop/390px browser no-overflow checks.
-- [ ] Complete fresh PostgreSQL/Redis/MinIO RDF and second-family multi-turn qualification.
-- [ ] Complete live-provider qualification and final current-head CI closure.
+- [x] Complete fresh PostgreSQL/Redis/MinIO RDF reuse, RDF parameter continuation,
+      XRD reuse and stale exact-version qualification with independent processes.
+- [x] Complete gated provider qualification and final current-head CI closure.
 
-Local service gate evidence: isolated PostgreSQL/Redis/MinIO reached a clean
-base-to-0023 migration, then the inherited Phase 4 RDF execution Worker timed
-out after 180 seconds; dedicated Phase 7 selection ended `2 errors, 0 skipped`.
+Closure evidence: the isolated Windows service fixture normalizes `localhost` to
+`127.0.0.1` without changing the 180-second scientific execution bound; readiness
+and execution timing are recorded separately. The interpretation fixture uses
+real persisted Fact/ResultItem references and does not weaken Phase 6 validators.
+Dedicated Phase 7 service selection passed `4 passed, 0 skipped`; final CI service
+selection passed `62 passed, 0 skipped`; final SHA is
+`99614060f8c8c4f88d5a47913585b0fd63d5010e` with current-head run `32655477520`.
+The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.

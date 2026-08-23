@@ -380,17 +380,19 @@ creates exactly one existing Assistant ResearchMessage and advances the Turn
 to `COMPLETED` or `PARTIAL`. Both phases are complete; the final Phase 6
 closure is `d0dc876` with current-head CI run `32621739291`.
 
-## Agent 2.0 Phase 7 Research Memory (2026-08-23)
+## Agent 2.0 Phase 7 Research Memory (2026-08-24)
 
-Phase 7 is the active Agent 2.0 scope and is currently `PARTIAL`. It adds
+Phase 7 is `COMPLETE` at `99614060f8c8c4f88d5a47913585b0fd63d5010e`. It adds
 PostgreSQL-backed ResearchSession state, auditable explicit constraints and
 pinning, deterministic bounded long-session candidate assembly, opaque
 reference resolution, previous-result reuse, and immutable continuation
-relationships. Full backend/frontend/build/migration and responsive browser
-checks are green locally.
+relationships. Fresh PostgreSQL/Redis/MinIO RDF reuse, RDF continuation, XRD
+reuse, and stale exact-version interpretation all passed with independent
+processes. The gated provider cases, full backend/frontend/build/migration and
+responsive browser checks also passed.
 
-Phase 7 is not complete until fresh PostgreSQL/Redis/MinIO RDF plus a second
-scientific-family multi-turn qualification, the gated provider cases, and the
-final exact-SHA current-head CI are verified with zero selected integration
-skips. Report Composer remains outside the executable roadmap; Phase 8 is not
-started or queued by this entry.
+Current-head CI run `32655477520` matches the final SHA and passed Unit,
+Frontend Typecheck & Build, Service-backed Integration (including the four
+dedicated Phase 7 cases with zero selected skips), Linux Replay and Windows
+Replay. Report Composer remains outside the executable roadmap; Phase 8 is not
+started by this entry.

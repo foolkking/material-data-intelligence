@@ -4,7 +4,7 @@ import os
 from typing import Any
 
 from fastapi import HTTPException
-from sqlalchemy import and_, select
+from sqlalchemy import and_, inspect, select
 from sqlalchemy.exc import SQLAlchemyError
 
 from mdi_api.db import project_members, projects
@@ -51,24 +51,24 @@ def require_project_access(
                 }
         raise HTTPException(status_code=404, detail="项目不存在。")
 
-    try:
-        # PostgreSQL marks the whole transaction failed after a missing-table
-        # query. Keep the owner-only compatibility probe inside a savepoint so
-        # callers can continue their authoritative transaction safely.
-        with connection.begin_nested():
-            membership = connection.execute(
-                select(project_members.c.role).where(
-                    and_(
-                        project_members.c.project_id == project_id,
-                        project_members.c.user_id == current_user.id,
+    membership = None
+    # `project_members` is a reserved, optional collaborator table in the
+    # current owner-only migration chain. Avoid issuing a known-invalid query
+    # (and noisy PostgreSQL error) while retaining the savepoint fallback for a
+    # migration race or a legacy database with a partially applied schema.
+    if project_members.name in inspect(connection).get_table_names():
+        try:
+            with connection.begin_nested():
+                membership = connection.execute(
+                    select(project_members.c.role).where(
+                        and_(
+                            project_members.c.project_id == project_id,
+                            project_members.c.user_id == current_user.id,
+                        )
                     )
-                )
-            ).scalar_one_or_none()
-    except SQLAlchemyError:
-        # Current production migrations are owner-only. The metadata contract
-        # already reserves memberships; until that table is migrated, a
-        # durable owner remains the only valid authority.
-        membership = None
+                ).scalar_one_or_none()
+        except SQLAlchemyError:
+            membership = None
     allowed_roles = WRITE_ROLES if write else READ_ROLES
     is_owner = project["created_by"] == current_user.id
     if not is_owner and membership not in allowed_roles:

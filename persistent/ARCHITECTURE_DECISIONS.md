@@ -5569,3 +5569,21 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   final ResearchMessage are immutable and exactly-once per Turn.
 - Previous-result interpretation reuses the authorized immutable snapshot and
   creates zero AnalysisPlan, Job, ToolCall, Artifact or ScientificResult rows.
+
+## ADR: Agent 2.0 Phase 7 memory is reference-first and process-independent (2026-08-24)
+
+- PostgreSQL `ResearchSessionState` is the mutable memory authority; immutable
+  `ResearchContextSnapshot` remains historical decision evidence. Redis carries
+  only identity wakeups and never becomes a memory or scientific-fact store.
+- Candidate resolution is deterministic and authorization-first with explicit,
+  UI-selection, current-scope, previous-result, pinned, recent and bounded
+  long-session priority. Provider responses may select only opaque server-issued
+  candidate keys; same-priority ambiguity remains `CLARIFY`.
+- Previous-result interpretation reuses the exact authorized snapshot with zero
+  Plan/Job/ToolCall/Artifact/Result deltas. Parameter changes create an immutable
+  child ResearchTurn and re-enter validated planning/execution; old Turns,
+  Plans, Results and ContextSnapshots are never patched.
+- Fresh-process RDF reuse, RDF continuation, XRD reuse and stale exact-version
+  interpretation passed against PostgreSQL/Redis/MinIO. Phase 7 is complete at
+  `99614060f8c8c4f88d5a47913585b0fd63d5010e`, CI `32655477520`; Report Composer
+  and Phase 8 remain outside this scope.

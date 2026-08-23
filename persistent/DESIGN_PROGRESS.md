@@ -3392,7 +3392,7 @@ unchanged until Phase 4.
   the dedicated Phase 6 PostgreSQL/Redis/MinIO fresh-process qualification
   with no selected integration skips. The Phase 6 verdict is COMPLETE.
 
-## 2026-08-23 Agent 2.0 Phase 7 research memory (partial)
+## 2026-08-24 Agent 2.0 Phase 7 research memory (complete)
 
 - Added durable, versioned ResearchSession state and auditable context items
   for explicit session constraints, pinned exact object/result references,
@@ -3404,10 +3404,17 @@ unchanged until Phase 4.
   results survive low-value conversation trimming; raw Artifact payloads and
   internal database identities remain outside provider context.
 - Existing Phase 6 zero-computation result interpretation and Phase 3–6
-  continuation paths are reused. Full backend (`1737 passed, 67 skipped`), frontend (`571
-  passed`), typecheck/build, migration round-trip, and authenticated desktop/
-  390px browser no-overflow checks pass. Fresh PostgreSQL/Redis/MinIO
-  base-to-0023 migration passed, but the inherited Phase 4 RDF execution Worker
-  timed out after 180 seconds before the dedicated RDF/XRD reuse qualification
-  began (`2 errors, 0 skipped`). Live provider qualification and final
-  current-head CI are also not claimed; verdict is PARTIAL.
+  continuation paths are reused. The Windows isolated-service `localhost -> ::1`
+  connection defect was fixed with a test-only `127.0.0.1` normalization; worker
+  readiness is measured separately from scientific execution and the 180-second
+  execution bound is unchanged.
+- The fresh interpretation fixture now references real persisted Fact/ResultItem
+  identities and satisfies the frozen Phase 6 schema/grounding contract. Fresh
+  RDF reuse, RDF continuation, XRD reuse and stale exact-version cases pass with
+  independent PostgreSQL/Redis/MinIO processes. Phase 7 deterministic (`8
+  passed`), live DeepSeek (`3 passed`), full backend (`1739 passed, 72 skipped`),
+  frontend (`85 files / 571 passed`), browser and migration gates pass.
+- Implementation `99614060f8c8c4f88d5a47913585b0fd63d5010e` is pushed and
+  current-head CI `32655477520` passes all five required jobs with service-backed
+  integration `62 passed, 0 skipped`. Phase 7 is COMPLETE; Phase 8 remains out of
+  scope for this record.

@@ -25,12 +25,13 @@ def list_projects_secured(current_user: CurrentUser = Depends(get_current_user_c
     visible: list[dict[str, Any]] = []
     try:
         with engine.connect() as connection:
-            try:
+            project_members_available = project_members.name in inspect(connection).get_table_names()
+            if project_members_available:
                 rows = connection.execute(select(projects).where(
                     (projects.c.created_by == current_user.id)
                     | projects.c.id.in_(select(project_members.c.project_id).where(project_members.c.user_id == current_user.id))
                 ).order_by(projects.c.updated_at.desc())).mappings().all()
-            except SQLAlchemyError:
+            else:
                 # Owner-only schema compatibility for databases before the
                 # optional project_members table migration.
                 rows = connection.execute(select(projects).where(
@@ -38,15 +39,16 @@ def list_projects_secured(current_user: CurrentUser = Depends(get_current_user_c
                 ).order_by(projects.c.updated_at.desc())).mappings().all()
             for row in rows:
                 role = "owner" if row["created_by"] == current_user.id else "viewer"
-                try:
-                    role = connection.execute(
-                        select(project_members.c.role).where(
-                            project_members.c.project_id == row["id"],
-                            project_members.c.user_id == current_user.id,
-                        )
-                    ).scalar_one_or_none() or role
-                except SQLAlchemyError:
-                    pass
+                if project_members_available:
+                    try:
+                        role = connection.execute(
+                            select(project_members.c.role).where(
+                                project_members.c.project_id == row["id"],
+                                project_members.c.user_id == current_user.id,
+                            )
+                        ).scalar_one_or_none() or role
+                    except SQLAlchemyError:
+                        pass
                 archived = False
                 try:
                     config = connection.execute(
@@ -511,7 +513,7 @@ def get_phase2_artifact_secured(artifact_id: str, current_user: CurrentUser = De
 def get_phase2_artifact_download_secured(artifact_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
     from mdi_api.phase2_runtime import get_phase2_artifact_download
 
-    artifact = get_phase2_artifact_secured(artifact_id, current_user)
+    get_phase2_artifact_secured(artifact_id, current_user)
     return get_phase2_artifact_download(artifact_id)
 
 

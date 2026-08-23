@@ -2,7 +2,7 @@
 
 ## Verdict
 
-PARTIAL
+COMPLETE
 
 ## Starting State
 
@@ -11,6 +11,9 @@ PARTIAL
 - Starting Alembic head: `0022_agent2_scientific_interpretation`.
 - Phase 6 final closure CI was independently verified as run `32621739291`
   for `d0dc8768838fdd883067bc13a412d78bfe87bcfa`; all five jobs passed.
+- Final Phase 7 implementation head is `99614060f8c8c4f88d5a47913585b0fd63d5010e`;
+  `HEAD == origin/master` and current-head CI run `32655477520` passed all
+  required jobs.
 
 ## Migration And Persistence
 
@@ -229,7 +232,7 @@ historical Result, did not auto-upgrade to the new version, and retained the
   the credential: `3 passed`.
 - Agent2 focused regression: `119 passed, 6 skipped`.
 - Full backend after the final service-fixture rewrite:
-  `1737 passed, 67 skipped`.
+  `1739 passed, 72 skipped`.
 - Frontend: `85 files, 571 passed`.
 - Typecheck: passed.
 - Isolated production build: passed.
@@ -237,6 +240,8 @@ historical Result, did not auto-upgrade to the new version, and retained the
 - Migration round-trip and fresh SQLite base-to-head: passed.
 - Dedicated Phase 6 service selection: `2 passed, 0 skipped`.
 - Dedicated Phase 7 service selection: `4 passed, 0 skipped`.
+- Current-head CI service-backed selection: `62 passed, 0 skipped, 0 failed,
+  0 errors`, including all four dedicated Phase 7 service cases.
 - Minimal fresh Phase 4 isolated execution: `1 passed`; readiness and execution
   timing are recorded above.
 - Browser: authenticated Research view at 1280x720 and 390x844; no horizontal
@@ -246,9 +251,11 @@ historical Result, did not auto-upgrade to the new version, and retained the
 
 ## Current-head CI
 
-- Phase 7 changes are uncommitted and unpushed.
-- Final Phase 7 SHA/run: NOT AVAILABLE.
-- Starting Phase 6 closure run `32621739291` is green but is not Phase 7 CI.
+- Final SHA: `99614060f8c8c4f88d5a47913585b0fd63d5010e`.
+- Current-head run: `32655477520`.
+- CI SHA exactly matched the final HEAD and all five required jobs passed.
+- The service-backed selection included Phase 7 RDF reuse, XRD reuse, RDF
+  continuation, and stale exact-version cases with zero selected skips.
 
 ## Not Implemented In Phase 7
 
@@ -259,11 +266,18 @@ the Phase 2 ORCHESTRATING lease/reaper.
 
 ## Exact Closure Gaps
 
-1. Phase 7 changes have no final exact-SHA current-head CI run and
-   `HEAD == origin/master` cannot hold while the implementation is uncommitted.
+None. The Windows IPv6 service-fixture defect and the Phase 6 fixture
+grounding/schema defect were both fixed without increasing the scientific
+execution timeout or weakening Phase 6 validators. Dedicated service,
+deterministic, live-provider, regression, frontend, browser, migration and
+current-head CI evidence is recorded above.
 
-## Minimal Fix-forward
+## Post-closure compatibility hardening
 
-Commit/push the now-green implementation, add the dedicated Phase 7 service
-selection to CI, and verify all required jobs against the final exact SHA
-before changing the verdict.
+The current migration chain intentionally reserves `project_members` without
+creating it. Authorization, login-role loading and secured project listing now
+check table existence before issuing optional membership queries, eliminating
+known PostgreSQL `relation does not exist` error noise while preserving the
+owner-only fallback and savepoint protection for migration races. Focused access
+and Agent2 API tests remain green (`20 passed`); no schema or authority change
+was introduced.

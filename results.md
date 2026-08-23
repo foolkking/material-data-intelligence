@@ -13965,3 +13965,34 @@ general continuation/re-analysis memory、Report Composer、Data Management muta
 full 62-tool capability mapping、professional Viewer expansion、Viewer linked-selection、
 Tool/plugin ecosystem 和 Phase 2 ORCHESTRATING lease/reaper。
 ---END---
+
+---RESULT---
+任务名称：Agent-2.0 Phase 7 Closure Round 2 — Interpretation Contract & Final Closure
+状态：已完成
+完成时间：2026-08-24T01:00:00+08:00
+
+修改摘要：完成 Phase 7 fresh-process 闭环。Windows isolated service 的
+`localhost -> ::1` PostgreSQL 连接问题保持 test-only `127.0.0.1` 修复，新增
+worker readiness 与科学执行计时分离证据，180 秒 execution bound 未增加。
+Phase 7 interpretation fixture 改为引用真实 persisted Fact/ResultItem，满足
+Phase 6 ScientificInterpretationOutput/grounding contract，未放宽 validator。
+RDF reuse、RDF 参数 continuation、XRD reuse 与 stale exact-version 均通过真实
+PostgreSQL/Redis/MinIO 与独立进程 qualification；CI dedicated service selection
+已纳入并强制 0 skip。
+
+测试结果：Phase 6 fresh service `2 passed, 0 skipped`；Phase 7 dedicated service
+`4 passed, 0 skipped`；service-backed CI 全部 `62 passed, 0 skipped, 0 failed,
+0 errors`；Phase 7 deterministic `8 passed`；gated live DeepSeek `3 passed`；
+Agent2 focused `121 passed, 9 skipped`；full backend `1739 passed, 72 skipped`；
+frontend `85 files / 571 passed`；typecheck、production build、compileall、
+`uv lock --check`、migration、browser desktop/390px 与 `git diff --check` 通过。
+RDF readiness timing 为 startup `6.844s`、ready 后 queued→terminal `2.688s`，
+未把 cold startup 计入科学执行 bound。
+
+提交/CI：实现提交 `82d8948a4014d09f7722608cd105f27bd246c580` 与 CI 命令修复提交
+`99614060f8c8c4f88d5a47913585b0fd63d5010e` 已推送，最终
+`HEAD == origin/master`。current-head GitHub Actions run `32655477520` 与最终
+SHA 完全一致，Unit、Frontend Typecheck & Build、PostgreSQL/Redis/MinIO
+Service-backed Integration、Linux Replay、Windows Replay 五个 jobs 全部成功。
+未部署或发布；用户既有 working-tree 文件未纳入提交。
+---END---
