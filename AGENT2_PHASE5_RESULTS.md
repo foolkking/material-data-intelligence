@@ -2,7 +2,7 @@
 
 ## Verdict
 
-**PARTIAL — awaiting authoritative current-head CI after closure push**
+**COMPLETE**
 
 This closure keeps Phase 5 deterministic and stops before Phase 6. No
 Scientific Interpreter, grounding validator, assistant final scientific
@@ -112,7 +112,10 @@ Dedicated marker: `agent2_phase5_service`.
 - `compileall`, `uv lock --check`, and `git diff --check`: **passed**.
 - `npm run lint`: not claimed; the repository still invokes deprecated
   interactive `next lint`.
-- Final current-head CI run: **recorded after the closure push below**.
+- Closure implementation commit: `1fd18bf995ee6ffc38cbfacf6f5af1fca54a7b9f`.
+- Authoritative current-head CI run: `32616753779`; Unit, Service-backed
+  Integration, Frontend Typecheck & Build, and Linux/Windows Scientific Replay
+  all succeeded.
 
 ## Explicitly Not Implemented In Phase 5
 

@@ -13803,6 +13803,7 @@ Alembic head、浏览器 1440x900/390x844 与 `git diff --check` 均通过。
 current-HEAD GitHub Actions run `32592517424` 的 Unit、service-backed integration、
 Frontend Typecheck & Build、Linux/Windows scientific replay 五个 job 全部成功。
 ---END---
+
 ---RESULT---
 任务名称：Agent-2.0 Phase 5 — Production Scientific Result Projection
 状态：失败（实现报告判定 PARTIAL）
@@ -13828,4 +13829,28 @@ qualification、390px browser result-state evidence，以及按每个 production
 Artifact contract 完整定义的领域 metric/figure/table projector 映射，因此未将
 `AGENT2_PHASE5` 标记 COMPLETE。实现提交 `5cfe6ae55fa9f3f23277495f7b8b12e49c74e4d9`
 已推送；未部署或发布。
+---END---
+
+---RESULT---
+任务名称：Agent-2.0 Phase 5 Closure — Production Result Qualification & Canonical Projector Specialization
+状态：已完成
+完成时间：2026-08-23T12:10:00+08:00
+
+修改摘要：完成自动 identity-only result projection wakeup 与 fresh RQ worker；
+完成九个 canonical production Artifact schema 的 typed adapter/domain-aware
+projector coverage；完成真实 PostgreSQL/Redis/MinIO RDF 与 XRD two-step
+fresh-process qualification、390px browser RESULT_READY evidence、队列失败恢复、
+重复/并发投影幂等和数值事实 locator 校验。保持 projection 阶段 LLM、Job、
+ToolCall、ScientificResult 重算和 Phase 6 interpretation 为零。
+
+测试结果：closure focused `20 passed`；fresh service-backed RDF/XRD `2 passed,
+selected skip 0`；完整 non-integration backend `1691 passed, 6 skipped,
+88 deselected`；frontend `569 passed`；typecheck、production build、compileall、
+`uv lock --check`、migration、`git diff --check` 均通过。浏览器 390x844：
+`scrollWidth=390`、`bodyScrollWidth=390`、`hasOverflow=false`，RESULT_READY
+结构化 RDF 输出可见。
+
+提交/CI：closure implementation `1fd18bf995ee6ffc38cbfacf6f5af1fca54a7b9f`
+已推送；该实现的 authoritative exact-SHA GitHub Actions run `32616753779`
+五个 jobs 全部成功。未部署或发布；无关工作树文件未纳入提交。
 ---END---

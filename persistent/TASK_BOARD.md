@@ -3201,7 +3201,7 @@ archival remains withheld.
       `32567895104` passed all five jobs, including service integration `51
       passed, 0 skipped`.
 
-## Agent 2.0 Phase 5 — Production Scientific Result Projection — Closure in progress
+## Agent 2.0 Phase 5 — Production Scientific Result Projection — Completed
 
 - [x] Add immutable typed ScientificResultBundle projection contracts and
       deterministic canonical projector registry.
@@ -3211,5 +3211,6 @@ archival remains withheld.
       HEAD CI verification (`32611474526`, all five jobs successful).
 - [x] Add dedicated fresh service-backed RDF/XRD result-projection and browser
       qualification before upgrading the Phase 5 verdict from PARTIAL.
-- [ ] Push the closure, verify the authoritative current-head CI run, then
-      archive this task and record the final closure verdict.
+- [x] Push closure implementation `1fd18bf995ee6ffc38cbfacf6f5af1fca54a7b9f`;
+      authoritative current-head CI run `32616753779` passed all five jobs.
+      Phase 5 verdict is COMPLETE and the queue task is archived.
