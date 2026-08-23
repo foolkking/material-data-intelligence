@@ -5585,7 +5585,7 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   Plans, Results and ContextSnapshots are never patched.
 - Fresh-process RDF reuse, RDF continuation, XRD reuse and stale exact-version
   interpretation passed against PostgreSQL/Redis/MinIO. Phase 7 is complete at
-  `61553dadb28f9a40d07684edcba1e51e1da457d5`, CI `32656452081`; Report Composer
+  `24dcfdb777a63b62a2537fdb081be12653fc3fc5`, CI `32657590810`; Report Composer
   and Phase 8 remain outside this scope.
 
 ## ADR: Agent 2.0 provider context never carries Turn database identities (2026-08-24)

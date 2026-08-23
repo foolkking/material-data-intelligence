@@ -11,8 +11,8 @@ COMPLETE
 - Starting Alembic head: `0022_agent2_scientific_interpretation`.
 - Phase 6 final closure CI was independently verified as run `32621739291`
   for `d0dc8768838fdd883067bc13a412d78bfe87bcfa`; all five jobs passed.
-- Final Phase 7 closure head is `61553dadb28f9a40d07684edcba1e51e1da457d5`;
-  `HEAD == origin/master` and current-head CI run `32656452081` passed all
+- Final Phase 7 closure head is `24dcfdb777a63b62a2537fdb081be12653fc3fc5`;
+  `HEAD == origin/master` and current-head CI run `32657590810` passed all
   required jobs.
 
 ## Migration And Persistence
@@ -251,8 +251,8 @@ historical Result, did not auto-upgrade to the new version, and retained the
 
 ## Current-head CI
 
-- Final SHA: `61553dadb28f9a40d07684edcba1e51e1da457d5`.
-- Current-head run: `32656452081`.
+- Final SHA: `24dcfdb777a63b62a2537fdb081be12653fc3fc5`.
+- Current-head run: `32657590810`.
 - CI SHA exactly matched the final HEAD and all five required jobs passed.
 - The service-backed selection included Phase 7 RDF reuse, XRD reuse, RDF
   continuation, and stale exact-version cases with zero selected skips.

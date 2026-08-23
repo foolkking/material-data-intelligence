@@ -982,8 +982,8 @@ current-HEAD GitHub Actions run `32592517424`; Phase 4 is complete.
 
 ## Agent 2.0 Phase 7 closure
 
-Phase 7 is complete at `61553dadb28f9a40d07684edcba1e51e1da457d5` with
-current-head CI `32656452081`. Durable ResearchSession memory, bounded opaque
+Phase 7 is complete at `24dcfdb777a63b62a2537fdb081be12653fc3fc5` with
+current-head CI `32657590810`. Durable ResearchSession memory, bounded opaque
 reference resolution, previous-result reuse, exact-version stale handling and
 new-Turn continuation were qualified through fresh PostgreSQL/Redis/MinIO
 processes. The Windows isolated-service fixture records worker readiness

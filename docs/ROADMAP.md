@@ -382,7 +382,7 @@ closure is `d0dc876` with current-head CI run `32621739291`.
 
 ## Agent 2.0 Phase 7 Research Memory (2026-08-24)
 
-Phase 7 is `COMPLETE` at `61553dadb28f9a40d07684edcba1e51e1da457d5`. It adds
+Phase 7 is `COMPLETE` at `24dcfdb777a63b62a2537fdb081be12653fc3fc5`. It adds
 PostgreSQL-backed ResearchSession state, auditable explicit constraints and
 pinning, deterministic bounded long-session candidate assembly, opaque
 reference resolution, previous-result reuse, and immutable continuation
@@ -391,7 +391,7 @@ reuse, and stale exact-version interpretation all passed with independent
 processes. The gated provider cases, full backend/frontend/build/migration and
 responsive browser checks also passed.
 
-Current-head CI run `32656452081` matches the final SHA and passed Unit,
+Current-head CI run `32657590810` matches the final SHA and passed Unit,
 Frontend Typecheck & Build, Service-backed Integration (including the four
 dedicated Phase 7 cases with zero selected skips), Linux Replay and Windows
 Replay. Report Composer remains outside the executable roadmap; Phase 8 is not
