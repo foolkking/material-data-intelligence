@@ -209,9 +209,15 @@ def project_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depe
             turn = session.agent2.research_turns.get(turn_id)
             require_project_access(session.connection, str(turn["project_id"]), current_user, write=True)
         storage = create_artifact_storage_from_settings(load_settings())
+        def load_payload(artifact: dict[str, Any]) -> Any:
+            media_type = str(artifact.get("contentType") or artifact.get("mediaType") or "")
+            artifact_type = str(artifact.get("type") or "")
+            if "json" not in media_type.lower() and "json" not in artifact_type.lower():
+                return None
+            return storage.get_json(str(artifact.get("storageKey") or artifact.get("storage_key")))
         service = ScientificResultProjectionService(
             factory,
-            artifact_loader=lambda artifact: storage.get_json(str(artifact.get("storageKey") or artifact.get("storage_key"))),
+            artifact_loader=load_payload,
         )
         row = service.project_turn(turn_id)
         return JSONResponse(status_code=200, content=jsonable_encoder({"turn_id": str(turn_id), "status": "RESULT_READY", "snapshot_id": str(row["id"])}))

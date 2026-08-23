@@ -87,13 +87,14 @@ class ScientificResultProjectionService:
         projector_ids = self._projector_ids(context)
         if not projector_ids:
             raise ScientificResultProjectionFailed("no registered result projector for capability plan")
+        context = ScientificResultProjectionContext(**{**context.__dict__, "projector_ids": tuple(projector_ids)})
         projections = []
         for projector_id in projector_ids:
             try:
                 projector = self.projector_registry.require(projector_id)
             except KeyError as exc:
                 raise ScientificResultProjectionFailed(f"result projector is not registered: {projector_id}", code="RESULT_PROJECTOR_NOT_REGISTERED") from exc
-            projections.append(projector.project(context))
+            projections.append(projector.project(self._context_for_projector(context, projector_id)))
         bundle = self._merge_projections(context, projections)
         source_fingerprint = ScientificResultSourceFingerprint.compute(
             research_turn_id=context.research_turn_id,
@@ -114,7 +115,9 @@ class ScientificResultProjectionService:
         return self._persist(turn_id, bundle, source_fingerprint, context.execution_summary.get("job_id"))
 
     def project_context(self, context: ScientificResultProjectionContext) -> ScientificResultBundle:
-        projections = [self.projector_registry.require(projector_id).project(context) for projector_id in self._projector_ids(context)]
+        projector_ids = self._projector_ids(context)
+        context = ScientificResultProjectionContext(**{**context.__dict__, "projector_ids": tuple(projector_ids)})
+        projections = [self.projector_registry.require(projector_id).project(self._context_for_projector(context, projector_id)) for projector_id in projector_ids]
         return self._merge_projections(context, projections).bundle
 
     def _load_projection_context(self, turn_id: UUID) -> tuple[ScientificResultProjectionContext, dict[str, Any] | None]:
@@ -127,11 +130,10 @@ class ScientificResultProjectionService:
                 raise ScientificResultProjectionFailed("execution summary is missing", code="RESULT_PROJECTION_FAILED")
             existing_rows = session.agent2.scientific_result_snapshots.list_for_turn(turn_id)
             existing = next((row for row in existing_rows if str(row["projection_version"]) == self.projection_version), None)
-            if existing is not None:
-                return self._context_from_rows(session, turn, summary), existing
-            if str(summary.get("execution_outcome")) not in {"SUCCESS", "PARTIAL"}:
+            if existing is None and str(summary.get("execution_outcome")) not in {"SUCCESS", "PARTIAL"}:
                 raise ScientificResultProjectionFailed("only successful or partial executions can be projected", code="RESULT_PROJECTION_FAILED")
-            return self._context_from_rows(session, turn, summary), None
+            context = self._context_from_rows(session, turn, summary)
+        return self._load_artifact_payloads(context), existing
 
     def _context_from_rows(self, session: Any, turn: dict[str, Any], summary: dict[str, Any]) -> ScientificResultProjectionContext:
         plan = session.repositories.analysis_plans.get(str(turn.get("analysis_plan_id")))
@@ -151,12 +153,6 @@ class ScientificResultProjectionService:
         job_id = str(summary["job_id"])
         tool_calls = tuple(self._as_dict(item) for item in session.repositories.tool_calls.list_for_job(job_id))
         artifacts = tuple(self._as_dict(item) for item in session.repositories.artifacts.list_for_job(job_id))
-        payloads: dict[str, Any] = {}
-        for artifact in artifacts:
-            try:
-                payloads[str(artifact.get("id"))] = self.artifact_loader(artifact)
-            except (FileNotFoundError, KeyError, OSError) as exc:
-                raise ScientificResultSourceUnavailable(f"committed artifact payload unavailable: {artifact.get('id')}") from exc
         plan_json = plan.get("analysisPlan") or plan.get("analysis_plan") or plan
         capability_plan = dict(cap.get("plan_json") or {})
         if resolution:
@@ -172,9 +168,18 @@ class ScientificResultProjectionService:
             research_turn_id=str(turn["id"]), research_question=str((snapshot.get("research_goal") or plan_json.get("goal") or "Scientific analysis")),
             execution_summary={**summary, "id": summary.get("id")},
             capability_plan=capability_plan, analysis_plan=plan_json,
-            tool_calls=tool_calls, artifacts=artifacts, artifact_payloads=payloads,
+            tool_calls=tool_calls, artifacts=artifacts, artifact_payloads={},
             source_object_refs=tuple(refs), projector_ids=tuple(),
         )
+
+    def _load_artifact_payloads(self, context: ScientificResultProjectionContext) -> ScientificResultProjectionContext:
+        payloads: dict[str, Any] = {}
+        for artifact in context.artifacts:
+            try:
+                payloads[str(artifact.get("id"))] = self.artifact_loader(artifact)
+            except (FileNotFoundError, KeyError, OSError) as exc:
+                raise ScientificResultSourceUnavailable(f"committed artifact payload unavailable: {artifact.get('id')}") from exc
+        return ScientificResultProjectionContext(**{**context.__dict__, "artifact_payloads": payloads})
 
     @staticmethod
     def _snapshot_refs(snapshot: dict[str, Any], project_id: str) -> list[ScientificObjectRef]:
@@ -212,6 +217,22 @@ class ScientificResultProjectionService:
         return sorted(set(ids))
 
     @staticmethod
+    def _context_for_projector(context: ScientificResultProjectionContext, projector_id: str) -> ScientificResultProjectionContext:
+        capability_id = projector_id.removeprefix("agent2.")
+        steps = [step for step in context.capability_plan.get("steps") or [] if str(step.get("capability_id")) == capability_id]
+        step_ids = {str(step.get("step_id") or step.get("stepId")) for step in steps}
+        calls = tuple(call for call in context.tool_calls if str(call.get("stepId") or call.get("step_id")) in step_ids)
+        call_ids = {str(call.get("id")) for call in calls}
+        artifacts = tuple(artifact for artifact in context.artifacts if str(artifact.get("toolCallId") or artifact.get("tool_call_id")) in call_ids or str(artifact.get("stepId") or artifact.get("step_id")) in step_ids)
+        if not artifacts and len(context.projector_ids) <= 1:
+            artifacts = context.artifacts
+        payloads = {str(item.get("id")): context.artifact_payloads.get(str(item.get("id"))) for item in artifacts}
+        return ScientificResultProjectionContext(**{
+            **context.__dict__, "capability_plan": {**context.capability_plan, "steps": steps},
+            "tool_calls": calls, "artifacts": artifacts, "artifact_payloads": payloads,
+        })
+
+    @staticmethod
     def _merge_projections(context: ScientificResultProjectionContext, projections: list[Any]) -> Any:
         if len(projections) == 1:
             return projections[0]
@@ -228,6 +249,11 @@ class ScientificResultProjectionService:
             bundle.limitations.extend(other.limitations)
             bundle.warnings.extend(other.warnings)
             bundle.provenance.projector_ids.extend(other.provenance.projector_ids)
+            bundle.provenance.tool_call_ids.extend(other.provenance.tool_call_ids)
+            bundle.provenance.artifact_ids.extend(other.provenance.artifact_ids)
+        bundle.provenance.projector_ids = sorted(set(bundle.provenance.projector_ids))
+        bundle.provenance.tool_call_ids = sorted(set(bundle.provenance.tool_call_ids))
+        bundle.provenance.artifact_ids = sorted(set(bundle.provenance.artifact_ids))
         return type(first)(bundle=ScientificResultBundle.model_validate(bundle.model_dump()), projector_id="agent2.composite", projector_version="1.0")
 
     def _persist(self, turn_id: UUID, bundle: ScientificResultBundle, source_fingerprint: str, job_id: str | None) -> dict[str, Any]:

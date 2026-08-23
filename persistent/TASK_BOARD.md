@@ -3201,11 +3201,13 @@ archival remains withheld.
       `32567895104` passed all five jobs, including service integration `51
       passed, 0 skipped`.
 
-## Agent 2.0 Phase 5 — Production Scientific Result Projection — In progress
+## Agent 2.0 Phase 5 — Production Scientific Result Projection — Partial
 
 - [x] Add immutable typed ScientificResultBundle projection contracts and
       deterministic canonical projector registry.
 - [x] Add RESULT_READY lifecycle, migration 0021, source fingerprinting,
       relevance evaluation, authorized result API and minimal UI state.
-- [ ] Complete full local/service-backed regression, report, commit, current-
-      HEAD CI verification and task archival.
+- [x] Complete full local regression, implementation report, push and current-
+      HEAD CI verification (`32611474526`, all five jobs successful).
+- [ ] Add dedicated fresh service-backed RDF/XRD result-projection and browser
+      qualification before upgrading the Phase 5 verdict from PARTIAL.

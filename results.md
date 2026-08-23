@@ -13803,3 +13803,29 @@ Alembic head、浏览器 1440x900/390x844 与 `git diff --check` 均通过。
 current-HEAD GitHub Actions run `32592517424` 的 Unit、service-backed integration、
 Frontend Typecheck & Build、Linux/Windows scientific replay 五个 job 全部成功。
 ---END---
+---RESULT---
+任务名称：Agent-2.0 Phase 5 — Production Scientific Result Projection
+状态：失败（实现报告判定 PARTIAL）
+完成时间：2026-08-23T10:02:00+08:00
+
+修改摘要：新增 `0021_agent2_scientific_result_projection` 和 `RESULT_READY`；
+复用既有 immutable `scientific_result_snapshots`；生产化 typed
+ScientificResultBundle、九个 canonical result-projector 注册、稳定 source
+fingerprint、exact-version relevance、授权结果 API 与最小 RESULT_READY UI。
+所有数值事实需要 committed Artifact locator，image-only Artifact 不产生数值；
+Artifact 读取在 DB transaction 外，多能力输入按 step/ToolCall/Artifact lineage
+隔离。projection 阶段 LLM/Job/ToolCall/assistant final delta 均为 0。
+
+测试结果：Phase 5 deterministic `5 passed`；focused Agent2 closure `55 passed,
+1 skipped`；Alembic migration `1 passed`；完整 non-integration backend `1706
+passed, 6 skipped, 56 deselected`；frontend `85 files / 569 passed`；typecheck、
+compileall、diff-check 通过。current-HEAD CI run `32611474526` 的 Unit、
+PostgreSQL/Redis/MinIO integration（无 skip）、Frontend build/typecheck 与
+Linux/Windows scientific replay五个 jobs 全部成功。
+
+未闭合：缺少 Phase 5 专属 fresh service-backed RDF/XRD projection worker
+qualification、390px browser result-state evidence，以及按每个 production
+Artifact contract 完整定义的领域 metric/figure/table projector 映射，因此未将
+`AGENT2_PHASE5` 标记 COMPLETE。实现提交 `5cfe6ae55fa9f3f23277495f7b8b12e49c74e4d9`
+已推送；未部署或发布。
+---END---

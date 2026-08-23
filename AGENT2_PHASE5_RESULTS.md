@@ -81,8 +81,11 @@ interpretations remain absent.
 - Frontend `npm run lint` was not declared passing because the repository still
   invokes deprecated interactive `next lint`.
 
-Service-backed Phase 5 PostgreSQL/Redis/MinIO qualification and browser
-evidence were not run in this local turn; they remain CI/qualification work.
+Current-HEAD CI run `32611474526` passed Unit, PostgreSQL/Redis/MinIO
+integration with no skips, Frontend test/typecheck/build and responsive
+evidence, plus Linux/Windows scientific replay. The integration job validated
+migration `0021` and legacy Agent2/runtime coverage, but it did not include a
+dedicated fresh Phase 5 RDF/XRD projection worker qualification.
 
 ## Explicitly not implemented in Phase 5
 
@@ -97,7 +100,7 @@ Current canonical projectors intentionally use structured-payload extraction
 and should be specialized against each production Artifact contract before
 claiming domain-complete metric coverage. Projection worker scheduling is
 exposed as an authorized hook; durable automatic result-worker deployment and
-service-backed qualification remain to be completed.
+dedicated Phase 5 service-backed qualification remain to be completed.
 
 ## Verdict
 
