@@ -5585,5 +5585,5 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   Plans, Results and ContextSnapshots are never patched.
 - Fresh-process RDF reuse, RDF continuation, XRD reuse and stale exact-version
   interpretation passed against PostgreSQL/Redis/MinIO. Phase 7 is complete at
-  `99614060f8c8c4f88d5a47913585b0fd63d5010e`, CI `32655477520`; Report Composer
+  `61553dadb28f9a40d07684edcba1e51e1da457d5`, CI `32656452081`; Report Composer
   and Phase 8 remain outside this scope.

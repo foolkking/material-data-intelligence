@@ -3247,5 +3247,5 @@ and execution timing are recorded separately. The interpretation fixture uses
 real persisted Fact/ResultItem references and does not weaken Phase 6 validators.
 Dedicated Phase 7 service selection passed `4 passed, 0 skipped`; final CI service
 selection passed `62 passed, 0 skipped`; final SHA is
-`99614060f8c8c4f88d5a47913585b0fd63d5010e` with current-head run `32655477520`.
+`61553dadb28f9a40d07684edcba1e51e1da457d5` with current-head run `32656452081`.
 The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.

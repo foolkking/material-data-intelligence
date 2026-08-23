@@ -13996,3 +13996,24 @@ SHA 完全一致，Unit、Frontend Typecheck & Build、PostgreSQL/Redis/MinIO
 Service-backed Integration、Linux Replay、Windows Replay 五个 jobs 全部成功。
 未部署或发布；用户既有 working-tree 文件未纳入提交。
 ---END---
+
+---RESULT---
+任务名称：Agent-2.0 Phase 7 post-closure compatibility hardening
+状态：已完成
+完成时间：2026-08-24T02:10:00+08:00
+
+修改摘要：在 authorization、login-role loading 和 secured project listing
+访问可选 `project_members` 表前增加 schema existence guard，消除当前 migration
+链中该表未创建时的 PostgreSQL `relation does not exist` 噪声；保留 owner-only
+fallback、savepoint 保护与 legacy/migration-race 兼容，不改变权限 authority。
+同时修复同文件中一个未使用局部变量的静态检查问题。
+
+测试结果：focused access/Agent2 API `20 passed`；目标文件 Ruff、compileall、
+git diff --check 通过；current-head CI `32656452081` 对 closure head
+`61553dadb28f9a40d07684edcba1e51e1da457d5` 的五个 jobs 全部成功，Service-backed
+Integration `62 passed, 0 skipped, 0 failed, 0 errors`，Phase 7 四个 dedicated
+cases 全部通过。
+
+提交/CI：提交 `61553dadb28f9a40d07684edcba1e51e1da457d5` 已推送；未部署或发布，
+用户既有 working-tree 文件未纳入提交。
+---END---
