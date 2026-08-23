@@ -3227,3 +3227,19 @@ archival remains withheld.
       current-head CI run `32621337675` passed all five jobs, including the
       dedicated fresh-process Phase 6 service qualification with zero skips.
 - [x] Record the COMPLETE result and archive the completed TASKS entry.
+
+## Agent 2.0 Phase 7 — Multi-turn Research Memory — In Progress
+
+- [x] Add durable ResearchSession state, auditable constraints and pinning.
+- [x] Add deterministic bounded long-session result/finding candidate assembly.
+- [x] Preserve opaque provider refs, exact-version identity and context budget.
+- [x] Keep previous-result reuse on the zero-computation Phase 6 path and
+      continuation on a new immutable ResearchTurn.
+- [x] Pass full backend, frontend, typecheck/build, migration, and authenticated
+      desktop/390px browser no-overflow checks.
+- [ ] Complete fresh PostgreSQL/Redis/MinIO RDF and second-family multi-turn qualification.
+- [ ] Complete live-provider qualification and final current-head CI closure.
+
+Local service gate evidence: isolated PostgreSQL/Redis/MinIO reached a clean
+base-to-0023 migration, then the inherited Phase 4 RDF execution Worker timed
+out after 180 seconds; dedicated Phase 7 selection ended `2 errors, 0 skipped`.

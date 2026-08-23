@@ -107,7 +107,12 @@ class AgentTurnProcessor:
                 for item in prepared.bundle.active_object_candidates
             }
             keys = list(prepared.resolution.ambiguous_object_keys)
-            question = "你指的是哪一个科研对象：" + "、".join(labels[key] for key in keys) + "？"
+            if not keys:
+                result_labels = {item.candidate_key: item.display_label for item in prepared.bundle.result_candidates}
+                keys = list(prepared.resolution.ambiguous_result_keys)
+                question = "你指的是哪一个历史结果：" + "、".join(result_labels.get(key, key) for key in keys) + "？"
+            else:
+                question = "你指的是哪一个科研对象：" + "、".join(labels[key] for key in keys) + "？"
             decision = ResearchTurnDecision(
                 contract_version="1.0",
                 action=ResearchAction.CLARIFY,

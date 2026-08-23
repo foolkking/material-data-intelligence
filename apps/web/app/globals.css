@@ -5270,6 +5270,10 @@ body:has(.research-workbench) {
 .research-session-list span { color: var(--product-secondary); font-size: 12px; }
 .research-session-empty { margin: 0; padding: 20px 12px; color: var(--product-secondary); font-size: 13px; line-height: 1.55; text-align: center; }
 .conversation-history { align-content: start; }
+.research-memory-strip { display: grid; gap: 8px; padding: 10px 0 12px; border-bottom: 1px solid var(--product-border); font-size: 12px; }
+.research-memory-strip > strong { color: var(--product-secondary); font-weight: 600; }
+.research-memory-strip > div { display: flex; flex-wrap: wrap; gap: 6px 12px; min-width: 0; }
+.research-memory-strip span { min-width: 0; max-width: 100%; color: var(--product-ink); overflow-wrap: anywhere; }
 .conversation-stream { display: grid; align-content: start; gap: 18px; }
 .research-starter { display: grid; gap: 12px; padding: 4px 0 20px; border-bottom: 1px solid var(--product-border); }
 .research-starter .product-kicker { margin: 0; }

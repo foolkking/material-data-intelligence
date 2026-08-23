@@ -2386,3 +2386,26 @@ execution facts. Its typed components are `ScientificResultItem`,
 locator; image-only artifacts cannot produce numeric facts. Execution status
 (`SUCCESS`/`PARTIAL`/`FAILED`) is independent from relevance status
 (`CURRENT`/`STALE`/`SOURCE_MISSING`/`INVALIDATED`).
+
+### Agent 2.0 Phase 7 ResearchSessionState
+
+`ResearchSessionState` is the mutable, versioned PostgreSQL projection for
+one authorized ResearchSession. It contains bounded exact-version
+`active_scope_refs`, `active_selection_refs`, `pinned_object_refs`,
+`pinned_result_refs`, explicit `session_constraints`, an optional
+`active_research_goal`, and bounded `open_questions`. It is not a scientific
+fact store and never replaces immutable `ResearchContextSnapshot` evidence.
+
+`ResearchContextItemType` is limited to `ACTIVE_SCOPE`,
+`ACTIVE_SELECTION`, `PINNED_OBJECT`, `PINNED_RESULT`,
+`SESSION_CONSTRAINT`, `RESEARCH_GOAL`, `OPEN_QUESTION`, and
+`PRIOR_FINDING`. `ContextScope` is limited to `TURN` and `SESSION`.
+Session-level items retain source-message identity, explicit-request status,
+active/inactive state, timestamps, and optimistic version metadata.
+
+`CompactResearchContext` is a deterministic bounded provider view. It uses
+opaque `obj_N`, `result_N`, and `finding_N` keys and preserves effective
+constraints, explicit/pinned references, exact object versions, relevance
+signals, and unresolved ambiguity before low-value conversation prose. Raw
+Artifact payloads, secrets, provider transcripts, and runtime identities are
+not members of this contract.

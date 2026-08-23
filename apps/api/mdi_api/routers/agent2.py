@@ -5,7 +5,7 @@ import logging
 from typing import Any, Iterator
 from uuid import UUID
 
-from fastapi import Depends, Header, HTTPException, Query
+from fastapi import Body, Depends, Header, HTTPException, Query
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse
 
@@ -43,6 +43,8 @@ from mdi_api.research_agent.execution.errors import (
     ExecutionSummaryConflict,
 )
 from mdi_api.research_agent.service import ResearchTurnService
+from mdi_api.research_agent.memory.service import ResearchSessionMemoryService
+from mdi_api.research_agent.memory.schemas import PinObjectRequest
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_api.scientific_objects.schemas import ScientificObjectKind, ScientificObjectLifecycle
 from mdi_api.scientific_objects.service import ScientificObjectService
@@ -125,6 +127,85 @@ def list_research_turns(
             limit=limit,
         )
         return {"items": items, "next_cursor": items[-1]["sequence_no"] if len(items) == limit else None}
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def get_research_session_memory(
+    project_id: str,
+    session_id: str,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    try:
+        factory = create_repository_factory()
+        with factory.session() as session:
+            require_project_access(session.connection, project_id, current_user)
+            state = ResearchSessionMemoryService().get_state(session, session_id=session_id, project_id=project_id)
+            return jsonable_encoder(state.model_dump(mode="json"))
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def pin_research_result(
+    project_id: str,
+    session_id: str,
+    result_id: UUID,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    try:
+        factory = create_repository_factory()
+        with factory.unit_of_work() as unit:
+            require_project_access(unit.connection, project_id, current_user, write=True)
+            state = ResearchSessionMemoryService().pin_result(unit, session_id=session_id, project_id=project_id, result_id=result_id)
+            return jsonable_encoder(state.model_dump(mode="json"))
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def unpin_research_result(
+    project_id: str,
+    session_id: str,
+    result_id: UUID,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    try:
+        factory = create_repository_factory()
+        with factory.unit_of_work() as unit:
+            require_project_access(unit.connection, project_id, current_user, write=True)
+            state = ResearchSessionMemoryService().unpin_result(unit, session_id=session_id, project_id=project_id, result_id=result_id)
+            return jsonable_encoder(state.model_dump(mode="json"))
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def pin_research_object(
+    project_id: str,
+    session_id: str,
+    request: PinObjectRequest = Body(...),
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    try:
+        factory = create_repository_factory()
+        with factory.unit_of_work() as unit:
+            require_project_access(unit.connection, project_id, current_user, write=True)
+            state = ResearchSessionMemoryService().pin_object(unit, session_id=session_id, project_id=project_id, object_ref=request.object_ref)
+            return jsonable_encoder(state.model_dump(mode="json"))
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def unpin_research_object(
+    project_id: str,
+    session_id: str,
+    request: PinObjectRequest = Body(...),
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    try:
+        factory = create_repository_factory()
+        with factory.unit_of_work() as unit:
+            require_project_access(unit.connection, project_id, current_user, write=True)
+            state = ResearchSessionMemoryService().unpin_object(unit, session_id=session_id, project_id=project_id, object_ref=request.object_ref)
+            return jsonable_encoder(state.model_dump(mode="json"))
     except Exception as exc:
         raise _http_error(exc) from exc
 

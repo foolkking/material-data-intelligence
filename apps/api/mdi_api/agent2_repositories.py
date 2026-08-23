@@ -17,6 +17,8 @@ from mdi_api.agent2_errors import (
 from mdi_api.db import (
     messages,
     research_context_snapshots,
+    research_session_states,
+    research_session_context_items,
     research_turn_decisions,
     research_capability_resolutions,
     research_capability_plans,
@@ -235,6 +237,16 @@ class ResearchTurnRepository(_Repository):
         )
         return self._run(lambda connection: [dict(row) for row in connection.execute(statement).mappings().all()])
 
+    def list_all_before(self, session_id: str, sequence_no: int, *, limit: int = 500) -> list[dict[str, Any]]:
+        """Bounded long-session history, ordered newest first for retrieval."""
+        statement = (
+            select(research_turns)
+            .where(and_(research_turns.c.research_session_id == session_id, research_turns.c.sequence_no < sequence_no))
+            .order_by(research_turns.c.sequence_no.desc())
+            .limit(limit)
+        )
+        return self._run(lambda connection: [dict(row) for row in connection.execute(statement).mappings().all()])
+
     def get_message(self, message_id: str) -> dict[str, Any]:
         statement = select(messages).where(messages.c.id == message_id)
         return self._run(lambda connection: dict(connection.execute(statement).mappings().one()))
@@ -407,6 +419,75 @@ class ResearchContextSnapshotRepository(_Repository):
     def get_for_turn(self, turn_id: UUID) -> dict[str, Any] | None:
         statement = select(research_context_snapshots).where(research_context_snapshots.c.research_turn_id == turn_id)
         return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
+
+
+class ResearchSessionMemoryRepository(_Repository):
+    """Persistence boundary for mutable session memory and its audit items."""
+
+    def get_state(self, session_id: str, *, for_update: bool = False) -> dict[str, Any] | None:
+        statement = select(research_session_states).where(research_session_states.c.session_id == session_id)
+        if for_update:
+            statement = statement.with_for_update()
+        return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
+
+    def ensure_state(self, *, session_id: str, project_id: str, state_id: UUID) -> dict[str, Any]:
+        def run(connection: Connection) -> dict[str, Any]:
+            existing = connection.execute(select(research_session_states).where(research_session_states.c.session_id == session_id)).mappings().first()
+            if existing is not None:
+                return dict(existing)
+            connection.execute(insert(research_session_states).values(
+                id=state_id, session_id=session_id, project_id=project_id,
+                active_scope_refs_json=[], active_selection_refs_json=[],
+                pinned_object_refs_json=[], pinned_result_refs_json=[],
+                session_constraints_json=[], open_questions_json=[], version=1,
+            ))
+            return dict(connection.execute(select(research_session_states).where(research_session_states.c.session_id == session_id)).mappings().one())
+        return self._run(run)
+
+    def update_state(self, session_id: str, *, expected_version: int, values: Mapping[str, Any]) -> dict[str, Any]:
+        statement = update(research_session_states).where(and_(
+            research_session_states.c.session_id == session_id,
+            research_session_states.c.version == expected_version,
+        )).values(**values, version=expected_version + 1, updated_at=datetime.now(timezone.utc))
+        def run(connection: Connection) -> dict[str, Any]:
+            result = connection.execute(statement)
+            if result.rowcount != 1:
+                raise ConcurrentTurnModification(f"ResearchSession state version changed: {session_id}")
+            return dict(connection.execute(select(research_session_states).where(research_session_states.c.session_id == session_id)).mappings().one())
+        return self._run(run)
+
+    def add_item(self, values: Mapping[str, Any]) -> dict[str, Any]:
+        def run(connection: Connection) -> dict[str, Any]:
+            connection.execute(insert(research_session_context_items).values(**values))
+            return dict(connection.execute(select(research_session_context_items).where(research_session_context_items.c.id == values["id"])).mappings().one())
+        return self._run(run)
+
+    def list_items(self, session_id: str, *, active_only: bool = True, limit: int = 200) -> list[dict[str, Any]]:
+        statement = select(research_session_context_items).where(research_session_context_items.c.session_id == session_id)
+        if active_only:
+            statement = statement.where(research_session_context_items.c.active.is_(True))
+        statement = statement.order_by(research_session_context_items.c.created_at.asc(), research_session_context_items.c.id.asc()).limit(limit)
+        return self._run(lambda connection: [dict(row) for row in connection.execute(statement).mappings().all()])
+
+    def deactivate_items(self, session_id: str, *, item_type: str, predicate: Any | None = None) -> int:
+        statement = update(research_session_context_items).where(and_(
+            research_session_context_items.c.session_id == session_id,
+            research_session_context_items.c.item_type == item_type,
+            research_session_context_items.c.active.is_(True),
+        )).values(active=False, updated_at=datetime.now(timezone.utc))
+        def run(connection: Connection) -> int:
+            if predicate is None:
+                return int(connection.execute(statement).rowcount or 0)
+            rows = connection.execute(select(research_session_context_items).where(and_(
+                research_session_context_items.c.session_id == session_id,
+                research_session_context_items.c.item_type == item_type,
+                research_session_context_items.c.active.is_(True),
+            ))).mappings().all()
+            ids = [row["id"] for row in rows if predicate(dict(row))]
+            if not ids:
+                return 0
+            return int(connection.execute(update(research_session_context_items).where(research_session_context_items.c.id.in_(ids)).values(active=False, updated_at=datetime.now(timezone.utc))).rowcount or 0)
+        return self._run(run)
 
 
 class ResearchTurnEventRepository(_Repository):
@@ -607,6 +688,7 @@ class Agent2RepositoryBundle:
     scientific_objects: ScientificObjectRepository
     research_turns: ResearchTurnRepository
     research_context_snapshots: ResearchContextSnapshotRepository
+    research_session_memory: ResearchSessionMemoryRepository
     research_turn_events: ResearchTurnEventRepository
     scientific_result_snapshots: ScientificResultSnapshotRepository
     research_turn_decisions: ResearchTurnDecisionRepository
@@ -621,6 +703,7 @@ class Agent2RepositoryBundle:
             scientific_objects=ScientificObjectRepository(bind),
             research_turns=ResearchTurnRepository(bind),
             research_context_snapshots=ResearchContextSnapshotRepository(bind),
+            research_session_memory=ResearchSessionMemoryRepository(bind),
             research_turn_events=ResearchTurnEventRepository(bind),
             scientific_result_snapshots=ScientificResultSnapshotRepository(bind),
             research_turn_decisions=ResearchTurnDecisionRepository(bind),

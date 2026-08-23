@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -23,7 +24,7 @@ from sqlalchemy.engine import make_url
 
 from mdi_api.artifact_storage import S3CompatibleArtifactStorage
 from mdi_api.db import (
-    artifacts, data_profiles, datasets, jobs, organizations, projects,
+    artifacts, data_profiles, datasets, job_events, jobs, organizations, projects,
     research_execution_summaries, research_turn_events, research_turns,
     scientific_result_snapshots, sessions, tool_calls, users,
 )
@@ -45,6 +46,146 @@ from mdi_artifact_core import content_hash, stable_json_dumps
 
 ROOT = Path(__file__).resolve().parents[2]
 LAST_PHASE4_SERVICE_EVIDENCE: dict[str, Any] = {}
+
+
+def _run_execution_worker_with_timeline(
+    *,
+    engine,
+    database_url: str,
+    job_id: str,
+    startup_timeout_seconds: float = 120.0,
+    timeout_seconds: float = 180.0,
+) -> tuple[str, str, dict[str, Any]]:
+    """Run a fresh worker with separate startup and execution timing bounds."""
+
+    with tempfile.TemporaryDirectory(prefix="agent2-phase4-worker-") as marker_dir:
+        ready_path = Path(marker_dir) / "ready"
+        process = subprocess.Popen(
+            [
+                sys.executable,
+                "-c",
+                (
+                    "from pathlib import Path; "
+                    "import os, sys, time; "
+                    "from mdi_workers.queue_runtime import run_queued_job; "
+                    "Path(sys.argv[2]).write_text(str(time.time()), encoding='utf-8'); "
+                    "print(f'EXECUTION_WORKER_PID={os.getpid()}', flush=True); "
+                    "result = run_queued_job(sys.argv[1]); "
+                    "print(result.status, flush=True)"
+                ),
+                job_id,
+                str(ready_path),
+            ],
+            cwd=ROOT,
+            env=_worker_environment(database_url),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        spawned = time.monotonic()
+        while not ready_path.exists() and process.poll() is None and time.monotonic() - spawned < startup_timeout_seconds:
+            time.sleep(0.05)
+        if not ready_path.exists():
+            stdout, stderr = process.communicate(timeout=5)
+            raise AssertionError(
+                "fresh execution worker readiness timeout; "
+                + json.dumps({
+                    "startup_timeout_seconds": startup_timeout_seconds,
+                    "process_id": process.pid,
+                    "stdout": stdout[-2000:],
+                    "stderr": stderr[-4000:],
+                }, ensure_ascii=False, sort_keys=True)
+            )
+        execution_started = time.monotonic()
+    last_state: tuple[Any, ...] | None = None
+    timeline: list[dict[str, Any]] = []
+    while process.poll() is None and time.monotonic() - execution_started < timeout_seconds:
+        with engine.connect() as connection:
+            job = connection.execute(
+                select(jobs.c.status).where(jobs.c.id == job_id)
+            ).scalar_one()
+            calls = connection.execute(
+                select(tool_calls.c.step_id, tool_calls.c.status)
+                .where(tool_calls.c.job_id == job_id)
+                .order_by(tool_calls.c.created_at, tool_calls.c.id)
+            ).all()
+            artifact_count = connection.execute(
+                select(func.count()).select_from(artifacts).where(
+                    artifacts.c.job_id == job_id
+                )
+            ).scalar_one()
+            events = connection.execute(
+                select(job_events.c.event_type).where(job_events.c.job_id == job_id)
+                .order_by(job_events.c.seq)
+            ).scalars().all()
+        state = (
+            str(job),
+            tuple((str(step), str(status)) for step, status in calls),
+            int(artifact_count),
+            tuple(str(item) for item in events),
+        )
+        if state != last_state:
+            timeline.append({
+                "elapsed_seconds": round(time.monotonic() - execution_started, 3),
+                "job_status": state[0],
+                "tool_calls": list(state[1]),
+                "artifact_count": state[2],
+                "job_events": list(state[3]),
+            })
+            last_state = state
+        time.sleep(0.1)
+    if process.poll() is None:
+        process.terminate()
+        try:
+            stdout, stderr = process.communicate(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            stdout, stderr = process.communicate(timeout=5)
+        raise AssertionError(
+            "fresh execution worker timeout; "
+            + json.dumps(
+                {
+                    "timeout_seconds": timeout_seconds,
+                    "startup_seconds": round(execution_started - spawned, 3),
+                    "process_id": process.pid,
+                    "stdout": stdout[-2000:],
+                    "stderr": stderr[-4000:],
+                    "timeline": timeline,
+                },
+                ensure_ascii=False,
+                sort_keys=True,
+            )
+        )
+    stdout, stderr = process.communicate(timeout=5)
+    execution_wall_seconds = time.monotonic() - execution_started
+    first_running = next(
+        (item["elapsed_seconds"] for item in timeline if item["job_status"] == "running"),
+        None,
+    )
+    first_tool_running = next(
+        (
+            item["elapsed_seconds"]
+            for item in timeline
+            if any(status == "running" for _step, status in item["tool_calls"])
+        ),
+        None,
+    )
+    first_artifact = next(
+        (item["elapsed_seconds"] for item in timeline if item["artifact_count"] > 0),
+        None,
+    )
+    return stdout, stderr, {
+        "startup_seconds": round(execution_started - spawned, 3),
+        "queued_to_terminal_seconds": round(execution_wall_seconds, 3),
+        "queued_to_running_seconds": first_running,
+        "running_to_tool_seconds": (
+            round(first_tool_running - first_running, 3)
+            if first_tool_running is not None and first_running is not None
+            else None
+        ),
+        "first_artifact_seconds": first_artifact,
+        "timeline": timeline,
+    }
 
 
 class RdfOrchestratorFixture:
@@ -128,6 +269,12 @@ def _postgres_url() -> str:
         if os.getenv("MDI_RUN_INTEGRATION") == "1":
             raise RuntimeError("PostgreSQL is required for the enabled Agent2 Phase4 integration gate")
         pytest.skip("A PostgreSQL MDI_TEST_DATABASE_URL or DATABASE_URL is required")
+    parsed = make_url(value)
+    # Docker Desktop can publish the test database on IPv4 only while Windows
+    # resolves localhost to ::1 first. Fresh worker processes then wait on the
+    # unreachable IPv6 address before psycopg can try IPv4.
+    if os.name == "nt" and parsed.host == "localhost":
+        return parsed.set(host="127.0.0.1").render_as_string(hide_password=False)
     return value
 
 
@@ -314,23 +461,13 @@ def test_agent2_phase4_fresh_worker_executes_exact_plan_and_stops_at_result_pend
             "artifacts": connection.execute(select(func.count()).select_from(artifacts).where(artifacts.c.job_id == dispatched.job_id)).scalar_one(),
         }
 
-    process = subprocess.run(
-        [
-            sys.executable,
-            "-c",
-            "from mdi_workers.queue_runtime import run_queued_job; import os, sys; print(f'EXECUTION_WORKER_PID={os.getpid()}'); result = run_queued_job(sys.argv[1]); print(result.status)",
-            dispatched.job_id,
-        ],
-        cwd=ROOT,
-        env=_worker_environment(database_url),
-        check=False,
-        capture_output=True,
-        text=True,
-        timeout=180,
+    stdout, stderr, rdf_timing = _run_execution_worker_with_timeline(
+        engine=engine,
+        database_url=database_url,
+        job_id=dispatched.job_id,
     )
-    assert process.returncode == 0, process.stderr[-4000:]
-    assert process.stdout.strip().endswith("completed")
-    rdf_worker_pid = int(next(line.split("=", 1)[1] for line in process.stdout.splitlines() if line.startswith("EXECUTION_WORKER_PID=")))
+    assert stdout.strip().endswith("completed"), stderr[-4000:]
+    rdf_worker_pid = int(next(line.split("=", 1)[1] for line in stdout.splitlines() if line.startswith("EXECUTION_WORKER_PID=")))
     assert rdf_worker_pid != os.getpid()
 
     with engine.connect() as connection:
@@ -533,11 +670,23 @@ print(result.status)
     LAST_PHASE4_SERVICE_EVIDENCE.clear()
     LAST_PHASE4_SERVICE_EVIDENCE.update({
         "api_fixture_pid": os.getpid(),
-        "rdf": {"turn_id": str(received.turn_id), "job_id": dispatched.job_id, "execution_worker_pid": rdf_worker_pid},
+        "rdf": {
+            "turn_id": str(received.turn_id),
+            "job_id": dispatched.job_id,
+            "execution_worker_pid": rdf_worker_pid,
+            "timing": rdf_timing,
+        },
         "xrd": {"turn_id": str(xrd_received.turn_id), "job_id": xrd_dispatch.job_id, "execution_worker_pid": xrd_worker_pid},
         "owner": {"id": owner.id, "email": owner.email},
         "project_id": project_id,
     })
+    print(json.dumps({
+        "phase4_fresh_worker_timing": {
+            "rdf": rdf_timing,
+            "execution_timeout_seconds": 180.0,
+            "startup_timeout_seconds": 120.0,
+        }
+    }, sort_keys=True))
 
     queued_job.delete()
     queued_xrd_job = xrd_queue.fetch_job(xrd_dispatch.job_id)

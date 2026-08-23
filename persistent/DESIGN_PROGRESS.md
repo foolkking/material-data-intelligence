@@ -3391,3 +3391,23 @@ unchanged until Phase 4.
   GitHub Actions run `32621337675`: all five retained jobs succeeded, including
   the dedicated Phase 6 PostgreSQL/Redis/MinIO fresh-process qualification
   with no selected integration skips. The Phase 6 verdict is COMPLETE.
+
+## 2026-08-23 Agent 2.0 Phase 7 research memory (partial)
+
+- Added durable, versioned ResearchSession state and auditable context items
+  for explicit session constraints, pinned exact object/result references,
+  goals, active scope/selection, and open questions.
+- Extended Phase 2 candidate assembly with deterministic explicit/UI/current/
+  previous/pinned/recent/long-session priority, bounded non-adjacent results,
+  grounded finding references, and opaque provider keys.
+- Extended the compact compiler budget so explicit constraints and pinned
+  results survive low-value conversation trimming; raw Artifact payloads and
+  internal database identities remain outside provider context.
+- Existing Phase 6 zero-computation result interpretation and Phase 3–6
+  continuation paths are reused. Full backend (`1737 passed, 67 skipped`), frontend (`571
+  passed`), typecheck/build, migration round-trip, and authenticated desktop/
+  390px browser no-overflow checks pass. Fresh PostgreSQL/Redis/MinIO
+  base-to-0023 migration passed, but the inherited Phase 4 RDF execution Worker
+  timed out after 180 seconds before the dedicated RDF/XRD reuse qualification
+  began (`2 errors, 0 skipped`). Live provider qualification and final
+  current-head CI are also not claimed; verdict is PARTIAL.

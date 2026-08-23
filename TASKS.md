@@ -1,4 +1,30 @@
 ---TASK---
+状态：处理中
+任务名称：Agent-2.0 Phase 7 — Multi-turn Research Memory, Result Reuse & Continuation
+开始时间：2026-08-23T15:00:00+08:00
+
+已实现 durable ResearchSession state、auditable context items、explicit Session
+constraints、authorized pin/unpin、bounded long-session candidate assembly、opaque
+provider references、finding references、context budget、previous-result reuse 与
+continuation integration。frontend `571` tests、typecheck/build、full backend
+`1737 passed, 67 skipped` 与 authenticated 1280/390px browser no-overflow 已通过。当前仍需关闭
+fresh PostgreSQL/Redis/MinIO RDF/second-family multi-turn qualification、live provider
+qualification 与 final current-head CI。
+
+本地 isolated fresh PostgreSQL/Redis/MinIO 已完成 base→0023。dedicated
+Phase 7 service run 已定位并修复 Windows `localhost -> ::1` 导致的
+inherited Phase 4 Worker PostgreSQL connect stall；readiness 后 execution
+timing 已与 cold startup 分离，180 秒 execution bound 未增加。Phase 6
+fresh interpretation failure 已确认为 Phase 7 fixture 缺少 grounded finding/
+ResultItem 的 schema contract defect，已用真实 persisted Fact/ResultItem 修复，
+未放宽 Phase 6 validator。Phase 6 service `2 passed`，Phase 7 service
+`4 passed, 0 skipped`，live DeepSeek 三个 gated case 已通过；仍需提交/push、
+把 dedicated selection 纳入 CI，并取得 final exact-SHA CI。
+
+不得启动 Phase 8；完整闭环前保持“处理中”。
+---END---
+
+---TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00

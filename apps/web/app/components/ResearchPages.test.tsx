@@ -21,6 +21,7 @@ const mocks = vi.hoisted(() => ({
   getPlannerInterpretationEvidence: vi.fn(),
   getPlannerProviderStatus: vi.fn(),
   listPlannerProviders: vi.fn(),
+  getAgent2SessionMemory: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
@@ -45,6 +46,10 @@ vi.mock("../lib/planner-api", () => ({
   getPlannerInterpretationEvidence: mocks.getPlannerInterpretationEvidence,
   getPlannerProviderStatus: mocks.getPlannerProviderStatus,
   listPlannerProviders: mocks.listPlannerProviders,
+}));
+
+vi.mock("../lib/agent2-memory-api", () => ({
+  getAgent2SessionMemory: mocks.getAgent2SessionMemory,
 }));
 
 vi.mock("./ProductShell", () => ({
@@ -150,6 +155,10 @@ it("summarizes structured result metadata without loading payloads", () => {
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.listResearchSessions.mockResolvedValue([]);
+  mocks.getAgent2SessionMemory.mockResolvedValue({
+    session_id: "session_1", project_id: "project_1", pinned_object_refs: [],
+    pinned_result_refs: [], session_constraints: [], active_research_goal: null, version: 1,
+  });
   mocks.getProjectHistory.mockResolvedValue({
     project: { id: "project_1", name: "研究项目", role: "owner" },
     datasets: [{ datasetId: "dataset_a" }, { datasetId: "dataset_b" }],
@@ -304,6 +313,23 @@ it("does not show first-use guidance inside an existing conversation", async () 
 
   expect(await screen.findByRole("article", { name: "你的消息" })).toHaveTextContent("查看结构");
   expect(screen.queryByText("研究起点")).not.toBeInTheDocument();
+});
+
+it("shows bounded session constraints without exposing internal ids", async () => {
+  mocks.listResearchSessions.mockResolvedValue([{ id: "session_1", project_id: "project_1", title: "连续研究", status: "active" }]);
+  mocks.getAgent2SessionMemory.mockResolvedValue({
+    session_id: "session_1", project_id: "project_1", pinned_object_refs: [{ object_type: "structure.crystal", display_name: "LiFePO4" }],
+    pinned_result_refs: ["internal-result-id"],
+    session_constraints: [{ id: "constraint-id", statement: "后续 RDF cutoff 固定为 8 Å", structured_constraint: { value: 8 } }],
+    active_research_goal: "比较 LiFePO4 的局域结构", version: 2,
+  });
+  render(<ResearchPage projectId="project_1" sessionId="session_1" />);
+
+  const context = await screen.findByRole("region", { name: "当前研究会话上下文" });
+  expect(context).toHaveTextContent("后续 RDF cutoff 固定为 8 Å");
+  expect(context).toHaveTextContent("固定结果 1");
+  expect(context).not.toHaveTextContent("internal-result-id");
+  expect(context).not.toHaveTextContent("constraint-id");
 });
 
 it("persists the selected dataset in the same research session before creating a scoped job", async () => {

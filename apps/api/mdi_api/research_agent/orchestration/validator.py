@@ -66,6 +66,27 @@ class ResearchTurnDecisionValidator:
                     f"Selected object keys violate deterministic candidate priority: {', '.join(lower_priority)}",
                     code="ORCHESTRATOR_INVALID_REFERENCE",
                 )
+        if decision.reusable_result_ref_keys and result_candidates:
+            highest_priority = min(candidate_source_priority(item.source) for item in result_candidates.values())
+            highest_keys = [key for key, item in result_candidates.items() if candidate_source_priority(item.source) == highest_priority]
+            if (
+                len(highest_keys) > 1
+                and decision.action != ResearchAction.CLARIFY
+                and set(decision.reusable_result_ref_keys) != set(highest_keys)
+            ):
+                raise InvalidResearchTurnDecision(
+                    "Same-priority result reference is ambiguous and requires clarification",
+                    code="ORCHESTRATOR_INVALID_REFERENCE",
+                )
+            lower_priority = [
+                key for key in decision.reusable_result_ref_keys
+                if candidate_source_priority(result_candidates[key].source) > highest_priority
+            ]
+            if lower_priority:
+                raise InvalidResearchTurnDecision(
+                    f"Selected result keys violate deterministic candidate priority: {', '.join(lower_priority)}",
+                    code="ORCHESTRATOR_INVALID_REFERENCE",
+                )
 
         action = decision.action
         if action == ResearchAction.ANSWER:

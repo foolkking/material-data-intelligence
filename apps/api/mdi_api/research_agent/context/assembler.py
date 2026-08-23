@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from datetime import datetime
 from typing import Any
 from uuid import UUID
 
@@ -30,14 +29,35 @@ class ResearchContextCandidateAssembler:
              if event["event_type"] == "TURN_RECEIVED"),
             None,
         )
+        current_messages = unit.agent2.research_turns.referenced_messages(turn)
+        current_user_message = next((str(row["content_summary"]) for row in current_messages if row["role"] == "user"), None)
         ui_context = ((received or {}).get("payload_json") or {}).get("ui_context") or {}
         selection_refs = list(ui_context.get("selection_refs") or [])
         active_refs = list(ui_context.get("active_object_refs") or [])
+        explicit_refs = list(ui_context.get("explicit_object_refs") or [])
         previous_turns = unit.agent2.research_turns.list_recent_before(session_id, current_sequence, limit=6)
+        long_turns = unit.agent2.research_turns.list_all_before(session_id, current_sequence, limit=500)
+        memory_state = unit.agent2.research_session_memory.get_state(session_id)
 
         raw_objects: list[tuple[ReferenceCandidateSource, int, dict[str, Any]]] = []
+        raw_objects.extend((ReferenceCandidateSource.EXPLICIT_REFERENCE, 0, item) for item in explicit_refs)
         raw_objects.extend((ReferenceCandidateSource.UI_SELECTION, 0, item) for item in selection_refs)
         raw_objects.extend((ReferenceCandidateSource.CURRENT_SCOPE, 0, item) for item in active_refs)
+        if memory_state:
+            raw_objects.extend((ReferenceCandidateSource.PINNED_CONTEXT, 0, item) for item in (memory_state.get("active_scope_refs_json") or []))
+            raw_objects.extend((ReferenceCandidateSource.PINNED_CONTEXT, 0, item) for item in (memory_state.get("pinned_object_refs_json") or []))
+        if turn.get("parent_turn_id"):
+            parent_snapshot = unit.agent2.research_context_snapshots.get_for_turn(turn["parent_turn_id"])
+            parent_refs = []
+            for item in (parent_snapshot or {}).get("resolved_references_json") or []:
+                raw = item.get("object_ref") if isinstance(item, dict) else None
+                if raw:
+                    parent_refs.append((item, raw))
+            lexical_matches = [raw for item, raw in parent_refs if str(item.get("display_label") or "").lower() in (current_user_message or "").lower()]
+            if len(lexical_matches) == 1:
+                raw_objects.append((ReferenceCandidateSource.EXPLICIT_REFERENCE, 0, lexical_matches[0]))
+            else:
+                raw_objects.extend((ReferenceCandidateSource.CURRENT_SCOPE, 0, raw) for _, raw in parent_refs)
         for recency, previous in enumerate(previous_turns, start=1):
             snapshot = unit.agent2.research_context_snapshots.get_for_turn(previous["id"])
             if snapshot is None:
@@ -52,22 +72,86 @@ class ResearchContextCandidateAssembler:
             )
 
         objects = self._object_candidates(unit, project_id, raw_objects)
-        result_rows = unit.agent2.scientific_result_snapshots.list_recent_for_session(
-            session_id, before_sequence=current_sequence, limit=6,
-        )
+        result_rows: list[tuple[ReferenceCandidateSource, int, dict[str, Any]]] = []
+        pinned_ids = [str(x) for x in ((memory_state or {}).get("pinned_result_refs_json") or [])]
+        for recency, previous in enumerate(long_turns, start=1):
+            snapshot = unit.agent2.scientific_result_snapshots.get_latest_for_turn(previous["id"]) if unit.agent2.scientific_result_snapshots.exists_for_turn(previous["id"]) else None
+            if snapshot is None:
+                continue
+            source = ReferenceCandidateSource.PINNED_CONTEXT if str(snapshot["id"]) in pinned_ids else (
+                ReferenceCandidateSource.PREVIOUS_TURN_RESULT if recency == 1 else (
+                    ReferenceCandidateSource.RECENT_CONTEXT if recency <= 6 else ReferenceCandidateSource.LONG_SESSION_RETRIEVAL
+                )
+            )
+            result_rows.append((source, 0 if source == ReferenceCandidateSource.PINNED_CONTEXT else recency, snapshot))
+        # Explicit lexical references are resolved only when exactly one
+        # authorized persisted result matches a registered scientific-family
+        # token. This deterministic elevation supports non-adjacent references
+        # without letting the model invent identities.
+        message_lower = (current_user_message or "").lower()
+        family_tokens = ("rdf", "xrd", "msd", "diffusion", "phonon", "regression", "回归", "声子", "扩散")
+        for token in family_tokens:
+            if token not in message_lower:
+                continue
+            matches = []
+            for _, _, row in result_rows:
+                bundle = dict(row.get("bundle_json") or {})
+                searchable = " ".join([
+                    str(bundle.get("research_question") or ""),
+                    *(str(item.get("result_type") or "") for item in (bundle.get("result_items") or []) if isinstance(item, dict)),
+                ]).lower()
+                if token in searchable:
+                    matches.append(row)
+            unique = {str(item["id"]): item for item in matches}
+            if len(unique) == 1:
+                result_rows.append((ReferenceCandidateSource.EXPLICIT_REFERENCE, 0, next(iter(unique.values()))))
+        explicit_result_ids = {str(x) for x in (ui_context.get("explicit_result_ids") or [])}
+        for result_id in explicit_result_ids:
+            row = unit.agent2.scientific_result_snapshots.get(UUID(result_id))
+            if str(row["project_id"]) != project_id or row["research_turn_id"] not in {item["id"] for item in long_turns}:
+                raise ValueError("Unauthorized explicit scientific result reference")
+            result_rows.append((ReferenceCandidateSource.EXPLICIT_REFERENCE, 0, row))
+        dedup_results: dict[str, tuple[ReferenceCandidateSource, int, dict[str, Any]]] = {}
+        priority = {
+            ReferenceCandidateSource.EXPLICIT_REFERENCE: 0,
+            ReferenceCandidateSource.UI_SELECTION: 1,
+            ReferenceCandidateSource.CURRENT_SCOPE: 2,
+            ReferenceCandidateSource.PREVIOUS_TURN_RESULT: 3,
+            ReferenceCandidateSource.PREVIOUS_TURN: 3,
+            ReferenceCandidateSource.PINNED_CONTEXT: 4,
+            ReferenceCandidateSource.RECENT_CONTEXT: 5,
+            ReferenceCandidateSource.LONG_SESSION_RETRIEVAL: 6,
+        }
+        for source, recency, row in result_rows:
+            key = str(row["id"])
+            current = dedup_results.get(key)
+            if current is None or (priority[source], recency) < (priority[current[0]], current[1]):
+                dedup_results[key] = (source, recency, row)
+        ordered_results = sorted(dedup_results.values(), key=lambda item: (priority[item[0]], item[1], str(item[2]["id"])))[:16]
         results = []
-        for index, row in enumerate(result_rows, start=1):
+        finding_rows: list[ReferenceCandidate] = []
+        for index, (source, recency, row) in enumerate(ordered_results, start=1):
             bundle = dict(row.get("bundle_json") or {})
             results.append(ReferenceCandidate(
                 candidate_key=f"result_{index}",
                 ref_type="SCIENTIFIC_RESULT",
                 result_id=row["id"],
-                source=ReferenceCandidateSource.PREVIOUS_TURN_RESULT,
+                source=source,
                 display_label=str(bundle.get("research_question") or f"Previous result {index}")[:512],
                 semantic_summary=self._bounded_summary(bundle),
-                recency_rank=index - 1,
+                recency_rank=recency,
                 stale=str(row["relevance_status"]) != "CURRENT",
             ))
+            for fact in (bundle.get("facts") or [])[:4]:
+                if not isinstance(fact, dict) or not fact.get("fact_id"):
+                    continue
+                finding_rows.append(ReferenceCandidate(
+                    candidate_key=f"finding_{len(finding_rows) + 1}",
+                    ref_type="SCIENTIFIC_FINDING", finding_ref=str(fact["fact_id"]),
+                    source=source, display_label=str(fact.get("predicate") or fact["fact_id"])[:512],
+                    semantic_summary=str(fact.get("value") or "")[:2000], recency_rank=recency,
+                    stale=str(row["relevance_status"]) != "CURRENT",
+                ))
 
         messages: list[CompactMessage] = []
         for previous in reversed(previous_turns):
@@ -92,12 +176,15 @@ class ResearchContextCandidateAssembler:
             research_turn_id=turn["id"],
             active_object_candidates=objects,
             result_candidates=results,
-            finding_candidates=[],
-            explicit_constraints=list((latest_snapshot or {}).get("effective_constraints_json") or []),
-            current_research_goal=(latest_snapshot or {}).get("research_goal"),
+            finding_candidates=finding_rows[:16],
+            explicit_constraints=list((memory_state or {}).get("session_constraints_json") or []) or list((latest_snapshot or {}).get("effective_constraints_json") or []),
+            current_research_goal=(memory_state or {}).get("active_research_goal") or (latest_snapshot or {}).get("research_goal"),
             unresolved_questions=list((latest_snapshot or {}).get("unresolved_questions_json") or []),
             recent_messages=messages[-12:],
             recent_turn_ids=[item["id"] for item in reversed(previous_turns)],
+            pinned_result_ids=[UUID(str(x)) for x in pinned_ids[:64]],
+            omitted_supporting_items=[] if len(ordered_results) <= 16 else ["additional historical results omitted by candidate budget"],
+            current_user_message=current_user_message,
         )
 
     @staticmethod
@@ -112,6 +199,7 @@ class ResearchContextCandidateAssembler:
             ReferenceCandidateSource.UI_SELECTION: 1,
             ReferenceCandidateSource.CURRENT_SCOPE: 2,
             ReferenceCandidateSource.PREVIOUS_TURN_RESULT: 3,
+            ReferenceCandidateSource.PREVIOUS_TURN: 3,
             ReferenceCandidateSource.PINNED_CONTEXT: 4,
             ReferenceCandidateSource.RECENT_CONTEXT: 5,
         }

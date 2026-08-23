@@ -13804,6 +13804,79 @@ current-HEAD GitHub Actions run `32592517424` 的 Unit、service-backed integrat
 Frontend Typecheck & Build、Linux/Windows scientific replay 五个 job 全部成功。
 ---END---
 
+---TASK---
+任务名称：Agent-2.0 Phase 7 Closure Round 2 — Interpretation Contract & Final Closure
+状态：处理中
+完成时间：2026-08-24T00:00:00+08:00
+
+修改摘要：确认 Windows fresh Worker timeout 根因是 isolated Docker PostgreSQL 的
+IPv4-only listener 与 Windows `localhost -> ::1` 解析不匹配，保留 `localhost ->
+127.0.0.1` test-only 修复且不增加 180 秒 execution bound；新增 readiness 后的
+startup/execution timing 证据。将 Phase 7 fresh interpretation fixture 从空 finding
+修正为引用真实 persisted Fact/ResultItem 的合法 Phase 6 `ScientificInterpretationOutput`
+，未修改 grounding/schema validator。更新 Phase 7 service qualification 证据。
+
+测试结果：Phase 6 fresh service `2 passed, 0 skipped`；Phase 7 dedicated service
+`4 passed, 0 skipped`；Phase 7 focused `121 passed, 9 skipped`；gated live DeepSeek
+`3 passed`；RDF readiness timing `startup 6.844s`, `queued->terminal 2.688s`，
+execution timeout unchanged. Full backend/frontend/full current-head CI 尚未完成。
+
+提交/CI：尚未提交、push 或取得 final exact-SHA CI；任务保持处理中。
+---END---
+
+---RESULT---
+任务名称：Agent-2.0 Phase 7 Closure
+状态：处理中
+完成时间：2026-08-24T00:00:00+08:00
+
+修改摘要：诊断 isolated fresh Phase 4 timeout。DB-backed timeline 与 py-spy
+确认 Windows `localhost` 首先解析到不可达 IPv6 `::1`，fresh Worker 卡在
+`psycopg.connect()`，尚未创建 ToolCall；测试 URL helper 规范化到
+`127.0.0.1`，180 秒上限未增加。修复 deterministic result/object priority
+解析缺陷：显式 Result 压过低优先级对象，同级 Result ambiguity 正确进入
+CLARIFY。增加 Phase 7 live DeepSeek gated cases（previous result、8 Å
+continuation、ambiguity），三例通过；扩展 dedicated service fixture/CI
+选择草案，但 service closure 仍因独立 interpretation Worker 的既有
+Phase 6 grounding/schema fixture contract 失败而未闭合，未将未通过选择强行
+纳入 CI。
+
+测试结果：Phase 7 memory `8 passed`；live DeepSeek `3 passed`；最小 fresh
+Phase 4 `1 passed in 177.98s`；ruff/compileall 通过。Dedicated Phase 7
+PostgreSQL/Redis/MinIO selection reached real RDF/XRD execution/result stages,
+but interpretation task was consumed and failed grounding/schema validation，
+因此 selected service gate 尚未通过。未执行 commit/push/current-head CI；
+未声称 Phase 7 COMPLETE。
+
+提交/CI：未提交，未推送；仍需 fix-forward。
+---END---
+
+---RESULT---
+任务名称：Agent-2.0 Phase 7 — Multi-turn Research Memory, Result Reuse & Continuation
+状态：处理中
+记录时间：2026-08-23T15:45:00+08:00
+
+修改摘要：新增 `0023_agent2_research_memory`、durable/versioned Session state、
+auditable context items、explicit Session constraint/goal extraction、authorized
+object/result pin APIs、bounded non-adjacent Result/Finding retrieval、opaque candidate
+priority、bounded CompactResearchContext，以及 existing Phase 6 zero-computation
+result reuse / Phase 3–6 continuation integration。
+
+测试结果：Phase 7 deterministic `6 passed`；Agent2 focused `119 passed, 6 skipped`；
+full backend `1737 passed, 67 skipped`；compileall、uv lock、diff-check PASS；SQLite
+migration `0022 → 0023 → 0022 → 0023` 与 fresh base-to-head PASS。Frontend
+`85 files / 571 passed`、typecheck、isolated production build PASS；authenticated
+Research browser 在 1280x720 与 390x844 均无横向溢出。Phase 7 专用 service
+selection 已改为自包含 RDF/XRD reuse fixture；isolated fresh PostgreSQL/Redis/MinIO
+完成 base→0023，但 inherited Phase 4 RDF execution Worker 180s timeout，结果
+`2 errors, 0 passed, 0 skipped`，尚未进入 Phase 7 reuse。Live provider 与
+current-head CI 也未执行。最终 dedicated selection 为默认 `2 skipped`、
+services-enabled `2 errors`；最终完整 backend 已重跑且通过，因此仍仅因
+service/live/CI closure gaps 不声明 Phase 7 COMPLETE。
+
+提交/CI：尚未提交或推送；current-head CI 尚未运行。用户无关 working-tree 文件
+保持未纳入。
+---END---
+
 ---RESULT---
 任务名称：Agent-2.0 Phase 5 — Production Scientific Result Projection
 状态：失败（实现报告判定 PARTIAL）

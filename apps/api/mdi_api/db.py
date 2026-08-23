@@ -858,6 +858,50 @@ research_context_snapshots = Table(
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
 
+# Phase 7: durable, auditable ResearchSession memory.  This is deliberately
+# separate from immutable ResearchContextSnapshot rows: the session state is
+# a mutable projection while snapshots remain historical evidence.
+research_session_states = Table(
+    "research_session_states",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("session_id", String(64), ForeignKey("sessions.id", name="fk_rss_session", ondelete="CASCADE"), nullable=False, unique=True),
+    Column("project_id", String(64), ForeignKey("projects.id", name="fk_rss_project", ondelete="RESTRICT"), nullable=False),
+    Column("active_scope_refs_json", JSON, nullable=False, server_default="[]"),
+    Column("active_selection_refs_json", JSON, nullable=False, server_default="[]"),
+    Column("pinned_object_refs_json", JSON, nullable=False, server_default="[]"),
+    Column("pinned_result_refs_json", JSON, nullable=False, server_default="[]"),
+    Column("session_constraints_json", JSON, nullable=False, server_default="[]"),
+    Column("active_research_goal", Text, nullable=True),
+    Column("open_questions_json", JSON, nullable=False, server_default="[]"),
+    Column("version", Integer, nullable=False, server_default="1"),
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint("version >= 1", name=conv("ck_rss_version")),
+)
+
+research_session_context_items = Table(
+    "research_session_context_items",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("session_id", String(64), ForeignKey("sessions.id", name="fk_rsci_session", ondelete="CASCADE"), nullable=False),
+    Column("project_id", String(64), ForeignKey("projects.id", name="fk_rsci_project", ondelete="RESTRICT"), nullable=False),
+    Column("item_type", String(32), nullable=False),
+    Column("scope", String(16), nullable=False),
+    Column("ref_json", JSON, nullable=True),
+    Column("statement", Text, nullable=True),
+    Column("structured_constraint_json", JSON, nullable=True),
+    Column("source_message_id", String(64), ForeignKey("messages.id", name="fk_rsci_message", ondelete="RESTRICT"), nullable=True),
+    Column("explicitly_requested", Boolean, nullable=False, server_default="true"),
+    Column("active", Boolean, nullable=False, server_default="true"),
+    Column("version", Integer, nullable=False, server_default="1"),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint("scope in ('TURN', 'SESSION')", name=conv("ck_rsci_scope")),
+    CheckConstraint("item_type in ('ACTIVE_SCOPE', 'ACTIVE_SELECTION', 'PINNED_OBJECT', 'PINNED_RESULT', 'SESSION_CONSTRAINT', 'RESEARCH_GOAL', 'OPEN_QUESTION', 'PRIOR_FINDING')", name=conv("ck_rsci_item_type")),
+    Index("idx_rsci_session_active", "session_id", "active", "item_type"),
+)
+
 research_turn_events = Table(
     "research_turn_events",
     metadata,

@@ -320,6 +320,9 @@ class ResearchTurnUIContext(BaseModel):
 
     active_object_refs: list[ScientificObjectRef] = Field(default_factory=list, max_length=64)
     selection_refs: list[ScientificObjectRef] = Field(default_factory=list, max_length=16)
+    explicit_object_refs: list[ScientificObjectRef] = Field(default_factory=list, max_length=64)
+    explicit_result_ids: list[UUID] = Field(default_factory=list, max_length=16)
+    explicit_finding_refs: list[str] = Field(default_factory=list, max_length=16)
 
 
 class CreateResearchTurnRequest(BaseModel):

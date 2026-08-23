@@ -18,8 +18,10 @@ class ReferenceCandidateSource(str, Enum):
     UI_SELECTION = "UI_SELECTION"
     CURRENT_SCOPE = "CURRENT_SCOPE"
     PREVIOUS_TURN_RESULT = "PREVIOUS_TURN_RESULT"
+    PREVIOUS_TURN = "PREVIOUS_TURN"
     PINNED_CONTEXT = "PINNED_CONTEXT"
     RECENT_CONTEXT = "RECENT_CONTEXT"
+    LONG_SESSION_RETRIEVAL = "LONG_SESSION_RETRIEVAL"
 
 
 class ReferenceCandidate(BaseModel):
@@ -65,13 +67,16 @@ class ResearchContextCandidateBundle(BaseModel):
     research_session_id: str = Field(min_length=1, max_length=64)
     research_turn_id: UUID
     active_object_candidates: list[ReferenceCandidate] = Field(max_length=80)
-    result_candidates: list[ReferenceCandidate] = Field(max_length=6)
+    result_candidates: list[ReferenceCandidate] = Field(max_length=16)
     finding_candidates: list[ReferenceCandidate] = Field(max_length=16)
-    explicit_constraints: list[BoundedContextText] = Field(max_length=32)
+    explicit_constraints: list[BoundedContextText | dict[str, Any]] = Field(max_length=32)
     current_research_goal: str | None = Field(max_length=2048)
     unresolved_questions: list[BoundedContextText] = Field(max_length=16)
     recent_messages: list[CompactMessage] = Field(max_length=12)
     recent_turn_ids: list[UUID] = Field(default_factory=list, max_length=6)
+    pinned_result_ids: list[UUID] = Field(default_factory=list, max_length=64)
+    omitted_supporting_items: list[str] = Field(default_factory=list, max_length=16)
+    current_user_message: str | None = Field(default=None, max_length=16000)
     assembly_version: str = "agent2.context-assembly/1.0"
 
     @model_validator(mode="after")
@@ -100,11 +105,22 @@ class CompactResultSummary(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     ref_key: str
-    result_id: UUID
+    # Kept for server-side projection only; Pydantic serialization used for
+    # provider input excludes the database identity.  The model sees ref_key.
+    result_id: UUID = Field(exclude=True)
     research_question: str | None
     execution_status: str
     relevance_status: str
     summary: str
+
+
+class CompactFindingSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    ref_key: str
+    display_label: str
+    summary: str
+    relevance_status: str
 
 
 class CompactResearchContext(BaseModel):
@@ -114,7 +130,13 @@ class CompactResearchContext(BaseModel):
     current_goal: str | None = Field(max_length=2048)
     objects: list[CompactObjectSummary]
     results: list[CompactResultSummary]
-    explicit_constraints: list[BoundedContextText] = Field(max_length=32)
+    relevant_findings: list[CompactFindingSummary] = Field(default_factory=list, max_length=16)
+    current_user_message: str | None = Field(default=None, max_length=16000)
+    pinned_results: list[CompactResultSummary] = Field(default_factory=list, max_length=16)
+    relevant_prior_turns: list[int] = Field(default_factory=list, max_length=12)
+    resolved_references: list[dict[str, Any]] = Field(default_factory=list, max_length=32)
+    omitted_supporting_items: list[str] = Field(default_factory=list, max_length=16)
+    explicit_constraints: list[BoundedContextText | dict[str, Any]] = Field(max_length=32)
     unresolved_questions: list[BoundedContextText] = Field(max_length=16)
     recent_conversation: list[CompactMessage]
     context_fingerprint: str

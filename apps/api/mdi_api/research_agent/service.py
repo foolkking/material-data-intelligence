@@ -26,6 +26,7 @@ from mdi_api.research_agent.schemas import (
     TERMINAL_TURN_STATUSES,
 )
 from mdi_api.research_agent.turns.state_machine import ensure_transition
+from mdi_api.research_agent.memory.service import ResearchSessionMemoryService
 from mdi_api.routers.auth import CurrentUser
 from mdi_api.unit_of_work import RepositoryFactory
 
@@ -106,6 +107,14 @@ class ResearchTurnService:
                     },
                     "created_at": now,
                 })
+                # Session-level memory is updated in the same transaction as
+                # the user message, so context snapshots can only observe
+                # committed, auditable state. Turn-only parameters remain in
+                # the request/context snapshot and are not persisted here.
+                ResearchSessionMemoryService().apply_user_message(
+                    unit, session_id=session_id, project_id=project_id,
+                    message=request.message, message_id=message_id,
+                )
                 turn_id = uuid4()
                 turn = unit.agent2.research_turns.add({
                     "id": turn_id,
@@ -256,6 +265,9 @@ class ResearchTurnService:
         ui_context = (received or {}).get("payload_json", {}).get("ui_context") or {}
         active = ui_context.get("active_object_refs") or []
         selected = ui_context.get("selection_refs") or []
+        memory_state = None
+        with self.repository_factory.session() as memory_session:
+            memory_state = memory_session.agent2.research_session_memory.get_state(str(turn["research_session_id"]))
         resolving = self.transition(
             turn_id=turn_id,
             expected_status=ResearchTurnStatus.RECEIVED,
@@ -269,8 +281,8 @@ class ResearchTurnService:
             selection_refs=selected,
             resolved_references=[],
             referenced_result_ids=[],
-            research_goal=None,
-            user_constraints=[],
+            research_goal=(memory_state or {}).get("active_research_goal"),
+            user_constraints=list((memory_state or {}).get("session_constraints_json") or []),
             unresolved_questions=[],
             requires_clarification=False,
         )
@@ -317,7 +329,13 @@ class ResearchTurnService:
             ResearchTurnService._authorize_context_refs(
                 unit,
                 project_id,
-                [*request.ui_context.active_object_refs, *request.ui_context.selection_refs],
+                [
+                    *request.ui_context.active_object_refs,
+                    *request.ui_context.selection_refs,
+                    # Explicit object refs are accepted only after the same
+                    # project/version authorization as UI selection.
+                    *request.ui_context.explicit_object_refs,
+                ],
             )
 
     @staticmethod
