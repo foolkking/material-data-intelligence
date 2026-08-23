@@ -83,7 +83,10 @@ class ResearchContextCompiler:
                 results=results,
                 relevant_findings=findings,
                 pinned_results=[item for item in results if item.result_id in set(candidates.pinned_result_ids)],
-                relevant_prior_turns=[int(item) for item in candidates.recent_turn_ids],
+                relevant_prior_turns=[
+                    f"prior_turn_{index}"
+                    for index, _turn_id in enumerate(candidates.recent_turn_ids, start=1)
+                ],
                 explicit_constraints=candidates.explicit_constraints,
                 unresolved_questions=unresolved,
                 recent_conversation=messages,

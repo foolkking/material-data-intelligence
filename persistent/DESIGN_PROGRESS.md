@@ -3416,5 +3416,7 @@ unchanged until Phase 4.
   frontend (`85 files / 571 passed`), browser and migration gates pass.
 - Closure head `61553dadb28f9a40d07684edcba1e51e1da457d5` is pushed and
   current-head CI `32656452081` passes all five required jobs with service-backed
-  integration `62 passed, 0 skipped`. Phase 7 is COMPLETE; Phase 8 remains out of
-  scope for this record.
+integration `62 passed, 0 skipped`. Phase 7 is COMPLETE; Phase 8 remains out of
+scope for this record. A post-closure provider-boundary audit also replaced
+database UUIDs in compact prior-turn context with stable opaque labels; focused
+memory tests pass and server-side fingerprints remain unchanged.

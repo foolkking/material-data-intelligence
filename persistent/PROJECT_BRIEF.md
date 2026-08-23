@@ -990,3 +990,5 @@ processes. The Windows isolated-service fixture records worker readiness
 separately from the unchanged scientific execution timeout, and the Phase 6
 interpretation validator remained strict. Phase 8/Report Composer is not started
 by this record.
+Provider-facing prior-turn context uses opaque labels; database Turn UUIDs stay
+server-side for authorization, replay and audit.

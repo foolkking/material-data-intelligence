@@ -281,3 +281,8 @@ known PostgreSQL `relation does not exist` error noise while preserving the
 owner-only fallback and savepoint protection for migration races. Focused access
 and Agent2 API tests remain green (`20 passed`); no schema or authority change
 was introduced.
+
+Provider-facing compact context also redacts database Turn UUIDs. Prior-turn
+entries use stable opaque labels (`prior_turn_N`); the real IDs remain server-side
+in the immutable context snapshot/fingerprint. The regression test confirms no
+Turn UUID is serialized into the orchestrator input.

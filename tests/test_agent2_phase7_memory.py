@@ -113,6 +113,22 @@ def test_context_compiler_stays_bounded_and_preserves_pinned_result():
     assert compact.explicit_constraints
 
 
+def test_context_compiler_keeps_turn_ids_out_of_provider_context():
+    turn_ids = [uuid4(), uuid4()]
+    bundle = ResearchContextCandidateBundle(
+        project_id="project", research_session_id="session", research_turn_id=uuid4(),
+        active_object_candidates=[], result_candidates=[], finding_candidates=[],
+        explicit_constraints=[], current_research_goal=None, unresolved_questions=[],
+        recent_messages=[], recent_turn_ids=turn_ids, current_user_message="继续",
+        pinned_result_ids=[],
+    )
+
+    compact = ResearchContextCompiler().compile(turn={}, candidates=bundle, token_budget=2048)
+    assert compact.relevant_prior_turns == ["prior_turn_1", "prior_turn_2"]
+    serialized = compact.model_dump_json()
+    assert all(str(turn_id) not in serialized for turn_id in turn_ids)
+
+
 def test_explicit_result_outranks_lower_priority_object_candidates():
     now = datetime.now(timezone.utc)
     bundle = ResearchContextCandidateBundle(

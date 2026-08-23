@@ -5587,3 +5587,12 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   interpretation passed against PostgreSQL/Redis/MinIO. Phase 7 is complete at
   `61553dadb28f9a40d07684edcba1e51e1da457d5`, CI `32656452081`; Report Composer
   and Phase 8 remain outside this scope.
+
+## ADR: Agent 2.0 provider context never carries Turn database identities (2026-08-24)
+
+- `CompactResearchContext.relevant_prior_turns` is provider-facing and uses
+  stable opaque `prior_turn_N` labels. UUIDs remain only in server-side
+  snapshots/fingerprints and are never serialized into the orchestrator input.
+- Result/object references continue using server-issued opaque candidate keys;
+  this is a privacy boundary, not a replacement for authorization or audit
+  identity.

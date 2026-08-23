@@ -133,7 +133,10 @@ class CompactResearchContext(BaseModel):
     relevant_findings: list[CompactFindingSummary] = Field(default_factory=list, max_length=16)
     current_user_message: str | None = Field(default=None, max_length=16000)
     pinned_results: list[CompactResultSummary] = Field(default_factory=list, max_length=16)
-    relevant_prior_turns: list[int] = Field(default_factory=list, max_length=12)
+    # Provider-facing context must not expose database UUIDs or other runtime
+    # identities. Turn references are stable opaque labels; the server keeps
+    # the real IDs in the immutable context snapshot/fingerprint.
+    relevant_prior_turns: list[str] = Field(default_factory=list, max_length=12)
     resolved_references: list[dict[str, Any]] = Field(default_factory=list, max_length=32)
     omitted_supporting_items: list[str] = Field(default_factory=list, max_length=16)
     explicit_constraints: list[BoundedContextText | dict[str, Any]] = Field(max_length=32)

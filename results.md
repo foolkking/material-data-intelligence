@@ -14017,3 +14017,18 @@ cases 全部通过。
 提交/CI：提交 `61553dadb28f9a40d07684edcba1e51e1da457d5` 已推送；未部署或发布，
 用户既有 working-tree 文件未纳入提交。
 ---END---
+
+---RESULT---
+任务名称：Agent-2.0 Phase 7 provider identity-boundary hardening
+状态：已完成
+完成时间：2026-08-24T02:25:00+08:00
+
+修改摘要：发现 compact context 将 UUID 转成整数后发送给 orchestrator，违反
+Provider 不接收 runtime/internal identity 的约束。将 provider-facing
+`relevant_prior_turns` 改为稳定 opaque `prior_turn_N` 标签；数据库 UUID 仍保留在
+server-side context snapshot/fingerprint 中用于授权、审计和 replay。未改变候选
+解析、continuation 或科学事实 authority。
+
+测试结果：Phase 7 memory `9 passed`；目标文件 Ruff、compileall、git diff --check
+通过。未触碰 Phase 8，也未修改用户已有 working-tree 文件。
+---END---

@@ -396,3 +396,7 @@ Frontend Typecheck & Build, Service-backed Integration (including the four
 dedicated Phase 7 cases with zero selected skips), Linux Replay and Windows
 Replay. Report Composer remains outside the executable roadmap; Phase 8 is not
 started by this entry.
+
+Post-closure hardening keeps provider context identity-safe: prior Turn entries
+use opaque labels rather than database UUIDs, while server-side snapshots retain
+the authoritative IDs for replay and audit.
