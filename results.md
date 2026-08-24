@@ -13826,8 +13826,9 @@ browser desktop/390px 与无横向溢出均通过。`npm run lint` 未声明（�
 deprecated interactive `next lint`）。
 
 提交/CI：实现提交 `57041f38240b6c8d50ca3bc44813da0a15deed87` 与闭环文档提交
-`41f2b102bd122fe50e34bcfe033639688a195fb2` 均已推送；最终 current-head
-GitHub Actions run `32689710797` 与闭环 SHA 完全一致，Unit、Frontend Typecheck
+`41f2b102bd122fe50e34bcfe033639688a195fb2` 与最终记录提交
+`05720f882877e03c76e3499a5708b9df3276d6e7` 均已推送；最终 current-head
+GitHub Actions run `32690181703` 与最终记录 SHA 完全一致，Unit、Frontend Typecheck
 & Build、PostgreSQL/Redis/MinIO Service-backed Integration、Linux Replay、Windows
 Replay 五个 jobs 全部成功；Phase 8 service selection `4 passed, 0 skipped`。
 用户既有 working-tree 文件未纳入提交，未实施 Phase 9。

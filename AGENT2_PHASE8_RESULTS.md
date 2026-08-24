@@ -187,8 +187,9 @@ report:
 ## Current-head CI
 
 - Implementation SHA: `57041f38240b6c8d50ca3bc44813da0a15deed87`
-- Final closure SHA: `41f2b102bd122fe50e34bcfe033639688a195fb2`
-- Final current-head GitHub Actions run: `32689710797`
+- Documentation closure SHA: `41f2b102bd122fe50e34bcfe033639688a195fb2`
+- Final recorded SHA: `05720f882877e03c76e3499a5708b9df3276d6e7`
+- Final current-head GitHub Actions run: `32690181703`
 - Unit Tests: PASS
 - Frontend Typecheck & Build: PASS
 - PostgreSQL/Redis/MinIO service-backed integration: PASS; Phase 8 selection
