@@ -175,7 +175,10 @@ class ProjectHistoryService:
         plan: dict[str, Any] | None = None
         try:
             plan = _record(self.repositories.analysis_plans.get_plan_for_job(job_id))
-        except LookupError:
+        except (LookupError, ValueError):
+            # Legacy rows may predate persisted analysis_plan_json. Keep the
+            # historical job projection readable without weakening validation
+            # for newly-created plans.
             pass
         artifacts = artifacts_by_job.get(job_id, [])
         return {

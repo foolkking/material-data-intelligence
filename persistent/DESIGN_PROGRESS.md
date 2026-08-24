@@ -3470,3 +3470,10 @@ memory tests pass and server-side fingerprints remain unchanged.
 - Phase 9 remains PARTIAL only for the grounded Report -> Figure/Evidence ->
   exact Viewer path: the legacy persisted RDF result has no valid exact source
   object refs, so the product correctly avoids same-name substitution.
+### Phase 9 legacy history compatibility (2026-08-24)
+
+Authenticated fixture rerun exposed an old `AnalysisPlan` row without
+`analysis_plan_json`, which caused project history to fail with HTTP 500. The
+read projection now degrades that legacy plan to an absent plan payload while
+keeping strict validation for newly persisted plans. This preserves historical
+job/result visibility without changing scientific authority.

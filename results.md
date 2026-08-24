@@ -14183,3 +14183,27 @@ unhandled rejections 为 0，已测 desktop/mobile 无全局溢出。
 提交/CI 状态：`665eba5` 已提交并推送；`HEAD == origin/master`；CI SHA 与 HEAD
 一致。不得进入 Phase 10。
 ---END---
+
+---RESULT---
+任务名称：Agent-2.0 Phase 9 Final Fixture & Worker Closure — compatibility fix
+状态：部分完成
+完成时间：2026-08-24T19:05:00+08:00
+
+修改摘要：提交阶段 9 fixture/worker 修复 `a5da170`，包含真实生产 ingestion
+生成的 scientific table fixture、SimpleWorker Windows 兼容、selection context
+持久化和 cwd 独立的 SQLite/artifact 默认路径。认证浏览器与 fresh worker 已
+验证 table viewer、row selection、ResearchContextSnapshot 持久化和旧 snapshot
+不可变。额外修复历史 `AnalysisPlan` 缺少 `analysis_plan_json` 导致项目历史
+HTTP 500 的读取兼容性问题；新计划写入校验未放宽。报告到精确 Viewer 仍因
+legacy RDF source refs 缺失而未完成，未伪造 Report/Evidence 或对象引用。
+
+测试结果：project history、runtime、processor、viewer focused `34 passed,
+1 skipped`；此前阶段 focused `44 passed, 5 skipped`、frontend `90 files /
+582 tests passed`、typecheck/build/compileall/uv lock/git diff check 通过。
+本地 service selection 因 PostgreSQL 凭据缺失为 `3 skipped`，未宣称 service
+pass；lint 未声明（deprecated `next lint`）。
+
+提交/CI 状态：`a5da170` 已本地提交，未推送；当前 exact-head CI 尚未运行。
+Phase 9 保持 PARTIAL，GP9-B04 Report → exact Viewer、push 和 current-head
+CI 仍未闭合；不得进入 Phase 10。
+---END---

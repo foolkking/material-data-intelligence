@@ -48,6 +48,11 @@ class PlanRecords(Records):
         return {"steps": [{"stepId": "step_1"}]}
 
 
+class MalformedPlanRecords(Records):
+    def get_plan_for_job(self, job_id: str) -> dict[str, object]:
+        raise ValueError("AnalysisPlan record is missing analysis_plan_json")
+
+
 def test_project_history_links_persisted_import_analysis_and_results() -> None:
     project_id = "project_1"
     repositories = SimpleNamespace(
@@ -191,6 +196,20 @@ def test_project_history_marks_archived_run_without_changing_execution_facts() -
     assert analysis["archived"] is True
     assert analysis["visibleInReports"] is False
     assert result["activity"][0]["archived"] is True
+
+
+def test_project_history_keeps_legacy_job_readable_when_plan_payload_is_malformed() -> None:
+    repositories = SimpleNamespace(
+        projects=Records([{"id": "project_1", "projectId": "project_1", "name": "Project"}]),
+        datasets=Records([]), data_profiles=Records([]),
+        jobs=Records([{"id": "job_1", "jobId": "job_1", "projectId": "project_1", "status": "completed", "createdAt": "2026-08-17T03:00:00Z"}]),
+        tool_calls=Records([]), artifacts=Records([]), workspaces=Records([]), reports=Records([]),
+        recipes=Records([]), interpretations=Records([]), analysis_intents=IntentRecords([]),
+        analysis_plans=MalformedPlanRecords([]),
+    )
+    result = ProjectHistoryService(repositories).build("project_1")
+    assert result["analyses"][0]["jobId"] == "job_1"
+    assert result["analyses"][0]["stepCount"] == 0
 
 
 def test_archive_projection_config_is_bounded_and_ignores_malformed_values() -> None:

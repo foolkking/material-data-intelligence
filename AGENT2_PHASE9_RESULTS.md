@@ -237,3 +237,11 @@ fresh service pass.
    fixtures. A fresh Agent2 worker was also not running locally, so the
    successful `202 Accepted` selection submission is not claimed as a completed
    worker/context-snapshot handoff.
+
+## Post-closure compatibility fix
+
+The authenticated rerun exposed a separate legacy-history defect: an older
+`AnalysisPlan` row without `analysis_plan_json` made the project history route
+return HTTP 500. The history projection now treats that row as a readable job
+with no plan payload, while new-plan validation remains strict. Focused
+project-history regression: `34 passed, 1 skipped`.
