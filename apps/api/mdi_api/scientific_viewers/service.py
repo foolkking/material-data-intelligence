@@ -93,7 +93,7 @@ class ScientificViewerProjectionService:
         )
 
     def _bounded_projection(self, object_type: str, payload: Any) -> tuple[Any, int, list[str]]:
-        if object_type == "materials.dataset":
+        if object_type in {"materials.dataset", "materials.table"}:
             return self._bounded_rows(payload)
         if object_type == "trajectory.atomic":
             return self._bounded_frames(payload)

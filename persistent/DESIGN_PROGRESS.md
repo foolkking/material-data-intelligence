@@ -3454,3 +3454,19 @@ memory tests pass and server-side fingerprints remain unchanged.
 - Focused backend viewer/selection tests, frontend tests (90 files / 581
   tests), typecheck, compileall, Ruff and migration round-trip currently pass;
   browser and current-head CI closure remain outstanding.
+
+### Phase 9 fixture/worker closure update (2026-08-24)
+
+- A canonical scientific table is now produced through the normal upload,
+  parser/profile, artifact manifest and `ScientificObjectService` promotion
+  path; no database rows are fabricated. The authenticated table viewer shows
+  bounded rows, scientific columns and semantic row selection.
+- A fresh Windows RQ `SimpleWorker` consumed the authenticated selection turn
+  and persisted immutable `ScientificSelectionContext` snapshots. A second
+  selection produced a separate snapshot without mutating the first.
+- Local SQLite and artifact defaults are now repository-absolute so API and
+  worker processes started from different working directories share the same
+  authority and viewer payloads.
+- Phase 9 remains PARTIAL only for the grounded Report -> Figure/Evidence ->
+  exact Viewer path: the legacy persisted RDF result has no valid exact source
+  object refs, so the product correctly avoids same-name substitution.

@@ -83,7 +83,7 @@ def _object(objects, storage, *, object_type: str, kind: ScientificObjectKind, p
 def test_phase9_registry_covers_every_current_scientific_object_type():
     registry = build_scientific_viewer_registry()
     expected = {
-        "materials.dataset", "structure.crystal", "trajectory.atomic",
+        "materials.dataset", "materials.table", "structure.crystal", "trajectory.atomic",
         "diffraction.xrd.experimental", "diffraction.xrd.theoretical",
         "analysis.rdf", "reciprocal.brillouin_zone",
         "electronic.band_structure", "electronic.dos",

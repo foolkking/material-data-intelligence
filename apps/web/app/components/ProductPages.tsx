@@ -497,7 +497,7 @@ function sourceTypeLabel(objectType: string) {
 }
 
 function scientificObjectTypeLabel(objectType: string) {
-  return ({ "materials.dataset": "材料数据表", "structure.crystal": "晶体结构", "trajectory.atomic": "原子轨迹", "diffraction.xrd.experimental": "实验 XRD", "diffraction.xrd.theoretical": "理论 XRD", "electronic.band_structure": "电子能带", "electronic.dos": "电子态密度", "phonon.band_structure": "声子能带", "phonon.dos": "声子态密度", "volumetric.charge_density": "电荷密度" } as Record<string, string>)[objectType] || "科学数据";
+  return ({ "materials.dataset": "材料数据表", "materials.table": "科研材料表", "structure.crystal": "晶体结构", "trajectory.atomic": "原子轨迹", "diffraction.xrd.experimental": "实验 XRD", "diffraction.xrd.theoretical": "理论 XRD", "electronic.band_structure": "电子能带", "electronic.dos": "电子态密度", "phonon.band_structure": "声子能带", "phonon.dos": "声子态密度", "volumetric.charge_density": "电荷密度" } as Record<string, string>)[objectType] || "科学数据";
 }
 
 function resourceDisplayName(resource: DatasetSourceResource, resources: DatasetSourceResource[], index: number) {

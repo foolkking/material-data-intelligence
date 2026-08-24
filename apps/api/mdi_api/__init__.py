@@ -10,4 +10,8 @@ def __getattr__(name: str) -> Any:
         from .main import create_app
 
         return create_app
+    if name == "research_agent_worker":
+        from importlib import import_module
+
+        return import_module(f"{__name__}.research_agent_worker")
     raise AttributeError(name)

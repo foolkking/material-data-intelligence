@@ -20,6 +20,7 @@ from mdi_api.research_agent.schemas import (
     CreateResearchTurnRequest,
     CreateResearchTurnResponse,
     ResolvedResearchContext,
+    ScientificSelectionContext,
     ResearchTurnEventType,
     ResearchTurnMessageDTO,
     ResearchTurnStatus,
@@ -271,7 +272,14 @@ class ResearchTurnService:
         ui_context = (received or {}).get("payload_json", {}).get("ui_context") or {}
         active = ui_context.get("active_object_refs") or []
         selected = ui_context.get("selection_refs") or []
-        scientific_selections = ui_context.get("scientific_selections") or []
+        # Normalize the persisted event payload at the worker boundary. This
+        # keeps semantic selections intact across a fresh process and prevents
+        # an untyped JSON list from being silently reduced to the default []
+        # when the immutable snapshot is assembled.
+        scientific_selections = [
+            ScientificSelectionContext.model_validate(item).model_dump(mode="json")
+            for item in (ui_context.get("scientific_selections") or [])
+        ]
         memory_state = None
         with self.repository_factory.session() as memory_session:
             memory_state = memory_session.agent2.research_session_memory.get_state(str(turn["research_session_id"]))

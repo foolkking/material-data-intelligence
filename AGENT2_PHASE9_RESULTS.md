@@ -2,22 +2,23 @@
 
 ## Verdict
 
-PARTIAL — deterministic viewer/selection implementation and dedicated
+PARTIAL - deterministic viewer/selection implementation and dedicated
 PostgreSQL/Redis/MinIO qualification pass. Authenticated browser qualification
-was run with the approved local acceptance session. Structure, XRD/table,
+was run with the approved local acceptance session. Structure, table, XRD/RDF,
 historical STALE and unsupported fallback paths rendered without fatal browser
-errors or global overflow. The closure remains PARTIAL because this canonical
-database has no scientific table object and no persisted grounded Phase 8
-report snapshot/evidence fixture, so those exact golden paths cannot be
-honestly claimed as complete. A real selection-to-Research contract defect was
-found and fixed during this closure; its API persistence path now returns 202.
+errors or global overflow. The canonical scientific table is now created and
+persisted through the normal upload/parse/promotion path, and a fresh
+Windows-compatible Agent2 worker now persists immutable semantic selection
+snapshots. The closure remains PARTIAL because the existing grounded RDF report
+was generated before an exact ScientificObject source reference was available;
+its report evidence link therefore cannot honestly be claimed as an exact
+Report -> Viewer deep link yet.
 
 ## Starting State
 
-- Starting HEAD: `45cd88327da2b4b529d5394d41f11523b88f310a`
-- Starting origin/master: `45cd88327da2b4b529d5394d41f11523b88f310a`
-- Implementation HEAD before closure hardening: `e02a14caaf91b22d52d0bf13089bfbe70af66d6a`
-- Starting Alembic head: `0024_agent2_scientific_reports`
+- Starting HEAD: `bcdf0627127976b582480881eaf20bcfe7bd9d56`
+- Starting origin/master: `bcdf0627127976b582480881eaf20bcfe7bd9d56`
+- Starting Alembic head: `0025_agent2_scientific_selection`
 - Phase 1–8 authorities were preserved; no Phase 10 capability expansion was
   started.
 
@@ -77,6 +78,29 @@ The frontend resolver exposes deterministic compatibility states for Structure
 metadata/table, RDF finding/evidence, XRD evidence/table and Report-to-viewer
 links. Selection deep links are decoded on a fresh Data page load.
 
+## Closure Fixture Evidence
+
+- Canonical table creation used `scripts/phase9_create_table_fixture.py` with
+  the real upload session, parser/profile persistence, artifact manifest and
+  `ScientificObjectService.create_table_from_dataset` authority path. No
+  database row was inserted directly. Project `project_0001_35554660bba644a2`
+  contains table object `d41fa155-3a4b-4b3b-b590-86e7faa17dd6`, version
+  `dc0ffe60-5f97-4c2b-bcb2-e40e074c202d`, with 3 bounded rows.
+- Browser table viewer rendered the three scientific columns (`formula`,
+  `y_pred`, `y_true`), row selection and exact-version research link at both
+  desktop and mobile widths.
+- Selection handoff used a real authenticated `202` submission and a fresh
+  RQ `SimpleWorker` on Windows. Turn `c9bdef8f-d8be-4b49-9425-b52e744542aa`
+  reached `ANSWERED`; immutable snapshot `ad25e544-3550-42cb-8347-f0de97bc57a3`
+  retained `Fe2O3`. A later turn selected `LiFePO4` and created a separate
+  snapshot; the first snapshot remained unchanged.
+- The first worker attempt failed because default RQ workers call
+  `os.fork()` on Windows. The closure reran with `rq.worker.SimpleWorker`; no
+  timeout inflation or fake completion was used.
+- Local runtime defaults now resolve the SQLite authority and artifact root
+  from the repository path rather than process cwd, preventing fresh API
+  processes from losing persisted viewer payloads.
+
 ## Exact-version, Relevance And Authorization
 
 Viewer requests require exact object and version in the URL and reject
@@ -115,7 +139,8 @@ Dedicated Phase 9 selection: **3 passed, 0 skipped, 0 failed, 0 errors**.
 - Migration `0024 -> 0025 -> 0024` round-trip: PASS; fresh PostgreSQL service
   migration is covered by the service fixture.
 - Full backend: `1759 passed, 83 skipped, 75 warnings`.
-- Browser authenticated smoke: Structure desktop/mobile, XRD data table,
+- Browser authenticated smoke: Structure desktop/mobile, canonical scientific
+  table desktop/mobile, XRD data table,
   RDF result, XRD legacy report, historical STALE structure and unsupported
   fallback were exercised with the local acceptance session. Fatal console
   errors and unhandled rejections were zero on exercised pages; desktop
@@ -164,6 +189,34 @@ Full 62-tool mapping, new scientific algorithms, Data Management mutations,
 external Tool/Parser/Viewer plugin ecosystem, global/cross-project memory,
 internet literature research, multi-project meta-reports, collaborative report
 editing, BYOK, deployment and ORCHESTRATING lease/reaper remain out of scope.
+
+## Closure Status Override (2026-08-24)
+
+The historical gap bullets below predate the final fixture rerun. GP9-B02 is
+now closed by the persisted table object and authenticated browser evidence;
+the selection worker handoff is also closed by the `ANSWERED` turn and two
+immutable snapshots. The only remaining functional gap is GP9-B04: the
+persisted RDF report has an empty `source_object_refs` list and legacy
+placeholder evidence object refs, so its Figure/Evidence link intentionally
+falls back to Research instead of silently substituting an unauthorized or
+same-name object. A new report must be generated from a result with an exact
+persisted ScientificObject/version before the Report -> Viewer gate can pass.
+
+## Final Fixture Closure Evidence
+
+The historical gap bullets below are retained for provenance. GP9-B02 and the
+selection handoff are now closed by the persisted table object, authenticated
+browser render and fresh SimpleWorker evidence recorded above. GP9-B04 remains
+open because the existing grounded report cannot be rebound to a valid exact
+ScientificObject/version; its fallback to Research is intentional and avoids
+same-name or unauthorized substitution.
+
+Current focused checks: `44 passed, 5 skipped`; viewer/selection focused:
+`22 passed`; frontend: `90 files / 582 tests passed`; typecheck and production
+build (`.next-phase9-closure`) passed; `uv lock --check`, compileall and
+`git diff --check` passed. The dedicated service marker remains `3 skipped`
+without the required local PostgreSQL credentials and is not claimed as a
+fresh service pass.
 
 ## Remaining Gaps
 

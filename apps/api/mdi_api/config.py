@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass(frozen=True)
 class ApiSettings:
     app_name: str = "Material Data Intelligence API"
     environment: str = "local"
-    database_url: str = "sqlite:///./mdi_phase5.db"
+    # Resolve the development SQLite authority independently of process cwd.
+    # Fresh API/worker processes may start from either the repo root or apps/api.
+    database_url: str = f"sqlite:///{(Path(__file__).resolve().parents[3] / 'mdi_phase5.db').as_posix()}"
     postgres_host: str = "localhost"
     postgres_port: int = 5432
     postgres_db: str = "mdi"
@@ -35,7 +38,7 @@ class ApiSettings:
     agent2_report_enabled: bool = True
     agent2_report_queue_name: str = "mdi-agent-reports"
     artifact_backend: str = "local"  # "local" | "minio"
-    artifact_root: str = ".artifacts/phase2"
+    artifact_root: str = str(Path(__file__).resolve().parents[3] / ".artifacts" / "phase2")
     # -- Test database for integration tests --
     test_database_url: str | None = None
     auth_required: bool = True

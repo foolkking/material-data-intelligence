@@ -50,6 +50,7 @@ def build_scientific_viewer_registry() -> ScientificViewerRegistry:
     mib = 1024 * 1024
     return ScientificViewerRegistry([
         _descriptor("materials.dataset", "scientific-table", interactions=["sort", "filter", "inspect_units"], selections=["TABLE_ROW", "TABLE_COLUMN"], maximum_payload_bytes=8 * mib),
+        _descriptor("materials.table", "scientific-table", interactions=["sort", "filter", "inspect_units"], selections=["TABLE_ROW", "TABLE_COLUMN"], maximum_payload_bytes=8 * mib),
         _descriptor("structure.crystal", "structure-3d", interactions=["rotate", "zoom", "reset", "inspect_cell"], selections=["STRUCTURE_SITE"], maximum_payload_bytes=8 * mib),
         _descriptor("trajectory.atomic", "trajectory", interactions=["frame_navigation", "playback", "inspect_time"], selections=["TRAJECTORY_FRAME", "TRAJECTORY_ATOM"], maximum_payload_bytes=32 * mib),
         _descriptor("diffraction.xrd.experimental", "xrd", interactions=["zoom", "inspect_series", "inspect_peaks"], selections=["XRD_PEAK"], maximum_payload_bytes=8 * mib),

@@ -72,6 +72,14 @@ def test_phase5_alembic_env_and_runbook_are_present(repo_root: Path) -> None:
     assert "python -m alembic -c apps/api/alembic.ini upgrade head" in runbook
 
 
+def test_phase5_local_defaults_are_cwd_independent(monkeypatch: pytest.MonkeyPatch, repo_root: Path) -> None:
+    for name in ("DATABASE_URL", "MDI_DATABASE_URL", "POSTGRES_HOST", "POSTGRES_PORT", "POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD", "MDI_ARTIFACT_ROOT"):
+        monkeypatch.delenv(name, raising=False)
+    settings = load_settings()
+    assert settings.database_url == f"sqlite:///{(repo_root / 'mdi_phase5.db').as_posix()}"
+    assert Path(settings.artifact_root).resolve() == (repo_root / ".artifacts" / "phase2").resolve()
+
+
 def test_phase5_postgresql_job_event_lock_strategy_is_documented_and_callable() -> None:
     class _Dialect:
         name = "postgresql"

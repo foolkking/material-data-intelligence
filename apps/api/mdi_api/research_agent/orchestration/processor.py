@@ -37,7 +37,7 @@ from mdi_api.research_agent.orchestration.schemas import (
 )
 from mdi_api.research_agent.orchestration.validator import ResearchTurnDecisionValidator
 from mdi_api.research_agent.registry_validation import Agent2Registries
-from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus, TERMINAL_TURN_STATUSES
+from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus, ScientificSelectionContext, TERMINAL_TURN_STATUSES
 from mdi_api.unit_of_work import RepositoryFactory, transaction_active
 from mdi_api.research_agent.planning.queue import DisabledCapabilityPlanningQueue
 
@@ -201,6 +201,16 @@ class AgentTurnProcessor:
                 for item in bundle.active_object_candidates
                 if item.source == ReferenceCandidateSource.UI_SELECTION
             ]
+            received_event = next(
+                (event for event in unit.agent2.research_turn_events.list_for_turn(turn_id)
+                 if event["event_type"] == ResearchTurnEventType.TURN_RECEIVED.value),
+                None,
+            )
+            raw_selections = ((received_event or {}).get("payload_json") or {}).get("ui_context", {}).get("scientific_selections") or []
+            scientific_selections = [
+                ScientificSelectionContext.model_validate(item).model_dump(mode="json")
+                for item in raw_selections
+            ]
             unit.agent2.research_context_snapshots.add({
                 "id": snapshot_id,
                 "project_id": bundle.project_id,
@@ -209,6 +219,7 @@ class AgentTurnProcessor:
                 "snapshot_schema_version": "2.0",
                 "active_scope_refs_json": active_refs,
                 "selection_refs_json": selected_refs,
+                "scientific_selections_json": scientific_selections,
                 "resolved_references_json": [item.model_dump(mode="json") for item in bundle.active_object_candidates],
                 "referenced_result_refs_json": [item.model_dump(mode="json") for item in bundle.result_candidates],
                 "relevant_finding_refs_json": [item.model_dump(mode="json") for item in bundle.finding_candidates],

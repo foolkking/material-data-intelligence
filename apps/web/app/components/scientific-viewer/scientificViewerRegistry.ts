@@ -22,6 +22,7 @@ const MIB = 1024 * 1024;
 
 const VIEWERS: readonly ScientificViewerDescriptor[] = Object.freeze([
   descriptor("materials.dataset", "scientific-table", ["sort", "filter", "inspect_units"], ["TABLE_ROW", "TABLE_COLUMN"], 8 * MIB),
+  descriptor("materials.table", "scientific-table", ["sort", "filter", "inspect_units"], ["TABLE_ROW", "TABLE_COLUMN"], 8 * MIB),
   descriptor("structure.crystal", "structure-3d", ["rotate", "zoom", "reset", "inspect_cell"], ["STRUCTURE_SITE"], 8 * MIB),
   descriptor("trajectory.atomic", "trajectory", ["frame_navigation", "playback", "inspect_time"], ["TRAJECTORY_FRAME", "TRAJECTORY_ATOM"], 32 * MIB),
   descriptor("diffraction.xrd.experimental", "xrd", ["zoom", "inspect_series", "inspect_peaks"], ["XRD_PEAK"], 8 * MIB),

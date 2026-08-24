@@ -176,6 +176,7 @@ from mdi_api.routers.agent2 import (
     list_scientific_object_relationships,
     list_scientific_object_versions,
     list_scientific_objects,
+    promote_dataset_table,
     stream_research_turn_events,
 )
 from mdi_api.routers.scientific_reports import (
@@ -245,6 +246,7 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/api/projects/{project_id}/scientific-reports", list_scientific_reports, ("GET",), ("agent2", "reports")),
     RouteSpec("/api/research/turns/{turn_id}/events", stream_research_turn_events, ("GET",), ("agent2", "research")),
     RouteSpec("/api/projects/{project_id}/scientific-objects", list_scientific_objects, ("GET",), ("agent2", "scientific-objects")),
+    RouteSpec("/api/projects/{project_id}/datasets/{dataset_id}/scientific-table", promote_dataset_table, ("POST",), ("agent2", "scientific-objects")),
     RouteSpec("/api/scientific-objects/{object_id}", get_scientific_object, ("GET",), ("agent2", "scientific-objects")),
     RouteSpec("/api/scientific-objects/{object_id}/versions", list_scientific_object_versions, ("GET",), ("agent2", "scientific-objects")),
     RouteSpec("/api/scientific-objects/{object_id}/versions/{version_id}", get_scientific_object_version, ("GET",), ("agent2", "scientific-objects")),

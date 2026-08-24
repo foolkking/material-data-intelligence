@@ -39,6 +39,7 @@ def build_default_object_type_registry() -> InMemoryObjectTypeRegistry:
     registry = InMemoryObjectTypeRegistry()
     for object_type, kind, display_name in (
         ("materials.dataset", ScientificObjectKind.DATASET, "Materials dataset"),
+        ("materials.table", ScientificObjectKind.TABLE, "Scientific materials table"),
         ("structure.crystal", ScientificObjectKind.STRUCTURE, "Crystal structure"),
         ("trajectory.atomic", ScientificObjectKind.TRAJECTORY, "Atomic trajectory"),
         ("diffraction.xrd.experimental", ScientificObjectKind.DIFFRACTION, "Experimental XRD"),

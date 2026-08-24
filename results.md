@@ -13804,6 +13804,29 @@ current-HEAD GitHub Actions run `32592517424` 的 Unit、service-backed integrat
 Frontend Typecheck & Build、Linux/Windows scientific replay 五个 job 全部成功。
 ---END---
 
+---RESULT---
+任务名称：Agent-2.0 Phase 9 Final Fixture & Worker Closure (round 2)
+状态：部分完成
+完成时间：2026-08-24T22:35:00+08:00
+
+修改摘要：修复本地 SQLite 与 Artifact 默认路径的 cwd 依赖；修正表格验收
+fixture 使用真实项目/用户授权并通过 upload、parse/profile、artifact manifest
+和 ScientificObject promotion 创建 canonical scientific table；修正 report
+fixture 的 UUID/user 参数；用 Windows RQ SimpleWorker 完成真实 selection ->
+ResearchContextSnapshot handoff，并验证第二次 selection 不修改第一份快照；
+更新 AGENT2_PHASE9_RESULTS.md 与 persistent 设计记录。未创建 Phase 10 能力。
+
+测试结果：focused backend `44 passed, 5 skipped`；viewer/selection `22 passed`；
+frontend `90 files / 582 tests passed`；typecheck PASS；production build PASS
+到 `.next-phase9-closure`；compileall、uv lock、git diff --check PASS。认证浏览器
+表格桌面/移动路径 PASS，selection worker 两个 turn 均 ANSWERED。Report -> exact
+Viewer 仍因历史 RDF bundle 缺少合法 source_object_refs 未闭合；service marker
+在本地缺 PostgreSQL credentials 时 `3 skipped`，未虚报 PASS。
+
+提交/CI 状态：本轮尚未提交或 push；HEAD 仍为 `bcdf0627127976b582480881eaf20bcfe7bd9d56`，
+因此没有新的 current-head CI。Phase 9 保持 PARTIAL，不能进入 Phase 10。
+---END---
+
 
 ---RESULT---
 任务名称：Agent-2.0 Phase 9 registry parity hardening and closure qualification

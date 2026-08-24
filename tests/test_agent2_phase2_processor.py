@@ -19,7 +19,7 @@ from mdi_api.db import (
 from mdi_api.research_agent.llm.schemas import StructuredLLMResult
 from mdi_api.research_agent.orchestration.processor import AgentTurnProcessor
 from mdi_api.research_agent.registry_validation import build_default_agent2_registries
-from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchTurnStatus
+from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchTurnStatus, ScientificSelectionContext
 from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.routers.auth import CurrentUser
 from mdi_api.scientific_objects.registry import build_default_object_type_registry
@@ -90,12 +90,12 @@ def structure(objects: ScientificObjectService, name: str = "Si", project_id: st
     )
 
 
-def receive(turns: ResearchTurnService, owner: CurrentUser, message: str, refs: list[ScientificObjectRef] | None = None, selected: list[ScientificObjectRef] | None = None, reply_to: UUID | None = None):
+def receive(turns: ResearchTurnService, owner: CurrentUser, message: str, refs: list[ScientificObjectRef] | None = None, selected: list[ScientificObjectRef] | None = None, reply_to: UUID | None = None, scientific_selections: list[ScientificSelectionContext] | None = None):
     return turns.receive_turn(
         project_id="project", session_id="session", current_user=owner,
         request=CreateResearchTurnRequest(
             message=message,
-            ui_context={"active_object_refs": refs or [], "selection_refs": selected or []},
+            ui_context={"active_object_refs": refs or [], "selection_refs": selected or [], "scientific_selections": scientific_selections or []},
             reply_to_turn_id=reply_to,
         ),
     )
@@ -384,3 +384,22 @@ def test_snapshot_and_decision_are_immutable_after_provider_failure():
     assert replay.outcome == "NOOP"
     assert [dict(item) for item in snapshots_after] == [dict(item) for item in snapshots_before]
     assert decisions_before == decisions_after == []
+
+
+def test_fresh_processor_persists_semantic_selection_in_context_snapshot():
+    _engine, owner, factory, objects, turns = foundation()
+    ref = structure(objects)
+    selection = ScientificSelectionContext(
+        object_ref=ref,
+        viewer_id="scientific.structure",
+        selection_type="PERIODIC_SITE",
+        semantic_locator={"site_id": "site:Si:0"},
+        display_label="结构位点 · site:Si:0",
+    )
+    turn = receive(turns, owner, "我刚才选中了什么？", refs=[ref], selected=[ref], scientific_selections=[selection])
+    result = asyncio.run(processor(factory, FakeStructuredClient([decision("ANSWER", assistant_message="已读取选择。")])).process(turn.turn_id))
+    assert result.outcome == "APPLIED"
+    with factory.session() as session:
+        snapshot = session.agent2.research_context_snapshots.get_for_turn(turn.turn_id)
+    assert snapshot is not None
+    assert snapshot["scientific_selections_json"][0]["semantic_locator"]["site_id"] == "site:Si:0"

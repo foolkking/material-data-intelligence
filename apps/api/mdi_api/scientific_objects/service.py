@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from datetime import datetime, timezone
+import hashlib
+import json
 import re
 import threading
 from typing import Any, Iterator
@@ -15,6 +17,7 @@ from mdi_api.agent2_errors import (
     UnauthorizedScientificObjectReference,
 )
 from mdi_api.db import datasets
+from mdi_api.artifact_storage import ArtifactStorage
 from mdi_api.scientific_objects.registry import ObjectTypeRegistry
 from mdi_api.scientific_objects.schemas import (
     ScientificObjectAvailability,
@@ -135,7 +138,89 @@ class ScientificObjectService:
             parent_object_version_refs=parent_object_version_refs,
             **{key: value for key, value in values.items() if key not in {"project_id", "kind", "display_name"}},
         )
-        return logical, version
+        # create_version advances the durable current-version projection.
+        # Reload so API callers never observe a stale logical object.
+        return self.get_object(logical["id"]), version
+
+    def create_table_from_dataset(
+        self,
+        *,
+        project_id: str,
+        dataset_id: str,
+        storage: ArtifactStorage,
+        resource_id: str | None = None,
+        display_name: str | None = None,
+        created_by_user_id: str | None = None,
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
+        """Promote a persisted, parsed DataFrame resource into the Agent2 authority.
+
+        Dataset upload/normalization remains the source of the bytes. This method
+        only creates the versioned ScientificObject projection after checking the
+        durable manifest, checksum, project scope, and DataFrame resource type.
+        """
+        with self.repository_factory.session() as session:
+            dataset = dict(session.repositories.datasets.get(dataset_id))
+            if str(dataset.get("projectId")) != project_id:
+                raise UnauthorizedScientificObjectReference("source dataset is outside the project")
+            metadata = dict(dataset.get("metadata") or {})
+            exports = [item for item in (metadata.get("normalizedExports") or []) if isinstance(item, dict)]
+        candidates = [item for item in exports if not resource_id or str(item.get("objectId")) == resource_id]
+        if not candidates:
+            raise InvalidScientificObjectVersion("the requested dataset table resource is unavailable")
+        export = candidates[0]
+        object_id = str(export.get("objectId") or "")
+        storage_key = str(export.get("storageKey") or "")
+        metadata_key = str(export.get("metadataKey") or "")
+        content_hash = str(export.get("contentHash") or "")
+        semantic_hash = str(export.get("objectHash") or content_hash)
+        if not object_id or not storage_key or not metadata_key or len(content_hash) != 64:
+            raise InvalidScientificObjectVersion("the persisted table manifest is incomplete")
+        expected_scope = f"projects/{project_id}/datasets/{dataset_id}/normalized/"
+        if not storage_key.startswith(expected_scope) or not metadata_key.startswith(expected_scope):
+            raise UnauthorizedScientificObjectReference("normalized table source is outside the dataset scope")
+        payload_bytes = storage.get_bytes_bounded(storage_key, max_bytes=8 * 1024 * 1024)
+        if hashlib.sha256(payload_bytes).hexdigest() != content_hash:
+            raise InvalidScientificObjectVersion("normalized table source checksum mismatch")
+        payload = json.loads(payload_bytes.decode("utf-8"))
+        source_metadata = json.loads(storage.get_bytes_bounded(metadata_key, max_bytes=256 * 1024).decode("utf-8"))
+        object_type = str((source_metadata.get("provenance") or {}).get("objectType") or (source_metadata.get("metadata") or {}).get("objectType") or "")
+        if object_type != "DataFrame":
+            raise InvalidScientificObjectVersion("the selected normalized resource is not a scientific table")
+        if not isinstance(payload, list):
+            raise InvalidScientificObjectVersion("scientific table payload must be a bounded row list")
+        logical = self.create_object(
+            project_id=project_id,
+            kind=ScientificObjectKind.TABLE,
+            object_type="materials.table",
+            display_name=display_name or str(dataset.get("name") or "Scientific materials table"),
+            created_by_user_id=created_by_user_id,
+        )
+        version = self.create_version(
+            logical["id"],
+            object_type="materials.table",
+            object_schema_version="1.0",
+            source_resource_refs=[{"project_id": project_id, "dataset_id": dataset_id, "resource_id": object_id}],
+            parent_object_version_refs=[],
+            normalized_payload_ref=StorageRef(
+                storage_backend="artifact_storage",
+                object_key=storage_key,
+                checksum=content_hash,
+                media_type="application/json",
+                byte_size=len(payload_bytes),
+            ),
+            content_hash=content_hash,
+            semantic_hash=semantic_hash,
+            canonical_metadata={
+                **dict(source_metadata.get("metadata") or {}),
+                "row_count": len(payload),
+                "source_resource_id": object_id,
+                "dataset_id": dataset_id,
+            },
+            created_by_user_id=created_by_user_id,
+        )
+        # create_version advances the durable current-version projection.
+        # Reload so API callers never observe a stale logical object.
+        return self.get_object(logical["id"]), version
 
     def get_object(self, object_id: UUID) -> dict[str, Any]:
         with self.repository_factory.session() as session:

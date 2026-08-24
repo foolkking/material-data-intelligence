@@ -55,7 +55,7 @@ class RedisRQAgentTurnQueue:
         if queue.fetch_job(rq_job_id) is not None:
             return TurnQueueSubmitResult(turn_id, False, "rq", "turn already queued")
         queue.enqueue(
-            "mdi_api.research_agent.orchestration.worker.run_queued_turn",
+            "mdi_api.research_agent_worker.run_queued_turn",
             str(turn_id),
             job_id=rq_job_id,
         )

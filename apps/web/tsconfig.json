@@ -29,7 +29,8 @@
     ".next-phase9-smoke/types/**/*.ts",
     ".next-wave2/types/**/*.ts",
     ".next/types/**/*.ts",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    ".next-phase9-closure/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

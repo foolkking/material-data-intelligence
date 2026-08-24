@@ -8,6 +8,7 @@ from uuid import UUID
 from fastapi import Body, Depends, Header, HTTPException, Query
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse
+from pydantic import BaseModel, Field
 
 from mdi_api.access import require_project_access
 from mdi_api.agent2_errors import (
@@ -64,12 +65,45 @@ from mdi_api.interpretation.queue import RedisRQInterpretationQueue
 logger = logging.getLogger(__name__)
 
 
+class PromoteDatasetTableRequest(BaseModel):
+    resource_id: str | None = Field(default=None, min_length=1, max_length=256)
+    display_name: str | None = Field(default=None, min_length=1, max_length=512)
+
+
 def get_research_turn_service() -> ResearchTurnService:
     return ResearchTurnService(create_repository_factory())
 
 
 def get_scientific_object_service() -> ScientificObjectService:
     return ScientificObjectService(create_repository_factory(), DEFAULT_AGENT2_REGISTRIES.object_types)
+
+
+def promote_dataset_table(
+    project_id: str,
+    dataset_id: str,
+    request: PromoteDatasetTableRequest = Body(default=PromoteDatasetTableRequest()),
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Promote a persisted parsed table resource into a versioned Agent2 object."""
+    try:
+        factory = create_repository_factory()
+        with factory.session() as session:
+            require_project_access(session.connection, project_id, current_user, write=True)
+            dataset = session.repositories.datasets.get(dataset_id)
+            if str(dataset.get("projectId")) != project_id:
+                raise UnauthorizedScientificObjectReference("source dataset is outside the project")
+        settings = load_settings()
+        logical, version = get_scientific_object_service().create_table_from_dataset(
+            project_id=project_id,
+            dataset_id=dataset_id,
+            storage=create_artifact_storage_from_settings(settings),
+            resource_id=request.resource_id,
+            display_name=request.display_name,
+            created_by_user_id=current_user.id,
+        )
+        return jsonable_encoder({"object": logical, "version": version})
+    except Exception as exc:
+        raise _http_error(exc) from exc
 
 
 def get_agent_turn_queue() -> AgentTurnQueue:
