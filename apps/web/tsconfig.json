@@ -26,6 +26,7 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    ".next-phase9-smoke/types/**/*.ts",
     ".next-wave2/types/**/*.ts",
     ".next/types/**/*.ts",
     "next-env.d.ts"

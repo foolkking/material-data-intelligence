@@ -14065,3 +14065,26 @@ server-side context snapshot/fingerprint 中用于授权、审计和 replay。�
 `32657590810` 的五个 jobs 全部成功，Service-backed Integration `62 passed,
 0 skipped, 0 failed, 0 errors`。
 ---END---
+
+---RESULT---
+任务名称：Agent-2.0 Phase 9 — Professional Scientific Data Viewer & Linked Scientific Selection
+状态：部分完成
+完成时间：2026-08-24T14:35:00+08:00
+
+修改摘要：在现有 ScientificObject authority 上新增 deterministic exact-version
+ScientificViewerRegistry、bounded viewer projection API、统一 ScientificViewerShell
+和 ScientificSelectionContext 1.0。新增 migration 0025，将语义 selection 与 exact
+object/version 固化到 immutable ResearchContextSnapshot；Data、Report evidence 和
+Research 链路复用现有 MatterViz/Plotly/trajectory/electronic/phonon/BZ/volumetric
+renderer，不触发科学计算、Job 或 LLM。
+
+测试结果：Phase 9 deterministic `5 passed`；专用 PostgreSQL/Redis/MinIO
+service-backed selection `3 passed, 0 skipped`；Agent2 Phase 1–9 focused
+`140 passed, 13 skipped`；full backend `1759 passed, 83 skipped, 75 warnings`；
+frontend `90 files / 581 tests passed`；typecheck、production build、compileall、
+Ruff、uv lock、migration round-trip、git diff --check 通过。浏览器需要在提交
+登录表单前进行 action-time credential confirmation，desktop/mobile golden paths
+尚未宣称 PASS；最终 commit/push 与 exact-SHA CI 尚未完成。
+
+提交/CI 状态：未提交；current-head CI 未运行。用户既有 working-tree 修改保留。
+---END---

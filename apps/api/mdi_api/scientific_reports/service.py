@@ -169,14 +169,32 @@ class ScientificReportService:
             row = session.agent2.scientific_reports.get_for_turn(turn_id)
             if row is None:
                 raise ScientificReportError("REPORT_NOT_READY", "报告尚未生成。", 404)
-            return self._public(row, current_relevance=self._current_relevance(session, row))
+            return self._with_viewer_sources(self._public(row, current_relevance=self._current_relevance(session, row)), session, row)
 
     def get_by_report_id(self, report_id: str) -> dict[str, Any]:
         with self.repository_factory.session() as session:
             row = session.agent2.scientific_reports.get_by_report_id(report_id)
             if row is None:
                 raise ScientificReportError("REPORT_NOT_FOUND", "报告不存在。", 404)
-            return self._public(row, current_relevance=self._current_relevance(session, row))
+            return self._with_viewer_sources(self._public(row, current_relevance=self._current_relevance(session, row)), session, row)
+
+    @staticmethod
+    def _with_viewer_sources(payload: dict[str, Any], session: Any, row: dict[str, Any]) -> dict[str, Any]:
+        snapshot = session.agent2.scientific_result_snapshots.get(row["scientific_result_snapshot_id"])
+        bundle = ScientificResultBundle.model_validate(snapshot["bundle_json"])
+        sources = []
+        for index, ref in enumerate(bundle.source_object_refs[:8], start=1):
+            try:
+                obj = session.agent2.scientific_objects.get_object(ref.object_id)
+                version = session.agent2.scientific_objects.get_version(ref.version_id)
+            except Exception:
+                continue
+            sources.append({
+                "source_ref": f"source_{index}", "object_id": str(ref.object_id), "version_id": str(ref.version_id),
+                "object_type": str(version["object_type"]), "display_name": str(obj["display_name"]),
+                "is_current_version": str(obj.get("current_version_id")) == str(ref.version_id),
+            })
+        return {**payload, "viewer_sources": sources}
 
     def list_project(self, project_id: str, *, limit: int = 50) -> dict[str, Any]:
         with self.repository_factory.session() as session:

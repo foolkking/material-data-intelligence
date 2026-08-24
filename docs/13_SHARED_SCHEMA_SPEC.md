@@ -2431,3 +2431,20 @@ plus supplied result/fact/evidence/figure identities. Raw Artifact content,
 database UUIDs, secrets, provider transcripts and hidden reasoning are outside
 the contract. All output references, numeric tokens, units, PARTIAL semantics
 and historical relevance are deterministically validated before persistence.
+
+### Agent 2.0 Phase 9 Scientific Viewer and Selection 1.0
+
+`ScientificViewerProjection` is a deterministic, authorized, exact
+`ScientificObjectVersion` projection. It is bounded by object family and may
+return metadata only when the source is missing or invalidated. It is a read
+projection, not a new scientific authority, and opening it creates no Plan,
+Job, ToolCall, Artifact, Result or LLM call.
+
+`ScientificSelectionContext 1.0` records the viewer, semantic selection type,
+bounded scalar locator, display label and optional evidence locator together
+with the exact `ScientificObjectRef`. When attached to a ResearchTurn it is
+stored in immutable `ResearchContextSnapshot.scientific_selections_json`
+(`0025_agent2_scientific_selection`). The selection is interaction context,
+never a fact authority; authorization is repeated before snapshot persistence.
+Provider-facing context uses opaque selection labels and never database,
+Artifact, Job or DOM identities.

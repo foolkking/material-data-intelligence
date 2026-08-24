@@ -3264,3 +3264,12 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
       and final recorded SHA `05720f882877e03c76e3499a5708b9df3276d6e7` passed
       current-head CI run `32690181703` (all required jobs green; Phase 8
       service selection `4 passed, 0 skipped`).
+
+## Agent 2.0 Phase 9 — Professional Scientific Viewer (2026-08-24)
+
+- [ ] Add deterministic exact-version ScientificViewerRegistry and bounded
+      viewer projections over existing ScientificObject authority.
+- [ ] Persist semantic ScientificSelectionContext 1.0 into immutable Research
+      ContextSnapshots and connect selection/evidence deep links.
+- [ ] Complete authenticated desktop/mobile browser golden paths, final
+      regression, commit/push and exact-SHA CI before marking this task done.

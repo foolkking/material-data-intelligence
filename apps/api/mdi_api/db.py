@@ -847,6 +847,7 @@ research_context_snapshots = Table(
     Column("snapshot_schema_version", String(32), nullable=False),
     Column("active_scope_refs_json", JSON, nullable=False),
     Column("selection_refs_json", JSON, nullable=False),
+    Column("scientific_selections_json", JSON, nullable=False, server_default="[]"),
     Column("resolved_references_json", JSON, nullable=False),
     Column("referenced_result_refs_json", JSON, nullable=False),
     Column("relevant_finding_refs_json", JSON, nullable=False),

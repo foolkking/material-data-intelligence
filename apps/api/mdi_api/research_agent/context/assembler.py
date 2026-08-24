@@ -33,6 +33,12 @@ class ResearchContextCandidateAssembler:
         current_user_message = next((str(row["content_summary"]) for row in current_messages if row["role"] == "user"), None)
         ui_context = ((received or {}).get("payload_json") or {}).get("ui_context") or {}
         selection_refs = list(ui_context.get("selection_refs") or [])
+        scientific_selections = list(ui_context.get("scientific_selections") or [])
+        selection_refs.extend(
+            item["object_ref"]
+            for item in scientific_selections
+            if isinstance(item, dict) and isinstance(item.get("object_ref"), dict)
+        )
         active_refs = list(ui_context.get("active_object_refs") or [])
         explicit_refs = list(ui_context.get("explicit_object_refs") or [])
         previous_turns = unit.agent2.research_turns.list_recent_before(session_id, current_sequence, limit=6)

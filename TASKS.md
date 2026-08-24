@@ -1,4 +1,14 @@
 ---TASK---
+状态：处理中
+任务名称：Agent-2.0 Phase 9 — Professional Scientific Data Viewer & Linked Scientific Selection
+开始时间：2026-08-24T00:00:00+08:00
+
+目标：在现有 ScientificObject、Workspace renderer registry、Phase 7 selection/context 与 Phase 8 report authority 上，实现 deterministic ScientificViewerRegistry、统一 ScientificViewerShell、exact-version ScientificSelection、linked evidence navigation，以及 Data/Result/Report 的专业科学查看体验。禁止 Viewer 路径触发 LLM 或科学重算；不实施 Phase 10。
+
+验收：完成 Phase 9 deterministic/service/browser qualification、Phase 1-8 regression、frontend tests/typecheck/build、current-head CI，并更新 canonical docs、AGENT2_PHASE9_RESULTS.md、results.md。保留所有 unrelated 用户修改。
+---END---
+
+---TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00

@@ -5614,3 +5614,19 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
 - Historical report content and `relevance_at_generation` are immutable. Reads
   additionally project current effective relevance without source-version
   substitution or snapshot rewrite.
+
+## ADR: Agent 2.0 Phase 9 uses one exact-version viewer projection and semantic selection (2026-08-24)
+
+- `ScientificObject` and `ScientificObjectVersion` remain the only data
+  authority. `ScientificViewerRegistry` and `ScientificViewerProjection` are
+  trusted deterministic read projections with bounded payloads and safe
+  metadata/fallback states; Viewer reads never enqueue work or call an LLM.
+- `ScientificSelectionContext 1.0` is stored alongside the existing immutable
+  ResearchContextSnapshot rather than in a competing Viewer database. It
+  carries an exact source/version plus a bounded semantic locator, so a site,
+  peak, frame, table row or field survives a new Turn without DOM indexes or
+  automatic version upgrades.
+- Data, Result and Report use the same viewer grammar. Report figure links may
+  open an authorized exact source version; historical relevance is shown and
+  never silently replaced with the current version. Legacy Workspace and
+  Report/Recipe routes remain readable.

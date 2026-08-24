@@ -128,6 +128,11 @@ qualification authorities.
 - [`agent2/scientific-report.md`](agent2/scientific-report.md)
 - [`../AGENT2_PHASE8_RESULTS.md`](../AGENT2_PHASE8_RESULTS.md)
 
+## Agent 2.0 Phase 9 Scientific Viewers
+
+- [`agent2/scientific-viewer.md`](agent2/scientific-viewer.md)
+- [`../AGENT2_PHASE9_RESULTS.md`](../AGENT2_PHASE9_RESULTS.md)
+
 Phase 2 ends at a validated decision or typed downstream handoff. It does not
 implement Capability resolution, AnalysisPlan creation, Job execution,
 scientific interpretation, Report composition, or Data mutation.

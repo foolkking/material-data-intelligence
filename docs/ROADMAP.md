@@ -417,3 +417,11 @@ Job, ToolCall, Artifact or ScientificResultSnapshot. Product integration is
 on-demand from completed Agent2 research, with a scientific Report list and a
 meaning-first reader. Exact completion SHA and current-head CI are recorded in
 `AGENT2_PHASE8_RESULTS.md`; Phase 9 is not started by this roadmap entry.
+
+## Agent 2.0 Phase 9 Professional Scientific Viewer (2026-08-24)
+
+Phase 9 is in progress. It adds a deterministic exact-version viewer registry,
+bounded ScientificObject projections and semantic ScientificSelection links
+without changing Phase 1–8 authority. `AGENT2_PHASE9_RESULTS.md` records the
+current evidence; authenticated browser golden paths, final commit/push and
+exact-SHA CI are still required before Phase 10.

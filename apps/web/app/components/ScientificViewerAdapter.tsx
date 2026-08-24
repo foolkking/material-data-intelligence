@@ -523,7 +523,7 @@ function sourceViewerContext(projectId: string, resource: DatasetSourceResource)
     projectId,
     sourceJobId: "source-view",
     datasetId: resource.datasetId,
-    datasetVersion: "current",
+    datasetVersion: resource.versionId || resource.objectHash || "current",
     sourceReferenceHash: resource.objectHash || `source:${resource.datasetId}`,
     revision: 0,
   } as ScientificWorkspace;

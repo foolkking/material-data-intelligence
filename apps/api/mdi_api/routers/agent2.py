@@ -48,6 +48,11 @@ from mdi_api.research_agent.memory.schemas import PinObjectRequest
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_api.scientific_objects.schemas import ScientificObjectKind, ScientificObjectLifecycle
 from mdi_api.scientific_objects.service import ScientificObjectService
+from mdi_api.scientific_viewers import (
+    ScientificViewerProjectionError,
+    ScientificViewerProjectionService,
+    build_scientific_viewer_registry,
+)
 from mdi_api.scientific_results.schemas import ScientificResultBundle
 from mdi_api.scientific_results.relevance import ScientificResultRelevanceEvaluator
 from mdi_api.scientific_results.service import ScientificResultProjectionService
@@ -451,6 +456,25 @@ def get_scientific_object_version(object_id: UUID, version_id: UUID, current_use
         raise _http_error(exc) from exc
 
 
+def get_scientific_object_viewer(
+    object_id: UUID,
+    version_id: UUID,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    try:
+        service = get_scientific_object_service()
+        item = service.get_object(object_id)
+        _authorize_object_project(service, str(item["project_id"]), current_user)
+        projection = ScientificViewerProjectionService(
+            service.repository_factory,
+            create_artifact_storage_from_settings(load_settings()),
+            build_scientific_viewer_registry(),
+        ).project(object_id, version_id)
+        return jsonable_encoder(projection.model_dump(mode="json"))
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
 def list_scientific_object_relationships(object_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
     service = get_scientific_object_service()
     try:
@@ -523,6 +547,8 @@ def _http_error(exc: Exception) -> HTTPException:
         return HTTPException(status_code=409, detail={"code": code, "summary": str(exc)})
     if isinstance(exc, InvalidScientificObjectVersion):
         return HTTPException(status_code=422, detail=str(exc))
+    if isinstance(exc, ScientificViewerProjectionError):
+        return HTTPException(status_code=exc.status_code, detail={"code": exc.code, "summary": str(exc)})
     if isinstance(exc, ScientificResultNotReady):
         return HTTPException(status_code=409, detail={"code": "SCIENTIFIC_RESULT_NOT_READY", "summary": str(exc)})
     if isinstance(exc, InterpretationFailure):

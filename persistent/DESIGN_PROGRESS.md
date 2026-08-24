@@ -3436,3 +3436,21 @@ memory tests pass and server-side fingerprints remain unchanged.
   responsive reader with legacy fallback.
 - Deterministic, live DeepSeek, real PostgreSQL/Redis/MinIO RDF/XRD, full backend
   and frontend gates are recorded in `AGENT2_PHASE8_RESULTS.md`.
+
+## 2026-08-24 Agent 2.0 Phase 9 scientific viewers (in progress)
+
+- Added deterministic exact-version ScientificViewerRegistry/projection APIs
+  with bounded table, trajectory and volumetric payload handling and safe
+  source-missing fallbacks.
+- Added a shared ScientificViewerShell and product-level viewer registry that
+  reuses existing structure, table, Plotly, electronic, phonon, BZ and
+  volumetric renderers instead of creating a second scientific data model.
+- Added `ScientificSelectionContext 1.0` and migration `0025` so semantic site,
+  peak, frame and field locators are captured in immutable ResearchContext
+  snapshots with repeated project/version authorization.
+- Data Viewer research links now carry exact object/version and bounded
+  selection context into the Agent2 ResearchTurn endpoint. Report figure links
+  expose an authorized exact source viewer when one is available.
+- Focused backend viewer/selection tests, frontend tests (90 files / 581
+  tests), typecheck, compileall, Ruff and migration round-trip currently pass;
+  browser and current-head CI closure remain outstanding.

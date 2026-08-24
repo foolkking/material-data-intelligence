@@ -631,6 +631,8 @@ export type DatasetSourceResource = {
   objectType: string;
   objectHash?: string;
   datasetId: string;
+  versionId?: string;
+  displayName?: string;
   payload: unknown;
 };
 

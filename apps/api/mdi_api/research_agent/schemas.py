@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
+import json
 import re
 from typing import Any, Literal
 from uuid import UUID
@@ -135,6 +136,40 @@ class ResolvedReference(BaseModel):
         return self
 
 
+class ScientificSelectionContext(BaseModel):
+    """Bounded semantic viewer selection captured as turn evidence."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    contract_version: Literal["1.0"] = "1.0"
+    object_ref: ScientificObjectRef
+    viewer_id: str = Field(pattern=r"^[a-z][a-z0-9_.-]{2,127}$")
+    selection_type: str = Field(pattern=r"^[A-Z][A-Z0-9_]{1,63}$")
+    semantic_locator: dict[str, Any] = Field(default_factory=dict, max_length=24)
+    display_label: str = Field(min_length=1, max_length=512)
+    evidence_locator: dict[str, Any] | None = Field(default=None, max_length=24)
+
+    @field_validator("semantic_locator", "evidence_locator")
+    @classmethod
+    def validate_locator(cls, value: dict[str, Any] | None) -> dict[str, Any] | None:
+        if value is None:
+            return None
+        for key, item in value.items():
+            if not re.fullmatch(r"[a-z][a-z0-9_.-]{0,63}", key):
+                raise ValueError("selection locator keys must be stable semantic identifiers")
+            values = item if isinstance(item, list) else [item]
+            if isinstance(item, (dict, tuple, set)) or len(values) > 64:
+                raise ValueError("selection locator values must be bounded scalars or scalar lists")
+            for scalar in values:
+                if scalar is not None and not isinstance(scalar, (str, int, float, bool)):
+                    raise ValueError("selection locator values must be JSON scalars")
+                if isinstance(scalar, str) and len(scalar) > 512:
+                    raise ValueError("selection locator strings must be bounded")
+        if len(json.dumps(value, sort_keys=True, separators=(",", ":"))) > 8192:
+            raise ValueError("selection locator payload is too large")
+        return value
+
+
 class ResolvedResearchContext(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -142,6 +177,7 @@ class ResolvedResearchContext(BaseModel):
     research_session_id: str = Field(min_length=1, max_length=64)
     active_objects: list[ScientificObjectRef]
     selection_refs: list[ScientificObjectRef]
+    scientific_selections: list[ScientificSelectionContext] = Field(default_factory=list, max_length=16)
     resolved_references: list[ResolvedReference]
     referenced_result_ids: list[UUID]
     research_goal: str | None
@@ -151,7 +187,12 @@ class ResolvedResearchContext(BaseModel):
 
     @model_validator(mode="after")
     def validate_scope(self) -> "ResolvedResearchContext":
-        refs = [*self.active_objects, *self.selection_refs, *(item.selected_ref for item in self.resolved_references if item.selected_ref)]
+        refs = [
+            *self.active_objects,
+            *self.selection_refs,
+            *(item.object_ref for item in self.scientific_selections),
+            *(item.selected_ref for item in self.resolved_references if item.selected_ref),
+        ]
         if any(ref.project_id != self.project_id for ref in refs):
             raise ValueError("all scientific object refs must belong to project_id")
         if any(item.status == ContextResolutionStatus.AMBIGUOUS for item in self.resolved_references) and not self.requires_clarification:
@@ -320,6 +361,7 @@ class ResearchTurnUIContext(BaseModel):
 
     active_object_refs: list[ScientificObjectRef] = Field(default_factory=list, max_length=64)
     selection_refs: list[ScientificObjectRef] = Field(default_factory=list, max_length=16)
+    scientific_selections: list[ScientificSelectionContext] = Field(default_factory=list, max_length=16)
     explicit_object_refs: list[ScientificObjectRef] = Field(default_factory=list, max_length=64)
     explicit_result_ids: list[UUID] = Field(default_factory=list, max_length=16)
     explicit_finding_refs: list[str] = Field(default_factory=list, max_length=16)

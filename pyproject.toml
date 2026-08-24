@@ -65,5 +65,6 @@ markers = [
   "agent2_phase6_service: Phase 6 RDF/XRD fresh-process interpretation qualification",
   "agent2_phase7_service: Phase 7 fresh-process ResearchSession memory qualification",
   "agent2_phase8_service: Phase 8 fresh-process grounded scientific report qualification",
+  "agent2_phase9_service: Phase 9 fresh-process exact-version viewer and selection qualification",
   "qualification: historical qualification-package validation, including checks that require the local _qualification workspace",
 ]

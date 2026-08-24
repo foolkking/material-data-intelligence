@@ -219,7 +219,12 @@ class ResearchTurnService:
                 self._authorize_context_refs(
                     unit,
                     context.project_id,
-                    [*context.active_objects, *context.selection_refs, *resolved_refs],
+                    [
+                        *context.active_objects,
+                        *context.selection_refs,
+                        *(item.object_ref for item in context.scientific_selections),
+                        *resolved_refs,
+                    ],
                 )
                 payload = context.model_dump(mode="json")
                 fingerprint = hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
@@ -229,9 +234,10 @@ class ResearchTurnService:
                     "project_id": context.project_id,
                     "research_session_id": context.research_session_id,
                     "research_turn_id": turn_id,
-                    "snapshot_schema_version": "1.0",
+                    "snapshot_schema_version": "1.1",
                     "active_scope_refs_json": payload["active_objects"],
                     "selection_refs_json": payload["selection_refs"],
+                    "scientific_selections_json": payload["scientific_selections"],
                     "resolved_references_json": payload["resolved_references"],
                     "referenced_result_refs_json": payload["referenced_result_ids"],
                     "relevant_finding_refs_json": [],
@@ -265,6 +271,7 @@ class ResearchTurnService:
         ui_context = (received or {}).get("payload_json", {}).get("ui_context") or {}
         active = ui_context.get("active_object_refs") or []
         selected = ui_context.get("selection_refs") or []
+        scientific_selections = ui_context.get("scientific_selections") or []
         memory_state = None
         with self.repository_factory.session() as memory_session:
             memory_state = memory_session.agent2.research_session_memory.get_state(str(turn["research_session_id"]))
@@ -279,6 +286,7 @@ class ResearchTurnService:
             research_session_id=str(turn["research_session_id"]),
             active_objects=active,
             selection_refs=selected,
+            scientific_selections=scientific_selections,
             resolved_references=[],
             referenced_result_ids=[],
             research_goal=(memory_state or {}).get("active_research_goal"),
@@ -332,6 +340,7 @@ class ResearchTurnService:
                 [
                     *request.ui_context.active_object_refs,
                     *request.ui_context.selection_refs,
+                    *(item.object_ref for item in request.ui_context.scientific_selections),
                     # Explicit object refs are accepted only after the same
                     # project/version authorization as UI selection.
                     *request.ui_context.explicit_object_refs,
@@ -387,6 +396,7 @@ class ResearchTurnService:
             "context": None if snapshot is None else {
                 "scope": snapshot["active_scope_refs_json"] or [],
                 "selection": snapshot["selection_refs_json"] or [],
+                "scientific_selection": snapshot["scientific_selections_json"] or [],
             },
             "orchestration": {
                 "decision_available": decision is not None,

@@ -992,3 +992,13 @@ interpretation validator remained strict. Phase 8/Report Composer is not started
 by this record.
 Provider-facing prior-turn context uses opaque labels; database Turn UUIDs stay
 server-side for authorization, replay and audit.
+
+## Agent 2.0 Phase 9 Scientific Viewer (2026-08-24)
+
+Phase 9 implementation is currently PARTIAL. The deterministic exact-version
+ScientificViewerRegistry, bounded viewer projection API and semantic
+ScientificSelectionContext 1.0 are implemented above the existing MatterViz,
+Plotly, trajectory, electronic, phonon, BZ, volumetric and table renderers.
+Dedicated PostgreSQL/Redis/MinIO service qualification passes with 3 tests and
+zero skips; authenticated browser golden paths and final current-head CI remain
+closure work. No viewer path creates a scientific Job or calls an LLM.

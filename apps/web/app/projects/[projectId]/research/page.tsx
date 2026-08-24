@@ -1,8 +1,8 @@
 import { ResearchPage } from "../../../components/ResearchPages";
-export default async function ProjectResearchRoute({ params, searchParams }: { params: Promise<{ projectId: string }>; searchParams?: Promise<{ run?: string | string[]; turn?: string | string[] }> }) {
+type ResearchQuery = { run?: string | string[]; turn?: string | string[]; object?: string | string[]; version?: string | string[]; type?: string | string[]; name?: string | string[]; selection?: string | string[]; selectionLabel?: string | string[] };
+const first = (value?: string | string[]) => Array.isArray(value) ? value[0] : value;
+export default async function ProjectResearchRoute({ params, searchParams }: { params: Promise<{ projectId: string }>; searchParams?: Promise<ResearchQuery> }) {
   const { projectId } = await params;
   const query = searchParams ? await searchParams : {};
-  const runId = Array.isArray(query.run) ? query.run[0] : query.run;
-  const turnId = Array.isArray(query.turn) ? query.turn[0] : query.turn;
-  return <ResearchPage projectId={projectId} runId={runId} agent2TurnId={turnId} />;
+  return <ResearchPage projectId={projectId} runId={first(query.run)} agent2TurnId={first(query.turn)} viewerContext={{ objectId: first(query.object), versionId: first(query.version), objectType: first(query.type), displayName: first(query.name), selectionToken: first(query.selection), selectionLabel: first(query.selectionLabel) }} />;
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { archiveProjectRun, createPlannerJob, createPlannerJobInterpretation, getPlannerInterpretationEvidence, getPlannerJob, getPlannerJobArtifacts, getPlannerJobEvents, getPlannerJobInterpretations, getPlannerProviderStatus, listPlannerProviders, getProjectHistory, restoreProjectRun, type Artifact, type GroundedScientificInterpretation, type InterpretationEvidenceResponse, type JobEvent, type PlannerJobCreateResult, type PlannerJobDetail, type ProjectHistory, type ProviderOption, type ProviderStatus } from "../lib/planner-api";
 import { createResearchAssistantProjection, createResearchMessage, createResearchSession, getResearchSession, listResearchSessions, resolveResearchScope, type ResearchMessage, type ResearchSession, type ScopeResolution } from "../lib/product-api";
 import { ProductShell, RequireProductAuth } from "./ProductShell";
@@ -14,6 +14,10 @@ import { cancelAgent2Execution, getAgent2ExecutionProgress, type Agent2ProgressV
 import { ResearchExecutionActivity } from "./ResearchExecutionActivity";
 import { getAgent2SessionMemory, type Agent2SessionMemory } from "../lib/agent2-memory-api";
 import { ScientificReportAction } from "./ScientificReportAction";
+import { createAgent2ResearchTurn } from "../lib/agent2-research-api";
+import { decodeWorkspaceSelectionUrl } from "./workspace/workspace-selection-contract";
+import { scientificSelectionFromWorkspace, selectionToResearchObjectRef } from "./scientific-viewer/scientificSelection";
+import { resolveScientificViewer } from "./scientific-viewer/scientificViewerRegistry";
 
 type ResearchState = "idle" | "planning" | "running" | "complete" | "partial" | "failed" | "unsupported" | "clarification" | "capability-clarification";
 
@@ -130,7 +134,9 @@ function researchRunHref(projectId: string, runId: string, sessions: ResearchSes
     : `/projects/${projectId}/research?run=${encodeURIComponent(runId)}`;
 }
 
-export function ResearchPage({ projectId, sessionId, runId, agent2TurnId }: { projectId: string; sessionId?: string; runId?: string; agent2TurnId?: string }) {
+type ViewerResearchContext = { objectId?: string; versionId?: string; objectType?: string; displayName?: string; selectionToken?: string; selectionLabel?: string };
+
+export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewerContext }: { projectId: string; sessionId?: string; runId?: string; agent2TurnId?: string; viewerContext?: ViewerResearchContext }) {
   const router = useRouter();
   const [session, setSession] = useState<ResearchSession | null>(null);
   const [sessions, setSessions] = useState<ResearchSession[]>([]);
@@ -173,6 +179,16 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId }: { pr
   const sessionHistorySearchRef = useRef<HTMLInputElement | null>(null);
   const mobileTimelineTabRef = useRef<HTMLButtonElement | null>(null);
   const mobileWorkbenchTabRef = useRef<HTMLButtonElement | null>(null);
+  const exactViewerContext = useMemo(() => {
+    if (!viewerContext?.objectId || !viewerContext.versionId || !viewerContext.objectType) return null;
+    const sourceRef = { projectId, objectId: viewerContext.objectId, versionId: viewerContext.versionId, objectType: viewerContext.objectType, displayName: viewerContext.displayName || "所选科学数据" };
+    if (!viewerContext.selectionToken) return { sourceRef, selection: null };
+    try {
+      const workspace = decodeWorkspaceSelectionUrl(viewerContext.selectionToken);
+      const descriptor = resolveScientificViewer({ objectType: viewerContext.objectType });
+      return { sourceRef, selection: scientificSelectionFromWorkspace(workspace, sourceRef, descriptor.viewerId) };
+    } catch { return { sourceRef, selection: null }; }
+  }, [projectId, viewerContext]);
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -411,6 +427,26 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId }: { pr
     let activeSession: ResearchSession | null = null;
     try {
       activeSession = await ensureSession();
+      if (exactViewerContext) {
+        const objectRef = exactViewerContext.selection ? selectionToResearchObjectRef(exactViewerContext.selection) : {
+          object_id: exactViewerContext.sourceRef.objectId, version_id: exactViewerContext.sourceRef.versionId,
+          project_id: exactViewerContext.sourceRef.projectId, object_type: exactViewerContext.sourceRef.objectType,
+          display_name: exactViewerContext.sourceRef.displayName,
+        };
+        const scientificSelections = exactViewerContext.selection ? [{
+          contract_version: "1.0" as const, object_ref: objectRef, viewer_id: exactViewerContext.selection.viewerId,
+          selection_type: exactViewerContext.selection.selectionType, semantic_locator: { ...exactViewerContext.selection.semanticLocator },
+          display_label: exactViewerContext.selection.displayLabel,
+          evidence_locator: exactViewerContext.selection.evidenceLocator ? { field_locator: exactViewerContext.selection.evidenceLocator } : null,
+        }] : [];
+        const created = await createAgent2ResearchTurn(projectId, activeSession.id, {
+          message: question.trim(),
+          ui_context: { active_object_refs: [objectRef], selection_refs: exactViewerContext.selection ? [objectRef] : [], scientific_selections: scientificSelections, explicit_object_refs: [], explicit_result_ids: [], explicit_finding_refs: [] },
+        });
+        setQuestion(""); setState("planning"); setMobilePanel("workbench");
+        router.push(`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(activeSession.id)}?turn=${encodeURIComponent(created.turn_id)}`);
+        return;
+      }
       const savedMessage = await createResearchMessage(activeSession.id, question.trim());
       setSession((current) => current ? { ...current, messages: [...(current.messages || []), savedMessage] } : current);
       const nextScope = await resolveResearchScope(projectId, question.trim());
