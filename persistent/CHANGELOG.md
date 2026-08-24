@@ -2871,3 +2871,13 @@ was created.
   conversation/result scrolling and a 320-640 px pointer/keyboard splitter.
 - Verified a real three-step CrystalNN/local-environment/RDF run and completed
   full Python, frontend, production-build, type, migration and static checks.
+## 2026-08-24 — Agent 2.0 Phase 8 grounded scientific reports
+
+- Added immutable Agent2 scientific report generation/snapshot persistence on
+  top of the existing Report authority.
+- Added bounded DeepSeek report composition, deterministic reference/numeric/
+  unit grounding, one repair maximum and identity-only fresh worker recovery.
+- Added authorized report APIs, dynamic relevance reads, on-demand Research
+  generation, scientific Report listing and responsive meaning-first reader.
+- Preserved legacy Workspace Report/Recipe compatibility and zero scientific
+  recomputation during report creation or reopen.

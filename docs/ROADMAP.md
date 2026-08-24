@@ -400,3 +400,20 @@ started by this entry.
 Post-closure hardening keeps provider context identity-safe: prior Turn entries
 use opaque labels rather than database UUIDs, while server-side snapshots retain
 the authoritative IDs for replay and audit.
+
+## Agent 2.0 Phase 8 Grounded Scientific Reports (2026-08-24)
+
+Phase 8 implements on-demand grounded report composition above the exact Phase
+5 result and Phase 6 interpretation. It reuses the existing `reports` identity,
+adds migration `0024_agent2_scientific_reports` for recoverable generation and
+immutable exact-upstream snapshots, and preserves all legacy Workspace
+Report/Recipe reads. The structured composer receives a bounded opaque
+projection with no raw Artifact or database identity, runs outside database
+transactions, and is followed by deterministic reference/numeric/unit/status
+grounding with at most one repair.
+
+Report generation is an independent lifecycle and creates no AnalysisPlan,
+Job, ToolCall, Artifact or ScientificResultSnapshot. Product integration is
+on-demand from completed Agent2 research, with a scientific Report list and a
+meaning-first reader. Exact completion SHA and current-head CI are recorded in
+`AGENT2_PHASE8_RESULTS.md`; Phase 9 is not started by this roadmap entry.

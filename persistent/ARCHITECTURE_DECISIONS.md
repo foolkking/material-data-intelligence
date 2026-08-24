@@ -5596,3 +5596,21 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
 - Result/object references continue using server-issued opaque candidate keys;
   this is a privacy boundary, not a replacement for authorization or audit
   identity.
+
+## ADR: Agent 2.0 Phase 8 reuses Report identity and adds immutable grounding evidence (2026-08-24)
+
+- The existing `reports` table remains the top-level Report identity. Agent2
+  adds an exact, immutable snapshot binding rather than a parallel product
+  Report universe; legacy Workspace Report/Recipe routes remain readable.
+- A Report is below ScientificResult and validated interpretation authority.
+  Its provider receives bounded semantic projections and opaque refs only;
+  raw Artifact payloads and runtime/database identities are excluded.
+- The provider performs editorial organization outside database transactions.
+  Deterministic schema, reference, numeric, unit, PARTIAL and relevance checks
+  run before persistence, with at most one repair.
+- Report generation has independent persisted state and identity-only queue
+  wakeups. It cannot create or modify scientific Plans, Jobs, ToolCalls,
+  Artifacts, Results, interpretations or ResearchTurn terminal status.
+- Historical report content and `relevance_at_generation` are immutable. Reads
+  additionally project current effective relevance without source-version
+  substitution or snapshot rewrite.

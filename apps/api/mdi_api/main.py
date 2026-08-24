@@ -177,6 +177,12 @@ from mdi_api.routers.agent2 import (
     list_scientific_objects,
     stream_research_turn_events,
 )
+from mdi_api.routers.scientific_reports import (
+    generate_scientific_report,
+    get_scientific_report,
+    get_scientific_report_by_id,
+    list_scientific_reports,
+)
 from mdi_api.routers.workspaces import (
     create_workspace,
     get_workspace,
@@ -232,6 +238,10 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/api/research/turns/{turn_id}/project-result", project_research_turn_result, ("POST",), ("agent2", "research")),
     RouteSpec("/api/research/turns/{turn_id}/interpret", interpret_research_turn, ("POST",), ("agent2", "research")),
     RouteSpec("/api/research/turns/{turn_id}/interpretation", get_research_turn_interpretation, ("GET",), ("agent2", "research")),
+    RouteSpec("/api/research/turns/{turn_id}/report", generate_scientific_report, ("POST",), ("agent2", "reports")),
+    RouteSpec("/api/research/turns/{turn_id}/report", get_scientific_report, ("GET",), ("agent2", "reports")),
+    RouteSpec("/api/scientific-reports/{report_id}", get_scientific_report_by_id, ("GET",), ("agent2", "reports")),
+    RouteSpec("/api/projects/{project_id}/scientific-reports", list_scientific_reports, ("GET",), ("agent2", "reports")),
     RouteSpec("/api/research/turns/{turn_id}/events", stream_research_turn_events, ("GET",), ("agent2", "research")),
     RouteSpec("/api/projects/{project_id}/scientific-objects", list_scientific_objects, ("GET",), ("agent2", "scientific-objects")),
     RouteSpec("/api/scientific-objects/{object_id}", get_scientific_object, ("GET",), ("agent2", "scientific-objects")),

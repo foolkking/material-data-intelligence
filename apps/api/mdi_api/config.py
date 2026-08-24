@@ -32,6 +32,8 @@ class ApiSettings:
     agent2_result_queue_name: str = "mdi-agent-results"
     agent2_interpretation_enabled: bool = True
     agent2_interpretation_queue_name: str = "mdi-agent-interpretations"
+    agent2_report_enabled: bool = True
+    agent2_report_queue_name: str = "mdi-agent-reports"
     artifact_backend: str = "local"  # "local" | "minio"
     artifact_root: str = ".artifacts/phase2"
     # -- Test database for integration tests --
@@ -107,6 +109,8 @@ def load_settings() -> ApiSettings:
         agent2_result_queue_name=os.getenv("MDI_AGENT2_RESULT_QUEUE_NAME", ApiSettings.agent2_result_queue_name),
         agent2_interpretation_enabled=_parse_bool(os.getenv("MDI_AGENT2_INTERPRETATION_ENABLED", "true")),
         agent2_interpretation_queue_name=os.getenv("MDI_AGENT2_INTERPRETATION_QUEUE_NAME", ApiSettings.agent2_interpretation_queue_name),
+        agent2_report_enabled=_parse_bool(os.getenv("MDI_AGENT2_REPORT_ENABLED", "true")),
+        agent2_report_queue_name=os.getenv("MDI_AGENT2_REPORT_QUEUE_NAME", ApiSettings.agent2_report_queue_name),
         artifact_backend=os.getenv("MDI_ARTIFACT_BACKEND", "local").lower(),
         artifact_root=os.getenv("MDI_ARTIFACT_ROOT", ApiSettings.artifact_root),
         test_database_url=test_database_url,

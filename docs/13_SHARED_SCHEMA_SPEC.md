@@ -2409,3 +2409,25 @@ constraints, explicit/pinned references, exact object versions, relevance
 signals, and unresolved ambiguity before low-value conversation prose. Raw
 Artifact payloads, secrets, provider transcripts, and runtime identities are
 not members of this contract.
+
+### Agent 2.0 Phase 8 ScientificReportOutput 1.0
+
+`ScientificReportOutput 1.0` is a strict editorial projection of one immutable
+`ScientificResultSnapshot` plus one validated grounded interpretation. It
+contains `title`, `research_question`, `summary`, grounded `main_findings`,
+validated `primary_figures`, `supporting_results`, `method_summary`, preserved
+`limitations`, opaque `data_sources`, `evidence_refs`,
+`reproducibility_summary`, and explicit `omitted_supporting_items`.
+
+`agent2_scientific_report_snapshots` binds the existing `reports.id` to the
+exact result and interpretation identities, contract/composer/prompt versions,
+source fingerprint, relevance at generation, grounding status and immutable
+report JSON. `agent2_scientific_report_generations` owns the independent
+`REQUESTED | COMPOSING | READY | FAILED` lifecycle. Neither table is a new
+scientific fact authority.
+
+Provider input is bounded and uses only opaque references such as `source_N`
+plus supplied result/fact/evidence/figure identities. Raw Artifact content,
+database UUIDs, secrets, provider transcripts and hidden reasoning are outside
+the contract. All output references, numeric tokens, units, PARTIAL semantics
+and historical relevance are deterministically validated before persistence.

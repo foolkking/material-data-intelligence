@@ -3420,3 +3420,19 @@ integration `62 passed, 0 skipped`. Phase 7 is COMPLETE; Phase 8 remains out of
 scope for this record. A post-closure provider-boundary audit also replaced
 database UUIDs in compact prior-turn context with stable opaque labels; focused
 memory tests pass and server-side fingerprints remain unchanged.
+
+## 2026-08-24 Agent 2.0 Phase 8 grounded scientific reports
+
+- Reused the existing `reports` table as product Report identity and retained
+  legacy Workspace Report/Recipe compatibility. Migration `0024` adds only the
+  recoverable Agent2 generation lifecycle and immutable exact result/
+  interpretation snapshot binding.
+- Added bounded opaque Report Composer input, structured output 1.0, strict
+  finding/fact/evidence/figure/result/source reference checks, numeric and unit
+  grounding, one bounded repair, identity-only RQ processing, and zero-
+  scientific-computation idempotency.
+- Added authorized generate/read/list APIs, dynamic effective relevance on read,
+  a completed-turn on-demand action, scientific Report list, and a four-level
+  responsive reader with legacy fallback.
+- Deterministic, live DeepSeek, real PostgreSQL/Redis/MinIO RDF/XRD, full backend
+  and frontend gates are recorded in `AGENT2_PHASE8_RESULTS.md`.

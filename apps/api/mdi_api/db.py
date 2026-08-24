@@ -1044,6 +1044,46 @@ agent2_scientific_interpretations = Table(
     CheckConstraint("grounding_status = 'VALID'", name="ck_agent2_interpretation_grounding"),
 )
 
+agent2_scientific_report_generations = Table(
+    "agent2_scientific_report_generations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("project_id", String(64), ForeignKey("projects.id", ondelete="RESTRICT"), nullable=False),
+    Column("research_turn_id", Uuid, ForeignKey("research_turns.id", ondelete="RESTRICT"), nullable=False, unique=True),
+    Column("status", String(32), nullable=False),
+    Column("requested_by", String(64), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False),
+    Column("attempt_count", Integer, nullable=False, server_default="0"),
+    Column("error_code", String(64), nullable=True),
+    Column("error_summary", String(1000), nullable=True),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint("status in ('REQUESTED', 'COMPOSING', 'READY', 'FAILED')", name="ck_agent2_report_generation_status"),
+)
+
+agent2_scientific_report_snapshots = Table(
+    "agent2_scientific_report_snapshots",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("report_id", String(96), ForeignKey("reports.id", ondelete="RESTRICT"), nullable=False, unique=True),
+    Column("project_id", String(64), ForeignKey("projects.id", ondelete="RESTRICT"), nullable=False),
+    Column("research_session_id", String(64), ForeignKey("sessions.id", ondelete="RESTRICT"), nullable=True),
+    Column("research_turn_id", Uuid, ForeignKey("research_turns.id", ondelete="RESTRICT"), nullable=False),
+    Column("scientific_result_snapshot_id", Uuid, ForeignKey("scientific_result_snapshots.id", ondelete="RESTRICT"), nullable=False),
+    Column("scientific_interpretation_id", Uuid, ForeignKey("agent2_scientific_interpretations.id", ondelete="RESTRICT"), nullable=False),
+    Column("contract_version", String(32), nullable=False),
+    Column("composer_version", String(64), nullable=False),
+    Column("prompt_version", String(64), nullable=False),
+    Column("source_fingerprint", String(128), nullable=False),
+    Column("relevance_at_generation", String(32), nullable=False),
+    Column("grounding_status", String(32), nullable=False),
+    Column("report_json", JSON, nullable=False),
+    Column("created_by", String(64), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    UniqueConstraint("research_turn_id", "source_fingerprint", name="uq_agent2_report_turn_fingerprint"),
+    CheckConstraint("grounding_status = 'VALID'", name="ck_agent2_report_grounding"),
+    CheckConstraint("relevance_at_generation in ('CURRENT', 'STALE', 'SOURCE_MISSING', 'INVALIDATED')", name="ck_agent2_report_relevance"),
+)
+
 Index("idx_projects_org_created", projects.c.organization_id, projects.c.created_at)
 Index("idx_project_members_user", project_members.c.user_id)
 Index("idx_datasets_project_created", datasets.c.project_id, datasets.c.created_at)
@@ -1094,6 +1134,11 @@ Index("idx_research_capability_plans_fingerprint", research_capability_plans.c.i
 Index("idx_research_execution_summaries_turn", research_execution_summaries.c.research_turn_id)
 Index("idx_research_execution_summaries_job", research_execution_summaries.c.job_id)
 Index("idx_agent2_interpretations_project_created", agent2_scientific_interpretations.c.project_id, agent2_scientific_interpretations.c.created_at)
+Index("idx_agent2_report_snapshots_project_created", agent2_scientific_report_snapshots.c.project_id, agent2_scientific_report_snapshots.c.created_at)
+Index("idx_agent2_report_snapshots_turn", agent2_scientific_report_snapshots.c.research_turn_id)
+Index("idx_agent2_report_snapshots_result", agent2_scientific_report_snapshots.c.scientific_result_snapshot_id)
+Index("idx_agent2_report_generations_project_created", agent2_scientific_report_generations.c.project_id, agent2_scientific_report_generations.c.created_at)
+Index("idx_agent2_report_generations_status_updated", agent2_scientific_report_generations.c.status, agent2_scientific_report_generations.c.updated_at)
 
 
 PHASE1_TABLES = (
@@ -1131,4 +1176,6 @@ PHASE4_TABLES = PHASE3_TABLES + (
     "research_capability_resolutions",
     "research_capability_plans",
     "research_execution_summaries",
+    "agent2_scientific_report_generations",
+    "agent2_scientific_report_snapshots",
 )

@@ -175,6 +175,7 @@ def _run_execution_worker_with_timeline(
         None,
     )
     return stdout, stderr, {
+        "returncode": process.returncode,
         "startup_seconds": round(execution_started - spawned, 3),
         "queued_to_terminal_seconds": round(execution_wall_seconds, 3),
         "queued_to_running_seconds": first_running,
@@ -466,7 +467,16 @@ def test_agent2_phase4_fresh_worker_executes_exact_plan_and_stops_at_result_pend
         database_url=database_url,
         job_id=dispatched.job_id,
     )
-    assert stdout.strip().endswith("completed"), stderr[-4000:]
+    assert stdout.strip().endswith("completed"), json.dumps(
+        {
+            "returncode": rdf_timing.get("returncode"),
+            "stdout": stdout[-4000:],
+            "stderr": stderr[-4000:],
+            "timing": rdf_timing,
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+    )
     rdf_worker_pid = int(next(line.split("=", 1)[1] for line in stdout.splitlines() if line.startswith("EXECUTION_WORKER_PID=")))
     assert rdf_worker_pid != os.getpid()
 

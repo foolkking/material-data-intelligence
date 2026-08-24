@@ -60,6 +60,7 @@ class DeepSeekStructuredLLMClient:
             "repair": request_context.get("repair"),
         }
         started = perf_counter()
+        purpose = "REPORT_COMPOSITION" if role == "scientific_report_composer" else "INTENT_EXTRACTION"
         response = await asyncio.to_thread(
             self.provider.complete_json,
             messages=[
@@ -73,7 +74,7 @@ class DeepSeekStructuredLLMClient:
                 max_tokens=4096,
                 temperature=0.0,
             ),
-            purpose="INTENT_EXTRACTION",
+            purpose=purpose,
         )
         if response.raw_json is None:
             raise ValueError("Provider returned no structured object")

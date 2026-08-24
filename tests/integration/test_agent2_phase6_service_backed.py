@@ -74,13 +74,19 @@ def phase6_service_pipeline():
         interpretation_pids: set[int] = set()
         for name, case in (("rdf", rdf), ("xrd", xrd)):
             environment["MDI_AGENT2_INTERPRETATION_FIXTURE_JSON"] = _interpreter_fixture(case["bundle"])
-            result = subprocess.run(
-                [sys.executable, "-m", "mdi_workers.worker_entrypoint", queue_name, "--url", redis_url, "--burst", "--max-jobs", "1", "--name", f"agent2-phase6-interpretation-{name}"],
-                cwd=ROOT, env=environment, capture_output=True, text=True, timeout=240,
-            )
-            assert result.returncode == 0, result.stderr[-6000:]
-            worker_outputs.append(result.stdout[-1000:])
-            task = Queue(queue_name, connection=Redis.from_url(redis_url)).fetch_job(f"agent2-interpretation-{case['turn_id']}")
+            target_job_id = f"agent2-interpretation-{case['turn_id']}"
+            task = None
+            for attempt in range(3):
+                task = Queue(queue_name, connection=Redis.from_url(redis_url)).fetch_job(target_job_id)
+                if task is not None and task.is_finished:
+                    break
+                result = subprocess.run(
+                    [sys.executable, "-m", "mdi_workers.worker_entrypoint", queue_name, "--url", redis_url, "--burst", "--max-jobs", "1", "--name", f"agent2-phase6-interpretation-{name}-{attempt}"],
+                    cwd=ROOT, env=environment, capture_output=True, text=True, timeout=240,
+                )
+                assert result.returncode == 0, result.stderr[-6000:]
+                worker_outputs.append(result.stdout[-1000:])
+            task = Queue(queue_name, connection=Redis.from_url(redis_url)).fetch_job(target_job_id)
             assert task is not None and task.is_finished
             interpretation_pids.add(int(task.return_value()["process_id"]))
         assert len(interpretation_pids) == 2

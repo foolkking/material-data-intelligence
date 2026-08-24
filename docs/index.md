@@ -123,6 +123,11 @@ qualification authorities.
 - [`agent2/research-memory.md`](agent2/research-memory.md)
 - [`../AGENT2_PHASE7_RESULTS.md`](../AGENT2_PHASE7_RESULTS.md)
 
+## Agent 2.0 Phase 8 Grounded Scientific Reports
+
+- [`agent2/scientific-report.md`](agent2/scientific-report.md)
+- [`../AGENT2_PHASE8_RESULTS.md`](../AGENT2_PHASE8_RESULTS.md)
+
 Phase 2 ends at a validated decision or typed downstream handoff. It does not
 implement Capability resolution, AnalysisPlan creation, Job execution,
 scientific interpretation, Report composition, or Data mutation.
