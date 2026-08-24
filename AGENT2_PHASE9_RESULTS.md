@@ -129,8 +129,8 @@ Dedicated Phase 9 selection: **3 passed, 0 skipped, 0 failed, 0 errors**.
 
 ## Current-head CI
 
-Final exact-SHA CI: GitHub Actions run `32699658743` for
-`52f3b176c7b8107c3ba894834a51bf52ae4d3dde`; Unit Tests, Frontend Typecheck &
+Final exact-SHA CI: GitHub Actions run `32700414678` for
+`99c3fc82937eb07ebddaae9a4bfe2d65af23aa43`; Unit Tests, Frontend Typecheck &
 Build, PostgreSQL/Redis/MinIO Service-backed Integration, Linux Replay and
 Windows Replay all succeeded. Service-backed integration summary was
 `69 passed, 0 skipped, 0 failed, 0 errors`; the three Phase 9 tests were
