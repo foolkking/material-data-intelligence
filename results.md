@@ -14229,3 +14229,23 @@ pass；lint 未声明（deprecated `next lint`）。
 Phase 9 保持 PARTIAL，GP9-B04 Report → exact Viewer、push 和 current-head
 CI 仍未闭合；不得进入 Phase 10。
 ---END---
+
+---RESULT---
+任务名称：Agent-2.0 Phase 9 — authenticated in-app browser retry
+状态：部分完成
+完成时间：2026-08-24T23:40:00+08:00
+
+修改摘要：使用 Codex 内置浏览器和已批准 acceptance session 打开真实项目
+`Agent2 Phase 9 Table Acceptance (Product)`。桌面 1280x720 与移动 390x844
+均完成表格 Viewer smoke；移动端显示 3/3 bounded rows、formula/y_pred/y_true
+科学列及 Si 语义行选择，document/body 宽度为 375/375，控制台错误为空。
+列显示入口存在但没有独立列选择提交动作，未将其伪报为 PASS。
+
+测试结果：fresh Postgres Phase 5 `2 passed`、Phase 8 `4 passed`、Phase 9
+`3 passed, 0 skipped`；本地 browser table desktop/mobile PASS。SQLite acceptance
+库仍只有 legacy 空 provenance report，fresh Postgres report 未注入，因此
+Report -> exact Viewer browser path、最终 C/D CI 仍未闭合。
+
+提交/CI 状态：browser retry evidence 尚待提交；未 push，未运行最终 exact-head
+CI。用户工作区文件保持不变。
+---END---

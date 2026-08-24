@@ -3489,3 +3489,10 @@ resolve to no viewer source; name, filename, latest-version and project-local
 substitution remain forbidden. This closes the provenance root cause as
 CASE_A, while authenticated browser verification against the fresh PostgreSQL
 report still requires an environment exposing that service-backed dataset.
+
+The subsequent Codex in-app-browser retry authenticated successfully and
+re-ran the canonical local table at desktop and mobile sizes. The table showed
+bounded rows, scientific columns and semantic row selection with no global
+overflow or console errors. The local acceptance database still contains only
+the legacy empty-provenance report, so the fresh PostgreSQL Report -> Viewer
+browser path remains intentionally unclaimed.

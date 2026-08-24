@@ -285,6 +285,25 @@ The exact Viewer route is therefore proven at the service/API contract level;
 an authenticated browser pass over the fresh Postgres report remains an
 environment-level gap, not a license to guess a legacy source.
 
+### Authenticated browser retry (in-app browser)
+
+The Codex in-app browser was started against the production build with the
+approved local acceptance session. The persisted canonical table project was
+opened through `/projects/project_0001_35554660bba644a2/data` and rendered by
+the Scientific Table viewer. At `1280x720`, `document.scrollWidth` and
+`body.scrollWidth` were `1265`; at `390x844`, both were `375`. The mobile
+table showed all bounded `3 / 3` rows and scientific columns, and the first
+row selection opened the semantic `Si` detail region. Console error logs were
+empty. The UI exposes column display controls but no separate column-selection
+commit action, so column selection is recorded as `NOT_EXPOSED` rather than
+claimed.
+
+The same authenticated SQLite project has zero fresh grounded reports and one
+legacy report with empty `source_object_refs`. The fresh PostgreSQL report
+cannot be injected into the browser database; Report -> exact Viewer therefore
+remains unverified at browser level and continues to use the safe legacy
+fallback contract.
+
 ## Post-closure compatibility fix
 
 The authenticated rerun exposed a separate legacy-history defect: an older
