@@ -145,8 +145,8 @@ Dedicated Phase 9 selection: **3 passed, 0 skipped, 0 failed, 0 errors**.
 
 ## Current-head CI
 
-Final closure commit `1916ab8ba4ef0f4375d05a059a3257ba5f053b58` was verified by
-GitHub Actions run `32716204866` on the exact SHA. Unit Tests, Frontend
+Final closure commit `665eba51688229444d14508ea32da38757b455b5` was verified by
+GitHub Actions run `32716917924` on the exact SHA. Unit Tests, Frontend
 Typecheck & Build, PostgreSQL/Redis/MinIO Service-backed Integration, Linux
 Replay and Windows Replay all succeeded. The service-backed job completed its
 no-skip assertion successfully. This green CI closes the implementation-CI
