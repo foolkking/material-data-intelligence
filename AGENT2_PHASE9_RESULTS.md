@@ -145,13 +145,13 @@ Dedicated Phase 9 selection: **3 passed, 0 skipped, 0 failed, 0 errors**.
 
 ## Current-head CI
 
-Carried-forward implementation CI: GitHub Actions run `32703157529` for
-`902c729035dd6abb279821d3ccad728a8016ea92`; Unit Tests, Frontend Typecheck &
-Build, PostgreSQL/Redis/MinIO Service-backed Integration, Linux Replay and
-Windows Replay all succeeded. Service-backed integration summary was
-`69 passed, 0 skipped, 0 failed, 0 errors`; the three Phase 9 tests were
-explicitly selected and passed. This closure adds a frontend selection bridge
-fix and therefore requires a new exact-head CI run before any COMPLETE verdict.
+Final closure commit `1916ab8ba4ef0f4375d05a059a3257ba5f053b58` was verified by
+GitHub Actions run `32716204866` on the exact SHA. Unit Tests, Frontend
+Typecheck & Build, PostgreSQL/Redis/MinIO Service-backed Integration, Linux
+Replay and Windows Replay all succeeded. The service-backed job completed its
+no-skip assertion successfully. This green CI closes the implementation-CI
+gap, but does not change the product verdict: the canonical project still
+lacks a scientific table object and a grounded Phase 8 report/evidence fixture.
 
 ## Legacy Compatibility
 
@@ -178,6 +178,9 @@ editing, BYOK, deployment and ORCHESTRATING lease/reaper remain out of scope.
    the authenticated ResearchTurn API. A fresh worker/context snapshot
    completion was not claimed because this local API queue was not running to
    advance the new turn beyond `RECEIVED`.
-4. A new CI run tied to the post-fix commit is still required; run `32703157529`
-   is carried-forward evidence for `902c729`, not evidence for uncommitted
-   closure changes.
+4. Authenticated browser evidence is real for the available canonical data,
+   but GP9-B02 (scientific table) and GP9-B04 (grounded Phase 8 Report → Viewer)
+   remain unverified because the canonical project has no such persisted
+   fixtures. A fresh Agent2 worker was also not running locally, so the
+   successful `202 Accepted` selection submission is not claimed as a completed
+   worker/context-snapshot handoff.

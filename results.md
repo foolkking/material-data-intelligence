@@ -14138,3 +14138,25 @@ report snapshot/evidence fixture，因此 Table 与新 Report→Viewer golden pa
 提交/CI 状态：待提交并推送；`902c729` 的 carried-forward CI `32703157529` 绿色，
 selection bridge 修复后的新 exact-head CI 尚未运行；Phase 9 保持 PARTIAL，不能进入 Phase 10。
 ---END---
+
+---RESULT---
+任务名称：Agent-2.0 Phase 9 Final Closure — exact-head CI provenance update
+状态：部分完成
+完成时间：2026-08-24T18:45:00+08:00
+
+修改摘要：确认提交 `1916ab8ba4ef0f4375d05a059a3257ba5f053b58` 已推送并与
+`origin/master` 一致；GitHub Actions run `32716204866` 对该 exact SHA 完成且
+Unit Tests、Frontend Typecheck & Build、PostgreSQL/Redis/MinIO Service-backed
+Integration、Linux Replay、Windows Replay 全部成功。更新 canonical
+`AGENT2_PHASE9_RESULTS.md` 的 current-head CI provenance。Phase 9 仍为 PARTIAL，
+因为真实 canonical project 没有 scientific table fixture 或 grounded Phase 8
+report/evidence fixture，且本地 Agent2 worker 未启动，selection API 的 `202`
+未被宣称为完成的 worker/context-snapshot handoff。
+
+测试结果：exact-head CI `32716204866` PASS；此前结构/selection/viewer focused
+Vitest `35 passed`，typecheck PASS；已认证浏览器 smoke 的 fatal console errors 与
+unhandled rejections 为 0，已测 desktop/mobile 无全局溢出。
+
+提交/CI 状态：`1916ab8` 已提交并推送；`HEAD == origin/master`；CI SHA 与 HEAD
+一致。不得进入 Phase 10。
+---END---
