@@ -3477,3 +3477,15 @@ Authenticated fixture rerun exposed an old `AnalysisPlan` row without
 read projection now degrades that legacy plan to an absent plan payload while
 keeping strict validation for newly persisted plans. This preserves historical
 job/result visibility without changing scientific authority.
+
+### Phase 9 provenance-first closure rerun (2026-08-24)
+
+The fresh PostgreSQL/Redis/MinIO Phase 5 pipeline produced current-generation
+RDF and XRD results whose persisted `source_object_refs` contain the exact
+ScientificObject and ScientificObjectVersion used by execution. A fresh Phase
+8 report worker then produced a new grounded report whose viewer sources are
+derived only from those result refs. Empty-ref legacy results intentionally
+resolve to no viewer source; name, filename, latest-version and project-local
+substitution remain forbidden. This closes the provenance root cause as
+CASE_A, while authenticated browser verification against the fresh PostgreSQL
+report still requires an environment exposing that service-backed dataset.

@@ -13805,6 +13805,28 @@ Frontend Typecheck & Build、Linux/Windows scientific replay 五个 job 全部�
 ---END---
 
 ---RESULT---
+任务名称：Agent-2.0 Phase 9 Provenance-First Redesign & Final Closure
+状态：部分完成
+完成时间：2026-08-24T20:30:00+08:00
+
+修改摘要：确认根因属于 CASE_A（legacy Result/reuse fixture defect），而非
+当前 Result provenance producer。真实 PostgreSQL/Redis/MinIO Phase 5 服务链
+创建了新的 RDF/XRD ScientificResultSnapshot，均带 exact ScientificObject 与
+ScientificObjectVersion refs；真实 Phase 8 report worker 创建了新 grounded report，
+其 viewer_sources 只由 persisted Result provenance 推导。新增 deterministic regression
+确保 fresh refs 可解析、legacy 空 refs 不会发生名称/最新版本替换。
+
+测试结果：Phase 5 service-backed `2 passed`；Phase 8 service-backed `4 passed`；
+Phase 9 service-backed `3 passed, 0 skipped`；Phase 8/report/viewer focused
+`24 passed, 4 skipped`；`git diff --check` 通过。浏览器扩展当前没有可见标签页，
+因此 fresh PostgreSQL report 的 authenticated browser、fresh table mobile 以及
+最终 current-head CI 未伪报通过；旧 legacy fallback 仍保持安全。
+
+提交/CI 状态：本轮 provenance regression 与文档待提交；未 push，未产生 C/D
+exact-SHA CI。保留所有用户已有 working-tree 文件。
+---END---
+
+---RESULT---
 任务名称：Agent-2.0 Phase 9 Final Fixture & Worker Closure (round 2)
 状态：部分完成
 完成时间：2026-08-24T22:35:00+08:00

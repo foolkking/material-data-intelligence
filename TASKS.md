@@ -1,11 +1,26 @@
 ---TASK---
-状态：处理中
+状态：失败
 任务名称：Agent-2.0 Phase 9 — Professional Scientific Data Viewer & Linked Scientific Selection
 开始时间：2026-08-24T00:00:00+08:00
 
 目标：在现有 ScientificObject、Workspace renderer registry、Phase 7 selection/context 与 Phase 8 report authority 上，实现 deterministic ScientificViewerRegistry、统一 ScientificViewerShell、exact-version ScientificSelection、linked evidence navigation，以及 Data/Result/Report 的专业科学查看体验。禁止 Viewer 路径触发 LLM 或科学重算；不实施 Phase 10。
 
 验收：完成 Phase 9 deterministic/service/browser qualification、Phase 1-8 regression、frontend tests/typecheck/build、current-head CI，并更新 canonical docs、AGENT2_PHASE9_RESULTS.md、results.md。保留所有 unrelated 用户修改。
+
+失败时间：2026-08-24T20:30:00+08:00
+
+失败原因：CASE_A provenance chain 已通过真实 PostgreSQL/Redis/MinIO 服务验收，
+但 fresh service-backed Report 尚未在当前 authenticated browser 环境中打开；Chrome
+扩展当前没有可见标签页，且 browser API 使用独立 SQLite acceptance database，不能
+安全注入 Postgres fixture。fresh Table mobile 与最终 C/D exact-head CI 也未完成，
+因此不得声明 Phase 9 COMPLETE 或进入 Phase 10。
+
+修改文件：AGENT2_PHASE9_RESULTS.md、persistent/DESIGN_PROGRESS.md、results.md、
+tests/test_agent2_phase8_reports.py。用户已有 working-tree 文件保留。
+
+测试结果：Phase 5 service-backed `2 passed`；Phase 8 service-backed `4 passed`；
+Phase 9 service-backed `3 passed, 0 skipped`；report/viewer focused `24 passed,
+4 skipped`；`git diff --check` 通过。未 push，未运行最终 exact-head CI。
 ---END---
 
 ---TASK---

@@ -238,6 +238,53 @@ fresh service pass.
    successful `202 Accepted` selection submission is not claimed as a completed
    worker/context-snapshot handoff.
 
+## Provenance-first closure rerun
+
+### Root-cause classification
+
+`CASE_A — fixture/reuse defect.` The current Result producer already persisted
+authoritative exact source refs. The repeated failure came from reusing a legacy
+RDF Result whose `source_object_refs` were empty and whose Evidence contained
+placeholder refs. No Result projector or Viewer resolver change was needed.
+
+### Fresh production chain
+
+The Docker service-backed Phase 4/5 pipeline created fresh Structure and
+experimental-XRD ScientificObjects and immutable versions, then executed real
+planning, Jobs, ToolCalls, Artifacts and Result projection. Fresh RDF and XRD
+snapshots contained exact object/version refs. Phase 5 qualification: `2 passed`.
+
+Fresh RDF Result example: `0d77c488-3bab-42f9-a0ee-241081a3a6b9`; its source
+ref identifies the exact Structure object/version used by the execution.
+Fresh XRD comparison Result: `0b8b2271-672e-4c87-980e-1c2b440d1f00`; both
+Structure and experimental XRD refs are exact and project-authorized.
+
+### Fresh grounded report
+
+The Phase 8 service-backed pipeline created a new report through a fresh report
+worker, not the legacy report idempotency key. New report:
+`agent2_report_54b0bb264a565fd36229a57e786fdf53`, bound to Result
+`870e16b9-856a-4b00-8e81-96965286b2c8`. Its API projection returned two
+`viewer_sources`, each derived only from the persisted Result source refs.
+Phase 8 qualification: `4 passed`; Phase 9 service qualification: `3 passed`.
+
+The deterministic contract regression now asserts fresh provenance resolves to
+exact viewer sources while an empty-ref legacy bundle resolves to no viewer
+source. No name, filename, latest-version or project-local substitution is
+allowed.
+
+### Service evidence
+
+The authoritative local service run used PostgreSQL at `127.0.0.1:55433`, Redis
+at `127.0.0.1:56380` and MinIO at `127.0.0.1:59000`. Selected service tests:
+Phase 5 `2 passed`, Phase 8 `4 passed`, Phase 9 `3 passed`, `0 skipped`.
+
+The browser API still uses the separate local SQLite acceptance database, so
+the Postgres fixture IDs were not injected into browser code or auth state.
+The exact Viewer route is therefore proven at the service/API contract level;
+an authenticated browser pass over the fresh Postgres report remains an
+environment-level gap, not a license to guess a legacy source.
+
 ## Post-closure compatibility fix
 
 The authenticated rerun exposed a separate legacy-history defect: an older

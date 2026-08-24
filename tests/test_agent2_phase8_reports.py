@@ -359,6 +359,50 @@ def test_persisted_report_is_idempotent_reopens_without_provider_or_scientific_c
     assert service.get_by_report_id(created["report_id"])["report"] == created["report"]
 
 
+def test_report_viewer_sources_are_derived_only_from_result_provenance() -> None:
+    source = _bundle().source_object_refs[0]
+
+    class Objects:
+        def get_object(self, object_id):
+            assert str(object_id) == str(source.object_id)
+            return {"id": str(source.object_id), "display_name": "LiFePO4", "current_version_id": str(source.version_id)}
+
+        def get_version(self, version_id):
+            assert str(version_id) == str(source.version_id)
+            return {"id": str(source.version_id), "object_type": source.object_type}
+
+    class Snapshots:
+        def __init__(self, bundle):
+            self.bundle = bundle
+
+        def get(self, _snapshot_id):
+            return {"bundle_json": self.bundle}
+
+    class Agent2:
+        def __init__(self, bundle):
+            self.scientific_result_snapshots = Snapshots(bundle)
+            self.scientific_objects = Objects()
+
+    class Session:
+        def __init__(self, bundle):
+            self.agent2 = Agent2(bundle)
+
+    row = {"scientific_result_snapshot_id": "snapshot-1"}
+    fresh = ScientificReportService._with_viewer_sources({}, Session(_bundle().model_dump(mode="json")), row)
+    assert fresh["viewer_sources"] == [{
+        "source_ref": "source_1",
+        "object_id": str(source.object_id),
+        "version_id": str(source.version_id),
+        "object_type": source.object_type,
+        "display_name": "LiFePO4",
+        "is_current_version": True,
+    }]
+
+    legacy_bundle = _bundle().model_copy(update={"source_object_refs": []}).model_dump(mode="json")
+    legacy = ScientificReportService._with_viewer_sources({}, Session(legacy_bundle), row)
+    assert legacy["viewer_sources"] == []
+
+
 @pytest.mark.live_llm
 @pytest.mark.skipif(os.getenv("MDI_RUN_AGENT2_LIVE") != "1" or not os.getenv("DEEPSEEK_KEY"), reason="live DeepSeek report qualification is explicitly gated")
 @pytest.mark.parametrize("family", ["rdf", "xrd", "stale"])
