@@ -3250,7 +3250,7 @@ selection passed `62 passed, 0 skipped`; final SHA is
 `61553dadb28f9a40d07684edcba1e51e1da457d5` with current-head run `32656452081`.
 The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
 
-## Agent 2.0 Phase 8 — Grounded Scientific Reports — In Progress
+## Agent 2.0 Phase 8 — Grounded Scientific Reports — Complete
 
 - [x] Reuse existing Report identity and retain legacy Report/Recipe reads.
 - [x] Add migration 0024 generation/snapshot persistence.
@@ -3258,4 +3258,7 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
 - [x] Add identity-only fresh worker, authorization and idempotent reopen.
 - [x] Add scientific Report list/reader and on-demand Research action.
 - [x] Pass deterministic, live DeepSeek and dedicated RDF/XRD service tests.
-- [ ] Complete browser evidence, final commit/push and exact-SHA CI closure.
+- [x] Complete browser evidence, final commit/push and exact-SHA CI closure.
+- [x] Final implementation SHA `57041f38240b6c8d50ca3bc44813da0a15deed87` passed
+      current-head CI run `32689170075` (all required jobs green; Phase 8
+      service selection `4 passed, 0 skipped`).

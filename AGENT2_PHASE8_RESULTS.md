@@ -2,7 +2,7 @@
 
 ## Verdict
 
-`PARTIAL` while the implementation is still uncommitted and exact-SHA CI is pending.
+`COMPLETE`
 
 ## Starting State
 
@@ -186,7 +186,17 @@ report:
 
 ## Current-head CI
 
-Pending implementation commit, push, and an exact-SHA current-head run.
+- Final implementation SHA: `57041f38240b6c8d50ca3bc44813da0a15deed87`
+- Current-head GitHub Actions run: `32689170075`
+- Unit Tests: PASS
+- Frontend Typecheck & Build: PASS
+- PostgreSQL/Redis/MinIO service-backed integration: PASS; Phase 8 selection
+  ran with `4 passed, 0 skipped`
+- Linux Scientific Replay: PASS
+- Windows Scientific Replay: PASS
+
+The implementation commit is the exact CI head. A later documentation-only
+closure commit will require, and will receive, its own exact-head CI run.
 
 ## Legacy Report Compatibility
 

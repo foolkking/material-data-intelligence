@@ -13804,6 +13804,34 @@ current-HEAD GitHub Actions run `32592517424` 的 Unit、service-backed integrat
 Frontend Typecheck & Build、Linux/Windows scientific replay 五个 job 全部成功。
 ---END---
 
+---RESULT---
+任务名称：Agent-2.0 Phase 8 — Grounded Scientific Report Composer & Persisted Scientific Presentation
+状态：已完成
+完成时间：2026-08-24T12:30:00+08:00
+
+修改摘要：完成 0024 科学报告持久化、结构化 Report Composer、确定性 grounding
+校验、identity-only fresh worker、授权 API、科研语义 Report List/Reader，以及
+RDF/XRD fresh service-backed report qualification。报告绑定不可变
+ScientificResultSnapshot 与 validated ScientificInterpretation，禁止 raw Artifact、
+内部 UUID、秘密和 provider transcript 进入 composer；报告生成保持零科学重算，
+支持幂等 reopen、CURRENT/STALE/SOURCE_MISSING/INVALIDATED 语义和 legacy Report
+读取兼容。Phase 6–8 相关 UI 与文档同步完成。
+
+测试结果：Phase 8 deterministic `14 passed, 4 deselected`；Phase 6–8 focused
+`31 passed, 8 deselected`；Agent2 focused `112 passed, 13 deselected`；full backend
+`1754 passed, 80 skipped, 75 warnings`；Phase 8 service `4 passed, 0 skipped`；
+gated live DeepSeek `4 passed`；frontend `87 files / 576 passed`；typecheck、build、
+compileall、Ruff、`uv lock --check`、migration round-trip、PostgreSQL base→head、
+browser desktop/390px 与无横向溢出均通过。`npm run lint` 未声明（仓库仍使用
+deprecated interactive `next lint`）。
+
+提交/CI：实现提交 `57041f38240b6c8d50ca3bc44813da0a15deed87` 已推送；current-head
+GitHub Actions run `32689170075` 与该 SHA 完全一致，Unit、Frontend Typecheck &
+Build、PostgreSQL/Redis/MinIO Service-backed Integration、Linux Replay、Windows
+Replay 五个 jobs 全部成功；Phase 8 service selection `4 passed, 0 skipped`。
+用户既有 working-tree 文件未纳入提交，未实施 Phase 9。
+---END---
+
 ---TASK---
 任务名称：Agent-2.0 Phase 7 Closure Round 2 — Interpretation Contract & Final Closure
 状态：处理中

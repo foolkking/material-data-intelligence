@@ -1,19 +1,4 @@
 ---TASK---
-状态：处理中
-任务名称：Agent-2.0 Phase 8 — Grounded Scientific Report Composer & Persisted Scientific Presentation
-开始时间：2026-08-24T00:00:00+08:00
-
-实现基于 immutable ScientificResultSnapshot 与 validated ScientificInterpretation
-的 grounded scientific report composer、严格引用/数字/单位校验、持久化不可变
-report snapshot、identity-only fresh worker、授权 API、科研语义 Report List 与
-四级 Report Reader。完成 RDF/XRD fresh service-backed qualification、第三科学
-family deterministic coverage、live DeepSeek qualification、全量回归、桌面/390px
-浏览器验收、迁移闭环、提交/push 与 final exact-SHA current-head CI。不得实施 Phase 9，
-不得通过 scientific recomputation、raw Artifact provider input 或放宽 grounding
-contract 生成报告。
----END---
-
----TASK---
 状态：失败
 任务名称：Phase E-R1.6 — Canonical Live-Agent Browser Qualification Restart
 开始时间：2026-08-17T00:00:00+08:00
