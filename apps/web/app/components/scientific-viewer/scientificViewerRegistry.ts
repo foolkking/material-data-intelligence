@@ -46,6 +46,7 @@ const LEGACY_TYPES: Record<string, string> = {
   ElectronicDos: "electronic.dos",
   PhononBand: "phonon.band_structure",
   PhononDos: "phonon.dos",
+  BrillouinZone: "reciprocal.brillouin_zone",
   PhononEigenvector: "phonon.band_structure",
   VolumetricData: "volumetric.charge_density",
 };

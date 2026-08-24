@@ -54,10 +54,12 @@ def build_scientific_viewer_registry() -> ScientificViewerRegistry:
         _descriptor("trajectory.atomic", "trajectory", interactions=["frame_navigation", "playback", "inspect_time"], selections=["TRAJECTORY_FRAME", "TRAJECTORY_ATOM"], maximum_payload_bytes=32 * mib),
         _descriptor("diffraction.xrd.experimental", "xrd", interactions=["zoom", "inspect_series", "inspect_peaks"], selections=["XRD_PEAK"], maximum_payload_bytes=8 * mib),
         _descriptor("diffraction.xrd.theoretical", "xrd", interactions=["zoom", "inspect_series", "inspect_peaks"], selections=["XRD_PEAK"], maximum_payload_bytes=8 * mib),
+        _descriptor("analysis.rdf", "rdf", interactions=["zoom", "inspect_curve", "inspect_validated_peaks"], selections=["RDF_RANGE", "RDF_PEAK"], maximum_payload_bytes=8 * mib),
         _descriptor("electronic.band_structure", "band-structure", interactions=["zoom", "inspect_k_path", "inspect_energy"], selections=["BAND_POINT", "BAND_SEGMENT"], maximum_payload_bytes=16 * mib),
         _descriptor("electronic.dos", "density-of-states", interactions=["zoom", "inspect_series", "inspect_energy"], selections=["DOS_SERIES", "ENERGY_INTERVAL"], maximum_payload_bytes=16 * mib),
         _descriptor("phonon.band_structure", "phonon-band", interactions=["zoom", "inspect_q_path"], selections=["PHONON_Q_POINT", "PHONON_BRANCH"], maximum_payload_bytes=16 * mib),
         _descriptor("phonon.dos", "phonon-dos", interactions=["zoom", "inspect_series"], selections=["PHONON_BRANCH", "ENERGY_INTERVAL"], maximum_payload_bytes=16 * mib),
+        _descriptor("reciprocal.brillouin_zone", "brillouin-zone", interactions=["rotate", "zoom", "inspect_path"], selections=["RECIPROCAL_POINT", "PATH_SEGMENT"], maximum_payload_bytes=8 * mib),
         _descriptor("volumetric.charge_density", "volumetric", interactions=["isosurface", "slice", "inspect_field"], selections=["VOLUMETRIC_REGION"], maximum_payload_bytes=16 * mib),
     ])
 

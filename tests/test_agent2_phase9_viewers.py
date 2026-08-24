@@ -85,6 +85,7 @@ def test_phase9_registry_covers_every_current_scientific_object_type():
     expected = {
         "materials.dataset", "structure.crystal", "trajectory.atomic",
         "diffraction.xrd.experimental", "diffraction.xrd.theoretical",
+        "analysis.rdf", "reciprocal.brillouin_zone",
         "electronic.band_structure", "electronic.dos",
         "phonon.band_structure", "phonon.dos", "volumetric.charge_density",
     }
