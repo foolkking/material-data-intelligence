@@ -3,13 +3,15 @@
 ## Verdict
 
 PARTIAL — deterministic viewer/selection implementation and dedicated
-PostgreSQL/Redis/MinIO qualification pass. Authenticated browser paths and
-final current-head CI remain unverified in this run.
+PostgreSQL/Redis/MinIO qualification pass. Final current-head CI is green;
+authenticated browser golden paths remain unverified because action-time
+credential confirmation was not available in this run.
 
 ## Starting State
 
 - Starting HEAD: `45cd88327da2b4b529d5394d41f11523b88f310a`
 - Starting origin/master: `45cd88327da2b4b529d5394d41f11523b88f310a`
+- Implementation HEAD before closure hardening: `e02a14caaf91b22d52d0bf13089bfbe70af66d6a`
 - Starting Alembic head: `0024_agent2_scientific_reports`
 - Phase 1–8 authorities were preserved; no Phase 10 capability expansion was
   started.
@@ -52,6 +54,10 @@ no LLM, Plan, Job, ToolCall, Artifact or ScientificResult writes.
 `ScientificViewerShell` presents title, exact version, relevance, metadata,
 limitations, selection and a single primary research action; technical
 provenance is progressively disclosed.
+
+The closure hardening commit aligned backend and frontend registry coverage for
+RDF and Brillouin-zone objects, preventing an exact-version backend process
+from silently resolving either type to the generic fallback.
 
 ## Scientific Selection And Linked Selection
 
@@ -123,8 +129,12 @@ Dedicated Phase 9 selection: **3 passed, 0 skipped, 0 failed, 0 errors**.
 
 ## Current-head CI
 
-Not run for the uncommitted Phase 9 tree. A final exact-SHA CI run is required
-after closure commit and push.
+Final exact-SHA CI: GitHub Actions run `32699658743` for
+`52f3b176c7b8107c3ba894834a51bf52ae4d3dde`; Unit Tests, Frontend Typecheck &
+Build, PostgreSQL/Redis/MinIO Service-backed Integration, Linux Replay and
+Windows Replay all succeeded. Service-backed integration summary was
+`69 passed, 0 skipped, 0 failed, 0 errors`; the three Phase 9 tests were
+explicitly selected and passed.
 
 ## Legacy Compatibility
 
@@ -142,5 +152,5 @@ editing, BYOK, deployment and ORCHESTRATING lease/reaper remain out of scope.
 
 1. Authenticated browser golden paths for Structure, Table, RDF, XRD, Report
    evidence, stale historical and unsupported fallback at 1280x720/390x844.
-2. Final commit/push and exact current-head CI, including the dedicated Phase 9
-   service selection in the final SHA workflow.
+   The local app redirected to its login surface; no password was entered
+   without action-time confirmation, so no browser PASS is claimed.

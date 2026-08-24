@@ -13805,6 +13805,31 @@ Frontend Typecheck & Build、Linux/Windows scientific replay 五个 job 全部�
 ---END---
 
 ---RESULT---
+任务名称：Agent-2.0 Phase 9 registry parity hardening and closure qualification
+状态：部分完成
+完成时间：2026-08-24T15:10:00+08:00
+
+修改摘要：补齐后端 ScientificViewerRegistry 对 `analysis.rdf` 与
+`reciprocal.brillouin_zone` 的确定性描述，使 exact-version viewer projection
+与前端 registry 在进程边界保持一致；未引入新的科学对象 authority、计算、Job、
+Artifact 或 LLM 路径。保留原有 Phase 9 实现及用户工作树文件。
+
+测试结果：后端 Phase 9 deterministic `5 passed`；前端 Viewer registry/shell
+`3 passed`；current-head GitHub Actions run `32699658743` 对最终代码 SHA
+`52f3b176c7b8107c3ba894834a51bf52ae4d3dde` 成功，五个 required jobs 全部通过，
+Service-backed Integration `69 passed, 0 skipped, 0 failed, 0 errors`，Phase 9
+三个专用测试均显式通过。
+
+未闭合：authenticated browser Structure/Table/RDF/XRD/Report evidence、stale
+和 unsupported fallback 的 desktop/mobile golden paths。浏览器已到达本地登录
+页面，但未在缺少 action-time credential confirmation 时输入密码，因此没有虚报
+浏览器 PASS。后续可在用户确认后重新完成该层验收。
+
+提交/CI：修复提交 `52f3b176c7b8107c3ba894834a51bf52ae4d3dde` 已推送，且
+`HEAD == origin/master`；未部署或发布。
+---END---
+
+---RESULT---
 任务名称：Agent-2.0 Phase 8 — Grounded Scientific Report Composer & Persisted Scientific Presentation
 状态：已完成
 完成时间：2026-08-24T12:30:00+08:00
