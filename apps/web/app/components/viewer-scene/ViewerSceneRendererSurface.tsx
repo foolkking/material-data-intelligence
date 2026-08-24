@@ -27,6 +27,7 @@ export type ViewerSceneRendererSurfaceProps = {
   readonly capabilityOverride?: boolean;
   readonly engineFactory?: ViewerRendererEngineFactory;
   readonly downloads?: Readonly<{ manifest?: unknown; summary?: string; recipe?: unknown }>;
+  readonly onSiteSelection?: (selection: Readonly<{ siteIndex: number; imageOffset: ImageOffset; siteId: string; species: string }> | null) => void;
 };
 
 const defaultEngineFactory: ViewerRendererEngineFactory = async (args) => {
@@ -64,13 +65,14 @@ function rendererStateLabel(state: ViewerRendererState) {
   return labels[state] ?? state;
 }
 
-export function ViewerSceneRendererSurface({ payload, capabilityOverride, engineFactory = defaultEngineFactory, downloads }: ViewerSceneRendererSurfaceProps) {
+export function ViewerSceneRendererSurface({ payload, capabilityOverride, engineFactory = defaultEngineFactory, downloads, onSiteSelection }: ViewerSceneRendererSurfaceProps) {
   const mapping = useMemo(() => mapViewerSceneForRenderer(payload), [payload]);
   const previousPayloadRef = useRef(payload);
   const payloadChanged = previousPayloadRef.current !== payload;
   const containerRef = useRef<HTMLDivElement>(null);
   const surfaceRef = useRef<HTMLElement>(null);
   const engineRef = useRef<ViewerRendererEngine | null>(null);
+  const siteSelectionListenerRef = useRef(onSiteSelection);
   const engineSceneRef = useRef<typeof renderScene>(null);
   const generationRef = useRef(0);
   const exportGenerationRef = useRef(0);
@@ -109,7 +111,17 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const performanceDecision = useMemo(() => renderScene ? classifyViewerPerformance(renderScene) : null, [renderScene]);
   const clipBounds = useMemo(() => renderScene ? sceneClipBounds(renderScene) : Object.freeze({x:[-1,1] as const,y:[-1,1] as const,z:[-1,1] as const}), [renderScene]);
   const latticeLengths = useMemo(() => (mapping.ok ? mapping.scene.lattice.matrix.map((vector)=>Math.hypot(...vector)) : [0,0,0]) as [number,number,number], [mapping]);
-  const onSitePick = useCallback((site: PeriodicSiteRef | null) => { setSelectedBondId(null); setSelection((current) => selectViewerSite(current, site)); }, []);
+  const onSitePick = useCallback((site: PeriodicSiteRef | null) => {
+    setSelectedBondId(null);
+    setSelection((current) => selectViewerSite(current, site));
+    const atom = site ? renderSceneRef.current?.atoms.find((candidate) => periodicSiteKey(candidate.ref) === periodicSiteKey(site)) : null;
+    siteSelectionListenerRef.current?.(atom ? Object.freeze({
+      siteIndex: atom.siteIndex,
+      imageOffset: atom.ref.imageOffset,
+      siteId: `${atom.species}-${atom.siteIndex}:${atom.ref.imageOffset.join(".")}`,
+      species: atom.species,
+    }) : null);
+  }, []);
   const onBondPick = useCallback((bondId: string) => {
     const bond = renderSceneRef.current?.bonds.find((candidate) => candidate.id === bondId);
     if (!bond) return;
@@ -123,6 +135,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   }, []);
 
   useEffect(() => { selectionRef.current = selection; }, [selection]);
+  useEffect(() => { siteSelectionListenerRef.current = onSiteSelection; }, [onSiteSelection]);
 
   useEffect(() => {
     const active = selection.activeSite;

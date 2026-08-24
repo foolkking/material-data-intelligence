@@ -13804,6 +13804,7 @@ current-HEAD GitHub Actions run `32592517424` 的 Unit、service-backed integrat
 Frontend Typecheck & Build、Linux/Windows scientific replay 五个 job 全部成功。
 ---END---
 
+
 ---RESULT---
 任务名称：Agent-2.0 Phase 9 registry parity hardening and closure qualification
 状态：部分完成
@@ -14115,4 +14116,25 @@ Ruff、uv lock、migration round-trip、git diff --check 通过。浏览器需�
 尚未宣称 PASS；最终 commit/push 与 exact-SHA CI 尚未完成。
 
 提交/CI 状态：未提交；current-head CI 未运行。用户既有 working-tree 修改保留。
+---END---
+
+---RESULT---
+任务名称：Agent-2.0 Phase 9 Final Closure — authenticated browser and selection bridge
+状态：部分完成
+完成时间：2026-08-24T18:10:00+08:00
+
+修改摘要：使用获批准的本地 acceptance session 完成真实 Structure、XRD/table、RDF、
+历史 STALE、unsupported fallback 浏览器 smoke；发现并修复 Structure 查看器选择未
+回传 Research 的真实缺陷，并将浏览器 camelCase locator 转换为 API 要求的 snake_case。
+选择 URL 现在包含 exact object/version 和 PERIODIC_SITE 语义 token，API 提交返回 202。
+未创建迁移、Job、ToolCall、Artifact 或 ScientificResult；用户已有 working-tree 文件保留。
+
+测试结果：结构/selection/viewer focused Vitest `35 passed`；typecheck PASS；浏览器已认证
+路径中 fatal console errors/unhandled rejections 为 0，已测 desktop/mobile 无全局溢出。
+生产 build 在本轮本地 bounded wait 内无诊断输出而未重新宣称 PASS，沿用同一实现 HEAD 的既有
+绿色 build/CI 证据。canonical 项目没有 scientific table object，也没有 grounded Phase 8
+report snapshot/evidence fixture，因此 Table 与新 Report→Viewer golden path 未伪报 PASS。
+
+提交/CI 状态：待提交并推送；`902c729` 的 carried-forward CI `32703157529` 绿色，
+selection bridge 修复后的新 exact-head CI 尚未运行；Phase 9 保持 PARTIAL，不能进入 Phase 10。
 ---END---

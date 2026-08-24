@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import type { WorkspaceSelectionContext } from "../../lib/workspace-api";
-import { opaqueSelectionEnvelope, providerEnvelopeContainsInternalIdentity, scientificSelectionFromWorkspace, selectionToResearchObjectRef } from "./scientificSelection";
+import { apiSemanticLocator, opaqueSelectionEnvelope, providerEnvelopeContainsInternalIdentity, scientificSelectionFromWorkspace, selectionToResearchObjectRef } from "./scientificSelection";
 import { resolveScientificSelectionLink } from "./selectionLinkResolver";
 
 describe("Agent2 Phase 9 ScientificSelection", () => {
   it("preserves exact object/version while exposing a human scientific locator", () => {
     const selection = scientificSelectionFromWorkspace(workspace("PERIODIC_SITE", { siteId: "O-12", structureId: "LiFePO4" }), source(), "scientific.structure-3d");
     expect(selection).toMatchObject({ selectionType: "PERIODIC_SITE", displayLabel: "结构位点 · O-12", semanticLocator: { siteId: "O-12" } });
+    expect(apiSemanticLocator(selection!)).toEqual({ site_id: "O-12" });
     expect(selectionToResearchObjectRef(selection!)).toEqual({ object_id: source().objectId, version_id: source().versionId, project_id: "project", object_type: "structure.crystal", display_name: "LiFePO4" });
   });
 

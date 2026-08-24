@@ -3,9 +3,14 @@
 ## Verdict
 
 PARTIAL — deterministic viewer/selection implementation and dedicated
-PostgreSQL/Redis/MinIO qualification pass. Final current-head CI is green;
-authenticated browser golden paths remain unverified because action-time
-credential confirmation was not available in this run.
+PostgreSQL/Redis/MinIO qualification pass. Authenticated browser qualification
+was run with the approved local acceptance session. Structure, XRD/table,
+historical STALE and unsupported fallback paths rendered without fatal browser
+errors or global overflow. The closure remains PARTIAL because this canonical
+database has no scientific table object and no persisted grounded Phase 8
+report snapshot/evidence fixture, so those exact golden paths cannot be
+honestly claimed as complete. A real selection-to-Research contract defect was
+found and fixed during this closure; its API persistence path now returns 202.
 
 ## Starting State
 
@@ -110,8 +115,19 @@ Dedicated Phase 9 selection: **3 passed, 0 skipped, 0 failed, 0 errors**.
 - Migration `0024 -> 0025 -> 0024` round-trip: PASS; fresh PostgreSQL service
   migration is covered by the service fixture.
 - Full backend: `1759 passed, 83 skipped, 75 warnings`.
-- Browser desktop/mobile: blocked pending action-time login confirmation in
-  the in-app browser; no browser PASS is claimed.
+- Browser authenticated smoke: Structure desktop/mobile, XRD data table,
+  RDF result, XRD legacy report, historical STALE structure and unsupported
+  fallback were exercised with the local acceptance session. Fatal console
+  errors and unhandled rejections were zero on exercised pages; desktop
+  document/body widths were 1265/1265 at 1280px and mobile widths were 375/375
+  at 390px (RDF measured 390/390). The initial Phase 9 run was blocked pending
+  action-time credential confirmation; this final closure run used the
+  explicitly approved credential without persisting or logging it.
+- Viewer selection regression: 35 focused Vitest tests passed after fixing the
+  Structure viewer callback and API snake_case locator conversion. Typecheck
+  passed. A production build was attempted after the fix but exceeded the
+  local bounded wait with no diagnostic output; the previously green exact-head
+  build remains the carried-forward implementation evidence.
 - Viewer rendering and selection use zero LLM calls; no live provider gate is
   applicable to this read-only path.
 
@@ -129,12 +145,13 @@ Dedicated Phase 9 selection: **3 passed, 0 skipped, 0 failed, 0 errors**.
 
 ## Current-head CI
 
-Final exact-SHA CI: GitHub Actions run `32702466953` for
-`3da0a04389438ec25b322339300350e27ebfc15c`; Unit Tests, Frontend Typecheck &
+Carried-forward implementation CI: GitHub Actions run `32703157529` for
+`902c729035dd6abb279821d3ccad728a8016ea92`; Unit Tests, Frontend Typecheck &
 Build, PostgreSQL/Redis/MinIO Service-backed Integration, Linux Replay and
 Windows Replay all succeeded. Service-backed integration summary was
 `69 passed, 0 skipped, 0 failed, 0 errors`; the three Phase 9 tests were
-explicitly selected and passed.
+explicitly selected and passed. This closure adds a frontend selection bridge
+fix and therefore requires a new exact-head CI run before any COMPLETE verdict.
 
 ## Legacy Compatibility
 
@@ -150,7 +167,17 @@ editing, BYOK, deployment and ORCHESTRATING lease/reaper remain out of scope.
 
 ## Remaining Gaps
 
-1. Authenticated browser golden paths for Structure, Table, RDF, XRD, Report
-   evidence, stale historical and unsupported fallback at 1280x720/390x844.
-   The local app redirected to its login surface; no password was entered
-   without action-time confirmation, so no browser PASS is claimed.
+1. GP9-B02 cannot be completed from the canonical local fixture because the
+   authenticated project contains no persisted scientific table/composition
+   object (only Structure/XRD objects); no fake table was inserted.
+2. GP9-B04 exact Phase 8 Report → Figure/Evidence → Viewer cannot be completed
+   because the project has zero grounded `ScientificReportSnapshot` rows. The
+   legacy XRD report rendered successfully, but it is not evidence of the new
+   grounded report route.
+3. The selection bridge passed focused tests and returned `202 Accepted` from
+   the authenticated ResearchTurn API. A fresh worker/context snapshot
+   completion was not claimed because this local API queue was not running to
+   advance the new turn beyond `RECEIVED`.
+4. A new CI run tied to the post-fix commit is still required; run `32703157529`
+   is carried-forward evidence for `902c729`, not evidence for uncommitted
+   closure changes.

@@ -94,13 +94,14 @@ describe("ViewerSceneRendererSurface", () => {
     anchorClick.mockRestore();
   });
   it("shows periodic neighbor topology and highlights the stored target endpoint",async()=>{
-    const engine=fakeEngine(); let args:Parameters<ViewerRendererEngineFactory>[0]|undefined;
-    render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async(value)=>{args=value;return engine;}}/>);
+    const engine=fakeEngine(); let args:Parameters<ViewerRendererEngineFactory>[0]|undefined; const onSiteSelection=vi.fn();
+    render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async(value)=>{args=value;return engine;}} onSiteSelection={onSiteSelection}/>);
     await waitFor(()=>expect(args).toBeTruthy());
     fireEvent.change(screen.getByTestId("viewer-supercell-x"), {target:{value:"2"}});
     await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
     await waitFor(()=>expect(vi.mocked(engine.replaceScene).mock.calls.at(-1)?.[0].bonds).toHaveLength(1));
     act(()=>args?.onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}));
+    expect(onSiteSelection).toHaveBeenLastCalledWith({siteIndex:0,imageOffset:[0,0,0],siteId:"Na-0:0.0.0",species:"Na"});
     expect(screen.getByTestId("viewer-periodic-neighbor-offset").textContent).toContain("1, 0, 0");
     expect(screen.getByTestId("viewer-periodic-neighbor-distance").textContent).toBe("0.400000");
     expect(screen.getByTestId("viewer-periodic-neighbor-source").textContent).toBe("distance_cutoff");

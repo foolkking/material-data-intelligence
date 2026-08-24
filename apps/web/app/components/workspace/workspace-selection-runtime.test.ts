@@ -4,7 +4,7 @@ import type { Artifact } from "../../lib/planner-api";
 import type { WorkspacePanel } from "../../lib/workspace-api";
 import { workspaceSnapshotFixture } from "./workspace-test-fixture";
 import { validateWorkspaceSelectionContext } from "./workspace-selection-contract";
-import { artifactSelectionFromArtifact, artifactSelectionFromPanel, claimSelection, coordinationSiteSelection, datasetSampleSelection, evidenceItemSelection, evidenceSourceArtifactSelection, resolvePanelSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
+import { artifactSelectionFromArtifact, artifactSelectionFromPanel, claimSelection, coordinationSiteSelection, datasetSampleSelection, evidenceItemSelection, evidenceSourceArtifactSelection, resolvePanelSelection, structureSiteSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
 
 const HASH = "a".repeat(64);
 
@@ -110,6 +110,22 @@ describe("Phase 10M-3 exact selection runtime", () => {
     const selection = coordinationSiteSelection(snapshot.workspace, artifact, { sourceResourceId: "resource_1", structureHash: HASH, siteId: `site:${HASH}:0` });
     expect(selection).toMatchObject({ primary: { kind: "PERIODIC_SITE", objectId: "resource_1", structureId: HASH, siteId: `site:${HASH}:0`, artifactId: "artifact_coord", artifactChecksum: HASH } });
     expect(() => coordinationSiteSelection(snapshot.workspace, artifact, { sourceResourceId: "", structureHash: HASH, siteId: `site:${HASH}:0` })).toThrowError("SELECTION_COORDINATION_IDENTITY_INVALID");
+  });
+
+  it("binds a source-viewer site selection to the exact object version scope", () => {
+    const snapshot = workspaceSnapshotFixture();
+    const artifact: Artifact = {
+      id: "source:object_1", artifactId: "source:object_1", jobId: "source-view", type: "structure_json", version: "1",
+      name: "Structure", sizeBytes: 10, sha256: HASH,
+      metadata: { sourceObjectId: "object_1", sourceObjectType: "Structure" },
+    };
+    const selection = structureSiteSelection(snapshot.workspace, artifact, { siteId: "Si-0:0.0.0" });
+    expect(selection).toMatchObject({ primary: {
+      kind: "PERIODIC_SITE", objectId: "object_1", structureId: HASH, siteId: "Si-0:0.0.0",
+      datasetId: snapshot.workspace.datasetId, datasetVersion: snapshot.workspace.datasetVersion,
+    } });
+    expect(resolvePanelSelection(snapshot.panels.find((panel) => panel.panelKind === "DATA")!, selection, snapshot.workspace)).toMatchObject({ compatibility: "EXACT" });
+    expect(structureSiteSelection({ ...snapshot.workspace, datasetId: null }, artifact, { siteId: "Si-0:0.0.0" })).toBeNull();
   });
 
   it("constructs exact grounded evidence and claim identities without display-label authority", () => {

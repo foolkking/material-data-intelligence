@@ -13,7 +13,7 @@ import {
   type RendererComponent,
   type WorkspaceRendererDescriptor,
 } from "./workspace-renderer-registry";
-import { artifactSelectionFromArtifact, datasetSampleSelection, type WorkspaceSelectionDelivery } from "./workspace-selection-runtime";
+import { artifactSelectionFromArtifact, datasetSampleSelection, structureSiteSelection, type WorkspaceSelectionDelivery } from "./workspace-selection-runtime";
 import { WorkspaceHeavyViewerLease } from "./workspace-heavy-viewer-gate";
 import { normalizedPlotFigure } from "./workspace-plot-contract";
 
@@ -207,7 +207,11 @@ export function ScientificArtifactRenderer({ selected, artifacts, workspace, del
     case "DATASET": return <LazyBoundary><DatasetMaterialsExplorerPanel artifacts={bundle} externalSampleKey={externalSampleKey} onSampleSelection={emitSample} /></LazyBoundary>;
     case "ML": return <LazyBoundary><MaterialsMlEvaluationPanel artifacts={bundle} /></LazyBoundary>;
     case "COMPOSITION": return <LazyBoundary><CompositionSpaceExplorerPanel artifacts={bundle} externalSampleKey={externalSampleKey} onSampleSelection={emitSample} /></LazyBoundary>;
-    case "STRUCTURE": return <LazyBoundary><ViewerSceneRendererSurface payload={loadedSelected.content} /></LazyBoundary>;
+    case "STRUCTURE": return <LazyBoundary><ViewerSceneRendererSurface payload={loadedSelected.content} onSiteSelection={(site) => {
+      if (!site) return;
+      const selection = structureSiteSelection(workspace, loadedSelected, site);
+      if (selection) onSelection(selection);
+    }} /></LazyBoundary>;
     case "TRAJECTORY": return <LazyBoundary><TrajectoryViewerSurface payload={loadedSelected.content} /></LazyBoundary>;
     case "PHONON_BAND": return <LazyBoundary><PhononBandPreviewPanel artifacts={bundle} /></LazyBoundary>;
     case "PHONON_DOS": return <LazyBoundary><PhononDosPreviewPanel artifacts={bundle} /></LazyBoundary>;

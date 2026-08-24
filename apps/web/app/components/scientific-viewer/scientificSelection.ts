@@ -60,6 +60,11 @@ export function opaqueSelectionEnvelope(selections: readonly ScientificSelection
   }));
 }
 
+/** Convert the browser-facing selection shape to the API's stable snake_case locator contract. */
+export function apiSemanticLocator(selection: ScientificSelection): Record<string, string | number> {
+  return Object.fromEntries(Object.entries(selection.semanticLocator).map(([key, value]) => [camelToSnake(key), value]));
+}
+
 export function providerEnvelopeContainsInternalIdentity(envelope: unknown): boolean {
   return scan(envelope);
 }
@@ -73,6 +78,10 @@ function scan(value: unknown): boolean {
 
 function semanticField(key: string): boolean {
   return /siteId|sampleRef|peakId|matchId|atomId|frameId|speciesPairId|rdfBinId|kpointId|bandId|energyPointId|qPointId|branchId|reciprocalPointId|segmentId|fieldId|regionId|fieldLocator/i.test(key);
+}
+
+function camelToSnake(value: string): string {
+  return value.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 }
 
 function selectionDisplayLabel(kind: string, locator: Record<string, string>): string {

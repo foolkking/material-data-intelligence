@@ -16,7 +16,7 @@ import { getAgent2SessionMemory, type Agent2SessionMemory } from "../lib/agent2-
 import { ScientificReportAction } from "./ScientificReportAction";
 import { createAgent2ResearchTurn } from "../lib/agent2-research-api";
 import { decodeWorkspaceSelectionUrl } from "./workspace/workspace-selection-contract";
-import { scientificSelectionFromWorkspace, selectionToResearchObjectRef } from "./scientific-viewer/scientificSelection";
+import { apiSemanticLocator, scientificSelectionFromWorkspace, selectionToResearchObjectRef } from "./scientific-viewer/scientificSelection";
 import { resolveScientificViewer } from "./scientific-viewer/scientificViewerRegistry";
 
 type ResearchState = "idle" | "planning" | "running" | "complete" | "partial" | "failed" | "unsupported" | "clarification" | "capability-clarification";
@@ -435,7 +435,7 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewer
         };
         const scientificSelections = exactViewerContext.selection ? [{
           contract_version: "1.0" as const, object_ref: objectRef, viewer_id: exactViewerContext.selection.viewerId,
-          selection_type: exactViewerContext.selection.selectionType, semantic_locator: { ...exactViewerContext.selection.semanticLocator },
+          selection_type: exactViewerContext.selection.selectionType, semantic_locator: apiSemanticLocator(exactViewerContext.selection),
           display_label: exactViewerContext.selection.displayLabel,
           evidence_locator: exactViewerContext.selection.evidenceLocator ? { field_locator: exactViewerContext.selection.evidenceLocator } : null,
         }] : [];

@@ -198,6 +198,38 @@ export function datasetSampleSelection(
   });
 }
 
+export function structureSiteSelection(
+  workspace: ScientificWorkspace,
+  artifact: Artifact,
+  identity: Readonly<{ siteId: string }>,
+): WorkspaceSelectionContext | null {
+  const artifactId = artifactIdentity(artifact);
+  const objectId = typeof artifact.metadata?.sourceObjectId === "string"
+    ? artifact.metadata.sourceObjectId
+    : artifactId?.startsWith("source:") ? artifactId.slice("source:".length) : null;
+  const structureId = artifactChecksum(artifact);
+  if (!workspace.datasetId || !workspace.datasetVersion || !objectId || !structureId || !identity.siteId) return null;
+  return validateWorkspaceSelectionContext({
+    schemaVersion: "1.0",
+    sourceScopeHash: workspace.sourceReferenceHash,
+    primary: {
+      selectionSchemaVersion: "1.0",
+      kind: "PERIODIC_SITE",
+      sourceScopeHash: workspace.sourceReferenceHash,
+      projectId: workspace.projectId,
+      datasetId: workspace.datasetId,
+      datasetVersion: workspace.datasetVersion,
+      objectId,
+      structureId,
+      siteId: identity.siteId,
+    },
+    secondary: [],
+    propagation: "EXACT_COMPATIBLE_ONLY",
+    compatibility: "EXACT",
+    cleared: false,
+  });
+}
+
 export function coordinationSiteSelection(
   workspace: ScientificWorkspace,
   artifact: Artifact,

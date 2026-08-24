@@ -170,7 +170,7 @@ export function sourceResourceArtifact(resource: DatasetSourceResource): Artifac
     sha256: resource.objectHash || null,
     contentType: "application/json",
     content,
-    metadata: { sourceObjectType: resource.objectType, sourceDatasetId: resource.datasetId },
+    metadata: { sourceObjectType: resource.objectType, sourceDatasetId: resource.datasetId, sourceObjectId: resource.objectId, sourceVersionId: resource.versionId },
   };
 }
 
