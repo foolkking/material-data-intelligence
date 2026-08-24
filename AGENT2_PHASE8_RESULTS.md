@@ -186,8 +186,9 @@ report:
 
 ## Current-head CI
 
-- Final implementation SHA: `57041f38240b6c8d50ca3bc44813da0a15deed87`
-- Current-head GitHub Actions run: `32689170075`
+- Implementation SHA: `57041f38240b6c8d50ca3bc44813da0a15deed87`
+- Final closure SHA: `41f2b102bd122fe50e34bcfe033639688a195fb2`
+- Final current-head GitHub Actions run: `32689710797`
 - Unit Tests: PASS
 - Frontend Typecheck & Build: PASS
 - PostgreSQL/Redis/MinIO service-backed integration: PASS; Phase 8 selection
@@ -195,8 +196,8 @@ report:
 - Linux Scientific Replay: PASS
 - Windows Scientific Replay: PASS
 
-The implementation commit is the exact CI head. A later documentation-only
-closure commit will require, and will receive, its own exact-head CI run.
+The final closure commit is the exact CI head; all required jobs are green on
+that SHA.
 
 ## Legacy Report Compatibility
 

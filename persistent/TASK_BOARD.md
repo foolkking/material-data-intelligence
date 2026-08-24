@@ -3259,6 +3259,7 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
 - [x] Add scientific Report list/reader and on-demand Research action.
 - [x] Pass deterministic, live DeepSeek and dedicated RDF/XRD service tests.
 - [x] Complete browser evidence, final commit/push and exact-SHA CI closure.
-- [x] Final implementation SHA `57041f38240b6c8d50ca3bc44813da0a15deed87` passed
-      current-head CI run `32689170075` (all required jobs green; Phase 8
+- [x] Implementation SHA `57041f38240b6c8d50ca3bc44813da0a15deed87` passed its
+      initial current-head CI; final closure SHA `41f2b102bd122fe50e34bcfe033639688a195fb2`
+      passed current-head CI run `32689710797` (all required jobs green; Phase 8
       service selection `4 passed, 0 skipped`).
