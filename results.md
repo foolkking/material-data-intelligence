@@ -13815,8 +13815,8 @@ Frontend Typecheck & Build、Linux/Windows scientific replay 五个 job 全部�
 Artifact 或 LLM 路径。保留原有 Phase 9 实现及用户工作树文件。
 
 测试结果：后端 Phase 9 deterministic `5 passed`；前端 Viewer registry/shell
-`3 passed`；current-head GitHub Actions run `32701649158` 对文档闭环 SHA
-`f669e9603ea11880de25245fb8b795508e8432b8` 成功，五个 required jobs 全部通过，
+`3 passed`；current-head GitHub Actions run `32702466953` 对文档闭环 SHA
+`3da0a04389438ec25b322339300350e27ebfc15c` 成功，五个 required jobs 全部通过，
 Service-backed Integration `69 passed, 0 skipped, 0 failed, 0 errors`，Phase 9
 三个专用测试均显式通过。
 
@@ -13826,8 +13826,8 @@ Service-backed Integration `69 passed, 0 skipped, 0 failed, 0 errors`，Phase 9
 浏览器 PASS。后续可在用户确认后重新完成该层验收。
 
 提交/CI：修复提交 `52f3b176c7b8107c3ba894834a51bf52ae4d3dde`、文档闭环提交
-`99c3fc82937eb07ebddaae9a4bfe2d65af23aa43`、最终 provenance 提交
-`f669e9603ea11880de25245fb8b795508e8432b8`
+`99c3fc82937eb07ebddaae9a4bfe2d65af23aa43`，以及 provenance 提交
+`f669e9603ea11880de25245fb8b795508e8432b8`、`3da0a04389438ec25b322339300350e27ebfc15c`
 已推送，且 `HEAD == origin/master`；
 未部署或发布。
 ---END---
