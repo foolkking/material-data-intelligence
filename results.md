@@ -14249,3 +14249,38 @@ Report -> exact Viewer browser path、最终 C/D CI 仍未闭合。
 提交/CI 状态：browser retry evidence 尚待提交；未 push，未运行最终 exact-head
 CI。用户工作区文件保持不变。
 ---END---
+## Agent-2.0 Phase 9 — Same-stack browser retry (2026-08-25)
+
+状态：部分完成
+
+同一 authenticated browser/API/PostgreSQL/Redis/MinIO 栈已验证 fresh
+grounded Report `agent2_report_1f4b8c9558f9602c0b1769ef0e731676` -> Result
+`e5628121-21e0-4f3f-a303-b5006b269e92` -> exact Structure object
+`de3dbb42-2690-44b0-bf82-c38f931f2b63` / version
+`bf49c2e3-4a25-4e8c-944b-833ca76318f5`。Report Figure 的真实链接打开了
+Professional Structure Viewer；历史版本警告显示，未发生 current/latest
+替换。表格对象在同一项目中显示 3/3 bounded rows 和科学列。浏览器 error
+logs 为空。Gate 0 的 `870e16b9-856a-4b00-8e81-96965286b2c8` 已审计为同一
+当前代生产链的 fresh XRD Result，带 exact source refs。
+
+服务栈：PostgreSQL/Redis/MinIO/worker health PASS；Phase 9 service-backed
+`3 passed`。未使用 SQLite 作为本次 canonical Report 浏览器数据源。
+
+未完成：当前 in-app browser 没有 viewport override，因此 fresh same-stack
+390x844 mobile evidence 尚未产生；尚未创建 C/D commits 或 final exact-head
+CI。不得声明 Phase 9 COMPLETE。
+## Agent-2.0 Phase 9 — Fresh same-stack mobile acceptance (2026-08-25)
+
+状态：功能闭环通过，发布 provenance 待完成
+
+复用仓库既有 Playwright runner 与 Chromium `chromium-1228`，通过真实登录
+访问同一 PostgreSQL-backed API，固定 viewport `390x844`。canonical
+Scientific Table 显示 3/3 rows、`formula/y_pred/y_true`、bounded payload 与
+semantic row selection；document/body 均无全局横向溢出。浏览器 console
+errors、unhandled rejections、critical API failures 均为 0。首次未认证的
+`/api/auth/me` 探测在登录成功后清除，不计为认证后的失败。
+
+新增可复用验收脚本：`apps/web/test/phase9-table-mobile-acceptance.mjs`。
+未修改产品 UI 或授权逻辑。`FUNCTIONAL_PHASE9_CLOSURE = PASS`；仍需
+Commit C exact-SHA CI、Commit D exact-head CI 与最终 HEAD/origin 对齐后
+才能声明 COMPLETE。

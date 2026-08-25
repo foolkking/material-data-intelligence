@@ -2,17 +2,11 @@
 
 ## Verdict
 
-PARTIAL - deterministic viewer/selection implementation and dedicated
-PostgreSQL/Redis/MinIO qualification pass. Authenticated browser qualification
-was run with the approved local acceptance session. Structure, table, XRD/RDF,
-historical STALE and unsupported fallback paths rendered without fatal browser
-errors or global overflow. The canonical scientific table is now created and
-persisted through the normal upload/parse/promotion path, and a fresh
-Windows-compatible Agent2 worker now persists immutable semantic selection
-snapshots. The closure remains PARTIAL because the existing grounded RDF report
-was generated before an exact ScientificObject source reference was available;
-its report evidence link therefore cannot honestly be claimed as an exact
-Report -> Viewer deep link yet.
+`FUNCTIONAL_PHASE9_CLOSURE = PASS` locally. The same-stack PostgreSQL Report
+-> exact Viewer path, exact-version stability, canonical Table desktop/mobile,
+selection handoff, service-backed qualification and browser quality gates are
+all verified. `AGENT2_PHASE9` remains `PARTIAL` only until Commit C exact-SHA
+CI, Commit D exact-current-head CI and final origin alignment are complete.
 
 ## Starting State
 
@@ -220,23 +214,9 @@ fresh service pass.
 
 ## Remaining Gaps
 
-1. GP9-B02 cannot be completed from the canonical local fixture because the
-   authenticated project contains no persisted scientific table/composition
-   object (only Structure/XRD objects); no fake table was inserted.
-2. GP9-B04 exact Phase 8 Report → Figure/Evidence → Viewer cannot be completed
-   because the project has zero grounded `ScientificReportSnapshot` rows. The
-   legacy XRD report rendered successfully, but it is not evidence of the new
-   grounded report route.
-3. The selection bridge passed focused tests and returned `202 Accepted` from
-   the authenticated ResearchTurn API. A fresh worker/context snapshot
-   completion was not claimed because this local API queue was not running to
-   advance the new turn beyond `RECEIVED`.
-4. Authenticated browser evidence is real for the available canonical data,
-   but GP9-B02 (scientific table) and GP9-B04 (grounded Phase 8 Report → Viewer)
-   remain unverified because the canonical project has no such persisted
-   fixtures. A fresh Agent2 worker was also not running locally, so the
-   successful `202 Accepted` selection submission is not claimed as a completed
-   worker/context-snapshot handoff.
+1. Commit C exact-SHA CI and push.
+2. Completion-record Commit D exact-current-head CI and final
+   `HEAD == origin/master` verification.
 
 ## Provenance-first closure rerun
 
@@ -311,3 +291,92 @@ The authenticated rerun exposed a separate legacy-history defect: an older
 return HTTP 500. The history projection now treats that row as a readable job
 with no plan payload, while new-plan validation remains strict. Focused
 project-history regression: `34 passed, 1 skipped`.
+
+## Same-stack PostgreSQL Browser Closure Retry
+
+The final retry used one shared authenticated stack:
+
+```text
+Browser -> Next production server :3002
+       -> API :8000
+       -> PostgreSQL 127.0.0.1:55433/mdi_phase7
+       -> Redis 127.0.0.1:56380
+       -> MinIO 127.0.0.1:59000
+```
+
+`/health/runtime` reported PostgreSQL, Redis, MinIO and the Redis worker
+backend healthy. SQLite was not used by this canonical Report test.
+
+Gate 0 identity audit classified Result `870e16b9-856a-4b00-8e81-96965286b2c8`
+as a current-generation fresh XRD Result. Its Report
+`agent2_report_54b0bb264a565fd36229a57e786fdf53` resolves through the exact
+Turn, Job, ToolCalls, Artifacts and two exact source object/version refs. A
+second fresh current-generation RDF report in the authenticated owner project
+was used for the browser path:
+
+```text
+Report: agent2_report_1f4b8c9558f9602c0b1769ef0e731676
+Result: e5628121-21e0-4f3f-a303-b5006b269e92
+Object: de3dbb42-2690-44b0-bf82-c38f931f2b63
+Version: bf49c2e3-4a25-4e8c-944b-833ca76318f5
+Viewer: exact Structure Viewer
+```
+
+Authenticated browser evidence:
+
+```text
+Project Reports -> fresh grounded report: PASS
+Report Figure -> scientific viewer link: PASS
+Result source object/version: PASS
+Historical version warning: PASS
+Newer current object version was not substituted: PASS
+Structure metadata and rendered 3D scene: PASS
+Table object and bounded 3/3 rows: PASS
+Table scientific columns: PASS
+Browser error logs: []
+```
+
+The Report URL retained the exact `object` and `version` query parameters and
+the Viewer displayed the historical-version warning while the logical object
+had a newer current version. No name or latest-version lookup was used.
+
+The in-app browser did not expose a viewport override capability in this run,
+so a fresh same-stack 390x844 mobile capture could not be produced. Previous
+SQLite mobile evidence remains historical only and is not claimed as this
+closure's same-stack mobile evidence. Consequently Phase 9 remains `PARTIAL`
+pending fresh mobile capture and final exact-head CI/provenance commits.
+
+## Fresh Same-stack 390x844 Table Acceptance
+
+The repository's existing Playwright runner was used with the supplied
+Chromium executable at:
+
+```text
+C:\Users\86182\Desktop\wkkk\playwright-browsers\chromium-1228\chrome-win64\chrome.exe
+```
+
+The acceptance script used a real authenticated login and the same production
+stack as the canonical Report test. No mocked API or static HTML was used.
+
+```text
+viewport: 390x844
+Table: PASS
+rows: 3 / 3
+columns: formula, y_pred, y_true
+bounded payload: PASS
+row selection: PASS
+document scrollWidth <= clientWidth: PASS
+body scrollWidth <= clientWidth: PASS
+global overflow: 0
+fatal console errors: 0
+unhandled rejections: 0
+critical API failures: 0
+```
+
+The initial unauthenticated `/api/auth/me` probe was cleared after the normal
+login response; no protected-route failure occurred after authentication.
+
+`FUNCTIONAL_PHASE9_CLOSURE = PASS` is now established locally. Product code
+was not changed for this gate; the only new artifact is the reusable
+Playwright acceptance script. Release provenance still requires Commit C,
+exact C CI, Commit D, and exact current-head D CI.

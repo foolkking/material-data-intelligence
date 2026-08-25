@@ -3496,3 +3496,17 @@ bounded rows, scientific columns and semantic row selection with no global
 overflow or console errors. The local acceptance database still contains only
 the legacy empty-provenance report, so the fresh PostgreSQL Report -> Viewer
 browser path remains intentionally unclaimed.
+### Phase 9 same-stack browser retry (2026-08-25)
+
+The authenticated in-app browser was pointed at the PostgreSQL-backed API and
+production frontend. A fresh grounded report opened its exact source Viewer;
+the URL preserved object/version provenance and the Viewer showed the expected
+historical-version warning. The same project also rendered the bounded
+Scientific Table. The browser runtime exposed no viewport override, so fresh
+390px evidence remains open; no SQLite evidence is being carried forward as
+canonical.
+
+The existing Playwright runner subsequently completed the fresh same-stack
+390x844 Table gate with real authentication: 3/3 bounded rows, scientific
+columns, semantic row selection, zero global overflow and zero runtime errors.
+Only release C/D exact-SHA CI provenance remains open.
