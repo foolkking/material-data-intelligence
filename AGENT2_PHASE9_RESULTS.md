@@ -380,3 +380,40 @@ login response; no protected-route failure occurred after authentication.
 was not changed for this gate; the only new artifact is the reusable
 Playwright acceptance script. Release provenance still requires Commit C,
 exact C CI, Commit D, and exact current-head D CI.
+
+## Final Closure Record (Commit D)
+
+The functional acceptance commit is exact and CI-verified:
+
+```text
+Commit C: 7fa8eba4ab57071b5b15b702bb0838b128bd230d
+Commit C CI: 32796758192
+Commit C CI SHA: 7fa8eba4ab57071b5b15b702bb0838b128bd230d
+Commit C required jobs: PASS
+Commit C service-backed tests: selected and executed, 0 skipped
+```
+
+The canonical Phase 9 gate is now functionally complete. This completion
+record intentionally does not embed its own commit SHA; the external CI run
+for the completion-record commit is the authoritative final-head proof.
+
+```text
+FUNCTIONAL_PHASE9_CLOSURE = PASS
+AGENT2_PHASE9 = COMPLETE
+READY_FOR_PHASE10 = YES
+```
+
+Final acceptance summary:
+
+```text
+fresh authenticated same-stack 390x844 Table: PASS
+fresh grounded Report -> exact Viewer: PASS
+historical exact-version stability: PASS
+legacy missing-provenance fallback: PASS
+Selection -> Research immutable snapshot: PASS
+viewer-only scientific recomputation: 0
+```
+
+Historical notes are intentionally retained above: the initial in-app browser
+run lacked viewport control, and the earlier SQLite/mobile evidence was not
+used for this final closure.

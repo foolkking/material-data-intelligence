@@ -14284,3 +14284,17 @@ errors、unhandled rejections、critical API failures 均为 0。首次未认证
 未修改产品 UI 或授权逻辑。`FUNCTIONAL_PHASE9_CLOSURE = PASS`；仍需
 Commit C exact-SHA CI、Commit D exact-head CI 与最终 HEAD/origin 对齐后
 才能声明 COMPLETE。
+
+## Agent-2.0 Phase 9 — Final completion record (2026-08-25)
+
+状态：完成记录（Commit D）
+
+Commit C `7fa8eba4ab57071b5b15b702bb0838b128bd230d` 的 exact-head CI 为
+`32796758192`，CI 测试 SHA 与 Commit C 一致；Unit、service-backed、frontend
+和 Linux/Windows replay jobs 均通过，Phase 9 service-backed tests 实际执行
+且 skipped=0。390x844 同栈 Table、fresh grounded Report -> exact Viewer、历史
+版本稳定性、legacy safe fallback 与 Selection -> Research 回归均已通过。
+
+Commit D 只包含本 canonical completion record；D 的最终 exact-head CI 将在
+推送后由 CI 外部验证。结果文件不嵌入自身 Commit D SHA，以避免 Git 自引用
+循环。
