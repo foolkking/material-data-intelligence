@@ -198,9 +198,15 @@ def test_decision_contract_rejects_extra_invalid_enum_and_negative_shape():
 def test_default_requirement_registry_has_only_bounded_phase2_requirements():
     registry = build_default_agent2_registries().requirements
     ids = [item.requirement_id for item in registry.list_active()]
-    assert len(ids) == 12
+    assert len(ids) == 20
     assert ids == sorted(ids)
     assert "structure.compute_rdf" in ids and "report.compose" in ids
+    assert {
+        "structure.inspect_coordination_hist", "structure.inspect_coordination_crystalnn",
+        "structure.inspect_coordination_voronoi", "trajectory.compute_rdf",
+        "electronic.inspect_band", "electronic.inspect_dos",
+        "data.explore_composition_space", "data.explore_materials",
+    }.issubset(ids)
     assert all("tool" not in item.requirement_id for item in registry.list_active())
     rdf = registry.require("structure.compute_rdf")
     assert rdf.accepted_object_types == ["structure.crystal"]

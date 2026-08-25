@@ -229,6 +229,15 @@ class ResearchContextCandidateAssembler:
             deduplicated.values(),
             key=lambda item: (priority[item[0]], item[1], str(item[2].object_id), str(item[2].version_id)),
         )[:_MAX_OBJECT_CANDIDATES]
+        # Once an exact UI/deep-link reference exists, lower-priority project
+        # history is not an alternative scope. Keeping it in the LLM candidate
+        # set lets a provider manufacture a clarification despite the frozen
+        # explicit-reference precedence rule. Retain all candidates only when
+        # they share the same effective priority (for example, a bounded set of
+        # explicitly selected sites).
+        if ordered:
+            best_priority = priority[ordered[0][0]]
+            ordered = [item for item in ordered if priority[item[0]] == best_priority]
         return [ReferenceCandidate(
             candidate_key=f"obj_{index}",
             ref_type="SCIENTIFIC_OBJECT",

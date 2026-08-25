@@ -5630,3 +5630,22 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   open an authorized exact source version; historical relevance is shown and
   never silently replaced with the current version. Legacy Workspace and
   Report/Recipe routes remain readable.
+
+## ADR: Agent 2.0 Phase 10 Batch 1 uses semantic capabilities over mature adapters (2026-08-25)
+
+- The Tool Registry remains an implementation authority; Agent2 receives
+  semantic Requirement and Capability manifests, never an unfiltered Tool ID
+  list. Batch 1 is frozen in `docs/phase10/agent2_phase10_batch1_manifest.json`.
+- Only existing adapters with bounded typed inputs, versioned production
+  Artifact contracts and canonical Result projection are activated. Eight
+  capabilities span structure, trajectory, electronic and dataset families;
+  unversioned MVP payloads remain candidates rather than being forced into the
+  Result authority.
+- Existing AnalysisPlan `0.2`, QueueWorkerRuntime, Tool Registry validation and
+  exact ScientificObjectVersion binding remain unchanged. Result projectors
+  preserve evidence and limitations without recomputing science.
+- Deep-linked Viewer research actions also populate `explicit_object_refs`.
+  Context assembly suppresses lower-priority historical object candidates when
+  an exact explicit object exists; this prevents provider ambiguity without
+  substituting a version or weakening authorization. Capability eligibility
+  still fail-closes when the persisted object lacks required semantic fields.

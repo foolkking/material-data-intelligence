@@ -1,11 +1,28 @@
 from __future__ import annotations
 
+from threading import RLock
 from typing import Any
 
 from sqlalchemy import Engine, create_engine, event
 
 from mdi_api.config import ApiSettings, load_settings
 from mdi_api.unit_of_work import RepositoryFactory
+
+
+_ENGINE_CACHE: dict[tuple[str, str], Engine] = {}
+_ENGINE_CACHE_LOCK = RLock()
+
+
+def _cache_key(database_url: str, kwargs: dict[str, Any]) -> tuple[str, str]:
+    """Build a stable key for process-scoped engines.
+
+    Route handlers create repositories per request, but the underlying Engine
+    must remain process-scoped.  Serializing the small engine option mapping
+    keeps equivalent settings on one pool while allowing health checks with
+    explicit connect arguments to remain isolated.
+    """
+
+    return database_url, repr(sorted((str(key), repr(value)) for key, value in kwargs.items()))
 
 
 def _engine_kwargs(settings: ApiSettings, **overrides: Any) -> dict[str, Any]:
@@ -28,9 +45,24 @@ def _engine_kwargs(settings: ApiSettings, **overrides: Any) -> dict[str, Any]:
 def create_engine_from_settings(settings: ApiSettings | None = None, **kwargs: Any) -> Engine:
     active = settings or load_settings()
     engine_kwargs = _engine_kwargs(active, **kwargs)
-    engine = create_engine(active.database_url, **engine_kwargs)
-    _configure_sqlite_pragma(engine, active.database_url)
-    return engine
+    key = _cache_key(active.database_url, engine_kwargs)
+    with _ENGINE_CACHE_LOCK:
+        engine = _ENGINE_CACHE.get(key)
+        if engine is None:
+            engine = create_engine(active.database_url, **engine_kwargs)
+            _configure_sqlite_pragma(engine, active.database_url)
+            _ENGINE_CACHE[key] = engine
+        return engine
+
+
+def dispose_cached_engines() -> None:
+    """Dispose process-scoped pools during application/test teardown."""
+
+    with _ENGINE_CACHE_LOCK:
+        engines = tuple(_ENGINE_CACHE.values())
+        _ENGINE_CACHE.clear()
+    for engine in engines:
+        engine.dispose()
 
 
 def create_repository_factory(settings: ApiSettings | None = None, **kwargs: Any) -> RepositoryFactory:

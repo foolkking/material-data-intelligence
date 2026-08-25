@@ -1,0 +1,71 @@
+{
+  "schema": "agent2.phase10.fixture_readiness.v1",
+  "generated_at": "2026-08-25",
+  "source_authority": "real production upload/profile and ScientificObjectService authority",
+  "families": [
+    {
+      "family": "STRUCTURE",
+      "capability": "structure.coordination_crystalnn / structure.coordination_voronoinn",
+      "source": "_qualification/work/phase_bc_r1_6/authority_package/09_Q-COORD-001/UPLOAD_Fe3O4_Magnetite_COD9007644.cif",
+      "production_import_path": "datasets upload -> parser/profile -> ScientificObjectService create_object/create_version",
+      "scientific_object": "773089f9-3ce8-4645-92dd-2f62c64cba89",
+      "scientific_object_version": "65f56d10-008d-445d-ab2f-228aebf1835b",
+      "data_profile_contract": "2.1",
+      "required_facts": ["periodic", "lattice", "site_count", "ordered_occupancy", "coordinationInputStatus", "exact_resource_identity"],
+      "observed_facts": {"periodic": true, "lattice_status": "VALID", "site_count": 2, "ordered_occupancy": true, "coordinationInputStatus": "READY"},
+      "eligibility": "ADMITTED",
+      "status": "READY",
+      "viewer": "scientific.structure-3d"
+    },
+    {
+      "family": "ELECTRONIC",
+      "capability": "electronic.band_structure",
+      "source": "_qualification/work/phase_bc_r1_6/authority_package/15_Q-ELECTRONIC-001/UPLOAD_electronic_band.json",
+      "production_import_path": "datasets upload -> parser/profile -> ScientificObjectService create_object/create_version",
+      "scientific_object": "54017eba-e71e-4af0-8d79-763124bbd72d",
+      "scientific_object_version": "0a389623-928d-4500-8dd3-b1759921a940",
+      "data_profile_contract": "2.4",
+      "required_facts": ["resource_identity", "calculation_identity", "energy_unit", "energy_reference", "fermi_semantics", "k_path"],
+      "observed_facts": {"resource_id": "si-qe-pbe-band", "energy_unit": "eV", "energy_reference": "source_absolute", "fermi_present": true, "k_path": true},
+      "eligibility": "ADMITTED",
+      "status": "READY",
+      "viewer": "scientific.band-structure"
+    },
+    {
+      "family": "ELECTRONIC",
+      "capability": "electronic.dos",
+      "source": "_qualification/work/phase_bc_r1_6/authority_package/15_Q-ELECTRONIC-001/UPLOAD_electronic_dos.json",
+      "production_import_path": "datasets upload -> parser/profile -> ScientificObjectService create_object/create_version",
+      "scientific_object": "cde1f0d5-76b1-428f-b53c-72ad2b82c324",
+      "scientific_object_version": "b591090d-e7b1-453d-9f57-11dc0d507158",
+      "data_profile_contract": "2.4",
+      "required_facts": ["resource_identity", "energy_unit", "energy_reference", "fermi_semantics", "dos_grid", "channels"],
+      "observed_facts": {"resource_id": "si-qe-pbe-dos", "energy_unit": "eV", "energy_reference": "source_absolute", "fermi_present": true, "dos_grid": true},
+      "eligibility": "ADMITTED",
+      "status": "PROFILE_READY_VIEWER_SOURCE_CHECKSUM_MISMATCH",
+      "viewer": "scientific.dos (blocked by existing source checksum validation)"
+    },
+    {
+      "family": "DATASET",
+      "capability": "data.materials_explorer",
+      "source": "real protected /datasets/upload with canonical materials table input",
+      "production_import_path": "datasets upload -> CSV parser/profile -> ScientificObjectService table promotion",
+      "scientific_object": "b8a1a55b-d32f-45f3-b421-df075dc3c05d",
+      "scientific_object_version": "622ef3d7-301c-420a-aa75-7dda551cf7ef",
+      "data_profile_contract": "2.0",
+      "required_facts": ["formula", "stable_sample_id", "canonical_table_binding", "materials_explorer readiness"],
+      "observed_facts": {"rows": 3, "formula": true, "sample_id": true, "materials_explorer": "READY"},
+      "eligibility": "ADMITTED",
+      "status": "READY",
+      "viewer": "scientific.scientific-table"
+    }
+  ],
+  "historical_negative": {
+    "object": "de3dbb42-2690-44b0-bf82-c38f931f2b63",
+    "behavior": "CAPABILITY_REQUIREMENT_UNSATISFIED",
+    "job_delta": 0,
+    "tool_call_delta": 0,
+    "artifact_delta": 0,
+    "result_delta": 0
+  }
+}

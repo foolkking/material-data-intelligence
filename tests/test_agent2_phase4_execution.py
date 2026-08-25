@@ -4,12 +4,12 @@ from datetime import datetime, timezone
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import create_engine, insert, select
+from sqlalchemy import create_engine, insert, select, update
 from sqlalchemy.pool import StaticPool
 
 from mdi_api.db import (
     analysis_plans, artifacts, data_profiles, datasets, jobs, metadata, messages, organizations,
-    projects, research_capability_plans, research_capability_resolutions, research_context_snapshots, research_execution_summaries, research_turn_events, research_turns, scientific_result_snapshots, sessions, tool_calls, users,
+    projects, research_capability_plans, research_capability_resolutions, research_context_snapshots, research_execution_summaries, research_turn_events, research_turns, scientific_result_snapshots, sessions, users,
 )
 from mdi_api.research_agent.execution.dispatcher import ResearchExecutionDispatcher
 from mdi_api.research_agent.execution.errors import ExecutionQueuePublishFailed
@@ -128,6 +128,40 @@ def test_supervisor_projects_running_then_result_pending_without_scientific_resu
         assert connection.execute(select(scientific_result_snapshots)).first() is None
         assert connection.execute(select(research_execution_summaries)).first() is not None
         assert connection.execute(select(research_turns.c.assistant_final_message_id).where(research_turns.c.id == turn_id)).scalar_one() is None
+
+
+def test_supervisor_reprojects_existing_summary_after_terminal_final_message():
+    engine, factory, turn_id = _factory()
+    dispatcher = ResearchExecutionDispatcher(factory, queue=CaptureQueue())
+    result = dispatcher.dispatch_turn(turn_id)
+    with factory.unit_of_work() as unit:
+        unit.repositories.jobs.set_status(result.job_id, "running")
+        unit.repositories.jobs.set_status(result.job_id, "completed")
+        unit.repositories.tool_calls.save(
+            {
+                "id": "call_terminal",
+                "jobId": result.job_id,
+                "stepId": "step_1",
+                "toolId": "structure.xrd",
+                "status": "completed",
+                "idempotencyKey": f"{result.job_id}:step_1",
+                "params": {},
+            }
+        )
+    supervisor = ResearchExecutionSupervisor(factory)
+    first = supervisor.sync_for_job(result.job_id)
+    assert first.status == ResearchTurnStatus.RESULT_PENDING
+    with engine.begin() as connection:
+        connection.execute(
+            update(research_turns)
+            .where(research_turns.c.id == turn_id)
+            .values(status=ResearchTurnStatus.COMPLETED.value, assistant_final_message_id="message")
+        )
+    second = supervisor.sync_for_job(result.job_id)
+    assert second.status == ResearchTurnStatus.COMPLETED
+    assert second.execution_outcome == ExecutionOutcome.SUCCESS
+    with engine.connect() as connection:
+        assert connection.execute(select(research_execution_summaries)).fetchall().__len__() == 1
 
 
 def test_incremental_output_is_projected_before_job_terminal_and_deduplicated():

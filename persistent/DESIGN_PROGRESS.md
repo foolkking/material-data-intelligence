@@ -1,5 +1,19 @@
 # DESIGN_PROGRESS
 
+## 2026-08-25 Phase 10 canonical fixture recheck
+
+- Fresh current-profile Structure coordination execution now proves exact
+  object/version through ContextSnapshot, deterministic two-capability Plan,
+  real Job/ToolCalls/Artifacts/Result and grounded DeepSeek interpretation.
+- Fresh electronic Band execution and grounded follow-up also pass. The
+  interpreter grounding boundary now ignores opaque provenance digits and
+  lower-case `k` point labels without weakening scientific fact validation.
+- Materials Explorer remains blocked at the typed input boundary: the current
+  requirement accepts `materials.dataset` while the canonical promoted table
+  is `materials.table`. Eligibility remains fail-closed; no substitution or
+  schema weakening was made. Phase 10 remains PARTIAL and Phase 11 is not
+  started.
+
 ## 2026-08-19 Scientific result projection closure
 
 - [x] Replaced persisted pre-run machine `purpose`/`reason` text with a bounded
@@ -3510,3 +3524,91 @@ The existing Playwright runner subsequently completed the fresh same-stack
 390x844 Table gate with real authentication: 3/3 bounded rows, scientific
 columns, semantic row selection, zero global overflow and zero runtime errors.
 Only release C/D exact-SHA CI provenance remains open.
+
+### Agent-2.0 Phase 10 Batch 1 capability expansion (2026-08-25)
+
+Phase 10 Batch 1 freezes eight new semantic Agent2 capabilities over existing
+production adapters: structure coordination (distance-cutoff, CrystalNN and
+VoronoiNN), trajectory RDF, electronic band/DOS inspection, composition-space
+exploration and bounded materials exploration. The existing nine Phase 3
+capabilities remain active. New payload schema envelopes and canonical Result
+projectors preserve exact source object/version refs and declared units; no
+AnalysisPlan version, migration, Viewer architecture or execution path changed.
+
+`tests/test_agent2_phase10_capabilities.py` passes 24 deterministic cases.
+Live provider, service-backed execution, authenticated browser and release CI
+remain unverified and are intentionally not claimed as Phase 10 completion.
+
+### Phase 10 browser context retry (2026-08-25)
+
+The real authenticated same-stack browser now submits deep-linked exact
+object/version references through the explicit research context channel. The
+fresh session snapshot retained only the exact Structure; the subsequent
+coordination request was rejected by the existing typed eligibility gate
+(`CAPABILITY_REQUIREMENT_UNSATISFIED`) because the persisted acceptance
+fixture does not expose the capability's semantic input contract. No execution
+records were fabricated and Phase 10 remains partial.
+
+### Phase 10 canonical fixture readiness recheck (2026-08-25)
+
+Fresh current-generation Structure, Electronic Band, and Materials Table
+fixtures now satisfy their production DataProfile contracts. Structure and
+Electronic have real PostgreSQL/Redis/MinIO execution and grounded Result
+evidence; the final Dataset chain also completes with exact object/version
+provenance and a valid grounded interpretation. The historical silicon object
+remains a deliberate fail-closed negative case.
+
+The existing Research UI now dispatches a `PLAN_READY` turn through the normal
+API rather than leaving it queued in the browser. Authenticated Chromium smoke
+passes Table mobile and Structure/Band desktop, and the Structure click path
+reaches an exact ContextSnapshot plus a deterministic two-capability plan.
+Repeated local diagnostic runs exhausted the API PostgreSQL connection pool
+before a clean dispatched three-family browser execution could be recorded;
+therefore Phase 10 remains PARTIAL and no completion commit/CI is claimed.
+
+### Phase 10 Stage 0 pool diagnosis (2026-08-25)
+
+The browser retry's PostgreSQL exhaustion was traced to the API database
+factory: route handlers created a new SQLAlchemy Engine (and a fresh
+5-connection pool with overflow) for every request. A live
+`pg_stat_activity` snapshot showed 98 idle sessions after repeated polling,
+with no idle-in-transaction accumulation. The fix is a process-scoped,
+configuration-keyed Engine cache plus explicit teardown disposal; health-check
+engines with special connect arguments remain isolated. The lifecycle regression
+repeated engine creation eight times and verified one pool with no checked-out
+connections after each request (`46 passed, 1 skipped` targeted suite).
+
+The API/worker runtime was stopped after capturing the baseline, so a clean
+post-fix authenticated three-family browser dispatch and current-head
+service-backed rerun remain outstanding. Phase 10 is still PARTIAL; Phase 11
+execution has not started.
+
+### Phase 10 clean runtime closure attempt (2026-08-25)
+
+The process-scoped engine fix was exercised in the live stack. PostgreSQL
+settled at `active=1`, `idle=6`, with zero idle-in-transaction sessions after
+the authenticated polling campaign. The terminal-progress supervisor now
+reprojects completed turns idempotently instead of returning a false conflict.
+
+Fresh authenticated Chromium execution then completed all three canonical
+families against the same PostgreSQL/Redis/MinIO data plane:
+
+- Structure Turn `21d40ce4-c299-485f-8b34-db29f1416dc8`, exact
+  `773089f9-3ce8-4645-92dd-2f62c64cba89` /
+  `65f56d10-008d-445d-ab2f-228aebf1835b`, CrystalNN + VoronoiNN, grounded
+  Result and Structure Viewer.
+- Electronic Band Turn `e96b22af-0bf5-4ef2-962e-05d20a5afe93`, exact
+  `54017eba-e71e-4af0-8d79-763124bbd72d` /
+  `0a389623-928d-4500-8dd3-b1759921a940`, grounded Result and Band Viewer.
+- Dataset Turn `6d16ce68-6cf1-4d93-8147-6d76fa35a784`, exact
+  `b8a1a55b-d32f-45f3-b421-df075dc3c05d` /
+  `622ef3d7-301c-420a-aa75-7dda551cf7ef`, canonical typed source/Profile
+  bridge, grounded Materials Explorer/Table result.
+
+The fresh browser paths reported zero fatal errors, unhandled rejections,
+critical API failures and authorization failures. Current verification is
+`1791 passed / 83 skipped` backend, `582 passed` frontend, typecheck/build,
+touched Ruff, compileall, lock and diff checks PASS; service-backed is
+`12/12 PASS, 0 skipped`. Functional Stage 0 evidence is therefore complete,
+but no P10-A/P10-B commit or exact-SHA CI has been created. Phase 10 remains
+PARTIAL and Phase 11 has not started.

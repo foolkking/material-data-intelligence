@@ -76,10 +76,16 @@ class GroundingValidationResult(BaseModel):
 
 
 _NUMBER = re.compile(r"(?<![A-Za-z0-9_.])[-+]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?%?")
+_OPAQUE_IDENTIFIER = re.compile(
+    r"(?i)(?:\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b|"
+    r"\b(?:fact|evidence|result|object|version|job|call|artifact)[._-][0-9a-f-]+\b)"
+)
 
 
 def numeric_tokens(text: str) -> list[str]:
-    return _NUMBER.findall(text or "")
+    # Opaque provenance refs can contain digits, but they are identifiers rather
+    # than scientific measurements and must not satisfy quantitative grounding.
+    return _NUMBER.findall(_OPAQUE_IDENTIFIER.sub(" ", text or ""))
 
 
 __all__ = [

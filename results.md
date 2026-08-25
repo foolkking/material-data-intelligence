@@ -1,5 +1,27 @@
 # Task Results
 
+## Agent-2.0 Phase 10 browser-context refresh — 2026-08-25
+
+状态：部分完成
+
+完成时间：2026-08-25
+
+修改摘要：deep-linked Viewer research action 现在携带 exact object/version
+到 `explicit_object_refs`；context assembler 只把最高优先级对象候选交给
+provider，避免无关历史对象制造澄清。真实同栈 PostgreSQL/Redis/MinIO 与
+Chromium 验收中，新会话快照只保留 Structure；随后 capability eligibility
+正确返回 `CAPABILITY_REQUIREMENT_UNSATISFIED`，因为现有结构 fixture 缺少
+coordination capability 的 typed semantic input contract。没有伪造执行记录。
+
+测试结果：Phase 2/7/10 focused `54 passed`；frontend `90 files / 582 tests`；
+typecheck/build/compileall/uv lock/diff check PASS；既有完整后端
+`1787 passed, 83 skipped`、服务端 Phase 10 `6/6 passed`、Batch-1 live semantic
+`8/8 passed`、390x844 Table PASS 保持有效。三族新能力的真实 browser
+Job/Result/Viewer 路径仍未闭合；full Ruff 有 79 个历史错误，未运行 exact-head
+CI，不能声明 Phase 10 COMPLETE。
+
+提交/CI 状态：未提交、未 push；Phase 11 未开始。
+
 ## Production Object Management UX — 2026-08-20
 
 状态：已完成
@@ -14298,3 +14320,175 @@ Commit C `7fa8eba4ab57071b5b15b702bb0838b128bd230d` 的 exact-head CI 为
 Commit D 只包含本 canonical completion record；D 的最终 exact-head CI 将在
 推送后由 CI 外部验证。结果文件不嵌入自身 Commit D SHA，以避免 Git 自引用
 循环。
+
+# Agent-2.0 Phase 10 Batch 1 Scientific Capability Expansion Result
+
+状态：`PARTIAL / DETERMINISTIC_CONTRACTS_QUALIFIED`
+
+本任务基于 current HEAD `e8118ebfbdfff6c44e7e2b5f583c5f5a8dfb41a6`，冻结 62
+个 production Tool census 与 8 个 Batch 1 Agent2 capability：结构配位三类、
+轨迹 RDF、电子能带/DOS、组成空间和材料探索。新增 requirement/capability
+均为语义合同，复用已有 Tool Registry、Adapter、AnalysisPlan 0.2 和 exact
+ScientificObjectVersion 绑定；新增 8 个 schema envelope 与 canonical Result
+projector，未创建 migration 或 Phase 11 architecture。
+
+测试：`tests/test_agent2_phase10_capabilities.py` 24 passed；Phase 3/contract/
+Result focused regression 41 passed, 1 skipped。Live DeepSeek、PostgreSQL/
+Redis/MinIO service-backed、authenticated browser、full release suite 与
+exact-head CI 本轮未执行，故不得声明 `AGENT2_PHASE10 = COMPLETE`。
+
+任务记录：`Agent-2.0 Phase 10 — Batch 1 Scientific Capability Expansion`；
+状态：失败（功能实现部分完成，发布门禁未闭合）；完成时间：2026-08-25
+11:00 +08:00。修改文件包括 Agent2 requirement/capability registry、生产
+Artifact schema envelope、canonical Result projectors、Phase 10 census/manifest、
+专项 qualification tests、persistent 设计记录与本结果文件；用户已有
+working-tree 文件未纳入。测试/构建结果如上；service-backed 为 1 skipped，
+未提交、未 push、未运行 current-head CI。
+
+## Agent-2.0 Phase 10 — Browser and service qualification rerun (2026-08-25)
+
+状态：`PARTIAL / BROWSER_SMOKE_AND_SERVICE_PASS`
+
+使用用户提供的 Chromium `C:\Users\86182\Desktop\wkkk\playwright-browsers\chromium-1228\chrome-win64\chrome.exe`，真实登录
+`acceptance.researcher@local.invalid` 后，通过同栈前端 `127.0.0.1:3002`、API
+`127.0.0.1:8000` 和 PostgreSQL/Redis/MinIO 服务完成点击验收：Console 可进入，
+Research Workbench 可打开；390x844 Scientific Table 显示 3/3 行、formula/
+y_pred/y_true，点击第 1 行后显示 `当前选择数据样本 · Si`，document/body 全局
+overflow 为 0。浏览器表格脚本结果为 PASS，console errors、unhandled
+rejections、critical API failures 均为 0。
+
+Phase 10 专项服务测试在本地 Docker 服务中为 selected=6、passed=6、failed=0、
+errors=0、skipped=0。专用 6–10-case live DeepSeek campaign、三类新增能力的
+完整自然语言执行浏览器路径和 exact-head CI 仍未闭合，因此 Phase 10 继续保持
+`PARTIAL`，不进入 Phase 11。
+
+追加验证：Batch-1 live DeepSeek 语义路由矩阵 `8/8 passed`；Phase 10N1/N4/N5/N6
+以及 Phase 10K3/K4 PostgreSQL/Redis/MinIO service-backed 集成 `6 passed, 0
+skipped`。K3/K4 首次失败的原因是测试 harness 与 API 使用了不同数据库环境；
+统一 `DATABASE_URL` 到 PostgreSQL 后重跑通过。
+## Agent-2.0 Phase 10 — current qualification refresh (2026-08-25)
+
+状态：失败（保持 PARTIAL；不得进入 Phase 11）
+
+完成时间：2026-08-25
+
+修改摘要：复核当前 Phase 10 Batch 1、使用用户提供 Chromium 完成同栈
+认证表格移动验收，并通过真实 Research 页面提交结构局部配位问题；未改动
+产品架构或 Phase 1-9 authority。
+
+测试结果：
+
+- Phase 10 deterministic: `34 passed`（24 Batch 1 + 10 N6 closure）。
+- Phase 10 service-backed: `6 selected / 6 passed / 0 failed / 0 errors / 0 skipped`。
+- Batch 1 live DeepSeek semantic matrix: `8/8 passed`。
+- Full backend: `1787 passed / 83 skipped`。
+- Frontend: `582 passed across 90 files`；typecheck/build PASS。
+- 390x844 authenticated Scientific Table: `3/3` rows, row selection PASS,
+  global overflow 0, fatal console errors 0, unhandled rejections 0。
+- Fresh authenticated structure request: real Research submission produced a
+  new Turn; this does not claim a complete new-family execution/browser path。
+
+剩余阻塞：尚未完成至少三个新增能力族的 authenticated same-stack
+自然语言执行→Job→Result→grounded answer→Viewer 浏览器黄金路径；未创建
+Commit A/B，未获得 Phase 10 exact-head CI。Ruff 全仓库存在 79 个历史问题，
+Phase 10 touched modules 的定向检查已通过。未 push。
+
+## Agent-2.0 Phase 10 — canonical fixture / three-family recheck (2026-08-25)
+
+状态：失败（保持 `PARTIAL`，不得进入 Phase 11）
+
+修改摘要：保留 fail-closed coordination eligibility；修复真实解释器
+grounding 对 UUID/provenance 数字和小写 `k` 点标签的误识别；新增回归测试。
+结构使用 fresh current-profile fixture 完成真实同栈
+ContextSnapshot→Plan→Job→2 ToolCalls→6 Artifacts→Result→DeepSeek grounded
+interpretation；电子能带也完成真实 Result 与 grounded follow-up。材料表的
+Agent 路径仍被 typed validator 拒绝，因为当前 `data.explore_materials`
+manifest 只接受 `materials.dataset`，而 canonical promoted object 是
+`materials.table`；未放宽 eligibility。
+
+测试结果：Phase 10/interpretation/worker focused `44 passed, 1 skipped`；
+touched Ruff、compileall PASS；Table mobile、Structure/Band viewer smoke PASS。
+未创建 Commit A/B，未 push，未运行 exact-head CI。剩余 dataset typed input
+bridge、三族完整浏览器黄金路径、reuse/multiturn 和 release provenance。
+
+## Agent-2.0 Phase 10 — final fixture readiness recheck (2026-08-25)
+
+状态：失败（保持 `PARTIAL`，不得进入 Phase 11）
+
+结构、电子能带和材料表均已通过当前生产 profile/readiness，并通过真实
+PostgreSQL/Redis/MinIO worker 完成至少一条成功链。最终材料表链为：
+Turn `a4f6f737-c7e5-4999-8063-d6c1911f3bb0` → Plan
+`plan_58e97082a5954e509c10a8a8` → Job
+`job_agent2_a4f6f737c7e549998063d6c1911f3bb0` → 1 ToolCall / 4 Artifacts
+→ Result `35bdb8fe-76e5-4f63-809d-e918b30ae483` → VALID interpretation；
+未直接写入数据库。
+
+修复内容是通用的 typed source/profile bridge、DataFrame 安全比较、table
+object capability admission，以及现有研究界面的 dispatch wiring；没有
+放宽 coordination/electronic eligibility，也没有新增 migration。旧 silicon
+仍以 `CAPABILITY_REQUIREMENT_UNSATISFIED` fail-closed。
+
+认证 Chromium smoke：Table `390x844`、Structure `1280x720`、Band
+`1280x720` 均 PASS，运行时错误为 0。Structure 自然语言点击路径已到达 exact
+ContextSnapshot 和双 capability `PLAN_READY`；但本地重复诊断造成 API
+PostgreSQL 连接池耗尽，未捕获一个干净的 dispatch 后浏览器 Job → Result →
+grounded answer → Viewer 证据，因此三族完整浏览器门禁仍未闭合。focused
+测试 `55 passed, 1 skipped`，前端 typecheck/build、touched Ruff、compileall
+和 diff check PASS；未创建/推送 Commit A/B，未获得 exact-head CI。
+
+## Agent-2.0 Phase 10 — Stage 0 pool diagnosis and lifecycle fix (2026-08-25)
+
+状态：失败（保持 `PARTIAL`，不得进入 Phase 11）
+
+实际 `pg_stat_activity` 证据显示，重复认证轮询后 PostgreSQL 达到约 98 个
+idle 会话，但没有 idle-in-transaction 累积。根因是 API 路由每次调用都创建新的
+SQLAlchemy Engine，从而创建新的 5-connection pool；不是应通过增大 pool 参数
+掩盖的问题。
+
+本轮加入按数据库配置复用的进程级 Engine cache、API shutdown disposal，以及
+8 次请求式 Engine 创建/连接关闭回归测试。定向结果为 `46 passed, 1 skipped`，
+数据库模块和新增测试 Ruff PASS，compileall、frontend focused、typecheck、
+production build、git diff check PASS。重启旧 API/worker 后数据库会话回落到
+单个诊断连接。
+
+由于本轮运行时在重启后尚未重新完成干净的三族 authenticated dispatch → Job →
+Result → grounded answer → Viewer 浏览器路径，且未运行 current-head service
+suite、未创建 P10-A/P10-B、未获得 exact-SHA CI，Phase 10 仍为 PARTIAL；Phase 11
+未开始。
+
+## Agent-2.0 Phase 10 — clean runtime three-family closure attempt (2026-08-25)
+
+状态：部分完成（功能证据通过；发布 provenance 未闭合，保持
+`AGENT2_PHASE10 = PARTIAL`，不得进入 Phase 11）
+
+修改摘要：完成进程级 PostgreSQL Engine cache 与终态进度幂等重投影修复；
+保留 coordination/electronic fail-closed eligibility；通过 canonical
+typed source/Profile bridge 完成材料表执行。使用真实 Chromium 和同一
+PostgreSQL/Redis/MinIO 数据平面，完成 Structure、Electronic Band、Dataset
+三条 authenticated natural-language
+Research→Plan→Job→ToolCall→Artifact→ScientificResult→grounded
+interpretation→Viewer 路径。未直接插入 ScientificObject、Profile、Job、
+Result 或 Report。
+
+验收证据：
+
+- Structure Turn `21d40ce4-c299-485f-8b34-db29f1416dc8`：
+  CrystalNN + VoronoiNN 双 capability，精确 object/version 保留，终态
+  `COMPLETED`，Structure Viewer PASS。
+- Electronic Turn `e96b22af-0bf5-4ef2-962e-05d20a5afe93`：Band Structure
+  自然语言路径、精确资源、grounded answer 和 Viewer PASS。
+- Dataset Turn `6d16ce68-6cf1-4d93-8147-6d76fa35a784`：3 行 canonical
+  table、材料探索结果、grounded answer 和 Viewer PASS。
+- Table `390x844`：3/3 rows、row selection、global overflow=0、fatal/
+  unhandled/critical request errors=0。
+- Structure/Band `1280x720`：Viewer PASS，运行时致命错误=0。
+- PostgreSQL pool：修复前约 98 idle sessions；修复后
+  `active=1, idle=6, idle-in-transaction=0`，无 pool timeout。
+- 当前 full backend：`1791 passed / 83 skipped`；frontend
+  `582 passed across 90 files`；typecheck/build/touched Ruff/compileall/
+  `uv lock --check`/diff check PASS。
+- 当前 Phase 10 service-backed：`12 selected / 12 passed / 0 failed /
+  0 errors / 0 skipped`。
+
+剩余阻塞：尚未创建并推送 P10-A/P10-B，也没有针对当前工作树的 exact-SHA
+CI；因此不能宣称 Phase 10 COMPLETE，Phase 11 执行明确为 NOT_STARTED。

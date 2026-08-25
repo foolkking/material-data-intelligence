@@ -14,7 +14,7 @@ import { cancelAgent2Execution, getAgent2ExecutionProgress, type Agent2ProgressV
 import { ResearchExecutionActivity } from "./ResearchExecutionActivity";
 import { getAgent2SessionMemory, type Agent2SessionMemory } from "../lib/agent2-memory-api";
 import { ScientificReportAction } from "./ScientificReportAction";
-import { createAgent2ResearchTurn } from "../lib/agent2-research-api";
+import { createAgent2ResearchTurn, dispatchAgent2ResearchTurn } from "../lib/agent2-research-api";
 import { decodeWorkspaceSelectionUrl } from "./workspace/workspace-selection-contract";
 import { apiSemanticLocator, scientificSelectionFromWorkspace, selectionToResearchObjectRef } from "./scientific-viewer/scientificSelection";
 import { resolveScientificViewer } from "./scientific-viewer/scientificViewerRegistry";
@@ -153,6 +153,7 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewer
   const [error, setError] = useState("");
   const [agent2Progress, setAgent2Progress] = useState<Agent2ProgressView | null>(null);
   const [agent2CancelPending, setAgent2CancelPending] = useState(false);
+  const agent2DispatchRef = useRef<string | null>(null);
   const [sessionMemory, setSessionMemory] = useState<Agent2SessionMemory | null>(null);
   const [conversationWidth, setConversationWidth] = useState(420);
   const [sessionHistoryOpen, setSessionHistoryOpen] = useState(false);
@@ -197,13 +198,20 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewer
 
   useEffect(() => {
     if (!agent2TurnId) { setAgent2Progress(null); return; }
+    agent2DispatchRef.current = null;
     let active = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const refresh = () => {
       void getAgent2ExecutionProgress(agent2TurnId).then((next) => {
         if (!active) return;
         setAgent2Progress(next);
-        if (["PLAN_READY", "QUEUED", "RUNNING", "CANCELING", "RESULT_PENDING", "RESULT_READY", "INTERPRETING"].includes(next.status)) timer = setTimeout(refresh, 1800);
+        if (next.status === "PLAN_READY" && agent2DispatchRef.current !== agent2TurnId) {
+          agent2DispatchRef.current = agent2TurnId;
+          void dispatchAgent2ResearchTurn(agent2TurnId).catch((reason) => {
+            if (active) setError(reason instanceof Error ? reason.message : "研究执行失败");
+          });
+        }
+        if (["ORCHESTRATING", "READY_TO_PLAN", "PLANNING", "PLAN_READY", "QUEUED", "RUNNING", "CANCELING", "RESULT_PENDING", "RESULT_READY", "INTERPRETING"].includes(next.status)) timer = setTimeout(refresh, 1800);
       }).catch(() => { if (active) setAgent2Progress(null); });
     };
     refresh();
@@ -441,7 +449,11 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewer
         }] : [];
         const created = await createAgent2ResearchTurn(projectId, activeSession.id, {
           message: question.trim(),
-          ui_context: { active_object_refs: [objectRef], selection_refs: exactViewerContext.selection ? [objectRef] : [], scientific_selections: scientificSelections, explicit_object_refs: [], explicit_result_ids: [], explicit_finding_refs: [] },
+          // A deep-linked Viewer context is already an explicit, exact object/version
+          // selection. Preserve it in the resolver's explicit channel as well as the
+          // bounded active/selection channels so ambiguous project history cannot
+          // downgrade a targeted research request to clarification.
+          ui_context: { active_object_refs: [objectRef], selection_refs: exactViewerContext.selection ? [objectRef] : [], scientific_selections: scientificSelections, explicit_object_refs: [objectRef], explicit_result_ids: [], explicit_finding_refs: [] },
         });
         setQuestion(""); setState("planning"); setMobilePanel("workbench");
         router.push(`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(activeSession.id)}?turn=${encodeURIComponent(created.turn_id)}`);

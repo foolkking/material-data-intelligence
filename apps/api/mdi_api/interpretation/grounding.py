@@ -7,7 +7,11 @@ from typing import Any
 from .schemas import GroundingValidationResult, ScientificInterpretationOutput, numeric_tokens
 
 
-_UNIT = re.compile(r"(?<![A-Za-z])(?:Å|angstrom|nm|pm|eV|meV|fs|ps|K|%|THz|cm-?1|1/s|m\^?2/s)(?![A-Za-z])", re.IGNORECASE)
+# Keep temperature ``K`` case-sensitive: a lowercase ``k`` in labels such as
+# ``k-point`` is not a Kelvin unit and must not trigger unit grounding.
+_UNIT = re.compile(
+    r"(?<![A-Za-z])(?:(?i:Å|angstrom|nm|pm|eV|meV|fs|ps|%|THz|cm-?1|1/s|m\^?2/s)|K)(?![A-Za-z])"
+)
 
 
 def _unit_key(value: str) -> str:

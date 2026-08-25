@@ -1,11 +1,28 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Mapping, MutableMapping
 
 from mdi_schemas import AnalysisPlan, AnalysisPlanV02
 from mdi_tool_registry import ToolRegistry, validate_dependency_plan
 from mdi_tool_registry.plan_validator import validate_plan
+
+
+def _same_runtime_payload(left: Any, right: Any) -> bool:
+    """Compare runtime source payloads without invoking ambiguous DataFrame truthiness."""
+    try:
+        import pandas as pd
+
+        if isinstance(left, pd.DataFrame) or isinstance(right, pd.DataFrame):
+            return isinstance(left, pd.DataFrame) and isinstance(right, pd.DataFrame) and left.equals(right)
+    except Exception:
+        # Non-tabular payloads must retain the historical equality behavior below.
+        pass
+    try:
+        result = left == right
+        return bool(result) if not hasattr(result, "all") else bool(result.all())
+    except Exception:
+        return left is right
 
 
 SOURCE_RESOURCE_INDEX_KEY = "__mdi_source_resources__"
@@ -49,12 +66,12 @@ def register_runtime_source_resource(
     current = index.get(object_id)
     if current is not None and current != identity:
         raise ValueError(f"Conflicting runtime source identity: {object_id}")
-    if object_id in object_store and object_store[object_id] != value:
+    if object_id in object_store and not _same_runtime_payload(object_store[object_id], value):
         raise ValueError(f"Conflicting runtime source payload: {object_id}")
     index[object_id] = identity
     object_store[object_id] = value
     for alias in aliases:
-        if alias in object_store and object_store[alias] != value:
+        if alias in object_store and not _same_runtime_payload(object_store[alias], value):
             raise ValueError(f"Conflicting runtime source alias: {alias}")
         object_store[alias] = value
         index[alias] = {**identity, "alias": alias, "canonicalObjectId": object_id}

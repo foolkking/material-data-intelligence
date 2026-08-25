@@ -208,9 +208,30 @@ class QueueWorkerRuntime:
 
         try:
             expected_profile_id = str((plan_payload or {}).get("profileId") or "") or None
-            effective_object_store = dict(
-                object_store or self._resolve_object_store(repos, job, profile_id=expected_profile_id)
+            exact_version_plan = any(
+                str(item.get("refType") or "") == "normalized_object"
+                and _looks_like_uuid(item.get("ref"))
+                for step in (plan_payload or {}).get("steps") or []
+                if isinstance(step, Mapping)
+                for item in step.get("inputRefs") or []
+                if isinstance(item, Mapping)
             )
+            if object_store is not None:
+                effective_object_store = dict(object_store)
+            else:
+                try:
+                    effective_object_store = dict(
+                        self._resolve_object_store(repos, job, profile_id=expected_profile_id)
+                    )
+                except ValueError:
+                    # Agent2 plans carry an exact ScientificObjectVersion. A
+                    # stale/missing dataset export must not prevent the
+                    # durable exact-version hydrator below from loading that
+                    # authoritative payload. Legacy plans without an exact
+                    # version continue to fail closed here.
+                    if not exact_version_plan:
+                        raise
+                    effective_object_store = {}
             hydrate_agent2_sources = getattr(self.object_store_resolver, "hydrate_agent2_sources", None)
             if callable(hydrate_agent2_sources):
                 effective_object_store = dict(hydrate_agent2_sources(
@@ -1265,3 +1286,13 @@ def _sha256(content: bytes) -> str:
 
 def _safe_id(value: str) -> str:
     return "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in value)
+
+
+def _looks_like_uuid(value: Any) -> bool:
+    try:
+        from uuid import UUID
+
+        UUID(str(value))
+    except (TypeError, ValueError):
+        return False
+    return True

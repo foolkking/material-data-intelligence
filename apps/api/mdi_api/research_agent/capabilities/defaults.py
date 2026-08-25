@@ -4,7 +4,6 @@ from mdi_api.research_agent.schemas import (
     CapabilityInputSlot,
     CapabilityManifest,
     CapabilityOutputSlot,
-    CapabilityPrecondition,
     CapabilityStatus,
     ToolBinding,
 )
@@ -21,6 +20,14 @@ _DISPLAY_NAMES = {
     "phonon.band": "检查声子能带",
     "phonon.dos": "检查声子态密度",
     "phonon.band_dos": "组合声子能带与态密度",
+    "structure.coordination_hist": "分析配位数分布",
+    "structure.coordination_crystalnn": "检查 CrystalNN 局域配位",
+    "structure.coordination_voronoinn": "检查 VoronoiNN 局域配位",
+    "trajectory.rdf": "计算轨迹径向分布函数",
+    "electronic.band_structure": "检查电子能带",
+    "electronic.dos": "检查电子态密度",
+    "data.composition_space": "探索材料组成空间",
+    "data.materials_explorer": "浏览材料数据集",
 }
 
 
@@ -70,6 +77,14 @@ def build_default_capability_registry() -> InMemoryCapabilityRegistry:
         _manifest("phonon.band", "Normalize and inspect a phonon band.", ["phonon.inspect_band"], [CapabilityInputSlot(name="band", accepted_object_types=["phonon.band_structure"])], [CapabilityOutputSlot(name="band", result_type="phonon.band", scientific_object_type="phonon.band_structure")], "phonon.band"),
         _manifest("phonon.dos", "Normalize and inspect a phonon DOS.", ["phonon.inspect_dos"], [CapabilityInputSlot(name="dos", accepted_object_types=["phonon.dos"])], [CapabilityOutputSlot(name="dos", result_type="phonon.dos", scientific_object_type="phonon.dos")], "phonon.dos"),
         _manifest("phonon.band_dos", "Compose compatible phonon band and DOS views.", ["phonon.inspect_band", "phonon.inspect_dos"], [CapabilityInputSlot(name="band", accepted_object_types=["phonon.band_structure"]), CapabilityInputSlot(name="dos", accepted_object_types=["phonon.dos"])], [CapabilityOutputSlot(name="combined", result_type="phonon.band_dos")], "phonon.band_dos"),
+        _manifest("structure.coordination_hist", "Summarize distance-cutoff coordination distributions.", ["structure.inspect_coordination_hist"], [structure], [CapabilityOutputSlot(name="coordination", result_type="structure.coordination.hist")], "structure.coordination_hist"),
+        _manifest("structure.coordination_crystalnn", "Inspect CrystalNN coordination results.", ["structure.inspect_coordination_crystalnn"], [structure], [CapabilityOutputSlot(name="coordination", result_type="structure.coordination.crystalnn")], "structure.coordination_crystalnn"),
+        _manifest("structure.coordination_voronoinn", "Inspect VoronoiNN coordination results.", ["structure.inspect_coordination_voronoi"], [structure], [CapabilityOutputSlot(name="coordination", result_type="structure.coordination.voronoi")], "structure.coordination_voronoinn"),
+        _manifest("trajectory.rdf", "Compute a bounded RDF from an atomic trajectory.", ["trajectory.compute_rdf"], [trajectory], [CapabilityOutputSlot(name="rdf", result_type="trajectory.rdf")], "trajectory.rdf"),
+        _manifest("electronic.band_structure", "Inspect supplied electronic band data.", ["electronic.inspect_band"], [CapabilityInputSlot(name="band", accepted_object_types=["electronic.band_structure"])], [CapabilityOutputSlot(name="band", result_type="electronic.band_structure", scientific_object_type="electronic.band_structure")], "electronic.band_structure"),
+        _manifest("electronic.dos", "Inspect supplied electronic DOS data.", ["electronic.inspect_dos"], [CapabilityInputSlot(name="dos", accepted_object_types=["electronic.dos"])], [CapabilityOutputSlot(name="dos", result_type="electronic.dos", scientific_object_type="electronic.dos")], "electronic.dos"),
+        _manifest("data.composition_space", "Explore an authorized composition-space projection.", ["data.explore_composition_space"], [CapabilityInputSlot(name="dataset", accepted_object_types=["materials.dataset", "materials.table"])], [CapabilityOutputSlot(name="space", result_type="data.composition_space")], "dataset.composition_space"),
+        _manifest("data.materials_explorer", "Summarize an authorized materials dataset.", ["data.explore_materials"], [CapabilityInputSlot(name="dataset", accepted_object_types=["materials.dataset", "materials.table"])], [CapabilityOutputSlot(name="explorer", result_type="data.materials_explorer")], "dataset.materials_explorer"),
     ]
     for manifest in manifests:
         if manifest.capability_id == "structure.rdf":

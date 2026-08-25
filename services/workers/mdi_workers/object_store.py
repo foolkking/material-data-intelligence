@@ -228,6 +228,8 @@ class DurableObjectStoreResolver:
                 executable_type=executable_type,
                 canonical_metadata=version.get("canonical_metadata_json") or {},
             )
+            canonical_resource_id = str((version.get("canonical_metadata_json") or {}).get("source_resource_id") or "")
+            aliases = (canonical_resource_id,) if canonical_resource_id and canonical_resource_id != version_id else ()
             register_runtime_source_resource(
                 hydrated,
                 object_id=version_id,
@@ -235,6 +237,7 @@ class DurableObjectStoreResolver:
                 object_hash=expected_checksum,
                 dataset_id=dataset_id,
                 value=value,
+                aliases=aliases,
             )
         return hydrated
 

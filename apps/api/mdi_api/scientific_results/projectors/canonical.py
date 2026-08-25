@@ -296,7 +296,8 @@ class CanonicalScientificResultProjector:
 
 
 def _contracts() -> tuple[ProjectorContract, ...]:
-    count = lambda pointer, predicate: FactDeclaration(predicate, pointer, "count")
+    def count(pointer: str, predicate: str) -> FactDeclaration:
+        return FactDeclaration(predicate, pointer, "count")
     return (
         ProjectorContract(
             "agent2.structure.rdf", "径向分布函数", "structure.rdf",
@@ -378,6 +379,49 @@ def _contracts() -> tuple[ProjectorContract, ...]:
                 count("/imaginary_band_mode_count", "phonon.imaginary_mode_count"),
             ),
             limitations=(("PHONON_EIGENVECTORS_UNAVAILABLE", "The combined Artifact is a static band/DOS result and does not provide eigenvectors or animation authority."),),
+        ),
+        ProjectorContract(
+            "agent2.structure.coordination_hist", "配位数分布", "structure.coordination.hist",
+            ("phase10e1.coordination_hist.v1",), ("phase10e1.static_chart.v1",), (),
+            facts=(FactDeclaration("structure.coordination_site_count", "/histogram/total_sites", "count"),),
+            limitations=(("COORDINATION_HIST_NO_NEW_NEIGHBOR_SEARCH", "The result references the validated coordination Artifact and does not recompute neighbors."),),
+        ),
+        ProjectorContract(
+            "agent2.structure.coordination_crystalnn", "CrystalNN 局域配位", "structure.coordination.crystalnn",
+            ("phase10n1.crystalnn_coordination.v1",), (), (),
+            facts=(FactDeclaration("structure.coordination_successful_sites", "/coverage/successfulSites", "count"),),
+        ),
+        ProjectorContract(
+            "agent2.structure.coordination_voronoinn", "VoronoiNN 局域配位", "structure.coordination.voronoi",
+            ("phase10n1.voronoinn_coordination.v1",), (), (),
+            facts=(FactDeclaration("structure.coordination_successful_sites", "/coverage/successfulSites", "count"),),
+        ),
+        ProjectorContract(
+            "agent2.trajectory.rdf", "轨迹径向分布函数", "trajectory.rdf",
+            ("phase10n4.trajectory_rdf.v1",), ("phase10n4.trajectory_plot.v1",), (),
+            limitations=(("TRAJECTORY_RDF_SERIES_REFERENCED", "RDF series remain bounded structured evidence; the projector does not detect peaks."),),
+        ),
+        ProjectorContract(
+            "agent2.electronic.band_structure", "电子能带", "electronic.band_structure",
+            ("phase10n5.electronic_band_structure.v1",), ("phase10n5.electronic_band_plot.v1",), (),
+            facts=(FactDeclaration("electronic.band_gap", "/gap/valueEv", "eV"), FactDeclaration("electronic.kpoint_count", "/coverage/kpointCount", "count")),
+            limitations=(("ELECTRONIC_DATA_SUPPLIED", "Band values are supplied electronic data; no DFT/GW calculation or interpolation is executed."),),
+        ),
+        ProjectorContract(
+            "agent2.electronic.dos", "电子态密度", "electronic.dos",
+            ("phase10n5.electronic_dos.v1",), ("phase10n5.electronic_dos_plot.v1",), (),
+            facts=(FactDeclaration("electronic.energy_point_count", "/coverage/energyPointCount", "count"),),
+            limitations=(("ELECTRONIC_DATA_SUPPLIED", "DOS values are supplied electronic data; no new electronic calculation is executed."),),
+        ),
+        ProjectorContract(
+            "agent2.data.composition_space", "材料组成空间", "data.composition_space",
+            ("phase10k4.composition_space.v1",), ("phase10k4.composition_space_plot.v1",), (),
+            limitations=(("COMPOSITION_SPACE_DESCRIPTIVE", "Composition-space projection is descriptive and does not establish material identity or causality."),),
+        ),
+        ProjectorContract(
+            "agent2.data.materials_explorer", "材料数据集探索", "data.materials_explorer",
+            ("phase10k2.dataset_materials_explorer.v1",), ("phase10k2.dataset_materials_explorer_plot.v1",), (),
+            limitations=(("MATERIALS_EXPLORER_BOUNDED", "Only the bounded, profile-authorized dataset projection is included."),),
         ),
     )
 

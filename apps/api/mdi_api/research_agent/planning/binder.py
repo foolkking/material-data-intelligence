@@ -46,6 +46,12 @@ class CapabilityBinder:
             tool = self.tool_registry.get_tool_by_id(binding.tool_id)
             step_to_tool[step.step_id] = (tool, build_tool_artifact_port_metadata(tool))
             input_refs: list[InputRef] = []
+            # Profile-backed dataset adapters consume the exact persisted
+            # DataProfile in addition to their source table/structure refs.
+            # Keep this binding explicit so the worker cannot silently run
+            # against an unprofiled or latest-inferred dataset.
+            if tool.toolId in {"dataset.materials_explorer", "dataset.composition_space"}:
+                input_refs.append(InputRef(refType="profile", ref="profile", fieldRole="profile"))
             for slot_name, bindings in step.input_bindings.items():
                 for item in bindings:
                     if item.kind == CapabilityBindingKind.SOURCE_OBJECT:

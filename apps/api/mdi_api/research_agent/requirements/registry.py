@@ -59,6 +59,14 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
         ("phonon.inspect_dos", "Inspect phonon DOS", "Inspect an authorized phonon density of states.", "phonon", ["phonon.dos"], object_constraints),
         ("data.query", "Query data", "Query authorized project scientific data without mutation.", "data", ["materials.dataset"], object_constraints),
         ("report.compose", "Compose report", "Prepare authorized result references for report composition.", "report", [], object_constraints),
+        ("structure.inspect_coordination_hist", "Inspect coordination histogram", "Summarize validated distance-cutoff coordination distributions for a crystal structure.", "structure", ["structure.crystal"], object_constraints),
+        ("structure.inspect_coordination_crystalnn", "Inspect CrystalNN coordination", "Inspect validated CrystalNN local coordination results.", "structure", ["structure.crystal"], object_constraints),
+        ("structure.inspect_coordination_voronoi", "Inspect Voronoi coordination", "Inspect validated VoronoiNN local coordination results.", "structure", ["structure.crystal"], object_constraints),
+        ("trajectory.compute_rdf", "Compute trajectory RDF", "Compute a bounded radial distribution function from an authorized atomic trajectory.", "trajectory", ["trajectory.atomic"], rdf_constraints),
+        ("electronic.inspect_band", "Inspect electronic band", "Inspect supplied electronic band-structure data without running a new electronic calculation.", "electronic", ["electronic.band_structure"], object_constraints),
+        ("electronic.inspect_dos", "Inspect electronic DOS", "Inspect supplied electronic density-of-states data without running a new electronic calculation.", "electronic", ["electronic.dos"], object_constraints),
+        ("data.explore_composition_space", "Explore composition space", "Explore an authorized materials table using the existing bounded composition-space projection.", "data", ["materials.dataset", "materials.table"], object_constraints),
+        ("data.explore_materials", "Explore materials", "Summarize and compare an authorized materials dataset using the existing bounded explorer.", "data", ["materials.dataset", "materials.table"], object_constraints),
     )
     for requirement_id, display_name, description, domain, accepted, constraints in manifests:
         registry.register(RequirementManifest(

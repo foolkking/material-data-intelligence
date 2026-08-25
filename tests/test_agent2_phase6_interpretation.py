@@ -6,7 +6,6 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
 from sqlalchemy import func, select, update
 
 from mdi_api.db import analysis_plans, artifacts, jobs, scientific_result_snapshots, tool_calls
@@ -53,6 +52,26 @@ def test_grounding_rejects_unknown_refs_numeric_hallucination_and_unit_conversio
     assert not validate_interpretation(answer_lead, bundle).valid
     angstrom_symbol = ScientificInterpretationOutput.model_validate(_output("A peak is recorded at 2.5 Å."))
     assert validate_interpretation(angstrom_symbol, bundle).valid
+
+
+def test_grounding_ignores_opaque_provenance_identifiers_in_answer_lead():
+    bundle = _bundle()
+    lead = (
+        "结果 440636e5-d4e6-4410-b2e4-6909399cde82 的第一峰位于 2.5 angstrom，"
+        "依据 fact.rdf.first_peak 和 evidence.evidence.rdf。"
+    )
+    result = ScientificInterpretationOutput.model_validate(_output(lead=lead))
+    assert validate_interpretation(result, bundle).valid
+
+
+def test_grounding_does_not_treat_lowercase_k_labels_as_kelvin_units():
+    base = _bundle()
+    bundle = base.model_copy(update={"facts": [*base.facts, {"fact_id": "rdf.kpoint_count", "predicate": "electronic.kpoint_count", "subject_ref": "structure:v1", "value": 81, "unit": "count", "source": {"artifact_id": "artifact-1", "artifact_locator": "/summary/kpointCount"}}]})
+    result = ScientificInterpretationOutput.model_validate(
+        _output(statement="该结果包含 81 k 点。", fact="rdf.kpoint_count")
+    )
+    # The statement intentionally has no measured unit; ``k`` is a path label.
+    assert validate_interpretation(result, bundle).valid
 
 
 def test_partial_result_cannot_be_presented_as_complete():

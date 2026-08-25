@@ -169,6 +169,57 @@ class PhononBandDosSummaryPayload(_Payload):
     imaginary_band_mode_count: int = Field(ge=0)
 
 
+class Phase10GenericArtifactPayload(_Payload):
+    """Validated envelope for mature Phase 10 adapter contracts.
+
+    Individual scientific adapters own their detailed schemas.  The result
+    projector only needs a strict contract/version envelope before it creates
+    bounded result references; it never derives science from this envelope.
+    """
+
+    artifact_type: str = Field(validation_alias="artifactType", min_length=3)
+
+
+class ElectronicBandArtifactPayload(Phase10GenericArtifactPayload):
+    schema_version: Literal["phase10n5.electronic_band_structure.v1"] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+    artifact_type: Literal["electronic.band_structure"] = Field(validation_alias="artifactType")
+
+
+class ElectronicDosArtifactPayload(Phase10GenericArtifactPayload):
+    schema_version: Literal["phase10n5.electronic_dos.v1"] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+    artifact_type: Literal["electronic.dos"] = Field(validation_alias="artifactType")
+
+
+class CoordinationHistArtifactPayload(Phase10GenericArtifactPayload):
+    schema_version: Literal["phase10e1.coordination_hist.v1"] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+    artifact_type: Literal["structure.coordination_hist"] = Field(validation_alias="artifactType")
+
+
+class CoordinationCrystalNNArtifactPayload(Phase10GenericArtifactPayload):
+    schema_version: Literal["phase10n1.crystalnn_coordination.v1"] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+    artifact_type: Literal["structure.coordination_crystalnn"] = Field(validation_alias="artifactType")
+
+
+class CoordinationVoronoiNNArtifactPayload(Phase10GenericArtifactPayload):
+    schema_version: Literal["phase10n1.voronoinn_coordination.v1"] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+    artifact_type: Literal["structure.coordination_voronoinn"] = Field(validation_alias="artifactType")
+
+
+class TrajectoryRdfArtifactPayload(Phase10GenericArtifactPayload):
+    schema_version: Literal["phase10n4.trajectory_rdf.v1"] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+    artifact_type: Literal["trajectory.rdf"] = Field(validation_alias="artifactType")
+
+
+class CompositionSpaceArtifactPayload(Phase10GenericArtifactPayload):
+    schema_version: Literal["phase10k4.composition_space.v1"] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+    artifact_type: Literal["dataset.composition_space"] = Field(validation_alias="artifactType")
+
+
+class MaterialsExplorerArtifactPayload(Phase10GenericArtifactPayload):
+    schema_version: Literal["phase10k2.dataset_materials_explorer.v1"] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+    artifact_type: Literal["dataset.materials_explorer"] = Field(validation_alias="artifactType")
+
+
 PRODUCTION_PAYLOAD_ADAPTERS: dict[str, type[_Payload]] = {
     "phase10e7.rdf.v1": RdfArtifactPayload,
     "phase10e4.xrd_pattern.v1": TheoreticalXrdArtifactPayload,
@@ -179,6 +230,14 @@ PRODUCTION_PAYLOAD_ADAPTERS: dict[str, type[_Payload]] = {
     "phase10h.phonon_summary.v1": PhononBandSummaryPayload,
     "phase10h2.phonon_dos_summary.v1": PhononDosSummaryPayload,
     "phase10h.phonon_band_dos_summary.v1": PhononBandDosSummaryPayload,
+    "phase10n5.electronic_band_structure.v1": ElectronicBandArtifactPayload,
+    "phase10n5.electronic_dos.v1": ElectronicDosArtifactPayload,
+    "phase10e1.coordination_hist.v1": CoordinationHistArtifactPayload,
+    "phase10n1.crystalnn_coordination.v1": CoordinationCrystalNNArtifactPayload,
+    "phase10n1.voronoinn_coordination.v1": CoordinationVoronoiNNArtifactPayload,
+    "phase10n4.trajectory_rdf.v1": TrajectoryRdfArtifactPayload,
+    "phase10k4.composition_space.v1": CompositionSpaceArtifactPayload,
+    "phase10k2.dataset_materials_explorer.v1": MaterialsExplorerArtifactPayload,
 }
 
 

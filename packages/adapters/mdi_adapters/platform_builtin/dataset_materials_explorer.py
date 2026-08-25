@@ -61,6 +61,29 @@ class DatasetMaterialsExplorerAdapter(BaseToolAdapter):
 
         for index, value in enumerate(self._resolved_inputs):
             ref = str(_ref_value(input_refs[index], "ref", f"input_{index}")) if index < len(input_refs) else f"input_{index}"
+            # Agent2 binds exact ScientificObjectVersion refs. Runtime source
+            # aliases retain that identity while the Profile owns the
+            # canonical parsed resource id used for semantic columns.
+            source_index = context.object_store.get("__mdi_source_resources__", {})
+            identity = source_index.get(ref) if isinstance(source_index, Mapping) else None
+            canonical_ref = str(identity.get("canonicalObjectId")) if isinstance(identity, Mapping) and identity.get("canonicalObjectId") else ref
+            if (
+                canonical_ref == ref
+                and isinstance(identity, Mapping)
+                and identity.get("objectHash")
+            ):
+                # Agent2 execution may bind an exact ScientificObjectVersion
+                # while the immutable DataProfile names the canonical parsed
+                # resource.  Resolve that bridge only by the profile's
+                # authoritative object hash; never by filename/name/latest
+                # substitution.
+                matching_profile_resources = [
+                    item
+                    for item in _profile_resources_from_values(self._resolved_inputs)
+                    if str(getattr(item, "objectHash", "")) == str(identity["objectHash"])
+                ]
+                if len(matching_profile_resources) == 1:
+                    canonical_ref = str(matching_profile_resources[0].objectId)
             candidate = _coerce_profile(value)
             if candidate is not None:
                 if profile is not None:
@@ -77,7 +100,7 @@ class DatasetMaterialsExplorerAdapter(BaseToolAdapter):
                     structures[object_id] = _coerce_structure(raw_structure)
                 continue
             if isinstance(value, pd.DataFrame) or _looks_like_table(value):
-                tables[ref] = coerce_dataframe(value, tool_id=self.tool_id)
+                tables[canonical_ref] = coerce_dataframe(value, tool_id=self.tool_id)
                 continue
             if _looks_like_structure(value):
                 structures[ref] = _coerce_structure(value)
@@ -92,6 +115,15 @@ class DatasetMaterialsExplorerAdapter(BaseToolAdapter):
             raise _input_error("Profile has no resolved table or structure resources.", "missing_material_resources")
 
         known_object_ids = {item.objectId for item in profile.resourceSemantics}
+        unknown_table_ids = [object_id for object_id in tables if object_id not in known_object_ids]
+        dataframe_resources = [item for item in profile.resourceSemantics if item.objectType == "DataFrame"]
+        if len(unknown_table_ids) == 1 and len(dataframe_resources) == 1:
+            # A current Agent2 exact-version binding can carry the source
+            # content hash rather than the parser's canonical resource id.
+            # When the Profile has exactly one DataFrame resource, the
+            # one-to-one typed bridge is authoritative and deterministic.
+            table_value = tables.pop(unknown_table_ids[0])
+            tables[str(dataframe_resources[0].objectId)] = table_value
         for object_id in (*tables, *structures):
             if object_id not in known_object_ids and object_id not in {"ml_table", "structures", "structure_resources"}:
                 raise _input_error("Resolved object is not declared by Profile 2.0.", "object_not_profiled", objectId=object_id)

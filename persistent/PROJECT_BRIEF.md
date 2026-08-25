@@ -993,6 +993,15 @@ by this record.
 Provider-facing prior-turn context uses opaque labels; database Turn UUIDs stay
 server-side for authorization, replay and audit.
 
+## Agent-2.0 Phase 10 status (2026-08-25)
+
+Batch 1 adds eight qualified semantic capabilities on top of the nine-capability
+Phase 3 baseline. Current active families are structure, trajectory, phonon,
+diffraction, machine learning, electronic and dataset. The checked-in census
+separates 62 registered Tools from 17 Agent2 capabilities. Deterministic
+qualification is green; live/service/browser/exact-head release gates remain
+open and Phase 11 must not start from this partial status.
+
 ## Agent 2.0 Phase 9 Scientific Viewer (2026-08-24)
 
 Phase 9 implementation is currently PARTIAL. The deterministic exact-version

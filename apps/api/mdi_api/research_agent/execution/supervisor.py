@@ -15,7 +15,11 @@ from mdi_api.research_agent.execution.schemas import (
     ExecutionWarning,
     ResearchExecutionSummary,
 )
-from mdi_api.research_agent.schemas import ResearchTurnEventType, ResearchTurnStatus
+from mdi_api.research_agent.schemas import (
+    TERMINAL_TURN_STATUSES,
+    ResearchTurnEventType,
+    ResearchTurnStatus,
+)
 
 
 def _v(row: Any, *names: str, default: Any = None) -> Any:
@@ -133,6 +137,23 @@ class ResearchExecutionSupervisor:
                     job=job,
                     tool_calls=tool_calls,
                     artifacts=projected_artifacts,
+                )
+
+            # Progress polling is intentionally idempotent after the result
+            # worker has completed the turn.  The interpreter may attach the
+            # final assistant message between two browser polls; in that
+            # window the same successful execution must be projected again,
+            # not treated as a conflicting RESULT_PENDING transition.
+            existing_summary = unit.agent2.research_execution_summaries.get_for_turn(turn["id"])
+            if existing_summary is not None and current_status in TERMINAL_TURN_STATUSES:
+                return projector.project(
+                    turn=turn,
+                    capability_plan=capability_context,
+                    analysis_plan=plan_record,
+                    job=job,
+                    tool_calls=tool_calls,
+                    artifacts=projected_artifacts,
+                    summary=existing_summary,
                 )
 
             if outcome in {ExecutionOutcome.SUCCESS, ExecutionOutcome.PARTIAL} and turn.get("assistant_final_message_id") is not None:

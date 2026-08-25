@@ -18,3 +18,16 @@ export async function createAgent2ResearchTurn(projectId: string, sessionId: str
   }
   return response.json() as Promise<Agent2TurnResponse>;
 }
+
+export async function dispatchAgent2ResearchTurn(turnId: string): Promise<{ turn_id: string; status: string; queued: boolean }> {
+  const response = await fetch(`${API_BASE}/api/research/turns/${encodeURIComponent(turnId)}/dispatch`, {
+    method: "POST",
+    credentials: "include",
+  });
+  if (!response.ok) {
+    let detail = `研究执行失败 (${response.status})`;
+    try { const body = await response.json() as { detail?: string }; if (body.detail) detail = body.detail; } catch { /* bounded product error */ }
+    throw new Error(detail);
+  }
+  return response.json() as Promise<{ turn_id: string; status: string; queued: boolean }>;
+}
