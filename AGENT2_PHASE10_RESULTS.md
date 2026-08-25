@@ -341,3 +341,19 @@ pushed and no exact-SHA CI exists for this uncommitted worktree. The release
 gate remains intentionally open:
 `FUNCTIONAL_PHASE10_CLOSURE = PARTIAL`, `AGENT2_PHASE10 = PARTIAL`,
 `READY_FOR_PHASE11 = NO`.
+
+## P10-A Functional Closure Record — 2026-08-25
+
+The clean runtime three-family campaign and current-head verification are now
+closed. P10-A is:
+
+- SHA: `ea5eb2546a82a1ffa602bab7651f7e9a6d2ffdd9`
+- CI run: `32858593255`
+- CI tested SHA: `ea5eb2546a82a1ffa602bab7651f7e9a6d2ffdd9`
+- CI result: PASS
+- Required service-backed integration: PASS (PostgreSQL/Redis/MinIO,
+  no-skipped assertion passed)
+
+This record preserves the earlier failed attempts as history. The remaining
+step is the documentation-only P10-B completion record and its exact-current-
+head CI; no Phase 11 implementation is authorized before that final gate.
