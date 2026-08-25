@@ -1,0 +1,60 @@
+{
+  "phase": "agent2_phase11",
+  "schema_version": "1.0",
+  "trust_model": "repository_trusted_declarative",
+  "packs": [
+    {
+      "pack_id": "core.structure",
+      "pack_version": "1.0",
+      "capabilities": [
+        "structure.coordination_hist",
+        "structure.coordination_crystalnn",
+        "structure.coordination_voronoinn",
+        "structure.rdf",
+        "diffraction.theoretical_xrd",
+        "diffraction.experimental_theoretical_comparison"
+      ]
+    },
+    {
+      "pack_id": "core.electronic",
+      "pack_version": "1.0",
+      "capabilities": [
+        "electronic.band_structure",
+        "electronic.dos"
+      ]
+    },
+    {
+      "pack_id": "core.data",
+      "pack_version": "1.0",
+      "capabilities": [
+        "data.composition_space",
+        "data.materials_explorer",
+        "ml.regression_evaluation"
+      ]
+    },
+    {
+      "pack_id": "core.trajectory",
+      "pack_version": "1.0",
+      "capabilities": [
+        "trajectory.rdf",
+        "trajectory.msd",
+        "trajectory.diffusion"
+      ]
+    },
+    {
+      "pack_id": "core.other",
+      "pack_version": "1.0",
+      "capabilities": [
+        "phonon.band",
+        "phonon.dos",
+        "phonon.band_dos"
+      ]
+    }
+  ],
+  "prohibitions": [
+    "arbitrary_code_loading",
+    "remote_package_installation",
+    "manifest_prompt_injection",
+    "raw_tool_catalog_to_provider"
+  ]
+}

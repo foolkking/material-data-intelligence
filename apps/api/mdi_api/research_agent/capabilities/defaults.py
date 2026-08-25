@@ -8,6 +8,7 @@ from mdi_api.research_agent.schemas import (
     ToolBinding,
 )
 from mdi_api.research_agent.capabilities.registry import InMemoryCapabilityRegistry
+from mdi_api.research_agent.capabilities.packs import CapabilityExtensionRegistry, build_phase11_packs
 
 
 _DISPLAY_NAMES = {
@@ -86,7 +87,11 @@ def build_default_capability_registry() -> InMemoryCapabilityRegistry:
         _manifest("data.composition_space", "Explore an authorized composition-space projection.", ["data.explore_composition_space"], [CapabilityInputSlot(name="dataset", accepted_object_types=["materials.dataset", "materials.table"])], [CapabilityOutputSlot(name="space", result_type="data.composition_space")], "dataset.composition_space"),
         _manifest("data.materials_explorer", "Summarize an authorized materials dataset.", ["data.explore_materials"], [CapabilityInputSlot(name="dataset", accepted_object_types=["materials.dataset", "materials.table"])], [CapabilityOutputSlot(name="explorer", result_type="data.materials_explorer")], "dataset.materials_explorer"),
     ]
-    for manifest in manifests:
+    # Phase 11 trusted-pack boundary: default capabilities are still the
+    # existing Phase 1-10 manifests, but are normalized through immutable
+    # repository-owned packs before becoming resolver-visible.
+    extension_registry = CapabilityExtensionRegistry(packs=build_phase11_packs(manifests))
+    for manifest in extension_registry.list_capabilities():
         if manifest.capability_id == "structure.rdf":
             manifest = manifest.model_copy(update={"tool_bindings": [manifest.tool_bindings[0].model_copy(update={"parameter_mapping": {"cutoff_angstrom": "r_max_angstrom"}})]})
         registry.register(manifest)

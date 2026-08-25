@@ -15,6 +15,7 @@ from mdi_api.scientific_results.projectors.registry import InMemoryScientificRes
 from mdi_api.research_agent.capabilities.preconditions import build_default_precondition_registry
 from mdi_api.research_agent.capabilities.versions import version_satisfies
 from mdi_api.research_agent.execution.progress import GenericScientificProgressProjector
+from mdi_api.research_agent.capabilities.packs import CapabilityExtensionRegistry, build_phase11_packs
 
 
 @dataclass(frozen=True)
@@ -24,18 +25,22 @@ class Agent2Registries:
     capabilities: InMemoryCapabilityRegistry
     result_projectors: InMemoryScientificResultProjectorRegistry
     progress_projectors: InMemoryScientificProgressProjectorRegistry
+    extension_registry: CapabilityExtensionRegistry | None = None
 
 
 def build_default_agent2_registries() -> Agent2Registries:
     result_projectors = build_default_result_projector_registry()
     progress_projectors = InMemoryScientificProgressProjectorRegistry()
     progress_projectors.register("agent2.fixture.progress", GenericScientificProgressProjector())
+    capabilities = build_default_capability_registry()
+    extension_registry = CapabilityExtensionRegistry(packs=build_phase11_packs(capabilities.list_all()))
     return Agent2Registries(
         object_types=build_default_object_type_registry(),
         requirements=build_default_requirement_registry(),
-        capabilities=build_default_capability_registry(),
+        capabilities=capabilities,
         result_projectors=result_projectors,
         progress_projectors=progress_projectors,
+        extension_registry=extension_registry,
     )
 
 
@@ -91,3 +96,20 @@ def validate_agent2_registries(registries: Agent2Registries, tool_registry: Any)
             raise RegistryValidationError(f"Unknown result projector: {capability.result_projector}")
         if not registries.progress_projectors.contains(capability.progress_projector):
             raise RegistryValidationError(f"Unknown progress projector: {capability.progress_projector}")
+
+    # Phase 11 extension boundary is validated against the same authorities as
+    # the legacy registry.  Validation is all-or-nothing per Pack; the
+    # resolver still consumes the existing CapabilityRegistry contract.
+    if registries.extension_registry is not None:
+        for pack in registries.extension_registry.list_packs():
+            result = registries.extension_registry.validate_pack(
+                pack,
+                allow_existing=True,
+                requirements=registries.requirements,
+                object_types=registries.object_types,
+                tool_registry=tool_registry,
+                result_projectors=registries.result_projectors,
+                progress_projectors=registries.progress_projectors,
+            )
+            if not result.accepted:
+                raise RegistryValidationError("; ".join(result.errors))

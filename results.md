@@ -14506,3 +14506,9 @@ P10-A 已提交并通过 exact-SHA CI：
 三族 authenticated browser、池生命周期、backend/frontend/typecheck/build、
 静态检查和当前服务回归均已通过。尚待 documentation-only P10-B 及其
 exact-current-head CI；Phase 11 尚未开始。
+
+## Agent-2.0 Phase 11 — trusted Capability Pack boundary (2026-08-25)
+
+状态：实现与 focused qualification 已完成，release provenance 待闭合。
+
+新增 `apps/api/mdi_api/research_agent/capabilities/packs.py`，提供 repository-trusted declarative Pack contract、确定性 contract/binding fingerprints、atomic validation/registration 和 semantic Agent catalog。Phase 10 Batch 1 通过 `core.structure`、`core.electronic`、`core.data`、`core.trajectory`、`core.other` Pack 归一化，不改变科学算法、AnalysisPlan 0.2、执行、Result、Viewer 或 exact-version 语义。新增 `docs/phase11/capability_pack_manifest_v1.json` 与 `AGENT2_PHASE11_RESULTS.md`。Phase 10 registry/capability 与 Phase 11 Pack focused tests：`38 passed`；无数据库 migration。P11-A/P11-B 及 exact-head CI 尚未完成，故当前尚不能宣称 Phase 11 COMPLETE。

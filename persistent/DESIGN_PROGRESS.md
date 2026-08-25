@@ -3612,3 +3612,16 @@ touched Ruff, compileall, lock and diff checks PASS; service-backed is
 `12/12 PASS, 0 skipped`. Functional Stage 0 evidence is therefore complete,
 but no P10-A/P10-B commit or exact-SHA CI has been created. Phase 10 remains
 PARTIAL and Phase 11 has not started.
+
+### Phase 11 trusted Capability Pack boundary (2026-08-25)
+
+Phase 10 is sealed at `fd23073009f92120d32efc710d57e457ed4c92ea` with
+exact-head CI. Phase 11 adds a repository-trusted declarative extension
+boundary around the existing `CapabilityManifest` contracts. Default
+capabilities are grouped into scientific-family Packs and validated
+atomically against the existing requirement, object-type, Tool, Result
+projector and progress-projector authorities. Contract and binding
+fingerprints preserve stable capability identity while implementation
+bindings evolve. The provider-facing catalog contains semantic capability
+summaries only and never raw Tool IDs or executable metadata. No migration,
+dynamic loader, or new scientific algorithm is introduced.
