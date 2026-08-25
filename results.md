@@ -14512,3 +14512,20 @@ exact-current-head CI；Phase 11 尚未开始。
 状态：实现与 focused qualification 已完成，release provenance 待闭合。
 
 新增 `apps/api/mdi_api/research_agent/capabilities/packs.py`，提供 repository-trusted declarative Pack contract、确定性 contract/binding fingerprints、atomic validation/registration 和 semantic Agent catalog。Phase 10 Batch 1 通过 `core.structure`、`core.electronic`、`core.data`、`core.trajectory`、`core.other` Pack 归一化，不改变科学算法、AnalysisPlan 0.2、执行、Result、Viewer 或 exact-version 语义。新增 `docs/phase11/capability_pack_manifest_v1.json` 与 `AGENT2_PHASE11_RESULTS.md`。Phase 10 registry/capability 与 Phase 11 Pack focused tests：`38 passed`；无数据库 migration。P11-A/P11-B 及 exact-head CI 尚未完成，故当前尚不能宣称 Phase 11 COMPLETE。
+
+## Agent-2.0 Phase 11 — P11-A exact-SHA implementation closure (2026-08-25)
+
+P11-A 已提交并推送：
+
+- SHA：`32ddeb9cfc33e4ff9f95be9b85b840fdf6c8f6da`
+- CI run：`32864008706`
+- tested SHA：`32ddeb9cfc33e4ff9f95be9b85b840fdf6c8f6da`
+- 结果：PASS
+- required jobs：Unit Tests、Frontend Typecheck & Build、
+  PostgreSQL/Redis/MinIO Service-backed Integration、Linux Replay、Windows
+  Replay，全部 PASS；service-backed no-skipped assertion PASS。
+
+P11-B 为 completion-record 文档提交；它只记录 P11-A 的 exact provenance、
+Phase 10 sealed provenance、Pack/registry 验收及浏览器扩展证明，不要求把
+自身 SHA 写回记录文件。P11-B exact-current-head CI 通过后，Phase 11 才
+满足 COMPLETE / READY_FOR_PHASE12。

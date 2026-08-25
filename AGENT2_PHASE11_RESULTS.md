@@ -67,6 +67,39 @@ compileall PASS, `uv lock --check` PASS, and `git diff --check` PASS.
 PostgreSQL/Redis/MinIO service-backed professional closure passed `1/1` when
 run with the repository container credentials.
 
+### Phase 10 sealed closure carried forward
+
+- P10-A: `ea5eb2546a82a1ffa602bab7651f7e9a6d2ffdd9`
+- P10-A exact-SHA CI: `32858593255` (tested SHA exact; required jobs PASS)
+- P10-B: `fd23073009f92120d32efc710d57e457ed4c92ea`
+- P10-B exact-head CI: `32859438557` (tested SHA exact; required jobs PASS)
+- Phase 10 verdict: `FUNCTIONAL_PHASE10_CLOSURE = PASS`,
+  `AGENT2_PHASE10 = COMPLETE`, `READY_FOR_PHASE11 = YES`.
+
+### Phase 11 functional closure
+
+The extension boundary is functional and remains repository-trusted only:
+five family packs load atomically, invalid packs fail closed, existing Phase 10
+Batch-1 capabilities retain typed eligibility and deterministic bindings, and
+the authenticated same-stack Structure browser proof completed through the
+normalized Pack registry without a Research Agent prompt rewrite. The proof
+used Turn `dda9c25a-d198-459e-af2c-cddb8ecf860b`, exact source
+`773089f9-3ce8-4645-92dd-2f62c64cba89` /
+`65f56d10-008d-445d-ab2f-228aebf1835b`, CrystalNN + VoronoiNN, normal
+Job/ToolCall/Artifact/Result execution, grounded interpretation `VALID`, and
+Structure coordination Viewer. Browser fatal errors, unhandled rejections and
+failed critical requests were all `0`.
+
+P11-A was pushed as
+`32ddeb9cfc33e4ff9f95be9b85b840fdf6c8f6da` and exact-SHA CI run
+`32864008706` passed. The required jobs passed: Unit Tests, Frontend
+Typecheck & Build, PostgreSQL/Redis/MinIO Service-backed Integration, Linux
+Scientific Replay, and Windows Scientific Replay. The service-backed job ran
+the integration tests and passed its no-skipped assertion.
+
+P11-B is the documentation-only completion record. It intentionally records
+P11-A's exact provenance and does not embed its own future commit SHA.
+
 ### Scope
 
 This is a repository-trusted v1 extension boundary, not a marketplace or
@@ -75,5 +108,15 @@ arbitrary Python, or Tool Registry exposure to the Agent.
 
 ## Release status
 
-P11-A/P11-B and exact-head CI remain to be completed. This file intentionally
-does not embed its own future commit SHA.
+After P11-B is pushed, the final exact-current-head CI must be recorded
+externally. Once that CI is green, the release verdict is:
+
+`FUNCTIONAL_PHASE11_CLOSURE = PASS`
+
+`AGENT2_PHASE11 = COMPLETE`
+
+`EXTENSIBLE_CAPABILITY_PLATFORM_V1 = COMPLETE`
+
+`READY_FOR_PHASE12 = YES`
+
+This file intentionally does not embed its own future P11-B commit SHA.
