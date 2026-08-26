@@ -15,6 +15,7 @@ export function ScientificViewerShell({
   limitations = [],
   selection = null,
   primaryActionHref,
+  lifecycleAction,
   children,
 }: Readonly<{
   title: string;
@@ -25,13 +26,17 @@ export function ScientificViewerShell({
   limitations?: readonly string[];
   selection?: ScientificSelection | null;
   primaryActionHref?: string | null;
+  lifecycleAction?: { label: string; onClick: () => void; disabled?: boolean } | null;
   children: ReactNode;
 }>) {
   const notice = relevanceNotice(relevance);
   return <article className="scientific-viewer-shell" data-viewer={descriptor.rendererKey}>
     <header className="scientific-viewer-shell-header">
       <div><p className="product-kicker">{scientificTypeLabel(descriptor.scientificType)}</p><h2>{title}</h2><p>{versionLabel}{descriptor.support === "FALLBACK" ? " · 专业视图暂不可用" : ""}</p></div>
-      {primaryActionHref ? <Link className="product-primary-action" href={primaryActionHref}>研究此数据</Link> : null}
+      <div className="scientific-viewer-shell-actions">
+        {lifecycleAction ? <button type="button" className="product-secondary-action" onClick={lifecycleAction.onClick} disabled={lifecycleAction.disabled}>{lifecycleAction.label}</button> : null}
+        {primaryActionHref ? <Link className="product-primary-action" href={primaryActionHref}>研究此数据</Link> : null}
+      </div>
     </header>
     {notice ? <div className={`scientific-relevance-notice ${relevance.toLowerCase()}`} role="note"><strong>{notice.title}</strong><span>{notice.detail}</span></div> : null}
     <div className="scientific-viewer-shell-body">{children}</div>

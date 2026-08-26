@@ -121,6 +121,72 @@ def _ml_facts(artifact: dict[str, Any], payload: dict[str, Any]) -> list[Scienti
     return result
 
 
+def _dataset_facts(artifact: dict[str, Any], payload: dict[str, Any]) -> list[ScientificFact]:
+    """Project bounded Dataset Explorer scalars into grounded facts.
+
+    The Dataset Explorer artifact already contains the authoritative values
+    used by its table/summary views.  Exposing those scalar values here keeps
+    interpretation grounded without asking the provider to recover numbers
+    from raw Artifact bytes.
+    """
+
+    result: list[ScientificFact] = []
+    artifact_id = _artifact_id(artifact)
+
+    def add(value: Any, *, predicate: str, pointer: str, subject: str, unit: str | None = None) -> None:
+        if value is None or isinstance(value, (dict, list, bool)):
+            return
+        result.append(
+            ScientificFact(
+                fact_id=_semantic_id("fact", artifact_id, predicate, pointer, subject),
+                predicate=predicate,
+                subject_ref=subject,
+                value=value,
+                unit=unit,
+                source=FactSourceLocator(artifact_id=artifact_id, artifact_locator=pointer),
+            )
+        )
+
+    overview = payload.get("overview") or {}
+    coverage = payload.get("coverage") or {}
+    composition = payload.get("composition") or {}
+    quality = payload.get("quality") or {}
+    add(overview.get("sampleCount"), predicate="dataset.sample_count", pointer="/overview/sampleCount", subject=artifact_id, unit="count")
+    add(overview.get("propertyCount"), predicate="dataset.property_count", pointer="/overview/propertyCount", subject=artifact_id, unit="count")
+    add(coverage.get("totalRows"), predicate="dataset.row_count", pointer="/coverage/totalRows", subject=artifact_id, unit="count")
+    add(coverage.get("totalColumns"), predicate="dataset.column_count", pointer="/coverage/totalColumns", subject=artifact_id, unit="count")
+    add(composition.get("uniqueFormulaCount"), predicate="dataset.unique_formula_count", pointer="/composition/uniqueFormulaCount", subject=artifact_id, unit="count")
+    add(composition.get("coverage", {}).get("valid"), predicate="composition.valid_count", pointer="/composition/coverage/valid", subject=artifact_id, unit="count")
+    add(composition.get("coverage", {}).get("invalid"), predicate="composition.invalid_count", pointer="/composition/coverage/invalid", subject=artifact_id, unit="count")
+    add(quality.get("invalidFormulaCount"), predicate="quality.invalid_formula_count", pointer="/quality/invalidFormulaCount", subject=artifact_id, unit="count")
+
+    for index, sample in enumerate(payload.get("sampleIndex") or []):
+        sample_ref = sample.get("sampleRef")
+        subject = str(sample.get("sampleKey") or sample_ref or f"{artifact_id}:row-{index}")
+        base = f"/sampleIndex/{index}"
+        add(sample_ref, predicate="dataset.sample_id", pointer=f"{base}/sampleRef", subject=subject)
+        add(sample.get("formula"), predicate="dataset.formula", pointer=f"{base}/formula", subject=subject)
+        for column, value in (sample.get("properties") or {}).items():
+            add(value, predicate=f"dataset.sample.{column}", pointer=f"{base}/properties/{column}", subject=subject)
+
+    for property_index, property_item in enumerate((payload.get("properties") or {}).get("properties") or []):
+        column = str(property_item.get("column") or "").strip()
+        if not column:
+            continue
+        statistics = property_item.get("statistics") or {}
+        unit = property_item.get("unit")
+        for name in ("min", "max", "mean", "median"):
+            add(
+                statistics.get(name),
+                predicate=f"dataset.property.{column}.{name}",
+                pointer=f"/properties/properties/{property_index}/statistics/{name}",
+                subject=f"{artifact_id}:{column}",
+                unit=unit,
+            )
+
+    return result
+
+
 def _project(context: ScientificResultProjectionContext, contract: ProjectorContract) -> ScientificResultProjection:
     recognized: list[tuple[dict[str, Any], dict[str, Any], str]] = []
     accepted = {*contract.primary_schemas, *contract.figure_schemas, *contract.table_schemas}
@@ -421,6 +487,7 @@ def _contracts() -> tuple[ProjectorContract, ...]:
         ProjectorContract(
             "agent2.data.materials_explorer", "材料数据集探索", "data.materials_explorer",
             ("phase10k2.dataset_materials_explorer.v1",), ("phase10k2.dataset_materials_explorer_plot.v1",), (),
+            fact_builder=_dataset_facts,
             limitations=(("MATERIALS_EXPLORER_BOUNDED", "Only the bounded, profile-authorized dataset projection is included."),),
         ),
     )

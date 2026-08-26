@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+from uuid import UUID
 
 import pytest
 from redis import Redis
@@ -13,6 +14,7 @@ from rq import Queue
 from sqlalchemy import create_engine, func, select
 
 from mdi_api.db import agent2_scientific_interpretations, artifacts, jobs, research_turns, scientific_result_snapshots, tool_calls
+from mdi_api.interpretation.queue import RedisRQInterpretationQueue
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -59,6 +61,18 @@ def phase6_service_pipeline():
         os.environ["MDI_AGENT2_INTERPRETATION_QUEUE_NAME"] = queue_name
         generator = phase5_fixture()
         cases = next(generator)
+        # Phase 5 intentionally disables interpretation while proving the
+        # RESULT_READY projection boundary.  Re-enable the production
+        # interpretation queue only after that fixture has yielded its
+        # durable result identities, then republish those identities through
+        # the real queue authority.  This keeps the two qualification
+        # boundaries separate without manually invoking the projector.
+        os.environ["MDI_AGENT2_INTERPRETATION_ENABLED"] = "1"
+        os.environ["MDI_AGENT2_INTERPRETATION_QUEUE_NAME"] = queue_name
+        interpretation_queue = RedisRQInterpretationQueue(redis_url=redis_url, queue_name=queue_name)
+        for case in (cases["rdf"], cases["xrd"]):
+            queued = interpretation_queue.enqueue_turn(UUID(case["turn_id"]))
+            assert queued.enqueued, queued.message
         rdf = cases["rdf"]
         xrd = cases["xrd"]
         environment = phase5._phase4_module()._worker_environment(database_url)

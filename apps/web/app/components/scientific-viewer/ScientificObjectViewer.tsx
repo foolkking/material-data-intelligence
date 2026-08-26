@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import type { DatasetSourceResource } from "../../lib/planner-api";
-import { getScientificViewerProjection, type ScientificViewerProjection } from "../../lib/scientific-viewer-api";
+import { getScientificViewerProjection, listScientificObjects, updateScientificObject, type ScientificObjectSummary, type ScientificViewerProjection } from "../../lib/scientific-viewer-api";
 import type { WorkspaceSelectionContext } from "../../lib/workspace-api";
 import { ScientificSourceViewer } from "../ScientificViewerAdapter";
 import { decodeWorkspaceSelectionUrl, encodeWorkspaceSelectionUrl } from "../workspace/workspace-selection-contract";
@@ -16,13 +16,18 @@ export function ScientificObjectViewer({ projectId, objectId, versionId, initial
   const [selection, setSelection] = useState<ScientificSelection | null>(null);
   const [selectionToken, setSelectionToken] = useState("");
   const [error, setError] = useState("");
+  const [objectSummary, setObjectSummary] = useState<ScientificObjectSummary | null>(null);
+  const [lifecycleBusy, setLifecycleBusy] = useState(false);
   const deepLinkedSelection = initialSelectionToken || (typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("selection") || "" : "");
   useEffect(() => {
     const controller = new AbortController();
     setProjection(null); setSelection(null); setSelectionToken(""); setError("");
     void getScientificViewerProjection(objectId, versionId, controller.signal).then(setProjection).catch((reason) => { if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : "VIEWER_LOAD_FAILED"); });
+    void listScientificObjects(projectId, controller.signal).then((response) => {
+      if (!controller.signal.aborted) setObjectSummary(response.items.find((item) => item.id === objectId) || null);
+    }).catch(() => { if (!controller.signal.aborted) setObjectSummary(null); });
     return () => controller.abort();
-  }, [objectId, versionId]);
+  }, [objectId, projectId, versionId]);
   const resource = useMemo(() => projection ? projectionResource(projection) : null, [projection]);
   useEffect(() => {
     if (!projection || !deepLinkedSelection) return;
@@ -50,7 +55,19 @@ export function ScientificObjectViewer({ projectId, objectId, versionId, initial
     if (!scientific) return;
     setSelection(scientific); setSelectionToken(encodeWorkspaceSelectionUrl(workspace)); onSelection?.(scientific);
   };
-  return <ScientificViewerShell title={projection.display_name} descriptor={descriptor} versionLabel={`版本 ${projection.version_no}`} relevance={relevance} metadata={projection.canonical_metadata} limitations={projection.limitations} selection={selection} primaryActionHref={researchHref}>
+  const toggleArchive = async () => {
+    if (!objectSummary || lifecycleBusy) return;
+    setLifecycleBusy(true);
+    try {
+      const updated = await updateScientificObject(objectSummary.id, { archived: objectSummary.lifecycle_status !== "ARCHIVED" });
+      setObjectSummary(updated);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "SCIENTIFIC_OBJECT_UPDATE_FAILED");
+    } finally {
+      setLifecycleBusy(false);
+    }
+  };
+  return <ScientificViewerShell title={projection.display_name} descriptor={descriptor} versionLabel={`版本 ${projection.version_no}`} relevance={relevance} metadata={projection.canonical_metadata} limitations={projection.limitations} selection={selection} primaryActionHref={researchHref} lifecycleAction={objectSummary ? { label: objectSummary.lifecycle_status === "ARCHIVED" ? "恢复科研对象" : "归档科研对象", onClick: () => void toggleArchive(), disabled: lifecycleBusy } : null}>
     {projection.payload_status === "READY" ? <ScientificSourceViewer projectId={projectId} resource={resource} onSelection={choose} /> : <div className="science-canvas science-canvas-fallback"><div className="science-canvas-label"><span>{descriptor.support === "FALLBACK" ? "安全预览" : "科学元数据"}</span><strong>当前没有可交互的 payload</strong></div><p>{projection.limitations[0] || "可查看元数据与版本信息。"}</p></div>}
   </ScientificViewerShell>;
 }

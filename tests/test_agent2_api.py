@@ -11,6 +11,7 @@ from sqlalchemy import create_engine, insert
 from sqlalchemy.pool import StaticPool
 
 from mdi_api.db import metadata, organizations, project_members, projects, sessions, users
+from mdi_api.artifact_storage import LocalFileArtifactStorage
 from mdi_api.main import create_app
 from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.research_agent.llm.schemas import StructuredLLMResult
@@ -18,7 +19,11 @@ from mdi_api.research_agent.orchestration.processor import AgentTurnProcessor
 from mdi_api.research_agent.registry_validation import build_default_agent2_registries
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_api.scientific_objects.registry import build_default_object_type_registry
-from mdi_api.scientific_objects.schemas import ScientificObjectKind, ScientificObjectRef, StorageRef
+from mdi_api.scientific_objects.schemas import (
+    ScientificObjectKind,
+    ScientificObjectRef,
+    StorageRef,
+)
 from mdi_api.scientific_objects.service import ScientificObjectService
 from mdi_api.unit_of_work import RepositoryFactory
 
@@ -177,6 +182,211 @@ def test_scientific_object_read_api_lists_exact_versions_and_relationships(api):
     assert exact.status_code == 200 and exact.json()["content_hash"] == "content-project"
     relationships = client.get(f"/api/scientific-objects/{left.object_id}/relationships")
     assert relationships.status_code == 200 and relationships.json()["items"][0]["relation_type"] == "companion_of"
+
+
+def test_scientific_object_metadata_update_is_authorized_and_version_stable(api):
+    client, active, owner, viewer, _stranger, objects = api
+    ref = create_ref(objects, "project")
+
+    renamed = client.patch(
+        f"/api/scientific-objects/{ref.object_id}",
+        json={"display_name": "Renamed"},
+    )
+    assert renamed.status_code == 200
+    assert renamed.json()["display_name"] == "Renamed"
+    assert renamed.json()["current_version_id"] == str(ref.version_id)
+
+    archived = client.patch(
+        f"/api/scientific-objects/{ref.object_id}",
+        json={"archived": True},
+    )
+    assert archived.status_code == 200
+    assert archived.json()["lifecycle_status"] == "ARCHIVED"
+    assert archived.json()["current_version_id"] == str(ref.version_id)
+
+    active["value"] = viewer
+    assert client.patch(
+        f"/api/scientific-objects/{ref.object_id}",
+        json={"display_name": "Unauthorized"},
+    ).status_code == 403
+    active["value"] = owner
+
+    restored = client.patch(
+        f"/api/scientific-objects/{ref.object_id}",
+        json={"archived": False},
+    )
+    assert restored.status_code == 200
+    assert restored.json()["lifecycle_status"] == "ACTIVE"
+    assert restored.json()["archived_at"] is None
+    assert client.get(f"/api/scientific-objects/{ref.object_id}/versions/{ref.version_id}").json()["content_hash"] == "content-project"
+
+
+def _persist_profiled_structure(objects, storage, *, dataset_id: str, resource_id: str, revision: int):
+    prefix = f"projects/project/datasets/{dataset_id}/normalized/{resource_id}"
+    payload = {
+        "@module": "pymatgen.core.structure",
+        "@class": "Structure",
+        "charge": 0,
+        "lattice": {"matrix": [[5.4 + revision / 10, 0, 0], [0, 5.4 + revision / 10, 0], [0, 0, 5.4 + revision / 10]]},
+        "properties": {},
+        "sites": [],
+    }
+    stored = storage.put_json(f"{prefix}/structure.json", payload)
+    metadata_ref = storage.put_json(
+        f"{prefix}/metadata.json",
+        {
+            "objectId": resource_id,
+            "contentHash": stored.sha256,
+            "metadata": {"formula": "Si", "periodicity": "periodic", "revision": revision},
+            "provenance": {"objectType": "Structure"},
+        },
+    )
+    with objects.repository_factory.session() as session:
+        session.repositories.datasets.save({
+            "id": dataset_id,
+            "projectId": "project",
+            "name": f"Profiled structure {revision}",
+            "status": "profile_ready",
+            "createdBy": "owner",
+            "metadata": {
+                "normalizedExports": [{
+                    "objectId": resource_id,
+                    "storageKey": stored.storage_key,
+                    "metadataKey": metadata_ref.storage_key,
+                    "objectHash": f"{revision:064x}",
+                    "contentHash": stored.sha256,
+                }],
+            },
+        })
+        session.repositories.data_profiles.save({
+            "schemaVersion": "0.1",
+            "profileId": f"profile-{dataset_id}",
+            "datasetId": dataset_id,
+            "version": "2",
+            "profileContractVersion": "2.1",
+            "semanticHash": f"{revision + 10:064x}",
+            "objects": [{
+                "objectId": resource_id,
+                "objectHash": f"{revision:064x}",
+                "objectType": "Structure",
+            }],
+            "resourceSemantics": [{
+                "objectId": resource_id,
+                "objectHash": f"{revision:064x}",
+                "objectType": "Structure",
+                "facts": {"formula": "Si", "periodicity": "periodic", "siteCount": 2},
+            }],
+            "coordinationReadiness": {
+                "contractVersion": "1.0",
+                "status": "READY",
+                "structures": [{
+                    "objectId": resource_id,
+                    "objectHash": f"{revision:064x}",
+                    "latticeStatus": "VALID",
+                    "siteCount": 2,
+                    "coordinationInputStatus": "READY",
+                    "speciesOccupancyStatus": "ORDERED_FULL_OCCUPANCY",
+                }],
+            },
+        })
+
+
+def test_scientific_object_admission_and_version_creation_use_profiled_resources(api, monkeypatch, tmp_path):
+    client, active, owner, viewer, _stranger, objects = api
+    storage = LocalFileArtifactStorage(tmp_path)
+    monkeypatch.setattr("mdi_api.routers.agent2.create_artifact_storage_from_settings", lambda _settings: storage)
+    _persist_profiled_structure(objects, storage, dataset_id="dataset-v1", resource_id="structure-v1", revision=1)
+    admitted = client.post(
+        "/api/projects/project/scientific-objects",
+        json={"dataset_id": "dataset-v1", "resource_id": "structure-v1", "display_name": "Versioned structure"},
+    )
+    assert admitted.status_code == 200
+    logical = admitted.json()["object"]
+    v1 = admitted.json()["version"]
+    assert logical["current_version_id"] == v1["id"]
+    assert v1["source_resource_refs_json"] == [{
+        "project_id": "project", "dataset_id": "dataset-v1", "resource_id": "structure-v1",
+    }]
+    assert v1["semantic_profile_ref_json"]["contractVersion"] == "2.1"
+    assert v1["canonical_metadata_json"]["coordinationInputStatus"] == "READY"
+
+    _persist_profiled_structure(objects, storage, dataset_id="dataset-v2", resource_id="structure-v2", revision=2)
+    response = client.post(
+        f"/api/scientific-objects/{logical['id']}/versions",
+        json={"dataset_id": "dataset-v2", "resource_id": "structure-v2"},
+    )
+    assert response.status_code == 200
+    v2 = response.json()
+    assert v2["version_no"] == 2
+    assert v2["scientific_object_id"] == logical["id"]
+    refreshed = client.get(f"/api/scientific-objects/{logical['id']}").json()
+    assert refreshed["current_version_id"] == v2["id"]
+    assert client.get(
+        f"/api/scientific-objects/{logical['id']}/versions/{v1['id']}"
+    ).json()["content_hash"] == v1["content_hash"]
+
+    active["value"] = viewer
+    denied = client.post(
+        f"/api/scientific-objects/{logical['id']}/versions",
+        json={"dataset_id": "dataset-v2", "resource_id": "structure-v2"},
+    )
+    assert denied.status_code == 403
+    active["value"] = owner
+
+
+def test_scientific_dataset_query_is_bounded_and_project_authorized(api, monkeypatch, tmp_path):
+    client, active, owner, _viewer, stranger, objects = api
+    storage = LocalFileArtifactStorage(tmp_path)
+    payload = [
+        {"sample_id": "s-1", "formula": "Si", "band_gap": 0.0},
+        {"sample_id": "s-2", "formula": "SiO2", "band_gap": 1.2},
+        {"sample_id": "s-3", "formula": "Ge", "band_gap": 0.7},
+    ]
+    stored = storage.put_json("project/query.json", payload)
+    logical = objects.create_object(
+        project_id="project",
+        kind=ScientificObjectKind.DATASET,
+        object_type="materials.dataset",
+        display_name="Query dataset",
+        created_by_user_id=owner.id,
+    )
+    version = objects.create_version(
+        logical["id"],
+        object_type="materials.dataset",
+        object_schema_version="1.0",
+        source_resource_refs=[{"scope": "system_fixture", "resource_id": "api-query"}],
+        parent_object_version_refs=[],
+        normalized_payload_ref=StorageRef(
+            storage_backend="local",
+            object_key=stored.storage_key,
+            checksum=stored.sha256,
+            media_type="application/json",
+            byte_size=stored.size_bytes,
+        ),
+        content_hash=stored.sha256,
+        semantic_hash=stored.sha256,
+        canonical_metadata={"row_count": 3, "sample_identity": "sample_id"},
+        created_by_user_id=owner.id,
+    )
+    monkeypatch.setattr("mdi_api.routers.agent2.create_artifact_storage_from_settings", lambda _settings: storage)
+    response = client.post(
+        f"/api/scientific-objects/{logical['id']}/versions/{version['id']}/query",
+        json={
+            "filters": [{"column": "band_gap", "operator": "gt", "value": 0}],
+            "sort_by": "band_gap",
+            "descending": True,
+            "columns": ["sample_id", "formula"],
+            "limit": 2,
+        },
+    )
+    assert response.status_code == 200
+    assert [item["_stable_id"] for item in response.json()["items"]] == ["s-2", "s-3"]
+    active["value"] = stranger
+    assert client.post(
+        f"/api/scientific-objects/{logical['id']}/versions/{version['id']}/query",
+        json={"limit": 1},
+    ).status_code == 403
+    active["value"] = owner
 
 
 def test_sse_orders_events_reconnects_without_duplicates_and_checks_authority(api):

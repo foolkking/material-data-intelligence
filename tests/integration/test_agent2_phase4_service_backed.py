@@ -284,8 +284,18 @@ def _minio_storage() -> S3CompatibleArtifactStorage:
         import boto3
 
         endpoint = os.getenv("MINIO_ENDPOINT", "http://localhost:9000")
-        access = os.getenv("MINIO_ACCESS_KEY", "mdi-local")
-        secret = os.getenv("MINIO_SECRET_KEY", "mdi-local-dev")
+        access = (
+            os.getenv("MINIO_ACCESS_KEY")
+            or os.getenv("MINIO_ROOT_USER")
+            or os.getenv("AWS_ACCESS_KEY_ID")
+            or "mdi-local"
+        )
+        secret = (
+            os.getenv("MINIO_SECRET_KEY")
+            or os.getenv("MINIO_ROOT_PASSWORD")
+            or os.getenv("AWS_SECRET_ACCESS_KEY")
+            or "mdi-local-dev"
+        )
         bucket = os.getenv("MINIO_BUCKET", "mdi-artifacts")
         client = boto3.client(
             "s3",
@@ -318,6 +328,9 @@ def _worker_environment(database_url: str) -> dict[str, str]:
         "MDI_DATABASE_URL": database_url,
         "MDI_ARTIFACT_BACKEND": "minio",
         "MDI_RUNTIME_BACKEND": "postgresql",
+        # This Phase 4 worker regression deliberately stops at RESULT_PENDING;
+        # interpretation-enabled terminal coverage is exercised separately.
+        "MDI_AGENT2_INTERPRETATION_ENABLED": "false",
     })
     python_paths = [
         ROOT / "apps" / "api",

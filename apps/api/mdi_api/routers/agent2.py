@@ -47,7 +47,13 @@ from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.research_agent.memory.service import ResearchSessionMemoryService
 from mdi_api.research_agent.memory.schemas import PinObjectRequest
 from mdi_api.routers.auth import CurrentUser, get_current_user
-from mdi_api.scientific_objects.schemas import ScientificObjectKind, ScientificObjectLifecycle
+from mdi_api.scientific_objects.schemas import (
+    ScientificDatasetQueryRequest,
+    ScientificObjectAdmissionRequest,
+    ScientificObjectKind,
+    ScientificObjectLifecycle,
+    ScientificObjectVersionCreateRequest,
+)
 from mdi_api.scientific_objects.service import ScientificObjectService
 from mdi_api.scientific_viewers import (
     ScientificViewerProjectionError,
@@ -68,6 +74,11 @@ logger = logging.getLogger(__name__)
 class PromoteDatasetTableRequest(BaseModel):
     resource_id: str | None = Field(default=None, min_length=1, max_length=256)
     display_name: str | None = Field(default=None, min_length=1, max_length=512)
+
+
+class ScientificObjectMetadataUpdateRequest(BaseModel):
+    display_name: str | None = Field(default=None, min_length=1, max_length=512)
+    archived: bool | None = None
 
 
 def get_research_turn_service() -> ResearchTurnService:
@@ -470,6 +481,46 @@ def get_scientific_object(object_id: UUID, current_user: CurrentUser = Depends(g
         raise _http_error(exc) from exc
 
 
+def admit_scientific_object(
+    project_id: str,
+    request: ScientificObjectAdmissionRequest,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    service = get_scientific_object_service()
+    try:
+        _authorize_object_project(service, project_id, current_user, write=True)
+        logical, version = service.admit_dataset_resource(
+            project_id=project_id,
+            dataset_id=request.dataset_id,
+            resource_id=request.resource_id,
+            storage=create_artifact_storage_from_settings(load_settings()),
+            display_name=request.display_name,
+            created_by_user_id=current_user.id,
+        )
+        return jsonable_encoder({"object": logical, "version": version})
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def update_scientific_object(
+    object_id: UUID,
+    request: ScientificObjectMetadataUpdateRequest,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    service = get_scientific_object_service()
+    try:
+        item = service.get_object(object_id)
+        _authorize_object_project(service, str(item["project_id"]), current_user, write=True)
+        updated = service.update_metadata(
+            object_id,
+            display_name=request.display_name,
+            archived=request.archived,
+        )
+        return jsonable_encoder(updated)
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
 def list_scientific_object_versions(object_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
     service = get_scientific_object_service()
     try:
@@ -480,12 +531,53 @@ def list_scientific_object_versions(object_id: UUID, current_user: CurrentUser =
         raise _http_error(exc) from exc
 
 
+def create_scientific_object_version(
+    object_id: UUID,
+    request: ScientificObjectVersionCreateRequest,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    service = get_scientific_object_service()
+    try:
+        item = service.get_object(object_id)
+        _authorize_object_project(service, str(item["project_id"]), current_user, write=True)
+        version = service.create_version_from_dataset_resource(
+            object_id,
+            dataset_id=request.dataset_id,
+            resource_id=request.resource_id,
+            storage=create_artifact_storage_from_settings(load_settings()),
+            created_by_user_id=current_user.id,
+        )
+        return jsonable_encoder(version)
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
 def get_scientific_object_version(object_id: UUID, version_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
     service = get_scientific_object_service()
     try:
         item = service.get_object(object_id)
         _authorize_object_project(service, str(item["project_id"]), current_user)
         return service.get_version(object_id, version_id)
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def query_scientific_dataset(
+    object_id: UUID,
+    version_id: UUID,
+    request: ScientificDatasetQueryRequest,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    service = get_scientific_object_service()
+    try:
+        item = service.get_object(object_id)
+        _authorize_object_project(service, str(item["project_id"]), current_user)
+        return service.query_dataset_version(
+            object_id,
+            version_id,
+            storage=create_artifact_storage_from_settings(load_settings()),
+            request=request,
+        )
     except Exception as exc:
         raise _http_error(exc) from exc
 
@@ -519,9 +611,15 @@ def list_scientific_object_relationships(object_id: UUID, current_user: CurrentU
         raise _http_error(exc) from exc
 
 
-def _authorize_object_project(service: ScientificObjectService, project_id: str, current_user: CurrentUser) -> None:
+def _authorize_object_project(
+    service: ScientificObjectService,
+    project_id: str,
+    current_user: CurrentUser,
+    *,
+    write: bool = False,
+) -> None:
     with service.repository_factory.session() as session:
-        require_project_access(session.connection, project_id, current_user)
+        require_project_access(session.connection, project_id, current_user, write=write)
 
 
 def _sse_event_name(event_type: str) -> str:

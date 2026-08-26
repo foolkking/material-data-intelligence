@@ -49,11 +49,23 @@ def phase5_service_pipeline():
     database_url = phase4._postgres_url()
     redis_url = os.getenv("MDI_REDIS_URL") or os.getenv("REDIS_URL") or "redis://localhost:6379/0"
     result_queue_name = f"mdi-agent2-phase5-results-{uuid4().hex[:12]}"
-    previous = {key: os.environ.get(key) for key in ("MDI_QUEUE_BACKEND", "MDI_AGENT2_RESULT_PROJECTION_ENABLED", "MDI_AGENT2_RESULT_QUEUE_NAME")}
+    previous = {
+        key: os.environ.get(key)
+        for key in (
+            "MDI_QUEUE_BACKEND",
+            "MDI_AGENT2_RESULT_PROJECTION_ENABLED",
+            "MDI_AGENT2_RESULT_QUEUE_NAME",
+            "MDI_AGENT2_INTERPRETATION_ENABLED",
+        )
+    }
     os.environ.update({
         "MDI_QUEUE_BACKEND": "redis",
         "MDI_AGENT2_RESULT_PROJECTION_ENABLED": "1",
         "MDI_AGENT2_RESULT_QUEUE_NAME": result_queue_name,
+        # This fixture validates Result projection in isolation. A shared
+        # interpretation worker must not consume its wakeup and race the
+        # RESULT_READY assertions with an unrelated provider failure.
+        "MDI_AGENT2_INTERPRETATION_ENABLED": "0",
     })
     try:
         phase4.test_agent2_phase4_fresh_worker_executes_exact_plan_and_stops_at_result_pending()
@@ -83,6 +95,7 @@ def phase5_service_pipeline():
             "MDI_REDIS_URL": redis_url,
             "MDI_AGENT2_RESULT_PROJECTION_ENABLED": "1",
             "MDI_AGENT2_RESULT_QUEUE_NAME": result_queue_name,
+            "MDI_AGENT2_INTERPRETATION_ENABLED": "0",
         })
         concurrent_script = """
 import json, os, sys

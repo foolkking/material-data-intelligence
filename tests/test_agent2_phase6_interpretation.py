@@ -64,6 +64,14 @@ def test_grounding_ignores_opaque_provenance_identifiers_in_answer_lead():
     assert validate_interpretation(result, bundle).valid
 
 
+def test_grounding_ignores_stable_dataset_sample_identifiers():
+    bundle = _bundle()
+    result = ScientificInterpretationOutput.model_validate(
+        _output(statement="样本 mat-2 的第一峰位于 2.5 angstrom。")
+    )
+    assert validate_interpretation(result, bundle).valid
+
+
 def test_grounding_does_not_treat_lowercase_k_labels_as_kelvin_units():
     base = _bundle()
     bundle = base.model_copy(update={"facts": [*base.facts, {"fact_id": "rdf.kpoint_count", "predicate": "electronic.kpoint_count", "subject_ref": "structure:v1", "value": 81, "unit": "count", "source": {"artifact_id": "artifact-1", "artifact_locator": "/summary/kpointCount"}}]})
@@ -77,6 +85,59 @@ def test_grounding_does_not_treat_lowercase_k_labels_as_kelvin_units():
 def test_partial_result_cannot_be_presented_as_complete():
     result = ScientificInterpretationOutput.model_validate(_output(statement="完整分析已完成，第一峰位于 2.5 angstrom。"))
     assert not validate_interpretation(result, _bundle(execution_status="PARTIAL")).valid
+
+
+def test_dataset_grounding_remains_fail_closed_for_unsupported_claim() -> None:
+    ref = ScientificObjectRef(object_id=uuid4(), version_id=uuid4(), project_id="project", object_type="materials.table")
+    bundle = ScientificResultBundle(
+        schema_version="1.0",
+        result_id=uuid4(),
+        project_id="project",
+        research_session_id="session",
+        research_turn_id=uuid4(),
+        research_question="Summarize sample mat-2",
+        source_object_refs=[ref],
+        execution_status="SUCCESS",
+        relevance_status="CURRENT",
+        result_items=[{
+            "id": "dataset.item",
+            "result_type": "data.materials_explorer",
+            "role": "PRIMARY",
+            "title": "Dataset",
+            "artifact_ids": ["artifact-1"],
+            "scientific_object_refs": [ref],
+            "fact_refs": ["dataset.sample.band_gap"],
+            "evidence_refs": ["evidence.dataset"],
+        }],
+        facts=[{
+            "fact_id": "dataset.sample.band_gap",
+            "predicate": "dataset.sample.band_gap",
+            "subject_ref": "dataset-object:mat-2",
+            "value": 5.6,
+            "unit": None,
+            "source": {"artifact_id": "artifact-1", "artifact_locator": "/sampleIndex/0/properties/band_gap"},
+        }],
+        figures=[],
+        tables=[],
+        output_object_refs=[],
+        evidence=[{
+            "evidence_id": "evidence.dataset",
+            "evidence_type": "COMMITTED_MACHINE_READABLE_ARTIFACT",
+            "artifact_id": "artifact-1",
+            "artifact_locator": "/",
+        }],
+        methods=[],
+        limitations=[],
+        warnings=[],
+        provenance={"artifact_ids": ["artifact-1"]},
+        projection_version="agent2.result/1.0",
+    )
+    unsupported = ScientificInterpretationOutput.model_validate(
+        _output("样本 mat-2 的 band gap 为 7.9。", fact="dataset.sample.band_gap")
+    )
+    validation = validate_interpretation(unsupported, bundle)
+    assert not validation.valid
+    assert any("quantitative claim" in error for error in validation.errors)
 
 
 def test_interpreter_input_is_bounded_and_excludes_raw_artifacts():

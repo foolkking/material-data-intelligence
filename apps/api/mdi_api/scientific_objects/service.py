@@ -21,6 +21,7 @@ from mdi_api.artifact_storage import ArtifactStorage
 from mdi_api.scientific_objects.registry import ObjectTypeRegistry
 from mdi_api.scientific_objects.schemas import (
     ScientificObjectAvailability,
+    ScientificDatasetQueryRequest,
     ScientificObjectKind,
     ScientificObjectVersionRef,
     StorageRef,
@@ -32,6 +33,13 @@ CANONICAL_RELATIONS = frozenset({
     "derived_from", "contains", "member_of", "has_structure", "associated_with",
     "prediction_for", "measurement_of", "comparison_of", "aligned_with", "companion_of",
 })
+_RESOURCE_OBJECT_TYPES: dict[str, tuple[ScientificObjectKind, str]] = {
+    "Structure": (ScientificObjectKind.STRUCTURE, "structure.crystal"),
+    "DataFrame": (ScientificObjectKind.TABLE, "materials.table"),
+    "Trajectory": (ScientificObjectKind.TRAJECTORY, "trajectory.atomic"),
+    "ElectronicBand": (ScientificObjectKind.ELECTRONIC, "electronic.band_structure"),
+    "ElectronicDos": (ScientificObjectKind.ELECTRONIC, "electronic.dos"),
+}
 _NAMESPACED_RELATION = re.compile(r"^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+$")
 _locks_guard = threading.Lock()
 _object_locks: dict[str, threading.Lock] = {}
@@ -222,6 +230,209 @@ class ScientificObjectService:
         # Reload so API callers never observe a stale logical object.
         return self.get_object(logical["id"]), version
 
+    def admit_dataset_resource(
+        self,
+        *,
+        project_id: str,
+        dataset_id: str,
+        resource_id: str,
+        storage: ArtifactStorage,
+        display_name: str | None = None,
+        created_by_user_id: str | None = None,
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
+        """Admit one current-generation persisted resource as a new logical object.
+
+        Dataset ingestion remains the source, parser, Profile, byte-storage, and
+        checksum authority. This bridge only projects an already verified exact
+        resource into the Agent2 ScientificObject authority.
+        """
+        source = self._validated_dataset_resource(
+            project_id=project_id,
+            dataset_id=dataset_id,
+            resource_id=resource_id,
+            storage=storage,
+        )
+        logical = self.create_object(
+            project_id=project_id,
+            kind=source["kind"],
+            object_type=source["object_type"],
+            display_name=display_name or source["display_name"],
+            created_by_user_id=created_by_user_id,
+        )
+        version = self._create_version_from_validated_resource(
+            logical["id"],
+            source=source,
+            created_by_user_id=created_by_user_id,
+        )
+        return self.get_object(logical["id"]), version
+
+    def create_version_from_dataset_resource(
+        self,
+        object_id: UUID,
+        *,
+        dataset_id: str,
+        resource_id: str,
+        storage: ArtifactStorage,
+        created_by_user_id: str | None = None,
+    ) -> dict[str, Any]:
+        logical = self.get_object(object_id)
+        source = self._validated_dataset_resource(
+            project_id=str(logical["project_id"]),
+            dataset_id=dataset_id,
+            resource_id=resource_id,
+            storage=storage,
+        )
+        if source["object_type"] != logical["object_type"] or source["kind"].value != logical["kind"]:
+            raise InvalidScientificObjectVersion(
+                "persisted resource type does not match the logical ScientificObject"
+            )
+        return self._create_version_from_validated_resource(
+            object_id,
+            source=source,
+            created_by_user_id=created_by_user_id,
+        )
+
+    def _create_version_from_validated_resource(
+        self,
+        object_id: UUID,
+        *,
+        source: dict[str, Any],
+        created_by_user_id: str | None,
+    ) -> dict[str, Any]:
+        return self.create_version(
+            object_id,
+            object_type=source["object_type"],
+            object_schema_version="1.0",
+            source_resource_refs=[{
+                "project_id": source["project_id"],
+                "dataset_id": source["dataset_id"],
+                "resource_id": source["resource_id"],
+            }],
+            parent_object_version_refs=[],
+            normalized_payload_ref=StorageRef(
+                storage_backend="artifact_storage",
+                object_key=source["storage_key"],
+                checksum=source["content_hash"],
+                media_type="application/json",
+                byte_size=source["byte_size"],
+            ),
+            content_hash=source["content_hash"],
+            semantic_hash=source["semantic_hash"],
+            canonical_metadata=source["canonical_metadata"],
+            semantic_profile_ref=source["semantic_profile_ref"],
+            created_by_user_id=created_by_user_id,
+        )
+
+    def _validated_dataset_resource(
+        self,
+        *,
+        project_id: str,
+        dataset_id: str,
+        resource_id: str,
+        storage: ArtifactStorage,
+    ) -> dict[str, Any]:
+        with self.repository_factory.session() as session:
+            dataset = dict(session.repositories.datasets.get(dataset_id))
+            profiles = list(session.repositories.data_profiles.list_for_dataset(dataset_id))
+        if str(dataset.get("projectId")) != project_id:
+            raise UnauthorizedScientificObjectReference("source dataset is outside the project")
+        if str(dataset.get("status") or "") != "profile_ready" or not profiles:
+            raise InvalidScientificObjectVersion("source dataset is not scientifically profiled")
+        profiles.sort(key=lambda item: str(item.get("createdAt") or item.get("profileId") or ""))
+        profile = dict(profiles[-1])
+        metadata = dict(dataset.get("metadata") or {})
+        exports = [item for item in metadata.get("normalizedExports") or [] if isinstance(item, dict)]
+        matches = [item for item in exports if str(item.get("objectId") or "") == resource_id]
+        if len(matches) != 1:
+            raise InvalidScientificObjectVersion("the requested normalized scientific resource is unavailable")
+        export = matches[0]
+        storage_key = str(export.get("storageKey") or "")
+        metadata_key = str(export.get("metadataKey") or "")
+        content_hash = str(export.get("contentHash") or "")
+        semantic_hash = str(export.get("objectHash") or "")
+        required_scope = f"projects/{project_id}/datasets/{dataset_id}/normalized/{resource_id}/"
+        if (
+            not storage_key.startswith(required_scope)
+            or not metadata_key.startswith(required_scope)
+            or len(content_hash) != 64
+            or len(semantic_hash) != 64
+        ):
+            raise InvalidScientificObjectVersion("persisted scientific resource manifest is incomplete")
+        payload_bytes = storage.get_bytes_bounded(storage_key, max_bytes=8 * 1024 * 1024)
+        if hashlib.sha256(payload_bytes).hexdigest() != content_hash:
+            raise InvalidScientificObjectVersion("persisted scientific resource checksum mismatch")
+        source_metadata = json.loads(
+            storage.get_bytes_bounded(metadata_key, max_bytes=256 * 1024).decode("utf-8")
+        )
+        if (
+            str(source_metadata.get("objectId") or "") != resource_id
+            or str(source_metadata.get("contentHash") or "") != content_hash
+        ):
+            raise InvalidScientificObjectVersion("persisted scientific resource metadata mismatch")
+        resource_type = str((source_metadata.get("provenance") or {}).get("objectType") or "")
+        mapped = _RESOURCE_OBJECT_TYPES.get(resource_type)
+        if mapped is None:
+            raise InvalidScientificObjectVersion(
+                "persisted scientific resource type is not admitted to ScientificObject authority"
+            )
+        profiled = [
+            item for item in profile.get("objects") or []
+            if isinstance(item, dict) and str(item.get("objectId") or "") == resource_id
+        ]
+        if len(profiled) != 1 or str(profiled[0].get("objectHash") or "") != semantic_hash:
+            raise InvalidScientificObjectVersion("exact resource is not bound to the persisted DataProfile")
+        canonical_metadata = self._resource_canonical_metadata(
+            profile=profile,
+            resource_id=resource_id,
+            source_metadata=dict(source_metadata.get("metadata") or {}),
+        )
+        return {
+            "project_id": project_id,
+            "dataset_id": dataset_id,
+            "resource_id": resource_id,
+            "kind": mapped[0],
+            "object_type": mapped[1],
+            "display_name": str(dataset.get("name") or resource_id),
+            "storage_key": storage_key,
+            "content_hash": content_hash,
+            "semantic_hash": semantic_hash,
+            "byte_size": len(payload_bytes),
+            "canonical_metadata": canonical_metadata,
+            "semantic_profile_ref": {
+                "profileId": str(profile.get("profileId") or profile.get("id") or ""),
+                "datasetId": dataset_id,
+                "contractVersion": str(profile.get("profileContractVersion") or profile.get("version") or ""),
+                "semanticHash": str(profile.get("semanticHash") or ""),
+                "resourceId": resource_id,
+                "resourceHash": semantic_hash,
+            },
+        }
+
+    @staticmethod
+    def _resource_canonical_metadata(
+        *,
+        profile: dict[str, Any],
+        resource_id: str,
+        source_metadata: dict[str, Any],
+    ) -> dict[str, Any]:
+        result = dict(source_metadata)
+        result["profileContractVersion"] = profile.get("profileContractVersion")
+        for record in profile.get("resourceSemantics") or []:
+            if isinstance(record, dict) and str(record.get("objectId") or "") == resource_id:
+                result.update(dict(record.get("facts") or {}))
+                break
+        coordination = profile.get("coordinationReadiness") or {}
+        for record in coordination.get("structures") or []:
+            if isinstance(record, dict) and str(record.get("objectId") or "") == resource_id:
+                result.update({
+                    "latticeStatus": record.get("latticeStatus"),
+                    "siteCount": record.get("siteCount"),
+                    "coordinationInputStatus": record.get("coordinationInputStatus"),
+                    "speciesOccupancyStatus": record.get("speciesOccupancyStatus"),
+                })
+                break
+        return result
+
     def get_object(self, object_id: UUID) -> dict[str, Any]:
         with self.repository_factory.session() as session:
             return session.agent2.scientific_objects.get_object(object_id)
@@ -294,6 +505,119 @@ class ScientificObjectService:
             with self.repository_factory.unit_of_work() as unit:
                 unit.agent2.scientific_objects.get_object(object_id, for_update=True)
                 return unit.agent2.scientific_objects.archive_object(object_id, datetime.now(timezone.utc))
+
+    def update_metadata(
+        self,
+        object_id: UUID,
+        *,
+        display_name: str | None = None,
+        archived: bool | None = None,
+    ) -> dict[str, Any]:
+        if display_name is not None and not display_name.strip():
+            raise InvalidScientificObjectVersion("display_name must not be blank")
+        if display_name is None and archived is None:
+            raise InvalidScientificObjectVersion("at least one metadata field is required")
+        with _object_lock(object_id):
+            with self.repository_factory.unit_of_work() as unit:
+                repository = unit.agent2.scientific_objects
+                repository.get_object(object_id, for_update=True)
+                lifecycle_status = None
+                archived_at = None
+                if archived is True:
+                    lifecycle_status = "ARCHIVED"
+                    archived_at = datetime.now(timezone.utc)
+                elif archived is False:
+                    lifecycle_status = "ACTIVE"
+                return repository.update_object_metadata(
+                    object_id,
+                    display_name=display_name.strip() if display_name is not None else None,
+                    lifecycle_status=lifecycle_status,
+                    archived_at=archived_at,
+                )
+
+    def query_dataset_version(
+        self,
+        object_id: UUID,
+        version_id: UUID,
+        *,
+        storage: ArtifactStorage,
+        request: ScientificDatasetQueryRequest,
+    ) -> dict[str, Any]:
+        logical = self.get_object(object_id)
+        version = self.get_version(object_id, version_id)
+        if logical["kind"] not in {ScientificObjectKind.DATASET.value, ScientificObjectKind.TABLE.value}:
+            raise InvalidScientificObjectVersion("typed dataset query requires a DATASET or TABLE object")
+        ref = StorageRef.model_validate(version["normalized_payload_ref_json"])
+        payload_bytes = storage.get_bytes_bounded(ref.object_key, max_bytes=8 * 1024 * 1024)
+        if hashlib.sha256(payload_bytes).hexdigest() != ref.checksum:
+            raise InvalidScientificObjectVersion("dataset payload checksum mismatch")
+        payload = json.loads(payload_bytes.decode("utf-8"))
+        if not isinstance(payload, list) or any(not isinstance(row, dict) for row in payload):
+            raise InvalidScientificObjectVersion("dataset payload must be a bounded list of objects")
+        rows = [dict(row) for row in payload]
+        columns = set().union(*(row.keys() for row in rows)) if rows else set()
+        requested_columns = request.columns or sorted(columns)
+        invalid_columns = [column for column in requested_columns if column not in columns]
+        if invalid_columns:
+            raise InvalidScientificObjectVersion(f"unknown dataset column: {invalid_columns[0]}")
+        if request.sort_by and request.sort_by not in columns:
+            raise InvalidScientificObjectVersion(f"unknown dataset column: {request.sort_by}")
+        for clause in request.filters:
+            if clause.column not in columns:
+                raise InvalidScientificObjectVersion(f"unknown dataset column: {clause.column}")
+            if clause.operator == "in" and (not isinstance(clause.value, list) or len(clause.value) > 100):
+                raise InvalidScientificObjectVersion("in filter must contain at most 100 values")
+        rows = [row for row in rows if all(self._matches_filter(row, clause) for clause in request.filters)]
+        if request.sort_by:
+            rows.sort(key=lambda row: self._sort_key(row.get(request.sort_by)), reverse=request.descending)
+        selected = []
+        for row in rows[: request.limit]:
+            projected = {column: row.get(column) for column in requested_columns}
+            projected["_stable_id"] = self._stable_row_identity(row)
+            selected.append(projected)
+        return {
+            "object_id": str(object_id),
+            "version_id": str(version_id),
+            "total_matching": len(rows),
+            "limit": request.limit,
+            "columns": requested_columns,
+            "items": selected,
+        }
+
+    @staticmethod
+    def _stable_row_identity(row: dict[str, Any]) -> str:
+        sample_id = row.get("sample_id")
+        if sample_id is not None and str(sample_id).strip():
+            return str(sample_id)
+        canonical = json.dumps(row, sort_keys=True, ensure_ascii=False, separators=(",", ":"), default=str)
+        return f"row-{hashlib.sha256(canonical.encode('utf-8')).hexdigest()[:24]}"
+
+    @staticmethod
+    def _sort_key(value: Any) -> tuple[int, Any]:
+        return (1, "") if value is None else (0, value)
+
+    @staticmethod
+    def _matches_filter(row: dict[str, Any], clause: Any) -> bool:
+        actual = row.get(clause.column)
+        expected = clause.value
+        if clause.operator == "eq":
+            return actual == expected
+        if clause.operator == "in":
+            return actual in expected
+        if actual is None:
+            return False
+        try:
+            if clause.operator == "gt":
+                return actual > expected
+            if clause.operator == "gte":
+                return actual >= expected
+            if clause.operator == "lt":
+                return actual < expected
+            if clause.operator == "lte":
+                return actual <= expected
+        except TypeError as exc:
+            raise InvalidScientificObjectVersion("dataset filter types are incompatible") from exc
+        raise InvalidScientificObjectVersion(f"unsupported dataset filter operator: {clause.operator}")
 
     @staticmethod
     def _validate_sources(connection: Any, project_id: str, refs: list[dict[str, Any]]) -> None:

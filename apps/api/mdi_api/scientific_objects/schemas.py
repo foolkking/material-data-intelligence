@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -65,6 +65,39 @@ class StorageRef(BaseModel):
     checksum: str = Field(min_length=1, max_length=128)
     media_type: str | None = Field(default=None, max_length=160)
     byte_size: int | None = Field(default=None, ge=0)
+
+
+class ScientificDatasetFilter(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    column: str = Field(min_length=1, max_length=128, pattern=r"^[A-Za-z_][A-Za-z0-9_]*$")
+    operator: Literal["eq", "gt", "gte", "lt", "lte", "in"] = "eq"
+    value: Any
+
+
+class ScientificDatasetQueryRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    filters: list[ScientificDatasetFilter] = Field(default_factory=list, max_length=8)
+    sort_by: str | None = Field(default=None, max_length=128, pattern=r"^[A-Za-z_][A-Za-z0-9_]*$")
+    descending: bool = False
+    columns: list[str] | None = Field(default=None, max_length=64)
+    limit: int = Field(default=100, ge=1, le=500)
+
+
+class ScientificObjectAdmissionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    dataset_id: str = Field(min_length=1, max_length=128)
+    resource_id: str = Field(min_length=1, max_length=128)
+    display_name: str | None = Field(default=None, min_length=1, max_length=512)
+
+
+class ScientificObjectVersionCreateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    dataset_id: str = Field(min_length=1, max_length=128)
+    resource_id: str = Field(min_length=1, max_length=128)
 
 
 class ObjectTypeManifest(BaseModel):

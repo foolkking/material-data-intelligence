@@ -152,6 +152,34 @@ class ScientificObjectRepository(_Repository):
             return self._object_row(connection, object_id)
         return self._run(run)
 
+    def update_object_metadata(
+        self,
+        object_id: UUID,
+        *,
+        display_name: str | None = None,
+        lifecycle_status: str | None = None,
+        archived_at: datetime | None = None,
+    ) -> dict[str, Any]:
+        values: dict[str, Any] = {"row_version": scientific_objects.c.row_version + 1}
+        if display_name is not None:
+            values["display_name"] = display_name
+        if lifecycle_status is not None:
+            values["lifecycle_status"] = lifecycle_status
+        if archived_at is not None or lifecycle_status == "ACTIVE":
+            values["archived_at"] = archived_at
+
+        def run(connection: Connection) -> dict[str, Any]:
+            result = connection.execute(
+                update(scientific_objects)
+                .where(scientific_objects.c.id == object_id)
+                .values(**values)
+            )
+            if result.rowcount != 1:
+                raise ScientificObjectNotFound(str(object_id))
+            return self._object_row(connection, object_id)
+
+        return self._run(run)
+
     @staticmethod
     def _required(row: Any, error: Exception) -> dict[str, Any]:
         if row is None:

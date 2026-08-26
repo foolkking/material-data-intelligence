@@ -95,6 +95,45 @@ def test_canonical_projector_uses_verified_production_contract_and_grounded_fact
         assert resolve_json_pointer(payload, fact.source.artifact_locator) == fact.value
 
 
+def test_materials_explorer_projects_bounded_sample_and_property_facts() -> None:
+    payload = {
+        "artifactType": "dataset.materials_explorer",
+        "schemaVersion": "phase10k2.dataset_materials_explorer.v1",
+        "overview": {"sampleCount": 3, "propertyCount": 2},
+        "coverage": {"totalRows": 3, "totalColumns": 4},
+        "composition": {
+            "uniqueFormulaCount": 3,
+            "coverage": {"valid": 3, "invalid": 0},
+        },
+        "quality": {"invalidFormulaCount": 0},
+        "sampleIndex": [
+            {
+                "sampleRef": "mat-2",
+                "sampleKey": "dataset-object:mat-2",
+                "formula": "NaCl",
+                "properties": {"band_gap": 5.6, "density": 2.16},
+            }
+        ],
+        "properties": {
+            "properties": [
+                {
+                    "column": "band_gap",
+                    "unit": None,
+                    "statistics": {"min": 1.1, "max": 5.6, "mean": 2.93, "median": 2.1},
+                }
+            ]
+        },
+    }
+    projector = next(item for item in build_canonical_result_projectors() if item.projector_id == "agent2.data.materials_explorer")
+    bundle = projector.project(_context([payload], projector_id=projector.projector_id)).bundle
+    facts = {fact.predicate: fact for fact in bundle.facts}
+    assert facts["dataset.sample_id"].value == "mat-2"
+    assert facts["dataset.sample.band_gap"].value == 5.6
+    assert facts["dataset.property.band_gap.max"].value == 5.6
+    assert all(fact.source.artifact_locator for fact in bundle.facts)
+    assert bundle.result_items[0].fact_refs
+
+
 def test_rdf_curve_is_not_expanded_into_scalar_facts_and_replay_is_deterministic():
     projector_id, payload, _expected = CASES[0]
     projector = next(item for item in build_canonical_result_projectors() if item.projector_id == projector_id)

@@ -78,7 +78,11 @@ class GroundingValidationResult(BaseModel):
 _NUMBER = re.compile(r"(?<![A-Za-z0-9_.])[-+]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?%?")
 _OPAQUE_IDENTIFIER = re.compile(
     r"(?i)(?:\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b|"
-    r"\b(?:fact|evidence|result|object|version|job|call|artifact)[._-][0-9a-f-]+\b)"
+    r"\b(?:fact|evidence|result|object|version|job|call|artifact)[._-][0-9a-f-]+\b|"
+    # Stable scientific sample locators are identifiers, not measurements.
+    # Keep this bounded to the repository's canonical ``mat-*`` / ``sample-*``
+    # forms so ordinary hyphenated scientific prose remains numeric-aware.
+    r"\b(?:mat|sample)[_-][A-Za-z0-9_-]+\b)"
 )
 
 

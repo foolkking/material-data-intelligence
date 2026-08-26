@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 import pytest
 from sqlalchemy import create_engine, func, insert, select
@@ -29,11 +28,14 @@ from mdi_api.db import (
     tool_calls,
     users,
 )
+from mdi_api.artifact_storage import LocalFileArtifactStorage
 from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchTurnStatus
 from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.routers.auth import CurrentUser
 from mdi_api.scientific_objects.registry import build_default_object_type_registry
 from mdi_api.scientific_objects.schemas import (
+    ScientificDatasetFilter,
+    ScientificDatasetQueryRequest,
     ScientificObjectAvailability,
     ScientificObjectKind,
     ScientificObjectRef,
@@ -159,6 +161,90 @@ def test_parent_project_cycle_relationship_and_archive_rules():
                 "normalized_payload_ref_json": av1["normalized_payload_ref_json"],
                 "canonical_metadata_json": av1["canonical_metadata_json"],
             })
+
+
+def test_object_metadata_archive_restore_and_rename_preserve_versions():
+    _engine, _owner, _factory, service, _turns = foundation()
+    logical = create_structure(service, "project", "Original")
+    v1 = create_version(service, logical, "stable")
+
+    renamed = service.update_metadata(logical["id"], display_name="Renamed structure")
+    assert renamed["display_name"] == "Renamed structure"
+    assert renamed["lifecycle_status"] == "ACTIVE"
+
+    archived = service.update_metadata(logical["id"], archived=True)
+    assert archived["lifecycle_status"] == "ARCHIVED"
+    assert archived["archived_at"] is not None
+    assert archived["current_version_id"] == v1["id"]
+
+    restored = service.update_metadata(logical["id"], archived=False)
+    assert restored["lifecycle_status"] == "ACTIVE"
+    assert restored["archived_at"] is None
+    assert restored["current_version_id"] == v1["id"]
+    assert service.get_version(logical["id"], v1["id"])["content_hash"] == "content-stable"
+
+    with pytest.raises(InvalidScientificObjectVersion, match="at least one"):
+        service.update_metadata(logical["id"])
+    with pytest.raises(InvalidScientificObjectVersion, match="must not be blank"):
+        service.update_metadata(logical["id"], display_name="   ")
+
+
+def test_typed_dataset_query_uses_stable_identity_and_bounds(tmp_path):
+    _engine, _owner, _factory, service, _turns = foundation()
+    storage_backend = LocalFileArtifactStorage(tmp_path)
+    payload = [
+        {"sample_id": "s-2", "formula": "SiO2", "band_gap": 1.2},
+        {"sample_id": "s-1", "formula": "Si", "band_gap": 0.0},
+        {"sample_id": "s-3", "formula": "Ge", "band_gap": 0.7},
+    ]
+    stored = storage_backend.put_json("project/dataset.json", payload)
+    logical = service.create_object(
+        project_id="project",
+        kind=ScientificObjectKind.DATASET,
+        object_type="materials.dataset",
+        display_name="Canonical materials",
+        created_by_user_id="owner",
+    )
+    version = service.create_version(
+        logical["id"],
+        object_type="materials.dataset",
+        object_schema_version="1.0",
+        source_resource_refs=[{"scope": "system_fixture", "resource_id": "dataset-query"}],
+        parent_object_version_refs=[],
+        normalized_payload_ref=StorageRef(
+            storage_backend="local",
+            object_key=stored.storage_key,
+            checksum=stored.sha256,
+            media_type="application/json",
+            byte_size=stored.size_bytes,
+        ),
+        content_hash=stored.sha256,
+        semantic_hash=stored.sha256,
+        canonical_metadata={"row_count": len(payload), "sample_identity": "sample_id"},
+        created_by_user_id="owner",
+    )
+    result = service.query_dataset_version(
+        logical["id"],
+        version["id"],
+        storage=storage_backend,
+        request=ScientificDatasetQueryRequest(
+            filters=[ScientificDatasetFilter(column="band_gap", operator="gt", value=0)],
+            sort_by="band_gap",
+            descending=True,
+            columns=["sample_id", "formula", "band_gap"],
+            limit=2,
+        ),
+    )
+    assert result["total_matching"] == 2
+    assert [row["_stable_id"] for row in result["items"]] == ["s-2", "s-3"]
+    assert [row["formula"] for row in result["items"]] == ["SiO2", "Ge"]
+    with pytest.raises(InvalidScientificObjectVersion, match="unknown dataset column"):
+        service.query_dataset_version(
+            logical["id"],
+            version["id"],
+            storage=storage_backend,
+            request=ScientificDatasetQueryRequest(filters=[ScientificDatasetFilter(column="unknown", value="x")]),
+        )
 
 
 def test_concurrent_version_allocation_is_unique_and_ordered():

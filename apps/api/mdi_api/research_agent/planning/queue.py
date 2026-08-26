@@ -45,5 +45,5 @@ class RedisRQCapabilityPlanningQueue:
         job_id = f"agent2-plan-{turn_id}"
         if queue.fetch_job(job_id) is not None:
             return PlanningQueueSubmitResult(turn_id, False, "rq", "turn already queued")
-        queue.enqueue("mdi_api.research_agent.planning.worker.run_queued_planning", str(turn_id), job_id=job_id)
+        queue.enqueue("mdi_api.research_agent_planning_worker.run_queued_planning", str(turn_id), job_id=job_id)
         return PlanningQueueSubmitResult(turn_id, True, "rq", "turn queued")
