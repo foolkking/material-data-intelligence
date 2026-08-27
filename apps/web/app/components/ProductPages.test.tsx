@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
   getProjectHistory: vi.fn(),
   getDatasetSourceResources: vi.fn(),
   uploadDatasetFiles: vi.fn(),
+  listScientificObjects: vi.fn(),
 }));
 
 vi.mock("next/link", () => ({ default: ({ children, href, ...props }: { children: React.ReactNode; href: string }) => <a href={href} {...props}>{children}</a> }));
@@ -34,8 +35,14 @@ vi.mock("./ProductShell", () => ({
   ProductShell: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   RequireProductAuth: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
+vi.mock("../lib/scientific-viewer-api", () => ({
+  listScientificObjects: mocks.listScientificObjects,
+}));
 vi.mock("./ScientificViewerAdapter", () => ({
   ScientificSourceViewer: ({ resource, onSelection }: { resource: { objectType: string }; onSelection?: (selection: unknown) => void }) => <div data-testid="quick-preview-scientific-viewer">{resource.objectType}{onSelection ? <button type="button" aria-label="选择第一条科学数据" onClick={() => onSelection({ schemaVersion: "1.0", sourceScopeHash: "scope", primary: { kind: "DATASET_SAMPLE", sampleRef: "BaTiO3" }, secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false })}>选择</button> : null}</div>,
+}));
+vi.mock("./scientific-viewer/ScientificObjectViewer", () => ({
+  ScientificObjectViewer: () => <div data-testid="scientific-object-viewer" />,
 }));
 
 import { ConsolePage, DatasetUploadPage, ProjectDataPage, ProjectsPage, TableScientificView } from "./ProductPages";
@@ -53,6 +60,7 @@ beforeEach(() => {
   mocks.getProjectHistory.mockResolvedValue({ project: { id: "project_1", name: "研究项目", role: "owner" }, datasets: [{ datasetId: "dataset_1", name: "materials-table", import: { fileCount: 1, resources: [] }, profile: { rowCount: 3, semanticRoles: {} }, status: "profile_ready" }], analyses: [] });
   mocks.getDatasetSourceResources.mockResolvedValue([{ objectId: "object_1", objectType: "DataFrame", datasetId: "dataset_1", payload: [{ formula: "BaTiO3" }] }]);
   mocks.uploadDatasetFiles.mockResolvedValue({ datasetId: "dataset_2" });
+  mocks.listScientificObjects.mockResolvedValue({ items: [], next_cursor: null });
 });
 
 it("opens a real source-resource viewer in Console quick preview", async () => {
@@ -249,6 +257,7 @@ it("manages datasets from the Data Navigator without permanent per-row buttons",
   render(<ProjectDataPage projectId="project_1" />);
 
   const datasetTitle = await screen.findByText("materials-table");
+  expect(mocks.listScientificObjects).toHaveBeenCalledWith("project_1", expect.anything(), "ACTIVE");
   fireEvent.contextMenu(datasetTitle.closest(".managed-object-row")!);
   expect(screen.getByRole("menuitem", { name: "重命名数据集" })).toBeInTheDocument();
   await user.keyboard("{Escape}");
@@ -257,6 +266,8 @@ it("manages datasets from the Data Navigator without permanent per-row buttons",
   await user.click(screen.getByRole("checkbox", { name: "选择 materials-table" }));
   await user.click(screen.getByRole("button", { name: "归档" }));
   await waitFor(() => expect(mocks.bulkDatasetAction).toHaveBeenCalledWith(["dataset_1"], "archive"));
+  await user.click(screen.getByRole("button", { name: "已归档" }));
+  await waitFor(() => expect(mocks.listScientificObjects).toHaveBeenLastCalledWith("project_1", expect.anything(), "ARCHIVED"));
 });
 
 it("does not expose dataset mutation controls to a viewer project member", async () => {
@@ -275,4 +286,15 @@ it("does not expose dataset mutation controls to a viewer project member", async
   expect(screen.queryByRole("menuitem", { name: "归档数据集" })).not.toBeInTheDocument();
   expect(screen.queryByRole("menuitem", { name: "删除空数据集" })).not.toBeInTheDocument();
   expect(screen.queryByRole("link", { name: "上传数据" })).not.toBeInTheDocument();
+});
+
+it("keeps an explicitly addressed archived scientific object resolvable outside default discovery filtering", async () => {
+  mocks.listScientificObjects.mockResolvedValue({
+    items: [{ id: "object_1", project_id: "project_1", kind: "STRUCTURE", object_type: "structure.crystal", display_name: "archived structure", lifecycle_status: "ARCHIVED", current_version_id: "version_1" }],
+    next_cursor: null,
+  });
+  render(<ProjectDataPage projectId="project_1" initialObjectId="object_1" initialObjectVersionId="version_1" />);
+
+  expect(await screen.findByTestId("scientific-object-viewer")).toBeInTheDocument();
+  expect(mocks.listScientificObjects).toHaveBeenCalledWith("project_1", expect.anything(), undefined);
 });

@@ -48,7 +48,14 @@ async function request<T>(path: string, signal?: AbortSignal): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export const listScientificObjects = (projectId: string, signal?: AbortSignal) => request<{ items: ScientificObjectSummary[]; next_cursor: string | null }>(`/api/projects/${encodeURIComponent(projectId)}/scientific-objects?limit=100`, signal);
+export const listScientificObjects = (
+  projectId: string,
+  signal?: AbortSignal,
+  lifecycleStatus?: "ACTIVE" | "ARCHIVED",
+) => request<{ items: ScientificObjectSummary[]; next_cursor: string | null }>(
+  `/api/projects/${encodeURIComponent(projectId)}/scientific-objects?limit=100${lifecycleStatus ? `&lifecycle_status=${lifecycleStatus}` : ""}`,
+  signal,
+);
 
 export const getScientificViewerProjection = (objectId: string, versionId: string, signal?: AbortSignal) => request<ScientificViewerProjection>(`/api/scientific-objects/${encodeURIComponent(objectId)}/versions/${encodeURIComponent(versionId)}/viewer`, signal);
 

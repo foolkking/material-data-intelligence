@@ -329,9 +329,9 @@ export function ProjectDataPage({ projectId, initialDatasetId = "", initialObjec
   const visibleDatasets = useMemo(() => (history?.datasets || []).filter((dataset) => statusFilter === "archived" ? dataset.status === "archived" : dataset.status !== "archived"), [history?.datasets, statusFilter]);
   useEffect(() => {
     const controller = new AbortController();
-    void listScientificObjects(projectId, controller.signal).then((response) => setScientificObjects(response.items)).catch(() => setScientificObjects([]));
+    void listScientificObjects(projectId, controller.signal, initialObjectId ? undefined : statusFilter === "archived" ? "ARCHIVED" : "ACTIVE").then((response) => setScientificObjects(response.items)).catch(() => setScientificObjects([]));
     return () => controller.abort();
-  }, [projectId]);
+  }, [initialObjectId, projectId, statusFilter]);
   useEffect(() => {
     if (selectedId && visibleDatasets.some((item) => item.datasetId === selectedId)) return;
     const requested = queryDatasetId && visibleDatasets.some((item) => item.datasetId === queryDatasetId) ? queryDatasetId : visibleDatasets[0]?.datasetId || "";
