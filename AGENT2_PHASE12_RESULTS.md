@@ -35,6 +35,33 @@ Required CI jobs passed:
 The P12-B SHA is the commit containing this completion record; it is
 intentionally not embedded here to avoid a self-referential commit hash.
 
+## Final archive discovery UI closure (2026-08-27)
+
+The existing exact Scientific Object Viewer action remains the lifecycle
+mutation authority and uses `PATCH /api/scientific-objects/{object_id}` with
+project-write authorization. The Data Platform list now requests
+`lifecycle_status=ACTIVE` for normal discovery and
+`lifecycle_status=ARCHIVED` for the archived view. An explicitly addressed
+`object`/`version` route intentionally omits the filter so authorized
+historical Results and Viewers remain resolvable while archived.
+
+Authenticated Chromium verified ACTIVE → ARCHIVED → ACTIVE on the canonical
+Structure/data object. ScientificObject identity, current version, version
+count, and historical exact-version Viewer resolution were unchanged. Archive
+and restore created no ScientificObjectVersion. P12-A UI closure commit:
+
+```text
+40ebb4d65c76ef0c44fdde2923c901c97efa2257
+```
+
+Exact-SHA CI:
+
+```text
+run = 33038096797
+tested SHA = 40ebb4d65c76ef0c44fdde2923c901c97efa2257
+result = PASS
+```
+
 ## Data authority
 
 `ScientificObject` remains the logical scientific identity and
