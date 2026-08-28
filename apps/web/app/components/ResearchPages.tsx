@@ -301,8 +301,13 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewer
       setHistory(nextHistory);
       setPageLoadState("ready");
       const runSession = runId ? items.find((item) => researchSessionReferencesRun(item, runId)) : undefined;
+      // An explicit session id is an authoritative navigation target. When a
+      // historical run is not yet normalized onto that session, retain the
+      // requested session rather than turning a valid route into a missing
+      // conversation error. A run-only route still requires an explicit
+      // persisted run binding and must not fall back to an unrelated session.
       const selected = runId
-        ? runSession
+        ? runSession || (sessionId ? items.find((item) => item.id === sessionId) : undefined)
         : sessionId
           ? items.find((item) => item.id === sessionId)
           : items[0];

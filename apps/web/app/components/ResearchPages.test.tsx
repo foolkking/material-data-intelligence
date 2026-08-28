@@ -872,6 +872,59 @@ it("uses the normalized run binding even when legacy assistant payloads are abse
   ).not.toBeInTheDocument();
 });
 
+it("honors an explicit session id when a historical run is not yet bound to it", async () => {
+  mocks.listResearchSessions.mockResolvedValue([
+    {
+      id: "session_explicit",
+      project_id: "project_1",
+      title: "当前研究",
+      status: "completed",
+      messages: [],
+    },
+    {
+      id: "session_other",
+      project_id: "project_1",
+      title: "其他研究",
+      status: "active",
+      messages: [],
+    },
+  ]);
+  mocks.getResearchSession.mockResolvedValue({
+    id: "session_explicit",
+    project_id: "project_1",
+    title: "当前研究",
+    status: "completed",
+    messages: [],
+  });
+  mocks.getProjectHistory.mockResolvedValue({
+    project: { id: "project_1", name: "研究项目", role: "owner" },
+    datasets: [],
+    analyses: [
+      {
+        jobId: "job_unbound",
+        status: "completed",
+        userQuestion: "新完成的研究",
+        stepCount: 2,
+        artifactCount: 1,
+      },
+    ],
+  });
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_explicit"
+      runId="job_unbound"
+    />,
+  );
+
+  await waitFor(() =>
+    expect(mocks.getResearchSession).toHaveBeenCalledWith("session_explicit"),
+  );
+  expect(
+    screen.queryByText("研究会话不存在或已不可访问。"),
+  ).not.toBeInTheDocument();
+});
+
 it("does not silently attach an orphaned historical run to the first session", async () => {
   mocks.listResearchSessions.mockResolvedValue([
     {

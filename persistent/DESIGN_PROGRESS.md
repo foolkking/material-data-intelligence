@@ -3998,3 +3998,13 @@ report/evidence navigation, proving this path is presentation-only.
 - Focused API/context regression: 20 passed. This is a narrow provenance
   continuity repair; Phase 14-R remains PARTIAL because the broader mature
   product and release gates are not yet closed.
+
+追加验证（2026-08-28）：修复 Research 路由在同时携带明确
+`sessionId` 与尚未绑定到该会话的历史 `runId` 时错误显示“研究会话不存在”
+的问题。现在优先使用持久化的 run 绑定，若绑定缺失则回退到明确的
+`sessionId`；仅有 run 且无可验证绑定时仍保持 fail-closed，不会附着到第一条
+无关会话。新增回归后 `ResearchPages` 聚焦套件为 `35 passed`，web
+typecheck 通过。刷新保留的已认证浏览器标签页后，历史研究对话正常加载，
+Context disclosure 可见，旧会话读取错误消失；API 的
+`GET /research-sessions/research_fbf038934dc84ffeaa5aed9e7c906095` 返回
+`200 OK`。Phase 14-R 其余成熟产品门仍保持真实 `PARTIAL`。

@@ -65,6 +65,26 @@ artifacts = 529 → 529
 scientific_result_snapshots = 68 → 68
 ```
 
+### Agent-2.0 Phase 14-R explicit session fallback continuity (2026-08-28)
+
+The authenticated Research route had a narrow continuity defect when a URL
+contained both an explicit `sessionId` and a historical `runId` that was not
+yet normalized onto that session. `ResearchPage` selected only the run-bound
+session and ignored the explicit target, producing a false
+`研究会话不存在或已不可访问` state despite an authorized persisted session.
+The minimal repair preserves the explicit session as a fallback while keeping
+run-only orphan routes fail-closed.
+
+The new deterministic regression covers an unbound historical run plus an
+explicit session and verifies `getResearchSession("session_explicit")`. The
+focused `ResearchPages` suite is now `35 passed`; web typecheck is `PASS`.
+After refreshing the preserved authenticated browser tab, the historical
+conversation loads, the context disclosure remains visible, and the previous
+session-unreadable error is absent. API logs show the authoritative
+`GET /research-sessions/research_fbf038934dc84ffeaa5aed9e7c906095` returning
+`200 OK`. The only browser warning observed was Next Fast Refresh's development
+full-reload notice; no console errors or unhandled rejections occurred.
+
 ### Agent-2.0 Phase 14-R historical ContextManifest compatibility (2026-08-28)
 
 Historical ResearchTurns whose `CONTEXT_RESOLVED` event predates embedded

@@ -14947,3 +14947,17 @@ scientific_result_snapshots` 聚合计数不增长，并验证 follow-up Turn �
 Presentation 仍保持不变。该旧会话仍有独立的“研究对话暂时无法读取”恢复
 提示，因此完整历史会话恢复门仍为 PARTIAL；本次兼容接口修复由 API focused
 20 项回归覆盖。
+
+## Agent-2.0 Phase 14-R — Explicit session fallback continuity
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改摘要：修复 Research 路由在 `sessionId + runId` 同时存在、但历史 run
+  尚未归一化绑定到该会话时错误丢失明确会话目标的问题；显式 session 现在
+  作为安全回退，run-only orphan route 仍 fail-closed。
+- 测试结果：`apps/web/app/components/ResearchPages.test.tsx` 为 `35 passed`；
+  web typecheck `PASS`；保留的已认证浏览器历史研究页刷新后成功加载，
+  Context disclosure 可见且不再出现“研究会话不存在或已不可访问”，对应
+  research-session API 返回 `200 OK`。
+- 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
+  `PARTIAL`。
