@@ -8,7 +8,7 @@ claiming the mature-product release gate.
 
 - Historical Phase 14 seal: `d03b0a2e86e50d834a774cf823cfe055c91cf10c`
 - Phase 14 remains sealed; no Phase 15 was created or started.
-- Current Phase 14-R worktree head: `4726be9`
+- Current Phase 14-R worktree head before this evidence update: `5c5a437`
 - `PHASE14R_REOPENED = NO`
 
 ## B. Product Reality Audit
@@ -40,7 +40,29 @@ The authenticated browser evidence inspector displays all of the above,
 including the exact source, Artifact checksum and completed ToolCall.
 Structure/Electronic/full scientific-surface campaigns remain `PARTIAL`.
 
-## D. Result Reuse
+## D. Report and Result Reuse
+
+The authenticated modern Dataset report
+`agent2_report_819f458171ba2d3219717895bf12eaf9` now carries its persisted
+interpretation identity into every bounded report presentation block. Its
+evidence inspector resolves:
+
+- Result snapshot: `2809dcd1-243e-4323-8538-0a5fe81780d9`
+- Interpretation: `efccf7a2-6666-429e-be92-20cb2cf659de`
+- exact Dataset version: `be02266a-7d4f-4ebb-9f28-3132855167d0`
+- Artifact checksum:
+  `879396a3bc0bfdef2d31387b3eb73df309fa228d95f9cf2fb2c92eca6c119708`
+- ToolCall: `dataset.materials_explorer` (`completed`)
+
+Persisted scientific-state counts before and after opening the report and its
+evidence inspector were unchanged:
+
+```text
+jobs = 96 → 96
+tool_calls = 131 → 131
+artifacts = 529 → 529
+scientific_result_snapshots = 68 → 68
+```
 
 `tests/integration/test_agent2_phase7_service_backed.py` passed `4` cases in
 `114.25s` against real PostgreSQL/Redis worker infrastructure. Interpretation
@@ -70,6 +92,7 @@ Recent service evidence:
 
 - `tests/test_phase10l4_api_persistence.py`: `14 passed`
 - Frontend scientific presentation/identity tests: `12 passed`
+- Report/presentation focused tests after report-evidence binding: `14 passed`
 - Frontend typecheck: `PASS`
 - touched Ruff (`apps/api/mdi_api/routers/planner.py`): `PASS`
 - `git diff --check`: `PASS`

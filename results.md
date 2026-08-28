@@ -14916,3 +14916,17 @@ Phase 14-R 更广泛的成熟产品门仍保持 PARTIAL，未创建 P14R-A/P14R-
 Result authority；测试断言 reuse 前后 `analysis_plans/jobs/tool_calls/artifacts/
 scientific_result_snapshots` 聚合计数不增长，并验证 follow-up Turn 完成及
 原始 Result/Turn 身份保持不变。浏览器级复用控制仍待成熟产品 campaign。
+## Agent-2.0 Phase 14-R — Report evidence continuity
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改摘要：Scientific Report presentation blocks now retain the persisted
+  interpretation identity, enabling the existing authorized evidence inspector
+  to resolve exact Result, Artifact, ToolCall and ScientificObjectVersion
+  provenance from a report without creating a second authority.
+- 测试结果：focused frontend `14 passed`; frontend typecheck `PASS`;
+  authenticated same-stack browser report evidence inspection `PASS`;
+  persisted no-recompute counts remained Jobs `96`, ToolCalls `131`, Artifacts
+  `529`, ScientificResult snapshots `68`.
+- 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
+  `PARTIAL`.

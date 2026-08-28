@@ -3967,6 +3967,19 @@ ScientificResult snapshot for the owning Job and includes Job-scoped Artifact
 and ToolCall descriptors for user inspection. Legacy bundles without a Result
 snapshot remain readable without fabricated provenance. No scientific authority,
 version semantics, or recomputation path changed.
+
+### Agent-2.0 Phase 14-R report evidence continuity (2026-08-28)
+
+The immutable Scientific Report presentation compiler now preserves the
+report's persisted `scientific_interpretation_id` on every bounded block.
+The authenticated Dataset report can therefore traverse the same authorized,
+read-only Result → Evidence → Artifact → ToolCall → exact source-version path
+as the Research presentation. Browser inspection resolved Result snapshot
+`2809dcd1-243e-4323-8538-0a5fe81780d9`, exact Dataset version
+`be02266a-7d4f-4ebb-9f28-3132855167d0`, the persisted Artifact checksum and
+completed `dataset.materials_explorer` ToolCall. Jobs, ToolCalls, Artifacts and
+ScientificResult snapshot counts remained `96/131/529/68` before and after
+report/evidence navigation, proving this path is presentation-only.
 ## 2026-08-28 Phase 14-R history continuity
 
 - Research session-history links now use the server-projected `ProjectHistory.analyses` relation to carry an exact `run` and persisted `turn` when available.

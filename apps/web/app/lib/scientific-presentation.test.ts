@@ -230,6 +230,10 @@ describe("scientific presentation compiler", () => {
     expect(presentation.historicalNotice).toContain("不会静默替换");
     expect(presentation.exactSourceRefs[0].versionId).toBe("version-v1");
     expect(presentation.blocks).toContainEqual(expect.objectContaining({ type: "finding", evidenceIds: expect.arrayContaining(["evidence-1"]) }));
+    expect(presentation.blocks).toContainEqual(expect.objectContaining({
+      type: "evidence_reference",
+      source: expect.objectContaining({ interpretationId: "interpretation-1" }),
+    }));
   });
 
   it("retains ToolCall provenance when projecting a Result fact", () => {

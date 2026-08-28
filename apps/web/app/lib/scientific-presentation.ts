@@ -229,6 +229,7 @@ export function compileScientificPresentation(input: PresentationInput): Scienti
  */
 export function compileReportPresentation(view: ScientificReportView): ScientificPresentation {
   const report = view.report;
+  const interpretationId = view.scientific_interpretation_id || null;
   const sourceRefs = (view.viewer_sources || []).map((source) => ({
     objectId: source.object_id,
     versionId: source.version_id,
@@ -243,7 +244,7 @@ export function compileReportPresentation(view: ScientificReportView): Scientifi
       type: "narrative",
       title: "报告摘要",
       text: report.summary,
-      source: { ...source, resultId: view.scientific_result_snapshot_id },
+      source: { ...source, resultId: view.scientific_result_snapshot_id, interpretationId },
     });
   }
   (report?.main_findings || []).slice(0, 12).forEach((finding, index) => {
@@ -256,6 +257,7 @@ export function compileReportPresentation(view: ScientificReportView): Scientifi
       source: {
         ...source,
         resultId: view.scientific_result_snapshot_id,
+        interpretationId,
         factId: finding.fact_refs[0] || null,
       },
       evidenceIds: [...new Set([...finding.finding_refs, ...finding.fact_refs, ...finding.evidence_refs])].slice(0, 12),
@@ -267,7 +269,7 @@ export function compileReportPresentation(view: ScientificReportView): Scientifi
       type: "figure",
       title: figure.caption || figure.figure_ref,
       artifactId: figure.figure_ref,
-      source: { ...source, resultId: view.scientific_result_snapshot_id, artifactId: figure.figure_ref },
+      source: { ...source, resultId: view.scientific_result_snapshot_id, interpretationId, artifactId: figure.figure_ref },
     });
   });
   (report?.evidence_refs || []).slice(0, 12).forEach((evidenceId, index) => {
@@ -276,7 +278,7 @@ export function compileReportPresentation(view: ScientificReportView): Scientifi
       type: "evidence_reference",
       title: "报告证据",
       label: evidenceId,
-      source: { ...source, resultId: view.scientific_result_snapshot_id, evidenceId },
+      source: { ...source, resultId: view.scientific_result_snapshot_id, interpretationId, evidenceId },
     });
   });
   (report?.limitations || []).slice(0, 8).forEach((limitation, index) => {
@@ -284,7 +286,7 @@ export function compileReportPresentation(view: ScientificReportView): Scientifi
       id: stableId("report-limitation", limitation.statement, index),
       type: "limitation",
       text: limitation.statement,
-      source: { ...source, resultId: view.scientific_result_snapshot_id },
+      source: { ...source, resultId: view.scientific_result_snapshot_id, interpretationId },
     });
   });
   sourceRefs.slice(0, 8).forEach((sourceRef, index) => {
@@ -293,7 +295,7 @@ export function compileReportPresentation(view: ScientificReportView): Scientifi
       type: "viewer_reference",
       title: "历史 Viewer",
       label: sourceRef.displayName || `${sourceRef.objectType || "ScientificObject"} · ${sourceRef.versionId}`,
-      source: { objectId: sourceRef.objectId, versionId: sourceRef.versionId, resultId: view.scientific_result_snapshot_id },
+      source: { objectId: sourceRef.objectId, versionId: sourceRef.versionId, resultId: view.scientific_result_snapshot_id, interpretationId },
     });
   });
   return {

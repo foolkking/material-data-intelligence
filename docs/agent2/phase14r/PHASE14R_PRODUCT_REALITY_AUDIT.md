@@ -39,11 +39,11 @@ acceptance evidence is not yet complete.
 | Structure/Electronic/Dataset user presentation | renderers and routes exist; full current same-stack domain campaign not rerun | PARTIAL |
 | Scientific Viewer coverage | registry and many renderer implementations exist; every declared family lacks current live acceptance | PARTIAL |
 | Evidence traversal UX | Presentation evidence references now link through the existing secured interpretation-evidence route, retaining Result/interpretation identity; Dataset Agent2 browser proof now shows exact source, Artifact checksum and ToolCall, while every capability-family path remains open | PARTIAL |
-| Scientific Report | grounded report composition and immutable snapshots exist; frozen `ReportContextBundle` validates bounded provider input, and the report index now labels modern recoverable sessions versus compatibility-only history; current multi-family browser/service quality campaign remains open | PARTIAL |
+| Scientific Report | grounded report composition and immutable snapshots exist; frozen `ReportContextBundle` validates bounded provider input, the report index labels modern recoverable sessions versus compatibility-only history, and the modern Dataset report now traverses its exact Result/interpretation evidence chain in the authenticated browser with zero Job/ToolCall/Artifact/Result delta; multi-family report-quality evaluation remains open | PARTIAL |
 | Historical v1/v2 presentation | exact source semantics are sealed in Phase 12/13; Research history links now use persisted `researchTurnId` only, and history explicitly labels modern `RESEARCH_TURN` versus compatibility-only `LEGACY_SESSION_RUN`; modern history now prefers the persisted `user_message_id` with a session-bound safety check; repeated browser campaign is still open | PARTIAL |
 | Archived historical presentation | archive API/UI and historical Viewer semantics exist; mature Report/Evidence browser proof not yet run | PARTIAL |
 | Viewer no-recompute | read-only architecture and tests exist; current persisted delta campaign across all viewers is not yet rerun | PARTIAL |
-| Exact Result reuse | some continuation/reuse infrastructure exists; dedicated zero-delta Phase 14-R acceptance is not yet established | NOT_QUALIFIED |
+| Exact Result reuse | the real PostgreSQL/Redis service campaign passes four continuation/reuse cases and asserts zero aggregate growth for Plan/Job/ToolCall/Artifact/ScientificResult state; browser-level control semantics remain open | PARTIAL |
 
 ## Context, memory and message provenance
 
