@@ -25,6 +25,7 @@ from mdi_api.scientific_objects.schemas import (
     StorageRef,
 )
 from mdi_api.scientific_objects.service import ScientificObjectService
+from mdi_api.scientific_results.schemas import ScientificResultBundle
 from mdi_api.unit_of_work import RepositoryFactory
 
 
@@ -490,6 +491,146 @@ def test_phase4_progress_and_dispatch_are_project_authorized(api):
     assert client.get(f"/api/research/turns/{turn['turn_id']}/progress").status_code == 403
     assert client.post(f"/api/research/turns/{turn['turn_id']}/dispatch").status_code == 403
     active["value"] = owner
+
+
+def test_terminal_history_progress_uses_read_only_fallback_when_legacy_plan_payload_is_missing(api, monkeypatch):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    turn = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json={"message": "Open a historical result"},
+    ).json()
+    turn_id = UUID(turn["turn_id"])
+    with objects.repository_factory.unit_of_work() as unit:
+        current = unit.agent2.research_turns.get(turn_id)
+        unit.agent2.research_turns.compare_and_set_status(
+            turn_id,
+            expected_status=str(current["status"]),
+            expected_version=int(current["row_version"]),
+            target_status="COMPLETED",
+        )
+        unit.agent2.research_turns.attach_job(turn_id, "legacy-result-job")
+
+    def missing_legacy_plan(_self, _job_id):
+        raise ValueError("AnalysisPlan record is missing analysis_plan_json")
+
+    monkeypatch.setattr(
+        "mdi_api.routers.agent2.ResearchExecutionSupervisor.sync_for_job",
+        missing_legacy_plan,
+    )
+    response = client.get(f"/api/research/turns/{turn_id}/progress")
+    assert response.status_code == 200
+    assert response.json() == {
+        "contract_version": "1.0",
+        "turn_id": str(turn_id),
+        "status": "COMPLETED",
+        "plan_title": "Historical completed analysis",
+        "steps": [],
+        "active_step_ids": [],
+        "completed_step_count": 0,
+        "total_step_count": 0,
+        "incremental_outputs": [],
+        "warnings": ["HISTORICAL_ANALYSIS_PLAN_PAYLOAD_UNAVAILABLE"],
+        "execution_outcome": "SUCCESS",
+        "result_projection_pending": False,
+    }
+
+
+def test_agent2_result_projection_exposes_bounded_facts_and_exact_sources(api):
+    client, active, _owner, _viewer, stranger, objects = api
+    ref = create_ref(objects, "project")
+    scientific_selection = {
+        "contract_version": "1.0",
+        "object_ref": ref.model_dump(mode="json"),
+        "viewer_id": "materials.table",
+        "selection_type": "DATASET_SAMPLE",
+        "semantic_locator": {"sample_ref": "mat-2"},
+        "display_label": "mat-2",
+    }
+    turn = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json={"message": "Read the exact scientific result"},
+    ).json()
+    turn_id = UUID(turn["turn_id"])
+    bundle = ScientificResultBundle.model_validate({
+        "schema_version": "1.0",
+        "result_id": str(uuid4()),
+        "project_id": "project",
+        "research_session_id": "session",
+        "research_turn_id": str(turn_id),
+        "research_question": "Read the exact scientific result",
+        "source_object_refs": [ref.model_dump(mode="json")],
+        "execution_status": "SUCCESS",
+        "relevance_status": "CURRENT",
+        "result_items": [],
+        "facts": [{
+            "fact_id": "structure.site_count",
+            "predicate": "structure.site_count",
+            "subject_ref": "structure",
+            "value": 2,
+            "unit": None,
+            "source": {"scientific_object_ref": ref.model_dump(mode="json")},
+        }],
+        "figures": [],
+        "tables": [],
+        "output_object_refs": [],
+        "evidence": [],
+        "methods": [],
+        "limitations": [],
+        "warnings": [],
+        "provenance": {},
+        "projection_version": "agent2.result/1.0",
+    })
+    with objects.repository_factory.unit_of_work() as unit:
+        unit.agent2.research_context_snapshots.add({
+            "id": uuid4(),
+            "project_id": "project",
+            "research_session_id": "session",
+            "research_turn_id": turn_id,
+            "snapshot_schema_version": "1.1",
+            "active_scope_refs_json": [],
+            "selection_refs_json": [],
+            "scientific_selections_json": [scientific_selection],
+            "resolved_references_json": [],
+            "referenced_result_refs_json": [],
+            "relevant_finding_refs_json": [],
+            "effective_constraints_json": [],
+            "research_goal": None,
+            "unresolved_questions_json": [],
+            "context_fingerprint": "presentation-api-test",
+            "compiler_version": "test",
+        })
+        current = unit.agent2.research_turns.get(turn_id)
+        unit.agent2.research_turns.compare_and_set_status(
+            turn_id,
+            expected_status=str(current["status"]),
+            expected_version=int(current["row_version"]),
+            target_status="COMPLETED",
+        )
+        unit.agent2.scientific_result_snapshots.add({
+            "id": uuid4(),
+            "project_id": "project",
+            "research_turn_id": turn_id,
+            "job_id": None,
+            "schema_version": bundle.schema_version,
+            "projection_version": bundle.projection_version,
+            "execution_status": bundle.execution_status.value,
+            "relevance_status": bundle.relevance_status.value,
+            "source_fingerprint": "presentation-api-test",
+            "bundle_json": bundle.model_dump(mode="json"),
+        })
+
+    response = client.get(f"/api/research/turns/{turn_id}/result")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["result_id"] == str(bundle.result_id)
+    assert payload["source_object_refs"] == [ref.model_dump(mode="json")]
+    assert payload["facts"] == [bundle.facts[0].model_dump(mode="json")]
+    assert payload["evidence"] == []
+    assert payload["artifacts"] == []
+    assert payload["scientific_selections"][0]["semantic_locator"] == {"sample_ref": "mat-2"}
+
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/result").status_code == 403
 
 
 def test_phase4_sse_reconnect_does_not_repeat_execution_events(api):

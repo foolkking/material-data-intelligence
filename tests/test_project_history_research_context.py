@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+from uuid import uuid4
 
 from sqlalchemy import create_engine, insert
 
@@ -10,6 +11,7 @@ from mdi_api.db import (
     metadata,
     organizations,
     projects,
+    research_turns,
     research_session_runs,
     sessions,
     users,
@@ -21,6 +23,7 @@ def test_research_context_maps_each_run_to_its_preceding_user_turn() -> None:
     engine = create_engine("sqlite:///:memory:")
     metadata.create_all(engine)
     started_at = datetime(2026, 8, 21, 8, 0, 0)
+    coordination_turn_id = uuid4()
 
     with engine.begin() as connection:
         connection.execute(insert(users), {
@@ -97,6 +100,15 @@ def test_research_context_maps_each_run_to_its_preceding_user_turn() -> None:
                 "created_at": started_at + timedelta(minutes=3),
             },
         ])
+        connection.execute(insert(research_turns), {
+            "id": coordination_turn_id,
+            "project_id": "project-1",
+            "research_session_id": "session-1",
+            "sequence_no": 1,
+            "user_message_id": "message-1",
+            "status": "COMPLETED",
+            "job_id": "job-coordination",
+        })
 
         assert _read_research_context_by_run(connection, "project-1") == {
             "job-rdf": {
@@ -106,5 +118,6 @@ def test_research_context_maps_each_run_to_its_preceding_user_turn() -> None:
             "job-coordination": {
                 "sessionId": "session-1",
                 "userQuestion": "Inspect the local coordination environment.",
+                "researchTurnId": str(coordination_turn_id),
             },
         }

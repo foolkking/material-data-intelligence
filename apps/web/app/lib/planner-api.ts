@@ -100,7 +100,7 @@ export type AnalysisIntent = {
     profileId: string;
     profileContractVersion: string;
     profileSemanticHash: string;
-    resourceRefs: Array<{ objectId: string; objectType: string; objectHash: string; kind: string; origin: string }>;
+    resourceRefs: Array<{ objectId: string; objectType: string; objectHash: string; kind: string; origin: string; versionId?: string; displayName?: string }>;
     sampleIds: string[];
     modelIds: string[];
     groupIds: string[];
@@ -721,6 +721,7 @@ export type ProjectHistory = {
     archived?: boolean;
     visibleInReports?: boolean;
     researchSessionId?: string;
+    researchTurnId?: string | null;
   }>;
   activity: Array<{
     activityId: string;

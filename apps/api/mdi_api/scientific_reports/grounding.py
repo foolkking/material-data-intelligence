@@ -1,12 +1,35 @@
 from __future__ import annotations
 
 import re
+import math
 from typing import Any
 
 from .schemas import ScientificReportOutput
 
 _NUMBER = re.compile(r"(?<![A-Za-z0-9_.])[-+]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?%?")
 _UNIT = re.compile(r"(?<![A-Za-z])(?:Å|angstrom|nm|pm|eV|meV|fs|ps|K|%|THz|cm-?1|1/s|m\^?2/s)(?![A-Za-z])", re.IGNORECASE)
+
+
+def _numeric_tokens(text: str) -> set[str]:
+    """Extract numeric claims while ignoring identifier suffixes such as mat-2.
+
+    Scientific prose frequently names stable samples/rows with hyphenated
+    identifiers.  The numeric suffix is not a claim and must not be compared
+    with ScientificResult facts.
+    """
+    tokens: set[str] = set()
+    for match in _NUMBER.finditer(text or ""):
+        start, end = match.span()
+        before = text[start - 1] if start else ""
+        after = text[end] if end < len(text) else ""
+        prefix = text[max(0, start - 8):start]
+        suffix = text[end:min(len(text), end + 8)]
+        if before == "-" and prefix and prefix[-2:-1].isalnum():
+            continue
+        if after == "-" and suffix and suffix[1:2].isalnum():
+            continue
+        tokens.add(match.group(0).rstrip("%"))
+    return tokens
 
 
 class ReportGroundingValidator:
@@ -20,8 +43,11 @@ class ReportGroundingValidator:
         data_sources = {f"source_{index}" for index, _ in enumerate(b.get("source_object_refs", []), start=1)}
         errors: list[str] = []
         source_text = " ".join([report.summary, report.method_summary, report.reproducibility_summary, *(f.statement for f in report.main_findings), *(f.caption for f in report.primary_figures), *(limitation.statement for limitation in report.limitations)])
-        report_fact_refs = sorted({ref for finding in report.main_findings for ref in finding.fact_refs} | {ref for figure in report.primary_figures for ref in figure.fact_refs})
-        errors.extend(self._numeric_errors(report.summary, report_fact_refs, facts, "summary"))
+    # A report summary is an editorial roll-up of the complete bounded
+        # result, so it may cite any authoritative fact from the bundle even
+        # when the detailed finding references are narrower.  It still
+        # remains fail-closed: every numeric token must match a persisted fact.
+        errors.extend(self._numeric_errors(report.summary, list(facts), facts, "summary"))
         for finding in report.main_findings:
             if not (finding.finding_refs or finding.fact_refs or finding.evidence_refs):
                 errors.append("main finding lacks an upstream grounding reference")
@@ -60,10 +86,28 @@ class ReportGroundingValidator:
 
     @staticmethod
     def _numeric_errors(text: str, fact_refs: list[str], facts: dict[str, Any], label: str) -> list[str]:
-        numbers = {token.rstrip("%") for token in _NUMBER.findall(text or "")}
+        numbers = _numeric_tokens(text)
         referenced = [facts[ref] for ref in fact_refs if ref in facts]
-        supported = {str(fact.get("value")).rstrip("%") for fact in referenced if isinstance(fact.get("value"), (int, float)) and not isinstance(fact.get("value"), bool)}
-        errors = [] if numbers.issubset(supported) else [f"{label} contains an unsupported numeric claim"]
+        supported = [
+            float(fact.get("value"))
+            for fact in referenced
+            if isinstance(fact.get("value"), (int, float)) and not isinstance(fact.get("value"), bool)
+        ]
+        errors = []
+        for token in numbers:
+            try:
+                value = float(token)
+            except ValueError:
+                errors.append(f"{label} contains an unsupported numeric claim")
+                continue
+            decimals = len(token.split(".", 1)[1]) if "." in token else 0
+            if not any(
+                math.isclose(value, candidate, rel_tol=1e-9, abs_tol=1e-9)
+                or round(candidate, decimals) == round(value, decimals)
+                for candidate in supported
+            ):
+                errors.append(f"{label} contains an unsupported numeric claim")
+                break
         units = {unit.lower().replace("angstrom", "å") for unit in _UNIT.findall(text or "")}
         supported_units = {str(fact.get("unit")).lower().replace("angstrom", "å") for fact in referenced if fact.get("unit")}
         if not units.issubset(supported_units):

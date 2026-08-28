@@ -12,9 +12,10 @@ from mdi_api.agent2_errors import (
     ScientificObjectTypeNotRegistered,
 )
 from mdi_api.research_agent.capabilities.registry import InMemoryCapabilityRegistry
+from mdi_api.research_agent.capabilities.defaults import build_default_capability_registry
 from mdi_api.research_agent.progress.registry import InMemoryScientificProgressProjectorRegistry
 from mdi_api.research_agent.registry_validation import Agent2Registries, validate_agent2_registries
-from mdi_api.research_agent.requirements.registry import InMemoryScientificRequirementRegistry
+from mdi_api.research_agent.requirements.registry import InMemoryScientificRequirementRegistry, build_default_requirement_registry
 from mdi_api.research_agent.schemas import (
     CapabilityInputSlot,
     CapabilityManifest,
@@ -45,6 +46,7 @@ from mdi_api.scientific_results.schemas import (
     ScientificResultRole,
 )
 from mdi_tool_registry import ToolRegistry, list_tools
+from jsonschema import Draft202012Validator
 
 
 def object_ref(project_id: str = "project") -> ScientificObjectRef:
@@ -209,6 +211,22 @@ def test_requirement_and_capability_registries_are_typed_and_fail_fast():
         capabilities.register(manifest)
     with pytest.raises(CapabilityNotRegistered):
         capabilities.require("agent2.unknown")
+
+
+def test_generic_coordination_requirement_is_covered_by_trusted_algorithm_capabilities():
+    registry = build_default_capability_registry()
+    crystalnn = registry.require("structure.coordination_crystalnn", "1.0")
+    voronoi = registry.require("structure.coordination_voronoinn", "1.0")
+    assert "structure.inspect_coordination" in crystalnn.satisfies_requirements
+    assert "structure.inspect_coordination" in voronoi.satisfies_requirements
+
+
+def test_dataset_requirements_accept_only_bounded_semantic_hints():
+    manifest = build_default_requirement_registry().require("data.explore_materials")
+    schema = manifest.constraint_schema
+    assert set(schema["properties"]) == {"property", "sample"}
+    assert not list(Draft202012Validator(schema).iter_errors({"property": "band_gap", "sample": "mat-2"}))
+    assert list(Draft202012Validator(schema).iter_errors({"sql": "select * from materials"}))
 
 
 def test_state_machine_accepts_every_declared_edge_and_rejects_terminal_revival():

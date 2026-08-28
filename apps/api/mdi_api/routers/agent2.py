@@ -297,10 +297,48 @@ def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depend
                 "total_step_count": 0, "incremental_outputs": [], "warnings": [],
                 "execution_outcome": None, "result_projection_pending": False,
             }
-        view = ResearchExecutionSupervisor(factory).sync_for_job(job_id)
+        try:
+            view = ResearchExecutionSupervisor(factory).sync_for_job(job_id)
+        except ValueError as exc:
+            # A small number of pre-contract local history fixtures have an
+            # exact terminal Result but no parseable AnalysisPlan payload. A
+            # progress read must not turn that immutable Result into a 500 or
+            # attempt to reconstruct/re-execute it. This fallback is limited
+            # to terminal historical turns and exposes the missing process
+            # detail explicitly.
+            if (
+                "missing analysis_plan_json" in str(exc)
+                and ResearchTurnStatus(str(turn["status"])) in TERMINAL_TURN_STATUSES
+            ):
+                return _historical_terminal_progress(turn_id, str(turn["status"]))
+            raise
         return jsonable_encoder(view.model_dump(mode="json") if hasattr(view, "model_dump") else view)
     except Exception as exc:
         raise _http_error(exc) from exc
+
+
+def _historical_terminal_progress(turn_id: UUID, status: str) -> dict[str, Any]:
+    outcome = (
+        "SUCCESS"
+        if status == ResearchTurnStatus.COMPLETED.value
+        else "PARTIAL"
+        if status == ResearchTurnStatus.PARTIAL.value
+        else "FAILED"
+    )
+    return {
+        "contract_version": "1.0",
+        "turn_id": str(turn_id),
+        "status": status,
+        "plan_title": "Historical completed analysis",
+        "steps": [],
+        "active_step_ids": [],
+        "completed_step_count": 0,
+        "total_step_count": 0,
+        "incremental_outputs": [],
+        "warnings": ["HISTORICAL_ANALYSIS_PLAN_PAYLOAD_UNAVAILABLE"],
+        "execution_outcome": outcome,
+        "result_projection_pending": False,
+    }
 
 
 def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
@@ -318,6 +356,14 @@ def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(
                 raise ScientificResultNotReady(str(turn_id))
             row = session.agent2.scientific_result_snapshots.get_latest_for_turn(turn_id)
             bundle = ScientificResultBundle.model_validate(row["bundle_json"])
+            # Artifacts remain authoritative in the existing Job/artifact
+            # repository.  Expose only the bounded descriptors needed by the
+            # presentation compiler; payload bytes stay behind the existing
+            # artifact routes.
+            artifacts = []
+            if row.get("job_id"):
+                artifacts = session.repositories.artifacts.list_for_job(str(row["job_id"]))[:64]
+            snapshot = session.agent2.research_context_snapshots.get_for_turn(turn_id)
             objects: dict[str, dict[str, Any]] = {}
             versions: dict[str, dict[str, Any]] = {}
             for ref in bundle.source_object_refs:
@@ -331,10 +377,18 @@ def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(
                 "result_id": str(bundle.result_id), "research_turn_id": str(bundle.research_turn_id),
                 "research_question": bundle.research_question, "execution_status": bundle.execution_status.value,
                 "relevance_status": relevance.value, "result_items": [item.model_dump(mode="json") for item in bundle.result_items],
+                "source_object_refs": [item.model_dump(mode="json") for item in bundle.source_object_refs],
+                "facts": [item.model_dump(mode="json") for item in bundle.facts],
                 "figures": [item.model_dump(mode="json") for item in bundle.figures],
                 "tables": [item.model_dump(mode="json") for item in bundle.tables],
+                "evidence": [item.model_dump(mode="json") for item in bundle.evidence[:64]],
+                "artifacts": artifacts,
                 "limitations": [item.model_dump(mode="json") for item in bundle.limitations],
                 "warnings": [item.model_dump(mode="json") for item in bundle.warnings],
+                # A bounded immutable selection is interaction provenance, not a
+                # second fact source. Presentation uses it only to prioritize
+                # already-authoritative facts for the selected semantic subject.
+                "scientific_selections": [] if snapshot is None else (snapshot["scientific_selections_json"] or []),
             }
     except Exception as exc:
         raise _http_error(exc) from exc
@@ -403,7 +457,19 @@ def get_research_turn_interpretation(turn_id: UUID, current_user: CurrentUser = 
             if row is None:
                 raise ScientificResultNotReady(str(turn_id))
             payload = dict(row["output_json"] or {})
-            return {"interpretation_id": str(row["id"]), "research_turn_id": str(turn_id), "status": row["grounding_status"], "title": (payload.get("interpretation") or {}).get("title"), "message": payload.get("message"), "execution_status": payload.get("execution_status")}
+            return {
+                "interpretation_id": str(row["id"]),
+                "research_turn_id": str(turn_id),
+                "status": row["grounding_status"],
+                "title": (payload.get("interpretation") or {}).get("title"),
+                "message": payload.get("message"),
+                "execution_status": payload.get("execution_status"),
+                # The full object is already validated and persisted by the
+                # interpretation service.  Returning it here lets the
+                # deterministic presentation compiler render claim-level
+                # provenance without treating assistant text as authority.
+                "interpretation": payload.get("interpretation"),
+            }
     except Exception as exc:
         raise _http_error(exc) from exc
 

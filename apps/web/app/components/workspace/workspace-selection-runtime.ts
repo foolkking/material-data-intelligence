@@ -198,6 +198,21 @@ export function datasetSampleSelection(
   });
 }
 
+/**
+ * Converts a rendered Dataset table row into the canonical semantic identity
+ * accepted by the selection contract. Display fields and visual row positions
+ * are intentionally excluded: neither is durable scientific identity.
+ */
+export function datasetSampleIdentityFromTableRow(
+  row: Readonly<Record<string, unknown>>,
+  datasetId: string | null,
+): Readonly<{ objectId: string; sampleRef: string; sampleKey: string }> | null {
+  const objectId = nonEmptyString(row.objectId) ?? datasetId;
+  const sampleRef = nonEmptyString(row.sampleRef) ?? nonEmptyString(row.sample_id) ?? nonEmptyString(row.id);
+  if (!objectId || !sampleRef) return null;
+  return { objectId, sampleRef, sampleKey: `${objectId}:${sampleRef}` };
+}
+
 export function structureSiteSelection(
   workspace: ScientificWorkspace,
   artifact: Artifact,
@@ -453,4 +468,8 @@ function panelSourceCompatible(panel: WorkspacePanel, context: WorkspaceSelectio
 
 function delivery(panel: WorkspacePanel, context: WorkspaceSelectionContext | null, compatibility: WorkspaceSelectionCompatibilityCode, reason: string, transaction: number, originPanelId: string | null): WorkspaceSelectionDelivery {
   return Object.freeze({ panelId: panel.panelId, originPanelId, context, compatibility, reason, transaction });
+}
+
+function nonEmptyString(value: unknown): string | null {
+  return typeof value === "string" && value.trim() ? value : null;
 }

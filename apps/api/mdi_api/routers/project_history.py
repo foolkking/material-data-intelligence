@@ -11,7 +11,7 @@ from mdi_api.project_history import ProjectHistoryService
 from mdi_api.access import require_project_access
 from mdi_api.config import load_settings
 from mdi_api.database import create_engine_from_settings
-from mdi_api.db import jobs, messages, project_configs, research_session_runs, sessions
+from mdi_api.db import jobs, messages, project_configs, research_session_runs, research_turns, sessions
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_api.routers.planner import _planner_read_repositories
 
@@ -75,6 +75,8 @@ def get_project_history(
         context = research_context_by_run.get(str(analysis.get("jobId") or ""))
         if context:
             analysis["researchSessionId"] = context["sessionId"]
+            if context.get("researchTurnId"):
+                analysis["researchTurnId"] = context["researchTurnId"]
             if not str(analysis.get("userQuestion") or "").strip() and context.get("userQuestion"):
                 analysis["userQuestion"] = context["userQuestion"]
     return history
@@ -172,8 +174,10 @@ def _read_research_context_by_run(
             research_session_runs.c.job_id,
             research_session_runs.c.session_id,
             research_session_runs.c.created_at,
+            research_turns.c.id.label("research_turn_id"),
         )
         .join(sessions, sessions.c.id == research_session_runs.c.session_id)
+        .outerjoin(research_turns, research_turns.c.job_id == research_session_runs.c.job_id)
         .where(sessions.c.project_id == project_id)
         .order_by(research_session_runs.c.created_at.asc(), research_session_runs.c.job_id.asc())
     ).mappings().all()
@@ -206,10 +210,13 @@ def _read_research_context_by_run(
             if bound_at is None or row["created_at"] <= bound_at
         ]
         question = str(candidates[-1]["content_summary"]).strip() if candidates else None
-        result[str(binding["job_id"])] = {
+        context = {
             "sessionId": session_id,
             "userQuestion": question,
         }
+        if binding.get("research_turn_id"):
+            context["researchTurnId"] = str(binding["research_turn_id"])
+        result[str(binding["job_id"])] = context
     return result
 
 

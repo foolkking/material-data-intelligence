@@ -3625,3 +3625,150 @@ fingerprints preserve stable capability identity while implementation
 bindings evolve. The provider-facing catalog contains semantic capability
 summaries only and never raw Tool IDs or executable metadata. No migration,
 dynamic loader, or new scientific algorithm is introduced.
+
+### Agent-2.0 Phase 12 data authority audit (2026-08-25)
+
+Phase 12 execution is tracked in
+`docs/agent2/phase12_data_platform/PHASE12_TASK.md`. The audit confirms that
+`scientific_objects`, `scientific_object_versions`,
+`scientific_object_relationships`, exact Result source refs, and
+ArtifactStorage already form the single Agent2 data authority; no duplicate
+ScientificObject model or migration is justified for the current increment.
+The bounded `PATCH /api/scientific-objects/{object_id}` metadata/lifecycle
+boundary was added with project write authorization. It changes labels and
+archive/restore state only, preserving immutable version identity and exact
+historical refs. Focused domain/API tests pass. Full authenticated browser,
+service-backed Phase 12 campaign, and P12-A/P12-B exact-SHA CI remain open.
+
+### Agent-2.0 Phase 12 continuation (2026-08-26)
+
+The data-platform increment now also provides a typed, bounded Dataset query
+for an exact ScientificObjectVersion, with checksum validation and stable row
+identity. Touched Python files pass Ruff; Agent2/API/Viewer focused tests are
+`25 passed, 4 skipped`, the full backend is `1802 passed, 83 skipped`, and
+frontend tests/typecheck/build remain green.
+
+Authenticated same-stack Chromium completed Structure Turn
+`63e68fed-eb0f-4675-aaed-1bc1479efd81` for exact object/version
+`773089f9-3ce8-4645-92dd-2f62c64cba89 /
+65f56d10-008d-445d-ab2f-228aebf1835b`; the turn reached `COMPLETED` with
+valid grounded interpretation and independent CrystalNN/VoronoiNN results.
+A generic request lacking required semantic comparison was rejected as
+`UNSUPPORTED` without execution, preserving fail-closed eligibility.
+
+Phase 12 remains PARTIAL: the Data→Research version/archive browser lifecycle,
+fresh mobile Data evidence, current-head service-backed campaign, and
+P12-A/P12-B exact-SHA CI remain open. The current Phase 5 service-backed
+result-worker does not reach terminal completion after queueing, which is the
+confirmed runtime blocker preventing a COMPLETE claim.
+
+### Agent-2.0 Phase 12 recovery (2026-08-26)
+
+The result-worker symptom was reproduced against PostgreSQL/Redis/MinIO. The
+execution worker completed successfully, persisted Artifacts and an immutable
+ScientificResultSnapshot, and reached `RESULT_READY`. A shared interpretation
+worker then consumed the wakeup without the Phase 5 provider fixture and moved
+the Turn to `FAILED`; the initial fixture also read obsolete MinIO credential
+variable names. The narrow test-only correction now aliases the supported
+MinIO credential names and disables interpretation while the Result projection
+gate is asserted. The service-backed Result projection test passed three
+consecutive runs (`2 passed` each).
+
+Authenticated Chromium also verified the exact Dataset query, archive/restore
+metadata boundary, and the canonical Data page at `390x844` with no global
+overflow. Full version-lifecycle browser evidence and P12-A/P12-B CI remain
+open, so Phase 12 remains PARTIAL.
+
+### Agent-2.0 Phase 13 scientific presentation foundation (2026-08-26)
+
+Phase 12 is sealed at `b4cd4c025b05532f03d10b67108abd40c8c2b887` with
+exact-head CI, so Phase 13 begins from that immutable baseline. The initial
+presentation increment adds a bounded, read-only presentation compiler for
+authorized Agent2 Results and Report snapshots. It consumes exact result
+facts, evidence, artifacts, validated interpretations, and exact
+ScientificObjectVersion references to emit semantic presentation blocks
+(`narrative`, `finding`, `metric`, `table`, `figure`, `viewer_reference`,
+`evidence_reference`, `limitation`, `warning`). It neither creates scientific
+facts nor performs “latest” resolution, Tool execution, or dynamic UI loading.
+
+The Agent2 Result endpoint now exposes only bounded, authorized exact Result
+facts and source references needed for this projection. Research and Report
+surfaces reuse this renderer while retaining the existing Viewer and Report
+authorities. Numeric and unit display remains sourced from immutable facts;
+unsafe HTML/script-like block content is rejected. Phase 13 functional,
+browser, service-backed, and release qualification remains open.
+
+### Agent-2.0 Phase 13 selection and historical Viewer verification (2026-08-26)
+
+The presentation follow-up exposed and repaired a pre-existing generic-table
+selection defect: Dataset rows with `sample_id` were falling back to formula
+labels and visual row-derived keys. The selection runtime now prefers the
+durable `sample_id`, binds the row to its Dataset identity, and disables
+selection when no stable semantic locator exists. A focused runtime regression
+passes and authenticated Chromium now displays and hands off
+`DATASET_SAMPLE / mat-2` with the exact Dataset object/version token.
+
+The same-stack browser path also verified the scientific-object lifecycle
+action: canonical Structure object archive changed only lifecycle status,
+historical exact v1 remained directly renderable with the historical-version
+notice, and restore returned the object to ACTIVE without creating a version.
+
+### Agent-2.0 Phase 13 presentation authority completion (2026-08-27)
+
+The Agent2 result boundary now exposes bounded persisted `evidence` and
+artifact descriptors in addition to exact source refs and facts. The
+interpretation endpoint exposes the already-validated interpretation object,
+allowing the shared deterministic presentation compiler to render claim-level
+findings, metrics, evidence paths, figures/tables, limitations, and warnings
+without treating assistant text as a second scientific authority. Artifact
+payload bytes remain behind existing authorized artifact routes.
+
+Focused presentation/runtime tests pass (`18 passed`), Agent2 API tests pass
+(`14 passed`), frontend typecheck and production build pass, and the full
+current backend/frontend suites remain green (`1807 passed / 85 skipped`,
+`590 passed`). Release CI and final Phase 12/13 closure evidence are still
+pending; no completion verdict is claimed from local checks alone.
+
+### Agent-2.0 Phase 13 final-seal qualification (2026-08-27)
+
+The current worktree was requalified without changing the frozen Phase 12
+authority. The existing Scientific Object Viewer already exposes the
+authorized archive/restore action; the Data Platform list now requests
+`ACTIVE` or `ARCHIVED` objects explicitly for default discovery, while an
+explicit object/version route bypasses that filter so historical Viewers
+remain addressable. Authenticated Chromium verified ACTIVE → ARCHIVED →
+ACTIVE with unchanged scientific version identity and exact historical
+Viewer resolution.
+
+Current local qualification is green: backend `1810 passed / 83 skipped`,
+frontend `91 files / 591 tests passed`, typecheck, production build,
+compileall, `uv lock --check`, touched Ruff and `git diff --check` pass.
+P13-A/P13-B release commits and exact-head CI remain pending; no COMPLETE
+verdict is claimed until those release gates are observed.
+
+### Agent-2.0 Phase 13 detailed gap scan (2026-08-27)
+
+P12-B exact-current-head CI completed successfully as run `33040374649` for
+`49398ecfb630d83301a38a647b94ae5b97f55a59`. A fresh Phase 13 audit confirms
+that the compiler/renderer foundation is present, but current-worktree
+qualification is not yet a closure: the running browser API is still a local
+SQLite/local-queue process, the visible acceptance projects expose legacy
+planner runs rather than a current Agent2 Result presentation, and no
+dedicated presentation service campaign, result-reuse delta proof, or
+P13-A/P13-B exact-SHA CI exists. These are recorded in
+`docs/agent2/phase13_scientific_presentation/PHASE13_GAP_SCAN.md`; Phase 13
+remains `FAIL/PARTIAL`, with Phase 14 not authorized.
+
+### Agent-2.0 Phase 13 second detailed scan (2026-08-27)
+
+A code-level follow-up confirms the remaining Phase 13 debt is broader than
+browser screenshots. Project history does not expose an explicit
+`researchTurnId`, so historical presentation recovery relies on the fragile
+`job_agent2_<32hex>` naming heuristic. The new Figure/Table blocks are still
+descriptor-only, Evidence blocks are labels rather than a navigable bounded
+Finding → Result → ToolCall/Artifact → exact-version path, and no current
+Agent2 grounded Report snapshot has rendered in the authenticated browser.
+The current browser API also reports SQLite/local/local backends despite the
+real PostgreSQL/Redis/MinIO services being available. These findings are
+recorded in the Agent2 Phase 13 gap scan; no Phase 13 COMPLETE or Phase 14
+authorization is claimed.

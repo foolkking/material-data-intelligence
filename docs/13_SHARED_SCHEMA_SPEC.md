@@ -2448,3 +2448,25 @@ stored in immutable `ResearchContextSnapshot.scientific_selections_json`
 never a fact authority; authorization is repeated before snapshot persistence.
 Provider-facing context uses opaque selection labels and never database,
 Artifact, Job or DOM identities.
+
+### Agent 2.0 Phase 13 Scientific Presentation Projection 1.0
+
+`ScientificPresentationProjection 1.0` is a bounded, deterministic frontend
+projection of an authorized immutable ScientificResultSnapshot, its validated
+grounded interpretation, persisted Artifact descriptors, and exact
+ScientificObjectVersion references. It is not persisted as a scientific fact
+store and must not alter Result, Artifact, Report, Viewer, or source-version
+authority.
+
+The only permitted presentation block kinds are `narrative`, `finding`,
+`metric`, `table`, `figure`, `viewer_reference`, `evidence_reference`,
+`limitation`, and `warning`. Each scientific block has one or more immutable
+source references (Result, Fact, Evidence, Artifact, or exact object/version)
+and may format an authoritative value without recalculating scientific
+meaning. The projection cannot resolve “latest”, execute a Tool, enqueue work,
+load arbitrary HTML/JavaScript/CSS, or accept Pack-provided executable UI.
+
+Research and Report renderers may choose a layout for these blocks, but the
+exact Result and source-version identities remain the authority. Opening,
+resizing, navigating, or rendering a presentation block must have zero
+ToolCall, scientific Artifact, and ScientificResult deltas.

@@ -219,6 +219,19 @@ def test_numeric_invention_and_unit_substitution_are_rejected(statement: str) ->
     assert errors
 
 
+def test_numeric_presentation_rounding_remains_grounded() -> None:
+    payload = _report().model_dump(mode="json")
+    payload["summary"] = "The measured value is 2.8."
+    payload["main_findings"][0]["statement"] = "The measured value is 2.8."
+    payload["main_findings"][0]["fact_refs"] = ["rdf.first_peak_position"]
+    bundle = _bundle()
+    assert ReportGroundingValidator().validate(
+        ScientificReportOutput.model_validate(payload),
+        bundle=bundle,
+        interpretation=_interpretation(),
+    ) == []
+
+
 def test_partial_and_stale_status_are_preserved() -> None:
     partial = DeterministicScientificReportComposer().compose(bundle=_bundle(execution_status="PARTIAL"), interpretation=_interpretation(), relevance_status="STALE")
     text = " ".join([partial.summary, *(item.statement for item in partial.limitations)])

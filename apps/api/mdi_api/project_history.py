@@ -183,6 +183,11 @@ class ProjectHistoryService:
         artifacts = artifacts_by_job.get(job_id, [])
         return {
             "jobId": job_id,
+            # New Agent2 executions persist this relation on research_turns.
+            # Keep it in the history projection so consumers can resolve the
+            # exact turn without parsing a Job identifier. Legacy records may
+            # not have it and remain readable with a null value.
+            "researchTurnId": job.get("researchTurnId") or job.get("research_turn_id"),
             "datasetId": job.get("datasetId"),
             "status": str(job.get("status") or "created"),
             "createdAt": job.get("createdAt"),

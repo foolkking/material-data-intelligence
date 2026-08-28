@@ -4,7 +4,7 @@ import type { Artifact } from "../../lib/planner-api";
 import type { WorkspacePanel } from "../../lib/workspace-api";
 import { workspaceSnapshotFixture } from "./workspace-test-fixture";
 import { validateWorkspaceSelectionContext } from "./workspace-selection-contract";
-import { artifactSelectionFromArtifact, artifactSelectionFromPanel, claimSelection, coordinationSiteSelection, datasetSampleSelection, evidenceItemSelection, evidenceSourceArtifactSelection, resolvePanelSelection, structureSiteSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
+import { artifactSelectionFromArtifact, artifactSelectionFromPanel, claimSelection, coordinationSiteSelection, datasetSampleIdentityFromTableRow, datasetSampleSelection, evidenceItemSelection, evidenceSourceArtifactSelection, resolvePanelSelection, structureSiteSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
 
 const HASH = "a".repeat(64);
 
@@ -102,6 +102,15 @@ describe("Phase 10M-3 exact selection runtime", () => {
       sampleKey: "display-row-0",
     })).toThrowError("SELECTION_SAMPLE_IDENTITY_INVALID");
     expect(() => new WorkspaceSelectionStore(snapshot.workspace, mutate(selection, { datasetVersion: "v2" }))).toThrowError("SELECTION_STALE_DATASET_VERSION");
+  });
+
+  it("uses sample_id for rendered Dataset rows and never derives semantic identity from a formula or visual row", () => {
+    expect(datasetSampleIdentityFromTableRow({ sample_id: "mat-2", formula: "NaCl" }, "dataset_1")).toEqual({
+      objectId: "dataset_1",
+      sampleRef: "mat-2",
+      sampleKey: "dataset_1:mat-2",
+    });
+    expect(datasetSampleIdentityFromTableRow({ formula: "NaCl" }, "dataset_1")).toBeNull();
   });
 
   it("binds a coordination site to exact structure and Artifact identities", () => {
