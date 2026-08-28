@@ -1,8 +1,9 @@
 # Phase 14-R Product Reality Audit
 
 Date: 2026-08-28  
-Verified base: `e22a732` (Phase 14-R fix-forward worktree; historical Phase 14
-seal `d03b0a2e86e50d834a774cf823cfe055c91cf10c` preserved)  
+Verified base: current Phase 14-R fix-forward worktree (historical Phase 14
+seal `d03b0a2e86e50d834a774cf823cfe055c91cf10c` preserved; see Git history for
+the latest committed repair)  
 Branch: `master` (`HEAD` is ahead of the historical seal; release CI has not
 yet been run for Phase 14-R)  
 Runtime: `/health/runtime` verified PostgreSQL + Redis + MinIO + Redis worker +
