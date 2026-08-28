@@ -147,3 +147,9 @@ continued qualification; no destructive browser action was performed.
 PostgreSQL activity after the service campaign was `active=1`, `idle=5`,
 `idle in transaction=0`; no pool timeout or monotonic idle growth was observed
 in this check.
+
+The current-worktree full regression was rerun after the Phase 14-R fixes:
+frontend `93 files / 597 passed`; backend `1820 passed / 83 skipped`
+(the skips remain historical/optional compatibility coverage). This is
+regression evidence only; the mature-product P0/P1 browser, report-quality,
+trash/retention, recovery and operations gates are still not all qualified.
