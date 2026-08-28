@@ -3808,3 +3808,12 @@ the normal Turn view does not leak provider-facing manifest internals. Focused
 backend/context tests and frontend typecheck pass. Phase 14-R remains open for
 the broader lifecycle, viewer, report, search, recovery, performance and
 real-user qualification tracks.
+### Agent-2.0 Phase 14-R historical identity hardening (2026-08-28)
+
+Research history navigation no longer derives a scientific Turn from the
+legacy `job_agent2_<32hex>` Job naming convention. When the server-projected
+history contains an explicit persisted `researchTurnId`, the UI passes that
+exact identity; otherwise a legacy run remains viewable through its run route
+without guessing a scientific Turn. This preserves fail-closed historical
+resolution for non-standard Job identifiers. ResearchPages focused tests and
+typecheck pass.

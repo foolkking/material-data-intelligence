@@ -37,7 +37,7 @@ acceptance evidence is not yet complete.
 | Scientific Viewer coverage | registry and many renderer implementations exist; every declared family lacks current live acceptance | PARTIAL |
 | Evidence traversal UX | labels and provenance summaries exist; complete user-navigable Result → ToolCall/Artifact → version path not proven for every surface | PARTIAL |
 | Scientific Report | grounded report composition and immutable snapshots exist; formal `ReportContextBundle` and quality rubric are not yet a checked-in contract | PARTIAL |
-| Historical v1/v2 presentation | exact source semantics are sealed in Phase 12/13; Phase 14-R repeated browser campaign not yet run | PARTIAL |
+| Historical v1/v2 presentation | exact source semantics are sealed in Phase 12/13; Research history links now use persisted `researchTurnId` only, while Phase 14-R repeated browser campaign is still open | PARTIAL |
 | Archived historical presentation | archive API/UI and historical Viewer semantics exist; mature Report/Evidence browser proof not yet run | PARTIAL |
 | Viewer no-recompute | read-only architecture and tests exist; current persisted delta campaign across all viewers is not yet rerun | PARTIAL |
 | Exact Result reuse | some continuation/reuse infrastructure exists; dedicated zero-delta Phase 14-R acceptance is not yet established | NOT_QUALIFIED |
