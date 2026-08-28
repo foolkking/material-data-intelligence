@@ -189,3 +189,19 @@ removes the prior blank-session risk without deriving identity from Job naming.
 The frontend ResearchPages regression suite passes (`34 passed`) and typecheck
 remains green. The broader history/resume browser campaign and mature
 stop/edit/branch gates remain open.
+
+### Agent-2.0 Phase 14-R evidence inspector (2026-08-28)
+
+Scientific Presentation evidence references now expose a bounded, read-only
+“检查证据链” interaction. The browser loads the existing secured
+interpretation-evidence projection only when the user asks to inspect a
+reference, then displays the exact source object/version, Result evidence
+field/value, persisted Artifact identity/checksum, and ToolCall/tool status.
+Artifact content remains available through the existing authorized content
+route. The UI does not display credentials, queue URLs, filesystem paths, or
+raw provider payloads and cannot trigger a Job. The deterministic frontend
+regression `ScientificPresentationBlocks.test.tsx` passes; the service-backed
+Phase 3/7 campaign also passes `5/5` with no skips under PostgreSQL/Redis/MinIO.
+This closes the presentation-layer evidence inspection seam, while the
+broader cross-project browser campaign and mature-product release gates remain
+open.

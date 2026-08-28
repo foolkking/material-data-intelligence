@@ -5432,6 +5432,13 @@ body:has(.research-workbench) {
 .scientific-presentation-links strong { min-width: 0; overflow-wrap: anywhere; }
 .scientific-presentation-evidence { border-top: 1px solid var(--product-border); padding-top: 10px; }
 .scientific-presentation-evidence ul, .scientific-presentation-limitations ul { margin: 10px 0 0; padding-left: 20px; color: var(--product-secondary); }
+.scientific-presentation-evidence-item { display: grid; gap: 6px; margin: 0 0 14px; padding: 10px 0; }
+.scientific-presentation-evidence-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.scientific-presentation-evidence-inspector { margin-top: 6px; padding: 12px 14px; border: 1px solid var(--product-border); background: var(--product-surface-muted); color: var(--product-ink); }
+.scientific-presentation-evidence-inspector dl { display: grid; gap: 8px; margin: 0 0 10px; }
+.scientific-presentation-evidence-inspector dl > div { display: grid; grid-template-columns: minmax(92px, 0.3fr) minmax(0, 1fr); gap: 10px; }
+.scientific-presentation-evidence-inspector dt { color: var(--product-secondary); }
+.scientific-presentation-evidence-inspector dd { margin: 0; overflow-wrap: anywhere; }
 .scientific-presentation-limitations { color: var(--product-secondary); }
 
 /* Scientific object navigation stays quiet so the viewer remains the focal point. */

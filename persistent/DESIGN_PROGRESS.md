@@ -1,5 +1,15 @@
 # DESIGN_PROGRESS
 
+## 2026-08-28 Agent-2.0 Phase 14-R evidence inspector
+
+- Scientific Presentation evidence references now provide a bounded
+  `检查证据链` disclosure backed by the secured interpretation-evidence API.
+  It resolves exact source object/version, Result evidence field/value,
+  persisted Artifact checksum and ToolCall status without adding a provenance
+  authority or any execution path. The UI keeps raw infrastructure details
+  out of the normal scientific surface and preserves the existing authorized
+  Artifact content route.
+
 ## 2026-08-28 Agent-2.0 Phase 14-R legacy history identity clarification
 
 - Project history now labels each persisted run binding as either
