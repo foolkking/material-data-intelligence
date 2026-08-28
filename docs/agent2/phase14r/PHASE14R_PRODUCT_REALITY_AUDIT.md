@@ -361,3 +361,13 @@ authorized persisted terminal-job notifications. Cleanup removes the listener
 on unmount. This keeps notifications truthful after connectivity returns while
 remaining read-only; full browser network/API/worker recovery qualification
 remains PARTIAL.
+
+### Agent-2.0 Phase 14-R authenticated task/notification browser evidence (2026-08-28)
+
+Using the running authenticated in-app browser against the same local frontend,
+`/notifications` rendered four persisted terminal notifications with exact
+project and research links, while `/tasks` rendered two active and four ended
+jobs across four authorized projects. Both pages exposed their persisted sync
+timestamps and loaded through the live product shell. This is browser evidence
+for the durable surfaces; it does not close the broader reconnect, API restart,
+or worker recovery campaign.

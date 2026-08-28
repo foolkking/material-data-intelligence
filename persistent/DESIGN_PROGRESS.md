@@ -4170,3 +4170,12 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   not create jobs, alter terminal states, or fabricate notifications.
 - Notification and Task Center focused tests pass; full browser reconnect/API
   restart/worker recovery qualification remains open.
+
+## Agent-2.0 Phase 14-R authenticated task/notification browser evidence (2026-08-28)
+
+- In-app authenticated browser verification loaded `/notifications` with four
+  persisted terminal notifications and `/tasks` with two active plus four
+  ended jobs across four authorized projects.
+- Exact project/run links and persisted sync timestamps were visible in both
+  surfaces. The broader reconnect/API restart/worker recovery browser campaign
+  remains open.

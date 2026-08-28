@@ -15007,6 +15007,20 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
   仍未完成。
 - 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — authenticated task/notification browser evidence
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：Phase 14-R 审计与进度文档。
+- 修改摘要：在保持服务和用户标签页不关闭的前提下，通过内置浏览器真实
+  打开并验证 `/notifications` 与 `/tasks`；通知中心显示 4 条持久化终态
+  通知，任务中心显示 2 个进行中、4 个已结束任务及 4 个授权项目，精确
+  项目/研究链接和同步时间均可见。
+- 测试结果：浏览器页面加载成功；此前通知/任务聚焦测试 `2 passed`，
+  同栈健康为 PostgreSQL/Redis/MinIO/Redis worker。断网、API 重启和 Worker
+  恢复的完整浏览器验收仍未完成。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
+
 ## Agent-2.0 Phase 14-R — notification-center online resynchronization
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
