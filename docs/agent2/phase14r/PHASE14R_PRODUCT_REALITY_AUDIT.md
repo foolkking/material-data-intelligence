@@ -88,6 +88,19 @@ acceptance evidence is not yet complete.
 | Monitoring/resource governance | health/runtime and bounded contracts exist; operational coverage/alerts/quotas absent | PARTIAL |
 | Performance baseline/SLOs | current warm authenticated route timing artifact records Data 175 ms, Research 215 ms, Report 259 ms, Tasks 202 ms and Notifications 189 ms; p50/p95 cold/warm and resource budgets remain open | PARTIAL |
 
+### Current authenticated Structure report browser proof (2026-08-28)
+
+The same-stack authenticated browser opened the legacy-compatible Structure
+report route for `job_agent2_17b67e68b7db475bbb4c3b336cb2ba15`. After the
+result payload settled, the page rendered the persisted CrystalNN/VoronoiNN
+output, independent algorithm controls, exact site table, neighbor relations,
+warnings (`CRYSTALNN_OXIDATION_STATES_NOT_DECLARED`,
+`CRYSTALNN_RADIUS_FALLBACK_USED`) and a bounded “复现信息” section. Opening
+the report did not enqueue scientific work; PostgreSQL counts after the route
+were `analysis_plans=133`, `jobs=117`, `tool_calls=158`, `artifacts=637` and
+`scientific_result_snapshots=88`, matching the prior read-only browser
+qualification snapshot for the scientific state tables.
+
 ## Current release conclusion
 
 The Phase 14 architecture is still sealed and there is no evidence requiring

@@ -15002,6 +15002,19 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
   `202 ms`、Notifications `189 ms`；页面仍保持认证，未关闭服务或标签页。
 - 提交/CI 状态：未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — Structure report browser proof
+
+- 状态：已完成历史 Structure 报告真实浏览器复核；成熟产品门仍为
+  `PARTIAL`
+- 完成时间：2026-08-28
+- 修改摘要：在认证同栈浏览器打开历史 Structure 报告，确认
+  CrystalNN/VoronoiNN 结果、站点表、邻居关系、警告与复现信息均来自持久
+  化结果；打开报告不触发科学重算。
+- 测试结果：科学状态计数保持
+  `analysis_plans=133`、`jobs=117`、`tool_calls=158`、`artifacts=637`、
+  `scientific_result_snapshots=88`。
+- 提交/CI 状态：未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
+
 ## Agent-2.0 Phase 14-R — Persisted Figure artifact bridge
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

@@ -4267,3 +4267,13 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   `215 ms`, modern Report `259 ms`, Tasks `202 ms`, Notifications `189 ms`.
 - These measurements establish a current baseline only; cold-start, p50/p95,
   payload/resource and mobile interaction SLO evidence remain open.
+
+## Agent-2.0 Phase 14-R Structure report browser proof (2026-08-28)
+
+- Authenticated report route
+  `/projects/project_0002_1a0af866391f412d/reports/job_agent2_17b67e68b7db475bbb4c3b336cb2ba15`
+  rendered persisted CrystalNN/VoronoiNN tables, site inspector, warnings and
+  reproducibility details.
+- Read-only reopen left PostgreSQL scientific counts unchanged:
+  `analysis_plans=133`, `jobs=117`, `tool_calls=158`, `artifacts=637`,
+  `scientific_result_snapshots=88`.
