@@ -125,5 +125,8 @@ export const getAgent2ResearchTurnResult = (turnId: string) =>
 export const getAgent2ResearchTurn = (turnId: string) =>
   readAgent2<Agent2TurnDetail>(`/api/research/turns/${encodeURIComponent(turnId)}`);
 
+export const getAgent2ContextManifest = (turnId: string) =>
+  readAgent2<{ turn_id: string; manifest: Agent2ContextManifest }>(`/api/research/turns/${encodeURIComponent(turnId)}/context-manifest`);
+
 export const getAgent2ResearchTurnInterpretation = (turnId: string) =>
   readAgent2<Agent2ResearchTurnInterpretation>(`/api/research/turns/${encodeURIComponent(turnId)}/interpretation`);

@@ -161,6 +161,31 @@ def get_research_turn(turn_id: UUID, current_user: CurrentUser = Depends(get_cur
         raise _http_error(exc) from exc
 
 
+def get_research_turn_context_manifest(
+    turn_id: UUID,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Return the bounded immutable context manifest for a ResearchTurn."""
+    try:
+        _turn, events = get_research_turn_service().list_events(turn_id, current_user)
+        context_event = next(
+            (
+                event
+                for event in events
+                if event["event_type"] == "CONTEXT_RESOLVED"
+            ),
+            None,
+        )
+        if context_event is None:
+            raise ScientificResultNotReady(f"context manifest unavailable for {turn_id}")
+        manifest = (context_event.get("payload_json") or {}).get("context_manifest")
+        if not isinstance(manifest, dict):
+            raise ScientificResultNotReady(f"context manifest unavailable for {turn_id}")
+        return jsonable_encoder({"turn_id": str(turn_id), "manifest": manifest})
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
 def list_research_turns(
     project_id: str,
     session_id: str,

@@ -530,16 +530,6 @@ class ResearchTurnService:
             "created_at": row["created_at"],
         } for row in message_rows]
         snapshot = session.agent2.research_context_snapshots.get_for_turn(turn["id"])
-        events = session.agent2.research_turn_events.list_for_turn(turn["id"])
-        context_event = next(
-            (
-                event
-                for event in events
-                if event["event_type"] == ResearchTurnEventType.CONTEXT_RESOLVED.value
-            ),
-            None,
-        )
-        context_manifest = None if context_event is None else context_event.get("payload_json", {}).get("context_manifest")
         decision = session.agent2.research_turn_decisions.get_for_turn(turn["id"])
         capability_resolution = session.agent2.research_capability_resolutions.get_for_turn(turn["id"])
         capability_plan = session.agent2.research_capability_plans.get_for_turn(turn["id"])
@@ -566,7 +556,6 @@ class ResearchTurnService:
                 "scope": snapshot["active_scope_refs_json"] or [],
                 "selection": snapshot["selection_refs_json"] or [],
                 "scientific_selection": snapshot["scientific_selections_json"] or [],
-                "manifest": context_manifest,
             },
             "orchestration": {
                 "decision_available": decision is not None,

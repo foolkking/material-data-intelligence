@@ -17,7 +17,7 @@ import { cancelAgent2Execution, getAgent2ExecutionProgress, type Agent2ProgressV
 import { ResearchExecutionActivity } from "./ResearchExecutionActivity";
 import { getAgent2SessionMemory, type Agent2SessionMemory } from "../lib/agent2-memory-api";
 import { ScientificReportAction } from "./ScientificReportAction";
-import { createAgent2ResearchTurn, dispatchAgent2ResearchTurn, getAgent2ResearchTurn, type Agent2TurnDetail } from "../lib/agent2-research-api";
+import { createAgent2ResearchTurn, dispatchAgent2ResearchTurn, getAgent2ContextManifest, type Agent2ContextManifest } from "../lib/agent2-research-api";
 import { decodeWorkspaceSelectionUrl } from "./workspace/workspace-selection-contract";
 import { apiSemanticLocator, scientificSelectionFromWorkspace, selectionToResearchObjectRef } from "./scientific-viewer/scientificSelection";
 import { resolveScientificViewer } from "./scientific-viewer/scientificViewerRegistry";
@@ -167,7 +167,7 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewer
   const [interpretationStatus, setInterpretationStatus] = useState<"idle" | "loading" | "ready" | "limited" | "error">("idle");
   const [error, setError] = useState("");
   const [agent2Progress, setAgent2Progress] = useState<Agent2ProgressView | null>(null);
-  const [agent2TurnDetail, setAgent2TurnDetail] = useState<Agent2TurnDetail | null>(null);
+  const [agent2ContextManifest, setAgent2ContextManifest] = useState<Agent2ContextManifest | null>(null);
   const [agent2CancelPending, setAgent2CancelPending] = useState(false);
   const agent2DispatchRef = useRef<string | null>(null);
   const [sessionMemory, setSessionMemory] = useState<Agent2SessionMemory | null>(null);
@@ -189,6 +189,9 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewer
   const [selectedProvider, setSelectedProvider] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
   const [thinkingMode, setThinkingMode] = useState<"quick" | "standard" | "deep">("standard");
+  const agent2TurnDetail = agent2ContextManifest
+    ? { context: { manifest: agent2ContextManifest } }
+    : null;
   const questionInputRef = useRef<HTMLTextAreaElement | null>(null);
   const workbenchRef = useRef<HTMLElement | null>(null);
   const sessionHistoryTriggerRef = useRef<HTMLButtonElement | null>(null);
@@ -235,11 +238,11 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewer
   }, [agent2TurnId]);
 
   useEffect(() => {
-    if (!agent2TurnId) { setAgent2TurnDetail(null); return; }
+    if (!agent2TurnId) { setAgent2ContextManifest(null); return; }
     let active = true;
-    void getAgent2ResearchTurn(agent2TurnId)
-      .then((detail) => { if (active) setAgent2TurnDetail(detail); })
-      .catch(() => { if (active) setAgent2TurnDetail(null); });
+    void getAgent2ContextManifest(agent2TurnId)
+      .then((detail) => { if (active) setAgent2ContextManifest(detail.manifest); })
+      .catch(() => { if (active) setAgent2ContextManifest(null); });
     return () => { active = false; };
   }, [agent2TurnId, agent2Progress?.status]);
 
