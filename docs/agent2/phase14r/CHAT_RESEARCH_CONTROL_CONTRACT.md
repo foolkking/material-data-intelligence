@@ -1,5 +1,15 @@
 # Chat / Research Control Contract
 
+## Re-interpret existing scientific results
+
+Modern ResearchTurn presentations may offer `重新解释（不重算科学结果）`
+when the user is inside an authorized Research Session. The control creates a
+new immutable ResearchTurn carrying the prior Result identity in its explicit
+context and routes through the normal Agent2 action router. It never mutates
+the historical Turn and cannot directly enqueue scientific work. If reuse is
+not eligible, the existing router/planner semantics remain authoritative and
+must fail closed or perform an explicitly new analysis.
+
 Research controls are explicit actions over immutable execution history:
 
 * Edit latest user message → new message revision and new ResearchTurn branch.
@@ -19,4 +29,3 @@ The existing backend cancellation boundary is
 `/api/research/turns/{turn_id}/cancel`. The complete message-revision,
 branch-switching and distinct Continue/Rerun/Re-interpret UI contract remains
 not yet qualified.
-

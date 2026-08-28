@@ -20,6 +20,17 @@
   Result/interpretation bundle instead of exposing decorative labels only; it
   remains read-only and does not create Jobs, Artifacts, or Results.
 
+## 2026-08-28 Agent-2.0 Phase 14-R reinterpret control
+
+- Modern Agent2 scientific presentations now expose a bounded
+  `重新解释（不重算科学结果）` action when opened from an authorized Research
+  Session.
+- The action creates a new ResearchTurn with the prior exact
+  `ScientificResult` in `explicit_result_ids`; it does not mutate the old Turn
+  and does not itself create a Job, ToolCall, Artifact, or new scientific
+  Result. The normal Agent2 router remains authoritative for deciding whether
+  reuse is eligible.
+
 ## 2026-08-28 Agent-2.0 Phase 14-R context budget policy
 
 - Added checked-in operation-specific `ContextBudgetPolicy 2.0` for

@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
+  createAgent2ResearchTurn,
   getAgent2ResearchTurnInterpretation,
   getAgent2ResearchTurnResult,
   type Agent2ResearchTurnInterpretation,
@@ -11,10 +13,13 @@ import { compileScientificPresentation } from "../lib/scientific-presentation";
 import { ScientificPresentationBlocks } from "./ScientificPresentationBlocks";
 import type { ScientificEvidenceItem } from "../lib/planner-api";
 
-export function Agent2ScientificPresentation({ turnId, projectId }: { turnId: string; projectId: string }) {
+export function Agent2ScientificPresentation({ turnId, projectId, sessionId }: { turnId: string; projectId: string; sessionId?: string }) {
+  const router = useRouter();
   const [result, setResult] = useState<Agent2ResearchTurnResult | null>(null);
   const [interpretation, setInterpretation] = useState<Agent2ResearchTurnInterpretation | null>(null);
   const [failed, setFailed] = useState(false);
+  const [reinterpretPending, setReinterpretPending] = useState(false);
+  const [reinterpretError, setReinterpretError] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -82,5 +87,37 @@ export function Agent2ScientificPresentation({ turnId, projectId }: { turnId: st
       semanticLocator: selection.semantic_locator,
     })),
   });
-  return <ScientificPresentationBlocks presentation={presentation} projectId={projectId} instanceId={turnId} />;
+  async function reinterpret() {
+    if (!sessionId || !result || reinterpretPending) return;
+    setReinterpretPending(true);
+    setReinterpretError("");
+    try {
+      const refs = result.source_object_refs || [];
+      const next = await createAgent2ResearchTurn(projectId, sessionId, {
+        message: "请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。",
+        ui_context: {
+          active_object_refs: refs,
+          selection_refs: refs,
+          scientific_selections: result.scientific_selections || [],
+          explicit_object_refs: refs,
+          explicit_result_ids: [result.result_id],
+          explicit_finding_refs: [],
+        },
+      });
+      router.push(`/projects/${projectId}/research/${encodeURIComponent(sessionId)}?turn=${encodeURIComponent(next.turn_id)}`);
+    } catch (reason) {
+      setReinterpretError(reason instanceof Error ? reason.message : "重新解释请求未能提交");
+    } finally {
+      setReinterpretPending(false);
+    }
+  }
+  return <section className="agent2-scientific-presentation">
+    <ScientificPresentationBlocks presentation={presentation} projectId={projectId} instanceId={turnId} />
+    {sessionId && result ? <div className="scientific-presentation-actions">
+      <button type="button" className="product-secondary-action" onClick={() => void reinterpret()} disabled={reinterpretPending}>
+        {reinterpretPending ? "正在创建解释分支…" : "重新解释（不重算科学结果）"}
+      </button>
+      {reinterpretError ? <p className="product-form-error" role="alert">{reinterpretError}</p> : null}
+    </div> : null}
+  </section>;
 }
