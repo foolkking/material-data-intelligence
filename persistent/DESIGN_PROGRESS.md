@@ -4216,3 +4216,13 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   while excluding provider/internal infrastructure details.
 - Focused Report route regression and web typecheck pass. Full export-package
   and retention policy acceptance remain open.
+
+## Agent-2.0 Phase 14-R authenticated Scientific Report browser evidence (2026-08-28)
+
+- In-app authenticated browser opened the project Reports list and modern
+  Dataset report. Exact Dataset version, method, findings, limitations,
+  evidence disclosure, and `导出 Markdown` were visible with no captured
+  console errors/warnings.
+- The browser download event did not expose a completed Blob transfer; only
+  route/action reachability is recorded. End-to-end export transport and
+  retention policy acceptance remain open.

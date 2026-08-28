@@ -410,3 +410,13 @@ reproducibility text; it excludes provider transcripts, credentials, queue
 details, and raw unbounded artifacts. The exporter is read-only with respect
 to scientific state and is covered by a focused privacy/provenance regression.
 Full export-package, retention, and real-user acceptance remain PARTIAL.
+
+### Agent-2.0 Phase 14-R authenticated Scientific Report browser evidence (2026-08-28)
+
+The live authenticated in-app browser opened the project Reports list and the
+modern Dataset report. The report page visibly rendered its exact Dataset
+version, method summary, grounded findings, limitations, evidence disclosure,
+and the `导出 Markdown` action; captured browser error/warning logs were empty.
+The in-app download event did not expose a completed Blob transfer, so this is
+route/action reachability evidence only, not a claim of end-to-end download
+transport or mature export-package closure.

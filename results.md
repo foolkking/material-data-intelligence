@@ -15020,6 +15020,18 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
   `PASS`。完整可移植复现包、Retention/Trash 与真实用户验收仍未完成。
 - 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — authenticated Scientific Report browser evidence
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：Phase 14-R 审计与进度文档。
+- 修改摘要：内置浏览器真实打开项目报告列表和现代 Dataset 报告，页面展示
+  exact Dataset version、方法、发现、限制、证据折叠区及 `导出 Markdown`
+  入口，浏览器错误/警告日志为空。
+- 测试结果：报告路由可达；点击导出入口未产生页面错误，但浏览器下载事件
+  未捕获 Blob 完成传输，因此仅记录入口可达，不宣称端到端导出传输完成。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
+
 ## Agent-2.0 Phase 14-R — report source/method presentation
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
