@@ -1,0 +1,45 @@
+import React from "react";
+import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+
+const mocks = vi.hoisted(() => ({
+  listProjects: vi.fn(),
+  listWorkspaceAnalysisJobs: vi.fn(),
+}));
+
+vi.mock("../lib/planner-api", () => ({ listProjects: mocks.listProjects }));
+vi.mock("../lib/workspace-api", () => ({ listWorkspaceAnalysisJobs: mocks.listWorkspaceAnalysisJobs }));
+vi.mock("./ProductShell", () => ({
+  ProductShell: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  RequireProductAuth: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
+import { TaskCenterPage } from "./TaskCenterPage";
+
+describe("TaskCenterPage", () => {
+  it("aggregates authorized project jobs and preserves exact workspace navigation", async () => {
+    mocks.listProjects.mockResolvedValue([
+      { id: "project-a", projectId: "project-a", name: "Project A" },
+      { id: "project-b", projectId: "project-b", name: "Project B" },
+    ]);
+    mocks.listWorkspaceAnalysisJobs.mockImplementation(async (projectId: string) => ({
+      data: {
+        items: projectId === "project-a"
+          ? [{ jobId: "job-running", projectId, datasetId: null, jobStatus: "running", workspaceProjectionStatus: "RUNNING", analysisPlanSchemaVersion: "0.2", dependencyOutcome: null, artifactCount: 1, interpretationCount: 0, workspaceId: "workspace-1", workspaceExists: true, createdAt: "2026-08-28T00:00:00Z", updatedAt: "2026-08-28T01:00:00Z" }]
+          : [{ jobId: "job-complete", projectId, datasetId: null, jobStatus: "completed", workspaceProjectionStatus: "COMPLETE", analysisPlanSchemaVersion: "0.2", dependencyOutcome: "ALL_SUCCEEDED", artifactCount: 2, interpretationCount: 1, workspaceId: null, workspaceExists: false, createdAt: "2026-08-27T00:00:00Z", updatedAt: "2026-08-27T01:00:00Z" }],
+      },
+      status: 200,
+      etag: null,
+      idempotentReplay: null,
+    }));
+
+    render(<TaskCenterPage />);
+    await waitFor(() => expect(screen.getByText("任务中心")).toBeInTheDocument());
+    expect(screen.getByText("运行中 · job-running")).toBeInTheDocument();
+    expect(screen.getByText("已完成 · job-complete")).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: "打开" })[0]).toHaveAttribute("href", "/workspaces/workspace-1");
+    expect(screen.getAllByRole("link", { name: "打开" })[1]).toHaveAttribute("href", "/projects/project-b/research?run=job-complete");
+    fireEvent.click(screen.getByRole("button", { name: "重新加载" }));
+    await waitFor(() => expect(mocks.listProjects).toHaveBeenCalledTimes(2));
+  });
+});

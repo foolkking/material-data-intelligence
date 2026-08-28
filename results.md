@@ -14960,6 +14960,22 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — Persisted task center bridge
+
+- 状态：部分完成；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改摘要：新增 `/tasks` 全局后台任务页，聚合授权项目的持久化分析
+  Job，区分进行中/已结束状态，并按现有 Workspace 或 Research run 关系提供
+  精确打开路径。
+- 增加显式“重新加载”操作，失败或返回页面时重新读取授权的持久化 Job
+  状态，不创建新的科学状态。
+- 测试结果：TaskCenterPage `1 passed`，ProductShell `4 passed`，web
+  typecheck `PASS`，当前完整前端回归 `95 files / 606 tests passed`。
+- 已认证浏览器实际打开 `/tasks`，显示 `2` 个进行中、`4` 个已结束和
+  `4` 个授权项目；PostgreSQL/Redis/MinIO 服务 smoke 集合为
+  `5 passed, 0 failed, 0 errors, 0 skipped`。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
+
 ## Agent-2.0 Phase 14-R — Authorized global search projection
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

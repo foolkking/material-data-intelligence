@@ -4057,3 +4057,17 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   38 passed；web typecheck：PASS；同栈浏览器实际显示授权数据搜索结果。
 - 组织标签、收藏/集合、保存视图等更高阶组织能力仍保持未完成，不将本次
   导航搜索修复误报为完整组织系统。
+
+## 2026-08-28 Phase 14-R persisted task center
+
+- 新增全局 `/tasks` 任务中心，复用现有授权的
+  `listWorkspaceAnalysisJobs` 投影，跨可见项目聚合排队、运行和终态研究。
+- 任务入口只导航到精确 Workspace 或 Research run，不在前端创建或复制
+  科学状态；取消/重试、持久通知和断线恢复仍保持未完成。
+- 增加显式“重新加载”操作，失败或离开后可重新读取持久化 Job 状态；
+  不创建新的科学状态。
+- `TaskCenterPage.test.tsx` 及 ProductShell 回归通过，完整前端当前为
+  `95 files / 606 tests passed`，web typecheck 通过。
+- 已认证浏览器 `http://127.0.0.1:3000/tasks` 实际显示 `2` 个进行中任务、
+  `4` 个已结束任务和 `4` 个授权项目；同栈服务 smoke 集合为
+  PostgreSQL/Redis/MinIO `5 passed, 0 skipped`。

@@ -261,6 +261,39 @@ green. This closes the global search navigation gate, while organization
 metadata/collections, task recovery, retention/export, performance and the
 broader mature-product acceptance campaign remain open.
 
+### Agent-2.0 Phase 14-R persisted task center bridge (2026-08-28)
+
+The product now exposes a bounded global `/tasks` surface backed by the
+existing authorized `listWorkspaceAnalysisJobs` projection. It aggregates
+jobs from every visible project without copying scientific facts, separates
+active (`created`, `queued`, `running`, `cancel_requested`) from terminal
+records, and opens either the exact persisted Workspace route or the existing
+project Research run route. No new job state or scientific authority is
+created in the frontend.
+
+Evidence:
+
+- `apps/web/app/components/TaskCenterPage.tsx` and
+  `apps/web/app/tasks/page.tsx` implement the user-facing route.
+- `TaskCenterPage.test.tsx` verifies two authorized projects, status grouping,
+  and exact Workspace/Research navigation (`1` test passed).
+- Task center now also exposes a bounded `重新加载` action. It re-reads the
+  same authorized persisted job projection after a connection failure or
+  return-to-page event; the focused test verifies a second backend read.
+- `ProductShell.test.tsx` and the full frontend regression pass after the
+  bridge (`95` files, `606` tests); web typecheck passes.
+- Authenticated browser tab `11` at `http://127.0.0.1:3000/tasks` rendered the
+  persisted task center with `2` active tasks, `4` terminal tasks and `4`
+  authorized projects. Each row exposed an exact `打开` route to its
+  Workspace or Research run; no frontend scientific state was created.
+- The current-worktree service-backed smoke collection completed against
+  PostgreSQL/Redis/MinIO with `5 passed, 0 failed, 0 errors, 0 skipped`.
+- `/health/runtime` remained green after the campaign: PostgreSQL database,
+  Redis queue/worker, MinIO bucket `mdi-artifacts`, and configured DeepSeek.
+- The task center intentionally remains `PARTIAL` for Phase 14-R because
+  cancel/retry, durable notifications and network-recovery semantics are not
+  yet qualified.
+
 ## K. Final Verdict
 
 ```text
