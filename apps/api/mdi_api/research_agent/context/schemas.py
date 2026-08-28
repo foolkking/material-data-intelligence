@@ -143,3 +143,77 @@ class CompactResearchContext(BaseModel):
     unresolved_questions: list[BoundedContextText] = Field(max_length=16)
     recent_conversation: list[CompactMessage]
     context_fingerprint: str
+
+
+class ContextManifestItem(BaseModel):
+    """Auditable, provider-safe inclusion decision for one context item.
+
+    Server-side identities remain available for replay while the provider
+    receives only bounded opaque references.  This is a read-model over the
+    immutable turn event; it is not a second scientific authority.
+    """
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    item_id: str = Field(min_length=1, max_length=128)
+    kind: Literal[
+        "SCIENTIFIC_OBJECT",
+        "SCIENTIFIC_SELECTION",
+        "SCIENTIFIC_RESULT",
+        "USER_CONSTRAINT",
+        "RESEARCH_GOAL",
+    ]
+    authority_class: Literal[
+        "SCIENTIFIC_DATA",
+        "SCIENTIFIC_RESULT",
+        "USER_CONSTRAINT",
+        "CONVERSATIONAL_NARRATIVE",
+    ]
+    server_side_source_identity: str = Field(min_length=1, max_length=256)
+    provider_opaque_ref: str = Field(min_length=1, max_length=128)
+    exact_object_id: str | None = Field(default=None, max_length=64)
+    exact_object_version_id: str | None = Field(default=None, max_length=64)
+    result_ref: str | None = Field(default=None, max_length=64)
+    inclusion_reason: str = Field(min_length=1, max_length=256)
+    selection_mode: Literal[
+        "EXPLICIT",
+        "UI_SELECTION",
+        "CURRENT",
+        "PINNED",
+        "RECENT",
+        "CONTINUATION",
+    ]
+    authorization_checked: bool
+    content_fingerprint: str = Field(pattern=r"^[0-9a-f]{64}$")
+    estimated_tokens: int = Field(ge=1, le=20000)
+    was_compacted: bool = False
+    was_truncated: bool = False
+    superseded_state: Literal["CURRENT", "STALE", "NONE"] = "NONE"
+
+
+class ContextManifest(BaseModel):
+    """Bounded per-turn context provenance contract.
+
+    It is intentionally persisted inside the immutable CONTEXT_RESOLVED event
+    payload so historical turns can be audited without introducing another
+    mutable context authority.
+    """
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    context_manifest_id: UUID
+    operation: Literal["ORCHESTRATOR", "PLANNER", "INTERPRETER", "DATA"]
+    project_id: str = Field(min_length=1, max_length=64)
+    research_session_id: str = Field(min_length=1, max_length=64)
+    research_turn_id: UUID
+    policy_version: str = Field(min_length=1, max_length=64)
+    included_items: list[ContextManifestItem] = Field(max_length=128)
+    excluded_items: list[str] = Field(default_factory=list, max_length=64)
+    estimated_input_tokens: int = Field(ge=0, le=100000)
+    input_budget: int = Field(ge=256, le=100000)
+    reserved_output_tokens: int = Field(ge=0, le=100000)
+    repair_margin: int = Field(ge=0, le=100000)
+    compaction_state: Literal["NONE", "COMPACTED"] = "NONE"
+    truncation_state: Literal["NONE", "TRUNCATED"] = "NONE"
+    context_fingerprint: str = Field(pattern=r"^[0-9a-f]{64}$")
+    created_at: datetime

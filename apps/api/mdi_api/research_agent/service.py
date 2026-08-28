@@ -26,6 +26,7 @@ from mdi_api.research_agent.schemas import (
     ResearchTurnStatus,
     TERMINAL_TURN_STATUSES,
 )
+from mdi_api.research_agent.context.schemas import ContextManifest, ContextManifestItem
 from mdi_api.research_agent.turns.state_machine import ensure_transition
 from mdi_api.research_agent.memory.service import ResearchSessionMemoryService
 from mdi_api.routers.auth import CurrentUser
@@ -248,6 +249,11 @@ class ResearchTurnService:
                     "context_fingerprint": fingerprint,
                     "compiler_version": "agent2.explicit-ui-context/1.0",
                 })
+                manifest = self._build_context_manifest(
+                    turn_id=turn_id,
+                    context=context,
+                    context_fingerprint=fingerprint,
+                )
                 updated = unit.agent2.research_turns.attach_context_snapshot(turn_id, snapshot_id)
                 updated = unit.agent2.research_turns.compare_and_set_status(
                     turn_id,
@@ -259,10 +265,155 @@ class ResearchTurnService:
                     unit,
                     turn_id,
                     ResearchTurnEventType.CONTEXT_RESOLVED,
-                    {"status": ResearchTurnStatus.ORCHESTRATING.value, "context_snapshot_id": str(snapshot_id)},
+                    {
+                        "status": ResearchTurnStatus.ORCHESTRATING.value,
+                        "context_snapshot_id": str(snapshot_id),
+                        "context_manifest": manifest.model_dump(mode="json"),
+                    },
                 )
         self._log_lifecycle(updated, ResearchTurnEventType.CONTEXT_RESOLVED, previous_status=ResearchTurnStatus.RESOLVING_CONTEXT)
         return snapshot
+
+    @staticmethod
+    def _build_context_manifest(
+        *,
+        turn_id: UUID,
+        context: ResolvedResearchContext,
+        context_fingerprint: str,
+    ) -> ContextManifest:
+        """Create a bounded immutable manifest for the resolved turn context."""
+
+        items: list[ContextManifestItem] = []
+
+        def add_item(
+            *,
+            item_id: str,
+            kind: str,
+            authority_class: str,
+            source_identity: str,
+            opaque_ref: str,
+            content: Any,
+            inclusion_reason: str,
+            selection_mode: str,
+            object_id: str | None = None,
+            version_id: str | None = None,
+            result_ref: str | None = None,
+            superseded_state: str = "NONE",
+        ) -> None:
+            encoded = json.dumps(content, sort_keys=True, separators=(",", ":"), default=str)
+            items.append(
+                ContextManifestItem(
+                    item_id=item_id,
+                    kind=kind,
+                    authority_class=authority_class,
+                    server_side_source_identity=source_identity,
+                    provider_opaque_ref=opaque_ref,
+                    exact_object_id=object_id,
+                    exact_object_version_id=version_id,
+                    result_ref=result_ref,
+                    inclusion_reason=inclusion_reason,
+                    selection_mode=selection_mode,
+                    authorization_checked=True,
+                    content_fingerprint=hashlib.sha256(encoded.encode("utf-8")).hexdigest(),
+                    estimated_tokens=max(1, len(encoded.encode("utf-8")) // 4),
+                    superseded_state=superseded_state,
+                )
+            )
+
+        for index, ref in enumerate(context.active_objects, start=1):
+            add_item(
+                item_id=f"object_{index}",
+                kind="SCIENTIFIC_OBJECT",
+                authority_class="SCIENTIFIC_DATA",
+                source_identity=f"{ref.object_id}:{ref.version_id}",
+                opaque_ref=f"object_{index}",
+                content=ref.model_dump(mode="json"),
+                inclusion_reason="active scientific scope",
+                selection_mode="CURRENT",
+                object_id=str(ref.object_id),
+                version_id=str(ref.version_id),
+            )
+        for index, ref in enumerate(context.selection_refs, start=1):
+            add_item(
+                item_id=f"selection_{index}",
+                kind="SCIENTIFIC_SELECTION",
+                authority_class="SCIENTIFIC_DATA",
+                source_identity=f"{ref.object_id}:{ref.version_id}",
+                opaque_ref=f"selection_{index}",
+                content=ref.model_dump(mode="json"),
+                inclusion_reason="explicit UI scientific selection",
+                selection_mode="UI_SELECTION",
+                object_id=str(ref.object_id),
+                version_id=str(ref.version_id),
+            )
+        for index, selection in enumerate(context.scientific_selections, start=1):
+            ref = selection.object_ref
+            add_item(
+                item_id=f"scientific_selection_{index}",
+                kind="SCIENTIFIC_SELECTION",
+                authority_class="SCIENTIFIC_DATA",
+                source_identity=f"{ref.object_id}:{ref.version_id}",
+                opaque_ref=f"scientific_selection_{index}",
+                content=selection.model_dump(mode="json"),
+                inclusion_reason="semantic UI selection",
+                selection_mode="EXPLICIT",
+                object_id=str(ref.object_id),
+                version_id=str(ref.version_id),
+            )
+        for index, result_id in enumerate(context.referenced_result_ids, start=1):
+            add_item(
+                item_id=f"result_{index}",
+                kind="SCIENTIFIC_RESULT",
+                authority_class="SCIENTIFIC_RESULT",
+                source_identity=str(result_id),
+                opaque_ref=f"result_{index}",
+                content={"result_id": str(result_id)},
+                inclusion_reason="explicit referenced prior Result",
+                selection_mode="CONTINUATION",
+                result_ref=str(result_id),
+            )
+        for index, constraint in enumerate(context.user_constraints, start=1):
+            add_item(
+                item_id=f"constraint_{index}",
+                kind="USER_CONSTRAINT",
+                authority_class="USER_CONSTRAINT",
+                source_identity=f"{context.research_session_id}:constraint:{index}",
+                opaque_ref=f"constraint_{index}",
+                content=constraint,
+                inclusion_reason="session/user constraint",
+                selection_mode="EXPLICIT",
+            )
+        if context.research_goal:
+            add_item(
+                item_id="goal_1",
+                kind="RESEARCH_GOAL",
+                authority_class="CONVERSATIONAL_NARRATIVE",
+                source_identity=f"{context.research_session_id}:goal",
+                opaque_ref="goal_1",
+                content=context.research_goal,
+                inclusion_reason="active research goal",
+                selection_mode="CURRENT",
+            )
+
+        estimated = sum(item.estimated_tokens for item in items)
+        return ContextManifest(
+            context_manifest_id=uuid4(),
+            operation="ORCHESTRATOR",
+            project_id=context.project_id,
+            research_session_id=context.research_session_id,
+            research_turn_id=turn_id,
+            policy_version="agent2.context-policy/2.0",
+            included_items=items,
+            excluded_items=[],
+            estimated_input_tokens=estimated,
+            input_budget=12000,
+            reserved_output_tokens=2048,
+            repair_margin=512,
+            compaction_state="NONE",
+            truncation_state="NONE",
+            context_fingerprint=context_fingerprint,
+            created_at=datetime.now(timezone.utc),
+        )
 
     def resolve_turn_context_stub(self, turn_id: UUID) -> dict[str, Any]:
         with self.repository_factory.session() as session:
@@ -379,6 +530,16 @@ class ResearchTurnService:
             "created_at": row["created_at"],
         } for row in message_rows]
         snapshot = session.agent2.research_context_snapshots.get_for_turn(turn["id"])
+        events = session.agent2.research_turn_events.list_for_turn(turn["id"])
+        context_event = next(
+            (
+                event
+                for event in events
+                if event["event_type"] == ResearchTurnEventType.CONTEXT_RESOLVED.value
+            ),
+            None,
+        )
+        context_manifest = None if context_event is None else context_event.get("payload_json", {}).get("context_manifest")
         decision = session.agent2.research_turn_decisions.get_for_turn(turn["id"])
         capability_resolution = session.agent2.research_capability_resolutions.get_for_turn(turn["id"])
         capability_plan = session.agent2.research_capability_plans.get_for_turn(turn["id"])
@@ -405,6 +566,7 @@ class ResearchTurnService:
                 "scope": snapshot["active_scope_refs_json"] or [],
                 "selection": snapshot["selection_refs_json"] or [],
                 "scientific_selection": snapshot["scientific_selections_json"] or [],
+                "manifest": context_manifest,
             },
             "orchestration": {
                 "decision_available": decision is not None,

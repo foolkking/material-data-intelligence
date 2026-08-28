@@ -49,6 +49,19 @@ and strict-provider modes share the same validator. Provider projection
 contains only provider-safe evidence items and never raw Artifact payloads.
 One interpretation-specific repair is permitted; there is no silent fallback.
 
+## Research Context Manifest 2.0 (Phase 14-R)
+
+`ContextManifest` and `ContextManifestItem` are bounded, immutable provenance
+projections persisted in the `CONTEXT_RESOLVED` ResearchTurn event payload.
+They record the operation, exact project/session/turn identity, policy and
+fingerprint, included/excluded items, budget/compaction state, and per-item
+authorization, authority class, opaque provider reference, exact scientific
+object/version or Result reference, inclusion reason, selection mode, and
+content fingerprint. The manifest is an audit/read model over the existing
+immutable `ResearchContextSnapshot`; it is not a second context or scientific
+authority. Providers receive bounded opaque references and grounded content,
+while historical turns retain exact server-side identities for replay.
+
 Outcomes are `INTERPRETATION_READY`,
 `INTERPRETATION_READY_WITH_LIMITS`, `NO_SUPPORTED_EVIDENCE`,
 `SOURCE_NOT_TERMINAL`, `SOURCE_INTEGRITY_FAILED`,

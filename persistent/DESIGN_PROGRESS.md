@@ -1,5 +1,16 @@
 # DESIGN_PROGRESS
 
+## 2026-08-28 Agent-2.0 Phase 14-R context provenance baseline
+
+- Added the first bounded `ContextManifest 2.0` projection over the existing
+  immutable `CONTEXT_RESOLVED` ResearchTurn event. It preserves exact
+  object/version and Result identities, authorization status, inclusion
+  reasons, content fingerprints, and bounded budget metadata without creating
+  a second scientific authority or database model.
+- Added a deterministic regression for manifest identity/fingerprint
+  preservation. User-facing context disclosure and message-revision controls
+  remain open until separately qualified.
+
 ## 2026-08-28 Agent-2.0 Phase 14 integration qualification
 
 - Phase 13 remains sealed at `56c096a98d082f2ee145c4a1ca4fd89b8d4538df`;

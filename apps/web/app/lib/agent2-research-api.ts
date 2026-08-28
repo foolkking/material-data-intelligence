@@ -5,6 +5,44 @@ const API_BASE = (process.env.NEXT_PUBLIC_MDI_API_BASE_URL || (typeof window ===
 export type Agent2ScientificObjectRef = { object_id: string; version_id: string; project_id: string; object_type: string; display_name?: string };
 export type Agent2ScientificSelection = { contract_version: "1.0"; object_ref: Agent2ScientificObjectRef; viewer_id: string; selection_type: string; semantic_locator: Record<string, string | number>; display_label: string; evidence_locator?: Record<string, string | number> | null };
 export type Agent2TurnResponse = { turn_id: string; research_session_id: string; project_id: string; sequence_no: number; status: string; user_message: { id: string; role: string; content: string }; created_at: string };
+export type Agent2ContextManifestItem = {
+  item_id: string;
+  kind: string;
+  authority_class: string;
+  server_side_source_identity: string;
+  provider_opaque_ref: string;
+  exact_object_id?: string | null;
+  exact_object_version_id?: string | null;
+  result_ref?: string | null;
+  inclusion_reason: string;
+  selection_mode: string;
+  authorization_checked: boolean;
+  estimated_tokens: number;
+  was_compacted: boolean;
+  was_truncated: boolean;
+  superseded_state: string;
+};
+export type Agent2ContextManifest = {
+  context_manifest_id: string;
+  operation: string;
+  project_id: string;
+  research_session_id: string;
+  research_turn_id: string;
+  policy_version: string;
+  included_items: Agent2ContextManifestItem[];
+  excluded_items: string[];
+  estimated_input_tokens: number;
+  input_budget: number;
+  reserved_output_tokens: number;
+  repair_margin: number;
+  compaction_state: string;
+  truncation_state: string;
+  context_fingerprint: string;
+  created_at: string;
+};
+export type Agent2TurnDetail = Agent2TurnResponse & {
+  context?: { manifest?: Agent2ContextManifest | null } | null;
+};
 export type Agent2ScientificFact = {
   fact_id: string;
   predicate: string;
@@ -83,6 +121,9 @@ export async function dispatchAgent2ResearchTurn(turnId: string): Promise<{ turn
 
 export const getAgent2ResearchTurnResult = (turnId: string) =>
   readAgent2<Agent2ResearchTurnResult>(`/api/research/turns/${encodeURIComponent(turnId)}/result`);
+
+export const getAgent2ResearchTurn = (turnId: string) =>
+  readAgent2<Agent2TurnDetail>(`/api/research/turns/${encodeURIComponent(turnId)}`);
 
 export const getAgent2ResearchTurnInterpretation = (turnId: string) =>
   readAgent2<Agent2ResearchTurnInterpretation>(`/api/research/turns/${encodeURIComponent(turnId)}/interpretation`);

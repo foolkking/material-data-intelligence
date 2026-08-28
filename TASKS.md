@@ -1,4 +1,20 @@
 ---TASK---
+状态：处理中
+任务名称：Agent-2.0 Phase 14-R — Post-Seal Product Quality Remediation
+开始时间：2026-08-28T13:00:00+08:00
+
+执行规范：
+`docs/agent2/phase14r/PHASE14R_TASK.md`
+
+保持 Phase 14 sealed，不创建或启动 Phase 15。按依赖顺序完成 Context
+Provenance 2.0、统一生命周期、Research 控制、完整科学 Surface/Viewer、
+专业 Report、性能、全局搜索、后台任务恢复、保留/导出、质量评估、运维治理
+和真实用户验收；最终需要 PostgreSQL/Redis/MinIO 同栈、桌面/移动浏览器、
+全回归以及 P14R-A/P14R-B exact-SHA CI。不得把注册、单测、页面 200、
+grounding 或 schema 通过冒充真实成熟产品验收。
+---END---
+
+---TASK---
 状态：已完成
 任务名称：Agent-2.0 Phase 14 — Full Platform Integration & Production Qualification
 开始时间：2026-08-28T00:00:00+08:00

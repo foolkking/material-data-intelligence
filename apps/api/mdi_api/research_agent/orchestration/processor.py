@@ -37,7 +37,9 @@ from mdi_api.research_agent.orchestration.schemas import (
 )
 from mdi_api.research_agent.orchestration.validator import ResearchTurnDecisionValidator
 from mdi_api.research_agent.registry_validation import Agent2Registries
-from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus, ScientificSelectionContext, TERMINAL_TURN_STATUSES
+from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus, ScientificSelectionContext, ResolvedResearchContext, TERMINAL_TURN_STATUSES
+from mdi_api.research_agent.service import ResearchTurnService
+from mdi_api.scientific_objects.schemas import ScientificObjectRef
 from mdi_api.unit_of_work import RepositoryFactory, transaction_active
 from mdi_api.research_agent.planning.queue import DisabledCapabilityPlanningQueue
 
@@ -211,6 +213,32 @@ class AgentTurnProcessor:
                 ScientificSelectionContext.model_validate(item).model_dump(mode="json")
                 for item in raw_selections
             ]
+            manifest_context = ResolvedResearchContext(
+                project_id=bundle.project_id,
+                research_session_id=bundle.research_session_id,
+                active_objects=[
+                    ScientificObjectRef.model_validate(item.object_ref.model_dump(mode="json"))
+                    for item in bundle.active_object_candidates
+                    if item.object_ref is not None and item.source != ReferenceCandidateSource.UI_SELECTION
+                ],
+                selection_refs=[
+                    ScientificObjectRef.model_validate(item.object_ref.model_dump(mode="json"))
+                    for item in bundle.active_object_candidates
+                    if item.object_ref is not None and item.source == ReferenceCandidateSource.UI_SELECTION
+                ],
+                scientific_selections=[ScientificSelectionContext.model_validate(item) for item in scientific_selections],
+                resolved_references=[],
+                referenced_result_ids=[item.result_id for item in bundle.result_candidates if item.result_id is not None],
+                research_goal=bundle.current_research_goal,
+                user_constraints=[str(item) for item in bundle.explicit_constraints],
+                unresolved_questions=list(resolution.ambiguous_object_keys),
+                requires_clarification=resolution.requires_clarification,
+            )
+            context_manifest = ResearchTurnService._build_context_manifest(
+                turn_id=turn_id,
+                context=manifest_context,
+                context_fingerprint=compact.context_fingerprint,
+            )
             unit.agent2.research_context_snapshots.add({
                 "id": snapshot_id,
                 "project_id": bundle.project_id,
@@ -240,6 +268,7 @@ class AgentTurnProcessor:
             self._append_event(unit, turn_id, ResearchTurnEventType.CONTEXT_RESOLVED, {
                 "status": ResearchTurnStatus.ORCHESTRATING.value,
                 "context_snapshot_id": str(snapshot_id),
+                "context_manifest": context_manifest.model_dump(mode="json"),
             })
             if resolution.requires_clarification:
                 self._append_event(unit, turn_id, ResearchTurnEventType.CONTEXT_AMBIGUOUS, {
