@@ -4096,3 +4096,12 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - `Agent2ScientificPresentation` focused tests: 5 passed; web typecheck PASS.
   Full browser context-control acceptance and budget stress coverage remain
   open.
+
+## Agent-2.0 Phase 14-R task-center attention and refresh (2026-08-28)
+
+- Task Center now refreshes on visibility return and every 30 seconds, with a
+  persisted-state “需要关注” group for failed/partial/canceled jobs.
+- The sync timestamp is only shown after an authorized server fetch; no fake
+  progress or new scientific state is created.
+- `TaskCenterPage.test.tsx` passed and web typecheck remains PASS. Retry,
+  notifications, and full network-reconnect acceptance remain open.

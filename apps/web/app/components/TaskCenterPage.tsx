@@ -24,6 +24,7 @@ export function TaskCenterPage() {
   const [reloadKey, setReloadKey] = useState(0);
   const [cancelingJobId, setCancelingJobId] = useState<string | null>(null);
   const [cancelError, setCancelError] = useState<string | null>(null);
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(null);
   useEffect(() => {
     let active = true;
     void listProjects().then(async (projectRows) => {
@@ -38,12 +39,21 @@ export function TaskCenterPage() {
       const rows = results.flatMap((result) => result.status === "fulfilled" ? result.value : []);
       rows.sort((left, right) => String(right.updatedAt || right.createdAt || "").localeCompare(String(left.updatedAt || left.createdAt || "")));
       setTasks(rows);
+      setLastUpdatedAt(new Date().toISOString());
       setState("ready");
     }).catch(() => { if (active) setState("error"); });
     return () => { active = false; };
   }, [reloadKey]);
+  useEffect(() => {
+    const refresh = () => setReloadKey((value) => value + 1);
+    const onVisibility = () => { if (document.visibilityState === "visible") refresh(); };
+    document.addEventListener("visibilitychange", onVisibility);
+    const timer = window.setInterval(refresh, 30_000);
+    return () => { document.removeEventListener("visibilitychange", onVisibility); window.clearInterval(timer); };
+  }, []);
   const activeTasks = useMemo(() => tasks.filter((task) => ["created", "queued", "running", "cancel_requested"].includes(String(task.jobStatus || "").toLowerCase())), [tasks]);
   const completedTasks = useMemo(() => tasks.filter((task) => !activeTasks.includes(task)), [activeTasks, tasks]);
+  const attentionTasks = useMemo(() => completedTasks.filter((task) => ["failed", "partial_success", "cancelled", "canceled"].includes(String(task.jobStatus || "").toLowerCase())), [completedTasks]);
   async function cancelTask(task: TaskRow) {
     if (!task.researchTurnId) return;
     setCancelingJobId(task.jobId);
@@ -58,11 +68,11 @@ export function TaskCenterPage() {
     }
   }
   return <RequireProductAuth><ProductShell><main className="document-page task-center-page">
-    <header className="product-page-heading"><div><p className="product-kicker">后台任务</p><h1>任务中心</h1><p>跨项目查看研究执行状态。任务状态来自持久化运行记录，离开页面后仍可从这里继续查看。</p></div><button type="button" className="product-secondary-action" onClick={() => setReloadKey((value) => value + 1)} disabled={state === "loading"}>{state === "loading" ? "正在加载…" : "重新加载"}</button></header>
+    <header className="product-page-heading"><div><p className="product-kicker">后台任务</p><h1>任务中心</h1><p>跨项目查看研究执行状态。任务状态来自持久化运行记录，离开页面后仍可从这里继续查看。</p>{lastUpdatedAt ? <small className="task-center-sync-status" role="status">最近同步 {new Date(lastUpdatedAt).toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</small> : null}</div><button type="button" className="product-secondary-action" onClick={() => setReloadKey((value) => value + 1)} disabled={state === "loading"}>{state === "loading" ? "正在加载…" : "重新加载"}</button></header>
     {state === "loading" ? <div className="product-loading" role="status">正在加载后台任务…</div> : null}
     {state === "error" ? <div className="product-state" role="alert"><h2>任务暂时无法读取</h2><p>已有研究不会丢失，请检查服务连接后重新打开任务中心。</p></div> : null}
     {cancelError ? <p className="product-form-error" role="alert">{cancelError}</p> : null}
-    {state === "ready" ? <><section className="task-center-summary" aria-label="任务概览"><div><strong>{activeTasks.length}</strong><span>进行中</span></div><div><strong>{completedTasks.length}</strong><span>已结束</span></div><div><strong>{projects.length}</strong><span>授权项目</span></div></section><TaskGroup title="进行中的研究" tasks={activeTasks} empty="当前没有排队或运行中的研究。" cancelingJobId={cancelingJobId} onCancel={cancelTask} /><TaskGroup title="最近完成与失败" tasks={completedTasks.slice(0, 20)} empty="还没有可展示的历史任务。" /></> : null}
+    {state === "ready" ? <><section className="task-center-summary" aria-label="任务概览"><div><strong>{activeTasks.length}</strong><span>进行中</span></div><div><strong>{completedTasks.length}</strong><span>已结束</span></div><div><strong>{projects.length}</strong><span>授权项目</span></div></section><TaskGroup title="进行中的研究" tasks={activeTasks} empty="当前没有排队或运行中的研究。" cancelingJobId={cancelingJobId} onCancel={cancelTask} />{attentionTasks.length ? <TaskGroup title="需要关注" tasks={attentionTasks.slice(0, 20)} empty="" /> : null}<TaskGroup title="最近完成与失败" tasks={completedTasks.slice(0, 20)} empty="还没有可展示的历史任务。" /></> : null}
   </main></ProductShell></RequireProductAuth>;
 }
 

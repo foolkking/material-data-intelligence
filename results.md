@@ -14977,6 +14977,18 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
   与 `tests/test_agent2_domain.py` 共 26 passed；web typecheck PASS。
 - 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains PARTIAL。
 
+## Agent-2.0 Phase 14-R task-center attention and refresh
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/TaskCenterPage.tsx`、
+  `apps/web/app/globals.css`，以及 Phase 14-R 审计/持久化文档。
+- 修改摘要：任务中心在页面重新可见与 30 秒周期触发持久化刷新，并将失败、
+  部分完成、取消任务单独归入“需要关注”，同步时间只在真实授权请求成功后
+  展示，不生成虚假进度或科学状态。
+- 测试结果：`TaskCenterPage.test.tsx` 1 passed；web typecheck PASS。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains PARTIAL。
+
 ## Agent-2.0 Phase 14-R persisted Result context control
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

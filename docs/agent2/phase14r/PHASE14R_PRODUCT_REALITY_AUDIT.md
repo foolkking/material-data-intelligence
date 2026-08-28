@@ -285,3 +285,11 @@ endpoint and updates only the memory selection; `ScientificResult`,
 `ScientificObjectVersion`, and execution lineage remain read-only. The control
 is covered by deterministic presentation tests. Broader fresh-vs-continued
 context campaigns, budget stress tests, and browser acceptance remain PARTIAL.
+
+### Agent-2.0 Phase 14-R task-center attention and refresh (2026-08-28)
+
+The persisted task center now refreshes on a 30-second cadence and when the
+document becomes visible again, and shows a durable “需要关注” section for
+failed, partial, or canceled work. The sync timestamp is derived from the
+completed authorized fetch; no synthetic progress or new execution state is
+created. The page remains PARTIAL for retry/notification/reconnect semantics.

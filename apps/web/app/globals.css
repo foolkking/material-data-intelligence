@@ -155,6 +155,7 @@
 .product-search-backdrop { position: fixed; inset: 0; z-index: 40; display: grid; place-items: start center; padding: 78px 24px 24px; background: rgb(24 33 29 / 24%); }
 .product-task-link { white-space: nowrap; text-decoration: none; }
 .task-center-page { padding-bottom: 56px; }
+.task-center-sync-status { display: block; margin-top: 8px; color: var(--product-tertiary); font-size: 12px; }
 .task-center-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 20px 0 34px; }
 .task-center-summary > div { display: grid; gap: 4px; padding: 16px; border: 1px solid var(--product-border); background: var(--product-subtle); }
 .task-center-summary strong { font-size: 24px; }
