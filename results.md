@@ -14868,3 +14868,7 @@ compileall PASS。
 `/health/runtime` 确认 PostgreSQL/Redis/MinIO/Redis worker/DeepSeek；
 PostgreSQL 活动连接 `active=1, idle=5, idle-in-transaction=0`。现有已认证
 浏览器数据页确认数据集操作菜单包含归档入口；未执行破坏性归档操作。
+
+追加验证（2026-08-28）：ContextManifest/预算聚焦套件新增确定性压缩回归，
+`3 passed`；在预算压力下优先压缩历史对话，同时保留精确选定的科学对象、
+版本和当前用户请求。浏览器/Provider 规模性能基准仍未闭合。

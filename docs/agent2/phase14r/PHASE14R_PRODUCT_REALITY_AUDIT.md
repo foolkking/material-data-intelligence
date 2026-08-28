@@ -1,7 +1,7 @@
 # Phase 14-R Product Reality Audit
 
 Date: 2026-08-28  
-Verified base: `72328e9` (Phase 14-R fix-forward worktree; historical Phase 14
+Verified base: `96d186a` (Phase 14-R fix-forward worktree; historical Phase 14
 seal `d03b0a2e86e50d834a774cf823cfe055c91cf10c` preserved)  
 Branch: `master` (`HEAD` is ahead of the historical seal; release CI has not
 yet been run for Phase 14-R)  
@@ -55,7 +55,7 @@ acceptance evidence is not yet complete.
 | Exact immutable ContextSnapshot | `research_context_snapshots` table and repository | PASS |
 | Explicit ContextManifest 2.0 persisted for resolved research context | `ContextManifest`/`ContextManifestItem` are built from resolved context and persisted in immutable `CONTEXT_RESOLVED` event payloads; authorized `GET /api/research/turns/{turn_id}/context-manifest` exposes the bounded projection | PASS |
 | Per-item inclusion/exclusion provenance | manifest items retain authority class, source identity, opaque ref, inclusion reason, selection mode, exact object/version and fingerprints; excluded-item ledger remains bounded | PASS |
-| Context budget policy | checked-in `ContextBudgetPolicy 2.0` defines operation-specific 12k/10k/12k/8k effective input budgets with reserved output/repair space; benchmark evidence remains open | PARTIAL |
+| Context budget policy | checked-in `ContextBudgetPolicy 2.0` defines operation-specific effective input budgets with reserved output/repair space; deterministic compiler coverage proves conversation compacts before dropping exact selected scientific identity, while provider/browser-scale benchmark evidence remains open | PARTIAL |
 | User-facing Used context disclosure | Research UI fetches the authorized manifest endpoint and renders a bounded “本次研究使用的上下文” disclosure | PASS |
 | Historical context replay | immutable `CONTEXT_RESOLVED` event retains manifest fingerprint, policy/budget state and exact refs for a turn; project history now exposes whether a run has an authoritative ResearchTurn or only a legacy session binding; replay UI controls are not part of this contract | PARTIAL |
 | Message revisions/branching | no complete persisted revision/branch product contract found in current Research UI | NOT_QUALIFIED |

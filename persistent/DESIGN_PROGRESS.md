@@ -3904,3 +3904,12 @@ authorization boundary and keeps physical deletion fail-closed when references
 exist; the UI explains that archive preserves historical provenance. No
 lifecycle authority or scientific version semantics changed. Focused
 project-access tests (`11 passed`) and ProductPages tests (`17 passed`) pass.
+
+### Agent-2.0 Phase 14-R context compaction regression (2026-08-28)
+
+Added deterministic coverage for the bounded context compiler under pressure:
+historical conversation is compacted first while the exact UI-selected
+ScientificObject/ScientificObjectVersion and current user request remain
+present. The focused ContextManifest suite now passes (`3 passed`); browser-
+scale provider performance benchmarking remains an explicit open qualification
+item.
