@@ -15018,6 +15018,8 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 及规划服务集合 `9 passed, 0 skipped`；Agent2 API/domain/report 组合回归
 `42 passed, 4 historical live-LLM skips`。这些结果确认 Figure 来源扩展没有
 破坏既有授权、报告生成或零科学状态增量约束。
+当前实现提交为 `456d0a9`（其父提交 `2141fb1` 包含 Figure Artifact
+路由回归）；工作树中的 Phase 14-R 仍未创建发布候选 P14R-A/P14R-B。
 
 ## Agent-2.0 Phase 14-R — Research progress reconnect
 
