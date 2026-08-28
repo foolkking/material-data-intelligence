@@ -1,5 +1,14 @@
 # DESIGN_PROGRESS
 
+## 2026-08-28 Agent-2.0 Phase 14-R context budget policy
+
+- Added checked-in operation-specific `ContextBudgetPolicy 2.0` for
+  orchestrator, planner, interpreter, and data contexts.
+- Effective budgets derive from provider/product/operation limits after
+  reserving output and structured-repair space; scientific identities remain
+  server-side and compaction stays deterministic.
+- Real-user performance benchmarking remains an open qualification item.
+
 ## 2026-08-28 Agent-2.0 Phase 14-R context provenance baseline
 
 - Added the first bounded `ContextManifest 2.0` projection over the existing

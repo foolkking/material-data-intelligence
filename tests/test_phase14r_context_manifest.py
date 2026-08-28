@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from mdi_api.research_agent.schemas import ResolvedResearchContext, ScientificSelectionContext
 from mdi_api.research_agent.context.schemas import ContextManifest
+from mdi_api.research_agent.context.policy import ContextOperation, context_budget_policy
 from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 
@@ -61,3 +62,17 @@ def test_context_manifest_is_bounded_and_preserves_exact_scientific_identity() -
     assert all(item.exact_object_version_id == str(version_id) for item in scientific_items)
     assert all(len(item.content_fingerprint) == 64 for item in manifest.included_items)
     assert manifest.estimated_input_tokens == sum(item.estimated_tokens for item in manifest.included_items)
+
+
+def test_context_budget_policy_is_operation_specific_and_reserves_output_space() -> None:
+    orchestrator = context_budget_policy(ContextOperation.ORCHESTRATOR)
+    planner = context_budget_policy(ContextOperation.PLANNER)
+    data = context_budget_policy(ContextOperation.DATA)
+
+    assert orchestrator.effective_input_budget == 12_000
+    assert planner.effective_input_budget == 10_000
+    assert data.effective_input_budget == 8_000
+    assert planner.effective_input_budget < orchestrator.effective_input_budget
+    assert data.effective_input_budget < planner.effective_input_budget
+    assert orchestrator.reserved_output_tokens > 0
+    assert orchestrator.repair_margin > 0

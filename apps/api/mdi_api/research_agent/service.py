@@ -27,6 +27,7 @@ from mdi_api.research_agent.schemas import (
     TERMINAL_TURN_STATUSES,
 )
 from mdi_api.research_agent.context.schemas import ContextManifest, ContextManifestItem
+from mdi_api.research_agent.context.policy import ContextOperation, context_budget_policy
 from mdi_api.research_agent.turns.state_machine import ensure_transition
 from mdi_api.research_agent.memory.service import ResearchSessionMemoryService
 from mdi_api.routers.auth import CurrentUser
@@ -396,6 +397,7 @@ class ResearchTurnService:
             )
 
         estimated = sum(item.estimated_tokens for item in items)
+        budget_policy = context_budget_policy(ContextOperation.ORCHESTRATOR)
         return ContextManifest(
             context_manifest_id=uuid4(),
             operation="ORCHESTRATOR",
@@ -406,9 +408,9 @@ class ResearchTurnService:
             included_items=items,
             excluded_items=[],
             estimated_input_tokens=estimated,
-            input_budget=12000,
-            reserved_output_tokens=2048,
-            repair_margin=512,
+            input_budget=budget_policy.effective_input_budget,
+            reserved_output_tokens=budget_policy.reserved_output_tokens,
+            repair_margin=budget_policy.repair_margin,
             compaction_state="NONE",
             truncation_state="NONE",
             context_fingerprint=context_fingerprint,

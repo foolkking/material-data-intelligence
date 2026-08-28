@@ -19,6 +19,7 @@ from mdi_api.agent2_errors import (
 )
 from mdi_api.research_agent.context.assembler import ResearchContextCandidateAssembler
 from mdi_api.research_agent.context.compiler import COMPILER_VERSION, ResearchContextCompiler
+from mdi_api.research_agent.context.policy import ContextOperation, context_budget_policy
 from mdi_api.research_agent.context.resolver import DeterministicReferenceResolver, ReferenceResolution
 from mdi_api.research_agent.context.schemas import CompactResearchContext, ResearchContextCandidateBundle, ReferenceCandidateSource
 from mdi_api.research_agent.llm.schemas import StructuredLLMResult
@@ -191,7 +192,12 @@ class AgentTurnProcessor:
             })
             bundle = self.assembler.assemble(unit, resolving)
             resolution = self.resolver.resolve(bundle)
-            compact = self.compiler.compile(turn=resolving, candidates=bundle, token_budget=12_000)
+            budget_policy = context_budget_policy(ContextOperation.ORCHESTRATOR)
+            compact = self.compiler.compile(
+                turn=resolving,
+                candidates=bundle,
+                token_budget=budget_policy.effective_input_budget,
+            )
             snapshot_id = uuid4()
             active_refs = [
                 item.object_ref.model_dump(mode="json")

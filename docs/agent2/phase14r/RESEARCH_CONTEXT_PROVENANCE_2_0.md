@@ -35,7 +35,17 @@ constraints never become scientific facts. Fresh Research resets working
 conversation context; Continue reuses explicit session state; historical turns
 reopen their original snapshot.
 
-Current gap: no explicit persisted `ContextManifest`/`ContextItem` model or
-user-facing “Used context” disclosure is present in the sealed Phase 14 code.
-This document is therefore a contract and gap record, not a claim of closure.
+The checked-in `ContextBudgetPolicy 2.0` in
+`apps/api/mdi_api/research_agent/context/policy.py` computes:
 
+```text
+min(provider_context_limit, product_global_limit, operation_specific_limit)
+- reserved_output_tokens
+- repair_margin
+```
+
+Current effective input budgets are 12,000 tokens for orchestration, 10,000
+for planning, 12,000 for interpretation, and 8,000 for bounded data context.
+The compiler compacts deterministically and preserves exact scientific
+identities. Provider/runtime benchmarking and browser-scale performance
+evidence remain open qualification work.
