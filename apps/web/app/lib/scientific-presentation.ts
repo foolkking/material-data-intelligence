@@ -72,8 +72,8 @@ function exactSource(sourceObjectRefs: PresentationInput["sourceObjectRefs"]): P
   return source ? { objectId: source.objectId, versionId: source.versionId } : {};
 }
 
-function evidenceSource(item: ScientificEvidenceItem, resultId: string | null | undefined, sourceObjectRefs: PresentationInput["sourceObjectRefs"]): PresentationSource {
-  return { ...exactSource(sourceObjectRefs), resultId, evidenceId: item.evidenceItemId, artifactId: item.sourceArtifactId, toolCallId: item.sourceToolId };
+function evidenceSource(item: ScientificEvidenceItem, resultId: string | null | undefined, interpretationId: string | null | undefined, sourceObjectRefs: PresentationInput["sourceObjectRefs"]): PresentationSource {
+  return { ...exactSource(sourceObjectRefs), resultId, interpretationId, evidenceId: item.evidenceItemId, artifactId: item.sourceArtifactId, toolCallId: item.sourceToolId };
 }
 
 function displayFactValue(value: unknown): string | null {
@@ -156,7 +156,7 @@ export function compileScientificPresentation(input: PresentationInput): Scienti
       title: item.semanticRole.replaceAll("_", " "),
       value: item.displayValue,
       unit: item.unit,
-      source: evidenceSource(item, input.resultId, input.sourceObjectRefs),
+      source: evidenceSource(item, input.resultId, interpretation?.interpretationId, input.sourceObjectRefs),
     });
   });
 
@@ -181,7 +181,7 @@ export function compileScientificPresentation(input: PresentationInput): Scienti
       type: "evidence_reference",
       title: "证据",
       label: item.displayValue,
-      source: evidenceSource(item, input.resultId, input.sourceObjectRefs),
+      source: evidenceSource(item, input.resultId, interpretation?.interpretationId, input.sourceObjectRefs),
     });
   });
 

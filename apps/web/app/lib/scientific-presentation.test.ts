@@ -62,6 +62,10 @@ describe("scientific presentation compiler", () => {
       evidenceIds: ["fact-band-gap"],
     }));
     expect(presentation.blocks).toContainEqual(expect.objectContaining({
+      type: "evidence_reference",
+      source: expect.objectContaining({ interpretationId: "interpretation-1", evidenceId: "fact-band-gap" }),
+    }));
+    expect(presentation.blocks).toContainEqual(expect.objectContaining({
       type: "table",
       artifactId: "dataset-table",
       source: expect.objectContaining({ versionId: "version-v1" }),

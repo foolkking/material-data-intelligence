@@ -35,7 +35,7 @@ acceptance evidence is not yet complete.
 | Scientific Presentation compiler | bounded presentation contracts and deterministic mappings | PASS |
 | Structure/Electronic/Dataset user presentation | renderers and routes exist; full current same-stack domain campaign not rerun | PARTIAL |
 | Scientific Viewer coverage | registry and many renderer implementations exist; every declared family lacks current live acceptance | PARTIAL |
-| Evidence traversal UX | labels and provenance summaries exist; complete user-navigable Result → ToolCall/Artifact → version path not proven for every surface | PARTIAL |
+| Evidence traversal UX | Presentation evidence references now link through the existing secured interpretation-evidence route, retaining Result/interpretation identity; complete browser proof of every Result → ToolCall/Artifact → version path remains open | PARTIAL |
 | Scientific Report | grounded report composition and immutable snapshots exist; frozen `ReportContextBundle` now validates the bounded provider input and the quality rubric is checked in; current multi-family browser/service quality campaign remains open | PARTIAL |
 | Historical v1/v2 presentation | exact source semantics are sealed in Phase 12/13; Research history links now use persisted `researchTurnId` only, and history explicitly labels modern `RESEARCH_TURN` versus compatibility-only `LEGACY_SESSION_RUN`; repeated browser campaign is still open | PARTIAL |
 | Archived historical presentation | archive API/UI and historical Viewer semantics exist; mature Report/Evidence browser proof not yet run | PARTIAL |

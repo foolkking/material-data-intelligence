@@ -39,6 +39,8 @@ export function ScientificPresentationBlocks({ presentation, mode = "full", proj
     {evidence.length ? <details className="scientific-presentation-evidence"><summary>证据路径 · {evidence.length} 项</summary><ul>{evidence.map((block) => {
       const href = block.source.artifactId && block.source.jobId
         ? `/api/planner/jobs/${encodeURIComponent(block.source.jobId)}/artifacts/${encodeURIComponent(block.source.artifactId)}/content`
+        : block.source.interpretationId
+          ? `/api/planner/interpretations/${encodeURIComponent(block.source.interpretationId)}/evidence`
         : viewerHref(block.source);
       return <li key={block.id}><strong>{block.label}</strong><small>Result {block.source.resultId || "—"} · Evidence {block.source.evidenceId || "—"} · ToolCall {block.source.toolCallId || "—"}</small>{href ? <Link href={href}>查看权威来源</Link> : null}{block.source.versionId ? <small>exact version {block.source.versionId}</small> : null}</li>;
     })}</ul></details> : null}

@@ -11,6 +11,15 @@
   runs. A legacy run remains safely resumable through its explicit session
   route while modern runs retain their exact Turn route.
 
+## 2026-08-28 Agent-2.0 Phase 14-R evidence traversal bridge
+
+- Scientific Presentation evidence references now retain the originating
+  `interpretationId` and prefer the existing secured
+  `/planner/interpretations/{interpretation_id}/evidence` route.
+- This keeps the evidence disclosure tied to the existing authorized
+  Result/interpretation bundle instead of exposing decorative labels only; it
+  remains read-only and does not create Jobs, Artifacts, or Results.
+
 ## 2026-08-28 Agent-2.0 Phase 14-R context budget policy
 
 - Added checked-in operation-specific `ContextBudgetPolicy 2.0` for
