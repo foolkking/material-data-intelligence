@@ -602,8 +602,23 @@ export type InterpretationEvidenceResponse = {
   interpretationId: string;
   bundleId: string;
   bundleHash: string;
+  jobId?: string;
+  planId?: string;
   evidenceItems: ScientificEvidenceItem[];
   sourceArtifactIds: string[];
+  sourceObjectRefs?: Array<{
+    objectId: string;
+    versionId: string;
+    objectType?: string;
+    displayName?: string;
+  }>;
+  artifacts?: Artifact[];
+  toolCalls?: Array<{
+    id?: string;
+    toolCallId?: string;
+    toolId?: string;
+    status?: string;
+  }>;
   bundleWarnings: string[];
   bundleLimitations: string[];
 };

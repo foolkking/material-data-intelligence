@@ -1,7 +1,7 @@
 # Phase 14-R Product Reality Audit
 
 Date: 2026-08-28  
-Verified base: `96d186a` (Phase 14-R fix-forward worktree; historical Phase 14
+Verified base: `a9ef271` (Phase 14-R fix-forward worktree; historical Phase 14
 seal `d03b0a2e86e50d834a774cf823cfe055c91cf10c` preserved)  
 Branch: `master` (`HEAD` is ahead of the historical seal; release CI has not
 yet been run for Phase 14-R)  
@@ -162,3 +162,19 @@ frontend `93 files / 597 passed`; backend `1820 passed / 83 skipped`
 (the skips remain historical/optional compatibility coverage). This is
 regression evidence only; the mature-product P0/P1 browser, report-quality,
 trash/retention, recovery and operations gates are still not all qualified.
+
+### Agent-2.0 Phase 14-R evidence traversal projection (2026-08-28)
+
+The secured interpretation-evidence response now keeps the evidence bundle as
+the authority for evidence identity while resolving a bounded read-only chain
+from the persisted ScientificResult snapshot for the source Job. The response
+adds `sourceObjectRefs` (exact object/version pairs) plus bounded Job-scoped
+Artifact and ToolCall descriptors. Legacy interpretations without a persisted
+Result remain readable with an empty source-ref projection; the secured route
+still authorizes through the owning Job before returning the response. The
+deterministic persistence test passes (`13 passed` in
+`tests/test_phase10l4_api_persistence.py`), targeted frontend Research/
+Presentation tests pass (`43 passed`), typecheck and touched Ruff pass. This
+closes the missing read-only source-chain projection at the API/UI boundary,
+but does not by itself close the broader Phase 14-R cross-project browser and
+full scientific-surface campaign.

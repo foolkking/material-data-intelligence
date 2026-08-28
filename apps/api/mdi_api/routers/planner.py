@@ -11,10 +11,12 @@ from typing import Any, Literal, Mapping
 import uuid
 
 from pydantic import BaseModel, Field
+from sqlalchemy import select
 
 from mdi_api.config import load_settings
 from mdi_api.artifact_storage import create_artifact_storage_from_settings
 from mdi_api.database import create_repository_factory
+from mdi_api.db import scientific_result_snapshots
 from mdi_api.repositories import InMemoryRepositoryBundle, compute_plan_hash
 from mdi_api.secrets import InMemorySecretStore
 from mdi_api.provider_connections import decrypt_api_key, get_connection, thinking_budget
@@ -1085,14 +1087,71 @@ def get_planner_interpretation_evidence(interpretation_id: str, *, repositories:
     repos = _planner_read_repositories(repositories)
     record = repos.interpretations.get_interpretation(interpretation_id)
     bundle = repos.interpretations.get_bundle(record["bundleId"])
+    job_id = str(bundle.get("jobId") or "")
+    source_object_refs: list[dict[str, Any]] = []
+    # Evidence bundles intentionally keep their own immutable identity and do
+    # not duplicate the ScientificResult source authority. Resolve the exact
+    # source refs from the persisted Result snapshot for this Job when the
+    # durable repository is available. In-memory compatibility repositories do
+    # not have a Result table, so they safely return an empty list.
+    bind = getattr(repos.interpretations, "bind", None)
+    if bind is not None and job_id:
+        statement = (
+            select(scientific_result_snapshots.c.bundle_json)
+            .where(scientific_result_snapshots.c.job_id == job_id)
+            .order_by(scientific_result_snapshots.c.created_at.desc(), scientific_result_snapshots.c.id.desc())
+            .limit(1)
+        )
+        try:
+            def read_source_refs(connection: Any) -> list[dict[str, Any]]:
+                row = connection.execute(statement).mappings().first()
+                payload = row.get("bundle_json") if row else None
+                refs = payload.get("source_object_refs") if isinstance(payload, dict) else None
+                normalized: list[dict[str, Any]] = []
+                if isinstance(refs, list):
+                    for item in refs[:16]:
+                        if not isinstance(item, dict):
+                            continue
+                        object_id = item.get("objectId") or item.get("object_id")
+                        version_id = item.get("versionId") or item.get("version_id")
+                        if not object_id or not version_id:
+                            continue
+                        normalized.append({
+                            "objectId": str(object_id),
+                            "versionId": str(version_id),
+                            "objectType": item.get("objectType") or item.get("object_type"),
+                            "displayName": item.get("displayName") or item.get("display_name"),
+                        })
+                return normalized
+
+            source_object_refs = list(repos.interpretations._with_connection(read_source_refs))
+        except Exception:
+            # A legacy interpretation may predate a persisted Result snapshot.
+            # Do not make evidence unreadable; the secured Job boundary still
+            # protects the response and the bundle remains available.
+            source_object_refs = []
+    artifacts = []
+    tool_calls = []
+    if job_id:
+        try:
+            artifacts = repos.artifacts.list_for_job(job_id)[:64]
+        except Exception:
+            artifacts = []
+        try:
+            tool_calls = repos.tool_calls.list_for_job(job_id)[:64]
+        except Exception:
+            tool_calls = []
     return {
         "interpretationId": interpretation_id,
         "bundleId": bundle["bundleId"],
         "bundleHash": bundle["bundleHash"],
-        "jobId": bundle["jobId"],
+        "jobId": job_id,
         "planId": bundle["planId"],
         "evidenceItems": bundle["evidenceItems"],
         "sourceArtifactIds": bundle["sourceArtifactIds"],
+        "sourceObjectRefs": source_object_refs,
+        "artifacts": artifacts,
+        "toolCalls": tool_calls,
         "bundleWarnings": bundle["bundleWarnings"],
         "bundleLimitations": bundle["bundleLimitations"],
     }

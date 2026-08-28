@@ -3921,3 +3921,12 @@ against the PostgreSQL/Redis/MinIO runtime: DOM-ready at `1442 ms`, with the
 research composer visible after `1945 ms` including a `500 ms` settling window.
 This is a baseline point only; the required p50/p95 and mobile performance
 campaign remains open.
+
+### Agent-2.0 Phase 14-R evidence traversal projection (2026-08-28)
+
+Interpretation evidence remains an immutable bundle projection. The secured
+read path now resolves bounded `sourceObjectRefs` from the persisted
+ScientificResult snapshot for the owning Job and includes Job-scoped Artifact
+and ToolCall descriptors for user inspection. Legacy bundles without a Result
+snapshot remain readable without fabricated provenance. No scientific authority,
+version semantics, or recomputation path changed.

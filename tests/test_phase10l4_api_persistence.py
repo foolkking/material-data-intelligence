@@ -6,6 +6,7 @@ from pathlib import Path
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
+from types import SimpleNamespace
 
 import pytest
 from alembic import command as alembic_command
@@ -565,6 +566,69 @@ def test_interpretation_request_caps_and_bounded_storage_reads(tmp_path: Path) -
     local.put_bytes("large.json", b"x" * 32, content_type="application/json")
     with pytest.raises(ValueError, match="bounded read limit"):
         local.get_bytes_bounded("large.json", max_bytes=16)
+
+
+def test_interpretation_evidence_exposes_exact_source_chain_without_mutating_bundle() -> None:
+    """Evidence inspection returns the authoritative Result source scope.
+
+    The evidence bundle owns only evidence identity. Exact object/version
+    provenance is read from the persisted ScientificResult snapshot, while
+    Artifact and ToolCall descriptors remain job-scoped read-only metadata.
+    """
+
+    source_refs = [{
+        "object_id": "object-structure",
+        "version_id": "version-v2",
+        "object_type": "Structure",
+        "display_name": "Silicon",
+    }]
+
+    class _Connection:
+        def execute(self, _statement):
+            return SimpleNamespace(
+                mappings=lambda: SimpleNamespace(
+                    first=lambda: {"bundle_json": {"source_object_refs": source_refs}},
+                ),
+            )
+
+    class _Interpretations:
+        bind = SimpleNamespace(_with_connection=lambda callback: callback(_Connection()))
+
+        def _with_connection(self, callback):
+            return callback(_Connection())
+
+        def get_interpretation(self, _interpretation_id):
+            return {"bundleId": "bundle-1"}
+
+        def get_bundle(self, _bundle_id):
+            return {
+                "bundleId": "bundle-1",
+                "bundleHash": "a" * 64,
+                "jobId": "job-1",
+                "planId": "plan-1",
+                "evidenceItems": [],
+                "sourceArtifactIds": ["artifact-1"],
+                "bundleWarnings": [],
+                "bundleLimitations": [],
+            }
+
+    repos = SimpleNamespace(
+        interpretations=_Interpretations(),
+        artifacts=SimpleNamespace(list_for_job=lambda _job_id: [{"artifactId": "artifact-1", "jobId": "job-1"}]),
+        tool_calls=SimpleNamespace(list_for_job=lambda _job_id: [{"id": "call-1", "toolId": "structure.summary", "status": "completed"}]),
+    )
+
+    evidence = get_planner_interpretation_evidence("interpretation-1", repositories=repos)
+
+    assert evidence["sourceObjectRefs"] == [{
+        "objectId": "object-structure",
+        "versionId": "version-v2",
+        "objectType": "Structure",
+        "displayName": "Silicon",
+    }]
+    assert evidence["artifacts"] == [{"artifactId": "artifact-1", "jobId": "job-1"}]
+    assert evidence["toolCalls"] == [{"id": "call-1", "toolId": "structure.summary", "status": "completed"}]
+    assert evidence["jobId"] == "job-1"
 
     class Body:
         def __init__(self) -> None:
