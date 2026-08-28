@@ -94,3 +94,16 @@ Phase 14 reopening. Phase 14-R is not yet closed. The highest-priority
 remaining gaps are the durable ContextManifest/message provenance contract,
 full scientific surface acceptance, report-quality/context contracts,
 explicit research controls, and current same-stack real-user evidence.
+
+## Current same-stack browser spot check
+
+On 2026-08-28, the authenticated in-app browser loaded
+`/projects/project_0002_1a0af866391f412d/research` against the live
+PostgreSQL/Redis/MinIO runtime with zero captured console warnings/errors.
+The existing legacy Structure run
+`job_c4ed9c864f104e5b884c6bae` rendered the bounded `结构组成概览` table and
+the deterministic `Scientific Presentation` result入口. Its session route is
+explicitly persisted (`research_fbf038934dc84ffeaa5aed9e7c906095`); no Job-name
+Turn guessing was observed. A complete current ResearchTurn-linked
+interpretation/evidence browser campaign is still open, so this spot check is
+not a Phase 14-R closure claim.
