@@ -14992,6 +14992,21 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — task-center online resynchronization
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/TaskCenterPage.tsx`、
+  `apps/web/app/components/TaskCenterPage.test.tsx`、Phase 14-R 审计与进度
+  文档。
+- 修改摘要：任务中心监听浏览器 `online` 事件，恢复联网后立即使当前读取
+  失效并重新加载授权项目与持久化 Job 状态；仍保留可见性恢复和 30 秒刷新。
+  该逻辑只同步服务端事实，不制造进度、不取消任务、不修改科学结果。
+- 测试结果：`TaskCenterPage.test.tsx` `1 passed`；`npm run typecheck`
+  `PASS`；`npm run build` `PASS`。完整断网/API 重启/Worker 恢复浏览器验收
+  仍未完成。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
+
 ## Agent-2.0 Phase 14-R — Current-worktree regression refresh
 
 - 状态：已完成（验证）

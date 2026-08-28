@@ -53,5 +53,8 @@ describe("TaskCenterPage", () => {
     mocks.listProjects.mockClear();
     fireEvent.click(screen.getByRole("button", { name: "重新加载" }));
     await waitFor(() => expect(mocks.listProjects).toHaveBeenCalledTimes(1));
+    mocks.listProjects.mockClear();
+    fireEvent(window, new Event("online"));
+    await waitFor(() => expect(mocks.listProjects).toHaveBeenCalledTimes(1));
   });
 });

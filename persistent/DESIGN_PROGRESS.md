@@ -4151,3 +4151,13 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   Task Center for server-backed resynchronization.
 - ProductShell focused tests: 5 passed; web typecheck PASS. Full reconnect and
   worker-recovery browser qualification remains open.
+
+## Agent-2.0 Phase 14-R task-center online resynchronization (2026-08-28)
+
+- Task Center now refreshes immediately when the browser emits `online`, in
+  addition to visibility-return and 30-second refresh boundaries.
+- The refresh only re-reads authorized persisted project/job state; it does
+  not mark jobs failed, cancel server work, or fabricate progress.
+- TaskCenterPage focused regression passes, production build passes, and the
+  broader network interruption/API restart/worker recovery browser campaign
+  remains open.

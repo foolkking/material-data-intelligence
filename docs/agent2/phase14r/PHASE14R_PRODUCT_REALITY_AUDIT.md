@@ -342,3 +342,13 @@ banner is presentation-only: it does not mark work failed, cancel jobs, or
 invent progress. ProductShell regression covers both transitions; typecheck
 passes. Full browser network interruption/reconnect qualification remains
 PARTIAL.
+
+### Agent-2.0 Phase 14-R task-center online resynchronization (2026-08-28)
+
+The Task Center now treats the browser `online` event as a persisted-state
+recovery boundary: it invalidates the current fetch key and reloads authorized
+project/job records. This complements visibility and interval refresh without
+inventing progress or changing scientific execution state. The event listener
+is removed on unmount. Focused regression verifies an online event causes a
+fresh project fetch; full network interruption, API restart, and worker recovery
+browser qualification remain PARTIAL.
