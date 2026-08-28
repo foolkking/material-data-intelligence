@@ -15014,6 +15014,11 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
   `PARTIAL`，Capability-wide same-stack Figure、Trash/retention、报告质量与
   真实用户验收仍未闭合。
 
+补充验证（2026-08-28）：真实 PostgreSQL/Redis/MinIO 报告生成、跨进程重开
+及规划服务集合 `9 passed, 0 skipped`；Agent2 API/domain/report 组合回归
+`42 passed, 4 historical live-LLM skips`。这些结果确认 Figure 来源扩展没有
+破坏既有授权、报告生成或零科学状态增量约束。
+
 ## Agent-2.0 Phase 14-R — Research progress reconnect
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
