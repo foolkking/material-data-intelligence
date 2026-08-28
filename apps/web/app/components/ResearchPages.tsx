@@ -255,7 +255,13 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, editTu
       }).catch(() => { if (active) setAgent2Progress(null); });
     };
     refresh();
-    return () => { active = false; if (timer) clearTimeout(timer); };
+    const onOnline = () => refresh();
+    window.addEventListener("online", onOnline);
+    return () => {
+      active = false;
+      window.removeEventListener("online", onOnline);
+      if (timer) clearTimeout(timer);
+    };
   }, [agent2TurnId]);
 
   useEffect(() => {

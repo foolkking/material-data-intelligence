@@ -4187,3 +4187,12 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - The tested paths included ContextManifest, PostgreSQL planning idempotency,
   and Redis-backed workspace/result behavior; runtime health remained on the
   real same-stack services with Redis workers and configured DeepSeek.
+
+## Agent-2.0 Phase 14-R Research progress reconnect (2026-08-28)
+
+- Active Agent2 Research progress polling now retries its existing persisted
+  progress read on browser `online`, with lifecycle cleanup on turn change or
+  unmount.
+- No new ResearchTurn/Job/ToolCall/Artifact/Result is created and no progress
+  is fabricated. ResearchPages regression (`36 passed`) and web typecheck pass;
+  full network/API/worker recovery browser qualification remains open.

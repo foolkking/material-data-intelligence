@@ -14992,6 +14992,18 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — Research progress reconnect
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/ResearchPages.tsx`、Phase 14-R 审计与进度文档。
+- 修改摘要：进行中的 Agent2 Research 进度轮询监听浏览器 `online` 事件，
+  恢复联网后重读同一持久化 Turn 进度；不创建新 Turn/Job/ToolCall/Artifact/
+  Result，也不伪造进度。
+- 测试结果：`ResearchPages.test.tsx` `36 passed`；`npm run typecheck`
+  `PASS`。完整网络中断、API 重启与 Worker 恢复浏览器验收仍未完成。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
+
 ## Agent-2.0 Phase 14-R — current-head same-stack regression
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

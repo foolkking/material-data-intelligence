@@ -380,3 +380,12 @@ After the reconnect changes, the PostgreSQL/Redis/MinIO campaign
 `tests/integration/test_agent2_phase7_service_backed.py` completed with
 `8 passed, 0 failed, 0 skipped` in `116.10s`. Runtime health remained
 PostgreSQL/Redis/MinIO with Redis workers and configured DeepSeek.
+
+### Agent-2.0 Phase 14-R Research progress reconnect (2026-08-28)
+
+The active Agent2 Research progress poller now re-issues its existing persisted
+progress read when the browser emits `online`, and removes that listener when
+the turn changes or the page unmounts. It does not create a new Turn, Job,
+ToolCall, Artifact, or Result and does not synthesize progress. Research page
+regression remains green; full browser network/API/worker recovery remains
+PARTIAL.
