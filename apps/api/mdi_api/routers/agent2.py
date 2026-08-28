@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
+from datetime import datetime, timezone
 from typing import Any, Iterator
-from uuid import UUID
+from uuid import UUID, NAMESPACE_URL, uuid5
 
 from fastapi import Body, Depends, Header, HTTPException, Query
 from fastapi.encoders import jsonable_encoder
@@ -44,6 +46,8 @@ from mdi_api.research_agent.execution.errors import (
     ExecutionSummaryConflict,
 )
 from mdi_api.research_agent.service import ResearchTurnService
+from mdi_api.research_agent.context.policy import ContextOperation, context_budget_policy
+from mdi_api.research_agent.context.schemas import ContextManifest, ContextManifestItem
 from mdi_api.research_agent.memory.service import ResearchSessionMemoryService
 from mdi_api.research_agent.memory.schemas import PinObjectRequest
 from mdi_api.routers.auth import CurrentUser, get_current_user
@@ -167,7 +171,7 @@ def get_research_turn_context_manifest(
 ) -> dict[str, Any]:
     """Return the bounded immutable context manifest for a ResearchTurn."""
     try:
-        _turn, events = get_research_turn_service().list_events(turn_id, current_user)
+        turn, events = get_research_turn_service().list_events(turn_id, current_user)
         context_event = next(
             (
                 event
@@ -180,10 +184,198 @@ def get_research_turn_context_manifest(
             raise ScientificResultNotReady(f"context manifest unavailable for {turn_id}")
         manifest = (context_event.get("payload_json") or {}).get("context_manifest")
         if not isinstance(manifest, dict):
-            raise ScientificResultNotReady(f"context manifest unavailable for {turn_id}")
+            # Older completed turns persisted the immutable context snapshot
+            # reference but predated the embedded manifest contract.  Build a
+            # deterministic, bounded read-model from that snapshot so history
+            # remains auditable without mutating the event or introducing a
+            # second context authority.
+            factory = create_repository_factory()
+            with factory.session() as session:
+                snapshot = session.agent2.research_context_snapshots.get_for_turn(turn_id)
+            if snapshot is None:
+                raise ScientificResultNotReady(f"context manifest unavailable for {turn_id}")
+            manifest = _compat_context_manifest_from_snapshot(turn, snapshot)
         return jsonable_encoder({"turn_id": str(turn_id), "manifest": manifest})
     except Exception as exc:
+        logger.exception("context_manifest_projection_failed", extra={"turn_id": str(turn_id)})
         raise _http_error(exc) from exc
+
+
+def _compat_context_manifest_from_snapshot(
+    turn: dict[str, Any],
+    snapshot: dict[str, Any],
+) -> dict[str, Any]:
+    """Project legacy immutable context snapshots into ContextManifest 2.0.
+
+    This is intentionally a read-only compatibility projection.  Exact
+    scientific object/version and Result references come only from the
+    persisted snapshot; the provider receives bounded opaque refs.
+    """
+
+    items: list[ContextManifestItem] = []
+
+    def add_item(
+        *,
+        item_id: str,
+        kind: str,
+        authority_class: str,
+        source_identity: str,
+        opaque_ref: str,
+        content: Any,
+        inclusion_reason: str,
+        selection_mode: str,
+        object_id: str | None = None,
+        version_id: str | None = None,
+        result_ref: str | None = None,
+    ) -> None:
+        encoded = json.dumps(content, sort_keys=True, separators=(",", ":"), default=str)
+        items.append(
+            ContextManifestItem(
+                item_id=item_id,
+                kind=kind,
+                authority_class=authority_class,
+                server_side_source_identity=source_identity,
+                provider_opaque_ref=opaque_ref,
+                exact_object_id=object_id,
+                exact_object_version_id=version_id,
+                result_ref=result_ref,
+                inclusion_reason=inclusion_reason,
+                selection_mode=selection_mode,
+                authorization_checked=True,
+                content_fingerprint=hashlib.sha256(encoded.encode("utf-8")).hexdigest(),
+                estimated_tokens=max(1, len(encoded.encode("utf-8")) // 4),
+            )
+        )
+
+    for index, ref in enumerate(snapshot.get("active_scope_refs_json") or [], start=1):
+        if not isinstance(ref, dict) or not ref.get("object_id") or not ref.get("version_id"):
+            continue
+        object_id = str(ref["object_id"])
+        version_id = str(ref["version_id"])
+        add_item(
+            item_id=f"object_{index}",
+            kind="SCIENTIFIC_OBJECT",
+            authority_class="SCIENTIFIC_DATA",
+            source_identity=f"{object_id}:{version_id}",
+            opaque_ref=f"object_{index}",
+            content=ref,
+            inclusion_reason="persisted active scientific scope",
+            selection_mode="CURRENT",
+            object_id=object_id,
+            version_id=version_id,
+        )
+
+    for index, ref in enumerate(snapshot.get("selection_refs_json") or [], start=1):
+        if not isinstance(ref, dict) or not ref.get("object_id") or not ref.get("version_id"):
+            continue
+        object_id = str(ref["object_id"])
+        version_id = str(ref["version_id"])
+        add_item(
+            item_id=f"selection_{index}",
+            kind="SCIENTIFIC_SELECTION",
+            authority_class="SCIENTIFIC_DATA",
+            source_identity=f"{object_id}:{version_id}",
+            opaque_ref=f"selection_{index}",
+            content=ref,
+            inclusion_reason="persisted UI scientific selection",
+            selection_mode="UI_SELECTION",
+            object_id=object_id,
+            version_id=version_id,
+        )
+
+    for index, selection in enumerate(snapshot.get("scientific_selections_json") or [], start=1):
+        if not isinstance(selection, dict):
+            continue
+        ref = selection.get("object_ref") or selection.get("objectRef") or {}
+        if not isinstance(ref, dict) or not ref.get("object_id") or not ref.get("version_id"):
+            continue
+        object_id = str(ref["object_id"])
+        version_id = str(ref["version_id"])
+        add_item(
+            item_id=f"scientific_selection_{index}",
+            kind="SCIENTIFIC_SELECTION",
+            authority_class="SCIENTIFIC_DATA",
+            source_identity=f"{object_id}:{version_id}",
+            opaque_ref=f"scientific_selection_{index}",
+            content=selection,
+            inclusion_reason="persisted semantic UI selection",
+            selection_mode="EXPLICIT",
+            object_id=object_id,
+            version_id=version_id,
+        )
+
+    for index, result in enumerate(snapshot.get("referenced_result_refs_json") or [], start=1):
+        result_id = result.get("result_id") if isinstance(result, dict) else result
+        if not result_id:
+            continue
+        result_id = str(result_id)
+        add_item(
+            item_id=f"result_{index}",
+            kind="SCIENTIFIC_RESULT",
+            authority_class="SCIENTIFIC_RESULT",
+            source_identity=result_id,
+            opaque_ref=f"result_{index}",
+            content={"result_id": result_id},
+            inclusion_reason="persisted referenced Result",
+            selection_mode="CONTINUATION",
+            result_ref=result_id,
+        )
+
+    session_id = str(turn.get("research_session_id") or snapshot.get("research_session_id") or "session")
+    for index, constraint in enumerate(snapshot.get("effective_constraints_json") or [], start=1):
+        add_item(
+            item_id=f"constraint_{index}",
+            kind="USER_CONSTRAINT",
+            authority_class="USER_CONSTRAINT",
+            source_identity=f"{session_id}:constraint:{index}",
+            opaque_ref=f"constraint_{index}",
+            content=constraint,
+            inclusion_reason="persisted user constraint",
+            selection_mode="EXPLICIT",
+        )
+
+    if snapshot.get("research_goal"):
+        add_item(
+            item_id="goal_1",
+            kind="RESEARCH_GOAL",
+            authority_class="CONVERSATIONAL_NARRATIVE",
+            source_identity=f"{session_id}:goal",
+            opaque_ref="goal_1",
+            content=str(snapshot["research_goal"]),
+            inclusion_reason="persisted research goal",
+            selection_mode="CURRENT",
+        )
+
+    fingerprint = str(snapshot.get("context_fingerprint") or "")
+    if len(fingerprint) != 64 or any(char not in "0123456789abcdef" for char in fingerprint.lower()):
+        fingerprint = hashlib.sha256(
+            json.dumps(snapshot, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
+        ).hexdigest()
+    estimated = sum(item.estimated_tokens for item in items)
+    policy = context_budget_policy(ContextOperation.ORCHESTRATOR)
+    created_at = snapshot.get("created_at") or datetime.now(timezone.utc)
+    manifest = ContextManifest(
+        context_manifest_id=uuid5(
+            NAMESPACE_URL,
+            f"mdi:compat-context-manifest:{turn['id']}:{snapshot['id']}",
+        ),
+        operation="ORCHESTRATOR",
+        project_id=str(turn.get("project_id") or snapshot["project_id"]),
+        research_session_id=session_id,
+        research_turn_id=UUID(str(turn["id"])),
+        policy_version="agent2.context-compat/1.0",
+        included_items=items,
+        excluded_items=[],
+        estimated_input_tokens=estimated,
+        input_budget=policy.effective_input_budget,
+        reserved_output_tokens=policy.reserved_output_tokens,
+        repair_margin=policy.repair_margin,
+        compaction_state="NONE",
+        truncation_state="NONE",
+        context_fingerprint=fingerprint.lower(),
+        created_at=created_at,
+    )
+    return manifest.model_dump(mode="json")
 
 
 def list_research_turns(

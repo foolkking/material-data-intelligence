@@ -14930,3 +14930,14 @@ scientific_result_snapshots` 聚合计数不增长，并验证 follow-up Turn �
   `529`, ScientificResult snapshots `68`.
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`.
+
+## Agent-2.0 Phase 14-R — Historical ContextManifest compatibility
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改摘要：为缺少内嵌 manifest 的历史 `CONTEXT_RESOLVED` 事件增加只读、
+  有界的 `research_context_snapshots` 兼容投影，保留精确对象/版本、Dataset
+  语义选择、Result 引用、约束和指纹；未引入第二上下文权威。
+- 测试结果：API/context focused `20 passed`。
+- 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
+  `PARTIAL`。

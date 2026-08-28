@@ -65,6 +65,17 @@ artifacts = 529 → 529
 scientific_result_snapshots = 68 → 68
 ```
 
+### Agent-2.0 Phase 14-R historical ContextManifest compatibility (2026-08-28)
+
+Historical ResearchTurns whose `CONTEXT_RESOLVED` event predates embedded
+ContextManifest payloads now receive a deterministic, read-only compatibility
+projection from the persisted immutable `research_context_snapshots` row. The
+projection preserves exact object/version refs, semantic selections, prior
+Result refs, constraints and bounded fingerprints while exposing only opaque
+provider refs. Newer turns continue returning their persisted manifest
+unchanged. Focused API/context regression: `20 passed`; no scientific
+authority or historical snapshot was mutated.
+
 `tests/integration/test_agent2_phase7_service_backed.py` passed `4` cases in
 `114.25s` against real PostgreSQL/Redis worker infrastructure. Interpretation
 reuse asserted zero aggregate growth for plans, jobs, ToolCalls, Artifacts and

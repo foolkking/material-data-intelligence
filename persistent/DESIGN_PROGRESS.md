@@ -3985,3 +3985,16 @@ report/evidence navigation, proving this path is presentation-only.
 - Research session-history links now use the server-projected `ProjectHistory.analyses` relation to carry an exact `run` and persisted `turn` when available.
 - Session-only links remain for sessions without a bound run; no Job-name parsing or scientific identity inference was added.
 - Frontend ResearchPages regression: 34 passed; web typecheck: PASS.
+
+## 2026-08-28 Phase 14-R historical context manifest compatibility
+
+- The context-manifest endpoint now projects a bounded `ContextManifest 2.0`
+  read model from legacy immutable `research_context_snapshots` when the
+  historical `CONTEXT_RESOLVED` event contains only `context_snapshot_id`.
+- Exact object/version refs, Dataset semantic selections, prior Result refs,
+  constraints and context fingerprints remain sourced from the persisted
+  snapshot; the compatibility manifest uses deterministic UUID5 identity and
+  opaque provider refs.
+- Focused API/context regression: 20 passed. This is a narrow provenance
+  continuity repair; Phase 14-R remains PARTIAL because the broader mature
+  product and release gates are not yet closed.

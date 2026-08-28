@@ -155,7 +155,7 @@ def test_context_manifest_endpoint_returns_bounded_manifest_and_enforces_project
         })
 
     response = client.get(f"/api/research/turns/{turn_id}/context-manifest")
-    assert response.status_code == 200
+    assert response.status_code == 200, response.text
     payload = response.json()
     assert payload["turn_id"] == str(turn_id)
     assert payload["manifest"]["manifest_id"] == "manifest-test"
@@ -164,6 +164,72 @@ def test_context_manifest_endpoint_returns_bounded_manifest_and_enforces_project
 
     active["value"] = stranger
     assert client.get(f"/api/research/turns/{turn_id}/context-manifest").status_code == 403
+
+
+def test_context_manifest_endpoint_projects_legacy_context_snapshot(api):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    created = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json={"message": "Reopen historical context"},
+    )
+    assert created.status_code == 202
+    turn_id = UUID(created.json()["turn_id"])
+    snapshot_id = uuid4()
+    with objects.repository_factory.unit_of_work() as unit:
+        unit.agent2.research_context_snapshots.add({
+            "id": snapshot_id,
+            "project_id": "project",
+            "research_session_id": "session",
+            "research_turn_id": turn_id,
+            "snapshot_schema_version": "2.0",
+            "active_scope_refs_json": [{
+                "object_id": str(uuid4()),
+                "version_id": str(uuid4()),
+                "project_id": "project",
+                "object_type": "materials.table",
+                "display_name": "Dataset",
+            }],
+            "selection_refs_json": [],
+            "scientific_selections_json": [{
+                "object_ref": {
+                    "object_id": str(uuid4()),
+                    "version_id": str(uuid4()),
+                    "project_id": "project",
+                    "object_type": "materials.table",
+                    "display_name": "Dataset",
+                },
+                "viewer_id": "materials.table",
+                "selection_type": "DATASET_SAMPLE",
+                "semantic_locator": {"sample_ref": "mat-2"},
+                "display_label": "mat-2",
+            }],
+            "resolved_references_json": [],
+            "referenced_result_refs_json": [str(uuid4())],
+            "relevant_finding_refs_json": [],
+            "effective_constraints_json": [{"name": "band_gap", "operator": ">", "value": 2}],
+            "research_goal": "Inspect the selected sample",
+            "unresolved_questions_json": [],
+            "context_fingerprint": "a" * 64,
+            "compiler_version": "legacy.context-compiler/1.0",
+        })
+        unit.agent2.research_turn_events.append_turn_event({
+            "id": uuid4(),
+            "turn_id": turn_id,
+            "sequence_no": unit.agent2.research_turn_events.next_sequence_no(turn_id),
+            "event_type": "CONTEXT_RESOLVED",
+            "payload_json": {"status": "ORCHESTRATING", "context_snapshot_id": str(snapshot_id)},
+        })
+
+    response = client.get(f"/api/research/turns/{turn_id}/context-manifest")
+    assert response.status_code == 200, response.text
+    manifest = response.json()["manifest"]
+    assert manifest["context_manifest_id"]
+    assert manifest["policy_version"] == "agent2.context-compat/1.0"
+    assert manifest["research_turn_id"] == str(turn_id)
+    assert any(item["kind"] == "SCIENTIFIC_SELECTION" for item in manifest["included_items"])
+    assert any(item["kind"] == "USER_CONSTRAINT" for item in manifest["included_items"])
+    assert any(item["kind"] == "RESEARCH_GOAL" for item in manifest["included_items"])
+    assert all("provider_prompt" not in item for item in manifest["included_items"])
 
 
 def test_concurrent_create_turn_api_allocates_unique_ordered_sequences(api):
