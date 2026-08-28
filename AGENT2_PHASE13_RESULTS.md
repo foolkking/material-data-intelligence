@@ -152,16 +152,23 @@ Service-backed Integration (PostgreSQL + Redis + MinIO),
 Phase 11-3 Scientific Replay (Linux), Phase 11-3 Scientific Replay (Windows)
 ```
 
-P13-B is the commit containing this final evidence record; its exact SHA and
-current-head CI are recorded in the release report after the commit completes.
+P13-B evidence commit: `3d1e184628363fcf8970cfa8ae2e5f5627e5a082`.
+Exact-current-head CI: run `33135423935`, tested SHA
+`3d1e184628363fcf8970cfa8ae2e5f5627e5a082`, result `PASS`.
 
 ### B15. Remaining Gaps
 
-At the time this record was created, only the P13-B exact-current-head CI
-remained.
+No mandatory Phase 13 functional or release gap remains.
 
 ### B16. Final Verdict
 
-Functional implementation and same-stack qualification are green locally and
-P13-A exact-SHA CI has passed. The final COMPLETE verdict is deferred only
-until P13-B exact-current-head CI and `HEAD == origin/master` are observed.
+Functional implementation, same-stack qualification, P13-A exact-SHA CI and
+P13-B exact-current-head CI are green. `HEAD == origin/master` is verified.
+
+```text
+FUNCTIONAL_PHASE13_CLOSURE = PASS
+AGENT2_PHASE13 = COMPLETE
+SCIENTIFIC_PRESENTATION_V2 = COMPLETE
+READY_FOR_PHASE14 = YES
+PHASE14_STARTED = NO
+```
