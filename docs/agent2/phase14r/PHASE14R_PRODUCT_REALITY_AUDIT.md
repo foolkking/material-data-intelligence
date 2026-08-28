@@ -129,3 +129,9 @@ this legacy run has no modern ResearchTurn-linked interpretation, its report
 conclusion remains a generic bounded summary; this is useful read-only
 evidence but does not satisfy the full Phase 14-R multi-family report-quality
 campaign.
+
+An authenticated browser request to a different project’s exact modern
+ResearchTurn route was denied with the bounded product message
+`当前用户无权访问此项目。` and no console warnings/errors. This is a live
+cross-project fail-closed check; it does not substitute for the still-open
+same-project multi-surface authorization campaign.
