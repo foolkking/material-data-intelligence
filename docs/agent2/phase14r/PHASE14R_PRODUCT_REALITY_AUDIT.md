@@ -70,7 +70,7 @@ acceptance evidence is not yet complete.
 | Trash/restore/purge policy | no complete protected-trash lifecycle found | NOT_QUALIFIED |
 | Bulk scientific-object lifecycle | partial Data UI patterns; full authorization/dependency qualification absent | PARTIAL |
 | Stop/cancel orchestration and execution | `cancel_turn`, execution supervisor, `/cancel` API | PASS |
-| Stop/continue/rerun/re-interpret/retry product controls | cancel path exists and modern Agent2 presentations now expose a bounded no-recompute re-interpret action; full stop/continue/rerun/retry browser semantics remain open | PARTIAL |
+| Stop/continue/rerun/re-interpret/retry product controls | cancel path exists; completed Result presentation now exposes explicit continue, deliberate new rerun, and bounded no-recompute re-interpret actions; queued/running recovery and retry browser semantics remain open | PARTIAL |
 | Last-message edit and branch history | no complete immutable message-revision flow found | NOT_QUALIFIED |
 
 ## Organization, reliability and operations
@@ -91,9 +91,9 @@ acceptance evidence is not yet complete.
 
 The Phase 14 architecture is still sealed and there is no evidence requiring
 Phase 14 reopening. Phase 14-R is not yet closed. The highest-priority
-remaining gaps are the durable ContextManifest/message provenance contract,
-full scientific surface acceptance, report-quality/context contracts,
-explicit research controls, and current same-stack real-user evidence.
+remaining gaps are full scientific surface acceptance, report-quality/context
+contracts, message revision/branching, queued/running recovery and retry,
+Trash/retention/export, and current same-stack real-user evidence.
 
 ## Current same-stack browser spot check
 
