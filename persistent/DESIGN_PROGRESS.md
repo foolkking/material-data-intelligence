@@ -4045,3 +4045,15 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   Turn；历史消息、ContextSnapshot、ScientificResult 均保持不可变。
 - 域回归 `9 passed`，前端呈现回归 `4 passed`，ResearchPages `35 passed`，
   web typecheck `PASS`。完整浏览器编辑提交和分支切换仍待资格验证。
+
+## 2026-08-28 Phase 14-R authorized global search
+
+- ProductShell 全局搜索改为调用有界服务端搜索投影，覆盖项目、数据集、
+  科学对象、Research 会话、ScientificResult 与科学报告，并为每项返回
+  项目归属、状态和受控打开路径。
+- 服务端复用项目 owner/member 授权；跨项目查询 fail-closed，不返回原始
+  科学值、Artifact 内容、凭据或基础设施细节。
+- `tests/test_project_access.py`：12 passed；ProductShell/ResearchPages：
+  38 passed；web typecheck：PASS；同栈浏览器实际显示授权数据搜索结果。
+- 组织标签、收藏/集合、保存视图等更高阶组织能力仍保持未完成，不将本次
+  导航搜索修复误报为完整组织系统。

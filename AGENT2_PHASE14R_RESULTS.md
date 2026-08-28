@@ -229,11 +229,37 @@ The following mandatory mature-product gates remain open:
 - browser-level exact Result reuse controls;
 - complete edit/branch/stop/continue/rerun/retry product campaign;
 - Trash/retention/purge/export governance;
-- global search/organization;
+- organization metadata/collections and saved views;
 - background task center and network recovery;
 - provider-scale context/performance benchmark;
 - backup/restore/monitoring/resource-governance qualification;
 - final real-user acceptance and P14R exact-SHA release commits.
+
+### Agent-2.0 Phase 14-R authorized global search projection (2026-08-28)
+
+The former project-only search entry point was extended through the existing
+ProductShell action to a bounded server-side `/search` projection (with the
+`/api/search` compatibility route). It searches only projects visible through
+the authenticated user's ownership/membership boundary and returns navigation
+records for projects, datasets, scientific objects, Research sessions, Reports
+and ScientificResult snapshots. Each item carries its owning project, status
+and a product route; no scientific values, raw artifacts, credentials or
+cross-project records are copied into the search response.
+
+Deterministic authorization coverage: `tests/test_project_access.py` now
+passes `12` cases, including viewer-scoped dataset/project search and a
+cross-project `404` denial. Frontend `ProductShell` and `ResearchPages`
+focused regression passes `38` tests and web typecheck is `PASS`.
+
+Authenticated browser evidence on the preserved same-stack tab shows the
+global search dialog returning real authorized records including
+`Phase13 Canonical Dataset`, `ScientificResult 2809dcd1-243`,
+`Phase13 Fresh Structure`, and the exact Research session
+`research_fbf038934dc84ffeaa5aed9e7c906095`, each with a bounded `打开` route.
+The API was reloaded against PostgreSQL/Redis/MinIO; `/health/runtime` remains
+green. This closes the global search navigation gate, while organization
+metadata/collections, task recovery, retention/export, performance and the
+broader mature-product acceptance campaign remain open.
 
 ## K. Final Verdict
 

@@ -181,6 +181,28 @@ def test_project_listing_is_scoped_to_owner_or_membership(monkeypatch: pytest.Mo
     assert result[0]["role"] == "viewer"
 
 
+def test_product_search_is_bounded_and_project_scoped(monkeypatch: pytest.MonkeyPatch):
+    import mdi_api.routers.secured_runtime as secured_runtime
+
+    engine, owner, viewer = _management_engine()
+    monkeypatch.setattr(secured_runtime, "create_engine_from_settings", lambda _settings: engine)
+    monkeypatch.setattr(secured_runtime, "load_settings", lambda: SimpleNamespace())
+
+    dataset_results = secured_runtime.search_product_secured(q="materials", current_user=viewer)
+    assert dataset_results["count"] == 1
+    assert dataset_results["items"][0]["kind"] == "dataset"
+    assert dataset_results["items"][0]["projectId"] == "used"
+    assert dataset_results["items"][0]["href"] == "/projects/used/data?dataset=dataset"
+
+    project_results = secured_runtime.search_product_secured(q="Science", kind="project", current_user=viewer)
+    assert project_results["count"] == 1
+    assert project_results["items"][0]["id"] == "used"
+
+    with pytest.raises(HTTPException) as exc_info:
+        secured_runtime.search_product_secured(q="materials", project_id="private", current_user=owner)
+    assert exc_info.value.status_code == 404
+
+
 def test_expired_authenticated_session_is_rejected(monkeypatch: pytest.MonkeyPatch):
     engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
     metadata.create_all(engine)

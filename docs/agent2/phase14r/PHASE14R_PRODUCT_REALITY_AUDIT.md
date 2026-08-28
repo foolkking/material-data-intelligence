@@ -77,7 +77,7 @@ acceptance evidence is not yet complete.
 
 | Surface | Current evidence | Status |
 | --- | --- | --- |
-| Global search | `ProductShell.tsx` searches authorized projects only | PARTIAL |
+| Global search | `GET /search` (and `/api/search`) provides bounded authorized navigation across projects, datasets, scientific objects, Research sessions, Reports and ScientificResults; ProductShell uses the same endpoint with type labels and direct links | PASS |
 | Background task center | persisted Job/Report queues exist; unified user task center not proven | PARTIAL |
 | Notifications | transient/status projections exist; durable notification center not proven | NOT_QUALIFIED |
 | Leave/return/reconnect | persisted Research state and history routes exist; network interruption campaign absent | PARTIAL |

@@ -10,7 +10,19 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from mdi_api.access import require_project_access
 from mdi_api.config import load_settings
 from mdi_api.database import create_engine_from_settings
-from mdi_api.db import audit_logs, datasets, metadata, project_configs, project_members, projects
+from mdi_api.db import (
+    audit_logs,
+    datasets,
+    messages,
+    metadata,
+    project_configs,
+    project_members,
+    projects,
+    reports,
+    scientific_objects,
+    scientific_result_snapshots,
+    sessions,
+)
 from mdi_api.routers.auth import CurrentUser, get_current_user_compat
 from mdi_api.phase2_runtime import CreateJobRequest, CreateProjectRequest, DatasetUploadRequest
 from mdi_api.routers.datasets import BulkDatasetActionRequest, UpdateDatasetRequest
@@ -98,6 +110,197 @@ def list_projects_secured(current_user: CurrentUser = Depends(get_current_user_c
         if project_id and owner and owner == current_user.id:
             visible.append(project)
     return visible
+
+
+def search_product_secured(
+    q: str = "",
+    project_id: str | None = None,
+    kind: str | None = None,
+    limit: int = 40,
+    current_user: CurrentUser = Depends(get_current_user_compat),
+) -> dict[str, Any]:
+    """Return a bounded, project-authorized product search projection.
+
+    Search is navigation only: it never projects scientific facts or broad
+    infrastructure metadata. Every row is scoped through the same project
+    membership boundary used by the normal product surfaces.
+    """
+
+    query = q.strip()
+    if len(query) > 160:
+        raise HTTPException(status_code=422, detail="搜索词过长。")
+    bounded_limit = max(1, min(int(limit), 100))
+    allowed_kinds = {"project", "dataset", "scientific_object", "research", "report", "result"}
+    requested_kind = kind.strip().lower() if kind else None
+    if requested_kind and requested_kind not in allowed_kinds:
+        raise HTTPException(status_code=422, detail="不支持的搜索类型。")
+
+    engine = create_engine_from_settings(load_settings())
+    with engine.connect() as connection:
+        visible_project_rows = connection.execute(
+            select(projects.c.id, projects.c.name).where(
+                (projects.c.created_by == current_user.id)
+                | projects.c.id.in_(
+                    select(project_members.c.project_id).where(project_members.c.user_id == current_user.id)
+                )
+            )
+        ).mappings().all()
+        visible_ids = {str(row["id"]) for row in visible_project_rows}
+        if project_id is not None:
+            if project_id not in visible_ids:
+                raise HTTPException(status_code=404, detail="项目不存在或无权访问。")
+            visible_ids = {project_id}
+        if not visible_ids:
+            return {"query": query, "items": [], "count": 0}
+
+        pattern = f"%{query.lower()}%" if query else "%"
+        items: list[dict[str, Any]] = []
+
+        def add_item(
+            *,
+            item_kind: str,
+            item_id: str,
+            item_project_id: str,
+            title: str,
+            subtitle: str,
+            href: str,
+            status: str | None = None,
+            updated_at: Any = None,
+        ) -> None:
+            if requested_kind and requested_kind != item_kind:
+                return
+            items.append({
+                "kind": item_kind,
+                "id": item_id,
+                "projectId": item_project_id,
+                "title": title,
+                "subtitle": subtitle,
+                "href": href,
+                "status": status,
+                "updatedAt": updated_at.isoformat() if updated_at else None,
+            })
+
+        if not requested_kind or requested_kind == "project":
+            project_rows = connection.execute(
+                select(projects).where(
+                    projects.c.id.in_(visible_ids),
+                    func.lower(projects.c.name).like(pattern)
+                    | func.lower(projects.c.description).like(pattern),
+                ).order_by(projects.c.updated_at.desc()).limit(bounded_limit)
+            ).mappings().all()
+            for row in project_rows:
+                add_item(
+                    item_kind="project",
+                    item_id=str(row["id"]),
+                    item_project_id=str(row["id"]),
+                    title=str(row["name"]),
+                    subtitle=str(row.get("description") or "材料研究项目"),
+                    href=f"/projects/{row['id']}",
+                    status="active",
+                    updated_at=row.get("updated_at"),
+                )
+
+        if not requested_kind or requested_kind == "dataset":
+            dataset_rows = connection.execute(
+                select(datasets).where(
+                    datasets.c.project_id.in_(visible_ids),
+                    func.lower(datasets.c.name).like(pattern),
+                ).order_by(datasets.c.updated_at.desc()).limit(bounded_limit)
+            ).mappings().all()
+            for row in dataset_rows:
+                add_item(
+                    item_kind="dataset",
+                    item_id=str(row["id"]),
+                    item_project_id=str(row["project_id"]),
+                    title=str(row["name"]),
+                    subtitle="数据集",
+                    href=f"/projects/{row['project_id']}/data?dataset={row['id']}",
+                    status=str(row.get("status") or ""),
+                    updated_at=row.get("updated_at"),
+                )
+
+        if not requested_kind or requested_kind == "scientific_object":
+            object_rows = connection.execute(
+                select(scientific_objects).where(
+                    scientific_objects.c.project_id.in_(visible_ids),
+                    func.lower(scientific_objects.c.display_name).like(pattern)
+                    | func.lower(scientific_objects.c.object_type).like(pattern),
+                ).order_by(scientific_objects.c.created_at.desc()).limit(bounded_limit)
+            ).mappings().all()
+            for row in object_rows:
+                add_item(
+                    item_kind="scientific_object",
+                    item_id=str(row["id"]),
+                    item_project_id=str(row["project_id"]),
+                    title=str(row["display_name"]),
+                    subtitle=str(row["object_type"]),
+                    href=f"/projects/{row['project_id']}/data?object={row['id']}",
+                    status=str(row.get("lifecycle_status") or ""),
+                    updated_at=row.get("created_at"),
+                )
+
+        if not requested_kind or requested_kind == "research":
+            session_rows = connection.execute(
+                select(sessions).join(messages, messages.c.session_id == sessions.c.id, isouter=True).where(
+                    sessions.c.project_id.in_(visible_ids),
+                    func.lower(sessions.c.id).like(pattern)
+                    | func.lower(messages.c.content_summary).like(pattern),
+                ).distinct().order_by(sessions.c.created_at.desc()).limit(bounded_limit)
+            ).mappings().all()
+            for row in session_rows:
+                add_item(
+                    item_kind="research",
+                    item_id=str(row["id"]),
+                    item_project_id=str(row["project_id"]),
+                    title=f"研究会话 {row['id']}",
+                    subtitle="Research",
+                    href=f"/projects/{row['project_id']}/research/{row['id']}",
+                    status=str(row.get("status") or ""),
+                    updated_at=row.get("created_at"),
+                )
+
+        if not requested_kind or requested_kind == "report":
+            report_rows = connection.execute(
+                select(reports).where(
+                    reports.c.project_id.in_(visible_ids),
+                    func.lower(reports.c.title).like(pattern),
+                ).order_by(reports.c.created_at.desc()).limit(bounded_limit)
+            ).mappings().all()
+            for row in report_rows:
+                add_item(
+                    item_kind="report",
+                    item_id=str(row["id"]),
+                    item_project_id=str(row["project_id"]),
+                    title=str(row["title"]),
+                    subtitle="科学报告",
+                    href=f"/projects/{row['project_id']}/reports/{row['id']}",
+                    status="available",
+                    updated_at=row.get("created_at"),
+                )
+
+        if not requested_kind or requested_kind == "result":
+            result_rows = connection.execute(
+                select(scientific_result_snapshots).where(
+                    scientific_result_snapshots.c.project_id.in_(visible_ids),
+                ).order_by(scientific_result_snapshots.c.created_at.desc()).limit(bounded_limit * 2)
+            ).mappings().all()
+            for row in result_rows:
+                result_id = str(row["id"])
+                if query and query.lower() not in result_id.lower() and query.lower() not in str(row.get("schema_version") or "").lower():
+                    continue
+                add_item(
+                    item_kind="result",
+                    item_id=result_id,
+                    item_project_id=str(row["project_id"]),
+                    title=f"ScientificResult {result_id[:12]}",
+                    subtitle=str(row.get("schema_version") or "科学结果"),
+                    href=f"/projects/{row['project_id']}/research?result={result_id}",
+                    status=str(row.get("relevance_status") or ""),
+                    updated_at=row.get("created_at"),
+                )
+
+    items.sort(key=lambda item: item.get("updatedAt") or "", reverse=True)
+    return {"query": query, "items": items[:bounded_limit], "count": min(len(items), bounded_limit)}
 
 
 def create_project_secured(request: CreateProjectRequest, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:

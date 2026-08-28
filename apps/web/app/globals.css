@@ -1957,6 +1957,8 @@ button:disabled {
   display: none;
 }
 
+ .research-edit-notice { display: grid; gap: 3px; padding: 10px 12px; border-left: 3px solid var(--product-accent); background: #edf5f1; color: var(--product-ink); font-size: 13px; line-height: 1.45; }
+ .research-edit-notice span { color: var(--product-secondary); font-size: 12px; }
  .research-composer-readonly { align-content: center; min-height: 108px; background: var(--product-subtle); }
  .research-composer-readonly strong { color: var(--product-ink); font-size: 14px; }
  .research-composer-readonly p { margin: 0; color: var(--product-secondary); font-size: 13px; line-height: 1.55; }

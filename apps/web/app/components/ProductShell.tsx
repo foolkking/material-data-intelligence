@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { getAuthUser, logout, type AuthUser } from "../lib/product-api";
-import { listProjects, type ProjectSummary } from "../lib/planner-api";
+import { searchProduct, type ProductSearchItem } from "../lib/planner-api";
 import { ModelSettingsDialog } from "./ModelSettingsPage";
 
 export function ProductShell({ children, projectId }: { children: ReactNode; projectId?: string }) {
@@ -15,7 +15,7 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
   const [checking, setChecking] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchProjects, setSearchProjects] = useState<ProjectSummary[]>([]);
+  const [searchItems, setSearchItems] = useState<ProductSearchItem[]>([]);
   const [searchState, setSearchState] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [modelSettingsOpen, setModelSettingsOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -69,10 +69,7 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
     setModelSettingsOpen(false);
     setAccountOpen(false);
     setSearchOpen(true);
-    if (searchState === "idle") {
-      setSearchState("loading");
-      void listProjects().then((items) => { setSearchProjects(items); setSearchState("ready"); }).catch(() => setSearchState("error"));
-    }
+    setSearchState("loading");
   }
 
   function closeAccount(restoreFocus = false) {
@@ -115,6 +112,18 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
   }, [searchOpen]);
 
   useEffect(() => {
+    if (!searchOpen) return;
+    const timer = window.setTimeout(() => {
+      setSearchState("loading");
+      void searchProduct(searchQuery).then((result) => {
+        setSearchItems(result.items);
+        setSearchState("ready");
+      }).catch(() => setSearchState("error"));
+    }, searchQuery.trim() ? 180 : 0);
+    return () => window.clearTimeout(timer);
+  }, [searchOpen, searchQuery]);
+
+  useEffect(() => {
     if (!accountOpen) return;
     accountMenuRef.current?.querySelector<HTMLElement>("[role='menuitem']")?.focus();
     const onPointerDown = (event: PointerEvent) => {
@@ -150,8 +159,15 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
     setAccountOpen(false);
   }, [pathname]);
 
-  const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
-  const matchingProjects = searchProjects.filter((item) => !normalizedQuery || [item.name, item.description || ""].join(" ").toLocaleLowerCase().includes(normalizedQuery));
+  const matchingItems = searchItems;
+  const kindLabels: Record<ProductSearchItem["kind"], string> = {
+    project: "项目",
+    dataset: "数据集",
+    scientific_object: "科学对象",
+    research: "研究会话",
+    report: "科学报告",
+    result: "ScientificResult",
+  };
 
   const isProject = Boolean(projectId);
   return (
@@ -191,11 +207,11 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
       </nav>}
       {searchOpen && <div className="product-search-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeSearch(); }}>
         <section ref={searchDialogRef} className="product-search-dialog" role="dialog" aria-modal="true" aria-labelledby="product-search-title">
-          <header><div><p className="product-kicker">全局搜索</p><h2 id="product-search-title">查找项目</h2></div><button type="button" className="product-icon-action" aria-label="关闭搜索" onClick={closeSearch}>×</button></header>
-          <label htmlFor="product-project-search">项目名称或描述</label>
-          <input ref={searchInputRef} id="product-project-search" value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="例如：钙钛矿稳定性" />
+          <header><div><p className="product-kicker">全局搜索</p><h2 id="product-search-title">查找科学工作</h2></div><button type="button" className="product-icon-action" aria-label="关闭搜索" onClick={closeSearch}>×</button></header>
+          <label htmlFor="product-project-search">项目、数据、研究或报告</label>
+          <input ref={searchInputRef} id="product-project-search" value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="例如：硅、band_gap、研究报告" />
           <div className="product-search-results" aria-live="polite">
-            {searchState === "loading" ? <p className="product-form-hint" role="status">正在加载项目…</p> : searchState === "error" ? <p className="product-form-error" role="alert">项目暂时无法读取，请稍后重试。</p> : matchingProjects.length ? matchingProjects.map((project) => { const id = project.projectId || project.id; return <div className="product-search-result" key={id}><div><strong>{project.name}</strong><span>{project.description || "材料研究项目"}</span></div><div className="product-row-actions"><Link className="product-secondary-action" href={`/projects/${id}`} onClick={closeSearch}>概览</Link><Link className="product-secondary-action" href={`/projects/${id}/data`} onClick={closeSearch}>数据</Link><Link className="product-secondary-action" href={`/projects/${id}/research`} onClick={closeSearch}>研究</Link></div></div>; }) : <p className="product-form-hint">没有匹配的项目。可以先查看全部项目。</p>}
+            {searchState === "loading" ? <p className="product-form-hint" role="status">正在搜索…</p> : searchState === "error" ? <p className="product-form-error" role="alert">搜索暂时无法读取，请稍后重试。</p> : matchingItems.length ? matchingItems.map((item) => <div className="product-search-result" key={`${item.kind}-${item.id}`}><div><strong>{item.title}</strong><span>{kindLabels[item.kind]} · {item.subtitle}</span></div><div className="product-row-actions"><Link className="product-secondary-action" href={item.href} onClick={closeSearch}>打开</Link>{item.kind === "project" ? <><Link className="product-secondary-action" href={`/projects/${item.projectId}/data`} onClick={closeSearch}>数据</Link><Link className="product-secondary-action" href={`/projects/${item.projectId}/research`} onClick={closeSearch}>研究</Link></> : null}</div></div>) : <p className="product-form-hint">没有匹配的科学工作。</p>}
           </div>
           <footer><Link className="product-primary-action" href="/projects" onClick={closeSearch}>查看全部项目</Link><button type="button" className="product-secondary-action" onClick={closeSearch}>关闭</button></footer>
         </section>

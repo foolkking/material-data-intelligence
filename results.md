@@ -14960,6 +14960,23 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — Authorized global search projection
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：`apps/api/mdi_api/routers/secured_runtime.py`、
+  `apps/api/mdi_api/main.py`、`apps/web/app/lib/planner-api.ts`、
+  `apps/web/app/components/ProductShell.tsx`、对应测试与 Phase 14-R 文档。
+- 修改摘要：新增有界、项目授权的统一搜索投影，覆盖项目、数据集、科学
+  对象、Research 会话、报告和 ScientificResult；ProductShell 搜索对话框
+  通过受控路由展示并打开结果。未复制科学事实、原始 Artifact 或凭据，
+  未引入新的科学权威。
+- 测试结果：`tests/test_project_access.py` 12 passed；
+  ProductShell/ResearchPages 聚焦 38 passed；web typecheck PASS；
+  `/health/runtime` PostgreSQL/Redis/MinIO/Redis worker PASS；已认证同栈
+  浏览器搜索实际显示授权记录。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R 仍为 `PARTIAL`。
+
 追加验证（2026-08-28）：结果页新增 `编辑问题`，通过显式 `turn`/`edit`
 参数进入编辑 composer；提交时从父 Result 恢复原问题与 exact source refs，
 创建新的带 `reply_to_turn_id` 的 ResearchTurn 分支，旧消息、旧上下文和旧

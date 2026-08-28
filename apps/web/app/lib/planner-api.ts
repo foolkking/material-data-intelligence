@@ -662,6 +662,23 @@ export type ProjectSummary = {
   updatedAt?: string | null;
 };
 
+export type ProductSearchItem = {
+  kind: "project" | "dataset" | "scientific_object" | "research" | "report" | "result";
+  id: string;
+  projectId: string;
+  title: string;
+  subtitle: string;
+  href: string;
+  status?: string | null;
+  updatedAt?: string | null;
+};
+
+export type ProductSearchResponse = {
+  query: string;
+  items: ProductSearchItem[];
+  count: number;
+};
+
 export type ProjectHistory = {
   schemaVersion: string;
   project: ProjectSummary;
@@ -1134,6 +1151,18 @@ export async function listDatasets(): Promise<DatasetOption[]> {
 export async function listProjects(): Promise<ProjectSummary[]> {
   const result = await apiFetch<ProjectSummary[] | { value: ProjectSummary[] }>("/projects");
   return Array.isArray(result) ? result : result.value;
+}
+
+export async function searchProduct(
+  query: string,
+  options: { projectId?: string; kind?: ProductSearchItem["kind"]; limit?: number } = {},
+): Promise<ProductSearchResponse> {
+  const params = new URLSearchParams();
+  if (query.trim()) params.set("q", query.trim());
+  if (options.projectId) params.set("project_id", options.projectId);
+  if (options.kind) params.set("kind", options.kind);
+  if (options.limit) params.set("limit", String(options.limit));
+  return apiFetch<ProductSearchResponse>(`/search?${params.toString()}`);
 }
 
 export async function createProject(name: string): Promise<ProjectSummary> {

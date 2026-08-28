@@ -4,7 +4,7 @@ import { beforeEach, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   getAuthUser: vi.fn(),
-  listProjects: vi.fn(),
+  searchProduct: vi.fn(),
   logout: vi.fn(),
   push: vi.fn(),
   replace: vi.fn(),
@@ -24,7 +24,7 @@ vi.mock("../lib/product-api", () => ({
   logout: mocks.logout,
 }));
 vi.mock("../lib/planner-api", () => ({
-  listProjects: mocks.listProjects,
+  searchProduct: mocks.searchProduct,
 }));
 vi.mock("./ModelSettingsPage", () => ({
   ModelSettingsDialog: ({ open }: { open: boolean }) => open ? <div role="dialog" aria-label="模型服务测试替身" /> : null,
@@ -35,7 +35,19 @@ import { ProductShell } from "./ProductShell";
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.getAuthUser.mockResolvedValue({ id: "user_1", displayName: "验收研究员", email: "acceptance.researcher@local.invalid" });
-  mocks.listProjects.mockResolvedValue([{ id: "project_1", projectId: "project_1", name: "结构研究", description: "RDF 与局部环境" }]);
+  mocks.searchProduct.mockResolvedValue({
+    query: "",
+    count: 1,
+    items: [{
+      kind: "project",
+      id: "project_1",
+      projectId: "project_1",
+      title: "结构研究",
+      subtitle: "RDF 与局部环境",
+      href: "/projects/project_1",
+      status: "active",
+    }],
+  });
   mocks.logout.mockResolvedValue(undefined);
 });
 
@@ -65,10 +77,10 @@ it("opens project search from an internal route and restores focus after outside
 
   const searchTrigger = await screen.findByRole("button", { name: "搜索项目" });
   await user.click(searchTrigger);
-  const searchInput = await screen.findByLabelText("项目名称或描述");
+  const searchInput = await screen.findByLabelText("项目、数据、研究或报告");
   await waitFor(() => expect(searchInput).toHaveFocus());
-  const dialog = screen.getByRole("dialog", { name: "查找项目" });
-  expect(await within(dialog).findByRole("link", { name: "研究" })).toHaveAttribute("href", "/projects/project_1/research");
+  const dialog = screen.getByRole("dialog", { name: "查找科学工作" });
+  expect(await within(dialog).findByRole("link", { name: "打开" })).toHaveAttribute("href", "/projects/project_1");
   fireEvent.mouseDown(dialog.parentElement!);
   expect(screen.queryByRole("dialog", { name: "查找项目" })).not.toBeInTheDocument();
   await waitFor(() => expect(searchTrigger).toHaveFocus());
@@ -82,4 +94,25 @@ it("opens model settings from the compact account menu", async () => {
   await user.click(screen.getByRole("menuitem", { name: "模型设置" }));
   expect(screen.queryByRole("menu", { name: "账户菜单" })).not.toBeInTheDocument();
   expect(screen.getByRole("dialog", { name: "模型服务测试替身" })).toBeInTheDocument();
+});
+
+it("searches across authorized scientific work after the query changes", async () => {
+  const user = userEvent.setup();
+  mocks.searchProduct
+    .mockResolvedValueOnce({ query: "", count: 1, items: [{
+      kind: "project", id: "project_1", projectId: "project_1", title: "结构研究",
+      subtitle: "RDF 与局部环境", href: "/projects/project_1", status: "active",
+    }] })
+    .mockResolvedValueOnce({ query: "band", count: 1, items: [{
+      kind: "result", id: "result_1", projectId: "project_1", title: "ScientificResult result_1",
+      subtitle: "1.0", href: "/projects/project_1/research?result=result_1", status: "CURRENT",
+    }] });
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+  await user.click(await screen.findByRole("button", { name: "搜索项目" }));
+  const input = await screen.findByLabelText("项目、数据、研究或报告");
+  await user.clear(input);
+  await user.type(input, "band");
+  await waitFor(() => expect(mocks.searchProduct).toHaveBeenLastCalledWith("band"));
+  expect(await screen.findByText("ScientificResult result_1")).toBeInTheDocument();
+  expect(screen.getByText("ScientificResult · 1.0")).toBeInTheDocument();
 });
