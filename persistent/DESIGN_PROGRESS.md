@@ -4115,3 +4115,12 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   lineage or fabricate result reuse.
 - `ResearchExecutionActivity` focused tests: 6 passed; web typecheck PASS.
   Full browser retry and worker-recovery qualification remain open.
+
+## Agent-2.0 Phase 14-R notification center projection (2026-08-28)
+
+- Added an authenticated `/notifications` route linked from the global shell.
+- The page projects only terminal states from authorized persisted project/job
+  reads and links each notification to the exact workspace or research route.
+- Visibility/30-second refresh is bounded and read-only; no scientific work is
+  created. Focused notification/task-center tests and web typecheck pass.
+- Push preferences and network reconnect recovery remain open.

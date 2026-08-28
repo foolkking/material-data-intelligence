@@ -182,6 +182,7 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
         </div>
         <div className="product-global-actions">
           <Link className="product-secondary-action product-task-link" href="/tasks">任务</Link>
+          <Link className="product-secondary-action product-task-link" href="/notifications">通知</Link>
           <button ref={searchTriggerRef} type="button" className="product-icon-action" aria-label="搜索项目" onClick={openSearch}>⌕</button>
           {checking ? <span className="product-user-skeleton" aria-label="正在读取账户" /> : user ? (
             <div ref={accountRef} className="product-account">

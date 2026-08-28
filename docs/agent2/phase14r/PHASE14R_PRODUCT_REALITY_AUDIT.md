@@ -302,3 +302,14 @@ Turn relation to create a new immutable retry lineage from the original user
 question; it never overwrites the failed Turn or claims scientific reuse. The
 control remains unavailable during active execution and is covered by focused
 component regression. Full authenticated retry/worker recovery remains PARTIAL.
+
+### Agent-2.0 Phase 14-R notification center projection (2026-08-28)
+
+The authenticated global shell now exposes `/notifications`. This bounded,
+read-only projection derives terminal research notifications (`completed`,
+`partial_success`, `failed`, and canceled states) from the existing authorized
+project and persisted analysis-job APIs. Each item links back to its exact
+workspace or project research route, refreshes on visibility return and every
+30 seconds, and cannot create or mutate scientific work. Focused notification
+and task-center tests pass. Push preferences and network reconnect recovery
+remain PARTIAL.

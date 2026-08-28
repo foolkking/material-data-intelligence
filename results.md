@@ -1,5 +1,22 @@
 # Task Results
 
+## Agent-2.0 Phase 14-R — Durable notification entry point
+
+- 状态：已完成（增量）
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/NotificationCenterPage.tsx`、
+  `apps/web/app/components/NotificationCenterPage.test.tsx`、
+  `apps/web/app/components/ProductShell.tsx`、
+  `apps/web/app/notifications/page.tsx`、
+  `docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+  `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：基于现有授权项目/持久化分析任务 API 增加只读通知中心，展示完成、
+  部分完成、失败和取消状态，支持精确研究入口、可见性恢复刷新和 30 秒刷新；
+  不新增科学事实或执行状态权威。
+- 测试结果：`NotificationCenterPage` 与 `TaskCenterPage` 共 2 tests passed；
+  `npm run typecheck` passed。
+- 提交/CI 状态：待提交；Phase 14-R 当前 verdict 仍为 PARTIAL。
+
 ## Agent-2.0 Phase 10 browser-context refresh — 2026-08-25
 
 状态：部分完成
