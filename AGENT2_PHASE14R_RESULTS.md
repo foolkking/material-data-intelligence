@@ -122,6 +122,18 @@ auditable lineage without inferring identity from Job names. Domain regression:
 `tests/test_agent2_domain.py` `9 passed`; frontend follow-up regression `3
 passed`. Message text editing and revision UI are still not fully qualified.
 
+### Agent-2.0 Phase 14-R last-question edit branch (2026-08-28)
+
+Completed Result presentation now exposes `编辑问题`. The action routes to an
+explicit edit composer carrying `turn=<parent>&edit=<parent>`. The composer
+loads the parent Result's original research question and exact source refs;
+submission creates a new ResearchTurn with `reply_to_turn_id` pointing to the
+terminal parent and never mutates the historical message, ContextSnapshot or
+ScientificResult. The service/domain branch regression remains `9 passed`,
+frontend presentation regression is `4 passed`, ResearchPages regression is
+`35 passed`, and web typecheck is `PASS`. Full browser text-edit submission
+and branch switching remain to be qualified.
+
 ### Agent-2.0 Phase 14-R historical ContextManifest compatibility (2026-08-28)
 
 Historical ResearchTurns whose `CONTEXT_RESOLVED` event predates embedded

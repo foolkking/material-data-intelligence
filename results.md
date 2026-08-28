@@ -14960,6 +14960,13 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
 
+追加验证（2026-08-28）：结果页新增 `编辑问题`，通过显式 `turn`/`edit`
+参数进入编辑 composer；提交时从父 Result 恢复原问题与 exact source refs，
+创建新的带 `reply_to_turn_id` 的 ResearchTurn 分支，旧消息、旧上下文和旧
+ScientificResult 不被修改。域回归 `9 passed`，前端呈现回归 `4 passed`，
+ResearchPages 回归 `35 passed`，typecheck PASS。完整浏览器编辑提交和分支
+切换仍待完成，Phase 14-R 继续保持 `PARTIAL`，未创建 P14R-A/P14R-B。
+
 ## Agent-2.0 Phase 14-R — Session-list ResearchTurn projection
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

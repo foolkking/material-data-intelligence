@@ -74,6 +74,16 @@ describe("Agent2ScientificPresentation", () => {
     expect(mocks.push).toHaveBeenCalledWith("/projects/project-1/research/session-1?turn=turn-continue-1");
   });
 
+  it("routes editing to an immutable branch composer", async () => {
+    mocks.getAgent2ResearchTurnResult.mockResolvedValue(result);
+    mocks.getAgent2ResearchTurnInterpretation.mockRejectedValue(new Error("not ready"));
+
+    render(<Agent2ScientificPresentation turnId="turn-1" projectId="project-1" sessionId="session-1" />);
+    fireEvent.click(await screen.findByRole("button", { name: "编辑问题" }));
+
+    expect(mocks.push).toHaveBeenCalledWith("/projects/project-1/research/session-1?turn=turn-1&edit=turn-1");
+  });
+
   it("creates a new rerun without claiming result reuse", async () => {
     mocks.getAgent2ResearchTurnResult.mockResolvedValue(result);
     mocks.getAgent2ResearchTurnInterpretation.mockRejectedValue(new Error("not ready"));

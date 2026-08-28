@@ -143,9 +143,16 @@ export function Agent2ScientificPresentation({ turnId, projectId, sessionId }: {
       setFollowUpPending(null);
     }
   }
+  function editQuestion() {
+    if (!sessionId || !result) return;
+    router.push(`/projects/${projectId}/research/${encodeURIComponent(sessionId)}?turn=${encodeURIComponent(turnId)}&edit=${encodeURIComponent(turnId)}`);
+  }
   return <section className="agent2-scientific-presentation">
     <ScientificPresentationBlocks presentation={presentation} projectId={projectId} instanceId={turnId} />
     {sessionId && result ? <div className="scientific-presentation-actions">
+      <button type="button" className="product-secondary-action" onClick={editQuestion} disabled={Boolean(followUpPending) || reinterpretPending}>
+        编辑问题
+      </button>
       <button type="button" className="product-secondary-action" onClick={() => void createFollowUp("continue")} disabled={Boolean(followUpPending) || reinterpretPending}>
         {followUpPending === "continue" ? "正在准备后续研究…" : "继续研究"}
       </button>

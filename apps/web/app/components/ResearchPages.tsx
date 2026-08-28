@@ -17,7 +17,7 @@ import { cancelAgent2Execution, getAgent2ExecutionProgress, type Agent2ProgressV
 import { ResearchExecutionActivity } from "./ResearchExecutionActivity";
 import { getAgent2SessionMemory, type Agent2SessionMemory } from "../lib/agent2-memory-api";
 import { ScientificReportAction } from "./ScientificReportAction";
-import { createAgent2ResearchTurn, dispatchAgent2ResearchTurn, getAgent2ContextManifest, type Agent2ContextManifest } from "../lib/agent2-research-api";
+import { createAgent2ResearchTurn, dispatchAgent2ResearchTurn, getAgent2ContextManifest, getAgent2ResearchTurnResult, type Agent2ContextManifest, type Agent2ResearchTurnResult } from "../lib/agent2-research-api";
 import { decodeWorkspaceSelectionUrl } from "./workspace/workspace-selection-contract";
 import { apiSemanticLocator, scientificSelectionFromWorkspace, selectionToResearchObjectRef } from "./scientific-viewer/scientificSelection";
 import { resolveScientificViewer } from "./scientific-viewer/scientificViewerRegistry";
@@ -158,7 +158,7 @@ function researchSessionHref(projectId: string, sessionId: string, history: Proj
 
 type ViewerResearchContext = { objectId?: string; versionId?: string; objectType?: string; displayName?: string; selectionToken?: string; selectionLabel?: string };
 
-export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewerContext }: { projectId: string; sessionId?: string; runId?: string; agent2TurnId?: string; viewerContext?: ViewerResearchContext }) {
+export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, editTurnId, viewerContext }: { projectId: string; sessionId?: string; runId?: string; agent2TurnId?: string; editTurnId?: string; viewerContext?: ViewerResearchContext }) {
   const router = useRouter();
   const [session, setSession] = useState<ResearchSession | null>(null);
   const [sessions, setSessions] = useState<ResearchSession[]>([]);
@@ -176,6 +176,8 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewer
   const [agent2Progress, setAgent2Progress] = useState<Agent2ProgressView | null>(null);
   const [agent2ContextManifest, setAgent2ContextManifest] = useState<Agent2ContextManifest | null>(null);
   const [agent2CancelPending, setAgent2CancelPending] = useState(false);
+  const [editingResult, setEditingResult] = useState<Agent2ResearchTurnResult | null>(null);
+  const [editingLoadState, setEditingLoadState] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const agent2DispatchRef = useRef<string | null>(null);
   const [sessionMemory, setSessionMemory] = useState<Agent2SessionMemory | null>(null);
   const [conversationWidth, setConversationWidth] = useState(420);
@@ -258,6 +260,28 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewer
       .catch(() => { if (active) setSessionMemory(null); });
     return () => { active = false; };
   }, [projectId, session?.id]);
+
+  useEffect(() => {
+    if (!editTurnId) {
+      setEditingResult(null);
+      setEditingLoadState("idle");
+      return;
+    }
+    let active = true;
+    setEditingLoadState("loading");
+    void getAgent2ResearchTurnResult(editTurnId).then((next) => {
+      if (!active) return;
+      setEditingResult(next);
+      setQuestion(next.research_question);
+      setEditingLoadState("ready");
+    }).catch(() => {
+      if (!active) return;
+      setEditingResult(null);
+      setEditingLoadState("error");
+      setError("原研究问题暂时无法读取，历史结果仍保持不变。");
+    });
+    return () => { active = false; };
+  }, [editTurnId]);
 
   async function cancelAgent2Turn() {
     if (!agent2TurnId || agent2CancelPending) return;
@@ -472,6 +496,23 @@ export function ResearchPage({ projectId, sessionId, runId, agent2TurnId, viewer
     let activeSession: ResearchSession | null = null;
     try {
       activeSession = await ensureSession();
+      if (editTurnId && editingResult) {
+        const refs = editingResult.source_object_refs || [];
+        const created = await createAgent2ResearchTurn(projectId, activeSession.id, {
+          message: question.trim(),
+          reply_to_turn_id: editTurnId,
+          ui_context: {
+            active_object_refs: refs,
+            selection_refs: refs,
+            scientific_selections: editingResult.scientific_selections || [],
+            explicit_object_refs: refs,
+            explicit_result_ids: [],
+            explicit_finding_refs: [],
+          },
+        });
+        router.push(`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(activeSession.id)}?turn=${encodeURIComponent(created.turn_id)}`);
+        return;
+      }
       if (exactViewerContext) {
         const objectRef = exactViewerContext.selection ? selectionToResearchObjectRef(exactViewerContext.selection) : {
           object_id: exactViewerContext.sourceRef.objectId, version_id: exactViewerContext.sourceRef.versionId,

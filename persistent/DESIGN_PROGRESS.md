@@ -4036,3 +4036,12 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   Result 与旧 ContextSnapshot 不被修改。
 - `tests/test_agent2_domain.py`：9 passed；前端 follow-up：3 passed。
 - 这项修复完成了可审计的分支 lineage，但完整消息编辑/修订 UI 仍未闭环。
+
+## 2026-08-28 Phase 14-R last-question edit branch
+
+- 完成结果页 `编辑问题` 入口，使用显式 `turn` 与 `edit` 参数进入编辑
+  composer；原问题和 exact source refs 从父 Result 读取。
+- 提交编辑会创建新的 ResearchTurn，并设置 `reply_to_turn_id` 指向终态父
+  Turn；历史消息、ContextSnapshot、ScientificResult 均保持不可变。
+- 域回归 `9 passed`，前端呈现回归 `4 passed`，ResearchPages `35 passed`，
+  web typecheck `PASS`。完整浏览器编辑提交和分支切换仍待资格验证。
