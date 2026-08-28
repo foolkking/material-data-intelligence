@@ -138,6 +138,8 @@ Recent service evidence:
 - `git diff --check`: `PASS`
 - Previously recorded current-worktree regression: frontend `93 files / 597
   passed`; backend `1820 passed / 83 skipped`
+- Latest frontend full regression after explicit-session fallback:
+  `94 files / 601 passed`; web typecheck `PASS`.
 
 ## G. Security / Provenance
 

@@ -4007,4 +4007,5 @@ report/evidence navigation, proving this path is presentation-only.
 typecheck 通过。刷新保留的已认证浏览器标签页后，历史研究对话正常加载，
 Context disclosure 可见，旧会话读取错误消失；API 的
 `GET /research-sessions/research_fbf038934dc84ffeaa5aed9e7c906095` 返回
-`200 OK`。Phase 14-R 其余成熟产品门仍保持真实 `PARTIAL`。
+`200 OK`。随后完整前端回归为 `94 files / 601 passed`，web typecheck
+通过。Phase 14-R 其余成熟产品门仍保持真实 `PARTIAL`。

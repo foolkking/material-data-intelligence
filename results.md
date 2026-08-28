@@ -14958,6 +14958,7 @@ Presentation 仍保持不变。该旧会话仍有独立的“研究对话暂时�
 - 测试结果：`apps/web/app/components/ResearchPages.test.tsx` 为 `35 passed`；
   web typecheck `PASS`；保留的已认证浏览器历史研究页刷新后成功加载，
   Context disclosure 可见且不再出现“研究会话不存在或已不可访问”，对应
-  research-session API 返回 `200 OK`。
+  research-session API 返回 `200 OK`。随后完整前端回归为
+  `94 files / 601 passed`。
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
