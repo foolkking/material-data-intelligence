@@ -276,3 +276,12 @@ asserted that the follow-up turns completed while aggregate counts for
 `scientific_result_snapshots` remained unchanged for interpretation-only reuse
 cases. This is concrete service-backed zero-delta evidence for the existing
 reuse authority; browser-level control coverage remains PARTIAL.
+
+### Agent-2.0 Phase 14-R persisted result context control (2026-08-28)
+
+Completed Result presentations now expose a bounded “固定到研究上下文 /
+取消固定结果” action. The client calls the existing authorized session-memory
+endpoint and updates only the memory selection; `ScientificResult`,
+`ScientificObjectVersion`, and execution lineage remain read-only. The control
+is covered by deterministic presentation tests. Broader fresh-vs-continued
+context campaigns, budget stress tests, and browser acceptance remain PARTIAL.

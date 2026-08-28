@@ -12,6 +12,7 @@ import {
 import { compileScientificPresentation } from "../lib/scientific-presentation";
 import { ScientificPresentationBlocks } from "./ScientificPresentationBlocks";
 import type { ScientificEvidenceItem } from "../lib/planner-api";
+import { getAgent2SessionMemory, pinAgent2Result, unpinAgent2Result } from "../lib/agent2-memory-api";
 
 export function Agent2ScientificPresentation({ turnId, projectId, sessionId }: { turnId: string; projectId: string; sessionId?: string }) {
   const router = useRouter();
@@ -22,6 +23,9 @@ export function Agent2ScientificPresentation({ turnId, projectId, sessionId }: {
   const [reinterpretError, setReinterpretError] = useState("");
   const [followUpPending, setFollowUpPending] = useState<"continue" | "rerun" | null>(null);
   const [followUpError, setFollowUpError] = useState("");
+  const [resultPinned, setResultPinned] = useState(false);
+  const [pinPending, setPinPending] = useState(false);
+  const [pinError, setPinError] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -34,6 +38,18 @@ export function Agent2ScientificPresentation({ turnId, projectId, sessionId }: {
       .catch(() => { if (active) setInterpretation(null); });
     return () => { active = false; };
   }, [turnId]);
+
+  useEffect(() => {
+    if (!sessionId || !result?.result_id) {
+      setResultPinned(false);
+      return;
+    }
+    let active = true;
+    void getAgent2SessionMemory(projectId, sessionId)
+      .then((memory) => { if (active) setResultPinned(memory.pinned_result_refs.includes(result.result_id)); })
+      .catch(() => { if (active) setResultPinned(false); });
+    return () => { active = false; };
+  }, [projectId, sessionId, result?.result_id]);
 
   if (failed) return <section className="scientific-presentation scientific-presentation-unavailable" role="status"><p>科学结果已保存；呈现投影暂时无法读取。</p></section>;
   if (!result) return <section className="scientific-presentation scientific-presentation-unavailable" role="status"><p>正在读取已验证的科学结果…</p></section>;
@@ -147,6 +163,21 @@ export function Agent2ScientificPresentation({ turnId, projectId, sessionId }: {
     if (!sessionId || !result) return;
     router.push(`/projects/${projectId}/research/${encodeURIComponent(sessionId)}?turn=${encodeURIComponent(turnId)}&edit=${encodeURIComponent(turnId)}`);
   }
+  async function togglePinnedResult() {
+    if (!sessionId || !result || pinPending) return;
+    setPinPending(true);
+    setPinError("");
+    try {
+      const next = resultPinned
+        ? await unpinAgent2Result(projectId, sessionId, result.result_id)
+        : await pinAgent2Result(projectId, sessionId, result.result_id);
+      setResultPinned(next.pinned_result_refs.includes(result.result_id));
+    } catch (reason) {
+      setPinError(reason instanceof Error ? reason.message : "上下文固定操作未能完成");
+    } finally {
+      setPinPending(false);
+    }
+  }
   return <section className="agent2-scientific-presentation">
     <ScientificPresentationBlocks presentation={presentation} projectId={projectId} instanceId={turnId} />
     {sessionId && result ? <div className="scientific-presentation-actions">
@@ -162,8 +193,12 @@ export function Agent2ScientificPresentation({ turnId, projectId, sessionId }: {
       <button type="button" className="product-secondary-action" onClick={() => void reinterpret()} disabled={reinterpretPending}>
         {reinterpretPending ? "正在创建解释分支…" : "重新解释（不重算科学结果）"}
       </button>
+      <button type="button" className="product-secondary-action" onClick={() => void togglePinnedResult()} disabled={pinPending}>
+        {pinPending ? "正在更新上下文…" : resultPinned ? "取消固定结果" : "固定到研究上下文"}
+      </button>
       {followUpError ? <p className="product-form-error" role="alert">{followUpError}</p> : null}
       {reinterpretError ? <p className="product-form-error" role="alert">{reinterpretError}</p> : null}
+      {pinError ? <p className="product-form-error" role="alert">{pinError}</p> : null}
     </div> : null}
   </section>;
 }

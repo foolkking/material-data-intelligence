@@ -7,10 +7,18 @@ const mocks = vi.hoisted(() => ({
   createAgent2ResearchTurn: vi.fn(),
   getAgent2ResearchTurnResult: vi.fn(),
   getAgent2ResearchTurnInterpretation: vi.fn(),
+  getAgent2SessionMemory: vi.fn(),
+  pinAgent2Result: vi.fn(),
+  unpinAgent2Result: vi.fn(),
   push: vi.fn(),
 }));
 
 vi.mock("../lib/agent2-research-api", () => mocks);
+vi.mock("../lib/agent2-memory-api", () => ({
+  getAgent2SessionMemory: mocks.getAgent2SessionMemory,
+  pinAgent2Result: mocks.pinAgent2Result,
+  unpinAgent2Result: mocks.unpinAgent2Result,
+}));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }));
 
 const result = {
@@ -33,6 +41,10 @@ describe("Agent2ScientificPresentation", () => {
     mocks.createAgent2ResearchTurn.mockReset();
     mocks.getAgent2ResearchTurnResult.mockReset();
     mocks.getAgent2ResearchTurnInterpretation.mockReset();
+    mocks.getAgent2SessionMemory.mockReset();
+    mocks.pinAgent2Result.mockReset();
+    mocks.unpinAgent2Result.mockReset();
+    mocks.getAgent2SessionMemory.mockResolvedValue({ pinned_result_refs: [] });
     mocks.push.mockReset();
   });
 
@@ -101,5 +113,20 @@ describe("Agent2ScientificPresentation", () => {
       }),
     ));
     expect(mocks.push).toHaveBeenCalledWith("/projects/project-1/research/session-1?turn=turn-rerun-1");
+  });
+
+  it("pins and unpins the exact result through session memory controls", async () => {
+    mocks.getAgent2ResearchTurnResult.mockResolvedValue(result);
+    mocks.getAgent2ResearchTurnInterpretation.mockRejectedValue(new Error("not ready"));
+    mocks.pinAgent2Result.mockResolvedValue({ pinned_result_refs: ["result-1"] });
+    mocks.unpinAgent2Result.mockResolvedValue({ pinned_result_refs: [] });
+
+    render(<Agent2ScientificPresentation turnId="turn-1" projectId="project-1" sessionId="session-1" />);
+    const pin = await screen.findByRole("button", { name: "固定到研究上下文" });
+    fireEvent.click(pin);
+    await waitFor(() => expect(mocks.pinAgent2Result).toHaveBeenCalledWith("project-1", "session-1", "result-1"));
+    const unpin = await screen.findByRole("button", { name: "取消固定结果" });
+    fireEvent.click(unpin);
+    await waitFor(() => expect(mocks.unpinAgent2Result).toHaveBeenCalledWith("project-1", "session-1", "result-1"));
   });
 });

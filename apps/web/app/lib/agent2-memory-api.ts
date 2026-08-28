@@ -28,3 +28,23 @@ export async function getAgent2SessionMemory(projectId: string, sessionId: strin
   if (!response.ok) throw new Error(`Research memory unavailable (${response.status})`);
   return response.json() as Promise<Agent2SessionMemory>;
 }
+
+async function mutateAgent2SessionMemory(
+  projectId: string,
+  sessionId: string,
+  resultId: string,
+  method: "POST" | "DELETE",
+): Promise<Agent2SessionMemory> {
+  const response = await fetch(
+    `${API_BASE}/api/projects/${encodeURIComponent(projectId)}/research/sessions/${encodeURIComponent(sessionId)}/memory/pinned-results/${encodeURIComponent(resultId)}`,
+    { method, credentials: "include" },
+  );
+  if (!response.ok) throw new Error(`Research memory update failed (${response.status})`);
+  return response.json() as Promise<Agent2SessionMemory>;
+}
+
+export const pinAgent2Result = (projectId: string, sessionId: string, resultId: string) =>
+  mutateAgent2SessionMemory(projectId, sessionId, resultId, "POST");
+
+export const unpinAgent2Result = (projectId: string, sessionId: string, resultId: string) =>
+  mutateAgent2SessionMemory(projectId, sessionId, resultId, "DELETE");

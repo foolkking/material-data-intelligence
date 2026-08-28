@@ -4086,3 +4086,13 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - Legacy/unresolvable turns remain read-only for branching. Pure branch lineage
   regression, `ResearchPages` (36 tests), `agent2_api`/domain (26 tests), and
   web typecheck pass. Browser edit/branch qualification remains open.
+
+## Agent-2.0 Phase 14-R persisted Result context control (2026-08-28)
+
+- Completed Agent2 presentations now allow authorized users to pin/unpin the
+  exact `ScientificResult` in the current Research session context.
+- The control reuses the existing session-memory API and never mutates the
+  scientific Result, source version, or execution lineage.
+- `Agent2ScientificPresentation` focused tests: 5 passed; web typecheck PASS.
+  Full browser context-control acceptance and budget stress coverage remain
+  open.

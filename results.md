@@ -14977,6 +14977,21 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
   与 `tests/test_agent2_domain.py` 共 26 passed；web typecheck PASS。
 - 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains PARTIAL。
 
+## Agent-2.0 Phase 14-R persisted Result context control
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/lib/agent2-memory-api.ts`、
+  `apps/web/app/components/Agent2ScientificPresentation.tsx`、
+  `apps/web/app/components/Agent2ScientificPresentation.test.tsx`，以及
+  Phase 14-R 审计/持久化文档。
+- 修改摘要：科学结果呈现提供“固定到研究上下文/取消固定结果”操作，
+  复用现有受权会话 memory API，只变更上下文选择，不写入
+  ScientificResult、ScientificObjectVersion 或执行链路。
+- 测试结果：`Agent2ScientificPresentation.test.tsx` 5 passed；web
+  typecheck PASS。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains PARTIAL。
+
 ## Agent-2.0 Phase 14-R — Persisted task center bridge
 
 - 状态：部分完成；Phase 14-R 总任务仍为处理中
