@@ -28,6 +28,25 @@ class ReportGroundingStatus(StrEnum):
     VALID = "VALID"
 
 
+class ReportContextBundle(BaseModel):
+    """Bounded, operation-specific report input.
+
+    This is deliberately a communication contract, not a second scientific
+    result store. Scientific values remain in the nested bounded Result
+    projection and all provider-facing references are opaque identifiers.
+    """
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    contract_version: Literal["1.0"] = REPORT_COMPOSER_CONTRACT_VERSION
+    research_question: str = Field(min_length=1, max_length=16000)
+    result: dict[str, Any]
+    interpretation: dict[str, Any]
+    evidence: list[dict[str, Any]] = Field(default_factory=list, max_length=64)
+    opaque_refs: dict[str, list[str]] = Field(default_factory=dict)
+    omitted_supporting_items: list[str] = Field(default_factory=list, max_length=64)
+
+
 class ReportFinding(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -120,6 +139,7 @@ class ScientificReportSnapshot(BaseModel):
 
 __all__ = [
     "REPORT_COMPOSER_CONTRACT_VERSION", "REPORT_COMPOSER_PROMPT_VERSION", "REPORT_COMPOSER_VERSION",
+    "ReportContextBundle",
     "ReportFigure", "ReportFinding", "ReportGenerationStatus", "ReportGroundingStatus",
     "ReportLimitation", "ReportSupportingResult", "ScientificReportOutput", "ScientificReportSnapshot",
 ]

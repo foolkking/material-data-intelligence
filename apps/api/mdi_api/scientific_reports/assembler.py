@@ -5,7 +5,7 @@ import json
 from typing import Any
 
 from mdi_api.scientific_results.schemas import ScientificResultBundle
-from .schemas import REPORT_COMPOSER_VERSION
+from .schemas import REPORT_COMPOSER_VERSION, ReportContextBundle
 
 
 class ReportComposerInputAssembler:
@@ -57,6 +57,11 @@ class ReportComposerInputAssembler:
         }
         # Raw provenance IDs are useful for persistence, never for provider prose.
         payload["result"]["provenance"] = {"source_object_version_ids": [f"source_{i + 1}" for i, _ in enumerate(bundle.source_object_refs)]}
+        # Validate the complete bounded report context before it crosses the
+        # provider boundary. This prevents accidental addition of raw
+        # conversation/tool payloads without changing the persisted Result
+        # authority or the existing wire shape.
+        ReportContextBundle.model_validate(payload)
         fingerprint = hashlib.sha256(json.dumps(payload, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
         return payload, fingerprint
 

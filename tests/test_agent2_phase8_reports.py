@@ -19,7 +19,7 @@ from mdi_api.scientific_reports.assembler import ReportComposerInputAssembler
 from mdi_api.scientific_reports.client import DeepSeekReportComposerClient, FakeStructuredReportComposerClient
 from mdi_api.scientific_reports.grounded import DeterministicScientificReportComposer
 from mdi_api.scientific_reports.grounding import ReportGroundingValidator
-from mdi_api.scientific_reports.schemas import ScientificReportOutput
+from mdi_api.scientific_reports.schemas import ReportContextBundle, ScientificReportOutput
 from mdi_api.scientific_reports.service import ScientificReportError, ScientificReportService
 from mdi_api.scientific_results.schemas import ScientificResultBundle
 from mdi_api.unit_of_work import RepositoryFactory
@@ -172,6 +172,7 @@ def test_grounded_rdf_report_and_opaque_provider_boundary() -> None:
     report = _report()
     assert ReportGroundingValidator().validate(report, bundle=bundle, interpretation=_interpretation()) == []
     envelope, first = ReportComposerInputAssembler().assemble(bundle=bundle, interpretation=_interpretation(), relevance_status="CURRENT")
+    assert ReportContextBundle.model_validate(envelope).contract_version == "1.0"
     _, second = ReportComposerInputAssembler().assemble(bundle=bundle, interpretation=_interpretation(), relevance_status="CURRENT")
     serialized = json.dumps(envelope, sort_keys=True)
     assert first == second
