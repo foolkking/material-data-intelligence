@@ -2483,3 +2483,14 @@ Research and Report renderers may choose a layout for these blocks, but the
 exact Result and source-version identities remain the authority. Opening,
 resizing, navigating, or rendering a presentation block must have zero
 ToolCall, scientific Artifact, and ScientificResult deltas.
+
+### Agent 2.0 Phase 14-R Project History Context Binding 1.0
+
+Each project-history analysis may expose a read-only `researchContextKind`
+with one of two values: `RESEARCH_TURN` when the persisted Job has an
+authoritative `research_turns` relation, or `LEGACY_SESSION_RUN` when it is
+linked only through the compatibility `research_session_runs` projection.
+The field is derived from existing server-side joins, is project-authorized,
+and never infers a Turn from a Job identifier or creates a second identity
+authority. Legacy runs remain addressable through their explicit session
+binding while modern runs may use the exact ResearchTurn route.
