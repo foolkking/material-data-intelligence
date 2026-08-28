@@ -247,3 +247,13 @@ broader Phase 14-R mature-product campaign remains PARTIAL: full scientific
 surface coverage, lifecycle/trash policy, task recovery, report-quality
 evaluation, operations maturity, and exact-SHA release commits are not yet
 qualified.
+### Agent-2.0 Phase 14-R exact Result reuse service qualification (2026-08-28)
+
+The existing Agent2 continuation/re-interpretation service campaign was rerun
+against PostgreSQL and Redis with real worker subprocesses. Four cases passed
+(RDF and XRD interpretation reuse plus continuation paths). The campaign
+asserted that the follow-up turns completed while aggregate counts for
+`analysis_plans`, `jobs`, `tool_calls`, `artifacts`, and
+`scientific_result_snapshots` remained unchanged for interpretation-only reuse
+cases. This is concrete service-backed zero-delta evidence for the existing
+reuse authority; browser-level control coverage remains PARTIAL.

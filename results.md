@@ -14910,3 +14910,9 @@ Dataset version `be02266a-7d4f-4ebb-9f28-3132855167d0`、Artifact checksum
 ToolCall `dataset.materials_explorer`；保留的已认证浏览器标签页显示同一证据链。
 新增持久化回归后 `tests/test_phase10l4_api_persistence.py` 为 `14 passed`。
 Phase 14-R 更广泛的成熟产品门仍保持 PARTIAL，未创建 P14R-A/P14R-B。
+追加验证（2026-08-28）：真实 PostgreSQL/Redis 同栈重跑
+`tests/integration/test_agent2_phase7_service_backed.py`，结果 `4 passed`
+（114.25s）。Interpretation-only reuse 与 continuation 路径均使用现有
+Result authority；测试断言 reuse 前后 `analysis_plans/jobs/tool_calls/artifacts/
+scientific_result_snapshots` 聚合计数不增长，并验证 follow-up Turn 完成及
+原始 Result/Turn 身份保持不变。浏览器级复用控制仍待成熟产品 campaign。

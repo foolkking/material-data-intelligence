@@ -10,6 +10,15 @@
   Persistence regression: 14 passed; same-stack browser evidence confirms the
   chain is inspectable.
 
+## 2026-08-28 Agent-2.0 Phase 14-R Result reuse qualification
+
+- Re-ran `tests/integration/test_agent2_phase7_service_backed.py` against the
+  real PostgreSQL/Redis stack. All 4 cases passed in 114.25s. Interpretation
+  reuse preserved the existing Result lineage with zero aggregate
+  plan/job/tool-call/artifact/result-snapshot growth; continuation cases
+  retained explicit prior-result identity. No browser or scientific authority
+  changes were made.
+
 ## 2026-08-28 Agent-2.0 Phase 14-R interpretation identity bridge
 
 - Presentation compilation now receives the persisted outer
