@@ -331,3 +331,14 @@ completed with `96 test files / 610 tests passed`; `npm run typecheck`,
 current-head regression results, not a claim that the broader Phase 14-R
 browser, trash/retention, report-quality, operations, or real-user acceptance
 gates are closed.
+
+### Agent-2.0 Phase 14-R network interruption banner (2026-08-28)
+
+The shared product shell now listens to browser `online`/`offline` transitions
+and displays a bounded recovery banner while offline. The message explicitly
+states that server-side research may continue and points users to the
+persistent Task Center for resynchronization after connectivity returns. The
+banner is presentation-only: it does not mark work failed, cancel jobs, or
+invent progress. ProductShell regression covers both transitions; typecheck
+passes. Full browser network interruption/reconnect qualification remains
+PARTIAL.

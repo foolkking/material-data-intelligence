@@ -116,3 +116,12 @@ it("searches across authorized scientific work after the query changes", async (
   expect(await screen.findByText("ScientificResult result_1")).toBeInTheDocument();
   expect(screen.getByText("ScientificResult · 1.0")).toBeInTheDocument();
 });
+
+it("surfaces a recoverable offline state without changing scientific work", async () => {
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+  await screen.findByRole("button", { name: "搜索项目" });
+  fireEvent(window, new Event("offline"));
+  expect(screen.getByRole("status")).toHaveTextContent("连接已中断");
+  fireEvent(window, new Event("online"));
+  await waitFor(() => expect(screen.queryByText("连接已中断")).not.toBeInTheDocument());
+});

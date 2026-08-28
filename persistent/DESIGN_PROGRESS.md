@@ -4142,3 +4142,12 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   production build, Python compileall, and diff check pass.
 - Broad mature-product browser, retention, report-quality, operations, and
   real-user gates remain PARTIAL.
+
+## Agent-2.0 Phase 14-R network interruption banner (2026-08-28)
+
+- ProductShell now surfaces a bounded `连接已中断` status on browser offline
+  events and clears it on reconnect.
+- The status does not mutate persisted research state; users are directed to
+  Task Center for server-backed resynchronization.
+- ProductShell focused tests: 5 passed; web typecheck PASS. Full reconnect and
+  worker-recovery browser qualification remains open.

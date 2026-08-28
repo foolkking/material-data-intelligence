@@ -15004,6 +15004,20 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
   worker/DeepSeek。
 - 提交/CI 状态：未创建 P14R-A/B；Phase 14-R verdict 保持 PARTIAL。
 
+## Agent-2.0 Phase 14-R — Network interruption recovery affordance
+
+- 状态：已完成（增量）
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/ProductShell.tsx`、
+  `apps/web/app/components/ProductShell.test.tsx`、
+  `apps/web/app/globals.css`、
+  `docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+  `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：全局产品壳增加浏览器离线/恢复提示，明确服务器任务可能继续，
+  恢复后通过任务中心重新同步；不改变任何科学或任务持久化状态。
+- 测试结果：`ProductShell.test.tsx` 5 passed；`npm run typecheck` passed。
+- 提交/CI 状态：待提交；Phase 14-R 当前 verdict 仍为 PARTIAL。
+
 ## Agent-2.0 Phase 14-R explicit terminal retry
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

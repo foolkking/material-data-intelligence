@@ -19,6 +19,7 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
   const [searchState, setSearchState] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [modelSettingsOpen, setModelSettingsOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
+  const [online, setOnline] = useState(true);
   const searchTriggerRef = useRef<HTMLButtonElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchDialogRef = useRef<HTMLElement | null>(null);
@@ -30,6 +31,19 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
     let active = true;
     void getAuthUser().then((next) => { if (active) setUser(next); }).catch(() => undefined).finally(() => { if (active) setChecking(false); });
     return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    const sync = () => setOnline(window.navigator.onLine !== false);
+    const onOnline = () => setOnline(true);
+    const onOffline = () => setOnline(false);
+    sync();
+    window.addEventListener("online", onOnline);
+    window.addEventListener("offline", onOffline);
+    return () => {
+      window.removeEventListener("online", onOnline);
+      window.removeEventListener("offline", onOffline);
+    };
   }, []);
 
   useEffect(() => {
@@ -207,6 +221,7 @@ export function ProductShell({ children, projectId }: { children: ReactNode; pro
         <Link className={pathname?.includes("/research") ? "active" : ""} href={`/projects/${projectId}/research`}>研究</Link>
         <Link className={pathname?.includes("/reports") ? "active" : ""} href={`/projects/${projectId}/reports`}>报告</Link>
       </nav>}
+      {!online ? <div className="product-connectivity-banner" role="status" aria-live="polite"><strong>连接已中断</strong><span>服务器上的研究可能仍在继续；恢复网络后可从任务中心重新同步。</span></div> : null}
       {searchOpen && <div className="product-search-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeSearch(); }}>
         <section ref={searchDialogRef} className="product-search-dialog" role="dialog" aria-modal="true" aria-labelledby="product-search-title">
           <header><div><p className="product-kicker">全局搜索</p><h2 id="product-search-title">查找科学工作</h2></div><button type="button" className="product-icon-action" aria-label="关闭搜索" onClick={closeSearch}>×</button></header>
