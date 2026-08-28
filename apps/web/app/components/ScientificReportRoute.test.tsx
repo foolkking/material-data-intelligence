@@ -30,6 +30,7 @@ const report: ScientificReportView = {
   source_fingerprint: "a".repeat(64),
   created_at: "2026-08-24T12:00:00Z",
   viewer_sources: [{ source_ref: "source_1", object_id: "object_1", version_id: "version_1", object_type: "structure.crystal", display_name: "LiFePO4 结构", is_current_version: true }],
+  figure_sources: [{ figure_ref: "figure.rdf", artifact_ids: ["artifact.rdf"], job_id: "job.rdf" }],
   report: {
     contract_version: "1.0",
     title: "LiFePO4 RDF 第一配位峰分析",
@@ -87,5 +88,14 @@ describe("ScientificReportRoute", () => {
     expect(markdown).toContain("LiFePO4 结构");
     expect(markdown).toContain("Evidence refs: evidence.rdf");
     expect(markdown).not.toMatch(/password|api[_ -]?key|redis:\/\/|minio/i);
+  });
+
+  it("opens a persisted Figure Artifact through the secured content route", async () => {
+    mocks.getScientificReport.mockResolvedValue(report);
+    render(<ScientificReportRoute projectId="project_1" reportId="agent2_report_1" />);
+    expect(await screen.findByRole("link", { name: "打开权威 Artifact" })).toHaveAttribute(
+      "href",
+      "/api/planner/jobs/job.rdf/artifacts/artifact.rdf/content",
+    );
   });
 });

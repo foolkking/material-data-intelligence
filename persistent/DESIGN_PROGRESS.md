@@ -4236,5 +4236,6 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   content route when available, with exact-source Viewer fallback otherwise;
   rendering remains read-only and cannot enqueue scientific work.
 - Backend report tests (`16`, with four historical live-LLM skips), frontend
-  presentation/report tests (`14`), typecheck and production build pass.
+  presentation/report tests (`15`), the PostgreSQL/Redis/MinIO report service
+  campaign (`9 passed, 0 skipped`) typecheck and production build pass.
   Capability-wide same-stack Figure acceptance remains open.

@@ -15007,7 +15007,8 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
   映射时保留 exact-source Viewer 回退。未引入第二事实源，打开图表不执行
   新科学计算。
 - 测试结果：后端报告 focused `16 passed, 4 historical skips`；前端报告/
-  presentation focused `14 passed`；前端全量 `96 files / 612 passed`；
+  presentation focused `15 passed`；同栈报告/规划回归 `9 passed, 0 skipped`
+  （PostgreSQL/Redis/MinIO）；前端全量 `96 files / 612 passed`；
   typecheck `PASS`；production build `PASS`。
 - 提交/CI 状态：本阶段变更尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`，Capability-wide same-stack Figure、Trash/retention、报告质量与
