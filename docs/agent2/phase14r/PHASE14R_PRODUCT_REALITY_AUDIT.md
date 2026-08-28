@@ -144,6 +144,15 @@ browser tab. The dataset action menu exposes the existing lifecycle controls
 before permanent-delete confirmation. The tab remains open and handed back for
 continued qualification; no destructive browser action was performed.
 
+An authenticated browser golden path then archived and restored the dedicated
+`dataset_0003_1e42d834bfa64961` (`Phase13 Canonical Dataset`) through the normal
+menu. While archived it appeared in the `已归档` filter with a `恢复数据集`
+action and was absent from the active dataset list; after restore it returned to
+the active list and the archived filter reported no archived data. PostgreSQL
+afterward showed the dataset `status=profile_ready`, with the project retaining
+4 ScientificObjects and 4 ScientificObjectVersions. This proves the reversible
+UI state transition but does not close the broader mature Trash/retention gate.
+
 PostgreSQL activity after the service campaign was `active=1`, `idle=5`,
 `idle in transaction=0`; no pool timeout or monotonic idle growth was observed
 in this check.
