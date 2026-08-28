@@ -3886,3 +3886,11 @@ The earlier import error was test-environment configuration only.
 The shared service-worker environment now includes `services/llm` directly,
 so fresh subprocess qualification does not depend on a caller-provided
 `PYTHONPATH` alias.
+
+### Agent-2.0 Phase 14-R report history continuity (2026-08-28)
+
+The Scientific Reports index now labels each compatibility/history entry as
+either a recoverable persisted ResearchTurn session or a legacy session-run
+projection. Existing report URLs and scientific authorities are unchanged;
+the label makes the recovery boundary explicit to users. Focused frontend
+test and typecheck pass.

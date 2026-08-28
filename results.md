@@ -14843,3 +14843,12 @@ exact-current-head CI 作为最终 release seal。
 测试结果：Phase 7 service-backed `4 passed`, `0 skipped`；目标 Ruff 与
 compileall PASS。
 提交/CI 状态：随 Phase 14-R fix-forward 提交；尚未创建 P14R-A/P14R-B。
+
+任务名称：Agent-2.0 Phase 14-R — report history continuity
+状态：处理中（并入当前任务）
+完成时间：2026-08-28
+修改摘要：科学报告历史索引根据服务端持久化绑定显示“可恢复研究会话”
+或“兼容历史运行”，不改变既有报告路由或科学权威。
+测试结果：`ScientificReportsIndexPage.test.tsx` `1 passed`；
+前端 typecheck PASS。
+提交/CI 状态：随 Phase 14-R fix-forward 提交；未创建 P14R-A/P14R-B。
