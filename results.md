@@ -14862,3 +14862,9 @@ compileall PASS。
 测试结果：`tests/test_project_access.py` 11 passed；前端
 `ProductPages.test.tsx` 与 `ScientificReportsIndexPage.test.tsx` 18 passed。
 提交/CI 状态：待随 Phase 14-R fix-forward 提交；未创建 P14R-A/P14R-B。
+
+追加验证（2026-08-28）：同栈 Phase 12 关键服务回归重新执行
+`5 passed, 0 failed, 0 errors, 0 skipped`（Phase 3 1 项 + Phase 7 4 项），
+`/health/runtime` 确认 PostgreSQL/Redis/MinIO/Redis worker/DeepSeek；
+PostgreSQL 活动连接 `active=1, idle=5, idle-in-transaction=0`。现有已认证
+浏览器数据页确认数据集操作菜单包含归档入口；未执行破坏性归档操作。

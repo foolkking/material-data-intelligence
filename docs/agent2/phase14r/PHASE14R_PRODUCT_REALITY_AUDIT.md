@@ -115,10 +115,11 @@ Redis DB 13, MinIO `127.0.0.1:9000`) and passed `1/1`; the earlier skip was
 only the missing `MDI_TEST_DATABASE_URL` shell alias. This is a focused
 service regression, not the complete Phase 14-R campaign.
 
-The current-worktree historical/reuse service suite
-`tests/integration/test_agent2_phase7_service_backed.py` was rerun against the
+The current-worktree Phase 12 service campaign
+(`tests/integration/test_agent2_phase3_service_backed.py` plus
+`tests/integration/test_agent2_phase7_service_backed.py`) was rerun against the
 same PostgreSQL/Redis/MinIO stack with the repository's `services/llm` package
-on subprocess `PYTHONPATH`: `4 passed`, `0 failed`, `0 errors`, `0 skipped`.
+on subprocess `PYTHONPATH`: `5 passed`, `0 failed`, `0 errors`, `0 skipped`.
 The earlier subprocess error was only a missing `mdi_llm` import path and did
 not indicate a service or scientific-result failure.
 
@@ -135,3 +136,14 @@ ResearchTurn route was denied with the bounded product message
 `当前用户无权访问此项目。` and no console warnings/errors. This is a live
 cross-project fail-closed check; it does not substitute for the still-open
 same-project multi-surface authorization campaign.
+
+The authenticated Data Platform route
+`/projects/project_0002_1a0af866391f412d/data` was rechecked in the existing
+browser tab. The dataset action menu exposes the existing lifecycle controls
+(`归档数据集`, `删除空数据集`) and the bounded dependency preview is wired
+before permanent-delete confirmation. The tab remains open and handed back for
+continued qualification; no destructive browser action was performed.
+
+PostgreSQL activity after the service campaign was `active=1`, `idle=5`,
+`idle in transaction=0`; no pool timeout or monotonic idle growth was observed
+in this check.
