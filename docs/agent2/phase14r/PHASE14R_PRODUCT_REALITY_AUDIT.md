@@ -107,3 +107,10 @@ explicitly persisted (`research_fbf038934dc84ffeaa5aed9e7c906095`); no Job-name
 Turn guessing was observed. A complete current ResearchTurn-linked
 interpretation/evidence browser campaign is still open, so this spot check is
 not a Phase 14-R closure claim.
+
+The current-worktree PostgreSQL integration smoke
+`tests/integration/test_agent2_phase3_service_backed.py` was also executed
+with the repository-supported service URLs (PostgreSQL `127.0.0.1:55433`,
+Redis DB 13, MinIO `127.0.0.1:9000`) and passed `1/1`; the earlier skip was
+only the missing `MDI_TEST_DATABASE_URL` shell alias. This is a focused
+service regression, not the complete Phase 14-R campaign.
