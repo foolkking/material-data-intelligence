@@ -70,7 +70,7 @@ acceptance evidence is not yet complete.
 | Trash/restore/purge policy | no complete protected-trash lifecycle found | NOT_QUALIFIED |
 | Bulk scientific-object lifecycle | partial Data UI patterns; full authorization/dependency qualification absent | PARTIAL |
 | Stop/cancel orchestration and execution | `cancel_turn`, execution supervisor, `/cancel` API | PASS |
-| Stop/continue/rerun/re-interpret/retry product controls | cancel path exists; full distinct UX semantics not proven | PARTIAL |
+| Stop/continue/rerun/re-interpret/retry product controls | cancel path exists and modern Agent2 presentations now expose a bounded no-recompute re-interpret action; full stop/continue/rerun/retry browser semantics remain open | PARTIAL |
 | Last-message edit and branch history | no complete immutable message-revision flow found | NOT_QUALIFIED |
 
 ## Organization, reliability and operations

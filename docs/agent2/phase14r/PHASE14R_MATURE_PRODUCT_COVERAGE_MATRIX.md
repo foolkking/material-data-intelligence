@@ -16,7 +16,7 @@ remain open.
 | Reports | Reports/Workbench | immutable snapshot | PASS | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | NOT_QUALIFIED | PASS | PARTIAL |
 | History/resume | Project history | explicit ResearchTurn relation | PASS | PARTIAL | PASS (Phase 14) | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | Archive/restore | object actions | lifecycle service | PASS | PARTIAL | PASS (Phase 12/14) | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
-| Result reuse | follow-up Research | exact reusable Result | NOT_QUALIFIED | NOT_QUALIFIED | NOT_QUALIFIED | NOT_QUALIFIED | PARTIAL | PASS | NOT_QUALIFIED | PARTIAL | NOT_QUALIFIED |
+| Result reuse | follow-up Research / re-interpret | exact reusable Result | PARTIAL | NOT_QUALIFIED | PARTIAL (control + deterministic test) | PARTIAL (existing Agent2 continuation coverage) | PARTIAL | PASS | NOT_QUALIFIED | PASS (explicit result ref) | PARTIAL |
 | Context transparency | Research context | ContextSnapshot/ContextManifest/memory | PASS | PARTIAL | PASS (authorized manifest endpoint + disclosure) | PASS (focused API tests) | PARTIAL | PASS | PARTIAL | PASS | PARTIAL |
 | Lifecycle management | project/data/report actions | lifecycle contract | PARTIAL | NOT_QUALIFIED | PARTIAL | PARTIAL | PARTIAL | PARTIAL | NOT_QUALIFIED | PARTIAL | NOT_QUALIFIED |
 | Search/organization | global search | authorized read models | PARTIAL | NOT_QUALIFIED | PARTIAL | NOT_QUALIFIED | PARTIAL | PARTIAL | NOT_QUALIFIED | PARTIAL | PARTIAL |
