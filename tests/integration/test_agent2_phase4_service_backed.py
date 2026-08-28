@@ -341,6 +341,7 @@ def _worker_environment(database_url: str) -> dict[str, str]:
         ROOT / "packages" / "artifact-core",
         ROOT / "packages" / "material-parsers",
         ROOT / "packages" / "llm-client",
+        ROOT / "services" / "llm",
     ]
     environment["PYTHONPATH"] = os.pathsep.join(
         [*(str(path) for path in python_paths), environment.get("PYTHONPATH", "")]

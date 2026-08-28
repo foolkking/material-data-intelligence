@@ -14833,3 +14833,13 @@ exact-current-head CI 作为最终 release seal。
 目标 Ruff PASS；此前 Agent2/Research/Presentation 聚焦回归仍保持通过。
 提交/CI 状态：本次变更待提交；Phase 14-R 仍有成熟产品 P0/P1 资格债务，
 未创建 P14R-A/P14R-B，未宣称 COMPLETE。
+
+任务名称：Agent-2.0 Phase 14-R — service worker subprocess environment
+状态：处理中（并入当前任务）
+完成时间：2026-08-28
+修改摘要：共享 Phase 4 service-worker 环境现在显式包含
+`services/llm`，避免 Phase 5/7 service-backed 子进程因缺少 `mdi_llm`
+导入路径而产生假 ERROR。
+测试结果：Phase 7 service-backed `4 passed`, `0 skipped`；目标 Ruff 与
+compileall PASS。
+提交/CI 状态：随 Phase 14-R fix-forward 提交；尚未创建 P14R-A/P14R-B。

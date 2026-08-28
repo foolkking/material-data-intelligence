@@ -3882,3 +3882,7 @@ broader mature-product qualification tracks.
 The same-stack historical/reuse service suite was rerun with the repository
 `services/llm` package on subprocess `PYTHONPATH`: `4 passed`, `0 skipped`.
 The earlier import error was test-environment configuration only.
+
+The shared service-worker environment now includes `services/llm` directly,
+so fresh subprocess qualification does not depend on a caller-provided
+`PYTHONPATH` alias.
