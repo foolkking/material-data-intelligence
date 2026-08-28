@@ -4171,6 +4171,16 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - Notification and Task Center focused tests pass; full browser reconnect/API
   restart/worker recovery qualification remains open.
 
+## Agent-2.0 Phase 14-R report source/method presentation (2026-08-28)
+
+- Scientific Report now presents the persisted method summary and authorized
+  exact object/version sources in a visible `数据与方法` section.
+- Historical/current version status is shown from the existing
+  `viewer_sources.is_current_version` authority; no scientific values are
+  recomputed or duplicated.
+- Report route/action focused tests pass and web typecheck remains PASS.
+  Multi-family report-quality and full browser acceptance remain open.
+
 ## Agent-2.0 Phase 14-R authenticated task/notification browser evidence (2026-08-28)
 
 - In-app authenticated browser verification loaded `/notifications` with four

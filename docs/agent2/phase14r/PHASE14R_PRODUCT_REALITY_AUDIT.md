@@ -343,6 +343,15 @@ invent progress. ProductShell regression covers both transitions; typecheck
 passes. Full browser network interruption/reconnect qualification remains
 PARTIAL.
 
+### Agent-2.0 Phase 14-R report source/method presentation (2026-08-28)
+
+Scientific Report pages now surface the existing authoritative method summary
+and `viewer_sources` projection in a dedicated “数据与方法” section. Each
+source row retains object type, exact version identity, and current-versus-
+historical status; no new scientific values or report authority are created.
+Focused Report route/action regression passes. Multi-family report-quality
+evaluation and full browser report acceptance remain PARTIAL.
+
 ### Agent-2.0 Phase 14-R task-center online resynchronization (2026-08-28)
 
 The Task Center now treats the browser `online` event as a persisted-state

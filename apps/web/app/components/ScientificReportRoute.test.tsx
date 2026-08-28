@@ -25,6 +25,7 @@ const report = {
   figure_count: 1,
   source_fingerprint: "a".repeat(64),
   created_at: "2026-08-24T12:00:00Z",
+  viewer_sources: [{ source_ref: "source_1", object_id: "object_1", version_id: "version_1", object_type: "structure.crystal", display_name: "LiFePO4 结构", is_current_version: true }],
   report: {
     contract_version: "1.0",
     title: "LiFePO4 RDF 第一配位峰分析",
@@ -50,6 +51,9 @@ describe("ScientificReportRoute", () => {
     render(<ScientificReportRoute projectId="project_1" reportId="agent2_report_1" />);
     expect(await screen.findByRole("heading", { name: report.title })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "主要发现" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "数据与方法" })).toBeInTheDocument();
+    expect(screen.getAllByText("LiFePO4 结构").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/version version_1/).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole("heading", { name: "限制与适用范围" })).toBeInTheDocument();
     expect(screen.getByText("结果受有限截断范围约束。")).toBeInTheDocument();
     expect(screen.getByText("复现信息")).toBeInTheDocument();

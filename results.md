@@ -15004,6 +15004,20 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
   `PASS`。完整网络中断、API 重启与 Worker 恢复浏览器验收仍未完成。
 - 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — report source/method presentation
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/ScientificReportRoute.tsx`、
+  `apps/web/app/components/ScientificReportRoute.test.tsx`、
+  `apps/web/app/globals.css`、Phase 14-R 审计与进度文档。
+- 修改摘要：报告主视图新增“数据与方法”区块，直接展示已有
+  `viewer_sources` 的对象类型、精确版本 ID 与当前/历史状态，并展示
+  权威方法摘要；移除重复的折叠方法段，未新增科学事实来源。
+- 测试结果：Scientific Report route/action `5 passed`；`npm run typecheck`
+  `PASS`；报告质量多族群和完整浏览器验收仍未完成。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
+
 ## Agent-2.0 Phase 14-R — current-head same-stack regression
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
