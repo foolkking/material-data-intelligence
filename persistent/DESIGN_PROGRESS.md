@@ -4242,3 +4242,10 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - Markdown export now retains the bounded persisted Artifact IDs for primary
   Figures, keeping the export reproducible without exposing provider or
   infrastructure secrets; the route regression remains green.
+
+## Agent-2.0 Phase 14-R results record (2026-08-28)
+
+- Added `AGENT2_PHASE14R_RESULTS.md` as the current truthful evidence index.
+- It records the sealed Phase 14 baseline, same-stack health, Figure/Artifact
+  bridge, focused/full regression counts and explicit remaining mature-product
+  gaps. Phase 14-R remains `PARTIAL`; no P14R release candidate was created.

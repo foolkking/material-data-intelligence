@@ -8,8 +8,9 @@ claiming the mature-product release gate.
 
 - Historical Phase 14 seal: `d03b0a2e86e50d834a774cf823cfe055c91cf10c`
 - Phase 14 remains sealed; no Phase 15 was created or started.
-- Current Phase 14-R worktree head before this evidence update: `af3b592`
-- Current evidence commit: `af3b592` (`phase14r: add immutable question editing branches`)
+- Current Phase 14-R worktree head: `739074d`
+- Latest evidence commits: `814f850`, `2141fb1`, `456d0a9`, `c398f65`,
+  `739074d`
 - `PHASE14R_REOPENED = NO`
 
 ## B. Product Reality Audit
@@ -321,3 +322,29 @@ READY_FOR_MATURE_PRODUCTION_USE = NO
 PHASE15_CREATED = NO
 PHASE15_STARTED = NO
 ```
+
+## L. Figure Artifact bridge follow-up
+
+The report Figure projection now derives bounded `figure_sources` from the
+immutable ScientificResult bundle, retaining each Figure reference, persisted
+Artifact IDs and source Job. Report and shared Presentation readers open the
+existing secured Artifact content route when available; no report rendering
+creates a Job, ToolCall, Artifact or ScientificResult.
+
+Evidence after the bridge:
+
+- `tests/test_agent2_phase8_reports.py`: `16 passed`, `4` historical live-LLM
+  skips.
+- `apps/web/app/components/ScientificReportRoute.test.tsx`: `5 passed`.
+- `apps/web/app/lib/scientific-presentation.test.ts`: `10 passed`.
+- PostgreSQL/Redis/MinIO report/planning campaign: `9 passed`, `0 skipped`.
+- Frontend full regression: `96 files / 612 tests passed`.
+- Typecheck, production build, compileall, touched Ruff and diff checks pass.
+
+The mature-product release gate remains open for full capability-family
+browser acceptance, report-quality/revision review, protected Trash/retention/
+export governance, context-stress/recovery campaigns, operations maturity and
+P14R-A/P14R-B exact-SHA CI.
+
+Current fix-forward commits are `814f850`, `2141fb1`, `456d0a9`, and
+`c398f65`; no P14R release candidate or push has been claimed.

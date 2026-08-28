@@ -15024,6 +15024,10 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 补充修复（2026-08-28）：Markdown 导出为每个主要 Figure 保留对应的持久化
 Artifact IDs；ScientificReportRoute focused `5 passed`，typecheck `PASS`。
 
+补充收口（2026-08-28）：创建 `AGENT2_PHASE14R_RESULTS.md`，集中记录当前
+Phase 14-R 证据、同栈健康、回归计数和未闭合成熟产品门；状态仍为
+`FUNCTIONAL_PHASE14R_CLOSURE = FAIL`，未创建 P14R-A/P14R-B。
+
 ## Agent-2.0 Phase 14-R — Research progress reconnect
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
