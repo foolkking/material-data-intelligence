@@ -4,7 +4,7 @@ const API_BASE = (process.env.NEXT_PUBLIC_MDI_API_BASE_URL || (typeof window ===
 
 export type Agent2ScientificObjectRef = { object_id: string; version_id: string; project_id: string; object_type: string; display_name?: string };
 export type Agent2ScientificSelection = { contract_version: "1.0"; object_ref: Agent2ScientificObjectRef; viewer_id: string; selection_type: string; semantic_locator: Record<string, string | number>; display_label: string; evidence_locator?: Record<string, string | number> | null };
-export type Agent2TurnResponse = { turn_id: string; research_session_id: string; project_id: string; sequence_no: number; status: string; user_message: { id: string; role: string; content: string }; created_at: string };
+export type Agent2TurnResponse = { turn_id: string; id?: string; research_session_id: string; project_id: string; sequence_no: number; parent_turn_id?: string | null; status: string; user_message: { id: string; role: string; content: string }; created_at: string };
 export type Agent2ContextManifestItem = {
   item_id: string;
   kind: string;
@@ -105,6 +105,13 @@ export async function createAgent2ResearchTurn(projectId: string, sessionId: str
     throw new Error(detail);
   }
   return response.json() as Promise<Agent2TurnResponse>;
+}
+
+export async function listAgent2ResearchTurns(projectId: string, sessionId: string): Promise<Agent2TurnResponse[]> {
+  const response = await readAgent2<{ items?: Agent2TurnResponse[] }>(
+    `/api/projects/${encodeURIComponent(projectId)}/research/sessions/${encodeURIComponent(sessionId)}/turns`,
+  );
+  return response.items || [];
 }
 
 export async function dispatchAgent2ResearchTurn(turnId: string): Promise<{ turn_id: string; status: string; queued: boolean }> {

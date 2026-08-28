@@ -255,6 +255,17 @@ broader Phase 14-R mature-product campaign remains PARTIAL: full scientific
 surface coverage, lifecycle/trash policy, task recovery, report-quality
 evaluation, operations maturity, and exact-SHA release commits are not yet
 qualified.
+
+### Agent-2.0 Phase 14-R explicit branch navigation (2026-08-28)
+
+The Research API now returns the persisted `parent_turn_id` and the session
+turn list is exposed through an authorized read-only endpoint. The Research
+workbench derives sibling branch choices from that relation and renders bounded
+links using the exact `researchTurnId`; it no longer relies on Job identifier
+formatting. Legacy turns without an explicit relation remain safely
+non-branchable. Deterministic coverage includes a three-turn root/sibling
+lineage and the API/domain regression suites remain green. Full authenticated
+browser submission/edit/branch acceptance is still PARTIAL.
 ### Agent-2.0 Phase 14-R exact Result reuse service qualification (2026-08-28)
 
 The existing Agent2 continuation/re-interpretation service campaign was rerun

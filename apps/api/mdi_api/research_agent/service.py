@@ -552,6 +552,9 @@ class ResearchTurnService:
             "project_id": turn["project_id"],
             "research_session_id": turn["research_session_id"],
             "sequence_no": turn["sequence_no"],
+            "parent_turn_id": (
+                str(turn["parent_turn_id"]) if turn.get("parent_turn_id") else None
+            ),
             "action": turn["action_type"],
             "status": turn["status"],
             "messages": messages_view,

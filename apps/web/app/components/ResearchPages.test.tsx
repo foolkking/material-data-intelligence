@@ -71,11 +71,22 @@ import {
   mergeArtifacts,
   mergeJobEvents,
   ResearchPage,
+  researchBranchChoices,
   researchStarterPrompts,
   researchTechnicalSummary,
   runProcessStepState,
   userFacingPlanStep,
 } from "./ResearchPages";
+
+it("resolves branch choices from explicit persisted turn relations", () => {
+  const turns = [
+    { id: "root", turn_id: "root", research_session_id: "session", project_id: "project", sequence_no: 1, parent_turn_id: null, status: "COMPLETED", user_message: { id: "m1", role: "user", content: "原问题" }, created_at: "2026-08-28T00:00:00Z" },
+    { id: "branch-a", turn_id: "branch-a", research_session_id: "session", project_id: "project", sequence_no: 2, parent_turn_id: "root", status: "COMPLETED", user_message: { id: "m2", role: "user", content: "分支 A" }, created_at: "2026-08-28T00:01:00Z" },
+    { id: "branch-b", turn_id: "branch-b", research_session_id: "session", project_id: "project", sequence_no: 3, parent_turn_id: "root", status: "PLANNING", user_message: { id: "m3", role: "user", content: "分支 B" }, created_at: "2026-08-28T00:02:00Z" },
+  ];
+
+  expect(researchBranchChoices(turns, "branch-b").map((turn) => turn.id)).toEqual(["root", "branch-a", "branch-b"]);
+});
 
 function starterHistory(profiles: Array<ProjectHistory["datasets"][number]["profile"]>): ProjectHistory {
   return {

@@ -5351,6 +5351,11 @@ body:has(.research-workbench) {
 .research-session-list a.active { box-shadow: inset 3px 0 var(--product-accent); }
 .research-session-list span { color: var(--product-secondary); font-size: 12px; }
 .research-session-empty { margin: 0; padding: 20px 12px; color: var(--product-secondary); font-size: 13px; line-height: 1.55; text-align: center; }
+.research-branch-switcher { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: 18px 32px 0; color: var(--product-secondary); font-size: 12px; }
+.research-branch-switcher span { margin-right: 2px; font-weight: 600; }
+.research-branch-switcher a { padding: 4px 9px; border: 1px solid var(--product-border); border-radius: 4px; color: var(--product-secondary); text-decoration: none; }
+.research-branch-switcher a:hover, .research-branch-switcher a:focus-visible { border-color: var(--product-accent); color: var(--product-accent); outline: none; }
+.research-branch-switcher a.active { border-color: var(--product-ink); color: var(--product-ink); font-weight: 650; }
 .conversation-history { align-content: start; }
 .research-memory-strip { display: grid; gap: 8px; padding: 10px 0 12px; border-bottom: 1px solid var(--product-border); font-size: 12px; }
 .research-memory-strip > strong { color: var(--product-secondary); font-weight: 600; }

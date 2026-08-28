@@ -14960,6 +14960,23 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
 
+## Agent-2.0 Phase 14-R explicit ResearchTurn branch navigation
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：`apps/api/mdi_api/research_agent/service.py`、
+  `apps/web/app/lib/agent2-research-api.ts`、
+  `apps/web/app/components/ResearchPages.tsx`、
+  `apps/web/app/components/ResearchPages.test.tsx`、
+  `apps/web/app/globals.css`，以及 Phase 14-R 审计/持久化文档。
+- 修改摘要：Research API 返回持久化 `parent_turn_id`；客户端读取当前会话
+  Turn 列表并提供显式、可访问的 sibling branch switcher，使用精确
+  `researchTurnId` 链接，不再从 Job 名称猜测身份。旧 Turn 无关系时保持
+  fail-closed。
+- 测试结果：`ResearchPages.test.tsx` 36 passed；`tests/test_agent2_api.py`
+  与 `tests/test_agent2_domain.py` 共 26 passed；web typecheck PASS。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains PARTIAL。
+
 ## Agent-2.0 Phase 14-R — Persisted task center bridge
 
 - 状态：部分完成；Phase 14-R 总任务仍为处理中

@@ -4076,3 +4076,13 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   PostgreSQL/Redis/MinIO `5 passed, 0 skipped`。
 - 受影响的 Workspace service-backed 集成回归为 `3 passed, 0 skipped`，
   确认新增显式 Turn 投影未破坏同栈工作流。
+
+## Agent-2.0 Phase 14-R explicit ResearchTurn branch navigation (2026-08-28)
+
+- Research history now exposes persisted `parent_turn_id` and the client lists
+  authorized turns for the current session through the existing API.
+- The workbench shows a bounded branch switcher when sibling turns exist and
+  links with the exact persisted Turn ID; it does not parse Job names.
+- Legacy/unresolvable turns remain read-only for branching. Pure branch lineage
+  regression, `ResearchPages` (36 tests), `agent2_api`/domain (26 tests), and
+  web typecheck pass. Browser edit/branch qualification remains open.
