@@ -1,5 +1,15 @@
 # DESIGN_PROGRESS
 
+## 2026-08-28 Agent-2.0 Phase 14-R Agent2 evidence compatibility adapter
+
+- The secured planner evidence route now adapts durable Agent2
+  interpretations through the immutable ScientificResult snapshot.
+  Historical snake_case/camelCase source bindings are normalized so the
+  read-only inspector exposes the exact object/version, Artifact checksum,
+  and ToolCall without creating a new scientific authority or execution path.
+  Persistence regression: 14 passed; same-stack browser evidence confirms the
+  chain is inspectable.
+
 ## 2026-08-28 Agent-2.0 Phase 14-R interpretation identity bridge
 
 - Presentation compilation now receives the persisted outer

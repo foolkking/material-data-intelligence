@@ -216,3 +216,34 @@ identity. Evidence blocks therefore retain the exact interpretation identity
 needed by the secured evidence-chain endpoint. Targeted compiler, presentation,
 and Agent2 presentation tests pass (`12 passed`); this is a read-only
 provenance fix and does not create or rerun scientific work.
+### Agent-2.0 Phase 14-R Agent2 evidence compatibility adapter (2026-08-28)
+
+The secured planner evidence route now recognizes durable Agent2
+interpretations in `agent2_scientific_interpretations` and projects their
+immutable `ScientificResult` snapshot through the existing read-only evidence
+contract. The adapter preserves exact `source_object_refs`, resolves
+Job-scoped Artifact and ToolCall descriptors, and accepts both snake_case and
+camelCase source bindings used by historical result bundles. No scientific
+values are copied into a new authority and no execution path is reachable from
+the inspector.
+
+Evidence:
+
+- real same-stack API call for interpretation
+  `efccf7a2-6666-429e-be92-20cb2cf659de` returned Result snapshot
+  `2809dcd1-243e-4323-8538-0a5fe81780d9`, exact Dataset object
+  `8a425466-b697-4c85-9a43-199414a22865`, version
+  `be02266a-7d4f-4ebb-9f28-3132855167d0`, Artifact checksum
+  `879396a3bc0bfdef2d31387b3eb73df309fa228d95f9cf2fb2c92eca6c119708`,
+  and ToolCall `call_job_agent2_8382c443f9ca4c909aa3444fea683807_step_1`
+  (`dataset.materials_explorer`, completed).
+- authenticated browser tab reloaded against the restarted PostgreSQL /
+  Redis / MinIO API and displayed the same source, checksum and ToolCall in
+  `证据链 evidence.bf3896f29ae3554e977725d327b4ebba`.
+- deterministic persistence suite now passes `14 passed`.
+
+This closes the remaining Agent2-to-planner evidence identity seam. The
+broader Phase 14-R mature-product campaign remains PARTIAL: full scientific
+surface coverage, lifecycle/trash policy, task recovery, report-quality
+evaluation, operations maturity, and exact-SHA release commits are not yet
+qualified.

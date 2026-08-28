@@ -16,7 +16,12 @@ from sqlalchemy import select
 from mdi_api.config import load_settings
 from mdi_api.artifact_storage import create_artifact_storage_from_settings
 from mdi_api.database import create_repository_factory
-from mdi_api.db import scientific_result_snapshots
+from mdi_api.db import (
+    agent2_scientific_interpretations,
+    artifacts,
+    scientific_result_snapshots,
+    tool_calls,
+)
 from mdi_api.repositories import InMemoryRepositoryBundle, compute_plan_hash
 from mdi_api.secrets import InMemorySecretStore
 from mdi_api.provider_connections import decrypt_api_key, get_connection, thinking_budget
@@ -1083,8 +1088,173 @@ def get_planner_interpretation(interpretation_id: str, *, repositories: Any = No
     return repos.interpretations.get_interpretation(interpretation_id)
 
 
+def _get_agent2_interpretation_evidence(interpretation_id: str, repos: Any) -> dict[str, Any] | None:
+    """Project an Agent2 interpretation through the legacy planner evidence route.
+
+    Agent2 interpretations are persisted in their own immutable table, while
+    the presentation client intentionally reuses the secured planner evidence
+    endpoint.  Keep this adapter read-only and bounded: the Result snapshot is
+    the authority for facts/source versions, and the Job-scoped tables only
+    contribute inspectable execution descriptors.
+    """
+    try:
+        interpretation_uuid = uuid.UUID(str(interpretation_id))
+    except (TypeError, ValueError, AttributeError):
+        return None
+    bind = getattr(repos.interpretations, "bind", None)
+    if bind is None:
+        return None
+
+    def read(connection: Any) -> dict[str, Any] | None:
+        interpretation = connection.execute(
+            select(agent2_scientific_interpretations).where(
+                agent2_scientific_interpretations.c.id == interpretation_uuid
+            )
+        ).mappings().first()
+        if interpretation is None:
+            return None
+        snapshot = connection.execute(
+            select(scientific_result_snapshots).where(
+                scientific_result_snapshots.c.id == interpretation["result_snapshot_id"]
+            )
+        ).mappings().first()
+        if snapshot is None:
+            return None
+
+        bundle = snapshot.get("bundle_json") or {}
+        if not isinstance(bundle, dict):
+            bundle = {}
+        facts = bundle.get("facts") if isinstance(bundle.get("facts"), list) else []
+        fact_by_id = {
+            str(item.get("fact_id") or item.get("factId")): item
+            for item in facts
+            if isinstance(item, dict) and (item.get("fact_id") or item.get("factId"))
+        }
+        source_refs: list[dict[str, Any]] = []
+        for item in bundle.get("source_object_refs") or []:
+            if not isinstance(item, dict):
+                continue
+            object_id = item.get("object_id") or item.get("objectId")
+            version_id = item.get("version_id") or item.get("versionId")
+            if not object_id or not version_id:
+                continue
+            source_refs.append({
+                "objectId": str(object_id),
+                "versionId": str(version_id),
+                "objectType": item.get("object_type") or item.get("objectType"),
+                "displayName": item.get("display_name") or item.get("displayName"),
+            })
+
+        job_id = str(snapshot.get("job_id") or bundle.get("provenance", {}).get("job_id") or "")
+        raw_artifacts = connection.execute(
+            select(artifacts).where(artifacts.c.job_id == job_id).order_by(artifacts.c.created_at, artifacts.c.id)
+        ).mappings().all() if job_id else []
+        artifact_rows = [dict(row) for row in raw_artifacts]
+        artifact_by_id = {str(row["id"]): row for row in artifact_rows}
+        artifact_descriptors = [{
+            "id": str(row["id"]),
+            "artifactId": str(row["id"]),
+            "jobId": str(row["job_id"]),
+            "toolCallId": str(row["tool_call_id"]) if row.get("tool_call_id") else None,
+            "type": row.get("type"),
+            "name": row.get("name"),
+            "contentHash": row.get("content_hash") or row.get("sha256"),
+            "sha256": row.get("sha256") or row.get("content_hash"),
+            "contentType": row.get("content_type"),
+        } for row in artifact_rows[:64]]
+        raw_tools = connection.execute(
+            select(tool_calls).where(tool_calls.c.job_id == job_id).order_by(tool_calls.c.created_at, tool_calls.c.id)
+        ).mappings().all() if job_id else []
+        tool_descriptors = [{
+            "id": str(row["id"]),
+            "toolCallId": str(row["id"]),
+            "toolId": row.get("tool_id"),
+            "status": row.get("status"),
+        } for row in raw_tools[:64]]
+
+        evidence_items: list[dict[str, Any]] = []
+        source_artifact_ids: list[str] = []
+        for raw in (bundle.get("evidence") or [])[:64]:
+            if not isinstance(raw, dict):
+                continue
+            evidence_id = raw.get("evidence_id") or raw.get("evidenceId")
+            if not evidence_id:
+                continue
+            artifact_id = raw.get("artifact_id") or raw.get("artifactId")
+            if artifact_id:
+                source_artifact_ids.append(str(artifact_id))
+            supported_fact_ids = raw.get("supports_fact_refs") or raw.get("supportsFactRefs") or []
+            representative = next(
+                (fact_by_id[str(fact_id)] for fact_id in supported_fact_ids if str(fact_id) in fact_by_id),
+                None,
+            )
+            if representative is None:
+                representative = {}
+            representative_value = representative.get("value")
+            representative_source = representative.get("source")
+            if not isinstance(representative_source, dict):
+                representative_source = {}
+            supported_result_refs = raw.get("supports_result_item_refs") or raw.get("supportsResultItemRefs") or []
+            display_value = (
+                str(representative_value)
+                if representative_value is not None
+                else str(raw.get("evidence_type") or raw.get("evidenceType") or evidence_id)
+            )
+            source_artifact = artifact_by_id.get(str(artifact_id)) if artifact_id else None
+            evidence_items.append({
+                "schemaVersion": "1.0",
+                "evidenceItemId": str(evidence_id),
+                "semanticRole": representative.get("predicate") or raw.get("evidence_type") or raw.get("evidenceType") or "evidence",
+                "evidenceKind": "PROVENANCE",
+                "subjectId": representative.get("subject_ref") or (supported_result_refs[0] if supported_result_refs else str(evidence_id)),
+                "displayValue": display_value,
+                "unit": representative.get("unit"),
+                "sourceArtifactId": str(artifact_id) if artifact_id else None,
+                "sourceArtifactChecksum": (source_artifact or {}).get("sha256") or (source_artifact or {}).get("content_hash") or "",
+                "artifactContract": (source_artifact or {}).get("type") or "scientific-result-evidence",
+                "artifactContractVersion": "1.0",
+                "sourceToolId": (
+                    raw.get("tool_call_id")
+                    or raw.get("toolCallId")
+                    or representative_source.get("tool_call_id")
+                    or representative_source.get("toolCallId")
+                    or representative_source.get("tool_id")
+                    or representative_source.get("toolId")
+                    or (source_artifact or {}).get("tool_call_id")
+                    or (source_artifact or {}).get("toolCallId")
+                ),
+                "sourceToolVersion": "1.0",
+                "fieldLocator": {"fieldId": raw.get("artifact_locator") or raw.get("artifactLocator") or str(evidence_id)},
+                "warnings": [],
+                "limitations": [],
+            })
+
+        provenance = bundle.get("provenance") if isinstance(bundle.get("provenance"), dict) else {}
+        return {
+            "interpretationId": str(interpretation["id"]),
+            "bundleId": f"agent2-result-{snapshot['id']}",
+            "bundleHash": str(snapshot.get("source_fingerprint") or ""),
+            "jobId": job_id,
+            "planId": str(provenance.get("analysis_plan_id") or ""),
+            "evidenceItems": evidence_items,
+            "sourceArtifactIds": list(dict.fromkeys(source_artifact_ids)),
+            "sourceObjectRefs": source_refs,
+            "artifacts": artifact_descriptors,
+            "toolCalls": tool_descriptors,
+            "bundleWarnings": bundle.get("warnings") or [],
+            "bundleLimitations": bundle.get("limitations") or [],
+        }
+
+    if hasattr(repos.interpretations, "_with_connection"):
+        return repos.interpretations._with_connection(read)
+    return None
+
+
 def get_planner_interpretation_evidence(interpretation_id: str, *, repositories: Any = None) -> dict[str, Any]:
     repos = _planner_read_repositories(repositories)
+    agent2_evidence = _get_agent2_interpretation_evidence(interpretation_id, repos)
+    if agent2_evidence is not None:
+        return agent2_evidence
     record = repos.interpretations.get_interpretation(interpretation_id)
     bundle = repos.interpretations.get_bundle(record["bundleId"])
     job_id = str(bundle.get("jobId") or "")

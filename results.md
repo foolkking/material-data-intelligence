@@ -14901,3 +14901,12 @@ PARTIAL 状态，未创建 P14R-A/P14R-B。
 追加验证（2026-08-28）：Scientific Presentation evidence reference 增加用户可触发的有界“检查证据链”面板，复用 secured interpretation-evidence 投影并展示 exact source object/version、Result 字段值、Artifact checksum、ToolCall/status；只读、不触发 Job/Tool/Artifact/Result，不暴露凭据或队列细节。新增 `ScientificPresentationBlocks.test.tsx` 为 1 passed，web typecheck PASS；同栈 Phase 3/7 service campaign 在显式 PostgreSQL/Redis/MinIO 环境为 5 passed、0 failed、0 errors、0 skipped。Phase 14-R 仍未达到 P14R-A/P14R-B 发布门。
 
 追加验证（2026-08-28）：定位并修复 Evidence Inspector 在真实现代 Result 上无法读取链路的身份契约缺口：`Agent2ScientificPresentation` 现在将 API 外层持久化 `interpretation_id` 显式传入 `compileScientificPresentation`，编译器随后为证据/发现/摘要/限制/警告保留该 ID；不再依赖嵌套 grounded payload 重复数据库身份。定向前端测试 `12 passed`，typecheck PASS，未新增科学执行。
+追加验证（2026-08-28）：完成 Agent2 durable interpretation → planner evidence route 的兼容适配。
+服务端从 immutable ScientificResult snapshot 解析 exact object/version，并从所属 Job
+返回 Artifact 与 ToolCall；同时兼容历史 source binding 的 snake_case/camelCase 字段。
+真实同栈 API 返回 interpretation `efccf7a2-6666-429e-be92-20cb2cf659de` 的
+Dataset version `be02266a-7d4f-4ebb-9f28-3132855167d0`、Artifact checksum
+`879396a3bc0bfdef2d31387b3eb73df309fa228d95f9cf2fb2c92eca6c119708` 与已完成
+ToolCall `dataset.materials_explorer`；保留的已认证浏览器标签页显示同一证据链。
+新增持久化回归后 `tests/test_phase10l4_api_persistence.py` 为 `14 passed`。
+Phase 14-R 更广泛的成熟产品门仍保持 PARTIAL，未创建 P14R-A/P14R-B。
