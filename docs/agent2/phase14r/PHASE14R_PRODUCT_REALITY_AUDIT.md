@@ -114,3 +114,11 @@ with the repository-supported service URLs (PostgreSQL `127.0.0.1:55433`,
 Redis DB 13, MinIO `127.0.0.1:9000`) and passed `1/1`; the earlier skip was
 only the missing `MDI_TEST_DATABASE_URL` shell alias. This is a focused
 service regression, not the complete Phase 14-R campaign.
+
+The authenticated report route for the same legacy run was also opened in the
+browser. It rendered the verified 9/9-row `结构组成概览` table, exact dataset
+link, methods/limitations sections, and no captured console errors. Because
+this legacy run has no modern ResearchTurn-linked interpretation, its report
+conclusion remains a generic bounded summary; this is useful read-only
+evidence but does not satisfy the full Phase 14-R multi-family report-quality
+campaign.
