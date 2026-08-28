@@ -57,9 +57,15 @@ export function NotificationCenterPage() {
   useEffect(() => {
     const refresh = () => setReloadKey((value) => value + 1);
     const onVisibility = () => { if (document.visibilityState === "visible") refresh(); };
+    const onOnline = () => refresh();
     document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("online", onOnline);
     const timer = window.setInterval(refresh, 30_000);
-    return () => { document.removeEventListener("visibilitychange", onVisibility); window.clearInterval(timer); };
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("online", onOnline);
+      window.clearInterval(timer);
+    };
   }, []);
 
   const unreadLikeCount = useMemo(

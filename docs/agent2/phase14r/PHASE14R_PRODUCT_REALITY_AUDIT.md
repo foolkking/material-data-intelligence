@@ -352,3 +352,12 @@ inventing progress or changing scientific execution state. The event listener
 is removed on unmount. Focused regression verifies an online event causes a
 fresh project fetch; full network interruption, API restart, and worker recovery
 browser qualification remain PARTIAL.
+
+### Agent-2.0 Phase 14-R notification-center online resynchronization (2026-08-28)
+
+The durable notification center now uses the same reconnect boundary as the
+Task Center: a browser `online` event invalidates its read key and refetches
+authorized persisted terminal-job notifications. Cleanup removes the listener
+on unmount. This keeps notifications truthful after connectivity returns while
+remaining read-only; full browser network/API/worker recovery qualification
+remains PARTIAL.

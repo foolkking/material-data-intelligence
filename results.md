@@ -15007,6 +15007,19 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
   仍未完成。
 - 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — notification-center online resynchronization
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/NotificationCenterPage.tsx`、
+  `apps/web/app/components/NotificationCenterPage.test.tsx`、Phase 14-R 审计与
+  进度文档。
+- 修改摘要：通知中心监听浏览器 `online` 事件，恢复联网后立即重新读取授权
+  的持久化终态通知；与任务中心一致，不创建 Job、不改变终态、不伪造通知。
+- 测试结果：通知中心与任务中心聚焦回归 `2 passed`；`npm run typecheck`
+  `PASS`。完整断网/API 重启/Worker 恢复浏览器验收仍未完成。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
+
 ## Agent-2.0 Phase 14-R — Current-worktree regression refresh
 
 - 状态：已完成（验证）

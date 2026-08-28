@@ -38,5 +38,8 @@ describe("NotificationCenterPage", () => {
     expect(screen.getByRole("link", { name: "打开研究" })).toHaveAttribute("href", "/projects/project-a/research?run=job-failed");
     expect(screen.getByRole("link", { name: "打开并重试" })).toHaveAttribute("href", "/projects/project-a/research?run=job-failed&turn=turn-failed");
     expect(screen.getByText("1 个", { exact: false })).toBeInTheDocument();
+    mocks.listProjects.mockClear();
+    window.dispatchEvent(new Event("online"));
+    await waitFor(() => expect(mocks.listProjects).toHaveBeenCalledTimes(1));
   });
 });

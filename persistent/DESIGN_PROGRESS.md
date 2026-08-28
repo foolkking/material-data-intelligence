@@ -4161,3 +4161,12 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - TaskCenterPage focused regression passes, production build passes, and the
   broader network interruption/API restart/worker recovery browser campaign
   remains open.
+
+## Agent-2.0 Phase 14-R notification-center online resynchronization (2026-08-28)
+
+- Notification Center now refetches its authorized persisted notifications
+  immediately after the browser emits `online`, matching Task Center recovery.
+- The listener is bounded to the page lifecycle and remains read-only; it does
+  not create jobs, alter terminal states, or fabricate notifications.
+- Notification and Task Center focused tests pass; full browser reconnect/API
+  restart/worker recovery qualification remains open.
