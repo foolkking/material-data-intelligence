@@ -2,14 +2,18 @@ import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ScientificReportRoute } from "./ScientificReportRoute";
+import { buildScientificReportMarkdown, type ScientificReportView } from "../lib/scientific-report-api";
 
 const mocks = vi.hoisted(() => ({ getScientificReport: vi.fn() }));
 
-vi.mock("../lib/scientific-report-api", () => ({ getScientificReport: mocks.getScientificReport }));
+vi.mock("../lib/scientific-report-api", async () => {
+  const actual = await vi.importActual<typeof import("../lib/scientific-report-api")>("../lib/scientific-report-api");
+  return { ...actual, getScientificReport: mocks.getScientificReport };
+});
 vi.mock("./ProductShell", () => ({ ProductShell: ({ children }: { children: React.ReactNode }) => <>{children}</>, RequireProductAuth: ({ children }: { children: React.ReactNode }) => <>{children}</> }));
 vi.mock("./ResearchPages", () => ({ ReportReaderPage: () => <div>Legacy report</div> }));
 
-const report = {
+const report: ScientificReportView = {
   report_id: "agent2_report_1",
   snapshot_id: "snapshot_1",
   project_id: "project_1",
@@ -70,9 +74,18 @@ describe("ScientificReportRoute", () => {
   it("does not repeat equivalent limitations from result and interpretation", async () => {
     mocks.getScientificReport.mockResolvedValue({
       ...report,
-      report: { ...report.report, limitations: [report.report.limitations[0], { ...report.report.limitations[0], source_refs: [] }] },
+      report: { ...report.report!, limitations: [report.report!.limitations[0], { ...report.report!.limitations[0], source_refs: [] }] },
     });
     render(<ScientificReportRoute projectId="project_1" reportId="agent2_report_1" />);
     expect(await screen.findAllByText("结果受有限截断范围约束。")).toHaveLength(1);
+  });
+
+  it("builds a bounded Markdown export with exact report and source provenance", () => {
+    const markdown = buildScientificReportMarkdown(report);
+    expect(markdown).toContain(`# ${report.report!.title}`);
+    expect(markdown).toContain(`ScientificResultSnapshot: ${report.scientific_result_snapshot_id}`);
+    expect(markdown).toContain("LiFePO4 结构");
+    expect(markdown).toContain("Evidence refs: evidence.rdf");
+    expect(markdown).not.toMatch(/password|api[_ -]?key|redis:\/\/|minio/i);
   });
 });

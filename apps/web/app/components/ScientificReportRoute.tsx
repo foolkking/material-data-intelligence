@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { getScientificReport, type ScientificReportView } from "../lib/scientific-report-api";
+import { buildScientificReportMarkdown, getScientificReport, type ScientificReportView } from "../lib/scientific-report-api";
 import { compileReportPresentation } from "../lib/scientific-presentation";
 import { ProductShell, RequireProductAuth } from "./ProductShell";
 import { ReportReaderPage } from "./ResearchPages";
@@ -59,9 +59,18 @@ function ScientificReportDocument({ projectId, view }: { projectId: string; view
     report.method_summary,
   );
   const presentation = compileReportPresentation(view);
+  const downloadMarkdown = () => {
+    const blob = new Blob([buildScientificReportMarkdown(view)], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `${report.title.replace(/[^\w\u4e00-\u9fff.-]+/g, "-").slice(0, 96) || "scientific-report"}.md`;
+    anchor.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  };
   return <main className="scientific-report-shell">
     <article className="scientific-report-document">
-      <nav className="scientific-report-back" aria-label="报告导航"><Link href={`/projects/${projectId}/reports`}>返回报告</Link><Link href={`/projects/${projectId}/research`}>回到研究</Link></nav>
+      <nav className="scientific-report-back" aria-label="报告导航"><Link href={`/projects/${projectId}/reports`}>返回报告</Link><Link href={`/projects/${projectId}/research`}>回到研究</Link><button type="button" className="product-secondary-action" onClick={downloadMarkdown}>导出 Markdown</button></nav>
       <header className="scientific-report-masthead">
         <p className="product-kicker">Grounded Scientific Report</p>
         <h1>{report.title}</h1>

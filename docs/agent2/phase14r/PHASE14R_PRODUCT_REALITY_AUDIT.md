@@ -399,3 +399,14 @@ the turn changes or the page unmounts. It does not create a new Turn, Job,
 ToolCall, Artifact, or Result and does not synthesize progress. Research page
 regression remains green; full browser network/API/worker recovery remains
 PARTIAL.
+
+### Agent-2.0 Phase 14-R bounded Scientific Report export (2026-08-28)
+
+The dedicated Scientific Report route now offers a deterministic Markdown
+export generated from the already-authorized immutable report view. The export
+contains the report/snapshot/turn/result identities, exact source-version
+summaries, grounded findings, limitations, evidence references, and
+reproducibility text; it excludes provider transcripts, credentials, queue
+details, and raw unbounded artifacts. The exporter is read-only with respect
+to scientific state and is covered by a focused privacy/provenance regression.
+Full export-package, retention, and real-user acceptance remain PARTIAL.

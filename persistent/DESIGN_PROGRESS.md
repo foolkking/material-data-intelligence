@@ -4206,3 +4206,13 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - No new ResearchTurn/Job/ToolCall/Artifact/Result is created and no progress
   is fabricated. ResearchPages regression (`36 passed`) and web typecheck pass;
   full network/API/worker recovery browser qualification remains open.
+
+## Agent-2.0 Phase 14-R bounded Scientific Report export (2026-08-28)
+
+- Scientific Report now exposes a deterministic Markdown export from the
+  authorized immutable report view.
+- The export retains report/snapshot/turn/result identities, exact source
+  versions, findings, limitations, evidence refs and reproducibility text,
+  while excluding provider/internal infrastructure details.
+- Focused Report route regression and web typecheck pass. Full export-package
+  and retention policy acceptance remain open.

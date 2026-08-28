@@ -15004,6 +15004,22 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
   `PASS`。完整网络中断、API 重启与 Worker 恢复浏览器验收仍未完成。
 - 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — bounded Scientific Report export
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/lib/scientific-report-api.ts`、
+  `apps/web/app/components/ScientificReportRoute.tsx`、
+  `apps/web/app/components/ScientificReportRoute.test.tsx`、相关 CSS 与
+  Phase 14-R 证据文档。
+- 修改摘要：专用科学报告页面新增“导出 Markdown”，由已授权报告快照确定性
+  生成；包含 Report/Snapshot/ResearchTurn/ScientificResult 身份、exact
+  source version、发现、限制、证据与复现信息，不包含凭据、Provider transcript
+  或内部队列/存储细节，也不触发科学重算。
+- 测试结果：ScientificReportRoute `4 passed`；`npm run typecheck`
+  `PASS`。完整可移植复现包、Retention/Trash 与真实用户验收仍未完成。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
+
 ## Agent-2.0 Phase 14-R — report source/method presentation
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
