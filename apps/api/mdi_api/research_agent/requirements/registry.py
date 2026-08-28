@@ -46,6 +46,18 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
         "properties": {"cutoff_angstrom": {"type": "number", "exclusiveMinimum": 0}},
         "additionalProperties": False,
     }
+    # Dataset exploration requests may carry bounded semantic hints from the
+    # orchestrator (for example the selected property and sample identity).
+    # These are planning constraints, not executable SQL, and remain strictly
+    # typed/bounded at the requirement boundary.
+    dataset_constraints = {
+        "type": "object",
+        "properties": {
+            "property": {"type": "string", "minLength": 1, "maxLength": 128},
+            "sample": {"type": "string", "minLength": 1, "maxLength": 256},
+        },
+        "additionalProperties": False,
+    }
     manifests = (
         ("structure.inspect", "Inspect structure", "Inspect an authorized crystal structure.", "structure", ["structure.crystal"], object_constraints),
         ("structure.compute_rdf", "Compute RDF", "Compute a radial distribution function for a crystal structure.", "structure", ["structure.crystal"], rdf_constraints),
@@ -57,7 +69,7 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
         ("ml.evaluate_regression", "Evaluate regression", "Evaluate a materials regression result.", "machine_learning", ["materials.dataset"], object_constraints),
         ("phonon.inspect_band", "Inspect phonon band", "Inspect an authorized phonon band structure.", "phonon", ["phonon.band_structure"], object_constraints),
         ("phonon.inspect_dos", "Inspect phonon DOS", "Inspect an authorized phonon density of states.", "phonon", ["phonon.dos"], object_constraints),
-        ("data.query", "Query data", "Query authorized project scientific data without mutation.", "data", ["materials.dataset"], object_constraints),
+        ("data.query", "Query data", "Query authorized project scientific data without mutation.", "data", ["materials.dataset", "materials.table"], dataset_constraints),
         ("report.compose", "Compose report", "Prepare authorized result references for report composition.", "report", [], object_constraints),
         ("structure.inspect_coordination_hist", "Inspect coordination histogram", "Summarize validated distance-cutoff coordination distributions for a crystal structure.", "structure", ["structure.crystal"], object_constraints),
         ("structure.inspect_coordination_crystalnn", "Inspect CrystalNN coordination", "Inspect validated CrystalNN local coordination results.", "structure", ["structure.crystal"], object_constraints),
@@ -65,8 +77,8 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
         ("trajectory.compute_rdf", "Compute trajectory RDF", "Compute a bounded radial distribution function from an authorized atomic trajectory.", "trajectory", ["trajectory.atomic"], rdf_constraints),
         ("electronic.inspect_band", "Inspect electronic band", "Inspect supplied electronic band-structure data without running a new electronic calculation.", "electronic", ["electronic.band_structure"], object_constraints),
         ("electronic.inspect_dos", "Inspect electronic DOS", "Inspect supplied electronic density-of-states data without running a new electronic calculation.", "electronic", ["electronic.dos"], object_constraints),
-        ("data.explore_composition_space", "Explore composition space", "Explore an authorized materials table using the existing bounded composition-space projection.", "data", ["materials.dataset", "materials.table"], object_constraints),
-        ("data.explore_materials", "Explore materials", "Summarize and compare an authorized materials dataset using the existing bounded explorer.", "data", ["materials.dataset", "materials.table"], object_constraints),
+        ("data.explore_composition_space", "Explore composition space", "Explore an authorized materials table using the existing bounded composition-space projection.", "data", ["materials.dataset", "materials.table"], dataset_constraints),
+        ("data.explore_materials", "Explore materials", "Summarize and compare an authorized materials dataset using the existing bounded explorer.", "data", ["materials.dataset", "materials.table"], dataset_constraints),
     )
     for requirement_id, display_name, description, domain, accepted, constraints in manifests:
         registry.register(RequirementManifest(
