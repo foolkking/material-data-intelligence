@@ -8,8 +8,8 @@ claiming the mature-product release gate.
 
 - Historical Phase 14 seal: `d03b0a2e86e50d834a774cf823cfe055c91cf10c`
 - Phase 14 remains sealed; no Phase 15 was created or started.
-- Current Phase 14-R worktree head before this evidence update: `06f903e`
-- Current evidence commit: `06f903e` (`phase14r: refresh research control gap audit`)
+- Current Phase 14-R worktree head before this evidence update: `af3b592`
+- Current evidence commit: `af3b592` (`phase14r: add immutable question editing branches`)
 - `PHASE14R_REOPENED = NO`
 
 ## B. Product Reality Audit

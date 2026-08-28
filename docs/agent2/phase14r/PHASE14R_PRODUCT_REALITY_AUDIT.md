@@ -58,7 +58,7 @@ acceptance evidence is not yet complete.
 | Context budget policy | checked-in `ContextBudgetPolicy 2.0` defines operation-specific effective input budgets with reserved output/repair space; deterministic compiler coverage proves conversation compacts before dropping exact selected scientific identity, while provider/browser-scale benchmark evidence remains open | PARTIAL |
 | User-facing Used context disclosure | Research UI fetches the authorized manifest endpoint and renders a bounded “本次研究使用的上下文” disclosure | PASS |
 | Historical context replay | immutable `CONTEXT_RESOLVED` event retains manifest fingerprint, policy/budget state and exact refs for a turn; project history now exposes whether a run has an authoritative ResearchTurn or only a legacy session binding; replay UI controls are not part of this contract | PARTIAL |
-| Message revisions/branching | no complete persisted revision/branch product contract found in current Research UI | NOT_QUALIFIED |
+| Message revisions/branching | completed Result exposes edit-to-new-branch; terminal parent relation, exact source refs and immutable parent are covered by domain/frontend tests; full browser edit submission and branch switcher remain open | PARTIAL |
 
 ## Lifecycle and control
 
@@ -71,7 +71,7 @@ acceptance evidence is not yet complete.
 | Bulk scientific-object lifecycle | partial Data UI patterns; full authorization/dependency qualification absent | PARTIAL |
 | Stop/cancel orchestration and execution | `cancel_turn`, execution supervisor, `/cancel` API | PASS |
 | Stop/continue/rerun/re-interpret/retry product controls | cancel path exists; completed Result presentation now exposes explicit continue, deliberate new rerun, and bounded no-recompute re-interpret actions; queued/running recovery and retry browser semantics remain open | PARTIAL |
-| Last-message edit and branch history | no complete immutable message-revision flow found | NOT_QUALIFIED |
+| Last-message edit and branch history | `编辑问题` routes to an explicit edit composer and creates a child ResearchTurn with `parent_turn_id`; browser submission/branch navigation campaign remains open | PARTIAL |
 
 ## Organization, reliability and operations
 
