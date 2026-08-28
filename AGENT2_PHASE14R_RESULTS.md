@@ -8,9 +8,10 @@ claiming the mature-product release gate.
 
 - Historical Phase 14 seal: `d03b0a2e86e50d834a774cf823cfe055c91cf10c`
 - Phase 14 remains sealed; no Phase 15 was created or started.
-- Current Phase 14-R worktree head: `1840ca82451150d2b89e4416cd3ca7e87d8e4c63`
+- Current Phase 14-R worktree head: `9ecbce5e0336618f9f4e464fe7c5c9a862e9f4c9`
 - Latest evidence commits: `814f850`, `2141fb1`, `456d0a9`, `c398f65`,
-  `739074d`, `26ad220`, `196c223`, `ee0bda5`, `1840ca8`
+  `739074d`, `26ad220`, `196c223`, `ee0bda5`, `1840ca8`, `08d7ec4`,
+  `9ecbce5`
 - `PHASE14R_REOPENED = NO`
 
 ## B. Product Reality Audit
