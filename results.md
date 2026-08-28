@@ -14992,6 +14992,16 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — Warm navigation performance baseline
+
+- 状态：已完成当前基线采样；成熟产品门仍为 `PARTIAL`
+- 完成时间：2026-08-28
+- 修改摘要：在真实已认证同栈浏览器记录 Data、Research、Report、Tasks、
+  Notifications 暖启动导航耗时，并同步性能基线与产品现实审计。
+- 测试结果：Data `175 ms`、Research `215 ms`、Report `259 ms`、Tasks
+  `202 ms`、Notifications `189 ms`；页面仍保持认证，未关闭服务或标签页。
+- 提交/CI 状态：未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
+
 ## Agent-2.0 Phase 14-R — Persisted Figure artifact bridge
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

@@ -1,9 +1,19 @@
 # Performance / Product Fluency Baseline
 
-Status: `PARTIAL` on 2026-08-28. A warm authenticated Research navigation
-against the same-stack runtime reached DOM-ready in `1442 ms` and exposed the
-research composer after `1945 ms` (including a 500 ms settling window). This
-is an initial point measurement, not a p95 SLO qualification.
+Status: `PARTIAL` on 2026-08-28. Warm authenticated navigation was measured
+against the live same-stack runtime (API/Redis/MinIO workers unchanged):
+
+| Route | Wall time |
+| --- | ---: |
+| `/projects/project_0002_1a0af866391f412d/data` | 175 ms |
+| `/projects/project_0002_1a0af866391f412d/research` | 215 ms |
+| `/projects/project_0002_1a0af866391f412d/reports/agent2_report_819f458171ba2d3219717895bf12eaf9` | 259 ms |
+| `/tasks` | 202 ms |
+| `/notifications` | 189 ms |
+
+An earlier warm Research navigation reached DOM-ready in `1442 ms` and
+exposed the research composer after `1945 ms` including a 500 ms settling
+window. These are point measurements, not p95 SLO qualification.
 
 Measure cold and warm runs for:
 

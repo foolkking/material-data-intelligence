@@ -86,7 +86,7 @@ acceptance evidence is not yet complete.
 | PostgreSQL/Redis/MinIO same-stack runtime | Phase 14 runtime evidence: PostgreSQL, Redis, MinIO, Redis workers | PASS |
 | Backup/restore drill | no current Phase 14-R drill evidence | NOT_QUALIFIED |
 | Monitoring/resource governance | health/runtime and bounded contracts exist; operational coverage/alerts/quotas absent | PARTIAL |
-| Performance baseline/SLOs | no current Phase 14-R measurement artifact | NOT_QUALIFIED |
+| Performance baseline/SLOs | current warm authenticated route timing artifact records Data 175 ms, Research 215 ms, Report 259 ms, Tasks 202 ms and Notifications 189 ms; p50/p95 cold/warm and resource budgets remain open | PARTIAL |
 
 ## Current release conclusion
 

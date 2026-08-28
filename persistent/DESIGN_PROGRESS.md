@@ -4260,3 +4260,10 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   `jobs=117`, `tool_calls=158`, `artifacts=637`, `results=88`.
 - This is a Structure-specific Viewer no-recompute proof; capability-wide
   Viewer acceptance remains open.
+
+## Agent-2.0 Phase 14-R warm route performance baseline (2026-08-28)
+
+- Same-stack authenticated browser timing samples: Data `175 ms`, Research
+  `215 ms`, modern Report `259 ms`, Tasks `202 ms`, Notifications `189 ms`.
+- These measurements establish a current baseline only; cold-start, p50/p95,
+  payload/resource and mobile interaction SLO evidence remain open.
