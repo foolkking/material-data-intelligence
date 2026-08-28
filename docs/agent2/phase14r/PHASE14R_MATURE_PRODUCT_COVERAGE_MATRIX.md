@@ -20,6 +20,6 @@ remain open.
 | Context transparency | Research context | ContextSnapshot/ContextManifest/memory | PASS | PARTIAL | PASS (authorized manifest endpoint + disclosure) | PASS (focused API tests) | PARTIAL | PASS | PARTIAL | PASS | PARTIAL |
 | Lifecycle management | project/data/report actions | lifecycle contract + dependency impact preview | PARTIAL | NOT_QUALIFIED | PARTIAL | PARTIAL | PARTIAL | PASS (write authorization) | NOT_QUALIFIED | PASS (server-derived dependencies) | PARTIAL |
 | Search/organization | global search | authorized read models | PARTIAL | NOT_QUALIFIED | PARTIAL | NOT_QUALIFIED | PARTIAL | PARTIAL | NOT_QUALIFIED | PARTIAL | PARTIAL |
-| Task/recovery | task center/reconnect | persisted Job/queue state | PARTIAL | NOT_QUALIFIED | NOT_QUALIFIED | PARTIAL | PARTIAL | PASS | NOT_QUALIFIED | PARTIAL | NOT_QUALIFIED |
+| Task/recovery | task center/reconnect | persisted Job/queue state | PARTIAL | NOT_QUALIFIED | NOT_QUALIFIED | PARTIAL | PARTIAL | PASS | NOT_QUALIFIED | PARTIAL | PARTIAL |
 | Retention/export | trash/export | retention policy | NOT_QUALIFIED | NOT_QUALIFIED | NOT_QUALIFIED | NOT_QUALIFIED | PARTIAL | PARTIAL | NOT_QUALIFIED | PARTIAL | NOT_QUALIFIED |
 | Evaluation/operations | internal qualification | test/ops evidence | PARTIAL | N/A | NOT_QUALIFIED | PARTIAL | N/A | PARTIAL | NOT_QUALIFIED | PASS | NOT_QUALIFIED |

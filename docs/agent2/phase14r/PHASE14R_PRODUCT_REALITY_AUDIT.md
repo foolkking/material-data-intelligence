@@ -78,9 +78,9 @@ acceptance evidence is not yet complete.
 | Surface | Current evidence | Status |
 | --- | --- | --- |
 | Global search | `GET /search` (and `/api/search`) provides bounded authorized navigation across projects, datasets, scientific objects, Research sessions, Reports and ScientificResults; ProductShell uses the same endpoint with type labels and direct links | PASS |
-| Background task center | `/tasks` aggregates authorized persisted analysis jobs, opens exact Workspace/Research routes, supports explicit reload and cancellation only when a persisted `researchTurnId` is present; retry/notification/network-recovery semantics remain open | PARTIAL |
-| Notifications | transient/status projections exist; durable notification center not proven | NOT_QUALIFIED |
-| Leave/return/reconnect | persisted Research state and history routes exist; network interruption campaign absent | PARTIAL |
+| Background task center | `/tasks` aggregates authorized persisted analysis jobs, opens exact Workspace/Research routes, supports explicit reload, cancellation, terminal retry handoff, and online/visibility resynchronization; full browser recovery campaign remains open | PARTIAL |
+| Notifications | durable `/notifications` projection reads authorized terminal states, links exact run/turn identities, and resynchronizes on visibility/online; push delivery and full browser recovery remain open | PARTIAL |
+| Leave/return/reconnect | persisted Research state/history, offline banner, and online Task/Notification resynchronization exist; API restart/worker recovery browser campaign remains open | PARTIAL |
 | Export/reproducibility package | Report/Recipe export foundations exist; mature user export manifest not proven | PARTIAL |
 | PostgreSQL/Redis/MinIO same-stack runtime | Phase 14 runtime evidence: PostgreSQL, Redis, MinIO, Redis workers | PASS |
 | Backup/restore drill | no current Phase 14-R drill evidence | NOT_QUALIFIED |
