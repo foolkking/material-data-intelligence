@@ -36,6 +36,7 @@ describe("NotificationCenterPage", () => {
     expect(screen.getByText("研究失败")).toBeInTheDocument();
     expect(screen.queryByText("研究状态更新")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "打开研究" })).toHaveAttribute("href", "/projects/project-a/research?run=job-failed");
+    expect(screen.getByRole("link", { name: "打开并重试" })).toHaveAttribute("href", "/projects/project-a/research?run=job-failed&turn=turn-failed");
     expect(screen.getByText("1 个", { exact: false })).toBeInTheDocument();
   });
 });

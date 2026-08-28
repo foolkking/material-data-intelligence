@@ -19,6 +19,9 @@ const statusLabel: Record<string, string> = {
 const notificationHref = (item: NotificationRow) => item.workspaceId
   ? `/workspaces/${encodeURIComponent(item.workspaceId)}`
   : `/projects/${encodeURIComponent(item.projectId)}/research?run=${encodeURIComponent(item.jobId)}`;
+const notificationRetryHref = (item: NotificationRow) => item.workspaceId || !item.researchTurnId
+  ? null
+  : `/projects/${encodeURIComponent(item.projectId)}/research?run=${encodeURIComponent(item.jobId)}&turn=${encodeURIComponent(item.researchTurnId)}`;
 
 function notificationLabel(status: string | null) {
   return statusLabel[String(status || "").toLowerCase()] || "研究状态更新";
@@ -70,7 +73,7 @@ export function NotificationCenterPage() {
     {state === "error" ? <div className="product-state" role="alert"><h2>通知暂时无法读取</h2><p>已有研究不会丢失，请检查服务连接后重新加载。</p></div> : null}
     {state === "ready" ? <>
       <section className="task-center-summary" aria-label="通知概览"><div><strong>{items.length}</strong><span>最近更新</span></div><div><strong>{unreadLikeCount}</strong><span>需要关注</span></div><div><strong>{projects.length}</strong><span>授权项目</span></div></section>
-      <section className="task-center-section" aria-labelledby="notification-list-title"><div className="product-section-heading"><h2 id="notification-list-title">最近通知</h2><span>{items.length} 项</span></div>{items.length ? <div className="task-center-list">{items.slice(0, 30).map((item) => <article className="task-center-row" key={`${item.projectId}:${item.jobId}`}><div><p className="product-kicker">{item.projectName}</p><h3>{notificationLabel(item.jobStatus)}</h3><p>{item.artifactCount} 个 Artifact · {item.interpretationCount} 个解释 · {item.workspaceProjectionStatus}</p></div><div className="product-row-actions"><Link className="product-secondary-action" href={notificationHref(item)}>打开研究</Link></div></article>)}</div> : <div className="product-state task-center-empty"><p>暂无新的研究通知。</p></div>}</section>
+      <section className="task-center-section" aria-labelledby="notification-list-title"><div className="product-section-heading"><h2 id="notification-list-title">最近通知</h2><span>{items.length} 项</span></div>{items.length ? <div className="task-center-list">{items.slice(0, 30).map((item) => { const retry = notificationRetryHref(item); const status = String(item.jobStatus || "").toLowerCase(); return <article className="task-center-row" key={`${item.projectId}:${item.jobId}`}><div><p className="product-kicker">{item.projectName}</p><h3>{notificationLabel(item.jobStatus)}</h3><p>{item.artifactCount} 个 Artifact · {item.interpretationCount} 个解释 · {item.workspaceProjectionStatus}</p></div><div className="product-row-actions"><Link className="product-secondary-action" href={notificationHref(item)}>打开研究</Link>{retry && ["failed", "cancelled", "canceled"].includes(status) ? <Link className="product-secondary-action" href={retry}>打开并重试</Link> : null}</div></article>; })}</div> : <div className="product-state task-center-empty"><p>暂无新的研究通知。</p></div>}</section>
     </> : null}
   </main></ProductShell></RequireProductAuth>;
 }
