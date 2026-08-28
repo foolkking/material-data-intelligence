@@ -371,3 +371,12 @@ jobs across four authorized projects. Both pages exposed their persisted sync
 timestamps and loaded through the live product shell. This is browser evidence
 for the durable surfaces; it does not close the broader reconnect, API restart,
 or worker recovery campaign.
+
+### Agent-2.0 Phase 14-R current-head same-stack regression (2026-08-28)
+
+After the reconnect changes, the PostgreSQL/Redis/MinIO campaign
+`tests/test_phase14r_context_manifest.py`,
+`tests/integration/test_agent2_phase3_service_backed.py`, and
+`tests/integration/test_agent2_phase7_service_backed.py` completed with
+`8 passed, 0 failed, 0 skipped` in `116.10s`. Runtime health remained
+PostgreSQL/Redis/MinIO with Redis workers and configured DeepSeek.

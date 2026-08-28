@@ -14992,6 +14992,18 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — current-head same-stack regression
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：无新增生产代码；更新 Phase 14-R 证据文档。
+- 修改摘要：在保持 API、Worker、PostgreSQL、Redis、MinIO 运行的条件下，
+  重跑 ContextManifest、Agent2 PostgreSQL 规划和 Workspace/Result 服务回归。
+- 测试结果：`8 passed, 0 failed, 0 skipped`，耗时 `116.10s`；健康端点仍为
+  `database=postgresql`、`redis=redis`、`artifactStorage=minio`、
+  `worker=redis`、DeepSeek 已配置。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
+
 ## Agent-2.0 Phase 14-R — task-center online resynchronization
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

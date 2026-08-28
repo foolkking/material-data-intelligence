@@ -4179,3 +4179,11 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - Exact project/run links and persisted sync timestamps were visible in both
   surfaces. The broader reconnect/API restart/worker recovery browser campaign
   remains open.
+
+## Agent-2.0 Phase 14-R current-head same-stack regression (2026-08-28)
+
+- The current PostgreSQL/Redis/MinIO service campaign completed
+  `8 passed, 0 failed, 0 skipped` in `116.10s`.
+- The tested paths included ContextManifest, PostgreSQL planning idempotency,
+  and Redis-backed workspace/result behavior; runtime health remained on the
+  real same-stack services with Redis workers and configured DeepSeek.
