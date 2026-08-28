@@ -4132,3 +4132,13 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - Workspace-backed jobs without a turn remain open-only; retry never mutates
   the prior execution lineage.
 - Task-center, notification-center, and execution activity tests pass.
+
+## Agent-2.0 Phase 14-R current-worktree regression refresh (2026-08-28)
+
+- Same-stack runtime remains PostgreSQL/Redis/MinIO with Redis workers and
+  configured DeepSeek.
+- Service-backed focused campaign: `8 passed, 0 failed, 0 skipped`.
+- Frontend full regression: `96 test files / 610 tests passed`; typecheck,
+  production build, Python compileall, and diff check pass.
+- Broad mature-product browser, retention, report-quality, operations, and
+  real-user gates remain PARTIAL.

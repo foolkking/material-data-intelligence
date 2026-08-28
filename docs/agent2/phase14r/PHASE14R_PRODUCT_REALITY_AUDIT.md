@@ -319,3 +319,15 @@ when an authoritative `researchTurnId` exists. The link carries both the
 persisted run and turn identifiers into the Research route, where the explicit
 retry action creates a new immutable lineage. Workspace-backed jobs without a
 turn remain open-only.
+
+### Agent-2.0 Phase 14-R current-worktree regression refresh (2026-08-28)
+
+After the notification and retry-handoff changes, the authenticated runtime
+health endpoint still reports PostgreSQL, Redis, MinIO (`mdi-artifacts`), Redis
+worker execution, and configured DeepSeek. The focused same-stack campaign
+completed with `8 passed, 0 failed, 0 skipped`; the frontend full regression
+completed with `96 test files / 610 tests passed`; `npm run typecheck`,
+`npm run build`, Python `compileall`, and `git diff --check` passed. These are
+current-head regression results, not a claim that the broader Phase 14-R
+browser, trash/retention, report-quality, operations, or real-user acceptance
+gates are closed.

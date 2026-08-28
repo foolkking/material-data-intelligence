@@ -14992,6 +14992,18 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — Current-worktree regression refresh
+
+- 状态：已完成（验证）
+- 完成时间：2026-08-28
+- 修改文件：无（仅验证）
+- 修改摘要：通知中心、任务中心重试入口合入后，重新验证真实同栈运行时与当前工作树。
+- 测试结果：同栈服务回归 `8 passed, 0 failed, 0 skipped`；前端全量
+  `96 test files / 610 tests passed`；typecheck、production build、compileall、
+  `git diff --check` 通过；`/health/runtime` 为 PostgreSQL/Redis/MinIO/Redis
+  worker/DeepSeek。
+- 提交/CI 状态：未创建 P14R-A/B；Phase 14-R verdict 保持 PARTIAL。
+
 ## Agent-2.0 Phase 14-R explicit terminal retry
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
