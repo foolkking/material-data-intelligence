@@ -131,6 +131,14 @@ conclusion remains a generic bounded summary; this is useful read-only
 evidence but does not satisfy the full Phase 14-R multi-family report-quality
 campaign.
 
+The preserved authenticated historical Research route was refreshed with an
+explicit session target and an unnormalized historical run. The route now
+loads the persisted conversation and exact Dataset presentation; the previous
+false “研究会话不存在或已不可访问” state is absent. The fix is covered by
+the `ResearchPages` regression (`35 passed`) and the authoritative session
+request returned `200 OK`. This closes that narrow navigation seam, but does
+not replace the broader history/resume and mature control campaign.
+
 An authenticated browser request to a different project’s exact modern
 ResearchTurn route was denied with the bounded product message
 `当前用户无权访问此项目。` and no console warnings/errors. This is a live
@@ -158,7 +166,7 @@ PostgreSQL activity after the service campaign was `active=1`, `idle=5`,
 in this check.
 
 The current-worktree full regression was rerun after the Phase 14-R fixes:
-frontend `93 files / 597 passed`; backend `1820 passed / 83 skipped`
+frontend `94 files / 601 passed`; backend `1820 passed / 83 skipped`
 (the skips remain historical/optional compatibility coverage). This is
 regression evidence only; the mature-product P0/P1 browser, report-quality,
 trash/retention, recovery and operations gates are still not all qualified.
