@@ -14808,3 +14808,15 @@ archive evidence 与 390x844 Dataset handoff 无溢出；仅出现预期认证 b
 提交/CI 状态：P13-A 候选 `4bfdacd`，exact-SHA CI run `33134862435`，
 Unit/Frontend/PostgreSQL-Redis-MinIO/Linux replay/Windows replay 全部 PASS。
 P13-B 为本次证据提交，待提交后运行 exact-current-head CI。
+任务名称：Agent-2.0 Phase 14 — Full Platform Integration & Production Qualification
+状态：已完成
+完成时间：2026-08-28T12:30:00+08:00
+修改摘要：完成 Phase 13 provenance normalization、Phase 14 coverage ledger、
+Project History/Workspace 显式 ResearchTurn 身份连续性桥，并完成真实
+PostgreSQL/Redis/MinIO、浏览器、全后端/前端及静态回归。
+测试结果：service-backed 17/17；backend 1813 passed / 83 historical skips；
+frontend 91 files / 595 passed；typecheck、production build、compileall、
+uv lock、touched Ruff、diff check 通过。
+提交/CI 状态：P14-A `d1249ac34cc0d2be571cdbc96075a3d88c6406b8`；
+CI `33142030331` exact-SHA PASS。P14-B 为本次证据封存提交，需以其
+exact-current-head CI 作为最终 release seal。

@@ -1,5 +1,5 @@
 ---TASK---
-状态：处理中
+状态：已完成
 任务名称：Agent-2.0 Phase 14 — Full Platform Integration & Production Qualification
 开始时间：2026-08-28T00:00:00+08:00
 
@@ -12,6 +12,16 @@ authenticated browser 验证跨表面连续性、历史版本、归档恢复、R
 Viewer zero-recompute、Evidence、Report、安全、桌面/移动端与完整回归。
 仅在所有强制门通过后创建 P14-A/P14-B exact-SHA CI。不得开始 Phase 15，
 不得覆盖用户文件，不得弱化科学权威或把 skipped 当作 PASS。
+
+完成时间：2026-08-28T12:30:00+08:00
+修改文件：Phase 14 coverage/task/results、Workspace history identity bridge、
+Phase 13 provenance normalization、持久化架构记录。
+修改摘要：完成同栈跨表面身份连续性修复与资格验证；P14-A exact-SHA CI
+通过；准备以 P14-B 证据提交完成最终 current-head CI。
+测试结果：PostgreSQL/Redis/MinIO service-backed 17/17；完整后端
+1813 passed；完整前端 595 passed；typecheck/build/compileall/lock/diff 通过。
+提交/CI 状态：P14-A d1249ac34cc0d2be571cdbc96075a3d88c6406b8；
+CI 33142030331 PASS；P14-B exact-current-head CI 待本提交完成。
 ---END---
 
 ---TASK---
