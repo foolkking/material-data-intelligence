@@ -28,7 +28,7 @@ describe("TaskCenterPage", () => {
       data: {
         items: projectId === "project-a"
           ? [{ jobId: "job-running", projectId, datasetId: null, researchTurnId: "turn-running", jobStatus: "running", workspaceProjectionStatus: "RUNNING", analysisPlanSchemaVersion: "0.2", dependencyOutcome: null, artifactCount: 1, interpretationCount: 0, workspaceId: "workspace-1", workspaceExists: true, createdAt: "2026-08-28T00:00:00Z", updatedAt: "2026-08-28T01:00:00Z" }]
-          : [{ jobId: "job-complete", projectId, datasetId: null, jobStatus: "completed", workspaceProjectionStatus: "COMPLETE", analysisPlanSchemaVersion: "0.2", dependencyOutcome: "ALL_SUCCEEDED", artifactCount: 2, interpretationCount: 1, workspaceId: null, workspaceExists: false, createdAt: "2026-08-27T00:00:00Z", updatedAt: "2026-08-27T01:00:00Z" }],
+          : [{ jobId: "job-complete", projectId, datasetId: null, jobStatus: "completed", workspaceProjectionStatus: "COMPLETE", analysisPlanSchemaVersion: "0.2", dependencyOutcome: "ALL_SUCCEEDED", artifactCount: 2, interpretationCount: 1, workspaceId: null, workspaceExists: false, createdAt: "2026-08-27T00:00:00Z", updatedAt: "2026-08-27T01:00:00Z" }, { jobId: "job-failed", projectId, datasetId: null, researchTurnId: "turn-failed", jobStatus: "failed", workspaceProjectionStatus: "FAILED", analysisPlanSchemaVersion: "0.2", dependencyOutcome: "FAILED", artifactCount: 0, interpretationCount: 0, workspaceId: null, workspaceExists: false, createdAt: "2026-08-27T00:00:00Z", updatedAt: "2026-08-27T02:00:00Z" }],
       },
       status: 200,
       etag: null,
@@ -40,7 +40,12 @@ describe("TaskCenterPage", () => {
     expect(screen.getByText("运行中 · job-running")).toBeInTheDocument();
     expect(screen.getByText("已完成 · job-complete")).toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: "打开" })[0]).toHaveAttribute("href", "/workspaces/workspace-1");
-    expect(screen.getAllByRole("link", { name: "打开" })[1]).toHaveAttribute("href", "/projects/project-b/research?run=job-complete");
+    expect(screen.getAllByRole("link", { name: "打开" }).map((link) => link.getAttribute("href"))).toContain("/projects/project-b/research?run=job-complete");
+    expect(screen.getAllByRole("link", { name: "打开" }).map((link) => link.getAttribute("href"))).toContain("/projects/project-b/research?run=job-failed");
+    expect(screen.getAllByRole("link", { name: "打开并重试" }).map((link) => link.getAttribute("href"))).toEqual([
+      "/projects/project-b/research?run=job-failed&turn=turn-failed",
+      "/projects/project-b/research?run=job-failed&turn=turn-failed",
+    ]);
     mocks.cancelAgent2Execution.mockResolvedValue({ turn_id: "turn-running", status: "CANCELING" });
     fireEvent.click(screen.getByRole("button", { name: "停止研究" }));
     await waitFor(() => expect(mocks.cancelAgent2Execution).toHaveBeenCalledWith("turn-running"));

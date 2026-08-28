@@ -17,6 +17,21 @@
   `npm run typecheck` passed。
 - 提交/CI 状态：待提交；Phase 14-R 当前 verdict 仍为 PARTIAL。
 
+## Agent-2.0 Phase 14-R — Task Center retry handoff
+
+- 状态：已完成（增量）
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/TaskCenterPage.tsx`、
+  `apps/web/app/components/TaskCenterPage.test.tsx`、
+  `docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+  `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：对失败/取消且具备权威 `researchTurnId` 的任务增加“打开并重试”
+  入口，保留原始 run/turn 标识并交给 Research 页创建新的不可变重试分支；
+  无 Turn 的 Workspace 任务保持仅打开。
+- 测试结果：Task Center、Notification Center、ResearchExecutionActivity 共
+  8 tests passed；`npm run typecheck` passed。
+- 提交/CI 状态：待提交；Phase 14-R verdict 仍为 PARTIAL。
+
 ## Agent-2.0 Phase 10 browser-context refresh — 2026-08-25
 
 状态：部分完成

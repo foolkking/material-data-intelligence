@@ -4124,3 +4124,11 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - Visibility/30-second refresh is bounded and read-only; no scientific work is
   created. Focused notification/task-center tests and web typecheck pass.
 - Push preferences and network reconnect recovery remain open.
+
+## Agent-2.0 Phase 14-R task-center retry handoff (2026-08-28)
+
+- Terminal failed/canceled jobs with an authoritative `researchTurnId` now
+  expose `打开并重试` and preserve both `run` and `turn` query identities.
+- Workspace-backed jobs without a turn remain open-only; retry never mutates
+  the prior execution lineage.
+- Task-center, notification-center, and execution activity tests pass.

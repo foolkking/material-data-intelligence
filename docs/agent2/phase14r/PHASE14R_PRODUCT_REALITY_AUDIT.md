@@ -313,3 +313,9 @@ workspace or project research route, refreshes on visibility return and every
 30 seconds, and cannot create or mutate scientific work. Focused notification
 and task-center tests pass. Push preferences and network reconnect recovery
 remain PARTIAL.
+
+The Task Center also exposes `打开并重试` for terminal failed/canceled jobs
+when an authoritative `researchTurnId` exists. The link carries both the
+persisted run and turn identifiers into the Research route, where the explicit
+retry action creates a new immutable lineage. Workspace-backed jobs without a
+turn remain open-only.
