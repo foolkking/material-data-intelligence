@@ -14992,6 +14992,27 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — Persisted Figure artifact bridge
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：`apps/api/mdi_api/scientific_reports/service.py`、
+  `apps/web/app/lib/scientific-report-api.ts`、
+  `apps/web/app/lib/scientific-presentation.ts`、
+  `apps/web/app/components/ScientificReportRoute.tsx`、
+  `tests/test_agent2_phase8_reports.py` 及 Phase 14-R 证据文档。
+- 修改摘要：报告 API 从不可变 ScientificResult bundle 派生有界
+  `figure_sources`，包含 Figure 对应的持久化 Artifact IDs 与 source Job；
+  Report/Presentation 通过既有授权 Artifact 内容路由打开真实图表，缺失
+  映射时保留 exact-source Viewer 回退。未引入第二事实源，打开图表不执行
+  新科学计算。
+- 测试结果：后端报告 focused `16 passed, 4 historical skips`；前端报告/
+  presentation focused `14 passed`；前端全量 `96 files / 612 passed`；
+  typecheck `PASS`；production build `PASS`。
+- 提交/CI 状态：本阶段变更尚未创建 P14R-A/P14R-B；Phase 14-R remains
+  `PARTIAL`，Capability-wide same-stack Figure、Trash/retention、报告质量与
+  真实用户验收仍未闭合。
+
 ## Agent-2.0 Phase 14-R — Research progress reconnect
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

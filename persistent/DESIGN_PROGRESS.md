@@ -4226,3 +4226,15 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - The browser download event did not expose a completed Blob transfer; only
   route/action reachability is recorded. End-to-end export transport and
   retention policy acceptance remain open.
+
+## Agent-2.0 Phase 14-R persisted Figure navigation (2026-08-28)
+
+- Report Figure blocks now resolve bounded `figure_sources` derived from the
+  immutable ScientificResult bundle, including persisted Artifact IDs and the
+  source Job.
+- Report and shared presentation readers use the existing secured Artifact
+  content route when available, with exact-source Viewer fallback otherwise;
+  rendering remains read-only and cannot enqueue scientific work.
+- Backend report tests (`16`, with four historical live-LLM skips), frontend
+  presentation/report tests (`14`), typecheck and production build pass.
+  Capability-wide same-stack Figure acceptance remains open.

@@ -172,6 +172,18 @@ frontend `95 files / 606 passed`; backend `1820 passed / 83 skipped`
 regression evidence only; the mature-product P0/P1 browser, report-quality,
 trash/retention, recovery and operations gates are still not all qualified.
 
+The report Figure projection was subsequently tightened on 2026-08-28:
+`ScientificReportService` now derives bounded `figure_sources` from the
+immutable ScientificResult bundle (figure reference, persisted Artifact IDs,
+and the authoritative source Job). The shared report presentation compiler and
+report reader expose the existing secured Artifact content route when that
+mapping is available; otherwise they retain the exact source Viewer fallback.
+This closes the descriptor-only Figure navigation seam without introducing a
+second artifact authority or recomputation path. Focused backend report tests
+pass `16` with the four historical live-LLM skips; frontend presentation/report
+tests pass `14`; typecheck and production build pass. Full same-stack and
+browser evidence for every capability-family Figure remains open.
+
 ### Agent-2.0 Phase 14-R evidence traversal projection (2026-08-28)
 
 The secured interpretation-evidence response now keeps the evidence bundle as

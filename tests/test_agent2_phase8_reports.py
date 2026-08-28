@@ -411,10 +411,20 @@ def test_report_viewer_sources_are_derived_only_from_result_provenance() -> None
         "display_name": "LiFePO4",
         "is_current_version": True,
     }]
+    assert fresh["figure_sources"] == [{
+        "figure_ref": "figure.rdf_curve",
+        "artifact_ids": ["artifact_private_123"],
+        "job_id": "job_private_123",
+    }]
 
     legacy_bundle = _bundle().model_copy(update={"source_object_refs": []}).model_dump(mode="json")
     legacy = ScientificReportService._with_viewer_sources({}, Session(legacy_bundle), row)
     assert legacy["viewer_sources"] == []
+    assert legacy["figure_sources"] == [{
+        "figure_ref": "figure.rdf_curve",
+        "artifact_ids": ["artifact_private_123"],
+        "job_id": "job_private_123",
+    }]
 
 
 @pytest.mark.live_llm

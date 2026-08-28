@@ -194,7 +194,20 @@ class ScientificReportService:
                 "object_type": str(version["object_type"]), "display_name": str(obj["display_name"]),
                 "is_current_version": str(obj.get("current_version_id")) == str(ref.version_id),
             })
-        return {**payload, "viewer_sources": sources}
+        # Figure descriptors are communication-layer projections, but opening
+        # the persisted figure must still resolve through the exact Result
+        # artifact authority. Keep this bounded and derived from the immutable
+        # ScientificResult bundle; never accept arbitrary report-provided URLs.
+        job_id = str(bundle.provenance.job_id or row.get("job_id") or "")
+        figure_sources = [
+            {
+                "figure_ref": str(figure.figure_id),
+                "artifact_ids": [str(artifact_id) for artifact_id in figure.artifact_ids[:8]],
+                "job_id": job_id or None,
+            }
+            for figure in bundle.figures[:16]
+        ]
+        return {**payload, "viewer_sources": sources, "figure_sources": figure_sources}
 
     def list_project(self, project_id: str, *, limit: int = 50) -> dict[str, Any]:
         with self.repository_factory.session() as session:

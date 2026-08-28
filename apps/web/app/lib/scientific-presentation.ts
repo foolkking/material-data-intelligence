@@ -264,12 +264,20 @@ export function compileReportPresentation(view: ScientificReportView): Scientifi
     });
   });
   (report?.primary_figures || []).slice(0, 12).forEach((figure, index) => {
+    const figureSource = (view.figure_sources || []).find((candidate) => candidate.figure_ref === figure.figure_ref);
+    const artifactId = figureSource?.artifact_ids?.[0] || figure.figure_ref;
     blocks.push({
       id: stableId("report-figure", figure.figure_ref || figure.caption, index),
       type: "figure",
       title: figure.caption || figure.figure_ref,
-      artifactId: figure.figure_ref,
-      source: { ...source, resultId: view.scientific_result_snapshot_id, interpretationId, artifactId: figure.figure_ref },
+      artifactId,
+      source: {
+        ...source,
+        resultId: view.scientific_result_snapshot_id,
+        interpretationId,
+        artifactId,
+        jobId: figureSource?.job_id || null,
+      },
     });
   });
   (report?.evidence_refs || []).slice(0, 12).forEach((evidenceId, index) => {

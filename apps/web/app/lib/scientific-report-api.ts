@@ -47,6 +47,7 @@ export type ScientificReportView = {
   source_fingerprint: string;
   created_at: string;
   viewer_sources?: Array<{ source_ref: string; object_id: string; version_id: string; object_type: string; display_name: string; is_current_version: boolean }>;
+  figure_sources?: Array<{ figure_ref: string; artifact_ids: string[]; job_id?: string | null }>;
   report?: ScientificReportContent;
 };
 
