@@ -9,7 +9,7 @@ claiming the mature-product release gate.
 - Historical Phase 14 seal: `d03b0a2e86e50d834a774cf823cfe055c91cf10c`
 - Phase 14 remains sealed; no Phase 15 was created or started.
 - Current Phase 14-R worktree head before this evidence update: `5c5a437`
-- Current evidence commit: `4eb40d0` (`phase14r: preserve report evidence identity`)
+- Current evidence commit: `87bc48a` (`phase14r: restore historical context manifest`)
 - `PHASE14R_REOPENED = NO`
 
 ## B. Product Reality Audit
