@@ -3913,3 +3913,11 @@ ScientificObject/ScientificObjectVersion and current user request remain
 present. The focused ContextManifest suite now passes (`3 passed`); browser-
 scale provider performance benchmarking remains an explicit open qualification
 item.
+
+### Agent-2.0 Phase 14-R warm navigation measurement (2026-08-28)
+
+The existing authenticated in-app browser measured a warm Research navigation
+against the PostgreSQL/Redis/MinIO runtime: DOM-ready at `1442 ms`, with the
+research composer visible after `1945 ms` including a `500 ms` settling window.
+This is a baseline point only; the required p50/p95 and mobile performance
+campaign remains open.

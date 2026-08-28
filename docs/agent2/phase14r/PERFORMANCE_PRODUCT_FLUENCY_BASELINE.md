@@ -1,7 +1,9 @@
 # Performance / Product Fluency Baseline
 
-Status: `NOT_QUALIFIED` on 2026-08-28. This artifact defines the measurement
-plan and records no invented timing numbers.
+Status: `PARTIAL` on 2026-08-28. A warm authenticated Research navigation
+against the same-stack runtime reached DOM-ready in `1442 ms` and exposed the
+research composer after `1945 ms` (including a 500 ms settling window). This
+is an initial point measurement, not a p95 SLO qualification.
 
 Measure cold and warm runs for:
 
@@ -23,3 +25,6 @@ current PASS evidence; measured deviations must be documented.
 No fake progress is permitted. UI state must derive from persisted
 ResearchTurn/Plan/Job/ToolCall/Artifact/Result/Interpretation state.
 
+The remaining cold/warm matrix, p50/p95 campaign, payload/render/resource
+measurements and mobile interaction timings remain open; no release PASS is
+claimed from this single sample.
