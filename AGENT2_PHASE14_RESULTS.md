@@ -262,8 +262,16 @@ required jobs = Unit Tests; Frontend Typecheck & Build;
 
 ### K2. P14-B / Final Seal
 
-This evidence commit is the final Phase 14 head. Its exact-current-head CI is
-the required final release qualification and is recorded after the commit.
+```text
+SHA = 28a5a92c31b662bd12b19cdb2f99431c79ca5612
+CI run = 33142435947
+CI tested SHA = 28a5a92c31b662bd12b19cdb2f99431c79ca5612
+result = PASS
+required jobs = Unit Tests; Frontend Typecheck & Build;
+                Service-backed Integration (PostgreSQL + Redis + MinIO);
+                Phase 11-3 Scientific Replay (Linux/Windows)
+HEAD == origin/master at P14-B
+```
 
 ## L. Remaining Gaps
 
@@ -276,9 +284,15 @@ NONE
 ```text
 PHASE12 = COMPLETE
 PHASE13 = COMPLETE
+FUNCTIONAL_PHASE14_CLOSURE = PASS
+AGENT2_PHASE14 = COMPLETE
+FULL_PLATFORM_INTEGRATION = COMPLETE
+PRODUCTION_QUALIFICATION = PASS
+READY_FOR_PRODUCTION_RELEASE = YES
 SILENT_LATEST_SUBSTITUTION = NO
 DUPLICATE_SCIENTIFIC_AUTHORITY = NO
 RAW_TOOL_EXPOSURE = NO
 UNQUALIFIED_MAJOR_PRODUCT_FLOW = NONE
 PHASE14_STARTED = YES
+PHASE15_STARTED = NO
 ```

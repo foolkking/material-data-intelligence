@@ -21,7 +21,8 @@ Phase 13 provenance normalization、持久化架构记录。
 测试结果：PostgreSQL/Redis/MinIO service-backed 17/17；完整后端
 1813 passed；完整前端 595 passed；typecheck/build/compileall/lock/diff 通过。
 提交/CI 状态：P14-A d1249ac34cc0d2be571cdbc96075a3d88c6406b8；
-CI 33142030331 PASS；P14-B exact-current-head CI 待本提交完成。
+CI 33142030331 PASS；P14-B 28a5a92c31b662bd12b19cdb2f99431c79ca5612；
+exact-current-head CI 33142435947 PASS；HEAD == origin/master。
 ---END---
 
 ---TASK---
