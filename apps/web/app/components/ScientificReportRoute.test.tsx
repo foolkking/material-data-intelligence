@@ -86,6 +86,7 @@ describe("ScientificReportRoute", () => {
     expect(markdown).toContain(`# ${report.report!.title}`);
     expect(markdown).toContain(`ScientificResultSnapshot: ${report.scientific_result_snapshot_id}`);
     expect(markdown).toContain("LiFePO4 结构");
+    expect(markdown).toContain("Artifacts: artifact.rdf");
     expect(markdown).toContain("Evidence refs: evidence.rdf");
     expect(markdown).not.toMatch(/password|api[_ -]?key|redis:\/\/|minio/i);
   });

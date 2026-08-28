@@ -15021,6 +15021,9 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 当前实现提交为 `456d0a9`（其父提交 `2141fb1` 包含 Figure Artifact
 路由回归）；工作树中的 Phase 14-R 仍未创建发布候选 P14R-A/P14R-B。
 
+补充修复（2026-08-28）：Markdown 导出为每个主要 Figure 保留对应的持久化
+Artifact IDs；ScientificReportRoute focused `5 passed`，typecheck `PASS`。
+
 ## Agent-2.0 Phase 14-R — Research progress reconnect
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

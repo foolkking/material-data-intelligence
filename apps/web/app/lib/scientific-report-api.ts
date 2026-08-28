@@ -101,7 +101,11 @@ export function buildScientificReportMarkdown(view: ScientificReportView): strin
   }
   if (report.primary_figures.length) {
     lines.push("", "## 主要图表");
-    report.primary_figures.forEach((figure) => lines.push(`- ${figure.caption} (${figure.figure_ref})`));
+    report.primary_figures.forEach((figure) => {
+      const source = view.figure_sources?.find((candidate) => candidate.figure_ref === figure.figure_ref);
+      const artifactRefs = source?.artifact_ids?.length ? ` · Artifacts: ${source.artifact_ids.join(", ")}` : "";
+      lines.push(`- ${figure.caption} (${figure.figure_ref})${artifactRefs}`);
+    });
   }
   if (report.limitations.length) {
     lines.push("", "## 限制与适用范围");

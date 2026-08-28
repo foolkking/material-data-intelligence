@@ -4239,3 +4239,6 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   presentation/report tests (`15`), the PostgreSQL/Redis/MinIO report service
   campaign (`9 passed, 0 skipped`) typecheck and production build pass.
   Capability-wide same-stack Figure acceptance remains open.
+- Markdown export now retains the bounded persisted Artifact IDs for primary
+  Figures, keeping the export reproducible without exposing provider or
+  infrastructure secrets; the route regression remains green.
