@@ -4074,3 +4074,5 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - 已认证浏览器 `http://127.0.0.1:3000/tasks` 实际显示 `2` 个进行中任务、
   `4` 个已结束任务和 `4` 个授权项目；同栈服务 smoke 集合为
   PostgreSQL/Redis/MinIO `5 passed, 0 skipped`。
+- 受影响的 Workspace service-backed 集成回归为 `3 passed, 0 skipped`，
+  确认新增显式 Turn 投影未破坏同栈工作流。

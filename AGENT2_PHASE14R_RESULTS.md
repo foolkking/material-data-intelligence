@@ -293,6 +293,9 @@ Evidence:
   Workspace or Research run; no frontend scientific state was created.
 - The current-worktree service-backed smoke collection completed against
   PostgreSQL/Redis/MinIO with `5 passed, 0 failed, 0 errors, 0 skipped`.
+- The affected Workspace service-backed integration suite also passed
+  `3 passed, 0 skipped` against the same PostgreSQL/Redis/MinIO stack after
+  the explicit Turn projection change.
 - `/health/runtime` remained green after the campaign: PostgreSQL database,
   Redis queue/worker, MinIO bucket `mdi-artifacts`, and configured DeepSeek.
 - The task center intentionally remains `PARTIAL` for Phase 14-R because

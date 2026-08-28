@@ -14976,6 +14976,7 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 - 已认证浏览器实际打开 `/tasks`，显示 `2` 个进行中、`4` 个已结束和
   `4` 个授权项目；PostgreSQL/Redis/MinIO 服务 smoke 集合为
   `5 passed, 0 failed, 0 errors, 0 skipped`。
+- 受影响的 Workspace service-backed 集成回归为 `3 passed, 0 skipped`。
 - 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains `PARTIAL`。
 
 ## Agent-2.0 Phase 14-R — Authorized global search projection
