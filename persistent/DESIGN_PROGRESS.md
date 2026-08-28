@@ -1,5 +1,13 @@
 # DESIGN_PROGRESS
 
+## 2026-08-28 Agent-2.0 Phase 14-R interpretation identity bridge
+
+- Presentation compilation now receives the persisted outer
+  `interpretation_id` explicitly, keeping evidence references resolvable even
+  when the nested grounded interpretation omits database identity fields.
+  This preserves the existing secured evidence endpoint and does not add a
+  scientific authority or execution path. Targeted frontend tests: 12 passed.
+
 ## 2026-08-28 Agent-2.0 Phase 14-R evidence inspector
 
 - Scientific Presentation evidence references now provide a bounded

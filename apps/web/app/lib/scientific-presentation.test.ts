@@ -113,6 +113,32 @@ describe("scientific presentation compiler", () => {
     }));
   });
 
+  it("preserves the persisted outer interpretation identity for evidence inspection", () => {
+    const presentation = compileScientificPresentation({
+      resultId: "result-1",
+      interpretationId: "interpretation-1",
+      evidence: [{
+        schemaVersion: "1.0",
+        evidenceItemId: "evidence-1",
+        semanticRole: "band_gap",
+        evidenceKind: "SCALAR",
+        subjectId: "mat-2",
+        displayValue: "2.5",
+        unit: "eV",
+        sourceArtifactId: "artifact-1",
+        sourceArtifactChecksum: "a".repeat(64),
+        artifactContract: "dataset.table",
+        artifactContractVersion: "1.0",
+        sourceToolId: "data.materials_explorer",
+        sourceToolVersion: "1.0",
+        fieldLocator: { fieldId: "band_gap", entityId: "mat-2" },
+        warnings: [],
+        limitations: [],
+      }],
+    });
+    expect(presentation.blocks.find((block) => block.type === "evidence_reference")?.source.interpretationId).toBe("interpretation-1");
+  });
+
   it("prioritizes the immutable selected Dataset sample over an unrelated first table row", () => {
     const presentation = compileScientificPresentation({
       facts: [

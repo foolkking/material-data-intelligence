@@ -205,3 +205,14 @@ Phase 3/7 campaign also passes `5/5` with no skips under PostgreSQL/Redis/MinIO.
 This closes the presentation-layer evidence inspection seam, while the
 broader cross-project browser campaign and mature-product release gates remain
 open.
+
+### Agent-2.0 Phase 14-R interpretation identity bridge (2026-08-28)
+
+The presentation compiler now accepts the persisted outer
+`interpretationId` returned by the authorized Research API. This matters for
+legacy and current payloads because the nested grounded interpretation is a
+scientific content envelope and is not required to repeat the database
+identity. Evidence blocks therefore retain the exact interpretation identity
+needed by the secured evidence-chain endpoint. Targeted compiler, presentation,
+and Agent2 presentation tests pass (`12 passed`); this is a read-only
+provenance fix and does not create or rerun scientific work.

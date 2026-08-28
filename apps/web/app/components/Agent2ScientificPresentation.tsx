@@ -57,6 +57,7 @@ export function Agent2ScientificPresentation({ turnId, projectId, sessionId }: {
 
   const presentation = compileScientificPresentation({
     resultId: result.result_id,
+    interpretationId: interpretation?.interpretation_id,
     relevance: result.relevance_status,
     interpretation: interpretation?.status === "VALID" ? interpretation.interpretation : undefined,
     evidence,

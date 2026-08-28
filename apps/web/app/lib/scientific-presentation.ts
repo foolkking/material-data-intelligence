@@ -45,6 +45,12 @@ export type ScientificPresentation = {
 
 export type PresentationInput = {
   interpretation?: GroundedScientificInterpretation | null;
+  /**
+   * The persisted interpretation envelope owns this identity. Keep it
+   * separate from the nested grounded payload because the latter is
+   * intentionally scientific content only.
+   */
+  interpretationId?: string | null;
   evidence?: ScientificEvidenceItem[];
   artifacts?: Artifact[];
   facts?: AuthoritativePresentationFact[];
@@ -128,6 +134,7 @@ function projectedArtifactBlocks(artifacts: Artifact[], resultId: string | null 
  */
 export function compileScientificPresentation(input: PresentationInput): ScientificPresentation {
   const interpretation = input.interpretation;
+  const interpretationId = input.interpretationId || interpretation?.interpretationId;
   const evidence = input.evidence || [];
   const artifacts = input.artifacts || [];
   const blocks: ScientificPresentationBlock[] = [];
@@ -141,13 +148,13 @@ export function compileScientificPresentation(input: PresentationInput): Scienti
       title: claim.claimType === "LIMITATION" ? "限制" : claim.claimType === "COMPARISON" ? "比较发现" : "科学发现",
       text: claim.renderedText,
       confidence: claim.confidenceClass,
-      source: { ...source, resultId: input.resultId, interpretationId: interpretation?.interpretationId, evidenceId: claim.supportingEvidenceIds[0] || claim.subjectEvidenceIds[0] || null },
+      source: { ...source, resultId: input.resultId, interpretationId, evidenceId: claim.supportingEvidenceIds[0] || claim.subjectEvidenceIds[0] || null },
       evidenceIds: [...new Set([...claim.subjectEvidenceIds, ...claim.supportingEvidenceIds])].slice(0, 12),
     });
   });
 
   const narrative = groundedClaims[0]?.renderedText || input.validatedNarrative?.trim();
-  if (narrative) blocks.unshift({ id: "narrative-grounded-summary", type: "narrative", title: "科学摘要", text: narrative, source: { ...source, resultId: input.resultId, interpretationId: interpretation?.interpretationId } });
+  if (narrative) blocks.unshift({ id: "narrative-grounded-summary", type: "narrative", title: "科学摘要", text: narrative, source: { ...source, resultId: input.resultId, interpretationId } });
 
   evidence.filter((item) => ["SCALAR", "COUNT", "RANGE", "CATEGORY", "BOOLEAN"].includes(item.evidenceKind)).slice(0, 12).forEach((item, index) => {
     blocks.push({
@@ -156,7 +163,7 @@ export function compileScientificPresentation(input: PresentationInput): Scienti
       title: item.semanticRole.replaceAll("_", " "),
       value: item.displayValue,
       unit: item.unit,
-      source: evidenceSource(item, input.resultId, interpretation?.interpretationId, input.sourceObjectRefs),
+      source: evidenceSource(item, input.resultId, interpretationId, input.sourceObjectRefs),
     });
   });
 
@@ -181,15 +188,15 @@ export function compileScientificPresentation(input: PresentationInput): Scienti
       type: "evidence_reference",
       title: "证据",
       label: item.displayValue,
-      source: evidenceSource(item, input.resultId, interpretation?.interpretationId, input.sourceObjectRefs),
+      source: evidenceSource(item, input.resultId, interpretationId, input.sourceObjectRefs),
     });
   });
 
   (interpretation?.globalLimitations || []).filter(Boolean).slice(0, 6).forEach((text, index) => {
-    blocks.push({ id: stableId("limitation", text, index), type: "limitation", text, source: { ...source, resultId: input.resultId, interpretationId: interpretation?.interpretationId } });
+    blocks.push({ id: stableId("limitation", text, index), type: "limitation", text, source: { ...source, resultId: input.resultId, interpretationId } });
   });
   (interpretation?.globalWarnings || []).filter(Boolean).slice(0, 6).forEach((text, index) => {
-    blocks.push({ id: stableId("warning", text, index), type: "warning", text, source: { ...source, resultId: input.resultId, interpretationId: interpretation?.interpretationId } });
+    blocks.push({ id: stableId("warning", text, index), type: "warning", text, source: { ...source, resultId: input.resultId, interpretationId } });
   });
 
   const viewerSource = input.sourceObjectRefs?.[0];
