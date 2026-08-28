@@ -1,7 +1,7 @@
 # Phase 14-R Product Reality Audit
 
 Date: 2026-08-28  
-Verified base: `9684e5a` (Phase 14-R fix-forward worktree; historical Phase 14
+Verified base: `72328e9` (Phase 14-R fix-forward worktree; historical Phase 14
 seal `d03b0a2e86e50d834a774cf823cfe055c91cf10c` preserved)  
 Branch: `master` (`HEAD` is ahead of the historical seal; release CI has not
 yet been run for Phase 14-R)  
@@ -66,7 +66,7 @@ acceptance evidence is not yet complete.
 | --- | --- | --- |
 | Project rename/archive/restore/bulk archive | `routers/projects.py` | PASS |
 | Dataset/object metadata update/archive/restore | `routers/datasets.py`, object repositories, Data UI | PASS |
-| Dependency impact preview | no server-derived lifecycle impact endpoint found | NOT_QUALIFIED |
+| Dependency impact preview | secured `GET /api/projects/{project_id}/dependency-impact` and `GET /api/datasets/{dataset_id}/dependency-impact` enumerate persisted dependencies server-side; destructive delete remains fail-closed | PASS |
 | Trash/restore/purge policy | no complete protected-trash lifecycle found | NOT_QUALIFIED |
 | Bulk scientific-object lifecycle | partial Data UI patterns; full authorization/dependency qualification absent | PARTIAL |
 | Stop/cancel orchestration and execution | `cancel_turn`, execution supervisor, `/cancel` API | PASS |

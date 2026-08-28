@@ -8,9 +8,11 @@ const mocks = vi.hoisted(() => ({
   updateProject: vi.fn(),
   bulkProjectAction: vi.fn(),
   deleteEmptyProject: vi.fn(),
+  getProjectDependencyImpact: vi.fn(),
   updateDataset: vi.fn(),
   bulkDatasetAction: vi.fn(),
   deleteEmptyDataset: vi.fn(),
+  getDatasetDependencyImpact: vi.fn(),
   getProjectHistory: vi.fn(),
   getDatasetSourceResources: vi.fn(),
   uploadDatasetFiles: vi.fn(),
@@ -24,9 +26,11 @@ vi.mock("../lib/planner-api", () => ({
   updateProject: mocks.updateProject,
   bulkProjectAction: mocks.bulkProjectAction,
   deleteEmptyProject: mocks.deleteEmptyProject,
+  getProjectDependencyImpact: mocks.getProjectDependencyImpact,
   updateDataset: mocks.updateDataset,
   bulkDatasetAction: mocks.bulkDatasetAction,
   deleteEmptyDataset: mocks.deleteEmptyDataset,
+  getDatasetDependencyImpact: mocks.getDatasetDependencyImpact,
   getProjectHistory: mocks.getProjectHistory,
   getDatasetSourceResources: mocks.getDatasetSourceResources,
   uploadDatasetFiles: mocks.uploadDatasetFiles,
@@ -54,9 +58,11 @@ beforeEach(() => {
   mocks.updateProject.mockImplementation(async (_projectId: string, changes: Record<string, unknown>) => ({ id: "project_2", projectId: "project_2", name: "新项目", status: "active", role: "owner", ...changes }));
   mocks.bulkProjectAction.mockResolvedValue({ action: "archive", projectIds: ["project_1"], count: 1 });
   mocks.deleteEmptyProject.mockResolvedValue({ projectId: "project_1", deleted: true });
+  mocks.getProjectDependencyImpact.mockResolvedValue({ entity: "project", entityId: "project_1", displayName: "项目", canDelete: true, dependencyCount: 0, dependencies: [], impact: { removedFromActiveDiscovery: false, historicalProvenanceProtected: false, historicalResearchRemainsAccessible: false } });
   mocks.updateDataset.mockResolvedValue({ id: "dataset_1", datasetId: "dataset_1", projectId: "project_1", name: "materials-table", status: "profile_ready" });
   mocks.bulkDatasetAction.mockResolvedValue({ action: "archive", datasetIds: ["dataset_1"], count: 1 });
   mocks.deleteEmptyDataset.mockResolvedValue({ datasetId: "dataset_1", deleted: true });
+  mocks.getDatasetDependencyImpact.mockResolvedValue({ entity: "dataset", entityId: "dataset_1", displayName: "数据集", canDelete: true, dependencyCount: 0, dependencies: [], impact: { removedFromActiveDiscovery: false, historicalProvenanceProtected: false, historicalResearchRemainsAccessible: false } });
   mocks.getProjectHistory.mockResolvedValue({ project: { id: "project_1", name: "研究项目", role: "owner" }, datasets: [{ datasetId: "dataset_1", name: "materials-table", import: { fileCount: 1, resources: [] }, profile: { rowCount: 3, semanticRoles: {} }, status: "profile_ready" }], analyses: [] });
   mocks.getDatasetSourceResources.mockResolvedValue([{ objectId: "object_1", objectType: "DataFrame", datasetId: "dataset_1", payload: [{ formula: "BaTiO3" }] }]);
   mocks.uploadDatasetFiles.mockResolvedValue({ datasetId: "dataset_2" });

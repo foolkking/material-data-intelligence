@@ -1152,6 +1152,24 @@ export async function deleteEmptyProject(projectId: string): Promise<{ projectId
   return apiFetch(`/projects/${encodeURIComponent(projectId)}`, { method: "DELETE" });
 }
 
+export type DependencyImpact = {
+  entity: "project" | "dataset";
+  entityId: string;
+  displayName: string;
+  canDelete: boolean;
+  dependencyCount: number;
+  dependencies: Array<{ kind: string; label: string; count: number }>;
+  impact: {
+    removedFromActiveDiscovery: boolean;
+    historicalProvenanceProtected: boolean;
+    historicalResearchRemainsAccessible: boolean;
+  };
+};
+
+export async function getProjectDependencyImpact(projectId: string): Promise<DependencyImpact> {
+  return apiFetch<DependencyImpact>(`/projects/${encodeURIComponent(projectId)}/dependency-impact`);
+}
+
 export async function getProjectHistory(projectId: string): Promise<ProjectHistory> {
   return apiFetch<ProjectHistory>("/projects/" + encodeURIComponent(projectId) + "/history");
 }
@@ -1190,6 +1208,10 @@ export async function bulkDatasetAction(
 
 export async function deleteEmptyDataset(datasetId: string): Promise<{ datasetId: string; deleted: boolean }> {
   return apiFetch(`/datasets/${encodeURIComponent(datasetId)}`, { method: "DELETE" });
+}
+
+export async function getDatasetDependencyImpact(datasetId: string): Promise<DependencyImpact> {
+  return apiFetch<DependencyImpact>(`/datasets/${encodeURIComponent(datasetId)}/dependency-impact`);
 }
 
 export async function getDatasetSourceResources(datasetId: string, signal?: AbortSignal): Promise<DatasetSourceResource[]> {

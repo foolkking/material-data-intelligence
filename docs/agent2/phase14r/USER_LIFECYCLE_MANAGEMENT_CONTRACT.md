@@ -20,6 +20,8 @@ ScientificObjectVersion. Orphan cleanup is based on persisted references, not
 frontend visibility.
 
 Current sealed implementation proves rename/archive/restore for projects,
-datasets and scientific objects. Trash/purge, dependency preview, retention
-policy and mature bulk management remain open Phase 14-R work.
-
+datasets and scientific objects. The lifecycle UI now receives a bounded
+server-derived dependency preview for projects and datasets before permanent
+delete confirmation; the existing fail-closed delete policy remains
+authoritative. Trash/purge, retention policy and mature bulk management remain
+open Phase 14-R work.

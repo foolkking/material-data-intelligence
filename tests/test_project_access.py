@@ -270,6 +270,32 @@ def test_project_management_only_physically_deletes_empty_owner_project(monkeypa
         assert connection.execute(select(projects.c.id).where(projects.c.id == "used")).scalar_one() == "used"
 
 
+def test_dependency_impact_preview_is_server_derived_and_authorized(monkeypatch: pytest.MonkeyPatch):
+    import mdi_api.routers.secured_runtime as secured_runtime
+
+    engine, owner, viewer = _management_engine()
+    monkeypatch.setattr(secured_runtime, "create_engine_from_settings", lambda _settings: engine)
+    monkeypatch.setattr(secured_runtime, "load_settings", lambda: SimpleNamespace())
+
+    project_impact = secured_runtime.get_project_dependency_impact_secured("used", owner)
+    assert project_impact["entity"] == "project"
+    assert project_impact["entityId"] == "used"
+    assert project_impact["dependencyCount"] >= 2
+    assert any(item["kind"] == "datasets" and item["count"] == 2 for item in project_impact["dependencies"])
+    assert project_impact["canDelete"] is False
+    assert project_impact["impact"]["historicalProvenanceProtected"] is True
+
+    dataset_impact = secured_runtime.get_dataset_dependency_impact_secured("empty-dataset", owner)
+    assert dataset_impact["entity"] == "dataset"
+    assert dataset_impact["entityId"] == "empty-dataset"
+    assert dataset_impact["dependencyCount"] == 0
+    assert dataset_impact["canDelete"] is True
+
+    with pytest.raises(HTTPException) as exc_info:
+        secured_runtime.get_project_dependency_impact_secured("used", viewer)
+    assert exc_info.value.status_code == 403
+
+
 def test_dataset_management_preserves_pre_archive_status_and_deletes_only_empty(monkeypatch: pytest.MonkeyPatch):
     import mdi_api.routers.secured_runtime as secured_runtime
 

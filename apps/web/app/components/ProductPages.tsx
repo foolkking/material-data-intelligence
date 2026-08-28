@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { bulkDatasetAction, bulkProjectAction, createProject, deleteEmptyDataset, deleteEmptyProject, getDatasetSourceResources, getProjectHistory, listProjects, updateDataset, updateProject, uploadDatasetFiles, type DatasetSourceResource, type ProjectHistory, type ProjectSummary } from "../lib/planner-api";
+import { bulkDatasetAction, bulkProjectAction, createProject, deleteEmptyDataset, deleteEmptyProject, getDatasetDependencyImpact, getDatasetSourceResources, getProjectDependencyImpact, getProjectHistory, listProjects, updateDataset, updateProject, uploadDatasetFiles, type DatasetSourceResource, type DependencyImpact, type ProjectHistory, type ProjectSummary } from "../lib/planner-api";
 import { PHONON_BAND_SCHEMA_VERSION, PHONON_DOS_SCHEMA_VERSION } from "../lib/phononContract";
 import { ProductShell, RequireProductAuth } from "./ProductShell";
 import { ScientificSourceViewer } from "./ScientificViewerAdapter";
@@ -90,6 +90,11 @@ function ProjectEditDialog({ project, mode, onClose, onUpdated, onDeleted }: { p
   const [confirmation, setConfirmation] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [impact, setImpact] = useState<DependencyImpact | null>(null);
+  useEffect(() => {
+    if (mode !== "delete") return;
+    void getProjectDependencyImpact(projectId).then(setImpact).catch(() => setImpact(null));
+  }, [mode, projectId]);
   async function save() {
     if (!name.trim() || busy) return;
     setBusy(true); setError("");
@@ -105,7 +110,7 @@ function ProjectEditDialog({ project, mode, onClose, onUpdated, onDeleted }: { p
     finally { setBusy(false); }
   }
   if (mode === "delete") return <ProductModal title="删除空项目" description="仅完全没有数据、研究记录与报告的项目可被永久删除。" onClose={onClose} footer={<><button type="button" className="product-secondary-action" onClick={onClose}>取消</button><button type="button" className="product-danger-action" disabled={busy || confirmation !== project.name} onClick={() => void remove()}>{busy ? "正在删除…" : "永久删除"}</button></>}>
-    <div className="product-form-grid danger-zone"><p>此操作不可撤销。输入项目名称 <strong>{project.name}</strong> 以确认。</p><label htmlFor="delete-project-confirmation">项目名称</label><input id="delete-project-confirmation" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); void remove(); } }} autoComplete="off" />{error ? <p className="product-form-error" role="alert">{error}</p> : null}</div>
+    <div className="product-form-grid danger-zone"><p>此操作不可撤销。输入项目名称 <strong>{project.name}</strong> 以确认。</p>{impact && impact.dependencyCount > 0 ? <div role="status"><strong>依赖影响</strong><ul>{impact.dependencies.map((item) => <li key={item.kind}>{item.label}：{item.count}</li>)}</ul><p>已有依赖时系统会拒绝物理删除；请改为归档。</p></div> : null}<label htmlFor="delete-project-confirmation">项目名称</label><input id="delete-project-confirmation" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); void remove(); } }} autoComplete="off" />{error ? <p className="product-form-error" role="alert">{error}</p> : null}</div>
   </ProductModal>;
   return <ProductModal title="编辑项目信息" description="名称和研究说明会在 Console、项目列表和研究上下文中同步显示。" onClose={onClose} footer={<><button type="button" className="product-secondary-action" onClick={onClose}>取消</button><button type="button" className="product-primary-action" disabled={busy || !name.trim()} onClick={() => void save()}>{busy ? "正在保存…" : "保存更改"}</button></>}>
     <div className="product-form-grid"><label htmlFor="edit-project-name">项目名称</label><input id="edit-project-name" value={name} onChange={(event) => setName(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); void save(); } }} /><label htmlFor="edit-project-description">研究说明</label><textarea id="edit-project-description" value={description} onChange={(event) => setDescription(event.target.value)} rows={4} />{error ? <p className="product-form-error" role="alert">{error}</p> : null}</div>
@@ -134,6 +139,11 @@ function DatasetEditDialog({ dataset, mode, onClose, onUpdated, onDeleted }: { d
   const [confirmation, setConfirmation] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [impact, setImpact] = useState<DependencyImpact | null>(null);
+  useEffect(() => {
+    if (mode !== "delete") return;
+    void getDatasetDependencyImpact(dataset.datasetId).then(setImpact).catch(() => setImpact(null));
+  }, [dataset.datasetId, mode]);
   async function save() {
     if (!name.trim() || busy) return;
     setBusy(true); setError("");
@@ -148,7 +158,7 @@ function DatasetEditDialog({ dataset, mode, onClose, onUpdated, onDeleted }: { d
     catch (reason) { setError(reason instanceof Error ? reason.message : "数据集包含源文件或研究记录，请改为归档。"); }
     finally { setBusy(false); }
   }
-  if (mode === "delete") return <ProductModal eyebrow="数据管理" title="删除空数据集" description="只有尚未包含源文件、语义档案和研究记录的数据集可以永久删除。" onClose={onClose} footer={<><button type="button" className="product-secondary-action" onClick={onClose}>取消</button><button type="button" className="product-danger-action" disabled={busy || confirmation !== dataset.name} onClick={() => void remove()}>{busy ? "正在删除…" : "永久删除"}</button></>}><div className="product-form-grid danger-zone"><p>输入数据集名称 <strong>{dataset.name}</strong> 以确认。</p><label htmlFor="delete-dataset-confirmation">数据集名称</label><input id="delete-dataset-confirmation" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); void remove(); } }} autoComplete="off" />{error ? <p className="product-form-error" role="alert">{error}</p> : null}</div></ProductModal>;
+  if (mode === "delete") return <ProductModal eyebrow="数据管理" title="删除空数据集" description="只有尚未包含源文件、语义档案和研究记录的数据集可以永久删除。" onClose={onClose} footer={<><button type="button" className="product-secondary-action" onClick={onClose}>取消</button><button type="button" className="product-danger-action" disabled={busy || confirmation !== dataset.name} onClick={() => void remove()}>{busy ? "正在删除…" : "永久删除"}</button></>}><div className="product-form-grid danger-zone"><p>输入数据集名称 <strong>{dataset.name}</strong> 以确认。</p>{impact && impact.dependencyCount > 0 ? <div role="status"><strong>依赖影响</strong><ul>{impact.dependencies.map((item) => <li key={item.kind}>{item.label}：{item.count}</li>)}</ul><p>已有依赖时系统会拒绝物理删除；请改为归档。</p></div> : null}<label htmlFor="delete-dataset-confirmation">数据集名称</label><input id="delete-dataset-confirmation" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); void remove(); } }} autoComplete="off" />{error ? <p className="product-form-error" role="alert">{error}</p> : null}</div></ProductModal>;
   return <ProductModal eyebrow="数据管理" title="重命名数据集" description="名称会同步到 Data Navigator、研究数据范围和报告来源。" onClose={onClose} footer={<><button type="button" className="product-secondary-action" onClick={onClose}>取消</button><button type="button" className="product-primary-action" disabled={busy || !name.trim()} onClick={() => void save()}>{busy ? "正在保存…" : "保存更改"}</button></>}><div className="product-form-grid"><label htmlFor="edit-dataset-name">数据集名称</label><input id="edit-dataset-name" value={name} onChange={(event) => setName(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); void save(); } }} />{error ? <p className="product-form-error" role="alert">{error}</p> : null}</div></ProductModal>;
 }
 

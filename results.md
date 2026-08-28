@@ -14852,3 +14852,13 @@ compileall PASS。
 测试结果：`ScientificReportsIndexPage.test.tsx` `1 passed`；
 前端 typecheck PASS。
 提交/CI 状态：随 Phase 14-R fix-forward 提交；未创建 P14R-A/P14R-B。
+
+任务名称：Agent-2.0 Phase 14-R — server-derived dependency impact preview
+状态：处理中（并入当前任务）
+完成时间：2026-08-28
+修改摘要：为 Project 与 Dataset 永久删除确认流程增加受现有项目写权限保护的
+依赖影响预览 API，并在生命周期对话框中展示已持久化依赖及归档建议；删除仍由
+既有 fail-closed 规则决定，未引入新的科学权威或版本语义。
+测试结果：`tests/test_project_access.py` 11 passed；前端
+`ProductPages.test.tsx` 与 `ScientificReportsIndexPage.test.tsx` 18 passed。
+提交/CI 状态：待随 Phase 14-R fix-forward 提交；未创建 P14R-A/P14R-B。

@@ -18,6 +18,28 @@ from mdi_api.routers.projects import BulkProjectActionRequest, UpdateProjectRequ
 from mdi_api.input_transport import CreateUploadSessionRequest
 
 
+_DEPENDENCY_LABELS = {
+    "datasets": "数据集",
+    "data_profiles": "语义档案",
+    "dataset_source_resources": "源资源",
+    "scientific_objects": "科学对象",
+    "scientific_object_versions": "科学对象版本",
+    "scientific_object_relationships": "科学对象关系",
+    "sessions": "研究会话",
+    "research_turns": "ResearchTurn",
+    "research_session_runs": "历史研究运行",
+    "jobs": "研究运行",
+    "tool_calls": "ToolCall",
+    "artifacts": "Artifact",
+    "scientific_result_snapshots": "ScientificResult",
+    "scientific_reports": "科学报告",
+    "reports": "报告",
+    "workspaces": "工作区",
+    "recipes": "Recipe",
+    "audit_logs": "审计记录",
+}
+
+
 def list_projects_secured(current_user: CurrentUser = Depends(get_current_user_compat)) -> list[dict[str, Any]]:
     from mdi_api.phase2_runtime import list_phase2_projects
 
@@ -179,6 +201,29 @@ def delete_empty_project_secured(
     return {"projectId": project_id, "deleted": True}
 
 
+def get_project_dependency_impact_secured(
+    project_id: str,
+    current_user: CurrentUser = Depends(get_current_user_compat),
+) -> dict[str, Any]:
+    """Return a bounded, server-derived deletion impact preview.
+
+    This endpoint never mutates data. It uses the same dependency boundary as
+    the protected empty-project delete operation, while giving the product a
+    safe explanation before a user chooses archive or deletion.
+    """
+
+    engine = create_engine_from_settings(load_settings())
+    with engine.connect() as connection:
+        project = require_project_access(connection, project_id, current_user, write=True)
+        blockers = _dependency_counts(connection, "project_id", project_id, {"projects", "project_members", "project_configs"})
+    return _dependency_impact_response(
+        entity="project",
+        entity_id=project_id,
+        display_name=str(project.get("name") or project_id),
+        blockers=blockers,
+    )
+
+
 def _write_project_archive_state(connection: Any, project_id: str, archived: bool) -> None:
     current = connection.execute(
         select(project_configs.c.config_json).where(project_configs.c.project_id == project_id).with_for_update()
@@ -338,6 +383,27 @@ def delete_empty_dataset_secured(
     return {"datasetId": dataset_id, "deleted": True}
 
 
+def get_dataset_dependency_impact_secured(
+    dataset_id: str,
+    current_user: CurrentUser = Depends(get_current_user_compat),
+) -> dict[str, Any]:
+    """Return a bounded, authorized dependency preview for a Dataset."""
+
+    engine = create_engine_from_settings(load_settings())
+    with engine.connect() as connection:
+        row = connection.execute(select(datasets).where(datasets.c.id == dataset_id)).mappings().one_or_none()
+        if row is None:
+            raise HTTPException(status_code=404, detail="数据集不存在。")
+        require_project_access(connection, str(row["project_id"]), current_user, write=True)
+        blockers = _dependency_counts(connection, "dataset_id", dataset_id, {"datasets"})
+    return _dependency_impact_response(
+        entity="dataset",
+        entity_id=dataset_id,
+        display_name=str(row.get("name") or dataset_id),
+        blockers=blockers,
+    )
+
+
 def _dataset_archive_values(row: dict[str, Any], archived: bool) -> dict[str, Any]:
     metadata_json = dict(row.get("metadata_json") or {})
     current_status = str(row.get("status") or "created")
@@ -349,6 +415,47 @@ def _dataset_archive_values(row: dict[str, Any], archived: bool) -> dict[str, An
     if previous not in {"created", "uploading", "profile_ready", "failed"}:
         previous = "created"
     return {"status": previous, "metadata_json": metadata_json}
+
+
+def _dependency_counts(connection: Any, column_name: str, value: str, excluded: set[str]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    existing_tables = set(inspect(connection).get_table_names())
+    for table in metadata.tables.values():
+        if table.name in excluded or table.name not in existing_tables or column_name not in table.c:
+            continue
+        count = int(connection.execute(
+            select(func.count()).select_from(table).where(table.c[column_name] == value)
+        ).scalar_one())
+        if count:
+            counts[table.name] = count
+    return counts
+
+
+def _dependency_impact_response(
+    *,
+    entity: str,
+    entity_id: str,
+    display_name: str,
+    blockers: dict[str, int],
+) -> dict[str, Any]:
+    dependencies = [
+        {"kind": table_name, "label": _DEPENDENCY_LABELS.get(table_name, table_name), "count": count}
+        for table_name, count in sorted(blockers.items())
+    ]
+    total = sum(item["count"] for item in dependencies)
+    return {
+        "entity": entity,
+        "entityId": entity_id,
+        "displayName": display_name,
+        "canDelete": not dependencies,
+        "dependencyCount": total,
+        "dependencies": dependencies,
+        "impact": {
+            "removedFromActiveDiscovery": bool(dependencies),
+            "historicalProvenanceProtected": bool(dependencies),
+            "historicalResearchRemainsAccessible": bool(dependencies),
+        },
+    }
 
 
 def get_dataset_profile_secured(dataset_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:

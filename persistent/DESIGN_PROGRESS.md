@@ -3894,3 +3894,13 @@ either a recoverable persisted ResearchTurn session or a legacy session-run
 projection. Existing report URLs and scientific authorities are unchanged;
 the label makes the recovery boundary explicit to users. Focused frontend
 test and typecheck pass.
+
+### Agent-2.0 Phase 14-R dependency impact preview (2026-08-28)
+
+Project and Dataset lifecycle dialogs now consume bounded, server-derived
+dependency impact projections before permanent-delete actions. The secured API
+enumerates persisted dependencies under the existing project-write
+authorization boundary and keeps physical deletion fail-closed when references
+exist; the UI explains that archive preserves historical provenance. No
+lifecycle authority or scientific version semantics changed. Focused
+project-access tests (`11 passed`) and ProductPages tests (`17 passed`) pass.
