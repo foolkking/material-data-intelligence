@@ -1,4 +1,20 @@
 ---TASK---
+状态：处理中
+任务名称：Agent-2.0 Phase 14 — Full Platform Integration & Production Qualification
+开始时间：2026-08-28T00:00:00+08:00
+
+执行规范：
+`docs/agent2/phase14/PHASE14_TASK.md`
+
+先完成 Phase 13 provenance normalization 与 Phase 14 base seal，再建立完整
+platform coverage matrix，使用真实 PostgreSQL/Redis/MinIO/API/workers/
+authenticated browser 验证跨表面连续性、历史版本、归档恢复、Result reuse、
+Viewer zero-recompute、Evidence、Report、安全、桌面/移动端与完整回归。
+仅在所有强制门通过后创建 P14-A/P14-B exact-SHA CI。不得开始 Phase 15，
+不得覆盖用户文件，不得弱化科学权威或把 skipped 当作 PASS。
+---END---
+
+---TASK---
 状态：已完成
 任务名称：Agent-2.0 Phase 13 — Scientific Presentation 2.0 最终封板
 开始时间：2026-08-27T00:00:00+08:00

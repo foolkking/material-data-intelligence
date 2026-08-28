@@ -1,5 +1,16 @@
 # DESIGN_PROGRESS
 
+## 2026-08-28 Agent-2.0 Phase 14 integration qualification
+
+- Phase 13 remains sealed at `56c096a98d082f2ee145c4a1ca4fd89b8d4538df`;
+  Phase 14 qualification uses the real PostgreSQL/Redis/MinIO runtime.
+- Project overview history links now propagate the persisted
+  `researchTurnId` and `researchSessionId` to the Research route. This closes
+  a cross-surface History → Resume identity seam without changing scientific
+  authority; the legacy Job-name resolver remains compatibility-only.
+- A complete Phase 14 coverage matrix is recorded at
+  `docs/agent2/phase14/PHASE14_COVERAGE_MATRIX.md`.
+
 ## 2026-08-25 Phase 10 canonical fixture recheck
 
 - Fresh current-profile Structure coordination execution now proves exact

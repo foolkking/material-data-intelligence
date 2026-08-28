@@ -131,6 +131,7 @@ class WorkspaceSnapshot:
 class _SourceProjection:
     project: Mapping[str, Any] | None
     job: Mapping[str, Any] | None
+    research_turn_id: str | None
     dataset: Mapping[str, Any] | None
     profile: Mapping[str, Any] | None
     intent: Mapping[str, Any] | None
@@ -536,6 +537,7 @@ class WorkspaceProjectionService:
             ),
             "sourceSummary": {
                 "jobStatus": _identity(source.job, "status"),
+                "researchTurnId": source.research_turn_id,
                 "analysisPlanSchemaVersion": source.plan_schema_version,
                 "dependencyOutcome": source.dependency_outcome,
                 "artifactCount": len(source.artifacts),
@@ -1007,6 +1009,21 @@ class WorkspaceProjectionService:
         if job is None and not allow_missing_job:
             raise WorkspaceDomainError("JOB_NOT_FOUND", "Analysis job not found.", 404)
 
+        research_turn_id: str | None = None
+        agent2_repositories = None
+        job_repository = getattr(self.repositories, "jobs", None)
+        bind = getattr(job_repository, "bind", None)
+        if bind is not None and job is not None:
+            try:
+                from mdi_api.agent2_repositories import Agent2RepositoryBundle
+
+                agent2_repositories = Agent2RepositoryBundle.create(bind)
+                turn = agent2_repositories.research_turns.get_for_job(job_id)
+                if turn is not None:
+                    research_turn_id = _identity(turn, "id", "turnId", "researchTurnId")
+            except (KeyError, LookupError, TypeError, ValueError):
+                research_turn_id = None
+
         project_id = _identity(job, "projectId", "project_id") or fallback_project_id
         project = (
             _repo_get(getattr(self.repositories, "projects", None), project_id)
@@ -1161,6 +1178,7 @@ class WorkspaceProjectionService:
         return _SourceProjection(
             project=project,
             job=job,
+            research_turn_id=research_turn_id,
             dataset=dataset,
             profile=profile,
             intent=intent,

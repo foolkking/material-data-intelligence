@@ -444,12 +444,20 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
   if (loadState === "ERROR" || !snapshot) return <WorkspaceLoadState title="Workspace unavailable" message={loadMessage} actionLabel="Retry" onAction={load} />;
 
   const workspace = snapshot.workspace;
+  const researchHref = new URL(
+    "/projects/" + encodeURIComponent(workspace.projectId) + "/research",
+    window.location.origin,
+  );
+  researchHref.searchParams.set("run", workspace.sourceJobId);
+  if (snapshot.sourceSummary.researchTurnId) {
+    researchHref.searchParams.set("turn", snapshot.sourceSummary.researchTurnId);
+  }
   return (
     <main className="scientific-workspace" data-testid="scientific-workspace-shell">
       <a className="skip-link" href="#workspace-primary-content">Skip to active scientific result</a>
       <header className="workspace-header">
         <div className="workspace-header-title">
-          <a className="workspace-back-link" href={"/projects/" + encodeURIComponent(workspace.projectId) + "/research?run=" + encodeURIComponent(workspace.sourceJobId)} aria-label="返回项目研究" onClick={(event) => {
+          <a className="workspace-back-link" href={researchHref.pathname + researchHref.search} aria-label="返回项目研究" onClick={(event) => {
             if ((workspaceDirty || reportDraftDirty) && !window.confirm("Leave Workspace and discard unsaved changes?")) event.preventDefault();
           }}>← 返回项目研究</a>
           <span className="eyebrow">Scientific Workspace 1.0</span>

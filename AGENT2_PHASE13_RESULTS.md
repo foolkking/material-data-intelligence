@@ -156,6 +156,16 @@ P13-B evidence commit: `3d1e184628363fcf8970cfa8ae2e5f5627e5a082`.
 Exact-current-head CI: run `33135423935`, tested SHA
 `3d1e184628363fcf8970cfa8ae2e5f5627e5a082`, result `PASS`.
 
+Final exact-current-head Phase 13 seal:
+
+```text
+SHA = 56c096a98d082f2ee145c4a1ca4fd89b8d4538df
+CI run = 33135877741
+CI tested SHA = 56c096a98d082f2ee145c4a1ca4fd89b8d4538df
+result = PASS
+HEAD == origin/master at Phase 13 seal
+```
+
 ### B15. Remaining Gaps
 
 No mandatory Phase 13 functional or release gap remains.

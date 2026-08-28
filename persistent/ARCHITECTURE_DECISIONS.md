@@ -1,5 +1,15 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-08-28 — Phase 14 history resume uses explicit ResearchTurn identity
+
+- Project History and Project Overview must carry the persisted
+  `researchTurnId`/`researchSessionId` relation when reopening scientific work.
+- Frontend Job-name parsing is retained only as a bounded compatibility
+  fallback for legacy records that have no authoritative relation.
+- This is a navigation/read-model bridge; it does not create a second Turn
+  identity or alter ScientificObject, ScientificObjectVersion, Result, or
+  provenance authority.
+
 ## 2026-08-19 — Historical Workspace routes inherit Project authorization
 
 - Workspace remains an internal result-projection model and compatibility

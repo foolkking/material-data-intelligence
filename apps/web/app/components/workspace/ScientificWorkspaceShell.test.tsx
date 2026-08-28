@@ -76,6 +76,18 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     expect(getWorkspaceMock).toHaveBeenCalledWith("workspace_demo", expect.objectContaining({ signal: expect.any(AbortSignal) }));
   });
 
+  it("returns to Research with the persisted Turn relation when available", async () => {
+    const snapshot = workspaceSnapshotFixture();
+    snapshot.sourceSummary.researchTurnId = "turn_exact";
+    getWorkspaceMock.mockResolvedValue({ data: snapshot, status: 200, etag: "etag", idempotentReplay: null });
+    render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
+    await screen.findByTestId("scientific-workspace-shell");
+    expect(screen.getByRole("link", { name: "返回项目研究" })).toHaveAttribute(
+      "href",
+      "/projects/project_demo/research?run=job_demo&turn=turn_exact",
+    );
+  });
+
   it("uses exact panel deep links and restores browser history", async () => {
     window.history.replaceState({}, "", "/workspaces/workspace_demo?panel=panel_data");
     const user = userEvent.setup();

@@ -285,6 +285,7 @@ export type ScientificWorkspace = {
 
 export type WorkspaceSourceSummary = {
   jobStatus: string | null;
+  researchTurnId?: string | null;
   analysisPlanSchemaVersion: string | null;
   dependencyOutcome: string | null;
   artifactCount: number;

@@ -45,7 +45,7 @@ vi.mock("./scientific-viewer/ScientificObjectViewer", () => ({
   ScientificObjectViewer: () => <div data-testid="scientific-object-viewer" />,
 }));
 
-import { ConsolePage, DatasetUploadPage, ProjectDataPage, ProjectsPage, TableScientificView } from "./ProductPages";
+import { ConsolePage, DatasetUploadPage, ProjectDataPage, ProjectsPage, ProjectOverviewPage, TableScientificView } from "./ProductPages";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -268,6 +268,30 @@ it("manages datasets from the Data Navigator without permanent per-row buttons",
   await waitFor(() => expect(mocks.bulkDatasetAction).toHaveBeenCalledWith(["dataset_1"], "archive"));
   await user.click(screen.getByRole("button", { name: "已归档" }));
   await waitFor(() => expect(mocks.listScientificObjects).toHaveBeenLastCalledWith("project_1", expect.anything(), "ARCHIVED"));
+});
+
+it("resumes project history with the authoritative ResearchTurn identity", async () => {
+  mocks.getProjectHistory.mockResolvedValue({
+    project: { id: "project_1", name: "研究项目", role: "owner" },
+    datasets: [],
+    analyses: [{
+      jobId: "job_nonstandard_history",
+      researchSessionId: "session_1",
+      researchTurnId: "turn-123",
+      status: "succeeded",
+      userQuestion: "比较两个结构",
+      toolIds: [],
+      stepCount: 2,
+      artifactCount: 1,
+      artifactTypes: ["table_json"],
+      interpretationCount: 1,
+      reportCount: 1,
+      recipeCount: 0,
+    }],
+  });
+  render(<ProjectOverviewPage projectId="project_1" />);
+  const link = (await screen.findByText("打开 →")).closest("a");
+  expect(link).toHaveAttribute("href", "/projects/project_1/research/session_1?run=job_nonstandard_history&turn=turn-123");
 });
 
 it("does not expose dataset mutation controls to a viewer project member", async () => {
