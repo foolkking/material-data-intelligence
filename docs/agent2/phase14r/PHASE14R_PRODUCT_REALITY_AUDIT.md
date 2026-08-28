@@ -1,7 +1,7 @@
 # Phase 14-R Product Reality Audit
 
 Date: 2026-08-28  
-Verified base: `a9ef271` (Phase 14-R fix-forward worktree; historical Phase 14
+Verified base: `e22a732` (Phase 14-R fix-forward worktree; historical Phase 14
 seal `d03b0a2e86e50d834a774cf823cfe055c91cf10c` preserved)  
 Branch: `master` (`HEAD` is ahead of the historical seal; release CI has not
 yet been run for Phase 14-R)  
@@ -166,7 +166,7 @@ PostgreSQL activity after the service campaign was `active=1`, `idle=5`,
 in this check.
 
 The current-worktree full regression was rerun after the Phase 14-R fixes:
-frontend `94 files / 601 passed`; backend `1820 passed / 83 skipped`
+frontend `95 files / 606 passed`; backend `1820 passed / 83 skipped`
 (the skips remain historical/optional compatibility coverage). This is
 regression evidence only; the mature-product P0/P1 browser, report-quality,
 trash/retention, recovery and operations gates are still not all qualified.
