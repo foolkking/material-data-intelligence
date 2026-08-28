@@ -98,6 +98,7 @@ export function Agent2ScientificPresentation({ turnId, projectId, sessionId }: {
       const refs = result.source_object_refs || [];
       const next = await createAgent2ResearchTurn(projectId, sessionId, {
         message: "请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。",
+        reply_to_turn_id: turnId,
         ui_context: {
           active_object_refs: refs,
           selection_refs: refs,
@@ -125,6 +126,7 @@ export function Agent2ScientificPresentation({ turnId, projectId, sessionId }: {
         message: isContinue
           ? "请基于这份已完成的科学结果继续研究，只补充当前证据支持的后续分析；如需新的计算，请明确说明。"
           : `请重新执行同一个科学研究问题：${result.research_question}。这是一次新的研究运行，不要覆盖之前的结果。`,
+        reply_to_turn_id: turnId,
         ui_context: {
           active_object_refs: refs,
           selection_refs: refs,

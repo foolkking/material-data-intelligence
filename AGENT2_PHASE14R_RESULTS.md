@@ -110,6 +110,18 @@ This closes the basic result-page control affordance but does not yet qualify
 message revision/branching, queued/running cancellation recovery, or the
 browser-level zero-delta reuse campaign.
 
+### Agent-2.0 Phase 14-R immutable ResearchTurn branching (2026-08-28)
+
+The existing `research_turns.parent_turn_id` relation now supports a bounded
+branch from any terminal ResearchTurn, not only clarification turns. The
+service still enforces same-project and same-session authorization and rejects
+non-terminal parents; the parent message/Result remains immutable while the
+new child Turn receives its own user message and lifecycle. Follow-up actions
+now pass the exact parent Turn ID, so continue, rerun and reinterpret retain an
+auditable lineage without inferring identity from Job names. Domain regression:
+`tests/test_agent2_domain.py` `9 passed`; frontend follow-up regression `3
+passed`. Message text editing and revision UI are still not fully qualified.
+
 ### Agent-2.0 Phase 14-R historical ContextManifest compatibility (2026-08-28)
 
 Historical ResearchTurns whose `CONTEXT_RESOLVED` event predates embedded

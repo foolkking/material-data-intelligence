@@ -14926,6 +14926,14 @@ scientific_result_snapshots` 聚合计数不增长，并验证 follow-up Turn �
 `git diff --check` 通过。该修复关闭了结果页基础控制入口，但消息修订/分支、
 运行中取消恢复、浏览器级零增量复用以及 Trash/retention/export 等成熟产品门
 仍未闭合，Phase 14-R 继续保持 `PARTIAL`，未创建 P14R-A/P14R-B。
+
+追加验证（2026-08-28）：复用既有 `research_turns.parent_turn_id` 完成终态
+ResearchTurn 的不可变分支边界。服务端现在允许从同项目、同会话的任意终态
+Turn 创建新子 Turn，非终态父 Turn 和跨项目/会话关系仍 fail-closed；父消息、
+父 ContextSnapshot 与父 ScientificResult 不被修改。Continue、rerun、
+reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up 回归
+`3 passed`。消息文本编辑/修订 UI 和完整分支浏览器验收仍待完成，Phase 14-R
+保持 `PARTIAL`，未创建 P14R-A/P14R-B。
 ## Agent-2.0 Phase 14-R — Report evidence continuity
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

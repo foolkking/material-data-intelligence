@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
 from uuid import uuid4
 
 import pytest
@@ -320,6 +321,54 @@ def test_concurrent_turn_sequence_and_cas_are_deterministic():
             errors.append(exc)
     assert len(results) == 1
     assert len(errors) == 1 and isinstance(errors[0], ConcurrentTurnModification)
+
+
+def test_receive_turn_can_branch_from_terminal_turn_without_mutating_parent():
+    engine, owner, factory, _objects, turns = foundation()
+    parent_turn_id = uuid4()
+    parent_message_id = f"message_{uuid4().hex}"
+    now = datetime.now(timezone.utc)
+    with factory.unit_of_work() as unit:
+        unit.agent2.research_turns.add_message({
+            "id": parent_message_id,
+            "session_id": "session",
+            "role": "user",
+            "content_summary": "Original research question",
+            "payload_json": {"source": "test"},
+            "created_at": now,
+        })
+        unit.agent2.research_turns.add({
+            "id": parent_turn_id,
+            "project_id": "project",
+            "research_session_id": "session",
+            "sequence_no": 1,
+            "parent_turn_id": None,
+            "user_message_id": parent_message_id,
+            "action_type": "ANALYZE",
+            "status": ResearchTurnStatus.COMPLETED.value,
+            "row_version": 2,
+            "created_at": now,
+            "updated_at": now,
+            "completed_at": now,
+        })
+
+    child = turns.receive_turn(
+        project_id="project",
+        session_id="session",
+        request=CreateResearchTurnRequest(
+            message="Revised research question",
+            reply_to_turn_id=parent_turn_id,
+        ),
+        current_user=owner,
+    )
+
+    with factory.session() as session:
+        parent = session.agent2.research_turns.get(parent_turn_id)
+        child_row = session.agent2.research_turns.get(child.turn_id)
+    assert parent["status"] == ResearchTurnStatus.COMPLETED.value
+    assert parent["user_message_id"] == parent_message_id
+    assert child_row["parent_turn_id"] == parent_turn_id
+    assert child_row["status"] == ResearchTurnStatus.RECEIVED.value
 
 
 def test_context_stub_stops_at_orchestrating_and_result_snapshot_round_trips():

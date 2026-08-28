@@ -94,6 +94,7 @@ async function readAgent2<T>(path: string): Promise<T> {
 export async function createAgent2ResearchTurn(projectId: string, sessionId: string, input: {
   message: string;
   ui_context: { active_object_refs: Agent2ScientificObjectRef[]; selection_refs: Agent2ScientificObjectRef[]; scientific_selections: Agent2ScientificSelection[]; explicit_object_refs: Agent2ScientificObjectRef[]; explicit_result_ids: string[]; explicit_finding_refs: string[] };
+  reply_to_turn_id?: string;
 }): Promise<Agent2TurnResponse> {
   const response = await fetch(`${API_BASE}/api/projects/${encodeURIComponent(projectId)}/research/sessions/${encodeURIComponent(sessionId)}/turns`, {
     method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input),

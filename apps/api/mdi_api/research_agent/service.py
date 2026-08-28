@@ -92,8 +92,10 @@ class ResearchTurnService:
                     parent = unit.agent2.research_turns.get(parent_turn_id)
                     if parent["project_id"] != project_id or parent["research_session_id"] != session_id:
                         raise ResearchSessionProjectMismatch("reply_to_turn_id is outside the Research Session")
-                    if parent["status"] != ResearchTurnStatus.NEEDS_CLARIFICATION.value:
-                        raise InvalidResearchTurnTransition("reply_to_turn_id must reference NEEDS_CLARIFICATION")
+                    if parent["status"] not in {status.value for status in TERMINAL_TURN_STATUSES}:
+                        raise InvalidResearchTurnTransition(
+                            "reply_to_turn_id must reference a terminal ResearchTurn"
+                        )
                 self._authorize_ui_context(unit, project_id, request)
                 now = datetime.now(timezone.utc)
                 message_id = f"message_{uuid4().hex}"

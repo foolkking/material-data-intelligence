@@ -4026,3 +4026,13 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   `git diff --check` 通过。
 - 该项只扩展用户控制，不改变 ScientificResult/ScientificObjectVersion
   authority；Phase 14-R 仍为 `PARTIAL`，未创建 P14R-A/P14R-B。
+
+## 2026-08-28 Phase 14-R immutable ResearchTurn branching
+
+- 复用既有 `research_turns.parent_turn_id`，允许从任意终态 ResearchTurn
+  创建新的不可变子 Turn；同项目/同会话授权仍由服务端强制校验，非终态父
+  Turn 继续拒绝。
+- Continue、rerun、reinterpret 后续动作均显式携带父 Turn ID；旧消息、旧
+  Result 与旧 ContextSnapshot 不被修改。
+- `tests/test_agent2_domain.py`：9 passed；前端 follow-up：3 passed。
+- 这项修复完成了可审计的分支 lineage，但完整消息编辑/修订 UI 仍未闭环。

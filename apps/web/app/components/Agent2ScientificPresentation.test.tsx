@@ -48,6 +48,7 @@ describe("Agent2ScientificPresentation", () => {
       "project-1",
       "session-1",
       expect.objectContaining({
+        reply_to_turn_id: "turn-1",
         ui_context: expect.objectContaining({ explicit_result_ids: ["result-1"] }),
       }),
     ));
@@ -66,6 +67,7 @@ describe("Agent2ScientificPresentation", () => {
       "project-1",
       "session-1",
       expect.objectContaining({
+        reply_to_turn_id: "turn-1",
         ui_context: expect.objectContaining({ explicit_result_ids: ["result-1"] }),
       }),
     ));
@@ -84,6 +86,7 @@ describe("Agent2ScientificPresentation", () => {
       "project-1",
       "session-1",
       expect.objectContaining({
+        reply_to_turn_id: "turn-1",
         ui_context: expect.objectContaining({ explicit_result_ids: [] }),
       }),
     ));
