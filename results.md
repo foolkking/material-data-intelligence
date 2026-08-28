@@ -14942,6 +14942,18 @@ scientific_result_snapshots` 聚合计数不增长，并验证 follow-up Turn �
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
 
+## Agent-2.0 Phase 14-R — Session-list ResearchTurn projection
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改摘要：在授权 Research 会话详情的 `runReferences` 中返回持久化
+  `researchTurnId`；无 ResearchTurn 的 legacy 记录继续返回 `null`，未引入
+  Job 名称解析或第二身份权威。
+- 测试结果：项目授权/历史回归 `11 passed`；Ruff `PASS`；web typecheck
+  `PASS`。
+- 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
+  `PARTIAL`。
+
 补充验证（2026-08-28）：滚动重启 API 后，保留的已认证 Research 标签页
 显示“本次研究使用的上下文”，历史 Dataset 的 exact object/version 与
 Presentation 仍保持不变。该旧会话仍有独立的“研究对话暂时无法读取”恢复

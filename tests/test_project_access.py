@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
+from uuid import uuid4
 
 import pytest
 from starlette.requests import Request
@@ -9,7 +10,7 @@ from sqlalchemy import create_engine, insert, select
 from sqlalchemy.pool import StaticPool
 from fastapi import HTTPException
 from mdi_api.access import require_project_access
-from mdi_api.db import audit_logs, datasets, jobs, metadata, organizations, project_configs, project_members, projects, research_session_runs, sessions, users
+from mdi_api.db import audit_logs, datasets, jobs, metadata, organizations, project_configs, project_members, projects, research_session_runs, research_turns, sessions, users, messages
 from mdi_api.routers.auth import CurrentUser
 from mdi_api.routers.datasets import BulkDatasetActionRequest, UpdateDatasetRequest
 from mdi_api.routers.projects import BulkProjectActionRequest, UpdateProjectRequest
@@ -93,10 +94,28 @@ def test_research_run_binding_is_project_scoped_idempotent_and_projected(monkeyp
             {"id": "research-owner", "project_id": "used", "mode": "project", "status": "active", "created_by": owner.id},
             {"id": "research-other", "project_id": "empty", "mode": "project", "status": "active", "created_by": owner.id},
         ])
+        connection.execute(insert(messages), {
+            "id": "message-bound",
+            "session_id": "research-owner",
+            "role": "user",
+            "content_summary": "分析绑定结果",
+            "created_at": datetime.now(timezone.utc),
+        })
         connection.execute(insert(jobs), [
             {"id": "job-bound", "project_id": "used", "dataset_id": "dataset", "kind": "analysis", "status": "completed", "created_by": owner.id},
             {"id": "job-other", "project_id": "empty", "dataset_id": None, "kind": "analysis", "status": "completed", "created_by": owner.id},
         ])
+        bound_turn_id = uuid4()
+        connection.execute(insert(research_turns), {
+            "id": bound_turn_id,
+            "project_id": "used",
+            "research_session_id": "research-owner",
+            "sequence_no": 1,
+            "user_message_id": "message-bound",
+            "action_type": "ANALYZE",
+            "status": "COMPLETED",
+            "job_id": "job-bound",
+        })
 
     validate_research_session_project("research-owner", "used", owner)
     assert bind_research_session_run("research-owner", "job-bound", owner) == {
@@ -108,6 +127,7 @@ def test_research_run_binding_is_project_scoped_idempotent_and_projected(monkeyp
     view = get_session("research-owner", owner)
     assert view["runIds"] == ["job-bound"]
     assert view["runReferences"][0]["jobId"] == "job-bound"
+    assert view["runReferences"][0]["researchTurnId"] == str(bound_turn_id)
     with engine.connect() as connection:
         assert connection.execute(select(research_session_runs.c.job_id)).scalars().all() == ["job-bound"]
 

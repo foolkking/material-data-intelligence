@@ -4009,3 +4009,8 @@ Context disclosure 可见，旧会话读取错误消失；API 的
 `GET /research-sessions/research_fbf038934dc84ffeaa5aed9e7c906095` 返回
 `200 OK`。随后完整前端回归为 `94 files / 601 passed`，web typecheck
 通过。Phase 14-R 其余成熟产品门仍保持真实 `PARTIAL`。
+
+追加验证（2026-08-28）：Research 会话详情接口现在在每个
+`runReferences` 条目中投影已持久化的 `researchTurnId`，并保持项目授权和
+legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目授权/历史
+回归 `11 passed`，Ruff 与 web typecheck 通过。

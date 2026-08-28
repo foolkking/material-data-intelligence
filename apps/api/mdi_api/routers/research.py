@@ -14,7 +14,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from mdi_api.config import load_settings
 from mdi_api.database import create_engine_from_settings
 from mdi_api.access import require_project_access
-from mdi_api.db import data_profiles, datasets, jobs, messages, research_session_runs, sessions
+from mdi_api.db import data_profiles, datasets, jobs, messages, research_session_runs, research_turns, sessions
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_llm.research_roles import orchestrate_research_turn
 
@@ -67,10 +67,8 @@ _TOOL_USER_STEP_LABELS = {
     "electronic.dos": "整理电子态密度与能量分布",
     "phonon.band": "整理声子色散关系",
     "phonon.dos": "整理声子态密度",
-    "phonon.band": "整理声子色散关系",
     "phonon.band_dos": "组合声子色散与态密度",
     "phonon.animation": "准备声子振动模式",
-    "structure.summary": "整理晶体结构与组成信息",
     "structure.lattice_summary": "整理晶格参数",
     "structure.spacegroup_summary": "整理空间群信息",
     "structure.composition_from_structure": "从晶体结构提取组成信息",
@@ -80,16 +78,12 @@ _TOOL_USER_STEP_LABELS = {
     "structure.coordination_crystalnn": "分析 CrystalNN 配位环境",
     "structure.coordination_voronoinn": "分析 VoronoiNN 配位环境",
     "structure.local_environment_polyhedra": "分析局部环境多面体",
-    "structure.xrd": "根据晶体结构生成理论 XRD 图谱",
     "structure.rdf": "计算结构径向分布函数（RDF）",
     "structure.trajectory_viewer": "整理分子动力学轨迹",
     "structure.trajectory_import": "读取分子动力学轨迹",
     "trajectory.viewer": "整理分子动力学轨迹",
     "trajectory.rdf": "计算轨迹径向分布函数（RDF）",
-    "trajectory.msd": "计算轨迹均方位移（MSD）",
     "trajectory.diffusion": "根据均方位移估计扩散行为",
-    "electronic.band_structure": "整理电子能带与能量参考",
-    "electronic.dos": "整理电子态密度与能量分布",
     "dataset.materials_explorer": "整理材料样本与属性概览",
     "dataset.composition_space": "分析材料组成空间",
     "ml.regression_evaluation": "评估材料属性回归结果",
@@ -99,9 +93,7 @@ _TOOL_USER_STEP_LABELS = {
     "ml.density_scatter": "生成预测值与真实值关系图",
     "ml.error_distribution": "分析预测误差分布",
     "ml.outlier_table": "整理异常样本",
-    "table.numeric_summary": "汇总数据中的数值属性",
     "table.distribution_summary": "分析材料属性的分布特征",
-    "table.property_distribution": "分析材料属性的分布特征",
     "viz.scatter": "生成材料属性关系图",
     "viz.histogram": "生成材料属性分布图",
     "viz.correlation": "计算材料属性之间的相关关系",
@@ -685,8 +677,13 @@ def _session_view(row, connection) -> dict[str, Any]:
     latest_message_at = _iso(message_rows[-1]["created_at"]) if message_rows else created_at
     try:
         run_rows = connection.execute(
-            select(research_session_runs.c.job_id, research_session_runs.c.created_at)
+            select(
+                research_session_runs.c.job_id,
+                research_session_runs.c.created_at,
+                research_turns.c.id.label("research_turn_id"),
+            )
             .join(jobs, jobs.c.id == research_session_runs.c.job_id)
+            .outerjoin(research_turns, research_turns.c.job_id == research_session_runs.c.job_id)
             .where(research_session_runs.c.session_id == row["id"], jobs.c.project_id == row["project_id"])
             .order_by(research_session_runs.c.created_at.asc(), research_session_runs.c.job_id.asc())
         ).mappings().all()
@@ -704,7 +701,11 @@ def _session_view(row, connection) -> dict[str, Any]:
             if job_id and job_id not in seen:
                 seen.add(job_id)
                 run_rows.append({"job_id": job_id, "created_at": item["created_at"]})
-    run_references = [{"jobId": item["job_id"], "createdAt": _iso(item["created_at"])} for item in run_rows]
+    run_references = [{
+        "jobId": item["job_id"],
+        "createdAt": _iso(item["created_at"]),
+        "researchTurnId": str(item["research_turn_id"]) if item.get("research_turn_id") else None,
+    } for item in run_rows]
     return {"id": row["id"], "projectId": row["project_id"], "project_id": row["project_id"], "datasetId": row["dataset_id"], "dataset_id": row["dataset_id"], "title": title, "status": row["status"], "createdAt": created_at, "created_at": created_at, "updated_at": latest_message_at, "messages": [_message_view(item) for item in message_rows], "runIds": [item["job_id"] for item in run_rows], "runReferences": run_references}
 
 

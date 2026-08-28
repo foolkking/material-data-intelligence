@@ -52,7 +52,7 @@ export type ResearchSession = {
   updated_at: string;
   messages?: ResearchMessage[];
   runIds?: string[];
-  runReferences?: Array<{ jobId: string; createdAt?: string | null }>;
+  runReferences?: Array<{ jobId: string; createdAt?: string | null; researchTurnId?: string | null }>;
 };
 
 export type ScopeResolution = {

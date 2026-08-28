@@ -85,6 +85,16 @@ session-unreadable error is absent. API logs show the authoritative
 `200 OK`. The only browser warning observed was Next Fast Refresh's development
 full-reload notice; no console errors or unhandled rejections occurred.
 
+### Agent-2.0 Phase 14-R session-list ResearchTurn projection (2026-08-28)
+
+The authorized `GET /research-sessions/{session_id}` projection now includes
+the persisted `researchTurnId` alongside each `runReferences` entry whenever a
+ResearchTurn row is linked to the Job. The relation is read-only and
+project-scoped; legacy sessions without a turn continue returning a null
+value. This removes another opportunity for clients to reconstruct Turn
+identity from Job strings. Project-access/history regression: `11 passed`;
+Ruff and web typecheck are `PASS`.
+
 ### Agent-2.0 Phase 14-R historical ContextManifest compatibility (2026-08-28)
 
 Historical ResearchTurns whose `CONTEXT_RESOLVED` event predates embedded
