@@ -14916,6 +14916,16 @@ Phase 14-R 更广泛的成熟产品门仍保持 PARTIAL，未创建 P14R-A/P14R-
 Result authority；测试断言 reuse 前后 `analysis_plans/jobs/tool_calls/artifacts/
 scientific_result_snapshots` 聚合计数不增长，并验证 follow-up Turn 完成及
 原始 Result/Turn 身份保持不变。浏览器级复用控制仍待成熟产品 campaign。
+
+追加验证（2026-08-28）：Scientific Presentation 结果页新增三个明确的后续
+研究控制：`继续研究`、`重新研究（新运行）`、`重新解释（不重算科学结果）`。
+三者均复用受授权的 ResearchTurn 创建边界并保留精确 source object/version；
+继续研究显式携带既有 Result 引用，重新研究明确创建新的 execution lineage，
+重新解释保持 interpretation-only 语义。`Agent2ScientificPresentation` 聚焦
+测试 `3 passed`，前端全量回归 `94 files / 603 passed`，typecheck 与
+`git diff --check` 通过。该修复关闭了结果页基础控制入口，但消息修订/分支、
+运行中取消恢复、浏览器级零增量复用以及 Trash/retention/export 等成熟产品门
+仍未闭合，Phase 14-R 继续保持 `PARTIAL`，未创建 P14R-A/P14R-B。
 ## Agent-2.0 Phase 14-R — Report evidence continuity
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

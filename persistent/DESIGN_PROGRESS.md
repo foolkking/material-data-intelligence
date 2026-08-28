@@ -4014,3 +4014,15 @@ Context disclosure 可见，旧会话读取错误消失；API 的
 `runReferences` 条目中投影已持久化的 `researchTurnId`，并保持项目授权和
 legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目授权/历史
 回归 `11 passed`，Ruff 与 web typecheck 通过。
+
+## 2026-08-28 Phase 14-R Research follow-up controls
+
+- Scientific Presentation 结果页现在提供 `继续研究`、`重新研究（新运行）`
+  和 `重新解释（不重算科学结果）` 三个明确动作。
+- Continue 通过 `explicit_result_ids` 传递既有 Result，保持同一精确来源；
+  rerun 不传既有 Result，明确建立新的运行 lineage；reinterpret 继续使用
+  interpretation-only 路径。
+- 聚焦前端测试 `3 passed`，前端全量 `94 files / 603 passed`，typecheck、
+  `git diff --check` 通过。
+- 该项只扩展用户控制，不改变 ScientificResult/ScientificObjectVersion
+  authority；Phase 14-R 仍为 `PARTIAL`，未创建 P14R-A/P14R-B。

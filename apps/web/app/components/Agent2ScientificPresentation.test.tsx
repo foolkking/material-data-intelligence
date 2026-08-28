@@ -53,4 +53,40 @@ describe("Agent2ScientificPresentation", () => {
     ));
     expect(mocks.push).toHaveBeenCalledWith("/projects/project-1/research/session-1?turn=turn-reinterpret-1");
   });
+
+  it("creates a continuation turn with an explicit reusable result", async () => {
+    mocks.getAgent2ResearchTurnResult.mockResolvedValue({ ...result, source_object_refs: [{ object_id: "object-1", version_id: "version-1", project_id: "project-1", object_type: "structure.crystal" }] });
+    mocks.getAgent2ResearchTurnInterpretation.mockRejectedValue(new Error("not ready"));
+    mocks.createAgent2ResearchTurn.mockResolvedValue({ turn_id: "turn-continue-1" });
+
+    render(<Agent2ScientificPresentation turnId="turn-1" projectId="project-1" sessionId="session-1" />);
+    fireEvent.click(await screen.findByRole("button", { name: "继续研究" }));
+
+    await waitFor(() => expect(mocks.createAgent2ResearchTurn).toHaveBeenCalledWith(
+      "project-1",
+      "session-1",
+      expect.objectContaining({
+        ui_context: expect.objectContaining({ explicit_result_ids: ["result-1"] }),
+      }),
+    ));
+    expect(mocks.push).toHaveBeenCalledWith("/projects/project-1/research/session-1?turn=turn-continue-1");
+  });
+
+  it("creates a new rerun without claiming result reuse", async () => {
+    mocks.getAgent2ResearchTurnResult.mockResolvedValue(result);
+    mocks.getAgent2ResearchTurnInterpretation.mockRejectedValue(new Error("not ready"));
+    mocks.createAgent2ResearchTurn.mockResolvedValue({ turn_id: "turn-rerun-1" });
+
+    render(<Agent2ScientificPresentation turnId="turn-1" projectId="project-1" sessionId="session-1" />);
+    fireEvent.click(await screen.findByRole("button", { name: "重新研究（新运行）" }));
+
+    await waitFor(() => expect(mocks.createAgent2ResearchTurn).toHaveBeenCalledWith(
+      "project-1",
+      "session-1",
+      expect.objectContaining({
+        ui_context: expect.objectContaining({ explicit_result_ids: [] }),
+      }),
+    ));
+    expect(mocks.push).toHaveBeenCalledWith("/projects/project-1/research/session-1?turn=turn-rerun-1");
+  });
 });

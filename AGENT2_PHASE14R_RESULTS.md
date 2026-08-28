@@ -95,6 +95,21 @@ value. This removes another opportunity for clients to reconstruct Turn
 identity from Job strings. Project-access/history regression: `11 passed`;
 Ruff and web typecheck are `PASS`.
 
+### Agent-2.0 Phase 14-R Research follow-up controls (2026-08-28)
+
+The authenticated Scientific Presentation now exposes explicit follow-up
+actions for a completed Result: `继续研究`, `重新研究（新运行）`, and the
+existing `重新解释（不重算科学结果）`. All three actions reuse the secured
+ResearchTurn creation boundary and preserve exact source object/version
+references. Continuation sends the prior Result identity as an explicit
+reusable reference; rerun deliberately omits that reference and states that a
+new execution lineage is requested; reinterpret remains the no-recompute path.
+The focused `Agent2ScientificPresentation` suite passes `3/3` and the full
+frontend regression passes `94 files / 603 tests`; typecheck remains `PASS`.
+This closes the basic result-page control affordance but does not yet qualify
+message revision/branching, queued/running cancellation recovery, or the
+browser-level zero-delta reuse campaign.
+
 ### Agent-2.0 Phase 14-R historical ContextManifest compatibility (2026-08-28)
 
 Historical ResearchTurns whose `CONTEXT_RESOLVED` event predates embedded
