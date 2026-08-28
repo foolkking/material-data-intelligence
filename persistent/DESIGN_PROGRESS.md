@@ -3878,3 +3878,7 @@ relations are checked against the bound session before use, so malformed
 cross-session links cannot disclose another conversation's content. The
 focused history suite passes (`7 passed`); Phase 14-R remains open for the
 broader mature-product qualification tracks.
+
+The same-stack historical/reuse service suite was rerun with the repository
+`services/llm` package on subprocess `PYTHONPATH`: `4 passed`, `0 skipped`.
+The earlier import error was test-environment configuration only.

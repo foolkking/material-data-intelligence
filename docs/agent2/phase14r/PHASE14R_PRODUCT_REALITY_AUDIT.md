@@ -1,7 +1,7 @@
 # Phase 14-R Product Reality Audit
 
 Date: 2026-08-28  
-Verified base: `7ae6975` (Phase 14-R fix-forward worktree; historical Phase 14
+Verified base: `1cf8b4a` (Phase 14-R fix-forward worktree; historical Phase 14
 seal `d03b0a2e86e50d834a774cf823cfe055c91cf10c` preserved)  
 Branch: `master` (`HEAD` is ahead of the historical seal; release CI has not
 yet been run for Phase 14-R)  
@@ -114,6 +114,13 @@ with the repository-supported service URLs (PostgreSQL `127.0.0.1:55433`,
 Redis DB 13, MinIO `127.0.0.1:9000`) and passed `1/1`; the earlier skip was
 only the missing `MDI_TEST_DATABASE_URL` shell alias. This is a focused
 service regression, not the complete Phase 14-R campaign.
+
+The current-worktree historical/reuse service suite
+`tests/integration/test_agent2_phase7_service_backed.py` was rerun against the
+same PostgreSQL/Redis/MinIO stack with the repository's `services/llm` package
+on subprocess `PYTHONPATH`: `4 passed`, `0 failed`, `0 errors`, `0 skipped`.
+The earlier subprocess error was only a missing `mdi_llm` import path and did
+not indicate a service or scientific-result failure.
 
 The authenticated report route for the same legacy run was also opened in the
 browser. It rendered the verified 9/9-row `结构组成概览` table, exact dataset
