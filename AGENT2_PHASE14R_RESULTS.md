@@ -1,0 +1,141 @@
+# Agent-2.0 Phase 14-R Results
+
+Date: 2026-08-28  
+Status: `PARTIAL` — this document records current evidence without
+claiming the mature-product release gate.
+
+## A. Incoming Phase 14 Seal
+
+- Historical Phase 14 seal: `d03b0a2e86e50d834a774cf823cfe055c91cf10c`
+- Phase 14 remains sealed; no Phase 15 was created or started.
+- Current Phase 14-R worktree head: `4726be9`
+- `PHASE14R_REOPENED = NO`
+
+## B. Product Reality Audit
+
+The authoritative audit is
+`docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`.
+Scientific identity/version and Result authority remain frozen. The remaining
+gaps are mature-product qualification gaps, not a replacement data model.
+
+## C. Scientific Surface / Presentation
+
+The bounded Scientific Presentation compiler and existing viewers are reused.
+Evidence inspection is read-only and resolves through the secured planner route.
+Current Dataset proof:
+
+- Result: `15fc4d39-d2d7-5ac3-907a-cb06ed6b7a3f`
+- Interpretation: `efccf7a2-6666-429e-be92-20cb2cf659de`
+- exact object/version:
+  `8a425466-b697-4c85-9a43-199414a22865` /
+  `be02266a-7d4f-4ebb-9f28-3132855167d0`
+- Evidence: `evidence.bf3896f29ae3554e977725d327b4ebba`
+- Artifact checksum:
+  `879396a3bc0bfdef2d31387b3eb73df309fa228d95f9cf2fb2c92eca6c119708`
+- ToolCall:
+  `call_job_agent2_8382c443f9ca4c909aa3444fea683807_step_1`
+  (`dataset.materials_explorer`, completed)
+
+The authenticated browser evidence inspector displays all of the above,
+including the exact source, Artifact checksum and completed ToolCall.
+Structure/Electronic/full scientific-surface campaigns remain `PARTIAL`.
+
+## D. Result Reuse
+
+`tests/integration/test_agent2_phase7_service_backed.py` passed `4` cases in
+`114.25s` against real PostgreSQL/Redis worker infrastructure. Interpretation
+reuse asserted zero aggregate growth for plans, jobs, ToolCalls, Artifacts and
+ScientificResult snapshots; continuation retained the explicit prior Result
+identity. Browser-level reuse controls remain unqualified.
+
+## E. Runtime / Service-backed
+
+`GET /health/runtime` reports:
+
+- PostgreSQL (`database.backend=postgresql`)
+- Redis (`redis.backend=redis`)
+- MinIO (`artifactStorage.backend=minio`, bucket `mdi-artifacts`)
+- Redis worker backend
+- configured DeepSeek provider
+
+Recent service evidence:
+
+- Phase 7 reuse campaign: `4 passed`, `0 failed`, `0 errors`, `0 skipped`
+- Earlier Phase 3/7 combined service campaign: `5 passed`, `0 failed`,
+  `0 errors`, `0 skipped`
+- DB sample after campaign: `active=1`, `idle=5`,
+  `idle-in-transaction=0`; no pool timeout observed.
+
+## F. Tests
+
+- `tests/test_phase10l4_api_persistence.py`: `14 passed`
+- Frontend scientific presentation/identity tests: `12 passed`
+- Frontend typecheck: `PASS`
+- touched Ruff (`apps/api/mdi_api/routers/planner.py`): `PASS`
+- `git diff --check`: `PASS`
+- Previously recorded current-worktree regression: frontend `93 files / 597
+  passed`; backend `1820 passed / 83 skipped`
+
+## G. Security / Provenance
+
+Evidence and Artifact reads remain authorized by owning Job/project. The Agent2
+compatibility adapter is read-only, bounded, accepts historical source-field
+spellings, and does not expose credentials, queue URLs, filesystem paths or
+provider payloads. Scientific values continue to come from persisted Result
+snapshots; no latest-version substitution was introduced.
+
+## H. Browser
+
+The preserved authenticated in-app browser tab remains open. The Dataset
+presentation route was reloaded after the API restart and the evidence
+inspector showed:
+
+`Phase13 Canonical Dataset · be02266a-7d4f-4ebb-9f28-3132855167d0`  
+Artifact checksum `879396…119708`  
+ToolCall `dataset.materials_explorer · completed`
+
+Full capability-family, archive/history, mobile, report-quality and recovery
+browser campaigns are not yet complete.
+
+## I. Git / CI
+
+- `c165212`: Agent2 evidence-chain compatibility adapter
+- `4726be9`: exact Result reuse qualification evidence
+- No `P14R-A` or `P14R-B` has been created.
+- No Phase 14-R release CI has been claimed.
+
+## J. Remaining Gaps
+
+The following mandatory mature-product gates remain open:
+
+- full live Structure/Electronic/Dataset and all declared viewer-family
+  acceptance;
+- multi-family Report quality/browser evaluation;
+- browser-level exact Result reuse controls;
+- complete edit/branch/stop/continue/rerun/retry product campaign;
+- Trash/retention/purge/export governance;
+- global search/organization;
+- background task center and network recovery;
+- provider-scale context/performance benchmark;
+- backup/restore/monitoring/resource-governance qualification;
+- final real-user acceptance and P14R exact-SHA release commits.
+
+## K. Final Verdict
+
+```text
+PHASE14 = SEALED
+PHASE14_REOPENED = NO
+FUNCTIONAL_PHASE14R_CLOSURE = FAIL
+AGENT2_PHASE14R = PARTIAL
+SCIENTIFIC_SURFACE_COMPLETENESS = PARTIAL
+SCIENTIFIC_REPORT_QUALITY = PARTIAL
+USER_LIFECYCLE_MANAGEMENT = PARTIAL
+CHAT_RESEARCH_CONTROL = PARTIAL
+CONTEXT_PROVENANCE_2_0 = PARTIAL
+PRODUCT_FLUENCY = PARTIAL
+REAL_USER_PRODUCT_ACCEPTANCE = NOT_QUALIFIED
+MATURE_PRODUCT_GAPS = PRESENT
+READY_FOR_MATURE_PRODUCTION_USE = NO
+PHASE15_CREATED = NO
+PHASE15_STARTED = NO
+```
