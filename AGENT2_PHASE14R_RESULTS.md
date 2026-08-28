@@ -1,6 +1,6 @@
 # Agent-2.0 Phase 14-R Results
 
-Date: 2026-08-28  
+Date: 2026-08-28
 Status: `PARTIAL` — this document records current evidence without
 claiming the mature-product release gate.
 
@@ -90,8 +90,8 @@ The preserved authenticated in-app browser tab remains open. The Dataset
 presentation route was reloaded after the API restart and the evidence
 inspector showed:
 
-`Phase13 Canonical Dataset · be02266a-7d4f-4ebb-9f28-3132855167d0`  
-Artifact checksum `879396…119708`  
+`Phase13 Canonical Dataset · be02266a-7d4f-4ebb-9f28-3132855167d0`
+Artifact checksum `879396…119708`
 ToolCall `dataset.materials_explorer · completed`
 
 Full capability-family, archive/history, mobile, report-quality and recovery
