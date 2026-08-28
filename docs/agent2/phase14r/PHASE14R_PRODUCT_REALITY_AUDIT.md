@@ -1,7 +1,7 @@
 # Phase 14-R Product Reality Audit
 
 Date: 2026-08-28  
-Verified base: `4f971be` (Phase 14-R fix-forward worktree; historical Phase 14
+Verified base: `7ae6975` (Phase 14-R fix-forward worktree; historical Phase 14
 seal `d03b0a2e86e50d834a774cf823cfe055c91cf10c` preserved)  
 Branch: `master` (`HEAD` is ahead of the historical seal; release CI has not
 yet been run for Phase 14-R)  
@@ -40,7 +40,7 @@ acceptance evidence is not yet complete.
 | Scientific Viewer coverage | registry and many renderer implementations exist; every declared family lacks current live acceptance | PARTIAL |
 | Evidence traversal UX | Presentation evidence references now link through the existing secured interpretation-evidence route, retaining Result/interpretation identity; complete browser proof of every Result → ToolCall/Artifact → version path remains open | PARTIAL |
 | Scientific Report | grounded report composition and immutable snapshots exist; frozen `ReportContextBundle` now validates the bounded provider input and the quality rubric is checked in; current multi-family browser/service quality campaign remains open | PARTIAL |
-| Historical v1/v2 presentation | exact source semantics are sealed in Phase 12/13; Research history links now use persisted `researchTurnId` only, and history explicitly labels modern `RESEARCH_TURN` versus compatibility-only `LEGACY_SESSION_RUN`; repeated browser campaign is still open | PARTIAL |
+| Historical v1/v2 presentation | exact source semantics are sealed in Phase 12/13; Research history links now use persisted `researchTurnId` only, and history explicitly labels modern `RESEARCH_TURN` versus compatibility-only `LEGACY_SESSION_RUN`; modern history now prefers the persisted `user_message_id` with a session-bound safety check; repeated browser campaign is still open | PARTIAL |
 | Archived historical presentation | archive API/UI and historical Viewer semantics exist; mature Report/Evidence browser proof not yet run | PARTIAL |
 | Viewer no-recompute | read-only architecture and tests exist; current persisted delta campaign across all viewers is not yet rerun | PARTIAL |
 | Exact Result reuse | some continuation/reuse infrastructure exists; dedicated zero-delta Phase 14-R acceptance is not yet established | NOT_QUALIFIED |

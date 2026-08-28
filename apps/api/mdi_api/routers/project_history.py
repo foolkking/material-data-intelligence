@@ -176,6 +176,7 @@ def _read_research_context_by_run(
             research_session_runs.c.session_id,
             research_session_runs.c.created_at,
             research_turns.c.id.label("research_turn_id"),
+            research_turns.c.user_message_id,
         )
         .join(sessions, sessions.c.id == research_session_runs.c.session_id)
         .outerjoin(research_turns, research_turns.c.job_id == research_session_runs.c.job_id)
@@ -188,6 +189,7 @@ def _read_research_context_by_run(
     session_ids = sorted({str(item["session_id"]) for item in bindings})
     message_rows = connection.execute(
         select(
+            messages.c.id,
             messages.c.session_id,
             messages.c.role,
             messages.c.content_summary,
@@ -197,20 +199,37 @@ def _read_research_context_by_run(
         .order_by(messages.c.session_id.asc(), messages.c.created_at.asc(), messages.c.id.asc())
     ).mappings().all()
     user_messages_by_session: dict[str, list[Any]] = {}
+    user_messages_by_id: dict[str, Any] = {}
     for row in message_rows:
         if row["role"] == "user" and str(row["content_summary"] or "").strip():
             user_messages_by_session.setdefault(str(row["session_id"]), []).append(row)
+            user_messages_by_id[str(row["id"])] = row
 
     result: dict[str, dict[str, str | None]] = {}
     for binding in bindings:
         session_id = str(binding["session_id"])
         bound_at = binding["created_at"]
+        exact_message = (
+            user_messages_by_id.get(str(binding["user_message_id"]))
+            if binding.get("research_turn_id") and binding.get("user_message_id")
+            else None
+        )
+        if exact_message is not None and str(exact_message["session_id"]) != session_id:
+            # A malformed historical relation must not disclose a message from
+            # another session; fall back to the bounded legacy projection.
+            exact_message = None
         candidates = [
             row
             for row in user_messages_by_session.get(session_id, [])
             if bound_at is None or row["created_at"] <= bound_at
         ]
-        question = str(candidates[-1]["content_summary"]).strip() if candidates else None
+        question = (
+            str(exact_message["content_summary"]).strip()
+            if exact_message
+            else str(candidates[-1]["content_summary"]).strip()
+            if candidates
+            else None
+        )
         context = {
             "sessionId": session_id,
             "userQuestion": question,

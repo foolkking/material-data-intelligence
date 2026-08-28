@@ -14820,3 +14820,16 @@ uv lock、touched Ruff、diff check 通过。
 提交/CI 状态：P14-A `d1249ac34cc0d2be571cdbc96075a3d88c6406b8`；
 CI `33142030331` exact-SHA PASS。P14-B 为本次证据封存提交，需以其
 exact-current-head CI 作为最终 release seal。
+
+任务名称：Agent-2.0 Phase 14-R — Post-Seal Product Quality Remediation
+状态：处理中
+完成时间：2026-08-28
+修改摘要：补强 Project History 的现代 ResearchTurn 消息身份解析。历史
+投影优先采用持久化 `ResearchTurn.user_message_id`，legacy
+`research_session_runs` 继续使用有界时间回退；跨 session 的异常消息绑定
+不会被用于展示，避免多轮会话串线或跨会话泄露。
+测试结果：`tests/test_project_history_research_context.py` 与
+`tests/test_project_history.py` 共 7 passed；目标模块 compileall PASS；
+目标 Ruff PASS；此前 Agent2/Research/Presentation 聚焦回归仍保持通过。
+提交/CI 状态：本次变更待提交；Phase 14-R 仍有成熟产品 P0/P1 资格债务，
+未创建 P14R-A/P14R-B，未宣称 COMPLETE。

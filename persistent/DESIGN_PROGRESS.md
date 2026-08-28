@@ -3868,3 +3868,13 @@ provider transcripts, credentials and unbounded Tool payloads remain outside
 the contract. Existing Report Phase 8 tests (16 passed, 4 historical skips),
 compileall, touched Ruff and diff checks pass. Full Report browser/service
 quality remains open.
+
+### Agent-2.0 Phase 14-R history message binding hardening (2026-08-28)
+
+Project History now prefers the persisted `ResearchTurn.user_message_id` when
+recovering a modern run's user question, while retaining the bounded
+timestamp-based fallback for legacy `research_session_runs`. Exact-message
+relations are checked against the bound session before use, so malformed
+cross-session links cannot disclose another conversation's content. The
+focused history suite passes (`7 passed`); Phase 14-R remains open for the
+broader mature-product qualification tracks.
