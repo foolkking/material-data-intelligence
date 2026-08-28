@@ -76,6 +76,14 @@ provider refs. Newer turns continue returning their persisted manifest
 unchanged. Focused API/context regression: `20 passed`; no scientific
 authority or historical snapshot was mutated.
 
+After refreshing the same authenticated browser Research route with the
+current API process, the `本次研究使用的上下文` disclosure is present and the
+historical Dataset presentation still resolves the exact object/version and
+evidence chain. The page continues to show a separate legacy conversation
+reload warning for that old session, so browser-level full conversation resume
+remains `PARTIAL`; this compatibility repair itself is verified by the focused
+API regression and the visible context disclosure.
+
 `tests/integration/test_agent2_phase7_service_backed.py` passed `4` cases in
 `114.25s` against real PostgreSQL/Redis worker infrastructure. Interpretation
 reuse asserted zero aggregate growth for plans, jobs, ToolCalls, Artifacts and

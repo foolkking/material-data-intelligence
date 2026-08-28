@@ -14941,3 +14941,9 @@ scientific_result_snapshots` 聚合计数不增长，并验证 follow-up Turn �
 - 测试结果：API/context focused `20 passed`。
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
+
+补充验证（2026-08-28）：滚动重启 API 后，保留的已认证 Research 标签页
+显示“本次研究使用的上下文”，历史 Dataset 的 exact object/version 与
+Presentation 仍保持不变。该旧会话仍有独立的“研究对话暂时无法读取”恢复
+提示，因此完整历史会话恢复门仍为 PARTIAL；本次兼容接口修复由 API focused
+20 项回归覆盖。
