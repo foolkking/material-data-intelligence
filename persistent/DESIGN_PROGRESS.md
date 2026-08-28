@@ -3817,3 +3817,14 @@ exact identity; otherwise a legacy run remains viewable through its run route
 without guessing a scientific Turn. This preserves fail-closed historical
 resolution for non-standard Job identifiers. ResearchPages focused tests and
 typecheck pass.
+
+### Agent-2.0 Phase 14-R report context hardening (2026-08-28)
+
+Report generation now validates a frozen `ReportContextBundle` immediately
+before the existing structured provider boundary. The bundle contains only the
+bounded research question, Result projection, validated interpretation,
+evidence references, opaque refs and omission ledger; raw conversation,
+provider transcripts, credentials and unbounded Tool payloads remain outside
+the contract. Existing Report Phase 8 tests (16 passed, 4 historical skips),
+compileall, touched Ruff and diff checks pass. Full Report browser/service
+quality remains open.

@@ -36,7 +36,7 @@ acceptance evidence is not yet complete.
 | Structure/Electronic/Dataset user presentation | renderers and routes exist; full current same-stack domain campaign not rerun | PARTIAL |
 | Scientific Viewer coverage | registry and many renderer implementations exist; every declared family lacks current live acceptance | PARTIAL |
 | Evidence traversal UX | labels and provenance summaries exist; complete user-navigable Result → ToolCall/Artifact → version path not proven for every surface | PARTIAL |
-| Scientific Report | grounded report composition and immutable snapshots exist; formal `ReportContextBundle` and quality rubric are not yet a checked-in contract | PARTIAL |
+| Scientific Report | grounded report composition and immutable snapshots exist; frozen `ReportContextBundle` now validates the bounded provider input and the quality rubric is checked in; current multi-family browser/service quality campaign remains open | PARTIAL |
 | Historical v1/v2 presentation | exact source semantics are sealed in Phase 12/13; Research history links now use persisted `researchTurnId` only, while Phase 14-R repeated browser campaign is still open | PARTIAL |
 | Archived historical presentation | archive API/UI and historical Viewer semantics exist; mature Report/Evidence browser proof not yet run | PARTIAL |
 | Viewer no-recompute | read-only architecture and tests exist; current persisted delta campaign across all viewers is not yet rerun | PARTIAL |
