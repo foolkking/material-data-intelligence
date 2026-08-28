@@ -50,11 +50,11 @@ acceptance evidence is not yet complete.
 | Deterministic compiler and compaction | `research_agent/context/compiler.py` | PASS |
 | Session memory pins/goals/constraints | `research_agent/memory/{schemas,service}.py` and `research_session_*` tables | PASS |
 | Exact immutable ContextSnapshot | `research_context_snapshots` table and repository | PASS |
-| Explicit ContextManifest 2.0 persisted per provider call | no `ContextManifest` model/table/reference found in current code | NOT_QUALIFIED |
-| Per-item inclusion/exclusion provenance | candidate/compiler internals exist, but no durable manifest contract/API | PARTIAL |
+| Explicit ContextManifest 2.0 persisted for resolved research context | `ContextManifest`/`ContextManifestItem` are built from resolved context and persisted in immutable `CONTEXT_RESOLVED` event payloads; authorized `GET /api/research/turns/{turn_id}/context-manifest` exposes the bounded projection | PASS |
+| Per-item inclusion/exclusion provenance | manifest items retain authority class, source identity, opaque ref, inclusion reason, selection mode, exact object/version and fingerprints; excluded-item ledger remains bounded | PASS |
 | Context budget policy | compiler has a bounded default budget; operation-specific checked-in policy and benchmark evidence absent | PARTIAL |
-| User-facing Used context disclosure | session memory strip exists in `ResearchPages.tsx`; complete manifest disclosure/control path absent | PARTIAL |
-| Historical context replay | immutable snapshots preserve exact refs; manifest fingerprint/replay contract absent | PARTIAL |
+| User-facing Used context disclosure | Research UI fetches the authorized manifest endpoint and renders a bounded “本次研究使用的上下文” disclosure | PASS |
+| Historical context replay | immutable `CONTEXT_RESOLVED` event retains manifest fingerprint, policy/budget state and exact refs for a turn; replay UI controls are not part of this contract | PARTIAL |
 | Message revisions/branching | no complete persisted revision/branch product contract found in current Research UI | NOT_QUALIFIED |
 
 ## Lifecycle and control
@@ -91,4 +91,3 @@ Phase 14 reopening. Phase 14-R is not yet closed. The highest-priority
 remaining gaps are the durable ContextManifest/message provenance contract,
 full scientific surface acceptance, report-quality/context contracts,
 explicit research controls, and current same-stack real-user evidence.
-

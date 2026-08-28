@@ -3794,3 +3794,17 @@ The current browser API also reports SQLite/local/local backends despite the
 real PostgreSQL/Redis/MinIO services being available. These findings are
 recorded in the Agent2 Phase 13 gap scan; no Phase 13 COMPLETE or Phase 14
 authorization is claimed.
+
+### Agent-2.0 Phase 14-R context provenance increment (2026-08-28)
+
+Phase 14-R now has a bounded ContextManifest 2.0 contract. Resolved research
+context builds immutable per-item provenance (authority class, source identity,
+opaque provider reference, inclusion reason, selection mode, exact object/version
+and content fingerprint) plus bounded budget/compaction state. The manifest is
+stored inside the immutable `CONTEXT_RESOLVED` event payload and is exposed only
+through the authorized `GET /api/research/turns/{turn_id}/context-manifest`
+projection. Research UI renders a bounded “本次研究使用的上下文” disclosure;
+the normal Turn view does not leak provider-facing manifest internals. Focused
+backend/context tests and frontend typecheck pass. Phase 14-R remains open for
+the broader lifecycle, viewer, report, search, recovery, performance and
+real-user qualification tracks.

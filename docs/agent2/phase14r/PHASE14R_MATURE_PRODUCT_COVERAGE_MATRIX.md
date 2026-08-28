@@ -17,10 +17,9 @@ remain open.
 | History/resume | Project history | explicit ResearchTurn relation | PASS | PARTIAL | PASS (Phase 14) | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | Archive/restore | object actions | lifecycle service | PASS | PARTIAL | PASS (Phase 12/14) | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | Result reuse | follow-up Research | exact reusable Result | NOT_QUALIFIED | NOT_QUALIFIED | NOT_QUALIFIED | NOT_QUALIFIED | PARTIAL | PASS | NOT_QUALIFIED | PARTIAL | NOT_QUALIFIED |
-| Context transparency | Research context | ContextSnapshot/memory | PARTIAL | NOT_QUALIFIED | NOT_QUALIFIED | PARTIAL | PARTIAL | PARTIAL | NOT_QUALIFIED | PARTIAL | NOT_QUALIFIED |
+| Context transparency | Research context | ContextSnapshot/ContextManifest/memory | PASS | PARTIAL | PASS (authorized manifest endpoint + disclosure) | PASS (focused API tests) | PARTIAL | PASS | PARTIAL | PASS | PARTIAL |
 | Lifecycle management | project/data/report actions | lifecycle contract | PARTIAL | NOT_QUALIFIED | PARTIAL | PARTIAL | PARTIAL | PARTIAL | NOT_QUALIFIED | PARTIAL | NOT_QUALIFIED |
 | Search/organization | global search | authorized read models | PARTIAL | NOT_QUALIFIED | PARTIAL | NOT_QUALIFIED | PARTIAL | PARTIAL | NOT_QUALIFIED | PARTIAL | PARTIAL |
 | Task/recovery | task center/reconnect | persisted Job/queue state | PARTIAL | NOT_QUALIFIED | NOT_QUALIFIED | PARTIAL | PARTIAL | PASS | NOT_QUALIFIED | PARTIAL | NOT_QUALIFIED |
 | Retention/export | trash/export | retention policy | NOT_QUALIFIED | NOT_QUALIFIED | NOT_QUALIFIED | NOT_QUALIFIED | PARTIAL | PARTIAL | NOT_QUALIFIED | PARTIAL | NOT_QUALIFIED |
 | Evaluation/operations | internal qualification | test/ops evidence | PARTIAL | N/A | NOT_QUALIFIED | PARTIAL | N/A | PARTIAL | NOT_QUALIFIED | PASS | NOT_QUALIFIED |
-

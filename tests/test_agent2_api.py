@@ -107,6 +107,65 @@ def test_create_get_list_and_cancel_turn(api):
     assert terminal.status_code == 409 and terminal.json()["detail"]["code"] == "TURN_TERMINAL"
 
 
+def test_context_manifest_endpoint_returns_bounded_manifest_and_enforces_project_access(api):
+    client, active, _owner, _viewer, stranger, objects = api
+    created = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json={"message": "Use the selected structure context"},
+    )
+    assert created.status_code == 202
+    turn_id = UUID(created.json()["turn_id"])
+    with objects.repository_factory.unit_of_work() as unit:
+        unit.agent2.research_turn_events.append_turn_event({
+            "id": uuid4(),
+            "turn_id": turn_id,
+            "sequence_no": unit.agent2.research_turn_events.next_sequence_no(turn_id),
+            "event_type": "CONTEXT_RESOLVED",
+            "payload_json": {
+                "context_manifest": {
+                    "manifest_id": "manifest-test",
+                    "operation": "ORCHESTRATOR",
+                    "project_id": "project",
+                    "research_turn_id": str(turn_id),
+                    "included_items": [{
+                        "item_id": "item-1",
+                        "kind": "SCIENTIFIC_SELECTION",
+                        "authority_class": "SCIENTIFIC_DATA",
+                        "server_side_source_identity": "scientific-object:project",
+                        "provider_opaque_ref": "opaque:item-1",
+                        "inclusion_reason": "explicit UI selection",
+                        "selection_mode": "UI_SELECTION",
+                        "authorization_checked": True,
+                        "content_fingerprint": "f" * 64,
+                        "estimated_tokens": 12,
+                        "exact_object_id": "object-1",
+                        "exact_object_version_id": "version-1",
+                    }],
+                    "excluded_items": [],
+                    "estimated_input_tokens": 12,
+                    "input_budget": 12000,
+                    "reserved_output_tokens": 2000,
+                    "repair_margin": 500,
+                    "compaction_state": "NONE",
+                    "truncation_state": "NONE",
+                    "context_fingerprint": "c" * 64,
+                    "created_at": "2026-08-28T00:00:00Z",
+                },
+            },
+        })
+
+    response = client.get(f"/api/research/turns/{turn_id}/context-manifest")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["turn_id"] == str(turn_id)
+    assert payload["manifest"]["manifest_id"] == "manifest-test"
+    assert payload["manifest"]["included_items"][0]["exact_object_version_id"] == "version-1"
+    assert "provider_prompt" not in payload["manifest"]
+
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/context-manifest").status_code == 403
+
+
 def test_concurrent_create_turn_api_allocates_unique_ordered_sequences(api):
     client, _active, _owner, _viewer, _stranger, _objects = api
 
