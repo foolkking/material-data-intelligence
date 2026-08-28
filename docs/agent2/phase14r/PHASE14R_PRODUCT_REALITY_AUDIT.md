@@ -293,3 +293,12 @@ document becomes visible again, and shows a durable “需要关注” section f
 failed, partial, or canceled work. The sync timestamp is derived from the
 completed authorized fetch; no synthetic progress or new execution state is
 created. The page remains PARTIAL for retry/notification/reconnect semantics.
+
+### Agent-2.0 Phase 14-R explicit terminal retry (2026-08-28)
+
+Terminal `FAILED`/`CANCELED` Research execution now exposes a clearly labeled
+“重试研究” control. The handler reuses the persisted session and exact parent
+Turn relation to create a new immutable retry lineage from the original user
+question; it never overwrites the failed Turn or claims scientific reuse. The
+control remains unavailable during active execution and is covered by focused
+component regression. Full authenticated retry/worker recovery remains PARTIAL.

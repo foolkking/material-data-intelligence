@@ -14960,6 +14960,20 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
 
+## Agent-2.0 Phase 14-R explicit terminal retry
+
+- 状态：阶段性闭环；Phase 14-R 总任务仍为处理中
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/ResearchExecutionActivity.tsx`、
+  `apps/web/app/components/ResearchExecutionActivity.test.tsx`、
+  `apps/web/app/components/ResearchPages.tsx`，以及 Phase 14-R 审计/持久化文档。
+- 修改摘要：失败/取消的研究执行现在才显示“重试研究”；该动作复用持久化
+  session 与 parent Turn 创建新的不可变重试 lineage，保留失败历史，不宣称
+  结果复用，也不在运行中显示。
+- 测试结果：`ResearchExecutionActivity.test.tsx` 6 passed；web typecheck
+  PASS。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；Phase 14-R remains PARTIAL。
+
 ## Agent-2.0 Phase 14-R explicit ResearchTurn branch navigation
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

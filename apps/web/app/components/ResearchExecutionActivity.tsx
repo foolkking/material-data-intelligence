@@ -16,14 +16,15 @@ const statusLabel: Record<Agent2ProgressView["status"], string> = {
   CANCELED: "分析已取消",
 };
 
-export function ResearchExecutionActivity({ progress, onCancel, cancelPending = false }: { progress: Agent2ProgressView; onCancel?: () => void; cancelPending?: boolean }) {
+export function ResearchExecutionActivity({ progress, onCancel, cancelPending = false, onRetry, retryPending = false }: { progress: Agent2ProgressView; onCancel?: () => void; cancelPending?: boolean; onRetry?: () => void; retryPending?: boolean }) {
   const importantStatus = progress.status === "FAILED" || progress.status === "CANCELED" || progress.status === "RESULT_PENDING" || progress.status === "RESULT_READY" || progress.status === "INTERPRETING" || progress.status === "COMPLETED" || progress.status === "PARTIAL";
   const cancelable = progress.status === "QUEUED" || progress.status === "RUNNING";
+  const retryable = progress.status === "FAILED" || progress.status === "CANCELED";
   return (
     <section className="research-execution-activity" aria-label="分析进度">
       <div className="research-execution-heading">
         <strong>{statusLabel[progress.status]}</strong>
-        <div>{progress.total_step_count > 0 ? <span>{progress.completed_step_count}/{progress.total_step_count}</span> : null}{cancelable && onCancel ? <button type="button" className="product-link-button research-execution-cancel" onClick={onCancel} disabled={cancelPending}>{cancelPending ? "正在取消" : "取消"}</button> : null}</div>
+        <div>{progress.total_step_count > 0 ? <span>{progress.completed_step_count}/{progress.total_step_count}</span> : null}{cancelable && onCancel ? <button type="button" className="product-link-button research-execution-cancel" onClick={onCancel} disabled={cancelPending}>{cancelPending ? "正在取消" : "取消"}</button> : null}{retryable && onRetry ? <button type="button" className="product-link-button research-execution-retry" onClick={onRetry} disabled={retryPending}>{retryPending ? "正在重试…" : "重试研究"}</button> : null}</div>
       </div>
       <ol className="research-execution-steps">
         {progress.steps.map((step) => (

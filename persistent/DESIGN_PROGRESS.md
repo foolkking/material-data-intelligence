@@ -4105,3 +4105,13 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   progress or new scientific state is created.
 - `TaskCenterPage.test.tsx` passed and web typecheck remains PASS. Retry,
   notifications, and full network-reconnect acceptance remain open.
+
+## Agent-2.0 Phase 14-R explicit terminal retry (2026-08-28)
+
+- Failed or canceled Research execution now exposes an explicit “重试研究”
+  action only in terminal states.
+- Retry creates a new immutable Turn under the existing session/parent relation
+  using the original persisted user question; it does not overwrite the failed
+  lineage or fabricate result reuse.
+- `ResearchExecutionActivity` focused tests: 6 passed; web typecheck PASS.
+  Full browser retry and worker-recovery qualification remain open.

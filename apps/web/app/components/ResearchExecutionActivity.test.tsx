@@ -47,4 +47,11 @@ describe("ResearchExecutionActivity", () => {
     fireEvent.click(button);
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
+
+  it("offers an explicit retry only for terminal failed work", () => {
+    const onRetry = vi.fn();
+    render(<ResearchExecutionActivity onRetry={onRetry} progress={{ contract_version: "1.0", turn_id: "turn-5", status: "FAILED", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: "FAILED", result_projection_pending: false }} />);
+    fireEvent.click(screen.getByRole("button", { name: "重试研究" }));
+    expect(onRetry).toHaveBeenCalledTimes(1);
+  });
 });
