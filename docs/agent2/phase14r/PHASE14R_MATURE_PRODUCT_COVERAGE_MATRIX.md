@@ -14,7 +14,7 @@ remain open.
 | Presentation/Viewers | Workbench/Result | ScientificResult | PASS | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
 | Evidence | Finding disclosure | Result/Artifact/version | PARTIAL | NOT_QUALIFIED | PARTIAL (bounded source-chain projection) | PARTIAL (deterministic persistence coverage) | PARTIAL | PARTIAL | NOT_QUALIFIED | PASS (exact source refs when snapshot exists) | PARTIAL |
 | Reports | Reports/Workbench | immutable snapshot | PASS | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | NOT_QUALIFIED | PASS | PARTIAL |
-| History/resume | Project history | explicit ResearchTurn relation | PASS | PARTIAL | PASS (Phase 14) | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
+| History/resume | Project history | explicit ResearchTurn relation | PASS | PARTIAL | PASS (Phase 14; session menu now carries persisted run/Turn when available) | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | Archive/restore | object actions | lifecycle service | PASS | PARTIAL | PASS (Phase 12/14) | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | Result reuse | follow-up Research / re-interpret | exact reusable Result | PARTIAL | NOT_QUALIFIED | PARTIAL (control + deterministic test) | PARTIAL (existing Agent2 continuation coverage) | PARTIAL | PASS | NOT_QUALIFIED | PASS (explicit result ref) | PARTIAL |
 | Context transparency | Research context | ContextSnapshot/ContextManifest/memory | PASS | PARTIAL | PASS (authorized manifest endpoint + disclosure) | PASS (focused API tests) | PARTIAL | PASS | PARTIAL | PASS | PARTIAL |

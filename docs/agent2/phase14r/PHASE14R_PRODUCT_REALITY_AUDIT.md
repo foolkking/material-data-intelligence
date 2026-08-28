@@ -178,3 +178,14 @@ Presentation tests pass (`43 passed`), typecheck and touched Ruff pass. This
 closes the missing read-only source-chain projection at the API/UI boundary,
 but does not by itself close the broader Phase 14-R cross-project browser and
 full scientific-surface campaign.
+
+### Agent-2.0 Phase 14-R history continuity bridge (2026-08-28)
+
+The Research history popover now resolves each session entry through the
+server-projected `ProjectHistory.analyses` relation. When a persisted run and
+`researchTurnId` exist, the link carries both `run` and exact `turn` query
+parameters; sessions without a bound run retain the session-only route. This
+removes the prior blank-session risk without deriving identity from Job naming.
+The frontend ResearchPages regression suite passes (`34 passed`) and typecheck
+remains green. The broader history/resume browser campaign and mature
+stop/edit/branch gates remain open.

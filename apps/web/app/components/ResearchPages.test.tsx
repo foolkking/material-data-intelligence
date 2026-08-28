@@ -576,6 +576,52 @@ it("focuses and closes the research history popover with localized status", asyn
   expect(screen.queryByRole("dialog", { name: "研究记录" })).not.toBeInTheDocument();
 });
 
+it("links a research-history session to the newest persisted run and Turn", async () => {
+  const user = userEvent.setup();
+  mocks.listResearchSessions.mockResolvedValue([
+    {
+      id: "session_history",
+      project_id: "project_1",
+      title: "结构研究",
+      status: "completed",
+      messages: [],
+    },
+  ]);
+  mocks.getResearchSession.mockResolvedValue({
+    id: "session_history",
+    project_id: "project_1",
+    title: "结构研究",
+    status: "completed",
+    messages: [],
+  });
+  mocks.getProjectHistory.mockResolvedValue({
+    project: { id: "project_1", name: "研究项目", role: "owner" },
+    datasets: [],
+    analyses: [{
+      jobId: "job_history",
+      researchSessionId: "session_history",
+      researchTurnId: "turn_history",
+      status: "completed",
+      userQuestion: "分析结构",
+      toolIds: [],
+      stepCount: 2,
+      artifactCount: 1,
+      artifactTypes: ["table_json"],
+      interpretationCount: 1,
+      reportCount: 0,
+      recipeCount: 0,
+    }],
+  });
+
+  render(<ResearchPage projectId="project_1" />);
+  await user.click(await screen.findByRole("button", { name: "研究记录" }));
+  const link = await screen.findByRole("link", { name: /结构研究/ });
+  expect(link).toHaveAttribute(
+    "href",
+    "/projects/project_1/research/session_history?run=job_history&turn=turn_history",
+  );
+});
+
 it("provides a single-view mobile switch between conversation and workbench", async () => {
   const user = userEvent.setup();
   render(<ResearchPage projectId="project_1" />);

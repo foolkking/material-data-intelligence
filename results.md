@@ -14889,4 +14889,11 @@ DOM-ready `1442 ms`，包含 `500 ms` 稳定窗口后研究输入可见总计 `1
 数据库最终状态为 `profile_ready`，项目内 ScientificObject/Version 数量均为
 4，未创建新科学版本。
 
+追加验证（2026-08-28）：修复 Research“研究记录”弹层的历史连续性导航。
+会话条目现在优先使用 ProjectHistory 中已持久化的 `researchSessionId`、
+`jobId` 和 `researchTurnId`，生成带 `run`/`turn` 的精确恢复链接；没有绑定运行
+的会话仍保持原会话入口，未引入 Job 名称解析。ResearchPages 回归
+`34 passed`，web typecheck 通过；Phase 14-R 其余成熟产品门仍保持真实
+PARTIAL 状态，未创建 P14R-A/P14R-B。
+
 追加验证（2026-08-28）：补齐 Interpretation Evidence 的只读来源链投影。证据接口继续以 immutable bundle 作为 evidence authority，并从所属 Job 的持久化 ScientificResult snapshot 解析 bounded `sourceObjectRefs`，同时返回 Job-scoped Artifact/ToolCall descriptors；旧记录缺少 Result snapshot 时安全返回空 source refs，不伪造 provenance。`tests/test_phase10l4_api_persistence.py` 为 13 passed，Research/Presentation 前端聚焦测试 43 passed，typecheck 与 touched Ruff 通过。该修复改善了 Evidence UX，但 Phase 14-R 全量科学 surface、Trash/retention、recovery 与 release CI 仍未闭合。

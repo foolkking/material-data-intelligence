@@ -3930,3 +3930,8 @@ ScientificResult snapshot for the owning Job and includes Job-scoped Artifact
 and ToolCall descriptors for user inspection. Legacy bundles without a Result
 snapshot remain readable without fabricated provenance. No scientific authority,
 version semantics, or recomputation path changed.
+## 2026-08-28 Phase 14-R history continuity
+
+- Research session-history links now use the server-projected `ProjectHistory.analyses` relation to carry an exact `run` and persisted `turn` when available.
+- Session-only links remain for sessions without a bound run; no Job-name parsing or scientific identity inference was added.
+- Frontend ResearchPages regression: 34 passed; web typecheck: PASS.
