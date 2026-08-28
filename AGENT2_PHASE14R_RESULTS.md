@@ -372,3 +372,14 @@ scientific_result_snapshots = 88
 
 This closes the Structure-specific Viewer no-recompute proof only; all-family
 Viewer qualification is still open.
+
+## N. Structure report browser follow-up
+
+Authenticated same-stack browser opened the legacy-compatible Structure report
+`job_agent2_17b67e68b7db475bbb4c3b336cb2ba15` and rendered persisted
+CrystalNN/VoronoiNN output, exact site/neighbor tables, algorithm warnings and
+reproducibility details. The read-only reopen left scientific state counts
+unchanged (`analysis_plans=133`, `jobs=117`, `tool_calls=158`,
+`artifacts=637`, `scientific_result_snapshots=88`). This strengthens the
+Structure report/viewer evidence only; full capability-family browser coverage,
+Trash/retention/export, recovery and P14R release CI remain open.
