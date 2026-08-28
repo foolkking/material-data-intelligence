@@ -140,18 +140,28 @@ frontend code. Viewer navigation is read-only.
 
 ### B14. Git / CI
 
-P13-A and P13-B are intentionally pending until the implementation commit and
-its exact-SHA CI runs are created. No Phase 13 release claim is made from
-local tests alone.
+P13-A implementation candidate:
+
+```text
+SHA = 4bfdacd
+CI run = 33134862435
+CI tested SHA = 4bfdacd
+result = PASS
+required jobs = Unit Tests, Frontend Typecheck & Build,
+Service-backed Integration (PostgreSQL + Redis + MinIO),
+Phase 11-3 Scientific Replay (Linux), Phase 11-3 Scientific Replay (Windows)
+```
+
+P13-B is the commit containing this final evidence record; its exact SHA and
+current-head CI are recorded in the release report after the commit completes.
 
 ### B15. Remaining Gaps
 
-At the time this record was created, only release provenance remained:
-P13-A exact-SHA CI and P13-B exact-current-head CI.
+At the time this record was created, only the P13-B exact-current-head CI
+remained.
 
 ### B16. Final Verdict
 
-Functional implementation and same-stack qualification are green locally.
-The final COMPLETE verdict is deferred until P13-A/P13-B exact-SHA CI and
-`HEAD == origin/master` are observed.
-
+Functional implementation and same-stack qualification are green locally and
+P13-A exact-SHA CI has passed. The final COMPLETE verdict is deferred only
+until P13-B exact-current-head CI and `HEAD == origin/master` are observed.

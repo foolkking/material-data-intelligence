@@ -1,4 +1,227 @@
 ---TASK---
+状态：已完成
+任务名称：Agent-2.0 Phase 13 — Scientific Presentation 2.0 最终封板
+开始时间：2026-08-27T00:00:00+08:00
+
+执行规范：
+`docs/agent2/phase13_scientific_presentation/PHASE13_TASK.md`
+
+本轮收口补充：
+`docs/agent2/phase13_scientific_presentation/PHASE13_FINAL_SEAL_TASK.md`
+
+先确认 Phase 12 已由 P12-B sealed base 封板，再完成已实现的科学呈现
+投影、归档/恢复产品路径、真实浏览器与服务回归、P13-A/P13-B exact-SHA
+CI。不得重做数据权威、版本、Result、Viewer 或队列架构；不得覆盖或提交
+用户-owned 文件。若任一强制门无法证明，保留处理中/失败状态并报告真实阻塞。
+
+完成时间：2026-08-28T02:20:00+08:00
+修改文件：Phase 13 presentation compiler/renderer、Agent2 result/history
+projections、bounded Dataset selection contracts、Phase 13 docs/evidence。
+修改摘要：完成 ScientificResult → deterministic presentation projection，
+exact source/evidence links、历史版本提示、Report/Research 集成、移动端
+Dataset 选择与同栈运行验收；P13-A exact-SHA CI 已通过。
+测试结果：focused frontend 25 passed；focused backend 85 passed、4 个历史
+兼容性 skip；full frontend 593 passed；full backend 1813 passed、83 个历史
+skip；PostgreSQL/Redis/MinIO service-backed 14 passed、0 skipped；typecheck、
+build、compileall、uv lock、Ruff、diff check 均通过。
+提交/CI 状态：P13-A `4bfdacd` / CI `33134862435` PASS；P13-B 待本次
+证据提交并执行 exact-current-head CI。
+
+---END---
+
+---TASK---
+状态：失败
+任务名称：Agent-2.0 Phase 12 — Surgical Repair（生产再摄取版本桥接 + 真实服务验收闭环）
+开始时间：2026-08-26T00:00:00+08:00
+
+仅执行两个根目标：建立真实 production re-ingestion → 同一 ScientificObject
+新 immutable version；让 PostgreSQL/Redis/MinIO mandatory service-backed
+测试真实执行且 skipped=0。不得开始 Phase 13，不得将 system_fixture v2
+作为最终证据，不得重设计 Phase 12。
+
+完整规范文件：
+`docs/agent2/phase12_data_platform/PHASE12_SURGICAL_REPAIR_TASK.md`
+
+失败时间：2026-08-26T14:20:00+08:00
+
+失败原因：已完成两个根目标的实现性验证。真实上传 CIF 经当前 Dataset
+ingestion → MinIO → parser/Profile 2.1 → 受授权版本桥接，生成同一
+ScientificObject `773089f9-3ce8-4645-92dd-2f62c64cba89` 的真实 v3
+`2538cd12-ffd5-473f-8c77-69e6d1700243`；system_fixture v2 未计入。当前
+PostgreSQL/Redis/MinIO Agent2 服务集合在显式 canonical 环境下为
+`19 passed, 0 failed, 0 errors, 0 skipped`，DB 为 active=1、idle=6、
+idle-in-transaction=0。浏览器 Structure v2 全链路、memory API 路由、
+archive/restore、Dataset typed query 与 exact `mat-2` ContextSnapshot/
+CapabilityPlan 已有证据，前端/后端/构建/静态检查也通过。
+
+仍无法宣称 COMPLETE：Dataset handoff 的真实 Tool/Artifact/Result 已完成，
+但现有 Dataset interpretation 以 `INTERPRETATION_GROUNDING_FAILED` 终止；
+因此 Dataset grounded final answer 门未通过。P12-A/P12-B exact-SHA CI
+未运行，也未创建或推送部分完成提交。Phase 13 主实现未开始。
+
+修改文件：`apps/web/app/lib/agent2-memory-api.ts`、
+`docs/agent2/phase12_data_platform/PHASE12_ACCEPTANCE_EVIDENCE.md`、
+`TASKS.md`、`results.md`。保留所有既有 Phase 12 实现、legacy
+`docs/phase12/evidence/...` 和用户-owned 文件。
+
+测试结果：全后端 `1803 passed, 83 skipped`；前端 `90 files / 582 tests
+passed`；Agent2/API/domain/registry `52 passed`；Phase12 evidence/queue
+`27 passed`；服务集合 `19 passed`；typecheck、生产 build（独立构建目录）、
+compileall、uv lock、git diff check、touched Ruff PASS。
+
+最终闭环复核（2026-08-26）：已定位 Dataset grounding 的最深层缺陷为
+`data.materials_explorer` Result projector 缺失 Artifact 权威标量 facts；
+已增加确定性 sample/property/coverage/composition/quality facts 投影和
+负向 unsupported-claim 回归。真实浏览器重试仍未形成有效 Dataset 科学
+执行：前端一条路径直接 `ANSWERED`，另一条路径因当前 same-origin
+rewrite 轮询 404 而无 Job/Result。故 Dataset grounded Assistant final、
+独立 archive 浏览器黄金路径和 P12-A/P12-B exact-SHA CI 仍未闭合；Phase 13
+主实现保持未开始。新增修改文件：
+`apps/api/mdi_api/scientific_results/projectors/canonical.py`、
+`tests/test_agent2_phase5_results.py`、
+`tests/test_agent2_phase6_interpretation.py`、
+`docs/agent2/phase12_data_platform/PHASE12_ACCEPTANCE_EVIDENCE.md`、
+`results.md`。最新相关测试：`27 passed, 1 skipped`。
+
+---END---
+---TASK---
+状态：失败
+任务名称：Agent-2.0 Phase 13 — Scientific Presentation 2.0（含强制 Phase 12 闭环门）
+开始时间：2026-08-26T00:00:00+08:00
+
+先完成 Phase 12 Stage 0 的真实产品生命周期与 release closure；只有合法
+Structure v1→v2、历史 Result/Viewer exact-v1、archive/restore 历史安全、
+Dataset→Research exact identity、当前工作树服务/全量回归，以及 P12-A/P12-B
+exact-SHA CI 全部通过后，才允许进入 Phase 13 Scientific Presentation 2.0。
+若 Stage 0 任一强制门失败，必须停止，Phase 13 主实现不得开始。
+
+完整任务规范文件：
+`docs/agent2/phase13_scientific_presentation/PHASE13_TASK.md`
+
+失败时间：2026-08-26T00:00:00+08:00
+
+失败原因：Phase 12 Stage 0 强制门未通过，Phase 13 主实现未开始。真实
+Chromium（`C:\Users\86182\Desktop\wkkk\playwright-browsers\chromium-1228\chrome-win64\chrome.exe`）
+使用已授权的 `acceptance.researcher@local.invalid` 登录成功；但 canonical
+Structure `773089f9-3ce8-4645-92dd-2f62c64cba89` 当前版本
+`8dcb6e0e-fb47-4af0-a1ef-a7f6b89fe708` 的 source ref 为
+`system_fixture/phase12-v2-structure`，不是合法生产再摄取证据。其合法 v1
+仍为 `65f56d10-008d-445d-ab2f-228aebf1835b`，虽已有生产域服务
+`create_version_from_dataset_resource` 和 POST 版本 API，但本轮没有完成真实
+source→storage→parse/profile→同逻辑对象 v2→v2 Research 的完整浏览器闭环。
+因此 `R1→v1`、`R2→v2`、历史 Viewer exact-v1、archive/restore 历史安全和
+Dataset→Research handoff 仍未全部证明。Phase 12 service-backed 当前复核
+结果为 `6 skipped`，不是必需同栈 PASS；P12-A/P12-B exact-SHA CI 也未完成。
+现阶段结论：
+`FUNCTIONAL_PHASE12_CLOSURE=FAIL`、`AGENT2_PHASE12=PARTIAL`、
+`SCIENTIFIC_DATA_PLATFORM_V2=PARTIAL`、`READY_FOR_PHASE13=NO`、
+`PHASE13_MAIN_IMPLEMENTATION=NOT_STARTED`。
+---END---
+
+---TASK---
+状态：失败
+任务名称：Agent-2.0 Phase 12 — Scientific Data Platform 2.0
+开始时间：2026-08-25T00:00:00+08:00
+
+依据用户授权执行 Phase 12。先完成现有数据权威、对象/版本、Profile、
+资源、关系、Result source refs、归档和 Data Context 的真实审计，再以
+现有 ScientificObject/ScientificObjectVersion authority 为基础，补齐
+必要的版本生命周期、精确 lineage、确定性 Data Management 边界、授权、
+有界 Dataset query、Research context 集成和 authenticated same-stack
+验收。不得创建第二套 ScientificObject authority，不得覆盖历史 Phase 12
+evidence，不得实现 Phase 13 presentation redesign、任意代码执行、远程
+插件、互联网研究或无 provenance 的删除。
+完整任务规范文件：`docs/agent2/phase12_data_platform/PHASE12_TASK.md`
+恢复闭环补充规范：`docs/agent2/phase12_data_platform/PHASE12_RECOVERY_CLOSURE_TASK.md`
+
+失败时间：2026-08-26T10:40:00+08:00
+
+失败原因：已完成现有 ScientificObject/ScientificObjectVersion authority
+审计，并实现受授权的显示名/归档恢复边界与有界 typed Dataset query。
+Focused Agent2/API/Viewer、全后端、前端、typecheck、build、compileall、
+uv lock、diff check 和 touched Ruff 均通过；真实同栈 Chromium 也完成了
+Structure exact object/version 的双能力研究 Turn
+`63e68fed-eb0f-4675-aaed-1bc1479efd81`（COMPLETED、grounding VALID）。
+但完整 Phase 12 仍未闭合：虽然已补齐最小的受授权版本创建 API 桥接，
+且解释器启用的真实同栈 Structure Turn
+`7334ba9c-9e9c-41bd-801b-884b4c84e862` 已达到 `COMPLETED` / `VALID`，
+但合法的 Data→Research→v1→v2 浏览器生命周期、归档历史安全、
+Dataset→Research handoff、390x844 canonical handoff、当前工作树的完整
+PostgreSQL/Redis/MinIO Phase 12 服务验收以及 P12-A/P12-B exact-SHA CI
+尚未完成。恢复复现后确认：
+执行 worker、Artifact 与 Result projection 均已成功，随后共享 interpretation
+worker 因未配置 provider fixture 将 Turn 改为 FAILED；这不是 Result projector
+终态缺失。Phase 5 fixture 已改为隔离 interpretation，并连续三次
+`2 passed`；该根因已修复/验证，但完整 Phase 12 仍未闭合。尝试的 v2
+仅使用 `system_fixture` 引用，因没有真实可重摄取 payload，不能作为科学
+版本证据。
+
+修改文件：apps/api/mdi_api/agent2_repositories.py、
+apps/api/mdi_api/scientific_objects/service.py、
+apps/api/mdi_api/scientific_objects/schemas.py、
+apps/api/mdi_api/routers/agent2.py、apps/api/mdi_api/main.py、
+apps/web/app/lib/scientific-viewer-api.ts、tests/test_agent2_domain.py、
+tests/test_agent2_api.py、docs/agent2/phase12_data_platform/、
+persistent/DESIGN_PROGRESS.md、results.md。保留用户已有文件与历史
+docs/phase12/evidence/* 修改，未提交或推送。
+
+测试结果：Agent2/API/Viewer `25 passed, 4 skipped`；Phase 5 Result
+projection service-backed 连续三次 `2 passed`；全后端
+`1802 passed, 83 skipped`；前端 `90 files / 582 tests passed`；typecheck、
+build、compileall、uv lock、git diff check、touched Ruff PASS。真实浏览器
+Structure Turn PASS；通用局部配位请求正确 UNSUPPORTED。Phase 5 Result
+projection worker 连续运行通过；完整服务闭环与 exact-head CI 仍未通过。
+---END---
+
+---TASK---
+状态：失败
+任务名称：Agent-2.0 Phase 10 — Batch 1 Scientific Capability Expansion
+开始时间：2026-08-25T00:00:00+08:00
+
+依据用户授权执行 Phase 10 Batch 1。先冻结当前 62-tool census 与 9 个
+Agent2-active capability baseline，再以现有生产 Tool/Adapter/Artifact/Result
+authority 扩展结构、组成、电子三个成熟科学族。不得暴露原始 Tool Registry，
+不得新增科学算法、迁移或 Phase 11。必须完成 deterministic eligibility、
+typed binding、exact-version/provenance、负例测试与 canonical Phase 10 文档；
+live DeepSeek、service-backed、authenticated browser 和 exact-head CI 若本轮
+无法真实完成必须准确记录为未完成，不得用 skip 冒充 PASS。
+失败时间：2026-08-25T11:00:00+08:00
+
+失败原因：Batch 1 semantic capability contracts、8 个新能力的 typed
+binding、production schema envelope、canonical Result projector 与 24 个
+deterministic qualification cases 已完成；前端 90 files/582 tests、
+typecheck、build 通过。随后在真实 Docker 服务中重跑 Phase 10 service-backed
+测试，结果为 `6 selected / 6 passed / 0 failed / 0 errors / 0 skipped`；Batch-1
+live DeepSeek 语义路由矩阵为 `8/8 passed`；使用用户提供的 Chromium 完成
+真实登录、Console、Research Workbench 和 390x844 Scientific Table 行选择
+点击验收，均通过。但专属新增能力自然语言执行浏览器
+路径、6–10 case live DeepSeek campaign、Commit A/B 与 exact-head CI 仍未闭合，
+因此不能声明 Phase 10 COMPLETE 或进入 Phase 11。
+
+修改文件：apps/api/mdi_api/research_agent/capabilities/defaults.py、
+requirements/registry.py、scientific_results/projectors/artifact_payloads.py、
+scientific_results/projectors/canonical.py、registry_validation.py、
+tests/test_agent2_phase10_capabilities.py、tests/test_agent2_phase2_contracts.py、
+docs/phase10/*、persistent/*、results.md。用户已有 working-tree 文件保留。
+
+测试结果：Phase 10 deterministic `24 passed`；Agent2 focused `76 passed, 1
+skipped`；Phase 10N/Agent2 focused `158 passed, 1 skipped`；frontend `582
+passed`；typecheck/build/compileall/uv lock/diff/Ruff touched files PASS；live
+DeepSeek existing qualification `2 passed`；Batch-1 live semantic matrix `8/8
+passed`；service-backed Phase 10 `6 passed, 0 skipped`；Chrome authenticated
+browser smoke 与 390x844 table click PASS。
+随后在当前工作树完成全量后端回归 `1787 passed, 83 skipped`，并使用用户提供
+Chromium 完成新的认证 Research 请求（结构局部配位）与既有 390x844 表格
+点击验收；这仍不足以证明三类新增能力的完整浏览器执行黄金路径。未 push，
+未运行 exact-head CI。
+本次继续验收补充：deep-linked exact object/version 已进入
+`explicit_object_refs`，context assembler 仅向 provider 暴露最高优先级对象；
+新建 authenticated session 的快照只保留 Structure，但当前结构 fixture 因缺少
+coordination capability 所需 typed semantic fields 被正确拒绝
+(`CAPABILITY_REQUIREMENT_UNSATISFIED`)。未伪造执行记录；Phase 10 仍失败/未闭合。
+---END---
+
+---TASK---
 状态：失败
 任务名称：Agent-2.0 Phase 9 — Professional Scientific Data Viewer & Linked Scientific Selection
 开始时间：2026-08-24T00:00:00+08:00

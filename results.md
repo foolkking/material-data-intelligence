@@ -14529,3 +14529,282 @@ P11-B 为 completion-record 文档提交；它只记录 P11-A 的 exact provenan
 Phase 10 sealed provenance、Pack/registry 验收及浏览器扩展证明，不要求把
 自身 SHA 写回记录文件。P11-B exact-current-head CI 通过后，Phase 11 才
 满足 COMPLETE / READY_FOR_PHASE12。
+
+## Agent-2.0 Phase 12 — Data Platform authority increment (2026-08-25)
+
+状态：失败 / PARTIAL
+
+任务名称：Agent-2.0 Phase 12 — Scientific Data Platform 2.0
+
+完成时间：2026-08-25
+
+修改摘要：完成现有 ScientificObject、ScientificObjectVersion、
+ScientificObjectRelationship、ArtifactStorage、Profile、Result source refs
+和 Report exact-version authority 审计；新增受项目写授权保护的
+`PATCH /api/scientific-objects/{object_id}`，支持显示名元数据更新和
+archive/restore。该操作不创建新科学版本、不修改 content/semantic hash、
+source refs、parent refs 或 current version，历史版本仍可按精确 UUID 读取。
+将用户 Phase 12 prompt 固化到
+`docs/agent2/phase12_data_platform/PHASE12_TASK.md`，并增加审计记录
+`PHASE12_DATA_PLATFORM_AUDIT.md`；同时把“阶段 Prompt 必须先固化并由
+TASKS 引用”的规则加入 `AGENTS.md`。
+
+测试结果：`tests/test_agent2_domain.py` 与 `tests/test_agent2_api.py`
+共 `18 passed`；compileall PASS。Ruff touched invocation 暴露的是
+`main.py` 与测试文件的既有 unused-import 基线，未发现本次服务改动新增的
+专属错误。
+
+提交/CI 状态：未提交、未推送；P12-A/P12-B exact-SHA CI 未运行。
+
+## Agent-2.0 Phase 12 — Data Platform authority increment (2026-08-26 continuation)
+
+状态：失败 / PARTIAL
+
+完成时间：2026-08-26
+
+修改摘要：在既有 ScientificObject/ScientificObjectVersion authority 基础上
+补齐受项目写授权保护的 metadata rename/archive/restore boundary，并增加
+exact object/version、checksum、typed filter/sort/projection 与 stable row
+identity 的 bounded Dataset query API 及前端 client helper。新增 Agent2-scoped
+audit/acceptance evidence，未创建 migration，未修改历史
+`docs/phase12/evidence/*` 用户文件。
+
+真实验收与测试：Agent2/API/Viewer `25 passed, 4 skipped`；全后端
+`1802 passed, 83 skipped`；前端 `90 files / 582 tests passed`；
+typecheck/build/compileall/uv lock/diff check/touched Ruff PASS。使用同栈
+认证 Chromium 完成 Structure exact object/version
+`773089f9-3ce8-4645-92dd-2f62c64cba89 /
+65f56d10-008d-445d-ab2f-228aebf1835b` 的真实 ResearchTurn
+`63e68fed-eb0f-4675-aaed-1bc1479efd81`，状态 `COMPLETED`，grounding
+`VALID`，CrystalNN/VoronoiNN 双能力均有结果；缺少必要语义的通用请求正确
+返回 `UNSUPPORTED` 且未创建 Job。
+
+恢复闭环结果：真实复现显示执行 worker、Artifact 与 Result projection 已
+成功，随后共享 interpretation worker 因未配置 provider fixture 将 Turn
+改为 FAILED；根因是 service-backed fixture 的队列/解释隔离与旧 MinIO
+凭据读取不一致，而非 Result projector 终态缺失。修复夹具后 Phase 5
+Result projection 连续三次 `2 passed`，每次均验证队列消费、Artifact、
+ScientificResult、`RESULT_READY` 和幂等投影。
+
+仍未闭合：Data→Research→新版本/归档恢复浏览器生命周期、当前工作树完整
+Phase 12 PostgreSQL/Redis/MinIO campaign、以及 P12-A/P12-B exact-SHA CI。
+未提交、未推送。
+
+## Agent-2.0 Phase 12 — Final qualification attempt (2026-08-26)
+
+状态：失败 / PARTIAL
+
+使用解释器启用、DeepSeek 已配置、PostgreSQL/Redis/MinIO 同栈运行时完成
+了一次新的 Structure 全链路：Turn
+`7334ba9c-9e9c-41bd-801b-884b4c84e862`，exact source
+`773089f9-3ce8-4645-92dd-2f62c64cba89 /
+65f56d10-008d-445d-ab2f-228aebf1835b`，执行 `SUCCESS`，解释
+`VALID`，Turn `COMPLETED`，Assistant final 已持久化。
+
+为暴露已有的不可变版本服务，新增最小授权
+`POST /api/scientific-objects/{object_id}/versions` API 及回归测试；API
+创建 v2 后正确推进 current version 且 v1 保持不变。但当前 canonical
+Structure 没有可由该入口合法重新摄取的真实 payload，本次尝试使用
+`system_fixture` 引用的 v2 Turn 返回 `UNSUPPORTED`，未被计作科学 v2
+验收，也未伪造历史 Viewer 结论。
+
+未闭合：合法 v1→v2 浏览器生命周期、归档历史安全、Dataset→Research
+handoff、完整当前工作树 service-backed campaign、P12-A/P12-B exact-SHA
+CI。未提交、未推送；Phase 13 未开始。
+## Agent-2.0 Phase 13 — Scientific Presentation 2.0（强制 Phase 12 Stage 0 门）
+
+状态：失败（Phase 13 主实现未开始）
+
+完成时间：2026-08-26
+
+验证摘要：
+
+- 按 `AGENTS.md` 读取了项目 brief、设计/架构/任务文档以及 Phase 12/13
+  权威任务文件；TASKS 首任务已按规则处理。
+- 使用用户指定 Chromium：
+  `C:\Users\86182\Desktop\wkkk\playwright-browsers\chromium-1228\chrome-win64\chrome.exe`。
+  通过产品登录入口，以用户授权的本地验收账号登录成功；未读取或复制浏览器
+  密码、Cookie、local storage 或 profile。
+- 真实 API/数据库显示 canonical Structure
+  `773089f9-3ce8-4645-92dd-2f62c64cba89` 的合法 v1 是
+  `65f56d10-008d-445d-ab2f-228aebf1835b`，当前 v2
+  `8dcb6e0e-fb47-4af0-a1ef-a7f6b89fe708` 的 source ref 为
+  `system_fixture/phase12-v2-structure`，不满足 Phase 12 真实再摄取版本门。
+- 生产域服务存在 `create_version_from_dataset_resource`，且版本创建 API 已有
+  focused 回归；但本轮没有完成真实 source→storage→parse/profile→v2→v2
+  Research 浏览器生命周期，不能把 system fixture 计为科学版本证据。
+- `uv run pytest -q tests/test_agent2_api.py tests/test_agent2_domain.py
+  tests/test_agent2_phase8_reports.py`：`36 passed, 4 skipped`。
+- `uv run pytest -q tests/integration/test_agent2_phase5_service_backed.py
+  tests/integration/test_agent2_phase7_service_backed.py`：`6 skipped`；关键
+  Phase 12 service-backed 门未实际执行，不能宣称 PASS。
+- P12-A/P12-B exact-SHA CI 未完成；因此不允许进入 Phase 13。
+
+修改文件：`TASKS.md`、`results.md`。保留所有既有 Phase 12 实现和用户-owned
+文件；未修改 Phase 13 主实现、未创建 migration、未提交或推送。
+
+最终状态：
+
+```text
+FUNCTIONAL_PHASE12_CLOSURE = FAIL
+AGENT2_PHASE12 = PARTIAL
+SCIENTIFIC_DATA_PLATFORM_V2 = PARTIAL
+READY_FOR_PHASE13 = NO
+PHASE13_MAIN_IMPLEMENTATION = NOT_STARTED
+```
+
+## Agent-2.0 Phase 12 — Final Browser Seal (2026-08-26T17:16:42+08:00)
+
+状态：失败 / PARTIAL；Phase 13 主实现未开始
+
+本轮 fresh runtime 已明确修复并验证 RQ 规划队列运行时边界：
+worker 必须带 `MDI_AGENT2_ORCHESTRATION_ENABLED=true`，且规划任务使用
+顶层可解析入口 `mdi_api.research_agent_planning_worker.run_queued_planning`。
+新的 Dataset Turn `295fdb48-6ea4-4b36-a7b8-9b9ed5559df6` 真实完成
+`ANALYZE → PLAN_READY → Job → ToolCall → Artifact → ScientificResult →
+Interpretation VALID → COMPLETED`；Result facts 非空，包含 `mat-2`、
+`NaCl`、`band_gap=5.6`、`density=2.16` 等权威事实。
+
+首个 fresh 请求被正确路由为 `QUERY_DATA`，决策明确为
+`scientific_requirements=[]`，因此没有科学执行；其第一缺失转移为
+`ORCHESTRATION_COMPLETED → ScientificRequirement/PLANNING`。改用确实要求
+材料科学分析的自然语言请求后，规划与执行完整通过。
+
+grounding 根因进一步收敛为 `IDENTIFIER_TOKENIZATION_MISMATCH`：
+grounding 数字提取器将稳定样本标识 `mat-2` 中的 `2` 当作定量 claim。
+已在 `interpretation/schemas.py` 对 canonical `mat-*` / `sample-*`
+标识做窄范围 opaque-token 处理，并增加正向 regression；负向不支持数字
+claim 仍拒绝。相关测试 `30 passed, 1 skipped`，touched Ruff PASS。
+
+archive/restore API 通过已登录浏览器上下文验证：对象
+`773089f9-3ce8-4645-92dd-2f62c64cba89` 从 ACTIVE → ARCHIVED → ACTIVE，
+current version `2538cd12-ffd5-473f-8c77-69e6d1700243` 不变，历史 Viewer
+仍以 v1 `65f56d10-008d-445d-ab2f-228aebf1835b` 返回。科研对象列表当前
+没有 archive/restore 操作菜单，因此“authenticated archive UI golden path”
+仍未闭合；本轮未添加未完成的 UI bridge。
+
+本轮新增/保留修改：
+`apps/api/mdi_api/interpretation/schemas.py`、
+`tests/test_agent2_phase6_interpretation.py`、
+`apps/api/mdi_api/research_agent/planning/__init__.py`、
+`apps/api/mdi_api/research_agent/planning/queue.py`、
+`apps/api/mdi_api/research_agent_planning_worker.py`、
+`tests/test_agent2_planning_worker_import.py`、
+`tests/test_agent2_queue_entrypoints.py`。
+
+未创建或推送 P12-A/P12-B；未运行 exact-SHA CI；Phase 13 主实现保持未开始。
+
+最终状态：
+
+```text
+FUNCTIONAL_PHASE12_CLOSURE = FAIL
+AGENT2_PHASE12 = PARTIAL
+SCIENTIFIC_DATA_PLATFORM_V2 = PARTIAL
+READY_FOR_PHASE13 = NO
+PHASE13_MAIN_IMPLEMENTATION = NOT_STARTED
+```
+
+## Agent-2.0 Phase 13 — Final Seal Gate Attempt (2026-08-26)
+
+状态：失败 / PARTIAL；Phase 13 主实现未开始
+
+本轮先执行 Phase 12 Stage 0。Dataset grounding 根因定位为
+`data.materials_explorer` Result projector 没有把生产 Artifact 中已有的
+`sampleIndex`、`sampleRef`、样本属性、coverage/composition/quality 计数及
+property statistics 投影为 `ScientificFact`，导致 validator 正确拒绝：
+`finding.001: quantitative claim is not supported by referenced facts`。
+
+已在 Result projector 增加窄范围确定性 facts 投影，并新增正向 `mat-2`
+grounding 与负向 unsupported numeric claim 回归；相关测试为
+`27 passed, 1 skipped`。未放宽 grounding、未硬编码 Dataset 答案。
+
+真实浏览器复核未形成有效 Dataset 科学闭环：首个前端实例走 direct
+`ANSWERED` 路径（无 Job/Result）；干净构建目录认证成功，但当前
+same-origin rewrite 的研究状态轮询返回 404，数据库中的该 Turn 仍为
+`ANSWERED` 且无 Job。故 Dataset grounded Assistant final、archive
+独立浏览器黄金路径、Phase 12 release gate 仍未通过。
+
+P12-A/P12-B 未创建、未推送、未运行 exact-SHA CI；Phase 13 未开始。
+
+最终状态：
+
+```text
+FUNCTIONAL_PHASE12_CLOSURE = FAIL
+AGENT2_PHASE12 = PARTIAL
+SCIENTIFIC_DATA_PLATFORM_V2 = PARTIAL
+READY_FOR_PHASE13 = NO
+PHASE13_MAIN_IMPLEMENTATION = NOT_STARTED
+```
+
+## Agent-2.0 Phase 12 — Surgical Repair
+
+状态：失败 / PARTIAL
+
+完成时间：2026-08-26
+
+修改摘要：确认 `VERSION_UPDATE_AUTHORITY =
+MISSING_MINIMAL_REINGESTION_BRIDGE`。真实 CIF 通过当前 Dataset ingestion、
+MinIO、parser/Profile 2.1 和受项目授权的版本 API，创建同一
+ScientificObject `773089f9-3ce8-4645-92dd-2f62c64cba89` 的真实版本
+`2538cd12-ffd5-473f-8c77-69e6d1700243`；保留 v1 和历史 system_fixture
+诊断版本，不把后者计入资格证明。修复浏览器 memory API 的 `/api` fallback，
+并保留 Phase 6 interpretation wakeup 夹具隔离修复。
+
+真实资格结果：
+
+- Structure v2 认证浏览器研究 Turn
+  `aa60bdff-7ddc-4989-bda2-490f94f9b871`：COMPLETED，双 coordination
+  Capability，真实 Job/ToolCalls/Artifacts/Result，grounding VALID。
+- archive/restore：ACTIVE → ARCHIVED → ACTIVE；current version 和版本数量
+  不变；历史 v1 Viewer API 仍解析 v1。
+- Dataset `band_gap > 2`：mat-3、mat-2；`mat-2` 作为
+  `DATASET_SAMPLE/sample_ref` 写入 exact Dataset object/version 的
+  ContextSnapshot 和 CapabilityPlan。真实表 Tool/Artifact/Result 完成，
+  但 interpretation 以 `INTERPRETATION_GROUNDING_FAILED` 结束，未宣称
+  grounded final answer PASS。
+- PostgreSQL/Redis/MinIO 显式环境服务集合：19 selected、19 passed、
+  0 failed、0 errors、0 skipped；PostgreSQL active=1、idle=6、
+  idle-in-transaction=0。
+
+测试结果：全后端 `1803 passed, 83 skipped`；前端 `90 files / 582 tests
+passed`；Agent2/API/domain/registry `52 passed`；Phase12 evidence/queue
+`27 passed`；typecheck、生产 build（独立构建目录）、compileall、
+`uv lock --check`、`git diff --check`、touched Ruff PASS。
+
+提交/CI 状态：未创建 P12-A/P12-B，未推送；Dataset grounded interpretation
+门仍未闭合，故不得声明 Phase 12 COMPLETE，也不得开始 Phase 13。
+
+最终状态：
+
+```text
+FUNCTIONAL_PHASE12_CLOSURE = FAIL
+AGENT2_PHASE12 = PARTIAL
+SCIENTIFIC_DATA_PLATFORM_V2 = PARTIAL
+READY_FOR_PHASE13 = NO
+PHASE13_MAIN_IMPLEMENTATION = NOT_STARTED
+```
+## Agent-2.0 Phase 13 — Scientific Presentation 2.0 最终封板
+
+状态：已完成
+
+完成时间：2026-08-28T02:20:00+08:00
+
+修改摘要：在已封存 Phase 12 数据权威之上完成 bounded Scientific
+Presentation compiler/renderer，接入 Research 与 Report，保留 exact
+ScientificObjectVersion、Result、Artifact、Evidence provenance，补齐
+稳定 Dataset sample identity、历史版本提示、真实 Artifact/Viewer links、
+unique presentation heading IDs 与显式 researchTurnId 历史解析。未创建第二
+科学事实权威，也未向浏览器转移执行权。
+
+测试结果：focused frontend 25 passed；focused backend 85 passed、4 个历史
+兼容性 skip；full frontend 593 passed；full backend 1813 passed、83 个历史
+skip；PostgreSQL/Redis/MinIO service-backed 14 passed、0 skipped；运行时
+`/health/runtime` 为 PostgreSQL/Redis/MinIO/DeepSeek configured；typecheck、
+production build、compileall、`uv lock --check`、touched Ruff 与
+`git diff --check` 通过。Chromium 1280x720 Structure/Dataset/Report/
+archive evidence 与 390x844 Dataset handoff 无溢出；仅出现预期认证 bootstrap
+401，无页面错误或 5xx。
+
+提交/CI 状态：P13-A 候选 `4bfdacd`，exact-SHA CI run `33134862435`，
+Unit/Frontend/PostgreSQL-Redis-MinIO/Linux replay/Windows replay 全部 PASS。
+P13-B 为本次证据提交，待提交后运行 exact-current-head CI。
