@@ -1,5 +1,16 @@
 # DESIGN_PROGRESS
 
+## 2026-08-28 Agent-2.0 Phase 14-R legacy history identity clarification
+
+- Project history now labels each persisted run binding as either
+  `RESEARCH_TURN` (an authoritative `research_turns` relation) or
+  `LEGACY_SESSION_RUN` (the compatibility-only `research_session_runs`
+  projection).
+- This is read-only metadata derived from existing joins; it does not create a
+  second Turn authority, infer identity from Job names, or rewrite historical
+  runs. A legacy run remains safely resumable through its explicit session
+  route while modern runs retain their exact Turn route.
+
 ## 2026-08-28 Agent-2.0 Phase 14-R context budget policy
 
 - Added checked-in operation-specific `ContextBudgetPolicy 2.0` for

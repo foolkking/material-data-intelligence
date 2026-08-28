@@ -37,7 +37,7 @@ acceptance evidence is not yet complete.
 | Scientific Viewer coverage | registry and many renderer implementations exist; every declared family lacks current live acceptance | PARTIAL |
 | Evidence traversal UX | labels and provenance summaries exist; complete user-navigable Result → ToolCall/Artifact → version path not proven for every surface | PARTIAL |
 | Scientific Report | grounded report composition and immutable snapshots exist; frozen `ReportContextBundle` now validates the bounded provider input and the quality rubric is checked in; current multi-family browser/service quality campaign remains open | PARTIAL |
-| Historical v1/v2 presentation | exact source semantics are sealed in Phase 12/13; Research history links now use persisted `researchTurnId` only, while Phase 14-R repeated browser campaign is still open | PARTIAL |
+| Historical v1/v2 presentation | exact source semantics are sealed in Phase 12/13; Research history links now use persisted `researchTurnId` only, and history explicitly labels modern `RESEARCH_TURN` versus compatibility-only `LEGACY_SESSION_RUN`; repeated browser campaign is still open | PARTIAL |
 | Archived historical presentation | archive API/UI and historical Viewer semantics exist; mature Report/Evidence browser proof not yet run | PARTIAL |
 | Viewer no-recompute | read-only architecture and tests exist; current persisted delta campaign across all viewers is not yet rerun | PARTIAL |
 | Exact Result reuse | some continuation/reuse infrastructure exists; dedicated zero-delta Phase 14-R acceptance is not yet established | NOT_QUALIFIED |
@@ -54,7 +54,7 @@ acceptance evidence is not yet complete.
 | Per-item inclusion/exclusion provenance | manifest items retain authority class, source identity, opaque ref, inclusion reason, selection mode, exact object/version and fingerprints; excluded-item ledger remains bounded | PASS |
 | Context budget policy | checked-in `ContextBudgetPolicy 2.0` defines operation-specific 12k/10k/12k/8k effective input budgets with reserved output/repair space; benchmark evidence remains open | PARTIAL |
 | User-facing Used context disclosure | Research UI fetches the authorized manifest endpoint and renders a bounded “本次研究使用的上下文” disclosure | PASS |
-| Historical context replay | immutable `CONTEXT_RESOLVED` event retains manifest fingerprint, policy/budget state and exact refs for a turn; replay UI controls are not part of this contract | PARTIAL |
+| Historical context replay | immutable `CONTEXT_RESOLVED` event retains manifest fingerprint, policy/budget state and exact refs for a turn; project history now exposes whether a run has an authoritative ResearchTurn or only a legacy session binding; replay UI controls are not part of this contract | PARTIAL |
 | Message revisions/branching | no complete persisted revision/branch product contract found in current Research UI | NOT_QUALIFIED |
 
 ## Lifecycle and control

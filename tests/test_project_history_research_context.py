@@ -114,10 +114,12 @@ def test_research_context_maps_each_run_to_its_preceding_user_turn() -> None:
             "job-rdf": {
                 "sessionId": "session-1",
                 "userQuestion": "Show the radial distribution function.",
+                "contextKind": "LEGACY_SESSION_RUN",
             },
             "job-coordination": {
                 "sessionId": "session-1",
                 "userQuestion": "Inspect the local coordination environment.",
                 "researchTurnId": str(coordination_turn_id),
+                "contextKind": "RESEARCH_TURN",
             },
         }

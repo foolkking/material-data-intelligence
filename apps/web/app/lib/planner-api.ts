@@ -722,6 +722,7 @@ export type ProjectHistory = {
     visibleInReports?: boolean;
     researchSessionId?: string;
     researchTurnId?: string | null;
+    researchContextKind?: "RESEARCH_TURN" | "LEGACY_SESSION_RUN" | null;
   }>;
   activity: Array<{
     activityId: string;

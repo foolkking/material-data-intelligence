@@ -75,6 +75,7 @@ def get_project_history(
         context = research_context_by_run.get(str(analysis.get("jobId") or ""))
         if context:
             analysis["researchSessionId"] = context["sessionId"]
+            analysis["researchContextKind"] = context["contextKind"]
             if context.get("researchTurnId"):
                 analysis["researchTurnId"] = context["researchTurnId"]
             if not str(analysis.get("userQuestion") or "").strip() and context.get("userQuestion"):
@@ -213,9 +214,11 @@ def _read_research_context_by_run(
         context = {
             "sessionId": session_id,
             "userQuestion": question,
+            "contextKind": "LEGACY_SESSION_RUN",
         }
         if binding.get("research_turn_id"):
             context["researchTurnId"] = str(binding["research_turn_id"])
+            context["contextKind"] = "RESEARCH_TURN"
         result[str(binding["job_id"])] = context
     return result
 
