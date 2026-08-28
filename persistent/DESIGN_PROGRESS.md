@@ -4249,3 +4249,14 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - It records the sealed Phase 14 baseline, same-stack health, Figure/Artifact
   bridge, focused/full regression counts and explicit remaining mature-product
   gaps. Phase 14-R remains `PARTIAL`; no P14R release candidate was created.
+
+## Agent-2.0 Phase 14-R Structure Viewer proof (2026-08-28)
+
+- Authenticated same-stack browser rendered exact Structure object
+  `dc3c3eee-f254-4edf-a0fa-c955402b3069` / version
+  `8859cb49-0766-48cd-8a56-e44f5332e0c5`, including formula, lattice, canvas,
+  camera and bounded supercell controls.
+- Isometric/2×2×2/reset navigation left PostgreSQL counts unchanged:
+  `jobs=117`, `tool_calls=158`, `artifacts=637`, `results=88`.
+- This is a Structure-specific Viewer no-recompute proof; capability-wide
+  Viewer acceptance remains open.

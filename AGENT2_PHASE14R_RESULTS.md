@@ -348,3 +348,27 @@ P14R-A/P14R-B exact-SHA CI.
 
 Current fix-forward commits are `814f850`, `2141fb1`, `456d0a9`, and
 `c398f65`; no P14R release candidate or push has been claimed.
+
+## M. Structure Viewer browser proof
+
+Authenticated same-stack Data Platform route:
+
+```text
+object = dc3c3eee-f254-4edf-a0fa-c955402b3069
+version = 8859cb49-0766-48cd-8a56-e44f5332e0c5
+```
+
+The Viewer rendered formula `Si`, one display site, lattice vectors, an
+interactive canvas, camera presets, bounded supercell controls and measurement
+controls. After isometric/`2 × 2 × 2`/reset navigation, persisted counts
+remained unchanged:
+
+```text
+jobs = 117
+tool_calls = 158
+artifacts = 637
+scientific_result_snapshots = 88
+```
+
+This closes the Structure-specific Viewer no-recompute proof only; all-family
+Viewer qualification is still open.

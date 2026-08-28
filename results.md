@@ -15028,6 +15028,13 @@ Artifact IDs；ScientificReportRoute focused `5 passed`，typecheck `PASS`。
 Phase 14-R 证据、同栈健康、回归计数和未闭合成熟产品门；状态仍为
 `FUNCTIONAL_PHASE14R_CLOSURE = FAIL`，未创建 P14R-A/P14R-B。
 
+补充浏览器证据（2026-08-29）：真实同栈 Data Platform Structure Viewer
+打开 object `dc3c3eee-f254-4edf-a0fa-c955402b3069` / exact version
+`8859cb49-0766-48cd-8a56-e44f5332e0c5`，显示 Si、晶格、位点和交互画布；
+等轴、2×2×2 预览、复位操作后 `jobs=117`、`tool_calls=158`、
+`artifacts=637`、`results=88` 均不变，Structure 路径的
+Viewer no-recompute PASS。其他 Viewer 家族仍未全量资格化。
+
 ## Agent-2.0 Phase 14-R — Research progress reconnect
 
 - 状态：阶段性闭环；Phase 14-R 总任务仍为处理中

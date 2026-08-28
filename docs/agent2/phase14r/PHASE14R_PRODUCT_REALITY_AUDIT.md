@@ -432,3 +432,16 @@ and the `导出 Markdown` action; captured browser error/warning logs were empty
 The in-app download event did not expose a completed Blob transfer, so this is
 route/action reachability evidence only, not a claim of end-to-end download
 transport or mature export-package closure.
+
+### Current Structure Viewer browser proof (2026-08-28)
+
+The authenticated same-stack browser opened Structure object
+`dc3c3eee-f254-4edf-a0fa-c955402b3069`, exact version
+`8859cb49-0766-48cd-8a56-e44f5332e0c5`, from the Data Platform route. The page
+rendered a non-blank interactive 3D structure with formula `Si`, one display
+site, lattice vectors, element legend, camera presets, cell/supercell
+controls and measurement controls. Isometric, bounded `2 × 2 × 2` supercell
+preview and reset navigation were exercised. PostgreSQL counts before and
+after were identical: `jobs=117`, `tool_calls=158`, `artifacts=637`,
+`scientific_result_snapshots=88`. This is a real Structure Viewer
+no-recompute proof; other Viewer-family browser campaigns remain open.
