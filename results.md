@@ -14969,6 +14969,8 @@ reinterpret 均显式提交父 Turn ID。域回归 `9 passed`，前端 follow-up
   精确打开路径。
 - 增加显式“重新加载”操作，失败或返回页面时重新读取授权的持久化 Job
   状态，不创建新的科学状态。
+- 活动任务在存在明确 `researchTurnId` 时可通过既有取消 API 执行“停止研究”；
+  没有关联 Turn 的 legacy 任务不显示取消入口，避免 Job 名称猜测。
 - 测试结果：TaskCenterPage `1 passed`，ProductShell `4 passed`，web
   typecheck `PASS`，当前完整前端回归 `95 files / 606 tests passed`。
 - 已认证浏览器实际打开 `/tasks`，显示 `2` 个进行中、`4` 个已结束和

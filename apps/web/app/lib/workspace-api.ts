@@ -326,6 +326,7 @@ export type WorkspaceAnalysisJobSummary = {
   datasetId: string | null;
   jobStatus: string | null;
   workspaceProjectionStatus: WorkspaceStatus;
+  researchTurnId?: string | null;
   analysisPlanSchemaVersion: string | null;
   dependencyOutcome: string | null;
   artifactCount: number;

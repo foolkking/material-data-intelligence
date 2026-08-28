@@ -933,6 +933,7 @@ class WorkspaceProjectionService:
                     "datasetId": _identity(job, "datasetId", "dataset_id"),
                     "jobStatus": _identity(job, "status"),
                     "workspaceProjectionStatus": source.status.value,
+                    "researchTurnId": source.research_turn_id,
                     "analysisPlanSchemaVersion": source.plan_schema_version,
                     "dependencyOutcome": source.dependency_outcome,
                     "artifactCount": len(source.artifacts),

@@ -4066,6 +4066,9 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
   科学状态；取消/重试、持久通知和断线恢复仍保持未完成。
 - 增加显式“重新加载”操作，失败或离开后可重新读取持久化 Job 状态；
   不创建新的科学状态。
+- Job 投影返回持久化 `researchTurnId`；有明确 Turn 关系的活动任务显示
+  “停止研究”并调用既有取消 API，legacy 无 Turn 关系时保持只读，不通过
+  Job 名称猜测身份。
 - `TaskCenterPage.test.tsx` 及 ProductShell 回归通过，完整前端当前为
   `95 files / 606 tests passed`，web typecheck 通过。
 - 已认证浏览器 `http://127.0.0.1:3000/tasks` 实际显示 `2` 个进行中任务、

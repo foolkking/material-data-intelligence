@@ -280,6 +280,11 @@ Evidence:
 - Task center now also exposes a bounded `重新加载` action. It re-reads the
   same authorized persisted job projection after a connection failure or
   return-to-page event; the focused test verifies a second backend read.
+- The authorized job projection now includes the persisted `researchTurnId`
+  when one exists. Active rows with that explicit relation expose `停止研究`
+  and call the existing `/api/research/turns/{turn_id}/cancel` authority;
+  legacy rows without a relation remain read-only instead of guessing from a
+  Job name. Focused UI and workspace projection tests cover this boundary.
 - `ProductShell.test.tsx` and the full frontend regression pass after the
   bridge (`95` files, `606` tests); web typecheck passes.
 - Authenticated browser tab `11` at `http://127.0.0.1:3000/tasks` rendered the
@@ -291,7 +296,7 @@ Evidence:
 - `/health/runtime` remained green after the campaign: PostgreSQL database,
   Redis queue/worker, MinIO bucket `mdi-artifacts`, and configured DeepSeek.
 - The task center intentionally remains `PARTIAL` for Phase 14-R because
-  cancel/retry, durable notifications and network-recovery semantics are not
+  retry, durable notifications and full network-recovery semantics are not
   yet qualified.
 
 ## K. Final Verdict
