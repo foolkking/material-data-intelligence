@@ -93,9 +93,16 @@ async function inspect(page, name, viewport, touch = false) {
   await accountTrigger.click();
   const settingsItem = page.getByRole("menuitem", { name: "模型设置" });
   await settingsItem.waitFor({ state: "visible" });
-  if ((await page.locator(":focus").textContent())?.trim() !== "模型设置") throw new Error(`${name}: account menu did not receive focus`);
+  const recycleItem = page.getByRole("menuitem", { name: "回收站" });
+  await recycleItem.waitFor({ state: "visible" });
+  // The current account menu includes the product-level Trash entry before
+  // model settings. Assert the actual bounded menu order instead of relying
+  // on the retired two-item menu shape.
+  if ((await page.locator(":focus").textContent())?.trim() !== "回收站") throw new Error(`${name}: account menu did not receive focus`);
   await page.keyboard.press("ArrowDown");
-  if ((await page.locator(":focus").textContent())?.trim() !== "退出登录") throw new Error(`${name}: account menu keyboard navigation failed`);
+  if ((await page.locator(":focus").textContent())?.trim() !== "模型设置") throw new Error(`${name}: account menu keyboard navigation did not reach model settings`);
+  await page.keyboard.press("ArrowDown");
+  if ((await page.locator(":focus").textContent())?.trim() !== "退出登录") throw new Error(`${name}: account menu keyboard navigation did not reach logout`);
   await page.keyboard.press("Escape");
   if (await page.getByRole("menu", { name: "账户菜单" }).isVisible().catch(() => false)) throw new Error(`${name}: account menu did not close on Escape`);
   if ((await page.locator(":focus").getAttribute("aria-controls")) !== "product-account-menu") throw new Error(`${name}: account menu did not restore trigger focus`);
