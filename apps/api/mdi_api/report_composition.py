@@ -6,14 +6,13 @@ import hashlib
 import json
 import os
 import re
-from contextlib import contextmanager
 from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from threading import RLock
-from typing import Any, Iterator, Mapping
+from typing import Any, Mapping
 
-from sqlalchemy.engine import Connection, Engine
+from sqlalchemy.engine import Engine
 
 from mdi_api.unit_of_work import UnitOfWork
 from mdi_api.workspaces import WorkspaceDomainError, WorkspaceProjectionService
@@ -41,6 +40,7 @@ from mdi_llm.research_roles import compose_grounded_report, project_grounded_int
 
 
 _M5_RECORD_VERSION = "m5.1.0"
+REPORT_EXPORT_MAX_BYTES = 2_097_152
 _PAIR_LOCK = RLock()
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _PRIVATE_PATH = re.compile(r"(?:[A-Za-z]:[\\/]|/(?:home|Users|var|tmp|etc)/)")
@@ -886,7 +886,7 @@ class ReportCompositionService:
             content_type = "text/markdown; charset=utf-8"
             suffix = "md"
         encoded = content.encode("utf-8")
-        if len(encoded) > 2_097_152:
+        if len(encoded) > REPORT_EXPORT_MAX_BYTES:
             raise ReportCompositionDomainError("EXPORT_SIZE_EXCEEDED", "The deterministic export exceeds the 2 MiB cap.", 413)
         return {
             "content": content,

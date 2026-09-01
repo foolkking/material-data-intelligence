@@ -1,0 +1,133 @@
+{
+  "contractVersion": "phase14r.agent-report-quality-results/1.0",
+  "evaluatedAt": "2026-09-01",
+  "corpus": {
+    "id": "phase14r-r10-v1",
+    "caseCount": 32,
+    "orchestratorCases": 18,
+    "productContractCases": 14,
+    "deterministicPassed": 32,
+    "deterministicFailed": 0,
+    "linkedEvidenceTests": 27,
+    "linkedEvidencePassed": 27,
+    "linkedEvidenceFailed": 0,
+    "linkedEvidenceSkipped": 0
+  },
+  "reports": [
+    {
+      "family": "Structure coordination histogram",
+      "reportId": "agent2_report_19a0d0c261c28577101de81532464893",
+      "snapshotId": "c8cc6fcb-1f0b-50c6-b6db-049374f7de6e",
+      "researchTurnId": "63d21ee3-6e18-49b3-ad6b-b3fb578563c5",
+      "scientificResultSnapshotId": "2382b0eb-b056-42b2-b6a7-d2e8a4ca398c",
+      "exactSourceVersions": ["8859cb49-0766-48cd-8a56-e44f5332e0c5"],
+      "normalizedScore": 100.0,
+      "qualityPass": true
+    },
+    {
+      "family": "Structure coordination histogram revision",
+      "reportId": "agent2_report_revision_7f89612da461b9697d5075d1ce7949b0",
+      "snapshotId": "3704195d-a41d-544a-b09d-f6c9018c263f",
+      "researchTurnId": "63d21ee3-6e18-49b3-ad6b-b3fb578563c5",
+      "scientificResultSnapshotId": "2382b0eb-b056-42b2-b6a7-d2e8a4ca398c",
+      "exactSourceVersions": ["8859cb49-0766-48cd-8a56-e44f5332e0c5"],
+      "normalizedScore": 100.0,
+      "qualityPass": true
+    },
+    {
+      "family": "Electronic Band + DOS",
+      "reportId": "agent2_report_e7fa88beeb9a92cd8d46e44182ec46f9",
+      "snapshotId": "4150ea90-9bee-50bc-bd97-a0233b3c97f8",
+      "researchTurnId": "c665906c-44ea-44b3-80f5-8caa729b1a48",
+      "scientificResultSnapshotId": "fa336a66-89f5-47f0-9869-f9240c2e0050",
+      "exactSourceVersions": [
+        "087f93c4-2a5b-4c1e-b4e4-916c368801d0",
+        "7f7f1008-4d67-4592-a501-41d9a7d9a5cc"
+      ],
+      "normalizedScore": 100.0,
+      "qualityPass": true
+    },
+    {
+      "family": "Trajectory MSD + diffusion",
+      "reportId": "agent2_report_e54681009a0e49abe371247d9053ce61",
+      "snapshotId": "d541785b-63d9-5e62-8f48-0e7d92420c47",
+      "researchTurnId": "fb72c2ad-bed1-47d7-b557-f398f04a8ede",
+      "scientificResultSnapshotId": "26127c48-d736-4983-b035-b68db238f6a7",
+      "exactSourceVersions": ["a22745f2-17b6-434f-ba4c-3fe6bd244841"],
+      "normalizedScore": 100.0,
+      "qualityPass": true
+    },
+    {
+      "family": "Composition + regression",
+      "reportId": "agent2_report_9b6943b7b3a9eaecd594ecf9bde7e806",
+      "snapshotId": "8aa609a8-ec17-5b14-bb01-b29277afeb3a",
+      "researchTurnId": "fbbb0c51-4f39-4c97-ad7a-69ee089884a2",
+      "scientificResultSnapshotId": "d984bb18-acc6-4d55-90e1-2097b0305a69",
+      "exactSourceVersions": ["cf2aeeea-53ad-452a-a4ef-7b61555004e5"],
+      "normalizedScore": 100.0,
+      "qualityPass": true,
+      "notApplicableCriteria": [7]
+    },
+    {
+      "family": "Legacy XRD comparison",
+      "reportId": "agent2_report_1b745b90c5408fbb0dce4ca2679f9daa",
+      "snapshotId": "1c25e53c-01b3-5a12-9fe3-a8d8400ff12e",
+      "scientificResultSnapshotId": "8c996f41-d78f-4dfc-a9b9-ea1c2ec0d5c6",
+      "exactSourceVersions": [
+        "651b5310-d7d6-4894-883d-cc43d7953823",
+        "86f54119-5404-4ade-835d-44984b84b02c"
+      ],
+      "normalizedScore": 89.5,
+      "qualityPass": false,
+      "failedCriteria": [11],
+      "partialCriteria": [10, 17],
+      "notApplicableCriteria": [15],
+      "classification": "LEGACY_QUALITY_BASELINE_NOT_RELEASE_PASS"
+    }
+  ],
+  "sameResultComparison": {
+    "scientificResultSnapshotId": "2382b0eb-b056-42b2-b6a7-d2e8a4ca398c",
+    "baseReportId": "agent2_report_19a0d0c261c28577101de81532464893",
+    "revisionReportId": "agent2_report_revision_7f89612da461b9697d5075d1ce7949b0",
+    "baseScore": 100.0,
+    "revisionScore": 100.0,
+    "scientificAuthorityChanged": false,
+    "note": "The immutable revision improves organization/title metadata without changing scientific content; equal quality scores are expected."
+  },
+  "readOnlyDeltas": {
+    "jobs": 0,
+    "toolCalls": 0,
+    "artifacts": 0,
+    "scientificResults": 0,
+    "before": {
+      "jobs": 301,
+      "toolCalls": 395,
+      "artifacts": 1565,
+      "scientificResults": 203
+    },
+    "after": {
+      "jobs": 301,
+      "toolCalls": 395,
+      "artifacts": 1565,
+      "scientificResults": 203
+    }
+  },
+  "reviewBoundary": {
+    "deterministicAuthority": [
+      "routing and product-contract invariants",
+      "grounding",
+      "exact Result/source-version provenance",
+      "numeric and unit reference closure",
+      "report section and evidence completeness",
+      "zero scientific recomputation"
+    ],
+    "boundedHumanReview": [
+      "scientific readability",
+      "narrative ordering",
+      "whether limitations are understandable",
+      "absence of raw IDs/JSON in the normal UI"
+    ],
+    "llmAsJudgeUsed": false,
+    "newProviderCalls": 0
+  }
+}

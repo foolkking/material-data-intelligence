@@ -87,6 +87,27 @@ def _resource_profile(*, object_id: str, object_type: str, kind: str, capabiliti
     )
 
 
+def _trajectory_profile(*, time_start_ps: float = 0.0, time_end_ps: float = 11.5) -> object:
+    return _profile(
+        resources=[
+            {
+                "objectId": "trajectory_exact",
+                "objectType": "Trajectory",
+                "objectHash": "d" * 64,
+                "kind": "trajectory",
+                "capabilities": ["trajectory"],
+                "facts": {
+                    "frameCount": 24,
+                    "atomCount": 1,
+                    "timeStartPs": time_start_ps,
+                    "timeEndPs": time_end_ps,
+                    "positionWrapping": "unwrapped",
+                },
+            }
+        ]
+    )
+
+
 def test_registry_planner_metadata_covers_actual_registry_deterministically() -> None:
     registry = load_manifests()
     first, metadata_by_id = build_registry_snapshot(registry)
@@ -511,6 +532,149 @@ def test_explicit_trajectory_analytics_exclude_the_trajectory_viewer() -> None:
     assert _explicit_trajectory_selection(intent, projection) == [
         "trajectory.diffusion", "trajectory.msd", "trajectory.rdf",
     ]
+
+
+@pytest.mark.parametrize(
+    "goal",
+    [
+        "Calculate the MSD and estimate diffusion from 1 ps to 6 ps.",
+        "请先计算均方位移（MSD），再只在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质。",
+    ],
+)
+def test_explicit_diffusion_window_is_bound_from_the_exact_user_request(goal: str) -> None:
+    profile = _trajectory_profile()
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request(goal, selected_resource_ids=("trajectory_exact",)),
+        profile=profile,
+    )
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=MockLLMProvider(),
+    )
+
+    assert result.outcome.value == "PLAN_READY"
+    assert result.plan is not None
+    assert [step.toolId for step in result.plan.steps] == [
+        "trajectory.diffusion",
+        "trajectory.msd",
+    ]
+    assert result.plan.schemaVersion == "0.2"
+    assert len(result.plan.dependencyBindings) == 1
+    binding = result.plan.dependencyBindings[0]
+    steps = {step.stepId: step.toolId for step in result.plan.steps}
+    assert steps[binding.producerStepId] == "trajectory.msd"
+    assert steps[binding.consumerStepId] == "trajectory.diffusion"
+    diffusion = next(
+        item for item in result.decision.selections
+        if item.toolId == "trajectory.diffusion"
+    )
+    bound = {item.parameter: item for item in diffusion.boundParameters}
+    assert bound["fit_start_time_ps"].value == 1.0
+    assert bound["fit_end_time_ps"].value == 6.0
+    assert {
+        bound["fit_start_time_ps"].source.value,
+        bound["fit_end_time_ps"].source.value,
+    } == {"USER_REQUEST"}
+    assert all(item.sourceIdentity.startswith(f"analysis-intent:{intent.intentId}:") for item in bound.values())
+
+
+@pytest.mark.parametrize(
+    ("goal", "expected_code"),
+    [
+        (
+            "Calculate MSD and estimate diffusion.",
+            "DIFFUSION_FIT_WINDOW_REQUIRED",
+        ),
+        (
+            "Calculate MSD and estimate diffusion from 6 ps to 1 ps.",
+            "DIFFUSION_FIT_WINDOW_INVALID",
+        ),
+        (
+            "Calculate MSD and estimate diffusion from 1 ps to 20 ps.",
+            "DIFFUSION_FIT_WINDOW_OUT_OF_RANGE",
+        ),
+    ],
+)
+def test_diffusion_window_validation_remains_fail_closed(goal: str, expected_code: str) -> None:
+    profile = _trajectory_profile()
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request(goal, selected_resource_ids=("trajectory_exact",)),
+        profile=profile,
+    )
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=MockLLMProvider(),
+    )
+
+    assert result.outcome.value == "NEEDS_CLARIFICATION"
+    assert result.plan is None
+    assert result.decision.diagnostics[0].code == expected_code
+
+
+def test_full_trajectory_range_preserves_profile_fact_authority() -> None:
+    profile = _trajectory_profile()
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request(
+            "Calculate MSD and estimate diffusion over the full supplied time range.",
+            selected_resource_ids=("trajectory_exact",),
+        ),
+        profile=profile,
+    )
+
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=MockLLMProvider(),
+    )
+
+    assert result.outcome.value == "PLAN_READY"
+    diffusion = next(
+        item for item in result.decision.selections
+        if item.toolId == "trajectory.diffusion"
+    )
+    bound = {item.parameter: item for item in diffusion.boundParameters}
+    assert bound["fit_start_time_ps"].value == 0.0
+    assert bound["fit_end_time_ps"].value == 11.5
+    assert {item.source.value for item in bound.values()} == {"RESOURCE_FACT"}
+
+
+def test_trajectory_analysis_with_report_delivery_does_not_require_a_report_tool() -> None:
+    profile = _resource_profile(
+        object_id="trajectory_exact",
+        object_type="Trajectory",
+        kind="trajectory",
+        capabilities=["trajectory"],
+    )
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request(
+            "请计算当前轨迹的 MSD，并报告有效滞后、末端 MSD、证据和限制。",
+            selected_resource_ids=("trajectory_exact",),
+        ),
+        profile=profile,
+    )
+
+    assert ScientificIntent.trajectory_analysis in intent.scientificIntents
+    assert ScientificIntent.report_or_export in intent.scientificIntents
+    result = plan_capabilities(
+        intent,
+        profile=profile,
+        registry=load_manifests(),
+        provider=MockLLMProvider(),
+    )
+
+    assert result.outcome.value == "PLAN_READY"
+    assert [item.toolId for item in result.decision.selections] == [
+        "trajectory.msd",
+    ]
+    assert result.plan is not None
+    assert [step.toolId for step in result.plan.steps] == ["trajectory.msd"]
 
 
 def test_provider_dependency_pair_is_not_rejected_as_redundant() -> None:

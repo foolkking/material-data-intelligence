@@ -118,6 +118,9 @@ def phase8_service_pipeline():
             next(generator)
         except StopIteration:
             pass
+        Queue(queue_name, connection=Redis.from_url(redis_url)).delete(
+            delete_jobs=True
+        )
         for key, value in previous.items():
             if value is None:
                 os.environ.pop(key, None)

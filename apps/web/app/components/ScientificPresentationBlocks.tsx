@@ -1,12 +1,28 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useId, useMemo, useState } from "react";
+import { ProductLink as Link } from "./ProductNavigation";
 import type { ScientificPresentation, ScientificPresentationBlock } from "../lib/scientific-presentation";
-import { isSafePresentationBlock } from "../lib/scientific-presentation";
-import { getPlannerInterpretationEvidence, type InterpretationEvidenceResponse } from "../lib/planner-api";
+import { formatPresentationMetricValue, isSafePresentationBlock, presentationLimitationText } from "../lib/scientific-presentation";
+import { getPlannerInterpretationEvidence, type Artifact, type InterpretationEvidenceResponse } from "../lib/planner-api";
+import { LazyScientificResultViewer } from "./LazyScientificViewers";
+import { ArtifactOpenLink } from "./ArtifactOpenLink";
 
-export function ScientificPresentationBlocks({ presentation, mode = "full", projectId, instanceId }: { presentation: ScientificPresentation; mode?: "full" | "report_supplement"; projectId?: string; instanceId?: string }) {
+export function ScientificPresentationBlocks({
+  presentation,
+  mode = "full",
+  projectId,
+  instanceId,
+  artifactCatalog = [],
+}: {
+  presentation: ScientificPresentation;
+  mode?: "full" | "report_supplement";
+  projectId?: string;
+  instanceId?: string;
+  artifactCatalog?: readonly Artifact[];
+}) {
+  const generatedInstanceId = useId().replace(/:/gu, "");
+  const [activeVisualId, setActiveVisualId] = useState<string | null>(null);
   const blocks = presentation.blocks.filter(isSafePresentationBlock);
   const narrative = blocks.find((block): block is Extract<ScientificPresentationBlock, { type: "narrative" }> => block.type === "narrative");
   const findings = blocks.filter((block): block is Extract<ScientificPresentationBlock, { type: "finding" }> => block.type === "finding");
@@ -14,7 +30,7 @@ export function ScientificPresentationBlocks({ presentation, mode = "full", proj
   const visual = blocks.filter((block): block is Extract<ScientificPresentationBlock, { type: "figure" | "table" | "viewer_reference" }> => block.type === "figure" || block.type === "table" || block.type === "viewer_reference");
   const evidence = blocks.filter((block): block is Extract<ScientificPresentationBlock, { type: "evidence_reference" }> => block.type === "evidence_reference");
   const limitations = blocks.filter((block): block is Extract<ScientificPresentationBlock, { type: "limitation" | "warning" }> => block.type === "limitation" || block.type === "warning");
-  const headingId = `scientific-presentation-title-${(instanceId || presentation.exactSourceRefs[0]?.versionId || "current").replace(/[^a-zA-Z0-9_-]/g, "-")}`;
+  const headingId = `scientific-presentation-title-${(instanceId || generatedInstanceId || presentation.exactSourceRefs[0]?.versionId || "current").replace(/[^a-zA-Z0-9_-]/g, "-")}`;
   const artifactHref = (block: Extract<ScientificPresentationBlock, { type: "figure" | "table" }>) =>
     block.source.jobId && block.source.artifactId
       ? `/api/planner/jobs/${encodeURIComponent(block.source.jobId)}/artifacts/${encodeURIComponent(block.source.artifactId)}/content`
@@ -23,22 +39,86 @@ export function ScientificPresentationBlocks({ presentation, mode = "full", proj
     projectId && source.objectId && source.versionId
       ? `/projects/${projectId}/data?object=${encodeURIComponent(source.objectId)}&version=${encodeURIComponent(source.versionId)}`
       : null;
+  const activeVisual = visual.find(
+    (block): block is Extract<ScientificPresentationBlock, { type: "figure" | "table" }> =>
+      block.id === activeVisualId && (block.type === "figure" || block.type === "table"),
+  );
+  const activeArtifact = useMemo(
+    () => activeVisual?.source.artifactId
+      ? artifactCatalog.find((artifact) =>
+        (artifact.artifactId || artifact.id) === activeVisual.source.artifactId)
+      : undefined,
+    [activeVisual, artifactCatalog],
+  );
   return <section className="scientific-presentation" aria-labelledby={headingId}>
     <header className="scientific-presentation-header">
-      <div><p className="product-kicker">Presentation projection · 1.0</p><h3 id={headingId}>科学呈现</h3></div>
-      {presentation.exactSourceRefs.length ? <span>绑定 {presentation.exactSourceRefs.length} 个 exact source version</span> : null}
+      <div><p className="product-kicker">科学呈现 · 1.0</p><h3 id={headingId}>科学呈现</h3></div>
+      {presentation.exactSourceRefs.length ? <span>绑定 {presentation.exactSourceRefs.length} 个精确源版本</span> : null}
     </header>
     {presentation.historicalNotice ? <aside className="scientific-presentation-notice" role="note">{presentation.historicalNotice}</aside> : null}
     {mode === "full" && narrative ? <div className="scientific-presentation-narrative"><p>{narrative.text}</p></div> : null}
     {mode === "full" && findings.length ? <section className="scientific-presentation-section"><h4>关键发现</h4><div className="scientific-presentation-findings">{findings.map((block) => <article key={block.id}><span>{block.confidence === "DIRECT" ? "直接证据" : block.confidence === "QUALIFIED" ? "限定结论" : "有限结论"}</span><p>{block.text}</p><small>{block.evidenceIds.length ? `${block.evidenceIds.length} 项证据绑定` : "已绑定 Result"}</small></article>)}</div></section> : null}
-    {mode === "full" && metrics.length ? <section className="scientific-presentation-section"><h4>权威指标</h4><div className="scientific-presentation-metrics">{metrics.map((block) => <div key={block.id}><span>{block.title}</span><strong>{block.value}</strong>{block.unit ? <small>{block.unit}</small> : null}</div>)}</div></section> : null}
+    {mode === "full" && metrics.length ? <section className="scientific-presentation-section"><h4>权威指标</h4><div className="scientific-presentation-metrics">{metrics.map((block) => {
+      const displayValue = formatPresentationMetricValue(block.value);
+      const formatted = displayValue !== block.value;
+      return <div key={block.id}>
+        <span>{block.title}</span>
+        <strong
+          title={formatted ? `精确值：${block.value}` : undefined}
+          data-exact-value={block.value}
+        >
+          {displayValue}
+        </strong>
+        {block.unit ? <small>{block.unit}</small> : null}
+        {formatted ? <span className="sr-only">精确值 {block.value}</span> : null}
+      </div>;
+    })}</div></section> : null}
     {visual.length ? <section className="scientific-presentation-section"><h4>结果入口</h4><div className="scientific-presentation-links">{visual.map((block) => {
       const label = block.type === "viewer_reference" ? block.label : block.title;
       const href = block.type === "viewer_reference" ? viewerHref(block.source) : artifactHref(block);
-      return <div key={block.id}><span>{block.type === "figure" ? "图形" : block.type === "table" ? "表格" : "Viewer"}</span>{href ? <Link href={href}><strong>{label}</strong></Link> : <strong>{label}</strong>}<small>{block.source.versionId ? `exact version ${block.source.versionId}` : "来自 ScientificResult"}</small></div>;
-    })}</div></section> : null}
+      const canPreview = block.type !== "viewer_reference"
+        && Boolean(block.source.jobId && block.source.artifactId)
+        && artifactCatalog.some((artifact) => (artifact.artifactId || artifact.id) === block.source.artifactId);
+      return <div key={block.id}>
+        <span>{block.type === "figure" ? "图形" : block.type === "table" ? "表格" : "查看器"}</span>
+        <strong>{label}</strong>
+        <small>{block.source.versionId ? `精确版本 ${block.source.versionId}` : "来自 ScientificResult"}</small>
+        <div className="scientific-presentation-link-actions">
+          {canPreview ? <button
+            type="button"
+            className="product-link-button"
+            aria-pressed={activeVisualId === block.id}
+            onClick={() => setActiveVisualId((current) => current === block.id ? null : block.id)}
+          >
+            {activeVisualId === block.id ? "收起科学视图" : "在页内查看"}
+          </button> : null}
+          {block.type === "viewer_reference" && href ? <Link href={href}>打开查看器</Link> : null}
+          {block.type !== "viewer_reference" && href ? <ArtifactOpenLink href={href}>打开原始 Artifact</ArtifactOpenLink> : null}
+        </div>
+      </div>;
+    })}</div>
+    {activeVisual && activeArtifact && projectId && activeVisual.source.jobId ? <section
+      className="scientific-presentation-inline-viewer"
+      aria-label={`${activeVisual.type === "figure" ? "图形" : "表格"}：${activeVisual.title}`}
+    >
+      <header>
+        <div>
+          <span className="scientific-surface-kicker">权威结果预览</span>
+          <h5>{activeVisual.title}</h5>
+          <p>读取已持久化 Artifact；切换和查看不会重新执行科学计算。</p>
+        </div>
+        <button type="button" className="product-secondary-action" onClick={() => setActiveVisualId(null)}>关闭预览</button>
+      </header>
+      <LazyScientificResultViewer
+        projectId={projectId}
+        jobId={activeVisual.source.jobId}
+        selected={activeArtifact}
+        artifacts={artifactCatalog}
+      />
+    </section> : null}
+    </section> : null}
     {evidence.length ? <details className="scientific-presentation-evidence"><summary>证据路径 · {evidence.length} 项</summary><ul>{evidence.map((block) => <EvidenceReference key={block.id} block={block} viewerHref={viewerHref(block.source)} />)}</ul></details> : null}
-    {mode === "full" && limitations.length ? <section className="scientific-presentation-section scientific-presentation-limitations"><h4>限制与警告</h4><ul>{limitations.map((block) => <li key={block.id}>{block.text}</li>)}</ul></section> : null}
+    {mode === "full" && limitations.length ? <section className="scientific-presentation-section scientific-presentation-limitations"><h4>限制与警告</h4><ul>{limitations.map((block) => <li key={block.id}>{presentationLimitationText(block.text)}</li>)}</ul></section> : null}
   </section>;
 }
 
@@ -84,7 +164,7 @@ function EvidenceReference({ block, viewerHref }: { block: Extract<ScientificPre
       <button type="button" className="product-link-button" onClick={() => void inspect()} disabled={loading} aria-expanded={open}>
         {loading ? "正在读取证据…" : open ? "收起证据链" : "检查证据链"}
       </button>
-      {!detail && block.source.artifactId && block.source.jobId ? <Link href={`/api/planner/jobs/${encodeURIComponent(block.source.jobId)}/artifacts/${encodeURIComponent(block.source.artifactId)}/content`}>打开 Artifact</Link> : null}
+      {!detail && block.source.artifactId && block.source.jobId ? <ArtifactOpenLink href={`/api/planner/jobs/${encodeURIComponent(block.source.jobId)}/artifacts/${encodeURIComponent(block.source.artifactId)}/content`}>打开 Artifact</ArtifactOpenLink> : null}
       {!detail && !block.source.artifactId && viewerHref ? <Link href={viewerHref}>查看精确来源</Link> : null}
     </div>
     {open ? <div className="scientific-presentation-evidence-inspector" role="region" aria-label={`证据链 ${evidenceId || block.label}`}>
@@ -95,9 +175,9 @@ function EvidenceReference({ block, viewerHref }: { block: Extract<ScientificPre
           <div><dt>ToolCall</dt><dd>{tool ? `${tool.toolId || tool.id || tool.toolCallId || "—"} · ${tool.status || "unknown"}` : "未返回 ToolCall"}</dd></div>
           <div><dt>字段</dt><dd>{item?.fieldLocator?.fieldId || "—"} · {item?.displayValue || block.label}{item?.unit ? ` ${item.unit}` : ""}</dd></div>
         </dl>
-        {artifact && (artifact.artifactId || artifact.id) && (artifact.jobId || detail.jobId) ? <Link href={`/api/planner/jobs/${encodeURIComponent(artifact.jobId || detail.jobId || "")}/artifacts/${encodeURIComponent(artifact.artifactId || artifact.id || "")}/content`}>打开权威 Artifact</Link> : null}
+        {artifact && (artifact.artifactId || artifact.id) && (artifact.jobId || detail.jobId) ? <ArtifactOpenLink href={`/api/planner/jobs/${encodeURIComponent(artifact.jobId || detail.jobId || "")}/artifacts/${encodeURIComponent(artifact.artifactId || artifact.id || "")}/content`}>打开权威 Artifact</ArtifactOpenLink> : null}
       </> : <p>此呈现块没有可用的 interpretation evidence identity。</p>}
     </div> : null}
-    {block.source.versionId ? <small>exact version {block.source.versionId}</small> : null}
+    {block.source.versionId ? <small>精确版本 {block.source.versionId}</small> : null}
   </li>;
 }

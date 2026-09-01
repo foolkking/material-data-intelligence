@@ -2,6 +2,11 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+const navigationMocks = vi.hoisted(() => ({ push: vi.fn() }));
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: navigationMocks.push }),
+}));
+
 import adapterGeneratedViewerScene from "../../../../docs/phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/generated_viewer_scene.json";
 import adapterGeneratedViewerSceneManifest from "../../../../docs/phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/generated_viewer_scene_manifest.json";
 import liveAdapterPayload from "../../../../docs/phase10f/evidence/phase10f13_viewer_scene_live_adapter_browser/live_payload.json";
@@ -912,7 +917,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(uploadedFileIds.sort()).toEqual(["file_1", "file_2", "file_3"]);
   });
 
-  it("loads metadata-only Workspace history and exposes exact Workspace routes", async () => {
+  it("loads metadata-only Workspace history and opens the authoritative Research run", async () => {
     fetchMock.mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
       if (url.includes("/projects/project_local/workspaces")) {
@@ -944,7 +949,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     await user.click(screen.getByRole("button", { name: "Workspace history" }));
     const dialog = await screen.findByRole("dialog", { name: "Scientific Workspaces" });
     expect(within(dialog).getByText("Historical phonon analysis")).not.toBeNull();
-    expect(within(dialog).getByRole("link", { name: "Open" })).toHaveAttribute("href", "/workspaces/workspace_history_1");
+    expect(within(dialog).getByRole("link", { name: "Open" })).toHaveAttribute("href", "/projects/project_local/research?run=job_history_1");
   });
 
   it("restores an exact persisted Job from a bounded query identity without resubmission", async () => {

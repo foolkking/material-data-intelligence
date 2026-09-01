@@ -11,7 +11,7 @@ import type { ScientificWorkspace, WorkspaceSelectionContext } from "../lib/work
 import { VOLUMETRIC_BROWSER_CAPS } from "./volumetric-viewer/volumetricViewerTypes";
 import { sha256HexSync } from "./volumetric-viewer/volumetricHash";
 import { ScientificArtifactRenderer } from "./workspace/WorkspaceArtifactGallery";
-import { artifactIdentity, resolveArtifactRenderer } from "./workspace/workspace-renderer-registry";
+import { artifactIdentity, resolveArtifactRenderer, resolveLoadedArtifactRenderer } from "./workspace/workspace-renderer-registry";
 
 export function ScientificSourceViewer({ projectId, resource, resources = [resource], onSelection = () => undefined }: Readonly<{ projectId: string; resource: DatasetSourceResource; resources?: readonly DatasetSourceResource[]; onSelection?: (selection: WorkspaceSelectionContext) => void }>) {
   const artifacts = useMemo(() => sourceResourceArtifacts(resource, resources), [resource, resources]);
@@ -77,8 +77,10 @@ export function ScientificResultViewer({
   const workspace = useMemo(() => resultViewerContext(projectId, datasetId, jobId, viewerSelected), [datasetId, jobId, projectId, viewerSelected]);
   if (state === "loading") return <div className="product-loading" role="status">正在加载科学结果…</div>;
   if (state === "failed") return <div className="product-state" role="alert"><h3>此结果暂时无法打开</h3><p>结果元数据仍然保留，可以稍后重试。</p></div>;
-  const loadedSelected = loaded.find((item) => artifactIdentity(item) === artifactIdentity(selected)) ?? viewerSelected;
-  return <ScientificArtifactRenderer selected={normalizeResultArtifactForViewer(loadedSelected)} artifacts={loaded.map(normalizeResultArtifactForViewer)} workspace={workspace} />;
+  const normalized = loaded.map(normalizeResultArtifactForViewer);
+  const loadedSelected = normalized.find((item) => artifactIdentity(item) === artifactIdentity(selected)) ?? viewerSelected;
+  const rendererSelected = selectProductRendererArtifact(loadedSelected, normalized);
+  return <ScientificArtifactRenderer selected={rendererSelected} artifacts={normalized} workspace={workspace} />;
 }
 
 /** Keep a composite viewer's request set semantic and bounded. The registry
@@ -97,7 +99,31 @@ export function selectResultViewerBundle(selected: Artifact, candidates: readonl
   if (selected.type === "phonon_dos_json" || /phonon_dos/.test(name)) {
     return candidates.filter((item) => keepName(item, /^phonon_dos(?:_|\.)/) && !keepName(item, /^phonon_band_dos(?:_|\.)/) || item === selected);
   }
+  if (selected.type === "plotly_json") {
+    const producer = artifactProducerIdentity(selected);
+    // A generic figure can have a richer, authoritative product contract in a
+    // table_json companion. Keep that pair exact to one ToolCall so a
+    // multi-capability Job cannot mix XRD, trajectory, or Dataset products.
+    return producer
+      ? candidates.filter((item) => artifactProducerIdentity(item) === producer && ["plotly_json", "table_json"].includes(String(item.type)))
+      : [selected];
+  }
+  if (["electronic_band_json", "electronic_dos_json"].includes(String(selected.type))) {
+    return candidates.filter((item) => ["electronic_band_json", "electronic_dos_json"].includes(String(item.type)));
+  }
   return [...candidates];
+}
+
+export function selectProductRendererArtifact(selected: Artifact, candidates: readonly Artifact[]): Artifact {
+  if (selected.type !== "plotly_json") return selected;
+  const producer = artifactProducerIdentity(selected);
+  if (!producer) return selected;
+  const product = candidates.find((item) => {
+    if (item.type !== "table_json" || artifactProducerIdentity(item) !== producer) return false;
+    const descriptor = resolveLoadedArtifactRenderer(item).descriptor;
+    return Boolean(descriptor && !["GENERIC_TABLE", "GENERIC_PLOT", "JSON", "TEXT"].includes(descriptor.component));
+  });
+  return product ?? selected;
 }
 
 export function resultViewerLoadKey(jobId: string, artifacts: readonly Artifact[]): string {
@@ -110,6 +136,25 @@ export function resultViewerLoadKey(jobId: string, artifacts: readonly Artifact[
     artifact.content === undefined ? "remote" : "inline",
   ].join(":"));
   return `${jobId}\u0000${artifactKeys.sort().join("\u0001")}`;
+}
+
+function artifactProducerIdentity(artifact: Artifact): string | null {
+  const metadata = artifact.metadata && typeof artifact.metadata === "object" ? artifact.metadata as Record<string, unknown> : {};
+  const provenance = artifact.provenance && typeof artifact.provenance === "object" ? artifact.provenance as Record<string, unknown> : {};
+  for (const value of [
+    artifact.toolCallId,
+    metadata.toolCallId,
+    metadata.tool_call_id,
+    metadata.stepId,
+    metadata.step_id,
+    provenance.toolCallId,
+    provenance.tool_call_id,
+    provenance.stepId,
+    provenance.step_id,
+  ]) {
+    if (typeof value === "string" && value.trim()) return value.trim();
+  }
+  return null;
 }
 
 export function normalizeResultArtifactForViewer(artifact: Artifact): Artifact {

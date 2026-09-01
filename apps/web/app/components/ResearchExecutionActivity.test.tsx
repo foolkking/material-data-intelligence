@@ -43,15 +43,70 @@ describe("ResearchExecutionActivity", () => {
   it("offers one keyboard-accessible cancel command only while execution is active", () => {
     const onCancel = vi.fn();
     render(<ResearchExecutionActivity onCancel={onCancel} progress={{ contract_version: "1.0", turn_id: "turn-3", status: "RUNNING", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: null, result_projection_pending: false }} />);
-    const button = screen.getByRole("button", { name: "取消" });
+    const button = screen.getByRole("button", { name: "停止研究" });
     fireEvent.click(button);
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
 
-  it("offers an explicit retry only for terminal failed work", () => {
+  it("offers cancellation during orchestration and planning before a Job exists", () => {
+    const onCancel = vi.fn();
+    render(<ResearchExecutionActivity onCancel={onCancel} progress={{ contract_version: "1.0", turn_id: "turn-plan", status: "PLANNING", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: null, result_projection_pending: false }} />);
+    expect(screen.getByText("正在准备分析方案")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "停止研究" }));
+    expect(onCancel).toHaveBeenCalledTimes(1);
+  });
+
+  it("distinguishes continue, edit, and explicit new-run recovery for terminal failed work", () => {
+    const onContinue = vi.fn();
+    const onEdit = vi.fn();
     const onRetry = vi.fn();
-    render(<ResearchExecutionActivity onRetry={onRetry} progress={{ contract_version: "1.0", turn_id: "turn-5", status: "FAILED", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: "FAILED", result_projection_pending: false }} />);
-    fireEvent.click(screen.getByRole("button", { name: "重试研究" }));
+    render(<ResearchExecutionActivity onContinue={onContinue} onEdit={onEdit} onRetry={onRetry} progress={{ contract_version: "1.0", turn_id: "turn-5", status: "FAILED", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: "FAILED", result_projection_pending: false }} />);
+    fireEvent.click(screen.getByRole("button", { name: "继续研究" }));
+    fireEvent.click(screen.getByRole("button", { name: "修改问题" }));
+    fireEvent.click(screen.getByRole("button", { name: "重新研究（新运行）" }));
+    expect(onContinue).toHaveBeenCalledTimes(1);
+    expect(onEdit).toHaveBeenCalledTimes(1);
     expect(onRetry).toHaveBeenCalledTimes(1);
+  });
+
+  it("explains that committed outputs survive cancellation", () => {
+    render(<ResearchExecutionActivity onContinue={() => undefined} onEdit={() => undefined} progress={{ contract_version: "1.0", turn_id: "turn-canceled", status: "CANCELED", steps: [], active_step_ids: [], completed_step_count: 1, total_step_count: 2, incremental_outputs: [{ output_key: "output-1", step_id: "step-1", display_label: "结构输出", artifact_id: "artifact-1", preview_available: true, available_at: "2026-08-30T00:00:00Z" }], warnings: [], execution_outcome: "CANCELED", result_projection_pending: false }} />);
+    expect(screen.getByText(/已经提交的有效输出仍会保留/)).toBeInTheDocument();
+    expect(screen.getByText("继续研究不会自动重算。", { exact: false })).toBeInTheDocument();
+    expect(screen.getByText("已有 1 项真实执行输出可查看。")).toBeInTheDocument();
+  });
+
+  it("renders query-only turns as completed without exposing scientific controls", () => {
+    const onCancel = vi.fn();
+    render(<ResearchExecutionActivity onCancel={onCancel} progress={{ contract_version: "1.0", turn_id: "turn-query", status: "ANSWERED", response_kind: "DATA_QUERY", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: null, result_projection_pending: false }} />);
+    expect(screen.getByText("数据查询已完成")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "停止研究" })).toBeNull();
+  });
+
+  it("labels a zero-recompute continuation as Result reuse rather than a data query", () => {
+    render(<ResearchExecutionActivity progress={{ contract_version: "1.0", turn_id: "turn-reuse", status: "ANSWERED", response_kind: "RESULT_REUSE", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: null, result_projection_pending: false }} />);
+    expect(screen.getByText("已基于现有科学结果继续回答")).toBeInTheDocument();
+    expect(screen.queryByText("数据查询已完成")).toBeNull();
+  });
+
+  it("deduplicates repeated execution warnings without duplicate React keys", () => {
+    render(<ResearchExecutionActivity progress={{
+      contract_version: "1.0",
+      turn_id: "turn-warning",
+      status: "FAILED",
+      steps: [],
+      active_step_ids: [],
+      completed_step_count: 0,
+      total_step_count: 0,
+      incremental_outputs: [],
+      warnings: [
+        { code: "EXECUTION_STEP_FAILED", message: "该步骤未能完成，已保留已生成的输出。" },
+        { code: "EXECUTION_STEP_FAILED", message: "该步骤未能完成，已保留已生成的输出。" },
+      ],
+      execution_outcome: "FAILED",
+      result_projection_pending: false,
+    }} />);
+
+    expect(screen.getAllByText("该步骤未能完成，已保留已生成的输出。")).toHaveLength(1);
   });
 });

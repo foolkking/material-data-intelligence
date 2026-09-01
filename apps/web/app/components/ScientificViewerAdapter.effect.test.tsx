@@ -10,12 +10,12 @@ vi.mock("../lib/planner-api", () => ({
 }));
 
 vi.mock("./workspace/WorkspaceArtifactGallery", () => ({
-  ScientificArtifactRenderer: ({ artifacts }: { artifacts: Array<{ content?: unknown }> }) => (
-    <div data-testid="loaded-scientific-renderer">{JSON.stringify(artifacts[0]?.content)}</div>
+  ScientificArtifactRenderer: ({ selected, artifacts }: { selected: { artifactId?: string; type?: string; content?: unknown }; artifacts: Array<{ content?: unknown }> }) => (
+    <div data-testid="loaded-scientific-renderer" data-selected={selected.artifactId || selected.type}>{JSON.stringify(selected.content ?? artifacts[0]?.content)}</div>
   ),
 }));
 
-import { ScientificResultViewer, selectResultViewerBundle } from "./ScientificViewerAdapter";
+import { ScientificResultViewer, selectProductRendererArtifact, selectResultViewerBundle } from "./ScientificViewerAdapter";
 
 beforeEach(() => mocks.getPlannerArtifactContent.mockReset());
 
@@ -93,4 +93,47 @@ it("bounds composite phonon loads to the selected result bundle", () => {
     { artifactId: "dos-table", type: "table_json", name: "phonon_dos_table.json" },
   ]);
   expect(bundle.map((item) => item.artifactId)).toEqual(["combined", "combined-plot", "combined-table"]);
+});
+
+it("loads only the exact ToolCall product pair for a selected scientific figure", () => {
+  const selected = { artifactId: "comparison-plot", toolCallId: "call-comparison", type: "plotly_json", name: "experimental_xrd_comparison_plot.json" };
+  const bundle = selectResultViewerBundle(selected, [
+    { artifactId: "theory-table", toolCallId: "call-theory", type: "table_json", name: "xrd_pattern.json" },
+    { artifactId: "theory-plot", toolCallId: "call-theory", type: "plotly_json", name: "xrd_plot.json" },
+    { artifactId: "comparison-table", toolCallId: "call-comparison", type: "table_json", name: "experimental_xrd_comparison.json" },
+    selected,
+  ]);
+  expect(bundle.map((item) => item.artifactId)).toEqual(["comparison-table", "comparison-plot"]);
+});
+
+it("promotes the validated product contract instead of flattening its figure to a generic plot", () => {
+  const selected = {
+    artifactId: "comparison-plot",
+    toolCallId: "call-comparison",
+    type: "plotly_json",
+    content: { figure: { data: [] } },
+  };
+  const product = {
+    artifactId: "comparison-table",
+    toolCallId: "call-comparison",
+    type: "table_json",
+    content: {
+      schema_version: "phase10n3.experimental_xrd_comparison.v1",
+      artifactType: "structure.experimental_xrd_comparison",
+    },
+  };
+  expect(selectProductRendererArtifact(selected, [selected, product])).toBe(product);
+});
+
+it("renders a selected XRD figure through its same-ToolCall professional product contract", async () => {
+  const selected = { artifactId: "comparison-plot", jobId: "job_xrd", toolCallId: "call-comparison", type: "plotly_json", name: "experimental_xrd_comparison_plot.json", contentType: "application/json", sizeBytes: 1 };
+  const product = { artifactId: "comparison-table", jobId: "job_xrd", toolCallId: "call-comparison", type: "table_json", name: "experimental_xrd_comparison.json", contentType: "application/json", sizeBytes: 1 };
+  mocks.getPlannerArtifactContent.mockImplementation(async (_jobId: string, artifactId: string) => new TextEncoder().encode(JSON.stringify(
+    artifactId === "comparison-table"
+      ? { schema_version: "phase10n3.experimental_xrd_comparison.v1", artifactType: "structure.experimental_xrd_comparison" }
+      : { figure: { data: [] } },
+  )).buffer);
+  render(<ScientificResultViewer projectId="project_1" datasetId="dataset_1" jobId="job_xrd" selected={selected} artifacts={[product, selected]} />);
+  await waitFor(() => expect(screen.getByTestId("loaded-scientific-renderer")).toHaveAttribute("data-selected", "comparison-table"));
+  expect(mocks.getPlannerArtifactContent).toHaveBeenCalledTimes(2);
 });

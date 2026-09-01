@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { ProductLink as Link } from "./ProductNavigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { getProjectHistory, listProjects, type ProjectHistory, type ProjectSummary } from "../lib/planner-api";
@@ -40,6 +40,10 @@ export function ProjectHome() {
     let active = true;
     setLoadState("loading");
     setError("");
+    // History reads already use the shared bounded directory cache. Mutating
+    // operations invalidate that cache explicitly, so forcing a refresh on
+    // every project selection only adds a full-latency round trip when users
+    // navigate back to the project home.
     void getProjectHistory(selectedProjectId)
       .then((nextHistory) => {
         if (!active) return;
@@ -151,12 +155,12 @@ export function ProjectHome() {
               {analyses.length === 0 ? <p className="empty-inline">暂无分析记录。</p> : (
                 <div className="analysis-history-list">
                   {analyses.slice(0, 8).map((analysis) => (
-                    <Link className="analysis-history-row" href={analysis.workspaceId ? "/workspaces/" + analysis.workspaceId : "/analysis?jobId=" + analysis.jobId} key={analysis.jobId}>
+                    <Link className="analysis-history-row" href={analysisHref(projectId, analysis)} key={analysis.jobId}>
                       <span>
                         <strong>{analysis.userQuestion || "未命名分析"}</strong>
                         <span>{analysis.artifactCount} 个结果 · {analysis.reportCount} 份报告</span>
                       </span>
-                      <StatusText value={analysis.status} />
+                      <StatusText value={effectiveAnalysisStatus(analysis)} />
                     </Link>
                   ))}
                 </div>
@@ -184,6 +188,29 @@ export function ProjectHome() {
   );
 }
 
+function analysisHref(
+  projectId: string,
+  analysis: {
+    jobId: string;
+    workspaceId?: string | null;
+    researchSessionId?: string;
+    researchTurnId?: string | null;
+  },
+) {
+  if (analysis.researchSessionId && analysis.researchTurnId) {
+    return `/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(analysis.researchSessionId)}?turn=${encodeURIComponent(analysis.researchTurnId)}`;
+  }
+  if (analysis.workspaceId) return "/workspaces/" + encodeURIComponent(analysis.workspaceId);
+  return "/analysis?jobId=" + encodeURIComponent(analysis.jobId);
+}
+
+function effectiveAnalysisStatus(analysis: {
+  status?: string | null;
+  researchTurnStatus?: string | null;
+}) {
+  return analysis.researchTurnStatus || analysis.status;
+}
+
 function Metric({ value, label }: { value: number; label: string }) {
   return <div className="project-metric"><strong>{value}</strong><span>{label}</span></div>;
 }
@@ -204,7 +231,8 @@ function StatusText({ value }: { value?: string | null }) {
     not_started: "未开始",
     pending: "待处理",
   };
-  const label = labels[value || ""] || value || "未开始";
+  const normalized = String(value || "").trim().toLowerCase();
+  const label = labels[normalized] || value || "未开始";
   return <span className={"status-text status-" + label.toLowerCase().replaceAll("_", "-")}>{label}</span>;
 }
 

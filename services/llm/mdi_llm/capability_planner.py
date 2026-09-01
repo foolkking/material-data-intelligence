@@ -71,6 +71,59 @@ _LOCAL_ENVIRONMENT_MARKERS = (
     "配位多面体",
     "局部几何",
 )
+_TRAJECTORY_RDF_MARKERS = (
+    "rdf",
+    "radial distribution",
+    "pair distribution",
+    "径向分布",
+)
+_TRAJECTORY_MSD_MARKERS = (
+    "msd",
+    "mean squared displacement",
+    "均方位移",
+)
+_TRAJECTORY_DIFFUSION_MARKERS = (
+    "diffusion",
+    "diffusivity",
+    "扩散",
+)
+_FULL_TRAJECTORY_RANGE_MARKERS = (
+    "full supplied time range",
+    "entire supplied time range",
+    "完整提供的时间范围",
+    "全部提供的时间范围",
+    "完整时间范围",
+    "全部时间范围",
+    "全时间范围",
+)
+_TRAJECTORY_WINDOW_PATTERNS = (
+    re.compile(
+        r"(?:from|between)\s+(?P<start>[0-9]+(?:\.[0-9]+)?)\s*ps"
+        r"\s+(?:to|and|through)\s+(?P<end>[0-9]+(?:\.[0-9]+)?)\s*ps",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"(?P<start>[0-9]+(?:\.[0-9]+)?)\s*ps"
+        r"\s*(?:到|至|—|–|-)\s*"
+        r"(?P<end>[0-9]+(?:\.[0-9]+)?)\s*ps",
+        re.IGNORECASE,
+    ),
+)
+
+
+def _tool_coverage_intents(intent: AnalysisIntent) -> set[ScientificIntent]:
+    """Return only intents that executable scientific capabilities must cover.
+
+    ``report_or_export`` describes a delivery preference after authoritative
+    scientific Results exist.  When it accompanies a real scientific intent,
+    requiring a Tool to cover it incorrectly rejects otherwise complete plans.
+    A report-only request remains unsupported here so it cannot create a
+    scientific Job without an analysis objective.
+    """
+
+    intents = set(intent.scientificIntents)
+    scientific = intents - {ScientificIntent.report_or_export}
+    return scientific or intents
 
 
 class CapabilityPlanningError(RuntimeError):
@@ -286,6 +339,20 @@ def plan_capabilities(
     resolution = resolve_eligibility(intent, profile=profile, registry=registry)
     projection = project_eligible_candidates(resolution)
     visible_ids = tuple(item.toolId for item in projection.candidates)
+    trajectory_window_error = _trajectory_fit_window_error(intent, profile)
+    if trajectory_window_error is not None:
+        code, message = trajectory_window_error
+        decision = _non_ready_decision(
+            intent,
+            profile,
+            resolution,
+            outcome=CapabilityPlanningOutcome.needs_clarification,
+            code=code,
+            message=message,
+            provider="deterministic_mock" if isinstance(provider, MockLLMProvider) else _provider_name(provider),
+            model="mock" if isinstance(provider, MockLLMProvider) else _provider_model(provider),
+        )
+        return CapabilityPlanningResult(decision.outcome, resolution, projection, decision, None, visible_ids)
     visual_gap = _explicit_visual_capability_gap(intent, resolution, projection)
     if visual_gap is not None:
         label, matching_ids, reason_codes = visual_gap
@@ -443,7 +510,7 @@ class CapabilityContextValidator:
         covered_intents = {item for selection in decision.selections for item in selection.coveredScientificIntents}
         covered_needs = {item for selection in decision.selections for item in selection.coveredCapabilityNeeds}
         covered_outputs = {item for selection in decision.selections for item in selection.coveredDesiredOutputs}
-        if not set(intent.scientificIntents).issubset(covered_intents) or not set(intent.requiredCapabilityNeeds).issubset(covered_needs):
+        if not _tool_coverage_intents(intent).issubset(covered_intents) or not set(intent.requiredCapabilityNeeds).issubset(covered_needs):
             raise CapabilityPlanningError("Decision does not cover the structured Intent.", code="CAPABILITY_COVERAGE_INCOMPLETE", repairable=True)
         expected_unfulfilled = sorted(set(intent.desiredOutputs) - covered_outputs, key=lambda item: item.value)
         if decision.unfulfilledDesiredOutputs != expected_unfulfilled:
@@ -504,12 +571,19 @@ def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandida
         return sorted(set(dependency_requests))
     if ScientificIntent.trajectory_analysis in intent.scientificIntents:
         requested: list[str] = []
-        if any(marker in goal for marker in ("rdf", "radial distribution", "pair distribution")):
+        if any(marker in goal for marker in _TRAJECTORY_RDF_MARKERS):
             requested.append("trajectory.rdf")
-        if any(marker in goal for marker in ("msd", "mean squared displacement", "diffusion", "diffusivity")):
+        if any(marker in goal for marker in (*_TRAJECTORY_MSD_MARKERS, *_TRAJECTORY_DIFFUSION_MARKERS)):
             requested.append("trajectory.msd")
-        if any(marker in goal for marker in ("diffusion", "diffusivity")):
-            if "full supplied time range" not in goal:
+        if any(marker in goal for marker in _TRAJECTORY_DIFFUSION_MARKERS):
+            fit_window = _requested_trajectory_fit_window(goal)
+            if fit_window is not None and fit_window[0] >= fit_window[1]:
+                raise CapabilityPlanningError(
+                    "The explicit diffusion fit window must have a start time before its end time.",
+                    code="DIFFUSION_FIT_WINDOW_INVALID",
+                    outcome=CapabilityPlanningOutcome.needs_clarification,
+                )
+            if fit_window is None and not _requests_full_trajectory_range(goal):
                 raise CapabilityPlanningError(
                     "Diffusion planning requires the user to select an explicit fit window or the full supplied time range.",
                     code="DIFFUSION_FIT_WINDOW_REQUIRED",
@@ -536,7 +610,7 @@ def _deterministic_selection(intent: AnalysisIntent, projection: EligibleCandida
             code="COMPOSITION_ANALYSIS_NOT_ELIGIBLE",
             outcome=CapabilityPlanningOutcome.capability_mismatch,
         )
-    remaining_intents = set(intent.scientificIntents)
+    remaining_intents = _tool_coverage_intents(intent)
     remaining_needs = set(intent.requiredCapabilityNeeds)
     selected: list[ProjectedCandidate] = []
     collision_groups: set[str] = set()
@@ -712,12 +786,19 @@ def _explicit_trajectory_selection(
         return None
     goal = intent.rawGoal.casefold()
     requested: list[str] = []
-    if any(marker in goal for marker in ("rdf", "radial distribution", "pair distribution")):
+    if any(marker in goal for marker in _TRAJECTORY_RDF_MARKERS):
         requested.append("trajectory.rdf")
-    if any(marker in goal for marker in ("msd", "mean squared displacement")):
+    if any(marker in goal for marker in _TRAJECTORY_MSD_MARKERS):
         requested.append("trajectory.msd")
-    if any(marker in goal for marker in ("diffusion", "diffusivity")):
-        if "full supplied time range" not in goal:
+    if any(marker in goal for marker in _TRAJECTORY_DIFFUSION_MARKERS):
+        fit_window = _requested_trajectory_fit_window(goal)
+        if fit_window is not None and fit_window[0] >= fit_window[1]:
+            raise CapabilityPlanningError(
+                "The explicit diffusion fit window must have a start time before its end time.",
+                code="DIFFUSION_FIT_WINDOW_INVALID",
+                outcome=CapabilityPlanningOutcome.needs_clarification,
+            )
+        if fit_window is None and not _requests_full_trajectory_range(goal):
             return None
         requested.append("trajectory.diffusion")
     if not requested:
@@ -796,7 +877,7 @@ def _build_ready_decision_and_plan(
         raise CapabilityPlanningError("Capability selection is empty.", code="CAPABILITY_SELECTION_EMPTY", repairable=True)
     covered_intents = {value for item in selected for value in item.matchedScientificIntents}
     covered_needs = {value for item in selected for value in item.matchedCapabilityNeeds}
-    if not set(intent.scientificIntents).issubset(covered_intents) or not set(intent.requiredCapabilityNeeds).issubset(covered_needs):
+    if not _tool_coverage_intents(intent).issubset(covered_intents) or not set(intent.requiredCapabilityNeeds).issubset(covered_needs):
         raise CapabilityPlanningError("Selected tools do not cover the structured Intent.", code="CAPABILITY_COVERAGE_INCOMPLETE", repairable=True)
     groups = [item.collisionGroup for item in selected if item.collisionGroup]
     if len(groups) != len(set(groups)):
@@ -1408,13 +1489,60 @@ def _binding_domains(
         elif binding.source is PlannerBindingSource.profile_id:
             values = [_binding_value(profile.profileId, profile.profileId, binding.source, profile.semanticHash or profile.profileId)]
         elif binding.source is PlannerBindingSource.resource_fact:
-            for resource in resources:
-                current = profile_resources.get(resource.objectId)
-                if current is None or (binding.objectTypes and resource.objectType not in binding.objectTypes):
+            requested_window = (
+                _requested_trajectory_fit_window(intent.rawGoal.casefold())
+                if metadata.toolId == "trajectory.diffusion"
+                else None
+            )
+            if requested_window is not None and binding.parameter in {
+                "fit_start_time_ps",
+                "fit_end_time_ps",
+            }:
+                trajectory_bounds = _trajectory_profile_time_bounds(profile_resources, resources)
+                if trajectory_bounds is None:
+                    reasons.append(
+                        (
+                            "DIFFUSION_TIME_RANGE_UNAVAILABLE",
+                            "The exact trajectory time bounds are unavailable for validating the requested diffusion fit window.",
+                        )
+                    )
                     continue
-                for key in binding.factKeys:
-                    if key in current.facts and isinstance(current.facts[key], (str, int, float, bool)):
-                        values.append(_binding_value(f"fact:{resource.objectId}:{key}", current.facts[key], binding.source, f"resource:{resource.objectId}:{resource.objectHash}:{key}"))
+                requested_start, requested_end = requested_window
+                available_start, available_end = trajectory_bounds
+                if (
+                    requested_start >= requested_end
+                    or requested_start < available_start
+                    or requested_end > available_end
+                ):
+                    reasons.append(
+                        (
+                            "DIFFUSION_FIT_WINDOW_OUT_OF_RANGE",
+                            "The requested diffusion fit window is outside the exact trajectory time range.",
+                        )
+                    )
+                    continue
+                requested_value = (
+                    requested_start
+                    if binding.parameter == "fit_start_time_ps"
+                    else requested_end
+                )
+                normalized_value = format(requested_value, ".15g")
+                values = [
+                    _binding_value(
+                        f"request:{intent.intentId}:{binding.parameter}:{normalized_value}",
+                        requested_value,
+                        PlannerBindingSource.user_request,
+                        f"analysis-intent:{intent.intentId}:{binding.parameter}",
+                    )
+                ]
+            else:
+                for resource in resources:
+                    current = profile_resources.get(resource.objectId)
+                    if current is None or (binding.objectTypes and resource.objectType not in binding.objectTypes):
+                        continue
+                    for key in binding.factKeys:
+                        if key in current.facts and isinstance(current.facts[key], (str, int, float, bool)):
+                            values.append(_binding_value(f"fact:{resource.objectId}:{key}", current.facts[key], binding.source, f"resource:{resource.objectId}:{resource.objectHash}:{key}"))
         elif binding.source is PlannerBindingSource.literal:
             values = [_binding_value(f"literal:{binding.parameter}", binding.literalValue, binding.source, f"registry:{metadata.toolId}:{metadata.toolVersion}:{binding.parameter}")]
         values = sorted(values, key=lambda item: item.valueId)
@@ -1443,6 +1571,82 @@ def _bind_domain(domain: PlannerBindingDomain) -> BoundParameter:
         source=value.source,
         sourceIdentity=value.sourceIdentity,
     )
+
+
+def _requested_trajectory_fit_window(goal: str) -> tuple[float, float] | None:
+    for pattern in _TRAJECTORY_WINDOW_PATTERNS:
+        match = pattern.search(goal)
+        if match is not None:
+            return float(match.group("start")), float(match.group("end"))
+    return None
+
+
+def _requests_full_trajectory_range(goal: str) -> bool:
+    return any(marker in goal for marker in _FULL_TRAJECTORY_RANGE_MARKERS)
+
+
+def _trajectory_fit_window_error(
+    intent: AnalysisIntent,
+    profile: DataProfile,
+) -> tuple[str, str] | None:
+    goal = intent.rawGoal.casefold()
+    if not any(marker in goal for marker in _TRAJECTORY_DIFFUSION_MARKERS):
+        return None
+    requested_window = _requested_trajectory_fit_window(goal)
+    if requested_window is None:
+        return None
+    requested_start, requested_end = requested_window
+    if requested_start >= requested_end:
+        return (
+            "DIFFUSION_FIT_WINDOW_INVALID",
+            "The explicit diffusion fit window must have a start time before its end time.",
+        )
+    profile_resources = {item.objectId: item for item in profile.resourceSemantics}
+    resources = [
+        PlannerResourceIdentity(
+            objectId=item.objectId,
+            objectType=item.objectType,
+            objectHash=item.objectHash,
+            kind=item.kind,
+        )
+        for item in intent.dataScope.resourceRefs
+    ]
+    trajectory_bounds = _trajectory_profile_time_bounds(profile_resources, resources)
+    if trajectory_bounds is None:
+        return (
+            "DIFFUSION_TIME_RANGE_UNAVAILABLE",
+            "The exact trajectory time bounds are unavailable for validating the requested diffusion fit window.",
+        )
+    available_start, available_end = trajectory_bounds
+    if requested_start < available_start or requested_end > available_end:
+        return (
+            "DIFFUSION_FIT_WINDOW_OUT_OF_RANGE",
+            "The requested diffusion fit window is outside the exact trajectory time range.",
+        )
+    return None
+
+
+def _trajectory_profile_time_bounds(
+    profile_resources: dict[str, Any],
+    resources: list[PlannerResourceIdentity],
+) -> tuple[float, float] | None:
+    bounds: list[tuple[float, float]] = []
+    for resource in resources:
+        if resource.objectType != "Trajectory":
+            continue
+        current = profile_resources.get(resource.objectId)
+        if current is None:
+            continue
+        start = current.facts.get("timeStartPs")
+        end = current.facts.get("timeEndPs")
+        if (
+            isinstance(start, (int, float))
+            and not isinstance(start, bool)
+            and isinstance(end, (int, float))
+            and not isinstance(end, bool)
+        ):
+            bounds.append((float(start), float(end)))
+    return bounds[0] if len(bounds) == 1 else None
 
 
 def _match_tool_resources(metadata: Any, resources: list[PlannerResourceIdentity]) -> tuple[list[PlannerResourceIdentity], str | None]:

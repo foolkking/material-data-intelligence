@@ -108,6 +108,9 @@ class DatasetRepository(Protocol):
     def get(self, dataset_id: str) -> dict[str, Any]:
         ...
 
+    def list(self) -> list[dict[str, Any]]:
+        ...
+
     def list_for_project(self, project_id: str) -> list[dict[str, Any]]:
         ...
 
@@ -117,6 +120,9 @@ class DataProfileRepository(Protocol):
         ...
 
     def get(self, profile_id: str) -> dict[str, Any]:
+        ...
+
+    def list(self) -> list[dict[str, Any]]:
         ...
 
     def list_for_dataset(self, dataset_id: str) -> list[dict[str, Any]]:
@@ -492,6 +498,9 @@ class InMemoryDatasetRepository(_InMemoryRecordRepository):
     def get(self, dataset_id: str) -> dict[str, Any]:
         return self._get(dataset_id)
 
+    def list(self) -> list[dict[str, Any]]:
+        return [_json_copy(record) for record in self.records.values()]
+
     def list_for_project(self, project_id: str) -> list[dict[str, Any]]:
         return [_json_copy(record) for record in self.records.values() if record.get("projectId") == project_id]
 
@@ -510,6 +519,9 @@ class InMemoryDataProfileRepository(_InMemoryRecordRepository):
 
     def get(self, profile_id: str) -> dict[str, Any]:
         return self._get(profile_id)
+
+    def list(self) -> list[dict[str, Any]]:
+        return [_json_copy(record) for record in self.records.values()]
 
     def list_for_dataset(self, dataset_id: str) -> list[dict[str, Any]]:
         return [_json_copy(record) for record in self.records.values() if record.get("datasetId") == dataset_id]
@@ -1500,6 +1512,10 @@ class SqlAlchemyDatasetRepository(_SqlAlchemyRepository):
     def get(self, dataset_id: str) -> dict[str, Any]:
         return _dataset_from_row(self._fetch_one_dict(select(datasets).where(datasets.c.id == dataset_id)))
 
+    def list(self) -> list[dict[str, Any]]:
+        statement = select(datasets).order_by(datasets.c.project_id, datasets.c.created_at, datasets.c.id)
+        return [_dataset_from_row(row) for row in self._fetch_all_dicts(statement)]
+
     def list_for_project(self, project_id: str) -> list[dict[str, Any]]:
         statement = select(datasets).where(datasets.c.project_id == project_id).order_by(datasets.c.created_at, datasets.c.id)
         return [_dataset_from_row(row) for row in self._fetch_all_dicts(statement)]
@@ -1528,6 +1544,14 @@ class SqlAlchemyDataProfileRepository(_SqlAlchemyRepository):
 
     def get(self, profile_id: str) -> dict[str, Any]:
         return _data_profile_from_row(self._fetch_one_dict(select(data_profiles).where(data_profiles.c.id == profile_id)))
+
+    def list(self) -> list[dict[str, Any]]:
+        statement = select(data_profiles).order_by(
+            data_profiles.c.dataset_id,
+            data_profiles.c.created_at,
+            data_profiles.c.id,
+        )
+        return [_data_profile_from_row(row) for row in self._fetch_all_dicts(statement)]
 
     def list_for_dataset(self, dataset_id: str) -> list[dict[str, Any]]:
         statement = (

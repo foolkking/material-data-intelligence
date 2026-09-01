@@ -13,6 +13,12 @@ runtime identifiers, provider prompts, hidden reasoning, ToolCall identifiers,
 or Artifact internals.
 
 Every scientific finding must cite a supplied finding, fact, or evidence ref.
+When supported by the supplied interpretation, also return bounded
+provenance-aware sections named `discussion`, `conclusion`, and `next_steps`.
+Each section is an object with `text`, `fact_refs`, and `evidence_refs`.
+Discussion and conclusion may only restate supplied scientific findings.
+Next steps are proposals, not new scientific claims; leave their reference
+lists empty unless they explicitly rely on supplied evidence.
 Every figure must cite a supplied figure ref. Do not convert units. Preserve
 PARTIAL, STALE, SOURCE_MISSING, and INVALIDATED semantics explicitly.
 Limitations supplied upstream must remain visible.

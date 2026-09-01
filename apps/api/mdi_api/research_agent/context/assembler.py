@@ -79,17 +79,30 @@ class ResearchContextCandidateAssembler:
 
         objects = self._object_candidates(unit, project_id, raw_objects)
         result_rows: list[tuple[ReferenceCandidateSource, int, dict[str, Any]]] = []
+        # An explicit result selection is an authoritative user/UI binding.
+        # Do not mix it with recency-derived historical candidates: doing so
+        # lets the provider select a lower-priority result and then correctly
+        # fail deterministic reference validation, even though the requested
+        # result itself is authorized. Supporting results can still be
+        # selected explicitly by supplying multiple snapshot IDs.
+        explicit_result_ids = {str(x) for x in (ui_context.get("explicit_result_ids") or [])}
         pinned_ids = [str(x) for x in ((memory_state or {}).get("pinned_result_refs_json") or [])]
-        for recency, previous in enumerate(long_turns, start=1):
-            snapshot = unit.agent2.scientific_result_snapshots.get_latest_for_turn(previous["id"]) if unit.agent2.scientific_result_snapshots.exists_for_turn(previous["id"]) else None
-            if snapshot is None:
-                continue
-            source = ReferenceCandidateSource.PINNED_CONTEXT if str(snapshot["id"]) in pinned_ids else (
-                ReferenceCandidateSource.PREVIOUS_TURN_RESULT if recency == 1 else (
-                    ReferenceCandidateSource.RECENT_CONTEXT if recency <= 6 else ReferenceCandidateSource.LONG_SESSION_RETRIEVAL
+        # Child turns represent an explicit new branch (edit/rerun/retry)
+        # unless they bind a result directly.  Do not silently inject
+        # recency-based result candidates into those branches: doing so can
+        # make the router choose INTERPRET_RESULT for a newly edited question
+        # and mix unrelated historical results into grounding.
+        if not explicit_result_ids and not turn.get("parent_turn_id"):
+            for recency, previous in enumerate(long_turns, start=1):
+                snapshot = unit.agent2.scientific_result_snapshots.get_latest_for_turn(previous["id"]) if unit.agent2.scientific_result_snapshots.exists_for_turn(previous["id"]) else None
+                if snapshot is None:
+                    continue
+                source = ReferenceCandidateSource.PINNED_CONTEXT if str(snapshot["id"]) in pinned_ids else (
+                    ReferenceCandidateSource.PREVIOUS_TURN_RESULT if recency == 1 else (
+                        ReferenceCandidateSource.RECENT_CONTEXT if recency <= 6 else ReferenceCandidateSource.LONG_SESSION_RETRIEVAL
+                    )
                 )
-            )
-            result_rows.append((source, 0 if source == ReferenceCandidateSource.PINNED_CONTEXT else recency, snapshot))
+                result_rows.append((source, 0 if source == ReferenceCandidateSource.PINNED_CONTEXT else recency, snapshot))
         # Explicit lexical references are resolved only when exactly one
         # authorized persisted result matches a registered scientific-family
         # token. This deterministic elevation supports non-adjacent references
@@ -111,7 +124,6 @@ class ResearchContextCandidateAssembler:
             unique = {str(item["id"]): item for item in matches}
             if len(unique) == 1:
                 result_rows.append((ReferenceCandidateSource.EXPLICIT_REFERENCE, 0, next(iter(unique.values()))))
-        explicit_result_ids = {str(x) for x in (ui_context.get("explicit_result_ids") or [])}
         for result_id in explicit_result_ids:
             row = unit.agent2.scientific_result_snapshots.get(UUID(result_id))
             if str(row["project_id"]) != project_id or row["research_turn_id"] not in {item["id"] for item in long_turns}:

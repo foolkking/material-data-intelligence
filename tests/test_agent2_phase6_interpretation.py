@@ -11,12 +11,17 @@ from sqlalchemy import func, select, update
 from mdi_api.db import analysis_plans, artifacts, jobs, scientific_result_snapshots, tool_calls
 from mdi_api.interpretation.assembler import InterpreterInputAssembler
 from mdi_api.interpretation.client import DeepSeekInterpreterClient, FakeStructuredInterpreterClient
-from mdi_api.interpretation.grounding import validate_interpretation
+from mdi_api.interpretation.grounding import (
+    project_grounded_answer_lead,
+    project_grounded_communication,
+    validate_interpretation,
+)
 from mdi_api.interpretation.schemas import ScientificInterpretationOutput
 from mdi_api.interpretation.service import ScientificInterpretationService
 from mdi_api.interpretation.queue import InMemoryInterpretationQueue
 from mdi_api.research_agent.orchestration.processor import AgentTurnProcessor
 from mdi_api.research_agent.registry_validation import build_default_agent2_registries
+from mdi_api.routers.research import _scientific_message_projections
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 from mdi_api.scientific_results.schemas import ScientificResultBundle
 
@@ -54,6 +59,248 @@ def test_grounding_rejects_unknown_refs_numeric_hallucination_and_unit_conversio
     assert validate_interpretation(angstrom_symbol, bundle).valid
 
 
+def test_grounding_normalizes_inverse_cubic_angstrom_notation_without_converting_units() -> None:
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"][0].update(
+        {
+            "fact_id": "rdf.number_density",
+            "predicate": "rdf.number_density",
+            "value": 0.037037,
+            "unit": "angstrom^-3",
+            "source": {
+                "artifact_id": "artifact-1",
+                "artifact_locator": "/rdf/normalization/number_density_per_angstrom3",
+            },
+        }
+    )
+    payload["result_items"][0]["fact_refs"] = ["rdf.number_density"]
+    bundle = ScientificResultBundle.model_validate(payload)
+
+    grounded = ScientificInterpretationOutput.model_validate(
+        _output(
+            statement="数密度为 0.037037 Å⁻³。",
+            fact="rdf.number_density",
+        )
+    )
+    converted = ScientificInterpretationOutput.model_validate(
+        _output(
+            statement="数密度为 0.037037 nm^-3。",
+            fact="rdf.number_density",
+        )
+    )
+
+    assert validate_interpretation(grounded, bundle).valid
+    assert not validate_interpretation(converted, bundle).valid
+
+
+def test_grounding_normalizes_terahertz_name_and_symbol_without_converting_units() -> None:
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"][0].update(
+        {
+            "fact_id": "phonon.frequency_max",
+            "predicate": "phonon.frequency_max",
+            "value": 2.5,
+            "unit": "terahertz",
+            "source": {
+                "artifact_id": "artifact-1",
+                "artifact_locator": "/frequency_max",
+            },
+        }
+    )
+    payload["result_items"][0]["fact_refs"] = ["phonon.frequency_max"]
+    bundle = ScientificResultBundle.model_validate(payload)
+
+    grounded = ScientificInterpretationOutput.model_validate(
+        _output(
+            statement="最高频率为 2.5 THz。",
+            fact="phonon.frequency_max",
+        )
+    )
+    converted = ScientificInterpretationOutput.model_validate(
+        _output(
+            statement="最高频率为 2.5 eV。",
+            fact="phonon.frequency_max",
+        )
+    )
+
+    assert validate_interpretation(grounded, bundle).valid
+    assert not validate_interpretation(converted, bundle).valid
+
+
+def test_diffusion_fit_window_and_composite_units_remain_fail_closed() -> None:
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"] = [
+        {
+            "fact_id": "trajectory.diffusion_coefficient",
+            "predicate": "trajectory.diffusion_coefficient",
+            "subject_ref": "artifact-1",
+            "value": 0.038618084156,
+            "unit": "angstrom^2/picosecond",
+            "source": {
+                "artifact_id": "artifact-1",
+                "artifact_locator": "/diffusionEstimate/value",
+            },
+        },
+        {
+            "fact_id": "trajectory.diffusion_fit_start_time",
+            "predicate": "trajectory.diffusion_fit_start_time",
+            "subject_ref": "artifact-1",
+            "value": 1.0,
+            "unit": "picosecond",
+            "source": {
+                "artifact_id": "artifact-1",
+                "artifact_locator": "/fitWindow/startPs",
+            },
+        },
+        {
+            "fact_id": "trajectory.diffusion_fit_end_time",
+            "predicate": "trajectory.diffusion_fit_end_time",
+            "subject_ref": "artifact-1",
+            "value": 6.0,
+            "unit": "picosecond",
+            "source": {
+                "artifact_id": "artifact-1",
+                "artifact_locator": "/fitWindow/endPs",
+            },
+        },
+    ]
+    payload["result_items"][0]["fact_refs"] = [
+        item["fact_id"] for item in payload["facts"]
+    ]
+    payload["evidence"][0]["supports_fact_refs"] = [
+        item["fact_id"] for item in payload["facts"]
+    ]
+    bundle = ScientificResultBundle.model_validate(payload)
+    output = _output(
+        statement=(
+            "在 1–6 ps 拟合窗口内，扩散系数为 "
+            "0.038618084156 angstrom^2/picosecond。"
+        ),
+        fact="trajectory.diffusion_coefficient",
+    )
+    output["primary_findings"][0]["fact_refs"] = [
+        "trajectory.diffusion_coefficient",
+        "trajectory.diffusion_fit_start_time",
+        "trajectory.diffusion_fit_end_time",
+    ]
+    grounded = ScientificInterpretationOutput.model_validate(output)
+
+    assert validate_interpretation(grounded, bundle).valid
+
+    unsupported_payload = grounded.model_dump(mode="json")
+    unsupported_payload["primary_findings"][0]["statement"] = (
+        "在 1–8 ps 拟合窗口内，扩散系数为 "
+        "0.038618084156 angstrom^2/picosecond。"
+    )
+    unsupported = ScientificInterpretationOutput.model_validate(
+        unsupported_payload
+    )
+    validation = validate_interpretation(unsupported, bundle)
+    assert not validation.valid
+    assert any("(8)" in error for error in validation.errors)
+
+    converted_payload = grounded.model_dump(mode="json")
+    converted_payload["primary_findings"][0]["statement"] = (
+        "在 1–6 ps 拟合窗口内，扩散系数为 "
+        "0.038618084156 m^2/s。"
+    )
+    converted = ScientificInterpretationOutput.model_validate(converted_payload)
+    assert not validate_interpretation(converted, bundle).valid
+
+
+def test_grounding_accepts_bounded_display_rounding_but_rejects_unrelated_values() -> None:
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"] = [
+        {
+            "fact_id": "trajectory.diffusion_coefficient",
+            "predicate": "trajectory.diffusion_coefficient",
+            "subject_ref": "artifact-1",
+            "value": 0.038618084156,
+            "unit": "angstrom^2/picosecond",
+            "source": {
+                "artifact_id": "artifact-1",
+                "artifact_locator": "/diffusionEstimate/value",
+            },
+        },
+        {
+            "fact_id": "trajectory.diffusion_fit_r_squared",
+            "predicate": "trajectory.diffusion_fit_r_squared",
+            "subject_ref": "artifact-1",
+            "value": 0.970301847945,
+            "unit": None,
+            "source": {
+                "artifact_id": "artifact-1",
+                "artifact_locator": "/fitQuality/r2",
+            },
+        },
+    ]
+    payload["result_items"][0]["fact_refs"] = [
+        item["fact_id"] for item in payload["facts"]
+    ]
+    bundle = ScientificResultBundle.model_validate(payload)
+    rounded = ScientificInterpretationOutput.model_validate(
+        _output(
+            statement=(
+                "扩散系数为 0.0386 angstrom^2/picosecond，"
+                "拟合 R² 为 0.9703。"
+            ),
+            fact="trajectory.diffusion_coefficient",
+        )
+    )
+    rounded.primary_findings[0].fact_refs = [
+        "trajectory.diffusion_coefficient",
+        "trajectory.diffusion_fit_r_squared",
+    ]
+    assert validate_interpretation(rounded, bundle).valid
+
+    unsupported_payload = rounded.model_dump(mode="json")
+    unsupported_payload["primary_findings"][0]["statement"] = (
+        "扩散系数为 0.038 angstrom^2/picosecond，拟合 R² 为 0.9703。"
+    )
+    unsupported = ScientificInterpretationOutput.model_validate(unsupported_payload)
+    assert not validate_interpretation(unsupported, bundle).valid
+
+    materially_rounded_payload = rounded.model_dump(mode="json")
+    materially_rounded_payload["primary_findings"][0]["statement"] = (
+        "扩散系数为 0.04 angstrom^2/picosecond，拟合 R² 为 0.9703。"
+    )
+    materially_rounded = ScientificInterpretationOutput.model_validate(
+        materially_rounded_payload
+    )
+    assert not validate_interpretation(materially_rounded, bundle).valid
+
+
+def test_quantitative_grounding_follows_bounded_result_and_evidence_fact_edges() -> None:
+    bundle_payload = _bundle().model_dump(mode="json")
+    bundle_payload["evidence"][0]["supports_fact_refs"] = ["rdf.first_peak"]
+    bundle_payload["evidence"][0]["supports_result_item_refs"] = ["rdf.item"]
+    bundle = ScientificResultBundle.model_validate(bundle_payload)
+
+    through_result_item = _output()
+    through_result_item["primary_findings"][0]["fact_refs"] = []
+    result_item_interpretation = ScientificInterpretationOutput.model_validate(
+        through_result_item
+    )
+    assert validate_interpretation(result_item_interpretation, bundle).valid
+
+    through_evidence = _output()
+    through_evidence["primary_findings"][0]["fact_refs"] = []
+    through_evidence["primary_findings"][0]["result_item_refs"] = []
+    evidence_interpretation = ScientificInterpretationOutput.model_validate(
+        through_evidence
+    )
+    assert validate_interpretation(evidence_interpretation, bundle).valid
+
+    unsupported = _output("第一峰位于 23 angstrom。")
+    unsupported["primary_findings"][0]["fact_refs"] = []
+    unsupported_interpretation = ScientificInterpretationOutput.model_validate(
+        unsupported
+    )
+    validation = validate_interpretation(unsupported_interpretation, bundle)
+    assert not validation.valid
+    assert any("(23)" in error for error in validation.errors)
+
+
 def test_grounding_ignores_opaque_provenance_identifiers_in_answer_lead():
     bundle = _bundle()
     lead = (
@@ -70,6 +317,169 @@ def test_grounding_ignores_stable_dataset_sample_identifiers():
         _output(statement="样本 mat-2 的第一峰位于 2.5 angstrom。")
     )
     assert validate_interpretation(result, bundle).valid
+
+
+def test_only_unsupported_answer_lead_is_projected_from_grounded_finding():
+    bundle = _bundle()
+    raw = ScientificInterpretationOutput.model_validate(
+        _output(lead="结果还包含 42 个未被权威事实支持的峰。")
+    )
+    assert not validate_interpretation(raw, bundle).valid
+
+    projected = project_grounded_answer_lead(raw, bundle)
+
+    assert projected.answer_lead == raw.primary_findings[0].statement
+    assert validate_interpretation(projected, bundle).valid
+
+
+def test_answer_lead_projection_never_repairs_an_unsupported_finding():
+    bundle = _bundle()
+    raw = ScientificInterpretationOutput.model_validate(
+        _output(
+            statement="第一峰位于 23 angstrom。",
+            lead="结果还包含 42 个未被权威事实支持的峰。",
+        )
+    )
+
+    projected = project_grounded_answer_lead(raw, bundle)
+
+    assert projected is raw
+    assert not validate_interpretation(projected, bundle).valid
+
+
+def test_grounded_communication_drops_unsourced_provider_method_lore() -> None:
+    bundle = _bundle()
+    raw = ScientificInterpretationOutput.model_validate({
+        **_output(),
+        "answer_lead": (
+            "RDF 结果支持第一峰。该算法通常受某种未提供的物理机制影响。"
+        ),
+        "limitations": [
+            "该算法可能对未在 Result 中记录的参数敏感。",
+        ],
+    })
+
+    projected = project_grounded_communication(raw, bundle)
+
+    assert projected.answer_lead == raw.primary_findings[0].statement
+    assert projected.limitations == []
+    assert validate_interpretation(projected, bundle).valid
+
+
+def test_grounded_communication_hides_exact_reference_echo_from_visible_prose() -> None:
+    bundle = _bundle()
+    raw = ScientificInterpretationOutput.model_validate(
+        _output(statement="第一峰位于 2.5 angstrom。（事实 ID: rdf.first_peak）")
+    )
+
+    projected = project_grounded_communication(raw, bundle)
+
+    assert projected.primary_findings[0].statement == "第一峰位于 2.5 angstrom。"
+    assert projected.primary_findings[0].fact_refs == ["rdf.first_peak"]
+    assert "rdf.first_peak" not in projected.answer_lead
+    assert validate_interpretation(projected, bundle).valid
+
+
+def test_grounded_communication_removes_redundant_success_wording() -> None:
+    bundle_payload = _bundle().model_dump(mode="json")
+    bundle_payload["facts"][0].update({
+        "predicate": "successful_coordination_site_count",
+        "value": 1,
+        "unit": None,
+    })
+    bundle = ScientificResultBundle.model_validate(bundle_payload)
+    raw = ScientificInterpretationOutput.model_validate(
+        _output(statement="CrystalNN 成功识别出 1 个成功配位位点。")
+    )
+
+    projected = project_grounded_communication(raw, bundle)
+
+    assert projected.primary_findings[0].statement == (
+        "CrystalNN 成功识别出 1 个配位位点。"
+    )
+    assert projected.answer_lead == "CrystalNN 成功识别出 1 个配位位点。"
+    assert validate_interpretation(projected, bundle).valid
+
+
+def test_reference_echo_cleanup_preserves_parenthetical_scientific_content() -> None:
+    bundle = _bundle()
+    raw = ScientificInterpretationOutput.model_validate(
+        _output(
+            statement=(
+                "第一峰位于 2.5 angstrom"
+                "（截断范围内；事实 ID: rdf.first_peak）。"
+            )
+        )
+    )
+
+    projected = project_grounded_communication(raw, bundle)
+
+    assert "截断范围内" in projected.primary_findings[0].statement
+    assert "rdf.first_peak" in projected.primary_findings[0].statement
+    assert validate_interpretation(projected, bundle).valid
+
+
+def test_historical_scientific_message_uses_grounded_read_projection() -> None:
+    bundle = _bundle()
+    interpretation_id = uuid4()
+    snapshot_id = uuid4()
+    message_id = "message-scientific-final"
+    interpretation_row = {
+        "id": interpretation_id,
+        "project_id": "project",
+        "result_snapshot_id": snapshot_id,
+        "output_json": {
+            "interpretation": {
+                **_output(
+                    statement="第一峰位于 2.5 angstrom。（事实 ID: rdf.first_peak）",
+                    lead="该方法非常准确，但 Result 未提供这种结论。",
+                ),
+                "limitations": ["未来源的方法常识。"],
+            }
+        },
+    }
+    snapshot_row = {
+        "id": snapshot_id,
+        "project_id": "project",
+        "bundle_json": bundle.model_dump(mode="json"),
+    }
+
+    class Rows:
+        def __init__(self, values):
+            self.values = values
+
+        def mappings(self):
+            return self
+
+        def all(self):
+            return self.values
+
+    class Connection:
+        def __init__(self):
+            self.calls = 0
+
+        def execute(self, _statement):
+            self.calls += 1
+            return Rows([interpretation_row] if self.calls == 1 else [snapshot_row])
+
+    projected = _scientific_message_projections(
+        [{
+            "id": message_id,
+            "role": "agent",
+            "payload_json": {
+                "source": "agent2_scientific_interpreter",
+                "messageKind": "ASSISTANT_FINAL",
+                "interpretationId": str(interpretation_id),
+            },
+        }],
+        Connection(),
+        project_id="project",
+    )
+
+    assert "第一峰位于 2.5 angstrom。" in projected[message_id]
+    assert "rdf.first_peak" not in projected[message_id]
+    assert "非常准确" not in projected[message_id]
+    assert "未来源的方法常识" not in projected[message_id]
 
 
 def test_grounding_does_not_treat_lowercase_k_labels_as_kelvin_units():
@@ -140,6 +550,51 @@ def test_dataset_grounding_remains_fail_closed_for_unsupported_claim() -> None:
     assert any("quantitative claim" in error for error in validation.errors)
 
 
+def test_rdf_parameter_facts_do_not_authorize_an_unprojected_peak_claim() -> None:
+    base = _bundle()
+    parameter_facts = [
+        {
+            "fact_id": "rdf.r_max",
+            "predicate": "rdf.r_max",
+            "subject_ref": "artifact-1",
+            "value": 8.0,
+            "unit": "angstrom",
+            "source": {
+                "artifact_id": "artifact-1",
+                "artifact_locator": "/parameters/r_max_angstrom",
+            },
+        },
+        {
+            "fact_id": "rdf.bin_width",
+            "predicate": "rdf.bin_width",
+            "subject_ref": "artifact-1",
+            "value": 0.1,
+            "unit": "angstrom",
+            "source": {
+                "artifact_id": "artifact-1",
+                "artifact_locator": "/parameters/bin_width_angstrom",
+            },
+        },
+    ]
+    bundle_payload = base.model_dump(mode="json")
+    bundle_payload["facts"] = [*bundle_payload["facts"], *parameter_facts]
+    bundle = ScientificResultBundle.model_validate(bundle_payload)
+    unsupported = ScientificInterpretationOutput.model_validate(
+        _output(
+            statement=(
+                "RDF 计算范围为 8.0 angstrom、分箱宽度为 0.1 angstrom，"
+                "第一峰位于 3.7 angstrom。"
+            ),
+            fact="rdf.r_max",
+        )
+    )
+
+    validation = validate_interpretation(unsupported, bundle)
+
+    assert not validation.valid
+    assert any("quantitative claim" in error for error in validation.errors)
+
+
 def test_interpreter_input_is_bounded_and_excludes_raw_artifacts():
     bundle = _bundle()
     envelope, fingerprint = InterpreterInputAssembler().assemble(bundle=bundle, question="Explain the RDF", relevance_status="STALE")
@@ -182,6 +637,26 @@ def test_schema_invalid_after_repair_is_not_accepted():
         service._generate_with_one_repair(InterpreterInputAssembler().assemble(bundle=_bundle(), question="Explain the RDF", relevance_status="CURRENT")[0], _bundle())
     assert getattr(exc.value, "code", "") == "INTERPRETATION_SCHEMA_INVALID"
     assert client.calls == 2
+
+
+def test_interpretation_service_projects_only_an_unsupported_answer_lead_without_retry():
+    client = FakeStructuredInterpreterClient(
+        [_output(lead="结果还包含 42 个未被权威事实支持的峰。")]
+    )
+    service = ScientificInterpretationService(repository_factory=None, client=client)  # type: ignore[arg-type]
+
+    result, repaired, _meta = service._generate_with_one_repair(
+        InterpreterInputAssembler().assemble(
+            bundle=_bundle(),
+            question="Explain the RDF",
+            relevance_status="CURRENT",
+        )[0],
+        _bundle(),
+    )
+
+    assert result.answer_lead == result.primary_findings[0].statement
+    assert repaired is False
+    assert client.calls == 1
 
 
 def test_interpretation_queue_is_identity_only_and_idempotent():
@@ -241,6 +716,20 @@ def test_previous_result_interpretation_reuses_one_snapshot_across_new_turns_wit
             stored_turn = session.agent2.research_turns.get(turn.turn_id)
             assert stored_turn["status"] == "COMPLETED"
             assert stored_turn["assistant_final_message_id"]
+            manifests = [
+                event["payload_json"]["context_manifest"]
+                for event in session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+                if event["event_type"] == "CONTEXT_MANIFEST_RECORDED"
+                and (event.get("payload_json") or {}).get("operation") == "INTERPRETER"
+            ]
+            assert len(manifests) == 1
+            assert manifests[0]["operation"] == "INTERPRETER"
+            assert manifests[0]["included_items"]
+            assert any(
+                item["kind"] == "SCIENTIFIC_RESULT"
+                and item["result_ref"] == str(snapshot_id)
+                for item in manifests[0]["included_items"]
+            )
     assert counts() == before
 
 

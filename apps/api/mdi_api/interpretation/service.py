@@ -10,13 +10,19 @@ from pydantic import ValidationError
 
 from mdi_api.agent2_errors import ScientificResultSnapshotNotFound
 from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus
+from mdi_api.research_agent.context.manifest import build_operation_manifest
+from mdi_api.research_agent.context.policy import ContextOperation
 from mdi_api.research_agent.turns.state_machine import ensure_transition
 from mdi_api.scientific_results.schemas import ScientificResultBundle
 from mdi_api.unit_of_work import RepositoryFactory
 
 from .assembler import InterpreterInputAssembler, effective_relevance
 from .client import DeepSeekInterpreterClient, PROMPT_VERSION, StructuredInterpreterClient
-from .grounding import validate_interpretation
+from .grounding import (
+    project_grounded_answer_lead,
+    project_grounded_communication,
+    validate_interpretation,
+)
 from .projector import AssistantResponseProjector
 from .schemas import ScientificInterpretationOutput
 
@@ -42,6 +48,14 @@ class ScientificInterpretationService:
             return claimed["existing"]
         try:
             bundle, snapshot, question, relevance, envelope, fingerprint = self._load_input(turn_id)
+            self._record_interpreter_manifest(
+                turn_id=turn_id,
+                bundle=bundle,
+                snapshot=snapshot,
+                question=question,
+                envelope=envelope,
+                context_fingerprint=fingerprint,
+            )
             result, repair_attempted, provider_meta = self._generate_with_one_repair(envelope, bundle)
             content = self.response_projector.project(result, bundle, effective_relevance=relevance)
             return self._persist(
@@ -78,6 +92,8 @@ class ScientificInterpretationService:
                 raise InterpretationFailure("INTERPRETATION_SCHEMA_INVALID", "解释输出未通过结构化 schema 校验。") from exc
             except Exception as exc:
                 raise InterpretationFailure("INTERPRETATION_PROVIDER_FAILED", "科学结果已生成，但自动解释未完成。") from exc
+            result = project_grounded_answer_lead(result, bundle)
+            result = project_grounded_communication(result, bundle)
             validation = validate_interpretation(result, bundle)
             if validation.valid:
                 return result, attempt == 1, provider_meta
@@ -164,6 +180,90 @@ class ScientificInterpretationService:
             envelope, fingerprint = self.assembler.assemble(bundle=bundle, question=question, relevance_status=relevance)
             return bundle, snapshot, question, relevance, envelope, fingerprint
 
+    def _record_interpreter_manifest(
+        self,
+        *,
+        turn_id: UUID,
+        bundle: ScientificResultBundle,
+        snapshot: dict[str, Any],
+        question: str,
+        envelope: Any,
+        context_fingerprint: str,
+    ) -> None:
+        """Persist the exact bounded input selection before provider execution."""
+        items: list[dict[str, Any]] = []
+        for index, ref in enumerate(bundle.source_object_refs, start=1):
+            items.append({
+                "item_id": f"source_{index}",
+                "kind": "SCIENTIFIC_SELECTION",
+                "authority_class": "SCIENTIFIC_DATA",
+                "source_identity": f"{ref.object_id}:{ref.version_id}",
+                "opaque_ref": f"source_{index}",
+                "object_id": str(ref.object_id),
+                "version_id": str(ref.version_id),
+                "content": ref.model_dump(mode="json"),
+                "inclusion_reason": "exact source bound to ScientificResult",
+                "selection_mode": "EXPLICIT",
+            })
+        items.append({
+            "item_id": "result_1",
+            "kind": "SCIENTIFIC_RESULT",
+            "authority_class": "SCIENTIFIC_RESULT",
+            "source_identity": str(snapshot["id"]),
+            "opaque_ref": "result_1",
+            "result_ref": str(snapshot["id"]),
+            "content": {
+                "result_snapshot_id": str(snapshot["id"]),
+                "result_id": str(bundle.result_id),
+                "fact_ids": [str(item.fact_id) for item in bundle.facts[:64]],
+                "result_item_ids": [str(item.id) for item in bundle.result_items[:24]],
+                "figure_ids": [str(item.figure_id) for item in bundle.figures[:16]],
+                "table_ids": [str(item.table_id) for item in bundle.tables[:16]],
+            },
+            "inclusion_reason": "authoritative result facts for grounded interpretation",
+            "selection_mode": "EXPLICIT",
+        })
+        for index, evidence in enumerate(envelope.evidence[:64], start=1):
+            evidence_id = str(evidence.get("evidence_id") or f"evidence_{index}")
+            items.append({
+                "item_id": evidence_id,
+                "kind": "SCIENTIFIC_EVIDENCE",
+                "authority_class": "SCIENTIFIC_EVIDENCE",
+                "source_identity": evidence_id,
+                "opaque_ref": f"evidence_{index}",
+                "content": {
+                    "evidence_id": evidence_id,
+                    "evidence_type": evidence.get("evidence_type"),
+                    "supports_fact_refs": list(evidence.get("supports_fact_refs") or [])[:32],
+                    "supports_result_item_refs": list(evidence.get("supports_result_item_refs") or [])[:32],
+                },
+                "inclusion_reason": "bounded evidence references supporting Result facts",
+                "selection_mode": "RETRIEVED",
+            })
+        items.append({
+            "item_id": "research_question",
+            "kind": "RESEARCH_GOAL",
+            "authority_class": "CONVERSATIONAL_NARRATIVE",
+            "source_identity": f"{turn_id}:question",
+            "opaque_ref": "research_question",
+            "content": question[:16000],
+            "inclusion_reason": "current interpretation question",
+            "selection_mode": "CURRENT",
+        })
+        manifest = build_operation_manifest(
+            operation=ContextOperation.INTERPRETER,
+            project_id=str(bundle.project_id),
+            research_session_id=str(bundle.research_session_id),
+            research_turn_id=turn_id,
+            context_fingerprint=context_fingerprint,
+            items=items,
+        )
+        with self.repository_factory.unit_of_work() as unit:
+            self._event(unit, turn_id, ResearchTurnEventType.CONTEXT_MANIFEST_RECORDED, {
+                "operation": ContextOperation.INTERPRETER.value,
+                "context_manifest": manifest.model_dump(mode="json"),
+            })
+
     def _generate(self, envelope: Any, *, repair_errors: list[str] | None = None, repair_attempted: bool = False) -> tuple[ScientificInterpretationOutput, bool, dict[str, Any]]:
         context = {"repair_attempted": repair_attempted, "repair": {"validation_errors": repair_errors[:16]} if repair_errors else None}
         result = asyncio.run(self.client.generate_structured(input_payload=envelope.model_dump(mode="json"), output_schema=ScientificInterpretationOutput.model_json_schema(), timeout_seconds=self.timeout_seconds, request_context=context))
@@ -196,7 +296,7 @@ class ScientificInterpretationService:
             unit.agent2.research_turns.add_message({"id": message_id, "session_id": turn["research_session_id"], "role": "agent", "content_summary": content, "payload_json": {"source": "agent2_scientific_interpreter", "messageKind": "ASSISTANT_FINAL", "turnId": str(turn_id), "interpretationId": str(interpretation_id), "sourceResultSnapshotId": str(snapshot_id), "groundingStatus": "VALID", "factRefs": sorted({ref for item in [*result.primary_findings, *result.supporting_findings] for ref in item.fact_refs}), "evidenceRefs": sorted({ref for item in [*result.primary_findings, *result.supporting_findings] for ref in item.evidence_refs})}, "created_at": datetime.now(timezone.utc)})
             attached = unit.agent2.research_turns.attach_message_refs(turn_id, assistant_final_message_id=message_id)
             target = ResearchTurnStatus.PARTIAL if bundle.execution_status.value == "PARTIAL" else ResearchTurnStatus.COMPLETED
-            updated = unit.agent2.research_turns.compare_and_set_status(turn_id, expected_status=ResearchTurnStatus.INTERPRETING.value, expected_version=int(attached["row_version"]), target_status=target.value, completed_at=datetime.now(timezone.utc))
+            unit.agent2.research_turns.compare_and_set_status(turn_id, expected_status=ResearchTurnStatus.INTERPRETING.value, expected_version=int(attached["row_version"]), target_status=target.value, completed_at=datetime.now(timezone.utc))
             self._event(unit, turn_id, ResearchTurnEventType.INTERPRETATION_READY, {"interpretation_id": str(interpretation_id), "message_id": message_id})
             self._event(unit, turn_id, ResearchTurnEventType.TURN_PARTIAL if target == ResearchTurnStatus.PARTIAL else ResearchTurnEventType.TURN_COMPLETED, {"status": target.value})
             return row

@@ -256,7 +256,7 @@ function ComparisonView({ comparison }: { comparison: JsonRecord }) {
 function SamplesView({ samples, active, onSelect }: { samples: JsonRecord[]; active?: JsonRecord; onSelect: (value: string) => void }) {
   return <div data-testid="dataset-explorer-samples">
     {active ? <dl className="mini-grid dataset-sample-inspector" aria-live="polite" data-testid="dataset-sample-inspector"><Field label="样本键" value={canonicalSampleKey(active)} /><Field label="样本" value={text(active.sampleRef)} /><Field label="化学式" value={text(active.formula)} /><Field label="最简式" value={text(active.reducedFormula)} /><Field label="来源" value={`${text(active.objectId)} · 第 ${numberText(active.rowIndex)} 行`} /></dl> : <p className="empty-state">选择一个稳定样本以查看其来源行。</p>}
-    <div className="compact-table-wrap"><table className="compact-table"><caption>稳定样本索引</caption><thead><tr><th>样本引用</th><th>化学式</th><th>最简式</th><th>来源对象</th><th>行</th></tr></thead><tbody>
+    <div className="compact-table-wrap" role="region" aria-label="稳定样本索引，可横向滚动查看完整列" tabIndex={0}><table className="compact-table"><caption>稳定样本索引</caption><thead><tr><th>样本引用</th><th>化学式</th><th>最简式</th><th>来源对象</th><th>行</th></tr></thead><tbody>
       {samples.map((item) => <tr key={canonicalSampleKey(item)}><td><button type="button" className="link-button" aria-label={`${text(item.sampleRef)} from ${text(item.objectId) || "legacy source"}`} onClick={() => onSelect(canonicalSampleKey(item))}>{text(item.sampleRef)}</button></td><td>{text(item.formula) || "-"}</td><td>{text(item.reducedFormula) || "-"}</td><td>{text(item.objectId)}</td><td>{numberText(item.rowIndex)}</td></tr>)}
     </tbody></table></div>
   </div>;
@@ -275,7 +275,7 @@ function BarRow({ label, value, max }: { label: string; value: number; max: numb
 
 function DataTable({ columns, rows, empty }: { columns: string[]; rows: string[][]; empty: string }) {
   if (!rows.length) return <p className="empty-state">{empty}</p>;
-  return <div className="compact-table-wrap"><table className="compact-table"><thead><tr>{columns.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={index}>{row.map((value, column) => <td key={column}>{value || "-"}</td>)}</tr>)}</tbody></table></div>;
+  return <div className="compact-table-wrap" role="region" aria-label="科学数据表，可横向滚动查看完整列" tabIndex={0}><table className="compact-table"><thead><tr>{columns.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={index}>{row.map((value, column) => <td key={column}>{value || "-"}</td>)}</tr>)}</tbody></table></div>;
 }
 
 export function validateDatasetExplorerPayload(payload: JsonRecord | null): { ok: true; payload: JsonRecord } | { ok: false; reason: string } {

@@ -1,5 +1,84 @@
 # TASK_BOARD
 
+## Phase 14-R current batch notes (2026-09-01)
+
+- [x] Added the unified authenticated Trash Center at `/trash`, linked from
+      the compact account menu; actions reuse existing lifecycle APIs.
+- [x] Browser-proved a disposable Project purge with server dependency preview
+      and exact-name confirmation, plus a second disposable Project restore.
+- [x] Added PostgreSQL-authoritative per-Project active ResearchTurn
+      admission cap with typed `PROJECT_ACTIVE_RESEARCH_LIMIT` 429 behavior.
+- [x] Added redacted resource-governance details to the same-stack operations
+      snapshot; PostgreSQL/Redis/MinIO, six workers, queue depth 0 and
+      idle-in-transaction 0 verified.
+- [x] Focused frontend `3 files / 19 tests`, backend `3 passed`, TypeScript,
+      Ruff and diff checks pass. Phase 14-R remains `处理中` pending broader
+      P0/P1 qualification, full regression and exact-SHA P14R-A/P14R-B gates.
+
+## Phase 14-R current batch notes (2026-09-01)
+
+- [x] Same-stack authenticated browser rechecked Report Markdown and
+      reproducibility-manifest exports with zero critical responses.
+- [x] Research Session pin/rename/archive/Trash/restore/current/archive flow
+      passed at desktop and 390x844 without overflow.
+- [x] Task/Notification terminal stop semantics and offline/reconnect recovery
+      passed with bounded 30-row feeds.
+- [x] Report batch management now has explicit current-filter,
+      select-all/clear controls; nested report `<main>` landmark was repaired.
+- [x] Current frontend regression = 102 files / 739 tests; Phase14-R
+      context/operations/recovery backend = 16 passed.
+- [x] Full Python regression = 1924 passed / 84 skipped; stale Phase10K3
+      evidence manifest synchronized and its focused test = 3 passed.
+- [x] Isolated real PostgreSQL/Redis/MinIO Agent2 Phase2/3 + Phase10L4
+      campaign = 5 passed; primary product database preserved.
+- [x] Canonical Agent2 trajectory report closes the stale `trajectory.msd`
+      Surface row with independent persisted Figure/Table/Evidence/Viewer and
+      zero Job/ToolCall/Artifact/Result delta.
+- [x] Shared App Router prefetch ownership, single report `main` landmark and
+      pathname-only document scroll reset are browser-verified.
+- [x] ScientificObject batch Archive/Restore passed through the authenticated
+      Data UI; current version, one immutable version and three Result refs
+      remained unchanged.
+- [x] Product lifecycle regression passed: frontend `32`, atomic object bulk
+      API `1`, project/dataset dependency and lifecycle `4`.
+
+Phase 14-R remains `处理中`; capability-wide live acceptance,
+retention/purge/export governance, operations maturity and exact-SHA P14R
+release gates remain open.
+
+## Phase 14-R current batch notes (2026-08-31)
+
+- [x] Report projects bounded persisted trajectory tables with exact Artifact
+      and object/version provenance; authenticated browser read-only evidence
+      captured.
+- [x] ProductShell keeps App Router transitions in one mounted work area with
+      intent prefetch, pending state and lazy scientific viewers.
+- [x] Operations snapshot standalone entrypoint works with an empty
+      `PYTHONPATH`.
+- [x] Operations snapshot exposes explicit `--same-stack` service selection
+      and reports PostgreSQL/Redis/MinIO health truthfully.
+- [x] Research timeline collapses adjacent duplicate persisted messages while
+      preserving deliberate repeats separated by assistant responses; fresh
+      authenticated browser DOM now contains four canonical messages with no
+      errors or overflow.
+- [x] Product navigation clears pending state immediately after exact route
+      commit, with focused regression coverage for pathname/query transitions.
+- [x] Global search resolves modern Scientific Report lifecycle state from the
+      existing project-scoped lifecycle authority; archived report filtering
+      has focused backend coverage.
+- [x] Global search keeps bounded payloads honest with an explicit `truncated`
+      lower-bound disclosure when a category reaches its query window.
+- [x] Task Center renders both `cancelled` and `canceled` terminal spellings as
+      已取消; focused and authenticated task/notification browser checks pass.
+
+The Phase 14-R task remains `处理中`; capability-wide real-source acceptance,
+retention/export, recovery stress, full current-head regression and P14R-A/B
+exact-SHA release gates remain open.
+
+2026-08-31 batch: Report chapter navigation and exact source-version context
+pinning are implemented and browser-verified. Focused frontend `26/26`,
+typecheck and production build pass. Release status remains `处理中`.
+
 ## Agent 2.0 Phase 4 - Execution Integration and Scientific Progress - Completed
 
 - [x] Add migration 0020, `CANCELING`/`RESULT_PENDING`, and immutable execution summaries.
@@ -3273,3 +3352,124 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
       ContextSnapshots and connect selection/evidence deep links.
 - [ ] Complete authenticated desktop/mobile browser golden paths, final
       regression, commit/push and exact-SHA CI before marking this task done.
+# Active Phase 14-R work (2026-08-30)
+
+- [x] Replace remaining internal Planner/Workspace hard navigation with Next
+      App Router navigation and preserve the persistent product shell.
+- [x] Add bounded Report availability status and remove valid-path 404 polling.
+- [x] Close measured mobile global-header and desktop Data-Navigator overflow.
+- [x] Browser-prove immutable edit branching and zero-recompute re-interpret.
+- [x] Bind failed/canceled retry and edit to the exact persisted Turn context.
+- [x] Bound long Research history around the current branch with on-demand
+      complete-history expansion and mobile-safe layout.
+- [x] Prove project navigation is App Router client navigation, use the
+      same-origin API proxy, delay non-essential progress chrome, prewarm
+      bounded data, invalidate caches after mutation, and qualify optimized
+      desktop/mobile continuity.
+- [x] Repair fresh Research routing so exact Data/Viewer handoffs and `?new=1`
+      never implicitly reopen archived or trashed sessions; preserve the
+      existing session route as the historical authority.
+- [x] Add workbench-preserving Data/Research loading boundaries and verify the
+      archived-session `开始新的研究` / `恢复原会话` browser controls.
+- [x] Converge historical/new scientific communication and Report reads on the
+      exact grounded Interpretation/ScientificResult authority; browser-prove
+      exact Used Context, source version, readable methods and limitation
+      disclosure without internal fact IDs or unsupported conclusions.
+- [x] Browser-prove queued and running cancellation, durable race
+      reconciliation, and non-executing Continue recovery with zero scientific
+      state delta.
+- [x] Preserve the global ProductShell across Project/Tasks/Notifications
+      App Router transitions, share the bounded task feed, and browser-prove
+      zero document reload with warm history navigation.
+- [x] Close the canonical authenticated RDF Result-to-Presentation path with
+      five authoritative facts, equivalent-unit grounding, persisted
+      Figure/Table links, Evidence and exact-version Viewer navigation.
+- [x] Exercise an explicit-unwrapped EXTXYZ source through the normal
+      upload/MinIO/parser/Profile path, complete a real MSD Job and grounded
+      interpretation, render the four-frame trajectory Viewer and Report,
+      and repair the object-store wrapper plus the false RDF/`NaN` MSD
+      narrative without estimating diffusion.
+- [x] Exercise real MSD → diffusion execution, project the exact fit window,
+      remove false companion-Artifact evidence limitations, reopen the latest
+      immutable interpretation, localize the diagnostic surface, and prove
+      production App Router navigation plus `390x844` browser health.
+- [ ] Complete remaining Phase 14-R capability-family, lifecycle,
+      context-stress, retention/export, operations and real-user gates.
+- [ ] Run full regression, P14R-A exact-SHA CI and P14R-B exact-head CI.
+
+## 2026-08-31 Phase 14-R current batch
+
+- [x] Close exact trajectory-diffusion Presentation → Evidence → Viewer →
+      Report with real PostgreSQL/Redis/MinIO/worker/browser evidence.
+- [x] Remove the duplicate false legacy 0-step process summary beside
+      authoritative Agent2 progress.
+- [x] Align Report compound-unit grounding with the authoritative
+      Fact/Evidence/ResultItem support graph while retaining fail-closed
+      forged-claim regressions.
+- [x] Verify desktop/mobile bounded layouts and read-only zero-recompute.
+- [x] Run backend/frontend/Report service-backed focused regression.
+- [x] Browser-prove archived diffusion Report/Evidence/Viewer exact-version
+      continuity, source lifecycle disclosure, zero recompute and UI restore.
+- [ ] Continue the remaining historical/archive capability matrix,
+      lifecycle/retention/export, context-stress, R12 and release gates.
+
+## 2026-09-01 Phase 14-R current batch
+
+- [x] Add reversible stop confirmation in Task Center with explicit
+      partial-output semantics; keep existing cancellation authority.
+- [x] Disclose the bounded 30-task window instead of implying complete history.
+- [x] Re-run focused Task Center, ProductShell and Report lifecycle tests.
+- [x] Close desktop/mobile production App Router continuity with immutable
+      build output, zero document reload, prefetch coalescing and no location
+      polling.
+- [x] Browser-prove immutable edit submission, persisted branch switching and
+      exact Dataset object/version preservation.
+## 2026-08-30 Phase 14-R current batch
+
+- Completed current-worktree PostgreSQL/Redis/MinIO scientific-surface
+  campaign: 12 passed, 0 skipped.
+- Completed focused frontend Viewer/Evidence and
+  Dataset/Coordination/XRD/registry runs: 10/10 and 38/38.
+- Reconciled surface evidence: Dataset/Coordination/XRD/RDF exercised paths
+  PASS; unsupported-by-current-evidence families remain NOT_QUALIFIED.
+- Queued/running cancellation and non-executing Continue recovery are now
+  browser-qualified with zero ToolCall/Artifact/ScientificResult delta.
+- Next hard gate: remaining capability-browser and lifecycle/retention/export
+  batches, then R12, full regression and P14R exact-SHA release gates.
+## 2026-09-01 Phase 14-R context-control / reuse batch
+
+- Closed the stale cross-component Pin state between Research Timeline and
+  Scientific Presentation by sharing the server-authoritative session-memory
+  projection.
+- Authenticated exact source/Result Pin → remove → restore browser campaign
+  passed; final source pin state was restored and scientific persisted counts
+  did not change.
+- Fresh Phase 7 PostgreSQL/Redis/MinIO reuse campaign passed `4/4` with zero
+  skips using isolated database `mdi_phase14r_reuse_20260901_1132`.
+- Remaining release work is still Phase 14-R maturity closure and
+  P14R-A/P14R-B exact-SHA CI; Phase 15 remains uncreated/unstarted.
+
+## 2026-09-01 Phase 14-R context-budget / recovery batch
+
+- ContextManifest 2.0 budget/replay is now current-worktree qualified across
+  all five provider operations and explicit under/near/at/over boundaries.
+- Real PostgreSQL evidence: `458` persisted manifests, zero truncation;
+  authenticated historical replay exposes exact policy, fingerprint and source
+  version.
+- Task/Notification leave-and-return surfaces are current-browser verified
+  (`60` tasks, `45` notifications) with exact routes and bounded rendering.
+- Remaining true gaps are retention/export governance, operations limits/
+  monitoring delivery, final performance/real-user acceptance, full regression
+  and P14R-A/P14R-B CI.
+
+## 2026-09-01 Phase 14-R release-candidate reconciliation
+
+- [x] Complete current-worktree frontend ARIA/product focused regression
+      (`116 passed`) and fresh production build.
+- [x] Complete fresh full backend (`1948 passed`) and frontend
+      (`105 files / 764 tests`) regression.
+- [x] Complete isolated PostgreSQL/Redis/MinIO mandatory campaign
+      (`70 selected / 70 passed / 0 failed / 0 errors / 0 skipped`).
+- [x] Reconcile current same-stack operations snapshot and browser evidence.
+- [ ] Create P14R-A, obtain exact-SHA CI, create P14R-B, obtain exact-head CI,
+      then close this task and append the final result.

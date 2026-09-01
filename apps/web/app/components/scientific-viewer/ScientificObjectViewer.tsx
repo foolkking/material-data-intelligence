@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import type { DatasetSourceResource } from "../../lib/planner-api";
+import { getProjectHistory, type DatasetSourceResource } from "../../lib/planner-api";
+import { listResearchSessions } from "../../lib/product-api";
 import { getScientificViewerProjection, listScientificObjects, updateScientificObject, type ScientificObjectSummary, type ScientificViewerProjection } from "../../lib/scientific-viewer-api";
 import type { WorkspaceSelectionContext } from "../../lib/workspace-api";
 import { ScientificSourceViewer } from "../ScientificViewerAdapter";
@@ -28,6 +29,16 @@ export function ScientificObjectViewer({ projectId, objectId, versionId, initial
     }).catch(() => { if (!controller.signal.aborted) setObjectSummary(null); });
     return () => controller.abort();
   }, [objectId, projectId, versionId]);
+  useEffect(() => {
+    if (!projection) return;
+    // The Viewer is the normal handoff point into Research. Warm only the
+    // bounded project/session indexes needed to render the next workbench;
+    // scientific payloads and Artifacts remain lazy.
+    void Promise.allSettled([
+      getProjectHistory(projectId),
+      listResearchSessions(projectId),
+    ]);
+  }, [projectId, projection]);
   const resource = useMemo(() => projection ? projectionResource(projection) : null, [projection]);
   useEffect(() => {
     if (!projection || !deepLinkedSelection) return;
@@ -67,7 +78,7 @@ export function ScientificObjectViewer({ projectId, objectId, versionId, initial
       setLifecycleBusy(false);
     }
   };
-  return <ScientificViewerShell title={projection.display_name} descriptor={descriptor} versionLabel={`版本 ${projection.version_no}`} relevance={relevance} metadata={projection.canonical_metadata} limitations={projection.limitations} selection={selection} primaryActionHref={researchHref} lifecycleAction={objectSummary ? { label: objectSummary.lifecycle_status === "ARCHIVED" ? "恢复科研对象" : "归档科研对象", onClick: () => void toggleArchive(), disabled: lifecycleBusy } : null}>
+  return <ScientificViewerShell title={projection.display_name} descriptor={descriptor} versionLabel={`版本 ${projection.version_no}`} exactVersionId={projection.version_id} relevance={relevance} metadata={projection.canonical_metadata} limitations={projection.limitations} selection={selection} primaryActionHref={researchHref} lifecycleAction={objectSummary ? { label: objectSummary.lifecycle_status === "ARCHIVED" ? "恢复科研对象" : "归档科研对象", onClick: () => void toggleArchive(), disabled: lifecycleBusy } : null}>
     {projection.payload_status === "READY" ? <ScientificSourceViewer projectId={projectId} resource={resource} onSelection={choose} /> : <div className="science-canvas science-canvas-fallback"><div className="science-canvas-label"><span>{descriptor.support === "FALLBACK" ? "安全预览" : "科学元数据"}</span><strong>当前没有可交互的 payload</strong></div><p>{projection.limitations[0] || "可查看元数据与版本信息。"}</p></div>}
   </ScientificViewerShell>;
 }

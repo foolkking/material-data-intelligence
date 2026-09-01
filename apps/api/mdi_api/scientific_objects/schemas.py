@@ -33,6 +33,7 @@ class ScientificObjectAvailability(str, Enum):
 class ScientificObjectLifecycle(str, Enum):
     ACTIVE = "ACTIVE"
     ARCHIVED = "ARCHIVED"
+    TRASHED = "TRASHED"
     INVALIDATED = "INVALIDATED"
 
 

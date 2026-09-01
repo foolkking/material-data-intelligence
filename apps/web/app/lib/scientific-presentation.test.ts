@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Artifact, GroundedScientificInterpretation, ScientificEvidenceItem } from "./planner-api";
-import { compileReportPresentation, compileScientificPresentation, isSafePresentationBlock } from "./scientific-presentation";
+import { compileReportPresentation, compileScientificPresentation, formatPresentationMetricValue, formatScientificNarrativeNumbers, isSafePresentationBlock, presentationLimitationText, presentationMetricTitle, presentationScientificText } from "./scientific-presentation";
 import type { ScientificReportView } from "./scientific-report-api";
 
 const source = { objectId: "structure-a", versionId: "version-v1", objectType: "Structure", displayName: "NaCl" };
@@ -72,6 +72,96 @@ describe("scientific presentation compiler", () => {
     }));
   });
 
+  it("projects the persisted Agent2 interpretation contract into bounded summary, findings, and limitations", () => {
+    const presentation = compileScientificPresentation({
+      resultId: "result-phonon",
+      interpretationId: "interpretation-phonon",
+      sourceObjectRefs: [source],
+      persistedInterpretation: {
+        contract_version: "1.0",
+        title: "声子能带与态密度分析结果",
+        answer_lead: "声子能带包含 6 条分支，频率范围为 0.0 至 5.0 THz。",
+        primary_findings: [{
+          finding_id: "finding-band",
+          statement: "声子能带包含 6 条分支。",
+          importance: "HIGH",
+          confidence: "HIGH",
+          fact_refs: ["fact-branch-count"],
+          evidence_refs: ["evidence-band"],
+          result_item_refs: ["result-item-band"],
+        }],
+        supporting_findings: [{
+          finding_id: "finding-dos",
+          statement: "声子态密度积分为 6 个模式。",
+          importance: "MEDIUM",
+          confidence: "MEDIUM",
+          fact_refs: ["fact-dos-integral"],
+          evidence_refs: ["evidence-dos"],
+          result_item_refs: ["result-item-dos"],
+        }],
+        limitations: ["The current band Artifact does not provide eigenvectors or animation authority."],
+        primary_result_refs: ["result-item-band"],
+        supporting_result_refs: ["result-item-dos"],
+        follow_up_suggestions: [],
+      },
+      validatedNarrative: "不应渲染的旧整段消息。\n- 重复发现\n限制：重复限制",
+    });
+
+    expect(presentation.blocks.filter((block) => block.type === "narrative")).toEqual([
+      expect.objectContaining({
+        text: "声子能带包含 6 条分支。",
+      }),
+    ]);
+    expect(presentation.blocks.filter((block) => block.type === "finding")).toEqual([
+      expect.objectContaining({
+        text: "声子能带包含 6 条分支。",
+        confidence: "DIRECT",
+        evidenceIds: ["fact-branch-count", "evidence-band"],
+        source: expect.objectContaining({ factId: "fact-branch-count", evidenceId: "evidence-band" }),
+      }),
+      expect.objectContaining({
+        text: "声子态密度积分为 6 个模式。",
+        confidence: "QUALIFIED",
+      }),
+    ]);
+    expect(presentation.blocks).toContainEqual(expect.objectContaining({
+      type: "limitation",
+      text: "The current band Artifact does not provide eigenvectors or animation authority.",
+    }));
+    expect(presentationLimitationText("The current band Artifact does not provide eigenvectors or animation authority.")).toBe(
+      "当前声子能带 Artifact 不包含特征向量，因此不提供模式动画依据。",
+    );
+  });
+
+  it("keeps internal provenance identities out of scientific prose while preserving bounded source refs", () => {
+    expect(
+      presentationScientificText(
+        "Band 图（figure.demo）提供带隙事实 fact.demo，值为 0.6 eV。该事实来自证据 evidence.demo（step_1-table_json）。该事实来自证据 evidence.demo。但 limitation.demo 明确说明：仅来自供应数据。",
+      ),
+    ).toBe(
+      "Band 图提供带隙事实，值为 0.6 eV。该数值已绑定本次分析证据。同时，权威限制说明：仅来自供应数据。",
+    );
+    expect(presentationMetricTitle("electronic.band_gap")).toBe("电子带隙（供应数据）");
+    expect(presentationMetricTitle("electronic.kpoint_count")).toBe("k 点数");
+    expect(presentationMetricTitle("ml.high_error_sample_id")).toBe("最大误差样本");
+  });
+
+  it("formats long scientific values for display without mutating the authoritative contract value", () => {
+    expect(formatPresentationMetricValue("0.20000000000000004")).toBe("0.2");
+    expect(formatPresentationMetricValue("0.21602468994692867")).toBe("0.2160247");
+    expect(formatPresentationMetricValue("-1.4802973661668753e-16")).toBe("-1.4803e-16");
+    expect(formatPresentationMetricValue("sample-fe2o3")).toBe("sample-fe2o3");
+    expect(formatScientificNarrativeNumbers("MAE 为 0.20000000000000004，RMSE 为 0.21602468994692867。")).toBe(
+      "MAE 为 0.2，RMSE 为 0.2160247。",
+    );
+    expect(formatScientificNarrativeNumbers("MAE为0.20000000000000004，残差为0.2999999999999998。")).toBe(
+      "MAE为0.2，残差为0.3。",
+    );
+    expect(formatScientificNarrativeNumbers("sample-fe2o3 的值为 2.2。")).toBe(
+      "sample-fe2o3 的值为 2.2。",
+    );
+  });
+
   it("retains bounded artifact provenance for real content links", () => {
     const presentation = compileScientificPresentation({
       resultId: "result-1",
@@ -82,6 +172,101 @@ describe("scientific presentation compiler", () => {
       type: "table",
       source: expect.objectContaining({ artifactId: "artifact-1", jobId: "job-1" }),
     }));
+  });
+
+  it("binds each multi-source Artifact to its authoritative result-item version", () => {
+    const bandSource = {
+      objectId: "phonon-band",
+      versionId: "band-v1",
+      objectType: "phonon.band",
+      displayName: "Phonon band",
+    };
+    const dosSource = {
+      objectId: "phonon-dos",
+      versionId: "dos-v1",
+      objectType: "phonon.dos",
+      displayName: "Phonon DOS",
+    };
+    const presentation = compileScientificPresentation({
+      resultId: "result-phonon",
+      artifacts: [
+        {
+          id: "artifact-band",
+          jobId: "job-phonon",
+          type: "plotly_json",
+          name: "phonon_band.json",
+        } as Artifact,
+        {
+          id: "artifact-dos",
+          jobId: "job-phonon",
+          type: "plotly_json",
+          name: "phonon_dos.json",
+        } as Artifact,
+      ],
+      sourceObjectRefs: [bandSource, dosSource],
+      artifactSourceRefs: {
+        "artifact-band": [bandSource],
+        "artifact-dos": [dosSource],
+      },
+    });
+
+    expect(
+      presentation.blocks.find(
+        (block) =>
+          block.type === "figure" && block.artifactId === "artifact-band",
+      )?.source,
+    ).toEqual(
+      expect.objectContaining({
+        objectId: "phonon-band",
+        versionId: "band-v1",
+      }),
+    );
+    expect(
+      presentation.blocks.find(
+        (block) =>
+          block.type === "figure" && block.artifactId === "artifact-dos",
+      )?.source,
+    ).toEqual(
+      expect.objectContaining({
+        objectId: "phonon-dos",
+        versionId: "dos-v1",
+      }),
+    );
+    expect(
+      presentation.blocks.filter(
+        (block) => block.type === "viewer_reference",
+      ),
+    ).toHaveLength(2);
+  });
+
+  it("does not guess an exact Artifact version for ambiguous legacy sources", () => {
+    const presentation = compileScientificPresentation({
+      resultId: "result-legacy",
+      artifacts: [
+        {
+          id: "artifact-legacy",
+          jobId: "job-legacy",
+          type: "table_json",
+          name: "legacy.json",
+        } as Artifact,
+      ],
+      sourceObjectRefs: [
+        source,
+        {
+          objectId: "structure-b",
+          versionId: "version-v2",
+          objectType: "Structure",
+        },
+      ],
+    });
+
+    const artifact = presentation.blocks.find(
+      (block) =>
+        block.type === "table" && block.artifactId === "artifact-legacy",
+    );
+    expect(artifact?.source.artifactId).toBe("artifact-legacy");
+    expect(artifact?.source.objectId).toBeUndefined();
+    expect(artifact?.source.versionId).toBeUndefined();
   });
 
   it("does not promote ungrounded claims into a finding", () => {
@@ -253,5 +438,63 @@ describe("scientific presentation compiler", () => {
       type: "metric",
       source: expect.objectContaining({ toolCallId: "tool-call-crystalnn" }),
     }));
+  });
+
+  it("binds report figures to their declared exact source type", () => {
+    const band = { objectId: "band-object", versionId: "band-version", objectType: "electronic.band_structure", displayName: "Band" };
+    const dos = { objectId: "dos-object", versionId: "dos-version", objectType: "electronic.dos", displayName: "DOS" };
+    const presentation = compileReportPresentation({
+      report_id: "report-electronic",
+      snapshot_id: "snapshot-electronic",
+      project_id: "project-1",
+      research_turn_id: "turn-electronic",
+      scientific_result_snapshot_id: "result-electronic",
+      scientific_interpretation_id: "interpretation-electronic",
+      title: "Electronic",
+      relevance_at_generation: "CURRENT",
+      current_effective_relevance: "CURRENT",
+      grounding_status: "VALID",
+      scientific_context: "exact",
+      finding_count: 0,
+      figure_count: 2,
+      source_fingerprint: "fingerprint",
+      created_at: "2026-08-31T00:00:00Z",
+      viewer_sources: [dos, band].map((item, index) => ({
+        source_ref: `source-${index + 1}`,
+        object_id: item.objectId,
+        version_id: item.versionId,
+        object_type: item.objectType,
+        display_name: item.displayName,
+        is_current_version: true,
+      })),
+      figure_sources: [
+        { figure_ref: "figure-band", artifact_ids: ["artifact-band"], job_id: "job-electronic", object_id: band.objectId, version_id: band.versionId, object_type: band.objectType },
+        { figure_ref: "figure-dos", artifact_ids: ["artifact-dos"], job_id: "job-electronic", object_id: dos.objectId, version_id: dos.versionId, object_type: dos.objectType },
+      ],
+      report: {
+        contract_version: "2.0",
+        title: "Electronic",
+        research_question: "比较电子数据",
+        summary: "已验证结果。",
+        discussion: null,
+        conclusion: null,
+        next_steps: null,
+        main_findings: [],
+        primary_figures: [
+          { figure_ref: "figure-band", caption: "电子能带", fact_refs: [], evidence_refs: [] },
+          { figure_ref: "figure-dos", caption: "电子态密度", fact_refs: [], evidence_refs: [] },
+        ],
+        supporting_results: [],
+        method_summary: "方法",
+        limitations: [],
+        data_sources: ["source-1", "source-2"],
+        evidence_refs: [],
+        reproducibility_summary: "可复现",
+        omitted_supporting_items: [],
+      },
+    });
+    const figures = presentation.blocks.filter((block) => block.type === "figure");
+    expect(figures[0]?.source).toEqual(expect.objectContaining({ objectId: "band-object", versionId: "band-version" }));
+    expect(figures[1]?.source).toEqual(expect.objectContaining({ objectId: "dos-object", versionId: "dos-version" }));
   });
 });

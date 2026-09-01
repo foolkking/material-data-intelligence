@@ -1,6 +1,9 @@
 import "./globals.css";
 import type { ReactNode } from "react";
 import type { Viewport } from "next";
+import { ProductNavigationProvider } from "./components/ProductNavigation";
+import { ProductRouteFrame } from "./components/ProductRouteFrame";
+import { RouteTransitionProgress } from "./components/RouteTransitionProgress";
 
 export const metadata = {
   title: "Material Data Intelligence",
@@ -16,7 +19,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>
+        <ProductNavigationProvider>
+          <RouteTransitionProgress />
+          <ProductRouteFrame>{children}</ProductRouteFrame>
+        </ProductNavigationProvider>
+      </body>
     </html>
   );
 }

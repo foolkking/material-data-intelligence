@@ -93,16 +93,12 @@ class AgentTurnProcessor:
         try:
             prepared = self._prepare(turn_id)
         except ConcurrentTurnModification:
-            with self.repository_factory.session() as session:
-                turn = session.agent2.research_turns.get(turn_id)
-            return ProcessTurnResult("NOOP", str(turn["status"]), 0)
+            return self._noop_result(turn_id)
         except Exception as exc:
             self._fail_if_active(turn_id, "CONTEXT_ASSEMBLY_FAILED", str(exc))
             raise ContextAssemblyFailed("Research context assembly failed") from exc
         if prepared is None:
-            with self.repository_factory.session() as session:
-                turn = session.agent2.research_turns.get(turn_id)
-            return ProcessTurnResult("NOOP", str(turn["status"]), 0)
+            return self._noop_result(turn_id)
 
         if prepared.resolution.requires_clarification:
             labels = {
@@ -133,31 +129,37 @@ class AgentTurnProcessor:
                 candidate_bundle=prepared.bundle,
                 continuation_turn_available=prepared.turn.get("parent_turn_id") is not None,
             )
+            try:
+                routed = self.router.apply(
+                    turn_id=turn_id,
+                    expected_version=int(prepared.turn["row_version"]),
+                    decision=decision,
+                    candidate_bundle=prepared.bundle,
+                    provider_result=StructuredLLMResult(
+                        provider="deterministic_context_resolver",
+                        model="none",
+                        parsed=decision.model_dump(mode="json"),
+                        latency_ms=0,
+                        repair_attempted=False,
+                        prompt_version=PROMPT_VERSION,
+                    ),
+                )
+            except ConcurrentTurnModification:
+                return self._noop_result(turn_id)
+            return ProcessTurnResult("CLARIFICATION", routed.turn_status, 0)
+
+        orchestrator_input = self._orchestrator_input(prepared)
+        provider_result, decision, calls = await self._generate_validated(prepared, orchestrator_input)
+        try:
             routed = self.router.apply(
                 turn_id=turn_id,
                 expected_version=int(prepared.turn["row_version"]),
                 decision=decision,
                 candidate_bundle=prepared.bundle,
-                provider_result=StructuredLLMResult(
-                    provider="deterministic_context_resolver",
-                    model="none",
-                    parsed=decision.model_dump(mode="json"),
-                    latency_ms=0,
-                    repair_attempted=False,
-                    prompt_version=PROMPT_VERSION,
-                ),
+                provider_result=provider_result,
             )
-            return ProcessTurnResult("CLARIFICATION", routed.turn_status, 0)
-
-        orchestrator_input = self._orchestrator_input(prepared)
-        provider_result, decision, calls = await self._generate_validated(prepared, orchestrator_input)
-        routed = self.router.apply(
-            turn_id=turn_id,
-            expected_version=int(prepared.turn["row_version"]),
-            decision=decision,
-            candidate_bundle=prepared.bundle,
-            provider_result=provider_result,
-        )
+        except ConcurrentTurnModification:
+            return self._noop_result(turn_id, provider_calls=calls)
         if routed.turn_status == ResearchTurnStatus.READY_TO_PLAN.value:
             self.planning_queue.enqueue_turn(turn_id)
         elif decision.action == ResearchAction.INTERPRET_RESULT and self.interpretation_queue is not None:
@@ -173,6 +175,17 @@ class AgentTurnProcessor:
             "validation_outcome": "VALIDATED",
         })
         return ProcessTurnResult("APPLIED", routed.turn_status, calls)
+
+    def _noop_result(
+        self,
+        turn_id: UUID,
+        *,
+        provider_calls: int = 0,
+    ) -> ProcessTurnResult:
+        """Treat duplicate delivery or a durable cancel as an idempotent no-op."""
+        with self.repository_factory.session() as session:
+            turn = session.agent2.research_turns.get(turn_id)
+        return ProcessTurnResult("NOOP", str(turn["status"]), provider_calls)
 
     def _prepare(self, turn_id: UUID) -> PreparedTurn | None:
         with self.repository_factory.unit_of_work() as unit:
@@ -302,9 +315,35 @@ class AgentTurnProcessor:
                 requirement_id=item.requirement_id,
                 display_name=item.display_name,
                 description=item.description,
+                constraint_schema=item.constraint_schema,
             ) for item in self.registries.requirements.list_active()],
-            allowed_actions=list(ResearchAction),
+            allowed_actions=self._allowed_actions(prepared),
         )
+
+    @staticmethod
+    def _allowed_actions(prepared: PreparedTurn) -> list[ResearchAction]:
+        """Advertise only actions that the resolved context can satisfy.
+
+        The validator remains the fail-closed authority.  This bounded
+        projection prevents the provider from repeatedly selecting an
+        impossible result-only action when the turn has scientific objects but
+        no reusable result.
+        """
+
+        result_available = bool(prepared.bundle.result_candidates)
+        continuation_available = (
+            result_available or prepared.turn.get("parent_turn_id") is not None
+        )
+        unavailable: set[ResearchAction] = set()
+        if not result_available:
+            unavailable.update({
+                ResearchAction.INTERPRET_RESULT,
+                ResearchAction.CREATE_REPORT,
+                ResearchAction.UPDATE_REPORT,
+            })
+        if not continuation_available:
+            unavailable.add(ResearchAction.CONTINUE_ANALYSIS)
+        return [action for action in ResearchAction if action not in unavailable]
 
     async def _generate_validated(
         self,

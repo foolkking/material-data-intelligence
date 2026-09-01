@@ -214,8 +214,32 @@ class ScientificResultProjectionService:
 
     @staticmethod
     def _projector_ids(context: ScientificResultProjectionContext) -> list[str]:
+        summary_payload = context.execution_summary.get("summary_json") or {}
+        successful_step_ids = {
+            str(step_id)
+            for step_id in (
+                context.execution_summary.get("successful_step_ids")
+                or summary_payload.get("successful_step_ids")
+                or []
+            )
+        }
+        if not successful_step_ids:
+            successful_step_ids = {
+                str(step.get("step_id") or step.get("stepId"))
+                for step in (summary_payload.get("steps") or [])
+                if str(step.get("status") or "").upper() == "SUCCEEDED"
+            }
+        outcome = str(
+            context.execution_summary.get("execution_outcome")
+            or context.execution_summary.get("outcome")
+            or summary_payload.get("outcome")
+            or "SUCCESS"
+        )
         ids: list[str] = []
         for step in context.capability_plan.get("steps") or []:
+            step_id = str(step.get("step_id") or step.get("stepId") or "")
+            if outcome == "PARTIAL" and step_id not in successful_step_ids:
+                continue
             capability_id = step.get("capability_id") or step.get("capabilityId")
             if capability_id:
                 ids.append(f"agent2.{capability_id}")
@@ -226,6 +250,27 @@ class ScientificResultProjectionService:
         capability_id = projector_id.removeprefix("agent2.")
         steps = [step for step in context.capability_plan.get("steps") or [] if str(step.get("capability_id")) == capability_id]
         step_ids = {str(step.get("step_id") or step.get("stepId")) for step in steps}
+        analysis_steps = [
+            step
+            for step in context.analysis_plan.get("steps") or []
+            if str(step.get("stepId") or step.get("step_id")) in step_ids
+        ]
+        bound_version_ids = {
+            str(input_ref.get("ref"))
+            for step in analysis_steps
+            for input_ref in (step.get("inputRefs") or step.get("input_refs") or [])
+            if str(input_ref.get("refType") or input_ref.get("ref_type") or "")
+            == "normalized_object"
+        }
+        exact_source_refs = tuple(
+            ref
+            for ref in context.source_object_refs
+            if str(ref.version_id) in bound_version_ids
+        )
+        # Modern AnalysisPlans bind exact ScientificObjectVersion IDs. Legacy
+        # plans without that binding retain the complete source set rather
+        # than guessing a single source and manufacturing false provenance.
+        projector_source_refs = exact_source_refs or context.source_object_refs
         calls = tuple(call for call in context.tool_calls if str(call.get("stepId") or call.get("step_id")) in step_ids)
         call_ids = {str(call.get("id")) for call in calls}
         artifacts = tuple(artifact for artifact in context.artifacts if str(artifact.get("toolCallId") or artifact.get("tool_call_id")) in call_ids or str(artifact.get("stepId") or artifact.get("step_id")) in step_ids)
@@ -235,6 +280,7 @@ class ScientificResultProjectionService:
         return ScientificResultProjectionContext(**{
             **context.__dict__, "capability_plan": {**context.capability_plan, "steps": steps},
             "tool_calls": calls, "artifacts": artifacts, "artifact_payloads": payloads,
+            "source_object_refs": projector_source_refs,
         })
 
     @staticmethod
@@ -254,9 +300,18 @@ class ScientificResultProjectionService:
             bundle.limitations.extend(other.limitations)
             bundle.warnings.extend(other.warnings)
             bundle.provenance.projector_ids.extend(other.provenance.projector_ids)
+            bundle.provenance.source_object_version_ids.extend(
+                other.provenance.source_object_version_ids
+            )
             bundle.provenance.tool_call_ids.extend(other.provenance.tool_call_ids)
             bundle.provenance.artifact_ids.extend(other.provenance.artifact_ids)
+        # Composite authority retains every exact source; individual result
+        # items/evidence/methods keep the narrower per-capability refs.
+        bundle.source_object_refs = list(context.source_object_refs)
         bundle.provenance.projector_ids = sorted(set(bundle.provenance.projector_ids))
+        bundle.provenance.source_object_version_ids = sorted(
+            set(bundle.provenance.source_object_version_ids)
+        )
         bundle.provenance.tool_call_ids = sorted(set(bundle.provenance.tool_call_ids))
         bundle.provenance.artifact_ids = sorted(set(bundle.provenance.artifact_ids))
         return type(first)(bundle=ScientificResultBundle.model_validate(bundle.model_dump()), projector_id="agent2.composite", projector_version="1.0")

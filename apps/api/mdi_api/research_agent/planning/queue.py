@@ -43,7 +43,11 @@ class RedisRQCapabilityPlanningQueue:
         from rq import Queue
         queue = Queue(self.queue_name, connection=Redis.from_url(self.redis_url))
         job_id = f"agent2-plan-{turn_id}"
-        if queue.fetch_job(job_id) is not None:
-            return PlanningQueueSubmitResult(turn_id, False, "rq", "turn already queued")
+        existing = queue.fetch_job(job_id)
+        if existing is not None:
+            status = str(getattr(existing.get_status(refresh=True), "value", existing.get_status(refresh=True)))
+            if status in {"queued", "started", "deferred", "scheduled"}:
+                return PlanningQueueSubmitResult(turn_id, False, "rq", "turn already queued")
+            existing.delete()
         queue.enqueue("mdi_api.research_agent_planning_worker.run_queued_planning", str(turn_id), job_id=job_id)
         return PlanningQueueSubmitResult(turn_id, True, "rq", "turn queued")

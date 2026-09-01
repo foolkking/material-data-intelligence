@@ -547,7 +547,7 @@ class Phase2ProductRuntime:
             tool_call_id="system",
             object_store=dataset.object_store,
         )
-        job = self.job_store.ensure_job(base_context)
+        self.job_store.ensure_job(base_context)
         self.job_store.append_event(
             job_id,
             event_type="job.created",
@@ -1263,14 +1263,25 @@ def list_phase2_datasets() -> list[dict[str, Any]]:
     runtime = get_phase2_runtime()
     if _runtime_backend_is_durable():
         repositories = _durable_read_repositories()
-        datasets: list[dict[str, Any]] = []
-        for project in repositories.projects.list():
-            project_id = str(project.get("projectId") or project.get("id") or "")
-            if not project_id:
-                continue
-            for dataset in repositories.datasets.list_for_project(project_id):
-                datasets.append(_durable_dataset_summary(dataset, repositories))
-        return datasets
+        project_ids = {
+            str(project.get("projectId") or project.get("id") or "")
+            for project in repositories.projects.list()
+            if project.get("projectId") or project.get("id")
+        }
+        profiles_by_dataset: dict[str, list[dict[str, Any]]] = {}
+        for profile in repositories.data_profiles.list():
+            dataset_id = str(profile.get("datasetId") or "")
+            if dataset_id:
+                profiles_by_dataset.setdefault(dataset_id, []).append(profile)
+        return [
+            _durable_dataset_summary(
+                dataset,
+                repositories,
+                profiles=profiles_by_dataset.get(str(dataset.get("datasetId") or dataset.get("id") or ""), []),
+            )
+            for dataset in repositories.datasets.list()
+            if str(dataset.get("projectId") or "") in project_ids
+        ]
     return runtime.list_datasets()
 
 
@@ -1399,20 +1410,26 @@ def _durable_dataset_profile(dataset_id: str, repositories: Any) -> dict[str, An
     return dict(profiles[-1])
 
 
-def _durable_dataset_summary(dataset: dict[str, Any], repositories: Any) -> dict[str, Any]:
+def _durable_dataset_summary(
+    dataset: dict[str, Any],
+    repositories: Any,
+    *,
+    profiles: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     dataset_id = str(dataset.get("datasetId") or dataset.get("id") or "")
     metadata = dict(dataset.get("metadata") or {})
     files = [item for item in metadata.get("files") or [] if isinstance(item, dict)]
     exports = [item for item in metadata.get("normalizedExports") or [] if isinstance(item, dict)]
-    profiles = list(repositories.data_profiles.list_for_dataset(dataset_id))
-    profiles.sort(key=lambda item: str(item.get("createdAt") or item.get("profileId") or ""))
-    profile_id = profiles[-1].get("profileId") if profiles else metadata.get("profileId")
+    dataset_profiles = list(profiles) if profiles is not None else list(repositories.data_profiles.list_for_dataset(dataset_id))
+    dataset_profiles.sort(key=lambda item: str(item.get("createdAt") or item.get("profileId") or ""))
+    profile_id = dataset_profiles[-1].get("profileId") if dataset_profiles else metadata.get("profileId")
+    status = "trashed" if metadata.get("trashedAt") else dataset.get("status") or metadata.get("status") or "created"
     return {
         "id": dataset_id,
         "datasetId": dataset_id,
         "projectId": dataset.get("projectId"),
         "name": dataset.get("name") or dataset_id,
-        "status": dataset.get("status") or metadata.get("status") or "created",
+        "status": status,
         "fileCount": len(files),
         "objectCount": len(exports),
         "profileId": profile_id,

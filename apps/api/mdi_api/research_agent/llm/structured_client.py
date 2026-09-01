@@ -12,7 +12,7 @@ from mdi_api.research_agent.llm.schemas import StructuredLLMResult
 from mdi_api.unit_of_work import transaction_active
 
 
-PROMPT_VERSION = "research-orchestrator/1.0"
+PROMPT_VERSION = "research-orchestrator/1.1"
 
 
 class StructuredLLMClient(Protocol):

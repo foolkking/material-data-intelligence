@@ -6,6 +6,7 @@ from mdi_api.routers.auth import get_current_user_compat
 from mdi_api.routers.report_compositions import get_report_composition
 from mdi_api.routers.research import (
     ResearchAssistantProjectionCreate,
+    ResearchSessionBulkActionRequest,
     _assistant_projection_text,
     _ground_projection_from_run,
     _provider_research_turn_text,
@@ -32,6 +33,20 @@ def test_scope_catalog_reads_current_profile_semantic_contract() -> None:
 
     assert {"y_true", "y_pred", "regression_target", "regression_prediction", "table", "regression_evaluation"} <= set(semantics)
     assert "structure_summary" not in semantics
+
+
+def test_research_session_bulk_contract_deduplicates_and_rejects_unknown_actions() -> None:
+    request = ResearchSessionBulkActionRequest(
+        sessionIds=["session-a", " session-a ", "session-b"],
+        action="ARCHIVE",
+    )
+    assert request.sessionIds == ["session-a", "session-b"]
+
+    with pytest.raises(ValueError):
+        ResearchSessionBulkActionRequest(
+            sessionIds=["session-a"],
+            action="DELETE",
+        )
 
 
 def test_research_assistant_projection_is_bounded_and_user_facing() -> None:
@@ -65,10 +80,22 @@ def test_research_assistant_projection_is_bounded_and_user_facing() -> None:
     assert "CrystalNN" in clarification
     assert "VoronoiNN" in clarification
     assert "确认后再创建分析运行" in clarification
-    assert "CrystalNN" in _assistant_projection_text(ResearchAssistantProjectionCreate(
+    generic_clarification = _assistant_projection_text(ResearchAssistantProjectionCreate(
         phase="failed",
         failureCode="NEEDS_CLARIFICATION",
     ))
+    assert "改变科学方法的选择" in generic_clarification
+    assert "CrystalNN" not in generic_clarification
+
+    diffusion_clarification = _assistant_projection_text(
+        ResearchAssistantProjectionCreate(
+            phase="failed",
+            failureCode="DIFFUSION_FIT_WINDOW_REQUIRED",
+        )
+    )
+    assert "拟合时间窗" in diffusion_clarification
+    assert "完整时间范围" in diffusion_clarification
+    assert "CrystalNN" not in diffusion_clarification
 
 
 def test_pre_run_projection_uses_persisted_plan_instead_of_client_copy() -> None:

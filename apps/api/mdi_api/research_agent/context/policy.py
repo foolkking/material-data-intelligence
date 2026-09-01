@@ -16,6 +16,7 @@ class ContextOperation(StrEnum):
     PLANNER = "PLANNER"
     INTERPRETER = "INTERPRETER"
     DATA = "DATA"
+    REPORT = "REPORT"
 
 
 @dataclass(frozen=True)
@@ -69,6 +70,13 @@ CONTEXT_BUDGET_POLICIES: dict[ContextOperation, ContextBudgetPolicy] = {
         provider_context_limit=16_384,
         product_global_limit=10_560,
         operation_specific_limit=10_560,
+        reserved_output_tokens=2_048,
+        repair_margin=512,
+    ),
+    ContextOperation.REPORT: ContextBudgetPolicy(
+        provider_context_limit=16_384,
+        product_global_limit=12_560,
+        operation_specific_limit=12_560,
         reserved_output_tokens=2_048,
         repair_margin=512,
     ),

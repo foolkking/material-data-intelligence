@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import { ProductLink as Link } from "./ProductNavigation";
 import { useEffect, useState } from "react";
 
 import { getProjectHistory, type ProjectHistory } from "../lib/planner-api";
+import { buildResearchHref } from "../lib/research-navigation";
 import { PlannerWorkbench } from "./PlannerWorkbench";
 
 export function DatasetWorkbenchPage({ projectId, datasetId }: { projectId: string; datasetId: string }) {
@@ -114,7 +115,13 @@ export function DatasetWorkbenchPage({ projectId, datasetId }: { projectId: stri
         {datasetAnalyses.length ? (
           <div className="dataset-analysis-list">
             {datasetAnalyses.map((analysis) => (
-              <Link className="dataset-analysis-row" key={analysis.jobId} href={analysis.workspaceId ? "/workspaces/" + analysis.workspaceId : "/analysis?jobId=" + analysis.jobId}>
+              <Link className="dataset-analysis-row" key={analysis.jobId} href={buildResearchHref({
+                projectId,
+                jobId: analysis.jobId,
+                researchSessionId: analysis.researchSessionId,
+                researchTurnId: analysis.researchTurnId,
+                workspaceId: analysis.workspaceId,
+              })}>
                 <span>
                   <strong>{analysis.userQuestion || "未命名分析"}</strong>
                   <span>{analysis.artifactCount} 个结果 · {analysis.reportCount} 份报告 · {friendlyProcessStatus(analysis.status)}</span>

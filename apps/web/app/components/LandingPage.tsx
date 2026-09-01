@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
+import { ProductLink as Link, useProductRouter } from "./ProductNavigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { getAuthUser, login, logout, type AuthUser } from "../lib/product-api";
 
 export function LandingPage() {
+  const router = useProductRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [open, setOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -80,7 +81,7 @@ export function LandingPage() {
       setUser(next);
       setOpen(false);
       const returnTo = safeProductReturnTo(new URLSearchParams(window.location.search).get("returnTo"));
-      if (returnTo) window.location.assign(returnTo);
+      if (returnTo) router.replace(returnTo);
     }} />}
   </main>;
 }

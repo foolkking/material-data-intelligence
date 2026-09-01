@@ -1,8 +1,15 @@
 import { afterEach, expect, it, vi } from "vitest";
 
-import { deleteEmptyProject, uploadDatasetFiles } from "./planner-api";
+import {
+  deleteEmptyProject,
+  getProjectHistory,
+  invalidateProjectHistory,
+  updateDataset,
+  uploadDatasetFiles,
+} from "./planner-api";
 
 afterEach(() => {
+  invalidateProjectHistory();
   vi.unstubAllGlobals();
 });
 
@@ -49,4 +56,41 @@ it("surfaces the server's safe object-lifecycle explanation", async () => {
   }), { status: 409 })));
 
   await expect(deleteEmptyProject("project-1")).rejects.toThrow("项目包含数据或研究记录，不能物理删除。请改为归档。");
+});
+
+it("deduplicates a warm project history request and invalidates it after data mutation", async () => {
+  let historyRequestCount = 0;
+  const fetchMock = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
+    const url = String(input);
+    if (url.endsWith("/projects/project-1/history")) {
+      historyRequestCount += 1;
+      return new Response(JSON.stringify({
+        project: { id: "project-1", name: `Project ${historyRequestCount}` },
+        datasets: [],
+        analyses: [],
+      }), { status: 200 });
+    }
+    if (url.endsWith("/datasets/dataset-1") && init?.method === "PATCH") {
+      return new Response(JSON.stringify({
+        id: "dataset-1",
+        datasetId: "dataset-1",
+        projectId: "project-1",
+        name: "Updated dataset",
+        status: "profile_ready",
+      }), { status: 200 });
+    }
+    throw new Error(`Unexpected fetch: ${url}`);
+  });
+  vi.stubGlobal("fetch", fetchMock);
+
+  await Promise.all([
+    getProjectHistory("project-1"),
+    getProjectHistory("project-1"),
+  ]);
+  expect(historyRequestCount).toBe(1);
+
+  await updateDataset("dataset-1", { name: "Updated dataset" });
+  await getProjectHistory("project-1");
+
+  expect(historyRequestCount).toBe(2);
 });

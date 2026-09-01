@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { ProductLink as Link } from "../ProductNavigation";
 import type { ReactNode } from "react";
 
 import type { ScientificSelection } from "./scientificSelection";
@@ -10,6 +10,7 @@ export function ScientificViewerShell({
   title,
   descriptor,
   versionLabel,
+  exactVersionId,
   relevance = "CURRENT",
   metadata = {},
   limitations = [],
@@ -21,6 +22,7 @@ export function ScientificViewerShell({
   title: string;
   descriptor: ScientificViewerDescriptor;
   versionLabel: string;
+  exactVersionId?: string | null;
   relevance?: "CURRENT" | "STALE" | "SOURCE_MISSING" | "INVALIDATED";
   metadata?: Record<string, unknown>;
   limitations?: readonly string[];
@@ -43,6 +45,7 @@ export function ScientificViewerShell({
     {selection ? <aside className="scientific-selection-rail" aria-live="polite"><div><span>当前选择</span><strong>{selection.displayLabel}</strong></div><p>此选择绑定当前数据版本，可用于询问、结果解释与证据定位。</p></aside> : null}
     <footer className="scientific-viewer-shell-footer">
       {limitations.length ? <section aria-labelledby="viewer-limitations"><h3 id="viewer-limitations">限制与说明</h3><ul>{limitations.map((item) => <li key={item}>{item}</li>)}</ul></section> : null}
+      {exactVersionId ? <details className="scientific-viewer-version-details"><summary>精确版本</summary><code>{exactVersionId}</code><p>此视图始终绑定该不可变版本；不会自动替换为最新数据。</p></details> : null}
       <details><summary>科学元数据</summary><dl>{Object.entries(metadata).slice(0, 16).map(([key, value]) => <div key={key}><dt>{humanize(key)}</dt><dd>{displayValue(value)}</dd></div>)}</dl></details>
       <details><summary>技术详情</summary><p>Viewer: {descriptor.viewerId} · contract {descriptor.viewerVersion} · payload bound {(descriptor.maximumPayloadBytes / 1024 / 1024).toFixed(0)} MiB</p></details>
     </footer>

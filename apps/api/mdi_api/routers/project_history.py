@@ -35,6 +35,9 @@ def get_project_history(
     archived_run_ids: set[str] = set()
     research_context_by_run: dict[str, dict[str, str | None]] = {}
     access_role = "owner"
+    project_lifecycle_status = "active"
+    project_pinned = False
+    project_tags: list[str] = []
     # Authorize the durable Project before hydrating any child projection.
     try:
         engine = create_engine_from_settings(load_settings())
@@ -42,6 +45,9 @@ def get_project_history(
             authorized_project = require_project_access(connection, project_id, current_user)
             access_role = str(authorized_project.get("access_role") or "viewer")
             archived_run_ids = _read_archived_run_ids(connection, project_id)
+            project_lifecycle_status = _read_project_lifecycle_status(connection, project_id)
+            project_pinned = _read_project_pinned(connection, project_id)
+            project_tags = _read_project_tags(connection, project_id)
             research_context_by_run = _read_research_context_by_run(connection, project_id)
     except SQLAlchemyError as exc:
         # Older local databases may predate the additive configuration table;
@@ -71,6 +77,9 @@ def get_project_history(
         raise HTTPException(status_code=403, detail="Current user cannot access this Project.")
     history = ProjectHistoryService(repositories, archived_run_ids=archived_run_ids).build(project_id)
     history["project"]["role"] = access_role
+    history["project"]["status"] = project_lifecycle_status
+    history["project"]["pinned"] = project_pinned
+    history["project"]["tags"] = project_tags
     for analysis in history.get("analyses") or []:
         context = research_context_by_run.get(str(analysis.get("jobId") or ""))
         if context:
@@ -78,6 +87,8 @@ def get_project_history(
             analysis["researchContextKind"] = context["contextKind"]
             if context.get("researchTurnId"):
                 analysis["researchTurnId"] = context["researchTurnId"]
+            if context.get("researchTurnStatus"):
+                analysis["researchTurnStatus"] = context["researchTurnStatus"]
             if not str(analysis.get("userQuestion") or "").strip() and context.get("userQuestion"):
                 analysis["userQuestion"] = context["userQuestion"]
     return history
@@ -158,6 +169,48 @@ def _read_archived_run_ids(connection: Any, project_id: str) -> set[str]:
     return _archived_run_ids_from_config(config)
 
 
+def _read_project_lifecycle_status(connection: Any, project_id: str) -> str:
+    config = connection.execute(
+        select(project_configs.c.config_json).where(project_configs.c.project_id == project_id)
+    ).scalar_one_or_none()
+    if not isinstance(config, Mapping):
+        return "active"
+    if bool(config.get("trashedProject")):
+        return "trashed"
+    if bool(config.get("archivedProject")):
+        return "archived"
+    return "active"
+
+
+def _read_project_pinned(connection: Any, project_id: str) -> bool:
+    config = connection.execute(
+        select(project_configs.c.config_json).where(project_configs.c.project_id == project_id)
+    ).scalar_one_or_none()
+    return bool(config.get("pinnedProject")) if isinstance(config, Mapping) else False
+
+
+def _read_project_tags(connection: Any, project_id: str) -> list[str]:
+    row = connection.execute(
+        select(project_configs.c.config_json).where(project_configs.c.project_id == project_id)
+    ).scalar_one_or_none()
+    config = row if isinstance(row, Mapping) else {}
+    raw = config.get("projectTags")
+    if not isinstance(raw, (list, tuple)):
+        return []
+    values: list[str] = []
+    seen: set[str] = set()
+    for candidate in raw:
+        value = str(candidate).strip()
+        key = value.casefold()
+        if not value or len(value) > 40 or key in seen:
+            continue
+        seen.add(key)
+        values.append(value)
+        if len(values) >= 12:
+            break
+    return values
+
+
 def _read_research_context_by_run(
     connection: Any,
     project_id: str,
@@ -177,12 +230,38 @@ def _read_research_context_by_run(
             research_session_runs.c.created_at,
             research_turns.c.id.label("research_turn_id"),
             research_turns.c.user_message_id,
+            research_turns.c.status.label("research_turn_status"),
         )
         .join(sessions, sessions.c.id == research_session_runs.c.session_id)
         .outerjoin(research_turns, research_turns.c.job_id == research_session_runs.c.job_id)
         .where(sessions.c.project_id == project_id)
         .order_by(research_session_runs.c.created_at.asc(), research_session_runs.c.job_id.asc())
     ).mappings().all()
+
+    # Agent-2 ResearchTurn rows are the authoritative job relationship, but
+    # some modern runs do not have the legacy ``research_session_runs``
+    # compatibility binding. Include those turns directly so Project History
+    # cannot lose the exact Turn identity merely because the legacy projection
+    # row is absent.
+    direct_turns = connection.execute(
+        select(
+            research_turns.c.job_id,
+            research_turns.c.research_session_id.label("session_id"),
+            research_turns.c.created_at,
+            research_turns.c.id.label("research_turn_id"),
+            research_turns.c.user_message_id,
+            research_turns.c.status.label("research_turn_status"),
+        )
+        .where(
+            research_turns.c.project_id == project_id,
+            research_turns.c.job_id.is_not(None),
+        )
+        .order_by(research_turns.c.created_at.asc(), research_turns.c.id.asc())
+    ).mappings().all()
+    bindings_by_job = {str(item["job_id"]): item for item in bindings}
+    for item in direct_turns:
+        bindings_by_job[str(item["job_id"])] = item
+    bindings = list(bindings_by_job.values())
     if not bindings:
         return {}
 
@@ -237,6 +316,7 @@ def _read_research_context_by_run(
         }
         if binding.get("research_turn_id"):
             context["researchTurnId"] = str(binding["research_turn_id"])
+            context["researchTurnStatus"] = str(binding["research_turn_status"])
             context["contextKind"] = "RESEARCH_TURN"
         result[str(binding["job_id"])] = context
     return result

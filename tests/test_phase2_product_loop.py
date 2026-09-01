@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 from fastapi.testclient import TestClient
 
 from mdi_api import create_app
+from mdi_api import phase2_runtime
 from mdi_api.phase2_runtime import (
     PHASE2_TOOL_ORDER,
     DatasetUploadRequest,
@@ -31,6 +34,43 @@ def _seed_project_and_dataset(tmp_path, repo_root):
         )
     )
     return runtime, project, dataset
+
+
+def test_durable_dataset_listing_batches_dataset_and_profile_reads(monkeypatch):
+    class Projects:
+        def list(self):
+            return [{"projectId": "project_a"}]
+
+    class Datasets:
+        def list(self):
+            return [
+                {"datasetId": "dataset_a", "projectId": "project_a", "name": "A"},
+                {"datasetId": "dataset_b", "projectId": "project_a", "name": "B"},
+                {"datasetId": "dataset_hidden", "projectId": "project_missing", "name": "Hidden"},
+            ]
+
+        def list_for_project(self, project_id):
+            raise AssertionError(f"unexpected per-project Dataset query: {project_id}")
+
+    class Profiles:
+        def list(self):
+            return [
+                {"profileId": "profile_a1", "datasetId": "dataset_a", "createdAt": "2026-01-01T00:00:00Z"},
+                {"profileId": "profile_a2", "datasetId": "dataset_a", "createdAt": "2026-01-02T00:00:00Z"},
+                {"profileId": "profile_b", "datasetId": "dataset_b", "createdAt": "2026-01-01T00:00:00Z"},
+            ]
+
+        def list_for_dataset(self, dataset_id):
+            raise AssertionError(f"unexpected per-dataset Profile query: {dataset_id}")
+
+    repositories = SimpleNamespace(projects=Projects(), datasets=Datasets(), data_profiles=Profiles())
+    monkeypatch.setattr(phase2_runtime, "_runtime_backend_is_durable", lambda: True)
+    monkeypatch.setattr(phase2_runtime, "_durable_read_repositories", lambda: repositories)
+
+    listed = phase2_runtime.list_phase2_datasets()
+
+    assert [item["datasetId"] for item in listed] == ["dataset_a", "dataset_b"]
+    assert [item["profileId"] for item in listed] == ["profile_a2", "profile_b"]
 
 
 def test_phase2_data_pipeline_upload_generates_profile_and_normalized_exports(tmp_path, repo_root):

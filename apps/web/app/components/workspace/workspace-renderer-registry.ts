@@ -29,7 +29,7 @@ export type RendererComponent =
   | "GENERIC_PLOT" | "GENERIC_TABLE" | "TEXT" | "JSON" | "STATIC_METADATA"
   | "DATASET" | "ML" | "COMPOSITION" | "STRUCTURE" | "TRAJECTORY"
   | "PHONON_BAND" | "PHONON_DOS" | "PHONON_COMBINED" | "PHONON_ANIMATION"
-  | "BRILLOUIN_ZONE" | "VOLUMETRIC" | "COORDINATION" | "DOWNLOAD_ONLY" | "LOCAL_ENVIRONMENT" | "EXPERIMENTAL_XRD" | "TRAJECTORY_ANALYTICS" | "ELECTRONIC";
+  | "BRILLOUIN_ZONE" | "VOLUMETRIC" | "COORDINATION" | "COORDINATION_HISTOGRAM" | "DOWNLOAD_ONLY" | "LOCAL_ENVIRONMENT" | "EXPERIMENTAL_XRD" | "TRAJECTORY_ANALYTICS" | "ELECTRONIC";
 export type RendererPayloadMode = "JSON" | "TEXT" | "BUNDLE" | "METADATA_ONLY" | "DOWNLOAD_ONLY";
 
 export type WorkspaceRendererDescriptor = Readonly<{
@@ -101,7 +101,12 @@ const BZ_BUNDLE = ["reciprocal_lattice_json", "brillouin_zone_json", "kpath_json
 const VOLUME_BUNDLE = ["volumetric_grid_json", "volumetric_payload_json", "volumetric_field_json", "volumetric_dataset_json", "volumetric_manifest_json", "volumetric_structure_overlay_json", "volumetric_binary", "summary_md", "recipe_json"] as const;
 
 export const WORKSPACE_RENDERER_REGISTRY: readonly WorkspaceRendererDescriptor[] = Object.freeze([
-  entry("plotly_json", "GENERIC_PLOT", { accessibilityFallback: "TABLE" }),
+  // A persisted plot can be the figure companion of a richer scientific
+  // product contract stored in a table_json Artifact from the same ToolCall.
+  // The viewer loader keeps this pair scoped by exact producer identity, then
+  // promotes the validated product contract instead of flattening it to a
+  // generic chart.
+  entry("plotly_json", "GENERIC_PLOT", { accessibilityFallback: "TABLE", bundleArtifactTypes: ["plotly_json", "table_json"] }),
   entry("plotly_html", "DOWNLOAD_ONLY", { classification: "INERT_FALLBACK", payloadMode: "DOWNLOAD_ONLY", security: "DOWNLOAD_ONLY", selectionInputs: [], selectionOutputs: [] }),
   entry("preview_png", "STATIC_METADATA", { classification: "METADATA_ONLY", payloadMode: "METADATA_ONLY", selectionOutputs: [] }),
   entry("figure_svg", "DOWNLOAD_ONLY", { classification: "INERT_FALLBACK", payloadMode: "DOWNLOAD_ONLY", security: "DOWNLOAD_ONLY", selectionInputs: [], selectionOutputs: [] }),
@@ -136,7 +141,7 @@ export const WORKSPACE_RENDERER_REGISTRY: readonly WorkspaceRendererDescriptor[]
   entry("volumetric_binary", "DOWNLOAD_ONLY", { classification: "METADATA_ONLY", payloadMode: "METADATA_ONLY", maximumPayloadBytes: BINARY_LIMIT, selectionOutputs: [] }),
   entry("metrics_json", "GENERIC_TABLE", { accessibilityFallback: "TABLE" }),
   entry("table_json", "GENERIC_TABLE", { selectionInputs: DATASET_SELECTIONS, accessibilityFallback: "TABLE" }),
-  entry("electronic_band_json", "ELECTRONIC", { payloadMode: "BUNDLE", heavy: true, webgl: true, accessibilityFallback: "TABLE" }),
+  entry("electronic_band_json", "ELECTRONIC", { payloadMode: "BUNDLE", heavy: true, webgl: true, accessibilityFallback: "TABLE", bundleArtifactTypes: ["electronic_band_json", "electronic_dos_json"] }),
   entry("electronic_dos_json", "ELECTRONIC", { payloadMode: "BUNDLE", heavy: true, webgl: true, accessibilityFallback: "TABLE", bundleArtifactTypes: ["electronic_band_json", "electronic_dos_json"] as const }),
   entry("table_csv", "DOWNLOAD_ONLY", { classification: "INERT_FALLBACK", payloadMode: "DOWNLOAD_ONLY", security: "DOWNLOAD_ONLY", selectionInputs: [], selectionOutputs: [] }),
   entry("quality_issues_json", "GENERIC_TABLE", { accessibilityFallback: "TABLE" }),
@@ -164,7 +169,7 @@ export function resolveArtifactRenderer(artifact: Artifact): RendererResolution 
 
 export function resolveLoadedArtifactRenderer(artifact: Artifact): RendererResolution {
   const base = resolveArtifactRenderer(artifact);
-  if (!base.descriptor || artifact.type !== "table_json") return base;
+  if (!base.descriptor || (artifact.type !== "table_json" && artifact.type !== "plotly_json")) return base;
   const payload = asRecord(artifact.content ?? artifact.payload);
   const schema = typeof payload?.schemaVersion === "string" ? payload.schemaVersion : typeof payload?.schema_version === "string" ? payload.schema_version : "";
   const artifactType = typeof payload?.artifactType === "string" ? payload.artifactType : "";
@@ -174,6 +179,8 @@ export function resolveLoadedArtifactRenderer(artifact: Artifact): RendererResol
 }
 
 const PRODUCT_RENDERERS = new Map<string, Partial<WorkspaceRendererDescriptor>>([
+  ["phase10e1.coordination_hist.v1\u0000structure.coordination_hist", { component: "COORDINATION_HISTOGRAM", rendererContract: "workspace.coordination-histogram", selectionInputs: ["ARTIFACT"], selectionOutputs: ["ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 512, maximumPoints: 512 }],
+  ["phase10e1.static_chart.v1\u0000structure.coordination_hist_plot", { component: "COORDINATION_HISTOGRAM", rendererContract: "workspace.coordination-histogram", selectionInputs: ["ARTIFACT"], selectionOutputs: ["ARTIFACT"], accessibilityFallback: "TABLE", maximumRows: 512, maximumPoints: 512 }],
   ["phase10k2.dataset_materials_explorer.v1\u0000dataset.materials_explorer", { component: "DATASET", rendererContract: "workspace.dataset-materials-explorer", selectionInputs: DATASET_SELECTIONS, selectionOutputs: DATASET_OUTPUTS }],
   ["phase10k4.composition_space.v1\u0000dataset.composition_space", { component: "COMPOSITION", rendererContract: "workspace.composition-space", selectionInputs: DATASET_SELECTIONS, selectionOutputs: DATASET_OUTPUTS }],
   ["phase10k3.materials_ml_regression.v1\u0000ml.regression_evaluation", { component: "ML", rendererContract: "workspace.materials-ml", selectionInputs: DATASET_SELECTIONS, selectionOutputs: ARTIFACT_SELECTION }],

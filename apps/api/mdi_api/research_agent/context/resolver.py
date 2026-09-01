@@ -60,6 +60,23 @@ class DeterministicReferenceResolver:
                 return ReferenceResolution(
                     (), (), (best_results[0].candidate_key,), ()
                 )
+            # Multiple exact result bindings supplied by the user/UI are one
+            # bounded comparison/synthesis scope. They are not a natural-
+            # language ambiguity between historical candidates.
+            if all(
+                item.source
+                in {
+                    ReferenceCandidateSource.EXPLICIT_REFERENCE,
+                    ReferenceCandidateSource.UI_SELECTION,
+                }
+                for item in best_results
+            ):
+                return ReferenceResolution(
+                    (),
+                    (),
+                    tuple(item.candidate_key for item in best_results),
+                    (),
+                )
             return ReferenceResolution(
                 (), (), (), tuple(item.candidate_key for item in best_results)
             )
@@ -72,8 +89,15 @@ class DeterministicReferenceResolver:
         ]
         if len(best) == 1:
             return ReferenceResolution((best[0].candidate_key,), ())
-        # Multiple exact UI selections are an explicit bounded scope, not a
+        # Multiple exact user/UI bindings are an explicit bounded scope, not a
         # natural-language guess between equally ranked candidates.
-        if all(item.source == ReferenceCandidateSource.UI_SELECTION for item in best):
+        if all(
+            item.source
+            in {
+                ReferenceCandidateSource.EXPLICIT_REFERENCE,
+                ReferenceCandidateSource.UI_SELECTION,
+            }
+            for item in best
+        ):
             return ReferenceResolution(tuple(item.candidate_key for item in best), ())
         return ReferenceResolution((), tuple(item.candidate_key for item in best))

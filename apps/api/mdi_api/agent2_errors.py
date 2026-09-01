@@ -37,6 +37,13 @@ class ConcurrentTurnModification(Agent2DomainError):
     pass
 
 
+class ResearchResourceLimitExceeded(Agent2DomainError):
+    def __init__(self, message: str, *, limit: int, active: int) -> None:
+        super().__init__(message)
+        self.limit = limit
+        self.active = active
+
+
 class ResearchSessionProjectMismatch(Agent2DomainError):
     pass
 

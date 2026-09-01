@@ -1,8 +1,10 @@
 "use client";
 
+import { ProductLink as Link, useProductRouter } from "./ProductNavigation";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { createTranslator, type Locale, type MessageKey } from "../lib/i18n";
+import { buildResearchHref } from "../lib/research-navigation";
 import { PHONON_BAND_SCHEMA_VERSION, PHONON_DOS_SCHEMA_VERSION } from "../lib/phononContract";
 import { createWorkspace, listProjectWorkspaces, WorkspaceApiError, type WorkspaceSummary } from "../lib/workspace-api";
 import { ViewerSceneRendererSurface } from "./viewer-scene/ViewerSceneRendererSurface";
@@ -116,6 +118,7 @@ export function PlannerWorkbench({
   initialDatasetId,
   showGlobalContextBar = true,
 }: PlannerWorkbenchProps = {}) {
+  const router = useProductRouter();
   const [locale, setLocale] = useState<Locale>("zh-CN");
   const t = useMemo(() => createTranslator(locale), [locale]);
   const examplePrompts = useMemo(() => examplePromptKeys.map((key) => t(key)), [t]);
@@ -572,7 +575,11 @@ export function PlannerWorkbench({
       );
       const workspaceId = response.data?.workspace.workspaceId;
       if (!workspaceId) throw new Error("Workspace projection returned no Workspace identity.");
-      window.location.assign(`/workspaces/${encodeURIComponent(workspaceId)}`);
+      router.push(buildResearchHref({
+        projectId,
+        jobId,
+        workspaceId,
+      }));
     } catch (error) {
       const message = error instanceof WorkspaceApiError || error instanceof Error
         ? error.message
@@ -859,6 +866,7 @@ export function PlannerWorkbench({
 
       {workspaceHistoryOpen ? (
         <WorkspaceHistoryDialog
+          projectId={projectId}
           items={workspaceHistory}
           busy={workspaceHistoryBusy}
           error={workspaceHistoryError}
@@ -951,7 +959,7 @@ function GlobalPrimaryNavigation(props: {
 }) {
   return (
     <nav className="global-primary-nav" aria-label={props.t("globalNavigation")} data-testid="global-primary-navigation">
-      <a className="active" href="/" aria-current="page">{props.t("homeNav")}</a>
+      <Link className="active" href="/" aria-current="page">{props.t("homeNav")}</Link>
       <button type="button" onClick={props.onOpenDataset}>{props.t("dataNav")}</button>
       <button
         type="button"
@@ -973,7 +981,7 @@ function GlobalPrimaryNavigation(props: {
   );
 }
 
-function WorkspaceHistoryDialog({ items, busy, error, onClose }: { items: WorkspaceSummary[]; busy: boolean; error: string; onClose: () => void }) {
+function WorkspaceHistoryDialog({ projectId, items, busy, error, onClose }: { projectId: string; items: WorkspaceSummary[]; busy: boolean; error: string; onClose: () => void }) {
   return (
     <div className="dialog-backdrop" onMouseDown={(event) => event.currentTarget === event.target && onClose()}>
       <section className="dialog-panel workspace-history-dialog" role="dialog" aria-modal="true" aria-labelledby="workspace-history-title">
@@ -981,7 +989,7 @@ function WorkspaceHistoryDialog({ items, busy, error, onClose }: { items: Worksp
         {busy ? <p role="status">Loading Workspace history</p> : null}
         {error ? <div className="validation-failure" role="alert">{error}</div> : null}
         {!busy && !error && !items.length ? <p className="empty-state">No persisted Workspaces in this Project.</p> : null}
-        <ul className="workspace-history-list">{items.map((item) => <li key={item.workspaceId}><div><strong>{item.title}</strong><span>{item.projectedStatus} · Job {compactIdentity(item.sourceJobId)}</span><small>Plan {item.analysisPlanSchemaVersion || "legacy"} · revision {item.revision}</small></div><a href={`/workspaces/${encodeURIComponent(item.workspaceId)}`}>Open</a></li>)}</ul>
+        <ul className="workspace-history-list">{items.map((item) => <li key={item.workspaceId}><div><strong>{item.title}</strong><span>{item.projectedStatus} · Job {compactIdentity(item.sourceJobId)}</span><small>Plan {item.analysisPlanSchemaVersion || "legacy"} · revision {item.revision}</small></div><Link href={buildResearchHref({ projectId, jobId: item.sourceJobId, workspaceId: item.workspaceId })}>Open</Link></li>)}</ul>
       </section>
     </div>
   );

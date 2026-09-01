@@ -37,6 +37,17 @@ class ApiSettings:
     agent2_interpretation_queue_name: str = "mdi-agent-interpretations"
     agent2_report_enabled: bool = True
     agent2_report_queue_name: str = "mdi-agent-reports"
+    # Re-publish only existing durable identities after an API/queue restart.
+    # The recovery service excludes explicit qualification actors and never
+    # creates a replacement scientific Result.
+    agent2_startup_recovery_enabled: bool = True
+    agent2_startup_recovery_stale_minutes: int = 15
+    agent2_startup_recovery_limit: int = 50
+    # Product resource governance. This is enforced against durable
+    # ResearchTurn state before a new Turn is admitted; it is not a
+    # process-local semaphore and therefore remains authoritative across API
+    # and worker restarts.
+    agent2_max_active_turns_per_project: int = 4
     artifact_backend: str = "local"  # "local" | "minio"
     artifact_root: str = str(Path(__file__).resolve().parents[3] / ".artifacts" / "phase2")
     # -- Test database for integration tests --
@@ -114,6 +125,36 @@ def load_settings() -> ApiSettings:
         agent2_interpretation_queue_name=os.getenv("MDI_AGENT2_INTERPRETATION_QUEUE_NAME", ApiSettings.agent2_interpretation_queue_name),
         agent2_report_enabled=_parse_bool(os.getenv("MDI_AGENT2_REPORT_ENABLED", "true")),
         agent2_report_queue_name=os.getenv("MDI_AGENT2_REPORT_QUEUE_NAME", ApiSettings.agent2_report_queue_name),
+        agent2_startup_recovery_enabled=_parse_bool(
+            os.getenv("MDI_AGENT2_STARTUP_RECOVERY_ENABLED", "true")
+        ),
+        agent2_startup_recovery_stale_minutes=max(
+            1,
+            int(
+                os.getenv(
+                    "MDI_AGENT2_STARTUP_RECOVERY_STALE_MINUTES",
+                    str(ApiSettings.agent2_startup_recovery_stale_minutes),
+                )
+            ),
+        ),
+        agent2_startup_recovery_limit=max(
+            1,
+            int(
+                os.getenv(
+                    "MDI_AGENT2_STARTUP_RECOVERY_LIMIT",
+                    str(ApiSettings.agent2_startup_recovery_limit),
+                )
+            ),
+        ),
+        agent2_max_active_turns_per_project=max(
+            1,
+            int(
+                os.getenv(
+                    "MDI_AGENT2_MAX_ACTIVE_TURNS_PER_PROJECT",
+                    str(ApiSettings.agent2_max_active_turns_per_project),
+                )
+            ),
+        ),
         artifact_backend=os.getenv("MDI_ARTIFACT_BACKEND", "local").lower(),
         artifact_root=os.getenv("MDI_ARTIFACT_ROOT", ApiSettings.artifact_root),
         test_database_url=test_database_url,

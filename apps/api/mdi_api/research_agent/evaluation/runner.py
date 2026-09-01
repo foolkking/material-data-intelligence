@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 from uuid import NAMESPACE_URL, uuid5
 
 from pydantic import TypeAdapter, ValidationError
@@ -103,6 +102,7 @@ class AgentEvaluationRunner:
                 requirement_id=item.requirement_id,
                 display_name=item.display_name,
                 description=item.description,
+                constraint_schema=item.constraint_schema,
             ) for item in self.registries.requirements.list_active()],
             allowed_actions=list(ResearchAction),
         )

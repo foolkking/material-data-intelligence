@@ -16,6 +16,7 @@ from ..composition_common import parse_formula
 from ..context import ToolExecutionContext
 from ..errors import ToolExecutionError
 from ..ml_common import coerce_dataframe
+from ..profile_binding import canonical_profile_resource_ref
 
 
 REGRESSION_SCHEMA_VERSION = "phase10k3.materials_ml_regression.v1"
@@ -67,6 +68,14 @@ class _MaterialsMLAdapter(BaseToolAdapter):
         if not tables:
             raise _input_error(self.tool_id, "A profiled DataFrame is required.", "missing_table")
 
+        tables = {
+            canonical_profile_resource_ref(
+                object_store=context.object_store,
+                runtime_ref=ref,
+                profile_resources=profile.resourceSemantics,
+            ): table
+            for ref, table in tables.items()
+        }
         matching_groups = [group for group in profile.semanticGroups if group.kind == self.expected_kind]
         groups = [group for group in matching_groups if group.status == "COMPLETE"]
         requested = params.get("groupIds") or []

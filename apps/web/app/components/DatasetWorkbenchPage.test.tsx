@@ -66,7 +66,7 @@ it("uses a distinct dataset frame and embeds the planner for the selected datase
   expect(screen.getAllByText("已完成")).toHaveLength(2);
   expect(screen.getByRole("heading", { name: "上传记录" })).toBeInTheDocument();
   expect(screen.getByRole("heading", { name: "该数据集的分析" })).toBeInTheDocument();
-  expect(screen.getByRole("link", { name: /Show the distribution of band gap/ })).toHaveAttribute("href", "/workspaces/workspace_1");
+  expect(screen.getByRole("link", { name: /Show the distribution of band gap/ })).toHaveAttribute("href", "/projects/project_1/research?run=job_1");
 
   const planner = screen.getByTestId("embedded-planner");
   expect(planner).toHaveAttribute("data-project-id", "project_1");

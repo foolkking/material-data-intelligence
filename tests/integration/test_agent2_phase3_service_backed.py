@@ -84,7 +84,9 @@ def _postgres_url() -> str:
 
 
 @pytest.mark.integration
-def test_agent2_phase3_postgresql_planning_is_idempotent_and_never_executes():
+def test_agent2_phase3_postgresql_planning_is_idempotent_and_never_executes(
+    request: pytest.FixtureRequest,
+):
     url = _postgres_url()
     config = AlembicConfig("apps/api/alembic.ini")
     config.set_main_option("script_location", "apps/api/alembic")
@@ -192,6 +194,7 @@ def test_agent2_phase3_postgresql_planning_is_idempotent_and_never_executes():
     queue_name = f"mdi-agent2-phase3-{suffix}"
     queued = RedisRQCapabilityPlanningQueue(redis_url=redis_url, queue_name=queue_name).enqueue_turn(received.turn_id)
     queue = Queue(queue_name, connection=Redis.from_url(redis_url))
+    request.addfinalizer(lambda: queue.delete(delete_jobs=True))
     rq_job = queue.fetch_job(f"agent2-plan-{received.turn_id}")
     assert queued.enqueued is True and rq_job is not None
     assert rq_job.args == (str(received.turn_id),) and rq_job.kwargs == {}

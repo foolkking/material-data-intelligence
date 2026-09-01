@@ -1,5 +1,6 @@
 "use client";
 
+import { ProductLink as Link } from "../ProductNavigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
@@ -457,9 +458,9 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
       <a className="skip-link" href="#workspace-primary-content">Skip to active scientific result</a>
       <header className="workspace-header">
         <div className="workspace-header-title">
-          <a className="workspace-back-link" href={researchHref.pathname + researchHref.search} aria-label="返回项目研究" onClick={(event) => {
+          <Link className="workspace-back-link" href={researchHref.pathname + researchHref.search} aria-label="返回项目研究" onClick={(event) => {
             if ((workspaceDirty || reportDraftDirty) && !window.confirm("Leave Workspace and discard unsaved changes?")) event.preventDefault();
-          }}>← 返回项目研究</a>
+          }}>← 返回项目研究</Link>
           <span className="eyebrow">Scientific Workspace 1.0</span>
           <h1>{workspace.title}</h1>
           <p>{workspaceGoalSummary(workspace)} · Job {compactIdentity(workspace.sourceJobId)}</p>
@@ -789,7 +790,7 @@ function WorkspaceEmptyState({ panelCount }: { panelCount: number }) {
 }
 
 function WorkspaceLoadState({ title, message, actionHref, actionLabel, onAction }: { title: string; message: string; actionHref?: string; actionLabel?: string; onAction?: () => void }) {
-  return <main className="workspace-route-state"><section role="status"><span className="eyebrow">Scientific Workspace</span><h1>{title}</h1><p>{message}</p>{actionHref ? <a href={actionHref}>Back to planner</a> : null}{onAction ? <button type="button" onClick={onAction}>{actionLabel || "Retry"}</button> : null}</section></main>;
+  return <main className="workspace-route-state"><section role="status"><span className="eyebrow">Scientific Workspace</span><h1>{title}</h1><p>{message}</p>{actionHref ? <Link href={actionHref}>Back to planner</Link> : null}{onAction ? <button type="button" onClick={onAction}>{actionLabel || "Retry"}</button> : null}</section></main>;
 }
 
 function Metadata({ label, value }: { label: string; value: string }) {

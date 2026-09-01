@@ -1,0 +1,4 @@
+sample_id,formula,y_true,y_pred
+sample-si,Si,1.1,1.0
+sample-fe2o3,Fe2O3,2.2,2.5
+sample-lifepo4,LiFePO4,3.1,2.9

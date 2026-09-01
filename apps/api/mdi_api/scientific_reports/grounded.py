@@ -3,7 +3,14 @@ from __future__ import annotations
 from typing import Any
 
 from mdi_api.scientific_results.schemas import ScientificResultBundle
-from .schemas import ReportFigure, ReportFinding, ReportLimitation, ReportSupportingResult, ScientificReportOutput
+from .schemas import (
+    ReportFigure,
+    ReportFinding,
+    ReportLimitation,
+    ReportNarrativeSection,
+    ReportSupportingResult,
+    ScientificReportOutput,
+)
 
 
 _METHOD_SUMMARIES = {
@@ -16,6 +23,8 @@ _METHOD_SUMMARIES = {
     "phonon.band": "沿既定布里渊区路径整理声子色散关系。",
     "phonon.dos": "根据已提交的频率网格整理声子态密度。",
     "phonon.band_dos": "联合呈现同一计算上下文中的声子色散与态密度。",
+    "structure.coordination_crystalnn": "使用 CrystalNN 对精确结构版本中的局部配位环境进行分析。",
+    "structure.coordination_voronoinn": "使用 VoronoiNN 对同一精确结构版本中的局部配位环境进行分析。",
 }
 
 
@@ -59,6 +68,11 @@ class DeterministicScientificReportComposer:
             limitations.append(ReportLimitation(statement="部分执行步骤未完成；报告仅覆盖已提交的有效输出。", source_refs=[]))
         if relevance_status in {"STALE", "SOURCE_MISSING", "INVALIDATED"}:
             limitations.append(ReportLimitation(statement={"STALE": "报告基于历史 source version 生成。", "SOURCE_MISSING": "原始 source version 当前不可获得。", "INVALIDATED": "原始 source version 已被标记为失效。"}[relevance_status], source_refs=[]))
+        if not limitations:
+            limitations.append(ReportLimitation(
+                statement="ScientificResult 未提供额外方法限制；报告不补充未来源的算法常识。",
+                source_refs=[],
+            ))
         limitations = _dedupe_limitations(limitations)
         methods = [
             _METHOD_SUMMARIES.get(
@@ -67,12 +81,68 @@ class DeterministicScientificReportComposer:
             )
             for item in bundle.methods[:16]
         ]
-        method_summary = "；".join(methods) or "方法信息来自已验证的 ScientificResult。"
+        method_summary = _join_sentences(methods) or "方法信息来自已验证的 ScientificResult。"
         evidence_refs = sorted({ref for item in findings for ref in item.evidence_refs} | {ref for item in figures for ref in item.evidence_refs} | {item.evidence_id for item in bundle.evidence})
+        supporting_findings = [
+            item for item in (interp.get("supporting_findings") or [])
+            if isinstance(item, dict) and str(item.get("statement") or item.get("claim") or item.get("text") or "").strip()
+        ][:8]
+        scientific_supporting_findings = [
+            item
+            for item in supporting_findings
+            if item.get("fact_refs", item.get("factRefs", []))
+        ]
+        if scientific_supporting_findings:
+            discussion_text = _join_sentences([
+                str(item.get("statement") or item.get("claim") or item.get("text")).strip()
+                for item in scientific_supporting_findings
+            ])
+            discussion_fact_refs = sorted({
+                str(ref)
+                for item in scientific_supporting_findings
+                for ref in item.get("fact_refs", item.get("factRefs", []))
+            })
+            discussion_evidence_refs = sorted({
+                str(ref)
+                for item in scientific_supporting_findings
+                for ref in item.get("evidence_refs", item.get("evidenceRefs", []))
+            })
+        else:
+            discussion_text = (
+                "综合已验证的结果："
+                + _join_sentences([item.statement for item in findings[:4]])
+            )
+            discussion_fact_refs = sorted({
+                ref for item in findings[:4] for ref in item.fact_refs
+            })
+            discussion_evidence_refs = sorted({
+                ref for item in findings[:4] for ref in item.evidence_refs
+            })
+        discussion = self._narrative_section(
+            interp.get("discussion"),
+            discussion_text,
+            fact_refs=discussion_fact_refs,
+            evidence_refs=discussion_evidence_refs,
+        )
+        conclusion = self._narrative_section(
+            interp.get("conclusion"),
+            summary,
+            # The conclusion fallback is the bounded report roll-up of the
+            # complete validated answer lead.  Bind every finding reference
+            # so a lead that truthfully summarizes multiple measurements
+            # cannot be rejected as if it were supported by only the first
+            # finding.
+            fact_refs=sorted({ref for item in findings for ref in item.fact_refs}),
+            evidence_refs=sorted({ref for item in findings for ref in item.evidence_refs}),
+        )
+        next_steps = self._next_steps(interp.get("follow_up_suggestions"))
         return ScientificReportOutput(
             title=title,
             research_question=bundle.research_question,
             summary=summary,
+            discussion=discussion,
+            conclusion=conclusion,
+            next_steps=next_steps,
             main_findings=findings,
             primary_figures=figures,
             supporting_results=supporting,
@@ -84,13 +154,60 @@ class DeterministicScientificReportComposer:
         )
 
     @staticmethod
+    def _narrative_section(
+        value: Any,
+        fallback: str,
+        *,
+        fact_refs: list[str],
+        evidence_refs: list[str],
+    ) -> ReportNarrativeSection | None:
+        if isinstance(value, dict):
+            text = str(value.get("text") or value.get("statement") or "").strip()
+            fact_refs = [str(ref) for ref in value.get("fact_refs", value.get("factRefs", fact_refs))]
+            evidence_refs = [str(ref) for ref in value.get("evidence_refs", value.get("evidenceRefs", evidence_refs))]
+        else:
+            text = str(value or "").strip()
+        if not text:
+            text = fallback.strip()
+        return ReportNarrativeSection(text=text, fact_refs=fact_refs[:32], evidence_refs=evidence_refs[:32]) if text else None
+
+    def _next_steps(self, suggestions: Any) -> ReportNarrativeSection | None:
+        if not isinstance(suggestions, list):
+            return None
+        items: list[str] = []
+        for item in suggestions[:8]:
+            if isinstance(item, dict):
+                text = str(item.get("text") or item.get("statement") or item.get("title") or "").strip()
+            else:
+                text = str(item or "").strip()
+            if text:
+                items.append(text)
+        return ReportNarrativeSection(text="；".join(items), fact_refs=[], evidence_refs=[]) if items else None
+
+    @staticmethod
     def _title(bundle: ScientificResultBundle, interpretation: dict[str, Any]) -> str:
-        title = str((interpretation.get("interpretation") or {}).get("title") or "").strip()
+        capabilities = {item.capability_id for item in bundle.methods}
+        if {
+            "structure.coordination_crystalnn",
+            "structure.coordination_voronoinn",
+        }.issubset(capabilities):
+            return "CrystalNN 与 VoronoiNN 局部配位环境比较"
+        title = str(interpretation.get("title") or "").strip()
         if title and title.lower() not in {"scientific analysis", "analysis report", "材料科学分析"}:
             return title
         if bundle.result_items:
             return bundle.result_items[0].title
         return bundle.research_question[:256]
+
+
+def _join_sentences(sentences: list[str]) -> str:
+    rendered: list[str] = []
+    for sentence in sentences:
+        text = sentence.strip()
+        if not text:
+            continue
+        rendered.append(text if text.endswith(("。", "！", "？", ".", "!", "?")) else f"{text}。")
+    return "".join(rendered)
 
 
 def _dedupe_limitations(limitations: list[ReportLimitation]) -> list[ReportLimitation]:

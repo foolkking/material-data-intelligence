@@ -4,6 +4,7 @@ import hashlib
 import json
 from uuid import uuid4
 
+from botocore.exceptions import ClientError
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, func, insert, select
 from sqlalchemy.pool import StaticPool
@@ -124,6 +125,77 @@ def test_phase9_volumetric_projection_omits_unbounded_scalar_array(tmp_path):
     assert "values" not in projection.payload
     assert projection.payload["value_count"] == 274_625
     assert projection.omitted_item_count == 274_625
+
+
+def test_phase9_missing_exact_source_fails_closed_without_frontend_500(tmp_path):
+    _engine, factory, storage, objects, _owner, _stranger = _environment(tmp_path)
+    logical = objects.create_object(
+        project_id="project",
+        kind=ScientificObjectKind.STRUCTURE,
+        object_type="structure.crystal",
+        display_name="Historical structure",
+        created_by_user_id="owner",
+    )
+    version = objects.create_version(
+        logical["id"],
+        object_type="structure.crystal",
+        object_schema_version="1.0",
+        source_resource_refs=[{"project_id": "project", "resource_id": "missing"}],
+        parent_object_version_refs=[],
+        normalized_payload_ref=StorageRef(
+            storage_backend="local",
+            object_key="phase9/missing.json",
+            checksum="a" * 64,
+            media_type="application/json",
+            byte_size=32,
+        ),
+        content_hash="b" * 64,
+        semantic_hash="c" * 64,
+        canonical_metadata={"formula": "LiFePO4"},
+        created_by_user_id="owner",
+    )
+    projection = ScientificViewerProjectionService(
+        factory, storage, build_scientific_viewer_registry()
+    ).project(logical["id"], version["id"])
+    assert projection.payload_status == "SOURCE_MISSING"
+    assert projection.payload is None
+    assert projection.version_id == version["id"]
+    assert any("source payload" in item.lower() for item in projection.limitations)
+
+
+def test_phase9_minio_no_such_key_is_a_source_missing_projection(tmp_path):
+    _engine, factory, storage, objects, _owner, _stranger = _environment(tmp_path)
+    logical, version = _object(
+        objects,
+        storage,
+        object_type="structure.crystal",
+        kind=ScientificObjectKind.STRUCTURE,
+        payload={"sites": [{"species": "Si", "abc": [0, 0, 0]}]},
+        name="MinIO missing historical source",
+    )
+
+    class MissingObjectStorage:
+        def get_bytes_bounded(self, _storage_key: str, *, max_bytes: int) -> bytes:
+            del max_bytes
+            raise ClientError(
+                {
+                    "Error": {
+                        "Code": "NoSuchKey",
+                        "Message": "The specified key does not exist.",
+                    }
+                },
+                "GetObject",
+            )
+
+    projection = ScientificViewerProjectionService(
+        factory,
+        MissingObjectStorage(),
+        build_scientific_viewer_registry(),
+    ).project(logical["id"], version["id"])
+    assert projection.payload_status == "SOURCE_MISSING"
+    assert projection.payload is None
+    assert projection.content_hash == version["content_hash"]
+    assert any("artifact storage" in item.lower() for item in projection.limitations)
 
 
 def test_phase9_authorized_viewer_api_is_read_only_and_cross_project_safe(tmp_path, monkeypatch):

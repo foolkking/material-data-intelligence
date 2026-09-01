@@ -15,7 +15,24 @@ from mdi_api.research_agent.planning.validator import CapabilityPlanValidator
 from mdi_api.unit_of_work import transaction_active
 
 
-PROMPT_VERSION = "scientific-capability-planner/1.0"
+PROMPT_VERSION = "scientific-capability-planner/1.1"
+
+
+def _binding_contracts() -> dict[str, dict[str, Any]]:
+    return {
+        "SOURCE_OBJECT": {
+            "required_fields": ["kind", "source_ref_key"],
+            "forbidden_fields": ["result_ref_key", "producer_step_id", "producer_output_slot"],
+        },
+        "PREVIOUS_RESULT": {
+            "required_fields": ["kind", "result_ref_key"],
+            "forbidden_fields": ["source_ref_key", "producer_step_id", "producer_output_slot"],
+        },
+        "PLANNED_OUTPUT": {
+            "required_fields": ["kind", "producer_step_id", "producer_output_slot"],
+            "forbidden_fields": ["source_ref_key", "result_ref_key"],
+        },
+    }
 
 
 def load_capability_planner_prompt() -> str:
@@ -55,11 +72,31 @@ class ScientificCapabilityPlanner:
                 role="scientific_capability_planner", system_prompt=load_capability_planner_prompt(),
                 input_payload=planner_input.model_dump(mode="json"), output_schema=CapabilityPlan.model_json_schema(),
                 timeout_seconds=self.timeout_seconds,
-                request_context={"prompt_version": PROMPT_VERSION, "repair_attempted": attempt == 1, "repair": None if attempt == 0 else {"validation_error": str(first_error)[:1000], "legal_capability_contracts": [item.model_dump(mode="json") for item in planner_input.candidates], "legal_source_keys": [item.ref_key for item in planner_input.source_bindings], "legal_result_keys": [item.ref_key for item in planner_input.reusable_results]}},
+                request_context={
+                    "prompt_version": PROMPT_VERSION,
+                    "repair_attempted": attempt == 1,
+                    "binding_contracts": _binding_contracts(),
+                    "repair": None if attempt == 0 else {
+                        "validation_error": str(first_error)[:1000],
+                        "binding_contracts": _binding_contracts(),
+                        "legal_capability_contracts": [
+                            item.model_dump(mode="json")
+                            for item in planner_input.candidates
+                        ],
+                        "legal_source_keys": [
+                            item.ref_key for item in planner_input.source_bindings
+                        ],
+                        "legal_result_keys": [
+                            item.ref_key for item in planner_input.reusable_results
+                        ],
+                    },
+                },
             ), timeout=self.timeout_seconds)
             try:
                 plan = CapabilityPlan.model_validate(result.parsed)
                 plan = CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=decision, context=context, registry=self.registry)
+                if attempt == 1 and not result.repair_attempted:
+                    result = result.model_copy(update={"repair_attempted": True})
                 return plan, "LLM", result
             except (CapabilityPlanInvalid, ValidationError, ValueError) as exc:
                 first_error = exc

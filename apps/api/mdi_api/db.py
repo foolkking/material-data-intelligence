@@ -193,8 +193,19 @@ sessions = Table(
     Column("dataset_id", String(64), ForeignKey("datasets.id"), nullable=True),
     Column("mode", String(32), nullable=False, server_default="auto"),
     Column("status", String(32), nullable=False, server_default="active"),
+    Column("title_override", String(200), nullable=True),
+    Column("is_pinned", Boolean, nullable=False, server_default="false"),
+    Column("pre_trash_status", String(32), nullable=True),
     Column("created_by", String(64), ForeignKey("users.id"), nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint(
+        "status in ('active', 'archived', 'trashed')",
+        name="research_session_status",
+    ),
+    CheckConstraint(
+        "pre_trash_status is null or pre_trash_status in ('active', 'archived')",
+        name="research_session_pre_trash_status",
+    ),
 )
 
 messages = Table(
@@ -732,11 +743,16 @@ scientific_objects = Table(
     Column("created_by_user_id", String(64), ForeignKey("users.id", name="fk_so_creator", ondelete="SET NULL"), nullable=True),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("archived_at", DateTime(timezone=True), nullable=True),
+    Column("pre_trash_lifecycle_status", String(32), nullable=True),
     Column("row_version", Integer, nullable=False, server_default="1"),
     CheckConstraint("row_version >= 1", name=conv("ck_so_row_version")),
     CheckConstraint(
-        "lifecycle_status in ('ACTIVE', 'ARCHIVED', 'INVALIDATED')",
+        "lifecycle_status in ('ACTIVE', 'ARCHIVED', 'TRASHED', 'INVALIDATED')",
         name=conv("ck_so_lifecycle"),
+    ),
+    CheckConstraint(
+        "pre_trash_lifecycle_status is null or pre_trash_lifecycle_status in ('ACTIVE', 'ARCHIVED')",
+        name=conv("ck_so_pre_trash_lifecycle"),
     ),
 )
 

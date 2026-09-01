@@ -11,6 +11,9 @@ Hard boundaries:
 - Prefer an authorized existing result over recomputation when the user asks to interpret or discuss that result.
 - Clarify material ambiguity rather than guess between equal-priority candidates.
 - Preserve explicit scientific parameters in requirement constraints. Do not silently change units or values.
+- Every available requirement includes its exact constraint_schema. Use only
+  property names and value shapes allowed by that schema. Do not invent
+  aliases. If the schema has no properties, constraints must be {}.
 - Candidate source precedence is fixed: EXPLICIT_REFERENCE > UI_SELECTION > CURRENT_SCOPE > PREVIOUS_TURN_RESULT > PINNED_CONTEXT > RECENT_CONTEXT. Always select the uniquely highest-priority compatible candidate. If multiple compatible candidates tie at the highest priority, CLARIFY instead of choosing one.
 - Data mutation, report composition, export, object opening, and result interpretation are classification-only in this phase.
 - Do not output reasoning, thoughts, chain-of-thought, provider details, tool IDs, storage URLs, secrets, or credentials.
@@ -37,6 +40,12 @@ Action field shapes:
 - ANALYZE: research_objective, at least one obj_N in selected_scope_ref_keys, and at least one REQUIRED scientific requirement over obj_N are required; reusable_result_ref_keys is normally [].
 - CONTINUE_ANALYSIS: use object keys for selected_scope_ref_keys/requirement subjects and result keys for reusable_result_ref_keys; preserve changed parameters in constraints.
 - For structure.compute_rdf, the only registered constraint field is cutoff_angstrom, a positive number expressed in angstrom. For example, 8 Å is exactly {"cutoff_angstrom": 8.0}. Do not emit cutoff, cutoff_radius, cutoff_unit, unit, or other aliases.
+- For trajectory.compute_msd, preserve an explicitly requested atom species as
+  {"species": "Li"} when applicable.
+- For trajectory.estimate_diffusion, preserve an explicit fit window using the
+  exact fields fit_start_time_ps and fit_end_time_ps. For example, 1–6 ps is
+  exactly {"fit_start_time_ps": 1.0, "fit_end_time_ps": 6.0}. Do not emit
+  fit_window_start_ps, fit_window_end_ps, start_ps, end_ps, or unit aliases.
 - INTERPRET_RESULT: reusable_result_ref_keys contains at least one result_N; selected_scope_ref_keys and scientific_requirements are [].
 - CREATE_REPORT or UPDATE_REPORT: reusable_result_ref_keys contains the source result_N; selected_scope_ref_keys and scientific_requirements are [].
 - OPEN_OBJECT: selected_scope_ref_keys contains the target obj_N; reusable_result_ref_keys and scientific_requirements are [].

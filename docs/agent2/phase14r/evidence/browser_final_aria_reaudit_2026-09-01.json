@@ -1,0 +1,271 @@
+{
+  "schema": "phase14r.browser_final_aria_reaudit.v1",
+  "captured_at": "2026-09-01",
+  "scope": {
+    "read_only": true,
+    "business_mutations": false,
+    "destructive_actions": false,
+    "uploads": false,
+    "services_stopped": false,
+    "tabs_closed": false
+  },
+  "runtime": {
+    "frontend": "http://127.0.0.1:3013",
+    "api": "http://127.0.0.1:8005",
+    "api_health_runtime": {
+      "database": "postgresql",
+      "redis": "redis",
+      "artifact_storage": "minio",
+      "worker": "redis",
+      "llm_provider": "deepseek",
+      "configured": true
+    },
+    "frontend_process": {
+      "pid": 7844,
+      "startup": "2026-09-01T17:15:31",
+      "note": "Existing production frontend was left running; no restart was performed."
+    },
+    "source_runtime_freshness": {
+      "ProductShell.tsx_last_write": "2026-09-01T17:57:31",
+      "next_directory_last_write": "2026-09-01T13:58:16",
+      "classification": "BROWSER_RUNTIME_APPEARS_OLDER_THAN_CURRENT_SOURCE",
+      "impact": "The current 3013 tab still serves the pre-ARIA-fix production bundle; source-level conditional aria-controls fix is present but not observable until the frontend is rebuilt/restarted."
+    },
+    "authenticated": true,
+    "browser_surface": "Chrome extension tab",
+    "tab_kept_open": true
+  },
+  "desktop_1830x878_live_audit": {
+    "note": "Chrome extension exposed a 1830x878 viewport in this audit. Existing 1280x720 and 390x844 production evidence is referenced below.",
+    "routes": {
+      "console": {
+        "path": "/console",
+        "reachable": true,
+        "overflow_px": -16,
+        "scroll_width": 1814,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "unnamed_visible_inputs": [],
+        "broken_aria_refs": [
+          "product-account-menu"
+        ]
+      },
+      "projects": {
+        "path": "/projects",
+        "reachable": true,
+        "overflow_px": -16,
+        "scroll_width": 1814,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "unnamed_visible_inputs": [],
+        "broken_aria_refs": [
+          "product-account-menu"
+        ]
+      },
+      "project_home": {
+        "path": "/projects/project_0002_1a0af866391f412d",
+        "reachable": true,
+        "overflow_px": -16,
+        "scroll_width": 1814,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "unnamed_visible_inputs": [],
+        "broken_aria_refs": [
+          "product-account-menu"
+        ]
+      },
+      "data": {
+        "path": "/projects/project_0002_1a0af866391f412d/data",
+        "reachable": true,
+        "overflow_px": -16,
+        "scroll_width": 1814,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "unnamed_visible_inputs": [
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "id": null
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "id": null
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "id": null
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "id": null
+          }
+        ],
+        "broken_aria_refs": [
+          "product-account-menu"
+        ]
+      },
+      "research": {
+        "path": "/projects/project_0002_1a0af866391f412d/research",
+        "reachable": true,
+        "overflow_px": 0,
+        "scroll_width": 1830,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "unnamed_visible_inputs": [],
+        "broken_aria_refs": [
+          "product-account-menu",
+          "research-session-history"
+        ]
+      },
+      "reports": {
+        "path": "/projects/project_0002_1a0af866391f412d/reports",
+        "reachable": true,
+        "overflow_px": -16,
+        "scroll_width": 1814,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "unnamed_visible_inputs": [],
+        "broken_aria_refs": [
+          "product-account-menu"
+        ]
+      },
+      "tasks": {
+        "path": "/tasks",
+        "reachable": true,
+        "overflow_px": 0,
+        "scroll_width": 1830,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "unnamed_visible_inputs": [],
+        "broken_aria_refs": [
+          "product-account-menu"
+        ]
+      },
+      "notifications": {
+        "path": "/notifications",
+        "reachable": true,
+        "overflow_px": 0,
+        "scroll_width": 1830,
+        "shell_count": 0,
+        "main_count": 0,
+        "h1_count": 0,
+        "duplicate_ids": [],
+        "unnamed_visible_inputs": [],
+        "broken_aria_refs": []
+      },
+      "trash": {
+        "path": "/trash",
+        "reachable": true,
+        "overflow_px": 0,
+        "scroll_width": 1830,
+        "shell_count": 1,
+        "main_count": 2,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "unnamed_visible_inputs": [],
+        "broken_aria_refs": [
+          "product-account-menu"
+        ]
+      }
+    },
+    "target_checks": {
+      "account_menu_closed": {
+        "button_aria_controls": "product-account-menu",
+        "button_aria_expanded": "false",
+        "controlled_node_mounted": false,
+        "result": "FAIL_ON_STALE_RUNTIME"
+      },
+      "research_history_closed": {
+        "button_aria_controls": "research-session-history",
+        "button_aria_expanded": "false",
+        "controlled_node_mounted": false,
+        "result": "FAIL_ON_STALE_RUNTIME"
+      },
+      "visible_input_naming": {
+        "research_textarea": "named_in_source_and_current_accessibility_snapshot",
+        "data_route": "four visible unlabeled checkbox inputs observed",
+        "result": "PARTIAL"
+      }
+    },
+    "console": {
+      "errors": 0,
+      "warnings": 0,
+      "observed_messages": []
+    }
+  },
+  "mobile_390x844_reference": {
+    "source": "docs/agent2/phase14r/evidence/browser_final_nondestructive_2026-09-01.json",
+    "status": "PASS_WITH_ARIA_GAPS_FROM_PRIOR_PRODUCTION_CAMPAIGN",
+    "viewport": [
+      390,
+      845
+    ],
+    "routes_checked": [
+      "data",
+      "research_turn",
+      "viewer_table",
+      "report_detail",
+      "tasks",
+      "notifications",
+      "trash"
+    ],
+    "overflow_px": 0,
+    "duplicate_ids": 0,
+    "console_errors": 0,
+    "critical_http_5xx": 0,
+    "document_requests": 0,
+    "shell_preserved": true,
+    "known_bounded_internal_regions": [
+      "Dataset table horizontal region",
+      "Report chapter strip internal navigation"
+    ],
+    "aria_status": "The prior 390x844 run predates the current source conditional aria-controls fix; current 3013 mobile recheck requires a rebuilt frontend bundle."
+  },
+  "app_router_and_network": {
+    "source": "docs/agent2/phase14r/PERFORMANCE_PRODUCT_FLUENCY_BASELINE.md",
+    "desktop_1280x720": {
+      "document_requests": 0,
+      "shell_preserved": true,
+      "critical_http_5xx": 0
+    },
+    "mobile_390x844": {
+      "document_requests": 0,
+      "shell_preserved": true,
+      "critical_http_5xx": 0
+    },
+    "current_chrome_console": {
+      "errors": 0,
+      "warnings": 0
+    }
+  },
+  "overall_classification": {
+    "desktop_routes_reachable": "PASS",
+    "mobile_layout_from_existing_same_stack_evidence": "PASS",
+    "document_reload_free_navigation_from_existing_same_stack_evidence": "PASS",
+    "duplicate_ids": "PASS",
+    "console": "PASS",
+    "critical_network_failures": "PASS_FROM_EXISTING_PRODUCTION_EVIDENCE",
+    "account_aria_controls_after_fix": "NOT_VERIFIED_CURRENT_RUNTIME",
+    "research_history_aria_controls_after_fix": "NOT_VERIFIED_CURRENT_RUNTIME",
+    "input_aria_label_gap": "PARTIAL_CURRENT_RUNTIME",
+    "blocking_root_cause": "Frontend process 7844 started before current ProductShell source modification and is serving a stale .next production bundle.",
+    "required_next_action": "Rebuild/restart only the frontend production bundle on 3013 while keeping PostgreSQL, Redis, MinIO, workers, and the Chrome tab open; then rerun this read-only audit."
+  }
+}

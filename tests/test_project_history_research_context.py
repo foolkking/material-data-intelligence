@@ -120,6 +120,7 @@ def test_research_context_maps_each_run_to_its_preceding_user_turn() -> None:
                 "sessionId": "session-1",
                 "userQuestion": "Inspect the local coordination environment.",
                 "researchTurnId": str(coordination_turn_id),
+                "researchTurnStatus": "COMPLETED",
                 "contextKind": "RESEARCH_TURN",
             },
         }
@@ -198,6 +199,72 @@ def test_research_context_prefers_exact_turn_message_over_timestamp_guess() -> N
         "sessionId": "session-1",
         "userQuestion": "Use the exact historical structure version.",
         "researchTurnId": str(turn_id),
+        "researchTurnStatus": "COMPLETED",
+        "contextKind": "RESEARCH_TURN",
+    }
+
+
+def test_research_context_uses_direct_turn_relation_without_legacy_run_binding() -> None:
+    engine = create_engine("sqlite:///:memory:")
+    metadata.create_all(engine)
+    started_at = datetime(2026, 8, 21, 8, 0, 0)
+    turn_id = uuid4()
+
+    with engine.begin() as connection:
+        connection.execute(insert(users), {
+            "id": "user-1",
+            "email": "researcher@example.invalid",
+            "display_name": "Researcher",
+            "is_active": True,
+        })
+        connection.execute(insert(organizations), {"id": "org-1", "name": "Research"})
+        connection.execute(insert(projects), {
+            "id": "project-1",
+            "organization_id": "org-1",
+            "name": "Materials project",
+            "created_by": "user-1",
+        })
+        connection.execute(insert(sessions), {
+            "id": "session-1",
+            "project_id": "project-1",
+            "mode": "project",
+            "status": "active",
+            "created_by": "user-1",
+            "created_at": started_at,
+        })
+        connection.execute(insert(jobs), {
+            "id": "job-direct-turn",
+            "project_id": "project-1",
+            "kind": "analysis",
+            "status": "completed",
+            "created_by": "user-1",
+            "created_at": started_at + timedelta(minutes=2),
+        })
+        connection.execute(insert(messages), {
+            "id": "message-direct-turn",
+            "session_id": "session-1",
+            "role": "user",
+            "content_summary": "Resume the exact scientific result.",
+            "created_at": started_at + timedelta(minutes=1),
+        })
+        connection.execute(insert(research_turns), {
+            "id": turn_id,
+            "project_id": "project-1",
+            "research_session_id": "session-1",
+            "sequence_no": 1,
+            "user_message_id": "message-direct-turn",
+            "status": "COMPLETED",
+            "job_id": "job-direct-turn",
+            "created_at": started_at + timedelta(minutes=2),
+        })
+
+        result = _read_research_context_by_run(connection, "project-1")
+
+    assert result["job-direct-turn"] == {
+        "sessionId": "session-1",
+        "userQuestion": "Resume the exact scientific result.",
+        "researchTurnId": str(turn_id),
+        "researchTurnStatus": "COMPLETED",
         "contextKind": "RESEARCH_TURN",
     }
 

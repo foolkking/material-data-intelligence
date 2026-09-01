@@ -4,24 +4,58 @@ from datetime import datetime, timezone
 import json
 import re
 import uuid
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import Depends, HTTPException
-from pydantic import BaseModel, Field
-from sqlalchemy import insert, select, update
+from pydantic import BaseModel, Field, model_validator
+from sqlalchemy import func, insert, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
 from mdi_api.config import load_settings
 from mdi_api.database import create_engine_from_settings
 from mdi_api.access import require_project_access
-from mdi_api.db import data_profiles, datasets, jobs, messages, research_session_runs, research_turns, sessions
+from mdi_api.db import (
+    agent2_scientific_interpretations,
+    data_profiles,
+    datasets,
+    jobs,
+    messages,
+    research_session_runs,
+    research_turns,
+    scientific_result_snapshots,
+    sessions,
+)
+from mdi_api.interpretation.grounding import project_grounded_communication
+from mdi_api.interpretation.projector import AssistantResponseProjector
+from mdi_api.interpretation.schemas import ScientificInterpretationOutput
 from mdi_api.routers.auth import CurrentUser, get_current_user
+from mdi_api.scientific_results.schemas import ScientificResultBundle
 from mdi_llm.research_roles import orchestrate_research_turn
 
 
 class ResearchSessionCreate(BaseModel):
     title: str = Field(default="未命名研究", min_length=1, max_length=200)
     datasetId: str | None = None
+
+
+class ResearchSessionUpdate(BaseModel):
+    title: str | None = Field(default=None, min_length=1, max_length=200)
+    pinned: bool | None = None
+    lifecycle: str | None = Field(default=None, pattern="^(ACTIVE|ARCHIVED|TRASHED)$")
+
+
+class ResearchSessionBulkActionRequest(BaseModel):
+    sessionIds: list[str] = Field(min_length=1, max_length=100)
+    action: Literal["PIN", "UNPIN", "ARCHIVE", "RESTORE", "TRASH"]
+
+    @model_validator(mode="after")
+    def unique_sessions(self) -> "ResearchSessionBulkActionRequest":
+        self.sessionIds = list(
+            dict.fromkeys(item.strip() for item in self.sessionIds if item.strip())
+        )
+        if not self.sessionIds:
+            raise ValueError("At least one Research Session is required.")
+        return self
 
 
 class ResearchMessageCreate(BaseModel):
@@ -99,6 +133,17 @@ _TOOL_USER_STEP_LABELS = {
     "viz.correlation": "计算材料属性之间的相关关系",
 }
 
+_TERMINAL_RESEARCH_TURN_STATUSES = (
+    "COMPLETED",
+    "PARTIAL",
+    "FAILED",
+    "CANCELED",
+    "CANCELLED",
+    "UNSUPPORTED",
+    "ANSWERED",
+    "NEEDS_CLARIFICATION",
+)
+
 
 def _user_facing_step_label(step: dict[str, Any]) -> str:
     tool_id = str(step.get("toolId") or step.get("tool_id") or "").strip()
@@ -150,7 +195,11 @@ def list_sessions(project_id: str, current_user: CurrentUser = Depends(get_curre
     engine = create_engine_from_settings(load_settings())
     with engine.connect() as connection:
         _require_project(connection, project_id, current_user)
-        rows = connection.execute(select(sessions).where(sessions.c.project_id == project_id).order_by(sessions.c.created_at.desc())).mappings().all()
+        rows = connection.execute(
+            select(sessions)
+            .where(sessions.c.project_id == project_id)
+            .order_by(sessions.c.is_pinned.desc(), sessions.c.created_at.desc())
+        ).mappings().all()
         return [_session_view(row, connection) for row in rows]
 
 
@@ -158,13 +207,20 @@ def create_session(project_id: str, request: ResearchSessionCreate, current_user
     engine = create_engine_from_settings(load_settings())
     session_id = f"research_{uuid.uuid4().hex}"
     now = datetime.now(timezone.utc)
+    requested_title = request.title.strip()
+    title_override = (
+        None
+        if requested_title in {"新研究", "未命名研究"}
+        else requested_title
+    )
     with engine.begin() as connection:
         require_project_access(connection, project_id, current_user, write=True)
         if request.datasetId:
             _require_dataset_or_runtime(connection, project_id, request.datasetId)
         connection.execute(insert(sessions).values(
             id=session_id, project_id=project_id, dataset_id=request.datasetId,
-            mode="project", status="active", created_by=current_user.id, created_at=now,
+            mode="project", status="active", title_override=title_override,
+            is_pinned=False, created_by=current_user.id, created_at=now,
         ))
         row = connection.execute(select(sessions).where(sessions.c.id == session_id)).mappings().one()
         return _session_view(row, connection)
@@ -178,6 +234,184 @@ def get_session(session_id: str, current_user: CurrentUser = Depends(get_current
             raise HTTPException(status_code=404, detail="研究会话不存在。")
         _require_project(connection, row["project_id"], current_user)
         return _session_view(row, connection)
+
+
+def update_session(
+    session_id: str,
+    request: ResearchSessionUpdate,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Update non-scientific Research Session metadata/lifecycle.
+
+    Session lifecycle is a product-management projection. Historical
+    ResearchTurns, Results, Artifacts and exact source references remain
+    immutable and readable after archive/trash.
+    """
+
+    if request.title is None and request.pinned is None and request.lifecycle is None:
+        raise HTTPException(status_code=400, detail="至少需要一个会话变更。")
+    engine = create_engine_from_settings(load_settings())
+    with engine.begin() as connection:
+        row = connection.execute(
+            select(sessions).where(sessions.c.id == session_id).with_for_update()
+        ).mappings().first()
+        if not row:
+            raise HTTPException(status_code=404, detail="研究会话不存在。")
+        require_project_access(connection, row["project_id"], current_user, write=True)
+        current_status = str(row["status"] or "active").lower()
+        next_status = current_status
+        pre_trash_status = row.get("pre_trash_status")
+        if request.lifecycle is not None:
+            requested_status = request.lifecycle.lower()
+            if requested_status in {"archived", "trashed"}:
+                active_turns = int(
+                    connection.execute(
+                        select(func.count()).select_from(research_turns).where(
+                            research_turns.c.research_session_id == session_id,
+                            func.upper(research_turns.c.status).not_in(
+                                _TERMINAL_RESEARCH_TURN_STATUSES
+                            ),
+                        )
+                    ).scalar_one()
+                )
+                if active_turns:
+                    raise HTTPException(
+                        status_code=409,
+                        detail="研究仍在进行，完成或停止后才能归档或移入回收站。",
+                    )
+            if requested_status == "trashed":
+                if current_status != "trashed":
+                    pre_trash_status = (
+                        current_status if current_status in {"active", "archived"} else "active"
+                    )
+                next_status = "trashed"
+            elif requested_status == "archived":
+                if current_status == "trashed":
+                    raise HTTPException(status_code=409, detail="请先从回收站恢复研究记录。")
+                next_status = "archived"
+                pre_trash_status = None
+            else:
+                next_status = (
+                    str(pre_trash_status)
+                    if current_status == "trashed"
+                    and str(pre_trash_status) in {"active", "archived"}
+                    else "active"
+                )
+                pre_trash_status = None
+        values: dict[str, Any] = {}
+        if request.title is not None:
+            values["title_override"] = request.title.strip()
+        if request.pinned is not None:
+            values["is_pinned"] = request.pinned
+        if request.lifecycle is not None:
+            values["status"] = next_status
+            values["pre_trash_status"] = pre_trash_status
+        if values:
+            connection.execute(
+                update(sessions).where(sessions.c.id == session_id).values(**values)
+            )
+        updated = connection.execute(select(sessions).where(sessions.c.id == session_id)).mappings().one()
+        return _session_view(updated, connection)
+
+
+def bulk_update_sessions(
+    project_id: str,
+    request: ResearchSessionBulkActionRequest,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Atomically apply one organization/lifecycle action to Research Sessions.
+
+    Every requested Session is locked and authorized before any mutation. This
+    prevents a mixed selection, active Turn, or unauthorized Session from
+    producing a partially applied bulk action.
+    """
+
+    engine = create_engine_from_settings(load_settings())
+    with engine.begin() as connection:
+        require_project_access(connection, project_id, current_user, write=True)
+        rows = connection.execute(
+            select(sessions)
+            .where(sessions.c.id.in_(request.sessionIds))
+            .order_by(sessions.c.id)
+            .with_for_update()
+        ).mappings().all()
+        if len(rows) != len(request.sessionIds):
+            raise HTTPException(status_code=404, detail="部分研究记录不存在。")
+        if any(str(row["project_id"]) != str(project_id) for row in rows):
+            raise HTTPException(status_code=403, detail="部分研究记录不属于当前项目。")
+
+        if request.action in {"ARCHIVE", "TRASH"}:
+            active_turns = int(
+                connection.execute(
+                    select(func.count()).select_from(research_turns).where(
+                        research_turns.c.research_session_id.in_(request.sessionIds),
+                        func.upper(research_turns.c.status).not_in(
+                            _TERMINAL_RESEARCH_TURN_STATUSES
+                        ),
+                    )
+                ).scalar_one()
+            )
+            if active_turns:
+                raise HTTPException(
+                    status_code=409,
+                    detail="所选研究中仍有任务在进行，已取消全部批量变更。",
+                )
+        if request.action == "ARCHIVE" and any(
+            str(row["status"] or "active").lower() == "trashed" for row in rows
+        ):
+            raise HTTPException(
+                status_code=409,
+                detail="所选研究包含回收站记录，请先恢复后再归档。",
+            )
+
+        if request.action in {"PIN", "UNPIN"}:
+            connection.execute(
+                update(sessions)
+                .where(sessions.c.id.in_(request.sessionIds))
+                .values(is_pinned=request.action == "PIN")
+            )
+        elif request.action == "ARCHIVE":
+            connection.execute(
+                update(sessions)
+                .where(sessions.c.id.in_(request.sessionIds))
+                .values(status="archived", pre_trash_status=None)
+            )
+        elif request.action == "TRASH":
+            for row in rows:
+                current_status = str(row["status"] or "active").lower()
+                pre_trash_status = row.get("pre_trash_status")
+                if current_status != "trashed":
+                    pre_trash_status = (
+                        current_status
+                        if current_status in {"active", "archived"}
+                        else "active"
+                    )
+                connection.execute(
+                    update(sessions)
+                    .where(sessions.c.id == row["id"])
+                    .values(status="trashed", pre_trash_status=pre_trash_status)
+                )
+        else:
+            for row in rows:
+                current_status = str(row["status"] or "active").lower()
+                pre_trash_status = row.get("pre_trash_status")
+                next_status = (
+                    str(pre_trash_status)
+                    if current_status == "trashed"
+                    and str(pre_trash_status) in {"active", "archived"}
+                    else "active"
+                )
+                connection.execute(
+                    update(sessions)
+                    .where(sessions.c.id == row["id"])
+                    .values(status=next_status, pre_trash_status=None)
+                )
+
+    return {
+        "action": request.action,
+        "sessionIds": request.sessionIds,
+        "count": len(request.sessionIds),
+    }
 
 
 def bind_research_session_run(
@@ -248,15 +482,37 @@ def reconcile_research_run_projection(
     engine = create_engine_from_settings(load_settings())
     try:
         with engine.connect() as connection:
+            # A modern Agent2 turn is the authoritative session binding. Use
+            # it first so terminal interpretation reconciliation works even
+            # when the legacy compatibility projection is absent.
             binding = connection.execute(
-                select(research_session_runs.c.session_id, jobs.c.dataset_id)
-                .join(jobs, jobs.c.id == research_session_runs.c.job_id)
-                .where(research_session_runs.c.job_id == job_id)
+                select(research_turns.c.research_session_id.label("session_id"), jobs.c.dataset_id)
+                .join(jobs, jobs.c.id == research_turns.c.job_id)
+                .where(research_turns.c.job_id == job_id, research_turns.c.research_session_id.is_not(None))
+                .order_by(research_turns.c.created_at.desc(), research_turns.c.id.desc())
             ).mappings().first()
+            if not binding:
+                binding = connection.execute(
+                    select(research_session_runs.c.session_id, jobs.c.dataset_id)
+                    .join(jobs, jobs.c.id == research_session_runs.c.job_id)
+                    .where(research_session_runs.c.job_id == job_id)
+                ).mappings().first()
     except SQLAlchemyError as exc:
-        if "research_session_runs" in str(exc).lower():
-            return None
-        raise
+        if "research_turns" not in str(exc).lower() and "research_session_runs" not in str(exc).lower():
+            raise
+        # Rolling deployments may lack one of the additive relation tables;
+        # retain the legacy compatibility path when it is still available.
+        try:
+            with engine.connect() as connection:
+                binding = connection.execute(
+                    select(research_session_runs.c.session_id, jobs.c.dataset_id)
+                    .join(jobs, jobs.c.id == research_session_runs.c.job_id)
+                    .where(research_session_runs.c.job_id == job_id)
+                ).mappings().first()
+        except SQLAlchemyError as fallback_exc:
+            if "research_session_runs" in str(fallback_exc).lower():
+                return None
+            raise
     if not binding:
         return None
     return create_assistant_projection(
@@ -281,6 +537,8 @@ def create_message(session_id: str, request: ResearchMessageCreate, current_user
         if not session:
             raise HTTPException(status_code=404, detail="研究会话不存在。")
         require_project_access(connection, session["project_id"], current_user, write=True)
+        if str(session["status"] or "active").lower() != "active":
+            raise HTTPException(status_code=409, detail="归档或回收的研究记录不可继续写入，请先恢复。")
         if request.datasetId:
             _require_dataset_or_runtime(connection, session["project_id"], request.datasetId)
             # `sessions` intentionally has no mutable updated_at column in the
@@ -418,8 +676,18 @@ def _assistant_projection_text(request: ResearchAssistantProjectionCreate) -> st
         return f"当前 {dataset} 缺少完成这项分析所需的科学属性，因此没有创建分析运行。"
     if request.phase == "failed":
         code = str(request.failureCode or "").upper()
-        if code in {"COORDINATION_ALGORITHM_CLARIFICATION_REQUIRED", "NEEDS_CLARIFICATION"}:
+        if code == "COORDINATION_ALGORITHM_CLARIFICATION_REQUIRED":
             return "径向分布可以直接计算；局部环境分析还需要确认使用 CrystalNN 还是 VoronoiNN 配位算法。确认后再创建分析运行。"
+        if code == "DIFFUSION_FIT_WINDOW_REQUIRED":
+            return "扩散估计需要明确拟合时间窗，或明确使用当前数据提供的完整时间范围。确认前不会创建分析运行。"
+        if code == "DIFFUSION_FIT_WINDOW_INVALID":
+            return "扩散拟合时间窗无效：起始时间必须早于结束时间。请修正区间后再提交。"
+        if code == "DIFFUSION_FIT_WINDOW_OUT_OF_RANGE":
+            return "扩散拟合时间窗超出当前轨迹的可验证时间范围。请选择范围内的区间，或明确使用完整提供范围。"
+        if code == "DIFFUSION_TIME_RANGE_UNAVAILABLE":
+            return "当前轨迹没有可验证的时间语义，因此不会推断扩散系数。可以先计算均方位移并保留这一限制。"
+        if code == "NEEDS_CLARIFICATION":
+            return "当前问题还缺少一个会改变科学方法的选择。请补充方法、范围或数据选择；确认前不会创建分析运行。"
         if "CAPABILITY" in code or "ELIGIB" in code:
             return "当前已验证的分析能力无法完整覆盖这个问题。请尝试缩小问题范围，或选择更匹配的数据。没有创建分析运行。"
         if "DURABLE_ROOT_INPUTS" in code:
@@ -671,9 +939,16 @@ def _merge_runtime_catalog(project_id: str, catalog: list[dict[str, Any]]) -> li
 
 def _session_view(row, connection) -> dict[str, Any]:
     message_rows = connection.execute(select(messages).where(messages.c.session_id == row["id"]).order_by(messages.c.created_at.asc())).mappings().all()
+    scientific_message_projections = _scientific_message_projections(
+        message_rows,
+        connection,
+        project_id=str(row["project_id"]),
+    )
     created_at = _iso(row["created_at"])
     first_question = next((str(item["content_summary"]).strip() for item in message_rows if item["role"] == "user" and str(item["content_summary"]).strip()), "")
-    title = first_question[:56] + ("…" if len(first_question) > 56 else "") if first_question else "新研究"
+    title_override = str(row.get("title_override") or "").strip()
+    generated_title = first_question[:56] + ("…" if len(first_question) > 56 else "") if first_question else "新研究"
+    title = title_override or generated_title
     latest_message_at = _iso(message_rows[-1]["created_at"]) if message_rows else created_at
     try:
         run_rows = connection.execute(
@@ -701,17 +976,161 @@ def _session_view(row, connection) -> dict[str, Any]:
             if job_id and job_id not in seen:
                 seen.add(job_id)
                 run_rows.append({"job_id": job_id, "created_at": item["created_at"]})
+    # Modern Agent2 turns are authoritative for the session relationship. A
+    # turn can legitimately exist without the legacy compatibility row, so
+    # merge those direct bindings into the session projection as well. This
+    # keeps run-only history links resolvable without inferring identity from
+    # a Job identifier string.
+    try:
+        direct_turn_rows = connection.execute(
+            select(
+                research_turns.c.job_id,
+                research_turns.c.created_at,
+                research_turns.c.id.label("research_turn_id"),
+            )
+            .join(jobs, jobs.c.id == research_turns.c.job_id)
+            .where(
+                research_turns.c.research_session_id == row["id"],
+                research_turns.c.project_id == row["project_id"],
+                research_turns.c.job_id.is_not(None),
+                jobs.c.project_id == row["project_id"],
+            )
+            .order_by(research_turns.c.created_at.asc(), research_turns.c.id.asc())
+        ).mappings().all()
+    except SQLAlchemyError as exc:
+        if "research_turns" not in str(exc).lower():
+            raise
+        direct_turn_rows = []
+    by_job = {str(item["job_id"]): item for item in run_rows}
+    for item in direct_turn_rows:
+        by_job[str(item["job_id"])] = item
+    run_rows = sorted(
+        by_job.values(),
+        key=lambda item: (_iso(item["created_at"]), str(item["job_id"])),
+    )
     run_references = [{
         "jobId": item["job_id"],
         "createdAt": _iso(item["created_at"]),
         "researchTurnId": str(item["research_turn_id"]) if item.get("research_turn_id") else None,
     } for item in run_rows]
-    return {"id": row["id"], "projectId": row["project_id"], "project_id": row["project_id"], "datasetId": row["dataset_id"], "dataset_id": row["dataset_id"], "title": title, "status": row["status"], "createdAt": created_at, "created_at": created_at, "updated_at": latest_message_at, "messages": [_message_view(item) for item in message_rows], "runIds": [item["job_id"] for item in run_rows], "runReferences": run_references}
+    return {
+        "id": row["id"],
+        "projectId": row["project_id"],
+        "project_id": row["project_id"],
+        "datasetId": row["dataset_id"],
+        "dataset_id": row["dataset_id"],
+        "title": title,
+        "status": row["status"],
+        "pinned": bool(row.get("is_pinned")),
+        "createdAt": created_at,
+        "created_at": created_at,
+        "updated_at": latest_message_at,
+        "messages": [
+            _message_view(
+                item,
+                content_override=scientific_message_projections.get(str(item["id"])),
+            )
+            for item in message_rows
+        ],
+        "runIds": [item["job_id"] for item in run_rows],
+        "runReferences": run_references,
+    }
 
 
-def _message_view(row) -> dict[str, Any]:
+def _message_view(row, *, content_override: str | None = None) -> dict[str, Any]:
     created_at = _iso(row["created_at"])
-    return {"id": row["id"], "sessionId": row["session_id"], "session_id": row["session_id"], "role": "assistant" if row["role"] == "agent" else row["role"], "content": row["content_summary"], "payload": row["payload_json"] or {}, "createdAt": created_at, "created_at": created_at}
+    payload = dict(row["payload_json"] or {})
+    if content_override is not None:
+        payload["contentProjection"] = "GROUNDED_READ_MODEL_2_0"
+    return {
+        "id": row["id"],
+        "sessionId": row["session_id"],
+        "session_id": row["session_id"],
+        "role": "assistant" if row["role"] == "agent" else row["role"],
+        "content": content_override if content_override is not None else row["content_summary"],
+        "payload": payload,
+        "createdAt": created_at,
+        "created_at": created_at,
+    }
+
+
+def _scientific_message_projections(
+    message_rows: list[Any],
+    connection: Any,
+    *,
+    project_id: str,
+) -> dict[str, str]:
+    """Batch-project historical scientific finals through current grounding.
+
+    Persisted Message content remains immutable audit evidence. The session
+    read model uses the exact persisted Interpretation and Result to present a
+    bounded, current communication projection without N+1 queries or any
+    scientific recomputation.
+    """
+    message_by_interpretation: dict[uuid.UUID, list[str]] = {}
+    for row in message_rows:
+        payload = row["payload_json"] or {}
+        if (
+            row["role"] != "agent"
+            or payload.get("messageKind") != "ASSISTANT_FINAL"
+            or payload.get("source") != "agent2_scientific_interpreter"
+        ):
+            continue
+        try:
+            interpretation_id = uuid.UUID(str(payload.get("interpretationId")))
+        except (TypeError, ValueError):
+            continue
+        message_by_interpretation.setdefault(interpretation_id, []).append(str(row["id"]))
+    if not message_by_interpretation:
+        return {}
+    try:
+        interpretation_rows = connection.execute(
+            select(agent2_scientific_interpretations).where(
+                agent2_scientific_interpretations.c.id.in_(
+                    list(message_by_interpretation)
+                ),
+                agent2_scientific_interpretations.c.project_id == project_id,
+            )
+        ).mappings().all()
+        snapshot_ids = [row["result_snapshot_id"] for row in interpretation_rows]
+        snapshot_rows = connection.execute(
+            select(scientific_result_snapshots).where(
+                scientific_result_snapshots.c.id.in_(snapshot_ids),
+                scientific_result_snapshots.c.project_id == project_id,
+            )
+        ).mappings().all()
+    except SQLAlchemyError:
+        # Pre-Phase-6 compatibility databases remain readable; no historical
+        # content is rewritten or treated as a new scientific authority.
+        return {}
+    snapshots = {row["id"]: row for row in snapshot_rows}
+    projected: dict[str, str] = {}
+    projector = AssistantResponseProjector()
+    for interpretation_row in interpretation_rows:
+        snapshot = snapshots.get(interpretation_row["result_snapshot_id"])
+        if (
+            snapshot is None
+            or str(interpretation_row["project_id"]) != project_id
+            or str(snapshot["project_id"]) != project_id
+        ):
+            continue
+        try:
+            bundle = ScientificResultBundle.model_validate(snapshot["bundle_json"])
+            raw = (interpretation_row["output_json"] or {}).get("interpretation")
+            interpretation = project_grounded_communication(
+                ScientificInterpretationOutput.model_validate(raw),
+                bundle,
+            )
+            content = projector.project(
+                interpretation,
+                bundle,
+                effective_relevance=bundle.relevance_status.value,
+            )
+        except (TypeError, ValueError):
+            continue
+        for message_id in message_by_interpretation.get(interpretation_row["id"], []):
+            projected[message_id] = content
+    return projected
 
 
 def _bind_run(connection: Any, *, session_id: str, job_id: str, created_at: datetime) -> bool:

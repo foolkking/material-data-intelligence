@@ -65,7 +65,7 @@ class AgentEvalExpectation(BaseModel):
 class AgentEvalCase(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    case_id: str = Field(pattern=r"^C(?:0[1-9]|1[0-5])$")
+    case_id: str = Field(pattern=r"^(?:C(?:0[1-9]|1[0-5])|R10-[0-9]{3})$")
     category: AgentEvalCategory
     message: str = Field(min_length=1, max_length=4000)
     paraphrases: list[str] = Field(min_length=3)

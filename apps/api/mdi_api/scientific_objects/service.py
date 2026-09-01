@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -9,20 +9,25 @@ import threading
 from typing import Any, Iterator
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from mdi_api.agent2_errors import (
     InvalidScientificObjectRelationship,
     InvalidScientificObjectVersion,
     UnauthorizedScientificObjectReference,
 )
-from mdi_api.db import datasets
+from mdi_api.db import (
+    agent2_scientific_report_snapshots,
+    datasets,
+    scientific_result_snapshots,
+)
 from mdi_api.artifact_storage import ArtifactStorage
 from mdi_api.scientific_objects.registry import ObjectTypeRegistry
 from mdi_api.scientific_objects.schemas import (
     ScientificObjectAvailability,
     ScientificDatasetQueryRequest,
     ScientificObjectKind,
+    ScientificObjectLifecycle,
     ScientificObjectVersionRef,
     StorageRef,
 )
@@ -39,6 +44,8 @@ _RESOURCE_OBJECT_TYPES: dict[str, tuple[ScientificObjectKind, str]] = {
     "Trajectory": (ScientificObjectKind.TRAJECTORY, "trajectory.atomic"),
     "ElectronicBand": (ScientificObjectKind.ELECTRONIC, "electronic.band_structure"),
     "ElectronicDos": (ScientificObjectKind.ELECTRONIC, "electronic.dos"),
+    "PhononBand": (ScientificObjectKind.PHONON, "phonon.band_structure"),
+    "PhononDos": (ScientificObjectKind.PHONON, "phonon.dos"),
 }
 _NAMESPACED_RELATION = re.compile(r"^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+$")
 _locks_guard = threading.Lock()
@@ -52,6 +59,51 @@ def _object_lock(object_id: UUID) -> Iterator[None]:
         lock = _object_locks.setdefault(key, threading.Lock())
     with lock:
         yield
+
+
+def _lifecycle_update_values(
+    current: dict[str, Any],
+    target: ScientificObjectLifecycle | str,
+) -> dict[str, Any]:
+    raw_target = target.value if isinstance(target, ScientificObjectLifecycle) else str(target)
+    try:
+        normalized_target = ScientificObjectLifecycle(raw_target).value
+    except ValueError as exc:
+        raise InvalidScientificObjectVersion(f"unsupported lifecycle: {raw_target}") from exc
+
+    current_status = str(current["lifecycle_status"])
+    lifecycle_status = normalized_target
+    archived_at: datetime | None = None
+    pre_trash_lifecycle_status: str | None = None
+    clear_pre_trash_lifecycle = False
+    if normalized_target == ScientificObjectLifecycle.TRASHED.value:
+        if current_status not in {
+            ScientificObjectLifecycle.ACTIVE.value,
+            ScientificObjectLifecycle.ARCHIVED.value,
+        }:
+            raise InvalidScientificObjectVersion("only active or archived objects can be trashed")
+        pre_trash_lifecycle_status = current_status
+    elif normalized_target == ScientificObjectLifecycle.ACTIVE.value and current_status == ScientificObjectLifecycle.TRASHED.value:
+        lifecycle_status = str(
+            current.get("pre_trash_lifecycle_status")
+            or ScientificObjectLifecycle.ACTIVE.value
+        )
+        clear_pre_trash_lifecycle = True
+    elif normalized_target in {
+        ScientificObjectLifecycle.ARCHIVED.value,
+        ScientificObjectLifecycle.INVALIDATED.value,
+    }:
+        clear_pre_trash_lifecycle = True
+
+    if lifecycle_status == ScientificObjectLifecycle.ARCHIVED.value:
+        archived_at = datetime.now(timezone.utc)
+
+    return {
+        "lifecycle_status": lifecycle_status,
+        "archived_at": archived_at,
+        "pre_trash_lifecycle_status": pre_trash_lifecycle_status,
+        "clear_pre_trash_lifecycle": clear_pre_trash_lifecycle,
+    }
 
 
 class ScientificObjectService:
@@ -196,6 +248,38 @@ class ScientificObjectService:
             raise InvalidScientificObjectVersion("the selected normalized resource is not a scientific table")
         if not isinstance(payload, list):
             raise InvalidScientificObjectVersion("scientific table payload must be a bounded row list")
+        # Promotion is a projection bridge, not a version factory that should
+        # create duplicate scientific authority on every navigation. Reuse the
+        # already-admitted logical object/version when this exact Dataset
+        # resource has been promoted before.
+        with self.repository_factory.session() as session:
+            existing_objects = session.agent2.scientific_objects.list_project_objects(
+                project_id,
+                object_type="materials.table",
+                limit=500,
+            )
+            for existing in existing_objects:
+                try:
+                    versions = session.agent2.scientific_objects.list_versions(existing["id"])
+                except Exception:
+                    continue
+                for existing_version in versions:
+                    refs = existing_version.get("source_resource_refs_json") or []
+                    if isinstance(refs, str):
+                        try:
+                            refs = json.loads(refs)
+                        except json.JSONDecodeError:
+                            refs = []
+                    if not isinstance(refs, list):
+                        continue
+                    if any(
+                        isinstance(ref, dict)
+                        and str(ref.get("project_id")) == project_id
+                        and str(ref.get("dataset_id")) == dataset_id
+                        and str(ref.get("resource_id")) == object_id
+                        for ref in refs
+                    ):
+                        return dict(existing), existing_version
         logical = self.create_object(
             project_id=project_id,
             kind=ScientificObjectKind.TABLE,
@@ -252,6 +336,39 @@ class ScientificObjectService:
             resource_id=resource_id,
             storage=storage,
         )
+        # Admission is a projection bridge over the persisted Dataset
+        # resource, not a logical-object factory that should mint a duplicate
+        # identity every time Data → Research resolves the same exact source.
+        # Reuse the already-admitted object/version by authoritative source
+        # refs before creating anything new.
+        with self.repository_factory.session() as session:
+            existing_objects = session.agent2.scientific_objects.list_project_objects(
+                project_id,
+                object_type=source["object_type"],
+                limit=500,
+            )
+            for existing in existing_objects:
+                try:
+                    versions = session.agent2.scientific_objects.list_versions(existing["id"])
+                except Exception:
+                    continue
+                for existing_version in versions:
+                    refs = existing_version.get("source_resource_refs_json") or []
+                    if isinstance(refs, str):
+                        try:
+                            refs = json.loads(refs)
+                        except json.JSONDecodeError:
+                            refs = []
+                    if not isinstance(refs, list):
+                        continue
+                    if any(
+                        isinstance(ref, dict)
+                        and str(ref.get("project_id")) == project_id
+                        and str(ref.get("dataset_id")) == dataset_id
+                        and str(ref.get("resource_id")) == resource_id
+                        for ref in refs
+                    ):
+                        return dict(existing), existing_version
         logical = self.create_object(
             project_id=project_id,
             kind=source["kind"],
@@ -500,6 +617,79 @@ class ScientificObjectService:
             session.agent2.scientific_objects.get_object(object_id)
             return session.agent2.scientific_objects.list_relationships(object_id)
 
+    def dependency_impact(self, object_id: UUID) -> dict[str, Any]:
+        """Return a bounded, read-only dependency preview for lifecycle actions.
+
+        ScientificObject versions and relationships are direct relational
+        dependencies. Result/report references are stored in immutable JSON
+        bundles, so they are matched only within the object's authorized
+        project and only against exact object/version identities.
+        """
+        with self.repository_factory.session() as session:
+            repository = session.agent2.scientific_objects
+            logical = repository.get_object(object_id)
+            versions = repository.list_versions(object_id)
+            relationships = repository.list_relationships(object_id)
+            version_ids = {str(item["id"]) for item in versions}
+            result_rows = session.connection.execute(
+                select(
+                    scientific_result_snapshots.c.id,
+                    scientific_result_snapshots.c.research_turn_id,
+                    scientific_result_snapshots.c.bundle_json,
+                ).where(scientific_result_snapshots.c.project_id == logical["project_id"])
+            ).mappings().all()
+
+            def references_object(bundle: Any) -> bool:
+                refs = bundle.get("source_object_refs") if isinstance(bundle, dict) else None
+                if not isinstance(refs, list):
+                    return False
+                for ref in refs:
+                    if not isinstance(ref, dict):
+                        continue
+                    ref_object = ref.get("object_id") or ref.get("objectId")
+                    ref_version = ref.get("version_id") or ref.get("versionId")
+                    if str(ref_object or "") == str(object_id) or str(ref_version or "") in version_ids:
+                        return True
+                return False
+
+            result_rows = [row for row in result_rows if references_object(row.get("bundle_json"))]
+            result_snapshot_ids = [row["id"] for row in result_rows]
+            turn_ids = {str(row["research_turn_id"]) for row in result_rows}
+            report_count = 0
+            if result_snapshot_ids:
+                report_count = int(
+                    session.connection.execute(
+                        select(func.count()).select_from(agent2_scientific_report_snapshots).where(
+                            agent2_scientific_report_snapshots.c.project_id == logical["project_id"],
+                            agent2_scientific_report_snapshots.c.scientific_result_snapshot_id.in_(result_snapshot_ids),
+                        )
+                    ).scalar_one()
+                )
+
+            dependencies = [
+                {"kind": "scientific_object_versions", "label": "科学对象版本", "count": len(versions)},
+                {"kind": "scientific_object_relationships", "label": "科学对象关系", "count": len(relationships)},
+                {"kind": "scientific_result_snapshots", "label": "ScientificResult", "count": len(result_snapshot_ids)},
+                {"kind": "research_turns", "label": "ResearchTurn", "count": len(turn_ids)},
+                {"kind": "scientific_reports", "label": "科学报告", "count": report_count},
+            ]
+            dependencies = [item for item in dependencies if item["count"]]
+            total = sum(item["count"] for item in dependencies)
+            return {
+                "entity": "scientific_object",
+                "entityId": str(object_id),
+                "displayName": str(logical.get("display_name") or object_id),
+                "canDelete": False,
+                "dependencyCount": total,
+                "dependencies": dependencies,
+                "impact": {
+                    "removedFromActiveDiscovery": True,
+                    "historicalProvenanceProtected": bool(dependencies),
+                    "historicalResearchRemainsAccessible": bool(dependencies),
+                    "scientificSnapshotMutated": False,
+                },
+            }
+
     def archive(self, object_id: UUID) -> dict[str, Any]:
         with _object_lock(object_id):
             with self.repository_factory.unit_of_work() as unit:
@@ -512,28 +702,91 @@ class ScientificObjectService:
         *,
         display_name: str | None = None,
         archived: bool | None = None,
+        lifecycle: ScientificObjectLifecycle | str | None = None,
     ) -> dict[str, Any]:
         if display_name is not None and not display_name.strip():
             raise InvalidScientificObjectVersion("display_name must not be blank")
-        if display_name is None and archived is None:
+        if display_name is None and archived is None and lifecycle is None:
             raise InvalidScientificObjectVersion("at least one metadata field is required")
+        if archived is not None and lifecycle is not None:
+            raise InvalidScientificObjectVersion("archived and lifecycle are mutually exclusive")
         with _object_lock(object_id):
             with self.repository_factory.unit_of_work() as unit:
                 repository = unit.agent2.scientific_objects
-                repository.get_object(object_id, for_update=True)
+                current = repository.get_object(object_id, for_update=True)
                 lifecycle_status = None
                 archived_at = None
-                if archived is True:
-                    lifecycle_status = "ARCHIVED"
-                    archived_at = datetime.now(timezone.utc)
+                pre_trash_lifecycle_status = None
+                clear_pre_trash_lifecycle = False
+                if lifecycle is not None:
+                    target: ScientificObjectLifecycle | str | None = lifecycle
+                elif archived is True:
+                    target = ScientificObjectLifecycle.ARCHIVED.value
                 elif archived is False:
-                    lifecycle_status = "ACTIVE"
+                    target = ScientificObjectLifecycle.ACTIVE.value
+                else:
+                    target = None
+                if target is not None:
+                    transition = _lifecycle_update_values(current, target)
+                    lifecycle_status = transition["lifecycle_status"]
+                    archived_at = transition["archived_at"]
+                    pre_trash_lifecycle_status = transition["pre_trash_lifecycle_status"]
+                    clear_pre_trash_lifecycle = transition["clear_pre_trash_lifecycle"]
                 return repository.update_object_metadata(
                     object_id,
                     display_name=display_name.strip() if display_name is not None else None,
                     lifecycle_status=lifecycle_status,
                     archived_at=archived_at,
+                    pre_trash_lifecycle_status=pre_trash_lifecycle_status,
+                    clear_pre_trash_lifecycle=clear_pre_trash_lifecycle,
                 )
+
+    def bulk_update_lifecycle(
+        self,
+        object_ids: list[UUID],
+        *,
+        project_id: str,
+        lifecycle: ScientificObjectLifecycle | str,
+    ) -> list[dict[str, Any]]:
+        """Apply one authorized lifecycle transition atomically.
+
+        The ordered row locks prevent partial product state while preserving
+        immutable ScientificObjectVersion rows and current-version pointers.
+        """
+        ordered_ids = sorted(set(object_ids), key=str)
+        if not ordered_ids:
+            raise InvalidScientificObjectVersion("at least one scientific object is required")
+        with ExitStack() as locks:
+            for object_id in ordered_ids:
+                locks.enter_context(_object_lock(object_id))
+            with self.repository_factory.unit_of_work() as unit:
+                repository = unit.agent2.scientific_objects
+                current_items = [
+                    repository.get_object(object_id, for_update=True)
+                    for object_id in ordered_ids
+                ]
+                if any(str(item["project_id"]) != project_id for item in current_items):
+                    raise UnauthorizedScientificObjectReference(
+                        "all scientific objects must belong to the authorized project"
+                    )
+                transitions = [
+                    _lifecycle_update_values(item, lifecycle)
+                    for item in current_items
+                ]
+                return [
+                    repository.update_object_metadata(
+                        object_id,
+                        lifecycle_status=transition["lifecycle_status"],
+                        archived_at=transition["archived_at"],
+                        pre_trash_lifecycle_status=transition["pre_trash_lifecycle_status"],
+                        clear_pre_trash_lifecycle=transition["clear_pre_trash_lifecycle"],
+                    )
+                    for object_id, transition in zip(
+                        ordered_ids,
+                        transitions,
+                        strict=True,
+                    )
+                ]
 
     def query_dataset_version(
         self,

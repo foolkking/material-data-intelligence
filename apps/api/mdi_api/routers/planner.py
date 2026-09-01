@@ -86,6 +86,21 @@ _IN_MEMORY_QUEUE_RUNTIME = QueueWorkerRuntime(
     queue_backend=_IN_MEMORY_QUEUE_BACKEND,
     object_store_resolver=lambda dataset_id: _phase2_object_store_for_dataset(dataset_id),
 )
+_INTERPRETATION_PROJECTABLE_ARTIFACT_TYPES = frozenset({
+    "table_json",
+    "metrics_json",
+    "structure_json",
+    "phonon_band_json",
+    "phonon_dos_json",
+    "phonon_band_dos_json",
+    "phonon_summary_json",
+    "volumetric_field_json",
+})
+_INTERPRETATION_PRESENTATION_COMPANION_TYPES = frozenset({
+    "plotly_json",
+    "summary_md",
+    "recipe_json",
+})
 
 
 def _get_registry() -> ToolRegistry:
@@ -1533,27 +1548,40 @@ def _interpretation_artifact_candidates(
 ) -> tuple[list[ArtifactProjectionInput], int]:
     tool_calls = {str(item.get("id")): item for item in repos.tool_calls.list_for_job(source.job_id)}
     lineage = {str(item.get("artifactId")): item for item in repos.dependency_execution.list_lineage_for_job(source.job_id)}
+    job_artifacts = sorted(
+        repos.artifacts.list_for_job(source.job_id),
+        key=lambda item: str(item.get("artifactId") or item.get("id")),
+    )
+    calls_with_projectable_evidence = {
+        tool_call_id
+        for artifact in job_artifacts
+        if (tool_call_id := str(artifact.get("toolCallId") or ""))
+        and (tool_call := tool_calls.get(tool_call_id))
+        and tool_call.get("status") == "completed"
+        and (
+            str(tool_call.get("toolId") or tool_call.get("tool_id") or ""),
+            str(artifact.get("type") or ""),
+        )
+        in ARTIFACT_PROJECTOR_CONTRACTS
+    }
     candidates: list[ArtifactProjectionInput] = []
     unsupported_artifact_count = 0
-    for artifact in sorted(repos.artifacts.list_for_job(source.job_id), key=lambda item: str(item.get("artifactId") or item.get("id"))):
-        if str(artifact.get("type") or "") not in {
-            "table_json",
-            "metrics_json",
-            "structure_json",
-            "phonon_band_json",
-            "phonon_dos_json",
-            "phonon_band_dos_json",
-            "phonon_summary_json",
-            "volumetric_field_json",
-        }:
-            unsupported_artifact_count += 1
-            continue
-        tool_call = tool_calls.get(str(artifact.get("toolCallId") or ""))
+    for artifact in job_artifacts:
+        tool_call_id = str(artifact.get("toolCallId") or "")
+        tool_call = tool_calls.get(tool_call_id)
         if not tool_call or tool_call.get("status") != "completed":
             unsupported_artifact_count += 1
             continue
         tool_id = str(tool_call.get("toolId") or tool_call.get("tool_id") or "")
         artifact_type = str(artifact.get("type") or "")
+        if (
+            artifact_type in _INTERPRETATION_PRESENTATION_COMPANION_TYPES
+            and tool_call_id in calls_with_projectable_evidence
+        ):
+            continue
+        if artifact_type not in _INTERPRETATION_PROJECTABLE_ARTIFACT_TYPES:
+            unsupported_artifact_count += 1
+            continue
         if (tool_id, artifact_type) not in ARTIFACT_PROJECTOR_CONTRACTS:
             unsupported_artifact_count += 1
             continue

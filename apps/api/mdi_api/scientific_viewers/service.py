@@ -5,6 +5,8 @@ import json
 from typing import Any
 from uuid import UUID
 
+from botocore.exceptions import ClientError
+
 from mdi_api.artifact_storage import ArtifactStorage
 from mdi_api.scientific_viewers.registry import ScientificViewerRegistry
 from mdi_api.scientific_viewers.schemas import ScientificViewerProjection
@@ -57,7 +59,42 @@ class ScientificViewerProjectionService:
                 payload_status = "METADATA_ONLY"
                 limitations.append("The scientific payload exceeds the bounded interactive preview limit; metadata and authorized download remain available.")
             else:
-                raw = self.storage.get_bytes_bounded(str(ref.get("object_key") or ""), max_bytes=descriptor.maximum_payload_bytes)
+                try:
+                    raw = self.storage.get_bytes_bounded(str(ref.get("object_key") or ""), max_bytes=descriptor.maximum_payload_bytes)
+                except FileNotFoundError:
+                    payload_status = "SOURCE_MISSING"
+                    limitations.append("The exact source payload is no longer available; metadata remains readable and no replacement version was selected.")
+                    raw = None
+                except ClientError as exc:
+                    error_code = str((exc.response or {}).get("Error", {}).get("Code", ""))
+                    if error_code in {"NoSuchKey", "NoSuchBucket", "NotFound", "404"}:
+                        payload_status = "SOURCE_MISSING"
+                        limitations.append("The exact source payload is no longer available in artifact storage; metadata remains readable and no replacement version was selected.")
+                        raw = None
+                    else:
+                        raise
+                if raw is None:
+                    return ScientificViewerProjection(
+                        project_id=str(logical["project_id"]),
+                        object_id=logical["id"],
+                        version_id=version["id"],
+                        object_type=str(version["object_type"]),
+                        object_schema_version=str(version["object_schema_version"]),
+                        display_name=str(logical["display_name"]),
+                        version_no=int(version["version_no"]),
+                        is_current_version=logical.get("current_version_id") == version["id"],
+                        availability_status=availability,
+                        viewer=descriptor,
+                        payload_status=payload_status,
+                        payload=None,
+                        canonical_metadata=dict(version["canonical_metadata_json"] or {}),
+                        source_resource_refs=list(version["source_resource_refs_json"] or []),
+                        content_hash=str(version["content_hash"]),
+                        semantic_hash=str(version["semantic_hash"]),
+                        payload_bytes=None,
+                        omitted_item_count=omitted,
+                        limitations=limitations,
+                    )
                 payload_bytes = len(raw)
                 checksum = hashlib.sha256(raw).hexdigest()
                 expected = str(ref.get("checksum") or version["content_hash"])

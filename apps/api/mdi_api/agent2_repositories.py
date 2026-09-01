@@ -28,6 +28,7 @@ from mdi_api.db import (
     agent2_scientific_report_snapshots,
     research_turn_events,
     research_turns,
+    projects,
     scientific_object_relationships,
     scientific_object_versions,
     scientific_objects,
@@ -145,7 +146,12 @@ class ScientificObjectRepository(_Repository):
             result = connection.execute(
                 update(scientific_objects)
                 .where(scientific_objects.c.id == object_id)
-                .values(lifecycle_status="ARCHIVED", archived_at=archived_at, row_version=scientific_objects.c.row_version + 1)
+                .values(
+                    lifecycle_status="ARCHIVED",
+                    archived_at=archived_at,
+                    pre_trash_lifecycle_status=None,
+                    row_version=scientific_objects.c.row_version + 1,
+                )
             )
             if result.rowcount != 1:
                 raise ScientificObjectNotFound(str(object_id))
@@ -159,6 +165,8 @@ class ScientificObjectRepository(_Repository):
         display_name: str | None = None,
         lifecycle_status: str | None = None,
         archived_at: datetime | None = None,
+        pre_trash_lifecycle_status: str | None = None,
+        clear_pre_trash_lifecycle: bool = False,
     ) -> dict[str, Any]:
         values: dict[str, Any] = {"row_version": scientific_objects.c.row_version + 1}
         if display_name is not None:
@@ -167,6 +175,10 @@ class ScientificObjectRepository(_Repository):
             values["lifecycle_status"] = lifecycle_status
         if archived_at is not None or lifecycle_status == "ACTIVE":
             values["archived_at"] = archived_at
+        if pre_trash_lifecycle_status is not None:
+            values["pre_trash_lifecycle_status"] = pre_trash_lifecycle_status
+        elif clear_pre_trash_lifecycle:
+            values["pre_trash_lifecycle_status"] = None
 
         def run(connection: Connection) -> dict[str, Any]:
             result = connection.execute(
@@ -242,6 +254,23 @@ class ResearchTurnRepository(_Repository):
         if for_update:
             statement = statement.with_for_update()
         return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
+
+    def lock_project_for_turn_admission(self, project_id: str) -> None:
+        """Serialize the bounded active-Turn admission decision per Project."""
+
+        statement = select(projects.c.id).where(projects.c.id == project_id).with_for_update()
+        self._run(lambda connection: connection.execute(statement).scalar_one())
+
+    def count_active_for_project(self, project_id: str) -> int:
+        terminal = (
+            "NEEDS_CLARIFICATION", "ANSWERED", "UNSUPPORTED", "PLAN_REJECTED",
+            "COMPLETED", "PARTIAL", "FAILED", "CANCELED",
+        )
+        statement = select(func.count()).select_from(research_turns).where(
+            research_turns.c.project_id == project_id,
+            research_turns.c.status.not_in(terminal),
+        )
+        return self._run(lambda connection: int(connection.execute(statement).scalar_one()))
 
     def list_for_session(self, session_id: str, *, cursor: int | None = None, limit: int = 50) -> list[dict[str, Any]]:
         statement = select(research_turns).where(research_turns.c.research_session_id == session_id)
@@ -631,6 +660,41 @@ class ResearchTurnDecisionRepository(_Repository):
         statement = select(research_turn_decisions).where(research_turn_decisions.c.research_turn_id == turn_id)
         return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
 
+    def complete_legacy_dispatch(self, turn_id: UUID) -> dict[str, Any]:
+        """Repair the bounded pre-terminal QUERY_DATA projection defect.
+
+        The orchestration decision itself remains immutable.  Only its
+        delivery projection advances from the historical
+        ``READY_FOR_DOWNSTREAM`` value to ``COMPLETED`` after the owning Turn
+        has been deterministically terminalized.
+        """
+
+        def run(connection: Connection) -> dict[str, Any]:
+            result = connection.execute(
+                update(research_turn_decisions)
+                .where(and_(
+                    research_turn_decisions.c.research_turn_id == turn_id,
+                    research_turn_decisions.c.action == "QUERY_DATA",
+                    research_turn_decisions.c.action_dispatch_status == "READY_FOR_DOWNSTREAM",
+                ))
+                .values(action_dispatch_status="COMPLETED")
+            )
+            if result.rowcount != 1:
+                current = connection.execute(
+                    select(research_turn_decisions).where(
+                        research_turn_decisions.c.research_turn_id == turn_id
+                    )
+                ).mappings().first()
+                if current is None or str(current["action_dispatch_status"]) != "COMPLETED":
+                    raise ConcurrentTurnModification(str(turn_id))
+            return dict(connection.execute(
+                select(research_turn_decisions).where(
+                    research_turn_decisions.c.research_turn_id == turn_id
+                )
+            ).mappings().one())
+
+        return self._run(run)
+
 
 class ResearchCapabilityResolutionRepository(_Repository):
     def add(self, values: Mapping[str, Any]) -> dict[str, Any]:
@@ -785,6 +849,18 @@ class Agent2ScientificReportRepository(_Repository):
     def get_for_turn(self, turn_id: UUID) -> dict[str, Any] | None:
         statement = select(agent2_scientific_report_snapshots).where(agent2_scientific_report_snapshots.c.research_turn_id == turn_id).order_by(agent2_scientific_report_snapshots.c.created_at.desc()).limit(1)
         return self._run(lambda connection: _optional_dict(connection.execute(statement).mappings().first()))
+
+    def list_for_turn(self, turn_id: UUID) -> list[dict[str, Any]]:
+        statement = (
+            select(agent2_scientific_report_snapshots)
+            .where(agent2_scientific_report_snapshots.c.research_turn_id == turn_id)
+            .order_by(agent2_scientific_report_snapshots.c.created_at.asc())
+        )
+        return self._run(
+            lambda connection: [
+                dict(row) for row in connection.execute(statement).mappings().all()
+            ]
+        )
 
     def get_by_report_id(self, report_id: str) -> dict[str, Any] | None:
         statement = select(agent2_scientific_report_snapshots).where(agent2_scientific_report_snapshots.c.report_id == report_id).limit(1)

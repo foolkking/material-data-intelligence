@@ -229,6 +229,51 @@ def test_dataset_requirements_accept_only_bounded_semantic_hints():
     assert list(Draft202012Validator(schema).iter_errors({"sql": "select * from materials"}))
 
 
+def test_trajectory_requirements_accept_only_bounded_adapter_constraints():
+    registry = build_default_requirement_registry()
+    msd_schema = registry.require("trajectory.compute_msd").constraint_schema
+    diffusion_schema = registry.require(
+        "trajectory.estimate_diffusion"
+    ).constraint_schema
+
+    assert not list(
+        Draft202012Validator(msd_schema).iter_errors(
+            {"species": "Li", "drift_correction": "none"}
+        )
+    )
+    assert list(
+        Draft202012Validator(msd_schema).iter_errors(
+            {"species": "Li", "python": "import os"}
+        )
+    )
+    assert list(
+        Draft202012Validator(msd_schema).iter_errors(
+            {"species": "Li;rm -rf"}
+        )
+    )
+
+    assert not list(
+        Draft202012Validator(diffusion_schema).iter_errors(
+            {
+                "fit_start_time_ps": 1.0,
+                "fit_end_time_ps": 6.0,
+                "direction": "total",
+                "minimum_r_squared": 0.9,
+            }
+        )
+    )
+    assert list(
+        Draft202012Validator(diffusion_schema).iter_errors(
+            {"fit_start_time_ps": -1.0, "fit_end_time_ps": 6.0}
+        )
+    )
+    assert list(
+        Draft202012Validator(diffusion_schema).iter_errors(
+            {"fit_start_time_ps": 1.0, "fit_end_time_ps": 6.0, "sql": "SELECT 1"}
+        )
+    )
+
+
 def test_state_machine_accepts_every_declared_edge_and_rejects_terminal_revival():
     for source, targets in ALLOWED_TRANSITIONS.items():
         for target in targets:

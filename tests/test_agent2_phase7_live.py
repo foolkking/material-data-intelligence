@@ -93,6 +93,7 @@ def _input(bundle: ResearchContextCandidateBundle) -> ResearchOrchestratorInput:
             requirement_id=item.requirement_id,
             display_name=item.display_name,
             description=item.description,
+            constraint_schema=item.constraint_schema,
         ) for item in registries.requirements.list_active()],
         allowed_actions=list(ResearchAction),
     )

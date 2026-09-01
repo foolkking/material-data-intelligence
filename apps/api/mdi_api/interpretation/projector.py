@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
 
 from mdi_api.scientific_results.schemas import ResultExecutionStatus, ResultRelevanceStatus, ScientificResultBundle
 
@@ -19,10 +18,16 @@ class AssistantResponseProjector:
         for finding in [*interpretation.primary_findings, *interpretation.supporting_findings]:
             lines.append(f"- {finding.statement.strip()}")
         limitations = list(interpretation.limitations)
-        limitations.extend(item.message for item in bundle.limitations)
         if limitations:
             lines.append("\n限制：")
             lines.extend(f"- {item.strip()}" for item in limitations[:16] if item.strip())
+        if bundle.warnings:
+            lines.append("\n警告：")
+            lines.extend(
+                f"- {item.message.strip()}"
+                for item in bundle.warnings[:16]
+                if item.message.strip()
+            )
         if interpretation.follow_up_suggestions:
             lines.append("\n可考虑的后续方向：")
             lines.extend(f"- {item.strip()}" for item in interpretation.follow_up_suggestions[:8] if item.strip())

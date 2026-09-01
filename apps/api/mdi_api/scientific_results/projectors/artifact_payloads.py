@@ -87,11 +87,28 @@ class _RegressionMetrics(BaseModel):
     medianAbsoluteError: float
 
 
+class _RegressionHighErrorSample(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    sampleRef: str = Field(min_length=1, max_length=512)
+    sampleKey: str = Field(min_length=1, max_length=1024)
+    objectId: str | None = Field(default=None, max_length=512)
+    rowIndex: int | None = Field(default=None, ge=0)
+    formula: str | None = Field(default=None, max_length=512)
+    reducedFormula: str | None = Field(default=None, max_length=512)
+    chemicalSystem: str | None = Field(default=None, max_length=512)
+    target: float
+    prediction: float
+    residual: float
+    absoluteError: float = Field(ge=0)
+
+
 class _RegressionEvaluation(BaseModel):
     model_config = ConfigDict(extra="allow")
     taskId: str = Field(min_length=1)
     unit: str | None = None
     metrics: _RegressionMetrics
+    highErrorSamples: list[_RegressionHighErrorSample] = Field(default_factory=list, max_length=200)
 
 
 class RegressionEvaluationArtifactPayload(_Payload):
@@ -128,6 +145,14 @@ class _DiffusionFit(BaseModel):
     rmseAngstrom2: float | None
 
 
+class _DiffusionFitWindow(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    startPs: float
+    endPs: float
+    pointCount: int = Field(ge=0)
+    durationPs: float = Field(ge=0)
+
+
 class _RegimeDiagnostic(BaseModel):
     model_config = ConfigDict(extra="allow")
     status: str = Field(min_length=1)
@@ -137,6 +162,7 @@ class DiffusionArtifactPayload(_Payload):
     schema_version: Literal["phase10n4.trajectory_diffusion.v1"] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
     artifact_type: Literal["trajectory.diffusion"] = Field(validation_alias="artifactType")
     diffusionEstimate: _DiffusionEstimate
+    fitWindow: _DiffusionFitWindow
     fit: _DiffusionFit
     regimeDiagnostic: _RegimeDiagnostic
 

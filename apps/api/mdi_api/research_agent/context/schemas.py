@@ -162,12 +162,17 @@ class ContextManifestItem(BaseModel):
         "SCIENTIFIC_RESULT",
         "USER_CONSTRAINT",
         "RESEARCH_GOAL",
+        "CAPABILITY_CANDIDATE",
+        "SCIENTIFIC_EVIDENCE",
     ]
     authority_class: Literal[
         "SCIENTIFIC_DATA",
         "SCIENTIFIC_RESULT",
+        "SCIENTIFIC_EVIDENCE",
         "USER_CONSTRAINT",
         "CONVERSATIONAL_NARRATIVE",
+        "SYSTEM_RUNTIME_STATE",
+        "DERIVED_SUMMARY",
     ]
     server_side_source_identity: str = Field(min_length=1, max_length=256)
     provider_opaque_ref: str = Field(min_length=1, max_length=128)
@@ -181,6 +186,7 @@ class ContextManifestItem(BaseModel):
         "CURRENT",
         "PINNED",
         "RECENT",
+        "RETRIEVED",
         "CONTINUATION",
     ]
     authorization_checked: bool
@@ -202,7 +208,7 @@ class ContextManifest(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     context_manifest_id: UUID
-    operation: Literal["ORCHESTRATOR", "PLANNER", "INTERPRETER", "DATA"]
+    operation: Literal["ORCHESTRATOR", "PLANNER", "INTERPRETER", "DATA", "REPORT"]
     project_id: str = Field(min_length=1, max_length=64)
     research_session_id: str = Field(min_length=1, max_length=64)
     research_turn_id: UUID

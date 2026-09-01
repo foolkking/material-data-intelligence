@@ -39,6 +39,7 @@ class PlannerBindingSource(str, Enum):
     semantic_columns = "SEMANTIC_COLUMNS"
     profile_id = "PROFILE_ID"
     resource_fact = "RESOURCE_FACT"
+    user_request = "USER_REQUEST"
     literal = "LITERAL"
 
 

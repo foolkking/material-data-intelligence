@@ -122,6 +122,12 @@ class ResearchProgressView(BaseModel):
     contract_version: Literal["1.0"]
     turn_id: UUID
     status: ResearchTurnStatus
+    response_kind: Literal[
+        "DATA_QUERY",
+        "RESULT_REUSE",
+        "CONVERSATIONAL",
+        "SCIENTIFIC_EXECUTION",
+    ] | None = None
     plan_title: str | None = None
     steps: list[ResearchProgressStep] = Field(default_factory=list)
     active_step_ids: list[str] = Field(default_factory=list)

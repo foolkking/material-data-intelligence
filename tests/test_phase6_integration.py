@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import io
 import os
-import time
 from pathlib import Path
 from typing import Any
 
@@ -11,18 +9,14 @@ from sqlalchemy import create_engine
 
 from mdi_api.artifact_storage import (
     S3CompatibleArtifactStorage,
-    create_minio_artifact_storage_from_settings,
 )
-from mdi_api.config import ApiSettings, load_settings
 from mdi_api.db import metadata
 from mdi_api.repositories import (
     SqlAlchemyJobEventRepository,
     SqlAlchemyRepositoryBundle,
-    _lock_job_event_sequence,
 )
 from mdi_api.state_machine import InvalidStatusTransition
 from mdi_workers import (
-    InMemoryQueueBackend,
     QueueToolExecution,
     QueueWorkerRuntime,
     RedisRQQueueBackend,
@@ -67,8 +61,6 @@ def _minio_storage(prefix: str = "test-phase6") -> S3CompatibleArtifactStorage:
     secret = os.getenv("MINIO_SECRET_KEY", "mdi-local-dev")
     bucket = os.getenv("MINIO_BUCKET", "mdi-artifacts")
     try:
-        import botocore
-
         client = _live_minio_client(endpoint, access, secret)
         return S3CompatibleArtifactStorage(
             bucket=bucket,
@@ -236,9 +228,11 @@ def test_phase6_alembic_upgrade_head_creates_all_tables(tmp_path: Path) -> None:
     for idx in expected_indexes:
         assert idx in indexes, f"Index {idx} missing from PostgreSQL after alembic upgrade head"
 
-    # 4. downgrade to clean up, then re-upgrade to verify reproducibility
+    # 4. Reconcile revision 0028 is intentionally schema-preserving on
+    # downgrade: foundation tables may predate Alembic and contain protected
+    # access/audit data.  Verify that contract, then re-upgrade the head.
     from alembic.command import downgrade as alembic_downgrade
-    alembic_downgrade(alembic_cfg, "base")
+    alembic_downgrade(alembic_cfg, "0027_research_session_management")
     with engine.connect() as conn:
         result = conn.execute(
             __import__("sqlalchemy").text(
@@ -246,7 +240,15 @@ def test_phase6_alembic_upgrade_head_creates_all_tables(tmp_path: Path) -> None:
             )
         )
         tables_after_downgrade = {row[0] for row in result}
-    assert len(tables_after_downgrade & expected_tables) == 0, "Tables should be dropped after downgrade"
+    assert expected_tables.issubset(tables_after_downgrade)
+    assert {
+        "project_members",
+        "files",
+        "field_mappings",
+        "user_configs",
+        "secrets",
+        "audit_logs",
+    }.issubset(tables_after_downgrade)
 
     alembic_upgrade(alembic_cfg, "head")
     with engine.connect() as conn:
@@ -707,19 +709,6 @@ def test_phase6_service_backed_product_loop(repo_root: Path) -> None:
         "y_pred": [2.0, 3.5, 1.9, 4.0, 3.0],
     })
     object_store: dict[str, list[Any]] = {"dataset_ml": [df]}
-    adapter_context = ToolExecutionContext(
-        job_id=ids["job"],
-        project_id=ids["project"],
-        dataset_id=ids["dataset"] or "",
-        tool_id="ml.basic_metrics",
-        tool_version="0.1.0",
-        adapter_version="0.1.0",
-        registry_version=_reg.version,
-        artifact_root=Path(".artifacts/phase6-loop"),
-        tool_call_id="call_job_p6_step_metrics",
-        object_store=object_store,
-    )
-
     def real_adapter_executor(request_obj, ctx):
         """Execute through the real Tool Registry + Adapter path."""
         parsed = request_obj if isinstance(request_obj, ToolExecutionRequest) else ToolExecutionRequest.model_validate(request_obj)

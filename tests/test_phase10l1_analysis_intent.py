@@ -967,6 +967,35 @@ def test_explicit_property_distribution_remains_property_analysis() -> None:
     assert CapabilityNeed.material_property_data in intent.requiredCapabilityNeeds
 
 
+def test_chinese_diffusion_properties_do_not_create_tabular_property_intent() -> None:
+    profile = _profile(
+        resources=[
+            {
+                "objectId": "trajectory_exact",
+                "objectType": "Trajectory",
+                "objectHash": "d" * 64,
+                "kind": "trajectory",
+                "capabilities": ["trajectory"],
+                "facts": {
+                    "timeStartPs": 0.0,
+                    "timeEndPs": 11.5,
+                },
+            }
+        ]
+    )
+    intent = DeterministicAnalysisIntentBuilder().build(
+        _request(
+            "请在 1 ps 到 6 ps 的显式窗口内评估扩散性质。",
+            selected_resource_ids=("trajectory_exact",),
+        ),
+        profile=profile,
+    )
+
+    assert intent.outcome.value == "READY"
+    assert intent.scientificIntents == [ScientificIntent.trajectory_analysis]
+    assert intent.requiredCapabilityNeeds == [CapabilityNeed.trajectory_resource]
+
+
 def test_validator_rejects_invented_clarification_candidate_label() -> None:
     profile = _profile(targets=("formation_energy", "band_gap"))
     intent = DeterministicAnalysisIntentBuilder().build(

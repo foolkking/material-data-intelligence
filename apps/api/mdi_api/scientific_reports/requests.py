@@ -32,6 +32,13 @@ class ScientificReportRequestService:
                 "created_at": datetime.now(timezone.utc),
                 "updated_at": datetime.now(timezone.utc),
             })
+            if str(generation["status"]).upper() == "FAILED":
+                generation = unit.agent2.scientific_report_generations.set_status(
+                    generation["id"],
+                    "REQUESTED",
+                    error_code=None,
+                    error_summary=None,
+                )
         try:
             queued = self.queue.enqueue_generation(generation["id"])
         except Exception as exc:

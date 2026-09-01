@@ -32,8 +32,8 @@ from mdi_api.research_agent.turns.state_machine import ensure_transition
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 from mdi_tool_registry import load_manifests
 from mdi_api.db import (
-    analysis_plans, artifacts, data_profiles, datasets, jobs, messages, metadata,
-    organizations, projects, research_context_snapshots, research_turn_decisions,
+    analysis_plans, artifacts, data_profiles, datasets, jobs, metadata,
+    organizations, projects,
     research_turns, sessions, tool_calls, users,
 )
 from mdi_api.research_agent.planning.processor import CapabilityPlanningProcessor
@@ -116,14 +116,48 @@ def test_p3_c03_ml_regression_evaluation_binds_exact_dataset_version():
     )
     assert resolution.candidates[0].capability_id == "ml.regression_evaluation"
     assert plan.steps[0].input_bindings["dataset"][0].source_ref_key == "obj_1"
-    assert analysis.steps[0].inputRefs[0].ref == str(dataset.version_id)
+    assert [item.refType for item in analysis.steps[0].inputRefs] == [
+        "profile",
+        "normalized_object",
+    ]
+    assert analysis.steps[0].inputRefs[1].ref == str(dataset.version_id)
+
+
+def test_p3_c03_ml_regression_evaluation_accepts_promoted_materials_table():
+    table = ref("materials.table", "Promoted regression table")
+    resolution, plan, analysis = plan_and_bind(
+        decision([("ml.evaluate_regression", ["obj_1"], {})], "Evaluate regression"),
+        [table],
+    )
+    assert resolution.candidates[0].capability_id == "ml.regression_evaluation"
+    assert resolution.candidates[0].eligibility.value == "ELIGIBLE"
+    assert plan.steps[0].input_bindings["dataset"][0].source_ref_key == "obj_1"
+    assert [item.refType for item in analysis.steps[0].inputRefs] == [
+        "profile",
+        "normalized_object",
+    ]
+    assert analysis.steps[0].inputRefs[1].ref == str(table.version_id)
 
 
 def test_p3_c04_trajectory_msd_diffusion_uses_real_planned_output():
     trajectory = ref("trajectory.atomic", "MD")
-    request = decision([("trajectory.compute_msd", ["obj_1"], {}), ("trajectory.estimate_diffusion", ["obj_1"], {})])
+    request = decision([
+        ("trajectory.compute_msd", ["obj_1"], {"species": "Li"}),
+        (
+            "trajectory.estimate_diffusion",
+            ["obj_1"],
+            {"fit_start_time_ps": 1.0, "fit_end_time_ps": 6.0},
+        ),
+    ])
     _resolution, _plan, analysis = plan_and_bind(request, [trajectory])
     assert [step.toolId for step in analysis.steps] == ["trajectory.msd", "trajectory.diffusion"]
+    assert analysis.steps[0].params == {"species": "Li"}
+    assert analysis.steps[1].params["fit_start_time_ps"] == 1.0
+    assert analysis.steps[1].params["fit_end_time_ps"] == 6.0
+    assert [item.refType for item in analysis.steps[0].inputRefs] == [
+        "normalized_object"
+    ]
+    assert analysis.steps[1].inputRefs == []
     assert analysis.dependencyBindings[0].producerOutputPort == "trajectory-msd"
     assert analysis.dependencyBindings[0].consumerInputPort == "msd"
 
@@ -148,6 +182,35 @@ def test_p3_c07_explicit_cutoff_is_preserved_through_tool_binding():
     _resolution, plan, analysis = plan_and_bind(decision([("structure.compute_rdf", ["obj_1"], {"cutoff_angstrom": 8.0})]), [structure])
     assert plan.steps[0].parameters == {"r_max_angstrom": 8.0}
     assert analysis.steps[0].params == {"r_max_angstrom": 8.0}
+
+
+def test_p3_dataset_semantic_constraints_do_not_become_tool_params():
+    dataset = ref("materials.dataset", "Materials")
+    request = decision(
+        [("data.explore_materials", ["obj_1"], {"property": "band_gap", "sample": "mat-2"})],
+        "Analyze the selected Dataset sample.",
+    )
+    resolution, plan, analysis = plan_and_bind(request, [dataset])
+    assert plan.steps[0].parameters == {"property": "band_gap", "sample": "mat-2"}
+    assert analysis.steps[0].toolId == "dataset.materials_explorer"
+    assert analysis.steps[0].params == {}
+
+
+def test_p3_dataset_unknown_executable_constraint_still_fails_closed():
+    dataset = ref("materials.dataset", "Materials")
+    request = decision(
+        [("data.explore_materials", ["obj_1"], {"unsupported": "should-reject"})],
+        "Analyze the selected Dataset.",
+    )
+    resolution, snapshot = resolve(request, [dataset])
+    plan = build_deterministic_capability_plan(decision=request, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    with pytest.raises(CapabilityBindingFailed, match="validation"):
+        CapabilityBinder(TOOLS).bind(
+            capability_plan=plan,
+            resolution=resolution,
+            context={"dataset_id": "dataset", "profile_id": "profile", "object_refs": {"obj_1": dataset}},
+            registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+        )
 
 
 def test_p3_c13_current_result_reuses_exact_output_object_without_recomputation():
@@ -320,6 +383,181 @@ def test_bounded_llm_planner_repairs_once_outside_transaction():
     plan, mode, result = asyncio.run(ScientificCapabilityPlanner(registry=DEFAULT_AGENT2_REGISTRIES.capabilities, llm_client=fake).plan(decision=request, resolution=resolution, planner_input=planner_input, context=snapshot))
     assert mode == "LLM" and len(fake.calls) == 2 and result.repair_attempted is True
     assert [step.capability_ref_key for step in plan.steps] == ["cap_1", "cap_3"]
+    repair_context = fake.calls[1]["request_context"]["repair"]
+    assert repair_context["binding_contracts"]["PREVIOUS_RESULT"] == {
+        "required_fields": ["kind", "result_ref_key"],
+        "forbidden_fields": [
+            "source_ref_key",
+            "producer_step_id",
+            "producer_output_slot",
+        ],
+    }
+
+
+def test_bounded_llm_planner_repairs_mixed_binding_shape_and_stays_fail_closed():
+    band, dos = ref("phonon.band_structure", "Band"), ref("phonon.dos", "DOS")
+    request = decision(
+        [
+            ("phonon.inspect_band", ["obj_1"], {}),
+            ("phonon.inspect_dos", ["obj_2"], {}),
+        ]
+    )
+    resolution, snapshot = resolve(request, [band, dos])
+    valid = {
+        "contract_version": "1.0",
+        "objective": request.research_objective,
+        "steps": [
+            {
+                "step_id": "step_1",
+                "capability_ref_key": "cap_1",
+                "satisfies_requirement_ids": ["phonon.inspect_band"],
+                "input_bindings": {
+                    "band": [{"kind": "SOURCE_OBJECT", "source_ref_key": "obj_1"}]
+                },
+                "parameters": {},
+                "expected_outputs": [
+                    {
+                        "slot_name": "band",
+                        "result_type": "phonon.band",
+                        "scientific_object_type": "phonon.band_structure",
+                    }
+                ],
+            },
+            {
+                "step_id": "step_2",
+                "capability_ref_key": "cap_3",
+                "satisfies_requirement_ids": ["phonon.inspect_dos"],
+                "input_bindings": {
+                    "dos": [{"kind": "SOURCE_OBJECT", "source_ref_key": "obj_2"}]
+                },
+                "parameters": {},
+                "expected_outputs": [
+                    {
+                        "slot_name": "dos",
+                        "result_type": "phonon.dos",
+                        "scientific_object_type": "phonon.dos",
+                    }
+                ],
+            },
+        ],
+        "omitted_optional_requirement_ids": [],
+        "planner_summary": "Inspect the exact band and DOS sources.",
+    }
+    invalid = {
+        **valid,
+        "steps": [
+            valid["steps"][0],
+            {
+                **valid["steps"][1],
+                "input_bindings": {
+                    "dos": [
+                        {
+                            "kind": "PREVIOUS_RESULT",
+                            "result_ref_key": "result_1",
+                            "producer_step_id": "step_1",
+                            "producer_output_slot": "band",
+                        }
+                    ]
+                },
+            },
+        ],
+    }
+    candidates = [
+        PlannerCapabilityView(
+            ref_key=f"cap_{index}",
+            capability_id=item.capability_id,
+            version=item.capability_version,
+            eligibility=item.eligibility,
+            satisfies_requirement_ids=item.satisfies_requirement_ids,
+            input_slots=[],
+            output_slots=[],
+        )
+        for index, item in enumerate(resolution.candidates, 1)
+    ]
+    planner_input = CapabilityPlannerInput(
+        research_objective=request.research_objective,
+        requirements=[
+            PlannerRequirementView(
+                requirement_id=item.requirement_id,
+                criticality=item.criticality.value,
+                subject_ref_keys=item.subject_ref_keys,
+                constraints=item.constraints,
+            )
+            for item in request.scientific_requirements
+        ],
+        candidates=candidates,
+        source_bindings=[
+            PlannerSourceRef(
+                ref_key="obj_1",
+                object_type=band.object_type,
+                display_name="Band",
+            ),
+            PlannerSourceRef(
+                ref_key="obj_2",
+                object_type=dos.object_type,
+                display_name="DOS",
+            ),
+        ],
+        reusable_results=[],
+        explicit_constraints=[],
+    )
+
+    class RepairingFake:
+        def __init__(self) -> None:
+            self.calls: list[dict] = []
+
+        async def generate_structured(self, **kwargs):
+            self.calls.append(kwargs)
+            parsed = invalid if len(self.calls) == 1 else valid
+            return StructuredLLMResult(
+                provider="fake",
+                model="fixture",
+                parsed=parsed,
+                latency_ms=1,
+                repair_attempted=False,
+                prompt_version="scientific-capability-planner/1.1",
+            )
+
+    repairing = RepairingFake()
+    plan, mode, result = asyncio.run(
+        ScientificCapabilityPlanner(
+            registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+            llm_client=repairing,
+        ).plan(
+            decision=request,
+            resolution=resolution,
+            planner_input=planner_input,
+            context=snapshot,
+        )
+    )
+    assert mode == "LLM"
+    assert len(repairing.calls) == 2
+    assert result.repair_attempted is True
+    assert plan.steps[1].input_bindings["dos"][0].kind == CapabilityBindingKind.SOURCE_OBJECT
+
+    class AlwaysInvalidFake:
+        async def generate_structured(self, **kwargs):
+            return StructuredLLMResult(
+                provider="fake",
+                model="fixture",
+                parsed=invalid,
+                latency_ms=1,
+                repair_attempted=bool(kwargs["request_context"]["repair_attempted"]),
+                prompt_version="scientific-capability-planner/1.1",
+            )
+
+    with pytest.raises(CapabilityPlanInvalid, match="binding fields do not match binding kind"):
+        asyncio.run(
+            ScientificCapabilityPlanner(
+                registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+                llm_client=AlwaysInvalidFake(),
+            ).plan(
+                decision=request,
+                resolution=resolution,
+                planner_input=planner_input,
+                context=snapshot,
+            )
+        )
 
 
 @pytest.mark.live_llm

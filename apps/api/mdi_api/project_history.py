@@ -121,7 +121,7 @@ class ProjectHistoryService:
         return {
             "datasetId": dataset_id,
             "name": str(dataset.get("name") or dataset_id),
-            "status": str(dataset.get("status") or "created"),
+            "status": "trashed" if metadata.get("trashedAt") else str(dataset.get("status") or "created"),
             "createdAt": dataset.get("createdAt") or metadata.get("createdAt"),
             "updatedAt": dataset.get("updatedAt") or dataset.get("createdAt") or metadata.get("createdAt"),
             "import": {

@@ -11,9 +11,9 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
-REPORT_COMPOSER_CONTRACT_VERSION = "1.0"
-REPORT_COMPOSER_VERSION = "agent2.report-composer/1.0"
-REPORT_COMPOSER_PROMPT_VERSION = "scientific-report-composer/1.0"
+REPORT_COMPOSER_CONTRACT_VERSION = "2.0"
+REPORT_COMPOSER_VERSION = "agent2.report-composer/2.0"
+REPORT_COMPOSER_PROMPT_VERSION = "scientific-report-composer/2.0"
 _SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$")
 
 
@@ -38,7 +38,7 @@ class ReportContextBundle(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    contract_version: Literal["1.0"] = REPORT_COMPOSER_CONTRACT_VERSION
+    contract_version: Literal["2.0"] = REPORT_COMPOSER_CONTRACT_VERSION
     research_question: str = Field(min_length=1, max_length=16000)
     result: dict[str, Any]
     interpretation: dict[str, Any]
@@ -79,15 +79,32 @@ class ReportLimitation(BaseModel):
     source_refs: list[str] = Field(default_factory=list, max_length=32)
 
 
+class ReportNarrativeSection(BaseModel):
+    """A bounded, provenance-aware narrative section.
+
+    Narrative is communication only.  Any scientific claim carried in a
+    section must point back to the validated Result facts/evidence.
+    """
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    text: str = Field(min_length=1, max_length=6000)
+    fact_refs: list[str] = Field(default_factory=list, max_length=32)
+    evidence_refs: list[str] = Field(default_factory=list, max_length=32)
+
+
 class ScientificReportOutput(BaseModel):
     """Structured report content; it is not accepted until grounding passes."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    contract_version: Literal["1.0"] = REPORT_COMPOSER_CONTRACT_VERSION
+    contract_version: Literal["1.0", "2.0"] = REPORT_COMPOSER_CONTRACT_VERSION
     title: str = Field(min_length=1, max_length=256)
     research_question: str = Field(min_length=1, max_length=16000)
     summary: str = Field(min_length=1, max_length=6000)
+    discussion: ReportNarrativeSection | None = None
+    conclusion: ReportNarrativeSection | None = None
+    next_steps: ReportNarrativeSection | None = None
     main_findings: list[ReportFinding] = Field(default_factory=list, max_length=16)
     primary_figures: list[ReportFigure] = Field(default_factory=list, max_length=16)
     supporting_results: list[ReportSupportingResult] = Field(default_factory=list, max_length=32)
@@ -112,7 +129,7 @@ class ScientificReportOutput(BaseModel):
 class ScientificReportSnapshot(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    contract_version: Literal["1.0"] = REPORT_COMPOSER_CONTRACT_VERSION
+    contract_version: Literal["1.0", "2.0"] = REPORT_COMPOSER_CONTRACT_VERSION
     report_id: str = Field(min_length=1, max_length=96)
     snapshot_id: UUID
     project_id: str = Field(min_length=1, max_length=64)
@@ -141,5 +158,6 @@ __all__ = [
     "REPORT_COMPOSER_CONTRACT_VERSION", "REPORT_COMPOSER_PROMPT_VERSION", "REPORT_COMPOSER_VERSION",
     "ReportContextBundle",
     "ReportFigure", "ReportFinding", "ReportGenerationStatus", "ReportGroundingStatus",
-    "ReportLimitation", "ReportSupportingResult", "ScientificReportOutput", "ScientificReportSnapshot",
+    "ReportLimitation", "ReportNarrativeSection", "ReportSupportingResult",
+    "ScientificReportOutput", "ScientificReportSnapshot",
 ]

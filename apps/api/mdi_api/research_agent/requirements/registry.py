@@ -46,6 +46,77 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
         "properties": {"cutoff_angstrom": {"type": "number", "exclusiveMinimum": 0}},
         "additionalProperties": False,
     }
+    # Trajectory constraints mirror the already-registered adapter contract at
+    # the scientific-requirement boundary.  They stay bounded and fail closed:
+    # the orchestrator may preserve an explicit species or fit window from the
+    # user's request, but it cannot inject arbitrary execution parameters.
+    trajectory_msd_constraints = {
+        "type": "object",
+        "properties": {
+            "species": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32,
+                "pattern": "^[A-Za-z0-9+_-]+$",
+            },
+            "max_lag_count": {"type": "integer", "minimum": 1, "maximum": 2048},
+            "origin_stride": {"type": "integer", "minimum": 1, "maximum": 1000},
+            "max_origins_per_lag": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4096,
+            },
+            "drift_correction": {"const": "none"},
+        },
+        "additionalProperties": False,
+    }
+    trajectory_diffusion_constraints = {
+        "type": "object",
+        "properties": {
+            "fit_start_time_ps": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1e12,
+            },
+            "fit_end_time_ps": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1e12,
+            },
+            "direction": {"enum": ["total", "x", "y", "z"]},
+            "minimum_fit_points": {
+                "type": "integer",
+                "minimum": 3,
+                "maximum": 10000,
+            },
+            "minimum_fit_duration_ps": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1e9,
+            },
+            "minimum_origin_coverage": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+            },
+            "minimum_r_squared": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+            },
+            "alpha_min": {
+                "type": "number",
+                "minimum": 0.1,
+                "maximum": 2,
+            },
+            "alpha_max": {
+                "type": "number",
+                "minimum": 0.1,
+                "maximum": 3,
+            },
+        },
+        "additionalProperties": False,
+    }
     # Dataset exploration requests may carry bounded semantic hints from the
     # orchestrator (for example the selected property and sample identity).
     # These are planning constraints, not executable SQL, and remain strictly
@@ -64,9 +135,16 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
         ("structure.inspect_coordination", "Inspect coordination", "Characterize local atomic coordination.", "structure", ["structure.crystal"], object_constraints),
         ("diffraction.generate_theoretical_pattern", "Generate theoretical XRD", "Generate a theoretical diffraction pattern.", "diffraction", ["structure.crystal"], object_constraints),
         ("diffraction.compare_experimental_theoretical", "Compare XRD patterns", "Compare authorized experimental and theoretical diffraction data.", "diffraction", ["diffraction.xrd.experimental", "diffraction.xrd.theoretical", "structure.crystal"], object_constraints),
-        ("trajectory.compute_msd", "Compute MSD", "Compute mean-squared displacement from an atomic trajectory.", "trajectory", ["trajectory.atomic"], object_constraints),
-        ("trajectory.estimate_diffusion", "Estimate diffusion", "Estimate diffusion from trajectory-derived displacement evidence.", "trajectory", ["trajectory.atomic"], object_constraints),
-        ("ml.evaluate_regression", "Evaluate regression", "Evaluate a materials regression result.", "machine_learning", ["materials.dataset"], object_constraints),
+        ("trajectory.compute_msd", "Compute MSD", "Compute mean-squared displacement from an atomic trajectory.", "trajectory", ["trajectory.atomic"], trajectory_msd_constraints),
+        ("trajectory.estimate_diffusion", "Estimate diffusion", "Estimate diffusion from trajectory-derived displacement evidence.", "trajectory", ["trajectory.atomic"], trajectory_diffusion_constraints),
+        (
+            "ml.evaluate_regression",
+            "Evaluate regression",
+            "Evaluate a materials regression result.",
+            "machine_learning",
+            ["materials.dataset", "materials.table"],
+            object_constraints,
+        ),
         ("phonon.inspect_band", "Inspect phonon band", "Inspect an authorized phonon band structure.", "phonon", ["phonon.band_structure"], object_constraints),
         ("phonon.inspect_dos", "Inspect phonon DOS", "Inspect an authorized phonon density of states.", "phonon", ["phonon.dos"], object_constraints),
         ("data.query", "Query data", "Query authorized project scientific data without mutation.", "data", ["materials.dataset", "materials.table"], dataset_constraints),

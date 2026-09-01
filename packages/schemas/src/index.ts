@@ -718,6 +718,7 @@ export type PlannerBindingSource =
   | "SEMANTIC_COLUMNS"
   | "PROFILE_ID"
   | "RESOURCE_FACT"
+  | "USER_REQUEST"
   | "LITERAL";
 
 export type CapabilityDiagnostic = {

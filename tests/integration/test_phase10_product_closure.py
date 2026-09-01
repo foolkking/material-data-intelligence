@@ -190,6 +190,83 @@ def test_phase10_service_backed_formal_viewer_product_closure(tmp_path: Path) ->
 
 
 @pytest.mark.integration
+def test_phase14r_service_backed_coordination_histogram_surface_closure(tmp_path: Path) -> None:
+    if os.getenv("MDI_RUN_INTEGRATION") != "1":
+        pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")
+    database_url = os.getenv("MDI_TEST_DATABASE_URL") or os.getenv("DATABASE_URL")
+    redis_url = os.getenv("REDIS_URL") or os.getenv("MDI_REDIS_URL")
+    if not database_url or "postgres" not in database_url or not redis_url:
+        pytest.skip("Service-backed Phase 14-R coordination environment is incomplete")
+
+    engine = create_engine(database_url, future=True)
+    try:
+        metadata.create_all(engine)
+        repos = SqlAlchemyRepositoryBundle.create(engine)
+        suffix = uuid.uuid4().hex[:10]
+        project_id = f"project_phase14r_coordination_{suffix}"
+        dataset_id = f"dataset_phase14r_coordination_{suffix}"
+        profile_id = f"profile_phase14r_coordination_{suffix}"
+        repos.projects.save({"id": project_id, "name": project_id, "createdBy": "test_user"})
+        repos.datasets.save({"id": dataset_id, "projectId": project_id, "name": dataset_id, "createdBy": "test_user"})
+
+        profile = _structure_profile(dataset_id=dataset_id, profile_id=profile_id)
+        prompt = "Create a coordination number histogram for this structure using a fixed distance cutoff."
+        plan = _planner_plan(prompt, profile)
+        assert plan["steps"][0]["toolId"] == "structure.coordination_hist"
+        assert validate_plan(plan, registry=load_manifests()).ok
+
+        storage = _minio_storage(f"phase14r-coordination-histogram-{suffix}")
+        runtime = QueueWorkerRuntime(
+            repository_factory=create_repository_factory(load_settings()),
+            queue_backend=RedisRQQueueBackend(redis_url=redis_url, queue_name="mdi-test-phase14r-coordination-histogram"),
+            artifact_storage=storage,
+            registry=load_manifests(),
+            artifact_root=tmp_path / "adapter-artifacts",
+        )
+        created = planner_jobs(
+            PlannerJobsRequest(
+                userPrompt=prompt,
+                projectId=project_id,
+                datasetId=dataset_id,
+                profileId=profile_id,
+                enqueue=True,
+            ),
+            provider=MockLLMProvider(fixed_plan=plan),
+            repositories=repos,
+            queue_runtime=runtime,
+            registry=load_manifests(),
+        )
+        assert created.ok and created.job_id and created.plan_id and created.enqueued
+
+        result = runtime.handle_job(created.job_id, object_store=_object_store())
+        calls = repos.tool_calls.list_for_job(created.job_id)
+        artifacts = repos.artifacts.list_for_job(created.job_id)
+        assert result.status == "completed"
+        assert len(calls) == 1 and calls[0]["toolId"] == "structure.coordination_hist"
+        assert {item["name"] for item in artifacts} == {
+            "coordination_hist.json",
+            "coordination_hist_plot.json",
+            "summary.md",
+            "recipe.json",
+        }
+        assert all(item["storageProvider"] == "s3" and storage.exists(item["storageKey"]) for item in artifacts)
+        histogram = storage.get_json(next(item["storageKey"] for item in artifacts if item["name"] == "coordination_hist.json"))
+        plot = storage.get_json(next(item["storageKey"] for item in artifacts if item["name"] == "coordination_hist_plot.json"))
+        assert histogram["artifactType"] == "structure.coordination_hist"
+        assert histogram["schema_version"] == "phase10e1.coordination_hist.v1"
+        assert histogram["histogram"]["total_sites"] == 2
+        assert histogram["security"] == {
+            "contains_javascript": False,
+            "external_urls": [],
+            "external_urls_allowed": False,
+        }
+        assert plot["artifactType"] == "structure.coordination_hist_plot"
+        assert plot["schema_version"] == "phase10e1.static_chart.v1"
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.integration
 def test_phase10_service_backed_formal_trajectory_viewer_product_closure(tmp_path: Path) -> None:
     if os.getenv("MDI_RUN_INTEGRATION") != "1":
         pytest.skip("Set MDI_RUN_INTEGRATION=1 with PostgreSQL, Redis, and MinIO running")

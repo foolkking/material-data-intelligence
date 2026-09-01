@@ -328,8 +328,32 @@ def _worker_environment(database_url: str) -> dict[str, str]:
         "MDI_DATABASE_URL": database_url,
         "MDI_ARTIFACT_BACKEND": "minio",
         "MDI_RUNTIME_BACKEND": "postgresql",
-        # This Phase 4 worker regression deliberately stops at RESULT_PENDING;
-        # interpretation-enabled terminal coverage is exercised separately.
+        # Keep the fresh subprocess on the same MinIO endpoint/credentials
+        # used by _minio_storage().  Without these explicit aliases the
+        # worker may inherit an empty shell environment and fail to hydrate
+        # the exact ScientificObjectVersion payload from MinIO.
+        "MINIO_ENDPOINT": os.getenv("MINIO_ENDPOINT", "http://localhost:9000"),
+        "MINIO_ACCESS_KEY": (
+            os.getenv("MINIO_ACCESS_KEY")
+            or os.getenv("MINIO_ROOT_USER")
+            or os.getenv("AWS_ACCESS_KEY_ID")
+            or "mdi-local"
+        ),
+        "MINIO_SECRET_KEY": (
+            os.getenv("MINIO_SECRET_KEY")
+            or os.getenv("MINIO_ROOT_PASSWORD")
+            or os.getenv("AWS_SECRET_ACCESS_KEY")
+            or "mdi-local-dev"
+        ),
+        "MINIO_BUCKET": os.getenv("MINIO_BUCKET", "mdi-artifacts"),
+        # This Phase 4 worker regression deliberately stops at RESULT_PENDING
+        # by default, so a live canonical worker cannot advance it beyond its
+        # boundary.  Phase 5 explicitly opts this reusable fixture into its
+        # unique Result queue before calling it.
+        "MDI_AGENT2_RESULT_PROJECTION_ENABLED": os.getenv(
+            "MDI_AGENT2_RESULT_PROJECTION_ENABLED",
+            "false",
+        ),
         "MDI_AGENT2_INTERPRETATION_ENABLED": "false",
     })
     python_paths = [
@@ -350,7 +374,9 @@ def _worker_environment(database_url: str) -> dict[str, str]:
 
 
 @pytest.mark.integration
-def test_agent2_phase4_fresh_worker_executes_exact_plan_and_stops_at_result_pending():
+def test_agent2_phase4_fresh_worker_executes_exact_plan_and_stops_at_result_pending(
+    request: pytest.FixtureRequest | None = None,
+):
     database_url = _postgres_url()
     config = AlembicConfig("apps/api/alembic.ini")
     config.set_main_option("script_location", "apps/api/alembic")
@@ -449,6 +475,8 @@ def test_agent2_phase4_fresh_worker_executes_exact_plan_and_stops_at_result_pend
     redis_url = os.getenv("MDI_REDIS_URL") or os.getenv("REDIS_URL") or "redis://localhost:6379/0"
     queue_name = f"mdi-agent2-phase4-{suffix}"
     queue = Queue(queue_name, connection=Redis.from_url(redis_url))
+    if request is not None:
+        request.addfinalizer(lambda: queue.delete(delete_jobs=True))
     dispatcher = ResearchExecutionDispatcher(
         factory,
         queue=RedisRQQueueBackend(redis_url=redis_url, queue_name=queue_name),
@@ -594,6 +622,8 @@ def test_agent2_phase4_fresh_worker_executes_exact_plan_and_stops_at_result_pend
 
     xrd_queue_name = f"mdi-agent2-phase4-xrd-{suffix}"
     xrd_queue = Queue(xrd_queue_name, connection=Redis.from_url(redis_url))
+    if request is not None:
+        request.addfinalizer(lambda: xrd_queue.delete(delete_jobs=True))
     xrd_dispatch = ResearchExecutionDispatcher(
         factory,
         queue=RedisRQQueueBackend(redis_url=redis_url, queue_name=xrd_queue_name),
@@ -716,4 +746,6 @@ print(result.status)
     queued_xrd_job = xrd_queue.fetch_job(xrd_dispatch.job_id)
     if queued_xrd_job is not None:
         queued_xrd_job.delete()
+    queue.delete(delete_jobs=True)
+    xrd_queue.delete(delete_jobs=True)
     engine.dispose()

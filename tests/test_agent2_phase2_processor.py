@@ -13,20 +13,21 @@ from sqlalchemy.pool import StaticPool
 
 from mdi_api.db import (
     analysis_plans, jobs, messages, metadata, organizations, projects,
-    research_context_snapshots, research_turn_decisions, research_turns,
-    scientific_result_snapshots, sessions, tool_calls, users,
+    research_context_snapshots, research_turn_decisions, sessions, tool_calls,
+    users,
 )
 from mdi_api.research_agent.llm.schemas import StructuredLLMResult
-from mdi_api.research_agent.orchestration.processor import AgentTurnProcessor
+from mdi_api.research_agent.orchestration.processor import (
+    AgentTurnProcessor,
+    ProcessTurnResult,
+)
 from mdi_api.research_agent.registry_validation import build_default_agent2_registries
-from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchTurnStatus, ScientificSelectionContext
+from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ScientificSelectionContext
 from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.routers.auth import CurrentUser
 from mdi_api.scientific_objects.registry import build_default_object_type_registry
 from mdi_api.scientific_objects.schemas import ScientificObjectKind, ScientificObjectRef, StorageRef
 from mdi_api.scientific_objects.service import ScientificObjectService
-from mdi_api.scientific_results.schemas import ResultExecutionStatus, ResultRelevanceStatus, ScientificResultBundle
-from mdi_api.scientific_results.service import ScientificResultSnapshotService
 from mdi_api.unit_of_work import RepositoryFactory, transaction_active
 
 
@@ -90,12 +91,26 @@ def structure(objects: ScientificObjectService, name: str = "Si", project_id: st
     )
 
 
-def receive(turns: ResearchTurnService, owner: CurrentUser, message: str, refs: list[ScientificObjectRef] | None = None, selected: list[ScientificObjectRef] | None = None, reply_to: UUID | None = None, scientific_selections: list[ScientificSelectionContext] | None = None):
+def receive(
+    turns: ResearchTurnService,
+    owner: CurrentUser,
+    message: str,
+    refs: list[ScientificObjectRef] | None = None,
+    selected: list[ScientificObjectRef] | None = None,
+    explicit: list[ScientificObjectRef] | None = None,
+    reply_to: UUID | None = None,
+    scientific_selections: list[ScientificSelectionContext] | None = None,
+):
     return turns.receive_turn(
         project_id="project", session_id="session", current_user=owner,
         request=CreateResearchTurnRequest(
             message=message,
-            ui_context={"active_object_refs": refs or [], "selection_refs": selected or [], "scientific_selections": scientific_selections or []},
+            ui_context={
+                "active_object_refs": refs or [],
+                "selection_refs": selected or [],
+                "explicit_object_refs": explicit or [],
+                "scientific_selections": scientific_selections or [],
+            },
             reply_to_turn_id=reply_to,
         ),
     )
@@ -186,6 +201,32 @@ def test_analyze_reaches_ready_to_plan_with_requirement_and_zero_execution():
     result = asyncio.run(processor(factory, fake).process(turn.turn_id))
     assert result.status == "READY_TO_PLAN"
     assert counts(engine) == before == {"plans": 0, "jobs": 0, "tools": 0}
+    allowed_actions = fake.calls[0]["input_payload"]["allowed_actions"]
+    assert "ANALYZE" in allowed_actions
+    assert "INTERPRET_RESULT" not in allowed_actions
+    assert "CREATE_REPORT" not in allowed_actions
+    assert "UPDATE_REPORT" not in allowed_actions
+    assert "CONTINUE_ANALYSIS" not in allowed_actions
+    requirement_options = {
+        item["requirement_id"]: item
+        for item in fake.calls[0]["input_payload"]["available_requirement_ids"]
+    }
+    assert set(
+        requirement_options["trajectory.compute_msd"]["constraint_schema"][
+            "properties"
+        ]
+    ) >= {"species", "max_lag_count"}
+    assert set(
+        requirement_options["trajectory.estimate_diffusion"][
+            "constraint_schema"
+        ]["properties"]
+    ) >= {"fit_start_time_ps", "fit_end_time_ps"}
+    assert (
+        requirement_options["trajectory.estimate_diffusion"][
+            "constraint_schema"
+        ]["additionalProperties"]
+        is False
+    )
     view = turns.get_turn(turn.turn_id, owner)
     assert view["messages"][-1]["content"] == "我会根据当前结构准备 RDF 分析。"
     assert view["orchestration"]["action_dispatch_status"] == "READY_FOR_DOWNSTREAM"
@@ -222,6 +263,39 @@ def test_ui_selection_resolves_equal_scope_before_llm():
     assert selected["display_name"] == "B" and selected["summary"]["source"] == "UI_SELECTION"
 
 
+def test_multiple_explicit_objects_reach_orchestrator_as_one_exact_scope():
+    _engine, owner, factory, objects, turns = foundation()
+    left, right = structure(objects, "A"), structure(objects, "B")
+    turn = receive(
+        turns,
+        owner,
+        "联合分析这两个精确来源。",
+        refs=[left, right],
+        explicit=[left, right],
+    )
+    fake = FakeStructuredClient([decision(
+        "ANALYZE",
+        assistant_message="我会基于两个精确来源准备联合分析。",
+        research_objective="对两个明确指定的结构执行同一受支持分析。",
+        selected_scope_ref_keys=["obj_1", "obj_2"],
+        scientific_requirements=[{
+            "requirement_id": "structure.compute_rdf",
+            "criticality": "REQUIRED",
+            "subject_ref_keys": ["obj_1", "obj_2"],
+            "constraints": {},
+        }],
+    )])
+
+    result = asyncio.run(processor(factory, fake).process(turn.turn_id))
+
+    assert result.status == "READY_TO_PLAN"
+    supplied_objects = fake.calls[0]["input_payload"]["research_context"]["objects"]
+    assert {item["display_name"] for item in supplied_objects} == {"A", "B"}
+    assert {item["summary"]["source"] for item in supplied_objects} == {
+        "EXPLICIT_REFERENCE"
+    }
+
+
 @pytest.mark.parametrize("stale", [False, True])
 def test_existing_result_interpretation_reuses_current_or_stale_without_recomputation(stale):
     engine, owner, factory, _objects, turns = foundation()
@@ -236,6 +310,16 @@ def test_existing_result_interpretation_reuses_current_or_stale_without_recomput
     assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
     result_summary = fake.calls[0]["input_payload"]["research_context"]["results"][0]
     assert result_summary["relevance_status"] == ("STALE" if stale else "CURRENT")
+    allowed_actions = fake.calls[0]["input_payload"]["allowed_actions"]
+    assert "INTERPRET_RESULT" in allowed_actions
+    assert "CREATE_REPORT" in allowed_actions
+    assert "UPDATE_REPORT" in allowed_actions
+    assert "CONTINUE_ANALYSIS" in allowed_actions
+    view = turns.get_turn(turn.turn_id, owner)
+    assert view["messages"][-1]["content"] == (
+        "已找到可复用的精确科学结果，正在基于其权威事实重新组织解释；"
+        "不会重新计算科学结果。"
+    )
 
 
 def test_continue_analysis_preserves_cutoff_and_continuation_relation():
@@ -261,6 +345,47 @@ def test_continue_analysis_preserves_cutoff_and_continuation_relation():
     assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
 
 
+def test_parent_turn_keeps_continue_action_without_reusable_result():
+    _engine, owner, factory, objects, turns = foundation()
+    ref = structure(objects)
+    parent = receive(turns, owner, "先检查这个结构。", refs=[ref])
+    parent_fake = FakeStructuredClient([
+        decision("ANSWER", assistant_message="已记录当前结构上下文。")
+    ])
+    assert (
+        asyncio.run(processor(factory, parent_fake).process(parent.turn_id)).status
+        == "ANSWERED"
+    )
+    child = receive(
+        turns,
+        owner,
+        "继续做 RDF 分析。",
+        refs=[ref],
+        reply_to=parent.turn_id,
+    )
+    fake = FakeStructuredClient([decision(
+        "CONTINUE_ANALYSIS",
+        assistant_message="我会继续准备当前结构的 RDF 分析。",
+        research_objective="计算当前结构的径向分布函数。",
+        selected_scope_ref_keys=["obj_1"],
+        scientific_requirements=[{
+            "requirement_id": "structure.compute_rdf",
+            "criticality": "REQUIRED",
+            "subject_ref_keys": ["obj_1"],
+            "constraints": {},
+        }],
+    )])
+
+    result = asyncio.run(processor(factory, fake).process(child.turn_id))
+
+    assert result.status == "READY_TO_PLAN"
+    allowed_actions = fake.calls[0]["input_payload"]["allowed_actions"]
+    assert "CONTINUE_ANALYSIS" in allowed_actions
+    assert "INTERPRET_RESULT" not in allowed_actions
+    assert "CREATE_REPORT" not in allowed_actions
+    assert "UPDATE_REPORT" not in allowed_actions
+
+
 @pytest.mark.parametrize("action,kwargs", [
     ("MANAGE_DATA", {"assistant_message": "已识别数据管理请求，尚未执行删除。"}),
     ("OPEN_OBJECT", {"assistant_message": "已识别打开对象请求。", "selected_scope_ref_keys": ["obj_1"]}),
@@ -274,6 +399,25 @@ def test_downstream_actions_are_classification_only(action, kwargs):
     assert result.status == "ORCHESTRATING"
     assert turns.get_turn(turn.turn_id, owner)["orchestration"]["action_dispatch_status"] == "READY_FOR_DOWNSTREAM"
     assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+
+
+def test_query_data_completes_as_non_scientific_handoff_without_execution():
+    engine, owner, factory, objects, turns = foundation()
+    ref = structure(objects)
+    turn = receive(turns, owner, "查看这个结构对应的数据。", refs=[ref])
+    fake = FakeStructuredClient([decision("QUERY_DATA", selected_scope_ref_keys=["obj_1"])])
+    result = asyncio.run(processor(factory, fake).process(turn.turn_id))
+    assert result.status == "ANSWERED"
+    assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+    view = turns.get_turn(turn.turn_id, owner)
+    assert view["status"] == "ANSWERED"
+    assert view["orchestration"] == {
+        "decision_available": True,
+        "action_dispatch_status": "COMPLETED",
+    }
+    assert view["messages"][-1]["content"] == (
+        "已识别为数据查询请求。请在数据平台查看或调整筛选条件；本次未创建科学分析运行。"
+    )
 
 
 def test_invalid_reference_repairs_once_then_persists_only_validated_decision():
@@ -364,6 +508,27 @@ def test_duplicate_and_concurrent_delivery_call_provider_once(tmp_path):
         decision_rows = session.connection.execute(select(func.count()).select_from(research_turn_decisions)).scalar_one()
         assistant_rows = session.connection.execute(select(func.count()).select_from(messages).where(messages.c.role == "agent")).scalar_one()
     assert view["status"] == "ANSWERED" and decision_rows == assistant_rows == 1
+
+
+def test_cancel_during_orchestration_is_an_idempotent_worker_noop():
+    _engine, owner, factory, _objects, turns = foundation()
+    turn = receive(turns, owner, "分析当前数据。")
+
+    class CancelingClient(FakeStructuredClient):
+        async def generate_structured(self, **kwargs: Any) -> StructuredLLMResult:
+            result = await super().generate_structured(**kwargs)
+            turns.cancel_turn(turn.turn_id, owner)
+            return result
+
+    fake = CancelingClient(
+        [decision("ANSWER", assistant_message="这条回答不应覆盖取消状态。")]
+    )
+    result = asyncio.run(processor(factory, fake).process(turn.turn_id))
+
+    assert result == ProcessTurnResult("NOOP", "CANCELED", 1)
+    with factory.session() as session:
+        stored = session.agent2.research_turn_decisions.get_for_turn(turn.turn_id)
+    assert stored is None
 
 
 def test_snapshot_and_decision_are_immutable_after_provider_failure():

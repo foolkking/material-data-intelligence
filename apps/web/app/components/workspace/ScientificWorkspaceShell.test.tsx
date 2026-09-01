@@ -198,6 +198,7 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     expect(await screen.findByText(/bounded payload record/u)).not.toBeNull();
     expect(getContentMock).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("table")).toHaveTextContent("object_1");
+    expect(screen.getByRole("region", { name: "已验证的数据表，可横向滚动查看完整列" })).toBeInTheDocument();
     expect(screen.getByTestId("workspace-scientific-viewer")).toHaveTextContent("Validated, exact-scope payload");
   });
 

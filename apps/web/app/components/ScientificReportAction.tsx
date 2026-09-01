@@ -1,36 +1,48 @@
 "use client";
 
-import Link from "next/link";
+import { ProductLink as Link } from "./ProductNavigation";
 import { useEffect, useState } from "react";
 
 import {
-  getScientificReportForTurn,
+  getScientificReportStatusForTurn,
   requestScientificReport,
-  type ScientificReportView,
 } from "../lib/scientific-report-api";
 
 export function ScientificReportAction({ projectId, turnId, canGenerate }: { projectId: string; turnId: string; canGenerate: boolean }) {
-  const [report, setReport] = useState<ScientificReportView | null>(null);
+  const [reportId, setReportId] = useState<string | null>(null);
   const [status, setStatus] = useState<"checking" | "idle" | "requesting" | "composing" | "ready" | "error">("checking");
+  const [pollRevision, setPollRevision] = useState(0);
 
   useEffect(() => {
     let active = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let attempts = 0;
     const refresh = () => {
-      void getScientificReportForTurn(turnId).then((value) => {
+      void getScientificReportStatusForTurn(turnId).then((value) => {
         if (!active) return;
-        setReport(value);
-        setStatus("ready");
-      }).catch((reason: Error & { status?: number }) => {
-        if (!active) return;
-        if (reason.status === 404) {
-          if (status === "composing" && attempts < 80) {
+        if (value.status === "READY" && value.report_id) {
+          setReportId(value.report_id);
+          setStatus("ready");
+          return;
+        }
+        if (value.status === "FAILED") {
+          setStatus("error");
+          return;
+        }
+        if (value.status === "REQUESTED" || value.status === "COMPOSING") {
+          setStatus("composing");
+          if (attempts < 80) {
             attempts += 1;
             timer = setTimeout(refresh, 1500);
-          } else if (status === "composing") setStatus("error");
-          else setStatus((current) => current === "checking" ? "idle" : current);
-        } else setStatus("error");
+          } else {
+            setStatus("error");
+          }
+          return;
+        }
+        setStatus("idle");
+      }).catch(() => {
+        if (!active) return;
+        setStatus("error");
       });
     };
     refresh();
@@ -38,13 +50,14 @@ export function ScientificReportAction({ projectId, turnId, canGenerate }: { pro
       active = false;
       if (timer) clearTimeout(timer);
     };
-  }, [turnId, status]);
+  }, [pollRevision, turnId]);
 
   async function generate() {
     setStatus("requesting");
     try {
       await requestScientificReport(turnId);
       setStatus("composing");
+      setPollRevision((value) => value + 1);
     } catch {
       setStatus("error");
     }
@@ -55,8 +68,8 @@ export function ScientificReportAction({ projectId, turnId, canGenerate }: { pro
       <strong>{status === "ready" ? "分析报告已生成" : status === "composing" || status === "requesting" ? "正在整理分析报告" : "生成科学报告"}</strong>
       <p>{status === "ready" ? "报告已作为可追溯的科学记录保存。" : status === "error" ? "科学结果仍然有效，报告整理暂时未完成。" : "将已验证结果和解释整理为持久报告，不会重新计算。"}</p>
     </div>
-    {status === "ready" && report
-      ? <Link className="product-primary-action" href={`/projects/${projectId}/reports/${report.report_id}`}>打开报告</Link>
+    {status === "ready" && reportId
+      ? <Link className="product-primary-action" href={`/projects/${projectId}/reports/${reportId}`}>打开报告</Link>
       : canGenerate && !["requesting", "composing", "checking"].includes(status)
         ? <button type="button" className="product-secondary-action" onClick={() => void generate()}>{status === "error" ? "重试生成" : "生成报告"}</button>
         : <span className="research-report-action-status" role="status" aria-live="polite">{status === "checking" ? "正在检查报告…" : status === "requesting" || status === "composing" ? "处理中…" : ""}</span>}

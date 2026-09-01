@@ -198,6 +198,12 @@ print(json.dumps({'api_pid': os.getpid(), 'owner_status': owner.status_code, 'ou
         assert api_evidence["outsider_status"] == 403
         assert api_evidence["api_pid"] not in result_pids
         assert api_evidence["body"]["research_turn_id"] == cases["rdf"]["turn_id"]
+        # The immutable persistence row has its own snapshot primary key. The
+        # public Result identity is the deterministic bundle result_id, which
+        # is the identifier presentation and provenance consumers must retain.
+        assert api_evidence["body"]["result_id"] == cases["rdf"]["bundle"]["result_id"]
+        assert api_evidence["body"]["source_object_refs"] == cases["rdf"]["bundle"]["source_object_refs"]
+        assert api_evidence["body"]["facts"] == cases["rdf"]["bundle"]["facts"]
 
         print(json.dumps({
             "phase5_fresh_process_evidence": {
@@ -214,6 +220,7 @@ print(json.dumps({'api_pid': os.getpid(), 'owner_status': owner.status_code, 'ou
             task = result_queue.fetch_job(f"agent2-result-{case['turn_id']}")
             if task is not None:
                 task.delete()
+        result_queue.delete(delete_jobs=True)
         engine.dispose()
     finally:
         for key, value in previous.items():

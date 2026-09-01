@@ -47,5 +47,68 @@ min(provider_context_limit, product_global_limit, operation_specific_limit)
 Current effective input budgets are 12,000 tokens for orchestration, 10,000
 for planning, 12,000 for interpretation, and 8,000 for bounded data context.
 The compiler compacts deterministically and preserves exact scientific
-identities. Provider/runtime benchmarking and browser-scale performance
-evidence remain open qualification work.
+identities. Current qualification covers deterministic boundary behavior,
+real persisted provider-operation manifests and authenticated historical
+browser replay.
+
+## Authenticated exact-context replay evidence (2026-08-30)
+
+The current same-stack browser reopened ResearchTurn
+`7c65deb0-5791-4340-b6e6-ead5a8733445` and expanded its user-facing
+`本次研究使用的上下文` disclosure. It exposed three recorded operation
+manifests:
+
+```text
+理解问题
+解释结果
+整理报告
+```
+
+The disclosure retained exact scientific version
+`8859cb49-0766-48cd-8a56-e44f5332e0c5` and exact prior Result
+`14ce2fd1-e5bc-4798-906f-3333df2f7a91`, and reported `无需压缩` plus
+`关键上下文完整`. The UI disclosed authority and inclusion purpose without
+exposing prompts, provider transcripts or private chain-of-thought. This
+closes the canonical Structure browser replay of ContextManifest 2.0; the
+broader near/over-budget, large Dataset and edited-branch stress matrix remains
+open.
+
+## Current budget and replay closure (2026-09-01)
+
+The operation-manifest suite now exercises every checked-in operation
+(`ORCHESTRATOR`, `PLANNER`, `INTERPRETER`, `DATA`, `REPORT`) at five explicit
+payload boundaries:
+
+```text
+well below budget
+near budget
+exactly at budget
+over budget
+significantly over budget
+```
+
+Non-critical overflow is recorded as deterministic compaction. Critical
+scientific context that cannot fit fails closed. The focused suite is
+`11 passed`.
+
+PostgreSQL inspection of the current same-stack qualification database found
+`458` persisted ContextManifests:
+
+```text
+ORCHESTRATOR 317 · max 241 / budget 12000
+PLANNER       60 · max 476 / budget 10000
+INTERPRETER   60 · max 1157 / budget 12000
+REPORT        21 · max 1802 / budget 10000
+```
+
+No persisted manifest reported truncation. The authenticated historical
+Research page for Turn `fb72c2ad-bed1-47d7-b557-f398f04a8ede` exposes
+understanding, planning, interpretation and two Report composition manifests.
+Its audit disclosure shows manifest
+`c4785024-6027-42af-9a1f-52143afd7303`, policy
+`agent2.context-policy/2.0`, budget `12000`, estimate `60`, fingerprint
+`6daaf41b284e5ce5211b62c6555b9d471e2769c96c6d635c14b731fbe6c35369`
+and exact version `a22745f2-17b6-434f-ba4c-3fe6bd244841`.
+
+The earlier 2026-08-30 “stress matrix remains open” sentence is retained as a
+historical checkpoint; the current contract is `PASS`.

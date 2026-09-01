@@ -20,6 +20,7 @@ from ..composition_common import ParsedFormula, parse_formula
 from ..context import ToolExecutionContext
 from ..errors import ToolExecutionError
 from ..ml_common import coerce_dataframe
+from ..profile_binding import canonical_profile_resource_ref
 
 
 COMPOSITION_SPACE_SCHEMA_VERSION = "phase10k4.composition_space.v1"
@@ -95,6 +96,14 @@ class CompositionSpaceAdapter(BaseToolAdapter):
         if not tables:
             raise _input_error("At least one Profile-bound DataFrame is required.", "missing_table")
 
+        tables = {
+            canonical_profile_resource_ref(
+                object_store=context.object_store,
+                runtime_ref=ref,
+                profile_resources=profile.resourceSemantics,
+            ): table
+            for ref, table in tables.items()
+        }
         known_tables = {
             item.objectId for item in profile.resourceSemantics if item.objectType == "DataFrame"
         }

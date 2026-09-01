@@ -1,6 +1,6 @@
 const API_BASE = (process.env.NEXT_PUBLIC_MDI_API_BASE_URL || (typeof window === "undefined" ? "http://127.0.0.1:8000" : "/api")).replace(/\/$/, "");
 
-export type Agent2ExecutionStatus = "PLAN_READY" | "QUEUED" | "RUNNING" | "CANCELING" | "RESULT_PENDING" | "RESULT_READY" | "INTERPRETING" | "COMPLETED" | "PARTIAL" | "FAILED" | "CANCELED";
+export type Agent2ExecutionStatus = "ORCHESTRATING" | "READY_TO_PLAN" | "PLANNING" | "PLAN_READY" | "QUEUED" | "RUNNING" | "CANCELING" | "RESULT_PENDING" | "RESULT_READY" | "INTERPRETING" | "COMPLETED" | "PARTIAL" | "FAILED" | "CANCELED" | "ANSWERED";
 export type Agent2ProgressStep = {
   step_id: string;
   display_name: string;
@@ -14,6 +14,7 @@ export type Agent2ProgressView = {
   contract_version: "1.0";
   turn_id: string;
   status: Agent2ExecutionStatus;
+  response_kind?: "DATA_QUERY" | "RESULT_REUSE" | "CONVERSATIONAL" | "SCIENTIFIC_EXECUTION" | null;
   plan_title?: string | null;
   steps: Agent2ProgressStep[];
   active_step_ids: string[];

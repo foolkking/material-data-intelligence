@@ -17,7 +17,7 @@ class ReportComposerInputAssembler:
         result = bundle.model_dump(mode="json")
         result["relevance_status"] = relevance_status
         payload = {
-            "contract_version": "1.0",
+            "contract_version": "2.0",
             "research_question": bundle.research_question,
             "result": {
                 "execution_status": bundle.execution_status.value,
@@ -40,9 +40,12 @@ class ReportComposerInputAssembler:
             "interpretation": {
                 "title": (interpretation.get("interpretation") or {}).get("title"),
                 "answer_lead": (interpretation.get("interpretation") or {}).get("answer_lead"),
+                "discussion": (interpretation.get("interpretation") or {}).get("discussion"),
+                "conclusion": (interpretation.get("interpretation") or {}).get("conclusion"),
                 "findings": (interpretation.get("interpretation") or {}).get("primary_findings", [])[:8],
                 "supporting_findings": (interpretation.get("interpretation") or {}).get("supporting_findings", [])[:16],
                 "limitations": (interpretation.get("interpretation") or {}).get("limitations", [])[:16],
+                "follow_up_suggestions": (interpretation.get("interpretation") or {}).get("follow_up_suggestions", [])[:8],
             },
             "evidence": [self._evidence(item.model_dump(mode="json")) for item in bundle.evidence[:64]],
             "opaque_refs": {

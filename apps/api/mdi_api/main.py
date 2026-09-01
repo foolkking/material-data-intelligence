@@ -1,49 +1,24 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import logging
 from typing import Any, Callable
 
 from mdi_api.config import load_settings
-from mdi_api.phase1_demo import submit_analysis_request_stub
-from mdi_api.phase2_runtime import (
-    create_phase2_dataset_profile,
-    create_phase2_demo_dataset,
-    create_phase2_job,
-    create_phase2_project,
-    get_phase2_artifact,
-    get_phase2_artifact_download,
-    get_phase2_dataset,
-    get_phase2_dataset_profile,
-    get_phase2_job,
-    get_phase2_job_artifacts,
-    get_phase2_job_events,
-    get_phase2_job_tool_calls,
-    list_phase2_datasets,
-    list_phase2_projects,
-    stream_phase2_job_events,
-    upload_phase2_dataset,
-)
-from mdi_api.routers.auth import CurrentUser, get_current_user_stub, get_current_user, login, logout, LoginRequest
+from mdi_api.routers.auth import CurrentUser, get_current_user, login, logout
 from mdi_api.routers.research import (
-    ResearchAssistantProjectionCreate,
-    ResearchMessageCreate,
-    ResearchSessionCreate,
-    ScopeResolveRequest,
+    bulk_update_sessions,
     create_assistant_projection,
     create_message,
     create_session,
     get_session,
     list_sessions,
+    update_session,
     resolve_scope,
 )
 from mdi_api.routers.datasets import (
     DatasetSummary,
-    cancel_upload_session,
-    complete_upload_session,
-    create_upload_session,
-    get_dataset_object_store,
     get_upload_capabilities,
-    put_upload_session_file,
 )
 from mdi_api.routers.secured_runtime import (
     create_phase2_job_secured,
@@ -71,11 +46,17 @@ from mdi_api.routers.secured_runtime import (
     get_dataset_dependency_impact_secured,
     list_datasets_secured,
     list_projects_secured,
+    list_saved_product_searches,
     search_product_secured,
+    create_saved_product_search,
+    update_saved_product_search,
+    delete_saved_product_search,
+    execute_saved_product_search,
     update_project_secured,
     bulk_project_action_secured,
     delete_empty_project_secured,
     get_project_dependency_impact_secured,
+    get_project_export_manifest_secured,
     stream_phase1_job_events_secured,
     submit_analysis_request_secured,
 )
@@ -101,33 +82,6 @@ from mdi_api.routers.secured_planner import (
     planner_validate_secured,
 )
 from mdi_api.routers.health import health, runtime_health
-from mdi_api.routers.planner import (
-    PlannerIntentClarificationRequest,
-    PlannerIntentCreateRequest,
-    PlannerInterpretationRequest,
-    PlannerJobsRequest,
-    PlannerPreviewRequest,
-    PlannerValidateRequest,
-    clarify_planner_intent_route,
-    create_planner_intent_route,
-    create_planner_job_interpretation_route,
-    get_planner_analysis_plan,
-    get_planner_intent_route,
-    get_planner_interpretation,
-    get_planner_interpretation_evidence,
-    get_planner_job,
-    get_planner_job_artifacts,
-    get_planner_job_dependencies,
-    get_planner_job_artifact_content_route,
-    get_planner_job_events,
-    get_planner_job_result,
-    list_planner_job_interpretations,
-    get_planner_job_tool_calls,
-    planner_jobs_route,
-    planner_preview_route,
-    planner_validate_route,
-    stream_planner_job_events,
-)
 from mdi_api.routers.planner_providers import (
     configure_planner_provider,
     update_planner_provider_models,
@@ -150,7 +104,6 @@ from mdi_api.routers.report_compositions import (
     preview_report_composition,
 )
 from mdi_api.routers.secrets import (
-    CreateSecretRequest,
     SecretSummary,
     create_secret,
     delete_secret,
@@ -169,6 +122,7 @@ from mdi_api.routers.agent2 import (
     interpret_research_turn,
     get_research_turn_interpretation,
     get_scientific_object,
+    get_scientific_object_dependency_impact,
     admit_scientific_object,
     update_scientific_object,
     get_scientific_object_version,
@@ -184,14 +138,23 @@ from mdi_api.routers.agent2 import (
     list_scientific_object_relationships,
     list_scientific_object_versions,
     list_scientific_objects,
+    bulk_update_scientific_objects,
     promote_dataset_table,
     stream_research_turn_events,
 )
 from mdi_api.routers.scientific_reports import (
+    bulk_update_scientific_report_lifecycle,
+    compare_scientific_report_revisions,
+    create_scientific_report_revision,
     generate_scientific_report,
+    get_scientific_report_dependency_impact,
     get_scientific_report,
+    get_scientific_report_status,
     get_scientific_report_by_id,
+    list_scientific_report_revisions,
     list_scientific_reports,
+    update_scientific_report_lifecycle,
+    update_scientific_report_organization,
 )
 from mdi_api.routers.workspaces import (
     create_workspace,
@@ -204,6 +167,9 @@ from mdi_api.routers.workspaces import (
     list_workspace_panels,
     patch_workspace,
 )
+
+
+logger = logging.getLogger("uvicorn.error")
 
 
 @dataclass(frozen=True)
@@ -230,7 +196,9 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/auth/logout", logout, ("POST",), ("auth",)),
     RouteSpec("/projects/{project_id}/research-sessions", list_sessions, ("GET",), ("research",)),
     RouteSpec("/projects/{project_id}/research-sessions", create_session, ("POST",), ("research",)),
+    RouteSpec("/projects/{project_id}/research-sessions/bulk", bulk_update_sessions, ("POST",), ("research",)),
     RouteSpec("/research-sessions/{session_id}", get_session, ("GET",), ("research",)),
+    RouteSpec("/research-sessions/{session_id}", update_session, ("PATCH",), ("research",)),
     RouteSpec("/research-sessions/{session_id}/messages", create_message, ("POST",), ("research",)),
     RouteSpec("/research-sessions/{session_id}/assistant-projections", create_assistant_projection, ("POST",), ("research",)),
     RouteSpec("/api/projects/{project_id}/research/sessions/{session_id}/turns", create_research_turn, ("POST",), ("agent2", "research")),
@@ -251,13 +219,23 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/api/research/turns/{turn_id}/interpretation", get_research_turn_interpretation, ("GET",), ("agent2", "research")),
     RouteSpec("/api/research/turns/{turn_id}/report", generate_scientific_report, ("POST",), ("agent2", "reports")),
     RouteSpec("/api/research/turns/{turn_id}/report", get_scientific_report, ("GET",), ("agent2", "reports")),
+    RouteSpec("/api/research/turns/{turn_id}/report-status", get_scientific_report_status, ("GET",), ("agent2", "reports")),
     RouteSpec("/api/scientific-reports/{report_id}", get_scientific_report_by_id, ("GET",), ("agent2", "reports")),
+    RouteSpec("/api/scientific-reports/{report_id}/lifecycle", update_scientific_report_lifecycle, ("PATCH",), ("agent2", "reports")),
+    RouteSpec("/api/scientific-reports/{report_id}/organization", update_scientific_report_organization, ("PATCH",), ("agent2", "reports")),
+    RouteSpec("/api/scientific-reports/{report_id}/dependency-impact", get_scientific_report_dependency_impact, ("GET",), ("agent2", "reports")),
+    RouteSpec("/api/scientific-reports/{report_id}/revisions", create_scientific_report_revision, ("POST",), ("agent2", "reports")),
+    RouteSpec("/api/scientific-reports/{report_id}/revisions", list_scientific_report_revisions, ("GET",), ("agent2", "reports")),
+    RouteSpec("/api/scientific-reports/{report_id}/compare", compare_scientific_report_revisions, ("GET",), ("agent2", "reports")),
     RouteSpec("/api/projects/{project_id}/scientific-reports", list_scientific_reports, ("GET",), ("agent2", "reports")),
+    RouteSpec("/api/projects/{project_id}/scientific-reports/bulk", bulk_update_scientific_report_lifecycle, ("POST",), ("agent2", "reports")),
     RouteSpec("/api/research/turns/{turn_id}/events", stream_research_turn_events, ("GET",), ("agent2", "research")),
     RouteSpec("/api/projects/{project_id}/scientific-objects", list_scientific_objects, ("GET",), ("agent2", "scientific-objects")),
     RouteSpec("/api/projects/{project_id}/scientific-objects", admit_scientific_object, ("POST",), ("agent2", "scientific-objects")),
+    RouteSpec("/api/projects/{project_id}/scientific-objects/bulk", bulk_update_scientific_objects, ("POST",), ("agent2", "scientific-objects")),
     RouteSpec("/api/projects/{project_id}/datasets/{dataset_id}/scientific-table", promote_dataset_table, ("POST",), ("agent2", "scientific-objects")),
     RouteSpec("/api/scientific-objects/{object_id}", get_scientific_object, ("GET",), ("agent2", "scientific-objects")),
+    RouteSpec("/api/scientific-objects/{object_id}/dependency-impact", get_scientific_object_dependency_impact, ("GET",), ("agent2", "scientific-objects")),
     RouteSpec("/api/scientific-objects/{object_id}", update_scientific_object, ("PATCH",), ("agent2", "scientific-objects")),
     RouteSpec("/api/scientific-objects/{object_id}/versions", list_scientific_object_versions, ("GET",), ("agent2", "scientific-objects")),
     RouteSpec("/api/scientific-objects/{object_id}/versions", create_scientific_object_version, ("POST",), ("agent2", "scientific-objects")),
@@ -269,11 +247,17 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/projects", list_projects_secured, ("GET",), ("projects",), list[ProjectSummary]),
     RouteSpec("/search", search_product_secured, ("GET",), ("search",)),
     RouteSpec("/api/search", search_product_secured, ("GET",), ("search",)),
+    RouteSpec("/saved-searches", list_saved_product_searches, ("GET",), ("search",)),
+    RouteSpec("/saved-searches", create_saved_product_search, ("POST",), ("search",)),
+    RouteSpec("/saved-searches/{saved_search_id}", update_saved_product_search, ("PATCH",), ("search",)),
+    RouteSpec("/saved-searches/{saved_search_id}", delete_saved_product_search, ("DELETE",), ("search",)),
+    RouteSpec("/saved-searches/{saved_search_id}/execute", execute_saved_product_search, ("POST",), ("search",)),
     RouteSpec("/projects", create_project_secured, ("POST",), ("projects",)),
     RouteSpec("/projects/bulk", bulk_project_action_secured, ("POST",), ("projects",)),
     RouteSpec("/projects/{project_id}", update_project_secured, ("PATCH",), ("projects",)),
     RouteSpec("/projects/{project_id}", delete_empty_project_secured, ("DELETE",), ("projects",)),
     RouteSpec("/projects/{project_id}/dependency-impact", get_project_dependency_impact_secured, ("GET",), ("projects",)),
+    RouteSpec("/projects/{project_id}/export-manifest", get_project_export_manifest_secured, ("GET",), ("projects",)),
     RouteSpec("/projects/{project_id}/history", get_project_history, ("GET",), ("projects",)),
     RouteSpec("/projects/{project_id}/runs/{job_id}/archive", archive_project_run, ("POST",), ("projects",)),
     RouteSpec("/projects/{project_id}/runs/{job_id}/archive", restore_project_run, ("DELETE",), ("projects",)),
@@ -407,6 +391,34 @@ def create_app() -> Any:
             tags=list(route.tags),
             response_model=route.response_model,
         )
+    if settings.agent2_startup_recovery_enabled:
+        @app.on_event("startup")
+        def recover_interrupted_research() -> None:
+            """Wake durable non-terminal work without blocking API admission."""
+
+            try:
+                from mdi_api.research_agent.recovery import run_startup_recovery
+
+                summary = run_startup_recovery(
+                    settings,
+                    stale_minutes=settings.agent2_startup_recovery_stale_minutes,
+                    limit=settings.agent2_startup_recovery_limit,
+                )
+                logger.info(
+                    "research_startup_recovery "
+                    "product_candidates=%s qualification_retained=%s "
+                    "accepted=%s attention=%s",
+                    summary.get("productCandidates", 0),
+                    summary.get("qualificationRetained", 0),
+                    summary.get("accepted", 0),
+                    summary.get("attention", 0),
+                )
+            except Exception:
+                # Recovery is operational hardening, not an alternate API
+                # authority.  A failed wakeup remains visible in the
+                # operations snapshot and must not make the API lie about
+                # scientific completion.
+                logger.exception("research_startup_recovery_failed")
     return app
 
 

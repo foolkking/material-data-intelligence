@@ -19,7 +19,7 @@ class StructuredReportComposerClient(Protocol):
 
 
 def load_report_composer_prompt() -> str:
-    return (Path(__file__).resolve().parent / "prompts" / "scientific_report_composer_v1.txt").read_text(encoding="utf-8")
+    return (Path(__file__).resolve().parent / "prompts" / "scientific_report_composer_v2.txt").read_text(encoding="utf-8")
 
 
 class DeepSeekReportComposerClient:
@@ -67,7 +67,7 @@ class FakeStructuredReportComposerClient:
             parsed=response,
             latency_ms=0,
             repair_attempted=bool((request_context or {}).get("repair_attempted")),
-            prompt_version="scientific-report-composer/1.0",
+            prompt_version="scientific-report-composer/2.0",
         )
 
 

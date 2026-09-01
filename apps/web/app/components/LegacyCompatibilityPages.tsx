@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { ProductLink as Link, useProductRouter } from "./ProductNavigation";
 import { useEffect, useState } from "react";
 
 import { getPlannerJob } from "../lib/planner-api";
@@ -11,7 +10,7 @@ import { ProductShell, RequireProductAuth } from "./ProductShell";
 type CompatibilityState = "loading" | "missing";
 
 export function LegacyAnalysisCompatibility({ jobId }: { jobId: string }) {
-  const router = useRouter();
+  const router = useProductRouter();
   const [state, setState] = useState<CompatibilityState>("loading");
   useEffect(() => {
     if (!jobId) { setState("missing"); return; }
@@ -27,7 +26,7 @@ export function LegacyAnalysisCompatibility({ jobId }: { jobId: string }) {
 }
 
 export function LegacyWorkspaceCompatibility({ workspaceId }: { workspaceId: string }) {
-  const router = useRouter();
+  const router = useProductRouter();
   const [state, setState] = useState<CompatibilityState>("loading");
   useEffect(() => {
     const controller = new AbortController();

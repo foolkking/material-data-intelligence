@@ -554,6 +554,64 @@ def test_large_projectable_table_is_skipped_without_blocking_supported_evidence(
     assert result["claims"]
 
 
+def test_presentation_companions_do_not_degrade_projected_scientific_evidence(
+    tmp_path: Path,
+) -> None:
+    repos, runtime, plan_hash = _seed_api_source(tmp_path / "presentation-companions")
+    for artifact_type in ("plotly_json", "summary_md", "recipe_json"):
+        raw = json.dumps(
+            {"kind": artifact_type, "derivedFrom": "artifact_l4_api"},
+            separators=(",", ":"),
+        ).encode("utf-8")
+        stored = runtime.artifact_storage.put_bytes(
+            f"jobs/job_l4_api/{artifact_type}.json",
+            raw,
+            content_type="application/json",
+        )
+        artifact_id = f"artifact_l4_api_{artifact_type}"
+        repos.artifacts.save({
+            "id": artifact_id,
+            "artifactId": artifact_id,
+            "projectId": "project_l4_api",
+            "datasetId": "dataset_l4_api",
+            "jobId": "job_l4_api",
+            "toolCallId": "tool_call_l4_api",
+            "type": artifact_type,
+            "name": artifact_type,
+            "version": "1",
+            "storageKey": stored.storage_key,
+            "storageProvider": "local",
+            "sizeBytes": stored.size_bytes,
+            "contentType": stored.content_type,
+            "contentHash": stored.sha256,
+            "sha256": stored.sha256,
+            "metadata": {
+                "toolId": "table.numeric_summary",
+                "toolVersion": "0.1.0",
+                "adapterVersion": "0.1.0",
+                "inputHashes": [],
+                "createdAt": "2026-08-31T00:00:00Z",
+                "provenance": {"planId": "plan_l4_api", "planHash": plan_hash},
+            },
+        })
+
+    result = create_planner_job_interpretation(
+        "job_l4_api",
+        PlannerInterpretationRequest(expectedPlanHash=plan_hash),
+        repositories=repos,
+        queue_runtime=runtime,
+    )
+    evidence = get_planner_interpretation_evidence(
+        result["interpretationId"],
+        repositories=repos,
+    )
+
+    assert result["outcome"] == "INTERPRETATION_READY"
+    assert result["limitations"] == []
+    assert evidence["bundleLimitations"] == []
+    assert evidence["sourceArtifactIds"] == ["artifact_l4_api"]
+
+
 def test_interpretation_request_caps_and_bounded_storage_reads(tmp_path: Path) -> None:
     with pytest.raises(ValidationError):
         PlannerInterpretationRequest(

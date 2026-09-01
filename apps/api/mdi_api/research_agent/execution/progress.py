@@ -66,4 +66,4 @@ class GenericScientificProgressProjector:
             for warning in raw_summary.get("warnings") or []:
                 warnings.append(ProgressWarning.model_validate(warning))
         status = ResearchTurnStatus(str(turn["status"]))
-        return ResearchProgressView(contract_version="1.0", turn_id=UUID(str(turn["id"])), status=status, plan_title=str(plan_payload.get("goal") or "科学分析"), steps=steps, active_step_ids=active, completed_step_count=completed, total_step_count=len(steps), incremental_outputs=outputs, warnings=warnings, execution_outcome=outcome, result_projection_pending=status == ResearchTurnStatus.RESULT_PENDING)
+        return ResearchProgressView(contract_version="1.0", turn_id=UUID(str(turn["id"])), status=status, response_kind="SCIENTIFIC_EXECUTION", plan_title=str(plan_payload.get("goal") or "科学分析"), steps=steps, active_step_ids=active, completed_step_count=completed, total_step_count=len(steps), incremental_outputs=outputs, warnings=warnings, execution_outcome=outcome, result_projection_pending=status == ResearchTurnStatus.RESULT_PENDING)

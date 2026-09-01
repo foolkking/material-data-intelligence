@@ -8,7 +8,9 @@ const mocks = vi.hoisted(() => ({
   getAgent2ResearchTurnResult: vi.fn(),
   getAgent2ResearchTurnInterpretation: vi.fn(),
   getAgent2SessionMemory: vi.fn(),
+  pinAgent2Object: vi.fn(),
   pinAgent2Result: vi.fn(),
+  unpinAgent2Object: vi.fn(),
   unpinAgent2Result: vi.fn(),
   push: vi.fn(),
 }));
@@ -16,13 +18,16 @@ const mocks = vi.hoisted(() => ({
 vi.mock("../lib/agent2-research-api", () => mocks);
 vi.mock("../lib/agent2-memory-api", () => ({
   getAgent2SessionMemory: mocks.getAgent2SessionMemory,
+  pinAgent2Object: mocks.pinAgent2Object,
   pinAgent2Result: mocks.pinAgent2Result,
+  unpinAgent2Object: mocks.unpinAgent2Object,
   unpinAgent2Result: mocks.unpinAgent2Result,
 }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }));
 
 const result = {
   result_id: "result-1",
+  result_snapshot_id: "snapshot-1",
   research_turn_id: "turn-1",
   research_question: "Inspect the structure",
   execution_status: "SUCCESS",
@@ -42,9 +47,11 @@ describe("Agent2ScientificPresentation", () => {
     mocks.getAgent2ResearchTurnResult.mockReset();
     mocks.getAgent2ResearchTurnInterpretation.mockReset();
     mocks.getAgent2SessionMemory.mockReset();
+    mocks.pinAgent2Object.mockReset();
     mocks.pinAgent2Result.mockReset();
+    mocks.unpinAgent2Object.mockReset();
     mocks.unpinAgent2Result.mockReset();
-    mocks.getAgent2SessionMemory.mockResolvedValue({ pinned_result_refs: [] });
+    mocks.getAgent2SessionMemory.mockResolvedValue({ pinned_result_refs: [], pinned_object_refs: [] });
     mocks.push.mockReset();
   });
 
@@ -61,7 +68,7 @@ describe("Agent2ScientificPresentation", () => {
       "session-1",
       expect.objectContaining({
         reply_to_turn_id: "turn-1",
-        ui_context: expect.objectContaining({ explicit_result_ids: ["result-1"] }),
+        ui_context: expect.objectContaining({ explicit_result_ids: ["snapshot-1"] }),
       }),
     ));
     expect(mocks.push).toHaveBeenCalledWith("/projects/project-1/research/session-1?turn=turn-reinterpret-1");
@@ -80,7 +87,7 @@ describe("Agent2ScientificPresentation", () => {
       "session-1",
       expect.objectContaining({
         reply_to_turn_id: "turn-1",
-        ui_context: expect.objectContaining({ explicit_result_ids: ["result-1"] }),
+        ui_context: expect.objectContaining({ explicit_result_ids: ["snapshot-1"] }),
       }),
     ));
     expect(mocks.push).toHaveBeenCalledWith("/projects/project-1/research/session-1?turn=turn-continue-1");
@@ -118,15 +125,113 @@ describe("Agent2ScientificPresentation", () => {
   it("pins and unpins the exact result through session memory controls", async () => {
     mocks.getAgent2ResearchTurnResult.mockResolvedValue(result);
     mocks.getAgent2ResearchTurnInterpretation.mockRejectedValue(new Error("not ready"));
-    mocks.pinAgent2Result.mockResolvedValue({ pinned_result_refs: ["result-1"] });
+    mocks.pinAgent2Result.mockResolvedValue({ pinned_result_refs: ["snapshot-1"] });
     mocks.unpinAgent2Result.mockResolvedValue({ pinned_result_refs: [] });
 
     render(<Agent2ScientificPresentation turnId="turn-1" projectId="project-1" sessionId="session-1" />);
     const pin = await screen.findByRole("button", { name: "固定到研究上下文" });
     fireEvent.click(pin);
-    await waitFor(() => expect(mocks.pinAgent2Result).toHaveBeenCalledWith("project-1", "session-1", "result-1"));
+    await waitFor(() => expect(mocks.pinAgent2Result).toHaveBeenCalledWith("project-1", "session-1", "snapshot-1"));
     const unpin = await screen.findByRole("button", { name: "取消固定结果" });
     fireEvent.click(unpin);
-    await waitFor(() => expect(mocks.unpinAgent2Result).toHaveBeenCalledWith("project-1", "session-1", "result-1"));
+    await waitFor(() => expect(mocks.unpinAgent2Result).toHaveBeenCalledWith("project-1", "session-1", "snapshot-1"));
+  });
+
+  it("pins and unpins exact source versions through session memory controls", async () => {
+    const source = { object_id: "object-1", version_id: "version-1", project_id: "project-1", object_type: "structure.crystal", display_name: "Structure" };
+    mocks.getAgent2ResearchTurnResult.mockResolvedValue({ ...result, source_object_refs: [source] });
+    mocks.getAgent2ResearchTurnInterpretation.mockRejectedValue(new Error("not ready"));
+    mocks.pinAgent2Object.mockResolvedValue({ pinned_result_refs: [], pinned_object_refs: [source] });
+    mocks.unpinAgent2Object.mockResolvedValue({ pinned_result_refs: [], pinned_object_refs: [] });
+
+    render(<Agent2ScientificPresentation turnId="turn-1" projectId="project-1" sessionId="session-1" />);
+    fireEvent.click(await screen.findByRole("button", { name: "固定来源版本" }));
+    await waitFor(() => expect(mocks.pinAgent2Object).toHaveBeenCalledWith("project-1", "session-1", expect.objectContaining({
+      object_id: source.object_id,
+      version_id: source.version_id,
+    })));
+    fireEvent.click(await screen.findByRole("button", { name: "取消固定来源版本" }));
+    await waitFor(() => expect(mocks.unpinAgent2Object).toHaveBeenCalledWith("project-1", "session-1", expect.objectContaining({
+      object_id: source.object_id,
+      version_id: source.version_id,
+    })));
+  });
+
+  it("keeps presentation pin controls synchronized with parent session memory", async () => {
+    const source = {
+      object_id: "object-1",
+      version_id: "version-1",
+      project_id: "project-1",
+      object_type: "structure.crystal",
+      display_name: "Structure",
+    };
+    mocks.getAgent2ResearchTurnResult.mockResolvedValue({
+      ...result,
+      source_object_refs: [source],
+    });
+    mocks.getAgent2ResearchTurnInterpretation.mockRejectedValue(
+      new Error("not ready"),
+    );
+    const onSessionMemoryChange = vi.fn();
+    const { rerender } = render(
+      <Agent2ScientificPresentation
+        turnId="turn-1"
+        projectId="project-1"
+        sessionId="session-1"
+        sessionMemory={{
+          session_id: "session-1",
+          project_id: "project-1",
+          pinned_result_refs: [],
+          pinned_object_refs: [source],
+          session_constraints: [],
+          version: 1,
+        }}
+        onSessionMemoryChange={onSessionMemoryChange}
+      />,
+    );
+
+    expect(
+      await screen.findByRole("button", { name: "取消固定来源版本" }),
+    ).toBeInTheDocument();
+
+    rerender(
+      <Agent2ScientificPresentation
+        turnId="turn-1"
+        projectId="project-1"
+        sessionId="session-1"
+        sessionMemory={{
+          session_id: "session-1",
+          project_id: "project-1",
+          pinned_result_refs: [],
+          pinned_object_refs: [],
+          session_constraints: [],
+          version: 2,
+        }}
+        onSessionMemoryChange={onSessionMemoryChange}
+      />,
+    );
+
+    expect(
+      await screen.findByRole("button", { name: "固定来源版本" }),
+    ).toBeInTheDocument();
+    expect(mocks.getAgent2SessionMemory).not.toHaveBeenCalled();
+  });
+
+  it("does not let a stale session-memory read undo a completed pin", async () => {
+    let resolveMemory: ((value: { pinned_result_refs: string[] }) => void) | undefined;
+    mocks.getAgent2SessionMemory.mockImplementation(
+      () => new Promise((resolve) => { resolveMemory = resolve; }),
+    );
+    mocks.getAgent2ResearchTurnResult.mockResolvedValue(result);
+    mocks.getAgent2ResearchTurnInterpretation.mockRejectedValue(new Error("not ready"));
+    mocks.pinAgent2Result.mockResolvedValue({ pinned_result_refs: ["snapshot-1"] });
+
+    render(<Agent2ScientificPresentation turnId="turn-1" projectId="project-1" sessionId="session-1" />);
+    const pin = await screen.findByRole("button", { name: "固定到研究上下文" });
+    fireEvent.click(pin);
+    const unpin = await screen.findByRole("button", { name: "取消固定结果" });
+
+    resolveMemory?.({ pinned_result_refs: [] });
+    await waitFor(() => expect(screen.getByRole("button", { name: "取消固定结果" })).toBeInTheDocument());
   });
 });

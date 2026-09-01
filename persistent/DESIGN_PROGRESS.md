@@ -1,5 +1,311 @@
 # DESIGN_PROGRESS
 
+## 2026-09-01 — Context controls and bulk selection
+
+- Added bounded remove controls to the Research session-memory strip for
+  pinned Results and exact pinned source versions. Labels remain human
+  readable; internal IDs are not exposed in normal UI.
+- Added current-filter “select all / clear” controls to Data Platform batch
+  selection, with wrapping action groups that preserve the dense scientific
+  workbench layout on mobile.
+- Focused frontend tests and typecheck pass. Phase 14-R remains partial until
+  the broader browser/service maturity campaign is complete.
+
+## 2026-08-31 — Trajectory diffusion evidence, latest interpretation and production navigation
+
+- Closed the real persisted MSD → diffusion evidence seam for Job
+  `job_dc63f3f5d57742009c6be09e`: exact `1–6 ps`, 11 points,
+  `R²=0.970301847945`, `α=0.924032310013` and bounded
+  `D=0.038618084156 Å²/ps` are now projected.
+- Re-interpretation
+  `interpretation_a115c2ced38a7586161370b7994fec88` increased only the
+  immutable interpretation count (`1 → 2`); Job, ToolCall, Artifact and
+  ScientificResultSnapshot counts did not change.
+- Corrected evidence completeness so known Plot/summary/Recipe presentation
+  companions do not masquerade as missing science when the same ToolCall
+  already has approved authoritative evidence.
+- Research and Report readers now reopen the newest immutable interpretation,
+  not the oldest snapshot.
+- Reworked the trajectory diagnostic surface into the scientific-instrument
+  design language: coherent Chinese labels, persisted/read-only explanation,
+  restrained hierarchy, explicit selection semantics and bounded mobile table.
+- Isolated production navigation on port `3002` preserved one ProductShell
+  with zero document requests across eight route transitions. Warm URL
+  response was `33–93 ms`; mobile Research was `390/390` with no post-auth
+  browser failures.
+- Focused regression: backend `26 passed`, frontend `65 passed`, Ruff,
+  typecheck and production build PASS. `trajectory.diffusion` is PARTIAL until
+  Agent2 ScientificResultSnapshot plus historical/archived exact-version
+  qualification closes.
+
+## 2026-08-30 — Exact failed-Turn recovery and bounded Research history
+
+- Retry/Edit now read the selected persisted ResearchTurn message and exact
+  context instead of the session's latest user message.
+- Recovery actions are placed under terminal failed/canceled progress:
+  `修改问题` and `重新研究（新运行）`; the active control is `停止研究`.
+- Browser retry parent `8080a173…` → child `f6441688…` retained exact Dataset
+  version `be02266a…` and `mat-2`. Only the Turn count changed; scientific
+  execution/result deltas were all zero and the router correctly answered
+  without over-computation.
+- The 50-message session now renders five messages around the selected branch
+  by default, with explicit full-history expansion/collapse. Mobile is
+  `390/390`.
+- Frontend recovery/history tests are `56 passed`; ContextManifest budget
+  tests are `6 passed`; typecheck passes. Phase 14-R remains partial.
+
+## 2026-08-30 — Product navigation, report availability and responsive shell
+
+- Replaced the remaining Planner/Workspace same-origin hard navigations with
+  Next App Router links/pushes; project routes keep the persistent shell.
+- A warm authenticated Research-to-Data transition used one route request in
+  `89ms`, retained the browser marker and made no document/icon reload request.
+  Cold development-route compilation remains visible but is not a full reload.
+- Added an authorized Report status projection so a normal missing Report is a
+  bounded `NOT_REQUESTED` state rather than a repeated `404`; READY still
+  opens the exact persisted Report.
+- Closed measured mobile global overflow (`375/375`) and desktop Data Navigator
+  horizontal overflow (`248/248`, controls `208/208`, rows `224/224`) while
+  keeping global actions and 44px lifecycle targets accessible.
+- Live edit/branch and re-interpret proof retains immutable parent/result
+  identity; re-interpret scientific deltas are all zero.
+- Focused backend Report coverage is `22 passed / 4 historical provider
+  skips`; grouped frontend coverage is `68 passed`; typecheck passes.
+  Phase 14-R remains partial.
+
+## 2026-08-30 — App Router navigation fluency
+
+## 2026-08-30 — Query navigation selection continuity and presentation accessibility
+
+- Fixed a real client-navigation defect in `ProjectDataPage`: when a Dataset
+  URL changed between two still-visible datasets, the old `selectedId` was
+  considered valid and prevented the URL selection from taking effect. URL
+  `dataset` now has priority; selection state falls back only when no valid
+  route selection exists.
+- Authenticated Chromium proof now switches
+  `Phase14R Band Gap Acceptance → Phase14R XRD Validation → Phase14R Band Gap
+  Acceptance` without a document request, while the main Viewer heading and
+  active row change on each transition.
+- Repeated `ScientificPresentationBlocks` now receive unique accessible
+  heading IDs via React `useId` when no explicit instance identity is supplied;
+  duplicate presentation instances no longer share `aria-labelledby` targets.
+- Focused frontend regression: `87 tests passed` across ProductPages,
+  ResearchPages, ScientificViewerAdapter, ScientificPresentation and Agent2
+  presentation suites; typecheck and production build pass.
+- Same-stack services remain running: PostgreSQL `55434`, Redis `6379/13`,
+  MinIO `9000`, API `8000`, frontend `3000/3001`, and six workers. Phase 14-R
+  remains partial pending capability-wide qualification, resource-health
+  cleanup, full regression, and exact-SHA release gates.
+
+- Confirmed through real click navigation that project route changes use Next
+  App Router (`documentRequests=0`, window marker preserved), not full browser
+  reloads.
+- Added a browser-session auth request cache so ProductShell and
+  RequireProductAuth coalesce `/auth/me`; post-login measured transitions made
+  zero additional auth requests.
+- Added pointer/focus prefetch for sibling project routes and native segment
+  loading boundaries with the same research-workbench hierarchy.
+- Current same-stack warm usable times: Data `131ms`, Research `967ms`,
+  Reports `95ms`, Overview `922ms`; cold Report `1659ms`. No critical response
+  failures. Phase 14-R remains partial pending broader provider-scale and
+  mobile real-user performance gates.
+- The project route group now owns a persistent `ProductRouteFrame`, so nested
+  page wrappers reuse one shell/auth frame across route transitions. Query-aware
+  root transition state is wrapped in Suspense and production build passes.
+
+## 2026-08-30 — Multi-family Report quality
+
+- A durable Report worker generated a VALID Structure Report from the existing
+  CrystalNN/VoronoiNN Result; the first unsupported numeric summary was
+  fail-closed and the bounded repair succeeded without science recomputation.
+- Dataset and Structure reports both pass exact-version, finding,
+  discussion/limitation/conclusion and no-raw-JSON browser checks.
+- Human-facing report prose now hides implementation capability IDs while
+  preserving technical identity in progressive audit/reproducibility details.
+- Long fact references now wrap inside the mobile findings grid; Report
+  `document/body = 390/390`.
+- Post-change backend Report/Context/authorization checks are `45 passed / 4
+  historical compatibility skips`; PostgreSQL Alembic head is `0027`.
+
+## 2026-08-30 — Structure Presentation/Evidence/Viewer continuity
+
+- Canonical Structure Turn renders one Presentation with independent
+  CrystalNN/VoronoiNN content and two Evidence references.
+- Evidence resolves persisted source/Artifact identity and the Viewer link
+  preserves exact object/version.
+- Viewer adds a progressive full-version disclosure; header remains concise.
+- Browser emitted zero scientific mutation requests; canvas rendered and
+  mobile Research is `390/390`.
+
+## 2026-08-30 — Task/notification recovery hierarchy
+
+- Stop is now rendered only for live persisted ResearchTurns; terminal and
+  legacy task rows cannot offer an invalid cancellation action.
+- Task and Notification aggregation expose partial project synchronization
+  instead of silently dropping failed project reads.
+- Notification Center adds bounded `全部 / 需要关注 / 已完成 / 已取消` filters
+  between its overview and event list; row actions remain state-specific.
+- The PostgreSQL/Redis/MinIO/API/frontend/worker stack was restored from
+  retained state after process loss. Runtime health is fully OK.
+- Authenticated Chromium recorded 17 tasks, 7 notifications, zero invalid Stop
+  controls, zero mobile overflow and a truthful offline/reconnect banner.
+- Focused/grouped frontend coverage is `4 passed` / `60 passed`; typecheck and
+  diff-check pass. Phase 14-R remains partial.
+
+## 2026-08-30 — Report management action hierarchy
+
+- Kept the Report itself as the dominant list target and moved row lifecycle
+  actions into the existing managed-object overflow menu.
+- Made batch selection an explicit mode; bulk Archive/Restore are available,
+  while bulk Trash remains prohibited because destructive lifecycle requires a
+  per-Report dependency preview.
+- Replaced the inline dependency overlay with the shared focus-managed modal;
+  Escape closes it and focus returns to the originating Report action.
+- Authenticated Chromium resolved duplicate report titles by exact report ID,
+  exercised Archive/Restore and the non-mutating dependency preview, and
+  recorded zero mobile overflow at `390x844`.
+- Focused/grouped frontend regression is `8 passed` / `68 passed`; typecheck,
+  touched Ruff and diff-check pass. Phase 14-R remains partial.
+
+## 2026-08-29 — Report dependency-impact confirmation
+
+- Added a secured, read-only Report dependency-impact projection derived from
+  the immutable Report snapshot and ScientificResult bundle.
+- Report Trash now requires explicit confirmation after showing bounded
+  ResearchTurn, ScientificResult, Interpretation, Artifact, Evidence and exact
+  source-version dependencies; canceling leaves the snapshot unchanged.
+- Focused Report backend/frontend regressions pass. Phase 14-R remains partial
+  because retention/purge, broad surface acceptance and release CI are open.
+
+## 2026-08-29 — Phase 14-R operations snapshot
+
+- Added a redacted, read-only operations snapshot for PostgreSQL pool/state,
+  stale active versus waiting ResearchTurns, stale Jobs, canonical RQ queues,
+  worker availability, recent-versus-retained failures, and MinIO health.
+- The current stack is healthy for queue depth/workers/MinIO/transactions but
+  correctly reports attention for nine historical automatic-stage
+  qualification Turns and one `test_user` queued Job.
+- No qualification evidence was deleted or silently terminalized.
+- Focused tests and touched Ruff pass; R11 remains partial pending alert
+  delivery, data reconciliation policy, concurrency/provider quotas, and the
+  production runbook.
+
+## 2026-08-29 — Phase 14-R Dataset-list fluency
+
+- Measured authenticated same-stack API projections over 25 samples.
+- Found the 129-row Dataset list issuing 265 SQL statements through
+  per-Project Dataset and per-Dataset Profile reads.
+- Added batch repository reads and deterministic Profile association, reducing
+  the current-worktree path to three SQL statements while preserving Dataset
+  visibility and identity.
+- Direct PostgreSQL p50 improved from 312.0 ms to 19.7 ms; focused tests and
+  touched Ruff pass.
+- Phase 14-R remains partial pending the browser cold/warm matrix, Viewer
+  timing, lifecycle/retention, operations governance, full surface acceptance,
+  and exact-SHA release gates.
+
+## 2026-08-29 — RQ queue lifecycle and durable worker roles
+
+Agent2 Phase 2–8 service-backed fixtures now remove their unique RQ queue
+registrations, including nested fixture cleanup. Phase 4 isolates its
+RESULT_PENDING boundary from live canonical Result workers unless Phase 5
+explicitly opts into its unique Result queue. Fresh same-stack coverage passed
+15/15 without registry growth. Historical strict test queues were removed
+only after active/scheduled/deferred counts were zero; PostgreSQL failure
+evidence was preserved. Missing planning/execution worker roles were restored
+without restarting the current stack, leaving five canonical queues empty and
+five workers idle.
+
+## 2026-08-29 — Phase 14-R authority recovery qualification
+
+PostgreSQL backup/restore now has a current isolated drill with exact
+ScientificObject/Version/Turn/Job/ToolCall/Artifact/Result/Report count
+parity, Alembic parity and zero broken identity pointers. MinIO backup/restore
+preserved byte checksums and failed closed for a missing object. Redis
+transient-loss semantics were proven on an isolated process while the primary
+queue and five workers stayed online; queue publication recovery preserves the
+same persisted Job. Operations maturity remains partial pending alert,
+resource-governance and transient test-queue lifecycle closure.
+
+## 2026-08-29 — Scientific Object lifecycle action wiring
+
+The Data Platform Scientific Object list now uses the existing lifecycle API
+for archive/restore actions in the standard managed-row menu. Active and
+archived filters update immediately after mutation while exact object/version
+viewer navigation remains unchanged. This is a UI bridge only; scientific
+identity and version authority are unchanged.
+
+## 2026-08-28 — Task state labels and pin mutation race
+
+Task Center and Notification Center now expose the persisted
+`researchTurnId` as a user-facing recoverable-session label and reserve the
+legacy read-only label for genuinely unresolvable historical jobs. Scientific
+Presentation pin/unpin now guards against stale session-memory responses and
+reconciles optimistic state with the authoritative API. Full frontend
+regression (96 files / 615 tests), typecheck and production build pass.
+
+The same mutation-sequence guard also covers stale memory-read errors, so an
+old failed read cannot undo a newer pin/unpin action. Full backend regression
+remains green at 1827 passed / 83 skipped.
+
+Authenticated Chromium also swept the project, Data, Research, Reports, Tasks
+and Notifications routes at desktop `1280x720` and mobile `390x844`: all 12
+checks had zero horizontal overflow and no page errors. The pre-login 401 and
+one aborted Data object-store request were classified as expected bootstrap/
+navigation cancellations.
+
+## 2026-08-28 — Exact Turn continuity from task surfaces
+
+Task Center and Notification Center now preserve the authoritative
+`researchTurnId` when opening non-Workspace jobs, carrying both `run` and
+`turn` query parameters. This keeps durable background-task navigation on the
+exact ResearchTurn path and leaves Workspace and legacy run-only fallbacks
+unchanged. Focused tests pass.
+
+## 2026-08-28 — Authorized global-search lifecycle filters
+
+The existing project-scoped global search now supports bounded type and
+lifecycle filters (`active`, `archived`, `all`). Project archive state is
+derived from the authoritative `project_configs` flag and all rows remain
+membership-scoped. The UI reuses the current search dialog and only sends
+filter options when selected; this is a navigation/organization projection,
+not scientific authority. Trash/retention remains outside this narrow repair.
+
+## 2026-08-28 — ScientificResult search continuity
+
+Result search hits now prefer the persisted ScientificResultSnapshot
+`research_turn_id` relation and route directly to the exact ResearchTurn.
+Rows without a resolvable relation retain the bounded `result=` fallback.
+This keeps navigation on the existing authoritative relation and does not
+create a second Result identity.
+
+## 2026-08-28 — Scientific Report export transport
+
+The modern Markdown report export now attaches its hidden Blob anchor before
+dispatch, removes it after click, and revokes the URL. This hardens browser
+download behavior without changing immutable report/scientific state.
+
+## 2026-08-28 — Same-stack worker MinIO environment parity
+
+Fresh service-backed worker subprocesses now inherit the same repository-
+supported MinIO endpoint, credential aliases and bucket as the fixture
+process. This fixes exact-version payload hydration failures in the Phase 7
+reuse campaign without changing scientific authority or worker execution
+contracts; the rerun passed 4/4 with no skips.
+
+## 2026-08-28 — ScientificResult logical/snapshot identity bridge
+
+Reuse controls now preserve the distinction between the ScientificResult
+bundle `result_id` and the persisted `scientific_result_snapshots.id`. The API
+exposes `result_snapshot_id`; frontend reinterpret/continue/pin controls use
+it for context/memory operations; explicit snapshot selections are isolated
+from recency candidates; and `INTERPRET_RESULT` presentation resolves the
+existing immutable snapshot without duplicate scientific execution. Live proof:
+Turn `4460fc2c-98f8-4129-8fd5-0615f08dc5a7`, source snapshot
+`2809dcd1-243e-4323-8538-0a5fe81780d9`, interpretation
+`bf7ef3ec-0567-4c2f-80b6-9b584984c45f` VALID/COMPLETED; counts unchanged
+(`117/158/637/88`). Phase 14-R remains PARTIAL.
+
 ## 2026-08-28 Agent-2.0 Phase 14-R Agent2 evidence compatibility adapter
 
 - The secured planner evidence route now adapts durable Agent2
@@ -4277,3 +4583,1402 @@ legacy null 兼容；客户端无需从 Job 字符串重建 Turn 身份。项目
 - Read-only reopen left PostgreSQL scientific counts unchanged:
   `analysis_plans=133`, `jobs=117`, `tool_calls=158`, `artifacts=637`,
   `scientific_result_snapshots=88`.
+
+## Agent-2.0 Phase 14-R current-worktree regression refresh (2026-08-28)
+
+- Fresh frontend regression: `96` files / `615` tests passed.
+- Fresh backend regression: `1827` passed / `83` historical or optional skips.
+- Production build, typecheck, compileall, `uv lock --check`, touched Ruff,
+  and `git diff --check` passed.
+- Runtime health remained PostgreSQL, Redis, MinIO, Redis workers, and
+  configured DeepSeek. Mature-product closure remains `PARTIAL`; no P14R
+  release candidate was created.
+
+## Agent-2.0 Phase 14-R current same-stack service campaign (2026-08-28)
+
+- Fresh Context Manifest, PostgreSQL planning, and Phase 7 reuse/execution
+  campaign: `8 passed`, `0 failed`, `0 errors`, `0 skipped`.
+- Runtime services: PostgreSQL, Redis, MinIO, Redis-backed workers, DeepSeek.
+- PostgreSQL activity after the campaign: `active=1`, `idle=4`,
+  `idle-in-transaction=0` observed. Mature-product closure remains
+  `PARTIAL`.
+
+## Agent-2.0 Phase 14-R authenticated browser continuity (2026-08-28)
+
+- Kept the authenticated in-app browser tab open at `/console`.
+- Live search still resolves ScientificResult snapshot
+  `2809dcd1-243e-4323-8538-0a5fe81780d9` to persisted ResearchTurn
+  `8382c443-f9ca-4c90-9aa3-444fea683807` through `/research?turn=...`.
+- Services and browser remain running for the next qualification pass.
+
+## Agent-2.0 Phase 14-R lifecycle audit (2026-08-28)
+
+- Verified current lifecycle authority is ACTIVE/ARCHIVED plus protected
+  empty-entity deletion with server-derived dependency impact.
+- No persisted TRASHED/PURGED or retention/export contract exists yet.
+- Kept this as an explicit mature-product gap instead of adding an unsafe
+  partial deletion model.
+
+## Agent-2.0 Phase 14-R direct Project History ResearchTurn relation (2026-08-28)
+
+- Restarted the browser-facing API with the repository-supported same-stack
+  environment; runtime health is PostgreSQL + Redis + MinIO with Redis-backed
+  workers and `mdi-artifacts`.
+- Project History now merges direct persisted `research_turns` bindings for
+  modern Agent2 jobs that lack legacy session-run rows. Authenticated live
+  evidence resolves `job_agent2_8382...` to Turn
+  `8382c443-f9ca-4c90-9aa3-444fea683807` and `job_agent2_17b67...` to Turn
+  `17b67e68-b7db-475b-bb4c-3b336cb2ba15`, both as `RESEARCH_TURN`.
+- Focused regression: `tests/test_project_history_research_context.py` 4
+  passed; touched Ruff and `git diff --check` pass. This continuity repair
+  does not change the truthful Phase 14-R `PARTIAL` status.
+
+## Agent-2.0 Phase 14-R session-list exact ResearchTurn continuity (2026-08-28)
+
+- Fixed the follow-on seam where `/research-sessions` exposed only legacy
+  `research_session_runs`, causing an exact modern task link to render a false
+  “no recoverable conversation” warning.
+- The session projection now merges authorized direct
+  `research_turns.research_session_id`/`job_id` relations into
+  `runIds`/`runReferences`; no Job-name inference or second identity source was
+  introduced.
+- Authenticated Chromium after API reload opened the exact Turn
+  `8382c443-f9ca-4c90-9aa3-444fea683807`; warning absent, context disclosure
+  and `mat-2` result present, no console/page/critical-request errors, and no
+  overflow. Focused Project Access/history regression: 19 passed. Overall
+Phase 14-R remains `PARTIAL`.
+
+## Agent-2.0 Phase 14-R terminal projection direct Turn relation (2026-08-28)
+
+- Terminal interpretation reconciliation now prefers direct persisted
+  `research_turns.research_session_id`/`job_id` for modern Agent2 work, with
+  the legacy `research_session_runs` fallback retained for rolling/old data.
+- This keeps assistant projections attached to the exact Research Session even
+  when no compatibility row exists; it does not create a second identity
+  source.
+- Focused Project Access/history/reconciliation regression: 20 passed; Ruff
+  and diff checks pass. Phase 14-R remains `PARTIAL`.
+
+## 2026-08-28 — Result reuse browser proof after worker recovery
+
+The authenticated reinterpret action completed as `INTERPRET_RESULT` for Turn
+`cc704d3f-dcfc-4a49-a971-2cda6282039c`, with `VALID` interpretation
+`ce8c820d-2f42-4a82-9593-714971b5ad09`, reusing immutable Result snapshot
+`2809dcd1-243e-4323-8538-0a5fe81780d9`. ContextManifest
+`da2d4f02-1dac-4d53-aa9f-8987a8ab6147` preserved the exact Dataset version
+and `mat-2`; analysis-job count stayed `4 → 4`. The Turn was initially
+delayed because the existing queue workers had exited; starting the repository
+launcher restored processing. This is a runtime availability finding, not an
+authority change. Phase 14-R remains PARTIAL.
+
+## 2026-08-28 — Edit branch context isolation
+
+The context assembler now treats a child turn with `parent_turn_id` and no
+explicit Result IDs as a fresh branch: recency-derived historical Results are
+not injected into its orchestration context. Explicit reinterpret/continue
+flows still bind the requested immutable Result snapshot. After reloading the
+same-stack API and workers, authenticated edit child Turn
+`1176df48-b0a4-4611-bf42-970ef2c6d181` preserved parent
+`8382c443-f9ca-4c90-9aa3-444fea683807`, exact Dataset object/version, and
+`mat-2`; its manifest contained zero Result candidates and the bounded
+request completed as `ANSWER` without a Job or Result. This closes a
+demonstrated orchestration seam while Phase 14-R remains PARTIAL.
+
+## 2026-08-28 — Dataset semantic constraint binding
+
+`sample`/`property` 是 Dataset 需求层的语义选择，不是
+`dataset.materials_explorer` 的可执行 Tool 参数。`CapabilityBinder` 现仅
+隔离这两个明确 key，任意其它未知参数仍由严格 schema 拒绝。规划器回归
+为 `21 passed, 1 skipped`，touched Ruff PASS。
+
+同栈 API 与五个 worker 重载后，认证浏览器新 Turn
+`3b85fa42-dcc8-42b3-ac68-f5f54b610df4` 完成
+`PLAN → Job → ToolCall → Artifact → ScientificResult →
+VALID Interpretation → COMPLETED`。Result
+`e2587ca6-9b1f-5532-9e79-0ae6a89d6777` 含 `mat-2` 的
+`band_gap=2.5` 权威 fact，精确 Dataset object/version 保留。Phase 14-R
+总体仍为 PARTIAL，服务和 Chrome 保持运行。
+
+## 2026-08-28 — Presentation pin 状态竞态修复与回归
+
+前端全量回归发现 `Agent2ScientificPresentation` 的旧 session-memory
+读取可能在 pin/unpin 请求完成后覆盖新状态。修复沿用现有
+`pinMutationSeq`，在 mutation 成功或失败结算时再次递增，使旧读失效，
+不改变科学结果或上下文权威。
+
+验证：
+
+- 组件回归：6 passed；
+- 前端全量：96 files / 615 passed；
+- 后端默认 SQLite 隔离全量：1833 passed / 83 skipped；
+- 显式 PostgreSQL/Redis/MinIO service-backed Phase 3/4/5：4 passed；
+- touched Ruff、compileall、git diff --check：PASS。
+
+Phase 14-R 仍为 `PARTIAL`，该修复只关闭一个真实用户控制竞态。
+
+## 2026-08-28 — 编辑分支真实浏览器验收
+
+认证 Chromium 通过编辑入口从父 Turn
+`8382c443-f9ca-4c90-9aa3-444fea683807` 创建不可变子 Turn
+`dc76de32-4675-4b6a-91fd-ef102602c905`。父 Turn 保持 `COMPLETED` 且未被
+修改；子 ContextSnapshot
+`e58057b5-b88b-495e-a855-29dd46a4c953` 保留精确 Dataset
+object/version 与 `DATASET_SAMPLE=mat-2`，查询型请求最终
+`ANSWERED`，无 Job/ScientificResult（符合 `QUERY_DATA` 语义）。
+浏览器无 page error、无 5xx；轮询期间的
+`SCIENTIFIC_RESULT_NOT_READY` 409 是无 Result 的 fail-closed 预期。
+## 2026-08-29 — Phase 14-R grounded Report narrative sections
+
+- Extended the immutable scientific Report communication contract with
+  optional bounded `discussion`, `conclusion`, and `next_steps` sections.
+- Each section carries Result `fact_refs`/`evidence_refs`; numeric and unit
+  claims are validated by `ReportGroundingValidator`, preserving fail-closed
+  scientific authority.
+- Updated the Report route, deterministic presentation projection and
+  Markdown export to expose the mature report hierarchy without creating a
+  Job, ToolCall, Artifact or ScientificResult.
+- Focused evidence: backend Report `18 passed, 4 compatibility skips`;
+  frontend Report/presentation `16 passed`; typecheck and touched Ruff pass.
+- Phase 14-R remains partial pending the broader capability, lifecycle,
+  recovery, operations, real-user and exact-SHA release gates.
+## 2026-08-29 — Phase 14-R archive/browser and same-stack service recheck
+
+- Preserved the authenticated in-app browser tab and verified the reversible
+  Dataset lifecycle action for `dataset_0003_1e42d834bfa64961`: active →
+  archived filter → restore → active, with typed rows and exact object/version
+  identity unchanged.
+- Re-ran the Phase 10L–10N service-backed collection after loading the
+  repository PostgreSQL/Redis/MinIO environment and explicit integration gate:
+  21 passed, 0 failed, 0 errors, 0 skipped.
+- The first two attempts were classified as command-environment defects
+  (missing `MDI_RUN_INTEGRATION` or missing PostgreSQL alias), not service
+  availability failures. Phase 14-R remains partial because protected Trash/
+  retention/purge, capability-wide live browser coverage, recovery and
+  release CI are still unqualified.
+
+## 2026-08-29 — Phase 14-R task-center stale-state clarity
+
+- Added a read-only 15-minute stale-status notice for active/queued tasks in
+  the global Task Center. Persisted task status, cancellation authority and
+  exact navigation identities are unchanged; the notice only directs users
+  to inspect the latest server state instead of implying a failure.
+- Focused Task Center regression passes. The mature task/recovery gate remains
+  partial until live retry/reconnect and worker-recovery browser campaigns are
+  qualified.
+
+## 2026-08-29 — Phase 14-R final same-stack operations recheck
+
+- Restored the missing `mdi-agent-turns` worker through the existing launcher
+  while preserving PostgreSQL, Redis, MinIO, API, frontend, and browser state.
+- Current redacted snapshot: PostgreSQL active=1/idle=7,
+  idle-in-transaction=0, pool checked-out=0, Redis queue depth=0,
+  canonical workers=5 idle, MinIO=OK, recent RQ failures=0.
+- Snapshot remains `attention` because 9 historical automatic-stage Turns and
+  1 stale qualification Job remain persisted; no records were deleted or
+  rewritten.
+
+## 2026-08-29 — Phase 14-R recoverable Project/Dataset Trash
+
+- Added recoverable `TRASHED` lifecycle projection for Projects through
+  `project_configs.config_json` and Datasets through
+  `datasets.metadata_json`, retaining the pre-Trash lifecycle for deterministic
+  restore.
+- Kept Dataset database status inside the released constraint (`archived`)
+  while API/history/search return the explicit outward `trashed` state.
+- Added Project/Data Trash filters, dependency preview, per-row and bulk
+  Trash/Restore, excluded Trash from normal new-work actions, and extended
+  authorized global search to `status=trashed`.
+- Focused evidence: backend lifecycle/access/history `20 passed`, frontend
+  Project/Data lifecycle `28 passed`, typecheck/build/Ruff/diff check PASS.
+- Restored the local same-stack runtime after process loss. MinIO required a
+  relative data argument because the previous absolute path contained spaces;
+  `/health/runtime` now reports PostgreSQL, Redis, MinIO, workers and DeepSeek
+  `ok`.
+- Phase 14-R remains partial pending the wider lifecycle/retention/export,
+  Viewer/Report quality, same-stack browser and exact-SHA release gates.
+
+## 2026-08-29 — Phase 14-R Research Session lifecycle
+
+- Added project-authorized `PATCH /research-sessions/{session_id}` for
+  recoverable `TRASHED`/`ACTIVE` session management using the existing
+  `sessions.status` authority.
+- Archived/trashed sessions remain readable for historical provenance but
+  reject new Messages and ResearchTurns; Trash is rejected while a
+  non-terminal Turn is running.
+- Added Research Records popover Trash/Restore controls with explicit
+  historical-retention confirmation. No Turn, Result, Artifact, or scientific
+  object/version authority is mutated.
+- Focused backend/frontend lifecycle tests pass; Phase 14-R remains partial.
+## 2026-08-29 Phase 14-R recoverable Research and Report lifecycle
+
+- Research Sessions now use the existing `sessions.status` authority for
+  recoverable `ACTIVE`/`ARCHIVED`/`TRASHED` management. Only active sessions
+  accept new messages or turns; non-terminal work blocks Trash; historical
+  Results and exact source provenance remain readable.
+- Immutable Scientific Reports now use a bounded project-config lifecycle
+  overlay. The report list exposes current/archived/Trash filters and
+  reversible Trash/Restore actions without mutating the Report snapshot or
+  creating scientific execution state.
+- Focused evidence: Report UI `2 passed`; Report lifecycle/backend
+  `20 passed, 4 historical compatibility skips`; broader affected backend
+  `45 passed, 4 skips`; same-stack Phase 8 report campaign
+  `4 passed, 0 skipped`; Research Session backend/frontend
+  `17 passed` / `37 passed`; typecheck, compileall, Ruff and diff check pass.
+- The preserved authenticated in-app browser is logged in against the real
+  PostgreSQL `55434` / Redis / MinIO stack. The report index renders
+  `agent2_report_819f458171ba2d3219717895bf12eaf9` with the recoverable
+  lifecycle action. Phase 14-R remains partial because capability-wide viewer,
+  retention/purge/export, recovery/performance, full real-user and exact-SHA
+  release gates are still open.
+## 2026-08-29 Phase 14-R report lifecycle completion
+
+Scientific Reports now expose distinct Archive, Trash, and Restore actions
+through the existing project-authorized lifecycle endpoint. The shared
+frontend request helper sends JSON content types for lifecycle PATCH calls.
+Authenticated browser evidence covered Trash, historical report reopening while
+trashed, Restore, and active rediscovery; immutable scientific counts remained
+unchanged (`Jobs 194`, `ToolCalls 250`, `Artifacts 995`,
+`ScientificResultSnapshots 127`). Phase 14-R remains PARTIAL because the
+capability-wide real-user, retention/export, and release gates are not closed.
+# Phase 14-R operations diagnostic entrypoint (2026-08-29)
+
+`scripts/phase14r_operations_snapshot.py` now bootstraps the repository's
+`apps/api` package from its own location. The redacted PostgreSQL/Redis/MinIO
+operations snapshot can therefore be invoked directly from a clean shell;
+qualification environment variables still remain explicit and are never
+embedded in the script.
+
+## 2026-08-29 — ScientificObject recoverable Trash lifecycle
+
+Extended the existing ScientificObject lifecycle authority with a bounded
+`TRASHED` state and `pre_trash_lifecycle_status` marker via Alembic
+`0026_scientific_object_trash_lifecycle`. The service/API preserve the prior
+ACTIVE or ARCHIVED state on restore, while the Data Navigator now queries and
+renders a Trash filter and reversible object action. Domain/API/frontend tests
+cover both active and archived pre-Trash cases; no scientific versions or
+Results are created or mutated. Retention, purge, export and broad lifecycle
+qualification remain open, so Phase 14-R stays PARTIAL.
+
+## 2026-08-29 — ScientificObject dependency preview
+
+ScientificObject recoverable Trash now requests the project-authorized
+`GET /api/scientific-objects/{object_id}/dependency-impact` projection before
+the existing lifecycle PATCH. The server derives bounded exact-version
+dependencies from immutable ScientificResult bundles, ResearchTurns, and
+Report snapshots; the UI presents protected historical-provenance flags and
+requires explicit confirmation. Preview is read-only and does not mutate any
+ScientificObjectVersion, ScientificResult, Artifact, or Report.
+## Phase 14-R qualification runtime isolation (2026-08-29)
+
+The browser qualification frontend now runs with an isolated Next build
+directory (`MDI_NEXT_DIST_DIR=.next-dev-phase14r`) so production `next build`
+cannot remove development route manifests. The process still targets the
+same-stack API (`127.0.0.1:8000`) and does not move execution authority into
+the browser. A fresh authenticated Chrome product tab returned the normal
+shell after the fix. This is an operational qualification safeguard only;
+Phase 14-R remains partial until the documented mature-product gates pass.
+
+## Exact-source Viewer fail-closed behavior (2026-08-29)
+
+Scientific Viewer projection now treats a not-found exact source object as
+`SOURCE_MISSING` metadata plus an explicit limitation, preserving the
+requested ScientificObject/ScientificObjectVersion. Integrity mismatches and
+other storage failures still fail closed. This avoids a generic browser 500
+without substituting a newer source or recomputing science.
+
+## Bounded Report reproducibility export (2026-08-29)
+
+Scientific Report pages expose a deterministic, non-executable JSON
+reproducibility manifest derived from the authorized immutable report view.
+It carries exact Result/Interpretation/source-version/Figure Artifact/Evidence
+identities and limitations, but no provider prompts, credentials, raw Tool
+logs or unbounded source data. This is a presentation export only and does not
+change the scientific authority model.
+
+Authenticated Chrome acceptance downloaded the manifest from Report
+`agent2_report_819f458171ba2d3219717895bf12eaf9` and verified exact
+Report/Turn/Result/Interpretation/Dataset-version provenance. Scientific state
+counts remained `196/253/1007/129` for
+Job/ToolCall/Artifact/ScientificResultSnapshot, proving the export does not
+recompute science. Cross-entity retention/export governance remains open.
+
+## Dataset handoff / same-stack worker qualification (2026-08-29)
+
+An explicit Data Platform → Research deep link now preserves `datasetId`,
+prevents stale-session auto-selection, and binds newly-created Research
+sessions/messages to the selected Dataset. Focused tests pass (`38 + 4`).
+The authenticated same-stack probe started the repository's five Redis
+workers and completed real uploaded Dataset Job
+`job_9a63cc82cf574e25a88529c7` with one ToolCall and three Artifacts.
+The probe confirms a remaining legacy Planner integration seam: the direct
+Planner route does not automatically materialize a ResearchTurn and
+ScientificResult interpretation, so Phase 14-R remains PARTIAL.
+
+## Fresh Dataset projector and report grounding qualification (2026-08-29)
+
+The current same-stack runtime now proves a fresh Dataset-to-Research
+execution with exact Dataset object/version/sample identity. Dataset promotion
+is idempotent: repeated navigation reuses the existing admitted
+`materials.table` object/version instead of creating duplicate scientific
+authority. The fresh run persisted a new Job, ToolCall, Artifact and
+ScientificResult containing authoritative sample and numeric facts, followed
+by a `VALID` grounded interpretation and terminal completed Turn.
+
+Report grounding was repaired at the narrow validator layer: numeric fragments
+embedded in opaque UUID/version/resource identifiers are provenance labels, not
+scientific claims. Ordinary numeric claims and scientific notation remain
+fail-closed, with a negative unsupported-claim regression retained. The fresh
+Report reached READY and opened/exported without any scientific-state delta.
+Phase 14-R remains partial because broad mature-product acceptance and release
+gates are not yet closed.
+
+## QUERY_DATA terminal-state runtime repair (2026-08-29)
+
+The fresh browser query-only path was initially stuck because the live
+`phase14r-turns-55434` worker had not loaded the current router implementation.
+After cleaning only that stale RQ registry entry and relaunching the worker from
+the current worktree, Turn
+`ddad0068-144e-4377-abe3-44a0e2601592` completed as `ANSWERED` with
+`QUERY_DATA`/`dispatch_status=COMPLETED` and no scientific execution records.
+The frontend now models `ANSWERED` explicitly and resets stale local planning
+state when a Turn route changes. This closes the demonstrated query-only
+runtime/UI seam while Phase 14-R remains partial for the broader mature-product
+gates.
+### 2026-08-29 — grouped Report/search/recovery product qualification
+
+在保持 API、workers、PostgreSQL、Redis、MinIO 与 Chrome 标签页运行的前提下，
+完成一组关联验证：Report
+`agent2_report_c91972312383616a6503acd6be76e233` ACTIVE→ARCHIVED→ACTIVE，
+归档筛选中仍可打开，Dataset exact object/version 与 Result snapshot 不变；
+回收站依赖预览显示 6 项受保护依赖并在确认前取消；全局搜索 `mat-2` 返回
+授权项目内的 Report/Research 入口；`/tasks`、`/notifications` 暴露持久化
+状态重载/恢复入口。报告/生命周期定向回归为 39 passed、4 historical skips，
+同栈服务子集为 11 passed、0 skipped。Phase 14-R 仍为 PARTIAL，未创建
+P14R-A/P14R-B。
+
+### 2026-08-29 — bounded bulk Report lifecycle controls
+
+在保留现有 Report 依赖预览语义的前提下，报告列表新增 ACTIVE/ARCHIVED
+范围内的受限多选归档/恢复；Trash 仍只允许逐份操作，以确保每份报告继续经过
+服务端依赖影响预览。真实 Chrome 标签页中对
+`agent2_report_c91972312383616a6503acd6be76e233` 完成
+ACTIVE→ARCHIVED→ACTIVE，归档筛选可见，Dataset exact object/version 与
+ScientificResult snapshot 不变；归档报告正文显示明确状态说明，并提供绑定
+ResearchTurn `9c3a8278-69cf-4f9e-973a-e0b5d0e46779` 的来源研究入口。
+前端定向回归 37 passed，同栈服务子集
+11 passed、0 failed、0 errors、0 skipped。Phase 14-R 总体仍为 PARTIAL。
+
+### 2026-08-29 — Report lifecycle toolbar quality
+
+报告列表批量工具条按 ACTIVE/ARCHIVED 实际状态分组，因此在“全部”筛选下
+混合选择仍有清晰的归档/恢复动作；批量请求使用 `Promise.allSettled`，
+成功项即时更新，失败项保持选中并显示可重试提示。筛选切换会清理旧选择。
+报告正文显示归档/回收站状态说明，并提供精确 ResearchTurn 来源研究入口。
+同时按现有设计系统补齐桌面/移动端工具条与行操作布局。相关前端回归
+40 passed，typecheck 通过；总体仍为 PARTIAL。
+
+### 2026-08-29 — task/notification control surface quality
+
+任务中心与通知中心采用统一的语义状态徽标（排队、运行、成功、警告、
+失败、已取消），将 Job ID 降为次级元数据，并为每行操作区增加状态相关
+的 aria-label。960px 以下操作区扩展到整行，保证“打开 / 重试 / 停止研究”
+在移动端可触达；未改变真实 ResearchTurn、Job 或取消 API 权威。
+相关前端回归 58 passed，typecheck 通过，diff check 无空白错误。
+总体 Phase 14-R 仍为 PARTIAL。
+
+### 2026-08-29 — runtime and legacy-task grouping repair
+
+长时间前端回归释放本地进程后，重新启动 PostgreSQL `55434`、Memurai
+Redis `6379/13`、MinIO `9000`、API、前端和 Redis workers。MinIO 的
+`XMinioServerNotInitialized` 根因是 Windows 启动参数拆分了带空格的工作区
+路径；使用显式引号的单 volume 后完成初始化，`/health/runtime` 恢复报告
+真实 PostgreSQL/Redis/MinIO。
+
+任务中心将 `LEGACY_READ_ONLY` 记录从“进行中”移到历史区域，即使旧 Job
+状态仍为 `created` 也不再虚增活跃任务。真实页面显示 0 个进行中、17 个已结束，
+旧记录与 stale 提示仍可查看。相关测试与全量前端回归通过，总体 Phase 14-R
+仍为 PARTIAL。
+
+### 2026-08-29 — Research result control hierarchy
+
+完成结果页新增统一的“继续这项研究”控制区，将编辑问题、继续研究、
+重新研究（新运行）、重新解释（不重算）和固定/取消固定结果分组呈现；
+异步操作期间显示“科学结果本身不会被覆盖”的实时状态。桌面五列、平板
+两列、手机单列，所有操作保持 44px 触控可达并沿用工作台安静边框视觉。
+相关定向回归 52 passed，typecheck 通过；总体 Phase 14-R 仍为 PARTIAL。
+
+### 2026-08-29 — Global search interaction quality
+
+在现有全局授权搜索上补齐 `Ctrl/⌘ K` 打开/聚焦、清除后焦点恢复、结果数量
+live status 和类型/生命周期语义徽标。搜索弹层仍是单实例并保留键盘焦点陷阱；
+移动端沿用 44px 触控尺寸和安静边框层级，没有新增科学事实或跨项目搜索权限。
+定向 ProductShell 回归 7 passed；总体 Phase 14-R 仍为 PARTIAL。
+
+### 2026-08-30 — XRD source recovery and mobile context priority
+
+The XRD Data Platform surface was requalified against the running PostgreSQL,
+Redis and MinIO stack after restoring repository-owned normalized objects into the
+existing artifact bucket. The page now visibly renders the validated XRD series
+and linked Structure Viewer; this preserves the existing source authority rather
+than introducing a fallback scientific payload.
+
+For a missing normalized source, the API/UI pair now communicates a typed,
+retryable recovery state and offers `重试加载` plus `查看来源与属性`. On narrow
+screens the data navigator starts collapsed behind `显示数据`, keeping the
+scientific viewer and its source context primary while preserving an explicit
+expand path. The mobile evidence measured no horizontal overflow.
+
+### 2026-08-30 — report index language hierarchy
+
+The Scientific Reports index now uses consistent Chinese kicker labels
+(`项目报告`, `已验证结果`, `历史运行`) alongside the existing Chinese headings.
+This keeps the Research/Report navigation hierarchy readable for the target
+workbench audience without changing report lifecycle semantics or provenance.
+The report index focused regression remains green.
+
+### 2026-08-30 — one authoritative completed-result surface
+
+Completed Agent2 turns now render the exact ResearchTurn presentation as the
+single primary workbench result. The legacy run-level workbench projection is
+suppressed for the same completed/partial turn, removing a duplicate
+`科学呈现` section and the misleading intermediary empty result state. Legacy
+and in-progress runs retain their existing workbench rendering. The change is
+presentation-only and does not alter Result, Artifact, Report or version
+authority.
+
+### 2026-08-30 — task and notification information hierarchy
+
+Task Center and Notification Center no longer put raw Job identifiers in the
+primary heading. Users first see the persisted status and a bounded product
+label (`工作台研究`, `可恢复研究`, `历史研究`, or `研究状态更新`).
+The exact Job ID remains available under a collapsed `技术身份` disclosure for
+audit and support. Navigation, cancellation, retry and persisted-state
+authorities are unchanged.
+
+### 2026-08-30 — task filters and Research action hierarchy
+
+Task Center now uses one compact tablist (`全部`、`进行中`、`需要关注`、`已结束`)
+so a task is not repeated across multiple visual groups. The row-level primary
+action is `打开`; technical Job identity remains progressive disclosure.
+Completed Research keeps `继续研究` as the primary action and separates
+explicit rerun, no-recompute reinterpretation, editing and context pinning as
+secondary controls. Desktop and 390x844 browser checks show no overflow and
+all controls remain reachable.
+
+### 2026-08-30 — Report Evidence mobile overflow and fluency baseline
+
+Evidence identifiers in the Report reader now shrink and wrap within the
+scientific document grid instead of pushing the action row beyond a 390px
+viewport. The current Chromium cold/warm matrix against PostgreSQL, Redis,
+MinIO and real workers records zero overflow across Data, Research, Viewer,
+Report, Tasks and Notifications; the bounded p50/p95 values are recorded in
+`docs/agent2/phase14r/PERFORMANCE_PRODUCT_FLUENCY_BASELINE.md`.
+
+### 2026-08-30 — context transparency and scientific search hierarchy
+
+Research context now leads with what the researcher needs to trust the answer:
+why an item was included, whether it is scientific data/result or a user
+constraint, and the exact source version. Manifest identity, policy and
+fingerprint remain under `审计详情`, preserving auditability without making
+internal contracts the page focal point. The disclosure reflows to one column
+at 390px and long versions/fingerprints wrap without overflow.
+
+Global search now uses human research questions instead of internal Session IDs,
+localized scientific Result/status labels, and one primary `打开` action. Project
+shortcuts remain secondary. This preserves the global bar as navigation and
+identity only while keeping search behavior inside one bounded modal.
+
+### 2026-08-30 — Research session lifecycle placement
+
+Research session organization is now grouped where users expect to manage a
+conversation: the Research Timeline header opens one bounded `研究记录`
+popover with `当前 / 已归档 / 回收站` filters, pinned records at the top, and
+row-level overflow actions. The selected session header shows its title and
+archive/trash state; Restore sits beside the Records entry point so the user
+can recover a historical session without hunting through another page.
+
+Archived and trashed sessions keep their historical conversation, Result,
+Viewer, Evidence and Report routes, but the composer becomes an explicit
+read-only panel and retry is withheld until restoration. This makes the
+scientific workbench hierarchy truthful: lifecycle controls belong to the
+session header, while scientific content remains in the workbench. The change
+does not mutate Messages, ResearchTurns, ScientificResults or exact source
+versions.
+
+### 2026-08-30 — App Router production fluency and layout validation
+
+The project shell now treats route changes as spatially continuous workbench
+transitions. Fast transitions do not flash a banner: the bounded progress
+affordance waits 180 ms and then uses a non-displacing 3 px mineral-green line.
+Project-nav pointer/focus intent prefetches both Next route data and the
+authoritative bounded history/session projections. Three-second promise caches
+deduplicate only the navigation handoff and invalidate after related mutations.
+
+The browser runtime uses same-origin `/api` routing. Optimized-build
+authenticated navigation measured `32–372 ms` usable time across
+Data/Research/Reports/Overview, with zero document requests and one preserved
+ProductShell. At `390x844`, Data, Research and Reports had zero global overflow
+and Reports had zero duplicate DOM IDs. The design review retains the Phase 9C
+workbench hierarchy, IBM Plex/Noto type, single mineral accent, quiet borders,
+one primary action, responsive progressive disclosure and touch-safe mobile
+controls.
+
+### 2026-08-30 — Dataset batch lifecycle safety
+
+Dataset multi-select now opens a bounded dependency-impact preview before
+`移入回收站`. The confirmation action is enabled only after every selected
+Dataset has an authorized server response; failed mutations leave the dialog
+open instead of implying success. This keeps destructive intent explicit while
+preserving the Data Navigator's existing actions/menu hierarchy.
+
+The failure path is explicit: if the batch endpoint rejects, the preview stays
+open and exposes the error so the user can retry or cancel without losing the
+dependency context.
+### 2026-08-30 — Batch lifecycle safety and action hierarchy
+
+Bulk ScientificObject `移入回收站` now follows the same dependency-protection
+contract as the single-object action. The Data Navigator requests an
+authorized impact projection for every selected object, shows a compact
+aggregate confirmation, and keeps the confirm control disabled until all
+previews resolve. Real authenticated browser verification showed two Structure
+objects and five protected dependencies with no mutation; Data page regression
+is `29/29`, and typecheck passes.
+
+### 2026-08-30 — Search and task-center continuity proof
+
+The authenticated Data route now has a verified path into global search and
+the global task center without closing the App Router shell. Search returns a
+bounded set of authorized scientific-work routes; Task Center presents
+persisted project-scoped status, explicit resumable ResearchTurn links and
+truthful stale-state notices. This preserves the workbench hierarchy while
+keeping recovery controls in the dedicated task surface.
+
+### 2026-08-30 — Search fluency and stale-response protection
+
+Global search keeps the existing 180 ms debounce but now invalidates older
+request sequences when the query, filters, or dialog state changes. A slower
+response can no longer replace a newer result set, which preserves user
+orientation and exact route identity during rapid typing.
+
+### 2026-08-30 — Full frontend regression on workspace temp volume
+
+The fresh current-worktree frontend suite completed with `98` files and
+`670` tests passing after redirecting Vitest temporary files to the E:
+workspace volume. This avoids the host C: temporary-volume `ENOSPC` seen in
+the prior attempt without deleting user data. Service listeners remained
+active throughout.
+
+### 2026-08-30 — Re-interpretation control now completes without recomputation
+
+The authenticated Research workbench revealed that a valid result could fail
+the no-recompute re-interpretation branch when the provider's `answer_lead`
+contained an extra unsupported number. The repair stays at the interpretation
+boundary: only the exact lead-only grounding error is replaced with the first
+already-grounded Finding statement, and the original validator still guards
+all Finding claims, references and units. A fresh child Turn completed with
+`grounding_status=VALID`; PostgreSQL showed zero new Plan/Job/ToolCall/Artifact/
+ScientificResult rows. Focused interpretation tests are `15 passed, 1 skipped`.
+
+### 2026-08-30 — Result reuse service qualification executed
+
+The Phase 7 fresh-process service campaign was rerun with the integration gate
+enabled instead of accepting its default skips. PostgreSQL/Redis/MinIO
+execution passed `4/4` with `selected_skip=0`, covering RDF/XRD reuse,
+continuation and stale exact-version follow-up. The campaign reported
+`no_recompute=true` for the reuse branch and preserved the exact historical
+source version while a newer current version existed.
+
+### 2026-08-30 — Fresh Research continuity and route loading
+
+Research now distinguishes a historical session route from a clean research
+route. `?new=1`, exact object/version handoffs and Dataset handoffs no longer
+implicitly reopen the first persisted session (which could be archived); the
+default route selects the first active, non-trashed session. Archived sessions
+show the existing lifecycle state with explicit `开始新的研究` and
+`恢复原会话` controls. The route-loading boundary uses the existing
+workbench skeleton for Data and Research so client transitions retain spatial
+orientation instead of flashing a blank document state.
+
+The same authenticated browser measured the exact Structure handoff's visible
+composer at `593 ms`, with `507/507` effective viewport width. Focused
+frontend tests passed `56/56`, typecheck passed, and the service/runtime
+listeners remained active. This is a continuity/UI repair; broad
+capability-wide qualification and release gates remain open.
+
+The same route-loading shell now covers project Overview and Reports in
+addition to Data and Research. All four surfaces retain a stable context/main
+workbench skeleton during App Router transitions, reducing the perceived
+“page reload” effect without loading scientific payloads early. Route-loading
+focused coverage is `3/3`; the change remains presentation-only.
+
+### 2026-08-30 — grounded communication and Report authority convergence
+
+Historical and new scientific answers now share a deterministic grounded
+communication projection. Persisted messages remain audit evidence; the
+Research read model resolves the exact Interpretation/ScientificResult,
+removes visible internal fact-reference echoes and redundant wording, and
+accepts the projection only when the unchanged fail-closed grounding validator
+passes.
+
+Scientific Report provider output is now normalized back to the validated
+Interpretation and ScientificResult for summary, findings, discussion,
+conclusion, methods, limitations, exact source labels, evidence and
+reproducibility. The authenticated Report
+`agent2_report_4f8320601e99ec9e3a78597f9973aa4c` retained exact version
+`8859cb49-0766-48cd-8a56-e44f5332e0c5`, displayed two independent coordination
+findings and readable CrystalNN/VoronoiNN methods, and omitted the unsupported
+“有效且可靠” conclusion. Its Used Context disclosure exposed the exact Result
+`14ce2fd1-e5bc-4798-906f-3333df2f7a91`, the exact version, three operation
+manifests, and truthful no-compaction state.
+
+Focused evidence is backend `46 passed / 5 historical live skips` plus
+`33 passed`, frontend `65 passed`, touched Ruff PASS and diff-check PASS.
+PostgreSQL/Redis/MinIO/Redis-workers/DeepSeek were healthy after a bounded
+API/Interpretation/Report worker restart; the existing browser tab was
+preserved. Phase 14-R remains PARTIAL for capability-wide Viewer, running
+cancellation/recovery, retention/export, R12 and exact-SHA release gates.
+## 2026-08-30 Phase 14-R scientific-surface evidence reconciliation
+
+The restored current-worktree same-stack campaign passed 12/12 service-backed
+tests with zero skips across Agent2 Phase 4/5/6/8, Coordination, XRD and
+professional closure. Focused scientific viewer/evidence frontend runs passed
+10/10 and 38/38. The authoritative surface matrix now marks the exercised
+Dataset, CrystalNN/VoronoiNN and XRD paths PASS, RDF PARTIAL pending its
+authenticated scientific-content browser campaign, and leaves renderer-only
+families NOT_QUALIFIED. No scientific authority or product behavior changed.
+
+## 2026-08-30 Phase 14-R queued/running cancellation and Continue recovery
+
+Real same-stack browser execution now proves both queued and running
+cancellation. Turns `76e51edf-f798-4771-930a-2011027ade96` and
+`e2789fe7-9322-4e0d-b43b-23981408e70c` reached durable `CANCELED`; their Jobs
+ended `cancelled`, with ToolCall/Artifact/ScientificResult counts remaining
+zero. A fast completion race correctly remained `COMPLETED`.
+
+The terminal recovery surface separates Continue, Edit and explicit Rerun.
+Continue focuses the existing composer and explains that exact authorized
+context is preserved without automatically starting work. Browser and
+PostgreSQL evidence confirms zero new Turn/Job/scientific state. Focused
+frontend coverage passes 61/61 and browser warnings/errors are zero.
+## 2026-08-30 Phase 14-R persistent navigation and RDF closure
+
+The global product shell is now owned by a root App Router frame across the
+project, Task Center and Notification Center surfaces. Login return navigation
+uses the router, ProductShell prefetches the two global destinations, and a
+bounded shared task feed removes duplicate project/job loads. Browser evidence
+shows zero document reloads, stable shell DOM identity, warm history
+transitions of `54 ms` and `26 ms`, and no duplicate task-feed API work.
+
+The canonical RDF projector now exposes five authoritative facts, including
+the configured radius and bin width. The grounding boundary recognizes only
+equivalent `angstrom^-3` / `Å⁻³` notation; different units and unsupported RDF
+peak claims remain rejected. Fresh exact Data-to-Research Turn
+`54fdeada-af1e-4e65-8a8a-855fb52ae76c` completed with Result
+`51baaff9-59ea-5a2e-8cad-931bbbd8586d`, Interpretation
+`87680594-fe78-46d6-8816-3e8a33993b09`, `grounding_status=VALID`, persisted
+Figure/Table links, Evidence and exact-version Viewer navigation.
+
+Focused frontend evidence is `7 files / 52 tests`; focused RDF backend evidence
+is `39 passed / 1 historical skip`; typecheck, Ruff and diff-check pass.
+Phase 14-R remains `PARTIAL` for the broader capability, mobile/historical,
+retention/export, context-stress, R12, regression and release gates.
+
+### 2026-08-31 — Report quality and route continuity
+
+The Report grounding boundary now accepts only the explicit physical-unit
+alias `terahertz ↔ THz`; unrelated units remain fail-closed. Deterministic
+Report projection preserves the validated interpretation title, readable
+method sentences, and fact-backed discussion.
+
+The navigation layer records pending intent while leaving ordinary Next
+`<Link>` navigation native. Programmatic Research controls share that router
+path, and Report source links carry the persisted session identity so users
+open the exact ResearchTurn without an intermediate index lookup. These are
+communication and navigation fixes only; scientific authority and execution
+remain server-side.
+
+### 2026-08-31 — current-worktree verification
+
+本批次完成前端全量回归 `101 files / 693 tests passed`、后端关键回归
+`47 passed / 4 historical skips`、production build `17 routes`、
+typecheck、compileall、Ruff、lock 与 diff-check。真实浏览器标签页继续停留
+在 exact Phonon Viewer；Report → Research → Viewer 导航没有 document reload，
+科学状态计数 `245/322/1291/170` 保持不变。运行时健康为
+PostgreSQL/Redis/MinIO/Redis worker/DeepSeek；运维快照仍暴露历史 stale
+Turn/Job，因此 Phase 14-R 继续保持 `PARTIAL`，不可提前封板。
+
+同一当前工作树的 PostgreSQL/Redis/MinIO mandatory selection 随后真实执行
+`21/21`，覆盖 Agent2 Phase 2–8、Coordination、local environment、
+experimental XRD、trajectory analytics、electronic structure 与
+professional closure，`failed/errors/skipped = 0/0/0`。完整后端回归为
+`1892 passed / 83 historical or optional skips`。
+
+真实 Report 浏览器复核发现旧快照讨论段存在 `。；` 连写。确定性 composer
+改为完整句连接，前端 reader 对已持久化旧快照做纯展示层标点归一化；不改变
+Result、事实、单位或证据。Report 后端 `30 passed / 4 historical skips`，
+Report route `14/14`，浏览器已显示为正常中文分号连接。
+
+### 2026-08-31 — Project History 状态、客户端导航与移动 UI 批次
+
+- Project Overview 与旧 Project Home 每次挂载读取一次当前 Project History，
+  并以 `ResearchTurn.status` 覆盖陈旧 Job 展示状态；历史链接继续携带显式
+  session/run/Turn 身份。
+- 真实浏览器已将 Turn `ec298988-0b32-4e5e-a3c0-8bbb22725818` 显示为
+  `分析失败`，不再误报为“分析进行中”。
+- 390×844 项目局部导航隐藏 Windows 原生横向滚动条，但保留可滚动语义；
+  Overview、Data、Research 的主要操作与 Composer 均可达。
+- 导航探针覆盖 Overview/Data/Research/Reports：document requests=0，
+  shell/marker preserved；暖态 URL 为 95–115 ms，Data/Reports 可用
+  108–121 ms，Research/Overview 可用 929–946 ms。
+- 完整桌面/移动性能矩阵所有路由 overflow=0、browser errors=0、
+  critical 5xx=0。Research p95 仍约 2.2 s，是后续性能重点。
+- 相关前端测试 `38/38`、typecheck 与 diff-check 通过。
+
+### 2026-08-31 — 科学报告与研究时间线的信息层收敛
+
+- Report 复用 Research 的确定性限制文案映射；旧持久化英文限制在中文产品
+  中统一呈现，科学事实、单位、证据和 exact source version 不变。
+- Research 时间线对 `ASSISTANT_FINAL` 采用有界摘要，只显示前两句已验证结论，
+  详细 Findings/Evidence/Limitations 继续留在右侧 Workbench，避免 raw
+  fact/evidence ID 和重复段落挤占主阅读区。
+- Phonon Band/DOS 与 Electronic Band/DOS 的真实 Viewer 内容在桌面与
+  390×844 均可达且无全局横向溢出；Report → Research → Viewer 读取保持
+  零科学重算。
+# 2026-08-31 Phase 14-R UI/product fluency batch
+
+- 保持 Research Workbench 的 Next App Router 客户端导航与持久化
+  `ProductShell`；补齐 `ProductShell` 的 hover/focus 预取去重，避免项目历史、
+  研究会话和任务中心的重复权威读取。
+- Scientific Report 的 Figure 入口现在按 Result 中的 `figure_type` 绑定精确
+  ScientificObjectVersion；Electronic Band 与 DOS 不再错误共享首个来源版本。
+- 报告正文继续使用可读科学文本，内部 fact/evidence/step 标识仅保留在可展开
+  的 provenance disclosure 中；移动端报告无横向溢出。
+- 轨迹 RDF 的真实 Report/Viewer 路径已复核，按精确轨迹版本展示 3 帧、2 原子、
+  距离范围、分箱数与 RDF 限制；RDF 峰不会被自动解释为化学键或配位壳。
+
+## 2026-08-31 — Real-source trajectory MSD, Viewer projection and narrative repair
+
+- Added a scientifically explicit unwrapped EXTXYZ acceptance source with Å
+  and Å/fs units; the normal parser preserves
+  `position_wrapping=unwrapped` and rejects inconsistent frame declarations.
+- Uploaded that source through the authenticated upload-session path into
+  Dataset `dataset_0001_b7f22cb1bb074f1a`, Profile
+  `profile_dataset_0001_b7f22cb1bb074f1a_v2` and object
+  `obj_trajectory_990aa1224948`.
+- Completed Plan `plan_72e81c4f236b4510b8d23450` and Job
+  `job_f2b56ba7d4a34c9288600852`; four artifacts and grounded Interpretation
+  `interpretation_fed32da21ee465e9e18d19048d559e93` report three lags and
+  `0.0009 Å² @ 0.003 ps`, explicitly without estimating diffusion.
+- Fixed the Dataset object-store read projection so the existing normalized
+  dataclass remains worker/storage authority while the Viewer receives its
+  canonical trajectory payload. The authenticated Viewer renders four real
+  frames, unwrapped metadata, time/lattice and interactive controls.
+- Fixed the MSD presentation so RDF frame coverage is optional and cannot
+  render a false `NaN` sentence; the limitation now states that diffusion was
+  not calculated.
+- Read-only Report → Research → Report navigation kept
+  Jobs/ToolCalls/Artifacts/Interpretations/Reports at
+  `261/341/1363/17/36`.
+
+Verification: planner `64 passed`; trajectory parser `24 passed`; backend
+object-store/parser `27 passed`; frontend Research/Trajectory Viewer
+`70 passed`; typecheck and touched diff-check pass. `trajectory.msd` advances
+to `PARTIAL`; its Agent2 snapshot, mobile and historical gates and the
+separate diffusion campaign remain open. Phase 14-R remains `PARTIAL`.
+
+### 2026-08-31 — Report 文案与窄屏导航操作批次
+
+- Scientific Report 与 Scientific Presentation 的产品标签改用统一中文语言层，
+  保留精确版本、Result、Artifact、契约版本等技术身份供审计。
+- Report 顶部返回、来源研究、Markdown 与复现清单操作允许窄屏换行，
+  保持单一科学文档阅读流，不引入第二套导航。
+- 本批 focused tests `37/37`、typecheck PASS；Report/Presentation 仍只读
+  既有 ScientificResult，没有触发新的 Job、ToolCall、Artifact 或 Result。
+
+### 2026-08-31 — 精确 Result 复用浏览器批次
+
+- 从 Report 的精确来源研究进入真实同栈 Research 页面，触发“重新解释（不重算
+  科学结果）”，创建 `INTERPRET_RESULT` 子 Turn `219e8d7f-1c62-4566-a05b-e9563efce407`。
+- 父 Turn `fbbb0c51-4f39-4c97-ad7a-69ee089884a2` 保持不变；Interpretation
+  `188→189`，Jobs/ToolCalls/Artifacts/ScientificResult 保持
+  `278/365/1450/184`，证明复用只改变沟通层。
+- 当前桌面复用路径已具备可审计零重算证据；整体 Phase 14-R 仍需移动、跨能力
+  与完整历史/归档复用矩阵。
+- Global Search 从研究页输入 `mat-2` 返回 7 项当前项目授权结果，保留研究、
+  报告与数据实体入口；搜索仍是导航读模型，不升级为科学事实 authority。
+## 2026-08-31 — Phase 14-R runtime continuity
+
+本轮未关闭既有服务或认证浏览器标签页。frontend/API、PostgreSQL、Redis、MinIO
+均保持运行，`/health/runtime` 真实返回 PostgreSQL/Redis/MinIO/Redis worker。
+项目内 Report → Data 使用客户端路由完成切换，保留全局上下文栏与单一主工作区，
+不回到登录恢复态。Phase 14-R 仍为 PARTIAL，成熟产品缺口与 release seal 未提前
+宣称完成。
+### Phase 14-R archive/navigation fluency batch (2026-08-31)
+
+The authenticated Data Platform tab completed a real Archive → Archived list →
+Restore cycle for `55648f55-51e4-4c94-b4fe-72cae944a54c`, retaining exact
+version `53037b6a-7a68-43ac-85de-6e920dfd4420` and returning the object to the
+active list. Product links now opt into Next same-origin prefetch while the
+ProductShell stays mounted and marks the main workbench busy during a pending
+transition. Focused frontend tests and typecheck pass; mature-product closure
+remains PARTIAL.
+
+### Phase 14-R composition-space/regression product batch (2026-08-31)
+
+- Requalified exact ResearchTurn
+  `fbbb0c51-4f39-4c97-ad7a-69ee089884a2` through Presentation, persisted
+  composition Figure/Table, regression diagnostic Table, Evidence, exact
+  Dataset Viewer and professional Report.
+- Stable sample `sample-fe2o3`, exact Dataset version
+  `cf2aeeea-53ad-452a-a4ef-7b61555004e5`, authoritative MAE/RMSE/R² and
+  residual semantics remained visible on desktop and `390x844`.
+- Evidence resolved the completed ToolCall and persisted Artifact checksum;
+  browser warnings/errors, duplicate IDs and horizontal overflow were zero.
+- Read-only navigation kept scientific persistence counts at
+  `278/365/1450/184/36`; focused frontend coverage passed `34/34`.
+- The exercised `data.composition_space` and `ml.regression_evaluation` paths
+  advance to PASS. Phase 14-R remains PARTIAL for the still-open mature-product
+  gates and release seal.
+
+### Phase 14-R coordination-histogram product batch (2026-08-31)
+
+- Reopened exact Turn `63d21ee3-6e18-49b3-ad6b-b3fb578563c5` and rendered its
+  persisted coordination Figure/Table, exact Structure Viewer and Evidence.
+- Preserved fixed-cutoff semantics (`3 Å`, one Si site, coordination number 6)
+  and the boundary against CrystalNN/VoronoiNN/bond-order interpretation.
+- Generated Report `agent2_report_19a0d0c261c28577101de81532464893`
+  through the normal product action; only Report count changed `36→37`, with
+  scientific persistence counts unchanged.
+- Mobile Report was bounded with zero duplicate IDs or browser warnings/errors;
+  focused frontend coverage passed `29/29`.
+- `structure.coordination_hist` advances to PASS; Phase 14-R remains PARTIAL.
+
+### Phase 14-R diffusion communication batch (2026-08-31)
+
+- Closed the current exact diffusion path across Research Presentation,
+  Evidence, 24-frame trajectory Viewer and Scientific Report for Turn
+  `fb72c2ad-bed1-47d7-b557-f398f04a8ede`.
+- Removed the duplicate legacy `0 个步骤` process summary when authoritative
+  Agent2 progress exists; the Timeline now presents one truthful progress
+  region.
+- Repaired Report compound-unit/evidence grounding at the communication
+  validator layer. Exact `Å²/ps` and `1–6 ps` claims pass only through the
+  persisted fact/evidence/result-item graph; forged intervals and units remain
+  rejected.
+- Desktop and `390x844` Workbench/Report/Evidence remained bounded; Viewer
+  interaction and all read-only scientific surfaces caused zero Job,
+  ToolCall, Artifact or ScientificResult growth.
+- Related regression: backend `79 passed / 5 historical skips`, service-backed
+  Report `4 passed / 0 skipped`, frontend `96 passed`, Ruff/diff PASS.
+- Remaining: capability-wide historical/archive coverage, lifecycle/
+  retention/export, context stress, R12, full regression and P14R release CI.
+
+### 2026-08-31 — 归档科学来源的 Report 生命周期披露
+
+- 修复真实浏览器发现的沟通层缺口：Report 精确来源投影从权威
+  `ScientificObject.lifecycle_status` 返回状态，与 `is_current_version`
+  分开表达；归档对象可以同时保持其不可变当前版本。
+- 对象 `f834e358-9944-4fe8-a3ab-f85d68041f54` 归档期间，Report
+  `agent2_report_e54681009a0e49abe371247d9053ce61`、Result
+  `26127c48-d736-4983-b035-b68db238f6a7`、4 条 Evidence 与 24 帧轨迹
+  Viewer 均保持精确版本 `a22745f2-17b6-434f-ba4c-3fe6bd244841` 可读。
+- Report 明确显示“当前版本 · 来源对象已归档”；Markdown 与非可执行复现清单
+  同步保留该管理元数据。归档查看器从第 1 帧切换到第 2 帧，科学计数
+  `285/377/1493/191` 零增量。
+- 通过产品 `恢复科研对象` 返回 ACTIVE；版本数仍为 1、current pointer
+  不变、`archived_at` 清空。后端 33 passed/4 historical skips，前端
+  33 passed，Report service-backed 4 passed/0 skipped，typecheck/Ruff/diff
+  PASS；PostgreSQL active 1/idle 9/idle-in-transaction 0，6 workers idle。
+- 该精确 diffusion 路径的 archive/historical continuity 已闭合；Phase 14-R
+  仍需诊断 Table、context/retention/R12、全回归和 P14R release seal。
+
+### 2026-08-31 — Report Table 与应用内导航批次
+
+- Report 从不可变 `ScientificResultBundle.tables` 投影有界
+  `table_sources`，真实 Report 页面展示“轨迹扩散性质”和“轨迹均方位移”，
+  每张表保留稳定引用、Artifact 链接和精确对象/版本来源；表格打开明确是
+  只读持久化数据，不触发科学重算。
+- 内部产品导航继续使用 Next App Router：指针/键盘意图预取、共享
+  ProductShell 保持挂载、等待期间显示 `aria-busy`，重型 Viewer 延迟加载，
+  避免页面级重新加载和空白闪烁。
+- 运维快照脚本补齐独立命令导入路径，清空 `PYTHONPATH` 后仍可执行
+  `--help`；后端 `49 passed / 4 historical compatibility skips`，前端相关
+  `99 passed`。
+- 运维快照新增显式 `--same-stack` 模式，直接选择本地
+  PostgreSQL/Redis/MinIO 资格拓扑，避免干净 shell 静默落回 SQLite/local；
+  实测 `status=ok`、6 workers idle、queued=0、idle-in-transaction=0。
+
+### 2026-08-31 — Research 时间线重复消息修复
+
+- 修复持久化重放导致的相邻重复消息：`ResearchPages` 现在只折叠相同
+  `role/content` 的相邻副本，保留被助手消息隔开的有意重复提问。
+- 真实认证 Research 页面复核从重复消息收敛为 4 条真实时间线消息，
+  保留原始消息 ID；文档宽度 731px、视口宽度 731px、浏览器错误 0。
+- 对应前端 Research/ProductShell/Report 回归为 `94 passed`，并通过
+  typecheck、compileall、Ruff 与 `git diff --check`。服务和 Chrome 标签页
+  保持运行。
+
+- 全前端当前工作树回归已复核为 `102 test files / 728 tests passed`；
+  后端 Phase 14-R 相关回归 `46 passed / 4 historical compatibility skips`。
+  认证浏览器 Data→Research→Research 应用内切换保持 `documentWidth=731`
+  与 `viewportWidth=731`、错误 0。
+
+### 2026-08-31 — 导航提交后立即清理等待态
+
+- `ProductNavigationProvider` 现在在 App Router 目标 pathname/query 提交后
+  立即清理 pending intent，15 秒超时只作为异常兜底，不再让已完成页面继续
+  显示切换中状态。
+- `RouteTransitionProgress` + `ProductShell` 回归 `18 passed`，typecheck
+  PASS；该修复只作用于壳层导航，不改变科学执行、版本或结果权威。
+- 首次实现触发静态 `/settings/models` 的 Suspense 构建约束，已改为仅在
+  pending 期间进行有界 URL 检查；生产构建恢复为全 17 路由 PASS。
+- 精确历史轨迹 Turn `fb72c2ad-bed1-47d7-b557-f398f04a8ede` 的移动对话面板
+  已展开“本次上下文”，显示 1 项精确来源、manifest
+  `c4785024-6027-42af-9a1f-52143afd7303`、策略版本 `agent2.context-policy/2.0`
+  与版本 `a22745f2-17b6-434f-ba4c-3fe6bd244841`；展开后仍无溢出或重复 ID。
+
+### 2026-08-31 — 报告章节导航与精确来源上下文
+
+- Scientific Report 增加稳定的报告章节导航，桌面端保持研究文档密度，
+  移动端改为可横向滚动的紧凑导航，不引入第二套路由。
+- Scientific Presentation 区分“固定结果”和“固定来源版本”两个上下文
+  控件，均复用既有 Session Memory 授权 API，不触发科学重算。
+- 认证浏览器 Report `agent2_report_e54681009a0e49abe371247d9053ce61`
+  显示 8 个章节链接，布局 `715/715`；轨迹来源版本
+  `a22745f2-17b6-434f-ba4c-3fe6bd244841` 固定成功。
+- 前端 focused `26/26`、typecheck、production build、compileall 与
+  `git diff --check` 通过；Phase 14-R 仍为 `PARTIAL`。
+- 随后全前端回归完成 `102 test files / 730 tests passed`；同栈运维快照
+  `status=ok`，PostgreSQL `active=1/idle=12/idleInTransaction=0`、
+  Redis `6/0`、MinIO `ok`。
+
+### 2026-08-31 — 目录请求连续性
+
+- `listProjects()` 与 `listDatasets()` 增加 20 秒有界共享请求缓存，并在
+  创建、更新、归档、回收站、上传等写操作后显式失效，减少 App Router
+  返回导航期间的重复请求，同时保持写入后的数据新鲜度。
+- Planner/Data focused `66/66`、typecheck、`git diff --check` 通过；Phase
+  14-R 仍为 `PARTIAL`，未创建 release commit。
+
+### 2026-08-31 — 研究控制在窄屏下的可见性
+
+- 从科学呈现点击“编辑问题”或“继续研究”时，自动切换到“对话”面板；
+  `?edit=` 路由也保持对话优先，避免移动端把不可变分支编辑器留在工作台
+  后面。
+- 认证浏览器确认 `selectedTab=对话`、编辑提示可见、布局 `731/731`、
+  无 alert；Research/Presentation focused `71/71`。完整编辑提交与分支
+  持久化仍待资格验证。
+
+### 2026-08-31 — 编辑分支真实浏览器验证
+
+- 认证浏览器通过不可变编辑器创建新 Turn
+  `17c0b9d1-b5c0-47f9-b93c-c5f8a1cb19df`，显示 `2/2` 分支并完成两个真实
+  分析输出。
+- 使用“上一个研究分支”返回历史 Turn
+  `fb72c2ad-bed1-47d7-b557-f398f04a8ede`，原问题与结果保持不变；无 alert
+  或布局溢出。停止/重试与严格 390px 浏览器资格仍未完成。
+
+### 2026-08-31 — 失败运行恢复入口可见性
+
+- 历史 `run=` 路由在确认持久化状态为 `FAILED/CANCELED` 后，窄屏自动切换
+  到“对话”面板，直接显示“继续研究”和“重新研究”。
+- 认证浏览器确认 `selectedTab=对话`、恢复按钮可见、布局 `731/731`、无
+  alert；ResearchPages focused `64/64`。完整停止/重试压力资格仍待完成。
+
+### 2026-08-31 — Grounding 展示舍入与真实重试
+
+- 解释器 grounding 原先按完整数字字符串比较，导致权威轨迹事实
+  `0.038618084156`、`0.064094868867`、`0.970301847945` 在用户答案中以
+  `0.0386`、`0.0641`、`0.9703` 展示时被误拒。现改为按声明小数分辨率、
+  且不超过权威值 1% 的确定性舍入容差；单位、证据边和引用校验保持
+  fail-closed。负向回归仍拒绝无关数值。
+- 真实同栈重试创建 Turn `b82c5758-fac8-4f30-b0ab-5df94dd68369`，
+  Result snapshot `8d506aa2-0247-4ea8-ae39-0c629ad3b991`，10 个权威
+  facts、2 ToolCalls、8 Artifacts，`grounding_status=VALID`、终态
+  `COMPLETED`；精确来源仍为 object `f834e358-9944-4fe8-a3ab-f85d68041f54`
+  / version `a22745f2-17b6-434f-ba4c-3fe6bd244841`。
+- 同栈快照保持 PostgreSQL `active=1/idle=12`、
+  `idle-in-transaction=0`、Redis 6 idle workers/queued 0、MinIO ok。两个
+  fresh Dataset 编辑请求按 `QUERY_DATA` 语义正确 `ANSWERED`，未强制创建
+  科学 Job；整体 Phase 14-R 仍为 PARTIAL。
+### 2026-08-31 — Service recovery and mobile scientific reinterpretation
+
+After the local services were stopped and restored, the qualification topology
+was verified without closing the existing authenticated Chrome tab:
+PostgreSQL `55434`, Redis `6379`, MinIO `9000/9001`, API `8000/8002` and
+frontend `3000` were listening; `/health/runtime` reported the real
+PostgreSQL/Redis/MinIO/worker stack. The 390x844 Research Workbench now
+reaches the scoped reinterpret action and created child Turn
+`89037298-7fb1-4c48-bbd3-5407d3f93f41` with `VALID` grounding and no Job or
+scientific Result recomputation. Navigation measurements showed zero document
+reloads with cold `120–267/137–628 ms` and warm `102–141/120–163 ms`
+URL/usable timings. Broader Phase 14-R gates remain open.
+
+### 2026-08-31 — Structure Viewer and XRD table qualification
+
+The authenticated Structure Presentation path now reaches the localized
+`查看器` link and opens a real Canvas-backed exact-version Viewer for
+`dc3c3eee-f254-4edf-a0fa-c955402b3069` /
+`8859cb49-0766-48cd-8a56-e44f5332e0c5`, with CrystalNN/VoronoiNN findings and
+evidence still visible. The XRD Data Platform path opens its persisted
+nine-row numeric table at desktop and mobile widths without scientific
+mutations. Report Structure/Dataset quality checks retain exact source
+versions and bounded chapter sections; the mobile chapter strip is an
+intentional internal scroller, not global page overflow.
+
+### 2026-08-31 — Task/notification recovery and full regression
+
+The authenticated Task Center/Notification surface read 30 persisted tasks,
+8 attention items and 4 canceled records. With no live persisted task, Stop
+was correctly absent; the offline banner stated that server research may
+continue and cleared after reconnect. Mobile document/body widths were
+390/390 with zero overflow. The current frontend full suite passed 730 tests;
+the Phase 14-R backend/service subset passed 10 with 8 historical skips.
+### 2026-08-31 — Global Search same-stack proof
+
+The authenticated global search modal returned 8 authorized `mat-2` results
+from the PostgreSQL-backed API. Desktop and 390x844 mobile widths stayed
+bounded with no non-auth mutation; search remains a navigation read model,
+while broader historical/organization coverage remains open.
+
+### 2026-08-31 — Context disclosure and edit continuity
+
+Fresh authenticated Research browser proof opened the real context disclosure
+and nested audit details, exposing the persisted manifest identity, policy
+version, `12000` token input budget, estimated input and context fingerprint.
+Exact Dataset version `be02266a-7d4f-4ebb-9f28-3132855167d0` remained visible;
+evidence and edit/continue/rerun/re-interpret controls remained available.
+Editing preserved the original ResearchTurn route and presentation heading IDs
+were Turn-scoped without duplicates. Provider-scale context stress/replay and
+full message lifecycle acceptance remain open.
+
+### 2026-08-31 — Fresh same-stack service regression
+
+The current-worktree Phase 14-R service/context regression completed against
+PostgreSQL/Redis/MinIO with `26 passed`, `0 failed`, `0 errors`, `0 skipped` in
+`425.80s`. The follow-up operations snapshot remained healthy
+(`active=1`, `idle=12`, `idle-in-transaction=0`, checked-out `0`, six idle
+Redis workers, queue `0`, MinIO `ok`). Broader mature-product and release gates
+remain open.
+
+### 2026-08-31 — Current-worktree frontend regression
+
+The full frontend suite passed `102 test files / 730 tests` after the
+context disclosure accessibility repair. No new failure or mandatory skip was
+introduced.
+
+### 2026-08-31 — Mobile Report chapter navigation repair
+
+报告章节导航在 390px 移动视口出现 `422px` 内容宽度的真实横向溢出。
+现已改为多行、有界的移动布局，章节入口保留可点击触控高度，认证浏览器
+复核 `overflowCount=0` 且 document/body 均为 `390px`；未改变 Report
+快照、Result、来源版本或路由语义。Phase 14-R 仍保持 `PARTIAL`。
+
+### 2026-08-31 — Full backend baseline environment correction
+
+完整非 integration 后端回归在移除 service-only PostgreSQL 环境覆盖后重新
+执行，临时 SQLite 迁移夹具与同栈服务资格被正确隔离：`1919 passed`、
+`32 skipped`、`170 warnings`，0 failed。此前 40 项失败确认是测试环境污染，
+不是当前工作树产品回归。
+
+### 2026-08-31 — Context disclosure accessibility repair
+
+Added stable accessible names to the Research context and nested audit
+disclosures. The focused ResearchPages suite passed `64/64`; native details
+behavior and exact source/version semantics are unchanged.
+
+### 2026-08-31 — Project history navigation cache repair
+
+Project Home no longer forces a complete history refresh on every project
+selection. It reuses the existing bounded history cache, while lifecycle and
+data mutations still invalidate that cache. This removes an unnecessary
+full-ledger round trip from App Router back-navigation without changing
+scientific identity or provenance. `ProjectHome.test.tsx` verifies one history
+request per project when switching away and back.
+
+The post-repair full frontend regression completed with `102 test files /
+732 tests passed`; typecheck and the Next production build (17 routes, 104 kB
+shared first-load JS) passed as well. Services and the authenticated browser
+remain online.
+
+### 2026-08-31 — Report export feedback and browser proof
+
+报告 Markdown 与复现清单导出现在共用一个有界 Blob 下载 helper，并在
+点击后显示可访问的 live status；浏览器不支持 Blob URL 时 fail-closed，
+显示可重试错误，不改变 Report/Result/来源版本。认证 Chromium 真实打开
+Report `agent2_report_401cfb421fcab8a9366e06fedb3acb6d`，记录 Markdown
+`2529` bytes 与复现 JSON `1403` bytes 两个导出 Blob，报告标题与复现信息
+均可见；只有预期 bootstrap `401`，无 5xx/critical。Focused
+ScientificReportRoute `20/20` 通过。
+
+### 2026-08-31 — Report lifecycle browser recheck
+
+认证 Report 索引在同栈服务上重新验证了操作菜单、服务器依赖影响预览、
+归档与恢复，以及移动端布局。Report
+`agent2_report_e54681009a0e49abe371247d9053ce61` 显示 `11` 项依赖，归档/
+恢复后身份不变；`390x844` 下 document/body 均为 `390/390`、溢出为 `0`。
+
+## Agent-2.0 Phase 14-R — task/notification refresh continuity
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：`apps/web/app/components/TaskCenterPage.tsx`、
+  `apps/web/app/components/NotificationCenterPage.tsx` 及对应测试。
+- 修改摘要：首次进入仍显示完整 loading；后续在线、可见性和定时刷新改为
+  保留当前任务/通知内容并显示“正在同步最新状态…”，避免每 30 秒整页
+  闪烁或暂时丢失可用操作。
+- 测试结果：Task Center/Notification Center `5/5`；typecheck 已通过。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+认证 Chromium 在同栈上复核 `/tasks` 与 `/notifications`：读取 30 条任务、
+通知筛选可用，390x844 下 document/body 均为 390、无横向溢出；断网提示在
+恢复网络后清除。仅出现预期 bootstrap 401，无 5xx/critical。
+
+后台同步失败时保留最近一次授权数据，并显示“同步失败，当前显示上次结果”；
+首次加载失败仍进入原有错误态，避免将 stale data 静默伪装成实时状态。
+
+最新工作树回归：前端 `102 test files / 734 tests passed`，typecheck 与
+production build（17 routes、104 kB shared first-load）通过；同栈服务保持
+PostgreSQL/Redis/MinIO、6 个 idle workers、队列 0。
+
+任务中心移动端认证浏览器复核：`390x844` 下 30 条任务可读，
+document/body `390/390`、无横向溢出；仅预期 bootstrap 401，无 critical。
+
+### 2026-08-31 — Scientific table mobile interaction repair
+
+真实 Data Platform 移动端表格内部内容宽度为 `400px`，但页面与 body 均保持
+`390px`，因此这是 bounded table 的可操作性问题而非全局溢出。已为
+`workspace-table-scroll` 增加键盘可聚焦 `role=region`、明确的横向滚动
+accessible label、inline overscroll containment 与稳定滚动条空间。
+认证 Chromium `390x844` 复核：`clientWidth=390`、`scrollWidth=400`、
+`pageOverflow=false`、表格可发现且可横向查看；只有预期 bootstrap `401`。
+Focused Dataset/Product/Workspace 测试 `70/70` 通过。
+
+### 2026-08-31 — Scientific table interaction regression
+
+Workspace shell focused test 已锁定真实数据表的可访问滚动区域契约
+（`role=region`、稳定 label、准确 table 语义），防止后续移动布局改动退化
+为无标签横向滚动。Dataset/Product/Workspace focused `71/71` 通过；完整前端
+仍为 `102 files / 734 tests passed`，typecheck 与 production build 保持通过。
+
+### 2026-08-31 — Global search lifecycle continuity
+
+全局搜索的报告结果现在复用现代 Scientific Report snapshot 已有的项目级
+生命周期映射；归档/回收站报告不会再被错误标成 active。搜索仍是有权限的
+导航读模型，不改变 ScientificResult 或 Report 快照权威。新增后端回归覆盖
+现代报告的 archived/active 筛选。
+
+### 2026-08-31 — Task Center cancellation copy
+
+任务中心统一 `cancelled` / `canceled` 两种后端终态拼写，避免已取消研究
+在部分运行记录上误显示为“处理中”；保留已有停止、重试和只读历史语义。
+
+### 2026-08-31 — Truthful bounded search counts
+
+全局搜索继续限制返回 payload 大小，并在某类命中触及边界时返回
+`truncated`；UI 会显示“至少 N 项”，避免把有界候选数误报为精确总数。
+新增回归覆盖 limit 小于结果总数的情况。
+
+### 2026-09-01 — Task Center stop confirmation and bounded feed disclosure
+
+任务中心的“停止研究”现在先打开可撤销确认对话框，明确说明停止只影响
+当前 ResearchTurn 的未完成分支，并保留已提交的有效 Artifact；只有确认后
+才调用既有取消 API。任务列表超过 30 条时显示“当前筛选显示最近 30 项”，
+并指向项目历史，避免有限展示被误解为完整历史。`TaskCenterPage` focused
+回归为 `5/5`，NotificationCenter 回归为 `3/3`，完整前端回归为
+`102 files / 737 tests passed`，未改变 Job/ToolCall/Artifact/ScientificResult
+权威。
+
+通知中心沿用同一 bounded-window 语义：筛选结果超过 30 条时明确提示最近
+30 条，并保留对应项目历史作为完整读取入口；新增通知组件回归覆盖。
+
+任务数据源的 `nextCursor` 现在也会进入共享 task feed；即使当前返回行数
+不足 30，只要服务端仍有更早记录，任务/通知中心也会显示 bounded-window
+提示，不再把分页边界误报为完整历史。
+
+### 2026-09-01 — App Router navigation and branch-control closure
+
+- 项目主导航继续采用 Phase 9C 的双层上下文：全局栏承载跨项目任务、
+  通知、搜索与账户；项目栏仅承载概览/数据/研究/报告。研究后续操作仍
+  留在 Result/时间线上下文，不上移为全局动作。
+- Next 内部导航预取现在合并同一路径 1.5 秒内的 pointer/focus 意图；路由完成
+  由 App Router 的 pathname/search 提交信号驱动，不再每 50ms 轮询 location。
+- 不可变 production build `3008` 实测：桌面 cold/warm usable
+  `61–118/33–70 ms`，移动 `66–102/41–68 ms`；16 次转换均为
+  `documentRequests=0`、ProductShell 节点保持、登录态不重复读取。
+- 编辑问题的真实 child Turn `92fcd73e-...` 保留 parent、精确 Dataset
+  object/version 与 17 个 facts；桌面/390px 分支切换无全局溢出。
+- Focused frontend `85/85`、typecheck、production build 均通过。
+
+### 2026-09-01 — lifecycle/export/recovery evidence batch
+
+- 同栈浏览器完成 Structure Report Markdown 与复现清单导出，验证报告仍为
+只读科学投影。
+- 新 Research Session 完成固定、重命名、归档、回收站、恢复和再次归档；
+  桌面与 390x844 均无溢出或关键错误。
+- Task/Notification 完成终态停止按钮隐藏、筛选、离线提示和重连恢复。
+- 全前端回归 `102 files / 739 tests`，Phase14-R 后端
+  Context/Operations/Recovery `16 passed`。总体仍保持 `PARTIAL`，未创建
+P14R 发布提交或 CI。
+
+### 2026-09-01 — Report batch management ergonomics
+
+报告列表批量管理现在明确显示“当前筛选”，并提供“全选报告 / 清空报告 /
+清除选择”按钮，同时保留无障碍 checkbox 与现有依赖预览生命周期动作。
+`ScientificReportsIndexPage` focused 回归 `8/8`，未改变科学结果或报告快照
+权威。`ScientificReportsIndexPage` focused 回归更新为 `9/9`。
+
+报告页根节点改为 ProductShell 主工作区内的带标题 section，避免重复
+`main` landmark；Report/ProductShell focused 回归 `20/20`。
+
+完整 Python 回归在修复遗留 Phase10K3 manifest 字节/SHA 漂移后通过：
+`1924 passed / 84 skipped`；独立 PostgreSQL/Redis/MinIO 资格库上的
+Agent2 Phase2/3 + Phase10L4 campaign 为 `5 passed`。同栈运维快照保持
+`active=1 idle=12 idle-in-transaction=0 checkedOut=0`、Redis 6 idle
+workers/queue 0、MinIO ok。
+
+### 2026-09-01 — canonical MSD surface and report-route continuity
+
+- 通过正常报告列表重新打开 Agent2 轨迹报告
+  `agent2_report_e54681009a0e49abe371247d9053ce61`，确认独立
+  `轨迹均方位移` Figure/Table、Evidence、24 帧 Viewer 与精确版本
+  `a22745f2-17b6-434f-ba4c-3fe6bd244841` 均可用。
+- 报告只读打开前后 Jobs/ToolCalls/Artifacts/ScientificResultSnapshots
+  均为 `301/395/1565/203`；`trajectory.msd` 从过期 `PARTIAL`
+  校正为 `PASS`，standalone legacy planner 证据仍保留为兼容历史。
+- ProductShell 不再重复 shared navigation provider 已执行的 route prefetch；
+  pathname 切换会重置 document scroll，query-only ResearchTurn 切换保留
+  workbench scroll。报告页保持单一 `main`、无重复 ID、无全局溢出。
+
+### 2026-09-01 — ScientificObject 批量生命周期浏览器闭环
+
+- Data Platform 批量选择真实对象
+  `cbfd4a9f-6659-4196-be2b-60f118bfa12f`，完成
+  `ACTIVE → ARCHIVED → ACTIVE`，并通过显式“已归档”视图和行级恢复入口
+  验证发现语义。
+- 精确版本 `cf2aeeea-53ad-452a-a4ef-7b61555004e5`、版本数 `1` 与
+  3 个 Result 引用全程不变；未创建科学版本、未删除历史科学权威。
+- ProductPages `32/32`、ScientificObject atomic bulk API `1/1`、
+  Project/Dataset dependency/lifecycle `4/4` 通过。
+## 2026-09-01 Phase 14-R shared Research context-state closure
+
+- `ResearchPages` now owns the authoritative client projection of
+  `Agent2SessionMemory` and passes it into Scientific Presentation. Removing or
+  pinning a Result/source from either UI surface updates the same state; the
+  left context strip and right action labels can no longer contradict each
+  other.
+- Authenticated browser proof used Turn
+  `fb72c2ad-bed1-47d7-b557-f398f04a8ede`, Result
+  `26127c48-d736-4983-b035-b68db238f6a7` and exact trajectory version
+  `a22745f2-17b6-434f-ba4c-3fe6bd244841`. The original source-only pin state
+  was restored.
+- Scientific counts remained `Jobs=301`, `ToolCalls=395`, `Artifacts=1565`,
+  `ScientificResults=203`; the exact ContextSnapshot count remained `1`.
+- Current focused verification: backend `30 passed`, frontend `104 passed`,
+  shared-memory frontend `73 passed`, typecheck PASS, real isolated
+  PostgreSQL/Redis/MinIO reuse `4 passed / 0 skipped`.
+
+## 2026-09-01 Phase 14-R ContextManifest budget/replay and recovery closure
+
+- Added explicit boundary coverage for all five ContextBudgetPolicy operations:
+  well below, near, exactly at, over and significantly over budget, plus
+  critical-science fail-closed. Focused suite: `11 passed`.
+- Inspected `458` real persisted operation manifests; maximum estimates remain
+  `241/12000` Orchestrator, `476/10000` Planner, `1157/12000` Interpreter and
+  `1802/10000` Report, with zero truncation.
+- Authenticated historical Turn `fb72c2ad…` exposes manifest/policy/budget/
+  fingerprint and exact version `a22745f2…` without prompts or chain-of-thought.
+- Current Task Center shows `60` persisted tasks and Notification Center shows
+  `45` persisted notifications, including partial/failure/canceled states and
+  exact reopen routes. Existing offline/reconnect and isolated Redis recovery
+  evidence remains valid.
+## 2026-09-01 Phase 14-R Trash/resource batch
+
+- Added a single account-menu entry to the unified `/trash` surface. The
+  surface is a dense management list with type filters, server-derived
+  dependency previews, exact-name confirmation for safe empty Project/Dataset
+  purge, and responsive stacked actions at mobile widths.
+- Kept lifecycle mutations in the existing project, dataset, scientific
+  object, session and report authorities. No scientific version/result state
+  is created or mutated by Trash restore/purge.
+- Added the redacted `resourceGovernance` operations projection and a
+  PostgreSQL-authoritative per-Project active ResearchTurn cap with typed 429
+  frontend messaging. This is governance of bounded execution resources, not
+  a second queue or scientific authority.
+
+## 2026-09-01 Phase 14-R project organization batch
+
+- Added bounded Project pinning as non-scientific organization metadata. The
+  existing `project_configs` authority stores `pinnedProject`; the project
+  directory and Project History expose the flag and lift pinned projects
+  without changing scientific identity, lifecycle, or updated-at ordering.
+- ProductPages exposes `固定到顶部` / `取消固定` in the existing row action
+  menu and keeps the state visible in the row summary. Viewer/read-only users
+  remain server-denied for the mutation.
+- Verification: ProductPages `33 passed`, project access `13 passed`, touched
+  Ruff PASS, typecheck PASS, production build PASS.
+
+## 2026-09-01 Phase 14-R project tags and catalog discovery
+
+- 项目组织标签已在既有 `project_configs` 非科学元数据边界内落地，编辑
+  表单做 trim、大小写不敏感去重、12 个标签/单标签 40 字符限制。
+- 项目目录提供与搜索、生命周期分段同层级的标签筛选；全局授权搜索在
+  项目名称/说明之外匹配标签并回显组织摘要。该筛选只影响导航发现，不
+  改变 ScientificObject、ScientificObjectVersion、Result 或上下文。
+- Verification: ProductPages `35 passed`, project access `23 passed`,
+  touched Ruff PASS, typecheck PASS.
+
+## 2026-09-01 Phase 14-R project catalog query consolidation
+
+- 项目目录的成员角色和组织元数据查询已改为对可见项目集合的批量读取，
+  仍保留旧 schema fallback；项目固定/标签功能不会制造 per-row N+1。
+- Verification: project access `23 passed`, touched Ruff PASS；同批次
+  ProductPages `35 passed`, typecheck/build PASS。
+
+## 2026-09-01 Phase 14-R bulk project organization
+
+- Projects 选择模式现支持批量固定/取消固定，沿用已有归档/回收站事务和
+  server authorization；组织操作只改变 `project_configs.pinnedProject`。
+- Verification: ProductPages `36 passed`, project access `24 passed`, touched
+  Ruff PASS。
+
+## 2026-09-01 Phase 14-R project provenance export
+
+- 项目目录继续复用现有 overflow action menu，增加“导出项目清单”。操作
+  位于项目管理动作而不是主导航，避免把一次性可移植性操作与科学研究主
+  CTA 混在一起；导出完成后在工具栏下方提供明确的非阻塞状态提示。
+- 导出内容是服务端授权、有界、不可执行的 provenance manifest，只包含项目、
+  数据集、对象/版本、研究会话/Turn、ScientificResult 与 Report 的身份和
+  受限来源引用；不包含原始科学载荷、Provider prompt/response、凭据或存储
+  内部信息。浏览器使用同栈 3000 → 8002 API 真实验证了成功状态。
+- 该动作不触碰 ScientificObject、ScientificObjectVersion、Result 或 Report
+  权威；标签/固定状态仍属于非科学项目组织元数据。桌面和移动布局继续沿用
+  项目列表的紧凑操作密度与可折行摘要。
+
+## 2026-09-01 Phase 14-R Report organization
+
+- Report rename and pin actions live in the existing row overflow menu rather
+  than adding primary-page controls or another management framework.
+- Rename is explicitly described as a display-name change. The immutable
+  snapshot title remains available as `source_title`, and the dialog explains
+  that Result, Evidence and exact source bindings remain unchanged.
+- Pinned Reports sort above chronological Reports and expose a compact
+  `已固定 · <状态>` trailing label. This preserves the dense scientific
+  workbench hierarchy and remains bounded at `390 px` without horizontal
+  overflow.
+- Search, list and direct Report reads share the same authorized organization
+  projection; the frontend does not derive or mutate scientific identity.
+
+## 2026-09-01 Phase 14-R release-candidate reconciliation
+
+- Current same-stack runtime remains API `8005`, frontend `3013`,
+  PostgreSQL `55434`, Redis `6379`, MinIO `9000/9001`, and six idle workers.
+- Fresh mandatory service-backed campaign passed `70/70` with zero failures,
+  errors or skips. Full current-worktree backend passed `1948` tests; frontend
+  passed `764` tests across `105` files.
+- Production navigation/browser evidence remains bounded: App Router
+  `documentRequests=0`, desktop/mobile global overflow `0`, duplicate IDs `0`,
+  console/page errors `0`; ARIA relation fixes are covered by `116` focused
+  tests.
+- Remaining release work is exact P14R-A/P14R-B commit and current-head CI only;
+  Phase 15 remains uncreated and unstarted.

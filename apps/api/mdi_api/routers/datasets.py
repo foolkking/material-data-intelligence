@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import is_dataclass
 from typing import Literal
 
 from pydantic import BaseModel, Field, model_validator
@@ -28,11 +29,14 @@ class DatasetSummary(BaseModel):
 class UpdateDatasetRequest(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=160)
     archived: bool | None = None
+    lifecycle: Literal["ACTIVE", "ARCHIVED", "TRASHED"] | None = None
 
     @model_validator(mode="after")
     def require_change(self) -> "UpdateDatasetRequest":
-        if self.name is None and self.archived is None:
+        if self.name is None and self.archived is None and self.lifecycle is None:
             raise ValueError("At least one Dataset field is required.")
+        if self.archived is not None and self.lifecycle is not None:
+            raise ValueError("Use either archived compatibility input or lifecycle, not both.")
         if self.name is not None:
             self.name = self.name.strip()
             if not self.name:
@@ -42,7 +46,7 @@ class UpdateDatasetRequest(BaseModel):
 
 class BulkDatasetActionRequest(BaseModel):
     datasetIds: list[str] = Field(min_length=1, max_length=100)
-    action: Literal["archive", "restore"]
+    action: Literal["archive", "trash", "restore"]
 
     @model_validator(mode="after")
     def unique_datasets(self) -> "BulkDatasetActionRequest":
@@ -80,7 +84,7 @@ def get_dataset_object_store(dataset_id: str) -> dict[str, object]:
         canonical_id = str(identity.get("canonicalObjectId") or object_id)
         if canonical_id in seen or identity.get("alias"):
             continue
-        value = store.get(canonical_id)
+        value = _canonical_source_payload(store.get(canonical_id))
         resources.append({
             "objectId": canonical_id,
             "objectType": identity.get("objectType"),
@@ -90,6 +94,21 @@ def get_dataset_object_store(dataset_id: str) -> dict[str, object]:
         })
         seen.add(canonical_id)
     return {"datasetId": dataset_id, "resources": resources}
+
+
+def _canonical_source_payload(value: object) -> object:
+    """Project an execution wrapper to the scientific payload used by viewers.
+
+    Trajectory and volumetric execution stores retain a frozen
+    ``NormalizedObjectDraft`` so workers can inspect parser metadata.  That
+    wrapper is not the Viewer contract: the browser needs its canonical
+    ``payload`` field.  Restrict unwrapping to dataclasses so arbitrary runtime
+    mappings cannot smuggle a second payload authority into the response.
+    """
+
+    if is_dataclass(value) and hasattr(value, "payload"):
+        return getattr(value, "payload")
+    return value
 
 
 def _json_safe_resource(value: object) -> object:

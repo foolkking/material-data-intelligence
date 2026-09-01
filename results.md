@@ -1,5 +1,214 @@
 # Task Results
 
+## Agent-2.0 Phase 14-R — 目录请求连续性与报告/来源上下文批次（2026-08-31）
+
+- 状态：已完成本批次，Phase 14-R 总体仍处理中
+- 修改摘要：报告增加稳定章节导航；Scientific Presentation 增加精确来源
+  版本固定/取消固定；项目与 Dataset 目录增加有界共享缓存及写入失效。
+- 测试结果：Planner/Data focused `66/66`；此前本批次全前端
+  `102 files / 730 tests`；typecheck、生产构建、compileall、lock、
+  `git diff --check` 通过；同栈 PostgreSQL/Redis/MinIO 运维快照 `status=ok`。
+- 提交/CI：未创建 P14R-A/P14R-B；整体 Phase 14-R 仍未封板。
+
+## Agent-2.0 Phase 14-R — 研究控制窄屏可见性（2026-08-31）
+
+- 状态：已完成本批次，Phase 14-R 总体仍处理中
+- 修改摘要：编辑/继续研究动作在窄屏下自动切换“对话”面板；编辑查询
+  路由保持 conversation-first，避免操作入口与编辑器分离。
+- 证据：认证浏览器编辑路由显示 `selectedTab=对话`、编辑提示可见，
+  布局 `731/731`、无 alert。
+- 测试结果：Research/Presentation focused `71/71` 通过。
+- 提交/CI：未创建 P14R-A/P14R-B；完整编辑提交、分支持久化及其他成熟
+  产品门仍未封板。
+
+## Agent-2.0 Phase 14-R — 编辑分支真实浏览器验证（2026-08-31）
+
+- 状态：已完成本批次，Phase 14-R 总体仍处理中
+- 证据：新编辑 Turn `17c0b9d1-b5c0-47f9-b93c-c5f8a1cb19df` 进入 `2/2`
+  分支并完成两个真实分析输出；分支切换返回历史 Turn
+  `fb72c2ad-bed1-47d7-b557-f398f04a8ede`，旧问题/结果未变。
+- 浏览器：无 alert、无布局溢出；停止/重试及严格 390px 浏览器资格仍待
+  验证。
+- 提交/CI：未创建 P14R-A/P14R-B，整体仍未封板。
+
+## Agent-2.0 Phase 14-R — 失败运行恢复入口可见性（2026-08-31）
+
+- 状态：已完成本批次，Phase 14-R 总体仍处理中
+- 修改摘要：历史 `run=` 路由在 FAILED/CANCELED 状态下自动选择“对话”
+  面板，使继续/重新研究恢复动作不再隐藏在工作台之外。
+- 证据：认证浏览器显示 `selectedTab=对话`、继续/重新研究可见，
+  `731/731` 且无 alert。
+- 测试结果：ResearchPages focused `64/64`。
+- 提交/CI：未创建 P14R-A/P14R-B；完整恢复压力与其他成熟产品门仍开放。
+
+## Phase 14-R — Report navigation and source-context pinning (2026-08-31)
+
+- 状态：已完成（本批；Phase 14-R 总体仍处理中）
+- 修改摘要：新增 Report 章节锚点导航与移动端紧凑布局；新增科学结果精确来源版本固定/取消固定控制，复用 Session Memory 授权 API。
+- 证据：认证浏览器 Report `agent2_report_e54681009a0e49abe371247d9053ce61` 显示 8 个章节链接并在页内定位；轨迹来源版本 `a22745f2-17b6-434f-ba4c-3fe6bd244841` 固定成功且未产生科学执行对象。
+- 测试结果：前端 focused `26/26`；typecheck、production build、compileall、`git diff --check` 通过。
+- 提交/CI：未创建 Phase 14-R release commit；任务继续处理中。
+- 追加回归：全前端 `102 test files / 730 tests passed`；同栈运维快照
+  PostgreSQL `1/12/0`、Redis `6/0`、MinIO `ok`。
+
+## Agent-2.0 Phase 14-R — Task state labels and pin mutation race
+
+- 状态：已完成（局部产品缺陷修复，Phase 14-R 总体仍处理中）
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/TaskCenterPage.tsx`、
+  `NotificationCenterPage.tsx`、`Agent2ScientificPresentation.tsx` 及对应测试，
+  Phase14-R 审计/结果与 `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：现代 Agent2 任务与通知显示“可恢复研究会话”，仅无 Turn 的
+  legacy 运行显示“历史运行 · 仅查看”；科学结果固定/取消固定增加异步
+  竞态保护和失败回滚，不改变结果或执行权威。
+- 测试结果：前端 `96 files / 615 tests passed`；定向 Agent2/任务/通知测试
+  通过；后端涉及测试 `31 passed, 3 skipped`；typecheck、production build、
+  `git diff --check` 通过；认证 Chromium `/tasks` 与 `/notifications` 通过。
+- 提交/CI 状态：未提交；Phase 14-R 尚未达到 P14R-A/P14R-B release 门槛。
+
+## Agent-2.0 Phase 14-R — Current full regression after stale-error guard
+
+- 状态：已完成（回归复核，Phase 14-R 总体仍处理中）
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/Agent2ScientificPresentation.tsx`，
+  Phase14-R 审计/结果、`persistent/DESIGN_PROGRESS.md`
+- 修改摘要：补齐会话记忆读取失败分支的序列校验，旧请求的成功或失败结果
+  都不能覆盖较新的固定/取消固定操作。
+- 测试结果：前端全量 `96 files / 615 tests passed`；后端全量
+  `1827 passed / 83 skipped`；定向 3 files / 7 tests、typecheck、build、
+  compileall、`uv lock --check`、touched Ruff、`git diff --check` 通过；
+  `/health/runtime` 为 PostgreSQL/Redis/MinIO/Redis worker/DeepSeek。
+- 提交/CI 状态：未提交；未创建 P14R-A/P14R-B。
+
+## Agent-2.0 Phase 14-R — Authenticated desktop/mobile surface sweep
+
+- 状态：已完成（浏览器证据补充，Phase 14-R 总体仍处理中）
+- 完成时间：2026-08-28
+- 修改文件：`AGENT2_PHASE14R_RESULTS.md`、Phase14-R 审计、
+  `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：使用指定 Chromium 和认证账户复核项目、Data、Research、Reports、
+  Tasks、Notifications 的桌面/移动端入口与布局。
+- 测试结果：12 个 route/viewport 检查全部 `overflow=0`，关键内容存在，
+  无 page error；登录前 401 与离开 Data 页面时的 object-store aborted 请求
+  均按预期 bootstrap/navigation cancellation 分类。
+- 提交/CI 状态：未提交；P14R-A/P14R-B 尚未创建。
+
+## Agent-2.0 Phase 14-R — Exact ResearchTurn continuity from task surfaces
+
+- 状态：已完成（局部产品缺陷修复，Phase 14-R 总体仍处理中）
+- 完成时间：2026-08-28T05:37:00+08:00
+- 修改文件：`apps/web/app/components/TaskCenterPage.tsx`、
+  `apps/web/app/components/NotificationCenterPage.tsx`、对应前端测试、
+  Phase14-R 审计/结果与 `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：任务中心和通知中心在没有 Workspace 时保留持久化
+  `researchTurnId`，导航同时传递 `run` 与 `turn`；无 Turn 的 legacy
+  任务继续使用 run-only fallback，避免 Job 名称推断。
+- 测试结果：`TaskCenterPage.test.tsx` 1 passed；
+  `NotificationCenterPage.test.tsx` 1 passed。
+- 提交/CI 状态：未提交；Phase 14-R 尚未达到 release commit 门槛。
+
+## Agent-2.0 Phase 14-R — current-worktree regression refresh
+
+- 状态：已完成（回归复核）
+- 完成时间：2026-08-28
+- 修改文件：`AGENT2_PHASE14R_RESULTS.md`、`docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+  `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：记录当前工作树在搜索生命周期筛选、ScientificResult 精确 ResearchTurn
+  连续性和报告 Markdown 导出传输修复后的新鲜回归结果；保持成熟产品门槛的
+  `PARTIAL` 事实状态。
+- 测试结果：前端 `96 files / 615 passed`；后端 `1827 passed / 83 skipped`；
+  production build、typecheck、compileall、`uv lock --check`、touched Ruff、
+  `git diff --check` 均通过；runtime 为 PostgreSQL/Redis/MinIO。
+- 提交/CI 状态：未提交；未创建 P14R-A/P14R-B；仍有 capability-wide browser、
+  lifecycle/retention、recovery、operations 和 real-user acceptance 欠债。
+
+## Agent-2.0 Phase 14-R — current same-stack service campaign
+
+- 状态：已完成（同栈服务回归）
+- 完成时间：2026-08-28
+- 修改文件：`AGENT2_PHASE14R_RESULTS.md`、`docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+  `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：在当前工作树、真实 PostgreSQL/Redis/MinIO 和 Redis worker 上复核
+  Context Manifest、PostgreSQL planning 以及 Phase 7 reuse/execution。
+- 测试结果：`8 passed, 0 failed, 0 errors, 0 skipped`；PostgreSQL
+  `active=1`, `idle=4`, `idle-in-transaction=0` observed。
+- 提交/CI 状态：未提交；本次仅补证据，P14R-A/P14R-B 尚未创建。
+
+## Agent-2.0 Phase 14-R — authenticated browser continuity
+
+- 状态：已完成（浏览器连续性复核）
+- 完成时间：2026-08-28
+- 修改文件：`AGENT2_PHASE14R_RESULTS.md`、`docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+  `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：保持已认证的内置浏览器标签页和同栈服务运行，复核全局搜索将
+  ScientificResult snapshot `2809dcd1-243e-4323-8538-0a5fe81780d9`
+  解析到持久化 ResearchTurn `8382c443-f9ca-4c90-9aa3-444fea683807`。
+- 测试结果：实时 DOM 快照显示精确 `/research?turn=...` 入口；无重启或关闭浏览器。
+- 提交/CI 状态：未提交；P14R 仍为 `PARTIAL`。
+
+## Agent-2.0 Phase 14-R — lifecycle archive/delete audit
+
+- 状态：已完成（边界审计）
+- 完成时间：2026-08-28
+- 修改文件：`AGENT2_PHASE14R_RESULTS.md`、`docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+  `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：确认当前只有 ACTIVE/ARCHIVED 生命周期和带依赖预览的空项目/空数据集物理删除；
+  尚无 TRASHED/PURGED、Retention 或 provenance-aware Export 契约，保持现有删除
+  fail-closed，不引入半成品破坏科学来源。
+- 测试结果：代码审计、现有 dependency-impact 和生命周期测试均保持通过。
+- 提交/CI 状态：未提交；P14R 仍为 `PARTIAL`。
+
+## Agent-2.0 Phase 14-R — ScientificResult search continuity
+
+- 状态：已完成（窄范围修复）
+- 完成时间：2026-08-28
+- 修改文件：`apps/api/mdi_api/routers/secured_runtime.py`、
+  `apps/web/app/lib/planner-api.ts`、`tests/test_project_access.py`、
+  `AGENT2_PHASE14R_RESULTS.md`、`persistent/DESIGN_PROGRESS.md`
+- 修改摘要：全局搜索命中 ScientificResult 时优先沿持久化
+  `ScientificResultSnapshot.research_turn_id` 打开精确 ResearchTurn；
+  无关系的历史记录保留 `result=` 兜底，移除前端从结果字符串猜测会话的风险。
+- 测试结果：搜索回归 `2 passed`，精确入口 helper 回归通过；同栈浏览器实测
+  snapshot `2809dcd1-243e-4323-8538-0a5fe81780d9` → Turn
+  `8382c443-f9ca-4c90-9aa3-444fea683807`。
+- 提交/CI 状态：未提交；Phase 14-R 仍为 `PARTIAL`，未创建 P14R-A/P14R-B。
+
+## Agent-2.0 Phase 14-R — Scientific Report export transport
+
+- 状态：已完成（窄范围修复）
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/ScientificReportRoute.tsx`、
+  `apps/web/app/components/ScientificReportRoute.test.tsx`、
+  `AGENT2_PHASE14R_RESULTS.md`、`persistent/DESIGN_PROGRESS.md`
+- 修改摘要：Markdown 导出使用挂载到 document 的隐藏 Blob anchor，点击后移除并
+  revoke URL，避免浏览器运行时丢失下载事件。
+- 测试结果：`ScientificReportRoute.test.tsx` `6 passed`；typecheck 通过。
+- 提交/CI 状态：未提交；Phase 14-R 仍为 `PARTIAL`，未创建 P14R-A/P14R-B。
+
+## Agent-2.0 Phase 14-R — Authorized global-search lifecycle filters
+
+- 状态：已完成（窄范围修复）
+- 完成时间：2026-08-28
+- 修改文件：`apps/api/mdi_api/routers/secured_runtime.py`、
+  `apps/web/app/lib/planner-api.ts`、`apps/web/app/components/ProductShell.tsx`、
+  `tests/test_project_access.py`、`apps/web/app/components/ProductShell.test.tsx`、
+  `docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+  `persistent/DESIGN_PROGRESS.md`、`AGENT2_PHASE14R_RESULTS.md`
+- 修改摘要：为现有授权全局搜索增加类型和 active/archived/all 生命周期筛选；
+  项目归档状态读取权威 `project_configs`，不改变科学数据或执行权威。
+- 测试结果：后端搜索回归 `2 passed`；前端 `ProductShell` 回归 `6 passed`；
+  Ruff、浏览器 `/console` 筛选证据通过。
+- 提交/CI 状态：未提交；Phase 14-R 仍为 `PARTIAL`，未创建 P14R-A/P14R-B。
+
+## Agent-2.0 Phase 14-R — explicit Result/Snapshot reuse seam
+
+- 状态：已完成（窄范围修复）
+- 完成时间：2026-08-28
+- 修改文件：`apps/api/mdi_api/routers/agent2.py`、`apps/api/mdi_api/research_agent/context/assembler.py`、`apps/web/app/lib/agent2-research-api.ts`、`apps/web/app/components/Agent2ScientificPresentation.tsx` 及对应测试
+- 修改摘要：区分 ScientificResult bundle `result_id` 与持久化 snapshot ID；显式复用结果不再与历史候选混排；解释分支读取原始 immutable snapshot，不创建重复科学结果。
+- 测试结果：前端 focused `15 passed`；后端 API/result focused `1 passed`；compileall `PASS`；同栈浏览器 Turn `4460fc2c-98f8-4129-8fd5-0615f08dc5a7` `COMPLETED`，解释 `VALID`，科学计数零增量。
+- 提交/CI：未提交；Phase 14-R 仍为 `PARTIAL`，未创建 P14R-A/P14R-B。
+
 ## Agent-2.0 Phase 14-R — Durable notification entry point
 
 - 状态：已完成（增量）
@@ -15325,3 +15534,1896 @@ Presentation 仍保持不变。该旧会话仍有独立的“研究对话暂时�
   `94 files / 601 passed`。
 - 提交/CI 状态：本阶段尚未创建 P14R-A/P14R-B；Phase 14-R remains
   `PARTIAL`。
+## Agent-2.0 Phase 14-R — same-stack worker MinIO environment parity
+
+状态：已完成（窄范围修复；Phase 14-R 总体仍为 PARTIAL）
+完成时间：2026-08-28
+修改文件：`tests/integration/test_agent2_phase4_service_backed.py`、
+`AGENT2_PHASE14R_RESULTS.md`、`docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+`persistent/DESIGN_PROGRESS.md`
+修改摘要：为 fresh execution worker 传递与 fixture 一致的 MinIO endpoint、
+credential aliases 与 bucket，修复精确 ScientificObjectVersion payload hydration
+在子进程中的环境不一致；未修改科学权威、版本或 worker 执行契约。
+测试结果：`tests/integration/test_agent2_phase7_service_backed.py` 为
+4 passed、0 failed、0 errors、0 skipped；前端全量 96 files / 613 tests passed；
+`git diff --check` 通过。
+提交/CI 状态：未创建 Phase 14-R release commit，未推送，待剩余成熟度门闭合。
+
+## Agent-2.0 Phase 14-R — direct Project History ResearchTurn relation
+
+- 状态：已完成（窄范围连续性修复；Phase 14-R 总体仍为 PARTIAL）
+- 完成时间：2026-08-28
+- 修改文件：`apps/api/mdi_api/routers/project_history.py`、
+  `tests/test_project_history_research_context.py`、Phase 14-R 结果与审计
+  文档、`persistent/DESIGN_PROGRESS.md`。
+- 修改摘要：Project History 在保留 legacy session-run 兼容逻辑的同时，
+  直接读取授权项目内 `research_turns.job_id` 关系，使现代 Agent2 作业即使
+  没有旧 `research_session_runs` 绑定，也能返回权威 `researchTurnId` 和
+  `RESEARCH_TURN` 上下文类型；不再依赖 Job 名称推断。
+- 实时证据：同栈 API `/health/runtime` 为 PostgreSQL/Redis/MinIO/Redis
+  worker；认证 history 请求将 `job_agent2_8382...` 解析为
+  `8382c443-f9ca-4c90-9aa3-444fea683807`，将 `job_agent2_17b67...` 解析为
+  `17b67e68-b7db-475b-bb4c-3b336cb2ba15`。
+- 测试结果：`tests/test_project_history_research_context.py` 4 passed；
+  touched Ruff PASS；`git diff --check` PASS。
+- 提交/CI 状态：尚未创建 P14R-A/P14R-B；服务和 Chrome 保持运行。
+
+## Agent-2.0 Phase 14-R — Dataset semantic constraint binding
+
+- 状态：已完成（窄范围规划/执行修复；Phase 14-R 总体仍为 PARTIAL）
+- 完成时间：2026-08-28
+- 修改文件：`apps/api/mdi_api/research_agent/planning/binder.py`、
+  `tests/test_agent2_phase3_planning.py`、Phase 14-R 审计/结果文档、
+  `persistent/DESIGN_PROGRESS.md`。
+- 修改摘要：Binder 将 Dataset `sample`/`property` 作为语义-only 约束保留在
+  需求和 ContextSnapshot 中，不再把它们传入严格 Tool 参数；任意未知参数
+  仍 fail-closed，未改变科学权威。
+- 实时证据：Turn
+  `3b85fa42-dcc8-42b3-ac68-f5f54b610df4` → Plan
+  `plan_4d7388c0464c4311af4dcd02` → Job
+  `job_agent2_3b85fa42dcc842b3ac68f5f54b610df4` → Result
+  `e2587ca6-9b1f-5532-9e79-0ae6a89d6777` /
+  Snapshot `8ac5b6d2-c5d7-4f31-8b19-4776149106bc` → Interpretation
+  `70e03e81-2185-4870-abfa-c2a18565a026`; `VALID`, `COMPLETED`，`mat-2`
+  `band_gap=2.5` fact 存在。
+- 测试结果：`tests/test_agent2_phase3_planning.py` `21 passed, 1 skipped`；
+  Ruff、compileall、git diff check PASS。
+- 提交/CI 状态：未创建 Phase 14-R release commit，未推送；服务和 Chrome
+  保持运行。
+
+## Agent-2.0 Phase 14-R — session-list exact ResearchTurn continuity
+
+- 状态：已完成（窄范围产品连续性修复；Phase 14-R 总体仍为 PARTIAL）
+- 完成时间：2026-08-28
+- 修改文件：`apps/api/mdi_api/routers/research.py`、
+  `tests/test_project_access.py`、Phase 14-R 审计/结果文档、
+  `persistent/DESIGN_PROGRESS.md`。
+- 修改摘要：`/research-sessions` 现在在 legacy 兼容投影之外合并授权项目内
+  现代 `research_turns` 的直接 session/job 关系，使任务中心携带的精确
+  `run + turn` 链接能恢复真实 Research 对话；旧运行继续保留 run-only
+  只读回退，不依赖 Job 名称猜测。
+- 实时浏览器证据：认证 Chromium 从 `/tasks` 打开
+  `job_agent2_8382...` / Turn `8382c443-f9ca-4c90-9aa3-444fea683807`，
+  “没有可恢复研究对话”误报消失，Context disclosure 与 `mat-2` 结果可见，
+  console/page/critical-request/overflow 均为 0。
+- 测试结果：Project Access + history `19 passed`；touched Ruff PASS；
+  `git diff --check` PASS。
+- 提交/CI 状态：未创建 P14R-A/P14R-B；服务与 Chrome 保持运行。
+
+## Agent-2.0 Phase 14-R — result reuse browser proof
+
+- 状态：已完成（窄范围结果复用闭环；Phase 14-R 总体仍为 PARTIAL）
+- 完成时间：2026-08-28T23:00:00+08:00
+- 修改文件：`AGENT2_PHASE14R_RESULTS.md`、
+  `docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+  `persistent/DESIGN_PROGRESS.md`、`results.md`。
+- 修改摘要：保持 PostgreSQL/Redis/MinIO 与 Chrome 开放，启动既有
+  `.phase13-start-workers.ps1` 五队列 worker，完成认证
+  `INTERPRET_RESULT` 浏览器路径。Turn
+  `cc704d3f-dcfc-4a49-a971-2cda6282039c` 复用快照
+  `2809dcd1-243e-4323-8538-0a5fe81780d9`，解释
+  `ce8c820d-2f42-4a82-9593-714971b5ad09` 为 `VALID`，分析 Job 数量
+  `4 → 4`。初始 `RECEIVED` 根因为 worker 进程退出，分类为
+  `WORKER_PROCESS_NOT_RUNNING`，未修改科学路由或权威模型。
+- 测试结果：真实 Chromium 同栈浏览器轮询与结果/解释/事件 API 成功；
+  五个 worker 进程保持运行。
+- 提交/CI 状态：未创建 Phase 14-R release commit；成熟产品 release gate
+  仍未闭合。
+
+## Agent-2.0 Phase 14-R — edit branch context isolation
+
+- 状态：已完成（窄范围编排边界修复；Phase 14-R 总体仍为 PARTIAL）
+- 完成时间：2026-08-28
+- 修改文件：`apps/api/mdi_api/research_agent/context/assembler.py`、
+  `tests/test_phase14r_context_manifest.py`、Phase 14-R 审计/结果文档、
+  `persistent/DESIGN_PROGRESS.md`。
+- 修改摘要：带 `parent_turn_id` 的编辑/重跑/重试子 Turn 在未显式绑定
+  Result snapshot 时不再注入近期历史 Result，避免错误走
+  `INTERPRET_RESULT` 并污染 grounding；显式 reinterpret/continue 仍保持
+  Result authority。
+- 实时浏览器证据：API 与五个 worker 在 PostgreSQL/Redis/MinIO 同栈重载后，
+  编辑产生子 Turn `1176df48-b0a4-4611-bf42-970ef2c6d181`，父 Turn
+  `8382c443-f9ca-4c90-9aa3-444fea683807`；ContextSnapshot
+  `6d7f8505-0adc-46ef-a09b-bffb4e9757f0` 中 Result 候选为 0，精确 Dataset
+  版本与 `mat-2` 保留，路由为正确的 `ANSWER`，终态 `ANSWERED`，无子 Turn
+  Job/Result。
+- 测试结果：Phase 14-R context `4 passed`；Agent2/API/access/history
+  focused `40 passed`。
+- 提交/CI 状态：未创建 P14R-A/P14R-B；服务和 Chrome 保持运行。
+
+## Agent-2.0 Phase 14-R — 编辑分支真实浏览器验收
+
+- 状态：已验证（浏览器控制链；Phase 14-R 总体仍为 PARTIAL）
+- 完成时间：2026-08-28
+- 证据：父 Turn `8382c443-f9ca-4c90-9aa3-444fea683807` 创建子 Turn
+  `dc76de32-4675-4b6a-91fd-ef102602c905`；父状态保持 COMPLETED，子
+  ContextSnapshot `e58057b5-b88b-495e-a855-29dd46a4c953` 保留精确
+  Dataset object/version 与 `mat-2`，子请求最终 ANSWERED 且无 Job/Result。
+- 浏览器质量：无 page error、无 5xx；轮询期间
+  `SCIENTIFIC_RESULT_NOT_READY` 409 为预期 fail-closed。
+- 提交/CI 状态：未提交；未创建 P14R-A/P14R-B。
+
+## Agent-2.0 Phase 14-R — Scientific presentation pin-state race
+
+- 状态：已完成（窄范围产品缺陷修复；Phase 14-R 总体仍为 PARTIAL）
+- 完成时间：2026-08-28
+- 修改文件：`apps/web/app/components/Agent2ScientificPresentation.tsx`、
+  `apps/web/app/components/Agent2ScientificPresentation.test.tsx`、
+  Phase 14-R 审计/结果文档、`persistent/DESIGN_PROGRESS.md`
+- 修改摘要：修复 session-memory 延迟旧读覆盖已确认 pin/unpin 状态的竞态；
+  复用现有 mutation sequence，不改变科学结果或上下文权威。
+- 测试结果：Agent2ScientificPresentation `6 passed`；前端全量
+  `96 files / 615 passed`；后端默认 SQLite 隔离 `1833 passed / 83 skipped`；
+  显式 PostgreSQL/Redis/MinIO service-backed Phase 3/4/5 `4 passed`；
+  Ruff、compileall、git diff --check `PASS`。
+- 提交/CI 状态：未提交；未创建 P14R-A/P14R-B。
+
+## Agent-2.0 Phase 14-R — terminal projection direct Turn relation
+
+- 状态：已完成（窄范围连续性修复；Phase 14-R 总体仍为 PARTIAL）
+- 完成时间：2026-08-28
+- 修改文件：`apps/api/mdi_api/routers/research.py`、
+  `tests/test_project_access.py`、Phase 14-R 审计/结果文档、
+  `persistent/DESIGN_PROGRESS.md`。
+- 修改摘要：终端解释投影优先通过现代 `research_turns` 的精确
+  `research_session_id`/`job_id` 关系恢复会话，仅在旧数据或滚动部署场景
+  回退 `research_session_runs`；避免现代 Agent2 结果因缺少 legacy 绑定而
+  丢失 assistant projection。
+- 测试结果：Project Access/history/reconciliation `20 passed`；touched
+  Ruff PASS；`git diff --check` PASS。
+- 提交/CI 状态：未创建 P14R-A/P14R-B；服务与 Chrome 保持运行。
+## Agent-2.0 Phase 14-R — grounded Report narrative quality increment
+
+- 状态：处理中（完成一个 R2 子门，Phase 14-R 尚未封板）
+- 完成时间：2026-08-29T08:35:00+08:00
+- 修改摘要：为 immutable Scientific Report 增加受约束的科学讨论、结论和
+  后续工作区块；所有科学数字/单位仍通过 Result fact/evidence grounding，
+  页面与 Markdown 导出同步呈现，不触发科学重计算。
+- 测试结果：Report 后端 18 passed、4 compatibility skips；Report/
+  presentation 前端 16 passed；typecheck PASS；touched Ruff PASS。
+- 提交/CI：未提交；Phase 14-R 仍有能力面、生命周期、恢复、运维和
+  exact-SHA 发布门未闭合。
+# Agent-2.0 Phase 14-R — Scientific Object lifecycle action wiring
+
+状态：已完成（窄范围 UI bridge）
+完成时间：2026-08-29
+修改文件：`apps/web/app/components/ProductPages.tsx`、
+`apps/web/app/components/ProductPages.test.tsx`、
+`docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+`AGENT2_PHASE14R_RESULTS.md`、`persistent/DESIGN_PROGRESS.md`
+修改摘要：在 Data Platform 科研对象列表复用既有
+`PATCH /api/scientific-objects/{object_id}`，为 ACTIVE/ARCHIVED 对象提供归档/
+恢复操作；按当前过滤视图移除已变更对象，未引入新 authority。
+测试结果：ProductPages `20 passed`；此前 Report、Research execution、
+context focused checks 仍为绿色；服务保持运行。
+提交/CI 状态：未创建 Phase 14-R release commit；总任务仍为处理中。
+
+# Agent-2.0 Phase 14-R — ContextManifest budget truthfulness repair
+
+状态：已完成（窄范围 context contract 修复）
+完成时间：2026-08-29
+修改文件：`apps/api/mdi_api/research_agent/service.py`、
+`tests/test_phase14r_context_manifest.py`、`AGENT2_PHASE14R_RESULTS.md`、
+`docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`
+修改摘要：ContextManifest 现在先按确定性优先级构造真实 bounded inclusion
+集合，科学对象/选择/Result 放不下时 fail-closed，低优先级约束/目标以稳定
+item id 记录为 excluded；不再出现“保留全部内容却标记已压缩”的不实状态。
+测试结果：context focused `5 passed`；Report/context/history/API focused
+`28 passed, 4 compatibility skips`；Ruff 与 diff check 通过。
+提交/CI 状态：未创建 Phase 14-R release commit；总任务仍为处理中。
+
+# Agent-2.0 Phase 14-R — Operations recovery qualification
+
+状态：已完成（R11 核心恢复演练；Phase 14-R 总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：`docs/agent2/phase14r/OPERATIONS_AND_RECOVERY_QUALIFICATION.md`、
+`AGENT2_PHASE14R_RESULTS.md`、
+`docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+`persistent/DESIGN_PROGRESS.md`、`results.md`
+修改摘要：在不停止当前 PostgreSQL/Redis/MinIO/API/workers/frontend 的前提
+下完成 PostgreSQL 隔离备份恢复、MinIO checksum 备份恢复和缺失对象
+fail-closed、隔离 Redis 瞬态丢失/重启边界；同一 Job 队列发布失败恢复保持原
+Job identity。
+测试结果：PostgreSQL 11 个核心表计数与 Alembic 完全一致，孤儿版本/错误
+current pointer 为 0；MinIO 四次 SHA-256 一致且缺失对象 404；Redis 主实例
+持续 PONG，确定性恢复回归 `2 passed`；DB `active=1 / idle=10 /
+idle-in-transaction=0`。
+提交/CI 状态：未创建 P14R-A/P14R-B；历史测试队列治理、监控/配额和其余
+成熟产品门仍未闭合。
+
+# Agent-2.0 Phase 14-R — RQ queue lifecycle and worker availability
+
+状态：已完成（测试资源泄漏与 worker 可用性修复；Phase 14-R 总体仍为
+PARTIAL）
+完成时间：2026-08-29
+修改文件：`tests/integration/test_agent2_phase2_service_backed.py` 至
+`test_agent2_phase8_service_backed.py`、
+`.phase14r-start-missing-workers.ps1`、Phase 14-R 运维/结果/审计文档、
+`persistent/DESIGN_PROGRESS.md`、`results.md`
+修改摘要：service-backed fixture 在成功/finally 路径删除唯一 RQ queue
+注册；Phase 4 默认隔离 Result projection，Phase 5 显式启用自己的 Result
+queue；清理确认无 active/scheduled/deferred 的 208 个历史测试队列注册与
+一个指向已失败 PostgreSQL Job 的孤立 Redis wakeup；补回缺失的 planning/
+execution workers。
+测试结果：Phase 2–5 `5 passed`，Phase 6–8 `10 passed`，测试 queue 数
+campaign 前后 `208 → 208`，清理后 `0`；canonical 5 queues depth 0，
+5 workers idle；Ruff/diff check PASS。
+提交/CI 状态：未创建 P14R-A/P14R-B；主服务与 Chrome 未关闭。
+# Agent-2.0 Phase 14-R — Dataset-list product fluency repair
+
+状态：已完成（性能缺陷修复；Phase 14-R 总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：`apps/api/mdi_api/repositories.py`、
+`apps/api/mdi_api/phase2_runtime.py`、
+`tests/test_phase2_product_loop.py`、Phase 14-R 性能/审计/结果文档、
+`persistent/DESIGN_PROGRESS.md`、`results.md`
+修改摘要：将 durable Dataset list 的逐 Project/逐 Dataset N+1 查询改为
+Projects、Datasets、Profiles 三次有界批量读取，保留授权过滤、Dataset identity
+和确定性的最新 Profile 选择。
+测试结果：129 rows；旧/新 SQL `265/3`；旧/新 p50
+`312.0/19.7 ms`；focused `2 passed`；Ruff/diff check PASS。
+提交/CI 状态：未创建 P14R-A/P14R-B；Phase 14-R release gate 仍未闭合。
+# Agent-2.0 Phase 14-R — Redacted operations snapshot
+
+状态：已完成（运维可观测性里程碑；Phase 14-R 总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：`apps/api/mdi_api/operations.py`、
+`scripts/phase14r_operations_snapshot.py`、
+`tests/test_phase14r_operations.py`、Phase 14-R 运维/审计/覆盖/结果文档、
+`persistent/DESIGN_PROGRESS.md`、`results.md`
+修改摘要：新增无秘密泄露的 PostgreSQL/Redis/RQ/worker/MinIO 运维快照，
+区分 stale active/waiting Turn 与 recent/retained RQ failures，并以非零状态
+真实暴露需关注项。
+测试结果：focused `3 passed`；Ruff PASS；当前快照 5 workers idle、
+queue depth 0、recent failures 0、idle-in-transaction 0、MinIO OK，同时识别
+9 个历史 qualification active-stage Turn 和 1 个 `test_user` stale Job。
+提交/CI 状态：未创建 P14R-A/P14R-B；告警投递、reconciliation policy、
+concurrency/provider quotas 与 release gate 仍开放。
+## Agent-2.0 Phase 14-R — fresh archive browser and corrected service campaign
+
+- 状态：已完成（本轮证据补充，Phase 14-R 总体仍处理中）
+- 完成时间：2026-08-29
+- 修改文件：`AGENT2_PHASE14R_RESULTS.md`、`docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、`persistent/DESIGN_PROGRESS.md`
+- 修改摘要：使用保持打开的认证内置浏览器完成 Dataset active → archive filter → restore → active 可逆路径；加载仓库同栈环境并启用 `MDI_RUN_INTEGRATION=1` 后重新执行 Phase 10L–10N 服务集合。
+- 测试结果：真实 PostgreSQL/Redis/MinIO 服务集合 `21 passed, 0 failed, 0 errors, 0 skipped`（85.84s）；归档/恢复前后 typed rows 与 exact object/version 路由保持不变。
+- 提交/CI 状态：未提交；Phase 14-R 仍未满足成熟产品全部门槛，未创建 P14R-A/P14R-B。
+
+## Agent-2.0 Phase 14-R — Task Center stale-state clarity
+
+- 状态：已完成（局部产品改进，Phase 14-R 总体仍处理中）
+- 完成时间：2026-08-29
+- 修改文件：`apps/web/app/components/TaskCenterPage.tsx`、`TaskCenterPage.test.tsx`、`apps/web/app/globals.css`、Phase14-R evidence docs
+- 修改摘要：对超过 15 分钟没有持久化状态更新的 active/queued 任务显示只读“需要检查”提示，保留原始状态、取消权限和精确任务路由，不伪造失败状态。
+- 测试结果：Task Center focused `1 passed`；未改变 PostgreSQL/Redis/MinIO 服务或科学执行权威。
+- 提交/CI 状态：未提交；P14R-A/P14R-B 尚未创建。
+
+## Agent-2.0 Phase 14-R — Final same-stack operations recheck
+
+- 状态：已完成（最终运行时复核，Phase 14-R 总体仍处理中）
+- 完成时间：2026-08-29
+- 修改文件：`AGENT2_PHASE14R_RESULTS.md`、`persistent/DESIGN_PROGRESS.md`
+- 修改摘要：通过现有 launcher 补回 `mdi-agent-turns` worker，保持 PostgreSQL、
+  Redis、MinIO、API、前端和认证浏览器标签页不变；同栈快照确认
+  PostgreSQL active=1/idle=7、idle-in-transaction=0、Redis queue depth=0、
+  5 个 canonical workers idle、MinIO OK、15 分钟内 RQ failures=0。
+- 测试结果：操作快照诚实返回 `attention`，原因仍为 9 个历史自动阶段 stale
+  Turns 与 1 个历史 stale Job；没有删除或改写这些记录。Task Center `1 passed`、
+  touched Ruff 与 `git diff --check` 通过。
+- 提交/CI 状态：未提交；P14R-A/P14R-B 未创建，成熟产品 release gate 仍未闭合。
+
+## Agent-2.0 Phase 14-R — Recoverable Project/Dataset Trash
+
+- 状态：已完成（Project/Dataset 局部生命周期闭环；Phase 14-R 总体仍处理中）
+- 完成时间：2026-08-29
+- 修改文件：Project/Dataset API lifecycle schemas、secured runtime、
+  Project History/Dataset projection、Product/Data UI、global search、
+  lifecycle tests、共享 schema、Phase 14-R lifecycle/audit/results 文档与
+  `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：通过现有 `project_configs.config_json` 与
+  `datasets.metadata_json` 增加可恢复 `TRASHED` 投影；保留回收前状态；
+  Dataset 底层状态继续使用已发布约束内的 `archived`；新增依赖预览、
+  Project/Data 回收站筛选、逐项和批量 Trash/Restore，并从 normal new-work
+  actions 排除已回收实体。未创建或修改 ScientificObjectVersion。
+- 测试结果：后端 lifecycle/access/history `20 passed`；前端 Project/Data
+  lifecycle `28 passed`；typecheck、production build、touched Ruff、
+  `git diff --check` PASS。恢复同栈运行后 `/health/runtime` 中
+  PostgreSQL/Redis/MinIO/workers/DeepSeek 全部 `ok`。
+- 提交/CI 状态：未创建 P14R-A/P14R-B；ScientificObject/Research/Report
+  Trash、retention/purge/export、完整浏览器和 release gate 仍开放。
+
+## Agent-2.0 Phase 14-R — Recoverable Research Session lifecycle
+
+- 状态：已完成（Research Session 局部生命周期闭环；Phase 14-R 总体仍处理中）
+- 完成时间：2026-08-29
+- 修改文件：Research Session API/service/main route、Product Research UI/API
+  client、ResearchPages regression、lifecycle/schema/evidence docs
+- 修改摘要：复用 `sessions.status` 增加 project-authorized
+  `TRASHED`/`ACTIVE` PATCH；归档或回收会话保留历史可读性但禁止新写入；
+  非终态 Turn 阻止回收；Research Records 菜单增加可恢复回收/恢复操作。
+- 测试结果：后端 `tests/test_project_access.py` 17 passed；前端
+  `ResearchPages.test.tsx` 37 passed；typecheck、compileall、Prettier、
+  `git diff --check` 通过。
+- 提交/CI 状态：未提交；P14R-A/P14R-B 尚未创建，成熟产品总体仍未封板。
+
+---TASK RESULT---
+任务名称：Agent-2.0 Phase 14-R — Report 生命周期与同栈运行时修复
+状态：已完成（窄范围修复；Phase 14-R 总体仍为 PARTIAL）
+完成时间：2026-08-29T13:55:00+08:00
+修改文件：apps/web/app/components/ScientificReportsIndexPage.test.tsx；AGENT2_PHASE14R_RESULTS.md；results.md；新增本地运行脚本 .phase14r-start-api-55434.ps1、.phase14r-start-workers-55434.ps1
+修改摘要：补充 Report ACTIVE→TRASHED→ACTIVE 生命周期 UI 回归；将保留的同栈 API/worker 切换到完整 PostgreSQL 资格库，修复认证 500 的实际缺表根因；保持 PostgreSQL、Redis、MinIO、worker 与内置浏览器运行。
+测试结果：Report UI 2 passed；Report/权限后端 45 passed、4 historical compatibility skips；PostgreSQL/Redis/MinIO Report service 4 passed、0 skipped；web typecheck PASS；登录接口 200；health/runtime PostgreSQL/Redis/MinIO/Redis worker/DeepSeek 全部 ok。
+提交/CI 状态：未提交；未推送；Phase 14-R 仍 PARTIAL，P14R-A/P14R-B 未创建。
+---END TASK RESULT---
+
+---TASK RESULT---
+任务名称：Agent-2.0 Phase 14-R — Report dependency-impact confirmation
+状态：已完成（窄范围修复；Phase 14-R 总体仍处理中）
+完成时间：2026-08-29
+修改文件：apps/api/mdi_api/scientific_reports/service.py；apps/api/mdi_api/routers/scientific_reports.py；apps/api/mdi_api/main.py；apps/web/app/lib/scientific-report-api.ts；apps/web/app/components/ScientificReportsIndexPage.tsx；apps/web/app/components/ScientificReportsIndexPage.test.tsx；tests/test_agent2_phase8_reports.py；docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md；docs/agent2/phase14r/USER_LIFECYCLE_MANAGEMENT_CONTRACT.md；persistent/DESIGN_PROGRESS.md；AGENT2_PHASE14R_RESULTS.md
+修改摘要：新增 project-authorized Report dependency-impact API；回收站动作先显示服务端派生的 ResearchTurn、ScientificResult、Interpretation、Artifact、Evidence 与 exact source-version 依赖并要求显式确认；保持不可变科学快照与历史来源不变。
+测试结果：web ScientificReportsIndexPage `4 passed`；Report backend `20 passed, 4 skipped`；依赖预览断言通过。
+提交/CI 状态：未提交、未推送；P14R-A/P14R-B 尚未创建；Phase 14-R 仍 PARTIAL。
+---END TASK RESULT---
+
+---TASK RESULT---
+任务名称：Agent-2.0 Phase 14-R — Report lifecycle failure visibility
+状态：已完成（窄范围修复；Phase 14-R 总体仍处理中）
+完成时间：2026-08-29
+修改文件：apps/web/app/components/ScientificReportsIndexPage.tsx；apps/web/app/components/ScientificReportsIndexPage.test.tsx；AGENT2_PHASE14R_RESULTS.md
+修改摘要：报告归档/回收/恢复失败时显示明确页面告警，并保留原报告状态；新增失败回归。
+测试结果：报告页 `4 passed`；此前全量前端 `96/96` 文件、`625/625` 测试通过；typecheck、Ruff、git diff --check PASS。
+提交/CI 状态：未提交、未推送；Phase 14-R 仍 PARTIAL。
+---END TASK RESULT---
+
+---TASK RESULT---
+任务名称：Agent-2.0 Phase 14-R — Report archive distinction and browser request hardening
+状态：已完成（窄范围修复；Phase 14-R 总体仍处理中）
+完成时间：2026-08-29
+修改文件：apps/web/app/components/ScientificReportsIndexPage.tsx；apps/web/app/components/ScientificReportsIndexPage.test.tsx；apps/web/app/lib/scientific-report-api.ts；docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md；persistent/DESIGN_PROGRESS.md；AGENT2_PHASE14R_RESULTS.md；results.md
+修改摘要：为报告列表补齐 ACTIVE→ARCHIVED、ACTIVE→TRASHED、ARCHIVED/TRASHED→ACTIVE 的最小产品动作；共享报告 API PATCH 请求自动声明 JSON Content-Type；生命周期失败显示可恢复页面告警。真实同栈浏览器完成回收站、历史报告读取、恢复和当前列表重新发现，科学记录计数无变化。
+测试结果：前端全量 96 个测试文件、625 个测试通过；报告页 3 passed；Report 后端 20 passed、4 historical compatibility skips；typecheck PASS；touched Ruff PASS；git diff --check PASS；PostgreSQL jobs/tool_calls/artifacts/results 保持 194/250/995/127。
+提交/CI 状态：未提交、未推送；P14R-A/P14R-B 尚未创建；Phase 14-R 仍 PARTIAL。
+---END TASK RESULT---
+## 2026-08-29 — Phase 14-R operations diagnostic entrypoint
+
+- 任务名称：Phase 14-R 运维快照脚本可独立启动
+- 状态：已完成（窄范围修复；Phase 14-R 总体仍为 PARTIAL）
+- 完成时间：2026-08-29
+- 修改文件：`scripts/phase14r_operations_snapshot.py`、
+  `docs/agent2/phase14r/OPERATIONS_AND_RECOVERY_QUALIFICATION.md`、
+  `persistent/DESIGN_PROGRESS.md`、`AGENT2_PHASE14R_RESULTS.md`
+- 修改摘要：脚本从自身路径注入 `apps/api`，清洁 shell 下无需隐藏
+  `PYTHONPATH` 即可加载诊断模块；运行时服务配置仍由环境变量提供。
+- 测试结果：直接 `--help` 入口通过；同栈运行报告 PostgreSQL/Redis/MinIO
+  健康、5 个 worker idle，并如实报告历史 stale turns/jobs 导致
+  `status=attention`。
+- 提交/CI 状态：未提交；未运行 CI。
+
+## 2026-08-29 — Phase 14-R ScientificObject Trash lifecycle bridge
+
+- 任务名称：ScientificObject recoverable Trash/Restore lifecycle
+- 状态：已完成（窄范围修复；Phase 14-R 总体仍为 PARTIAL）
+- 完成时间：2026-08-29
+- 修改文件：`apps/api/mdi_api/db.py`、`apps/api/mdi_api/agent2_repositories.py`、
+  `apps/api/mdi_api/scientific_objects/schemas.py`、
+  `apps/api/mdi_api/scientific_objects/service.py`、
+  `apps/api/mdi_api/routers/agent2.py`、
+  `apps/api/alembic/versions/0026_scientific_object_trash_lifecycle.py`、
+  `apps/web/app/lib/scientific-viewer-api.ts`、
+  `apps/web/app/components/ProductPages.tsx`、相关测试与 Phase 14-R 文档。
+- 修改摘要：在既有 ScientificObject lifecycle authority 上增加 TRASHED 和
+  `pre_trash_lifecycle_status`，实现 ACTIVE/ARCHIVED 到 Trash 的可恢复状态
+  转换；Data Navigator 增加 authoritative Trash 查询和对象恢复/移入回收站
+  操作。未创建或修改任何 ScientificObjectVersion、Result、Artifact 或 Job。
+- 测试结果：domain `10 passed`；API `17 passed`；ProductPages `22 passed`；
+  touched Ruff、compileall、git diff --check PASS；同栈 PostgreSQL 已应用
+  migration，实时对象完成 `ACTIVE → TRASHED → ACTIVE` 且版本数/current
+  version 不变。
+- 提交/CI 状态：未提交、未推送；Phase 14-R 仍 PARTIAL。
+
+## 2026-08-29 — Phase 14-R ScientificObject dependency-impact preview
+
+- 任务名称：ScientificObject Trash dependency-impact preview
+- 状态：已完成（窄范围修复；Phase 14-R 总体仍为 PARTIAL）
+- 完成时间：2026-08-29
+- 修改文件：`apps/api/mdi_api/scientific_objects/service.py`、
+  `apps/api/mdi_api/routers/agent2.py`、`apps/api/mdi_api/main.py`、
+  `apps/web/app/lib/scientific-viewer-api.ts`、
+  `apps/web/app/components/ProductPages.tsx`、相关测试与 Phase 14-R 文档。
+- 修改摘要：增加 project-write 授权的
+  `/api/scientific-objects/{object_id}/dependency-impact`，从 immutable
+  ScientificResult、ResearchTurn 和 Report snapshot 派生有界 exact-version
+  依赖；Data Navigator 在现有生命周期 PATCH 前展示受保护历史 provenance
+  并要求显式确认。预览不修改 ScientificObjectVersion、Result、Artifact、
+  Report 或 current-version pointer。
+- 测试结果：`tests/test_agent2_api.py` 17 passed；
+  `ProductPages.test.tsx` 24 passed；compileall、touched Ruff、
+  `git diff --check` PASS。
+- 提交/CI 状态：未提交、未推送；保留 Phase 14-R PARTIAL。
+任务名称：Phase 14-R 浏览器资格运行时隔离
+状态：已完成（窄范围修复）
+完成时间：2026-08-29
+修改文件：.phase14r-start-web.ps1、docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、AGENT2_PHASE14R_RESULTS.md、persistent/DESIGN_PROGRESS.md
+修改摘要：将 Next 开发运行时切换到独立 `.next-dev-phase14r` 构建目录，避免生产构建清空开发路由；复核同栈 API 与新 Chrome 产品标签页均恢复正常。
+测试结果：GET /health/runtime=200（PostgreSQL/Redis/MinIO/Redis worker/DeepSeek 均 ok）；Chrome fresh product tab `/`=200；既有定向 API/domain/operations 回归通过。
+提交/CI 状态：未提交；Phase 14-R 总体仍为 PARTIAL，待完整成熟产品门禁后再进行发布提交。
+
+任务名称：Phase 14-R 报告复现清单导出
+状态：已完成（窄范围能力）
+完成时间：2026-08-29
+修改文件：apps/web/app/lib/scientific-report-api.ts、apps/web/app/components/ScientificReportRoute.tsx、apps/web/app/components/ScientificReportRoute.test.tsx、docs/agent2/phase14r/USER_LIFECYCLE_MANAGEMENT_CONTRACT.md、docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、AGENT2_PHASE14R_RESULTS.md、persistent/DESIGN_PROGRESS.md
+修改摘要：新增有界、非可执行 `mdi.reproducibility-manifest/1.0` JSON 导出，保留授权 Report/Result/Interpretation/exact object-version/Figure Artifact/Evidence/限制身份，不导出凭据、prompt、原始 Tool 日志或不受限科学 payload。
+测试结果：ScientificReportRoute.test.tsx = 8 passed；随后 full frontend = 96 files / 630 tests passed；typecheck/build 通过。
+提交/CI 状态：未提交；Phase 14-R 总体仍为 PARTIAL，待完整导出治理与成熟产品门禁后再发布。
+
+任务名称：Phase 14-R Viewer 修复后前端回归
+状态：已完成（回归验证）
+完成时间：2026-08-29
+修改文件：无新增代码修改
+修改摘要：在 E: 临时卷使用 Vitest single-fork 运行当前工作树完整前端回归。
+测试结果：96 个测试文件通过，628 个测试通过；typecheck/build 通过。
+提交/CI 状态：未提交；仅作为当前工作树证据，Phase 14-R 仍为 PARTIAL。
+
+任务名称：Phase 14-R 当前工作树后端与静态收尾
+状态：已完成（回归验证）
+完成时间：2026-08-29
+修改文件：无新增代码修改
+修改摘要：完成当前工作树后端全量与静态检查，确认 Viewer fail-closed 修复未引入跨阶段回归。
+测试结果：backend 1847 passed / 83 skipped / 0 failed / 0 errors；compileall、uv lock --check、touched Ruff、git diff --check PASS；/health/runtime=200（PostgreSQL/Redis/MinIO/worker/DeepSeek）。
+提交/CI 状态：未提交；Phase 14-R 仍为 PARTIAL，P14R-A/P14R-B 未创建。
+
+任务名称：Phase 14-R 精确源 Viewer 缺失对象处理
+状态：已完成（窄范围修复）
+完成时间：2026-08-29
+修改文件：apps/api/mdi_api/scientific_viewers/service.py、tests/test_agent2_phase9_viewers.py、docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、AGENT2_PHASE14R_RESULTS.md、persistent/DESIGN_PROGRESS.md
+修改摘要：将 MinIO/S3 not-found 精确源映射为 `SOURCE_MISSING` 的只读元数据投影与明确限制；保留 checksum 等其他错误；避免历史 Viewer 因缺失源返回通用 500。
+测试结果：tests/test_agent2_phase9_viewers.py = 7 passed；指定 Chromium 对象浏览器探针 critical 5xx = 0。
+提交/CI 状态：未提交；Phase 14-R 总体仍为 PARTIAL，待完整成熟产品门禁后再进行发布提交。
+
+任务名称：Phase 14-R Report 复现清单真实浏览器与零重计算验收
+状态：已完成（Report 级窄范围；Phase 14-R 总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：AGENT2_PHASE14R_RESULTS.md、docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、docs/agent2/phase14r/PHASE14R_MATURE_PRODUCT_COVERAGE_MATRIX.md、persistent/DESIGN_PROGRESS.md、results.md
+修改摘要：通过已认证 Chrome 正常 Report 路由点击“导出复现清单”，读取真实下载文件并验证 exact Report snapshot、ResearchTurn、ScientificResult、Interpretation、Dataset object/version、Evidence 与限制身份；敏感凭据、prompt、原始 Tool 日志及脚本检查均为阴性。
+测试结果：浏览器控制台 warning/error = 0；导出前后 Jobs 196、ToolCalls 253、Artifacts 1007、ScientificResultSnapshots 129，全部 delta = 0。
+提交/CI 状态：未提交；跨实体 retention/export、完整科学 surface、移动端和真实用户总验收仍未闭合，未创建 P14R-A/P14R-B。
+
+任务名称：Phase 14-R 显式 Dataset handoff 与真实 worker 资格验证
+状态：已完成（窄范围修复与证据）
+完成时间：2026-08-29
+修改文件：apps/web/app/projects/[projectId]/research/page.tsx、apps/web/app/components/ResearchPages.tsx、apps/web/app/components/ResearchPages.test.tsx、apps/web/app/lib/product-api.ts、tests/fixtures/tables/phase14r_band_gap_acceptance.csv、AGENT2_PHASE14R_RESULTS.md、docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、persistent/DESIGN_PROGRESS.md
+修改摘要：修复 Data Platform 显式 `?dataset=` handoff 丢失 Dataset scope 和旧会话抢占；通过真实上传入口验证 PostgreSQL/MinIO 根资源；启动五类 Redis worker 并完成真实 Job。XRD 不支持请求保持 fail-closed。
+测试结果：ResearchPages 38 passed；product-api 4 passed；真实上传 Dataset `dataset_0002_53c12dddfa984a80`，Job `job_9a63cc82cf574e25a88529c7` completed，1 ToolCall，3 Artifacts；旧 Planner UI 未自动生成 ResearchTurn/ScientificResult interpretation，Phase 14-R 仍为 PARTIAL。
+
+任务名称：Phase 14-R fresh Dataset scientific execution 与 Report grounding 修复
+状态：已完成（窄范围闭环；Phase 14-R 总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：apps/api/mdi_api/scientific_objects/service.py、apps/api/mdi_api/scientific_reports/grounding.py、tests/test_agent2_phase8_reports.py、AGENT2_PHASE14R_RESULTS.md、docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、persistent/DESIGN_PROGRESS.md、results.md
+修改摘要：修复 Dataset promotion 使用错误 repository bundle 导致的 500，并保证相同 Dataset/resource 重复提升时复用已存在的 materials.table 对象/版本；修复 Report grounding 将 UUID/版本标识中的数字片段误判为科学数值的窄范围验证缺陷，保留不支持数字主张的 fail-closed 回归。
+测试结果：fresh same-stack Dataset ResearchTurn `9c3a8278-69cf-4f9e-973a-e0b5d0e46779` 完成，ScientificResult snapshot `c73dd037-07bd-447e-a049-a97e5426d371` 含 16 facts，Interpretation `a674095b-7349-4d4f-9db7-e9008c0e0b8e`=`VALID`，Report `agent2_report_c91972312383616a6503acd6be76e233`=`READY`；报告定向测试 `21 passed/4 skipped`；前端全量 `96 files/631 passed`；后端全量 `1848 passed/83 skipped`；同栈集成子集 `11 passed/0 skipped`；typecheck、compileall、uv lock、Ruff、diff check 均 PASS；导出前后 Jobs 198、ToolCalls 255、Artifacts 1014、ScientificResultSnapshots 130，delta=0。
+提交/CI 状态：未提交；服务、workers 和 Chrome 标签页保持开启；P14R-A/P14R-B 未创建，因 capability-wide viewer、retention/recovery、real-user acceptance 等强制门禁仍未闭合。
+提交/CI 状态：未提交；服务与 Chrome 保持开启；P14R-A/P14R-B 未创建。
+
+任务名称：Phase 14-R QUERY_DATA fresh browser terminal-state repair
+状态：已完成（窄范围修复与真实浏览器证据；Phase 14-R 总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：apps/api/mdi_api/research_agent/orchestration/router.py、apps/web/app/lib/agent2-execution-api.ts、apps/web/app/components/ResearchExecutionActivity.tsx、apps/web/app/components/ResearchExecutionActivity.test.tsx、apps/web/app/components/ResearchPages.tsx、AGENT2_PHASE14R_RESULTS.md、docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、persistent/DESIGN_PROGRESS.md
+修改摘要：修复 query-only ResearchTurn 无下游消费者时遗留 ORCHESTRATING 的后端终态契约；清理并重载当前同栈 Turn worker；前端声明 ANSWERED、显示数据查询完成并在 Turn 路由变化时清理旧 planning 状态。
+测试结果：真实 Chrome fresh Turn `ddad0068-144e-4377-abe3-44a0e2601592` 为 `ANSWERED`，事件 `dispatch_status=COMPLETED`，无 Plan/Job/ToolCall/Artifact/ScientificResult；前端定向 `46 passed`；浏览器 fatal/unhandled/critical = 0；PostgreSQL/Redis/MinIO 与 Chrome 标签页保持开启。
+提交/CI 状态：未提交；P14R-A/P14R-B 未创建，能力全覆盖、生命周期治理、恢复/运维、真实用户验收等强制门禁仍未闭合。
+任务名称：Phase 14-R 批量产品连续性验证（报告生命周期、搜索、任务通知）
+状态：已完成（批量资格验证；总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：AGENT2_PHASE14R_RESULTS.md、docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、persistent/DESIGN_PROGRESS.md
+修改摘要：在同一已认证 Chrome 标签页中成组验证 Report ACTIVE→ARCHIVED→ACTIVE、
+受保护依赖预览与取消、全局 `mat-2` 搜索、任务中心与通知中心持久化入口；
+保持科学 Result、Dataset exact object/version 与服务运行不变。
+测试结果：报告/生命周期定向 39 passed、4 historical compatibility skips；
+同栈 PostgreSQL/Redis/MinIO 子集 11 passed、0 skipped；报告归档/恢复后
+精确 Dataset version 与 Result snapshot 均保持一致。
+提交/CI 状态：未提交；服务与 Chrome 标签页保持开启；P14R-A/P14R-B 未创建，
+因为能力全覆盖、恢复/保留治理、真实用户总验收与 exact-SHA 门禁仍未闭合。
+
+任务名称：Phase 14-R 批量 Report 生命周期控制补齐
+状态：已完成（受限批量归档/恢复与真实浏览器验证；总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：apps/web/app/components/ScientificReportsIndexPage.tsx、
+apps/web/app/components/ScientificReportsIndexPage.test.tsx、
+AGENT2_PHASE14R_RESULTS.md、persistent/DESIGN_PROGRESS.md
+修改摘要：在现有服务端生命周期 API 之上增加 ACTIVE/ARCHIVED 报告的受限
+多选归档/恢复；保留逐报告 Trash 依赖影响预览，不提供批量 Trash，避免绕过
+保护性确认。真实已认证 Chrome 标签页完成目标报告 ACTIVE→ARCHIVED→ACTIVE，
+归档筛选中可见，归档正文显示状态说明并提供精确 ResearchTurn 来源研究入口；
+Dataset exact object/version 与 Result snapshot 未变化。
+测试结果：报告/生命周期/任务/通知/产品壳定向前端 37 passed；同栈
+PostgreSQL/Redis/MinIO 子集 11 passed、0 failed、0 errors、0 skipped；
+未观察到科学重算或授权失败。
+提交/CI 状态：未提交；P14R-A/P14R-B 未创建；服务与 Chrome 标签页保持开启，
+能力全覆盖、保留/导出治理、恢复运维、真实用户验收与 exact-SHA 门禁仍未闭合。
+
+任务名称：Phase 14-R Report Evidence 移动溢出与当前流畅度基线
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/web/app/globals.css、.phase14r-performance-current.cjs、
+docs/agent2/phase14r/PERFORMANCE_PRODUCT_FLUENCY_BASELINE.md、
+AGENT2_PHASE14R_RESULTS.md、persistent/DESIGN_PROGRESS.md、results.md
+修改摘要：修复 Report Evidence 长 UUID/Result/Version 标识导致的 390px
+移动端 30px 瞬态溢出，改为 Evidence grid item 可收缩且长标识可断行；
+性能测量器增加 250ms render-settle 窗口，避免将异步内容瞬态误报为最终布局。
+测试结果：同栈 Chromium 当前冷/热矩阵 Data、Research、Viewer、Report、
+Tasks、Notifications 桌面及 Data/Research/Report 移动全部 `maxOverflow=0`；
+Report mobile warm p50/p95 `867/887ms`，Research `1224/1272ms`，Data
+`1077/1141ms`；所有路由无 page error、无关键 5xx。
+提交/CI 状态：未提交；API、workers、PostgreSQL、Redis、MinIO 与浏览器标签页
+保持运行；P14R-A/P14R-B 未创建，能力全覆盖、治理、恢复与真实用户验收仍待闭合。
+
+任务名称：Phase 14-R 任务筛选与 Research 操作层级质量
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/web/app/components/TaskCenterPage.tsx、
+apps/web/app/components/TaskCenterPage.test.tsx、
+apps/web/app/components/NotificationCenterPage.tsx、
+apps/web/app/components/Agent2ScientificPresentation.tsx、
+apps/web/app/globals.css、AGENT2_PHASE14R_RESULTS.md、
+persistent/DESIGN_PROGRESS.md、results.md
+修改摘要：任务中心改为单一任务单次出现的四项 tab 筛选（全部、进行中、
+需要关注、已结束），避免同一失败任务在多个分组重复出现；任务和通知行的
+“打开/打开研究”成为主操作，Job ID 仅在技术详情中渐进披露；完成研究页将
+“继续研究”提升为唯一主操作，重算、重解释、编辑和固定上下文保持次级。
+测试结果：Task/Notification/Research/Agent2 定向 47 passed；typecheck PASS；
+真实同栈 Playwright 桌面验证结果页 1 个科学呈现、任务 17 条/四项筛选、
+通知 7 条；390x844 五个 Research 操作均 390px 全宽、body.scrollWidth=390。
+唯一 401 为登录前预期 `/auth/me` bootstrap，认证路径无页面错误或关键 4xx/5xx。
+提交/CI 状态：未提交；API、workers、PostgreSQL、Redis、MinIO 与浏览器标签页
+保持运行；P14R-A/P14R-B 未创建，能力全覆盖、生命周期/恢复/保留导出与
+真实用户验收及 exact-SHA 门禁仍未闭合。
+
+任务名称：Phase 14-R 任务与通知信息层级修复
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/web/app/components/TaskCenterPage.tsx、
+apps/web/app/components/TaskCenterPage.test.tsx、
+apps/web/app/components/NotificationCenterPage.tsx、
+apps/web/app/components/NotificationCenterPage.test.tsx、
+apps/web/app/globals.css、persistent/DESIGN_PROGRESS.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+AGENT2_PHASE14R_RESULTS.md、results.md
+修改摘要：任务/通知列表不再把原始 Job ID 放在主标题，改为优先显示持久化
+状态与用户可理解的工作类型；Job ID 保留在折叠“技术身份”中。未改变打开、
+重试、停止、Workspace/ResearchTurn 路由或队列权威。
+测试结果：Task/Notification/Research/Agent2/Report 五文件 55 passed；
+frontend typecheck PASS；git diff --check PASS。
+提交/CI 状态：未提交；服务与浏览器保持运行；P14R-A/P14R-B 未创建，能力族
+实测、保留/导出、恢复运维和最终用户验收仍待闭合。
+
+任务名称：Phase 14-R 报告批量工具条与来源透明度质量补齐
+状态：已完成（UI 状态、失败回读、移动布局与精确来源入口；总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：apps/web/app/components/ScientificReportsIndexPage.tsx、
+apps/web/app/components/ScientificReportsIndexPage.test.tsx、
+apps/web/app/components/ScientificReportRoute.tsx、
+apps/web/app/components/ScientificReportRoute.test.tsx、
+apps/web/app/globals.css、AGENT2_PHASE14R_RESULTS.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、persistent/DESIGN_PROGRESS.md
+修改摘要：批量报告工具条按生命周期状态提供归档/恢复动作；部分失败仅保留
+失败项选中并给出可重试反馈；筛选切换清理旧选择；报告阅读页披露 ARCHIVED/TRASHED
+状态并链接精确 ResearchTurn；补齐桌面/390px 行布局、边界、焦点和可达性。
+测试结果：7 个相关前端测试文件共 40 passed；typecheck PASS；
+API `/health/runtime` 仍为 PostgreSQL/Redis/MinIO/Redis worker 正常。
+提交/CI 状态：未提交；P14R-A/P14R-B 未创建；服务与 Chrome 标签页保持开启，
+能力全覆盖、保留/导出治理、恢复运维、真实用户验收与 exact-SHA 门禁仍未闭合。
+
+任务名称：Phase 14-R 任务中心与通知中心状态控制面质量补齐
+状态：已完成（语义状态徽标、操作可达性与移动布局；总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：apps/web/app/components/TaskCenterPage.tsx、
+apps/web/app/components/TaskCenterPage.test.tsx、
+apps/web/app/components/NotificationCenterPage.tsx、apps/web/app/globals.css、
+AGENT2_PHASE14R_RESULTS.md、docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+persistent/DESIGN_PROGRESS.md、results.md
+修改摘要：为任务与通知行加入统一的排队/运行/成功/警告/失败/取消语义徽标，
+保留准确 Job ID 和持久化研究入口；操作组增加状态语义 aria-label，移动端
+扩展到整行以保证打开、重试和停止研究可触达；未引入新的执行或队列逻辑。
+测试结果：5 个相关前端文件共 58 passed；apps/web typecheck PASS；
+git diff --check 无空白错误（仅 CRLF 转换警告）。
+提交/CI 状态：未提交；服务与 Chrome 标签页保持开启；P14R-A/P14R-B 未创建，
+能力全覆盖、保留/导出治理、恢复运维、真实用户验收与 exact-SHA 门禁仍未闭合。
+
+任务名称：Phase 14-R XRD 源恢复、Viewer 可恢复错误与移动数据上下文
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/api/mdi_api/routers/secured_runtime.py、
+tests/test_project_access.py、apps/web/app/components/ProductPages.tsx、
+apps/web/app/components/ProductPages.test.tsx、apps/web/app/globals.css、
+docs/agent2/phase14r/SCIENTIFIC_SURFACE_COVERAGE_MATRIX.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+persistent/DESIGN_PROGRESS.md、results.md
+修改摘要：为缺失 normalized source 增加
+`SOURCE_RESOURCE_UNAVAILABLE`/409/可重试契约；Viewer 提供显式重试与来源属性
+入口并隐藏原始基础设施错误；资源按钮改为单一清晰标签；移动端数据导航
+默认折叠，保留明确展开控制。将仓库已有 normalized scientific objects
+以非破坏方式恢复到正在使用的 `mdi-artifacts` MinIO bucket，未改变数据库科学
+身份或版本记录。
+测试结果：`tests/test_project_access.py` 18 passed；ProductPages/product-api
+定向 29 passed；ProductPages/ScientificPresentation/Agent2 定向 33 passed；
+frontend typecheck PASS；浏览器 XRD 桌面渲染 1 个系列/9 个数值与 Si 结构查看器
+通过；390x844 `body.scrollWidth=388`、无横向溢出；浏览器 error/warn 日志为空。
+提交/CI 状态：未提交；API、workers、PostgreSQL、Redis、MinIO 与浏览器标签页
+保持运行；P14R-A/P14R-B 未创建，能力全覆盖、保留/导出治理、真实用户验收与
+exact-SHA 门禁仍未闭合。
+
+任务名称：Phase 14-R ResearchTurn 单一权威呈现收敛
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/web/app/components/ResearchPages.tsx、
+apps/web/app/components/ResearchPages.test.tsx、persistent/DESIGN_PROGRESS.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+AGENT2_PHASE14R_RESULTS.md、results.md
+修改摘要：完成/部分完成的 Agent2 ResearchTurn 只显示 exact-turn
+Scientific Presentation；不再同时渲染旧运行级呈现，也不再出现误导性的
+“当前没有可展示的结果”。旧兼容运行和进行中执行仍保留原工作台。
+测试结果：ResearchPages/Agent2ScientificPresentation/
+ScientificPresentationBlocks 定向 46 passed；frontend typecheck PASS；
+git diff --check PASS。
+提交/CI 状态：未提交；服务与浏览器保持运行；P14R-A/P14R-B 未创建，其余
+能力族实测、治理、恢复运维和最终用户验收仍待闭合。
+
+任务名称：Phase 14-R Research Session 生命周期与只读历史布局
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/api/mdi_api/db.py、apps/api/alembic/versions/0027_research_session_management.py、
+apps/api/mdi_api/routers/research.py、apps/api/mdi_api/routers/secured_runtime.py、
+apps/web/app/lib/product-api.ts、apps/web/app/components/ResearchPages.tsx、
+apps/web/app/components/ObjectManagement.tsx、apps/web/app/globals.css、
+tests/test_project_access.py、apps/web/app/components/ResearchPages.test.tsx、
+docs/13_SHARED_SCHEMA_SPEC.md、docs/agent2/phase14r/USER_LIFECYCLE_MANAGEMENT_CONTRACT.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+docs/agent2/phase14r/PHASE14R_MATURE_PRODUCT_COVERAGE_MATRIX.md、
+persistent/DESIGN_PROGRESS.md、AGENT2_PHASE14R_RESULTS.md、results.md
+修改摘要：在既有 sessions/status 权威上增加非科学的 title override、
+pin 与 pre-trash 状态；完成当前/归档/回收站三态记录管理、服务器端写入
+保护与会话恢复。Research 时间线标题区显示当前会话和生命周期，恢复动作
+紧邻记录入口；归档/回收会话的 composer 改为明确只读提示，重试操作在恢复
+前隐藏，历史科学内容仍可读且不触碰 Turn/Result/版本权威。UI 采用现有
+overflow/action 系统，移动端保留 44px 触控目标与单一工作区层级。
+测试结果：backend `tests/test_project_access.py` 19 passed；frontend
+`ResearchPages.test.tsx` 40 passed；frontend typecheck PASS；touched Ruff PASS；
+git diff --check PASS；已有真实同栈研究管理浏览器证据桌面/390x844 均无溢出、
+无 console/critical 错误。
+提交/CI 状态：未提交；PostgreSQL/Redis/MinIO/API/workers 与现有 Chrome
+标签页保持运行；P14R-A/P14R-B 未创建，能力全覆盖、保留/恢复运维和最终
+用户验收仍待闭合。
+
+任务名称：Phase 14-R 报告索引语言层级统一
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/web/app/components/ScientificReportsIndexPage.tsx、
+apps/web/app/components/ScientificReportsIndexPage.test.tsx、persistent/DESIGN_PROGRESS.md、
+results.md
+修改摘要：将报告页 `Project Reports`、`Grounded Reports`、`Legacy Reports`
+分区 kicker 统一为“项目报告”“已验证结果”“历史运行”，保持既有状态筛选、
+批量生命周期和来源引用不变，避免中英文标签混杂造成层级误读。
+测试结果：ScientificReportsIndexPage/ProductPages/ScientificPresentation/
+Agent2/product-api 定向共 41 passed；frontend typecheck PASS；浏览器报告页
+三种中文层级均可见，桌面 `scrollWidth=1265` / viewport `1280`，无错误日志。
+提交/CI 状态：未提交；服务与浏览器标签页保持运行；P14R-A/P14R-B 未创建，
+能力全覆盖、保留/导出治理、恢复运维、真实用户验收与 exact-SHA 门禁仍未闭合。
+
+任务名称：Phase 14-R 全局搜索键盘入口与结果层级质量
+状态：已完成（R7 交互与可达性补齐；总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：apps/web/app/components/ProductShell.tsx、
+apps/web/app/components/ProductShell.test.tsx、apps/web/app/globals.css、
+AGENT2_PHASE14R_RESULTS.md、docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+persistent/DESIGN_PROGRESS.md、results.md
+修改摘要：为已有授权全局搜索增加 Ctrl/⌘ K 入口、清除按钮、结果数量
+aria-live 状态、类型/生命周期徽标和移动端友好的输入布局；未改变搜索 API
+授权或科学身份权威。
+测试结果：ProductShell 7 passed；8 个相关前端文件合计 79 passed；typecheck PASS；服务与
+Chrome 标签页保持开启。
+提交/CI 状态：未提交；P14R-A/P14R-B 未创建；能力全覆盖、保留/导出治理、
+恢复运维、真实用户验收与 exact-SHA 门禁仍未闭合。
+
+任务名称：Phase 14-R Research 结果控制层级与异步状态提示
+状态：已完成（控制区分组、语义说明、移动布局；总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：apps/web/app/components/Agent2ScientificPresentation.tsx、
+apps/web/app/globals.css、AGENT2_PHASE14R_RESULTS.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、persistent/DESIGN_PROGRESS.md、results.md
+修改摘要：将编辑、继续、重跑、仅重新解释、固定上下文五类操作放入明确的
+“继续这项研究”区域；提交中通过 aria-live 状态说明科学 Result 不会被覆盖；
+按宽屏/平板/手机分别采用五列、两列、单列布局。
+测试结果：Research/presentation/execution 定向 52 passed；apps/web
+全量此前 96 files / 638 passed；typecheck PASS；服务同栈健康。
+提交/CI 状态：未提交；服务与 Chrome 标签页保持开启；P14R-A/P14R-B 未创建，
+能力全覆盖、保留/导出治理、恢复运维、真实用户验收与 exact-SHA 门禁仍未闭合。
+
+任务名称：Phase 14-R 运行时与旧任务分组一致性修复
+状态：已完成（同栈服务恢复、MinIO 初始化修复、历史任务不再计入活跃数；总体仍为 PARTIAL）
+完成时间：2026-08-29
+修改文件：apps/web/app/components/TaskCenterPage.tsx、
+apps/web/app/components/TaskCenterPage.test.tsx、AGENT2_PHASE14R_RESULTS.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、persistent/DESIGN_PROGRESS.md、results.md
+修改摘要：证明 MinIO 未初始化是带空格工作区路径被 Windows Start-Process 拆成多 volume，
+改用显式引号的单 volume 重新启动并创建 mdi-artifacts bucket；任务中心将
+LEGACY_READ_ONLY 旧兼容记录归入历史，不再将其错误统计为进行中。
+测试结果：Task/Notification 2 passed；Context Manifest/operations backend 9 passed；
+前端全量 96 files / 638 passed；typecheck PASS；API `/health/runtime` 报告
+PostgreSQL/Redis/MinIO/Redis worker 正常。
+提交/CI 状态：未提交；服务与 Chrome 标签页保持开启；P14R-A/P14R-B 未创建，
+能力全覆盖、保留/导出治理、恢复运维、真实用户验收与 exact-SHA 门禁仍未闭合。
+
+任务名称：Phase 14-R 上下文透明度与全局科学搜索层级
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/api/mdi_api/routers/secured_runtime.py、
+apps/web/app/components/ProductShell.tsx、
+apps/web/app/components/ProductShell.test.tsx、
+apps/web/app/components/ResearchPages.tsx、
+apps/web/app/components/ResearchPages.test.tsx、
+apps/web/app/lib/agent2-research-api.ts、apps/web/app/globals.css、
+tests/test_project_access.py、AGENT2_PHASE14R_RESULTS.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+docs/agent2/phase14r/PHASE14R_MATURE_PRODUCT_COVERAGE_MATRIX.md、
+persistent/DESIGN_PROGRESS.md、results.md
+修改摘要：把 ContextManifest 从内部枚举/ID 主导的展示改为研究者优先的
+“纳入原因—权威类别—精确版本”两层披露；全局搜索使用人类可读的首条用户问题
+作为研究会话标题，中文化 Result/生命周期标签，并将打开结果设为单一主动作。
+真实 Session/Turn/Version 身份、授权和科学权威均未改变。
+测试结果：后端 Project/search 19 passed；前端 ProductShell/Research/
+Task/Notification/Report 5 files / 59 passed；typecheck PASS；touched
+git diff --check PASS。真实同栈浏览器 canonical Turn 保留 exact version
+809a6825-5bfe-4820-81fc-b589ba447abc；`mat-2` 搜索返回 6 个授权结果、
+0 个内部 Session-ID 标题；1280x720 与 390x844 均无溢出或浏览器错误。
+提交/CI 状态：未提交；API 已在同一 PostgreSQL/Redis/MinIO/worker 栈快速
+恢复，frontend 与现有 Chrome 标签页未关闭；P14R-A/P14R-B 未创建，完整
+科学 Surface、保留/运维、真实用户验收和 exact-SHA 门禁仍待闭合。
+
+任务名称：Phase 14-R Report 操作层级与依赖确认布局
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/web/app/components/ScientificReportsIndexPage.tsx、
+apps/web/app/components/ScientificReportsIndexPage.test.tsx、
+apps/web/app/components/ObjectManagement.tsx、apps/web/app/globals.css、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+docs/agent2/phase14r/PHASE14R_MATURE_PRODUCT_COVERAGE_MATRIX.md、
+persistent/DESIGN_PROGRESS.md、AGENT2_PHASE14R_RESULTS.md、results.md
+修改摘要：默认报告行只保留报告打开主路径与就近溢出菜单；批量复选框仅在
+显式“批量管理”模式出现；Archive/Restore 可批量执行，Trash 继续要求逐份
+服务端依赖预览与确认。依赖影响改用可聚焦、Escape 关闭并恢复焦点的共享
+ProductModal。同名报告的真实浏览器验收使用 reportId 而非标题作为身份。
+测试结果：ScientificReportsIndexPage 8 passed；相关前端 6 files / 68 tests；
+typecheck、touched Ruff、git diff --check PASS；同栈 Chromium 完成精确 Report
+Archive/Restore 与六项依赖预览，390x844 无水平溢出或关键 API 失败。
+提交/CI 状态：未提交；服务和既有 Chrome 标签页保持开启；P14R-A/P14R-B
+未创建，能力全覆盖、保留/恢复/运维、真实用户验收和 exact-SHA 门禁仍待闭合。
+
+任务名称：Phase 14-R App Router 导航流畅度与过渡反馈
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/web/app/lib/product-api.ts、apps/web/app/components/ProductShell.tsx、
+apps/web/app/components/RouteLoading.tsx、apps/web/app/projects/[projectId]/loading.tsx、
+apps/web/app/projects/[projectId]/data/loading.tsx、apps/web/app/projects/[projectId]/research/loading.tsx、
+apps/web/app/projects/[projectId]/reports/loading.tsx、apps/web/app/tasks/loading.tsx、
+apps/web/app/notifications/loading.tsx、apps/web/app/globals.css、
+docs/agent2/phase14r/PERFORMANCE_PRODUCT_FLUENCY_BASELINE.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+docs/agent2/phase14r/PHASE14R_MATURE_PRODUCT_COVERAGE_MATRIX.md、
+persistent/DESIGN_PROGRESS.md、AGENT2_PHASE14R_RESULTS.md、results.md
+修改摘要：实证点击导航并非 full reload（documentRequests=0、window marker 保留），
+真正问题是重复认证请求和过渡空白。新增浏览器会话 auth 请求合并缓存、项目导航
+pointer/focus 预取、项目/数据/研究/报告/任务/通知原生 loading 边界，保持全局
+工作台层级并显示真实过渡状态。
+测试结果：ProductShell/Task/Notification 11 passed；导航同栈 Chromium cold/warm
+可用时间分别为 Data 481/131ms、Research 991/967ms、Reports 1659/95ms、
+Overview 952/922ms；所有转换 documentRequests=0、post-login authRequests=0、
+critical=0；typecheck、git diff --check PASS。
+提交/CI 状态：未提交；PostgreSQL/Redis/MinIO/API/worker/frontend 和既有 Chrome
+标签页保持开启；P14R-A/P14R-B 未创建，完整成熟产品门禁仍待闭合。
+
+任务名称：Phase 14-R 报告质量与移动端科学阅读收口
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/web/app/components/ScientificReportRoute.tsx、
+apps/web/app/lib/scientific-report-api.ts、apps/web/app/components/ScientificReportRoute.test.tsx、
+apps/web/app/globals.css、apps/api/mdi_api/scientific_reports/prompts/scientific_report_composer_v2.txt、
+docs/agent2/phase14r/SCIENTIFIC_REPORT_QUALITY_RUBRIC.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+docs/agent2/phase14r/PHASE14R_MATURE_PRODUCT_COVERAGE_MATRIX.md、
+AGENT2_PHASE14R_RESULTS.md、results.md
+修改摘要：Structure 与 Dataset 两份真实 Report 通过同栈浏览器验证；展示方法
+名称改为研究者可读文本，保留技术身份在审计层；长 fact 引用在移动端可换行，
+报告页 `390/390` 无水平溢出。
+测试结果：ScientificReportRoute 11 passed；Structure report `agent2_report_401cfb421fcab8a9366e06fedb3acb6d`
+与 Dataset report `agent2_report_c91972312383616a6503acd6be76e233` 的精确版本、
+发现、限制、讨论、结论均可见；无 raw capability ID/JSON，科学计数无新增。
+提交/CI 状态：未提交；服务与 Chrome 标签页保持开启；P14R-A/P14R-B 未创建，
+capability-wide surface、retention、operations 与真实用户验收仍待闭合。
+
+任务名称：Phase 14-R Report/Context/授权后端回归
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：AGENT2_PHASE14R_RESULTS.md、persistent/DESIGN_PROGRESS.md、results.md
+修改摘要：在导航持久布局、Report 质量与移动端修复后，重新执行 Report grounding、
+ContextManifest、项目授权后端回归；确认 PostgreSQL 实例 Alembic head 为 0027。
+测试结果：45 passed / 4 历史兼容 skip；`DATABASE_URL` 指向 127.0.0.1:55434 时
+`alembic current = 0027_research_session_management (head)`；runtime PostgreSQL/
+Redis/MinIO/worker 全部 OK。
+提交/CI 状态：未提交；服务和 Chrome 标签页保持开启；P14R-A/P14R-B 未创建，
+能力全覆盖、生命周期/保留、运维和真实用户验收仍待闭合。
+
+任务名称：Phase 14-R 多族群 Report 质量、可读方法名与移动端收缩
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/api/mdi_api/scientific_reports/prompts/scientific_report_composer_v2.txt、
+apps/web/app/lib/scientific-report-api.ts、apps/web/app/components/ScientificReportRoute.tsx、
+apps/web/app/components/ScientificReportRoute.test.tsx、apps/web/app/globals.css、
+docs/agent2/phase14r/SCIENTIFIC_REPORT_QUALITY_RUBRIC.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+docs/agent2/phase14r/PHASE14R_MATURE_PRODUCT_COVERAGE_MATRIX.md、
+AGENT2_PHASE14R_RESULTS.md、results.md
+修改摘要：通过真实 Report worker 以既有 Structure Result 生成 VALID 报告；
+方法段将 capability ID 映射为研究者可读名称，质量量表只允许经权威缺失检查
+后使用 N/A。修复报告主要发现长 fact 标识导致的 390px 横向扩张。
+测试结果：Report route 11 passed；Structure report `agent2_report_401cfb421fcab8a9366e06fedb3acb6d`
+与 Dataset report `agent2_report_c91972312383616a6503acd6be76e233` 浏览器通过，
+精确版本/发现/限制/讨论/结论保留，390/390 无溢出；科学计数无新增 Job、ToolCall、
+Artifact、Result。
+提交/CI 状态：未提交；报告 worker、PostgreSQL/Redis/MinIO/API/frontend 和 Chrome
+标签页保持开启；P14R-A/P14R-B 未创建，能力全覆盖与成熟产品 release gates 仍待闭合。
+
+任务名称：Phase 14-R 导航持久布局生产构建与全量前端回归
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/web/app/components/ProductShell.tsx、apps/web/app/components/ProductRouteFrame.tsx、
+apps/web/app/projects/layout.tsx、apps/web/app/components/RouteTransitionProgress.tsx、
+apps/web/app/components/RouteTransitionProgress.test.tsx、apps/web/app/components/RouteLoading.tsx、
+apps/web/app/globals.css、apps/web/app/layout.tsx、apps/web/app/lib/product-api.ts、
+相关 loading.tsx 与 docs/persistent/results 台账
+修改摘要：项目路由使用持久 ProductRouteFrame，页面壳复用同一全局 DOM；
+query-aware 过渡进度组件置于 Suspense；认证请求缓存对 401/登出清除；
+修复报告移动长 fact 引用横向扩张，并保留原生 loading 层级。
+测试结果：前端全量 `97 files / 649 tests passed`；typecheck PASS；
+production build PASS（17 routes）；同栈点击导航 documentRequests=0、shellCount=1、
+window marker 与 shell marker 均保留、post-login authRequests=0；390px Report
+document/body=390/390，critical=0。
+提交/CI 状态：未提交；PostgreSQL/Redis/MinIO/API/worker/frontend 和 Chrome 标签页
+保持开启；P14R-A/P14R-B 未创建，真实用户验收、能力全覆盖、保留治理与 exact-SHA
+门禁仍待闭合。
+
+任务名称：Phase 14-R Structure Presentation/Evidence/Viewer 连续性
+状态：已完成（canonical path；总体仍为 PARTIAL）
+完成时间：2026-08-30
+修改文件：apps/web/app/components/scientific-viewer/ScientificViewerShell.tsx、
+apps/web/app/components/scientific-viewer/ScientificObjectViewer.tsx、
+apps/web/app/components/scientific-viewer/ScientificViewerShell.test.tsx、
+apps/web/app/globals.css、docs/agent2/phase14r/SCIENTIFIC_SURFACE_COVERAGE_MATRIX.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+docs/agent2/phase14r/PHASE14R_MATURE_PRODUCT_COVERAGE_MATRIX.md、
+persistent/DESIGN_PROGRESS.md、AGENT2_PHASE14R_RESULTS.md、results.md
+修改摘要：Structure Research 的单一 Presentation、两项 Evidence、精确 Viewer
+handoff 完成同栈验收；Viewer 底部新增可展开完整 UUID 的“精确版本”披露，
+头部继续保持简洁版本号。
+测试结果：Viewer/Presentation 3 files / 6 tests；typecheck、diff-check PASS；
+真实 Turn `17b67e68-b7db-475b-bb4c-3b336cb2ba15`、object
+`dc3c3eee-f254-4edf-a0fa-c955402b3069`、version
+`8859cb49-0766-48cd-8a56-e44f5332e0c5` 浏览器通过；0 scientific mutation，
+390/390 无溢出。
+提交/CI 状态：未提交；服务与 Chrome 标签页保持开启；未验收 capability families
+仍保持 NOT_QUALIFIED，P14R-A/P14R-B 未创建。
+
+任务名称：Phase 14-R 当前工作树回归与 Report/Viewer 只读验证批次
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-31
+修改文件：AGENT2_PHASE14R_RESULTS.md、docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+persistent/DESIGN_PROGRESS.md、apps/web/tsconfig.json（仅移除生产构建自动生成的临时 include）
+修改摘要：完成真实同栈健康复核、Report → Research → Viewer 导航与零科学重算证据记录；
+确认前端原生 App Router 导航、桌面无全局溢出和报告精确来源路由；保留运维快照中
+历史 stale Turn/Job 的真实 attention 状态，不将其伪装为成熟度 PASS。
+测试结果：前端全量 `101 files / 693 tests passed`；后端关键回归 `47 passed / 4 historical
+skips`；production build `17 routes`、typecheck、compileall、uv lock --check、Ruff、
+git diff --check 全部通过；同栈 `/health/runtime` 为 PostgreSQL/Redis/MinIO/6 workers，
+idle-in-transaction=0，queued=0，recentFailed=0；operations snapshot 暴露
+staleActiveResearchTurns=13、staleJobs=1；mandatory PostgreSQL/Redis/MinIO
+selection `21 passed / 0 failed / 0 errors / 0 skipped`；完整后端
+`1892 passed / 83 historical or optional skips`。
+提交/CI 状态：未提交；服务与 Chrome 标签页保持开启；Phase 14-R 仍为 PARTIAL，
+P14R-A/P14R-B 未创建。
+
+任务名称：Phase 14-R Phonon/Electronic presentation readability batch
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-31
+修改文件：apps/web/app/components/ScientificReportRoute.tsx、
+apps/web/app/components/ScientificReportRoute.test.tsx、
+apps/web/app/components/ResearchPages.tsx、
+apps/web/app/components/ResearchPages.test.tsx、
+docs/agent2/phase14r/SCIENTIFIC_SURFACE_COVERAGE_MATRIX.md、
+docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md、
+persistent/DESIGN_PROGRESS.md、AGENT2_PHASE14R_RESULTS.md
+修改摘要：Report 限制文案复用 Research 的确定性产品语言；Research 时间线
+对持久化 ASSISTANT_FINAL 采用有界摘要，避免 raw fact/evidence ID 与重复
+机器段落占用主阅读区；真实 Phonon/Electronic Viewer 显示科学内容并保持
+exact version 与零重算。
+测试结果：前端 Report/Presentation `31/31`；ResearchPages `54/54`；
+390x844 Viewer 无横向溢出；浏览器错误/未处理异常为 0；PostgreSQL
+计数 `258/339/1359/181/33` 在只读导航前后不变。
+提交/CI 状态：未提交；服务与 Chrome 标签页保持开启；Phase 14-R 仍为
+PARTIAL，P14R-A/P14R-B 未创建。
+
+补充 UI 质量验证：真实 Phonon Report 的旧持久化 discussion 曾显示 `。；`；
+deterministic composer 已改为完整句连接，Report reader 对旧快照仅做展示标点
+归一化。后端 Report `30 passed / 4 historical skips`、前端 Report route
+`14/14`；浏览器可见讨论现在为正常分号连接，科学数据未重算。
+
+任务名称：Phase 14-R Project History 状态、客户端导航与移动 UI 批次
+状态：已完成（受限批次；总体仍为 PARTIAL）
+完成时间：2026-08-31
+修改文件：apps/web/app/lib/research-display.ts、
+apps/web/app/components/ProductPages.tsx、
+apps/web/app/components/ProductPages.test.tsx、
+apps/web/app/components/ProjectHome.tsx、
+apps/web/app/components/ProjectHome.test.tsx、apps/web/app/globals.css、
+.phase14r-performance-current.cjs、Phase 14-R docs/persistent/results 台账。
+修改摘要：Project Overview/Project Home 以权威 ResearchTurn 终态覆盖陈旧
+Job 展示状态并强制读取当前 History；移动项目导航隐藏原生滚动条；性能脚本
+同步当前 Task/Notification section 根语义。
+测试结果：前端 focused `38/38`、typecheck、diff-check PASS；真实浏览器
+Turn `ec298988-0b32-4e5e-a3c0-8bbb22725818` 显示“分析失败”并携带精确
+session/run/Turn。App Router 四路由 documentRequests=0、shell preserved；
+桌面/移动完整矩阵 overflow/browser errors/critical 5xx 均为 0。
+提交/CI 状态：未提交；同栈服务与浏览器保持开启；Phase 14-R 总体仍为
+PARTIAL，P14R-A/P14R-B 未创建。
+# Agent-2.0 Phase 14-R — 2026-08-31 Report provenance + navigation fluency batch
+
+状态：已完成（批次）
+
+修改摘要：
+- Scientific Report view 为 Figure source 增加按 `figure_type` 推导的精确
+  object/version 绑定；前端 Report Presentation 优先使用该绑定。
+- ProductShell 对项目历史、研究会话、任务中心的 hover/focus 预取做幂等合并，
+  保持 App Router 壳层、避免重复权威读取。
+- 更新 Phase 14-R 科学 surface/audit 与设计进度证据。
+
+测试结果：
+- `tests/test_agent2_phase8_reports.py`: 32 passed, 4 historical compatibility skips
+- `apps/web`: ProductShell + ScientificReportRoute + scientific-presentation:
+  41 passed
+- live API `/health/runtime`: PostgreSQL + Redis + MinIO + Redis workers + configured DeepSeek
+- live report browser: Band exact version `7f7f1008…`, DOS exact version
+  `087f93c4…`, mobile overflow 0
+- live navigation: document reloads 0, RSC request 1/route, shell count 1
+
+提交/CI 状态：未提交；等待 Phase 14-R 全部强制门后统一创建 P14R-A/P14R-B。
+
+# Agent-2.0 Phase 14-R — 2026-08-31 trajectory RDF qualification batch
+
+状态：已完成（批次）
+
+证据：
+- ResearchTurn `321db606-efeb-41af-9333-3709fa07e9ee`
+- ScientificResultSnapshot `ae56aeb8-27ec-47c3-b0cc-254c4636c205`
+- Report `agent2_report_55692c117165c20c3da272ef75e28118`
+- exact trajectory version `052d3a8e-8a35-48ac-9e65-b95a86b42c99`
+
+结果：真实同栈浏览器生成并打开 RDF Report，展示 5 项有界发现、持久化 Figure、
+2 项证据引用、精确 Viewer 来源及 RDF 限制；移动端 overflow=0。
+`trajectory.rdf` 从 `NOT_QUALIFIED` 升级为 `PASS`；`trajectory.msd` 和
+`trajectory.diffusion` 保持真实的 `NOT_QUALIFIED`。
+
+提交/CI 状态：未提交；Phase 14-R 仍未封板。
+
+# Agent-2.0 Phase 14-R — 2026-08-31 trajectory MSD real-source batch
+
+状态：已完成（受限批次；总体仍为 PARTIAL）
+
+修改摘要：
+- 新增带 Å 与 Å/fs 单位、显式 `unwrapped` 语义的真实 EXTXYZ 接受源，并通过
+  正常上传、MinIO、parser 与 Profile 路径建立 Dataset
+  `dataset_0001_b7f22cb1bb074f1a`。
+- 完成 Plan `plan_72e81c4f236b4510b8d23450`、Job
+  `job_f2b56ba7d4a34c9288600852`、4 个持久化 Artifact 与 grounding
+  `VALID` 的 Interpretation
+  `interpretation_fed32da21ee465e9e18d19048d559e93`。
+- 科学输出为 3 个 lag、末端 `0.0009 Å² @ 0.003 ps`，明确不估算扩散系数。
+- 修复 Dataset object-store 将规范化轨迹 dataclass 错投影为字符串的问题；
+  Viewer 现显示 4 个真实帧及 unwrapped/time/lattice/交互控件。
+- 修复 MSD-only Presentation 无条件拼接 RDF 帧数、产生 `NaN` 文案的问题。
+- Report → Research → Report 只读复开前后科学状态计数保持
+  `261/341/1363/17/36`。
+
+测试结果：
+- capability planner `64 passed`
+- trajectory parser `24 passed`
+- backend object-store/parser `27 passed`
+- frontend Research + Trajectory Viewer `70 passed`
+- typecheck、diff-check PASS
+
+提交/CI 状态：未提交；`trajectory.msd` 升级为 `PARTIAL`，Agent2
+ResearchTurn/ScientificResultSnapshot、移动/历史 MSD、diffusion、其余成熟产品
+门以及 P14R-A/P14R-B 仍未闭合。
+
+# Agent-2.0 Phase 14-R — 2026-08-31 trajectory diffusion and production navigation
+
+状态：已完成（受限批次；Phase 14-R 总体仍为 PARTIAL）
+
+修改摘要：
+- 对真实 Job `job_dc63f3f5d57742009c6be09e` 完成零科学重算的严格解释，
+  新 Interpretation `interpretation_a115c2ced38a7586161370b7994fec88`
+  投影 `1–6 ps`、11 个拟合点、`R²=0.970301847945`、
+  `α=0.924032310013` 和 `D=0.038618084156 Å²/ps`。
+- 修复 Plot/摘要/Recipe 伴生 Artifact 被误算为“缺少科学证据投影器”的问题；
+  未知、大文件或真正不可投影的科学来源仍 fail-closed。
+- Research 与 legacy Report 改为读取最新不可变解释快照；轨迹诊断 Viewer
+  统一中文科研语言、选择语义和移动端布局。
+- 独立生产构建 `3002 → API 8002 → PostgreSQL/Redis/MinIO` 通过，
+  八次项目导航 `documentRequests=0` 且 ProductShell 节点保持不变。
+
+验证结果：
+- 数据库差分：
+  `jobs/tool_calls/artifacts/scientific_result_snapshots/interpretations =
+  1/2/8/0/1 → 1/2/8/0/2`。
+- 后端 focused：`26 passed`；前端 focused：`65 passed`。
+- Ruff、typecheck、production build：PASS。
+- 390×844：`scrollWidth=clientWidth=390`；认证后 console/page/API/critical
+  failure 均为 0。
+- 生产热导航 URL `33–93 ms`；可用时间 Data `97 ms`、Research `866 ms`、
+  Reports `59 ms`、Overview `872 ms`。
+
+提交/CI 状态：未提交；`trajectory.diffusion` 从 `NOT_QUALIFIED` 升级为
+`PARTIAL`。缺少 Agent2 ScientificResultSnapshot、历史/归档 exact-version
+验收以及其余 R1–R12 门，因此未创建 P14R-A/P14R-B。
+
+任务名称：Agent-2.0 Phase 14-R — Report 语言与移动导航批次
+状态：已完成（批次）
+完成时间：2026-08-31
+修改摘要：统一 Scientific Report/Presentation 的中文产品文案，保留精确
+版本与科学 provenance；修复 Report 移动端顶部操作栏换行布局。
+测试结果：ScientificReportRoute/ScientificPresentation/scientific-presentation
+focused `37 passed`；web typecheck PASS；Report 打开前后
+Jobs/ToolCalls/Artifacts/Results `278/365/1450/184` 无变化。
+提交/CI 状态：未提交；Phase 14-R 总体仍 PARTIAL，等待 P14R-A/P14R-B。
+
+任务名称：Agent-2.0 Phase 14-R — Global Search 同栈浏览器批次
+状态：已完成（批次）
+完成时间：2026-08-31
+修改摘要：从真实认证研究页验证全局搜索入口、`mat-2` 查询、授权结果与精确
+实体链接；未触发科学执行或跨项目泄露。
+测试结果：当前 API/PostgreSQL 返回 7 项授权结果；既有 390px 搜索弹层证据
+保持无全局横向溢出。
+提交/CI 状态：未提交；Phase 14-R 总体仍 PARTIAL，等待 P14R-A/P14R-B。
+
+任务名称：Agent-2.0 Phase 14-R — 精确 Result 复用浏览器批次
+状态：已完成（批次）
+完成时间：2026-08-31
+修改摘要：用 Report → 来源研究 → 重新解释真实产品路径验证精确 Result
+复用；保留父 Turn、对象/版本与 sample identity，只生成 INTERPRET_RESULT
+子 Turn 和新 Interpretation。
+测试结果：child Turn `219e8d7f-1c62-4566-a05b-e9563efce407` COMPLETED；
+Interpretations `188→189`；Jobs/ToolCalls/Artifacts/ScientificResults
+`278/365/1450/184` 无变化。
+提交/CI 状态：未提交；Phase 14-R 总体仍 PARTIAL，等待 P14R-A/P14R-B。
+## Agent-2.0 Phase 14-R — same-stack service availability recheck
+
+- 状态：已完成（运行时连续性证据；Phase 14-R 总体仍为 PARTIAL）
+- 完成时间：2026-08-31T21:44:41+08:00
+- 修改文件：`AGENT2_PHASE14R_RESULTS.md`、`docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、`persistent/DESIGN_PROGRESS.md`
+- 修改摘要：确认现有 frontend/API/PostgreSQL/Redis/MinIO 与 Redis-backed workers 持续运行；认证浏览器 tab 15 保持打开；Report → Data 客户端路由切换正常。
+- 测试结果：`/health/runtime` HTTP 200，真实 backend 为 PostgreSQL/Redis/MinIO；端口与健康探针均通过。
+- 提交/CI 状态：未提交；P14R-A/P14R-B 仍等待成熟产品强制门闭合。
+任务名称：Agent-2.0 Phase 14-R — archive/restore UI + navigation fluency batch
+状态：已完成
+完成时间：2026-08-31T22:05:00+08:00
+修改文件：`apps/web/app/components/ProductNavigation.tsx`、
+`apps/web/app/components/ProductShell.tsx`、Phase 14-R 结果/审计/设计记录。
+修改摘要：产品内链在未显式指定时自动启用同源 Next 预取；ProductShell 在
+过渡期间保留并标记主工作区；认证浏览器真实完成
+`55648f55-51e4-4c94-b4fe-72cae944a54c` 的归档→恢复，精确版本
+`53037b6a-7a68-43ac-85de-6e920dfd4420` 保持不变。
+测试结果：ProductShell/ProductPages/RouteTransition focused `46 passed`；
+`npm run typecheck` PASS；浏览器 Data → Research 约 `2234 ms`，无认证恢复态、
+卡住过渡或错误页。
+提交/CI 状态：未提交；Phase 14-R 仍为 `PARTIAL`，服务和浏览器保持运行。
+
+补充测试结果：全前端 `102 test files / 718 passed`；ProductPages/
+ScientificReportsIndex/RouteTransition focused `45 passed`；Phase 14-R 后端
+`65 passed / 4 historical compatibility skips`；typecheck、compileall、
+`uv lock --check`、`git diff --check` PASS。未提交，未停止服务或浏览器。
+独立 `.next-prod-phase14r-batch` 生产构建包含 `17` 个路由并通过。
+项目壳还在空闲预取窗口预热 Research session inventory，复用现有 TTL 与
+失效逻辑；focused ProductShell/RouteTransition `15 passed`，typecheck PASS。
+预热后认证浏览器 Data → Research 复测约 `1314 ms`，无登录恢复态、切换残留或
+水平溢出；服务与浏览器保持运行。
+后端全量 `1916 passed / 84 skipped / 168 warnings`（`279.60s`）；前端全量
+`718 passed`；生产构建、typecheck、compileall、lock、diff check PASS。
+
+任务名称：Agent-2.0 Phase 14-R — composition-space / regression product batch
+状态：已完成（批次）
+完成时间：2026-08-31T22:50:00+08:00
+修改文件：Phase 14-R scientific/mature coverage matrices、结果与设计进度记录。
+修改摘要：真实认证同栈浏览器验证 composition-space Figure/Table、回归
+Table、Evidence、exact Dataset Viewer、Report 和 390×844 移动端；稳定样本
+`sample-fe2o3` 与精确版本 `cf2aeeea-53ad-452a-a4ef-7b61555004e5` 保持不变。
+测试结果：前端 focused `34 passed`；浏览器错误/警告 0、移动端 overflow 0；
+PostgreSQL 前后 `Jobs/ToolCalls/Artifacts/ScientificResults/Reports =
+278/365/1450/184/36` 不变，`idle-in-transaction=0`。
+提交/CI 状态：未提交；Phase 14-R 总体仍 PARTIAL，P14R-A/P14R-B 未创建。
+
+任务名称：Agent-2.0 Phase 14-R — coordination-histogram product batch
+状态：已完成（批次）
+完成时间：2026-08-31T22:55:00+08:00
+修改文件：Phase 14-R scientific/mature matrices、结果与设计进度记录。
+修改摘要：真实认证浏览器验证配位 Figure/Table、Evidence、exact Structure
+Viewer，并通过正常产品按钮生成可追溯 Report。
+测试结果：Turn `63d21ee3-6e18-49b3-ad6b-b3fb578563c5`、Report
+`agent2_report_19a0d0c261c28577101de81532464893`；仅 Report
+`36→37`，Jobs/ToolCalls/Artifacts/Results 保持 `278/365/1450/184`；
+390×844 无溢出、重复 ID 或浏览器错误；前端 focused `29 passed`。
+提交/CI 状态：未提交；`structure.coordination_hist` PASS，Phase 14-R 总体
+仍 PARTIAL。
+
+任务名称：Agent-2.0 Phase 14-R — trajectory diffusion communication batch
+状态：已完成（批次）
+完成时间：2026-08-31T23:59:00+08:00
+修改文件：`apps/api/mdi_api/scientific_reports/grounding.py`、
+`tests/test_agent2_phase8_reports.py`、`apps/web/app/components/ResearchPages.tsx`、
+`apps/web/app/components/ResearchPages.test.tsx`、Phase 14-R 结果/矩阵/
+持久化记录。
+修改摘要：真实认证同栈产品路径闭合 diffusion Presentation、Evidence、
+24-frame Viewer 与 professional Report；修复 Report 对 `Å²/ps`、单位指数和
+Evidence/ResultItem 支持图的 grounding 误判；当 Agent2 权威进度存在时隐藏
+重复且错误的 legacy 0-step 摘要。
+测试结果：后端 Result/Interpretation/Report `79 passed / 5 historical
+skips`；Phase 8 Report service-backed `4 passed / 0 skipped`；前端相关
+`96 passed`；Ruff/diff PASS；PostgreSQL/Redis/MinIO 正常、6 workers idle、
+队列无积压、idle-in-transaction=0。Turn
+`fb72c2ad-bed1-47d7-b557-f398f04a8ede`、Result
+`26127c48-d736-4983-b035-b68db238f6a7`、Report
+`agent2_report_e54681009a0e49abe371247d9053ce61`。
+提交/CI 状态：未提交；Phase 14-R 总体仍 PARTIAL，服务与浏览器保持运行。
+
+任务名称：Agent-2.0 Phase 14-R — grounding display-rounding repair and live retry
+状态：已完成（批次；总体仍为 PARTIAL）
+完成时间：2026-08-31T20:20:00+08:00
+修改文件：`apps/api/mdi_api/interpretation/grounding.py`、
+`tests/test_agent2_phase6_interpretation.py`、Phase 14-R 结果与持久化记录。
+修改摘要：在不削弱单位、证据和引用校验的前提下，允许有界的权威数字展示
+舍入；保留 unsupported quantitative claim 的 fail-closed 负向回归。仅重启
+interpretation worker 加载当前代码，未关闭 PostgreSQL/Redis/MinIO/API/前端
+或认证 Chrome 标签页。
+测试结果：解释器 `26 passed / 1 historical skip`；Report+解释器
+`60 passed / 5 historical skips`；Ruff、git diff check PASS。真实浏览器重试
+Turn `b82c5758-fac8-4f30-b0ab-5df94dd68369`，Result snapshot
+`8d506aa2-0247-4ea8-ae39-0c629ad3b991`，10 facts、2 ToolCalls、8 Artifacts，
+`grounding_status=VALID`、Turn `COMPLETED`。同栈运维快照 PostgreSQL
+`active=1/idle=12/idle-in-transaction=0`、Redis `6/0`、MinIO `ok`。
+提交/CI 状态：未提交；P14R-A/P14R-B 未创建，Phase 14-R 仍 PARTIAL。
+
+任务名称：Agent-2.0 Phase 14-R — archived diffusion continuity batch
+状态：已完成（批次）
+完成时间：2026-08-31T23:59:59+08:00
+修改文件：`apps/api/mdi_api/scientific_reports/service.py`、
+`tests/test_agent2_phase8_reports.py`、
+`apps/web/app/lib/scientific-report-api.ts`、
+`apps/web/app/components/ScientificReportRoute.tsx`、
+`apps/web/app/components/ScientificReportRoute.test.tsx`、共享 schema、
+Phase 14-R 结果/矩阵/持久化记录。
+修改摘要：Report 精确来源从权威 ScientificObject 投影 lifecycle，独立于
+current/historical version；归档状态同步进入 UI、Markdown 和非可执行复现清单。
+真实产品路径在归档期间保持 exact Report/Result/4 Evidence/24-frame Viewer
+可用，随后通过 UI 恢复 ACTIVE，未创建版本或科学执行状态。
+测试结果：对象 `f834e358-9944-4fe8-a3ab-f85d68041f54`、版本
+`a22745f2-17b6-434f-ba4c-3fe6bd244841`、Result
+`26127c48-d736-4983-b035-b68db238f6a7`、Report
+`agent2_report_e54681009a0e49abe371247d9053ce61`；科学计数
+`285/377/1493/191` 零增量；后端 `33 passed / 4 historical skips`，前端
+`33 passed`，Phase 8 service-backed `4 passed / 0 skipped`，typecheck、
+Ruff、diff PASS；PostgreSQL active 1/idle 9/idle-in-transaction 0，
+Redis 6 workers idle/queued 0，MinIO PASS，浏览器错误/警告 0。
+提交/CI 状态：未提交；Phase 14-R 总体仍 PARTIAL，P14R-A/P14R-B 未创建，
+服务与认证浏览器保持运行。
+
+任务名称：Agent-2.0 Phase 14-R — Report tables / navigation / operations batch
+状态：已完成（批次）
+完成时间：2026-08-31T22:25:00+08:00
+修改文件：`apps/api/mdi_api/scientific_reports/service.py`、
+`apps/web/app/components/ScientificReportRoute.tsx`、
+`apps/web/app/components/ResearchPages.test.tsx`、
+`scripts/phase14r_operations_snapshot.py`、Phase 14-R 矩阵与持久化记录。
+修改摘要：将权威 Result 表格以有界 `table_sources` 投影到 Report，保留
+人类标题、Artifact 和精确对象/版本来源；保持 App Router 壳体、预取与
+延迟 Viewer 的连续导航；修复运维快照脚本在清空 `PYTHONPATH` 时无法直接
+启动的问题，并让延迟 Viewer 测试等待真实异步渲染。
+测试结果：Phase 14-R 后端 `49 passed / 4 historical compatibility skips`；
+前端 Report/Navigation/ProductShell/Research `99 passed`；运维脚本
+`--help` PASS；服务仍为 PostgreSQL/Redis/MinIO，未关闭浏览器或服务。
+提交/CI 状态：未提交；Phase 14-R 总体仍 `PARTIAL`，P14R-A/P14R-B 未创建。
+
+补充修复：运维快照命令新增 `--same-stack` 显式资格拓扑选项，并保留空
+`PYTHONPATH` 的独立导入能力。实测 `status=ok`，PostgreSQL
+`active=1/idle=9/idleInTransaction=0`，Redis `workerCount=6/queued=0`，
+MinIO `status=ok`；对应操作测试 `6 passed`。
+
+任务名称：Agent-2.0 Phase 14-R — Research timeline duplicate replay repair
+状态：已完成（批次）
+完成时间：2026-08-31T22:40:00+08:00
+修改文件：`apps/web/app/components/ResearchPages.tsx`、
+`apps/web/app/components/ResearchPages.test.tsx`、Phase 14-R 持久化记录。
+修改摘要：对 Research 时间线的相邻持久化重复消息做边界明确的去重，
+仅合并连续且同角色/同内容的副本，避免重放造成一个科学问题重复显示，
+同时保留被助手消息隔开的有意重复。
+测试结果：ResearchPages/ProductShell/ScientificReportRoute 前端
+`94 passed`；认证浏览器 DOM 复核为 4 条真实消息、文档宽度与视口宽度
+均为 `731px`、错误 `0`；typecheck、compileall、Ruff、diff check PASS。
+提交/CI 状态：未提交；服务与 Chrome 标签页保持运行；Phase 14-R 总体仍
+`PARTIAL`，P14R-A/P14R-B 未创建。
+
+回归补充：当前前端全量为 `102 test files / 728 passed`；Phase 14-R
+后端相关集合为 `46 passed / 4 historical compatibility skips`。认证浏览器
+Data→Research→Research 应用内切换成功，未发生文档级重载，宽度
+`731/731`、错误 `0`。same-stack 运维快照继续为 PostgreSQL
+`active=1/idle=11/idleInTransaction=0`、Redis `6 workers/queued=0`、
+MinIO `status=ok`；服务与 Chrome 标签页保持开启。
+
+任务名称：Agent-2.0 Phase 14-R — Navigation pending-state cleanup
+状态：已完成（批次）
+完成时间：2026-08-31T22:50:00+08:00
+修改文件：`apps/web/app/components/ProductNavigation.tsx`、
+`apps/web/app/components/RouteTransitionProgress.test.tsx`、Phase 14-R 记录。
+修改摘要：路由提交到目标 pathname/query 后立即清理导航 pending intent，
+避免页面已经完成却继续显示切换中状态；保留 15 秒异常兜底。
+测试结果：`RouteTransitionProgress` 与 `ProductShell` `18 passed`，
+typecheck PASS；服务和 Chrome 标签页保持运行。
+提交/CI 状态：未提交；Phase 14-R 总体仍 `PARTIAL`。
+
+## Agent-2.0 Phase 14-R — Structure Viewer/XRD/Report UI batch
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改摘要：复核并修正 Structure 浏览器验收脚本的本地化 Viewer 选择器；
+  真实 Presentation 打开精确版本 Viewer Canvas；真实 XRD 页面打开九行
+  持久化数值表；报告质量路径确认 Structure/Dataset 的精确版本、发现、
+  方法/讨论/表格/限制/结论结构和无原始 JSON。
+- 测试结果：Structure 桌面/移动 `1280/1280`、`390/390`，无科学写入；
+  XRD 桌面/移动无写入、无全局溢出；隔离浏览器仅有预期 bootstrap `401`；
+  前端焦点 `71/71`，后端 operations/recovery/grounding `36 passed, 1 skipped`，
+  typecheck 通过。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`，服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — Task/notification recovery and regression batch
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改摘要：完成同栈 Task Center/Notification 真实浏览器复核；验证持久化
+  任务、需要关注与取消状态、离线/重连提示和 390x844 无溢出；保留无 live
+  任务时不显示 Stop 的正确空状态。
+- 测试结果：30 tasks、8 attention、4 canceled；offline banner 恢复后清除；
+  前端全量 `102 files / 730 passed`；Phase14-R 后端/service 子集
+  `10 passed / 8 historical skips`；operations、compileall、typecheck、
+  diff-check 通过。
+- 提交/CI：未提交，Phase 14-R 仍 `PARTIAL`，服务与 Chrome 标签页保持运行。
+
+构建补充：最初使用 `useSearchParams()` 的实现触发静态
+`/settings/models` 构建错误，已修正为 pending 期间 50ms URL 检查。
+修正后 focused `18 passed`、production build `17 routes PASS`、
+typecheck PASS。
+
+真实浏览器补充：在同一认证标签页通过 Project History 打开精确 Turn
+`fb72c2ad-bed1-47d7-b557-f398f04a8ede`，移动对话面板可展开“本次上下文”，
+显示 1 项精确来源、manifest `c4785024-6027-42af-9a1f-52143afd7303`、
+`agent2.context-policy/2.0`、输入预算 `12000` 与估算 `60` tokens；精确版本
+`a22745f2-17b6-434f-ba4c-3fe6bd244841` 保持不变，宽度 `731/731`、重复 ID 0。
+## Agent-2.0 Phase 14-R — service recovery/mobile reinterpretation/navigation
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改摘要：修正移动端验证脚本对隐藏 Workbench 节点的非限定定位；真实
+  390x844 浏览器可达 `重新解释（不重算科学结果）`，创建
+  `INTERPRET_RESULT` Turn `89037298-7fb1-4c48-bbd3-5407d3f93f41`，精确来源
+  版本 `a22745f2-17b6-434f-ba4c-3fe6bd244841`，无 Job/Result 科学重算；
+  同栈服务恢复检查通过；App Router 导航零 document reload。
+- 测试结果：移动端 overflow `0`；同栈 `/health/runtime` 为
+  PostgreSQL/Redis/MinIO/worker；导航冷路径 `120–267 ms` URL、
+  `137–628 ms` usable，热路径 `102–141 ms` URL、`120–163 ms` usable；
+  仅隔离未认证上下文 bootstrap `401`，无 5xx/critical response。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`，保持服务与 Chrome 标签页运行。
+## Agent-2.0 Phase 14-R — Global Search same-stack batch
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改摘要：真实认证浏览器在 PostgreSQL-backed API 上查询 `mat-2`；桌面和
+  390x844 移动端均返回 8 条授权结果，保留精确实体链接和项目隔离。
+- 测试结果：页面宽度 `1280/1280` 与 `390/390`，无非认证 mutation、5xx 或
+  critical 浏览器错误；搜索仍为导航 read model，不改变科学权威。
+- 提交/CI：未提交，Phase 14-R 仍 `PARTIAL`，服务与 Chrome 标签页保持运行。
+## Agent-2.0 Phase 14-R — static/build verification
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改摘要：完成当前工作树静态与构建核验，未关闭服务或 Chrome。
+- 测试结果：touched Ruff PASS，`uv lock --check` PASS，Next production build
+  `17 routes PASS`（shared first load `104 kB`），compileall 与 diff-check PASS。
+- 提交/CI：未提交，Phase 14-R 仍 `PARTIAL`。
+
+## Agent-2.0 Phase 14-R — context disclosure and edit continuity
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改摘要：补充真实认证浏览器证据记录；Research 结果页可展开上下文及
+  审计详情，保留精确 Dataset 版本，编辑上一条问题不改写历史 Turn。
+- 测试结果：上下文 disclosure、证据 disclosure、编辑/继续/重跑/重解释
+  控件均可见；`12000` token 输入预算与上下文指纹可读；标题 ID 无重复；
+  仅预期隔离未认证 bootstrap `401`，无 5xx/critical response。
+- 提交/CI：未提交，Phase 14-R 仍 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+### Agent-2.0 Phase 14-R — cache repair full frontend/build verification
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：无额外产品文件（复核当前工作树）。
+- 修改摘要：缓存修复后重跑完整前端、类型检查和生产构建；未停止同栈
+  服务或关闭 Chrome。
+- 测试结果：`102 test files / 732 tests passed`；typecheck PASS；Next
+  production build PASS（17 routes，共享首屏 JS `104 kB`）。
+- 提交/CI：未提交，Phase 14-R 仍 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — current-worktree frontend regression
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改摘要：UI 无障碍修复后重跑完整前端回归，未停止服务或关闭 Chrome。
+- 测试结果：`102 test files / 730 tests passed`，无新增失败或 mandatory skip。
+- 提交/CI：未提交，Phase 14-R 仍 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — context disclosure accessibility repair
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：`apps/web/app/components/ResearchPages.tsx`、
+  `apps/web/app/components/ResearchPages.test.tsx`。
+- 修改摘要：为上下文披露和嵌套审计详情增加稳定 `aria-label`，保留原生
+  键盘展开、精确版本和既有布局。
+- 测试结果：`ResearchPages.test.tsx` `64/64` 通过。
+- 提交/CI：未提交，Phase 14-R 仍 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — fresh same-stack service regression
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改摘要：使用当前工作树和真实 PostgreSQL/Redis/MinIO 运行服务回归；
+  未停止服务或关闭 Chrome。
+- 测试结果：`26 passed`，`0 failed`，`0 errors`，`0 skipped`，耗时
+  `425.80s`；operations snapshot 为 PostgreSQL
+  `active=1/idle=12/idle-in-transaction=0`、checked-out `0`，Redis 六个
+  idle worker、队列 `0`，MinIO `ok`，无 stale active work。
+- 提交/CI：未提交，Phase 14-R 仍 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — Mobile Report chapter navigation repair
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：`apps/web/app/globals.css`
+- 修改摘要：修复 390px 报告章节导航的横向溢出，将移动端章节链接改为
+  有界多行布局，保留桌面粘性导航、触控尺寸和章节定位。
+- 测试结果：ScientificReportRoute/ScientificReportsIndexPage `27/27`；
+  认证浏览器报告质量路径 `overflowCount=0`、document/body `390/390`，
+  精确版本与八个章节锚点保持可用。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — task/notification browser requalification
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：无新增产品文件；复核 `TaskCenterPage` /
+  `NotificationCenterPage` 真实浏览器路径。
+- 浏览器结果：认证 Chromium `/tasks`、`/notifications` 读取 30 条任务、8
+  条需要关注通知、4 条已取消通知；移动端 `390x844` 无溢出，离线提示与
+  online 重同步正常。仅预期 bootstrap `401`，无 critical `5xx`。
+- 测试结果：Task/Notification 浏览器脚本完成；TaskCenter focused `4 passed`。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — Task Center canceled-state copy
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：`apps/web/app/components/TaskCenterPage.tsx`、
+  `apps/web/app/components/TaskCenterPage.test.tsx`、`AGENT2_PHASE14R_RESULTS.md`、
+  `persistent/DESIGN_PROGRESS.md`。
+- 修改摘要：统一 `canceled` 与 `cancelled` 的中文终态文案为“已取消”，
+  防止任务中心误报为处理中。
+- 测试结果：`TaskCenterPage.test.tsx`：`4 passed`。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — truthful bounded global-search counts
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：`apps/api/mdi_api/routers/secured_runtime.py`、
+  `tests/test_project_access.py`、`AGENT2_PHASE14R_RESULTS.md`、
+  `persistent/DESIGN_PROGRESS.md`。
+- 修改摘要：搜索响应保留 bounded `items`，并用 `truncated` 明示某类结果
+  触及查询窗口；UI 在这种情况下显示“至少 N 项”，避免误报精确总数。
+- 测试结果：`tests/test_project_access.py -k product_search`：`4 passed`；
+  touched Ruff PASS。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — global search modern-report browser proof
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：无新增产品文件；复核现有 `ProductShell`、Reports 路由与搜索
+  读模型。
+- 浏览器结果：认证 Chromium `390x844` 搜索 `Li 扩散性质评估`，命中现代报告
+  `agent2_report_e54681009a0e49abe371247d9053ce61`，打开链接为该报告精确
+  项目路由；document/body `390/390`、无横向溢出。仅预期 bootstrap `401`，
+  无 critical `5xx`。
+- 测试结果：前端 `ProductShell` `11 passed`；后端 product-search `4 passed`；
+  typecheck、compileall、git diff check PASS。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — global search report lifecycle continuity
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：`apps/api/mdi_api/routers/secured_runtime.py`、
+  `tests/test_project_access.py`、`AGENT2_PHASE14R_RESULTS.md`、
+  `persistent/DESIGN_PROGRESS.md`。
+- 修改摘要：全局搜索接入现有现代 Scientific Report snapshot 与
+  `scientificReportLifecycle` 项目配置，正确返回 archived/trashed/active
+  状态；未新增科学权威或报告存储。
+- 测试结果：`PYTHONPATH=apps/api python -m pytest -q
+  tests/test_project_access.py -k product_search`：`4 passed`。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — research history management browser proof
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 浏览器证据：认证 Chromium 在项目 `project_0002_1a0af866391f412d` 创建并
+  管理研究记录 `research_bb889efa3b584759bb81c059efafd90f`，完成重命名、
+  固定、归档与恢复；最终标题保持，`finalPinned=true`、`finalStatus=archived`，
+  恢复后的记录仍可见。
+- 移动端 `390x844` 复核：`bodyWidth=390`、`documentWidth=390`、
+  `overflowCount=0`；浏览器 `errors=[]`、`critical=[]`。
+- 该路径验证的是会话管理投影，不改变 ResearchTurn/Result 科学身份。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — reinterpret zero-delta persistence proof
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 证据：移动端重新解释子 Turn `4a2256df-6d41-4725-baa4-884a4b49384f`
+  完成 `INTERPRET_RESULT / COMPLETED / VALID`，精确复用父 Turn
+  `fb72c2ad-bed1-47d7-b557-f398f04e8ede` 的 MSD/Diffusion Result。
+- PostgreSQL 项目计数在操作前后完全一致：
+  `jobs=45`、`tool_calls=63`、`artifacts=237`、
+  `scientific_result_snapshots=31`；因此科学重算增量为 `0/0/0/0`。
+- 浏览器：`390x844`、page overflow `0`，仅预期 bootstrap `401`，无 5xx
+  或 critical response。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — operations/recovery focused regression
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 测试结果：`tests/test_phase14r_operations.py` +
+  `tests/test_phase14r_recovery.py` + `tests/test_phase14r_context_manifest.py`
+  共 `16 passed`，无失败；保持服务运行。
+- 修改摘要：验证同栈操作快照、恢复语义与 Context Manifest 契约在本批次
+  前端/布局变更后仍然稳定。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — exact Result reuse browser recheck
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 浏览器证据：认证 Chromium 重新打开 Dataset ResearchTurn
+  `8382c443-f9ca-4c90-9aa3-444fea683807`，服务返回 `COMPLETED` /
+  `SUCCESS`，精确 Result `15fc4d39-d2d7-5ac3-907a-cb06ed6b7a3f`，
+  snapshot `2809dcd1-243e-4323-8538-0a5fe81780d9`，interpretation `VALID`。
+  Result 保留 Dataset object `8a425466-b697-4c85-9a43-199414a22865`、
+  version `be02266a-7d4f-4ebb-9f28-3132855167d0` 和 mat-2 facts。
+- 事件链：`PLAN_READY → QUEUED → RUNNING → RESULT_READY →
+  INTERPRETING → COMPLETED`；无新增浏览器 critical response，仅预期
+  bootstrap `401`。该次为只读历史重开，不把历史 Result 误报为新计算。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — mobile reinterpretation clean rerun
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 浏览器证据：认证 Chromium `390x844` 从 Report 返回来源 Research，
+  真实显示 `重新解释（不重算科学结果）`，并创建解释子 Turn
+  `2c5b6646-d521-4e9d-a939-f9318efdb557`。该 Turn 使用父 Turn
+  `fb72c2ad-bed1-47d7-b557-f398f04e8ede` 的精确 MSD/Diffusion Result，
+  `status=COMPLETED`、`action=INTERPRET_RESULT`、`grounding=VALID`。
+- 精确上下文：object `f834e358-9944-4fe8-a3ab-f85d68041f54`、
+  version `a22745f2-17b6-434f-ba4c-3fe6bd244841`；上下文快照
+  `fd138518-efb3-475f-8dc8-0f2aa13a13fe`。
+- 结果：viewport `390`、页面 overflow `0`，移动工作台操作可见；本次
+  网络审计仅有预期 `401 GET /api/auth/me`，无 `409`、5xx 或 critical。
+  该路径未创建 Job/ToolCall/Artifact/ScientificResult。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — same-stack navigation/performance requalification
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 浏览器证据：认证 Chromium（指定可执行文件）在 PostgreSQL/Redis/MinIO
+  同栈上复核 App Router，Overview/Data/Research/Reports 全部
+  `documentRequests=0`，shell marker 保留；warm usable 分别为
+  `188/192/254/139 ms`。
+- 页面基线：Data desktop/mobile warm p50/p95 `2139/5184` /
+  `1462/1490 ms`；Research `1866/1931` / `1874/1901 ms`；Report
+  `850/1403` / `844/856 ms`；所有测量 overflow `0`、无 critical。
+- 服务状态：PostgreSQL `active=1 idle=12 idle-in-transaction=0`，
+  checked-out `0`；Redis 6 idle workers、queue `0`；MinIO `ok`。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+任务中心移动端浏览器复核：`390x844` 下读取 30 条任务，
+document/body `390/390`、`overflowCount=0`；仅预期 bootstrap `401`，
+无 5xx/critical。
+
+## Agent-2.0 Phase 14-R — refresh failure disclosure and latest regression
+
+- 完成时间：2026-08-31
+- 修改摘要：后台同步失败保留最近一次授权任务/通知行并显示明确状态；
+  最新前端回归为 `102 test files / 734 tests passed`，typecheck、生产
+  build（17 routes、104 kB shared first-load）与 diff-check 通过。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — task/notification refresh continuity
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：`apps/web/app/components/TaskCenterPage.tsx`、
+  `apps/web/app/components/NotificationCenterPage.tsx`、`TaskCenterPage.test.tsx`。
+- 修改摘要：后台刷新不再把已呈现的任务/通知替换为整页 loading；保留当前
+  行和操作，使用可访问同步状态提示；失败时显示“当前显示上次结果”。
+- 测试结果：`6 passed, 0 failed`；typecheck 通过。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — task/notification refresh continuity
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：`apps/web/app/components/TaskCenterPage.tsx`、
+  `apps/web/app/components/NotificationCenterPage.tsx`、`TaskCenterPage.test.tsx`。
+- 修改摘要：后台刷新不再把已呈现的任务/通知替换为整页 loading；保留当前
+  行和操作，使用可访问同步状态提示，减少长任务期间的界面闪烁。
+- 测试结果：`5 passed, 0 failed`；typecheck 通过。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+认证 Chromium 复核 `/tasks` 与 `/notifications`：30 条任务可读、通知筛选
+响应正常，移动端 `390x844` 无溢出；断网提示在恢复后清除。仅预期 bootstrap
+`401`，无 5xx/critical。
+
+## Agent-2.0 Phase 14-R — Report lifecycle browser recheck
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：无额外产品文件（认证浏览器复核）。
+- 修改摘要：在现有同栈服务上重新验证报告操作菜单、服务器依赖影响预览、
+  归档与恢复，以及移动端布局。
+- 测试结果：Report `agent2_report_e54681009a0e49abe371247d9053ce61`
+  归档/恢复成功，依赖预览显示 `11` 项；`390x844` document/body
+  `390/390`、`overflowCount=0`；仅预期 bootstrap `401`，无 5xx/critical。
+- 提交/CI：未提交，Phase 14-R 仍 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — project history navigation cache repair
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：`apps/web/app/components/ProjectHome.tsx`、
+  `apps/web/app/components/ProjectHome.test.tsx`、Phase 14-R 审计/设计记录。
+- 修改摘要：移除项目选择时无条件 `forceRefresh` 历史接口的行为，复用已有
+  有界缓存；写操作仍通过显式失效保证新鲜度。修复返回项目页时的额外全量
+  历史请求，保持 App Router 与科学身份语义不变。
+- 测试结果：`ProjectHome.test.tsx` `3/3` 通过；相关前端回归随后执行。
+- 提交/CI：未提交，Phase 14-R 仍 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — correctly isolated full backend baseline
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：无（仅校准测试环境并复核当前工作树）。
+- 修改摘要：移除 service-only `DATABASE_URL` 后重跑完整非 integration
+  后端，确认临时 SQLite 迁移夹具不被 PostgreSQL 污染。
+- 测试结果：`1919 passed`、`32 skipped`、`170 warnings`，耗时
+  `231.89s`；0 failed。之前 40 项失败确认为环境注入错误，不是产品回归。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+## Agent-2.0 Phase 14-R — post-repair frontend/build verification
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：无（仅复核）。
+- 修改摘要：移动报告导航修复后重跑完整前端与静态检查。
+- 测试结果：前端 `102 test files / 730 tests passed`；typecheck、compileall、
+  `uv lock --check`、`git diff --check` PASS；本地 Next production build
+  `17 routes` PASS，共享首屏 JS `104 kB`。全仓 Ruff 仍存在历史 legacy/evidence
+  债务，未新增本批次 touched-code Python lint 问题。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — Report export feedback and browser proof
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：`apps/web/app/components/ScientificReportRoute.tsx`、
+  `apps/web/app/components/ScientificReportRoute.test.tsx`、
+  `apps/web/app/globals.css`，以及 Phase 14-R 证据/持久化记录。
+- 修改摘要：Markdown 与复现清单导出统一使用有界 Blob 下载 helper；点击后
+  显示可访问成功状态，浏览器不支持 Blob URL 时 fail-closed 并提示重试。
+  不改变 Report 快照、ScientificResult、来源版本或科学执行。
+- 测试结果：`ScientificReportRoute` focused `20/20`；认证 Chromium
+  Report `agent2_report_401cfb421fcab8a9366e06fedb3acb6d` 观察到 Markdown
+  `2529` bytes 与 JSON `1403` bytes 两个导出 Blob，标题/复现信息可见，
+  无 5xx/critical，仅预期 bootstrap `401`。
+
+## Agent-2.0 Phase 14-R — scientific table mobile interaction repair
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：`apps/web/app/components/workspace/WorkspaceArtifactGallery.tsx`、
+  `apps/web/app/globals.css`，以及本地浏览器诊断脚本。
+- 修改摘要：为真实 Data Platform 的 `workspace-table-scroll` 增加明确的
+  `role=region`、可键盘聚焦标签、inline overscroll containment 与稳定滚动条
+  空间；保持 bounded table 内容与科学数据身份不变。
+- 浏览器结果：认证 Chromium `390x844` 下 document/body 为 `390/390`、
+  `pageOverflow=false`；表格 wrapper `clientWidth=390`、`scrollWidth=400`、
+  `overflowX=auto`，可横向查看完整列；仅预期 bootstrap `401`。
+- 测试结果：Dataset/Product/Workspace focused `70/70` 通过。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — scientific table interaction regression
+
+- 状态：已完成本批次
+- 完成时间：2026-08-31
+- 修改文件：`apps/web/app/components/workspace/ScientificWorkspaceShell.test.tsx`。
+- 修改摘要：新增回归断言，确保真实 Workspace 数据表持续暴露可键盘访问的
+  `role=region`、稳定 accessible label 与表格语义。
+- 测试结果：Dataset/Product/Workspace focused `71/71`；完整前端当前工作树
+  `102 files / 734 tests passed`，typecheck 与 production build PASS。
+- 提交/CI：未提交，Phase 14-R 仍为 `PARTIAL`；服务与 Chrome 标签页保持运行。
+
+## Agent-2.0 Phase 14-R — Task Center control and bounded history UX
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改文件：`apps/web/app/components/TaskCenterPage.tsx`、
+  `apps/web/app/components/TaskCenterPage.test.tsx`、`persistent/DESIGN_PROGRESS.md`、
+  `persistent/TASK_BOARD.md`、`results.md`。
+- 修改摘要：停止研究改为可撤销确认对话框，说明保留已提交有效 Artifact、
+  未完成分支不会伪装成功；任务中心超过 30 条时明确披露只展示最近窗口，
+  保持项目历史作为完整持久化入口。
+- 测试结果：Task Center `5/5`；ProductShell + ScientificReportsIndex
+  `19/19`；NotificationCenter bounded-window 回归 `3/3`；touched Ruff、
+  compileall、git diff check PASS；既有前端全套
+  `102 files / 737 tests passed`。
+- 提交/CI：未提交；服务与 Chrome 标签页保持运行，Phase 14-R 仍为
+  `PARTIAL`。
+
+同批次补充：通知中心对超过 30 条的筛选结果显示 bounded-window 提示，
+避免将有界通知 projection 误认为完整历史；NotificationCenter focused
+回归通过。
+
+随后补齐共享 task feed 的服务端 `nextCursor` 传播：任务与通知界面现在能
+识别“当前行数未达 30 但仍有更早记录”的分页边界；`task-center-data`
+新增 `3/3` 回归，覆盖 cursor=true 与授权项目降级。
+
+最终验证：当前前端全套 `102 files / 737 tests passed`；`npm run build`
+通过（17 routes，shared first-load `104 kB`），`npm run typecheck` 通过。
+
+## Agent-2.0 Phase 14-R — production navigation and edit-branch batch
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改文件：`apps/web/app/components/ProductNavigation.tsx`、
+  `apps/web/app/components/RouteTransitionProgress.test.tsx`、Phase 14-R
+  performance/coverage/audit/results 与 persistent 记录。
+- 修改摘要：合并同一路径 pointer/focus 预取，移除 50ms location 轮询；
+  使用唯一不可变 Next build 目录排除运行中构建覆盖导致的旧 manifest/new
+  chunk 水合失败；保留全局/项目/研究三层动作位置。
+- 浏览器结果：生产 `3008` 桌面 cold/warm usable `61–118/33–70 ms`，
+  移动 `66–102/41–68 ms`；16 次项目转换均 `documentRequests=0`、
+  shell 节点保持、无重复 auth。编辑 child
+  `92fcd73e-3803-4dcf-bc7a-a63fbcf2a70e` 保留精确 Dataset
+  object/version，Result `a6769b88-abbb-54e5-867d-8a12562c6062` 含
+  17 facts；390px 无全局溢出。
+- 测试结果：focused frontend `85/85`；typecheck、production build、
+  touched diff check PASS。
+- 提交/CI：未提交；Phase 14-R 总体仍为 `PARTIAL`，服务和浏览器标签保持
+  运行。
+## Agent-2.0 Phase 14-R — unified Trash and resource governance batch
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改文件：`apps/web/app/components/TrashCenterPage.tsx`、
+  `apps/web/app/components/TrashCenterPage.test.tsx`、
+  `apps/web/app/trash/page.tsx`、`apps/web/app/trash/loading.tsx`、
+  `apps/web/app/components/ProductShell.tsx`、`ProductShell.test.tsx`、
+  `apps/web/app/globals.css`、`apps/web/app/lib/agent2-research-api.test.ts`、
+  `apps/api/mdi_api/config.py`、`agent2_errors.py`、
+  `agent2_repositories.py`、`research_agent/service.py`、`routers/agent2.py`、
+  `report_composition.py`、`operations.py`、相关测试与 Phase 14-R 文档。
+- 修改摘要：增加统一回收站入口与恢复/受保护永久删除路径；服务端以
+  PostgreSQL 项目行锁实施活动 ResearchTurn 上限并返回 typed 429；运维快照
+  公开有界资源治理配置；错误展示不再泄漏对象形状。未新增科学权威。
+- 测试结果：前端聚焦 `3 files / 19 tests passed`；后端聚焦
+  `3 passed / 14 deselected`；TypeScript typecheck、touched Ruff、git
+  diff-check PASS；同栈快照 PostgreSQL/Redis/MinIO `ok`、6 idle workers、
+  queue depth `0`、idle-in-transaction `0`、pool checked out `0`。
+- 浏览器结果：认证浏览器在 `/projects` 通过正常菜单将项目
+  `project_0001_e0091c0e6f5a4d58` 移入回收站并在 `/trash` 完成依赖预览、
+  exact-name PURGED；第二项目 `project_0002_f78490df5c38406a` 完成
+  `TRASHED → Restore → ACTIVE`。服务和浏览器标签页保持运行。
+- 提交/CI：未提交；Phase 14-R 仍为 `PARTIAL`，待下一批完整回归与发布封板。
+
+## Agent-2.0 Phase 14-R — project organization metadata batch
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改文件：`apps/api/mdi_api/routers/projects.py`、
+  `apps/api/mdi_api/routers/secured_runtime.py`、
+  `apps/api/mdi_api/routers/project_history.py`、
+  `apps/web/app/lib/planner-api.ts`、
+  `apps/web/app/components/ProductPages.tsx`、
+  `tests/test_project_access.py`、
+  `apps/web/app/components/ProductPages.test.tsx`、
+  `docs/agent2/phase14r/PHASE14R_PRODUCT_REALITY_AUDIT.md`、
+  `docs/agent2/phase14r/PHASE14R_MATURE_PRODUCT_COVERAGE_MATRIX.md`、
+  `persistent/DESIGN_PROGRESS.md`。
+- 修改摘要：在现有 `project_configs` 非科学元数据边界内增加项目固定/
+  取消固定；API、Project History、项目目录和动作菜单共享同一权威状态，
+  固定项目稳定置顶，读者账号不能写入。未新增科学权威、版本或生命周期
+  语义。
+- 测试结果：ProductPages `33 passed`；项目访问 `13 passed`；touched Ruff、
+  typecheck、production build、diff-check PASS。
+- 提交/CI 状态：未提交；Phase 14-R 总体仍为 `PARTIAL`，服务与浏览器
+  标签页保持运行。
+
+## Agent-2.0 Phase 14-R — project tags and catalog discovery follow-up
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改摘要：项目编辑对话框支持有界非科学组织标签；项目目录增加标签
+  筛选，服务端搜索也会在授权项目范围内匹配标签并回显标签摘要。标签
+  仍保存在 `project_configs.config_json.projectTags`，不会进入科学上下文、
+  Result 或版本权威。
+- 测试结果：ProductPages `35 passed`；项目访问 `23 passed`；touched Ruff
+  与 typecheck PASS。
+- 提交/CI 状态：未提交；Phase 14-R 总体仍为 `PARTIAL`，服务与浏览器标签页
+  保持运行。
+
+## Agent-2.0 Phase 14-R — archived global-search filter evidence
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改摘要：补齐当前工作树审计、覆盖矩阵与结果记录中的归档状态搜索证据；
+  不改变搜索或科学权威。
+- 浏览器结果：同一认证内置浏览器标签页在全局搜索中选择
+  `状态=已归档` 并输入 `硅结构`，返回 8 个授权历史 Research 会话，
+  每项显示 `已归档` 并保留精确项目作用域路由；浏览器 warning/error 日志为空。
+- 测试结果：`uv lock --check` 与 `git diff --check` PASS。
+- 提交/CI 状态：未提交；Phase 14-R 仍为 `PARTIAL`，P14R-A/P14R-B 未创建。
+
+## Agent-2.0 Phase 14-R — Scientific Report organization batch
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改摘要：在既有 `project_configs` 管理投影内增加 Report 有界重命名和
+  固定；列表、直接读取和全局搜索共享显示标题，原始 snapshot title 作为
+  `source_title` 保留。UI 使用现有报告行 overflow menu，不新增主操作栏。
+- 浏览器结果：Report `agent2_report_19a0…` 重命名为
+  “结构配位数分布统计报告”并固定置顶，精确路由不变；全局搜索返回唯一
+  授权结果。移动 Chromium `390/390`、overflow 0，动作菜单和不可变快照
+  提示可达；仅出现预期登录 bootstrap `401`，critical 0。
+- 零重算结果：UI Unpin→Pin 前后
+  Jobs/ToolCalls/Artifacts/Results/Report snapshots 均为
+  `301/395/1565/203/44`；snapshot
+  `c8cc6fcb-1f0b-50c6-b6db-049374f7de6e` 及 SHA-256
+  `10a9b50c…ec555` 不变。
+- 聚焦测试：Report service lifecycle/organization `1 passed`；
+  project authorization/search `2 passed`；Report index UI `10 passed`；
+  touched Ruff、typecheck、compileall PASS。
+- 提交/CI 状态：未提交；Phase 14-R 仍为 `PARTIAL`，报告 revision compare
+  与最终 P14R-A/P14R-B release seal 仍未闭合。
+
+## Agent-2.0 Phase 14-R — project provenance export and service recovery follow-up
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改文件：`apps/api/mdi_api/routers/secured_runtime.py`、
+  `apps/api/mdi_api/main.py`、`apps/web/app/lib/planner-api.ts`、
+  `apps/web/app/components/ProductPages.tsx`、
+  `apps/web/app/components/ProductPages.test.tsx`、
+  `tests/test_project_access.py`、Phase 14-R 文档与共享 schema。
+- 修改摘要：增加授权、有界、不可执行的项目 provenance manifest API 和
+  Projects overflow 导出动作；复用既有项目组织/授权边界，不引入新的科学
+  权威。定位并修复浏览器 3000→8002 命中旧 API 进程导致的 `404`，以当前
+  工作树持久会话重载 8000/8002 API，PostgreSQL/Redis/MinIO/worker 保持运行。
+- 测试结果：`tests/test_project_access.py` `25 passed`；ProductPages
+  `37 passed`；Phase14-R operations/recovery/context `21 passed`；完整
+  frontend `103 files / 750 tests passed`；`npm run typecheck`、production
+  build、compileall、git diff check、touched Ruff（新文件范围）PASS。
+  `main.py` 的历史大型路由导入 F401 未扩大处理，保留为既有非阻塞 lint debt。
+- 浏览器/服务结果：认证 `/projects` 同栈标签页真实看到“导出项目清单”并
+  收到成功状态；`/health/runtime` 在 8000/8002 均为 PostgreSQL/Redis/
+  MinIO/Redis worker/DeepSeek configured。标签页、前端、数据库、Redis、
+  MinIO 和 worker 均保持运行。
+- 提交/CI 状态：未提交；Phase 14-R 仍为 `PARTIAL`，更广泛能力族、
+  retention/operations、性能/真实用户验收和 P14R-A/P14R-B 仍未闭合。
+
+补充回归结果（同一批次当前工作树）：
+
+```text
+full backend = 1935 passed, 84 skipped, 170 warnings
+full frontend = 103 files / 751 tests passed
+operations snapshot = PostgreSQL active=1 idle=8 idle-in-transaction=0,
+                      pool checkedOut=0, Redis workers=6, queue depth=0,
+                      MinIO=ok
+uv lock --check = PASS
+
+补充浏览器证据：认证 `/projects` 同栈标签页打开全局搜索，输入 `mat-2` 后
+显示 `找到 8 项，显示前 8 项`，结果包含精确 Research/Report 路由和项目/
+生命周期标记；当前浏览器日志为空。该路径使用 3000→8002→PostgreSQL，
+因此 Search/organization 的 service-backed 维度从 `NOT_QUALIFIED` 更新为
+`PASS`，整体 Search 行仍因历史跨项目与 collections 语义保持 `PARTIAL`。
+```
+
+补充验证：本批次后的完整前端回归为 `103 个测试文件 / 750 个测试通过`；
+`npm run build`、`npm run typecheck`、`python -m compileall -q apps/api/mdi_api`
+和 `git diff --check` 均通过。
+
+## Agent-2.0 Phase 14-R — bulk project organization follow-up
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改摘要：项目选择工具栏新增批量固定/取消固定，复用现有批量动作
+  与事务/授权边界；批量组织操作只写 `project_configs.pinnedProject`，
+  不触碰科学对象、版本、Result 或历史记录。
+- 测试结果：ProductPages `36 passed`；项目访问 `24 passed`；touched Ruff
+  PASS。
+- 提交/CI 状态：未提交；Phase 14-R 总体仍为 `PARTIAL`，服务与浏览器标签页
+  保持运行。
+
+## Agent-2.0 Phase 14-R — project catalog query consolidation
+
+- 状态：已完成本批次
+- 修改摘要：项目目录把成员角色与 `project_configs` 固定/标签元数据从
+  逐行查询改为按可见项目集合批量读取，保留旧 schema 兼容和授权边界，
+  避免组织功能引入额外 N+1。
+- 测试结果：项目访问 `23 passed`；touched Ruff PASS；前端 ProductPages
+  `35 passed`、typecheck/build 已在同一批次验证。
+- 提交/CI 状态：未提交；Phase 14-R 总体仍为 `PARTIAL`，服务与浏览器标签页
+  保持运行。
+
+## Agent-2.0 Phase 14-R — archived global-search filter evidence
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改摘要：补齐当前工作树审计、覆盖矩阵与结果记录中的归档状态搜索证据；
+  不改变搜索或科学权威。
+- 浏览器结果：同一认证内置浏览器标签页在全局搜索中选择
+  `状态=已归档` 并输入 `硅结构`，返回 8 个授权历史 Research 会话，
+  每项显示 `已归档` 并保留精确项目作用域路由；浏览器 warning/error 日志为空。
+- 测试结果：文档变更后 `git diff --check` 待本批次末复核。
+- 提交/CI 状态：未提交；Phase 14-R 仍为 `PARTIAL`，P14R-A/P14R-B 未创建。

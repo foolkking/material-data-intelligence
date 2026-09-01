@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from copy import deepcopy
+import hashlib
 import json
 from pathlib import Path
 
@@ -10,7 +10,13 @@ import pytest
 from mdi_adapters import create_adapter
 from mdi_adapters.context import ToolExecutionContext
 from mdi_artifact_core import canonical_trajectory_id
+from mdi_llm.grounded_interpretation import (
+    ArtifactProjectionInput,
+    InterpretationSource,
+    project_artifact,
+)
 from mdi_llm.providers import LLMProviderError, MockLLMProvider, PlannerRequest
+from mdi_material_parsers.trajectory import parse_trajectory_file
 from mdi_schemas import DataProfile
 from mdi_tool_registry import build_artifact_compatibility_matrix, load_manifests
 from mdi_adapters.platform_builtin.trajectory_analytics import _minimum_image, _pair_distances
@@ -18,6 +24,7 @@ from mdi_adapters.platform_builtin.trajectory_analytics import _minimum_image, _
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "docs/phase10g/fixtures/trajectory_v1/fixed_lattice_md.json"
+DIFFUSION_FIXTURE = ROOT / "tests/fixtures/trajectory/phase14r_diffusion_unwrapped.extxyz"
 
 
 def _trajectory() -> dict:
@@ -145,6 +152,159 @@ def test_diffusion_accepts_linear_msd_and_rejects_ballistic(tmp_path: Path) -> N
     ballistic = _payload(ballistic_root, _execute(ballistic_root, "trajectory.diffusion", _msd_payload([0.06 * i * i for i in range(1, 9)]), params, binding)[0])
     assert ballistic["regimeDiagnostic"]["status"] == "BALLISTIC_LIKE_WINDOW"
     assert ballistic["diffusionEstimate"]["available"] is False
+
+
+def test_real_unwrapped_extxyz_closes_msd_to_diffusion_dependency(tmp_path: Path) -> None:
+    trajectory = parse_trajectory_file(DIFFUSION_FIXTURE).trajectory
+    assert trajectory["position_wrapping"] == "unwrapped"
+    assert trajectory["time"]["unit"] == "femtosecond"
+    assert trajectory["frames"][-1]["time"] == 11_500.0
+    assert len(trajectory["frames"]) == 24
+
+    msd_root = tmp_path / "msd"
+    msd_artifact = _execute(
+        msd_root,
+        "trajectory.msd",
+        trajectory,
+        {"max_lag_count": 16, "origin_stride": 1, "max_origins_per_lag": 4096},
+    )[0]
+    msd = _payload(msd_root, msd_artifact)
+
+    diffusion_root = tmp_path / "diffusion"
+    diffusion = _payload(
+        diffusion_root,
+        _execute(
+            diffusion_root,
+            "trajectory.diffusion",
+            msd,
+            {
+                "fit_start_time_ps": 1.0,
+                "fit_end_time_ps": 6.0,
+                "direction": "total",
+                "minimum_fit_points": 5,
+                "minimum_fit_duration_ps": 1.0,
+                "minimum_origin_coverage": 0.2,
+                "minimum_r_squared": 0.9,
+                "alpha_min": 0.8,
+                "alpha_max": 1.2,
+            },
+            {"input": {"artifactId": msd_artifact.id, "checksum": msd_artifact.contentHash}},
+        )[0],
+    )
+
+    assert diffusion["sourceMsd"]["artifactId"] == msd_artifact.id
+    assert diffusion["regimeDiagnostic"]["status"] == "DIFFUSIVE_WINDOW_ACCEPTED"
+    assert diffusion["diffusionEstimate"] == {
+        "available": True,
+        "value": pytest.approx(0.038618, abs=1e-6),
+        "unit": "angstrom^2/picosecond",
+        "qualifiedOverSelectedWindow": True,
+    }
+    assert diffusion["fit"]["rSquared"] >= 0.9
+    assert diffusion["regimeDiagnostic"]["alpha"] == pytest.approx(0.924031, abs=1e-5)
+    assert diffusion["runtimeDiagnostics"] == {
+        "rawTrajectoryReads": False,
+        "msdRecomputation": False,
+        "frontendFit": False,
+        "automaticWindowOptimization": False,
+    }
+
+
+def test_diffusion_projects_the_exact_authoritative_fit_window(tmp_path: Path) -> None:
+    trajectory = parse_trajectory_file(DIFFUSION_FIXTURE).trajectory
+    msd_root = tmp_path / "msd"
+    msd_artifact = _execute(
+        msd_root,
+        "trajectory.msd",
+        trajectory,
+        {"max_lag_count": 16, "origin_stride": 1, "max_origins_per_lag": 4096},
+    )[0]
+    msd = _payload(msd_root, msd_artifact)
+    diffusion_root = tmp_path / "diffusion"
+    diffusion_artifact = _execute(
+        diffusion_root,
+        "trajectory.diffusion",
+        msd,
+        {
+            "fit_start_time_ps": 1.0,
+            "fit_end_time_ps": 6.0,
+            "direction": "total",
+            "minimum_fit_points": 5,
+            "minimum_fit_duration_ps": 1.0,
+            "minimum_origin_coverage": 0.2,
+            "minimum_r_squared": 0.9,
+            "alpha_min": 0.8,
+            "alpha_max": 1.2,
+        },
+        {"input": {"artifactId": msd_artifact.id, "checksum": msd_artifact.contentHash}},
+    )[0]
+    diffusion = _payload(diffusion_root, diffusion_artifact)
+    raw = json.dumps(
+        diffusion,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode()
+    checksum = hashlib.sha256(raw).hexdigest()
+    source = InterpretationSource(
+        project_id="project_n4",
+        dataset_id="dataset_n4",
+        dataset_version="2.0",
+        profile_id="profile_n4",
+        profile_semantic_hash="p" * 64,
+        intent_id="intent_n4",
+        intent_hash="i" * 64,
+        resolution_id="resolution_n4",
+        resolution_hash="r" * 64,
+        decision_id="decision_n4",
+        decision_hash="d" * 64,
+        plan_id="plan_n4",
+        plan_hash="a" * 64,
+        plan_schema_version="0.2",
+        graph_hash=None,
+        job_id="job_n4",
+        job_status="completed",
+        execution_outcome="ALL_SUCCEEDED",
+        failed_step_count=0,
+        blocked_step_count=0,
+    )
+    candidate = ArtifactProjectionInput(
+        artifact={
+            "id": diffusion_artifact.id,
+            "artifactId": diffusion_artifact.id,
+            "projectId": "project_n4",
+            "datasetId": "dataset_n4",
+            "jobId": "job_n4",
+            "toolCallId": "call_trajectory_diffusion",
+            "type": "table_json",
+            "version": "1",
+            "sizeBytes": len(raw),
+            "sha256": checksum,
+            "contentHash": checksum,
+        },
+        payload=diffusion,
+        tool_call={
+            "id": "call_trajectory_diffusion",
+            "toolId": "trajectory.diffusion",
+            "stepId": "step_diffusion",
+            "status": "completed",
+        },
+        lineage={"producerToolVersion": "0.1.0"},
+        raw_checksum=checksum,
+        raw_size_bytes=len(raw),
+    )
+
+    roles = {item.semanticRole: item for item in project_artifact(source, candidate)}
+    assert roles["trajectory.diffusion.fit_start"].displayValue == "1 picosecond"
+    assert roles["trajectory.diffusion.fit_end"].displayValue == "6 picosecond"
+    assert roles["trajectory.diffusion.fit_points"].displayValue == "11"
+    assert roles["trajectory.diffusion.estimate"].displayValue == (
+        "0.0386181 angstrom^2/picosecond"
+    )
+    assert roles["trajectory.diffusion.status"].displayValue == (
+        "DIFFUSIVE_WINDOW_ACCEPTED"
+    )
 
 
 def test_diffusion_requires_explicit_window_and_persisted_checksum(tmp_path: Path) -> None:

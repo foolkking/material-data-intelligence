@@ -4,14 +4,36 @@ export type ResearchRunDisplaySource = {
   artifactTypes?: string[];
 };
 
+export type ResearchRunStatusSource = {
+  status?: string | null;
+  researchTurnStatus?: string | null;
+};
+
+export function researchRunStatusLabel(run: ResearchRunStatusSource) {
+  const status = String(run.researchTurnStatus || run.status || "")
+    .trim()
+    .toUpperCase();
+  if (["COMPLETED", "SUCCEEDED"].includes(status)) return "分析完成";
+  if (["PARTIAL", "PARTIAL_SUCCESS"].includes(status)) return "部分完成";
+  if (status === "FAILED") return "分析失败";
+  if (["CANCELED", "CANCELLED"].includes(status)) return "分析已取消";
+  if (status === "ANSWERED") return "回答完成";
+  if (status === "CLARIFICATION_REQUIRED") return "等待补充信息";
+  if (status === "UNSUPPORTED") return "当前请求不受支持";
+  return "分析进行中";
+}
+
 export function researchRunTitle(run: ResearchRunDisplaySource) {
   const tools = (run.toolIds || []).join(" ").toLowerCase();
   const artifacts = (run.artifactTypes || []).join(" ").toLowerCase();
+  const hasTrajectoryMsd = tools.includes("trajectory.msd") || artifacts.includes("trajectory_msd");
+  const hasTrajectoryDiffusion = tools.includes("trajectory.diffusion") || artifacts.includes("trajectory_diffusion");
   if (tools.includes("experimental_xrd")) return "实验与理论 XRD 峰比较";
   if (tools.includes("structure.rdf")) return "静态结构径向分布函数（RDF）";
-  if (tools.includes("trajectory.msd") || artifacts.includes("trajectory_msd")) return "均方位移（MSD）与轨迹扩散";
+  if (hasTrajectoryMsd && hasTrajectoryDiffusion) return "均方位移（MSD）与轨迹扩散";
+  if (hasTrajectoryDiffusion) return "轨迹扩散分析";
+  if (hasTrajectoryMsd) return "均方位移（MSD）";
   if (tools.includes("trajectory.rdf") || artifacts.includes("trajectory_rdf")) return "轨迹径向分布函数（RDF）";
-  if (tools.includes("trajectory.diffusion") || artifacts.includes("trajectory_diffusion")) return "轨迹扩散分析";
   if (tools.includes("trajectory")) return "AIMD 轨迹分析";
   if (tools.includes("phonon")) return "声子色散与态密度";
   if (tools.includes("electronic")) return "电子能带与态密度";

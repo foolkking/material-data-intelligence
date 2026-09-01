@@ -72,6 +72,7 @@ class OrchestratorRequirementOption(BaseModel):
     requirement_id: str
     display_name: str
     description: str
+    constraint_schema: dict[str, Any]
 
 
 class ResearchOrchestratorInput(BaseModel):

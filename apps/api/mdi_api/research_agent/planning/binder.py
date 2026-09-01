@@ -26,6 +26,21 @@ _RESULT_TO_ARTIFACT = {
     "phonon.band_dos": ArtifactType.phonon_band_dos_json,
 }
 
+# Dataset requirement constraints such as a selected sample/property are
+# semantic planning context, not executable adapter arguments.  They remain
+# persisted in the immutable decision/context snapshot and are consumed by
+# the bounded result/interpretation path.  Only these known keys may be
+# omitted before strict Tool paramsSchema validation; arbitrary unknown keys
+# remain fail-closed below.
+_DATASET_SEMANTIC_ONLY_CONSTRAINTS = frozenset({"sample", "property"})
+_PROFILE_BACKED_DATA_TOOLS = frozenset({
+    "dataset.materials_explorer",
+    "dataset.composition_space",
+    "ml.regression_evaluation",
+    "ml.uncertainty_evaluation",
+    "ml.classification_evaluation",
+})
+
 
 class CapabilityBinder:
     def __init__(self, tool_registry: Any) -> None:
@@ -50,7 +65,7 @@ class CapabilityBinder:
             # DataProfile in addition to their source table/structure refs.
             # Keep this binding explicit so the worker cannot silently run
             # against an unprofiled or latest-inferred dataset.
-            if tool.toolId in {"dataset.materials_explorer", "dataset.composition_space"}:
+            if tool.toolId in _PROFILE_BACKED_DATA_TOOLS:
                 input_refs.append(InputRef(refType="profile", ref="profile", fieldRole="profile"))
             for slot_name, bindings in step.input_bindings.items():
                 for item in bindings:
@@ -75,13 +90,27 @@ class CapabilityBinder:
             artifact_outputs = [out.result_type for out in manifest.output_slots]
             for out in manifest.output_slots:
                 expected.append(ExpectedArtifact(name=f"{step.step_id}.{out.name}", type=_RESULT_TO_ARTIFACT.get(out.result_type, ArtifactType.table_json), fromStepId=step.step_id))
+            # Requirement constraints are normally mapped to adapter params,
+            # but Dataset semantic selectors are not part of the
+            # materials_explorer/composition_space executable schema.  Keep
+            # them in the authoritative requirement/context records and
+            # remove only this explicit, bounded set before plan validation.
+            executable_params = dict(step.parameters)
+            if tool.toolId in {"dataset.materials_explorer", "dataset.composition_space"}:
+                allowed_params = set((tool.paramsSchema or {}).get("properties") or {})
+                executable_params = {
+                    key: value
+                    for key, value in executable_params.items()
+                    if key in allowed_params
+                    or key not in _DATASET_SEMANTIC_ONLY_CONSTRAINTS
+                }
             steps.append(AnalysisStep(
                 stepId=step.step_id,
                 toolId=tool.toolId,
                 purpose=manifest.display_name,
                 reason=manifest.scientific_purpose,
                 inputRefs=input_refs,
-                params=dict(step.parameters),
+                params=executable_params,
                 output={"resultTypes": artifact_outputs},
                 constraints={},
             ))

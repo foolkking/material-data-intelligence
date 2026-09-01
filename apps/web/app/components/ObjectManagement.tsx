@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { ProductLink as Link } from "./ProductNavigation";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 
 export type ObjectAction = Readonly<{
   label: string;
@@ -99,14 +99,14 @@ export function ManagedObjectRow({
     }}
   >
     {selectionMode ? <label className="object-selection-control">
-      <input type="checkbox" checked={selected} disabled={!selectable} onChange={(event) => onSelectedChange?.(event.target.checked)} />
-      <span className="sr-only">{selectable ? `选择 ${title}` : `${title} 为只读项目`}</span>
+      <input aria-label={selectable ? `选择 ${title}` : `${title} 当前不可批量操作`} type="checkbox" checked={selected} disabled={!selectable} onChange={(event) => onSelectedChange?.(event.target.checked)} />
+      <span className="sr-only">{selectable ? `选择 ${title}` : `${title} 当前不可批量操作`}</span>
     </label> : null}
     <Link className="managed-object-link" href={href} tabIndex={selectionMode ? -1 : 0} aria-disabled={selectionMode || undefined} onClick={(event) => { if (selectionMode) event.preventDefault(); }}>
       <span><strong>{title}</strong><small>{description}</small></span>
       {trailing ? <span className="managed-object-trailing">{trailing}</span> : null}
     </Link>
-    {!selectionMode ? <button ref={triggerRef} type="button" className="object-menu-trigger" aria-label={`管理 ${title}`} aria-haspopup="menu" aria-expanded={open} title="更多操作" onClick={() => setOpen((value) => !value)}>⋯</button> : null}
+    {!selectionMode && actions.length ? <button ref={triggerRef} type="button" className="object-menu-trigger" aria-label={`管理 ${title}`} aria-haspopup="menu" aria-expanded={open} title="更多操作" onClick={() => setOpen((value) => !value)}>⋯</button> : null}
     {open ? <div ref={menuRef} className={`object-action-menu ${placement}`} role="menu" aria-label={`${title} 操作`}>
       {actions.map((action) => action.href
         ? <Link key={`${action.label}-${action.href}`} role="menuitem" href={action.href} aria-disabled={action.disabled || undefined} tabIndex={action.disabled ? -1 : 0} className={action.destructive ? "danger" : undefined} onClick={(event) => { if (action.disabled) event.preventDefault(); else close(false); }}>{action.label}</Link>
@@ -136,6 +136,9 @@ export function ProductModal({
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const onCloseRef = useRef(onClose);
   const openerRef = useRef<HTMLElement | null>(null);
+  const dialogId = useId().replace(/:/gu, "");
+  const titleId = `product-task-dialog-title-${dialogId}`;
+  const descriptionId = `product-task-dialog-description-${dialogId}`;
   onCloseRef.current = onClose;
   useEffect(() => {
     openerRef.current = returnFocus || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
@@ -169,8 +172,8 @@ export function ProductModal({
     };
   }, [returnFocus]);
   return <div className="product-modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
-    <div ref={dialogRef} className="product-task-dialog" role="dialog" aria-modal="true" aria-labelledby="product-task-dialog-title" aria-describedby={description ? "product-task-dialog-description" : undefined}>
-      <header><div><p className="product-kicker">{eyebrow}</p><h2 id="product-task-dialog-title">{title}</h2>{description ? <p id="product-task-dialog-description">{description}</p> : null}</div><button type="button" className="product-icon-action" aria-label="关闭" onClick={onClose}>×</button></header>
+    <div ref={dialogRef} className="product-task-dialog" role="dialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={description ? descriptionId : undefined}>
+      <header><div><p className="product-kicker">{eyebrow}</p><h2 id={titleId}>{title}</h2>{description ? <p id={descriptionId}>{description}</p> : null}</div><button type="button" className="product-icon-action" aria-label="关闭" onClick={onClose}>×</button></header>
       <div className="product-task-dialog-body">{children}</div>
       <footer>{footer}</footer>
     </div>

@@ -17,12 +17,14 @@ from mdi_api.agent2_errors import (
     ConcurrentTurnModification,
     InvalidResearchTurnTransition,
     InvalidScientificObjectVersion,
+    ResearchResourceLimitExceeded,
     ResearchSessionProjectMismatch,
     ResearchTurnNotFound,
     ScientificObjectNotFound,
     ScientificObjectVersionNotFound,
     UnauthorizedScientificObjectReference,
     ScientificResultNotReady,
+    ScientificResultSnapshotNotFound,
     ScientificResultProjectionConflict,
     ScientificResultProjectionFailed,
 )
@@ -66,6 +68,7 @@ from mdi_api.scientific_viewers import (
 )
 from mdi_api.scientific_results.schemas import ScientificResultBundle
 from mdi_api.scientific_results.relevance import ScientificResultRelevanceEvaluator
+from mdi_api.scientific_results.artifact_loader import load_committed_json_artifact
 from mdi_api.scientific_results.service import ScientificResultProjectionService
 from mdi_api.artifact_storage import create_artifact_storage_from_settings
 from mdi_api.interpretation.service import InterpretationFailure
@@ -83,10 +86,20 @@ class PromoteDatasetTableRequest(BaseModel):
 class ScientificObjectMetadataUpdateRequest(BaseModel):
     display_name: str | None = Field(default=None, min_length=1, max_length=512)
     archived: bool | None = None
+    lifecycle: ScientificObjectLifecycle | None = None
+
+
+class ScientificObjectBulkLifecycleRequest(BaseModel):
+    object_ids: list[UUID] = Field(min_length=1, max_length=100)
+    lifecycle: ScientificObjectLifecycle
 
 
 def get_research_turn_service() -> ResearchTurnService:
-    return ResearchTurnService(create_repository_factory())
+    settings = load_settings()
+    return ResearchTurnService(
+        create_repository_factory(),
+        max_active_turns_per_project=settings.agent2_max_active_turns_per_project,
+    )
 
 
 def get_scientific_object_service() -> ScientificObjectService:
@@ -195,7 +208,37 @@ def get_research_turn_context_manifest(
             if snapshot is None:
                 raise ScientificResultNotReady(f"context manifest unavailable for {turn_id}")
             manifest = _compat_context_manifest_from_snapshot(turn, snapshot)
-        return jsonable_encoder({"turn_id": str(turn_id), "manifest": manifest})
+        operation_manifests: list[dict[str, Any]] = []
+        for event in events:
+            payload = event.get("payload_json") or {}
+            candidate = payload.get("context_manifest")
+            if not isinstance(candidate, dict):
+                continue
+            operation = str(payload.get("operation") or candidate.get("operation") or "ORCHESTRATOR")
+            operation_manifests.append({
+                "operation": operation,
+                "manifest": candidate,
+                "event_id": str(event.get("id")) if event.get("id") is not None else None,
+                "sequence_no": event.get("sequence_no"),
+            })
+        if not operation_manifests:
+            operation_manifests = [{
+                "operation": str(manifest.get("operation") or "ORCHESTRATOR"),
+                "manifest": manifest,
+                "event_id": str(context_event.get("id")) if context_event.get("id") is not None else None,
+                "sequence_no": context_event.get("sequence_no"),
+            }]
+        return jsonable_encoder({
+            "turn_id": str(turn_id),
+            # Backward-compatible primary manifest for existing clients.
+            "manifest": manifest,
+            "manifests": operation_manifests,
+        })
+    except ScientificResultNotReady as exc:
+        # This is an expected transitional state while a new Turn is still
+        # resolving context. Return the typed 409 without emitting a false
+        # server-error traceback on every UI poll.
+        raise _http_error(exc) from exc
     except Exception as exc:
         logger.exception("context_manifest_projection_failed", extra={"turn_id": str(turn_id)})
         raise _http_error(exc) from exc
@@ -507,9 +550,11 @@ def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depend
             turn = session.agent2.research_turns.get(turn_id)
             require_project_access(session.connection, str(turn["project_id"]), current_user)
             job_id = str(turn.get("job_id") or "")
+            decision = session.agent2.research_turn_decisions.get_for_turn(turn_id)
         if not job_id:
             return {
                 "contract_version": "1.0", "turn_id": str(turn_id), "status": turn["status"],
+                "response_kind": _research_progress_response_kind(turn, decision),
                 "plan_title": None, "steps": [], "active_step_ids": [], "completed_step_count": 0,
                 "total_step_count": 0, "incremental_outputs": [], "warnings": [],
                 "execution_outcome": None, "result_projection_pending": False,
@@ -546,6 +591,7 @@ def _historical_terminal_progress(turn_id: UUID, status: str) -> dict[str, Any]:
         "contract_version": "1.0",
         "turn_id": str(turn_id),
         "status": status,
+        "response_kind": "SCIENTIFIC_EXECUTION",
         "plan_title": "Historical completed analysis",
         "steps": [],
         "active_step_ids": [],
@@ -556,6 +602,26 @@ def _historical_terminal_progress(turn_id: UUID, status: str) -> dict[str, Any]:
         "execution_outcome": outcome,
         "result_projection_pending": False,
     }
+
+
+def _research_progress_response_kind(
+    turn: dict[str, Any],
+    decision: dict[str, Any] | None,
+) -> str | None:
+    if str(turn.get("status") or "") != ResearchTurnStatus.ANSWERED.value:
+        return None
+    action = str(turn.get("action_type") or "")
+    if action == ResearchAction.QUERY_DATA.value:
+        return "DATA_QUERY"
+    if action == ResearchAction.ANSWER.value:
+        reusable = (
+            ((decision or {}).get("decision_json") or {}).get(
+                "reusable_result_ref_keys"
+            )
+            or []
+        )
+        return "RESULT_REUSE" if reusable else "CONVERSATIONAL"
+    return "CONVERSATIONAL"
 
 
 def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
@@ -571,7 +637,39 @@ def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(
                 ResearchTurnStatus.PARTIAL.value,
             }:
                 raise ScientificResultNotReady(str(turn_id))
-            row = session.agent2.scientific_result_snapshots.get_latest_for_turn(turn_id)
+            try:
+                row = session.agent2.scientific_result_snapshots.get_latest_for_turn(turn_id)
+            except ScientificResultSnapshotNotFound:
+                # INTERPRET_RESULT creates a new conversational Turn but
+                # intentionally does not duplicate the immutable scientific
+                # snapshot. Resolve the explicitly reused snapshot through the
+                # persisted context/decision relation instead of treating the
+                # current Turn as if it owned a new Result.
+                if str(turn.get("action_type") or "") != ResearchAction.INTERPRET_RESULT.value:
+                    raise
+                decision = session.agent2.research_turn_decisions.get_for_turn(turn_id)
+                context = session.agent2.research_context_snapshots.get_for_turn(turn_id)
+                requested = set(
+                    str(item)
+                    for item in ((decision or {}).get("decision_json") or {}).get("reusable_result_ref_keys") or []
+                )
+                candidates = (context or {}).get("referenced_result_refs_json") or []
+                row = None
+                for candidate in candidates:
+                    if not isinstance(candidate, dict):
+                        continue
+                    if requested and str(candidate.get("candidate_key")) not in requested:
+                        continue
+                    snapshot_id = candidate.get("result_id")
+                    if not snapshot_id:
+                        continue
+                    candidate_row = session.agent2.scientific_result_snapshots.get(UUID(str(snapshot_id)))
+                    if str(candidate_row["project_id"]) != str(turn["project_id"]):
+                        raise UnauthorizedScientificObjectReference("reused result is outside the project")
+                    row = candidate_row
+                    break
+                if row is None:
+                    raise ScientificResultNotReady(str(turn_id))
             bundle = ScientificResultBundle.model_validate(row["bundle_json"])
             # Artifacts remain authoritative in the existing Job/artifact
             # repository.  Expose only the bounded descriptors needed by the
@@ -581,6 +679,8 @@ def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(
             if row.get("job_id"):
                 artifacts = session.repositories.artifacts.list_for_job(str(row["job_id"]))[:64]
             snapshot = session.agent2.research_context_snapshots.get_for_turn(turn_id)
+            if snapshot is None and str(bundle.research_turn_id) != str(turn_id):
+                snapshot = session.agent2.research_context_snapshots.get_for_turn(bundle.research_turn_id)
             objects: dict[str, dict[str, Any]] = {}
             versions: dict[str, dict[str, Any]] = {}
             for ref in bundle.source_object_refs:
@@ -591,7 +691,14 @@ def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(
                     pass
             relevance = ScientificResultRelevanceEvaluator().evaluate(bundle.source_object_refs, objects=objects, versions=versions)
             return {
-                "result_id": str(bundle.result_id), "research_turn_id": str(bundle.research_turn_id),
+                # `result_id` is the immutable logical result identity carried
+                # by the bundle.  Context/memory APIs address the persisted
+                # ScientificResultSnapshot row, so expose that identity
+                # explicitly instead of making clients guess or conflate the
+                # two UUIDs.
+                "result_id": str(bundle.result_id),
+                "result_snapshot_id": str(row["id"]),
+                "research_turn_id": str(bundle.research_turn_id),
                 "research_question": bundle.research_question, "execution_status": bundle.execution_status.value,
                 "relevance_status": relevance.value, "result_items": [item.model_dump(mode="json") for item in bundle.result_items],
                 "source_object_refs": [item.model_dump(mode="json") for item in bundle.source_object_refs],
@@ -618,15 +725,11 @@ def project_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depe
             turn = session.agent2.research_turns.get(turn_id)
             require_project_access(session.connection, str(turn["project_id"]), current_user, write=True)
         storage = create_artifact_storage_from_settings(load_settings())
-        def load_payload(artifact: dict[str, Any]) -> Any:
-            media_type = str(artifact.get("contentType") or artifact.get("mediaType") or "")
-            artifact_type = str(artifact.get("type") or "")
-            if "json" not in media_type.lower() and "json" not in artifact_type.lower():
-                return None
-            return storage.get_json(str(artifact.get("storageKey") or artifact.get("storage_key")))
         service = ScientificResultProjectionService(
             factory,
-            artifact_loader=load_payload,
+            artifact_loader=lambda artifact: load_committed_json_artifact(
+                storage, artifact
+            ),
         )
         row = service.project_turn(turn_id)
         return JSONResponse(status_code=200, content=jsonable_encoder({"turn_id": str(turn_id), "status": "RESULT_READY", "snapshot_id": str(row["id"])}))
@@ -754,12 +857,50 @@ def list_scientific_objects(
         raise _http_error(exc) from exc
 
 
+def bulk_update_scientific_objects(
+    project_id: str,
+    request: ScientificObjectBulkLifecycleRequest,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    service = get_scientific_object_service()
+    try:
+        _authorize_object_project(service, project_id, current_user, write=True)
+        items = service.bulk_update_lifecycle(
+            request.object_ids,
+            project_id=project_id,
+            lifecycle=request.lifecycle,
+        )
+        return jsonable_encoder(
+            {
+                "project_id": project_id,
+                "lifecycle": request.lifecycle.value,
+                "count": len(items),
+                "items": items,
+            }
+        )
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
 def get_scientific_object(object_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
     service = get_scientific_object_service()
     try:
         item = service.get_object(object_id)
         _authorize_object_project(service, str(item["project_id"]), current_user)
         return item
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def get_scientific_object_dependency_impact(
+    object_id: UUID,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    service = get_scientific_object_service()
+    try:
+        item = service.get_object(object_id)
+        _authorize_object_project(service, str(item["project_id"]), current_user, write=True)
+        return jsonable_encoder(service.dependency_impact(object_id))
     except Exception as exc:
         raise _http_error(exc) from exc
 
@@ -798,6 +939,7 @@ def update_scientific_object(
             object_id,
             display_name=request.display_name,
             archived=request.archived,
+            lifecycle=request.lifecycle,
         )
         return jsonable_encoder(updated)
     except Exception as exc:
@@ -960,6 +1102,16 @@ def _http_error(exc: Exception) -> HTTPException:
     if isinstance(exc, (ConcurrentTurnModification, InvalidResearchTurnTransition)):
         code = "TURN_TERMINAL" if str(exc) == "TURN_TERMINAL" else "TURN_CONFLICT"
         return HTTPException(status_code=409, detail={"code": code, "summary": str(exc)})
+    if isinstance(exc, ResearchResourceLimitExceeded):
+        return HTTPException(
+            status_code=429,
+            detail={
+                "code": "PROJECT_ACTIVE_RESEARCH_LIMIT",
+                "summary": str(exc),
+                "limit": exc.limit,
+                "active": exc.active,
+            },
+        )
     if isinstance(exc, InvalidScientificObjectVersion):
         return HTTPException(status_code=422, detail=str(exc))
     if isinstance(exc, ScientificViewerProjectionError):

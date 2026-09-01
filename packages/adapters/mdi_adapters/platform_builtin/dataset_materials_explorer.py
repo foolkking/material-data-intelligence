@@ -19,6 +19,7 @@ from ..composition_common import ParsedFormula, PreparedCompositionTable, formul
 from ..context import ToolExecutionContext
 from ..errors import ToolExecutionError
 from ..ml_common import coerce_dataframe
+from ..profile_binding import canonical_profile_resource_ref
 from .structure import _structure_from_normalized_dict
 
 
@@ -64,26 +65,13 @@ class DatasetMaterialsExplorerAdapter(BaseToolAdapter):
             # Agent2 binds exact ScientificObjectVersion refs. Runtime source
             # aliases retain that identity while the Profile owns the
             # canonical parsed resource id used for semantic columns.
-            source_index = context.object_store.get("__mdi_source_resources__", {})
-            identity = source_index.get(ref) if isinstance(source_index, Mapping) else None
-            canonical_ref = str(identity.get("canonicalObjectId")) if isinstance(identity, Mapping) and identity.get("canonicalObjectId") else ref
-            if (
-                canonical_ref == ref
-                and isinstance(identity, Mapping)
-                and identity.get("objectHash")
-            ):
-                # Agent2 execution may bind an exact ScientificObjectVersion
-                # while the immutable DataProfile names the canonical parsed
-                # resource.  Resolve that bridge only by the profile's
-                # authoritative object hash; never by filename/name/latest
-                # substitution.
-                matching_profile_resources = [
-                    item
-                    for item in _profile_resources_from_values(self._resolved_inputs)
-                    if str(getattr(item, "objectHash", "")) == str(identity["objectHash"])
-                ]
-                if len(matching_profile_resources) == 1:
-                    canonical_ref = str(matching_profile_resources[0].objectId)
+            canonical_ref = canonical_profile_resource_ref(
+                object_store=context.object_store,
+                runtime_ref=ref,
+                profile_resources=_profile_resources_from_values(
+                    self._resolved_inputs
+                ),
+            )
             candidate = _coerce_profile(value)
             if candidate is not None:
                 if profile is not None:

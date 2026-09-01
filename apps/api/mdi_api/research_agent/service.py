@@ -13,6 +13,7 @@ from mdi_api.access import require_project_access
 from mdi_api.agent2_errors import (
     ConcurrentTurnModification,
     InvalidResearchTurnTransition,
+    ResearchResourceLimitExceeded,
     ResearchSessionProjectMismatch,
     UnauthorizedScientificObjectReference,
 )
@@ -68,8 +69,14 @@ _STATUS_EVENTS = {
 
 
 class ResearchTurnService:
-    def __init__(self, repository_factory: RepositoryFactory) -> None:
+    def __init__(
+        self,
+        repository_factory: RepositoryFactory,
+        *,
+        max_active_turns_per_project: int | None = None,
+    ) -> None:
         self.repository_factory = repository_factory
+        self.max_active_turns_per_project = max_active_turns_per_project
 
     def receive_turn(
         self,
@@ -87,6 +94,22 @@ class ResearchTurnService:
                 session = unit.agent2.research_turns.lock_session(session_id)
                 if session is None or str(session["project_id"]) != project_id:
                     raise ResearchSessionProjectMismatch(session_id)
+                if str(session.get("status") or "active").lower() != "active":
+                    raise InvalidResearchTurnTransition(
+                        "Archived or trashed Research Sessions must be restored before new research."
+                    )
+                if self.max_active_turns_per_project is not None:
+                    # Lock the Project row in this transaction before counting
+                    # active Turns. Concurrent sessions therefore cannot both
+                    # pass the limit check and over-admit work.
+                    unit.agent2.research_turns.lock_project_for_turn_admission(project_id)
+                    active_turns = unit.agent2.research_turns.count_active_for_project(project_id)
+                    if active_turns >= self.max_active_turns_per_project:
+                        raise ResearchResourceLimitExceeded(
+                            "当前项目已有过多进行中的研究。请等待现有研究完成或先停止不再需要的任务。",
+                            limit=self.max_active_turns_per_project,
+                            active=active_turns,
+                        )
                 parent_turn_id = request.reply_to_turn_id
                 if parent_turn_id is not None:
                     parent = unit.agent2.research_turns.get(parent_turn_id)
@@ -398,8 +421,29 @@ class ResearchTurnService:
                 selection_mode="CURRENT",
             )
 
-        estimated = sum(item.estimated_tokens for item in items)
         budget_policy = context_budget_policy(ContextOperation.ORCHESTRATOR)
+        budget = budget_policy.effective_input_budget
+        priority = {
+            "SCIENTIFIC_OBJECT": 0,
+            "SCIENTIFIC_SELECTION": 0,
+            "SCIENTIFIC_RESULT": 1,
+            "USER_CONSTRAINT": 2,
+            "RESEARCH_GOAL": 3,
+        }
+        ordered = sorted(enumerate(items), key=lambda pair: (priority[pair[1].kind], pair[0]))
+        included: list[ContextManifestItem] = []
+        excluded: list[str] = []
+        estimated = 0
+        for index, item in ordered:
+            critical = item.kind in {"SCIENTIFIC_OBJECT", "SCIENTIFIC_SELECTION", "SCIENTIFIC_RESULT"}
+            if estimated + item.estimated_tokens <= budget:
+                included.append(item)
+                estimated += item.estimated_tokens
+            elif critical:
+                raise ValueError("critical scientific context exceeds the operation budget")
+            else:
+                excluded.append(item.item_id)
+        over_budget = bool(excluded)
         return ContextManifest(
             context_manifest_id=uuid4(),
             operation="ORCHESTRATOR",
@@ -407,13 +451,13 @@ class ResearchTurnService:
             research_session_id=context.research_session_id,
             research_turn_id=turn_id,
             policy_version="agent2.context-policy/2.0",
-            included_items=items,
-            excluded_items=[],
+            included_items=included,
+            excluded_items=excluded,
             estimated_input_tokens=estimated,
             input_budget=budget_policy.effective_input_budget,
             reserved_output_tokens=budget_policy.reserved_output_tokens,
             repair_margin=budget_policy.repair_margin,
-            compaction_state="NONE",
+            compaction_state="COMPACTED" if over_budget else "NONE",
             truncation_state="NONE",
             context_fingerprint=context_fingerprint,
             created_at=datetime.now(timezone.utc),

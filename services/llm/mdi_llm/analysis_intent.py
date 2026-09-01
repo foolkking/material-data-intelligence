@@ -1051,7 +1051,12 @@ def _classify_goal(goal: str) -> _Classification:
     ):
         add_intent(ScientificIntent.composition_analysis)
         required.append(CapabilityNeed.composition_data)
-    if _contains(value, "property", "coverage", "性质", "属性", "覆盖"):
+    # Generic Chinese ``性质`` also appears in domain phrases such as
+    # ``扩散性质`` and is not, by itself, an exact tabular material-property
+    # request.  Keep deterministic property analysis bounded to explicit
+    # property/coverage language; named Profile-owned properties are added
+    # later by ``_with_explicit_material_property_classification``.
+    if _contains(value, "property", "coverage", "材料性质", "物性", "属性", "覆盖"):
         add_intent(ScientificIntent.property_distribution)
         required.append(CapabilityNeed.material_property_data)
     dataset_overview_requested = _contains(value, "dataset", "batch", "这批", "数据集", "materials")

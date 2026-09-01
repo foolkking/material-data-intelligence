@@ -60,13 +60,20 @@ def test_reference_candidate_is_strict_opaque_and_cross_field_validated():
         )
 
 
-def test_multiple_explicit_ui_selections_form_one_authorized_scope():
+@pytest.mark.parametrize(
+    "source",
+    [
+        ReferenceCandidateSource.UI_SELECTION,
+        ReferenceCandidateSource.EXPLICIT_REFERENCE,
+    ],
+)
+def test_multiple_exact_user_bindings_form_one_authorized_scope(source):
     candidates = [
         ReferenceCandidate(
             candidate_key=f"obj_{index}",
             ref_type="SCIENTIFIC_OBJECT",
             object_ref=object_ref(),
-            source=ReferenceCandidateSource.UI_SELECTION,
+            source=source,
             display_label=f"Selected {index}",
             recency_rank=index - 1,
         )
@@ -89,6 +96,37 @@ def test_multiple_explicit_ui_selections_form_one_authorized_scope():
 
     assert resolution.selected_object_keys == ("obj_1", "obj_2")
     assert resolution.ambiguous_object_keys == ()
+
+
+def test_multiple_explicit_results_form_one_authorized_comparison_scope():
+    candidates = [
+        ReferenceCandidate(
+            candidate_key=f"result_{index}",
+            ref_type="SCIENTIFIC_RESULT",
+            result_id=uuid4(),
+            source=ReferenceCandidateSource.EXPLICIT_REFERENCE,
+            display_label=f"Selected result {index}",
+            recency_rank=0,
+        )
+        for index in (1, 2)
+    ]
+    bundle = ResearchContextCandidateBundle(
+        project_id="project",
+        research_session_id="session",
+        research_turn_id=uuid4(),
+        active_object_candidates=[],
+        result_candidates=candidates,
+        finding_candidates=[],
+        explicit_constraints=[],
+        current_research_goal=None,
+        unresolved_questions=[],
+        recent_messages=[],
+    )
+
+    resolution = DeterministicReferenceResolver().resolve(bundle)
+
+    assert resolution.selected_result_keys == ("result_1", "result_2")
+    assert resolution.ambiguous_result_keys == ()
 
 
 def test_compact_message_is_bounded_and_candidate_keys_are_unique():

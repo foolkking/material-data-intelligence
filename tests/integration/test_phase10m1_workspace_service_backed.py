@@ -178,13 +178,19 @@ def test_phase10m1_postgres_redis_minio_workspace_domain_persistence(
         assert source_job_fk["referred_table"] == "jobs"
         assert source_job_fk.get("options", {}).get("ondelete", "").upper() == "RESTRICT"
 
-        alembic_downgrade(config, "0006_phase10l4_interpretation")
+        # Revision 0028 deliberately preserves foundation tables on downgrade
+        # because they may contain pre-Alembic access/audit data.  The
+        # workspace migration's own downgrade contract is covered by its
+        # deterministic migration test; this service-backed test verifies
+        # that a safe reconciliation downgrade does not destroy the live
+        # workspace or its source authority.
+        alembic_downgrade(config, "0027_research_session_management")
         downgraded_tables = set(inspect(engine).get_table_names())
         assert {
             "scientific_workspaces",
             "workspace_panels",
             "workspace_layout_revisions",
-        }.isdisjoint(downgraded_tables)
+        }.issubset(downgraded_tables)
         alembic_upgrade(config, "head")
         upgraded_inspector = inspect(engine)
         assert {

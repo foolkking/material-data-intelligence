@@ -126,6 +126,12 @@ class ResearchActionRouter:
             return ResearchTurnStatus.ANSWERED, DownstreamDispatchStatus.COMPLETED, "final", "ASSISTANT_FINAL"
         if action == ResearchAction.CLARIFY:
             return ResearchTurnStatus.NEEDS_CLARIFICATION, DownstreamDispatchStatus.COMPLETED, "final", "CLARIFICATION"
+        # A query-only request is a completed conversational handoff to the
+        # Data Platform, not scientific execution.  Leaving it in
+        # ORCHESTRATING with no downstream consumer strands the ResearchTurn
+        # forever and gives the browser a false "preparing analysis" state.
+        if action == ResearchAction.QUERY_DATA:
+            return ResearchTurnStatus.ANSWERED, DownstreamDispatchStatus.COMPLETED, "final", "QUERY_DATA_ACK"
         if action in {ResearchAction.ANALYZE, ResearchAction.CONTINUE_ANALYSIS}:
             return ResearchTurnStatus.READY_TO_PLAN, DownstreamDispatchStatus.READY_FOR_DOWNSTREAM, "pre", "ASSISTANT_PRE_RUN"
         return ResearchTurnStatus.ORCHESTRATING, DownstreamDispatchStatus.READY_FOR_DOWNSTREAM, "pre", "DOWNSTREAM_ACKNOWLEDGEMENT"
@@ -134,6 +140,14 @@ class ResearchActionRouter:
     def _assistant_content(decision: ResearchTurnDecision) -> str | None:
         if decision.action == ResearchAction.CLARIFY:
             return decision.clarification.question
+        if decision.action == ResearchAction.QUERY_DATA and not decision.assistant_message:
+            return "已识别为数据查询请求。请在数据平台查看或调整筛选条件；本次未创建科学分析运行。"
+        if decision.action == ResearchAction.INTERPRET_RESULT:
+            # The orchestrator only selects the exact reusable Result. It is
+            # not scientific authority and must not place an ungrounded
+            # interpretation candidate into the conversation before the
+            # grounded interpreter runs.
+            return "已找到可复用的精确科学结果，正在基于其权威事实重新组织解释；不会重新计算科学结果。"
         return decision.assistant_message
 
     @staticmethod

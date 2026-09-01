@@ -31,6 +31,18 @@ def run_queued_report_generation(generation_id: str) -> dict:
         with factory.unit_of_work() as unit:
             unit.agent2.scientific_report_generations.set_status(identifier, "FAILED", error_code=exc.code, error_summary=str(exc)[:1000])
         raise
+    except Exception as exc:
+        # Unexpected runtime failures must not strand durable product state in
+        # COMPOSING. Persist a typed failure so polling stops and retry remains
+        # explicit.
+        with factory.unit_of_work() as unit:
+            unit.agent2.scientific_report_generations.set_status(
+                identifier,
+                "FAILED",
+                error_code="REPORT_GENERATION_FAILED",
+                error_summary=str(exc)[:1000],
+            )
+        raise
     with factory.unit_of_work() as unit:
         unit.agent2.scientific_report_generations.set_status(identifier, "READY")
     return {"generation_id": generation_id, "report_id": report["report_id"], "status": "READY", "process_id": os.getpid()}

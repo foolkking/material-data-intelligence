@@ -30,6 +30,10 @@ describe("Phase 10M-4 typed renderer registry", () => {
     expect(resolveLoadedArtifactRenderer(exact).descriptor?.component).toBe("DATASET");
     const coordination = artifact({ type: "table_json", content: { schema_version: "phase10n1.crystalnn_coordination.v1", artifactType: "structure.coordination_crystalnn" } });
     expect(resolveLoadedArtifactRenderer(coordination).descriptor).toMatchObject({ component: "COORDINATION", heavy: false, accessibilityFallback: "TABLE" });
+    const coordinationHistogram = artifact({ type: "table_json", content: { schema_version: "phase10e1.coordination_hist.v1", artifactType: "structure.coordination_hist" } });
+    expect(resolveLoadedArtifactRenderer(coordinationHistogram).descriptor).toMatchObject({ component: "COORDINATION_HISTOGRAM", heavy: false, accessibilityFallback: "TABLE" });
+    const coordinationHistogramPlot = artifact({ type: "plotly_json", content: { schema_version: "phase10e1.static_chart.v1", artifactType: "structure.coordination_hist_plot" } });
+    expect(resolveLoadedArtifactRenderer(coordinationHistogramPlot).descriptor).toMatchObject({ component: "COORDINATION_HISTOGRAM", heavy: false, accessibilityFallback: "TABLE" });
     const wrongAlgorithm = artifact({ type: "table_json", content: { schema_version: "phase10n1.crystalnn_coordination.v1", artifactType: "structure.coordination_voronoinn" } });
     expect(resolveLoadedArtifactRenderer(wrongAlgorithm).descriptor?.component).toBe("GENERIC_TABLE");
     const localEnvironment = artifact({ type: "table_json", content: { schema_version: "phase10n2.local_environment_polyhedra.v1", artifactType: "structure.local_environment_polyhedra" } });

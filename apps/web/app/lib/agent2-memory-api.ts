@@ -13,7 +13,13 @@ export type Agent2SessionConstraint = {
 export type Agent2SessionMemory = {
   session_id: string;
   project_id: string;
-  pinned_object_refs: Array<{ display_name?: string | null; object_type: string }>;
+  pinned_object_refs: Array<{
+    object_id: string;
+    version_id: string;
+    project_id: string;
+    display_name?: string | null;
+    object_type: string;
+  }>;
   pinned_result_refs: string[];
   session_constraints: Agent2SessionConstraint[];
   active_research_goal?: string | null;
@@ -48,3 +54,42 @@ export const pinAgent2Result = (projectId: string, sessionId: string, resultId: 
 
 export const unpinAgent2Result = (projectId: string, sessionId: string, resultId: string) =>
   mutateAgent2SessionMemory(projectId, sessionId, resultId, "DELETE");
+
+type ScientificObjectMemoryRef = {
+  object_id: string;
+  version_id: string;
+  project_id: string;
+  object_type: string;
+  display_name?: string | null;
+};
+
+async function mutateAgent2SessionObjectMemory(
+  projectId: string,
+  sessionId: string,
+  objectRef: ScientificObjectMemoryRef,
+  method: "POST" | "DELETE",
+): Promise<Agent2SessionMemory> {
+  const response = await fetch(
+    `${API_BASE}/api/projects/${encodeURIComponent(projectId)}/research/sessions/${encodeURIComponent(sessionId)}/memory/pinned-objects`,
+    {
+      method,
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ object_ref: objectRef }),
+    },
+  );
+  if (!response.ok) throw new Error(`Research source context update failed (${response.status})`);
+  return response.json() as Promise<Agent2SessionMemory>;
+}
+
+export const pinAgent2Object = (
+  projectId: string,
+  sessionId: string,
+  objectRef: ScientificObjectMemoryRef,
+) => mutateAgent2SessionObjectMemory(projectId, sessionId, objectRef, "POST");
+
+export const unpinAgent2Object = (
+  projectId: string,
+  sessionId: string,
+  objectRef: ScientificObjectMemoryRef,
+) => mutateAgent2SessionObjectMemory(projectId, sessionId, objectRef, "DELETE");

@@ -2432,6 +2432,12 @@ validated `primary_figures`, `supporting_results`, `method_summary`, preserved
 `limitations`, opaque `data_sources`, `evidence_refs`,
 `reproducibility_summary`, and explicit `omitted_supporting_items`.
 
+Phase 14-R extends this communication contract compatibly with optional
+`discussion`, `conclusion`, and `next_steps` narrative sections. Each uses a
+bounded `{ text, fact_refs, evidence_refs }` shape. Discussion and conclusion
+remain subject to numeric/unit grounding against their referenced Result
+facts; next steps are proposals and cannot create scientific authority.
+
 `agent2_scientific_report_snapshots` binds the existing `reports.id` to the
 exact result and interpretation identities, contract/composer/prompt versions,
 source fingerprint, relevance at generation, grounding status and immutable
@@ -2494,3 +2500,247 @@ The field is derived from existing server-side joins, is project-authorized,
 and never infers a Turn from a Job identifier or creates a second identity
 authority. Legacy runs remain addressable through their explicit session
 binding while modern runs may use the exact ResearchTurn route.
+## Phase 14-R recoverable Project/Dataset lifecycle projection
+
+Phase 14-R adds a bounded product lifecycle projection without changing
+scientific authority or released database check constraints.
+
+```text
+ProjectLifecycleInput =
+  ACTIVE | ARCHIVED | TRASHED
+
+DatasetLifecycleInput =
+  ACTIVE | ARCHIVED | TRASHED
+
+BulkLifecycleAction =
+  archive | trash | restore
+```
+
+Project lifecycle metadata is held by `project_configs.config_json`:
+
+```json
+{
+  "archivedProject": true,
+  "trashedProject": true,
+  "trashedAt": "<UTC timestamp>",
+  "trashedPreviousStatus": "active | archived"
+}
+```
+
+Dataset lifecycle metadata is held by `datasets.metadata_json`:
+
+```json
+{
+  "trashedAt": "<UTC timestamp>",
+  "trashedPreviousStatus": "<outward lifecycle status>",
+  "archivedPreviousStatus": "<released dataset processing status>"
+}
+```
+
+While trashed, the Dataset's persisted `datasets.status` remains `archived`;
+API/history/search projections return `status = trashed` from the metadata
+marker. Restore clears the Trash marker and deterministically restores the
+pre-Trash lifecycle. No ScientificObjectVersion, Artifact, ScientificResult or
+Report is created, mutated or deleted by these lifecycle transitions.
+
+### Phase 14-R ScientificObject lifecycle projection
+
+ScientificObject lifecycle is persisted in the authoritative
+`scientific_objects.lifecycle_status` column and now accepts
+`ACTIVE | ARCHIVED | TRASHED | INVALIDATED`. The nullable
+`pre_trash_lifecycle_status` field records whether a trashed object was active
+or archived before Trash. Restoring with `lifecycle=ACTIVE` clears the marker
+and deterministically returns to that prior lifecycle; it never changes
+`ScientificObjectVersion` rows or the current-version pointer. Migration
+`0026_scientific_object_trash_lifecycle` widens only the lifecycle constraint
+and adds this management metadata; scientific identity and version authority
+remain unchanged.
+
+`ScientificReportView.viewer_sources[]` is the bounded communication projection
+for an exact report source. In addition to `object_id`, `version_id`,
+`object_type`, `display_name`, and `is_current_version`, it now carries
+`lifecycle_status = ACTIVE | ARCHIVED | TRASHED | INVALIDATED`, derived from
+the same authoritative `scientific_objects` row. Lifecycle and version
+relevance are intentionally independent: an archived object may still expose
+the report's exact version as its current immutable version. The field is
+display/export metadata only and cannot mutate the object, version, Result, or
+Report.
+
+### Phase 14-R Research Session lifecycle projection
+
+Research Session lifecycle is a non-scientific management projection over the
+existing `sessions.status` column. `active`, `archived`, and `trashed` are
+readable states; only `active` sessions accept new Messages or ResearchTurns.
+The lifecycle PATCH is project-write authorized and rejects Trash while a
+non-terminal ResearchTurn is present. It does not alter immutable Turn,
+ScientificResult, Artifact, Evidence, Report, ScientificObject, or
+ScientificObjectVersion records. Restoring a session changes only its status
+back to `active`.
+
+Migration `0027_research_session_management` adds bounded organizational
+metadata to the same `sessions` authority: nullable `title_override`,
+`is_pinned`, and nullable `pre_trash_status`. `title_override` changes only
+the navigation/search label and never rewrites historical Message content;
+`is_pinned` affects ordering only; `pre_trash_status` preserves whether a
+session was active or archived before Trash. Archived and trashed sessions are
+read-only in the product composer and the ResearchTurn service rejects new
+scientific work until restoration. The selected session header exposes its
+lifecycle state and a contextual restore action, while historical Results,
+Evidence, Viewers and Reports remain addressable by their exact persisted
+identities.
+
+### Phase 14-R Scientific Report lifecycle projection
+
+Scientific Report lifecycle is a project-scoped management overlay over the
+existing immutable `agent2_scientific_report_snapshots` authority. The
+`project_configs.config_json.scientificReportLifecycle` mapping stores only
+non-active `ARCHIVED` or `TRASHED` values keyed by Report identity; absence
+means `ACTIVE`.
+
+`PATCH /api/scientific-reports/{report_id}/lifecycle` accepts only
+`ACTIVE | ARCHIVED | TRASHED`, repeats project-write authorization, and never
+rewrites the Report JSON, Result snapshot, Interpretation, exact source refs,
+or scientific versions. Direct authorized reads remain available for archived
+and trashed Reports so historical provenance is not broken.
+## Phase 14-R Research progress response kind
+
+`ResearchProgressView` retains contract version `1.0` and adds the optional
+bounded `response_kind` projection:
+
+```text
+DATA_QUERY
+RESULT_REUSE
+CONVERSATIONAL
+SCIENTIFIC_EXECUTION
+```
+
+The value is derived server-side from the persisted ResearchTurn action and
+validated decision. It is presentation metadata only: it does not create
+scientific authority or alter execution semantics. `RESULT_REUSE` means an
+`ANSWERED` Turn explicitly referenced an authorized persisted Result and
+created no new scientific execution. `DATA_QUERY` remains distinct from both
+scientific execution and ordinary conversational answers.
+
+## Phase 14-R explicit trajectory fit-window binding
+
+`PlannerBindingSource 1.0` adds the bounded value `USER_REQUEST`. It records a
+parameter copied deterministically from the exact validated AnalysisIntent
+request rather than inferred by the Provider or copied from a Profile fact.
+
+The first consumer is `trajectory.diffusion`. A request may bind an explicit
+physical-time interval such as `from 1 ps to 6 ps` or `1 ps 到 6 ps`. Both
+endpoints must be finite, strictly ordered, and contained within the exact
+Trajectory Profile `timeStartPs` / `timeEndPs` range. The binding retains the
+AnalysisIntent identity as `sourceIdentity`; a request without an explicit
+interval still fails closed unless it explicitly selects the full supplied
+time range. The resulting AnalysisPlan remains Registry-validated and the
+Provider cannot invent or widen the interval.
+
+### Phase 14-R project provenance manifest
+
+`mdi.project-reproducibility-manifest/1.0` is a bounded, non-executable
+project portability projection. It is served only after normal project access
+authorization and contains project organization metadata plus bounded identity
+lists for datasets, ScientificObjects, immutable ScientificObjectVersions,
+ResearchSessions/Turns, ScientificResults and Reports. Scientific source
+references are reduced to safe IDs/types/hashes/kinds; raw scientific payloads,
+Provider prompts/responses, credentials, queue/database/storage internals and
+filesystem paths are explicitly excluded. The manifest is a communication and
+reproducibility aid only: it cannot mutate scientific authority, create a
+version, rerun a Job, or be executed as a Recipe.
+
+### Phase 14-R Scientific Report organization projection
+
+`ScientificReportView` retains its immutable snapshot and exact scientific
+references while adding bounded navigation metadata:
+
+```text
+source_title = immutable Report snapshot title
+title        = project display override when present, otherwise source_title
+pinned       = non-scientific catalog ordering flag
+```
+
+`PATCH /api/scientific-reports/{report_id}/organization` accepts only an
+optional display `title` and `pinned` flag after project-write authorization.
+The values are stored under
+`project_configs.config_json.scientificReportOrganization`; they do not update
+the Report JSON, ScientificResult, Interpretation, Artifact, Evidence,
+ResearchTurn, ScientificObject or ScientificObjectVersion. Clearing the title
+restores `source_title`; clearing `pinned` restores ordinary chronological
+ordering. Global Search uses the authorized display title but retains the
+exact Report identity and route.
+
+### Phase 14-R immutable Report revisions and atomic lifecycle batches
+
+A finalized Scientific Report remains immutable. Creating a revision uses the
+existing Report snapshot authority and records a new snapshot with:
+
+```text
+new Report ID
+new snapshot ID
+same exact ResearchTurn / ScientificResult / Interpretation refs
+same exact ScientificObjectVersion refs
+revision_number = parent revision + 1
+parent_report_id = exact source Report
+```
+
+The revision service never creates a Job, ToolCall, Artifact or
+ScientificResult. List and compare projections are authorized through the
+Report's owning Project and resolve only persisted snapshot values.
+
+`POST /api/projects/{project_id}/scientific-reports/bulk` accepts a bounded,
+deduplicated list of Report IDs and only `ACTIVE | ARCHIVED`. It validates
+that every Report belongs to the authorized Project before writing the single
+project configuration transaction. Any missing, cross-project or unauthorized
+identity rejects the entire request; partial lifecycle mutation is forbidden.
+
+`POST /projects/{project_id}/research-sessions/bulk` applies the same atomic
+project boundary for `PIN | UNPIN | ARCHIVE | RESTORE | TRASH`. A non-terminal
+ResearchTurn blocks a destructive session transition and rolls back the whole
+batch. These operations mutate only non-scientific organization/lifecycle
+metadata.
+
+### Phase 14-R Saved Search projection
+
+Saved Searches reuse `user_configs.config_json` as user-owned navigation
+metadata. They persist only:
+
+```text
+display name
+bounded query text
+optional entity type filter
+optional lifecycle filter
+optional authorized Project scope
+```
+
+Search results, ContextManifest items and scientific facts are never stored in
+the Saved Search record. `POST /saved-searches/{saved_search_id}/execute`
+rechecks current authorization on every execution and returns a fresh bounded
+search projection; a revoked Project scope fails closed.
+
+### Migration 0028 foundation schema reconciliation
+
+`0028_foundation_schema_reconciliation` closes the historical gap between the
+SQLAlchemy foundation metadata and fresh Alembic databases. It adds or
+validates:
+
+```text
+project_members
+files
+field_mappings
+user_configs
+secrets
+audit_logs
+```
+
+plus the three bounded lookup indexes used by current product reads.
+Compatible pre-existing tables and their data are preserved. An incompatible
+column, primary key, foreign key, check constraint or same-name index fails
+before missing tables are created. Downgrade is intentionally
+schema-preserving because these tables can predate Alembic authority and may
+contain access, source, configuration, secret-reference or audit data.
+
+The revision may widen `alembic_version.version_num` to `VARCHAR(64)` so a
+descriptive current marker can be stored; this does not change scientific
+data. It introduces no new ScientificObject, ScientificObjectVersion,
+ScientificResult, Presentation or Report authority.

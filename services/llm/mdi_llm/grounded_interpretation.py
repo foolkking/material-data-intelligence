@@ -1364,8 +1364,30 @@ def _project_trajectory_analytics(source: InterpretationSource, candidate: Artif
         diagnostic = payload.get("regimeDiagnostic")
         estimate = payload.get("diffusionEstimate")
         fit = payload.get("fit")
-        if not isinstance(diagnostic, dict) or not isinstance(estimate, dict) or not isinstance(fit, dict) or not isinstance(diagnostic.get("status"), str):
+        fit_window = payload.get("fitWindow")
+        if (
+            not isinstance(diagnostic, dict)
+            or not isinstance(estimate, dict)
+            or not isinstance(fit, dict)
+            or not isinstance(fit_window, dict)
+            or not isinstance(diagnostic.get("status"), str)
+        ):
             raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Trajectory diffusion diagnostics are invalid.")
+        start_ps = fit_window.get("startPs")
+        end_ps = fit_window.get("endPs")
+        point_count = fit_window.get("pointCount")
+        if (
+            not _finite(start_ps)
+            or not _finite(end_ps)
+            or float(start_ps) >= float(end_ps)
+            or not _nonnegative_int(point_count)
+        ):
+            raise InterpretationError("SOURCE_INTEGRITY_FAILED", "Trajectory diffusion fit-window evidence is invalid.")
+        items.extend([
+            _item(source, candidate, "trajectory.diffusion.fit_start", EvidenceKind.scalar, subject, "fit_start", start_ps, unit="picosecond", field="fitWindow.startPs", entity=trajectory_hash),
+            _item(source, candidate, "trajectory.diffusion.fit_end", EvidenceKind.scalar, subject, "fit_end", end_ps, unit="picosecond", field="fitWindow.endPs", entity=trajectory_hash),
+            _item(source, candidate, "trajectory.diffusion.fit_points", EvidenceKind.count, subject, "count", point_count, field="fitWindow.pointCount", entity=trajectory_hash),
+        ])
         items.append(_item(source, candidate, "trajectory.diffusion.status", EvidenceKind.category, subject, "category", diagnostic["status"], field="regimeDiagnostic.status", entity=trajectory_hash))
         if estimate.get("available") is True:
             value = estimate.get("value")

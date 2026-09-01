@@ -1,0 +1,329 @@
+{
+  "schema": "phase14r.browser_final_nondestructive.v1",
+  "captured_at": "2026-09-01",
+  "browser": {
+    "surface": "Codex In-app Browser",
+    "frontend": "http://127.0.0.1:3013",
+    "api": "http://127.0.0.1:8005",
+    "runtime": {
+      "database": "postgresql",
+      "redis": "redis",
+      "artifact_storage": "minio",
+      "worker": "redis",
+      "provider": "deepseek",
+      "services_left_running": true
+    },
+    "authenticated": true
+  },
+  "scope": {
+    "mutations": false,
+    "destructive_actions": false,
+    "uploads": false,
+    "tabs_closed": false
+  },
+  "route_matrix": {
+    "desktop_1280x720": {
+      "project": {
+        "path": "/projects/project_0002_1a0af866391f412d",
+        "status": "PASS",
+        "viewport": [1280, 720],
+        "overflow_px": 0,
+        "document_scroll_width": 1265,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"],
+        "focusable_without_accessible_name": []
+      },
+      "data": {
+        "path": "/projects/project_0002_1a0af866391f412d/data",
+        "status": "PASS",
+        "viewport": [1280, 720],
+        "overflow_px": 0,
+        "document_scroll_width": 1265,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"],
+        "focusable_without_accessible_name": ["input", "input", "input", "input"],
+        "scientific_surfaces_visible": ["typed dataset list", "scientific object list", "bounded table"]
+      },
+      "research_index": {
+        "path": "/projects/project_0002_1a0af866391f412d/research",
+        "status": "PASS",
+        "viewport": [1280, 720],
+        "overflow_px": 0,
+        "document_scroll_width": 1280,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu", "research-session-history"],
+        "focusable_without_accessible_name": ["textarea#research-question"],
+        "scientific_surfaces_visible": ["Research Timeline", "Workbench", "history", "context"]
+      },
+      "research_turn": {
+        "path": "/projects/project_0002_1a0af866391f412d/research/research_fbf038934dc84ffeaa5aed9e7c906095?run=job_agent2_92fcd73e38034dcfbc7aa63fbcf2a70e&turn=92fcd73e-3803-4dcf-bc7a-a63fbcf2a70e",
+        "status": "PASS",
+        "viewport": [1280, 720],
+        "overflow_px": 0,
+        "document_scroll_width": 1280,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu", "research-session-history"],
+        "focusable_without_accessible_name": ["textarea#research-question"],
+        "exact_dataset": {
+          "object_id": "8a425466-b697-4c85-9a43-199414a22865",
+          "version_id": "be02266a-7d4f-4ebb-9f28-3132855167d0",
+          "sample_id": "mat-2"
+        },
+        "presentation": ["grounded findings", "metrics", "table", "viewer reference", "evidence chain", "limitations"]
+      },
+      "viewer_table": {
+        "path": "/projects/project_0002_1a0af866391f412d/data?object=8a425466-b697-4c85-9a43-199414a22865&version=be02266a-7d4f-4ebb-9f28-3132855167d0",
+        "status": "PASS",
+        "viewport": [1280, 720],
+        "overflow_px": 0,
+        "document_scroll_width": 1265,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"],
+        "focusable_without_accessible_name": []
+      },
+      "report_index": {
+        "path": "/projects/project_0002_1a0af866391f412d/reports",
+        "status": "PASS",
+        "viewport": [1280, 720],
+        "overflow_px": 0,
+        "document_scroll_width": 1265,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"],
+        "focusable_without_accessible_name": [],
+        "report_count_visible": 11,
+        "history_count_visible": 33
+      },
+      "report_detail": {
+        "path": "/projects/project_0002_1a0af866391f412d/reports/agent2_report_819f458171ba2d3219717895bf12eaf9",
+        "status": "PASS",
+        "viewport": [1280, 720],
+        "overflow_px": 0,
+        "document_scroll_width": 1265,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"],
+        "focusable_without_accessible_name": [],
+        "sections_visible": ["研究问题", "数据与方法", "科学呈现", "科学讨论", "主要数据表", "主要发现", "限制与适用范围", "结论"]
+      },
+      "global_search": {
+        "path": "project report detail with global search opened",
+        "status": "PASS",
+        "viewport": [1280, 720],
+        "overflow_px": 0,
+        "shell_count": 1,
+        "duplicate_ids": [],
+        "results_visible": true,
+        "focusable_without_accessible_name": ["input#product-project-search"],
+        "broken_aria_refs": ["product-account-menu"]
+      },
+      "tasks": {
+        "path": "/tasks",
+        "status": "PASS",
+        "viewport": [1280, 720],
+        "overflow_px": 0,
+        "document_scroll_width": 1265,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"],
+        "focusable_without_accessible_name": [],
+        "authorized_project_count": 16,
+        "total_count": 60,
+        "bounded_visible_count": 30
+      },
+      "notifications": {
+        "path": "/notifications",
+        "status": "PASS",
+        "viewport": [1280, 720],
+        "overflow_px": 0,
+        "document_scroll_width": 1265,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"],
+        "focusable_without_accessible_name": [],
+        "total_count": 45,
+        "bounded_visible_count": 30
+      },
+      "trash": {
+        "path": "/trash",
+        "status": "PASS",
+        "viewport": [1280, 720],
+        "overflow_px": 0,
+        "document_scroll_width": 1280,
+        "shell_count": 1,
+        "main_count": 2,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"],
+        "focusable_without_accessible_name": [],
+        "destructive_actions_invoked": false
+      }
+    },
+    "mobile_390x844": {
+      "effective_viewport": [390, 845],
+      "data": {
+        "path": "/projects/project_0002_1a0af866391f412d/data",
+        "status": "PASS_WITH_BOUNDED_INTERNAL_TABLE",
+        "overflow_px": 0,
+        "document_scroll_width": 375,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"],
+        "internal_table_content_width_px": 680,
+        "page_overflow": false
+      },
+      "research_turn": {
+        "path": "/projects/project_0002_1a0af866391f412d/research/research_fbf038934dc84ffeaa5aed9e7c906095?run=job_agent2_92fcd73e38034dcfbc7aa63fbcf2a70e&turn=92fcd73e-3803-4dcf-bc7a-a63fbcf2a70e",
+        "status": "PASS",
+        "overflow_px": 0,
+        "document_scroll_width": 390,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu", "research-session-history"],
+        "focusable_without_accessible_name": ["textarea#research-question"]
+      },
+      "viewer_table": {
+        "path": "/projects/project_0002_1a0af866391f412d/data?object=8a425466-b697-4c85-9a43-199414a22865&version=be02266a-7d4f-4ebb-9f28-3132855167d0",
+        "status": "PASS",
+        "overflow_px": 0,
+        "document_scroll_width": 375,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"]
+      },
+      "report_detail": {
+        "path": "/projects/project_0002_1a0af866391f412d/reports/agent2_report_819f458171ba2d3219717895bf12eaf9",
+        "status": "PASS_WITH_ONE_OFFSCREEN_CHAPTER_LINK",
+        "overflow_px": 0,
+        "document_scroll_width": 375,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"],
+        "offscreen_nodes": [{"tag": "a", "left": 403, "right": 427, "note": "chapter strip internal horizontal navigation; page remains bounded"}]
+      },
+      "tasks": {
+        "path": "/tasks",
+        "status": "PASS",
+        "overflow_px": 0,
+        "document_scroll_width": 390,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"]
+      },
+      "notifications": {
+        "path": "/notifications",
+        "status": "PASS",
+        "final_after_loading": true,
+        "overflow_px": 0,
+        "document_scroll_width": 390,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"]
+      },
+      "trash": {
+        "path": "/trash",
+        "status": "PASS",
+        "final_after_loading": true,
+        "overflow_px": 0,
+        "document_scroll_width": 375,
+        "shell_count": 1,
+        "main_count": 2,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": ["product-account-menu"]
+      }
+    }
+  },
+  "app_router_and_network": {
+    "status": "PASS_FROM_CURRENT_PRODUCTION_EVIDENCE",
+    "source": "docs/agent2/phase14r/PERFORMANCE_PRODUCT_FLUENCY_BASELINE.md",
+    "desktop": {
+      "viewport": "1280x720",
+      "cold_usable_ms": "79-135",
+      "warm_usable_ms": "47-62",
+      "document_requests": 0,
+      "shell_marker_preserved": true,
+      "shell_node_preserved": true,
+      "duplicate_auth_me_requests": 0
+    },
+    "mobile": {
+      "viewport": "390x844",
+      "cold_usable_ms": "60-152",
+      "warm_usable_ms": "46-67",
+      "document_requests": 0,
+      "shell_marker_preserved": true,
+      "shell_node_preserved": true,
+      "duplicate_auth_me_requests": 0
+    },
+    "external_requests": 0,
+    "critical_http_5xx": 0
+  },
+  "browser_health": {
+    "dev_console_errors": 0,
+    "dev_console_warnings": 0,
+    "unexpected_4xx_5xx": 0,
+    "authorization_failures": 0,
+    "expected_bootstrap_401": "not observed in current in-app tab; historical production script classifies bootstrap 401 separately",
+    "duplicate_ids_all_audited_routes": 0,
+    "broken_aria_refs": {
+      "product-account-menu": "REPRODUCED_ON_CLOSED_ACCOUNT_MENU_ACROSS_MOST_AUTHENTICATED_ROUTES",
+      "research-session-history": "REPRODUCED_ON_RESEARCH_ROUTES"
+    }
+  },
+  "screenshots": {
+    "mobile_trash": "browser screenshot emitted during this audit; matching persisted mobile evidence: docs/agent2/phase14r/evidence/browser_batch_2026-09-01_mobile_390x844.png",
+    "mobile_research": "browser screenshot emitted during this audit; matching persisted mobile evidence: docs/agent2/phase14r/evidence/browser_batch_2026-09-01_mobile_report_390x844.png",
+    "desktop": "docs/agent2/phase14r/evidence/browser_batch_2026-09-01_desktop_1280x720.png"
+  },
+  "final_classification": {
+    "routes_reachable": true,
+    "same_stack_runtime": true,
+    "desktop_layout": "PASS",
+    "mobile_layout": "PASS_WITH_BOUNDED_INTERNAL_SCROLL_REGIONS",
+    "app_router_no_document_reload": "PASS_FROM_PRODUCTION_PLAYWRIGHT_EVIDENCE",
+    "console_network": "PASS",
+    "duplicate_ids": "PASS",
+    "aria": "GAP",
+    "remaining_ui_gaps": [
+      "Closed account-menu buttons retain aria-controls=product-account-menu while the controlled node is not mounted.",
+      "Research history buttons retain aria-controls=research-session-history when the history popover is closed.",
+      "Some inputs rely on surrounding visible context rather than an explicit label in the browser accessibility tree.",
+      "Mobile report chapter strip intentionally exposes an offscreen internal link; document overflow remains zero."
+    ]
+  }
+}

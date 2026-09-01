@@ -13,10 +13,10 @@ import {
 
 type ProductKind = "regression" | "uncertainty" | "classification";
 
-const PRODUCTS: readonly { id: MaterialIntelligenceProductId; name: string; schema: string; kind: ProductKind; label: string }[] = [
-  { id: "regression", name: "materials_ml_regression.json", schema: "phase10k3.materials_ml_regression.v1", kind: "regression", label: "Regression" },
-  { id: "uncertainty", name: "materials_ml_uncertainty.json", schema: "phase10k3.materials_ml_uncertainty.v1", kind: "uncertainty", label: "Uncertainty" },
-  { id: "classification", name: "materials_ml_classification.json", schema: "phase10k3.materials_ml_classification.v1", kind: "classification", label: "Classification" },
+const PRODUCTS: readonly { id: MaterialIntelligenceProductId; name: string; schema: string; kind: ProductKind; label: string; code: string }[] = [
+  { id: "regression", name: "materials_ml_regression.json", schema: "phase10k3.materials_ml_regression.v1", kind: "regression", label: "回归评估", code: "Regression" },
+  { id: "uncertainty", name: "materials_ml_uncertainty.json", schema: "phase10k3.materials_ml_uncertainty.v1", kind: "uncertainty", label: "不确定性评估", code: "Uncertainty" },
+  { id: "classification", name: "materials_ml_classification.json", schema: "phase10k3.materials_ml_classification.v1", kind: "classification", label: "分类评估", code: "Classification" },
 ];
 
 const CAPS = { evaluations: 32, points: 10_000, rows: 200, groups: 256, histogramBins: 100, classes: 64, curvePoints: 5_000 };
@@ -64,10 +64,10 @@ export function MaterialsMlEvaluationPanel({ artifacts }: { artifacts: Artifact[
   const evaluations = records(payload.evaluations);
   const evaluation = evaluations.find((item) => text(item.taskId) === selectedTask) || evaluations[0];
   const dataset = record(payload.dataset);
-  return <section className="panel materials-ml" data-testid="materials-ml-evaluation" aria-label="Materials ML Evaluation">
+    return <section className="panel materials-ml" data-testid="materials-ml-evaluation" aria-label="材料模型评估">
     <header className="panel-heading">
       <div><span>确定性材料模型诊断</span><h2>材料属性模型评估</h2></div>
-      <span className="badge">{active.product.label}</span>
+      <span className="badge" title={active.product.code} data-semantic-code={active.product.code}>{active.product.label}</span>
     </header>
     <dl className="mini-grid materials-ml-identity">
       <Field label="数据集" value={text(dataset.datasetId)} />
@@ -83,7 +83,7 @@ export function MaterialsMlEvaluationPanel({ artifacts }: { artifacts: Artifact[
     {evaluation && active.product.kind === "regression" ? <RegressionView evaluation={evaluation} comparisons={records(payload.modelComparisons)} /> : null}
     {evaluation && active.product.kind === "uncertainty" ? <UncertaintyView evaluation={evaluation} /> : null}
     {evaluation && active.product.kind === "classification" ? <ClassificationView evaluation={evaluation} /> : null}
-    <p className="dataset-method-note">Performance diagnostics describe the supplied result dataset. They do not establish material validity, causal model quality, or scientific truth.</p>
+    <p className="dataset-method-note">性能诊断仅描述所提供的结果数据集，不代表材料有效性、因果模型质量或科学真值。</p>
   </section>;
 }
 
@@ -106,7 +106,7 @@ function RegressionView({ evaluation, comparisons }: { evaluation: JsonRecord; c
       <ChartFrame title="残差分布" note="残差 = 预测值 − 真实值。"><Histogram counts={counts} /></ChartFrame>
     </div>
     <h3>预测误差最大的样本</h3>
-    <DataTable columns={["Sample key", "Sample", "Formula", "System", "Target", "Prediction", "Residual", "Absolute error", "Uncertainty"]} rows={highError.map((row) => [canonicalSampleKey(row), text(row.sampleRef), text(row.formula), text(row.chemicalSystem), format(row.target), format(row.prediction), format(row.residual), format(row.absoluteError), format(row.uncertainty)])} rowKeys={highError.map(canonicalSampleKey)} empty="No aligned high-error samples." testId="materials-ml-high-error-table" />
+    <DataTable columns={["样本键", "样本", "化学式", "化学体系", "真实值", "预测值", "残差", "绝对误差", "不确定性"]} rows={highError.map((row) => [canonicalSampleKey(row), text(row.sampleRef), text(row.formula), text(row.chemicalSystem), format(row.target), format(row.prediction), format(row.residual), format(row.absoluteError), format(row.uncertainty)])} rowKeys={highError.map(canonicalSampleKey)} empty="暂无对齐的高误差样本。" testId="materials-ml-high-error-table" />
     <div className="materials-ml-columns">
       <section><h3>按元素统计误差</h3><p className="dataset-method-note">元素分组可以重叠，同一材料可能出现在多行。</p><GroupTable rows={records(chemistry.byElement)} /></section>
       <section><h3>按化学体系统计误差</h3><p className="dataset-method-note">样本数较少的分组仍保留，并明确显示样本数。</p><GroupTable rows={records(chemistry.byChemicalSystem)} /></section>
@@ -145,7 +145,7 @@ function ClassificationView({ evaluation }: { evaluation: JsonRecord }) {
   return <div className="materials-ml-view" data-testid="materials-ml-classification">
     <MetricGrid items={[["Accuracy", format(metrics.accuracy)], ["Macro precision", format(metrics.macroPrecision)], ["Macro recall", format(metrics.macroRecall)], ["Macro F1", format(metrics.macroF1)], ["Evaluated", integer(record(evaluation.coverage).evaluatedSamples)], ["Curve status", text(curves.status)]]} />
     <div className="materials-ml-columns">
-      <section><h3>Confusion matrix (raw counts)</h3><DataTable columns={["Actual / predicted", ...labels]} rows={labels.map((label, index) => [label, ...numberList(matrix[index]).map(String)])} empty="No confusion matrix." testId="materials-ml-confusion-matrix" /></section>
+      <section><h3>混淆矩阵（原始计数）</h3><DataTable columns={["真实 / 预测 · Actual / predicted", ...labels]} rows={labels.map((label, index) => [label, ...numberList(matrix[index]).map(String)])} empty="暂无混淆矩阵。" testId="materials-ml-confusion-matrix" /></section>
       <section><h3>Per-class metrics</h3><DataTable columns={["Class", "Support", "Precision", "Recall", "F1"]} rows={records(metrics.perClass).map((row) => [text(row.class), integer(row.support), format(row.precision), format(row.recall), format(row.f1)])} empty="No per-class metrics." testId="materials-ml-class-metrics" /></section>
     </div>
     {text(curves.status) === "READY" ? <div className="materials-ml-charts">
@@ -153,7 +153,7 @@ function ClassificationView({ evaluation }: { evaluation: JsonRecord }) {
       <ChartFrame title="Precision-recall" note={`Average precision ${format(record(curves.precisionRecall).averagePrecision)}`}><LineChart points={records(record(curves.precisionRecall).points)} x="recall" y="precision" /></ChartFrame>
     </div> : <p className="empty-state" data-testid="materials-ml-curves-unavailable">ROC/PR unavailable: {text(curves.status)}.</p>}
     <h3>Misclassified samples</h3>
-    <DataTable columns={["Sample key", "Sample", "Formula", "Actual", "Predicted"]} rows={records(evaluation.misclassifiedSamples).map((row) => [canonicalSampleKey(row), text(row.sampleRef), text(row.formula), text(row.actualClass), text(row.predictedClass)])} rowKeys={records(evaluation.misclassifiedSamples).map(canonicalSampleKey)} empty="No bounded misclassified samples." testId="materials-ml-misclassified-table" />
+    <DataTable columns={["样本键", "样本", "化学式", "真实类别", "预测类别"]} rows={records(evaluation.misclassifiedSamples).map((row) => [canonicalSampleKey(row), text(row.sampleRef), text(row.formula), text(row.actualClass), text(row.predictedClass)])} rowKeys={records(evaluation.misclassifiedSamples).map(canonicalSampleKey)} empty="暂无有界的错误分类样本。" testId="materials-ml-misclassified-table" />
     <Warnings values={textList(evaluation.warnings)} />
   </div>;
 }
@@ -190,7 +190,7 @@ function ChartAxes() { return <><line x1="42" y1="226" x2="536" y2="226" classNa
 function ChartFrame({ title, note, children }: { title: string; note: string; children: ReactNode }) { return <figure><figcaption><strong>{title}</strong><span>{note}</span></figcaption>{children}</figure>; }
 function MetricGrid({ items }: { items: [string, string][] }) { return <dl className="dataset-stat-grid">{items.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>; }
 function Field({ label, value }: { label: string; value: string }) { return <div><dt>{label}</dt><dd>{value || "-"}</dd></div>; }
-function GroupTable({ rows }: { rows: JsonRecord[] }) { return <DataTable columns={["Group", "Samples", "MAE", "RMSE"]} rows={rows.map((row) => [text(row.group), integer(row.sampleCount), format(row.mae), format(row.rmse)])} empty="No chemistry grouping." />; }
+function GroupTable({ rows }: { rows: JsonRecord[] }) { return <DataTable columns={["分组", "样本数", "MAE", "RMSE"]} rows={rows.map((row) => [text(row.group), integer(row.sampleCount), format(row.mae), format(row.rmse)])} empty="暂无化学分组统计。" />; }
 function Warnings({ values }: { values: string[] }) { return values.length ? <div className="warning-list" role="status">{values.map((value) => <span className="badge" key={value}>{value}</span>)}</div> : null; }
 
 function DataTable({ columns, rows, rowKeys, empty, testId }: { columns: string[]; rows: string[][]; rowKeys?: string[]; empty: string; testId?: string }) {

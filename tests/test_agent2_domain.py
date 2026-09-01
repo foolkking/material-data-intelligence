@@ -13,6 +13,7 @@ from mdi_api.agent2_errors import (
     ConcurrentTurnModification,
     InvalidScientificObjectRelationship,
     InvalidScientificObjectVersion,
+    ResearchResourceLimitExceeded,
     ScientificObjectTypeNotRegistered,
     UnauthorizedScientificObjectReference,
 )
@@ -39,6 +40,7 @@ from mdi_api.scientific_objects.schemas import (
     ScientificDatasetQueryRequest,
     ScientificObjectAvailability,
     ScientificObjectKind,
+    ScientificObjectLifecycle,
     ScientificObjectRef,
     ScientificObjectVersionRef,
     StorageRef,
@@ -190,6 +192,33 @@ def test_object_metadata_archive_restore_and_rename_preserve_versions():
         service.update_metadata(logical["id"], display_name="   ")
 
 
+def test_scientific_object_trash_restore_preserves_prior_lifecycle_and_versions():
+    _engine, _owner, _factory, service, _turns = foundation()
+    logical = create_structure(service, "project", "Recoverable structure")
+    v1 = create_version(service, logical, "recoverable-v1")
+
+    trashed = service.update_metadata(logical["id"], lifecycle=ScientificObjectLifecycle.TRASHED)
+    assert trashed["lifecycle_status"] == "TRASHED"
+    assert trashed["pre_trash_lifecycle_status"] == "ACTIVE"
+    assert trashed["current_version_id"] == v1["id"]
+
+    listed = service.list_project_objects("project", lifecycle_status="TRASHED")
+    assert [row["id"] for row in listed] == [logical["id"]]
+
+    restored = service.update_metadata(logical["id"], lifecycle=ScientificObjectLifecycle.ACTIVE)
+    assert restored["lifecycle_status"] == "ACTIVE"
+    assert restored["pre_trash_lifecycle_status"] is None
+    assert restored["current_version_id"] == v1["id"]
+    assert [row["id"] for row in service.list_project_objects("project", lifecycle_status="TRASHED")] == []
+
+    archived = service.update_metadata(logical["id"], lifecycle=ScientificObjectLifecycle.ARCHIVED)
+    trashed_archived = service.update_metadata(logical["id"], lifecycle=ScientificObjectLifecycle.TRASHED)
+    assert trashed_archived["pre_trash_lifecycle_status"] == "ARCHIVED"
+    restored_archived = service.update_metadata(logical["id"], lifecycle=ScientificObjectLifecycle.ACTIVE)
+    assert restored_archived["lifecycle_status"] == "ARCHIVED"
+    assert restored_archived["current_version_id"] == archived["current_version_id"]
+
+
 def test_typed_dataset_query_uses_stable_identity_and_bounds(tmp_path):
     _engine, _owner, _factory, service, _turns = foundation()
     storage_backend = LocalFileArtifactStorage(tmp_path)
@@ -289,6 +318,32 @@ def test_receive_turn_is_atomic_no_llm_no_plan_no_job_no_tool_call(monkeypatch):
             "tools": connection.execute(select(func.count()).select_from(tool_calls)).scalar_one(),
         }
     assert after == before
+
+
+def test_project_active_turn_limit_fails_closed_before_persisting_a_second_turn():
+    engine, owner, factory, _objects, _turns = foundation()
+    turns = ResearchTurnService(factory, max_active_turns_per_project=1)
+    first = turns.receive_turn(
+        project_id="project",
+        session_id="session",
+        request=CreateResearchTurnRequest(message="First active research"),
+        current_user=owner,
+    )
+
+    with pytest.raises(ResearchResourceLimitExceeded) as exc_info:
+        turns.receive_turn(
+            project_id="project",
+            session_id="session",
+            request=CreateResearchTurnRequest(message="Second active research"),
+            current_user=owner,
+        )
+
+    assert exc_info.value.limit == 1
+    assert exc_info.value.active == 1
+    with engine.connect() as connection:
+        assert connection.execute(select(func.count()).select_from(research_turns)).scalar_one() == 1
+        assert connection.execute(select(func.count()).select_from(messages)).scalar_one() == 1
+    assert first.status == ResearchTurnStatus.RECEIVED
 
 
 def test_concurrent_turn_sequence_and_cas_are_deterministic():

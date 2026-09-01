@@ -96,6 +96,32 @@ def _fact(
 
 def _ml_facts(artifact: dict[str, Any], payload: dict[str, Any]) -> list[ScientificFact]:
     result: list[ScientificFact] = []
+    artifact_id = _artifact_id(artifact)
+
+    def add_sample_fact(
+        value: Any,
+        *,
+        predicate: str,
+        pointer: str,
+        subject: str,
+        unit: str | None = None,
+    ) -> None:
+        if value is None or isinstance(value, (dict, list, bool)):
+            return
+        result.append(
+            ScientificFact(
+                fact_id=_semantic_id("fact", artifact_id, predicate, pointer, subject),
+                predicate=predicate,
+                subject_ref=subject,
+                value=value,
+                unit=unit,
+                source=FactSourceLocator(
+                    artifact_id=artifact_id,
+                    artifact_locator=pointer,
+                ),
+            )
+        )
+
     for index, evaluation in enumerate(payload.get("evaluations") or []):
         unit = evaluation.get("unit")
         for key, predicate in (
@@ -118,6 +144,28 @@ def _ml_facts(artifact: dict[str, Any], payload: dict[str, Any]) -> list[Scienti
             )
             if fact is not None:
                 result.append(fact)
+        # The adapter already ranks these rows deterministically by descending
+        # absolute error and stable sample identity. Project a bounded prefix
+        # so interpretation can name the real sample and its exact residual
+        # without recovering facts from raw Artifact bytes.
+        for sample_index, sample in enumerate((evaluation.get("highErrorSamples") or [])[:10]):
+            subject = str(sample.get("sampleKey") or sample.get("sampleRef") or f"{artifact_id}:high-error-{sample_index}")
+            base = f"/evaluations/{index}/highErrorSamples/{sample_index}"
+            for key, predicate, fact_unit in (
+                ("sampleRef", "ml.high_error_sample_id", None),
+                ("formula", "ml.high_error_formula", None),
+                ("target", "ml.high_error_target", unit),
+                ("prediction", "ml.high_error_prediction", unit),
+                ("residual", "ml.high_error_residual", unit),
+                ("absoluteError", "ml.high_error_absolute_error", unit),
+            ):
+                add_sample_fact(
+                    sample.get(key),
+                    predicate=predicate,
+                    pointer=f"{base}/{key}",
+                    subject=subject,
+                    unit=fact_unit,
+                )
     return result
 
 
@@ -371,6 +419,8 @@ def _contracts() -> tuple[ProjectorContract, ...]:
             facts=(
                 count("/structureCount", "rdf.structure_count"),
                 count("/limits/bin_count", "rdf.bin_count"),
+                FactDeclaration("rdf.r_max", "/parameters/r_max_angstrom", "angstrom"),
+                FactDeclaration("rdf.bin_width", "/parameters/bin_width_angstrom", "angstrom"),
                 FactDeclaration("rdf.number_density", "/rdf/normalization/number_density_per_angstrom3", "angstrom^-3"),
             ),
             limitations=(("RDF_NO_PROJECTOR_PEAK_DETECTION", "The result projector does not infer peaks or coordination shells from the RDF curve."),),
@@ -408,6 +458,10 @@ def _contracts() -> tuple[ProjectorContract, ...]:
             ("phase10n4.trajectory_diffusion.v1",), ("phase10n4.trajectory_plot.v1",), (),
             facts=(
                 FactDeclaration("trajectory.diffusion_coefficient", "/diffusionEstimate/value", "angstrom^2/picosecond"),
+                FactDeclaration("trajectory.diffusion_fit_start_time", "/fitWindow/startPs", "picosecond"),
+                FactDeclaration("trajectory.diffusion_fit_end_time", "/fitWindow/endPs", "picosecond"),
+                count("/fitWindow/pointCount", "trajectory.diffusion_fit_point_count"),
+                FactDeclaration("trajectory.diffusion_fit_duration", "/fitWindow/durationPs", "picosecond"),
                 FactDeclaration("trajectory.diffusion_fit_r2", "/fit/rSquared"),
                 FactDeclaration("trajectory.diffusion_fit_rmse", "/fit/rmseAngstrom2", "angstrom^2"),
                 FactDeclaration("trajectory.diffusion_regime", "/regimeDiagnostic/status"),
@@ -465,6 +519,15 @@ def _contracts() -> tuple[ProjectorContract, ...]:
         ProjectorContract(
             "agent2.trajectory.rdf", "轨迹径向分布函数", "trajectory.rdf",
             ("phase10n4.trajectory_rdf.v1",), ("phase10n4.trajectory_plot.v1",), (),
+            facts=(
+                FactDeclaration("trajectory.frame_count", "/trajectory/frameCount", "count"),
+                FactDeclaration("trajectory.atom_count", "/trajectory/atomCount", "count"),
+                FactDeclaration("trajectory.rdf_included_frames", "/coverage/includedFrames", "count"),
+                FactDeclaration("trajectory.rdf_pair_samples", "/coverage/pairSamples", "count"),
+                FactDeclaration("trajectory.rdf_r_min", "/resolvedParameters/r_min_angstrom", "angstrom"),
+                FactDeclaration("trajectory.rdf_r_max", "/resolvedParameters/r_max_angstrom", "angstrom"),
+                FactDeclaration("trajectory.rdf_bin_count", "/resolvedParameters/bin_count", "count"),
+            ),
             limitations=(("TRAJECTORY_RDF_SERIES_REFERENCED", "RDF series remain bounded structured evidence; the projector does not detect peaks."),),
         ),
         ProjectorContract(

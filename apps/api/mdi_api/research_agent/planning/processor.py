@@ -21,6 +21,8 @@ from mdi_api.research_agent.orchestration.schemas import ResearchTurnDecision
 from mdi_api.research_agent.planning.binder import CapabilityBinder
 from mdi_api.research_agent.planning.planner import ScientificCapabilityPlanner
 from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus
+from mdi_api.research_agent.context.manifest import build_operation_manifest
+from mdi_api.research_agent.context.policy import ContextOperation
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 from mdi_api.scientific_results.schemas import ScientificResultBundle
 from mdi_api.unit_of_work import RepositoryFactory
@@ -55,12 +57,26 @@ class CapabilityPlanningProcessor:
             if prepared.get("terminal"):
                 return prepared["result"]
             planner = ScientificCapabilityPlanner(registry=registries.capabilities, llm_client=self.llm_client)
+            planner_input = self._planner_input(
+                prepared["decision"], prepared["resolution"], prepared["snapshot"],
+                prepared["reusable_results"], registries,
+            )
+            planner_manifest = build_operation_manifest(
+                operation=ContextOperation.PLANNER,
+                project_id=str(prepared["turn"]["project_id"]),
+                research_session_id=str(prepared["turn"]["research_session_id"]),
+                research_turn_id=turn_id,
+                context_fingerprint=str(prepared["snapshot"].get("context_fingerprint") or ""),
+                items=self._planner_manifest_items(planner_input, prepared["snapshot"]),
+            )
+            with self.repository_factory.unit_of_work() as unit:
+                self._event(unit, turn_id, ResearchTurnEventType.CONTEXT_MANIFEST_RECORDED, {
+                    "operation": "PLANNER",
+                    "context_manifest": planner_manifest.model_dump(mode="json"),
+                })
             plan, planner_mode, provider_result = asyncio.run(planner.plan(
                 decision=prepared["decision"], resolution=prepared["resolution"],
-                planner_input=self._planner_input(
-                    prepared["decision"], prepared["resolution"], prepared["snapshot"],
-                    prepared["reusable_results"], registries,
-                ),
+                planner_input=planner_input,
                 context=prepared["snapshot"],
             ))
             with self.repository_factory.unit_of_work() as unit:
@@ -92,7 +108,7 @@ class CapabilityPlanningProcessor:
                 self._event(unit, turn_id, ResearchTurnEventType.ANALYSIS_PLAN_BOUND, {"analysis_plan_id": plan_id, "status": updated["status"]})
                 self._event(unit, turn_id, ResearchTurnEventType.PLAN_READY, {"analysis_plan_id": plan_id, "status": updated["status"]})
                 return {"status": updated["status"], "turn_id": str(turn_id), "analysis_plan_id": plan_id}
-        except (TimeoutError, asyncio.TimeoutError) as exc:
+        except (TimeoutError, asyncio.TimeoutError):
             logger.warning("Agent2 capability planner timed out", extra={"turn_id": str(turn_id)})
             self._fail(turn_id, "CAPABILITY_PLANNER_TIMEOUT", "Capability planner timed out", target=ResearchTurnStatus.FAILED)
             raise
@@ -195,6 +211,81 @@ class CapabilityPlanningProcessor:
             reusable_results=results,
             explicit_constraints=[item.constraints for item in decision.scientific_requirements if item.constraints],
         )
+
+    @staticmethod
+    def _planner_manifest_items(planner_input: CapabilityPlannerInput, snapshot: dict[str, Any]) -> list[dict[str, Any]]:
+        selected_versions = {
+            str(item.get("version_id"))
+            for item in (snapshot.get("selection_refs_json") or [])
+            if isinstance(item, dict)
+        }
+        snapshot_refs: dict[str, dict[str, Any]] = {}
+        for raw in [*(snapshot.get("selection_refs_json") or []), *(snapshot.get("active_scope_refs_json") or [])]:
+            if not isinstance(raw, dict):
+                continue
+            ref_key = f"obj_{len(snapshot_refs) + 1}"
+            snapshot_refs.setdefault(ref_key, raw)
+        items: list[dict[str, Any]] = []
+        for source in planner_input.source_bindings:
+            # ``PlannerSourceRef.ref_key`` is the bounded server-side binding
+            # key. Resolve it first so two sources of the same object type can
+            # never be silently collapsed onto the first matching row.
+            raw = snapshot_refs.get(source.ref_key)
+            if raw is None:
+                # Compatibility fallback for older planner payloads that did
+                # not preserve the binding key. This is intentionally bounded
+                # and only used when the authoritative key is unavailable.
+                raw = next(
+                    (item for item in snapshot_refs.values() if str(item.get("object_type")) == source.object_type),
+                    None,
+                )
+            items.append({
+                "item_id": source.ref_key,
+                "kind": "SCIENTIFIC_SELECTION" if raw and str(raw.get("version_id")) in selected_versions else "SCIENTIFIC_OBJECT",
+                "authority_class": "SCIENTIFIC_DATA",
+                "source_identity": f"{raw.get('object_id')}:{raw.get('version_id')}" if raw else source.ref_key,
+                "opaque_ref": source.ref_key,
+                "object_id": raw.get("object_id") if raw else None,
+                "version_id": raw.get("version_id") if raw else None,
+                "content": source.model_dump(mode="json"),
+                "inclusion_reason": "exact source binding for capability planning",
+                "selection_mode": "UI_SELECTION" if raw and str(raw.get("version_id")) in selected_versions else "CURRENT",
+            })
+        for candidate in planner_input.candidates:
+            items.append({
+                "item_id": candidate.ref_key,
+                "kind": "CAPABILITY_CANDIDATE",
+                "authority_class": "SYSTEM_RUNTIME_STATE",
+                "source_identity": f"{candidate.capability_id}@{candidate.version}",
+                "opaque_ref": candidate.ref_key,
+                "content": candidate.model_dump(mode="json"),
+                "inclusion_reason": "eligible registered capability candidate",
+                "selection_mode": "RETRIEVED",
+            })
+        for result in planner_input.reusable_results:
+            items.append({
+                "item_id": result.ref_key,
+                "kind": "SCIENTIFIC_RESULT",
+                "authority_class": "SCIENTIFIC_RESULT",
+                "source_identity": str(result.result_id),
+                "opaque_ref": result.ref_key,
+                "result_ref": str(result.result_id),
+                "content": result.model_dump(mode="json"),
+                "inclusion_reason": "authorized exact-result reuse candidate",
+                "selection_mode": "CONTINUATION",
+            })
+        for index, constraint in enumerate(planner_input.explicit_constraints, start=1):
+            items.append({
+                "item_id": f"constraint_{index}",
+                "kind": "USER_CONSTRAINT",
+                "authority_class": "USER_CONSTRAINT",
+                "source_identity": f"{planner_input.contract_version}:constraint:{index}",
+                "opaque_ref": f"constraint_{index}",
+                "content": constraint,
+                "inclusion_reason": "explicit scientific constraint",
+                "selection_mode": "EXPLICIT",
+            })
+        return items
 
     @staticmethod
     def _plan_context(unit: Any, project_id: str, refs: list[ScientificObjectRef]) -> dict[str, Any]:

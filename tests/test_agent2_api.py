@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+import hashlib
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -17,6 +18,7 @@ from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.research_agent.llm.schemas import StructuredLLMResult
 from mdi_api.research_agent.orchestration.processor import AgentTurnProcessor
 from mdi_api.research_agent.registry_validation import build_default_agent2_registries
+from mdi_api.routers.agent2 import _research_progress_response_kind
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_api.scientific_objects.registry import build_default_object_type_registry
 from mdi_api.scientific_objects.schemas import (
@@ -161,6 +163,8 @@ def test_context_manifest_endpoint_returns_bounded_manifest_and_enforces_project
     assert payload["manifest"]["manifest_id"] == "manifest-test"
     assert payload["manifest"]["included_items"][0]["exact_object_version_id"] == "version-1"
     assert "provider_prompt" not in payload["manifest"]
+    assert payload["manifests"][0]["operation"] == "ORCHESTRATOR"
+    assert payload["manifests"][0]["manifest"]["manifest_id"] == "manifest-test"
 
     active["value"] = stranger
     assert client.get(f"/api/research/turns/{turn_id}/context-manifest").status_code == 403
@@ -308,6 +312,14 @@ def test_scientific_object_read_api_lists_exact_versions_and_relationships(api):
     assert exact.status_code == 200 and exact.json()["content_hash"] == "content-project"
     relationships = client.get(f"/api/scientific-objects/{left.object_id}/relationships")
     assert relationships.status_code == 200 and relationships.json()["items"][0]["relation_type"] == "companion_of"
+    impact = client.get(f"/api/scientific-objects/{left.object_id}/dependency-impact")
+    assert impact.status_code == 200
+    assert impact.json()["entity"] == "scientific_object"
+    assert impact.json()["impact"]["scientificSnapshotMutated"] is False
+    assert {item["kind"] for item in impact.json()["dependencies"]} >= {
+        "scientific_object_versions",
+        "scientific_object_relationships",
+    }
 
 
 def test_scientific_object_metadata_update_is_authorized_and_version_stable(api):
@@ -345,6 +357,76 @@ def test_scientific_object_metadata_update_is_authorized_and_version_stable(api)
     assert restored.json()["lifecycle_status"] == "ACTIVE"
     assert restored.json()["archived_at"] is None
     assert client.get(f"/api/scientific-objects/{ref.object_id}/versions/{ref.version_id}").json()["content_hash"] == "content-project"
+
+    trashed = client.patch(
+        f"/api/scientific-objects/{ref.object_id}",
+        json={"lifecycle": "TRASHED"},
+    )
+    assert trashed.status_code == 200
+    assert trashed.json()["lifecycle_status"] == "TRASHED"
+    assert trashed.json()["pre_trash_lifecycle_status"] == "ACTIVE"
+    listing = client.get("/api/projects/project/scientific-objects?lifecycle_status=TRASHED")
+    assert listing.status_code == 200
+    assert any(item["id"] == str(ref.object_id) for item in listing.json()["items"])
+
+    restored_from_trash = client.patch(
+        f"/api/scientific-objects/{ref.object_id}",
+        json={"lifecycle": "ACTIVE"},
+    )
+    assert restored_from_trash.status_code == 200
+    assert restored_from_trash.json()["lifecycle_status"] == "ACTIVE"
+    assert restored_from_trash.json()["pre_trash_lifecycle_status"] is None
+
+
+def test_scientific_object_bulk_lifecycle_is_atomic_authorized_and_version_stable(api):
+    client, active, owner, viewer, _stranger, objects = api
+    left = create_ref(objects, "project")
+    right = create_ref(objects, "project")
+
+    archived = client.post(
+        "/api/projects/project/scientific-objects/bulk",
+        json={
+            "object_ids": [str(left.object_id), str(right.object_id)],
+            "lifecycle": "ARCHIVED",
+        },
+    )
+    assert archived.status_code == 200
+    assert archived.json()["count"] == 2
+    assert {item["lifecycle_status"] for item in archived.json()["items"]} == {"ARCHIVED"}
+    assert {item["current_version_id"] for item in archived.json()["items"]} == {
+        str(left.version_id),
+        str(right.version_id),
+    }
+    assert objects.list_versions(left.object_id)[0]["content_hash"] == "content-project"
+    assert objects.list_versions(right.object_id)[0]["content_hash"] == "content-project"
+
+    active["value"] = viewer
+    assert client.post(
+        "/api/projects/project/scientific-objects/bulk",
+        json={"object_ids": [str(left.object_id)], "lifecycle": "ACTIVE"},
+    ).status_code == 403
+    active["value"] = owner
+
+    outside = create_ref(objects, "other")
+    rejected = client.post(
+        "/api/projects/project/scientific-objects/bulk",
+        json={
+            "object_ids": [str(left.object_id), str(outside.object_id)],
+            "lifecycle": "ACTIVE",
+        },
+    )
+    assert rejected.status_code == 403
+    assert objects.get_object(left.object_id)["lifecycle_status"] == "ARCHIVED"
+
+    restored = client.post(
+        "/api/projects/project/scientific-objects/bulk",
+        json={
+            "object_ids": [str(left.object_id), str(right.object_id)],
+            "lifecycle": "ACTIVE",
+        },
+    )
+    assert restored.status_code == 200
+    assert {item["lifecycle_status"] for item in restored.json()["items"]} == {"ACTIVE"}
 
 
 def _persist_profiled_structure(objects, storage, *, dataset_id: str, resource_id: str, revision: int):
@@ -415,6 +497,195 @@ def _persist_profiled_structure(objects, storage, *, dataset_id: str, resource_i
                 }],
             },
         })
+
+
+def _persist_profiled_resource(
+    objects,
+    storage,
+    *,
+    dataset_id: str,
+    resource_id: str,
+    resource_type: str,
+    semantic_hash: str,
+):
+    prefix = f"projects/project/datasets/{dataset_id}/normalized/{resource_id}"
+    stored = storage.put_json(
+        f"{prefix}/scientific.json",
+        {"schemaVersion": "test.scientific_resource.v1", "resourceId": resource_id},
+    )
+    metadata_ref = storage.put_json(
+        f"{prefix}/metadata.json",
+        {
+            "objectId": resource_id,
+            "contentHash": stored.sha256,
+            "metadata": {"source": "typed-import"},
+            "provenance": {"objectType": resource_type},
+        },
+    )
+    with objects.repository_factory.session() as session:
+        session.repositories.datasets.save({
+            "id": dataset_id,
+            "projectId": "project",
+            "name": f"Profiled {resource_type}",
+            "status": "profile_ready",
+            "createdBy": "owner",
+            "metadata": {
+                "normalizedExports": [{
+                    "objectId": resource_id,
+                    "storageKey": stored.storage_key,
+                    "metadataKey": metadata_ref.storage_key,
+                    "objectHash": semantic_hash,
+                    "contentHash": stored.sha256,
+                }],
+            },
+        })
+        session.repositories.data_profiles.save({
+            "schemaVersion": "0.1",
+            "profileId": f"profile-{dataset_id}",
+            "datasetId": dataset_id,
+            "version": "2",
+            "profileContractVersion": "2.1",
+            "semanticHash": hashlib.sha256(dataset_id.encode("utf-8")).hexdigest(),
+            "objects": [{
+                "objectId": resource_id,
+                "objectHash": semantic_hash,
+                "objectType": resource_type,
+            }],
+            "resourceSemantics": [{
+                "objectId": resource_id,
+                "objectHash": semantic_hash,
+                "objectType": resource_type,
+                "facts": {"source": "typed-import"},
+            }],
+        })
+
+
+@pytest.mark.parametrize(
+    ("resource_type", "expected_object_type"),
+    [
+        ("PhononBand", "phonon.band_structure"),
+        ("PhononDos", "phonon.dos"),
+    ],
+)
+def test_scientific_object_admission_accepts_profiled_phonon_resources(
+    api,
+    monkeypatch,
+    tmp_path,
+    resource_type,
+    expected_object_type,
+):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    storage = LocalFileArtifactStorage(tmp_path)
+    monkeypatch.setattr(
+        "mdi_api.routers.agent2.create_artifact_storage_from_settings",
+        lambda _settings: storage,
+    )
+    resource_id = f"resource-{resource_type.lower()}"
+    dataset_id = f"dataset-{resource_type.lower()}"
+    semantic_hash = hashlib.sha256(resource_id.encode("utf-8")).hexdigest()
+    _persist_profiled_resource(
+        objects,
+        storage,
+        dataset_id=dataset_id,
+        resource_id=resource_id,
+        resource_type=resource_type,
+        semantic_hash=semantic_hash,
+    )
+
+    response = client.post(
+        "/api/projects/project/scientific-objects",
+        json={"dataset_id": dataset_id, "resource_id": resource_id},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["object"]["kind"] == "PHONON"
+    assert body["object"]["object_type"] == expected_object_type
+    assert body["version"]["semantic_hash"] == semantic_hash
+    assert body["version"]["source_resource_refs_json"] == [{
+        "project_id": "project",
+        "dataset_id": dataset_id,
+        "resource_id": resource_id,
+    }]
+
+
+def test_scientific_object_admission_reuses_the_exact_profiled_resource(
+    api,
+    monkeypatch,
+    tmp_path,
+):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    storage = LocalFileArtifactStorage(tmp_path)
+    monkeypatch.setattr(
+        "mdi_api.routers.agent2.create_artifact_storage_from_settings",
+        lambda _settings: storage,
+    )
+    dataset_id = "dataset-trajectory-idempotent"
+    resource_id = "resource-trajectory-idempotent"
+    semantic_hash = hashlib.sha256(resource_id.encode("utf-8")).hexdigest()
+    _persist_profiled_resource(
+        objects,
+        storage,
+        dataset_id=dataset_id,
+        resource_id=resource_id,
+        resource_type="Trajectory",
+        semantic_hash=semantic_hash,
+    )
+
+    first = client.post(
+        "/api/projects/project/scientific-objects",
+        json={"dataset_id": dataset_id, "resource_id": resource_id},
+    )
+    second = client.post(
+        "/api/projects/project/scientific-objects",
+        json={"dataset_id": dataset_id, "resource_id": resource_id},
+    )
+
+    assert first.status_code == 200, first.text
+    assert second.status_code == 200, second.text
+    assert second.json()["object"]["id"] == first.json()["object"]["id"]
+    assert second.json()["version"]["id"] == first.json()["version"]["id"]
+    admitted = objects.list_project_objects(
+        "project",
+        object_type="trajectory.atomic",
+        limit=50,
+    )
+    assert [str(item["id"]) for item in admitted] == [first.json()["object"]["id"]]
+    assert len(objects.list_versions(UUID(first.json()["object"]["id"]))) == 1
+
+
+def test_scientific_object_admission_keeps_unregistered_resource_types_fail_closed(
+    api,
+    monkeypatch,
+    tmp_path,
+):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    storage = LocalFileArtifactStorage(tmp_path)
+    monkeypatch.setattr(
+        "mdi_api.routers.agent2.create_artifact_storage_from_settings",
+        lambda _settings: storage,
+    )
+    _persist_profiled_resource(
+        objects,
+        storage,
+        dataset_id="dataset-unsupported",
+        resource_id="resource-unsupported",
+        resource_type="UnregisteredScientificPayload",
+        semantic_hash=hashlib.sha256(b"resource-unsupported").hexdigest(),
+    )
+
+    response = client.post(
+        "/api/projects/project/scientific-objects",
+        json={
+            "dataset_id": "dataset-unsupported",
+            "resource_id": "resource-unsupported",
+        },
+    )
+
+    assert response.status_code == 422
+    assert response.json()["detail"] == (
+        "persisted scientific resource type is not admitted to ScientificObject authority"
+    )
 
 
 def test_scientific_object_admission_and_version_creation_use_profiled_resources(api, monkeypatch, tmp_path):
@@ -589,6 +860,43 @@ def test_phase2_sse_projects_product_events_without_internal_provider_details(ap
     ]
     assert "fake-internal-provider" not in stream.text
 
+    progress = client.get(f"/api/research/turns/{created['turn_id']}/progress")
+    assert progress.status_code == 200
+    assert progress.json()["response_kind"] == "CONVERSATIONAL"
+
+
+@pytest.mark.parametrize(
+    ("turn", "decision", "expected"),
+    [
+        (
+            {"status": "ANSWERED", "action_type": "QUERY_DATA"},
+            {"decision_json": {"reusable_result_ref_keys": []}},
+            "DATA_QUERY",
+        ),
+        (
+            {"status": "ANSWERED", "action_type": "ANSWER"},
+            {"decision_json": {"reusable_result_ref_keys": []}},
+            "CONVERSATIONAL",
+        ),
+        (
+            {"status": "ANSWERED", "action_type": "ANSWER"},
+            {"decision_json": {"reusable_result_ref_keys": ["result_1"]}},
+            "RESULT_REUSE",
+        ),
+        (
+            {"status": "COMPLETED", "action_type": "ANALYZE"},
+            {"decision_json": {"reusable_result_ref_keys": ["result_1"]}},
+            None,
+        ),
+    ],
+)
+def test_research_progress_response_kind_is_server_authoritative(
+    turn: dict[str, Any],
+    decision: dict[str, Any],
+    expected: str | None,
+):
+    assert _research_progress_response_kind(turn, decision) == expected
+
 
 def test_phase4_progress_and_dispatch_are_project_authorized(api):
     client, active, owner, _viewer, stranger, _objects = api
@@ -602,6 +910,7 @@ def test_phase4_progress_and_dispatch_are_project_authorized(api):
         "contract_version": "1.0",
         "turn_id": turn["turn_id"],
         "status": "RECEIVED",
+        "response_kind": None,
         "plan_title": None,
         "steps": [],
         "active_step_ids": [],
@@ -648,6 +957,7 @@ def test_terminal_history_progress_uses_read_only_fallback_when_legacy_plan_payl
         "contract_version": "1.0",
         "turn_id": str(turn_id),
         "status": "COMPLETED",
+        "response_kind": "SCIENTIFIC_EXECUTION",
         "plan_title": "Historical completed analysis",
         "steps": [],
         "active_step_ids": [],
@@ -748,6 +1058,8 @@ def test_agent2_result_projection_exposes_bounded_facts_and_exact_sources(api):
     assert response.status_code == 200
     payload = response.json()
     assert payload["result_id"] == str(bundle.result_id)
+    assert payload["result_snapshot_id"]
+    assert payload["result_snapshot_id"] != str(bundle.result_id)
     assert payload["source_object_refs"] == [ref.model_dump(mode="json")]
     assert payload["facts"] == [bundle.facts[0].model_dump(mode="json")]
     assert payload["evidence"] == []

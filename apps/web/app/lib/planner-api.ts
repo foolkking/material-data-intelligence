@@ -651,6 +651,24 @@ export type DatasetSourceResource = {
   payload: unknown;
 };
 
+export type PromotedDatasetTable = {
+  object: {
+    id: string;
+    project_id?: string;
+    object_type?: string;
+    display_name?: string;
+    current_version_id?: string | null;
+  };
+  version: {
+    id: string;
+    scientific_object_id?: string;
+    object_type?: string;
+    source_resource_refs_json?: unknown;
+    content_hash?: string;
+    semantic_hash?: string;
+  };
+};
+
 export type ProjectSummary = {
   id: string;
   projectId?: string;
@@ -658,6 +676,8 @@ export type ProjectSummary = {
   role?: string;
   description?: string | null;
   status?: string | null;
+  pinned?: boolean;
+  tags?: string[];
   createdAt?: string | null;
   updatedAt?: string | null;
 };
@@ -669,6 +689,7 @@ export type ProductSearchItem = {
   title: string;
   subtitle: string;
   href: string;
+  researchTurnId?: string | null;
   status?: string | null;
   updatedAt?: string | null;
 };
@@ -677,6 +698,7 @@ export type ProductSearchResponse = {
   query: string;
   items: ProductSearchItem[];
   count: number;
+  truncated?: boolean;
 };
 
 export type ProjectHistory = {
@@ -754,6 +776,7 @@ export type ProjectHistory = {
     visibleInReports?: boolean;
     researchSessionId?: string;
     researchTurnId?: string | null;
+    researchTurnStatus?: string | null;
     researchContextKind?: "RESEARCH_TURN" | "LEGACY_SESSION_RUN" | null;
   }>;
   activity: Array<{
@@ -1143,57 +1166,107 @@ export async function getRuntimeHealth(): Promise<RuntimeHealth> {
   return apiFetch<RuntimeHealth>("/health/runtime");
 }
 
-export async function listDatasets(): Promise<DatasetOption[]> {
-  const result = await apiFetch<DatasetOption[] | { value: DatasetOption[] }>("/datasets");
-  return Array.isArray(result) ? result : result.value;
+const PRODUCT_DIRECTORY_CACHE_TTL_MS = 20_000;
+let datasetsDirectoryCache: { expiresAt: number; promise: Promise<DatasetOption[]> } | null = null;
+let projectsDirectoryCache: { expiresAt: number; promise: Promise<ProjectSummary[]> } | null = null;
+
+export function invalidateProductDirectories(): void {
+  datasetsDirectoryCache = null;
+  projectsDirectoryCache = null;
 }
 
-export async function listProjects(): Promise<ProjectSummary[]> {
-  const result = await apiFetch<ProjectSummary[] | { value: ProjectSummary[] }>("/projects");
-  return Array.isArray(result) ? result : result.value;
+export async function listDatasets(options: Readonly<{ forceRefresh?: boolean }> = {}): Promise<DatasetOption[]> {
+  if (!options.forceRefresh && datasetsDirectoryCache && datasetsDirectoryCache.expiresAt > Date.now()) {
+    return datasetsDirectoryCache.promise;
+  }
+  const promise = apiFetch<DatasetOption[] | { value: DatasetOption[] }>("/datasets")
+    .then((result) => Array.isArray(result) ? result : result.value)
+    .catch((error) => {
+      datasetsDirectoryCache = null;
+      throw error;
+    });
+  datasetsDirectoryCache = { expiresAt: Date.now() + PRODUCT_DIRECTORY_CACHE_TTL_MS, promise };
+  return promise;
+}
+
+export async function listProjects(options: Readonly<{ forceRefresh?: boolean }> = {}): Promise<ProjectSummary[]> {
+  if (!options.forceRefresh && projectsDirectoryCache && projectsDirectoryCache.expiresAt > Date.now()) {
+    return projectsDirectoryCache.promise;
+  }
+  const promise = apiFetch<ProjectSummary[] | { value: ProjectSummary[] }>("/projects")
+    .then((result) => Array.isArray(result) ? result : result.value)
+    .catch((error) => {
+      projectsDirectoryCache = null;
+      throw error;
+    });
+  projectsDirectoryCache = { expiresAt: Date.now() + PRODUCT_DIRECTORY_CACHE_TTL_MS, promise };
+  return promise;
 }
 
 export async function searchProduct(
   query: string,
-  options: { projectId?: string; kind?: ProductSearchItem["kind"]; limit?: number } = {},
+  options: { projectId?: string; kind?: ProductSearchItem["kind"]; status?: "active" | "archived" | "trashed" | "all"; limit?: number } = {},
 ): Promise<ProductSearchResponse> {
   const params = new URLSearchParams();
   if (query.trim()) params.set("q", query.trim());
   if (options.projectId) params.set("project_id", options.projectId);
   if (options.kind) params.set("kind", options.kind);
+  if (options.status) params.set("status", options.status);
   if (options.limit) params.set("limit", String(options.limit));
   return apiFetch<ProductSearchResponse>(`/search?${params.toString()}`);
 }
 
 export async function createProject(name: string): Promise<ProjectSummary> {
-  return apiFetch<ProjectSummary>("/projects", {
+  const project = await apiFetch<ProjectSummary>("/projects", {
     method: "POST",
     body: JSON.stringify({ name }),
   });
+  invalidateProjectHistory();
+  invalidateProductDirectories();
+  return project;
 }
 
 export async function updateProject(
   projectId: string,
-  changes: Readonly<{ name?: string; description?: string; archived?: boolean }>,
+  changes: Readonly<{
+    name?: string;
+    description?: string;
+    archived?: boolean;
+    lifecycle?: "ACTIVE" | "ARCHIVED" | "TRASHED";
+    pinned?: boolean;
+    tags?: string[];
+  }>,
 ): Promise<ProjectSummary> {
-  return apiFetch<ProjectSummary>(`/projects/${encodeURIComponent(projectId)}`, {
+  const project = await apiFetch<ProjectSummary>(`/projects/${encodeURIComponent(projectId)}`, {
     method: "PATCH",
     body: JSON.stringify(changes),
   });
+  invalidateProjectHistory(projectId);
+  invalidateProductDirectories();
+  return project;
 }
 
 export async function bulkProjectAction(
   projectIds: string[],
-  action: "archive" | "restore",
-): Promise<{ action: "archive" | "restore"; projectIds: string[]; count: number }> {
-  return apiFetch("/projects/bulk", {
+  action: "archive" | "trash" | "restore" | "pin" | "unpin",
+): Promise<{ action: "archive" | "trash" | "restore" | "pin" | "unpin"; projectIds: string[]; count: number }> {
+  const result = await apiFetch<{ action: "archive" | "trash" | "restore" | "pin" | "unpin"; projectIds: string[]; count: number }>("/projects/bulk", {
     method: "POST",
     body: JSON.stringify({ projectIds, action }),
   });
+  projectIds.forEach((projectId) => invalidateProjectHistory(projectId));
+  invalidateProductDirectories();
+  return result;
 }
 
 export async function deleteEmptyProject(projectId: string): Promise<{ projectId: string; deleted: boolean }> {
-  return apiFetch(`/projects/${encodeURIComponent(projectId)}`, { method: "DELETE" });
+  const result = await apiFetch<{ projectId: string; deleted: boolean }>(
+    `/projects/${encodeURIComponent(projectId)}`,
+    { method: "DELETE" },
+  );
+  invalidateProjectHistory(projectId);
+  invalidateProductDirectories();
+  return result;
 }
 
 export type DependencyImpact = {
@@ -1214,16 +1287,89 @@ export async function getProjectDependencyImpact(projectId: string): Promise<Dep
   return apiFetch<DependencyImpact>(`/projects/${encodeURIComponent(projectId)}/dependency-impact`);
 }
 
-export async function getProjectHistory(projectId: string): Promise<ProjectHistory> {
-  return apiFetch<ProjectHistory>("/projects/" + encodeURIComponent(projectId) + "/history");
+export type ProjectExportManifest = Readonly<{
+  schemaVersion: string;
+  exportKind: "authorized_project_provenance";
+  executable: false;
+  generatedAt: string;
+  project: Readonly<{
+    id: string;
+    name: string;
+    description: string;
+    status: string;
+    pinned: boolean;
+    tags: string[];
+    role: string;
+  }>;
+  datasets: ReadonlyArray<Record<string, unknown>>;
+  scientificObjects: ReadonlyArray<Record<string, unknown>>;
+  scientificObjectVersions: ReadonlyArray<Record<string, unknown>>;
+  researchSessions: ReadonlyArray<Record<string, unknown>>;
+  researchTurns: ReadonlyArray<Record<string, unknown>>;
+  scientificResults: ReadonlyArray<Record<string, unknown>>;
+  reports: ReadonlyArray<Record<string, unknown>>;
+  bounds: Readonly<{ truncated: Readonly<Record<string, boolean>> }>;
+  excluded: ReadonlyArray<string>;
+}>;
+
+export async function getProjectExportManifest(projectId: string): Promise<ProjectExportManifest> {
+  return apiFetch<ProjectExportManifest>(
+    `/projects/${encodeURIComponent(projectId)}/export-manifest`,
+  );
+}
+
+// Project history is explicitly invalidated by every product mutation below.
+// Keep read-only route transitions warm long enough for a researcher to inspect
+// a Viewer before moving into Research, instead of reloading the same project
+// ledger after a few seconds.
+const PROJECT_HISTORY_WARM_TTL_MS = 30_000;
+const projectHistoryRequests = new Map<
+  string,
+  { expiresAt: number; promise: Promise<ProjectHistory> }
+>();
+
+export function invalidateProjectHistory(projectId?: string): void {
+  if (projectId) projectHistoryRequests.delete(projectId);
+  else projectHistoryRequests.clear();
+}
+
+export async function getProjectHistory(
+  projectId: string,
+  options: Readonly<{ forceRefresh?: boolean }> = {},
+): Promise<ProjectHistory> {
+  const cached = projectHistoryRequests.get(projectId);
+  if (!options.forceRefresh && cached && cached.expiresAt > Date.now()) {
+    return cached.promise;
+  }
+  const promise = apiFetch<ProjectHistory>(
+    "/projects/" + encodeURIComponent(projectId) + "/history",
+  ).catch((error) => {
+    projectHistoryRequests.delete(projectId);
+    throw error;
+  });
+  projectHistoryRequests.set(projectId, {
+    expiresAt: Date.now() + PROJECT_HISTORY_WARM_TTL_MS,
+    promise,
+  });
+  return promise;
 }
 
 export async function archiveProjectRun(projectId: string, jobId: string): Promise<{ projectId: string; jobId: string; archived: boolean }> {
-  return apiFetch(`/projects/${encodeURIComponent(projectId)}/runs/${encodeURIComponent(jobId)}/archive`, { method: "POST" });
+  const result = await apiFetch<{ projectId: string; jobId: string; archived: boolean }>(
+    `/projects/${encodeURIComponent(projectId)}/runs/${encodeURIComponent(jobId)}/archive`,
+    { method: "POST" },
+  );
+  invalidateProjectHistory(projectId);
+  return result;
 }
 
 export async function restoreProjectRun(projectId: string, jobId: string): Promise<{ projectId: string; jobId: string; archived: boolean }> {
-  return apiFetch(`/projects/${encodeURIComponent(projectId)}/runs/${encodeURIComponent(jobId)}/archive`, { method: "DELETE" });
+  const result = await apiFetch<{ projectId: string; jobId: string; archived: boolean }>(
+    `/projects/${encodeURIComponent(projectId)}/runs/${encodeURIComponent(jobId)}/archive`,
+    { method: "DELETE" },
+  );
+  invalidateProjectHistory(projectId);
+  return result;
 }
 
 export async function getDataset(datasetId: string): Promise<DatasetDetail> {
@@ -1232,26 +1378,38 @@ export async function getDataset(datasetId: string): Promise<DatasetDetail> {
 
 export async function updateDataset(
   datasetId: string,
-  changes: Readonly<{ name?: string; archived?: boolean }>,
+  changes: Readonly<{ name?: string; archived?: boolean; lifecycle?: "ACTIVE" | "ARCHIVED" | "TRASHED" }>,
 ): Promise<DatasetDetail> {
-  return apiFetch<DatasetDetail>(`/datasets/${encodeURIComponent(datasetId)}`, {
+  const dataset = await apiFetch<DatasetDetail>(`/datasets/${encodeURIComponent(datasetId)}`, {
     method: "PATCH",
     body: JSON.stringify(changes),
   });
+  invalidateProjectHistory();
+  invalidateProductDirectories();
+  return dataset;
 }
 
 export async function bulkDatasetAction(
   datasetIds: string[],
-  action: "archive" | "restore",
-): Promise<{ action: "archive" | "restore"; datasetIds: string[]; count: number }> {
-  return apiFetch("/datasets/bulk", {
+  action: "archive" | "trash" | "restore",
+): Promise<{ action: "archive" | "trash" | "restore"; datasetIds: string[]; count: number }> {
+  const result = await apiFetch<{ action: "archive" | "trash" | "restore"; datasetIds: string[]; count: number }>("/datasets/bulk", {
     method: "POST",
     body: JSON.stringify({ datasetIds, action }),
   });
+  invalidateProjectHistory();
+  invalidateProductDirectories();
+  return result;
 }
 
 export async function deleteEmptyDataset(datasetId: string): Promise<{ datasetId: string; deleted: boolean }> {
-  return apiFetch(`/datasets/${encodeURIComponent(datasetId)}`, { method: "DELETE" });
+  const result = await apiFetch<{ datasetId: string; deleted: boolean }>(
+    `/datasets/${encodeURIComponent(datasetId)}`,
+    { method: "DELETE" },
+  );
+  invalidateProjectHistory();
+  invalidateProductDirectories();
+  return result;
 }
 
 export async function getDatasetDependencyImpact(datasetId: string): Promise<DependencyImpact> {
@@ -1264,6 +1422,43 @@ export async function getDatasetSourceResources(datasetId: string, signal?: Abor
     { signal },
   );
   return result.resources;
+}
+
+export async function promoteDatasetTable(
+  projectId: string,
+  datasetId: string,
+  resourceId?: string,
+): Promise<PromotedDatasetTable> {
+  const result = await apiFetch<PromotedDatasetTable>(
+    `/api/projects/${encodeURIComponent(projectId)}/datasets/${encodeURIComponent(datasetId)}/scientific-table`,
+    {
+      method: "POST",
+      body: JSON.stringify(resourceId ? { resource_id: resourceId } : {}),
+    },
+  );
+  invalidateProjectHistory(projectId);
+  return result;
+}
+
+export async function admitDatasetResource(
+  projectId: string,
+  datasetId: string,
+  resourceId: string,
+  displayName?: string,
+): Promise<PromotedDatasetTable> {
+  const result = await apiFetch<PromotedDatasetTable>(
+    `/api/projects/${encodeURIComponent(projectId)}/scientific-objects`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        dataset_id: datasetId,
+        resource_id: resourceId,
+        ...(displayName?.trim() ? { display_name: displayName.trim() } : {}),
+      }),
+    },
+  );
+  invalidateProjectHistory(projectId);
+  return result;
 }
 
 export async function loadDemoDataset(): Promise<DemoDatasetResult> {
@@ -1327,10 +1522,13 @@ export async function uploadDatasetFiles(
         throw new Error("UPLOAD_SERVER_RECEIPT_MISMATCH");
       }
     }));
-    return await apiFetch<DatasetDetail & { profile?: DataProfileSummary }>(
+    const result = await apiFetch<DatasetDetail & { profile?: DataProfileSummary }>(
       `/upload-sessions/${encodeURIComponent(session.uploadSessionId)}/complete`,
       { method: "POST" },
     );
+    invalidateProjectHistory(projectId);
+    invalidateProductDirectories();
+    return result;
   } catch (error) {
     await apiFetch(`/upload-sessions/${encodeURIComponent(session.uploadSessionId)}`, { method: "DELETE" }).catch(() => undefined);
     throw error;
