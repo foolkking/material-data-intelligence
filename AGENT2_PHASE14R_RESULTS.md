@@ -4380,3 +4380,10 @@ failures `0`. App Router transitions retained the ProductShell and recorded
 Implementation and qualification gates are green in the current worktree.
 Exact P14R-A/P14R-B commit and CI provenance remains the only release action
 not yet recorded here; Phase 15 remains uncreated and unstarted.
+
+The final immutable-bundle browser re-audit is
+`docs/agent2/phase14r/evidence/browser_final_aria_reaudit_2026-09-01_r2.json`.
+It confirms the rebuilt frontend (PID `29668`, dist
+`.next-prod-phase14r-final-20260901`) has zero broken ARIA references, zero
+unnamed visible inputs, zero duplicate IDs, zero overflow, zero console
+errors/warnings and zero critical HTTP failures across the audited routes.

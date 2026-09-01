@@ -1,0 +1,237 @@
+{
+  "schema": "phase14r.browser_final_aria_reaudit.v2",
+  "captured_at": "2026-09-01",
+  "scope": {
+    "read_only": true,
+    "business_mutations": false,
+    "destructive_actions": false,
+    "uploads": false,
+    "services_stopped": false,
+    "tabs_closed": false,
+    "browser_tab_preserved": true
+  },
+  "runtime": {
+    "frontend": "http://127.0.0.1:3013",
+    "api": "http://127.0.0.1:8005",
+    "frontend_pid": 29668,
+    "frontend_startup": "2026-09-01T18:18:22+08:00",
+    "frontend_dist": "apps/web/.next-prod-phase14r-final-20260901",
+    "api_health_runtime": {
+      "database": "postgresql",
+      "redis": "redis",
+      "artifact_storage": "minio",
+      "worker": "redis",
+      "llm_provider": "deepseek",
+      "configured": true
+    },
+    "authenticated": true,
+    "browser_surface": "Chrome extension tab",
+    "services_left_running": true
+  },
+  "live_desktop_audit": {
+    "viewport": [
+      1830,
+      878
+    ],
+    "routes": {
+      "console": {
+        "path": "/console",
+        "reachable": true,
+        "overflow_px": -16,
+        "scroll_width": 1814,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": [],
+        "unnamed_visible_inputs": []
+      },
+      "projects": {
+        "path": "/projects",
+        "reachable": true,
+        "overflow_px": -16,
+        "scroll_width": 1814,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": [],
+        "unnamed_visible_inputs": []
+      },
+      "project_home": {
+        "path": "/projects/project_0002_1a0af866391f412d",
+        "reachable": true,
+        "overflow_px": -16,
+        "scroll_width": 1814,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": [],
+        "unnamed_visible_inputs": []
+      },
+      "data": {
+        "path": "/projects/project_0002_1a0af866391f412d/data",
+        "reachable": true,
+        "overflow_px": -16,
+        "scroll_width": 1814,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": [],
+        "unnamed_visible_inputs": []
+      },
+      "research": {
+        "path": "/projects/project_0002_1a0af866391f412d/research",
+        "reachable": true,
+        "overflow_px": 0,
+        "scroll_width": 1830,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": [],
+        "unnamed_visible_inputs": []
+      },
+      "reports": {
+        "path": "/projects/project_0002_1a0af866391f412d/reports",
+        "reachable": true,
+        "overflow_px": -16,
+        "scroll_width": 1814,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": [],
+        "unnamed_visible_inputs": []
+      },
+      "tasks": {
+        "path": "/tasks",
+        "reachable": true,
+        "overflow_px": 0,
+        "scroll_width": 1830,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": [],
+        "unnamed_visible_inputs": []
+      },
+      "notifications": {
+        "path": "/notifications",
+        "reachable": true,
+        "overflow_px": 0,
+        "scroll_width": 1830,
+        "shell_count": 1,
+        "main_count": 1,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": [],
+        "unnamed_visible_inputs": []
+      },
+      "trash": {
+        "path": "/trash",
+        "reachable": true,
+        "overflow_px": 0,
+        "scroll_width": 1830,
+        "shell_count": 1,
+        "main_count": 2,
+        "h1_count": 1,
+        "duplicate_ids": [],
+        "broken_aria_refs": [],
+        "unnamed_visible_inputs": []
+      }
+    },
+    "aggregate": {
+      "reachable_routes": 9,
+      "duplicate_id_count": 0,
+      "broken_aria_reference_count": 0,
+      "routes_with_overflow": 0,
+      "routes_with_unnamed_visible_inputs": 0
+    }
+  },
+  "aria_target_checks": {
+    "account_menu": {
+      "closed": {
+        "aria_controls": null,
+        "aria_expanded": "false",
+        "controlled_node_mounted": false,
+        "result": "PASS"
+      },
+      "open": {
+        "aria_controls": "product-account-menu",
+        "aria_expanded": "true",
+        "controlled_node_mounted": true,
+        "result": "PASS"
+      }
+    },
+    "research_history": {
+      "closed": {
+        "aria_controls": null,
+        "aria_expanded": "false",
+        "controlled_node_mounted": false,
+        "result": "PASS"
+      },
+      "open": {
+        "aria_controls": "research-session-history",
+        "aria_expanded": "true",
+        "controlled_node_mounted": true,
+        "result": "PASS"
+      }
+    },
+    "data_inputs": {
+      "visible_controls": [
+        "搜索表格",
+        "显示属性列",
+        "显示语义角色列",
+        "显示记录列",
+        "显示单位列"
+      ],
+      "unnamed_visible_inputs": 0,
+      "result": "PASS"
+    }
+  },
+  "browser_health": {
+    "current_chrome_console_errors": 0,
+    "current_chrome_console_warnings": 0,
+    "observed_messages": [],
+    "duplicate_ids": 0,
+    "broken_aria_refs": 0,
+    "critical_http_5xx": 0,
+    "unexpected_authorization_failures": 0
+  },
+  "mobile_390x844": {
+    "source": "docs/agent2/phase14r/evidence/browser_final_nondestructive_2026-09-01.json",
+    "same_frontend_dist": "apps/web/.next-prod-phase14r-final-20260901",
+    "layout_status": "PASS_FROM_SAME_STACK_PRODUCTION_EVIDENCE",
+    "overflow_px": 0,
+    "duplicate_ids": 0,
+    "document_requests": 0,
+    "shell_preserved": true,
+    "critical_http_5xx": 0,
+    "console_errors": 0,
+    "bounded_internal_regions": [
+      "Dataset table horizontal scroll region",
+      "Report chapter strip internal navigation"
+    ],
+    "aria_fix_status": "The conditional aria-controls implementation is in the immutable bundle now live on 3013; live Chrome verification was performed at desktop viewport. Mobile layout evidence remains PASS and uses the same bundle, but this Chrome extension session did not expose viewport emulation."
+  },
+  "app_router": {
+    "source": "docs/agent2/phase14r/PERFORMANCE_PRODUCT_FLUENCY_BASELINE.md",
+    "desktop_1280x720_document_requests": 0,
+    "mobile_390x844_document_requests": 0,
+    "desktop_shell_preserved": true,
+    "mobile_shell_preserved": true
+  },
+  "overall_result": {
+    "aria_account_menu": "PASS",
+    "aria_research_history": "PASS",
+    "input_accessible_names": "PASS",
+    "desktop_routes": "PASS",
+    "mobile_layout": "PASS_FROM_EXISTING_SAME_STACK_EVIDENCE",
+    "console_network": "PASS",
+    "duplicate_ids": "PASS",
+    "remaining_gaps": []
+  }
+}

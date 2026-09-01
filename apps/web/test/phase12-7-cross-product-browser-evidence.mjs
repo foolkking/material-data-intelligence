@@ -83,7 +83,11 @@ async function inspect(page, name, viewport, touch = false) {
   const composer = page.getByLabel("询问此项目中的数据");
   if (await composer.inputValue() !== selectedQuestion || !(await composer.evaluate((element) => element === document.activeElement))) throw new Error(`${name}: starter question did not fill and focus the composer`);
   if (audit.mutatingApiRequests.length) throw new Error(`${name}: selecting an inert starter question created a write request`);
-  const searchTrigger = page.getByRole("button", { name: "搜索项目" });
+  // The shared ProductShell names this global discovery action according to
+  // the current scientific-work vocabulary. Keep the acceptance harness
+  // tolerant of the historical "搜索项目" label for legacy bundles while
+  // requiring the same single global search control.
+  const searchTrigger = page.getByRole("button", { name: /搜索(科学工作|项目)/ });
   const accountTrigger = page.getByRole("button", { name: /打开账户菜单/ });
   if (!(await searchTrigger.isVisible()) || !(await accountTrigger.isVisible())) throw new Error(`${name}: internal route lost global navigation controls`);
   await accountTrigger.click();
