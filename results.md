@@ -17393,6 +17393,33 @@ uv lock --check = PASS
 `npm run build`、`npm run typecheck`、`python -m compileall -q apps/api/mdi_api`
 和 `git diff --check` 均通过。
 
+## Agent-2.0 Phase 14-R — Post-Seal Product Quality Remediation
+
+- 状态：已完成
+- 完成时间：2026-09-01
+- 修改文件：Phase 14-R release evidence in
+  `AGENT2_PHASE14R_RESULTS.md`, `persistent/TASK_BOARD.md`,
+  `persistent/DESIGN_PROGRESS.md`; cross-browser acceptance harness
+  `apps/web/test/phase12-7-cross-product-browser-evidence.mjs`.
+- 修改摘要：完成同栈产品质量收口与跨浏览器无障碍验收脚本修复。账户菜单
+  按真实产品顺序验证“回收站 → 模型设置 → 退出登录”，关闭态验证焦点
+  恢复、`aria-expanded=false` 与不保留失效 `aria-controls`；等待逻辑兼容
+  WebKit 的异步焦点恢复。未改变科学数据、Result、版本、队列或权威边界。
+- 测试结果：当前工作树完整后端 `1948 passed, 32 historical optional
+  skips`；完整前端 `105 files / 764 tests passed`；ARIA/product focused
+  `116 passed`；同栈 PostgreSQL/Redis/MinIO `70 selected / 70 passed /
+  0 failed / 0 errors / 0 skipped`；compileall、uv lock、production build、
+  touched Ruff、git diff check 均通过。浏览器证据
+  `docs/agent2/phase14r/evidence/browser_final_aria_reaudit_2026-09-01_r2.json`
+  记录桌面/移动溢出 0、重复 ID 0、broken ARIA 0、console/page errors 0、
+  critical 4xx/5xx 0、授权失败 0。
+- 提交/CI 状态：P14R-A final candidate
+  `8607b1c1f1cb4afbcbf777b69129a0055a141791`，exact CI
+  `33501524613` PASS；P14R-B
+  `f23f6b124383ccdba03d750911d06e85b6532ce4`，exact-current-head CI
+  `33502281952` PASS；`HEAD == origin/master`。服务、worker 与 Chrome
+  标签页按用户要求保持运行；Phase 15 未创建、未启动。
+
 ## Agent-2.0 Phase 14-R — bulk project organization follow-up
 
 - 状态：已完成本批次

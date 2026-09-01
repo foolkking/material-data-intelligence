@@ -3473,5 +3473,6 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
 - [x] Reconcile current same-stack operations snapshot and browser evidence.
 - [x] Create P14R-A and obtain exact-SHA CI (`8607b1c1`,
       `33501524613`, all required jobs PASS).
-- [ ] Create P14R-B, obtain exact-head CI, then close this task and append the
-      final result.
+- [x] Create P14R-B and obtain exact-current-head CI
+      (`f23f6b1`, `33502281952`, all required jobs PASS); final result appended
+      to `results.md`.

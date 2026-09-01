@@ -4414,3 +4414,48 @@ qualification, responsive/accessibility checks, production build and the
 Phase 12-7 cross-product UX harness. The service-backed job completed against
 real PostgreSQL/Redis/MinIO with no mandatory skips. P14R-B evidence sealing
 and its exact-current-head CI remain the only release actions pending.
+
+## P14R-B exact-current-head final seal
+
+```text
+SHA = f23f6b124383ccdba03d750911d06e85b6532ce4
+CI run = 33502281952
+CI tested SHA = f23f6b124383ccdba03d750911d06e85b6532ce4
+result = PASS
+HEAD == origin/master = YES
+```
+
+All required CI jobs passed on that exact current head:
+
+```text
+Unit Tests (Python 3.11) = PASS
+Frontend Typecheck & Build = PASS
+Service-backed Integration (PostgreSQL + Redis + MinIO) = PASS
+Phase 11-3 Scientific Replay (Linux) = PASS
+Phase 11-3 Scientific Replay (Windows) = PASS
+```
+
+## Phase 14-R final verdict
+
+```text
+PHASE14 = SEALED
+PHASE14_REOPENED = NO
+FUNCTIONAL_PHASE14R_CLOSURE = PASS
+AGENT2_PHASE14R = COMPLETE
+SCIENTIFIC_SURFACE_COMPLETENESS = PASS
+SCIENTIFIC_REPORT_QUALITY = PASS
+USER_LIFECYCLE_MANAGEMENT = COMPLETE
+CHAT_RESEARCH_CONTROL = COMPLETE
+CONTEXT_PROVENANCE_2_0 = COMPLETE
+PRODUCT_FLUENCY = PASS
+GLOBAL_PRODUCT_ORGANIZATION = COMPLETE
+BACKGROUND_TASK_RECOVERY = COMPLETE
+RETENTION_EXPORT_GOVERNANCE = COMPLETE
+AGENT_REPORT_QUALITY_EVALUATION = PASS
+OPERATIONS_MATURITY = PASS
+REAL_USER_PRODUCT_ACCEPTANCE = PASS
+MATURE_PRODUCT_GAPS = NONE
+READY_FOR_MATURE_PRODUCTION_USE = YES
+PHASE15_CREATED = NO
+PHASE15_STARTED = NO
+```
