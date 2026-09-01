@@ -4387,3 +4387,30 @@ It confirms the rebuilt frontend (PID `29668`, dist
 `.next-prod-phase14r-final-20260901`) has zero broken ARIA references, zero
 unnamed visible inputs, zero duplicate IDs, zero overflow, zero console
 errors/warnings and zero critical HTTP failures across the audited routes.
+
+## P14R-A exact-SHA release qualification
+
+The final P14R-A candidate is:
+
+```text
+SHA = 8607b1c1f1cb4afbcbf777b69129a0055a141791
+CI run = 33501524613
+CI tested SHA = 8607b1c1f1cb4afbcbf777b69129a0055a141791
+result = PASS
+```
+
+Required jobs all passed:
+
+```text
+Unit Tests (Python 3.11) = PASS
+Frontend Typecheck & Build = PASS
+Service-backed Integration (PostgreSQL + Redis + MinIO) = PASS
+Phase 11-3 Scientific Replay (Linux) = PASS
+Phase 11-3 Scientific Replay (Windows) = PASS
+```
+
+The frontend job included the pinned Chromium/Firefox/WebKit browser
+qualification, responsive/accessibility checks, production build and the
+Phase 12-7 cross-product UX harness. The service-backed job completed against
+real PostgreSQL/Redis/MinIO with no mandatory skips. P14R-B evidence sealing
+and its exact-current-head CI remain the only release actions pending.

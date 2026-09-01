@@ -5982,3 +5982,12 @@ workers/queue 0、MinIO ok。
   tests.
 - Remaining release work is exact P14R-A/P14R-B commit and current-head CI only;
   Phase 15 remains uncreated and unstarted.
+
+## 2026-09-01 Phase 14-R P14R-A exact-SHA qualification
+
+- Final P14R-A candidate `8607b1c1f1cb4afbcbf777b69129a0055a141791` passed exact
+  CI run `33501524613`. Unit, frontend typecheck/build/browser evidence,
+  PostgreSQL/Redis/MinIO service-backed integration, and Linux/Windows replay
+  jobs all passed.
+- P14R-B is now limited to authoritative evidence finalization and exact-head
+  CI; no product architecture remains open in this release candidate.

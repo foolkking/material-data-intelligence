@@ -3471,5 +3471,7 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
 - [x] Complete isolated PostgreSQL/Redis/MinIO mandatory campaign
       (`70 selected / 70 passed / 0 failed / 0 errors / 0 skipped`).
 - [x] Reconcile current same-stack operations snapshot and browser evidence.
-- [ ] Create P14R-A, obtain exact-SHA CI, create P14R-B, obtain exact-head CI,
-      then close this task and append the final result.
+- [x] Create P14R-A and obtain exact-SHA CI (`8607b1c1`,
+      `33501524613`, all required jobs PASS).
+- [ ] Create P14R-B, obtain exact-head CI, then close this task and append the
+      final result.
