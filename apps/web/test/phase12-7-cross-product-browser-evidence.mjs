@@ -106,6 +106,7 @@ async function inspect(page, name, viewport, touch = false) {
   await page.keyboard.press("Escape");
   if (await page.getByRole("menu", { name: "账户菜单" }).isVisible().catch(() => false)) throw new Error(`${name}: account menu did not close on Escape`);
   const restoredAccountTrigger = page.getByRole("button", { name: /打开账户菜单/ });
+  await page.waitForFunction(() => document.activeElement?.getAttribute("aria-label") === "打开账户菜单");
   if (!(await restoredAccountTrigger.evaluate((element) => element === document.activeElement))) throw new Error(`${name}: account menu did not restore trigger focus`);
   if ((await restoredAccountTrigger.getAttribute("aria-expanded")) !== "false" || await restoredAccountTrigger.getAttribute("aria-controls")) throw new Error(`${name}: closed account menu retained an invalid accessibility relationship`);
   const metrics = await page.evaluate(({ touch }) => {
