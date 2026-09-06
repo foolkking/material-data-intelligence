@@ -17300,6 +17300,24 @@ document/body `390/390`、`overflowCount=0`；仅预期 bootstrap `401`，
 - 提交/CI 状态：未提交；Phase 14-R 总体仍为 `PARTIAL`，服务与浏览器
   标签页保持运行。
 
+## Product maturity — 同栈科学对象逐页复核（2026-09-04）
+
+- 状态：完成当前生产构建的科学对象读路径复核，成熟度总任务仍处理中。
+- 证据：认证浏览器在 `127.0.0.1:3020` 打开活动项目 `13/13` 个精确
+  ScientificObject/Version 入口。Electronic DOS、Phonon Band/DOS、Dataset、
+  ML 表格、Electronic Band、Structure、Trajectory、Diffusion 均在 hydration
+  后到达声明的 renderer 或 bounded fallback；`Internal Server Error`、
+  `Application error`、`SOURCE_MISSING`、alert 均为 `0`，桌面宽度
+  `1265/1265`，overflow `0`。Structure/Trajectory 挂载真实 canvas；Structure
+  显示 `Si` 位点、晶胞和精确版本信息。
+- 服务：API `8005`、PostgreSQL、Redis、MinIO、workers 与浏览器标签页均保持
+  运行；`/api/health/runtime` 返回 PostgreSQL/Redis/MinIO/Redis worker。
+- 测试：后端焦点 `56 passed / 1 historical skip`；全前端当前回归
+  `110 files / 819 tests passed`；typecheck、production build、compileall、
+  `uv lock --check`、`git diff --check` 均通过。
+- 边界：历史源文件确实缺失时仍展示显式 fail-closed，不伪造替代 payload；
+  未提交、未推送，未删除用户文件/证据/临时日志。
+
 ## Agent-2.0 Phase 14-R — project tags and catalog discovery follow-up
 
 - 状态：已完成本批次
@@ -17324,6 +17342,121 @@ document/body `390/390`、`overflowCount=0`；仅预期 bootstrap `401`，
   每项显示 `已归档` 并保留精确项目作用域路由；浏览器 warning/error 日志为空。
 - 测试结果：`uv lock --check` 与 `git diff --check` PASS。
 - 提交/CI 状态：未提交；Phase 14-R 仍为 `PARTIAL`，P14R-A/P14R-B 未创建。
+
+## Product Maturity — Data Visibility and Exact Payload Closure
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改文件：`apps/api/mdi_api/routers/secured_runtime.py`、
+  `tests/test_project_access.py`、`apps/web/app/components/ProductPages.tsx`、
+  `apps/web/app/components/ProductPages.test.tsx`、
+  `apps/web/app/components/ProjectHome.tsx`、
+  `apps/web/app/components/ProjectHome.test.tsx`、
+  `apps/web/app/projects/[projectId]/datasets/[datasetId]/page.tsx`、
+  migration-head regression、Product Maturity evidence 与 `persistent/*`。
+- 修改摘要：确认 PostgreSQL、Redis、MinIO、API、workers 和 frontend 均
+  正常；把 11 个零资源 Dataset 从错误的 storage failure 改为显式 `EMPTY`
+  专业空状态；使用 exact SHA/parser/object identity 恢复唯一用户可见历史
+  Dataset 的 raw/normalized/metadata 三个既有权威对象；旧 Dataset 详情路由
+  统一进入当前 Data Platform，空 Dataset 不再暴露科学执行 Planner。
+- 可见数据结果：28 个 Dataset 为 17 READY + 11 EMPTY + 0 failed；13/13
+  ScientificObjectVersion Viewer READY；241/241 Artifact 内容可读；11/11
+  Report 可读；70/70 产品路由 HTTP 200；Internal Server Error=0，
+  SOURCE_MISSING=0。
+- 浏览器结果：恢复 Dataset 显示 `Si / 1` 单行权威表格；旧空 Dataset 深链
+  正确重定向并显示“尚未导入科学对象”，Research link=0、Planner run
+  action=0、global overflow=0、browser logs=0。
+- 测试结果：完整 backend `1970 passed, 84 skipped`；完整 frontend
+  `106 files / 773 passed`；focused frontend `41 passed`；隔离
+  PostgreSQL/Redis/MinIO `70 selected / 70 passed / 0 failed / 0 errors /
+  0 skipped`；production build、typecheck、compileall、uv lock、touched
+  Ruff、git diff check PASS。最终 operations snapshot 为 status=ok、
+  PostgreSQL active=1/idle=5/idle-in-transaction=0/pool checkedOut=0、
+  六个 idle workers、production queue depth=0、MinIO=ok。
+- 服务状态：frontend 3013、API 8005、PostgreSQL 55434、Redis 6379/13、
+  MinIO 9000/9001、六个 workers 与两个认证浏览器核验标签页保持运行。
+- 提交/CI 状态：未提交；用户本轮要求先进行最终产品核验。`HEAD ==
+  origin/master == 9864e79c433536cc90b24c6a4c68c5bebd940daa`。
+
+## Product Maturity Closure — scientific data reachability remediation
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改文件：`apps/api/mdi_api/routers/secured_runtime.py`,
+  `apps/web/app/components/ProductPages.tsx` 及其回归测试，当前迁移 head
+  回归断言，payload availability/recovery evidence 与 persistent 状态文件。
+- 修改摘要：确认 PostgreSQL、Redis、MinIO、API、六个 worker 和前端均正常，
+  Internal Server Error/不可用页面不是服务未启动。把零文件/零对象 Dataset
+  从 storage failure 修正为正式 `EMPTY` contract，并让 UI 显示可操作的导入
+  空状态而不是故障，同时禁止无 payload 的 Research 动作。对唯一缺失的
+  acceptance Dataset，只有在 raw ZIP、normalized JSON、parser object ID/hash、
+  schema 与 resolver 全部精确匹配后，才条件写回三个既有 MinIO key；无版本、
+  Result 或 Report 变更。
+- 实时数据结果：28 个可见 Dataset 全部可达（17 READY、11 EMPTY、0 失败）；
+  13 个可见 ScientificObjectVersion Viewer 全部为 HTTP 200、payload READY、
+  PROFESSIONAL，SOURCE_MISSING=0。报告中的轨迹对象
+  `d325a090-d53f-4980-8a5e-c466bf6470eb` / version
+  `052d3a8e-8a35-48ac-9e65-b95a86b42c99` 已在认证内置浏览器显示三帧轨迹、
+  播放/测量/超胞及精确元数据，浏览器日志为空。
+- 测试结果：完整前端 `106 files / 773 tests passed`；focused backend
+  object-store `2 passed`；migration `3 passed`；typecheck、production
+  build、compileall、uv lock、touched Ruff、git diff check PASS。完整后端
+  与 PostgreSQL/Redis/MinIO service-backed 最终计数见随后补充。
+- 提交/CI 状态：未提交；保留所有既有用户工作树与证据文件，服务及浏览器
+  标签页保持运行。
+
+## Product maturity closure — same-stack/runtime and shared UX batch
+
+- 状态：已完成本批次
+- 完成时间：2026-09-01
+- 修改摘要：确认并保持 PostgreSQL/Redis/MinIO/workers 运行；将
+  `0029_product_maturity_platform_roles` 升级到真实 PostgreSQL；平台
+  Provider 变更改为显式 `PLATFORM_ADMIN`，普通研究者的模型设置改为只读；
+  全局任务/通知改为单次授权分页 feed；空白搜索不再加载全部历史；研究
+  历史结果使用单调加载状态；移动端保留项目身份；新增当前产品现实审计。
+- 修改文件：`apps/api/mdi_api/db.py`、
+  `apps/api/mdi_api/routers/auth.py`、
+  `apps/api/mdi_api/routers/planner_providers.py`、
+  `apps/api/mdi_api/routers/workspaces.py`、
+  `apps/api/mdi_api/workspaces.py`、对应 migration/tests、前端
+  `ProductShell`/`ModelSettingsPage`/`ResearchPages`/Task Center/
+  Notifications、`globals.css`、`docs/agent2/product_maturity/PRODUCT_REALITY_AUDIT.md`。
+- 测试结果：前端定向 `22 passed`；后端定向 `26 passed`；生产
+  `typecheck`、`build`、`git diff --check` PASS；浏览器同栈 Data、
+  Tasks、Reports、Model Settings 路径加载成功；`/health/runtime`
+  PostgreSQL/Redis/MinIO/Redis worker/DeepSeek 全部 `ok`。
+- 提交/CI 状态：未提交；保留当前用户未提交修改，待更大批次产品成熟度
+  工作完成后统一审阅和提交。
+
+## Phase 14-R — Scientific Payload Availability Remediation
+
+- 状态：已完成
+- 完成时间：2026-09-01T22:19:12+08:00
+- 修改文件：`apps/api/mdi_api/routers/planner.py`、
+  `tests/test_phase8c_planner_read_api.py`、`apps/web/app/lib/planner-api.ts`、
+  `apps/web/app/components/ScientificViewerAdapter.tsx`、
+  `apps/web/app/components/ProductPages.tsx`、Scientific Object Viewer/Shell、
+  focused frontend tests、Phase 14-R audit/results/recovery evidence 与
+  `persistent/*` 项目记录。
+- 修改摘要：确认服务本身正常，根因为 PostgreSQL 引用与活动 MinIO 数据根
+  分裂，加上 `NoSuchKey` 未处理。按 exact key/size/SHA-256/contentHash/
+  metadata identity 恢复 1,551 个对象，活动引用覆盖达到 1,800/1,805；
+  canonical diffusion Job 的 8/8 Artifact 和 exact trajectory Viewer 均恢复。
+  对剩余 5 个无法证明的历史引用保留 typed missing 状态，不伪造 payload、
+  不静默替换版本。UI 区分确认缺失与临时服务失败，并保留精确 provenance。
+- 测试结果：后端 focused `9 passed`；前端 focused `45 passed`；
+  `npm --prefix apps/web run typecheck` PASS；production build PASS；
+  touched Ruff PASS；`git diff --check` PASS。认证浏览器 1280×720 与
+  390×844 的 Research/Report/Dataset 均为 loading=0、Internal Server
+  Error=0、unexpected 5xx=0、mobile global overflow=0。目标 Artifact 内容
+  API 8/8 为 200 且 SHA-256 匹配。
+- 服务状态：frontend 3013、API 8005、PostgreSQL 55434、Redis 6379、
+  MinIO 9000/9001、6 个 Redis workers 与可见 Chromium 核验窗口保持运行。
+- 提交/CI 状态：未提交；用户本轮未要求提交或推送。`HEAD ==
+  origin/master == 9864e79c433536cc90b24c6a4c68c5bebd940daa`。
+- 唯一外部恢复输入：若需让 `dataset_0001_a0b09e3324e44ca4` 完整交互，
+  需要原始 `materials.zip`，SHA-256
+  `b75f9a1d398de4636e4494f2aaa04977326ca66a96356fcc1be87e86a3a520c4`。
 
 ## Agent-2.0 Phase 14-R — Scientific Report organization batch
 
@@ -17454,3 +17587,2928 @@ uv lock --check = PASS
   每项显示 `已归档` 并保留精确项目作用域路由；浏览器 warning/error 日志为空。
 - 测试结果：文档变更后 `git diff --check` 待本批次末复核。
 - 提交/CI 状态：未提交；Phase 14-R 仍为 `PARTIAL`，P14R-A/P14R-B 未创建。
+
+## Product maturity — Dataset interaction batch (continued)
+
+- 状态：已完成本批次；总 Product Maturity Closure 继续处理中
+- 完成时间：2026-09-01
+- 修改文件：`apps/api/mdi_api/routers/datasets.py`,
+  `tests/test_dataset_object_store_projection.py`,
+  `apps/web/app/components/workspace/WorkspaceArtifactGallery.tsx`,
+  `apps/web/app/globals.css`,
+  `docs/agent2/product_maturity/PRODUCT_MATURITY_BATCH_2026-09-01.md`,
+  `persistent/DESIGN_PROGRESS.md`, `persistent/TASK_BOARD.md`,
+  `persistent/ARCHITECTURE_DECISIONS.md`.
+- 修改摘要：为 DataFrame object-store 结果补齐确定性的 `objectId`、
+  `sampleRef`、`sampleKey`；表格保留可读样本身份、固定左侧选择列并提供
+  移动端横向浏览提示，避免“内容可读但无法选择”的产品断层。未改变科学
+  数值、ScientificObject/Version、Result、Artifact 或报告权威。
+- 运行证据：`/health/runtime` 为 PostgreSQL/Redis/MinIO/Redis worker/
+  DeepSeek 全部 `ok`；API `8005`、前端 `3013`、PostgreSQL `55434`、
+  Redis `6379/13`、MinIO `9000/9001` 与六个 worker 均保持运行。
+- 浏览器证据：认证数据页刷新后显示 `Si / 1`、`objectId =
+  obj_dataframe_60c91184df02`、稳定 `sampleRef =
+  dataset_0001_a0b09e3324e44ca4@2:60c91184df022d34:0`，`选择` 已启用；
+  数据页浏览器错误/警告为空；账户中心显示认证身份与权限信息。
+- 测试结果：后端 focused `56 passed`；前端 focused `91 passed`；完整后端
+  `1978 passed, 84 skipped`；typecheck/build/compileall/uv lock/Ruff/diff
+  均 PASS。
+- 提交/CI 状态：未提交；服务、worker 与浏览器标签页保持运行；总任务仍有
+  后续产品成熟度队列，不宣称整体 COMPLETE。
+
+## Product maturity — runtime compatibility and project governance batch
+
+- 状态：已完成本批次；总 Product Maturity Closure 继续处理中
+- 完成时间：2026-09-01
+- 修改文件：`apps/api/mdi_api/routers/platform_admin.py`,
+  `apps/api/mdi_api/main.py`, `apps/web/app/lib/product-api.ts`,
+  `apps/web/app/components/AdminCenterPage.tsx`,
+  `apps/web/app/components/AdminCenterPage.test.tsx`,
+  `apps/web/app/globals.css`, `tests/test_account_admin_management.py`,
+  `scripts/phase14r_frontend_alias.mjs`,
+  `docs/agent2/product_maturity/PRODUCT_MATURITY_BATCH_RUNTIME_GOVERNANCE_2026-09-01.md`,
+  `persistent/DESIGN_PROGRESS.md`, `persistent/ARCHITECTURE_DECISIONS.md`,
+  `persistent/TASK_BOARD.md`.
+- 修改摘要：确认用户报告的不可读页面不是 PostgreSQL/Redis/MinIO/API/
+  worker 停止；当前同栈 13 个可见 ScientificObject Viewer 均为
+  `200 / READY`。新增无状态 `3000 → 3013` 兼容入口，解决旧书签落到
+  失效前端端口的问题；新增平台管理员项目目录与成员角色治理，复用
+  `project_members`、保护 owner、服务端授权并写入脱敏审计。
+- 测试结果：后端账户/管理员 `7 passed`；前端 Admin/Trash/ProductShell
+  `24 passed`；typecheck、production build、compileall、Ruff、diff check
+  均 PASS。`/health/runtime` 为 PostgreSQL/Redis/MinIO/Redis workers/
+  DeepSeek 全部 `ok`；3000/3013 根、Dataset、Report 请求均 `200`。
+- 提交/CI 状态：未提交；服务、worker、3000 兼容入口与浏览器会话保持
+  运行；整体 Product Maturity Closure 仍为处理中。
+
+## Product maturity — payload availability UI clarification batch
+
+- 状态：已完成本批次；总 Product Maturity Closure 继续处理中
+- 完成时间：2026-09-01
+- 修改文件：`apps/web/app/components/ProductPages.tsx`,
+  `apps/web/app/components/ProductPages.test.tsx`,
+  `apps/web/app/components/ScientificViewerAdapter.tsx`,
+  `apps/web/app/components/ScientificViewerAdapter.effect.test.tsx`,
+  `apps/web/app/globals.css`,
+  `docs/agent2/product_maturity/PRODUCT_MATURITY_BATCH_PAYLOAD_UI_2026-09-01.md`,
+  `persistent/TASK_BOARD.md`.
+- 修改摘要：将来源读取失败按服务端证据区分为“暂时失败，可重试”和
+  “已确认缺失”，避免将可恢复故障误报为 Internal Server Error；确认缺失
+  时保留精确来源/版本身份、禁止静默替换，并显示重新导入/恢复原文件的
+  可操作提示。未修改科学数据、ScientificObject/Version、Result、Artifact
+  或 Report authority。
+- 测试结果：ProductPages `40 passed`；TypeScript typecheck PASS；
+  touched Ruff PASS；`git diff --check` 待本批次末复核。认证 acceptance
+  用户的 28 个 Dataset object-store 路由全部 HTTP 200，`/health/runtime`
+  的 PostgreSQL/Redis/MinIO/worker/DeepSeek 均为 `ok`。
+- 提交/CI 状态：未提交；服务、worker、3000 兼容入口与浏览器标签页保持
+  运行；整体 Product Maturity Closure 仍为处理中。
+
+## Product maturity — route continuity batch
+
+- 状态：已完成本批次；总 Product Maturity Closure 继续处理中
+- 完成时间：2026-09-01
+- 修改文件：`apps/web/app/components/DatasetWorkbenchPage.tsx`,
+  `apps/web/app/components/DatasetWorkbenchPage.test.tsx`,
+  `apps/web/app/components/ProjectHome.tsx`,
+  `apps/web/app/components/ProjectHome.test.tsx`,
+  `docs/agent2/product_maturity/PRODUCT_MATURITY_BATCH_ROUTE_CONTINUITY_2026-09-01.md`,
+  `persistent/TASK_BOARD.md`, `persistent/DESIGN_PROGRESS.md`,
+  `persistent/ARCHITECTURE_DECISIONS.md`.
+- 修改摘要：修复 Dataset 工作台和项目首页的项目上下文丢失问题。已加载
+  项目现在通过现有 ProductNavigation 客户端过渡进入项目级数据集导入；
+  数据工作台面包屑/返回项目也回到当前项目，避免落入全局根或旧兼容分析
+  入口。无科学 authority、版本、Result、Artifact、Report 或服务拓扑变更。
+- 测试结果：DatasetWorkbenchPage `1 passed`、ProjectHome `3 passed`、
+  ProductPages `40 passed`；TypeScript typecheck PASS；`git diff --check`
+  PASS（仅既有换行规范告警）。
+- 提交/CI 状态：未提交；API、前端、PostgreSQL、Redis、MinIO、workers
+  与现有浏览器标签页保持运行；总任务仍在继续，不宣称整体 COMPLETE。
+
+补充：本批次发现旧书签兼容端口 `3000` 的代理进程曾退出；未触碰主前端
+`3013`，已重新启动无状态 `3000 → 3013` 代理并确认端口监听恢复。
+## Product maturity — payload recovery entry UX batch
+
+- 状态：已完成本批次；总 Product Maturity Closure 继续处理中
+- 完成时间：2026-09-01
+- 修改文件：`apps/web/app/components/ProductPages.tsx`,
+  `apps/web/app/components/ProductPages.test.tsx`,
+  `docs/agent2/product_maturity/PRODUCT_MATURITY_BATCH_PAYLOAD_RECOVERY_ENTRY_2026-09-01.md`,
+  `persistent/TASK_BOARD.md`, `persistent/DESIGN_PROGRESS.md`,
+  `persistent/ARCHITECTURE_DECISIONS.md`.
+- 修改摘要：为确认缺失的科学 payload 增加项目级“重新导入源文件”恢复入口；
+  为重复数据 fallback 标题生成 Dataset/data-kind 作用域的唯一 DOM id 并保持
+  `aria-labelledby` 关系；为缺失/暂时不可读的结果 Artifact 增加项目级
+  “返回数据源”入口。未修改任何科学 authority、版本、Result、Artifact、
+  Report 或服务拓扑。
+- 测试结果：ProductPages/ProductShell/ProjectHome/DatasetWorkbench focused
+  `61 passed`，ScientificViewerAdapter effect `8 passed`；TypeScript typecheck、生产 build、
+  API compileall、`git diff --check` 均 PASS；同栈 `/health/runtime` 继续为
+  PostgreSQL/Redis/MinIO/worker/DeepSeek `ok`。
+- 提交/CI 状态：未提交；API、前端、数据库、Redis、MinIO、workers、
+  3000 兼容入口与浏览器标签页保持运行。
+
+## Product maturity — scientific table accessibility normalization
+
+- 状态：已完成本批次；总 Product Maturity Closure 继续处理中
+- 完成时间：2026-09-01
+- 修改文件：
+  `apps/web/app/components/workspace/WorkspaceArtifactGallery.tsx`,
+  `apps/web/app/components/workspace/WorkspaceArtifactGallery.test.tsx`,
+  `persistent/TASK_BOARD.md`, `persistent/DESIGN_PROGRESS.md`,
+  `persistent/ARCHITECTURE_DECISIONS.md`.
+- 修改摘要：将科学表格滚动区域的主可访问名称恢复为稳定语义，
+  将“样本身份列固定在左侧”等移动交互提示改为每个实例唯一的
+  `aria-describedby` 说明链，避免重复 DOM id 和不稳定 role 名称。
+  未修改科学数据、版本、Result、Artifact、Report 或服务拓扑。
+- 测试结果：ScientificWorkspaceShell `29 passed`；完整前端
+  `108 files / 787 tests passed`；TypeScript typecheck、API compileall、
+  `git diff --check` PASS；`/health/runtime` 继续报告 PostgreSQL/Redis/
+  MinIO/Redis worker/DeepSeek，同栈服务和浏览器标签页保持运行。
+- 提交/CI 状态：未提交；等待后续产品成熟度批次统一收口。
+
+## Product maturity — same-stack runtime reload and browser recheck
+
+- 状态：已完成本批次；总 Product Maturity Closure 继续处理中
+- 完成时间：2026-09-01
+- 修改文件：`docs/agent2/product_maturity/PRODUCT_MATURITY_BATCH_RUNTIME_RELOAD_2026-09-01.md`,
+  `persistent/TASK_BOARD.md`, `persistent/DESIGN_PROGRESS.md`,
+  `persistent/ARCHITECTURE_DECISIONS.md`.
+- 补充修改：`scripts/phase14r_frontend_start.mjs`、
+  `apps/web/test/phase14r-runtime-static-assets.mjs`。
+- 修改摘要：恢复 API 的正式 MinIO 凭据并验证真实 PostgreSQL/Redis/MinIO/
+  worker 健康；替换 3013 上错误的旧 Next 构建进程，修复 `/trash` 和
+  `/account` 的 ChunkLoadError。未关闭服务或浏览器标签页，未修改科学
+  authority、版本、Result、Artifact 或 Report 数据。
+- 测试结果：账号/生命周期/Viewer 后端 `16 passed`；TypeScript typecheck、
+  compileall、`git diff --check` PASS；新认证浏览器标签页的 Trash、Account、
+  数据对象详情、报告详情和 Acceptance Dataset 均无应用错误、Internal
+  Server Error 或 console error；静态资源 smoke test PASS；
+  `/health/runtime` 全部必需组件 `ok`。
+- 提交/CI 状态：未提交；服务与浏览器标签页保持运行；总体任务继续处理中。
+
+## Product maturity — admin route continuity
+
+- 状态：已完成本批次；总 Product Maturity Closure 继续处理中
+- 完成时间：2026-09-01
+- 修改文件：`apps/web/app/components/ProductRouteFrame.tsx`,
+  `apps/web/app/components/ProductRouteFrame.test.ts`,
+  `apps/web/app/components/UserCenterPage.tsx`,
+  `apps/web/app/components/UserCenterPage.test.tsx`,
+  `apps/web/app/components/AdminCenterPage.tsx`,
+  `apps/web/app/components/AdminCenterPage.test.tsx`,
+  `persistent/TASK_BOARD.md`, `persistent/DESIGN_PROGRESS.md`.
+- 修改摘要：将 `/admin` 接入共享认证产品壳，补齐全局导航、会话守卫、
+  转场和滚动归属；账户中心与管理中心增加明确的“返回控制台”出口。
+  未修改科学数据、版本、Result、Artifact、Report 或生命周期 API。
+- 测试结果：前端 `ProductRouteFrame`、`AdminCenterPage`、
+  `UserCenterPage` 窄回归 `13 passed`。
+- 提交/CI 状态：未提交；未关闭服务或浏览器标签页；总体任务继续处理中。
+
+## Product maturity — shared UI and account fluency
+
+- 状态：已完成本批次；总 Product Maturity Closure 继续处理中
+- 完成时间：2026-09-01
+- 修改文件：`apps/web/app/components/UserCenterPage.tsx`,
+  `apps/web/app/components/UserCenterPage.test.tsx`,
+  `apps/web/app/globals.css`, `persistent/TASK_BOARD.md`,
+  `persistent/DESIGN_PROGRESS.md`.
+- 修改摘要：集中修复共享产品壳的横向溢出隔离、sticky 上下文导航及
+  action 状态反馈；账户中心的会话列表默认限制为最近 8 个，并提供
+  明确的“显示全部会话”入口，降低长页面和移动端滚动负担。重新构建并
+  窄重启 3013 前端，让实际浏览器加载当前构建；未关闭 API、PostgreSQL、
+  Redis、MinIO、workers 或浏览器标签页。
+- 测试结果：UserCenter/ProductShell/ProductRouteFrame 前端窄回归
+  `27 passed`；完整前端回归 `108 files / 788 passed`；typecheck、
+  production build、compileall、`git diff --check` PASS；
+  `/health/runtime` PostgreSQL/Redis/MinIO/Redis worker/DeepSeek 全部
+  `ok`；认证账户页 desktop 会话列表由 100 条收敛为默认 8 条，移动端
+  `scrollWidth=375/clientWidth=375` 且无页面告警。
+- 补充验证：3000 兼容入口曾继续提供旧 chunk，导致 fresh account tab
+  出现 ChunkLoadError；已将 alias 重启为 `3000 → 3013`。新的 3000
+  fresh tab 静态资源引用 `14/14` 返回 200，页面默认 8 条会话、无
+  Internal Server Error、无 console error。
+- 补充 UI 回归：任务/通知筛选在 390px 视口保持单行横向可滑动，按钮
+  均为 44px 触控高度，页面宽度未扩大；任务、通知、共享产品壳窄回归
+  `25 passed`，production build PASS。
+- 提交/CI 状态：未提交；服务与浏览器标签页保持运行；总体任务继续处理中。
+## Product maturity — live scientific surface re-audit (2026-09-02)
+
+- 状态：已完成本轮核验（总产品成熟度任务仍处理中）
+- 修改摘要：新增 `docs/agent2/product_maturity/LIVE_SCIENTIFIC_SURFACE_REAUDIT_2026-09-02.md`，记录同栈运行时、浏览器详情回归及截图根因分类；未修改科学 authority、数据库记录或服务。
+- 真实浏览器结果：16/16 项目数据入口；41/41 精确 Dataset/Object 详情；10/10 已验证 Report；10/10 报告引用 Viewer；`:3000` 兼容入口轨迹 Viewer 均无 Internal Server Error、SOURCE_MISSING 或 console error。
+- 代表性内容：轨迹版本 `052d3a8e-8a35-48ac-9e65-b95a86b42c99` 渲染真实 3 帧 canvas；Dataset 版本 `be02266a-7d4f-4ebb-9f28-3132855167d0` 渲染 `mat-1`/`mat-2`/`mat-3` 表格。
+- 服务证据：`/health/runtime` 为 PostgreSQL/Redis/MinIO/Redis worker；`phase14r_operations_snapshot.py --same-stack --fail-on-attention` PASS，idle-in-transaction=0、pool checkedOut=0、队列深度=0、6 workers idle。
+- 测试/检查：`phase14r-runtime-static-assets.mjs` PASS；未提交/未推送。
+## P14R results document status normalization (2026-09-02)
+
+- 状态：已完成
+- 修改摘要：将 `AGENT2_PHASE14R_RESULTS.md` 顶部状态与文件末尾最终封板一致化为 `COMPLETE`，并标注历史 checkpoint 的 `PARTIAL` 不代表当前状态。
+- 测试结果：文档一致性检查完成；未修改实现、数据库、服务或浏览器状态。
+- 提交/CI：未提交、未推送。
+
+### 前端构建刷新后的全路由复核（2026-09-03）
+
+- 结果：通过；本轮成熟度总任务仍处理中。
+- 证据：Console、Projects、Project Overview、Data、Research、Reports、Tasks、
+  Notifications、Trash、Account、Admin、Model Settings 在 `390×844` 和
+  `1280×720` 共 24 个组合全部 HTTP 200；页面级 overflow=0，console/page
+  errors=0，HTTP 5xx=0。
+- 运行状态：仅重启前端以刷新构建 chunk；PostgreSQL、Redis、MinIO、API、
+  workers、Chrome 标签页均保持运行。
+## Product maturity — legacy Report route P1 fix (2026-09-02)
+
+- 状态：已完成
+- 根因：历史 `job_*`/`run_*` 报告入口先探测现代报告接口，产生无意义 404，再降级到兼容页。
+- 修复：`apps/web/app/components/ScientificReportRoute.tsx` 对 legacy 引用直接进入只读兼容报告路径；增加错误项目路由校正与测试覆盖。
+- 验证：`ScientificReportRoute.test.tsx` 23 passed；生产构建通过；认证浏览器打开 `job_agent2_92fcd73e38034dcfbc7aa63fbcf2a70e`，无 Internal Server Error、console error/warn，科学结果最终加载。
+- 服务状态：PostgreSQL/Redis/MinIO/API/6 workers 保持运行；未提交、未推送。
+
+## Product maturity — mobile scientific table affordance fix (2026-09-02)
+
+- 状态：已完成本轮 UI 修复（总产品成熟度任务仍处理中）
+- 根因：科学表格已有横向滚动容器，但移动断点将 `.workspace-table-mobile-hint` 隐藏，右侧属性容易被误判为不可用或缺失。
+- 修复：恢复移动断点提示，明确完整属性可左右滑动，并保留稳定样本身份与选择操作固定在左侧；未改变数据、选择语义或科学 authority。
+- 验证：`WorkspaceArtifactGallery` + `ScientificWorkspaceShell` + `ScientificReportRoute` 窄回归 `53 passed`；前端全量 `108 files / 789 tests passed`；production build、typecheck、compileall、静态资源、`git diff --check` PASS；同栈 `/health/runtime` 与 operations snapshot PASS。
+- 提交/CI：未提交、未推送；服务与浏览器标签页保持运行。
+
+## Product maturity — repeated Viewer accessibility ids (2026-09-02)
+
+- 状态：已完成本轮可访问性修复（总 Product Maturity Closure 仍继续处理中）
+- 根因：多个科学 Viewer 同页渲染时共用 `viewer-limitations`，会造成重复
+  DOM id 和错误的 `aria-labelledby` 关联。
+- 修复：`ScientificViewerShell` 使用 React `useId` 为每个 Viewer 的限制
+  区域生成稳定唯一标题 id；未改变科学内容或运行行为。
+- 测试结果：`ScientificViewerShell.test.tsx` 与
+  `ScientificObjectViewer.test.tsx` 合计 `3 passed`；typecheck 与
+  `git diff --check` PASS；同栈服务快照无告警。
+- 提交/CI 状态：未提交、未推送；服务、worker 与浏览器标签页保持运行。
+
+## Dataset/Research recovery and exact-version navigation (2026-09-04)
+
+- 状态：完成第二批 Dataset/Research/Viewer 交互审计修复，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/components/ProductPages.tsx`、
+  `apps/web/app/components/ProductPages.test.tsx`、
+  `persistent/DESIGN_PROGRESS.md`。
+- 修改摘要：为 Console 快速查看失败态和项目数据/概览读取失败态增加原地重试；
+  为缺少不可变版本参数的科研对象 Data 路由增加 fail-closed 精确版本提示与返回
+  项目数据入口，避免回退到 Dataset 面板造成误导。
+- 测试结果：ProductPages `43 passed`；前端 typecheck PASS；
+  `git diff --check` PASS。
+- 提交/CI 状态：未提交、未推送；运行中的 API、前端、PostgreSQL、Redis、MinIO、
+  workers 与浏览器标签页保持不变。
+
+## 2026-09-03 — Product maturity UX batch
+
+状态：已完成本批次，持续任务仍处理中。
+
+修改摘要：
+- Task Center/Notification Center 增加有界搜索、稳定排序和无匹配恢复。
+- Scientific Report 增加移动端章节跳转，Dataset workbench 增加来源到结果
+  的术语层级说明与精确项目 breadcrumb。
+- 授权全局搜索覆盖 Dataset/Object/Result 语义内容并改进 Result 人类可读标题。
+- 重建并重启当前生产前端实例；API、PostgreSQL、Redis、MinIO、workers
+  与现有浏览器标签页保持运行。
+
+测试结果：
+- focused list/report/data：44 passed；
+- full frontend：110 files / 803 tests passed；
+- typecheck、production build、git diff --check：PASS；
+- 同栈 runtime snapshot：PostgreSQL/Redis/MinIO healthy，queue=0，
+  stale=0，idle-in-transaction=0，pool checked out=0；
+- authenticated Chromium mobile route sweep：Console/Projects/Tasks/
+  Notifications/Trash/Report 全部 HTTP 200，无 page error/5xx/overflow。
+
+后续路由恢复与 Admin 确认对话框测试契约同步后，focused
+Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
+完整前端回归更新为 `110 files / 810 tests passed`。该数字取代本批次
+早先的 803 记录。
+
+提交/CI：未提交，未推送。
+
+补充验证：
+- Project Home 长列表采用渐进式“显示更多”，历史错误提供原地重新加载。
+- 认证 Chromium 核心路由巡检：12 路由 × 3 前端实例 × 2 视口 = 72/72 HTTP 200；
+  Internal Server Error、不可恢复交互提示、page error、console error、5xx、
+  横向溢出均为 0。
+- 当前 13 个 ScientificObject 的 Data/Version/Viewer 投影 26/26 成功，
+  payload=READY、viewer support=PROFESSIONAL。
+
+## Product maturity — Dataset authority boundary clarity (2026-09-04)
+
+- 状态：完成 Dataset 详情页术语与信息架构澄清，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/components/DatasetWorkbenchPage.tsx`、
+  `apps/web/app/components/DatasetWorkbenchPage.test.tsx`、
+  `apps/web/app/globals.css`、`persistent/DESIGN_PROGRESS.md`。
+- 修改摘要：增加可见的数据层级说明，区分 Dataset 来源范围、Profile 语义档案、
+  ScientificObject/Version 科学身份与不可变状态、ScientificResult 分析事实；
+  将“表格行数/可用能力/结果”等模糊标签改为记录数、可用分析、分析结果，并
+  保持所有数据与版本 authority 不变。
+- 测试结果：DatasetWorkbenchPage `1 passed`；前端 typecheck PASS；
+  `git diff --check` PASS。
+- 提交/CI 状态：未提交、未推送；API、前端、PostgreSQL、Redis、MinIO、
+  workers 与浏览器标签页保持运行。
+
+## Product maturity — authorized scientific semantic search and recovery (2026-09-03)
+
+- 状态：完成全局科学语义搜索、结果标题可读性与搜索恢复入口批次；成熟度总任务仍处理中
+- 修改文件：`apps/api/mdi_api/routers/secured_runtime.py`、
+  `tests/test_project_access.py`、`apps/web/app/components/ProductShell.tsx`、
+  `apps/web/app/components/ProductShell.test.tsx`、
+  `apps/web/app/components/workspace/ScientificWorkspaceShell.tsx`、
+  `apps/web/app/workspaces/[workspaceId]/error.tsx`、`apps/web/app/globals.css`
+  及产品审计/持久化记录。
+- 修改摘要：在现有授权搜索边界内增加 Dataset sample/formula、对象版本元数据、
+  ScientificResult 权威 bundle 与 grounded finding 文本命中；Result 标题优先
+  显示权威研究问题或结果项标题，副标题保留短 Result ID/schema 版本；搜索和已
+  保存检索失败均可原地重试；深层 workspace 错误态提供项目/控制台安全出口。
+- 测试结果：`tests/test_project_access.py` 32 passed；前端全套
+  `110 files / 799 tests passed`；typecheck、production build、Ruff、
+  compileall、git diff --check PASS。认证内置浏览器 `390×844` 搜索 `mat-2`
+  返回 14 项，Result/Research/Report 均可命中，首条 Result 打开精确
+  ResearchTurn `92fcd73e-3803-4dcf-bc7a-a63fbcf2a70e`，无 5xx、console/page
+  errors 或横向溢出。
+- 提交/CI 状态：未提交、未推送；API 在本批次重启以加载最新搜索实现；
+  PostgreSQL、Redis、MinIO、workers、前端服务与浏览器标签页保持运行。
+
+## Product maturity — legacy browser alias recovery (2026-09-03)
+
+- 状态：恢复历史浏览器标签页对应的 3013/3016 前端兼容入口；成熟度总任务仍处理中
+- 修改文件：无产品代码新增；启动当前 `apps/web` 默认生产构建的两个兼容进程。
+- 修改摘要：原有标签页 URL 保持不变，3013/3016 均代理同一 8005 API；历史报告
+  路由可打开、章节与来源研究入口可见，未关闭任何服务或浏览器标签页。
+- 测试结果：3013/3016 `/console` HTTP 200；3013 历史报告路由 HTTP 200，
+  内置浏览器 console errors=0、页面未出现 Internal Server Error。
+- 提交/CI 状态：未提交、未推送；PostgreSQL、Redis、MinIO、API、workers、
+  3000/3013/3016 前端与浏览器标签页保持运行。
+
+## Product maturity — 回收站空状态可达性微调 (2026-09-03)
+
+- 状态：已完成；成熟度总任务仍处理中
+- 修改文件：`apps/web/app/components/TrashCenterPage.tsx`、
+  `apps/web/app/components/TrashCenterPage.test.tsx`、`apps/web/app/globals.css`、
+  `docs/agent2/product_maturity/ux-audit-global-product-2026-09-03.md`、
+  `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：回收站空状态增加“查看项目 / 返回控制台”出口；移动端操作组
+  保持可达、均分宽度，避免用户停留在无内容死路。
+- 测试结果：TrashCenterPage `4 passed`；typecheck PASS；production build PASS；
+  git diff --check PASS；认证 Chromium `390×844`、`1280×720` 均
+  `200 / console errors=0 / HTTP 5xx=0 / page overflow=0`。
+- 运行备注：构建后检测到旧前端 chunk 400，已只重启前端 `next start`；
+  PostgreSQL、Redis、MinIO、API、workers 和 Chrome 标签页持续保留。
+- 提交/CI：未提交、未推送。
+
+## Product maturity — Dataset asset context clarification (2026-09-03)
+
+- 状态：完成 Dataset 工作台心智模型微调，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/components/DatasetWorkbenchPage.tsx`、
+  `apps/web/app/globals.css` 及审计/持久化记录。
+- 修改摘要：新增数据资产工作台上下文说明与术语折叠，解释 Dataset、
+  ScientificObject/Version、Profile、规范化资源和结果的关系；不改变 Data
+  Platform authority、版本语义或分析执行路径。
+- 测试结果：DatasetWorkbench `1 passed`；typecheck PASS；production build PASS；
+  认证 Chromium 数据集真实路由在 `390×844`/`1280×720` 均无 5xx、console errors
+  或横向溢出，真实结构查看器继续可用。
+- 提交/CI 状态：未提交、未推送；服务、worker 与浏览器标签页继续保持运行。
+
+## Product maturity — scientific viewer unavailable-state recovery (2026-09-02)
+
+- 状态：已完成本轮可用性修复（总 Product Maturity Closure 仍继续处理中）
+- 根因：精确版本 Viewer 在 payload 暂时不可用或请求失败时只有静态
+  fallback，用户无法从当前页面重试，也缺少回到同一 object/version 来源
+  页面核对元数据的明确出口。
+- 修复：`ScientificObjectViewer` 增加 `重新读取来源` 与
+  `查看来源与属性`；重试仅重新读取既有 viewer projection，保持 exact
+  object/version，不创建 Job/ToolCall/Artifact/Result，不做 latest 替换。
+- 修改文件：`apps/web/app/components/scientific-viewer/ScientificObjectViewer.tsx`、
+  `apps/web/app/components/scientific-viewer/ScientificObjectViewer.test.tsx`、
+  `persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`。
+- 测试结果：Focused `ScientificObjectViewer.test.tsx` `1 passed`；服务
+  `/health/runtime` 与同栈 operations snapshot 仍 PASS。
+- 提交/CI 状态：未提交、未推送；API、PostgreSQL、Redis、MinIO、workers
+  与浏览器标签页保持运行。总 Product Maturity Closure 继续处理中。
+
+- 浏览器补充证据：当前生产构建验证端口 `3017` 的 `390x844` Dataset
+  页面截图 `phase14r-viewer-retry-dataset-390x844.png`；精确数据表显示
+  `mat-1 / mat-2 / mat-3`，浏览器 console/page error 均为空。
+
+## Product maturity — authenticated current route sweep (2026-09-02)
+
+- 状态：已完成当前运行时复核（总 Product Maturity Closure 仍继续处理中）
+- 修改摘要：使用当前认证会话与 Chromium 对项目、任务、通知、回收站以及
+  16 个项目的概览/数据/研究/报告路由进行重新扫描；未修改科学 authority、
+  数据库记录或服务。
+- 浏览器结果：`16` 个项目、`52` 条路由全部正常；Internal Server Error、
+  Application error、ChunkLoadError、不可用 payload 文案和 console/page
+  error 均为 `0`。
+- 结论：当前同栈验收路径未复现用户截图中的实时服务故障；历史缺失原始
+  MinIO 字节的记录仍按 fail-closed typed 状态处理，不伪造恢复内容。
+- 提交/CI 状态：未提交、未推送；API、PostgreSQL、Redis、MinIO、workers
+  与浏览器标签页保持运行。
+
+## Product maturity — persisted Plotly Figure/Table preview (2026-09-02)
+
+- 状态：已完成共享 Report 预览映射修复（总 Product Maturity Closure 仍继续处理中）
+- 根因：持久化 Plotly 图使用 `data[]` 而不是预览原先支持的 `series[]`；
+  MSD 与 diffusion Table Artifact 使用科学数组/嵌套拟合结构而不是通用
+  `rows[]`，导致真实数据被显示为空占位。
+- 修复文件：`apps/web/app/components/ScientificReportArtifactPreview.tsx`、
+  `apps/web/app/components/ScientificReportArtifactPreview.test.tsx`。
+- 确定性投影：支持 Plotly `data[]` 有界有限点、`trajectory.msd` 的滞后/
+  总量/方向数组，以及 `trajectory.diffusion` 的拟合窗口/扩散系数/R²/
+  RMSE/诊断字段；不重新计算科学结果。
+- 测试：`ScientificReportArtifactPreview` `5 passed`。
+- 认证浏览器：独立当前构建 `3019` 上，Report
+  `agent2_report_e54681009a0e49abe371247d9053ce61` 展开后为 `2 SVG + 2
+  tables`，空预览 `0`，Internal Server Error `0`，Artifact 读取失败 `0`，
+  console/page errors `0`。
+- 提交/CI 状态：未提交、未推送；现有 API、数据库、对象存储、worker 与
+  Chrome 标签页保持运行。
+
+## Product maturity — Report Figure layout correction (2026-09-02)
+
+- 状态：已完成报告图形布局修复（总 Product Maturity Closure 仍继续处理中）
+- 根因：Figure 预览组件被报告图卡的 CSS Grid 自动放入窄索引列，
+  导致真实 SVG 退化成窄竖条并留下大块空白。
+- 修复文件：`apps/web/app/globals.css`，将
+  `.scientific-report-figure-plate > .scientific-report-artifact-preview`
+  固定到内容列并限制宽度。
+- 认证浏览器验证：当前独立生产构建 `3020` 在 `1280x720` 和 `390x844`
+  均显示 `2 SVG + 2 tables`，空预览 `0`，页面宽度分别保持
+  `1280/1280`、`390/390`，console/page errors `0`。
+- 提交/CI 状态：未提交、未推送；API、PostgreSQL、Redis、MinIO、workers
+  与 Chrome 标签页保持运行。
+
+## Product maturity — report Artifact inline preview (2026-09-02)
+
+- 状态：已完成本轮 UI/数据可用性修复（总 Product Maturity Closure 仍继续处理中）
+- 根因：现代 Report 的 Figure/Table 仅展示描述牌和权威 Artifact 外链，用户看到的主体像图片占位，无法在报告内快速核对持久化科学内容。
+- 修复：新增 `apps/web/app/components/ScientificReportArtifactPreview.tsx`，按需通过现有 Artifact content API 读取 JSON；Figure 投影为有界 SVG，Table 投影为最多 24 行/8 列的 typed preview，保留完整 Artifact 外链。只读读取不触发科学重算。
+- 修改文件：`apps/web/app/components/ScientificReportArtifactPreview.tsx`、`apps/web/app/components/ScientificReportArtifactPreview.test.tsx`、`apps/web/app/components/ScientificReportRoute.tsx`、`apps/web/app/globals.css`。
+- 测试结果：`ScientificReportRoute.test.tsx` 23 passed；`ScientificReportArtifactPreview.test.tsx` 3 passed；TypeScript typecheck PASS；生产 build PASS；同栈认证浏览器报告 `agent2_report_19a0d0c261c28577101de81532464893` Figure 2 点/Table 1 行预览 PASS，error/warn 日志为空。
+- 服务/浏览器：PostgreSQL、Redis、MinIO、API、workers 与既有 Chrome 标签页保持运行；未删除文件、未提交、未推送。
+
+## Product maturity — shared filter hierarchy fix (2026-09-02)
+
+- 状态：已完成本轮 UI 修复（总产品成熟度任务仍处理中）
+- 根因：报告与回收站筛选按钮未覆盖全局 `button` 主操作样式，四个状态筛选均呈现为 teal 主按钮。
+- 修复：新增共享 `.product-filter-row` / `.product-filter-button` 样式，仅 active filter 使用强调填充，其他 filter 使用描边胶囊；移动端保留 44px 触控高度。
+- 验证：重建 `.next-prod-maturity-20260902` 并重载 3013；认证浏览器报告页实测 active/inactive 视觉状态正确，无 ISE 或 console error；此前全量前端 `108 files / 789 tests passed`、build、typecheck、compileall、静态资源与 diff check 均通过。
+- 提交/CI：未提交、未推送；服务与浏览器标签页保持运行。
+
+## Product maturity — exact scientific payload recovery and same-stack runtime alignment (2026-09-03)
+
+- 任务：Materials Intelligence Platform — Product Maturity Closure
+- 状态：处理中（本批次完成，产品成熟度总任务继续）
+- 完成时间：2026-09-03T17:20:00+08:00
+- 修改文件：
+  - `docs/agent2/product_maturity/ux-audit-scientific-data-availability-2026-09-03.md`
+  - `docs/agent2/product_maturity/evidence/exact_minio_reference_recovery_2026-09-03.json`
+  - `docs/agent2/product_maturity/evidence/exact_minio_availability_verification_2026-09-03.json`
+  - `scripts/restore_exact_minio_references.py`
+  - `scripts/phase14r_start_api.ps1`
+  - `scripts/phase14r_start_workers.ps1`
+  - `scripts/phase14r_operations_snapshot.py`
+  - `apps/api/mdi_api/artifact_storage.py`
+  - `tests/test_phase5_runtime_infrastructure.py`
+- 修改摘要：确认核心服务均运行；恢复 acceptance scope 缺失的 1 个精确
+  ScientificObjectVersion payload 与 10 个精确 Artifact keys，逐项验证大小/
+  SHA-256/readback；修复 S3 existence 错误分类与 response body 关闭；将
+  Phase 14-R 专用 API/Workers 统一到 Redis DB 13，并使 same-stack 运维快照
+  覆盖陈旧父进程环境变量。
+- 测试结果：
+  - acceptance ScientificObjectVersion `13/13` exact payload present；
+    acceptance MinIO Artifact `241/241` exact payload present；
+  - `tests/test_phase5_runtime_infrastructure.py` selected `2 passed`；
+  - `tests/test_phase8c_planner_read_api.py` `9 passed`；
+  - `compileall`、`git diff --check` PASS；
+  - same-stack operations snapshot `status=ok`, `workerCount=6`,
+    `totalQueued=0`, `idleInTransaction=0`, `pool.checkedOut=0`；
+  - `/health/runtime`: PostgreSQL/Redis/MinIO/Redis-worker/DeepSeek all `ok`.
+- 提交/CI 状态：未提交、未推送；保留所有既有用户文件、浏览器标签页和服务。
+
+## Product maturity — source-unavailable Viewer copy refinement (2026-09-03)
+
+- 状态：已完成窄范围 UI 可用性修复（产品成熟度总任务仍处理中）
+- 修改文件：`apps/web/app/components/scientific-viewer/ScientificViewerShell.tsx`、
+  `apps/web/app/components/scientific-viewer/ScientificObjectViewer.tsx`、
+  `apps/web/app/components/scientific-viewer/ScientificObjectViewer.test.tsx`、
+  `docs/agent2/product_maturity/ux-audit-scientific-data-availability-2026-09-03.md`
+- 修改摘要：将缺源状态中的内部术语 `payload` 改为用户可理解的
+  “原始科学数据”；在已确认缺源时优先提供“查看来源与属性”，保留
+  “重新读取来源”为次要动作，避免误导性重复重试。
+- 测试结果：Viewer focused `3 passed`；前端 typecheck PASS；touched Ruff
+  与 `git diff --check` PASS；同栈 API/Artifact/Viewer/Report smoke
+  endpoints 均 HTTP 200。
+- 提交/CI 状态：未提交、未推送；PostgreSQL、Redis、MinIO、API、workers
+  及现有浏览器标签页保持运行。
+
+## Product maturity — final regression after exact payload recovery (2026-09-03)
+
+- 状态：当前批次回归完成，产品成熟度总任务仍处理中
+- 同栈运行时：frontend `3000`、API `8005`、PostgreSQL qualification
+  `55434`、Redis `6379`、MinIO `9000/9001`，source MinIO `9102` 均保持监听；
+  API health 为 PostgreSQL/Redis/MinIO/Redis worker/DeepSeek `ok`。
+- 可见性验证：acceptance scope 的 ScientificObjectVersion payload
+  `13/13`、MinIO Artifact `241/241`，缺失 `0`、checksum mismatch `0`；
+  Viewer、Artifact content、Scientific Report API/页面入口均返回 HTTP 200。
+- 回归：前端全量 `110 files / 796 tests passed`；后端全量
+  `1982 passed / 84 skipped`；Viewer/运行时/Planner focused
+  `28 passed / 1 historical compatibility skip`；typecheck、compileall、
+  touched Ruff、git diff check 均 PASS。
+- UI：缺源状态改为面向研究者的“原始科学数据”文案，并将来源属性查看
+  作为主操作；未改变 fail-closed、精确版本或科学权威语义。
+- 提交/CI 状态：未提交、未推送；按用户要求保留 API、workers、数据库、
+  Redis、MinIO、source MinIO 与浏览器标签页。
+
+## Product maturity — whole-product UI audit and mobile Research reachability (2026-09-03)
+
+- 状态：已完成共享滚动根因修复，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/globals.css`、
+  `docs/agent2/product_maturity/ux-audit-global-product-2026-09-03.md`、
+  `persistent/DESIGN_PROGRESS.md`
+- 修改摘要：基于真实 Chromium 的桌面/移动路由审计，记录 16 项可复核观察，
+  将移动 Research 工作台在窄屏上的固定高度/`overflow:hidden` 裁切修复为
+  页面纵向滚动 + 有界会话历史；不改变科学表格的稳定身份、横向滚动和
+  精确 provenance。
+- 测试结果：Research/ProductShell focused `83 passed`；typecheck PASS；
+  production build PASS；新前端实例 `3014` 的真实浏览器复测中，Research
+  移动端页面可滚动至 `开始分析`，`body.scrollHeight=933`、无横向溢出、
+  console errors=0、5xx=0；全站当前路由批次 12/12 HTTP 200。
+- 提交/CI 状态：未提交、未推送；3000 原有前端、API、PostgreSQL、Redis、
+  MinIO、6 个 worker 与浏览器标签页均保留；3014 为本轮复测前端实例。
+
+## Product maturity — exact Dataset source recovery and route re-audit (2026-09-03)
+
+- 状态：完成本轮资源恢复与浏览器复核，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/lib/scientific-viewer-api.ts`、相关审计与
+  `persistent/DESIGN_PROGRESS.md`；活动 MinIO 恢复了 Dataset 原始源与规范化
+  元数据，未修改 PostgreSQL 科学权威。
+- 证据：`dataset_0002_cb403e1b78f54d32` 的 `si.cif` 441 字节 SHA-256
+  `4aeaf0107a36ef4bf587da1e52d20ca2739063dd5a548dcb3dac29efc0331198`；
+  `structure.json` 832 字节 SHA-256
+  `067bc07a01eb9d27021cfcb9406a6358b7b0c81910ca4beb2531dfbfc35217a6`；
+  DurableObjectStoreResolver 成功解析 1 个结构。
+- 测试结果：前端生产构建 PASS；科学 Viewer focused `48 passed`；真实认证
+  Chromium Dataset 页面桌面/移动均无 console/page/HTTP 错误，页面横向溢出
+  `0`，真实三维结构 Viewer 可见。
+- 提交/CI 状态：未提交、未推送；API、前端、PostgreSQL、Redis、MinIO、
+  6 个 worker 与浏览器标签页继续保持运行。
+
+## Product maturity — shared lifecycle/report navigation refinement (2026-09-03)
+
+- 状态：完成一批共享 UI 改进，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/components/ProductShell.tsx`、
+  `apps/web/app/components/ScientificReportRoute.tsx`、
+  `apps/web/app/globals.css` 及持久化记录。
+- 修改摘要：在全局顶栏增加直接“回收站”入口；移动端压缩为带 tooltip、
+  accessible name 的紧凑控制；报告章节横向导航增加移动端可发现提示，
+  保持原有锚点、报告快照和科学 provenance 不变。
+- 测试结果：ProductShell/ScientificReport focused `40 passed`；production
+  build PASS；真实认证 Chromium 报告移动页显示章节提示，回收站入口可见，
+  `scrollWidth === clientWidth === 390`。
+- 提交/CI 状态：未提交、未推送；服务、worker 与浏览器标签页保持运行。
+
+## Product maturity — shared list/report action refinement (2026-09-03)
+
+- 状态：完成本批共享 UI 改进，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/components/TaskCenterPage.tsx`、
+  `apps/web/app/components/NotificationCenterPage.tsx`、
+  `apps/web/app/components/ScientificReportRoute.tsx`、
+  `apps/web/app/components/AdminCenterPage.tsx`、`apps/web/app/globals.css`
+  及审计/持久化记录。
+- 修改摘要：任务与通知列表新增显式渐进加载；报告首屏主次操作分组并优化移动布局；
+  管理中心无权限状态补充控制台恢复入口；未改变科学 authority、生命周期 API 或历史
+  provenance。
+- 测试结果：Task/Notification `8 passed`；Report/Admin `27 passed`；
+  typecheck PASS；production build PASS；认证 Chromium 桌面/移动复核无横向溢出、
+  console errors=0，渐进加载入口可见。
+- 提交/CI 状态：未提交、未推送；API、前端、PostgreSQL、Redis、MinIO、worker 与
+  浏览器标签页继续保持运行。
+
+## Product maturity — mobile scientific table affordance (2026-09-03)
+
+- 状态：完成移动表格可发现性微调，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/components/ProductPages.tsx`、`apps/web/app/globals.css`
+  及审计/持久化记录。
+- 修改摘要：Data 科学属性表在移动端显示明确横向滚动与行选择提示；表格列、语义
+  行身份、授权和 scientific authority 均保持不变。
+- 测试结果：ProductPages `40 passed`；typecheck PASS；生产构建 PASS；认证
+  Chromium 当前 Data 路由 `390×844` 无横向溢出、console errors=0。
+- 提交/CI 状态：未提交、未推送；服务、worker 与浏览器标签页保持运行。
+
+## Product maturity — Dataset asset context and SPA navigation check (2026-09-03)
+
+- 状态：完成 Dataset 语义分层与产品导航复核，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/components/DatasetWorkbenchPage.tsx`、相关审计与
+  `persistent/DESIGN_PROGRESS.md`。
+- 修改摘要：Dataset 工作台明确导入容器、ScientificObject/Version、Profile、
+  规范化资源和结果的职责边界；认证浏览器实测 Data → Research 点击导航时
+  document request 增量为 `0`，保持 App Router 切换，不退化为整页重载。
+- 测试结果：DatasetWorkbench `1 passed`；typecheck PASS；production build PASS；
+  认证 Chromium 数据集真实路由在 `390×844`/`1280×720` 无 5xx、console errors
+  或横向溢出。
+- 提交/CI 状态：未提交、未推送；API、前端、PostgreSQL、Redis、MinIO、worker 与
+  浏览器标签页保持运行。
+
+
+## Product maturity — current-worktree verification (2026-09-03)
+
+- 状态：本批次当前工作树验证完成，成熟度总任务仍处理中
+- 测试结果：图例微调后重新执行完整前端回归，`110 files / 796 tests passed`；
+  operations snapshot 仍为 `status=ok`、PostgreSQL/Redis/MinIO ready、6 workers、
+  `totalQueued=0`、`idleInTransaction=0`、`pool.checkedOut=0`；`git diff --check`
+  通过（仅报告既有 LF/CRLF 警告）。
+- 运行状态：API `8005`、前端 `3000`、PostgreSQL `55434`、Redis `6379`、
+  MinIO `9000/9001` 与 retained source `9102` 均保持监听；Chrome 标签页未关闭。
+- 提交/CI 状态：未提交、未推送；neat-freak 候选临时文件/旧日志仅完成只读盘点，
+  未进行删除。
+
+## Product maturity — mobile account section navigation (2026-09-03)
+
+- 状态：完成账户长页面导航微调，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/globals.css` 及审计/持久化记录。
+- 修改摘要：账户页移动端目录改为吸顶导航，滚动时保持个人资料、登录会话、
+  密码和停用账户入口可达；未改变认证、会话或账户生命周期 API。
+- 测试结果：UserCenter `6 passed`；typecheck PASS；production build PASS；
+  认证 Chromium `390×844` 实测目录 `position=sticky/top=56px`，滚动后仍固定在
+  `y=56`，页面横向溢出 `0`、console errors=0。
+- 提交/CI 状态：未提交、未推送；服务、worker 与浏览器标签页保持运行。
+
+## Product maturity — multi-series scientific figure preview (2026-09-03)
+
+- 状态：完成报告图表预览质量修复，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/components/ScientificReportArtifactPreview.tsx`、
+  `apps/web/app/globals.css` 及审计/持久化记录。
+- 修改摘要：持久化 Figure 预览保留有限多序列、正负值基线、坐标标题和序列
+  边界，继续只读投影 Artifact，不创建 Job/Artifact/Result。
+- 测试结果：ScientificReportArtifactPreview `5 passed`；typecheck PASS；
+  production build PASS；认证 Chromium 真实报告页面点开预览后显示 `2` 条序列、
+  `2` 个有限点，横向溢出 `0`、console errors=0、5xx=0。
+- 提交/CI 状态：未提交、未推送；API、前端、PostgreSQL、Redis、MinIO、worker 与
+  浏览器标签页保持运行。
+
+## Product maturity — mobile scientific scroll affordances (2026-09-03)
+
+- 状态：完成共享表格/报告章节横向可见性微调，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/globals.css`。
+- 修改摘要：为通用科学表格、Dataset 验证表与移动报告章节导航补充可见滚动阴影、
+  稳定滚动条颜色和键盘聚焦反馈；不裁剪列、不改变稳定样本身份、不改变科学
+  authority 或报告锚点。
+- 测试结果：ProductPages/ScientificReportRoute/ScientificReportArtifactPreview
+  定向 `68 passed`；全前端 `110 files / 796 tests passed`；typecheck PASS；
+  production build PASS；认证 Chromium `390×844` Data 表 `scrollWidth=759`
+  且页面溢出 `0`、报告章节 `scrollWidth=573` 且页面溢出 `0`，console errors=0、
+  HTTP 5xx=0。
+- 提交/CI 状态：未提交、未推送；API、前端、PostgreSQL、Redis、MinIO、worker 与
+  浏览器标签页保持运行。
+
+## Product maturity — scientific figure legend clarity (2026-09-03)
+
+- 状态：完成稀疏 Figure 预览的序列辨识增强，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/components/ScientificReportArtifactPreview.tsx`、
+  `apps/web/app/globals.css`。
+- 修改摘要：在确定性只读 Figure 预览下方增加序列图例与每条序列的有限点数，
+  避免稀疏数据被误解为空白或加载失败；没有新增计算、Artifact 或 Result。
+- 测试结果：ScientificReportArtifactPreview/ScientificReportRoute `28 passed`；
+  typecheck PASS；production build PASS；认证 Chromium 桌面报告真实 Artifact
+  预览显示 `All sites / 1 个点`、`Si / 1 个点`，SVG=1，页面溢出 `0`，
+  console errors=0、HTTP 5xx=0。
+- 提交/CI 状态：未提交、未推送；服务、worker 与浏览器标签页保持运行。
+
+## Product maturity — Account/Admin control-safety batch (2026-09-03)
+
+- 状态：完成账户与平台管理控制面修复，成熟度总任务仍处理中
+- 修改文件：`apps/web/app/components/UserCenterPage.tsx`、
+  `apps/web/app/components/UserCenterPage.test.tsx`、
+  `apps/web/app/components/AdminCenterPage.tsx`、
+  `apps/web/app/components/AdminCenterPage.test.tsx`、
+  `apps/web/app/globals.css`，以及对应持久化记录。
+- 修改摘要：账户与会话读取增加原地重试；管理员账户角色/启停和项目成员角色/
+  移除改为带后果说明的显式确认；用户/项目目录增加 bounded continuation loading；
+  邀请凭证复制增加成功与手动复制失败反馈。未改变科学 authority、版本、
+  provenance 或服务端授权。
+- 测试结果：Account/Admin focused `13 passed`；TypeScript typecheck PASS；
+  `git diff --check` PASS；同栈 `/health/runtime` 为 PostgreSQL/Redis/MinIO/
+  Redis worker，认证 Chromium 账户页 `390×844` HTTP 200、横向溢出 0、console
+  errors 0；普通用户访问管理中心正确显示无平台管理权限。
+- 提交/CI 状态：未提交、未推送；API、前端、PostgreSQL、Redis、MinIO、
+  worker 与浏览器标签页保持运行。
+
+后续完整回归：生产构建后 full frontend `110 files / 810 tests passed`；
+认证 Chromium 核心路由 `24/24` HTTP 200（桌面/移动），无 page/console error、
+5xx 或全局横向溢出。账号管理员后端 focused `8 passed`。
+
+## Product maturity — 当前报告/表格/移动布局复核（2026-09-03）
+
+- 状态：完成本批表格、报告 Artifact 预览与不可用状态的真实浏览器复核；成熟度总任务仍处理中。
+- 修改文件：`apps/web/app/components/ScientificReportArtifactPreview.tsx`、
+  `apps/web/app/components/ScientificReportRoute.tsx`、`apps/web/app/components/
+  dataset-explorer/DatasetMaterialsExplorerPanel.tsx` 及对应测试/样式，另有
+  审计与持久化文档。
+- 浏览器证据：认证内置浏览器 `3000` 报告详情页正常，图表预览显示
+  `All sites / 1 个点` 与 `Si / 1 个点`，表格预览显示 typed headers、caption、
+  精确版本；`390x844` Dataset 表显示 3/3 行和稳定 sample IDs，页面宽度
+  `375/375/375`，全局溢出 `0`，console error/warn `0`。
+- 测试结果：full frontend `110 files / 813 tests passed`；后端关键回归
+  `56 passed, 1 skipped`；production build、typecheck、compileall、`uv lock --check`、
+  `git diff --check` PASS；同栈 operations snapshot PostgreSQL/Redis/MinIO healthy，
+  worker `6 idle`、queue depth `0`、idle-in-transaction `0`。
+- 提交/CI 状态：未提交、未推送；API、前端、PostgreSQL、Redis、MinIO、worker 与
+  浏览器标签页保持运行。临时文件与日志仅完成候选识别，等待用户明确确认再执行删除。
+
+- 追加验证：当前认证浏览器桌面/移动核心路由矩阵 `24/24` 全部 HTTP 200，
+  `Application error`、Internal Server Error、console error、5xx 与全局溢出均为
+  `0`；项目 13 个精确对象/版本入口桌面+移动 `26/26` 成功。缺失稳定 sample
+  identity 的历史表格仍可读但不可选择，保持 fail-closed，不以行号替代科学身份。
+
+## Product maturity — 导航/研究控制/科学表面批量修复（2026-09-03）
+
+- 状态：当前批次实现与回归完成，成熟度总任务继续处理中。
+- 修改摘要：品牌/控制台导航统一；顶层路由 loading frame；Research Continue
+  精确 Result 复用；PLAN_READY/Stop 竞态收敛；Electronic/Phonon/Volumetric
+  大数组安全渲染与表格可访问性语义。
+- 测试结果：相关前端聚焦 `99 passed`；typecheck、production build、compileall、
+  `uv lock --check`、`git diff --check` PASS；operations snapshot 显示
+  PostgreSQL/Redis/MinIO `ok`，6 workers idle，queue depth 0，
+  idle-in-transaction 0。
+- 提交/CI：未提交、未推送；API、前端、数据库、Redis、MinIO、worker 和浏览器
+  标签页保持运行。临时文件与日志只完成候选扫描，按 neat-freak 规则等待明确确认后删除。
+- 追加浏览器验证：当前构建在 `3018` 端口认证运行，桌面核心路由 `11/11`、
+  移动 `11/11` 全部无 page/console error、Internal Server Error 或全局溢出；
+  `390x844` 项目导航“控制台”保持单行可读。未停止既有服务或关闭原有标签页。
+
+## Product maturity — 数据层级与导航感知性能批次（2026-09-04）
+
+- 状态：已完成本批实现与验证，成熟度总任务继续处理中。
+- 修改摘要：Data Navigator 增加 Dataset 与 Scientific Object/Version 的权威
+  层级说明；项目历史支持已解析快照复用，Console 预热首个活动项目并显式
+  预取继续研究路径，减少导航后二次等待。保留精确版本、历史 fail-closed、
+  服务与浏览器现状，不引入新的科学 authority。
+- 修改文件：`apps/web/app/components/ProductPages.tsx`、
+  `apps/web/app/components/ProductPages.test.tsx`、
+  `apps/web/app/components/ProjectHome.tsx`、
+  `apps/web/app/lib/planner-api.ts`、`apps/web/app/globals.css`，
+  `persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`。
+- 测试结果：`ProductPages + ProjectHome + ProductShell = 69 passed`；
+  `npm run typecheck`、生产构建、`git diff --check` 通过。当前构建在
+  `127.0.0.1:3020`，认证浏览器数据页桌面层级提示可见，移动端
+  `document/body = 375/375`，无 page/console error。
+- 提交/CI：未提交、未推送；PostgreSQL、Redis、MinIO、workers 与既有
+  Chrome/内置浏览器标签页保持运行。
+
+## Product maturity — Research 上下文完整审计可见性（2026-09-04）
+
+- 状态：已完成本批实现与验证；成熟度总任务继续处理中。
+- 修改摘要：ContextManifest 在长清单场景默认显示前 8 项，并提供可访问的
+  “查看全部上下文（N 项）/收起上下文列表”控制；ResearchTurn 切换时自动收起。
+  该操作仅改变只读呈现，不改变上下文选择、科学结果或执行。
+- 修改文件：`apps/web/app/components/ResearchPages.tsx`、
+  `apps/web/app/components/ResearchPages.test.tsx`、`apps/web/app/globals.css`、
+  `persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`。
+- 测试结果：ResearchPages `69 passed`；`npm run typecheck`、`git diff --check` PASS。
+- 提交/CI：未提交、未推送；现有 API、worker、PostgreSQL、Redis、MinIO 与浏览器
+  标签页保持运行。
+
+## Product maturity — Report/Artifact 展示与完整回归（2026-09-04）
+
+- 状态：完成本批展示层修复与当前工作树完整回归；成熟度总任务仍处理中。
+- 修改摘要：Report 每条主要发现支持折叠查看精确 ScientificResult、对象/版本、
+  fact/evidence/finding refs；Artifact Gallery 为 `STATIC_METADATA` 与
+  `DOWNLOAD_ONLY` 契约增加明确的元数据/安全下载状态，避免图片/HTML 资源被
+  猜测或执行。
+- 浏览器：当前生产构建 `127.0.0.1:3021` 的认证报告页桌面宽度
+  `1265/1265`、移动宽度 `375/375`，主要发现依据入口可见；alert、Internal
+  Server Error 与全局 overflow 均为 `0`。
+- 测试：完整前端 `110 files / 823 tests passed`；完整后端
+  `1983 passed / 84 skipped / 189 warnings`；typecheck、production build、
+  compileall、`uv lock --check`、`git diff --check` PASS。
+- 服务/运行时：API `8005`、PostgreSQL、Redis、MinIO、6 workers 与现有浏览器
+  标签页保持运行；未提交、未推送、未删除用户文件或历史证据。
+- 状态边界：Phase 14-R 仍为 `PARTIAL`；capability-wide real-user acceptance、
+  retention/export/operations maturity、release CI 与临时文件清理确认仍未
+  全部闭合。历史缺失 payload 继续按 fail-closed 展示。
+
+- 视觉复核：`3021` 报告页桌面保持“来源研究”为主行动、导出为次行动，
+  章节导航为单一横向滚动 owner；`390x844` 下标题、操作组、章节导航和正文
+  均可达，章节导航右侧渐隐提示仍可见，页面无全局横向溢出。
+
+## Product maturity — ContextManifest 读取恢复（2026-09-04，第二批）
+
+- 状态：已完成本批实现与验证；成熟度总任务继续处理中。
+- 修改摘要：ResearchPages 对 ContextManifest 增加有界读取状态。读取失败时明确
+  告知研究者并提供“重新读取上下文”原地重试；成功后恢复同一只读清单。
+  该动作不改变 ContextManifest 内容、ScientificResult、Result、来源版本或
+  科学执行，不把暂时不可读误判为无上下文。
+- 修改文件：`apps/web/app/components/ResearchPages.tsx`、
+  `apps/web/app/components/ResearchPages.test.tsx`、
+  `persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`。
+- 测试结果：ResearchPages `70 passed`；未提交、未推送。
+- 运行状态：API、PostgreSQL、Redis、MinIO、workers 与现有浏览器标签页保持运行。
+
+## Product maturity — 回收站读取恢复（2026-09-04，第二批）
+
+- 状态：已完成本批实现与验证；成熟度总任务继续处理中。
+- 修改摘要：Trash Center 在回收站库存读取失败时提供明确的“重新加载回收站”
+  原地恢复动作；重试仅重新获取同一授权搜索投影，失败期间不会改变任何
+  Project/Dataset/Research/Report 生命周期或科学 provenance。
+- 修改文件：`apps/web/app/components/TrashCenterPage.tsx`、
+  `apps/web/app/components/TrashCenterPage.test.tsx`、
+  `persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`。
+- 测试结果：TrashCenter + ResearchPages `75 passed`；未提交、未推送。
+- 运行状态：API、PostgreSQL、Redis、MinIO、workers 与现有浏览器标签页保持运行。
+## Product maturity — recovery-control verification (2026-09-04)
+
+- 状态：部分完成（Product Maturity Closure umbrella 继续处理中）
+- 修改摘要：
+  - Research ContextManifest 读取失败可在原地重新读取同一持久化上下文；
+  - Trash Center 读取失败可原地重新加载授权回收站清单；
+  - 两条恢复路径均不创建 Job、ToolCall、Artifact、ScientificResult，也不改变生命周期。
+- 测试结果：
+  - `ResearchPages.test.tsx`: `70 passed`
+  - `TrashCenterPage.test.tsx`: `5 passed`
+  - focused total: `75 passed`
+  - frontend typecheck: `PASS`
+- 运行状态：PostgreSQL、Redis、MinIO、API、workers、当前 production
+  frontend 与浏览器标签页保持运行。
+- 提交/CI：未提交、未推送；当前批次未执行新的 exact-SHA release。
+- 剩余：capability-wide human acceptance、retention/export/operations maturity、
+  安全清理确认和新的 Phase 14-R release gate。
+
+## Product maturity — Research 主操作停止控制（2026-09-04）
+
+- 状态：已完成本批实现与验证；Product Maturity Closure umbrella 继续处理中。
+- 修改摘要：当精确 ResearchTurn 处于 planning/running 时，研究输入区主操作
+  从不可点击的处理中按钮切换为可发现的“停止研究”。该动作复用现有服务端
+  取消与 durable terminal-state reconciliation，不删除已提交的有效部分输出，
+  也不新增前端取消 authority。
+- 修改文件：`apps/web/app/components/ResearchPages.tsx`、
+  `apps/web/app/components/ResearchPages.test.tsx`、`apps/web/app/globals.css`、
+  `persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`、
+  `AGENT2_PHASE14R_RESULTS.md`。
+- 测试结果：ResearchPages `71 passed`；frontend typecheck `PASS`。
+- 提交/CI：未提交、未推送；API、PostgreSQL、Redis、MinIO、workers 与
+  浏览器标签页保持运行。
+
+## Product maturity — R7/R8 研究任务可查找身份（2026-09-04）
+
+- 状态：已完成本批实现与验证；Product Maturity Closure umbrella 继续处理中。
+- 审计：新增
+  `docs/agent2/phase14r/ux-audit-r7-r8-search-task-recovery-2026-09-04.md`；
+  确认 Global Search/已保存检索与 Task/Notification 恢复已有正确授权边界，
+  无需新建搜索索引或任务 authority。
+- 修改摘要：现有 Job → ResearchTurn → user message 关系在同一 bounded SQL
+  task-feed projection 中增加最多 180 字符的 `researchQuestion`；任务与通知
+  以真实研究问题作为标题和查找文本，并显示持久化更新时间。精确 Turn 路由、
+  cross-project authorization、legacy read-only、停止/重试/重连语义不变。
+- 修改文件：`apps/api/mdi_api/repositories.py`、
+  `apps/api/mdi_api/workspaces.py`、`apps/web/app/lib/workspace-api.ts`、
+  `apps/web/app/lib/task-center-data.ts`、`apps/web/app/components/TaskCenterPage.tsx`、
+  `apps/web/app/components/NotificationCenterPage.tsx`、对应测试与 Phase14-R 证据文档。
+- 测试结果：Workspace/task-feed backend `15 passed`；Task/Notification/task-data
+  frontend `16 passed`；frontend typecheck、touched Ruff、`git diff --check` PASS；
+  1/5 个 Job 的 task-feed 查询数均保持 `2`。
+- 提交/CI：未提交、未推送；没有停止 API、PostgreSQL、Redis、MinIO、workers
+  或浏览器标签页。
+- 剩余：生产规模分页、外部 push 通知与 Phase 14-R 全量真人验收不在本批 PASS
+  声明内。
+
+## Product maturity — task clarity, stop control and latest regression (2026-09-04)
+
+- 状态：部分完成（umbrella task 继续处理中）
+- 修改摘要：
+  - Task/Notification 使用持久化 `Job → ResearchTurn → user message`
+    关系显示真实研究问题和更新时间，并支持本地查找；
+  - Research 处于 planning/running 且已有持久化 Turn 时，主提交操作切换为
+    “停止研究”，复用服务器取消 authority；
+  - 最新 worktree production build 运行于 `127.0.0.1:3023`，未停止旧实例。
+- 测试结果：
+  - full frontend: `110 files / 826 tests passed`
+  - Research: `71 passed`
+  - Task/Notification frontend: `16 passed`
+  - focused backend task-feed: `21 passed`
+  - typecheck/build/Ruff/diff: `PASS`
+- 运行状态：
+  - PostgreSQL `active/idle/idle-in-transaction = 1/5/0`
+  - Redis `6` workers idle，queue depth `0`
+  - MinIO healthy，resource alerts `0`
+- 提交/CI：未提交、未推送。
+- 剩余：capability-wide human acceptance、provider-scale recovery/performance、
+  retention/export/operations review、safe cleanup confirmation 和 exact-SHA
+  Phase 14-R release。
+
+## Product maturity — neat-freak cleanup and knowledge reconciliation (2026-09-04)
+
+- 状态：已完成本次授权的有限工作区清理；成熟度总任务继续处理中。
+- 修改摘要：在用户确认后删除 12 个旧项目日志，共 `656,867` bytes；保留
+  active API/worker/service/browser logs、科学数据、证据和 Codex runtime。
+  同步记录到 `AGENT2_PHASE14R_RESULTS.md`、`persistent/DESIGN_PROGRESS.md`
+  与 `persistent/TASK_BOARD.md`。
+- 只读存储审计：C: 约剩 `80 MB`；报告为
+  `E:\storage-analysis-phase14r-20260904\storage-report.html`。未删除
+  Chrome、Codex、服务、科学数据或其他 C 盘目录。
+- 测试/运行：API `8005`、前端 `3023`、PostgreSQL、Redis、MinIO 与
+  workers 仍在运行；同栈健康保持通过；未提交、未推送。
+- 状态边界：Phase 14-R 仍为 `PARTIAL`，全站真人验收、retention/export/
+  operations maturity、safe C-drive cleanup confirmation 与 exact-SHA
+  release gates 仍开放。
+
+## Continuous optimization — Improvement #1 / CO-001 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Report Figure 虽保留权威 x 数值，但 SVG 按数组序号等距绘制，
+  会错误表达非均匀科学采样的几何关系。
+- 修改：以所有有界展示点的权威 numeric x-domain 统一映射坐标；分类或缺失
+  x 才回退到序列位置；常量 x-domain 居中显示。不改变 Artifact、
+  ScientificResult、单位或科学计算。
+- 修改文件：`ScientificReportArtifactPreview.tsx` 及对应测试；持续优化
+  backlog/log 和 persistent 状态文档。
+- 验证：focused Vitest `7 passed`；新增 `[0, 0.1, 10]` 非均匀回归；
+  frontend typecheck PASS；diff check PASS（仅 TASKS.md 既有 CRLF 提示）；
+  authenticated same-stack 报告
+  `agent2_report_e54681009a0e49abe371247d9053ce61` 页内图形加载 `92` 点，
+  browser error `0`。
+- 实际收益：报告内图形不再以错误的横向间距误导研究者，同时保持只读、
+  零科学重计算边界。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #36 / CO-126 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Agent2 Research 的读取、创建和 dispatch 直连请求遇到 401 时
+  只抛普通错误，没有触发现有 ProductShell 会话失效恢复，容易把认证
+  失效误报为科学研究失败。
+- 修改：在 Agent2 Research API 增加共享 `notifySessionExpired` 边界，
+  三条请求路径统一派发 `mdi:session-expired`，同时保留原始错误。
+- 验证：`agent2-research-api` 前端回归 `7 passed`；typecheck、diff
+  check PASS。
+- 实际收益：Research 主路径会一致进入登录恢复/returnTo 流程，不改变
+  已持久化 Turn、Job、Result 或科学权限。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #35 / CO-125 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：安全 Planner 解释证据入口只校验来源 Job 的项目权限，未显式
+  校验持久化解释/Result snapshot 的项目关系，异常关系可能成为跨项目
+  证据读取边界。
+- 修改：Agent2/legacy 证据投影增加有界 `projectId`；安全证据读取比较
+  evidence Project 与 Job Project，关系不一致统一返回 404；新增同项目
+  通过与跨项目 fail-closed 回归。
+- 验证：授权 + Planner 读 API + 解释持久化回归 `26 passed`；compileall、
+  diff check PASS。
+- 实际收益：跨项目证据关系不再仅依赖 Job ID，篡改或陈旧关系不会泄漏
+  证据内容或提供可枚举的权限差异。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #31 / CO-025 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：MinIO 仅有基础读写回归，未证明备份副本、哈希完整性和源对象
+  缺失后的可恢复行为。
+- 修改：新增唯一测试前缀的 server-side copy 流程，校验大小/SHA-256，
+  删除测试源后从备份读取，再清理测试键。
+- 验证：MinIO live focused `2 passed, 20 deselected`。
+- 实际收益：对象缺失时系统有明确可恢复副本，不会静默重建或替换科学
+  Artifact 内容。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #30 / CO-024 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：权威一致性扫描只有“当前零问题”证据，缺少确定性的断链分类和
+  只读性回归。
+- 修改：隔离数据库注入缺失 Job 的 ToolCall，断言只返回
+  `ORPHAN_TOOL_CALL_JOB` 及精确 sample ID，并核对扫描前后记录数。
+- 验证：authority consistency focused `2 passed, 10 deselected`；
+  before=1、after=1。
+- 实际收益：运维扫描不会被误用成隐式修复路径，断链诊断可精确自动化。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #29 / CO-023 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：数据库池测试只有 SQLite 重复建引擎，缺少真实 PostgreSQL 并发
+  压力和 idle-in-transaction 检查。
+- 修改：新增同栈 PostgreSQL 8 worker × 40 transaction 回归，断言 engine
+  复用、checked-out 归零及 `pg_stat_activity` 的 idle-in-transaction 为零；
+  未修改连接池配置。
+- 验证：`tests/test_database_pool_lifecycle.py` 在
+  `postgresql+psycopg` 下 `2 passed`。
+- 实际收益：长时间重复请求的连接泄漏和事务未归还现在有真实服务证据。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #28 / CO-124 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：ToolCall、Artifact、Result、Report 与当前版本断链没有统一的只读
+  诊断结果，死信/孤儿恢复缺少精确分类。
+- 修改：operations snapshot 新增 `authorityConsistency`，检查七类断链，
+  输出有界 sample IDs、typed issue code、`readOnly=true`，不执行修复。
+- 验证：同栈 `MDI_RUN_INTEGRATION=1` 的 authority consistency 测试
+  `2 passed, 9 deselected`；PostgreSQL/Redis/MinIO 均健康，`issueCount=0`。
+- 实际收益：恢复和运维可以先发现断链再采取人工/安全修复，避免前端或
+  自动任务猜测并修改科学 authority。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #27 / CO-123 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Artifact 同内容跨 worker 并发保存存在“先查后插”竞态，唯一约束
+  异常会被重复投递暴露。
+- 修改：`SqlAlchemyArtifactRepository.save` 在唯一冲突后读取已提交的同一
+  job/storage/checksum Artifact；冲突绑定和其他 integrity failure 继续失败
+  关闭；新增四 bundle/48 次 live 重复保存回归。
+- 验证：真实 PostgreSQL `-k "concurrent_seq or duplicate_delivery"` 为
+  `4 passed, 17 deselected`。
+- 实际收益：重复 Artifact 投递不会生成第二条科学 provenance，也不会因
+  正常并发竞态误报失败。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #26 / CO-022 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：独立 worker 同时第一次投递同一个 Job/Step 时，ToolCall 的
+  “先查后插”竞态会把数据库唯一约束异常暴露给调用方。
+- 修改：`SqlAlchemyToolCallRepository.save` 在唯一冲突后读取已提交的
+  幂等 ToolCall 并收敛返回；不相关 integrity failure 和冲突绑定仍失败
+  关闭；新增四 bundle/12 worker live 回归。
+- 验证：真实 PostgreSQL `postgresql+psycopg` 下
+  `-k "concurrent_seq or duplicate_delivery"` 为 `3 passed,
+  17 deselected`。
+- 实际收益：重复队列投递不会制造第二个 ToolCall，也不会因正常并发竞态
+  误报失败；科学 authority 未改变。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #20 / CO-034 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：未知运行时 Presentation block 曾被文本检查误判为安全，随后静默
+  丢弃，用户无法知道内容被拒绝且边界缺少明确证明。
+- 修改摘要：`isSafePresentationBlock` 增加有界语义类型 allowlist；未知类型、
+  HTML/script/危险 URL fail-closed；Presentation UI 显示拒绝数量但不暴露
+  payload，不动态加载任何组件。
+- 修改文件：`apps/web/app/lib/scientific-presentation.ts`、
+  `scientific-presentation.test.ts`、`ScientificPresentationBlocks.tsx`、
+  `ScientificPresentationBlocks.test.tsx`、连续优化证据与状态文档。
+- 验证：focused frontend `23 passed`；typecheck PASS；git diff check PASS。
+- 实际收益：不受支持的呈现内容不再静默丢失或进入潜在执行路径，研究者可见
+  到有界安全状态，科学 authority 不变。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #21 / CO-038 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：服务启动分散，缺少统一 readiness 保护，重启时可能只看到端口而
+  误以为真实运行时已切到 PostgreSQL/Redis/MinIO。
+- 修改摘要：新增 `scripts/phase14r_start_stack.ps1`，幂等启动缺失的 API、
+  worker、frontend，等待所有服务端口，并探测真实 `/health/runtime`；
+  发现 SQLite/local/fake worker 时直接失败；不停止现有服务。
+- 修改文件：`scripts/phase14r_start_stack.ps1`、连续优化证据与状态文档。
+- 验证：`-CheckOnly -FrontendPort 3023 -TimeoutSeconds 10` 实测
+  PostgreSQL/Redis/MinIO/Redis worker/DeepSeek 全部健康；git diff check PASS。
+- 实际收益：下次恢复服务可使用一个可重复命令，不会把错误 runtime 当作同栈
+  健康；现有服务和浏览器标签保持运行。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #19 / CO-122 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Viewer registry 将 `analysis.rdf`、`reciprocal.brillouin_zone`
+  暴露为对象类型，但 ScientificObject authority 并未注册它们，导致历史/
+  归档语义不明确。
+- 修改摘要：从对象级 registry 移除两个 descriptor，新增显式
+  `RESULT_ONLY_VIEWER_TYPES`；保持现有 Result/Artifact renderer 可用，不新增
+  对象或第二科学 authority。
+- 修改文件：`apps/api/mdi_api/scientific_viewers/registry.py`、
+  `__init__.py`、`tests/test_agent2_phase9_viewers.py`、连续优化证据与状态文档。
+- 验证：`pytest tests/test_agent2_phase9_viewers.py tests/test_agent2_contracts_registries.py -q`
+  为 `38 passed`；touched Ruff PASS；git diff check PASS。
+- 实际收益：对象级版本/归档边界与 Result-only renderer 边界一致，避免用户
+  误以为 RDF/BZ 可直接作为 ScientificObject 生命周期管理。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #18 / CO-016 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Viewer API 的零重算断言原先仅覆盖 Structure，其他注册 Viewer 家族
+  的只读行为缺少同等保护。
+- 修改摘要：将授权 Viewer API 回归参数化至 `11` 个 ScientificObject-backed
+  类型；每个类型检查 renderer identity、执行/Artifact/Result 表计数不变，
+  并保留跨项目 `403` 与无元数据泄漏断言。
+- 修改文件：`tests/test_agent2_phase9_viewers.py`、连续优化证据与状态文档。
+- 验证：`pytest tests/test_agent2_phase9_viewers.py -q` 为 `28 passed`；
+  touched Ruff PASS；git diff check PASS。
+- 实际收益：Structure、Band/DOS、Phonon、Trajectory、XRD、Dataset/Table、
+  Volumetric 的 Viewer 现在共享同一 persisted no-recompute 保护。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #10 / CO-121 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：缺失 ScientificResult 引用未纳入 Agent2 typed error mapping，导致
+  context-memory pin 操作可能返回泛化 500。
+- 修改：`_http_error` 将 `ScientificResultSnapshotNotFound` 归一化为稳定
+  404；新增 API 回归保护安全错误详情。
+- 修改文件：`apps/api/mdi_api/routers/agent2.py`、
+  `tests/test_agent2_api.py`、连续优化证据文件。
+- 验证：`pytest tests/test_agent2_api.py -q` 为 `27 passed`；touched Ruff
+  PASS；`git diff --check` PASS。
+- 实际收益：上下文控制遇到缺失 Result 时可恢复且不泄漏内部 500，科学与
+  session memory authority 保持不变。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #11 / CO-010 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Research 依据条目只显示泛化来源标签，用户难以从结论回溯到
+  字段、Artifact、ToolCall 与校验和。
+- 修改：新增有界 `evidenceProvenanceSummary`，依据行显示字段定位、
+  Artifact ID、ToolCall ID 与 SHA-256；保留既有结果内定位按钮。
+- 修改文件：`apps/web/app/components/ResearchPages.tsx`、
+  `apps/web/app/components/ResearchPages.test.tsx`、连续优化证据文件。
+- 验证：ResearchPages `75 passed`；frontend typecheck PASS；
+  `git diff --check` PASS。
+- 实际收益：科学证据链更容易被研究人员检查，同时不改变科学 authority、
+  不暴露 provider 或基础设施秘密。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #12 / CO-009 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：stale recovery 虽有同栈演练证据，但缺少数据库回归保护 product
+  与 qualification 项目分流。
+- 修改：新增一个真实 product stale Turn 和一个 bounded qualification
+  Turn，验证 `list_stale` 只将 product 暴露为 recovery candidate，资格
+  数据单独保留。
+- 修改文件：`tests/test_phase14r_recovery.py`、连续优化证据文件。
+- 验证：recovery focused `5 passed`；touched Ruff PASS；
+  `git diff --check` PASS。
+- 实际收益：避免恢复服务误重发资格任务或制造重复科学执行。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #13 / CO-011 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：XRD 报告虽支持讨论、结论和限制，但缺少专门回归保护其科学
+  通信质量。
+- 修改：新增 XRD 报告测试，验证 discussion/conclusion 绑定权威
+  `xrd.matched_peak_count`，保留限制并通过 ReportGroundingValidator。
+- 修改文件：`tests/test_agent2_phase8_reports.py`、连续优化证据文件。
+- 验证：Reports focused `35 passed, 4 skipped`；touched Ruff PASS；
+  `git diff --check` PASS。
+- 实际收益：XRD 报告可读性与事实绑定得到持续保护，不会触发科学重算。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #14 / CO-012 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Phase 14-R Scientific Surface 覆盖矩阵是手工维护的，缺少对 live
+  Registry/Capability Pack/Result projector 的漂移保护；审计实际发现
+  `ml.regression_evaluation` 文档 Pack 为 `core.data`，而 live pack 为
+  `core.other`。
+- 修改：新增 `tests/test_phase14r_surface_coverage.py`，自动从当前
+  Registry 与 trusted Packs 派生 capability IDs、Pack、ToolBinding 与
+  Result projector，并要求与矩阵逐项一致、覆盖列非空、状态值受控且
+  projector 已注册；同步修正矩阵 Pack 单元。
+- 修改文件：`tests/test_phase14r_surface_coverage.py`、
+  `docs/agent2/phase14r/SCIENTIFIC_SURFACE_COVERAGE_MATRIX.md`、
+  `docs/agent2/continuous_optimization/evidence/co-012-surface-registry-drift-2026-09-05.json`、
+  连续优化状态文档。
+- 验证：surface coverage `1 passed`；touched Ruff PASS；`git diff --check`
+  PASS。
+- 实际收益：Registry/Pack/文档能力覆盖漂移现在会在回归阶段快速失败，
+  不会悄悄产生错误的科学能力覆盖认知；未引入第二套能力 authority。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #15 / CO-013 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：历史精确版本 Viewer 回归主要集中在 Dataset/Structure，其他已注册
+  ScientificObject-backed Viewer 家族缺少 v1/v2、归档/恢复后的精确版本保护。
+- 修改：在 `tests/test_agent2_phase9_viewers.py` 增加参数化回归，覆盖
+  Dataset/Table、Structure、Trajectory、XRD、Electronic、Phonon 与
+  Volumetric 共 `10` 个对象类型；每例验证 v2 为 current 时归档状态仍可
+  读取 v1，恢复后 current 与版本数量保持不变。
+- 额外发现：`analysis.rdf` 与 `reciprocal.brillouin_zone` 只有 Viewer
+  descriptor、没有 ScientificObject registry 类型，记录为新候选 CO-122，
+  没有把对象级历史覆盖伪装成 PASS。
+- 修改文件：`tests/test_agent2_phase9_viewers.py`、连续优化证据与状态文档。
+- 验证：Viewer focused `18 passed`；touched Ruff PASS；`git diff --check`
+  PASS。
+- 实际收益：已注册对象 Viewer 的历史/归档读取具备统一可重复保护，防止
+  newer version 或 archive transition 替换旧科学来源。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #16 / CO-014 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Viewer 将 `SOURCE_MISSING`、`METADATA_ONLY`、`INVALIDATED` 统一
+  显示为不可用并提供重试，用户无法区分可恢复缺失、交互预览上限与失效
+  历史证据。
+- 修改：新增 `viewerPayloadRecovery` 状态映射；仅 `SOURCE_MISSING` 显示
+  “重新读取来源”，`METADATA_ONLY` 和 `INVALIDATED` 分别显示准确原因并
+  移除误导性重试；三种状态均保留精确来源/属性入口。
+- 修改文件：`apps/web/app/components/scientific-viewer/ScientificObjectViewer.tsx`、
+  `apps/web/app/components/scientific-viewer/ScientificObjectViewer.test.tsx`、
+  连续优化证据与状态文档。
+- 验证：ScientificObjectViewer focused `3 passed`；frontend typecheck PASS；
+  `git diff --check` PASS。
+- 实际收益：恢复动作与持久化科学状态一致，避免用户对超限或失效版本
+  进行无效重试，同时保留可审计的来源导航。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #2 / CO-002 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Report table preview 对无显式 ID 的科学行使用视觉数组下标作为
+  React key，排序或重新投影后可能发生错误 DOM 复用。
+- 修改：优先使用唯一 `id/sample_id/sampleRef/site_index/structureId/
+  material_id`；否则使用属性顺序无关的规范化行内容，并仅对完全相同的重复行
+  添加 occurrence 消歧。
+- 修改文件：`ScientificReportArtifactPreview.tsx` 及对应测试；持续优化
+  backlog/log 和 persistent 状态文档。
+- 验证：focused Vitest `9 passed`；无 ID 行重排、`sample_id` 唯一性和
+  重复行消歧测试 PASS；frontend typecheck、touched diff check PASS。
+- 实际收益：报告表格在排序/刷新后保留稳定科学行身份，不把视觉位置提升为
+  数据 authority。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #3 / CO-003 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Materials Explorer 通用统计/比较表格丢弃上游语义身份并使用数组
+  下标作为 React key。
+- 修改：表格行改为 `{ key, cells }`，分别绑定 chemical system、
+  ScientificObject、quality column/value 和 comparison property；重复上游
+  身份进入确定性消歧，不把视觉位置作为默认身份。
+- 修改文件：`DatasetMaterialsExplorerPanel.tsx` 及对应测试；持续优化
+  backlog/log 和 persistent 状态文档。
+- 验证：focused Vitest `11 passed`；重排和重复身份回归 PASS；frontend
+  typecheck、touched diff check PASS。
+- 实际收益：数据浏览器的科学行在筛选、重排和刷新后保持稳定 DOM identity。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #4 / CO-005 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：ResearchTurn 与 legacy Job polling 只忽略迟到结果，但未真正取消
+  网络请求/全部 retry timer；legacy Interpretation 回调可能在切换研究后更新
+  当前页面。
+- 修改：相关读 API 支持 AbortSignal；两套 polling 实施单一在途约束、卸载
+  abort、timer 清理和 exact-lineage callback guard；仅 AbortError 被静默忽略。
+- 修改文件：`agent2-execution-api.ts`、`planner-api.ts`、
+  `ResearchPages.tsx` 及对应测试；持续优化状态文档。
+- 验证：ResearchPages `73 passed`；新增 unmount abort、online 防重叠和
+  AbortError 分类回归；frontend typecheck、touched diff check PASS。
+- 实际收益：长时间研究切换不再留下无效请求或让迟到的进度/解释覆盖当前 Turn。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #5 / CO-004 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：历史链接同时包含相关 Job ID 和权威 ResearchTurn ID 时，旧 Job
+  hydration/polling 仍可能与 Turn progress 并行，形成两套执行状态 authority。
+- 修改：explicit ResearchTurn 存在时，`runId` 只保留 provenance/session
+  定位用途；跳过 legacy Job details/events/artifacts/interpretation 与 poller；
+  legacy run-only 行为保持。
+- 修改文件：`ResearchPages.tsx` 及对应测试；持续优化状态文档。
+- 验证：ResearchPages `74 passed`；新增 run+turn 测试证明 Turn 进度可见且
+  Planner Job/Event/Artifact readers 调用为 0；frontend typecheck、diff
+  check PASS。
+- 实际收益：一个研究页面不再被两个执行模型同时驱动，避免进度和结果串线。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #6 / CO-036 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：关键 Data→Research→Viewer→Report→History 产品转换缺少真实
+  浏览器级 SPA/no-document-reload 回归，用户容易感知为页面重载和缓慢切换。
+- 修改摘要：新增 `apps/web/test/product-navigation-spa-acceptance.mjs`
+  和 `test:product-navigation-spa` npm 入口；脚本在认证后遍历六条关键
+  转换，检测 document 请求、`performance.timeOrigin`、运行时标记、
+  console 与 5xx。预期认证前 401 在认证边界清理，认证后仍严格失败。
+- 修改文件：`apps/web/test/product-navigation-spa-acceptance.mjs`、
+  `apps/web/package.json`、连续优化证据与状态文档。
+- 验证：authenticated Chrome acceptance PASS；六条转换
+  `documentRequests=0`，`timeOriginPreserved=true`，
+  `runtimeStatePreserved=true`；暖态 `37–139 ms`；console errors `0`；
+  server 5xx `0`；frontend typecheck PASS；touched diff check PASS。
+- 实际收益：将用户感知的“页面转换慢/重载”风险变成可重复的产品回归；
+  当前实现保持单页运行时并且暖态切换远低于秒级目标。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #7 / CO-006 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Project History 兼容查询只按 Job ID 连接 ResearchTurn，异常跨项目
+  关系可能泄漏另一项目的 Turn identity。
+- 修改摘要：`research_session_runs` 与 `research_turns` 的连接增加同项目约束；
+  保留非标准 Job ID 的 legacy run-only 安全回退；新增跨项目关系 fail-closed
+  回归。未改变 ResearchTurn identity authority。
+- 修改文件：`apps/api/mdi_api/routers/project_history.py`、
+  `tests/test_project_history_research_context.py`、优化证据与状态文档。
+- 验证：project-history `5 passed`；project-access `32 passed`；touched Ruff
+  PASS；touched diff check PASS。
+- 实际收益：历史恢复路径不再因 malformed Job/Turn 关系跨项目泄漏精确
+  ResearchTurn；合法显式关系与 legacy 兼容行为保持不变。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #8 / CO-007 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Legacy ContextSnapshot 兼容 Manifest 投影未执行 operation-specific
+  budget，历史回放可能超出输入预算并错误标记为 `NONE`。
+- 修改：按科学上下文优先级确定性裁剪兼容项；非关键溢出写入
+  `excluded_items` 并标记 `COMPACTED`；关键科学上下文超限 fail-closed；
+  保留有界 included/excluded 合同。
+- 修改文件：`apps/api/mdi_api/routers/agent2.py`、
+  `tests/test_phase14r_context_manifest.py`、连续优化证据文件。
+- 验证：`pytest tests/test_phase14r_context_manifest.py -q` 为 `13 passed`；
+  touched Ruff PASS；`git diff --check` PASS。
+- 实际收益：历史 ContextManifest 回放与新建 Manifest 使用同一预算边界，
+  避免 provider 输入超限或关键科学证据被静默丢弃。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #9 / CO-008 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：上下文 pin/unpin 虽已有服务/API/UI，但缺少跨 repository reload
+  的持久化回归，刷新或重新登录可能出现未验证的状态漂移。
+- 修改：新增真实 `ScientificResultSnapshot` 生命周期测试，验证固定精确
+  Result 后新会话仍可读取，取消固定后再次读取为空。
+- 修改文件：`tests/test_agent2_phase7_memory.py`、连续优化证据文件。
+- 验证：`pytest tests/test_agent2_phase7_memory.py -q` 为 `10 passed`；
+  touched Ruff PASS；`git diff --check` PASS。
+- 实际收益：Context pin/unpin 的跨刷新持久化契约有了可重复保护，且不改变
+  ScientificResult 的不可变科学 authority。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #17 / CO-015 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Research/Report 的 Figure/Table 只能打开受信 Artifact，缺少可审计的
+  下载入口，用户需要离开当前呈现才能保存完整科学 payload。
+- 修改摘要：新增 `ArtifactDownloadLink`，严格限制为同源
+  `/api/planner/jobs/{job}/artifacts/{artifact}/content`；在
+  `ScientificPresentationBlocks`、`ScientificReportRoute` 的 Figure/Table
+  与证据 Artifact 入口提供下载。没有新增科学执行或第二结果来源。
+- 修改文件：`apps/web/app/components/ArtifactDownloadLink.tsx`、
+  `ArtifactDownloadLink.test.tsx`、`ScientificPresentationBlocks.tsx`、
+  `ScientificPresentationBlocks.test.tsx`、`ScientificReportRoute.tsx`、
+  `ScientificReportRoute.test.tsx`、连续优化证据与状态文档。
+- 验证：focused frontend `32 passed`；typecheck PASS；git diff check PASS。
+- 实际收益：Research、Report 与 Workbench 的 Artifact 访问能力一致，下载
+  复用服务端授权/长度/SHA-256 校验，Job/ToolCall/Artifact/Result 增量为 0。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #32 / CO-026 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Redis/RQ 不可用时，stale Research recovery 的首次队列异常会
+  中断恢复扫描，无法向产品暴露可重试的 durable attention 状态。
+- 修改摘要：`StaleResearchRecoveryService` 支持注入既有队列适配器，并在
+  orchestration/planning/execution/result/interpretation 重发边界将队列
+  故障归一化为 `QUEUE_UNAVAILABLE`；不改变 PostgreSQL 中的 Turn/Job
+  身份或状态。Interpretation reconciler 增加同样的有界 queue 注入。
+- 修改文件：`apps/api/mdi_api/research_agent/recovery.py`、
+  `apps/api/mdi_api/interpretation/reconciler.py`、
+  `tests/test_phase14r_recovery.py`、连续优化证据。
+- 验证：`test_phase14r_recovery.py` + `test_agent2_phase4_execution.py`
+  `15 passed`；operations/retention 回归 `14 passed, 1 skipped`；
+  compileall、touched diff check PASS。
+- 实际收益：Redis 恢复前不伪造科学完成、不丢弃后续候选；恢复后按同一
+  Turn 身份重发，叠加既有 ToolCall/Artifact/Result 幂等保护避免重复输出。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #21 / CO-017 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：回收站保留规则仅由 UI 文案表达，依赖预览与物理删除没有共享的
+  版本化策略判定，未来自动过期可能误伤科学 provenance。
+- 修改：新增 `mdi_api.lifecycle_policy` 作为后端单一留存策略契约；自动
+  清理明确禁用，引用 provenance 永久保护，手动永久删除仅在服务器确认
+  零依赖时允许。Project/Dataset 预览与删除路径统一使用该判定；回收站
+  永久删除检查展示服务端策略。
+- 修改文件：`apps/api/mdi_api/lifecycle_policy.py`、
+  `apps/api/mdi_api/routers/secured_runtime.py`、
+  `apps/web/app/lib/planner-api.ts`、
+  `apps/web/app/components/TrashCenterPage.tsx`、
+  `apps/web/app/components/TrashCenterPage.test.tsx`、
+  `tests/test_phase14r_retention_policy.py`、
+  `tests/test_project_access.py`、优化证据与状态文档。
+- 验证：retention policy `3 passed`；生命周期/依赖回归 `6 passed,
+  29 deselected`；Trash Center `5 passed`；compileall、typecheck、diff check
+  均 PASS。
+- 实际收益：科学历史不会被自动过期任务静默删除；手动删除、依赖预览和
+  用户看到的保留说明遵循同一可审计策略。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #22 / CO-018 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Project/Dataset 已有零依赖 purge，而 Research Session、
+  ScientificObject、Scientific Report 虽实际受保护，却没有相同的机器可读
+  策略，客户端可能错误推断其可永久删除。
+- 修改：共享留存策略新增 `manualPurge`；容器实体返回
+  `SERVER_ZERO_DEPENDENCY_ONLY`，科学/历史实体返回
+  `NOT_SUPPORTED_FOR_ENTITY`。Research Session read model 和 Object/Report
+  dependency preview 均暴露该策略；未新增删除路由。
+- 验证：policy `3 passed`；research/dependency lifecycle `2 passed,
+  33 deselected`；report lifecycle `1 passed, 38 deselected`；viewer/object
+  lifecycle `28 passed`；Trash Center `5 passed`；typecheck/diff check PASS。
+- 实际收益：所有受管理实体均有明确 fail-closed purge 语义，科学版本、
+  结果、报告和研究历史不会因客户端误判而进入物理删除路径。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #23 / CO-019 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Research Session 没有数据库权威 dependency-impact 端点，客户端
+  无法在生命周期操作前检查消息、Turns、上下文、结果与报告引用。
+- 修改：新增 `GET /research-sessions/{session_id}/dependency-impact`，按真实
+  `session_id/research_session_id` 列扫描并返回有界依赖；项目权限 fail-closed，
+  会话明确 `canDelete=false` 与 `NOT_SUPPORTED_FOR_ENTITY`。
+- 验证：research lifecycle `1 passed, 31 deselected`；report lifecycle
+  `1 passed, 38 deselected`；viewer/object lifecycle `28 passed`；陌生用户
+  `403`；typecheck、compileall、diff check PASS。
+- 实际收益：四类生命周期实体都可从服务器读取依赖边界，Research 历史不会
+  被当作可删除的前端记录。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #24 / CO-020 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：项目删除与账户停用虽已保留科学记录，但 API 没有结构化表达
+  “用户工作区访问”与“科学 provenance 保留”的边界。
+- 修改：账户停用返回 `provenanceRetained=true` 及受保护 retention policy；
+  项目物理删除继续由服务器零依赖门禁控制；logout 合同保持 `{ok:true}`，
+  现有会话撤销和 `account.deactivated` 审计不变。
+- 验证：账户管理 `8 passed`；停用/logout 子集 `2 passed`；typecheck、
+  compileall、diff check PASS。
+- 实际收益：账户停用不再让客户端猜测是否会影响科学历史，结果、版本和
+  审计记录明确保留。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+
+## Continuous optimization — Improvement #25 / CO-021 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Job-event 并发回归只覆盖单一 repository 实例，且 live 夹具在
+  多次进程运行间复用固定 Dataset ID，旧 Job 外键会让测试在锁逻辑之前
+  失败。
+- 修改：新增四个独立 `SqlAlchemyRepositoryBundle`、12 个并发 writer 的
+  PostgreSQL stress test；`_seed_repos` 改用每次调用唯一随机后缀，避免
+  跨运行 FK 冲突；生产 advisory-lock 实现未修改。
+- 验证：配置 `postgresql+psycopg` 与 `MDI_RUN_INTEGRATION=1` 后，
+  `tests/test_phase6_integration.py -k concurrent_seq` 为 `2 passed,
+  17 deselected`。
+- 实际收益：多 worker 形态下事件序列的唯一性、连续性和读取顺序有真实
+  PostgreSQL 证据，测试夹具不会因历史残留数据掩盖并发回归。
+- 提交/CI：未提交、未推送；持续任务保持处理中。
+## Continuous optimization — Improvement #37 / CO-127 (2026-09-05)
+
+- 状态：已完成并验证；持续任务保持处理中。
+- 问题：viewer 项目成员无法从 Projects 菜单发现只读项目 provenance 导出，
+  与服务端 `require_project_access(read)` 授权语义不一致。
+- 修改文件：`apps/web/app/components/ProductPages.tsx`、
+  `apps/web/app/components/ProductPages.test.tsx` 及 CO-127 evidence。
+- 验证：`npm run test -- --run app/components/ProductPages.test.tsx`，
+  `46 passed`；viewer 导出请求、下载触发和写操作隐藏均通过。
+- 提交/CI：未提交、未推送；持续优化任务继续处理中。
+## Continuous optimization — Improvement #38 / CO-128 (2026-09-05)
+
+- 状态：已完成并验证；持续任务保持处理中。
+- 问题：旧兼容分析请求接口在带项目 ID 时没有执行项目读取授权。
+- 修改文件：`apps/api/mdi_api/routers/secured_runtime.py`、
+  `tests/test_project_access.py` 及 CO-128 evidence。
+- 验证：项目授权子集 `2 passed`；owner/viewer scoped request 通过，
+  stranger 返回 403，无项目旧请求仍返回 accepted，未创建科学执行。
+- 提交/CI：未提交、未推送；持续优化任务继续处理中。
+## Continuous optimization — Improvement #39 / CO-129 (2026-09-05)
+
+- 状态：已完成并验证；持续任务保持处理中。
+- 问题：缺失上传文件的 HTTP detail 暴露完整本地路径。
+- 修改文件：`apps/api/mdi_api/phase2_runtime.py`、
+  `tests/test_phase2_product_loop.py` 及 CO-129 evidence。
+- 验证：`pytest -q tests/test_phase2_product_loop.py -k
+  'api_call_redacts_missing_upload_paths or direct_upload_path_preflights'`
+  `2 passed`；路径已从 detail 移除。
+- 提交/CI：未提交、未推送；持续优化任务继续处理中。
+
+## Continuous optimization — Improvement #40 / CO-091 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Scientific Viewer 外层 `article` 没有显式可访问名称，
+  屏幕阅读器无法可靠识别 Viewer 区域。
+- 修改文件：`apps/web/app/components/scientific-viewer/ScientificViewerShell.tsx`、
+  `ScientificViewerShell.test.tsx` 及 CO-091 evidence。
+- 验证：Viewer Shell focused tests `2 passed`；`npm run typecheck`
+  通过；`git diff --check` 通过（仅常规换行提示）。
+- 收益：每个 Viewer 实例的 `article` 现在通过唯一标题 ID 与可见 `h2`
+  建立 `aria-labelledby`，重复实例不会冲突。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #85 / CO-103 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- ProductShell speculative route prefetch 从一次性突发改为逐路由 idle/timer
+  队列，并在 route change/unmount 时取消；保持 App Router 预取能力。
+- 修改文件：`apps/web/app/components/ProductShell.tsx`、
+  `ProductShell.test.tsx`及 CO-103 evidence。
+- 验证：dedicated scheduler `1 passed`，typecheck PASS，diff check 无实际错误。
+- 收益：冷启动期间减少预取请求突发，避免与首屏/历史/会话请求争抢资源，
+  且不会在用户离开后继续无效请求。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #86 / CO-048 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- saved-search 使用同页 CustomEvent、storage 与 BroadcastChannel 同步，
+  只广播 opaque revision，跨通道去重并忽略 malformed marker。
+- 修改文件：`apps/web/app/lib/saved-search-sync.ts`、
+  `ProductShell.tsx`及对应测试/evidence。
+- 验证：sync `5 passed`、ProductShell `21 passed`、typecheck PASS。
+- 收益：保存检索在重新打开和多标签场景下自动收敛，无需硬刷新且不泄露
+  检索内容。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #87 / CO-109 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Artifact renderer registry 新增 identity index，Workspace Gallery 使用
+  memoized index 进行 O(1) 查找，避免大 bundle 重复线性扫描。
+- 修改文件：`workspace-renderer-registry.ts`、`WorkspaceArtifactGallery.tsx`
+  及对应测试/evidence。
+- 验证：workspace renderer focused `11 passed`（含 500 artifacts），
+  typecheck PASS。
+- 收益：大量 Artifact 更新和重复渲染时降低匹配开销，身份与 renderer
+  选择保持精确且不触发科学重算。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #88 / CO-055 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Research 与 Task Center 统一 CANCELING/cancel_requested 语义、中文案与
+  1.8 秒确认轮询；取消中禁用重复停止，等待服务端终态。
+- 修改文件：`research-status.ts`、`ResearchExecutionActivity.tsx`、
+  `ResearchPages.tsx`、`TaskCenterPage.tsx`、`globals.css`及对应测试/evidence。
+- 验证：取消 focused `25 passed`，typecheck PASS，diff check 无实际错误。
+- 收益：慢取消不会被误认为完成或失败，跨页面状态一致且避免重复请求。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #89 / CO-134 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Artifact 下载链接现在对文件名做有界清洗：移除控制字符、替换路径分隔符、
+  去除前导点遍历、限制 120 字符；无效名称使用浏览器默认命名。
+- 修改文件：`apps/web/app/components/ArtifactDownloadLink.tsx`、
+  `ArtifactDownloadLink.test.tsx`及 CO-134 evidence。
+- 验证：focused `3 passed`，typecheck PASS，diff check PASS。
+- 收益：保留可读下载名，同时避免不必要的路径/控制元数据进入浏览器。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #90 / CO-051 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Task Center 从服务端授权 cursor feed 分页加载历史任务，按稳定
+  `projectId:jobId` 去重，保持筛选、排序、exact Turn 链接与后续页重试。
+- 修改文件：`apps/web/app/lib/task-center-data.ts`、`TaskCenterPage.tsx`
+  及对应测试/evidence。
+- 验证：Task feed/Task Center `21 passed`（含 1000-job/10-page），
+  typecheck PASS，diff check PASS。
+- 收益：长任务历史不再被客户端切片隐藏，首屏 payload 有界且分页为只读。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #91 / CO-110 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Viewer 在 payload 尚未就绪时保留 metadata/provenance 可见，显示精确
+  Artifact 身份、ToolCall、SHA-256 与来源/重试入口；缺失和失败复用同一
+  有界元数据区。
+- 修改文件：`apps/web/app/components/ScientificViewerAdapter.tsx`、
+  对应 effect tests 及 evidence。
+- 验证：focused `8 passed`，typecheck PASS，diff check 无实际错误。
+- 收益：慢 Viewer 不再只有泛化 spinner，用户可核验来源并采取恢复动作，
+  且不触发科学重新计算。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #92 / CO-054 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- “打开”保持原 exact ResearchTurn；“打开并重试（新运行）”显式带
+  `retry=1`，仅对失败/取消且具写权限的会话创建 child Turn，并保留
+  原 Turn、Job 与 evidence。
+- 修改文件：`TaskCenterPage.tsx`、`ResearchPages.tsx`、两个 research 路由、
+  对应测试/evidence。
+- 验证：Research + Task Center 合并 `99 passed`，typecheck PASS，
+  diff check 无实际错误。
+- 收益：用户可明确知道是否会重新执行科学，旧失败证据不会被覆盖。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #93 / CO-037 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 通过 grid `min-width:0`/`max-width:100%`、移动控件换行及可聚焦宽表
+  滚动区，改善 390x844/200% zoom 下 Presentation/Report 可用性。
+- 修改文件：`apps/web/app/globals.css`、`WorkspaceArtifactGallery.test.tsx`
+  及 CO-037 evidence。
+- 验证：Workspace Gallery `7 passed`，typecheck PASS，diff check 无实际错误。
+- 收益：宽科学表格不再把全局页面撑出横向裁剪，样本选择和表格滚动仍可
+  用键盘触达。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #94 / CO-056 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Research 页面按 exact Project/Session/Turn 校验持久化 scope，刷新、重新
+  挂载、恢复可见或联网时重读 History/Session/Turn，并从 Turn 恢复缺失问题。
+- 修改文件：`apps/web/app/components/ResearchPages.tsx`、对应 tests/evidence。
+- 验证：recovery/reconnect focused PASS，typecheck PASS；完整 Research
+  `88 passed`，1 个既有顺序敏感 context retry case 单独重跑通过。
+- 收益：离开返回不依赖前端内存，不使用 Job 名猜测，跨项目/会话错误身份
+  fail closed。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvements #71–#75 (2026-09-05)
+
+- 状态：全部已完成并验证；持续优化总任务继续处理中。
+- CO-114：服务端授权的依赖影响导航覆盖 exact Data/Research/Report；
+  backend `37 passed, 4 historical skips`，frontend `66 passed`。
+- CO-073：Viewer loader 错误按场景校验、WebGL、chunk、初始化分类；
+  focused `25 passed`。
+- CO-053：停滞 RUNNING 任务以“需要关注”呈现，保留真实状态与检查动作；
+  focused `7 passed`。
+- CO-096：Edit-last-message 在权威原 Turn 加载失败时双层 fail closed；
+  focused `2 passed`。
+- CO-095：Continue 只对 Result 404 进入新执行；exact Result 显式成为复用
+  候选，其他读取失败不创建 Turn；Research/API `89 passed`。
+- 合并验证：frontend typecheck PASS；`git diff --check` PASS（仅工作树
+  既有 CRLF 提示）；未提交、未推送，服务与浏览器保持运行。
+
+## Continuous optimization — Improvements #76–#78 (2026-09-05)
+
+- 状态：全部已完成并验证；持续优化总任务继续处理中。
+- CO-077：Viewer 生命周期动作具有权限/归档/服务等精确禁用原因，
+  focused `8 passed`。
+- CO-094：Retry 创建新 ResearchTurn lineage，旧失败 Turn 与证据保持并可
+  导航返回；focused `3 passed`，Research `85 passed`。
+- CO-100：运行中草稿在当前标签页按 exact Turn 保存并可刷新恢复，
+  且明确不会重提正在运行的科学任务；Research `85 passed`。
+- typecheck/diff PASS；未提交、未推送，服务与浏览器保持运行。
+
+## Continuous optimization — Improvement #79 / CO-115 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Project、Research session 与 Report 的组织动作统一显示“列表置顶”，
+  Result 与来源版本明确显示“加入/移出本会话上下文”；会话内同时解释两类
+  操作的不同影响。
+- 修改文件：四个产品组件、四个对应 focused test、优化 backlog/log 及
+  CO-115 evidence。
+- 验证：frontend focused `151 passed`；typecheck PASS；diff check 仅有
+  已知 CRLF 转换警告。
+- 收益：用户不会把列表排序误认为 Agent 科学上下文变更，且没有改变
+  ScientificResult、ScientificObjectVersion、执行或授权权威。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #80 / CO-050 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Task/Notification 共享 feed 增加 AbortSignal、hidden/offline 轮询门控、
+  多消费者安全取消与恢复刷新；预期 Abort 不会显示为失败或覆盖新状态。
+- 修改文件：`task-center-data`、Task/Notification 两个页面及对应测试、
+  backlog/log/evidence。
+- 验证：focused `21 passed`；合并 typecheck PASS；diff check 仅有已知
+  CRLF 转换警告。
+- 收益：不可见或离线时减少无意义请求和陈旧覆盖，返回页面时无需整页重载
+  即可恢复持久化状态。
+- 提交/CI：未提交、未推送；服务与浏览器保持运行。
+
+## Continuous optimization — Improvement #70 / CO-104 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 修改：补充 Research session 预热缓存的 lifecycle mutation 回归；重复读取
+  继续合并，archive/restore/rename 后下一次列表读取必须命中授权 API。
+- 文件：`apps/web/app/lib/product-api.test.ts`及 CO-104 evidence。
+- 测试：product-api `7 passed`；typecheck/diff check PASS。
+- 收益：页面预热性能保留，同时消除生命周期操作后的跨页面陈旧列表风险。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvements #67–#69 (2026-09-05)
+
+- 状态：三项均已完成并验证；持续优化总任务继续处理中。
+- CO-111：Viewer 快速重试合并为一个可取消请求，并使用最大 1 秒退避；
+  focused tests `4 passed`。
+- CO-113：Trash Center 批量恢复按授权/项目原子执行，失败组保留并显示
+  partial result；focused tests `8 passed`。
+- CO-119：CI 失败也会上传 log、exit、JUnit 与脱敏同栈快照；workflow
+  parse PASS，operations `11 passed, 1 historical skip`。
+- 合并 typecheck/diff PASS；本机 same-stack status=ok，PostgreSQL/Redis/
+  MinIO 正常，workerCount=6，DB active=1/idle=5/idle-in-transaction=0。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvements #63–#66 (2026-09-05)
+
+- 状态：四项均已完成并验证；持续优化总任务继续处理中。
+- CO-075：来源缺失 Viewer 展示有界精确身份并导出不含 payload 的元数据；
+  Viewer tests `6 passed`。
+- CO-093：Research 状态筛选支持命名组、方向键/Home/End 与同步焦点状态；
+  ResearchPages `77 passed`。
+- CO-102：空 Research 项目获得授权正确的 Data Platform 入口；
+  ResearchPages `77 passed`。
+- CO-117：CI 以 JUnit XML 汇总 service-backed 测试；解析器 `2 passed`，
+  真实 smoke selected=2/passed=2/skipped=failed=errors=0。
+- 合并 `npm run typecheck`、touched Ruff、相关 diff check 通过。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #62 / CO-108 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 修改：Generic JSON Artifact 预览先执行有界结构投影，再序列化小型预览；
+  节点、层级、数组项、对象字段和长文本均受明确预算约束，并披露省略数量。
+- 文件：WorkspaceArtifactGallery、ScientificWorkspaceShell focused test、
+  `docs/agent2/continuous_optimization/evidence/co-108-bounded-json-preview-2026-09-05.json`。
+- 测试：10 万项数组尾部 getter 未读取；focused test `1 passed`；
+  `npm run typecheck` 通过。
+- 收益：避免大 JSON 完整同步序列化造成页面冻结，同时完整 Artifact 与科学
+  事实权威不变。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvements #58–#61 (2026-09-05)
+
+- 状态：四项均已完成并独立验证；持续优化总任务继续处理中。
+- CO-081：Dataset 稳定样本身份成为主要视觉/语义身份，源行降为辅助定位；
+  focused tests `12 passed`。
+- CO-099：取消终态去除重复 notice，由 execution card 单一呈现；Research
+  cancel cases `3 passed`，execution activity `11 passed`。
+- CO-090：重复 Presentation 的 Evidence item、inspector、Finding anchor
+  使用实例作用域；Presentation/Viewer/Report `35 passed`。
+- CO-133：Workspace Gallery 标题、分组与活动 Viewer 标题 ID 使用实例
+  作用域；gallery `6 passed`。
+- `npm run typecheck` 通过；相关 `git diff --check` 无错误。
+- 证据：`docs/agent2/continuous_optimization/evidence/co-081-*`、
+  `co-099-*`、`co-090-*`、`co-133-*`。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #56 / CO-098 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 修改：Research 生命周期菜单在 archive/restore 后恢复来源焦点；若行因
+  当前筛选消失，则焦点回退到状态筛选按钮，并通过 `aria-live` 播报状态。
+- 文件：`apps/web/app/components/ResearchPages.tsx`、
+  `apps/web/app/components/ResearchPages.test.tsx`、
+  `docs/agent2/continuous_optimization/evidence/co-098-lifecycle-focus-2026-09-05.json`。
+- 测试：生命周期 focused test `1 passed, 74 skipped`；`npm run typecheck`
+  通过。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #57 / CO-132 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 修改：Scientific Table 行 key 现在优先使用对象作用域的稳定 sample
+  标识，避免多个同 `objectId` 行碰撞；无稳定身份时使用确定性回退键。
+- 文件：`apps/web/app/components/workspace/WorkspaceArtifactGallery.tsx`、
+  `apps/web/app/components/workspace/WorkspaceArtifactGallery.test.tsx`、
+  `docs/agent2/continuous_optimization/evidence/co-132-table-row-key-identity-2026-09-05.json`。
+- 测试：gallery focused tests `5 passed`，无 duplicate-key warning；
+  `npm run typecheck` 通过。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #41 / CO-130 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Artifact 直接下载路由虽已有授权包装，但没有回归证明陌生项目
+  请求会在真正读取存储内容前失败。
+- 修改文件：`tests/test_project_access.py` 及 CO-130 evidence。
+- 验证：授权子集 `1 passed, 33 deselected`；陌生用户 403 且下载函数调用
+  次数为 0；项目所有者可成功下载同一 Artifact。
+- 收益：跨项目直接下载边界有可观察的 fail-closed 保护，避免仅检查
+  元数据授权而误读存储内容。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #42 / CO-076 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Viewer 元数据原先静默只显示前 16 项，用户无法判断其余字段
+  是缺失还是被折叠。
+- 修改文件：`ScientificViewerShell.tsx`、`ScientificViewerShell.test.tsx`
+  及 CO-076 evidence。
+- 验证：focused shell tests `3 passed`；typecheck 通过；diff check 通过
+  （仅常规换行提示）；18 字段场景显示“查看其余 2 项元数据”，展开后
+  可访问全部字段。
+- 收益：保持研究工作台紧凑首屏，同时以明确计数和原生 disclosure 保留
+  所有已加载权威元数据，不再产生“字段不存在”的误导。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #43 / CO-084 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Finding 只有证据数量，用户无法直接进入对应证据链。
+- 修改文件：`ScientificPresentationBlocks.tsx`、其测试及 CO-084 evidence。
+- 验证：ScientificPresentation focused tests `7 passed`；typecheck 通过；
+  diff check 通过；Finding 链接能定位稳定 evidence 节点并调用精确
+  interpretation evidence，不创建 Job/ToolCall/Artifact/Result。
+- 收益：从科学结论到 provenance 的路径缩短为一次操作，保持现有证据
+  inspector 和权限边界不变。
+- 备注：仓库暂无 ESLint 配置，`next lint` 进入交互式初始化，未将其
+  误报为通过或失败。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #44 / CO-092 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Evidence inspector 打开后焦点不会进入新内容，触发按钮也未声明
+  控制区域。
+- 修改文件：`ScientificPresentationBlocks.tsx`、其测试及 CO-092 evidence。
+- 验证：ScientificPresentation focused tests `7 passed`；typecheck 与
+  diff check 通过；打开后焦点在 Evidence region，关闭后返回原按钮，
+  `aria-controls` 与详情 ID 匹配。
+- 收益：键盘用户可直接进入、阅读并返回证据链，保持现有授权、Result
+  和 Artifact 只读边界。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #45 / CO-072 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 通用 Plotly Viewer 增加 `ResizeObserver`，监听实际绘图容器尺寸变化；
+  保留 `window.resize` 兼容路径，卸载时断开 observer 并清理 Plotly。
+- 修改文件：`apps/web/app/components/workspace/WorkspaceGenericPlot.tsx`、
+  `apps/web/app/components/workspace/WorkspaceGenericPlot.test.tsx`及 CO-072 evidence。
+- 验证：focused tests `9 passed`，typecheck 通过。
+- 收益：分栏、标签切换和移动布局变化会即时反映到图表几何尺寸，
+  且不触发任何科学重算。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #46 / CO-112 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 回收站永久删除确认改用稳定 `类型:ID` 令牌，不再依赖可重复标题；
+  对话框同时解释依赖保护与留存策略。
+- 修改文件：`TrashCenterPage.tsx`、`TrashCenterPage.test.tsx`及 CO-112 evidence。
+- 验证：focused tests `6 passed`，typecheck 通过。
+- 收益：同名实体无法混淆，错误令牌不会触发删除，保留服务端依赖扫描
+  和 provenance 保护。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #48 / CO-087 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Figure 预览从持久化 Artifact 读取有限的 axis title/range/tickvals/ticktext，
+  在 SVG `desc` 和可见轴信息中展示；缺失元数据明确显示 Artifact 未提供。
+- 修改文件：`ScientificReportArtifactPreview.tsx`、对应测试、
+  `globals.css`及 CO-087 evidence。
+- 验证：focused tests `10 passed`，typecheck 通过。
+- 收益：Band/XRD/RDF 等图表预览的单位、范围和刻度更容易核验，且不推断
+  科学事实、不触发重算。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #49 / CO-089 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 表格预览保留 24 行/8 列上限，同时展示准确的省略行列数量，并用原生
+  disclosure 列出隐藏列名；完整数据继续通过外层已授权 Artifact 入口查看。
+- 修改文件：`ScientificReportArtifactPreview.tsx`、对应测试、
+  `globals.css`及 CO-089 evidence。
+- 验证：focused tests `11 passed`，typecheck 通过。
+- 收益：用户不会把“预览截断”误判为“数据不存在”，且保持有界渲染。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #50 / CO-078 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Viewer 对辅助 Artifact 的失败不再静默丢弃：保留主结果，同时显示部分
+  可用状态、每个失败 Artifact 和稳定错误码，并提供原地重试；JSON 解析失败
+  统一为 `ARTIFACT_CONTENT_INVALID`。
+- 修改文件：`ScientificViewerAdapter.tsx`、对应 effect 测试、`globals.css`
+  及 CO-078 evidence。
+- 验证：focused tests `8 passed`，typecheck 通过。
+- 收益：科研用户能区分完整结果与部分结果，不会看到原生解析堆栈，
+  也不会触发科学重算。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #51 / CO-070 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Generic Plot 抽样状态显示 `显示点数/原始点数`，并明确保留端点与极值；
+  `sanitizePlotSpec` 同时保留总点数。
+- 修改文件：`WorkspaceGenericPlot.tsx`、对应测试及 CO-070 evidence。
+- 验证：focused tests `10 passed`，typecheck 通过。
+- 收益：有界预览不会伪装成完整数据，科学数值仍来自原始 Artifact。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #52 / CO-079 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 结构 Viewer 在站点达到有界截断时显示权威的“当前显示前 256 / 总数”
+  警告，并保留完整结构来源提示；重复的代码与消息警告不会产生重复 UI。
+- 修改文件：`apps/web/app/components/viewer-scene/viewerSceneRendererMapper.ts`、
+  `apps/web/app/components/viewer-scene/ViewerSceneRendererSurface.tsx`、
+  `apps/web/app/components/viewer-scene/ViewerSceneRendererSurface.test.tsx`及
+  `docs/agent2/continuous_optimization/evidence/co-079-viewer-site-truncation-2026-09-05.json`。
+- 验证：mapper/surface focused tests `43 passed`，`npm run typecheck` 通过。
+- 收益：用户可直接区分有界预览与完整结构，科学来源与渲染上限未改变。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #53 / CO-082 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 配位数直方图现在通过 `aria-describedby` 关联有界文本摘要，逐 bin 提供
+  配位数、位点数和占比；现有数值表仍是完整可键盘访问替代。
+- 修改文件：`apps/web/app/components/workspace/CoordinationHistogramPanel.tsx`、
+  对应测试及 CO-082 evidence。
+- 验证：focused tests `2 passed`，`npm run typecheck` 通过。
+- 收益：科学图表的数值信息不再只依赖颜色、柱高或 hover，且仍来自原始
+  Artifact，不触发重算。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #54 / CO-080 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Dataset Explorer 增加每页 50 条的有界分页，显示当前范围、已投影索引
+  总数与权威总样本数；通用 Scientific Table 同样显示当前页范围和总行数，
+  首尾分页边界正确禁用，sample_id/sampleRef 语义身份保持不变。
+- 修改文件：DatasetMaterialsExplorerPanel、WorkspaceArtifactGallery 及对应
+  focused tests/evidence。
+- 验证：focused tests `17 passed`，typecheck 与 diff check 通过。
+- 收益：大数据集不会把有界 payload 误显示成完整数据，同时用户可预测地
+  浏览和定位行。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #55 / CO-085 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Figure/Table Artifact 预览按 401/403/404/410、无效 JSON 和大小边界提供
+  稳定、可行动且不泄露基础设施细节的状态；安全域错误码继续保留，
+  不改变完整 Artifact 入口或科学重算语义。
+- 修改文件：ScientificReportArtifactPreview、对应测试及 CO-085 evidence。
+- 验证：focused tests `12 passed`，typecheck 通过。
+- 收益：报告用户能区分权限、缺失、过期、内容损坏和大小限制，不会把原始
+  堆栈误认为科学结果失败。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #47 / CO-131 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 增加精确 ID 授权矩阵，覆盖 ResearchTurn 与 ScientificObject 的详情、
+  context、cancel、dispatch、progress、result、projection、interpretation、
+  events、metadata、dependency、versions、query、viewer、relationships。
+- 修改文件：`tests/test_agent2_api.py`及 CO-131 evidence。
+- 验证：授权子集 `1 passed, 27 deselected`；陌生用户所有覆盖路由均为 403，
+  对象/版本/哨兵元数据不泄露。
+- 收益：核心科学对象和研究执行边界有统一的 fail-closed 回归，不触发
+  下游存储或科学执行。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #81 / CO-083 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Data 页面将 tableQuery、tableSort、tableRow 与 canonical selection 写入
+  bounded URL/history；非法、跨项目或跨 Dataset token fail closed。
+- 修改文件：`apps/web/app/projects/[projectId]/data/page.tsx`、
+  `apps/web/app/components/ProductPages.tsx`、`globals.css`及对应测试/evidence。
+- 验证：Product/Data regression `48 passed`，typecheck PASS，diff check 无实际错误。
+- 收益：刷新、复制链接与前进/后退可恢复同一有界科学数据视图，精确
+  Dataset/Object/Version 与 sample identity 不变。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #82 / CO-088 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Workspace Plot 与 Report SVG 预览在有界预算内确定性保留端点、全局
+  min/max 与分桶局部极值，公开 shown/total/strategy。
+- 修改文件：`WorkspaceGenericPlot.tsx`、`ScientificReportArtifactPreview.tsx`
+  及对应测试/evidence。
+- 验证：Plot/Report focused `24 passed`，typecheck PASS，diff check 无实际错误。
+- 收益：采样预览不会因前段数据填满预算而隐藏后段关键峰值，也不会伪装
+  为完整科学序列。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #83 / CO-097 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Research 分支切换器使用服务端 persisted Turn、parent Turn、user message
+  revision 和问题内容；增加目标分支可访问名称、来源问题、全部分支披露、
+  exact Turn/消息修订标识及当前 aria-current。
+- 修改文件：`ResearchPages.tsx`、对应测试、`globals.css`及 evidence。
+- 验证：完整 Research regression `86 passed`，typecheck PASS，diff check 无实际错误。
+- 收益：用户可在相似问题之间识别正确分支，返回历史时不依赖箭头计数或
+  Job 命名猜测。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #84 / CO-049 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Task Center 与 Notification Center 共享不可变 feed snapshot、一次请求、
+  一次轮询与在线/可见性生命周期；消费者级取消不会互相误伤。
+- 修改文件：`use-product-task-feed.ts`、`TaskCenterPage.tsx`、
+  `NotificationCenterPage.tsx`、`task-center-data.ts`及对应测试/evidence。
+- 验证：Task/Notification/cache focused `22 passed`，typecheck PASS，
+  diff check 无实际错误。
+- 收益：双页面打开时初始与恢复请求去重，后台/离线不浪费轮询资源，
+  恢复时仍从持久化权威刷新。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #95 / CO-135 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Artifact 普通打开保持 inline；显式下载通过同一授权内容路由追加
+  `download=true`，并仅为该请求返回清洗后的 attachment disposition。
+- 修改文件：`apps/api/mdi_api/routers/planner.py`、
+  `apps/web/app/components/ArtifactDownloadLink.tsx` 及对应测试/evidence。
+- 验证：后端 Artifact content `7 passed`；前端 Artifact/Presentation/Report
+  `35 passed`；typecheck PASS。
+- 收益：用户可区分在线科学检查与本地下载；权限、内容身份和零重算语义不变。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #96 / CO-032 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Provider payload/error、Queue Job/Tool/依赖 failure summary 与 Report
+  failure summary 使用统一递归脱敏；自动检测 credential、Bearer/API token、
+  Redis/MinIO/S3 endpoint 与绝对路径。
+- 修改文件：`services/llm/mdi_llm/redaction.py`、
+  `services/llm/mdi_llm/providers.py`、
+  `services/workers/mdi_workers/queue_runtime.py`、
+  `services/workers/mdi_workers/report_worker.py`、
+  `tests/test_phase14r_sensitive_sentinels.py` 及 evidence。
+- 验证：focused `37 passed`；scanner/Provider subset `11 passed`；
+  Report/export/project authorization regression、web typecheck、compileall、
+  touched Ruff 与 diff check PASS。
+- 收益：嵌套错误不会泄漏凭据、基础设施 endpoint 或路径，科学数值、单位、
+  sample/version/evidence identity 不被误脱敏。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #97 / CO-069 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Generic Plotly 异步创建/卸载的 purge 变为幂等；审计现有 Scene、
+  Trajectory、Phonon、Volumetric 的 engine/worker/request/listener cleanup。
+- 修改文件：`WorkspaceGenericPlot.tsx` 及对应测试/evidence。
+- 验证：renderer cleanup `60 passed`；typecheck、diff check PASS。
+- 收益：快速切换/卸载重 Viewer 不再重复释放，且不触发科学重算。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #98 / CO-058 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 新增授权只读 `ResearchTurn→Job→ToolCall→Result→Report` correlation
+  投影，ToolCall 上限 64 并披露截断；不返回参数、路径、storage/provider/
+  queue 细节或凭据。
+- 修改文件：`apps/api/mdi_api/routers/agent2.py`、`main.py`、
+  `tests/test_agent2_api.py` 及 evidence。
+- 验证：focused API `2 passed`；Ruff、compileall、diff check PASS。
+- 收益：完整科学执行链可诊断，同时保持项目隔离、去敏与科学权威不变。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #99 / CO-045 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Global search 新增绑定用户/查询/项目/类型/状态的有界 cursor；ProductShell
+  使用 SPA 加载更多、稳定去重和失败重试，达到服务端扫描上限时明确提示。
+- 修改文件：`secured_runtime.py`、`planner-api.ts`、`product-api.ts`、
+  `ProductShell.tsx`、对应测试及 evidence。
+- 验证：后端 `9 passed`；前端 `22 passed`；125 个授权结果六页、唯一 125、
+  私有泄漏 0；跨用户/变更筛选 cursor 422；typecheck/Ruff/diff PASS。
+- 收益：长搜索可完整、授权、无硬刷新地浏览，不把导航结果提升为科学事实。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #100 / CO-035 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Research performance 探针在当前标签页保存最多 50 条 opaque timing，
+  以双帧确认衡量真实 UI 响应，并绑定 exact ResearchTurn 的首个持久化进度；
+  不记录 prompt、科学数据、凭据或基础设施 secret。
+- 修改文件：`research-performance.ts` 及测试、`ResearchPages.tsx`、
+  Phase14R performance baseline 和 evidence。
+- 验证：五个 exact Turn 的 acknowledgement p50/p95=`26/29 ms`，
+  first persisted `RECEIVED` p50/p95=`262/293 ms`；browser error/warn 0；
+  helper `5 passed`、focused Research `1 passed`、typecheck/build PASS。
+- 收益：提交流畅度现在可跨 App Router 导航稳定复验，且进度来自 durable
+  ResearchTurn 状态而非伪造的 thinking 文案。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #101 / CO-136 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 关闭 3000、3013–3023 的旧前端/专用包装进程，只保留当前 3024；新增
+  默认 dry-run、当前端口 health gate、仓库 Next listener 精确匹配的安全轮换工具。
+- 修改文件：`scripts/phase14r_rotate_frontend.ps1`、
+  `tests/test_phase14r_frontend_rotation.py` 及 evidence。
+- 验证：focused `2 passed`；live 3025 dry-run 只识别 PID 26440，apply
+  只停止该 PID；3024/8005/PostgreSQL/Redis/MinIO 均健康；diff PASS。
+- 收益：不再堆积 stale frontend 内存或误用旧构建，同时不会误停当前后端栈。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #102 / CO-071 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Generic Plot 增加 heatmap cell、mesh vertex 与 mesh triangle 独立
+  100,000 hard cap；超限明确拒绝、不静默截断，完整 Artifact authority 保留。
+- 修改文件：`WorkspaceGenericPlot.tsx`、对应测试及 evidence。
+- 验证：focused `13 passed`；typecheck、diff check PASS。
+- 收益：重 heatmap/mesh 在进入 Plotly 前被有界保护，不冻结标签页、不改变科学值。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #103 / CO-030 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 统一 session-expired 恢复保留完整 path/query/hash 与 Research 本地草稿；
+  登录页显示明确重认证说明，安全 local return 成功后精确返回。
+- 修改文件：`ProductShell.tsx`、`LandingPage.tsx`、对应测试及 evidence。
+- 验证：focused `27 passed`；typecheck、diff check PASS。
+- 收益：401 不再表现为科学失败或丢失草稿；外部/歧义 return URL 继续 fail closed。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #104 / CO-052 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 通知 read/unread 采用 user/project/Job/revision 绑定的服务端持久标记；
+  Job 新状态自动重新未读，打开研究、筛选和显式切换均有诚实同步语义。
+- 修改文件：`secured_runtime.py`、`main.py`、`product-api.ts`、
+  `NotificationCenterPage.tsx`、对应测试及 evidence。
+- 验证：后端 `2 passed`；前端/API `14 passed`；typecheck、Ruff、
+  compile/import、route registration、diff check PASS。
+- 收益：阅读状态跨导航/登录保持，且不会越权或成为科学事实 authority。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #105 / CO-033 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Presentation exact-field allowlist、Viewer bounded token 与 Pack binding
+  validator 阻断任意 component/import/HTML/script/remote URL。
+- 修改文件：`scientific-presentation.ts`、`scientificViewerRegistry.ts`、
+  `packs.py`、Viewer schemas、对应负向测试及 evidence。
+- 验证：后端 `44 passed`；前端 `29 passed`；typecheck、Ruff、diff PASS。
+- 收益：Presentation 继续是 reviewed repository code 的声明式通信层，
+  server/Pack descriptor 无法变成可执行 UI authority。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #106 / CO-086 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Artifact content 将 404 临时缺失、410 metadata-only gone、413 over-cap 与
+  422 integrity failure 分开；browse/download 共享存储前项目授权但 disposition
+  分离。
+- 修改文件：Planner content route、Viewer/Report Artifact 状态、对应测试及 evidence。
+- 验证：后端 `11 passed`；Viewer/Report `28 passed`；链接/Presentation
+  `12 passed`；typecheck、Ruff、compileall、diff PASS。
+- 收益：用户得到准确可恢复性提示，不泄漏 storage 细节、不强迫下载、不重算科学。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #107 / CO-105 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Project Home 从全量 history 客户端切片改为 datasets/analyses/activity 各自
+  8 条首屏与稳定 server cursor 继续加载；保留其他调用的兼容行为。
+- 修改文件：Project History service/router、`planner-api.ts`、
+  `ProjectHome.tsx`、对应测试及 evidence。
+- 验证：1000-item；后端 `5 passed`、前端 `5 passed`；typecheck/diff PASS。
+- 收益：大项目首屏 payload 与渲染成本有界，继续加载仍保持 SPA 和 exact identity。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #108 / CO-039 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- typed local/same-stack profile 在 API serving 与 worker consuming 前统一校验
+  PostgreSQL、Redis namespace、MinIO、Agent orchestration 及环境 alias 冲突。
+- 修改文件：API `config.py`、worker entrypoint、API/worker 启动脚本、测试及 evidence。
+- 验证：focused `35 passed`；Ruff/diff PASS。
+- 收益：同栈资格环境不能静默退化或让 API/worker 使用不同队列命名空间。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #109 / CO-046 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- Global Search 补齐日期过滤、Result lifecycle 与 exact Session/Turn SPA
+  destination，跨 Project 异常关系不再污染导航。
+- 修改文件：`secured_runtime.py`、`planner-api.ts`、`ProductShell.tsx`、
+  Search 覆盖测试及 evidence。
+- 验证：后端 `27 passed`、前端 `28 passed`；typecheck、Ruff、route/diff PASS。
+- 收益：所有支持的 active/archived/trashed 工作可授权发现并精确返回产品流。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #110 / CO-029 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 新增 24-route exact HTTP 矩阵与 Report/Evidence/Dataset/Artifact 前置授权
+  回归；修复 Project History 测试兼容分支吞 403。
+- 修改文件：Project History router、三组 authorization 测试及 evidence。
+- 验证：HTTP `1 passed`、Report/Evidence `3 passed`、Dataset/Artifact
+  `2 passed`；Ruff、compileall、diff PASS。
+- 收益：跨项目 exact ID 不能成为 metadata、projection、mutation 或 storage oracle。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #111 / CO-107 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- ContextManifest disclosure 从展开后全量 DOM 改为默认 8 项、展开 32 项的
+  可导航窗口，同时保留 exact source/Result/scientific provenance 顺序。
+- 修改文件：`ResearchPages.tsx`、对应前端测试、持续优化 evidence/台账。
+- 验证：10,000-item；前端 focused `3 passed`、既有 provenance 回归通过、
+  后端 ContextManifest `13 passed`；typecheck、diff PASS。
+- 收益：大型上下文审计保持有界和可操作，不压缩、不改写科学权威。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #112 / CO-031 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 统一 Project role capability matrix，并修复平台管理页允许非创建者成为
+  owner、从而错误暴露 owner-only purge UI 的真实权限不一致。
+- 修改文件：API access/platform admin、Project/Research/Admin UI、角色 helper、
+  前后端测试及 evidence。
+- 验证：后端 `5 passed`；权限/Admin UI `12 passed`；Project actions
+  `6 passed`；Research read-only `3 passed`；typecheck、Ruff、compileall、
+  diff PASS。
+- 收益：项目角色、操作可见性与服务端 enforcement 一致，平台管理员也不会
+  自动获得每个科学 Project 的成员权限。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #113 / CO-041 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- API、六类 worker、frontend 启动接入同一日志轮转/保留运行器；活动日志
+  不进入删除集合，只有严格托管的时间戳归档可被清理。
+- 修改文件：日志 runner、三套启动脚本、focused tests 与 evidence。
+- 验证：`5 passed`；Ruff、PowerShell parser、diff PASS；当前真实服务栈
+  保持健康且未被重启。
+- 收益：后续运行不会因固定日志无限增长占用磁盘，维护操作可先 dry-run。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #114 / CO-074 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 体数据校验不再把合法 mixed boundary 误判为损坏；renderer unsupported、
+  schema invalid、grid mismatch 与数值越界均有独立 typed 状态。
+- 修改文件：Volumetric validation、focused tests 与 evidence。
+- 验证：`7 passed`；typecheck、diff PASS。
+- 收益：用户能区分“科学数据有效但当前不能渲染”和“数据确实损坏/不一致”。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #115 / CO-047 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 根因：offset-only 搜索游标会在分页期间的较新插入发生后漂移，产生重复或
+  漏项；生产表也缺少覆盖授权过滤和稳定排序的完整复合索引。
+- 修改：opaque keyset v2 使用 `updatedAt/kind/id`，绑定 caller 与 query、
+  Project、类型、生命周期、日期筛选；增加 0031 搜索索引迁移及回归。
+- 验证：后端搜索/授权 `27 passed`；fresh/legacy migration `4 passed`；
+  前端 continuation/API `32 passed`；Ruff、diff PASS。1,250 条语料
+  p95 `15.33 ms`，payload <64 KiB，跨 Project 泄漏 0。
+- 收益：并发插入时仍能稳定遍历授权结果，且不把无界搜索集加载到浏览器。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #116 / CO-040 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 根因：runtime health 虽执行真实 SQL/Redis/MinIO probe，却没有可比较且
+  去密的运行拓扑/连接身份，难以发现连接到了错误实例。
+- 修改：新增 `RuntimeConfigurationFingerprint/1.0` 与三个连接 SHA-256
+  指纹；凭据不进入 hash，backend/target 与实际探测证明进入 hash。
+- 验证：focused `3 passed`，Ruff/compileall/diff PASS；live endpoint
+  PostgreSQL、Redis、MinIO 均 `ok` 且 `connectionBound=true`。
+- 运行时：只滚动 API PID `27560 → 26356`；其余服务与浏览器标签未停止。
+- 收益：运行时漂移可被可靠比较，同时不泄漏或编码密码/Access Key。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #117 / CO-043 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 根因：pytest、npm/build、browser evidence 和服务会在确认磁盘容量前分配
+  进程及写入缓存，低空间会留下部分输出并显示无关底层错误。
+- 修改：跨平台只读 preflight 接入全部上述入口；默认 5/10 GiB，
+  capacity/path/configuration typed failure，并披露配置的 E 盘 fallback。
+- 验证：focused `11 passed`；前端 `5 passed`；typecheck 与 isolated distDir
+  production build PASS；Ruff/compileall/PowerShell parser/diff PASS。
+- 收益：大型操作在部分写入前失败并给出可操作恢复卷；运行 frontend 保持 200。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #118 / CO-042 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 根因：临时残留没有 dry-run-first 分类，难以区分真正候选与发布证据、活动
+  服务数据、日志及恢复归档。
+- 修改：严格 allowlist、resolved-path/symlink 防护；默认/显式 dry-run；
+  apply 只移入 `.cleanup_archive`，永久删除权不在工具内。
+- 验证：focused `4 passed`，Ruff/compileall/diff PASS；live 0 candidates，
+  evidence/service/log/archive 均显式列为 protected/recoverable。
+- 收益：清理可审计、可恢复，不会把“页面不可见”误当成“可删除”。
+- neat-freak：285 MB 独立 build 复核现场已隔离，永久清场等待完整汇报后确认。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #119 / CO-060 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 根因：schema 形状测试不能提前阻止多 head 或危险 upgrade，0031 也没有
+  携带核心科学身份的数据往返证明。
+- 修改：锁定单一线性 head；全部 revision 要求 upgrade/downgrade；AST
+  拒绝 drop/TRUNCATE/DELETE FROM；加入 0030↔0031 identity/Result smoke。
+- 验证：fresh/legacy/guard `7 passed`；head `0031_product_search_keyset`；
+  Ruff/compileall/diff PASS。
+- 收益：迁移分叉或破坏科学身份会在确定性门禁中失败，而不是运行后才发现。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Result archive reconciliation / CO-027 (2026-09-05)
+
+- 状态：已完成并验证；本条补齐既有实现的结果归档，不重新执行或改变实现。
+- 修改摘要：DeepSeek 429/5xx/network/timeout 瞬时故障执行一次 250 ms
+  有界退避；认证、配置与非法响应继续 fail-fast，调用审计保持脱敏。
+- 测试结果：完整 Provider 回归 `67 passed`；Agent2 provider/timeout/failure
+  回归 `4 passed, 41 deselected`。
+- 提交/CI：未提交、未推送；原实现证据保留在
+  `docs/agent2/continuous_optimization/evidence/co-027-provider-retry-2026-09-05.json`。
+
+## Continuous optimization — Result archive reconciliation / CO-028 (2026-09-05)
+
+- 状态：已完成并验证；本条补齐既有实现的结果归档，不重新执行或改变实现。
+- 修改摘要：直接 `DatasetUploadRequest` 复用上传会话的文件数、单文件与总字节
+  上限；filesystem path 在创建 raw 目录前完成预检并返回类型化错误。
+- 测试结果：Phase 2 产品 `9 passed`；typed/durable upload `15 passed`。
+- 提交/CI：未提交、未推送；原实现证据保留在
+  `docs/agent2/continuous_optimization/evidence/co-028-direct-upload-quota-2026-09-05.json`。
+
+## Continuous optimization — Improvement #120 / CO-137 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：优化候选池包含 5 个重复 ID，声明计数与唯一任务行不一致，两个已完成
+  项也缺少 `results.md` 归档，可能导致后续重复执行或错误恢复。
+- 修改摘要：删除重复 OPEN 行，将唯一任务计数校正为
+  `137 discovered / 121 completed / 16 remaining`；补齐 CO-027/CO-028
+  结果记录；新增台账验证器，拒绝重复或不连续 ID、计数漂移、无效 CURRENT
+  状态及缺少结果记录的已完成项。
+- 修改文件：优化 backlog、`results.md`、台账验证脚本与 focused tests。
+- 测试结果：见
+  `docs/agent2/continuous_optimization/evidence/co-137-ledger-integrity-2026-09-05.json`。
+- 实际收益：持续任务恢复点现在可机器验证，已完成工作不会因重复 OPEN 行再次
+  进入执行队列。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #121 / CO-044 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：npm、Playwright、pytest 与 Next 的缓存/临时输出可能落到用户目录或
+  分散目录，持续消耗受限系统盘并降低构建可复现性。
+- 修改摘要：新增有界 cache runner，把相关工具默认路由到仓库
+  `.cache/tooling` 与 `apps/web/.cache`；所有覆盖路径必须位于仓库内，Next
+  输出还必须位于 web root 内。
+- 修改文件：cache runner、npm/Next/pytest/CI 配置、启动/浏览器入口及
+  focused tests。
+- 测试结果：focused `3 passed`；越界 probe 正确返回 exit 64；
+  typecheck、两次 production build、Node syntax、Ruff、diff check PASS；
+  运行 frontend 保持 HTTP 200。
+- 实际收益：大型工具缓存不再默认挤占用户系统盘，清理边界与跨平台构建行为
+  更可预测。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #122 / CO-063 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：六类 worker queue 名分散在 launcher、settings、producer、recovery、
+  operations 与 health，环境覆盖可能造成 API/worker 拓扑漂移。
+- 修改摘要：新增 `WorkerQueueManifest/1.0`，统一六个角色、默认名、环境变量、
+  settings 属性与 trusted handler；same-stack 对空值、重复名、未知队列和错误
+  Redis namespace fail closed；启动器支持有界蓝绿轮换。
+- 测试结果：focused `40 passed`；Ruff、compileall、PowerShell parse、diff
+  check PASS。8006 影子 API 与新 6 worker 先通过 PostgreSQL/Redis/MinIO
+  runtime 验证，再关闭旧 API/worker；最终 8005 PID `25628`、前端 3024
+  HTTP 200、影子 8006 不再监听。
+- 实际收益：队列拓扑只有一个权威来源，服务更新不再需要同时保留旧进程或
+  依赖 launcher 字面量保持偶然一致。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #123 / CO-106 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：长 Research 会话展开时全量渲染消息，1,000+ 消息会让 DOM、内存与
+  交互成本无界增长。
+- 修改摘要：普通模式保留最近 10 条；展开模式改为 100 条窗口，并提供更早/
+  更新导航、明确范围状态、Session/Turn 切换重置和 exact message ID 保留。
+- 测试结果：1,001 条真实组件 DOM 固定 100 条；导航后内容身份与按钮焦点
+  稳定；20 次窗口投影小于 100 ms；Research suite `92 passed`，
+  typecheck、diff check PASS。
+- 实际收益：长会话可完整分窗审阅而不会随历史长度线性增加页面渲染负担。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #124 / CO-061 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：真实同栈 PostgreSQL 仍在 `0030_account_invitations`，仓库已经要求
+  `0031_product_search_keyset`；API/worker 没有启动门禁，Alembic 也未识别
+  启动脚本使用的 `MDI_POSTGRES_HOST`。
+- 修改摘要：新增同栈 migration-head fail-fast validator，并接入 API startup
+  和 worker admission；统一显式数据库别名判定；启动保护只读且不自动迁移。
+- 修改文件：`apps/api/mdi_api/migration_head.py`、API startup、worker
+  entrypoint、Alembic env、runtime config、focused tests 和持续优化证据。
+- 测试结果：focused `24 passed`；旧 `0030` 影子 API 拒绝；2,679,964-byte
+  备份后显式升级，`0031` 影子与正式 API 通过；6 workers idle、6 queues
+  depth 0、旧项目进程 0；Ruff、compileall、diff PASS。
+- 实际收益：新代码无法再对旧 schema 静默提供服务；迁移与运行 admission
+  分离，旧 API/worker generation 在健康切换后全部释放。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #125 / CO-057 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：queue depth、stale Job 和 worker 数量虽已采集，但没有统一健康
+  语义、runbook identity 与面向管理员的可操作解释。
+- 修改摘要：新增 state/heartbeat worker health；将 backlog、stale Job、
+  worker degradation 映射到三个受控 runbook；Admin API/UI 只投影去敏
+  指标与处置建议，不提供队列或科学记录变更操作。
+- 测试结果：backend `21 passed, 1 integration skipped`；该真实同栈
+  integration 单独 `1 passed, 0 skipped`；frontend `8 passed`；live
+  snapshot 为 6/6 healthy、depth 0、alerts 0、authority issues 0。
+- 实际收益：运维告警从“需要检查”变成一套可解释、可复核且 fail-safe 的
+  响应合同。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #126 / CO-059 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：API、worker 和浏览器未处理异常缺少统一的 release-bound、
+  request-correlated、secret-safe 事件合同。
+- 修改摘要：新增 `OperationalExceptionEvent/1.0`、API 中间件、RQ 异常
+  hook、authenticated browser capture 与 frontend rejection capture；只允许
+  bounded product/scientific correlation，禁止异常正文、stack、prompt、凭据、
+  service URL 和 filesystem path。
+- 修改文件：API/worker observability、frontend client observability、启动器
+  release SHA 注入、focused tests 与证据文件。
+- 测试结果：backend `16 passed`；frontend `2 passed`；live 3023→8005
+  authenticated POST 返回 202，请求 ID
+  `b7f5745f2d854e4d9907e891555cf959`；typecheck、Ruff、diff PASS。
+- 实际收益：跨三层故障现在可按精确 release 与 bounded identity 关联，且
+  不泄露科学 payload 或运行秘密。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #127 / CO-101 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Task Center 与 Research 分别推断取消能力，legacy/no-Turn 项可能
+  出现不一致或错误的 Agent2 变更操作。
+- 修改摘要：引入共享 `MODERN_TURN / LEGACY_READ_ONLY /
+  NO_TURN_UNAVAILABLE` 合同；Stop 仅面向显式 persisted ResearchTurn，
+  legacy 与无法解析项 fail closed。
+- 修改文件：Research 状态 helper、Task Center 与 focused tests。
+- 测试结果：合同 `3 passed`；完整 Task Center/status 文件 `14 passed`，
+  另有一个与本改进无关的共享 feed 脆弱断言，已登记 CO-138；typecheck、
+  diff PASS。
+- 实际收益：取消 UI 不再以 Job 字符串或缺失关系推导 mutation authority，
+  且服务端取消授权仍为最终权威。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #128 / CO-062 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：API、worker 和 operations 脚本分别硬编码 PostgreSQL、Redis、
+  MinIO 同栈参数，一个变更可能只作用于部分进程。
+- 修改摘要：新增 typed `SameStackRuntimeTopology` 与环境构建器；API/worker
+  launcher 和 operations snapshot 统一消费完整 alias 集；提供有界
+  `MDI_PHASE14R_*` override，避免继承 stale generic alias。
+- 修改文件：共享 runtime builder、API/worker 启动脚本、operations snapshot、
+  focused tests 与证据。
+- 测试结果：focused `38 passed, 1 existing live skip`；单一 Redis override
+  同时进入 API、worker、health、operations；live PostgreSQL/Redis/MinIO
+  healthy、6 workers、queued 0、idle-in-transaction 0；PowerShell parse、
+  Ruff、compileall、diff PASS。
+- 实际收益：运行与诊断不再因三份配置漂移而连接到不同数据库、Redis
+  namespace 或 MinIO endpoint。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #129 / CO-064 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：PostgreSQL、Redis、MinIO 故障在 runtime health 与 operations
+  返回不同异常类名，且异常正文可能含 endpoint、bucket 或凭据。
+- 修改摘要：新增 `ServiceFailure/1.0`，仅用异常类型、SQLSTATE 与受限
+  storage protocol code 分类 authentication/configuration/not-found/timeout/
+  unavailable/unknown，并统一 health/operations 投影与 retryability。
+- 修改文件：service failure classifier、health、operations、focused tests
+  与证据。
+- 测试结果：分类 `6 passed`；扩大回归在一个无关旧文本断言前通过 39 项，
+  该问题登记为 CO-139；live database/Redis/MinIO/worker 均 ok；Ruff、
+  compileall、diff PASS。
+- 实际收益：故障能稳定指向正确依赖和重试语义，同时不泄漏基础设施细节。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #130 / CO-066 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Artifact storage 缺少后端统一写入上限，本地中断写入可能在目标路径
+  留下半成品。
+- 修改摘要：Local 与 S3/MinIO 增加 256 MiB final admission；超限在文件/
+  client 调用前拒绝；Local 改为同目录 `.part` 后 atomic replace，异常路径
+  清理临时内容。
+- 修改文件：Artifact storage、focused tests 与证据。
+- 测试结果：Artifact `4 passed`；product/input transport `18 passed`；
+  超限 target 0、S3 client call 0、中断 `.part` residue 0；Ruff、compileall、
+  diff PASS。
+- 实际收益：存储入口有明确硬边界，异常写入不能发布或遗留部分科学 payload。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #131 / CO-065 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Research submit 只依赖 React disabled，Global Search 只丢弃旧响应
+  而不取消旧网络请求。
+- 修改摘要：Research durable admission 前增加 synchronous same-tick
+  single-flight；PostgreSQL active-Turn limit 继续作为服务端权威并返回 typed
+  429/`Retry-After: 5`；Search 全链路传播 AbortSignal，在 query/filter/close/
+  unmount 时取消过时请求。
+- 修改文件：Agent2 error mapping、planner API、ProductShell、Research Pages、
+  focused backend/frontend tests 与证据。
+- 测试结果：backend `13 passed`；24 并发为 3 accepted/21 limited/3 persisted；
+  Search/ProductShell `29 passed`；Research Pages `93 passed`；typecheck、
+  Ruff、diff PASS。
+- 实际收益：快速重复输入不再产生重复科学准入或浪费搜索容量，服务端持久状态
+  仍为最终背压权威。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #132 / CO-116 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：CI 第三方 Actions 与 PostgreSQL/Redis/MinIO service images 使用可变
+  tag，供应链身份可能在仓库未改动时漂移。
+- 修改摘要：5 个 Action 固定 full commit SHA，3 个 service image 固定
+  multi-platform manifest digest；新增 checked-in provenance lock 与
+  floating-reference guard。
+- 修改文件：CI workflow、provenance lock、focused tests 与证据。
+- 测试结果：focused `3 passed`；5 个官方 tag→SHA 全匹配；YAML/JSON parse、
+  Ruff、diff PASS；floating Action/image reference 均为 0。
+- 实际收益：第三方 tag 重指向不能静默改变 CI 执行内容，审查过的 immutable
+  provenance 可在仓库内复核。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #133 / CO-118 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：CI 与本地 service qualification 分别维护测试路径、必过身份与
+  terminal grep，存在选择漂移。
+- 修改摘要：新增 versioned manifest 与统一 runner/validator；声明 29 paths、
+  34 required identities、minimum 50、zero skip/failure；CI/runbook 共用，
+  结果由 JUnit 结构验证。
+- 修改文件：mandatory-service manifest、runner、CI、两个 runbook、focused
+  tests 与证据。
+- 测试结果：focused `6 passed`；manifest/load/missing-required/skip guards、
+  Ruff、compileall、JSON/YAML parse、diff PASS。
+- 实际收益：mandatory test 不会只加入某一个 shell 列表而在其他资格路径
+  静默缺席。
+- 提交/CI：未提交、未推送；本项不伪造新的完整 service campaign PASS。
+
+## Continuous optimization — Improvement #134 / CO-138 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Task Center 与 Notification Center 的 shared-feed 回归把项目名必须
+  出现两次当作正确性条件；合法去重展示后测试失败，但共享请求合同未回归。
+- 修改摘要：保留一次共享请求和刷新 transition 的断言，改为分别验证
+  `全部任务`、`最近通知` 语义标题及至少一处共享项目内容。
+- 修改文件：`apps/web/app/components/TaskCenterPage.test.tsx` 与证据。
+- 测试结果：3 个相关测试文件、`27 passed`；diff check PASS。
+- 实际收益：测试重新绑定产品语义与共享请求权威，不再被无关的重复文本节点
+  数量影响。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #135 / CO-139 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Phase 5 Alembic 回归仍要求 `alembic/env.py` 包含字面
+  `DATABASE_URL`，而当前数据库权威已统一到 typed settings。
+- 修改摘要：测试改为验证 `load_settings().database_url`、显式配置检测及
+  Alembic URL 安全注入/百分号转义。
+- 修改文件：`tests/test_phase5_runtime_infrastructure.py` 与证据。
+- 测试结果：完整 Phase 5 runtime 文件 `9 passed, 1 existing skip`；
+  Ruff、diff check PASS。
+- 实际收益：数据库迁移测试保护真实配置合同，不再因安全重构后的源文本变化
+  产生误报。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #136 / CO-067 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：qualification PostgreSQL/MinIO 目录缺少 run identity、完成状态与
+  retention authority，不能安全区分当前服务、发布证据和可回收运行数据。
+- 修改摘要：新增 `.qualification_runs/<run-id>` manifest/active marker、
+  ACTIVE/COMPLETED/FAILED、14 天 TTL、release evidence 永久保护；默认只读
+  dry-run，显式 apply 仅移动至 recoverable archive。
+- 修改文件：retention policy/script/tests、`.gitignore` 与证据。
+- 测试结果：focused `7 passed`；真实仓库 dry-run candidate 0、legacy
+  directories unmanaged；Ruff、compileall、diff PASS；live runtime 的
+  PostgreSQL/Redis/MinIO/worker 均健康。
+- 实际收益：后续资格运行可安全回收而不误删当前服务或历史封板证据。
+- 提交/CI：未提交、未推送；当前 legacy 服务目录保持不动。
+
+## Continuous optimization — Improvement #137 / CO-068 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：磁盘 preflight 只有卷剩余空间，不能脱敏地区分 workspace、数据库、
+  MinIO、日志、qualification profiles 与 build/test caches 的容量占用。
+- 修改摘要：增加六类 bounded storage budget projection；PostgreSQL 使用
+  只读 `pg_database_size`，MinIO 最多扫描 10,000 objects，filesystem 最多
+  100,000 entries 且不跟随 symlink；admin 再次 allowlist 输出。
+- 修改文件：storage budget、operations/admin projection、focused tests 与
+  证据。
+- 测试结果：相关矩阵 `20 passed, 1 existing integration skip`；storage
+  focused `6 passed`；Ruff、diff PASS；真实同栈容量扫描完整。
+- 实际收益：服务健康与容量提醒不再混淆；发现 build/test caches
+  40,349,971,256 B（150.32%），另登记 CO-140，当前没有删除文件。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #138 / CO-120 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：旧 quickstart 混用 retained same-stack、default-port Compose 与手工
+  Uvicorn/Next 路径，新 checkout 还缺少 launcher 需要的 production build。
+- 修改摘要：统一 lockfile-driven Windows quickstart；增加匹配的
+  `.cache/next-production` build、服务端口预检、动态 Alembic head、
+  `/health/runtime`、`-CheckOnly` 和 repository-scoped old frontend cleanup。
+- 修改文件：release quickstart、focused contract test 与证据。
+- 测试结果：focused `5 passed`；Alembic head
+  `0031_product_search_keyset`；live check-only 验证 55434/6379/9000/
+  8005/3023、Redis workers 与 DeepSeek 健康；Ruff、diff PASS。
+- 实际收益：启动、验证和旧实例清理不再存在互相冲突的文档路径。
+- 提交/CI：未提交、未推送；现有服务和浏览器未重启或关闭。
+
+## Continuous optimization — Improvement #139 / CO-140 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：113 个 Next build caches 占用 40.35 GB，历史构建与当前 3023
+  活动构建混在同一工作区，直接递归清理可能破坏运行页面。
+- 修改摘要：新增只允许 direct `apps/web/.next*` 的 dry-run/fingerprint/
+  re-scan cleanup authority；Git tracked、symlink、近 24h、活动 BUILD_ID 与
+  `apps/web/.cache` 永久排除。
+- 修改文件：build-cache cleanup script/tests 与证据。
+- 测试结果：相关 `14 passed`；计划 105 candidates、0 tracked/bad；精确
+  apply 删除 38,056,000,111 B；清理后 2,293,972,298 B、预算 8.55%；
+  frontend 原 PID 29664 仍 HTTP 200，API/DB/Redis/MinIO/workers 健康。
+- 实际收益：释放 35.44 GiB，同时不停止服务、不碰源码/科学数据/证据。
+- 可恢复性：被删目录不在回收站、不可直接恢复，但全部是 Git-ignored、
+  可重新构建的生成物。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #140 / CO-141 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：Platform Provider credential 与 legacy `/me/secrets` 使用
+  process-local dictionary，多 API 进程/重启会丢失或分裂 credential
+  authority，部分前端合同还错误暗示持久化。
+- 修改摘要：新增 `0032_provider_connections` 与 PostgreSQL encrypted shared
+  repository；durable 写入强制 stable Fernet key；Provider mutation 限定
+  platform admin；same-stack legacy secret API 返回 typed 503；所有 local
+  secret lookup/delete/usage 强制 exact user scope；删除浏览器 legacy secret
+  client、`secretId` 和陈旧文案。
+- 修改文件：Provider migration/repository/routes、legacy secrets store/routes、
+  Model Settings/Planner client/messages、focused tests 与证据。
+- 测试结果：backend `84 passed`；frontend `40 passed`；typecheck、Ruff、
+  compileall、diff PASS。真实 PostgreSQL 备份 SHA-256
+  `7AC281AC9E49D08B3121EAA94CDCDE98685370905EEFBE3F5FD7D0A707F91DC1`；
+  独立进程 encrypted write/read/decrypt PASS；authenticated `/me/secrets`
+  返回 `503 LEGACY_USER_SECRET_API_UNAVAILABLE`。
+- 运行时：先启动/验证影子 8006，再停止旧 8005 PID `29356/22124`，启动新
+  8005 PID `29280`，最后停止影子；frontend PID `29664` 未中断，8006 无
+  listener，PostgreSQL/Redis/MinIO/workers 均健康。
+- 实际收益：Provider connection 成为共享、加密、可重启的一致 authority；
+  legacy surface 不再制造错误持久化承诺；服务换代后没有重复 API 占内存。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #141 / CO-142 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：API 的 migration-head guard 与 interrupted-work recovery 仍依赖
+  FastAPI 已弃用的 `@app.on_event("startup")`，框架升级会威胁启动安全和
+  执行顺序。
+- 修改摘要：统一为 app-factory-scoped async lifespan；migration validation
+  保持第一步且 fail-fast；recovery 保持 best-effort；各 `create_app()` 捕获
+  自己的 settings；新增顺序、失败与实例隔离测试。
+- 修改文件：`apps/api/mdi_api/main.py`、`tests/test_api_lifespan.py` 与证据。
+- 测试结果：combined lifespan/migration/recovery/API `49 passed`；严格
+  `DeprecationWarning` gate `7 passed`；Ruff、compileall、diff PASS。
+- 运行时：影子 8006 同栈启动且无旧 warning；随后停止旧 8005
+  `29280/27464`，启动新 8005 `20748/16260`，最后停止影子
+  `19060/21200`；8006 无监听，frontend PID 29664 未中断。
+- 实际收益：启动安全、恢复和框架生命周期对齐，且服务换代后没有重复 API
+  占用内存。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #142 / CO-143 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：`test_phase14r_recovery.py` 使用 `UUID` 类型注解但未导入；pytest
+  因 postponed annotations 通过，Ruff 则产生两个 F821。
+- 修改摘要：在既有 `uuid` import 中补充 `UUID`，不修改任何运行时代码。
+- 修改文件：recovery test 与证据。
+- 测试结果：完整 recovery 文件 `6 passed`；Ruff、compileall、diff PASS；
+  live frontend/API/PostgreSQL/Redis/MinIO/workers 保持健康，8006 仍关闭。
+- 实际收益：恢复测试同时满足执行与静态正确性，后续 touched Ruff 可真实
+  保护该路径。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+
+## Continuous optimization — Improvement #143 / CO-144 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：API 代码换代依赖手工 PID 编排，中断时可能留下旧 canonical 或
+  shadow 的 Uvicorn/log-runner 进程继续占用内存。
+- 修改摘要：API starter 增加健康门禁与原子 instance manifest；新增默认
+  dry-run 的 repository-scoped rotation helper，shadow 健康后才停止旧
+  canonical，且只按 PID、父子关系、创建时间、可执行文件与命令摘要精确停止
+  child→runner；新 canonical 和 frontend proxy 验证后回收 shadow。首次真实
+  shadow 揭示 PowerShell 布尔数组解析歧义，已改为 11 个命名括号化检查并
+  复测通过。
+- 修改文件：API starter/rotation、focused tests、运行手册、ADR、优化台账与
+  `co-144-api-rotation-process-ownership-2026-09-05.json`。
+- 测试结果：startup/rotation/log/runtime focused `20 passed`；PowerShell AST、
+  diff check PASS。真实轮换旧 child/runner `20748/16260` → 新
+  `18468/19620`；8005 listener=1、8006=0、旧 PID 均不存在、shadow manifest
+  不存在。frontend `29664`、六类 worker、PostgreSQL `11720`、Redis `7284`、
+  MinIO `12552` 均保持原 PID；direct/proxy runtime fingerprint 一致。
+- 运行健康：operations alerts=0、worker healthy=6、queue depth=0、
+  idle-in-transaction=0、pool checked-out=0。
+- 实际收益：以后新服务健康后会自动精确回收被替换的旧服务，不再依赖手工
+  停进程，也不会让旧/影子 API 持续占用内存。
+- 新发现：CO-145，MinIO bounded scan 已达到 8,739/10,000，需要在触顶时
+  明确报告 incomplete/unknown，而非伪造完整容量精度。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中，当前服务继续运行。
+
+## Continuous optimization — Improvement #144 / CO-145 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：MinIO bounded scan 接近 10,000-object 上限；截断时下游仍可能展示
+  伪精确 utilization，且 operations 没有 typed warning。
+- 修改摘要：触顶和 continuation 缺失分别输出稳定 reason；截断扫描保留
+  已观测 bytes/count 下界但 utilization 置空、state=unknown；新增
+  `OPS_MINIO_USAGE_SCAN_INCOMPLETE` 及明确“不删除科学 Artifact”的处置指引。
+- 测试结果：operations/storage/admin focused `29 passed, 1 existing skip`；
+  Ruff、compileall、diff PASS。纯内存 3-object 边界模拟返回
+  `MINIO_USAGE_SCAN_LIMIT_REACHED` 且不包含对象键；真实同栈 8,739/10,000
+  扫描仍 complete、alerts=0。
+- 运行时：受管 API 轮换旧 `18468/19620` → 新 `25704/5060`，旧 pair 已退出，
+  8005 listener=1、8006=0，frontend/workers/PostgreSQL/Redis/MinIO 均未停止。
+- 实际收益：运维不会把截断下界误当完整容量事实，也不会为容量告警破坏科学
+  provenance。
+- 新发现：CO-146，live API manifest 应从通用 cache scope 中获得显式保护。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中，当前服务继续运行。
+
+## Continuous optimization — Improvement #145 / CO-146 (2026-09-06)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：API 活动 instance manifest 位于通用 `.cache/runtime`，未来缓存
+  清理规则扩展时可能误选运行时身份数据。
+- 修改摘要：新增共享 `phase14r_runtime_paths.ps1`，API start/rotate 使用
+  `.runtime_services/managed/api`；rotate 保留旧路径兼容读取，且只有在
+  精确停止旧 child/runner 后才移除旧 manifest；`repo_safe_cleanup.py`
+  明确保护 `.runtime_services`。
+- 验证：真实同栈轮换 `25704/5060 → 12044/19996`；8005 单监听、8006
+  已关闭、旧 manifest 不存在、新 manifest 存在；frontend、六类 worker、
+  PostgreSQL、Redis、MinIO 未停止。focused `21 passed`，PowerShell AST、
+  Ruff、compileall、diff PASS；safe cleanup candidate=0，build-cache
+  dry-run 保留活动前端构建。
+- 实际收益：API 进程身份与清理边界现在有显式共享 authority，不会因缓存
+  维护误删活动 manifest；旧服务也不会继续占用内存。
+- 新发现：CO-147，worker launcher 尚无等价的 repository-scoped identity/
+  health manifest 与精确替换证明。
+
+## Continuous optimization — Improvement #146 / CO-147 (2026-09-06)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：stack startup 只判断是否存在任意 worker，缺失一个队列时不会补齐；
+  且 plain shell 没有 `PYTHONPATH` 时无法读取 queue manifest。
+- 修改摘要：`phase14r_start_stack.ps1` 临时、可恢复地注入
+  `packages/schemas`，逐队列匹配 live `worker_entrypoint`，仅把缺失队列
+  传给 `phase14r_start_workers.ps1 -OnlyQueue`；manifest 外队列 fail closed。
+- 验证：真实 `phase14r_start_stack.ps1 -FrontendPort 3023` 成功；6 个队列
+  对应的 12 个 runner/child PID 前后完全一致，无重复 worker、无服务停止；
+  runtime 仍为 PostgreSQL/Redis/MinIO。focused `17 passed`，PowerShell
+  AST、Ruff、compileall、diff PASS。
+- 实际收益：部分 worker 丢失时只恢复缺失队列，不再误判为完整拓扑，也不
+  会把普通 shell 的环境问题误报为服务缺失。
+- 新发现：CO-148，worker launcher 仍需 per-queue identity manifest 与
+  精确替换证明。
+
+## Continuous optimization — Improvement #147 / CO-148 (2026-09-06)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：worker runner/child 归属只能临时从进程命令行观察，未来无法安全精确
+  替换或回收。
+- 修改摘要：新增 `phase14r_discover_workers.ps1` 和受保护的
+  `.runtime_services/managed/workers`；按 checked-in queue manifest 配对
+  parent/child，并原子写入 queue、role、handler、Redis URL、PID、创建时间、
+  可执行文件、命令摘要和 release SHA；start_workers 启动后自动刷新。
+- 验证：真实发现 6/6 并写入 6 个 manifest；现有 12 个 worker 进程全部存活，
+  无服务停止；focused `19 passed`，PowerShell AST、Ruff、compileall、diff
+  PASS。运维快照首次 MinIO timeout，立即重试 0 alerts、8,739/10,000
+  complete，已作为后续 CO-149 记录。
+- 实际收益：后续 worker 精确轮换有持久身份依据，不再依赖模糊名称匹配或误杀
+  健康 worker。
+- 新发现：CO-149，MinIO bounded scan 瞬时 timeout 需要窄范围分类与重试策略。
+
+## Continuous optimization — Improvement #148 / CO-149 (2026-09-06)
+
+- 状态：已完成并验证；持续优化总任务保持处理中。
+- 问题：MinIO bounded list 偶发 timeout 会暂时把健康 bucket 显示成容量
+  unknown。
+- 修改摘要：仅对 shared classifier 标记为 retryable 的 storage failure 做
+  一次 50ms 有界重试；认证、not-found 等错误不重试，仍 typed fail-closed，
+  不伪造 count/utilization。
+- 验证：operations/storage/service-failure `29 passed, 1 skipped`；假客户端
+  timeout→success 恰好两次调用并 complete，认证失败仅一次调用并拒绝；真实
+  同栈 snapshot `status=ok`、alerts=0、MinIO `8,739/10,000 complete`、
+  PostgreSQL/Redis/6 workers 健康。Ruff、compileall、diff PASS。
+- 实际收益：瞬态存储抖动不再制造不必要告警，持续/未授权故障仍可见且安全。
+- 新发现：CO-150，worker manifest 需先脱敏完整 `redisUrl`，避免凭据落盘。
+
+## Continuous optimization — Improvement #149 / CO-150 (2026-09-06)
+
+- 状态：已完成并验证；持续优化总任务保持处理中。
+- 问题：worker manifest 的完整 `redisUrl` 可能携带 Redis credentials，违反
+  runtime evidence 不落 secret 边界。
+- 修改摘要：持久化字段改为 bounded `redisIdentity`，仅保留 scheme/host/
+  port/database；userinfo、password、query、raw URL 均不落盘；重新发现 6 个
+  live worker 以原子方式迁移旧 manifest。
+- 验证：6 个 manifest secret sentinel=0、raw `redisUrl`=0，身份均为
+  `redis://127.0.0.1:6379/13`；12 个 worker 进程全部存活、服务未停止；
+  focused `14 passed`，PowerShell AST、Ruff、compileall、diff PASS。
+- 实际收益：runtime evidence 不再持久化 credential-bearing Redis URL。
+- 新发现：CO-151，消失队列时旧 manifest 需有显式 stale 状态，避免误读为
+  活动身份。
+
+## Continuous optimization — Improvement #150 / CO-151 (2026-09-06)
+
+- 状态：已完成并验证；持续优化总任务保持处理中。
+- 问题：worker 消失后旧 `worker-*.json` 仍可能看起来像活动身份。
+- 修改摘要：found queue 写入 `RUNNING`、`lastSeenAt`、`staleSince=null`；
+  missing queue 原子标记 `MISSING` 并保留 lastSeen/staleSince，不删除证据；
+  迁移同时移除旧 raw `redisUrl`。
+- 验证：live discovery 6/6、6 manifests 全部 RUNNING、12 worker 进程存活；
+  focused `14 passed`，PowerShell AST、Ruff、compileall、diff PASS；为保护
+  当前健康 worker 未执行破坏性 stale simulation，已明确记录。
+- 实际收益：过期身份不会再被默认为活动进程，且故障恢复证据可保留。
+- 新发现：CO-152，增加 manifest-authorized dry-run/health-gated worker
+  精确轮换 helper。
+
+## Continuous optimization — Improvement #151 / CO-152 (2026-09-06)
+
+- 状态：已完成并验证；持续优化总任务保持处理中。
+- 问题：worker manifest 已有但没有安全消费方，未来可能回到手工 PID 操作。
+- 修改摘要：新增 `phase14r_rotate_workers.ps1`；默认 dry-run，验证
+  repository/release、runner/child 存在与 parentage、创建时间、可执行文件、
+  命令摘要、queue command、redacted Redis identity；Apply 限制单 queue 并
+  经过 `ShouldProcess`。
+- 验证：live dry-run 6 个 queue 全部通过、12 个 worker PID 前后不变、服务
+  未停止；focused `16 passed`，PowerShell AST、Ruff、compileall、diff PASS。
+- 实际收益：worker 替换有 fail-closed 的精确计划，不再依赖手工 PID。
+- 新发现：CO-153，Apply 必须在停旧前验证 replacement 的真实身份与健康。
+
+## Continuous optimization — Improvement #152 / CO-153 (2026-09-06)
+
+- 状态：已完成并验证；持续优化总任务保持处理中。
+- 问题：worker Apply 启动 replacement 后只固定等待 2 秒，未证明新 pair
+  真实可用就可能停旧。
+- 修改摘要：按 exact queue + generation worker name 发现 replacement；停旧
+  前验证 parentage、queue command、Redis identity、runner/child liveness；
+  admission 失败保留旧 pair，后续失败按 digest 精确回滚 replacement。
+- 验证：focused `16 passed`，PowerShell AST、Ruff、compileall、diff PASS；
+  live dry-run 6 queue 验证通过，12 worker PID 前后不变，未停止服务。
+- 实际收益：未证明的 replacement 不能再授权旧 worker 下线。
+- 新发现：CO-154，补 Redis/RQ registration 与 expected queue/state 健康门禁。
+
+## Continuous optimization — Improvement #153 / CO-154 (2026-09-06)
+
+- 状态：已完成并验证；持续优化总任务保持处理中。
+- 问题：OS 进程存活不能证明 replacement 已注册到 Redis/RQ；强制停进程还会
+  留下 stale registration，造成重复 worker 观测。
+- 修改摘要：新增 `phase14r_worker_registration.py`，按 exact name、exact
+  single queue、healthy state、900 秒 heartbeat 做脱敏 probe；rotation 停
+  旧后 exact `register_death()`，失败 rollback 只清理已验证 replacement；
+  修复 child matcher 排除 `phase14r_log_runner.py`。
+- 验证：首次 Apply 在停旧前 fail-closed；修复后真实 `mdi-jobs`
+  `18684/26300 → 29512/2972` 成功。RQ worker count=6、每个 queue 唯一、
+  queue depth=0；old/failed replacement pair 全部退出。focused registration
+  `7 passed` + rotation `16 passed`，PowerShell AST、Ruff、compileall、diff
+  PASS。PostgreSQL/Redis/MinIO/API/frontend 未停止。
+- 实际收益：未注册或错误队列 replacement 不能授权停旧，stale RQ identity
+  会被精确清理。
+- 新发现：CO-155，MinIO bounded scan 需保留带 freshness 的 last-known-
+  complete 状态，不能将 stale capacity 当 current。
+
+## Continuous optimization — Improvement #154 / CO-155 (2026-09-06)
+
+- 状态：已完成并验证；持续优化总任务保持处理中。
+- 问题：MinIO bounded scan 瞬态 timeout 时，健康 API 进程缺少连续诊断上下文。
+- 修改摘要：operations 增加 endpoint/bucket keyed、5 分钟、线程安全的
+  in-process last-known-complete cache；timeout 当前值仍 null/incomplete，
+  仅附 authoritative=false 的 age/value；过期仅 marker，不暴露 stale 数值。
+- 验证：operations/storage/service-failure `31 passed, 1 skipped`；API
+  受管轮换 `12044/19996 → 26224/21772`，前端代理和同栈健康保持；Ruff、
+  compileall、diff PASS。独立 CLI 每次新进程，不共享此缓存，已明确记录。
+- 实际收益：运维可看到有界连续上下文，同时任何 stale 容量都不会替代当前
+  scientific/storage truth。
+- 新发现：CO-156，独立 CLI 是否需要受保护 TTL observation cache，或统一
+  文档化进程边界并分类。
+- 任务：CO-156（跨进程 MinIO observation cache）
+  - 状态：已完成
+  - 完成时间：2026-09-06
+  - 修改摘要：为独立 operations CLI 增加受保护的 SHA-256 keyed runtime
+    observation file；采用 5 分钟 TTL、原子写入、secret-free payload、未来
+    时间戳拒绝和过期清理。超时快照仍保持 current unknown，旧值只作为
+    `authoritative=false` 的诊断上下文。
+  - 修改文件：`apps/api/mdi_api/operations.py`、
+    `tests/test_phase14r_operations.py`、CO-156 evidence、优化台账及持久化进度文档。
+  - 测试结果：operations/storage/service-failure `33 passed, 1 skipped`；
+    Ruff、compileall、git diff --check 通过；同栈 CLI 运行正常并显示
+    PostgreSQL/Redis/MinIO、6 workers。
+  - 提交/CI：待本地聚焦提交；未推送。

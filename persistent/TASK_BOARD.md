@@ -1,5 +1,27 @@
 # TASK_BOARD
 
+## Product maturity data reachability batch (2026-09-02)
+
+- [x] Add retry/source navigation controls to unavailable Scientific Viewer
+  states without changing scientific authority or triggering recomputation.
+
+## Product Maturity data reachability batch (2026-09-01)
+
+- [x] Proved PostgreSQL/Redis/MinIO/API/workers/frontend are running on the
+      same stack; service outage is not the root cause.
+- [x] Classified all 28 visible Datasets: 17 ready, 11 intentionally empty,
+      zero failed after the empty-state contract repair.
+- [x] Recovered the one acceptance Dataset's exact raw and normalized payload
+      through SHA-256/parser/object-identity checks and conditional MinIO
+      create semantics.
+- [x] Verified all 13 visible ScientificObjectVersion Viewer projections:
+      13 READY, 13 PROFESSIONAL, zero SOURCE_MISSING.
+- [x] Reopened the exact trajectory Viewer from the reported failure and
+      verified real three-frame content and zero browser logs.
+- [x] Full frontend, typecheck, production build, migration regression, Ruff,
+      compileall, lock and diff checks pass; final full backend and
+      service-backed counts are appended when the running campaigns finish.
+
 ## Phase 14-R current batch notes (2026-09-01)
 
 - [x] Added the unified authenticated Trash Center at `/trash`, linked from
@@ -3476,3 +3498,696 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
 - [x] Create P14R-B and obtain exact-current-head CI
       (`f23f6b1`, `33502281952`, all required jobs PASS); final result appended
       to `results.md`.
+
+## 2026-09-01 Phase 14-R payload availability remediation
+
+- [x] Audit PostgreSQL references against active and preserved MinIO stores.
+- [x] Restore only exact or deterministically validated payload identities.
+- [x] Convert missing Artifact storage from unhandled 500 to typed 404.
+- [x] Distinguish confirmed absence from transient storage failure in the UI.
+- [x] Browser-verify canonical Research, Report and Dataset on desktop/mobile.
+- [x] Preserve the five truly unavailable references without data fabrication
+      or silent version substitution.
+
+## 2026-09-01 Product maturity data visibility closure
+
+- [x] Reconcile every acceptance-visible Dataset, ScientificObjectVersion,
+      Viewer, Artifact and Report against PostgreSQL and MinIO.
+- [x] Restore the one exact historical Dataset payload with byte/checksum/parser
+      identity proof and no scientific authority mutation.
+- [x] Separate legitimate empty Datasets from storage failures.
+- [x] Remove the legacy empty-Dataset Planner escape hatch by converging old
+      detail routes on the current Data Platform.
+- [x] Browser-prove recovered and empty Dataset states with zero console errors
+      and zero horizontal overflow.
+- [x] Complete full backend/frontend/build/static regression and a disposable
+      PostgreSQL/Redis/MinIO campaign with mandatory skipped=0.
+
+## 2026-09-01 Product maturity Dataset interaction batch (continued)
+
+- [x] Confirm current API/frontend/PostgreSQL/Redis/MinIO/worker runtime via
+      `/health/runtime`.
+- [x] Re-project DataFrame rows with deterministic sample identity so a
+      readable row also has a semantic selection contract.
+- [x] Refresh the authenticated Data Platform tab and verify `Si / 1`,
+      exact object/sample refs, enabled selection, and zero browser diagnostics.
+- [x] Record batch evidence in
+      `docs/agent2/product_maturity/PRODUCT_MATURITY_BATCH_2026-09-01.md`.
+- [ ] Continue the broader Product Maturity Closure queue; this batch does not
+      mark the umbrella task complete.
+
+## 2026-09-01 Product maturity runtime/governance batch (continued)
+
+- [x] Verify PostgreSQL/Redis/MinIO/API/frontend/workers remain healthy after
+      the reported unavailable-page symptoms.
+- [x] Add a state-free `3000 → 3013` frontend compatibility entry for older
+      bookmarks without changing the primary service topology.
+- [x] Add bounded platform-admin project/member catalog and role governance
+      over the existing `project_members` authority, with owner protection and
+      sanitized audit events.
+- [x] Run focused backend/frontend, typecheck, build, compileall, Ruff and
+      diff checks.
+- [ ] Continue broader Product Maturity Closure qualification and remaining
+      lifecycle/retention/export gaps.
+
+## 2026-09-01 Product maturity payload UI clarification (continued)
+
+- [x] Re-check the same-stack runtime after the reported unavailable-page
+      screenshots; PostgreSQL/Redis/MinIO/worker health remains `ok`.
+- [x] Verify all 28 acceptance Dataset object-store routes return HTTP 200 with
+      no new 5xx responses.
+- [x] Distinguish transient source-read failure from confirmed
+      `SOURCE_MISSING`/404 in the Data Platform UI.
+- [x] Keep exact source/version metadata and fail-closed no-substitution
+      semantics visible while providing a truthful retry/recovery action.
+- [x] Add focused regression coverage for the confirmed-missing state.
+- [ ] Continue broader Product Maturity Closure qualification; this batch does
+      not mark the umbrella task complete.
+
+## 2026-09-01 Product maturity payload recovery entry UX
+
+- [x] Add a project-scoped `重新导入源文件` action for confirmed missing
+      normalized payloads while preserving exact source/version metadata.
+- [x] Scope scientific fallback heading ids by Dataset and data kind so
+      repeated surfaces retain valid `aria-labelledby` relationships.
+- [ ] Continue broader Product Maturity Closure qualification; this batch does
+      not mark the umbrella task complete.
+
+## 2026-09-01 Product maturity route continuity batch (continued)
+
+- [x] Route Dataset workbench breadcrumb and return action to the current
+      project instead of the global root.
+- [x] Route Dataset workbench import action to the current project's dataset
+      upload page.
+- [x] Route loaded Project Home import actions to the project-scoped upload
+      page while preserving the no-project compatibility fallback.
+- [x] Add focused route-continuity assertions and run typecheck/diff checks.
+- [ ] Continue broader Product Maturity Closure qualification; this batch does
+      not mark the umbrella task complete.
+
+## 2026-09-01 Product maturity table accessibility regression
+
+- [x] Restore the stable accessible name for the validated scientific table
+      scroll region.
+- [x] Preserve the mobile/sample-identity guidance through a unique
+      `aria-describedby` relationship instead of inflating the primary region
+      name.
+- [x] Run the full frontend regression: 108 files / 787 tests passed.
+- [ ] Continue broader Product Maturity Closure qualification; this batch does
+      not mark the umbrella task complete.
+
+## 2026-09-01 Product maturity same-stack runtime reload and browser recheck
+
+- [x] Restore the API's documented MinIO credentials after a reload regression and
+      verify real PostgreSQL/Redis/MinIO/worker health.
+- [x] Replace the stale 3013 Next process that served the wrong `.next` chunk set
+      with the current complete production build, without stopping platform
+      services or closing browser tabs.
+- [x] Recheck Trash, Account, object-detail and Report routes in a fresh
+      authenticated browser tab: no client error, Internal Server Error, or
+      console error.
+- [x] Keep a fresh Acceptance Dataset tab available for user verification.
+- [x] Add a static-asset smoke test and make the frontend start helper use the
+      exact `apps/web` build directory with native `next start`.
+- [ ] Continue broader Product Maturity Closure qualification; this batch does
+      not mark the umbrella task complete.
+
+## 2026-09-01 Product maturity admin route continuity
+
+- [x] Include `/admin` in the shared authenticated ProductRouteFrame boundary.
+- [x] Add explicit Account Center and Admin Center return-to-console actions.
+- [x] Add route and component regression assertions.
+- [x] Run the narrow frontend account/admin/route suite: 13 tests passed.
+- [ ] Continue broader Product Maturity Closure qualification; this batch does
+      not mark the umbrella task complete.
+
+## 2026-09-01 Product maturity shared UI and account fluency batch
+
+- [x] Keep the shared product shell, project navigation and scientific
+      surfaces within the viewport without propagating accidental page-wide
+      horizontal overflow.
+- [x] Normalize shared action hover/focus/disabled feedback while preserving
+      the existing 44px mobile touch targets.
+- [x] Keep `/admin` inside the authenticated shared route frame and preserve
+      explicit return-to-console actions for account/admin deep pages.
+- [x] Bound the Account Center session list to the most recent 8 sessions by
+      default, with an explicit full-list disclosure for complete management.
+- [x] Rebuild and reload the active 3013 frontend process from the current
+      production build; PostgreSQL, Redis, MinIO, API, workers and browser
+      tabs remain running.
+- [x] Repoint the legacy 3000 compatibility alias to the current 3013 build
+      and verify a fresh 3000 browser tab has no static-asset errors.
+- [x] Keep task/notification filters on one horizontally scrollable mobile
+      row instead of allowing ambiguous wrapping into a second filter line.
+- [x] Rebuild 3013 and verify the mobile task filter geometry, page width and
+      browser logs after the shared CSS change.
+- [x] Run the shared UI/account regression: 27 tests passed; typecheck,
+      runtime health, route smoke and mobile overflow checks passed.
+- [ ] Continue broader Product Maturity Closure qualification; this batch does
+      not mark the umbrella task complete.
+- [ ] 2026-09-02 继续产品成熟度实时科学表面复核：同栈认证浏览器完成 16 个项目数据入口、41 个精确详情、10 个 Report、10 个 Viewer 的真实验证；当前 acceptance 可见路径无 ISE/SOURCE_MISSING/浏览器错误。证据：`docs/agent2/product_maturity/LIVE_SCIENTIFIC_SURFACE_REAUDIT_2026-09-02.md`。后续仍继续执行更广泛产品成熟度闭环，不将历史/合成测试记录伪造为可用科学 payload。
+- [x] 2026-09-02 历史 `job_*` / `run_*` 报告入口已修复：直接进入只读兼容报告页，避免先探测现代报告接口造成无意义 404；`ScientificReportRoute` 23 项回归通过，当前 3013/3000 构建已重载并完成浏览器复核。
+- [x] 2026-09-02 移动科学表格滚动提示已恢复：`.workspace-table-mobile-hint` 在移动断点可见，稳定样本身份与选择列保持固定；窄回归 53 passed，全量前端 108 files / 789 tests、build、typecheck、compileall、静态资源与 diff check 均通过。
+- [x] 2026-09-02 报告/回收站筛选控件已统一为 filter 视觉层级：当前项填充强调，其他项描边胶囊，移动端保持 44px 触控高度；生产构建与浏览器报告页回归通过。
+- [x] 2026-09-02 现代科学报告已补齐 Figure/Table 页内读取入口：只读读取现有持久化 Artifact，Figure 显示有界 SVG 数据预览，Table 显示有界 typed rows，失败保持显式不可用且不伪造成功；认证同栈报告浏览器验证通过，相关回归 26 passed。
+
+## 2026-09-03 Product maturity semantic search/recovery batch
+
+- [x] Extended authorized global search to bounded Dataset sample/formula
+      metadata, ScientificObject version metadata and ScientificResult facts/
+      grounded finding text; preserved explicit ResearchTurn links.
+- [x] Added human-readable Result titles from authoritative research questions
+      or Result item titles, with short ID/schema metadata retained.
+- [x] Added in-place retry controls for search and saved-search loading failures.
+- [x] Added safe project/console exits for deep workspace not-found states.
+- [x] Real stack verification: PostgreSQL/Redis/MinIO API health PASS; backend
+      search 32 passed; frontend full suite 110 files/799 tests passed;
+      production build/typecheck/Ruff/compileall/diff checks PASS; authenticated
+      browser `mat-2` search returned 14 items and exact Turn navigation.
+
+## 2026-09-03 Product maturity UX batch — verification
+
+- [x] Task Center and Notification Center search/sort/no-match recovery.
+- [x] Scientific Report mobile chapter navigation.
+- [x] Dataset source-to-result terminology and exact breadcrumb.
+- [x] Authorized semantic search for Dataset/Object/Result.
+- [x] Focused tests 44/44; full frontend 110 files/803 tests; typecheck/build.
+- [ ] Final product-maturity audit and safe cleanup confirmation remain open.
+
+- [x] Project Home long lists now reveal bounded “显示更多” pages and history
+      errors expose an in-place reload action without changing route identity.
+
+## 2026-09-03 Account/Admin control-safety batch
+
+- [x] Account Center account/session read failures retain safe recovery actions.
+- [x] Platform Admin role/status/member mutations require explicit consequence
+      confirmation; user/project directories support bounded continuation loading.
+- [x] Invitation-token copy reports success or manual-copy fallback.
+- [x] Focused Account/Admin tests `13 passed`; typecheck and diff check PASS.
+- [x] Rebuilt production frontend and reran full frontend regression:
+      `110 files / 810 tests passed`; authenticated route matrix `24/24` PASS.
+- [x] 2026-09-03 当前生产构建重载后复核报告、图表、表格与 Dataset 移动布局：
+      报告详情无旧 chunk/application error；内联 Figure/Table 可读且保持精确来源；
+      `390x844` 数据表稳定 sample identity、滚动提示与零全局溢出；全前端
+      `110 files / 813 tests`，后端关键回归 `56 passed / 1 skip`。
+
+## 2026-09-03 Product maturity — 连续性/研究控制/科学表面批量批次
+
+- [x] 登录后品牌与控制台导航统一；顶层 Projects/Console/Account/Admin
+      使用一致 loading frame，避免路由等待时空白。
+- [x] Continue 精确 Result 复用、PLAN_READY/Stop 竞态收敛、大数组安全渲染、
+      空状态与表格列语义修复。
+- [x] 相关前端聚焦 `99 passed`；typecheck、production build、compileall、
+      lock、diff check PASS；同栈服务健康。
+- [x] 当前构建 `3018` 认证浏览器复核：桌面核心路由 `11/11`、移动核心路由
+      `11/11` 全部通过；移动全局导航标签可读且无全局横向溢出。
+- [ ] 全站产品成熟度审计、真实浏览器最终复核与安全清理确认仍开放。
+
+## 2026-09-04 Product maturity — 数据层级与导航感知性能批次
+
+- [x] Data Navigator 增加 Dataset 与 Scientific Object/Version 权威层级说明，
+      并补充响应式窄屏样式。
+- [x] 已解析项目历史快照由概览/数据/研究路由复用；Console 预热首个活动
+      项目 ledger，继续研究主入口显式启用框架预取。
+- [x] 定向前端回归 `69 passed`；typecheck、production build、diff check PASS。
+- [x] 同栈运行时 PostgreSQL/Redis/MinIO/Redis worker healthy；当前构建
+      `3020` 认证浏览器数据页桌面/移动复核无 page/console error 或全局溢出。
+- [x] 当前活动项目 `13/13` 精确 ScientificObject/Version 入口均完成 hydration
+      后真实渲染复核；Structure/Trajectory 使用真实 canvas，表格/电子/声子/ML
+      使用 bounded renderer，桌面 overflow `0 px`。
+- [ ] 历史缺失 payload 继续保持 fail-closed；不得以替代版本伪造可用性。
+
+## 2026-09-04 Product maturity — Research 上下文完整审计可见性
+
+- [x] ContextManifest 默认保留有界八项预览，并提供“查看全部上下文”
+      的可访问展开/收起控制；完整清单仍来自同一只读服务投影。
+- [x] ResearchTurn 变化时重置展开状态，避免长会话或分支之间残留显示状态；
+      不改变 ContextManifest、科学权威或执行行为。
+- [x] ResearchPages 聚焦回归 `69 passed`，typecheck/diff check PASS。
+- [ ] 全站产品成熟度审计、真实浏览器最终复核与安全清理确认仍开放。
+
+## 2026-09-04 Product maturity — ContextManifest 读取恢复（第二批）
+
+- [x] ContextManifest 暂时读取失败不再静默隐藏；Research 时间线提供原地
+      “重新读取上下文”动作，并保留只读、精确来源和执行不变语义。
+- [x] ResearchPages 定向回归 `70 passed`。
+- [ ] 全站产品成熟度审计、真实浏览器最终复核与安全清理确认仍开放。
+
+## 2026-09-04 Product maturity — 回收站读取恢复（第二批）
+
+- [x] 回收站库存读取失败提供原地“重新加载回收站”恢复动作；不改变
+      生命周期、科学版本或历史 provenance。
+- [x] TrashCenter + ResearchPages 定向回归 `75 passed`。
+- [ ] 全站产品成熟度审计、真实浏览器最终复核与安全清理确认仍开放。
+## 2026-09-04 Product maturity — read-projection recovery verification
+
+- [x] Research ContextManifest read failure exposes bounded same-manifest retry.
+- [x] Trash inventory read failure exposes bounded authorized inventory retry.
+- [x] Focused frontend regression `75 passed`; typecheck PASS.
+- [ ] Capability-wide human acceptance, retention/export/operations maturity,
+      safe cleanup confirmation and new exact-SHA Phase 14-R release remain
+      open.
+
+## 2026-09-04 Product maturity — Research primary Stop control
+
+- [x] Active `planning/running` ResearchTurns replace the composer submit action
+      with a visible primary Stop control.
+- [x] The control reuses the authoritative cancellation endpoint and durable
+      terminal-state reconciliation; committed partial scientific outputs remain
+      protected.
+- [x] Transitional states without a persisted Turn identity cannot claim a
+      successful cancellation.
+- [x] ResearchPages focused regression `71 passed`; frontend typecheck PASS.
+- [ ] Broader Phase 14-R mature-product acceptance and exact-SHA release remain
+      open.
+
+## 2026-09-04 Product maturity — R7/R8 human task identity
+
+- [x] Audit Global Search, saved searches, Task Center, Notification Center and
+      reconnect behavior against current persisted authorities.
+- [x] Project the exact bounded ResearchTurn user question through the existing
+      metadata-only task feed without adding a search or task authority.
+- [x] Use the question for task/notification titles and local search; disclose
+      each row's persisted update timestamp with semantic `<time>`.
+- [x] Preserve exact Turn routes, cross-project authorization, legacy read-only,
+      stop/retry and online/visibility recovery semantics.
+- [x] Focused backend `15 passed`, frontend `16 passed`, typecheck/Ruff/diff PASS;
+      task-feed query count remains constant at `2`.
+- [ ] Production-scale pagination, external push delivery and broad Phase 14-R
+      mature-product acceptance remain separately open.
+
+## 2026-09-04 Neat-freak cleanup / knowledge reconciliation
+
+- [x] 在显式确认后清理 12 个已识别旧项目日志，共 `656,867` bytes；没有
+      删除当前服务、浏览器标签页、科学数据或 Codex 运行时。
+- [x] 重新验证 API/前端/PostgreSQL/Redis/MinIO 监听与同栈健康；当前
+      `3023` 前端与 `8005` API 保持运行。
+- [x] 生成只读 C 盘空间报告：
+      `E:\storage-analysis-phase14r-20260904\storage-report.html`。
+- [ ] C 盘临界空间、全站真人验收、retention/export/operations maturity
+      与新的 Phase 14-R exact-SHA release 仍未闭合。
+
+## 2026-09-05 Continuous autonomous optimization
+
+- [x] 建立 `121` 项具体、去重、带证据与验证方式的动态候选池。
+- [x] CO-001：修复 Report Figure 对非均匀权威 x 值的等距误绘；
+      focused frontend `7 passed`，typecheck、diff、authenticated browser
+      preview PASS。
+- [x] CO-002：Report table preview 使用稳定语义/内容行身份；focused
+      frontend `9 passed`，typecheck、diff check PASS。
+- [x] CO-003：Materials Explorer 通用 DataTable 使用稳定上游科学行身份；
+      focused frontend `11 passed`，typecheck、diff check PASS。
+- [x] CO-005：ResearchTurn/legacy Job polling 增加 AbortSignal、单一在途
+      请求、timer 清理和 stale Interpretation guard；Research `73 passed`，
+      typecheck、diff check PASS。
+- [x] CO-004：run + turn 同时出现时仅 authoritative ResearchTurn 驱动
+      execution state；Research `74 passed`、typecheck、diff check PASS。
+- [x] CO-036：Data→Research→Viewer→Report→History 全路径保持 SPA
+      导航且不发生 document reload；新增真实 Chrome 验收脚本，六条
+      转换均为 `documentRequests=0`、运行时标记和 `timeOrigin` 保持，
+      console/5xx `0`。
+- [x] CO-006：历史 Job 标识使用服务端权威 ResearchTurn resolver；
+      legacy join 增加 project scope，跨项目异常关系 fail-closed；
+      project-history `5 passed`、project-access `32 passed`。
+- [x] CO-007：兼容 ContextManifest 投影现在执行确定性预算裁剪；非关键
+      溢出记录 excluded，关键科学溢出 fail-closed；focused `13 passed`。
+- [x] CO-008：固定的精确 Result 跨 repository reload 仍可读取；取消固定
+      后再次 reload 为空；memory `10 passed`。
+- [x] CO-121：缺失 ScientificResult 引用现在归一化为 Agent2 404；
+      Agent2 API `27 passed`。
+- [x] CO-009：Recovery partition regression 已完成；`test_phase14r_recovery`
+      `5 passed`，产品 stale work 与 qualification work 分区保持独立。
+- [x] CO-010：Research evidence rows 显示字段定位、Artifact、ToolCall 与
+      checksum；Research focused `75 passed`，typecheck PASS。
+- [x] CO-011：XRD Report discussion/conclusion 绑定权威 matched-peak fact；
+      Reports focused `35 passed, 4 skipped`，grounding validator PASS。
+- [x] CO-012：Registry/Pack/Scientific Surface 矩阵漂移保护；live `17`
+      capabilities 与矩阵逐项一致，surface focused `1 passed`。
+- [x] CO-013：为 `10` 个已注册 ScientificObject-backed Viewer 类型增加
+      v1/v2 + archive/restore 精确来源回归；Viewer focused `18 passed`。
+- [x] CO-014：Viewer 对 `SOURCE_MISSING`、`METADATA_ONLY`、
+      `INVALIDATED` 提供不同状态与动作；仅可恢复缺失显示重试，
+      ScientificObjectViewer focused `3 passed`。
+- [x] CO-015：可信 Figure/Table Artifact 打开与下载路径；Research/Report
+      复用服务端授权、长度/哈希校验，focused `32 passed`，typecheck PASS。
+- [x] CO-016：授权 Viewer API 的零重算回归扩展到全部 `11` 个已注册
+      ScientificObject-backed family；Viewer focused `28 passed`，跨项目仍
+      `403` 且执行/结果表计数不变。
+- [x] CO-034：未知运行时 Presentation block 按有界 allowlist fail-closed；
+      ScientificPresentation + blocks `23 passed`，typecheck PASS，UI 显示受限
+      计数且不执行未知组件/脚本。
+- [x] CO-038：新增幂等同栈启动/readiness 脚本，复用既有 API/workers/frontend
+      启动器且不停止现有服务；`-CheckOnly` 实测 PostgreSQL/Redis/MinIO/API/
+      Redis worker/DeepSeek 全部健康。
+- [x] CO-122：`analysis.rdf` 与 `reciprocal.brillouin_zone` 明确标为
+      Result/Artifact-only Viewer contract；不进入 ScientificObject authority，
+      registry/viewer focused `38 passed`。
+- [x] CO-017：统一可审计生命周期留存策略；自动清理明确禁用，受引用科学
+      provenance 永久保护，Project/Dataset 预览与物理删除共用零依赖判定；
+      retention policy 与回收站检查测试通过。
+- [x] CO-018：跨实体统一 purge policy；Project/Dataset 为零依赖手动删除，
+      Research Session/ScientificObject/Scientific Report 明确禁止物理删除；
+      lifecycle/report/viewer/UI 回归通过。
+- [x] CO-019：补齐 Research Session 数据库权威 dependency-impact 端点，
+      统计真实 session/turn/context/result/report 关系，跨项目 403，
+      永久删除明确禁止。
+- [x] CO-020：结构化账户停用与项目删除的 provenance 边界；停用返回
+  `provenanceRetained` 与保护策略，项目删除仍零依赖门禁，账户回归通过。
+- [x] CO-021：Job-event 并发回归扩展到独立 repository bundle；真实
+  PostgreSQL `concurrent_seq` `2 passed`，并修复跨运行固定 ID 引发的 FK
+  夹具冲突。
+- [x] CO-022：ToolCall 幂等保存增加跨 worker 唯一冲突收敛；真实 PostgreSQL
+  四 bundle/12 worker 重复投递回归 `3 passed`。
+- [x] CO-123：Artifact 幂等保存增加跨 worker 唯一冲突收敛；真实 PostgreSQL
+  四 bundle/48 次重复投递回归 `4 passed`。
+- [x] CO-124：operations snapshot 增加只读权威一致性扫描；同栈
+  PostgreSQL/Redis/MinIO `issueCount=0`，live test `2 passed`。
+- [x] CO-023：真实 PostgreSQL 连接池压力回归（8 worker × 40 transaction），
+  engine 复用、checked-out=0、idle-in-transaction=0，测试 `2 passed`。
+- [x] CO-024：只读权威一致性扫描加入 seeded orphan/non-mutation 回归；
+  精确报告 `ORPHAN_TOOL_CALL_JOB`，focused `2 passed`。
+- [x] CO-025：MinIO 备份复制、SHA-256 校验、源缺失与备份恢复 live 回归；
+      focused `2 passed`。
+- [x] CO-026：Redis/RQ 队列故障在 stale recovery 中归一化为可重试的
+      `QUEUE_UNAVAILABLE`，保留同一 durable Turn/Job 身份；recovery +
+      Agent2 execution 回归 `15 passed`，operations/retention 回归
+      `14 passed, 1 skipped`。
+- [x] CO-027：DeepSeek 429/5xx/network/timeout 瞬时故障只重试一次，
+      250 ms 有界退避并逐次写入脱敏审计；认证/配置/非法响应不重试；
+      Provider 回归 `67 passed`。
+- [x] CO-028：直接 `DatasetUploadRequest` 现在复用上传会话的文件数、
+  单文件字节数和总字节数上限；filesystem path 在创建 raw 目录前预检，
+  超限返回类型化错误；Phase 2 产品 `9 passed`，typed/durable upload
+  `15 passed`。
+- [x] CO-125：安全 Planner 解释证据投影增加有界 Project provenance，
+  并比较解释/Result snapshot 与 Job 项目的关系；跨项目关系统一 404，
+  同项目回归通过（`26 passed`）。
+- [x] CO-126：Agent2 Research 读取/创建/dispatch 遇到 401 时统一派发
+  `mdi:session-expired`，进入既有登录恢复流程；前端回归 `7 passed`，
+  typecheck PASS。
+- [ ] 按 `OPTIMIZATION_BACKLOG.md` 持续一次完成一个独立改进。
+- [x] CO-127：修复项目 provenance 导出动作的角色边界；服务端读取权限
+      已授权的 viewer 现在可从 Projects 菜单导出有界清单，写操作仍隐藏；
+      `ProductPages.test.tsx` `46 passed`。
+- [x] CO-128：为旧 `/analysis-requests` 兼容接口补齐项目作用域授权；
+      提供 `projectId/project_id` 时执行读取权限校验，陌生用户 403，
+      无作用域旧调用保持兼容；授权回归 `2 passed`。
+- [x] CO-129：脱敏直接上传缺失文件的 HTTP 错误，使用稳定
+      `UPLOAD_SOURCE_NOT_FOUND`，不泄露绝对路径；Phase 2 回归 `2 passed`。
+- [x] CO-091：Scientific Viewer 外层区域增加唯一标题 ID 与
+      `aria-labelledby`，重复 Viewer 可访问名称不冲突；focused
+      `ScientificViewerShell` `2 passed`，typecheck 通过。
+- [x] CO-130：Artifact 直接下载增加跨项目 fail-closed 回归；陌生用户
+      403 且存储下载函数不调用，授权 owner 路径通过；授权子集
+      `1 passed`。
+- [x] CO-076：Viewer 元数据超过 16 项时显示精确剩余数量并可展开查看
+      全部字段；18 字段回归 `3 passed`，typecheck 通过。
+- [x] CO-084：Finding 卡片增加稳定的“查看证据链”入口，直接定位现有
+      Evidence inspector；ScientificPresentation 回归 `7 passed`，typecheck
+      通过。
+- [x] CO-092：Evidence inspector 增加 `aria-controls` 与焦点移入/恢复；
+      ScientificPresentation 回归 `7 passed`，typecheck 通过。
+- [x] CO-072：通用 Plotly Viewer 增加容器级 ResizeObserver，适配分栏、
+      标签和移动布局变化；focused tests `9 passed`，typecheck 通过。
+- [x] CO-112：回收站永久删除确认改用稳定 `类型:ID` 令牌，并覆盖同名
+      实体回归；focused tests `6 passed`，typecheck 通过。
+- [x] CO-131：增加 ResearchTurn/ScientificObject 精确 ID 跨项目授权矩阵；
+      覆盖读写、query、Viewer、events，授权子集 `1 passed`。
+- [x] CO-087：Figure 预览展示 Artifact 权威范围、刻度和单位，并在 SVG
+      desc 中提供可访问摘要；focused tests `10 passed`，typecheck 通过。
+- [x] CO-089：报告表格预览显示省略行/列准确数量，并可展开隐藏列清单；
+      focused tests `11 passed`，typecheck 通过。
+- [x] CO-078：Viewer 对辅助 Artifact 失败显示部分可用状态、稳定错误码与
+      重试；focused tests `8 passed`，typecheck 通过。
+- [x] CO-070：Generic Plot 抽样显示原始总点数和端点/极值保留策略；
+ - [x] CO-079：结构 Viewer 站点达到 256 上限时显示权威的当前/总数截断
+      警告并保留完整源数据提示；focused tests `43 passed`，typecheck 通过。
+ - [x] CO-082：配位数直方图增加绑定图形的键盘/读屏文本摘要，数值表继续
+      作为完整替代；focused tests `2 passed`，typecheck 通过。
+ - [x] CO-080：Dataset Explorer 和 Scientific Table 增加有界分页、当前范围/
+      权威总量披露，保持 sample_id 身份；focused tests `17 passed`，typecheck 通过。
+ - [x] CO-085：Figure/Table Artifact 预览按 401/403/404/410、无效内容和大小
+      限制显示稳定安全状态；focused tests `12 passed`，typecheck 通过。
+      focused tests `10 passed`，typecheck 通过。
+- [x] CO-098：Research 生命周期 archive/restore 后恢复来源焦点；行消失时
+      回退到状态筛选按钮，并增加可访问成功播报；focused test `1 passed`，
+      typecheck 通过。
+- [x] CO-132：修复 Scientific Table 共享 objectId 行的 React key 冲突；
+      sample-aware key 保持稳定身份；gallery focused tests `5 passed`且无
+      duplicate-key warning，typecheck 通过。
+- [x] CO-081：Dataset inspector 明确稳定样本身份为主、源行为辅助定位；
+      focused tests `12 passed`，typecheck 通过。
+- [x] CO-099：取消终态只由 execution card 单一呈现；cancel cases
+      `3 passed`、execution activity `11 passed`，typecheck 通过。
+- [x] CO-090：重复 Presentation 的 Evidence/inspector/Finding DOM ID 与
+      ARIA 关系实例化；相关 `35 passed`，typecheck 通过。
+- [x] CO-133：重复 Workspace Gallery 的标题、分组、活动 Viewer DOM ID
+      实例化；gallery `6 passed`，typecheck 通过。
+- [x] CO-108：Generic JSON Artifact 改为有界结构投影后再序列化，避免
+      完整大 payload 同步阻塞；10 万项尾部未读取，focused test 与
+      typecheck 通过。
+- [x] CO-075：来源缺失 Viewer 保留精确版本/指纹/来源摘要并支持安全元数据
+      导出；focused tests `6 passed`。
+- [x] CO-093：Research 状态筛选增加命名键盘分段导航；ResearchPages
+      `77 passed`。
+- [x] CO-102：空 Research 状态提供授权正确的 Data Platform 主入口；
+      ResearchPages `77 passed`。
+- [x] CO-117：CI integration summary 改为 JUnit XML 确定性解析；
+      parser `2 passed`、Ruff/diff PASS。
+- [x] CO-111：Viewer retry 增加去重、可取消退避和卸载清理；
+      ScientificObjectViewer `4 passed`。
+- [x] CO-113：Trash Center 批量恢复使用授权原子批次并报告部分失败；
+      focused tests `8 passed`。
+- [x] CO-119：CI 总是上传 integration log/exit/JUnit/脱敏运行快照；
+      workflow/operations 验证通过。
+- [x] CO-104：Research session 预热缓存补充生命周期失效回归；
+      product-api `7 passed`，typecheck/diff 通过。
+- [x] CO-114：依赖影响条目增加服务端授权 ProductLink；backend
+      `37 passed, 4 historical skips`、frontend `66 passed`。
+- [x] CO-073：Viewer loader 按数据/WebGL/chunk/初始化根因分类并提供
+      有界恢复；focused `25 passed`。
+- [x] CO-053：停滞 RUNNING 任务进入“需要关注”且不伪造失败/重试；
+      focused `7 passed`。
+- [x] CO-096：原 ResearchTurn 加载失败时编辑分支 fail closed；
+      focused `2 passed`。
+- [x] CO-095：Continue 的 Result 404/服务失败/精确复用候选语义分离；
+      Research/API `89 passed`，typecheck/diff 通过。
+- [x] CO-077：Viewer 生命周期控件提供可访问禁用原因；focused `8 passed`。
+- [x] CO-094：Retry 显式创建并展示新 lineage，可返回原失败 Turn；
+      Research `85 passed`。
+- [x] CO-100：运行中草稿按 exact Turn 在当前标签页持久化并刷新恢复；
+      Research `85 passed`。
+- [x] CO-115：Project、Research 与 Report 的组织操作统一为“列表置顶”，
+      Result/来源版本操作明确为“加入/移出本会话上下文”，并说明只有后者
+      会影响后续研究上下文；focused `151 passed`，typecheck 通过。
+- [x] CO-050：Task/Notification 轮询在 hidden/offline 时取消在途请求并暂停，
+      恢复可见/联网后刷新；共享消费者不会互相误取消；focused `21 passed`。
+- [x] CO-049：Task/Notification 共享有界 feed 订阅、请求、轮询与生命周期；
+      双消费者初始/恢复各仅一次请求；focused `22 passed`。
+- [x] CO-083：Dataset 查询、排序、行选择与精确样本选择纳入可分享 URL，
+      非法/跨项目选择 fail closed；Product/Data regression `48 passed`。
+- [x] CO-088：Plot 与 Report SVG 预览保留端点、全局极值和分桶局部极值，
+      并披露采样策略；focused `24 passed`。
+- [x] CO-097：Research 分支展示服务端问题、父问题、exact Turn 与消息修订
+      身份，当前分支使用 aria-current；Research regression `86 passed`。
+- [x] CO-048：saved-search 使用同页事件、storage 与 BroadcastChannel 同步，
+      revision 去重且不广播内容；focused `5 passed`，ProductShell `21 passed`。
+- [x] CO-109：Artifact renderer 按 identity 建索引并在 Gallery 中 memoize，
+      500-artifact focused `11 passed`，typecheck 通过。
+- [x] CO-055：Research 与 Task Center 统一 CANCELING/cancel_requested 文案、
+      1.8s 终态轮询与重复停止禁用；focused `25 passed`，typecheck 通过。
+- [x] CO-134：Artifact 下载文件名清洗控制字符、路径分隔符与点遍历，
+      长度上限 120；focused `3 passed`，typecheck 通过。
+- [x] CO-051：Task Center 使用授权 cursor 分页加载长任务流，1000-job/10-page
+      回归、Task Center focused 共 `21 passed`，typecheck 通过。
+- [x] CO-110：Viewer 在重 payload 延迟时先展示 Artifact 身份、校验来源与
+      恢复入口；focused `8 passed`，typecheck 通过。
+- [x] CO-054：Task Center Open 与 Open-and-retry 分离；retry=1 创建带
+      parent_turn_id 的新 lineage，旧 Turn/evidence 保留；合并 `99 passed`。
+- [x] CO-037：窄屏/200% zoom 下报告与 Presentation grid 有界，宽表滚动区
+      可聚焦，移动控件可换行；Workspace Gallery `7 passed`，typecheck 通过。
+- [x] CO-056：Research 按 exact Project/Session/Turn 从持久化后端恢复消息、
+      progress 与 Result；跨作用域 fail closed，focused recovery/reconnect 通过。
+- [x] CO-135：Artifact open 保持 inline，显式 download 使用同一授权内容路由
+      并返回清洗后的 attachment disposition；后端 `7 passed`、前端 `35 passed`。
+- [x] CO-032：Provider、Queue Job/Tool/依赖和 Report failure summary 统一递归
+      脱敏凭据、服务端点和绝对路径，同时保留科学数值/单位/身份；focused
+      `37 passed`。
+- [x] CO-069：Plotly async create/unmount purge 幂等；Scene/Trajectory/
+      Phonon/Volumetric 资源释放审计保持有界；renderer cleanup `60 passed`。
+- [x] CO-058：新增授权、只读、去敏、64 ToolCall 上限的
+      ResearchTurn→Job→ToolCall→Result→Report correlation 投影；focused
+      `2 passed`。
+- [x] CO-045：全局搜索增加绑定用户/筛选的 continuation cursor 与 SPA
+      “加载更多”；125 个授权结果六页无重复/泄漏；后端 `9 passed`、前端
+      `22 passed`。
+- [x] CO-035：Research 提交双帧确认与 exact Turn 首个持久化进度跨路由
+      有界测量；真实五样本 p50/p95 为 `26/29 ms` 与 `262/293 ms`，
+      browser error 0，typecheck/build PASS。
+- [x] CO-136：安全前端轮换工具默认 dry-run，先验证当前端口，再只停止本仓库
+      obsolete Next listener；live 3025 清理后 3024/8005/PostgreSQL/Redis/
+      MinIO 全健康，focused `2 passed`。
+- [x] CO-071：heatmap cells 与 mesh vertices/triangles 分别限制 100,000；
+      超限明确拒绝、不静默截断且保留完整 Artifact；focused `13 passed`。
+- [x] CO-030：统一 401 过期会话恢复保留完整 path/query/hash 与 Research
+      草稿，登录页明确重认证语义，外部 return URL fail closed；focused
+      `27 passed`，typecheck 通过。
+- [x] CO-052：通知已读状态按 user/project/Job/revision 服务端持久化；Job
+      更新自动重新未读，权限撤销后不泄露；后端 `2 passed`、前端/API
+      `14 passed`，typecheck/Ruff 通过。
+- [x] CO-033：Presentation block 精确字段白名单、Viewer bounded token、
+      Pack 原子 binding 验证共同拒绝 component/import/HTML/script/remote
+      UI；后端 `44 passed`、前端 `29 passed`。
+- [x] CO-086：Artifact browse/download 同一授权且存储前 fail closed；
+      404 temporary missing、410 gone、413 over 64 MiB 分离，后端 `11 passed`、
+      前端 `40 passed`，typecheck/Ruff 通过。
+- [x] CO-105：Project Home 各区首屏 8 条服务端有界分页与稳定 cursor，
+      1000-item 大项目不再全量载入；后端/前端各 `5 passed`，typecheck 通过。
+- [x] CO-039：typed local/same-stack runtime profile 在 API/worker 启动前
+      校验 PostgreSQL/Redis/MinIO/队列一致性；focused `35 passed`，Ruff 通过。
+- [x] CO-046：Global Search 覆盖 18 个 entity/lifecycle 场景、UTC 日期过滤与
+      exact Result→Session/Turn SPA route；后端 `27 passed`、前端 `28 passed`。
+- [x] CO-029：24 条 exact HTTP route 加 Report/Evidence/Dataset/Artifact
+      授权矩阵；403 在投影/存储/变更前发生且不泄漏目标 ID，focused 全通过。
+- [x] CO-107：ContextManifest 默认 8 项、展开 32 项有界窗口与前后导航；
+      10,000-item 回归保持 exact provenance 顺序，前端 `3 passed`、后端
+      `13 passed`，typecheck 通过。
+- [x] CO-031：统一 owner/admin/researcher/viewer 的 read/export/write/
+      archive/research/purge 矩阵；唯一 owner 绑定 `projects.created_by`，
+      协作者 owner 提升被拒绝，角色与 UI/server enforcement 回归全绿。
+- [x] CO-041：API/worker/frontend 统一 25 MiB/UTC 日志轮转、8 归档/14 天
+      保留与 dry-run maintenance；活动日志和非托管文件受保护，`5 passed`。
+- [x] CO-074：Volumetric 合法 mixed boundary 与损坏 schema、grid mismatch、
+      out-of-range inline data 分离；valid-but-unsupported 不再误报损坏，`7 passed`。
+- [x] CO-047：Global Search opaque keyset v2 绑定用户与全筛选条件；
+      1,250 条语料 p95 `15.33 ms`、payload <64 KiB、私有结果泄漏 0，
+      后端 `27 passed`、迁移 `4 passed`、前端 `32 passed`。
+- [x] CO-040：runtime health 暴露去密拓扑指纹和真实 PostgreSQL/Redis/MinIO
+      连接指纹；live 三项 `connectionBound=true`，focused `3 passed`。
+- [x] CO-043：pytest/npm/build/Playwright/CI/service 统一只读磁盘预检；
+      5/10 GiB 阈值、typed failure、配置 fallback，focused `11 passed`，
+      typecheck/production build PASS。
+- [x] CO-042：allowlisted cleanup 默认 dry-run、分类 evidence/active data/log/
+      temporary/archive，apply 仅可恢复移动；focused `4 passed`。
+- [x] CO-060：Alembic 单 head/线性图/危险 upgrade AST guard；0030↔0031
+      带 Project/Object/Version/Result 数据往返，`7 passed`。
+- [x] CO-137：持续优化 backlog 去除 5 个重复 ID，校正唯一任务计数并补齐
+      CO-027/CO-028 结果归档；新增唯一/连续 ID、计数、CURRENT 与完成记录
+      自校验，focused `5 passed`。
+- [x] CO-044：npm/Playwright/pytest/Next 统一使用可配置的 workspace-local
+      cache；越界配置 fail closed，focused `3 passed`，typecheck 与两次
+      production build PASS。
+- [x] CO-063：六类 Agent2 queue 统一到 checked-in manifest，settings、
+      producer、recovery、health 与 launcher 共享权威；蓝绿轮换后新 API
+      与 6 workers 正常、旧实例全部退出，focused `40 passed`。
+- [x] CO-106：1,001 条 Research 消息改为 100 条可导航 DOM 窗口，保留
+      exact message identity 与焦点；20 次投影小于 100 ms，Research
+      `92 passed`、typecheck PASS。
+- [x] CO-061：same-stack API/worker 启动前校验数据库 Alembic head；
+      真实旧 `0030` 影子实例拒绝，备份并显式升级 `0031` 后通过；最终
+      仅保留 1 个 API 与 6 个新 workers，focused `24 passed`。
+- [x] CO-057：queue depth、stale Job、worker state/heartbeat 统一为只读
+      operations alert/runbook contract；Admin 可解释处置但不能修改队列；
+      backend 21+1 live、frontend 8 passed。
+- [x] CO-059：API/worker/frontend 异常统一为 release-SHA 与 bounded
+      request/scientific identity 相关联的去敏事件；live authenticated capture
+      返回 202，backend 16、frontend 2 passed。
+- [x] CO-101：Research/Task Center 统一取消可用性合同；只有明确现代 Turn
+      可停止，legacy/no-Turn fail closed；contract 3 passed，另有不相关测试
+      可靠性问题登记为 CO-138。
+- [x] CO-062：API、worker、operations 统一使用 same-stack runtime builder；
+      单一 Redis override 在四个消费路径一致，focused 38 passed，live
+      PostgreSQL/Redis/MinIO 与 6 workers 健康。
+- [x] CO-064：PostgreSQL/Redis/MinIO 故障统一为 `ServiceFailure/1.0`，
+      health/operations 分类与 retryability 一致且不序列化异常正文；
+      focused 6 passed，live 同栈健康。
+- [x] CO-066：Artifact Local/S3 统一 256 MiB write ceiling；Local 使用
+      `.part` + atomic replace 并在失败后清理，相关回归 22 passed。
+- [x] CO-065：Research same-tick single-flight、PostgreSQL active-Turn 429
+      backpressure、Global Search AbortSignal；24 并发仅 3 个 Turn 入库，
+      backend 13、frontend 122 passed。
+- [x] CO-116：CI Action 固定 full SHA，PostgreSQL/Redis/MinIO 固定 manifest
+      digest，并增加 provenance lock 与 floating-reference guard；3 passed。
+- [x] CO-118：mandatory service qualification 的 29 paths、34 required tests、
+      minimum 50、zero skip/failure 统一到 versioned manifest 与 JUnit
+      validator；focused 6 passed。
+- [x] CO-138：Task/Notification shared-feed 回归改为验证一次共享请求与两个
+      产品 surface 的语义标题，不再依赖项目名必须重复两次；3 files /
+      27 tests passed。
+- [x] CO-139：Phase 5 Alembic 回归改为验证 `load_settings` /
+      `database_configuration_declared` 的 typed database authority，不再
+      依赖 `DATABASE_URL` 字面量；完整文件 9 passed、1 existing skip。
+- [x] CO-067：新增隔离 qualification run ID/manifest、14 天 TTL、release
+      evidence 永久保护和 recoverable archive；默认 dry-run 不删除，现网
+      candidate 0，focused 7 passed。
+- [x] CO-068：运维快照新增 workspace/PostgreSQL/MinIO/logs/profiles/build
+      caches 六类只读脱敏容量预算；focused 20 passed、1 existing skip；
+      同栈扫描发现 build caches 40.35 GB，已登记 CO-140。
+- [x] CO-140：安全识别并回收过期 repository build/test caches；必须保留
+      当前 3023 frontend、8005 API、workers 与全部 service data。
+- [x] CO-141：platform Provider credential 已收敛到 PostgreSQL encrypted
+      shared authority；稳定 key 缺失时 fail closed，legacy `/me/secrets`
+      在 same-stack 返回 typed 503。迁移前备份、0032 migration、影子 API
+      验证和单实例 8005 换代均已完成；focused backend `84 passed`、frontend
+      `40 passed`、typecheck/Ruff/compileall/diff PASS。
+- [x] CO-142：FastAPI 两个 deprecated startup handlers 已合并为单一
+      lifespan；migration head guard 保持先执行/fail-fast，recovery 保持
+      best-effort，多个 app factory settings 相互隔离。combined `49 passed`、
+      strict warning `7 passed`；影子验证后正式 API 更新为 PID 20748，旧/影子
+      实例均已退出。
+- [x] CO-143：补齐 `test_phase14r_recovery.py` 的 `UUID` import；完整
+      recovery regression `6 passed`，Ruff/compileall/diff PASS，无运行时
+      行为变化。
+- [x] CO-144：把 API “shadow 先健康、canonical 再切换、旧/影子最终退出”
+      固化为 repository-scoped Windows rotation helper；真实轮换后旧
+      `20748/16260` 已退出，新 `18468/19620` 独占 8005，8006 无监听，
+      frontend/workers/PostgreSQL/Redis/MinIO PID 均未变化，focused
+      `20 passed`。
+- [x] CO-145：MinIO bounded scan 触顶/continuation 缺失现在返回 typed
+      reason，保留 lower-bound bytes/count、隐藏伪精确 utilization，并由
+      operations 发出 read-only warning；focused `29 passed`，真实
+      8,739/10,000 完整扫描仍为零告警。
+- [x] CO-146：API live instance manifest 已迁移到
+      `.runtime_services/managed/api`；start/rotate 共享路径 helper，旧
+      `.cache/runtime` 仅兼容读取并在精确停旧后清理；cleanup 明确保护
+      runtime root。真实轮换 `25704/5060 → 12044/19996`，focused `21
+      passed`，旧 manifest 消失、新 manifest 存在。
+- [x] CO-147：stack startup 现在按 checked-in queue manifest 对比每个
+      `worker_entrypoint` 队列，只有缺失队列才通过 `-OnlyQueue` 补齐；并
+      修复 plain shell 无 `PYTHONPATH` 时的 manifest 读取。真实 6/6 同栈
+      启动前后 12 个 worker PID 完全不变，focused `17 passed`。
+- [x] CO-148：新增受保护的 `.runtime_services/managed/workers`，按 queue
+      记录 runner/child PID、创建时间、可执行文件、命令摘要、Redis URL、
+      release SHA；真实发现 6/6，12 个 worker 进程均保持存活，focused
+      `19 passed`。
+- [x] CO-149：MinIO bounded scan 仅对 retryable failure 做一次有界重试；
+      非 retryable 仍 typed fail-closed。focused `29 passed, 1 skipped`，
+      真实同栈 0 alerts、8,739/10,000 complete。
+- [x] CO-150：worker manifest 改为 bounded `redisIdentity`（scheme/host/
+      port/database），不持久化 userinfo/password/query/raw URL；6 个 live
+      manifest secret sentinel=0，focused `14 passed`，worker 全部保持运行。
+- [x] CO-151：worker discovery 现在对 found queue 写入 `RUNNING`/
+      `lastSeenAt`/`staleSince=null`，对暂时消失 queue 原子标记 `MISSING`
+      并保留旧证据，不删除 manifest；live 6/6、focused `14 passed`。
+- [x] CO-152：新增 `phase14r_rotate_workers.ps1`，默认 dry-run，按 queue
+      验证 repository/release/PID parentage/创建时间/命令摘要/Redis identity；
+      live 6 queue dry-run 12 个 PID 完全不变，focused `16 passed`。
+- [x] CO-153：worker Apply 停旧前现在验证 replacement generation、queue、
+      parentage、Redis identity 与双进程 liveness；失败保留旧 pair，已出现
+      replacement 则按 digest 精确回滚。focused `16 passed`，live dry-run
+      12 PID 不变。
+- [x] CO-154：新增脱敏 RQ registration probe，校验 exact worker name/queue/
+      state/heartbeat；rotation 停旧后 exact unregister，rollback 也受限；
+      真实 `mdi-jobs` `18684/26300 → 29512/2972`，Redis worker count=6、
+      queue depth=0，focused `7 + 16 passed`。
+- [x] CO-155：MinIO scan 增加 endpoint/bucket keyed、5 分钟 in-process
+      last-known-complete cache；timeout 仍 current unknown，仅提供
+      authoritative=false 的 bounded age/value，过期只给 marker。focused
+      `31 passed, 1 skipped`，API 已轮换加载。
+- [x] CO-156：独立 operations CLI 通过受保护的 SHA-256 keyed runtime observation
+      file 获得跨进程 bounded continuity；5 分钟 TTL、原子替换、未来时间戳拒绝、
+      过期清理和 secret-free payload 均已验证。超时仍保持 current unknown，
+      不会把 stale capacity 标成 current；focused `33 passed, 1 skipped`。
+- [x] CO-120：发布 quickstart 统一为 lockfile-driven Windows retained
+      same-stack 路径，包含 production build、动态 Alembic head、
+      `/health/runtime`、`-CheckOnly` 和精确旧 frontend 清理；5 passed。

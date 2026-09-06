@@ -1,5 +1,62 @@
 # DESIGN_PROGRESS
 
+## 2026-09-02 — Scientific viewer unavailable-state recovery
+
+Scientific object viewers now expose a bounded `重新读取来源` action plus a
+project-scoped `查看来源与属性` escape hatch when an exact source payload is
+temporarily unavailable. Retry re-fetches the existing authoritative viewer
+projection only; it does not substitute a newer version or trigger scientific
+execution. Focused regression: `ScientificObjectViewer.test.tsx` 1 passed.
+
+Repeated Viewer shells now generate unique limitation-heading IDs, preserving
+`aria-labelledby` relationships when multiple scientific surfaces are rendered
+on one page. Focused Viewer regressions: 3 passed.
+
+## 2026-09-01 — Payload recovery entry UX
+
+Confirmed missing scientific payloads now expose a direct project-scoped
+`重新导入源文件` recovery action while preserving exact source/version
+metadata and fail-closed semantics. Scientific fallback headings use
+Dataset/data-kind scoped IDs so repeated data surfaces remain accessible
+without duplicate DOM identifiers.
+
+## 2026-09-01 — Product data reachability and exact payload recovery
+
+- Verified that the browser-facing runtime is genuinely backed by PostgreSQL,
+  Redis, MinIO and Redis workers; the reported unavailable pages were not a
+  service outage.
+- Corrected the secured Dataset object-store projection so a Dataset with zero
+  files and zero objects is a valid `EMPTY` state instead of a storage error.
+  The Data surface now distinguishes empty, unavailable and ready states and
+  does not offer Research for absent scientific payload.
+- Reconstructed one leaked transport-test Dataset only after exact raw and
+  normalized SHA-256, parser object ID/hash, schema, row and resolver checks
+  passed. Three existing MinIO keys were conditionally created; no scientific
+  identity, Result or Report was changed.
+- Authenticated inventory now reports 28/28 Dataset routes available
+  (17 READY, 11 EMPTY) and 13/13 visible ScientificObjectVersion Viewer
+  projections as `READY + PROFESSIONAL`, with no `SOURCE_MISSING`.
+- The exact trajectory object from the reported unavailable surface renders
+  three frames with professional interaction controls and empty browser logs.
+- Full frontend regression is 106 files / 773 tests; typecheck and production
+  build pass. Backend/service-backed final reruns are recorded in the active
+  Product Maturity task evidence.
+
+## 2026-09-01 — Runtime entry compatibility and project governance
+
+- Rechecked the user-visible runtime after reports of unavailable payloads:
+  PostgreSQL, Redis, MinIO, API, six Redis workers and the production frontend
+  are healthy; 13 acceptance-visible ScientificObject Viewers and canonical
+  Dataset/Report routes return successful readable projections.
+- Added a small inert `127.0.0.1:3000 → 127.0.0.1:3013` compatibility alias
+  so older bookmarks reach the current production frontend without changing
+  scientific/API authority or stopping the retained services.
+- Added platform-admin project catalog/member governance over the existing
+  `project_members` authority, with owner protection, server authorization and
+  sanitized audit events. The Admin Center now exposes the responsive project
+  member surface; no ScientificObject/Version/Result/Artifact/Report authority
+  changed.
+
 ## 2026-09-01 — Context controls and bulk selection
 
 - Added bounded remove controls to the Research session-memory strip for
@@ -5991,3 +6048,1749 @@ workers/queue 0、MinIO ok。
   jobs all passed.
 - P14R-B is now limited to authoritative evidence finalization and exact-head
   CI; no product architecture remains open in this release candidate.
+
+## 2026-09-01 Phase 14-R scientific payload availability remediation
+
+- Diagnosed user-visible scientific 500/missing states as a split MinIO data
+  root plus an unhandled `NoSuchKey`, not stopped PostgreSQL/Redis/MinIO
+  services or a scientific identity defect.
+- Recovered 1,551 exact/deterministically validated objects into the active
+  bucket. The canonical diffusion Job now loads all 8 Artifacts with matching
+  sizes and SHA-256 values; its trajectory exact-version Viewer is `READY`.
+- Added typed 404/503 Artifact storage boundaries and separate professional UI
+  states for confirmed missing payloads versus transient loading failures.
+- Authenticated desktop/mobile Research, Report and Dataset validation has no
+  unexpected 5xx, infinite scientific loading or horizontal overflow.
+- Five historical references have no exact recoverable bytes and remain
+  explicitly unavailable; no scientific payload or latest-version substitute
+  was fabricated.
+
+## 2026-09-01 Product maturity batch — same-stack runtime and shared UX seams
+
+- Confirmed the retained browser-facing stack is actually PostgreSQL `55434`,
+  Redis `6379/13`, MinIO `9000` and Redis-backed workers; `/health/runtime`
+  reports the same truth.
+- Applied migration `0029_product_maturity_platform_roles` to the live
+  qualification PostgreSQL database. Provider mutations now require explicit
+  `PLATFORM_ADMIN`; ordinary researchers receive a read-only model-service
+  surface while server authorization remains authoritative.
+- Rebuilt the frontend against API proxy target `8005`; this fixed the browser
+  login/model-settings `500` caused by a production build still targeting the
+  stale `8000` backend.
+- Replaced the global task/notification project fan-out with one bounded,
+  authorized task-feed request, and tightened blank global search behavior.
+- Added monotonic persisted-result loading state, mobile project identity,
+  and a current product reality audit at
+  `docs/agent2/product_maturity/PRODUCT_REALITY_AUDIT.md`.
+
+## 2026-09-01 Product maturity data visibility closure
+
+- Confirmed the reported unavailable pages were not a service outage. The live
+  runtime remains PostgreSQL/Redis/MinIO/API/six workers/frontend/DeepSeek.
+- Recovered the only user-visible missing Dataset payload using exact
+  byte/checksum/parser/object identity proof; no version, Result or Report was
+  changed and no later source was substituted.
+- Introduced the explicit `EMPTY` Dataset contract so zero-resource records show
+  import guidance instead of a storage failure. Legacy Dataset detail routes
+  now converge on the current Data Platform and cannot expose Planner execution
+  for an empty source.
+- Current authenticated inventory is 28/28 Datasets correctly classified,
+  13/13 exact-version Viewers READY, 241/241 Artifact contents readable and
+  11/11 Reports readable. The 70-route product sweep contains no 500 response.
+- Verification: full backend `1970 passed`; full frontend `106 files / 773
+  passed`; isolated PostgreSQL/Redis/MinIO campaign `70 passed / 0 skipped`;
+  build/typecheck/compileall/lock/Ruff/diff PASS.
+
+## 2026-09-01 Product maturity runtime reload and browser recheck
+
+- The reported `/trash` and `/account` client failures were traced to a stale
+  3013 Next process serving a chunk manifest from the default `.next` directory,
+  not to PostgreSQL, Redis or MinIO availability.
+- The API reload briefly used incorrect MinIO credentials; restoring the
+  repository-documented `mdi-local` / `mdi-local-dev` pair returned
+  `/health/runtime` to PostgreSQL/Redis/MinIO/Redis-worker/DeepSeek `ok`.
+- A fresh authenticated browser tab now renders Trash, Account, scientific
+  object detail, Report detail and the Acceptance Dataset with zero console
+  errors. Existing browser tabs and all platform services remain open.
+
+## 2026-09-01 Product maturity Dataset interaction batch (continued)
+
+- Confirmed the retained API/frontend and PostgreSQL/Redis/MinIO services are
+  live; `/health/runtime` truthfully reports PostgreSQL, Redis, MinIO,
+  Redis-backed workers and configured DeepSeek.
+- Re-projected DataFrame source rows with deterministic `objectId`,
+  `sampleRef` and `sampleKey` provenance so a readable Dataset row is also
+  semantically selectable.
+- Verified the authenticated Data Platform tab after refresh: `Si / 1`,
+  exact `objectId=obj_dataframe_60c91184df02`, stable sample reference
+  `dataset_0001_a0b09e3324e44ca4@2:60c91184df022d34:0`, enabled `选择`, and
+  zero browser warnings/errors.
+- Kept the scientific table identity column visible and keyboard/mobile
+  usable; no scientific values or authority records were mutated.
+- Added the batch evidence record at
+  `docs/agent2/product_maturity/PRODUCT_MATURITY_BATCH_2026-09-01.md`.
+## 2026-09-01 Product maturity — payload failure UX clarification
+
+- Data Platform source-read failures now present two truthful states:
+  transient/retryable and confirmed missing payload.
+- Confirmed missing states retain exact source/version metadata and explicitly
+  prohibit replacement by another Dataset, ScientificObjectVersion or Artifact.
+- The interaction keeps a bounded recovery action and avoids presenting a
+  storage-contract 404 as an opaque Internal Server Error.
+
+## 2026-09-01 Product maturity — route continuity batch
+
+- Repaired the Dataset workbench's project breadcrumb, return action and
+  secondary import action so all preserve the active project context.
+- Repaired Project Home import actions to use the project-scoped Dataset
+  upload route after project identity is loaded; `/analysis` remains only as
+  a compatibility fallback when no project is available.
+- Reused `ProductNavigation` client transitions, preserving the existing
+  no-full-reload interaction model.
+
+## 2026-09-01 Product maturity — table accessibility normalization
+
+- Scientific table scroll regions keep one stable primary accessible name for
+  predictable screen-reader navigation.
+- The mobile interaction and fixed semantic sample-identity guidance remains
+  available through a per-instance `aria-describedby` target, so repeated
+  tables do not share a global DOM id or expose a misleadingly long role name.
+- Full frontend regression is green at 108 files / 787 tests.
+
+## 2026-09-01 Product maturity — admin route continuity
+
+- Added `/admin` to the shared authenticated product-route boundary so the
+  platform management surface receives the same global shell, session guard,
+  transition behavior and scroll ownership as `/account`, `/tasks` and
+  `/notifications`.
+- Added explicit `返回控制台` actions to the Account Center and Admin Center
+  headings, preventing deep account/admin pages from relying on browser Back
+  or the landing page brand as their only exit.
+- Scientific authority, project membership, account state and lifecycle APIs
+  were not changed.
+
+## 2026-09-01 Product maturity — shared UI and account fluency
+
+- Shared shell boundaries now isolate accidental page-wide overflow while
+  retaining explicit internal scrolling for scientific tables and viewers.
+- Shared primary/secondary actions expose consistent hover, focus and disabled
+  states; mobile controls retain the existing 44px touch target.
+- Account sessions are bounded to the most recent eight entries by default
+  with an explicit “显示全部会话” disclosure, reducing deep-page scroll cost
+  without hiding session management.
+- The active 3013 frontend was rebuilt from the current production output and
+  restarted narrowly; API, PostgreSQL, Redis, MinIO, workers and browser tabs
+  remained running.
+- The legacy 3000 compatibility alias was also corrected to target the current
+  3013 build. A fresh 3000 browser tab now resolves the same account page with
+  eight bounded session rows, no Internal Server Error and no console errors.
+- Task and notification filter controls now remain a single horizontally
+  scrollable row on mobile, preserving clear filter semantics and 44px touch
+  targets instead of wrapping into a visually ambiguous second row.
+- 2026-09-02 产品成熟度实时科学表面复核：保持 PostgreSQL/Redis/MinIO、API、6 个 worker 与现有浏览器标签页不变，使用同栈认证浏览器完成 16 个项目数据入口、41 个精确 Dataset/Object 详情、10 个已验证 Report、10 个报告引用 Viewer 的真实回归。当前 acceptance 可见路径均无 Internal Server Error、SOURCE_MISSING、不可用 payload 或浏览器 error；轨迹精确版本 `d325a090-d53f-4980-8a5e-c466bf6470eb` / `052d3a8e-8a35-48ac-9e65-b95a86b42c99` 实际渲染 3 帧 canvas，Dataset 精确版本 `8a425466-b697-4c85-9a43-199414a22865` / `be02266a-7d4f-4ebb-9f28-3132855167d0` 实际渲染稳定样本表。新增证据 `docs/agent2/product_maturity/LIVE_SCIENTIFIC_SURFACE_REAUDIT_2026-09-02.md`。同时栈 operations snapshot `--same-stack --fail-on-attention` 为 PASS，idle-in-transaction=0，pool checkedOut=0，队列深度=0；此前截图对应的现行根因不是服务停止，而是过期前端构建/历史测试 payload 缺失，当前 acceptance 路径已闭合。
+- 2026-09-02 P14R 结果文档一致性修复：`AGENT2_PHASE14R_RESULTS.md` 顶部状态从历史 `PARTIAL` 明确更新为当前 `COMPLETE`，并注明后续带日期的 PARTIAL 为历史 checkpoint，避免最终 P14R-A/P14R-B 已 PASS 但文档开头仍产生矛盾。未修改科学 authority、实现代码或服务。
+- 2026-09-02 历史报告入口 P1 修复：`ScientificReportRoute` 现在在 legacy `job_*` / `run_*` 引用下直接进入只读兼容报告页，不再先探测必然 404 的现代报告接口，避免用户可见的错误噪声。补充回归 `ScientificReportRoute` 23 passed；重建 `.next-prod-maturity-20260902` 并重载 3013（3000 alias 保持指向当前实例）；认证浏览器对 `job_agent2_92fcd73e38034dcfbc7aa63fbcf2a70e` 实测无 ISE/console error，科学结果最终正常加载。详见 `docs/agent2/product_maturity/LIVE_SCIENTIFIC_SURFACE_REAUDIT_2026-09-02.md`。
+- 2026-09-02 移动科学表格 P1/P2 可用性修复：保留现有横向滚动与稳定样本身份/选择固定逻辑，恢复 `.workspace-table-mobile-hint` 在移动断点的可见提示，避免用户将被裁切的右侧属性误判为 payload 丢失。`WorkspaceArtifactGallery`、`ScientificWorkspaceShell`、`ScientificReportRoute` 窄回归 53 passed；前端全量 108 files / 789 tests、production build、typecheck、compileall、静态资源与 diff check 均通过。未修改科学 authority、服务配置、数据库记录或浏览器标签页。
+- 2026-09-02 筛选控件共享视觉层级修复：报告与回收站的 `product-filter-row` 不再继承全局 teal 主按钮；仅当前筛选使用填充强调，其他筛选使用描边胶囊，移动端保持 44px 触控高度。生产构建重载后浏览器报告页实测样式与页面内容正常，未改变筛选语义或科学数据。
+- 2026-09-02 报告科学内容页内预览：现代科学报告的持久化 Figure/Table 不再只有描述牌和外链；新增按需、只读的 Artifact 预览，Figure 使用有限序列的确定性 SVG 投影，Table 使用最多 24 行/8 列的有界表格投影，保留权威 Artifact 外链与失败回退。认证同栈报告 `agent2_report_19a0d0c261c28577101de81532464893` 实测 Figure 2 点、Table 1 行、浏览器 error/warn 为空；相关测试 26 passed，typecheck/build PASS。
+
+## 2026-09-03 Product maturity — exact payload recovery and runtime alignment
+
+- 现有 PostgreSQL、Redis、MinIO、API、frontend 与 workers 均可达；问题不是
+  服务整体停止，而是 acceptance scope 的 1 个 ScientificObjectVersion
+  payload 与 10 个 MinIO Artifact 精确 key 缺失。
+- 通过保留的同栈 MinIO 对象和 active bucket 的同字节副本执行清单驱动恢复；
+  每项均按数据库权威 `size_bytes` 与 SHA-256 校验，目标 key readback 再校验。
+  PostgreSQL 中的 Object、Version、Job、ToolCall、Artifact、Result、Report
+  身份均未改变，也没有 latest/version 替换。
+- 当前验收范围核验为 `ScientificObjectVersion 13/13 present`、
+  `MinIO Artifact 241/241 present`、missing `0`。证据：
+  `docs/agent2/product_maturity/evidence/exact_minio_reference_recovery_2026-09-03.json`
+  与
+  `docs/agent2/product_maturity/evidence/exact_minio_availability_verification_2026-09-03.json`。
+- 新增 provider-aware 精确恢复工具
+  `scripts/restore_exact_minio_references.py`；它只恢复已声明 provider、
+  已存在权威 key 的 exact bytes，不写入科学数据库。
+- 修复 S3 `exists()` 将 AccessDenied/连接错误误判为不存在的问题，并关闭
+  `get_bytes()` response body，避免批量读取时连接泄漏；新增回归覆盖。
+- Phase 14-R 同栈 Redis 权威为 `127.0.0.1:6379/13`。API 与 6 个 workers
+  已受控重启至 DB 13，`phase14r_operations_snapshot.py --same-stack
+  --fail-on-attention` 返回 `status=ok`, `workerCount=6`,
+  `idleInTransaction=0`, `pool.checkedOut=0`, `totalQueued=0`。
+- 受控浏览器标签页、PostgreSQL、Redis、MinIO、前端与临时恢复源服务均保持
+  运行。综合 UX 审计记录：
+  `docs/agent2/product_maturity/ux-audit-scientific-data-availability-2026-09-03.md`。
+## 2026-09-03 — Scientific source-unavailable state refinement
+
+- Exact acceptance-scope source bytes and MinIO Artifact payloads are now
+  verified present (`13/13` versions, `241/241` artifacts) after restoring the
+  original keys from the retained source store.
+- The same-stack runtime is explicitly aligned to PostgreSQL, Redis DB 13,
+  MinIO `mdi-artifacts`, and six Redis workers; `/health/runtime` and the
+  operations snapshot both report healthy.
+- The Viewer fallback now uses researcher-facing “原始科学数据” wording and
+  makes “查看来源与属性” the primary escape hatch while retaining retry as a
+  secondary action. This changes only UX copy/action priority; exact-version
+  and fail-closed semantics remain unchanged.
+## 2026-09-03 — Product maturity global audit and mobile Research scroll repair
+
+- Added a current whole-product evidence audit at
+  `docs/agent2/product_maturity/ux-audit-global-product-2026-09-03.md`.
+- Reconfirmed the browser/API stack is healthy on PostgreSQL/Redis/MinIO; the
+  remaining user-visible risk was mobile Research scroll ownership, not a
+  stopped service.
+- Adjusted mobile Research so the document owns vertical scrolling, the
+  conversation history remains bounded and internally scrollable, and the
+  composer/primary action cannot be clipped by the desktop fixed-height grid.
+- Kept scientific table horizontal scrolling, sticky semantic identity and
+  exact provenance unchanged.
+
+## 2026-09-03 — Dataset source recovery and viewer route re-audit
+
+- Restored the exact `si.cif` source (441 bytes, SHA-256
+  `4aeaf0107a36ef4bf587da1e52d20ca2739063dd5a548dcb3dac29efc0331198`) and
+  normalized metadata for `dataset_0002_cb403e1b78f54d32` from retained MinIO
+  `9102` to active MinIO `9000`; no PostgreSQL scientific rows were changed.
+- DurableObjectStoreResolver now resolves the Dataset structure from active
+  storage. Authenticated desktop/mobile browser checks show the real Structure
+  Viewer, with zero source-missing states, console errors, HTTP failures, or
+  horizontal overflow.
+- Scientific viewer API URL construction now preserves the repository's
+  browser proxy contract for `/api/*` FastAPI routes while safely de-duplicating
+  only full backend URLs.
+
+## 2026-09-03 — Shared lifecycle and report navigation discoverability
+
+- Added a direct global `回收站` entry beside Tasks/Notifications, while keeping
+  the account-menu entry for users who prefer the identity menu. On mobile it
+  collapses to a compact labeled control with a tooltip and accessible name.
+- Added a mobile-only report chapter overflow cue (`左右滑动查看章节`) without
+  creating a second scroll owner or changing report anchors/provenance.
+- Verified report navigation and global lifecycle entry at `390×844` with zero
+  horizontal overflow; focused ProductShell/ScientificReport tests remain green.
+
+## 2026-09-03 — Shared list progressive disclosure and report action hierarchy
+
+- Tasks/Notifications now expose a bounded initial window plus explicit
+  “显示更早…” progressive loading, resetting to 30 items when filters change.
+- Scientific Report actions now distinguish the primary “打开来源研究” path
+  from return/export actions, with a deliberate mobile two-group layout.
+- Admin forbidden state now offers a direct console recovery CTA while preserving
+  the account-center path and server-side authorization boundary.
+- Focused component tests and typecheck/build remain green; authenticated
+  Chromium smoke checks show zero horizontal overflow and no console errors.
+- Data 科学属性表补充移动端横向滚动提示，继续保留语义表格与稳定选择行为。
+- Dataset 工作台增加数据资产上下文说明与术语折叠，明确导入容器、不可变科学
+  版本、Profile、规范化资源及分析结果的职责边界。
+- 认证浏览器实测 Data → Research 点击导航的 document request 增量为 `0`，
+  保持框架内路由切换与预取，不退化为整页刷新。
+- Account 移动端设置目录改为 `top: 56px` 吸顶，长页面滚动期间保持安全区段
+  导航可见；不改变账户 API 或会话安全语义。
+- Scientific Report Figure 预览改为有界多序列 SVG 线图，保留正负值基线、坐标
+  语义、序列边界和只读 Artifact 声明；不触发科学重算。
+
+## 2026-09-03 — Scientific figure legend clarity
+
+- Figure 预览增加序列图例和每条序列的有限点数，特别处理只有少量数据点时
+  的可理解性；继续从持久化 Artifact 做只读投影，不创建新的科学执行。
+- 认证 Chromium 桌面真实报告预览显示 `All sites / 1 个点`、`Si / 1 个点`，
+  SVG 仍为 1 个，页面无横向溢出、console errors 或 HTTP 5xx。
+
+## 2026-09-03 — Global scientific semantic search and recovery
+
+- Global search now matches bounded authoritative Dataset metadata (`sample_id`,
+  formula and schema semantics), ScientificObject version metadata, and
+  ScientificResult bundle/grounded-interpretation text within the existing
+  project authorization boundary.
+- Findings remain a projection of ScientificResult rather than a second search
+  authority. Result links retain explicit `researchTurnId`; no Job-name parsing
+  is used.
+- Result search labels prefer the authoritative research question or first
+  Result item title, with a short Result ID and schema version as secondary
+  provenance metadata.
+- Search and saved-search loading failures now expose in-place retry controls
+  while preserving query, filters and project scope.
+- Same-stack API refresh and authenticated browser search for `mat-2` returned
+  14 authorized items and opened an exact ResearchTurn without 5xx, page/console
+  errors or horizontal overflow.
+
+## 2026-09-03 — Restored legacy browser aliases
+
+- Kept the existing user tabs open and restored the two legacy frontend aliases
+  at `127.0.0.1:3013` and `127.0.0.1:3016` using the current production build
+  and API proxy to `8005`.
+- Both aliases return HTTP 200; the historical report route opens with report
+  title, revision navigation, chapters and source-research entry, with zero
+  browser console errors. This distinguishes an unavailable old frontend
+  process from a missing scientific payload.
+
+## 2026-09-03 — 回收站空状态出口
+
+- 回收站为空时提供“查看项目 / 返回控制台”明确路径，避免管理页死路。
+- 移动端出口采用可换行、均分宽度的操作组，不增加新的导航框架。
+- 真实认证浏览器在 390×844 与 1280×720 验证通过；构建后通过重启前端
+  刷新旧静态 chunk，保留同栈服务与 Chrome 会话。
+
+## 2026-09-03 — 前端构建刷新后的全路由回归
+
+- 前端重启后对 12 个产品入口、2 个视口共 24 个组合重新验收；
+  `24/24 HTTP 200`，页面级横向溢出 `0`，console/page errors 与 HTTP 5xx 均为 `0`。
+- PostgreSQL、Redis、MinIO、API、workers 和 Chrome 标签页保持运行。
+
+## 2026-09-03 — Mobile scientific scroll affordances
+
+- 为通用科学表格、Dataset 验证表与报告章节导航补充移动端滚动阴影、稳定
+  滚动条颜色和键盘聚焦反馈，强化“还有内容可横向查看”的可发现性。
+- 保留完整列、稳定样本/语义身份、报告锚点和科学 authority；未引入新的滚动
+  容器或科学计算路径。
+- 定向 `68 passed`、全前端 `110 files / 796 tests passed`、typecheck/build
+  均通过；认证 Chromium `390×844` Data 表横向内容 `759px`、报告章节
+  横向内容 `573px`，页面级横向溢出均为 `0`，console errors=0、5xx=0。
+
+## 2026-09-04 — Dataset authority boundary clarity
+
+- Dataset 详情页增加可见的“从来源到结果：每一层负责什么”说明，明确 Dataset
+  是导入范围、Profile 是语义档案、ScientificObject/Version 是科学身份与不可变
+  状态、ScientificResult 是分析事实；没有引入第二科学权威或改变数据路由。
+- 详情页将“表格行数/可用能力/结果”等容易误读的标签改为“记录数/可用分析/
+  分析结果”，并将来源区分为来源文件、可查看的科学资源和语义档案。
+- 聚焦 `DatasetWorkbenchPage` 测试 `1 passed`，前端 typecheck PASS，
+  `git diff --check` PASS；尚未提交或推送，运行中的 API、前端、数据库、Redis、
+  MinIO、workers 与浏览器标签页保持不变。
+
+## 2026-09-04 — Dataset/Research recovery and exact-version navigation
+
+- Dataset/Research 第二批交互审计发现两个可复现的恢复性缺口：Console 快速查看
+  和项目数据读取失败时缺少原地重试；已补充“重新加载数据/重新加载项目数据”，
+  保留当前项目与页面上下文，不改变 ScientificObject、Version 或 Result authority。
+- Data 路由只带科研对象而未带不可变版本时，原来会落回 Dataset 面板；现改为
+  明确的“需要指定科研对象版本”安全态，避免任何静默最新版本替换，并提供返回项目
+  数据入口。
+- 验证：`ProductPages.test.tsx` `43 passed`，前端 typecheck PASS，
+  `git diff --check` PASS；未提交或推送，API、前端、PostgreSQL、Redis、MinIO、
+  workers 与浏览器标签页保持运行。
+
+## 2026-09-03 — Product maturity UX batch
+
+- Rebuilt the current production frontend and kept API, PostgreSQL, Redis, MinIO,
+  workers and retained browser tabs running.
+- Added bounded Task/Notification search and stable sorting with no-match recovery.
+- Added mobile report chapter navigation and clarified Dataset/Profile/
+  ScientificObject/Version/ScientificResult boundaries.
+- Expanded authorized search to Dataset/Object/Result semantic metadata and
+  grounded finding content with human-readable Result titles.
+- Verification: focused `44 passed`; full frontend `110 files / 803 tests
+  passed`; typecheck/build/diff check PASS; same-stack runtime healthy.
+
+- Project Home now exposes progressive “显示更多” controls for long dataset,
+  analysis-history and recent-activity lists, and a bounded reload action for
+  project-history errors while preserving exact routes.
+- Authenticated Chromium route sweep covered 12 core routes across 3 frontend
+  instances and 2 viewports (72/72 HTTP 200, no page/console errors, 5xx or
+  global overflow). Current Data/Version/Viewer projections for 13 objects
+  also passed 26/26 loads with READY payloads.
+
+## 2026-09-03 — Account/Admin control-safety batch
+
+- Account Center now preserves the loaded account surface when session inventory
+  fails and offers in-place account/session retries.
+- Platform Admin now confirms role/status mutations and project-member role/removal
+  changes in an accessible inline confirmation region, explains the permission/
+  provenance consequence, supports bounded “显示更多” pagination for users and
+  projects, and exposes recovery when the initial admin read fails.
+- Invitation token copy reports success/fallback instead of silently failing.
+- No scientific identity, version, result, provenance, or authorization authority
+  changed. Focused frontend tests: 13 passed; typecheck and diff check passed.
+- Rebuilt production frontend after this batch; full frontend regression is now
+  `110 files / 810 tests passed`, with authenticated core route matrix `24/24`
+  HTTP 200 across desktop/mobile and no page/console errors, 5xx or overflow.
+
+## 2026-09-04 — Scientific table and unavailable-view recovery clarity
+
+- Dataset Explorer summary/sample tables now expose a mobile-only horizontal
+  scrolling cue and keyboard-focusable semantic regions while retaining typed
+  columns and stable sample identity. The cue is descriptive and does not alter
+  row ordering or selection authority.
+- Scientific Report keeps exact Report, snapshot, ResearchTurn, Result and
+  object/version identities in a collapsed technical disclosure after the
+  readable scientific content, so provenance remains inspectable without
+  overwhelming the primary report hierarchy.
+- Workspace unavailable/unsupported Artifact states now use researcher-facing
+  Chinese copy, distinguish missing exact payload from unsupported renderer,
+  preserve bounded diagnostic codes, and explicitly state that no alternate
+  version or executable component is used.
+- Focused frontend tests: 35 passed; typecheck and diff check passed. No
+  scientific authority, storage, routing, or service configuration changed.
+
+## Product maturity — 当前生产报告/表格复核（2026-09-03）
+
+- 重载当前生产构建至 `3000`、`3013`、`3016` 后，认证报告详情页恢复稳定：
+  版本历史、章节导航、持久化 Figure/Table 预览和精确对象版本均可读，浏览器
+  console error/warn 为 `0`，不再出现旧 chunk/application error。
+- `390x844` 数据工作台保留稳定 sample identity、typed columns 与显式横向滚动
+  提示；页面无全局横向溢出。报告页将技术身份放在折叠 disclosure 后，主层级先
+  呈现科学内容，符合研究工作台的信息密度与渐进披露原则。
+- 当前全前端 `110 files / 813 tests passed`，后端关键回归 `56 passed /
+  1 historical compatibility skip`，build/typecheck/compileall/lock/diff 均通过。
+
+## Product maturity — 导航/研究控制/科学表面批量修复（2026-09-03）
+
+- 登录后品牌入口与显式“控制台”入口统一回 `/console`；高频顶层
+  `/projects`、`/console`、`/account`、`/admin` 增加一致的 loading frame，
+  切换等待服务端数据时保留工作区层级和即时反馈。
+- Research Continue 子 Turn 显式绑定父 Turn 的精确 Result snapshot；
+  PLAN_READY 自动 dispatch 与 Stop 竞态以持久化终态为准，避免伪执行失败。
+- Electronic/DOS、Phonon Band/DOS、Volumetric 大数组统计改为安全迭代，
+  空数据显示可解释状态，科学表格补充列语义，避免合法 Artifact 在浏览器中
+  因调用栈溢出而空白。
+- 验证：相关前端聚焦 `99 passed`，`npm run typecheck`、`npm run build`、
+  `compileall`、`uv lock --check`、`git diff --check` 均通过；同栈
+  PostgreSQL/Redis/MinIO healthy，6 workers idle，queue depth 0，
+  idle-in-transaction 0。
+- 当前构建在保留既有端口和标签页的 `3018` 前端副本上复核：桌面核心路由
+  `11/11`、移动 `11/11` 均无页面/console 错误和全局溢出；`390x844` 项目
+  导航中的“控制台”标签保持单行可读。
+
+## 2026-09-04 数据层级与导航感知性能批次
+
+- Data Navigator 增加固定的“来源数据与科学身份”阅读提示，明确区分
+  `Dataset`（导入范围、文件、记录与查询）和 `Scientific Object / Version`
+  （解析后的科学身份与不可变精确状态），避免把 Dataset 当作科学版本入口。
+- 项目历史新增已解析快照读取入口；项目概览、数据和研究路由优先使用
+  ProductShell 预热后的快照，减少客户端导航后的重复等待与重复历史请求。
+  Console 在展示首个活动项目后短延迟预热同一历史 ledger，并对“继续研究”
+  主入口显式启用框架预取。
+- 定向前端回归 `ProductPages + ProjectHome + ProductShell = 69 passed`；
+  `npm run typecheck`、生产构建、`git diff --check` 通过。
+- 当前构建独立运行在 `127.0.0.1:3020`（API `8005`），同栈 `/health/runtime`
+  仍为 PostgreSQL / Redis / MinIO / Redis worker / DeepSeek `ok`；认证浏览器
+  数据页桌面显示层级提示，移动端 `scrollWidth === clientWidth === 375`。
+- 旧历史缺失 payload 继续保留 fail-closed 说明；本批没有用其他版本替代、
+  没有改写 ScientificObject/Version/Result authority，也没有停止服务或关闭既有标签页。
+
+## 2026-09-04 Research 上下文审计可见性批次
+
+- 上下文清单此前在默认展示中只显示前 `8` 项，但摘要会报告完整纳入数量；
+  对长上下文而言，这会让研究者无法从产品界面检查其余已授权上下文项。
+- 现在仍默认采用有界八项预览，同时提供可访问的“查看全部上下文”切换，
+  允许展开完整 `included_items` 清单；切换只改变通信层显示，不改变
+  ContextManifest、科学来源、Result 或 Provider 负载。
+- 清单切换在 ResearchTurn 变化时自动收起，`aria-expanded` / `aria-controls`
+  与稳定列表 ID 配套，窄屏继续沿用有界布局。
+- 验证：ResearchPages `69 passed`，`npm run typecheck` PASS，`git diff --check`
+  PASS。没有新增 Job、ToolCall、Artifact 或 ScientificResult。
+
+### 同栈科学对象逐页复核（2026-09-04）
+
+- 使用当前生产构建 `127.0.0.1:3020` 重新打开活动项目的 `13/13` 个精确
+  ScientificObject/Version 入口。Electronic DOS、Phonon Band/DOS、Dataset、
+  ML 表格、Electronic Band、Structure、Trajectory 与 Diffusion 均在 hydration
+  后到达声明的 renderer 或 bounded fallback。
+- 未出现 `Internal Server Error`、`Application error`、`SOURCE_MISSING` 或
+  alert；桌面 document/client width 均为 `1265`，全局 overflow 为 `0 px`。
+  Structure/Trajectory 路径挂载真实 canvas；Structure 显示 `Si` 位点、晶胞和
+  精确版本信息。
+- 该检查仅验证读路径，不创建 Job/Result，也不改变历史 `SOURCE_MISSING`
+  的 fail-closed 语义。
+
+### Report / Artifact 展示批次与完整回归（2026-09-04）
+
+- Report 阅读器为每条主要发现增加折叠式“查看科学依据”，只读展示
+  ScientificResult snapshot、精确对象/版本、fact/evidence/finding refs；
+  技术身份继续置于渐进披露层，避免污染正文。
+- Artifact Gallery 对 `STATIC_METADATA` 与 `DOWNLOAD_ONLY` 契约提供明确的
+  元数据/安全下载状态；`plotly_html`、图片和其他不可执行资源不会被猜测成
+  可执行组件或伪装为科学图像。
+- 当前生产构建 `127.0.0.1:3021` 同栈健康；认证报告桌面宽度
+  `1265/1265`、移动宽度 `375/375`，报告主要发现依据入口可见，页面无
+  alert 或全局 overflow。
+- 回归：完整前端 `110 files / 823 tests passed`；完整后端
+  `1983 passed / 84 skipped`；typecheck、production build、compileall、
+  `uv lock --check`、`git diff --check` 均通过。
+- Phase 14-R 仍保持 `PARTIAL`，因为 capability-wide real-user、retention/
+  export/operations maturity 和 exact-SHA release gates 尚未全部证实；历史
+  缺失 payload 仍 fail-closed。
+
+### 2026-09-04 Research 上下文恢复性批次（第二批）
+
+- ResearchTurn 的 ContextManifest 读取失败此前会静默清空上下文区域，长会话
+  中研究者无法判断是“本次没有清单”还是“临时读取失败”。
+- 现在记录有界的读取状态；临时失败会在研究时间线显示“本次研究的上下文
+  清单暂时无法读取”和“重新读取上下文”原地恢复动作。重试只重新读取同一
+  已持久化 ContextManifest，不会改变上下文选择、Result、ScientificResult
+  或执行状态。
+- ResearchPages 定向回归 `70 passed`；未停止 API、workers、PostgreSQL、
+  Redis、MinIO 或浏览器标签页，未提交/推送。
+
+### 2026-09-04 生命周期恢复性批次（第二批）
+
+- 回收站库存读取失败此前只显示错误，没有原地恢复入口；现在提供
+  “重新加载回收站”，重试只重新读取服务端回收站投影，不改变任何生命周期、
+  科学版本或历史 provenance。
+- TrashCenter 定向回归与 ResearchPages 合计 `75 passed`；未停止现有服务、
+  workers 或浏览器标签页，未提交/推送。
+
+### 2026-09-04 Research 主操作停止控制批次
+
+- Research 运行期间，底部输入区的主操作此前会退化为不可点击的处理中按钮；
+  停止入口只存在于上方过程卡片，长时间线和移动端用户不容易发现。
+- 现在在已有精确 `ResearchTurn` 且处于 `planning/running` 时，输入区主操作
+  明确切换为“停止研究”；它复用现有服务端持久化取消、部分 Artifact 保留和
+  终态竞态对账逻辑，不创建第二套取消状态。
+- 没有可取消 Turn 身份的旧式/过渡状态仍保持只读处理中，避免把无法持久化的
+  前端动作伪装成取消成功。
+- 验证：ResearchPages `71 passed`，`npm run typecheck` PASS。未停止 API、
+  workers、PostgreSQL、Redis、MinIO 或浏览器标签页，未提交/推送。
+
+### 2026-09-04 R7/R8 研究任务可查找身份批次
+
+- 范围化审计确认 Global Search、已保存检索、Task Center、Notification Center
+  与 online/visibility 恢复已经复用持久化授权投影，不需要第二套搜索索引或任务
+  authority；审计记录位于
+  `docs/agent2/phase14r/ux-audit-r7-r8-search-task-recovery-2026-09-04.md`。
+- 真实缺口是 ResearchTurn-backed 任务仍显示通用“可恢复研究/研究会话更新”，
+  并且本地查找不包含研究问题。现有 Job → ResearchTurn → user_message 外键现已
+  在同一 bounded SQL task-feed projection 中增加 `researchQuestion` 显示元数据；
+  它只用于标题与本地查找，不改变 Turn/Job/Result 权威。
+- Task/Notification 行同时展示持久化 `updatedAt || createdAt` 的语义化
+  `<time>`，让研究者能核对恢复后的任务是否是刚更新的运行；精确 Turn 路由、
+  legacy read-only、停止/重试与断网恢复语义保持不变。
+- 验证：Workspace/task-feed backend `15 passed`；Task/Notification/task-data
+  frontend `16 passed`；typecheck、touched Ruff、diff check PASS。性能回归仍证明
+  1 个与 5 个 Job 均为固定 `2` 次查询。
+
+### 2026-09-04 Neat-freak knowledge/workspace closeout
+
+- 在用户确认后，仅删除 12 个已核对旧项目日志，总计 `656,867` bytes；当前
+  API、workers、PostgreSQL、Redis、MinIO、前端和浏览器标签页均保留。
+- 删除后检查：API `8005`、前端 `3023`、PostgreSQL `5432/55434`、Redis
+  `6379`、MinIO `9000` 仍在监听；同栈健康保持 PostgreSQL/Redis/MinIO/
+  worker healthy。
+- 已同步 `AGENT2_PHASE14R_RESULTS.md`、`persistent/TASK_BOARD.md`、`results.md`；
+  未提交、未推送，Phase 14-R 仍为 `PARTIAL`。
+- C 盘约剩 `80 MB`，只读报告位于
+  `E:\storage-analysis-phase14r-20260904\storage-report.html`；未触碰
+  Chrome/Codex/runtime/science data，其他临时目录需另行确认。
+
+### 2026-09-05 Continuous optimization — Report Figure x-coordinate fidelity
+
+- 建立 `120` 项有证据、可独立验证的持续优化池；首项选择科学呈现中的
+  非均匀 x 坐标失真问题。
+- Report 的持久化 Figure 预览现在按权威 numeric x-domain 映射 SVG，
+  缺失/分类 x 才回退到序列位置；不改变 Artifact、ScientificResult 或单位。
+- 非均匀 `[0, 0.1, 10]` 回归、聚焦前端 `7 passed`、typecheck 和 diff
+  check 通过；同栈报告 `agent2_report_e54681009a0e49abe371247d9053ce61`
+  页内预览真实加载 `92` 个点且 browser error 为 `0`。
+- 下一项为 CO-002：消除 Report table preview 的视觉行号身份回退。
+
+### 2026-09-05 Continuous optimization — Report Table stable row identity
+
+- Report table preview 不再把视觉数组下标作为默认 React identity；唯一的
+  `sample_id` 等语义字段优先，缺失时使用属性顺序无关的规范化行内容。
+- 完全重复且科学上不可区分的行仅使用重复序号消歧；排序/刷新不会让不同内容
+  的科学行发生 DOM identity 漂移。
+- focused frontend `9 passed`、typecheck、diff check PASS。
+- 下一项为 CO-003：Materials Explorer 通用 DataTable 的稳定行身份。
+
+### 2026-09-05 Continuous optimization — Materials Explorer stable row identity
+
+- composition、structure、quality、comparison 的通用表格从 `string[][]`
+  升级为带上游语义 key 的 bounded rows，视觉数组下标不再承担科学身份。
+- 重排和重复上游身份回归均通过；focused frontend `11 passed`、
+  typecheck、diff check PASS。
+- 下一项为 CO-005：Research polling 的取消和 stale-response 防护。
+
+### 2026-09-05 Continuous optimization — Research polling lifecycle
+
+- ResearchTurn progress 与 legacy Job polling API 均支持 `AbortSignal`；
+  Turn/Job 切换或卸载会终止在途请求、清除 retry timer，并阻止 online 事件
+  生成重叠 polling。
+- legacy 终态 Interpretation/Evidence 回调增加 exact active-lineage guard，
+  不会在切换研究后写入当前页面。
+- ResearchPages focused `73 passed`、typecheck、diff check PASS。
+- 下一项为 CO-004：同时存在 run/turn 身份时只允许 authoritative Turn
+  驱动执行状态。
+
+### 2026-09-05 Continuous optimization — one Research execution authority
+
+- `run + turn` 历史链接继续保留 Job provenance，但 explicit ResearchTurn
+  成为唯一 execution-state authority；不再 hydrate/poll legacy Job。
+- run-only legacy 历史路径保持兼容；新增权威 Turn 回归后 Research
+  `74 passed`、typecheck、diff check PASS。
+- 下一项为 CO-036：检查并修复跨产品入口绕过共享 SPA 导航的问题。
+
+### 2026-09-05 Continuous optimization — SPA navigation acceptance (CO-036)
+
+- 通过独立 Chrome 认证浏览器验收确认 Data → Research → Report → 来源
+  Research/历史 → Viewer 的六条内部转换均为同文档客户端路由：每条
+  `documentRequests=0`，`performance.timeOrigin` 与运行时探针保持，
+  暖态耗时 `37–139 ms`，console errors 与 server 5xx 均为 `0`。
+- 新增 `apps/web/test/product-navigation-spa-acceptance.mjs` 及 npm
+  入口，后续若出现 document reload、运行时状态丢失、console error 或
+  5xx 会直接失败。
+- 未修改科学 authority 或路由架构；CO-006（历史 Job → ResearchTurn
+  权威 resolver）进入下一轮。
+
+### 2026-09-05 Continuous optimization — historical Turn scope (CO-006)
+
+- 历史兼容投影的 `research_session_runs` → `research_turns` 外连接现在同时
+  约束 `job_id` 与请求项目；异常跨项目关系不会泄漏 `researchTurnId`，
+  仅保留安全的 legacy run projection。
+- 新增非标准 Job ID 与跨项目 Turn 回归；`test_project_history_research_context`
+  `5 passed`、`test_project_access` `32 passed`、Ruff/diff PASS。
+- 下一项为 CO-007：ContextManifest 预算与溢出压力验证。
+
+### 2026-09-05 Continuous optimization — legacy ContextManifest budget (CO-007)
+
+- 发现历史 ContextSnapshot 的兼容 Manifest 投影未应用 operation-specific
+  budget，可能让回放上下文超过契约上限且错误标记为未压缩。
+- `routers/agent2.py` 现在按科学身份优先确定性裁剪；非关键内容记录
+  `excluded_items`，关键科学上下文超限直接 fail-closed。
+- `tests/test_phase14r_context_manifest.py` `13 passed`；Ruff 与 diff check
+  通过。下一项为 CO-008：上下文 pin/unpin/use/compare 持久化。
+
+### 2026-09-05 Continuous optimization — context pin reload durability (CO-008)
+
+- 增加真实 `ScientificResultSnapshot` 的 repository 生命周期回归：固定
+  精确 Result、关闭事务、重新读取、取消固定、再次读取。
+- memory focused `10 passed`，Ruff 与 diff check 通过；确认上下文控制
+  只改变 session memory，不改变科学 Result authority。
+- 下一项为 CO-009：归一化 malformed/missing context-memory reference 的
+  用户可见错误。
+
+### 2026-09-05 Continuous optimization — missing Result error normalization (CO-121)
+
+- Agent2 `_http_error` 现在将 `ScientificResultSnapshotNotFound` 映射为稳定
+  404，而不是泛化 500；API focused `27 passed`，Ruff/diff check 通过。
+- 该错误路径不改变 ScientificResult 或 session memory authority。
+- 下一项回到 backlog 的 CO-009：network/API/worker interruption recovery
+  qualification。
+
+### 2026-09-05 Continuous optimization — evidence provenance UI (CO-010)
+
+- Research 依据条目现在显示字段定位、Artifact ID、ToolCall ID 与 SHA-256，
+  并保留现有“在结果中查看”入口。
+- ResearchPages focused `75 passed`，frontend typecheck 与 diff check 通过；
+  未引入新的 provenance authority 或暴露运行时秘密。
+- 下一项仍为 CO-009：network/API/worker interruption recovery qualification。
+
+### 2026-09-05 Continuous optimization — recovery partition regression (CO-009)
+
+- 为 stale recovery 增加数据库级分流回归：真实 product Turn 进入
+  recovery candidates，资格项目保留在单独列表，不自动重发。
+- `test_phase14r_recovery` `5 passed`，Ruff/diff check 通过；下一项为
+  CO-011：XRD 报告科学讨论质量评估。
+
+### 2026-09-05 Continuous optimization — XRD report quality guard (CO-011)
+
+- 新增 XRD 报告回归，验证 discussion、conclusion 均绑定
+  `xrd.matched_peak_count`，限制存在且 ReportGroundingValidator 通过。
+- Reports focused `35 passed, 4 skipped`（既有 live-provider 条件 skip）；
+  Ruff/diff check 通过。下一项为 CO-012：Registry/Pack/Viewer 能力覆盖矩阵。
+
+### 2026-09-05 Continuous optimization — Registry/Pack surface drift guard (CO-012)
+
+- 审计发现 live registry 当前有 `17` 个 ACTIVE capability，文档矩阵也有
+  `17` 行，但 `ml.regression_evaluation` 的 Pack 标注错误：文档写作
+  `core.data`，实际 `build_phase11_packs` 依据 `domain=ml` 放入
+  `core.other`。
+- 新增 `test_phase14r_surface_coverage.py`，从 live Registry 与 trusted
+  Packs 自动派生 capability、Pack、ToolBinding、Result projector，并与
+  `SCIENTIFIC_SURFACE_COVERAGE_MATRIX.md` 逐项校验；同时要求覆盖单元非空、
+  状态值受控、projector 已注册。
+- focused `1 passed`；Ruff 与 `git diff --check` 通过。下一项为 CO-013：
+  扩展各 capability family 的历史/归档 Presentation 证据。
+
+### 2026-09-05 Continuous optimization — historical Viewer family guard (CO-013)
+
+- 为当前已注册的 `10` 个 ScientificObject-backed Viewer 类型增加参数化
+  历史/归档回归：同一对象创建 v1/v2、切换 current 到 v2、归档、读取精确
+  v1 Viewer、恢复，并校验版本计数与 current version 未漂移。
+- `pytest tests/test_agent2_phase9_viewers.py -q` 为 `18 passed`；Ruff 与
+  `git diff --check` 通过。
+- `analysis.rdf` 与 `reciprocal.brillouin_zone` 虽有 Viewer descriptor，但
+  当前不在 ScientificObject registry；已记录为新发现 CO-122，未将其伪装为
+  已完成对象级历史覆盖。下一项为 CO-014：payload 临时/永久不可用恢复 UX。
+
+### 2026-09-05 Continuous optimization — typed payload recovery states (CO-014)
+
+- Viewer fallback 之前把 `SOURCE_MISSING`、`METADATA_ONLY` 与
+  `INVALIDATED` 混成同一“来源不可用 + 重试”状态，导致超限预览和失效历史
+  版本出现无效动作。
+- 新增 `viewerPayloadRecovery` 状态映射：只有 `SOURCE_MISSING` 保留重新读取；
+  `METADATA_ONLY` 明确交互预览上限，`INVALIDATED` 明确历史失效；三者都保留
+  精确“查看来源与属性”入口。
+- ScientificObjectViewer focused `3 passed`，frontend typecheck 与 diff
+  check 通过。下一项为 CO-015：可信 Figure Artifact 打开/下载路径。
+## 2026-09-04 — Product maturity recovery-control verification
+
+- Research ContextManifest read failures now keep the exact persisted context
+  identity visible and provide an in-place retry instead of silently removing
+  the context disclosure.
+- Trash Center inventory failures now provide an in-place retry without
+  changing lifecycle or provenance.
+- Focused frontend regression: Research `70` + Trash `5` = `75 passed`;
+  TypeScript typecheck passed.
+- Same-stack runtime and browser instances remain running. Current active
+  project exact scientific object routes remain `13/13` readable; historical
+  missing bytes continue to be represented as professional fail-closed states
+  rather than fabricated replacement payloads.
+
+## 2026-09-05 — Continuous optimization CO-015
+
+Research 与 Report 的 Figure/Table 现在提供受信 Artifact 的打开与下载入口。
+新增 `ArtifactDownloadLink` 仅接受项目授权的 planner Artifact 内容路径，
+复用服务端大小、哈希和媒体类型校验；原生下载不触发 Job、ToolCall、Artifact
+或 ScientificResult 创建。Focused `32 passed`，typecheck 与 diff check 通过。
+
+## 2026-09-05 — Continuous optimization CO-016
+
+授权 Viewer API 的 persisted zero-recompute 回归已扩展到全部 `11` 个已注册
+ScientificObject-backed family。每类都验证 Viewer 返回、执行/结果相关表计数
+不变以及跨项目 `403` fail-closed；`test_agent2_phase9_viewers.py` 为 `28 passed`。
+
+## 2026-09-05 — Continuous optimization CO-122
+
+`analysis.rdf` 与 `reciprocal.brillouin_zone` 已从 ScientificObject Viewer
+registry 明确移入 `RESULT_ONLY_VIEWER_TYPES`。它们继续由 Result/Artifact
+renderer 支持，但不再伪装成可版本化、可归档的 ScientificObject；对象与
+result-only 集合互斥，focused registry/viewer tests `38 passed`。
+
+## 2026-09-05 — Continuous optimization CO-034
+
+Presentation block runtime now uses an explicit semantic allowlist. Unknown
+types and executable-looking labels fail closed and are reported as a bounded
+rejected-block status; no unknown component, HTML or script is rendered.
+Focused presentation tests `23 passed`, typecheck PASS.
+
+## 2026-09-05 — Continuous optimization CO-038
+
+新增 `phase14r_start_stack.ps1` 作为同栈启动与 readiness 门禁：只启动缺失的
+API、worker、frontend，不停止现有服务；等待 PostgreSQL/Redis/MinIO/API/
+frontend 后再检查真实 `/health/runtime`。`-CheckOnly` 实测 PostgreSQL、
+Redis、MinIO、Redis worker 与 DeepSeek provider 均正常。
+
+## 2026-09-05 — Continuous optimization CO-017
+
+生命周期留存策略已统一到后端 `mdi_api.lifecycle_policy`：自动清理明确禁用，
+受引用 scientific provenance 永久保护，手动物理删除必须先由服务器确认
+零依赖。Project/Dataset 依赖预览、物理删除与回收站检查共用同一判定逻辑；
+不会新增科学 authority，也不会自动删除用户数据。
+
+## 2026-09-05 — Continuous optimization CO-018
+
+统一生命周期合同现在区分两类实体：Project/Dataset 只允许服务器确认
+零依赖后的手动 purge；Research Session、ScientificObject、Scientific Report
+明确标记 `NOT_SUPPORTED_FOR_ENTITY`。这消除了客户端把“暂无依赖”误解成
+“所有历史/科学实体均可永久删除”的风险。
+
+## 2026-09-05 — Continuous optimization CO-019
+
+Research Session 现在提供受项目权限保护的 dependency-impact 只读端点，
+按真实 `session_id/research_session_id` 关系统计消息、上下文、Turns、
+历史结果与报告绑定，并明确 `canDelete = false`。生命周期实体的依赖
+预览不再缺少服务器权威边界。
+
+## 2026-09-05 — Continuous optimization CO-020
+
+账户停用响应现在明确返回 `provenanceRetained = true` 与受保护留存策略；
+项目物理删除仍只允许服务器确认零依赖的空项目。账户工作区访问与科学
+provenance 保留边界已结构化表达，停用不会删除结果、版本或审计记录。
+
+## 2026-09-05 — Continuous optimization CO-021
+
+Job-event 并发回归已扩展到四个独立 SQLAlchemy repository bundle 和真实
+PostgreSQL 多 writer；测试夹具改用每次调用唯一 ID，避免旧 Job 外键导致
+跨运行清理冲突。生产 advisory lock 未改动；live `concurrent_seq` 测试
+`2 passed`。
+
+## 2026-09-05 — Continuous optimization CO-022
+
+ToolCall persistence now converges after a losing PostgreSQL uniqueness race:
+the committed idempotent row is reloaded, while conflicting bindings and
+unrelated integrity failures remain fail-closed. Four independent repository
+bundles with 12 concurrent writers produced one row; live focused campaign
+`3 passed`.
+
+## 2026-09-05 — Continuous optimization CO-123
+
+Artifact persistence now converges after a losing PostgreSQL uniqueness race by
+reloading the committed job/storage/checksum row. Four independent repository
+bundles with 48 duplicate deliveries produced exactly one Artifact; live
+focused campaign `4 passed`.
+
+## 2026-09-05 — Continuous optimization CO-124
+
+Operations snapshots now include a bounded, read-only authority consistency
+projection for orphan ToolCall/Artifact/Result/Report references and broken
+ScientificObject current-version pointers. Same-stack PostgreSQL qualification
+reported `issueCount=0`, `readOnly=true`.
+
+## 2026-09-05 — Continuous optimization CO-023
+
+Added a real PostgreSQL pool pressure regression (8 concurrent workers × 40
+transactions). The process-scoped engine is reused, checked-out connections
+return to zero, and `idle in transaction` remains zero; live test `2 passed`.
+
+## 2026-09-05 — Continuous optimization CO-024
+
+The authority consistency scanner now has a deterministic seeded-orphan test:
+one missing-Job ToolCall produces exactly `ORPHAN_TOOL_CALL_JOB`, and row counts
+remain unchanged before/after scanning. Focused tests `2 passed`.
+
+## 2026-09-05 — Continuous optimization CO-025
+
+MinIO live qualification now verifies a server-side backup copy, exact
+SHA-256/size fidelity, typed missing-source behavior, and successful restore
+from the backup key; focused tests `2 passed`.
+
+## 2026-09-05 — Continuous optimization CO-026
+
+Stale Research recovery now treats Redis/RQ outage as a bounded
+`QUEUE_UNAVAILABLE` attention outcome instead of aborting the recovery scan.
+The exact durable Turn/Job state is left unchanged and can be republished
+through the same identity after the queue recovers. Queue adapters are
+injectable for outage/reconnect qualification; production continues to use
+the settings-backed Redis queues. Recovery tests pass with no scientific
+recomputation or authority mutation.
+
+## 2026-09-05 — Continuous optimization CO-027
+
+DeepSeek transport now absorbs one bounded transient 429/5xx/network/timeout
+failure using a deterministic 250 ms backoff. Authentication, configuration
+and invalid-response errors remain fail-fast. Every attempt is represented in
+the existing redacted call audit, and the full provider regression reports
+`67 passed`.
+
+## 2026-09-05 — Continuous optimization CO-028
+
+Direct Dataset uploads now enforce the same shared file-count, per-file byte
+and total byte caps as upload sessions. Filesystem paths are size-preflighted
+before the raw dataset directory is created, so oversized direct imports fail
+with typed errors without leaving partial scientific bytes. Phase 2 product,
+typed import and durable upload regressions remain green.
+
+## 2026-09-05 — Continuous optimization CO-125
+
+Secured Planner interpretation evidence now carries a bounded persisted
+`projectId` and compares it with the authorized Job project. Cross-project
+interpretation/snapshot relations fail closed with the same typed 404 as a
+missing resource; same-project evidence remains readable. Deterministic
+authorization, Planner read API and interpretation persistence regressions:
+`26 passed`.
+
+## 2026-09-05 — Continuous optimization CO-126
+
+Agent2 Research read/create/dispatch fetches now emit the shared
+`mdi:session-expired` event on 401 so ProductShell can return the user to
+login without misclassifying auth loss as scientific failure. Frontend
+regression: `7 passed`; typecheck PASS.
+## Continuous optimization — Improvement #37 / CO-127 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：项目 provenance manifest 服务端按读取权限授权，但 Projects 操作菜单
+  将导出入口错误地放在写权限分支中，共享 viewer 无法发现安全的只读导出。
+- 修改：导出动作移入读取权限动作集合；归档、回收站、固定和项目信息编辑
+  仍保持写权限门禁；新增 viewer 导出回归。
+- 验证：`ProductPages.test.tsx` `46 passed`；viewer 调用授权 manifest API
+  并触发下载，写操作入口仍不可见。
+- 收益：只读项目成员可获取有界、非可执行 provenance 清单，不扩大生命周期
+  或元数据修改权限。
+## Continuous optimization — Improvement #38 / CO-128 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：已认证的旧 `/analysis-requests` 兼容接口忽略请求中的
+  `projectId/project_id`，跨项目调用仍会收到无条件 accepted。
+- 修改：当请求提供项目作用域时，先使用现有 `require_project_access(read)`
+  校验；无项目的旧非执行调用保持兼容。
+- 验证：`tests/test_project_access.py -k
+  'legacy_analysis_request_scope or project_export_manifest'` `2 passed`；
+  owner/viewer 通过，stranger 403，未创建科学执行记录。
+- 收益：兼容接口不再绕过项目隔离，同时不破坏旧客户端。
+## Continuous optimization — Improvement #39 / CO-129 (2026-09-05)
+
+- 状态：已完成并验证；持续优化总任务继续处理中。
+- 问题：直接文件上传的缺失路径会被 `_api_call` 原样写入 HTTP 400 detail，
+  可能泄露用户名、工作区结构或敏感文件名。
+- 修改：为 `FileNotFoundError` 增加独立类型化响应
+  `UPLOAD_SOURCE_NOT_FOUND`，不再返回绝对路径；其他 `ValueError` 配额和
+  校验错误保持原契约。
+- 验证：Phase 2 子集 `2 passed`；响应不包含私有路径，上传大小预检仍通过。
+- 收益：上传失败仍可理解和重试，同时消除了本地文件系统信息泄露。
+
+## Continuous optimization — Improvement #40 / CO-091 (2026-09-05)
+
+- 状态：已完成并验证；持续优化任务继续处理中。
+- 科学 Viewer shell 为每个实例生成唯一标题 ID，并将外层 `article`
+  通过 `aria-labelledby` 绑定到可见 `h2`；这只改进可访问性，不改变
+  ScientificResult、Artifact 或 Viewer 数据权限。
+- 验证：`ScientificViewerShell.test.tsx` `2 passed`；frontend typecheck
+  通过；触及文件 diff check 通过。
+
+## Continuous optimization — Improvement #41 / CO-130 (2026-09-05)
+
+- 状态：已完成并验证；持续优化任务继续处理中。
+- Artifact 下载 secured wrapper 增加跨项目测试：陌生用户在存储读取前
+  收到 403，授权所有者仍可读取；未改变 Artifact 或项目授权模型。
+- 验证：`tests/test_project_access.py -k
+  artifact_download_denies_foreign_project` `1 passed`。
+
+## Continuous optimization — Improvement #42 / CO-076 (2026-09-05)
+
+- 状态：已完成并验证；持续优化任务继续处理中。
+- Viewer 科学元数据维持前 16 项紧凑摘要；超过上限时显示准确剩余数量，
+  并通过原生 `<details>` 展开全部追加字段，避免把“未显示”误导成
+  “不存在”。
+- 验证：`ScientificViewerShell` focused tests `3 passed`，typecheck 通过。
+
+## Continuous optimization — Improvement #43 / CO-084 (2026-09-05)
+
+- 状态：已完成并验证；持续优化任务继续处理中。
+- Scientific Presentation Finding 卡片在存在匹配 Evidence reference 时提供
+  直接 `查看证据链` 入口，以稳定 evidence id 定位现有 inspector；不复制
+  ScientificResult，也不触发科学重算。
+- 验证：focused presentation tests `7 passed`；typecheck 通过。
+
+## Continuous optimization — Improvement #44 / CO-092 (2026-09-05)
+
+- 状态：已完成并验证；持续优化任务继续处理中。
+- Evidence inspector 增加 `aria-controls`、稳定 id 和焦点管理：打开时
+  聚焦证据 region，关闭时返回触发按钮；不引入新的科学数据读取路径。
+- 验证：ScientificPresentation focused tests `7 passed`，typecheck 通过。
+
+## Continuous optimization — Improvement #45 / CO-072 (2026-09-05)
+
+- 通用科学绘图增加容器级 `ResizeObserver`，并在卸载时断开；
+  保留窗口 resize 兼容路径。
+- focused tests `9 passed`；typecheck 通过。
+- 目的：分栏/移动布局变化时保持图表可读、尺寸正确，不触发科学重算。
+
+## Continuous optimization — Improvement #46 / CO-112 (2026-09-05)
+
+- 回收站永久删除确认要求稳定 `类型:ID` 令牌，避免同名实体歧义；
+  保留服务端依赖与留存保护。
+- duplicate-title 回归 `6 passed`；typecheck 通过。
+
+## Continuous optimization — Improvement #48 / CO-087 (2026-09-05)
+
+- Figure 预览投影持久化 Artifact 的权威坐标轴范围、刻度、标题/单位；
+  缺失时显式显示未提供，避免视觉层推断科学单位。
+- focused tests `10 passed`；typecheck 通过。
+
+## Continuous optimization — Improvement #49 / CO-089 (2026-09-05)
+
+- 报告表格预览展示精确省略行/列数，并可展开查看隐藏列名；
+  仍通过外层授权 Artifact 进入完整数据。
+- focused tests `11 passed`；typecheck 通过。
+
+## Continuous optimization — Improvement #50 / CO-078 (2026-09-05)
+
+- Viewer 明确呈现辅助 Artifact 的部分失败与稳定错误码，并支持重试；
+  主 Artifact 仍可读，避免“部分结果”被误认为完整。
+- focused tests `8 passed`；typecheck 通过。
+
+## Continuous optimization — Improvement #51 / CO-070 (2026-09-05)
+
+- Generic Plot 抽样预览显示原始总点数与保真策略（端点/极值保留），
+  避免将显示上限误读为科学数据规模。
+- focused tests `10 passed`；typecheck 通过。
+
+## Continuous optimization — Improvement #47 / CO-131 (2026-09-05)
+
+- 增加 ResearchTurn/ScientificObject 精确 ID 的跨项目授权矩阵；
+  覆盖读、写、query、Viewer、事件入口，陌生用户统一 403 且不泄露
+  对象/版本标识。
+- 授权子集 `1 passed, 27 deselected`。
+## Continuous optimization — Improvement #52 / CO-079 (2026-09-05)
+
+- 结构 Viewer 对超过 256 个站点的有界显示现在呈现权威的“当前显示前
+  256 / 总数”警告，且明确完整结构仍保留在源数据中。
+- 通过 mapper 保留经过校验的 payload warning message，surface 对代码与消息
+  去重后只显示一个可访问状态提示；没有改变 ScientificResult 或源数据权威。
+- 验证：viewer mapper/surface focused tests `43 passed`，typecheck PASS。
+- 提交/CI：未提交、未推送；持续优化任务保持处理中。
+## Continuous optimization — Improvement #53 / CO-082 (2026-09-05)
+
+- 配位数直方图为每个有界 bin 增加绑定到图形的可访问文本摘要，包含配位数、
+  位点数和占比；保留现有语义数值表作为详细替代。
+- 使用 `useId` 生成实例稳定的 `aria-describedby` 关系，避免重复 DOM ID。
+- 验证：focused tests `2 passed`，typecheck PASS；未改变科学权威。
+## Continuous optimization — Improvements #54–#55 (CO-080 / CO-085, 2026-09-05)
+
+- Dataset Explorer 与通用 Scientific Table 采用统一的有界分页/总量披露，
+  保留 sample_id/sampleRef 稳定身份，focused tests `17 passed`。
+- Report Figure/Table Artifact 预览将权限、缺失、过期、无效内容和大小边界
+  映射到稳定安全状态，focused tests `12 passed`；typecheck PASS。
+- 未改变科学事实权威或重算行为；未提交/未推送。
+
+## Continuous optimization — Improvement #56 / CO-098 (2026-09-05)
+
+- Research 生命周期菜单在 archive/restore 后恢复来源焦点；行被当前筛选
+  隐藏时回退到状态筛选按钮，并提供 `aria-live` 成功播报。
+- 修改文件：`apps/web/app/components/ResearchPages.tsx`、
+  `apps/web/app/components/ResearchPages.test.tsx`及 CO-098 evidence。
+- 验证：lifecycle focused test `1 passed, 74 skipped`；typecheck PASS。
+
+## Continuous optimization — Improvement #57 / CO-132 (2026-09-05)
+
+- Scientific Table 对共享 `objectId` 的多样本行使用对象作用域的稳定样本
+  key，消除 duplicate React key warning，保持分页/筛选后的行身份稳定。
+- 修改文件：`apps/web/app/components/workspace/WorkspaceArtifactGallery.tsx`、
+  `apps/web/app/components/workspace/WorkspaceArtifactGallery.test.tsx`及
+  CO-132 evidence。
+- 验证：gallery focused tests `5 passed`且无 duplicate-key warning；typecheck PASS。
+
+## Continuous optimization — Improvements #58–#61 (2026-09-05)
+
+- CO-081：Dataset 样本引用与对象作用域稳定 ID 成为主要身份，源行明确为
+  辅助定位；focused tests `12 passed`。
+- CO-099：取消终态只由权威 execution card 呈现一次；cancel cases
+  `3 passed`，execution activity `11 passed`。
+- CO-090：重复 Presentation 的 Evidence/inspector/Finding ARIA 身份加入
+  实例作用域；Presentation/Viewer/Report `35 passed`。
+- CO-133：Workspace Gallery 主标题、分组和活动 Viewer 标题 ID 加入
+  `useId` 实例作用域；gallery `6 passed`。
+- 四项 typecheck PASS，未改变科学数据、Result 或版本权威。
+
+## Continuous optimization — Improvement #62 / CO-108 (2026-09-05)
+
+- Generic JSON Artifact 采用有界结构投影后再序列化，限制节点、层级、数组项、
+  对象字段和长文本；完整 Artifact 保持权威且预览披露精确省略量。
+- 10 万项回归证明尾部 getter 未被读取；focused test `1 passed`，
+  typecheck PASS。
+
+## Continuous optimization — Improvements #63–#66 (2026-09-05)
+
+- CO-075：来源缺失 Viewer 保留有界身份/指纹/来源摘要并可安全导出元数据；
+  Viewer focused tests `6 passed`。
+- CO-093：Research 状态筛选支持命名组与方向键/Home/End；合并回归
+  `77 passed`。
+- CO-102：空 Research 状态提供授权正确的 Data Platform 入口，归档/回收
+  项目不会误获写权限；合并回归 `77 passed`。
+- CO-117：service-backed CI 使用 JUnit XML 确定性汇总，解析器 `2 passed`，
+  JUnit smoke selected=2/passed=2/zero skip-fail-error。
+- 合并 typecheck、Ruff 与 diff check PASS；未改变科学权威。
+
+## Continuous optimization — Improvements #67–#69 (2026-09-05)
+
+- CO-111：Viewer 重试增加进行中去重、可取消的有界退避和卸载清理；
+  focused tests `4 passed`。
+- CO-113：Trash Center 支持授权分组的批量恢复及 typed partial-failure；
+  focused tests `8 passed`。
+- CO-119：CI 始终上传 integration log/exit/JUnit/脱敏 runtime 快照；
+  workflow parse PASS，operations `11 passed, 1 historical skip`。
+- 合并 typecheck/diff PASS；同栈 PostgreSQL/Redis/MinIO 和 6 workers 正常。
+
+## Continuous optimization — Improvement #70 / CO-104 (2026-09-05)
+
+- Research session 预热缓存新增生命周期失效回归：缓存窗口内合并读取，
+  archive/restore/rename 后强制重新访问授权 API。
+- product-api `7 passed`；typecheck/diff PASS。
+
+## Continuous optimization — Improvements #71–#75 (2026-09-05)
+
+- CO-114：依赖影响条目使用服务端授权的 ProductLink 打开 exact Data、
+  Research 和 Report；backend `37 passed, 4 historical skips`，
+  frontend `66 passed`。
+- CO-073：Viewer 区分场景校验、WebGL、chunk 和初始化失败；focused
+  `25 passed`。
+- CO-053：持久化停滞 RUNNING 任务进入“需要关注”，保持真实状态且只提供
+  检查/停止动作；focused `7 passed`。
+- CO-096：Edit-last-message 在原 Turn 读取失败时 UI 与提交合同双重
+  fail closed；精确 focused `2 passed`。
+- CO-095：Continue 仅对 Result 404 进入新执行；其他读取失败不创建新 Turn，
+  exact snapshot 作为可见复用候选；合并 Research/API `89 passed`。
+- 五项合并 typecheck/diff PASS；未改变 ScientificResult、版本或执行权威。
+
+## Continuous optimization — Improvements #76–#78 (2026-09-05)
+
+- CO-077：Viewer 生命周期控件显示权限/归档/回收站/服务状态的可访问禁用
+  原因；focused `8 passed`。
+- CO-094：Retry 创建新的持久化子 Turn，显示并链接原失败 Turn；
+  focused `3 passed`，完整 Research `85 passed`。
+- CO-100：运行中草稿按 exact Project/Session/Turn 保存在当前标签页并可
+  刷新恢复；完整 Research `85 passed`。
+- 合并 typecheck/diff PASS；无科学重算或历史 lineage 覆盖。
+
+## Continuous optimization — Improvement #79 / CO-115 (2026-09-05)
+
+- 将 Project、Research session 与 Report 的非科学组织语义统一为“列表置顶”；
+  将 Result 与 exact source version 的科学上下文操作统一为“加入/移出本会话
+  上下文”。
+- Presentation 操作区增加简短权威说明：会话上下文可影响后续研究，列表
+  置顶仅改变排序。
+- frontend focused `151 passed`，typecheck/diff PASS；未修改科学事实、
+  版本、执行或授权权威。
+
+## Continuous optimization — Improvement #80 / CO-050 (2026-09-05)
+
+- Task Center 与 Notification Center 的共享 feed 支持消费者级取消；只有
+  全部可取消消费者退出才会中止底层请求。
+- hidden/offline 会取消在途刷新并暂停轮询，恢复后从持久化权威重新读取；
+  Abort 不再误报为同步失败。
+- focused `21 passed`，合并 typecheck/diff PASS；未停止服务或浏览器。
+
+## Continuous optimization — Improvements #81–#84 (2026-09-05)
+
+- CO-083：Data 查询、排序、行选择和 canonical sample selection 写入
+  bounded URL/history，保持 Dataset/Object/Version 精确身份；`48 passed`。
+- CO-088：Plot 与 Report SVG 预览采用端点、全局极值、分桶局部极值采样，
+  并披露 shown/total/strategy；`24 passed`。
+- CO-097：Research 分支展示 persisted Turn/parent/message-revision 上下文、
+  来源问题与 exact URL；Research `86 passed`。
+- CO-049：Task/Notification 共享 feed snapshot、request、poller 和生命周期，
+  双消费者请求去重；`22 passed`。
+- 四项合并 typecheck PASS，diff check 仅既有 CRLF 警告；未改变科学权威。
+
+## Continuous optimization — Improvement #85 / CO-103 (2026-09-05)
+
+- ProductShell 的隔离/无项目 fallback 预取改为可取消的空闲队列，每个
+  idle/timer 时隙只预取一个路由，切换/卸载时清理剩余队列。
+- dedicated scheduler test `1 passed`，typecheck PASS，diff check 仅既有
+  CRLF 警告；不影响首屏主导航或科学权威。
+
+## Continuous optimization — Improvements #86–#87 / CO-048, CO-109 (2026-09-05)
+
+- CO-048：saved-search 通过同页、storage 与 BroadcastChannel 只广播 opaque
+  revision，跨标签刷新授权列表并去重；sync `5 passed`、ProductShell `21 passed`。
+- CO-109：Workspace Artifact Gallery 对 Artifact identity 建 memoized O(1)
+  索引，500-artifact focused `11 passed`，typecheck PASS。
+- 两项均未改变科学、版本、执行或授权权威。
+
+## Continuous optimization — Improvement #88 / CO-055 (2026-09-05)
+
+- Research 与 Task Center 统一 `CANCELING`/`cancel_requested` 状态契约，
+  取消中每 1.8s 从持久化任务刷新至终态，重复停止动作禁用。
+- focused `25 passed`，typecheck PASS，diff check 仅既有 CRLF 警告；
+  未伪造完成，也未改变后端取消权威。
+
+## Continuous optimization — Improvement #89 / CO-134 (2026-09-05)
+
+- ArtifactDownloadLink 对 caller-provided filename 移除控制字符、路径分隔符、
+  前导点遍历并限制 120 字符；空/点文件名回退为浏览器默认命名。
+- focused `3 passed`，typecheck PASS，diff check PASS；未改变内容路由、
+  Artifact 权限或科学数据。
+
+## Continuous optimization — Improvement #90 / CO-051 (2026-09-05)
+
+- Task Center 保留服务端授权 `nextCursor`，按页加载更早任务，使用
+  `projectId:jobId` 去重合并并保留 exact ResearchTurn 链接；后续页失败
+  可重试且不触发科学计算。
+- 1000-job/10-page 与 Task Center focused 共 `21 passed`，typecheck PASS，
+  diff check PASS。
+
+## Continuous optimization — Improvement #91 / CO-110 (2026-09-05)
+
+- Scientific Viewer 将 metadata-ready 与 payload-loading 分层；重 payload
+  延迟时仍展示 Artifact identity、ToolCall、SHA-256、来源入口与 retry。
+- focused `8 passed`，typecheck PASS，diff check 仅既有 CRLF 警告；无科学重算。
+
+## Continuous optimization — Improvement #92 / CO-054 (2026-09-05)
+
+- Task Center 的 Open 仅恢复 exact ResearchTurn；Open-and-retry 通过
+  `retry=1` 在失败/取消且可写时创建唯一 child Turn，`parent_turn_id` 指向
+  原 Turn，旧证据保留。
+- Research + Task Center 合并回归 `99 passed`，typecheck PASS，diff check
+  仅既有 CRLF 警告。
+
+## Continuous optimization — Improvement #93 / CO-037 (2026-09-05)
+
+- Report/Presentation grid 子项设置 `min-width:0`/`max-width:100%`，宽表
+  使用可聚焦独立滚动区，移动操作控件可换行，避免全局横向裁剪。
+- Workspace Gallery focused `7 passed`，typecheck PASS，diff check 仅既有
+  CRLF 警告。
+
+## Continuous optimization — Improvement #94 / CO-056 (2026-09-05)
+
+- Research remount/visibility/online recovery 从授权 Session 的 persisted Turn
+  inventory 校验 exact Project/Session/Turn，缺失消息从 Turn 恢复，progress/
+  Result 继续由现有后端 API 重建。
+- focused recovery/reconnect PASS，typecheck PASS；完整 Research `88 passed`
+  加 1 个顺序敏感 context retry case（单测独立通过）。
+
+## Continuous optimization — Improvement #95 / CO-135 (2026-09-05)
+
+- 复用现有 project-authorized Artifact content route；普通打开保持 inline，
+  显式下载追加 `download=true` 并仅此时返回安全 attachment disposition。
+- 后端 Artifact content `7 passed`；前端 Artifact/Presentation/Report
+  `35 passed`；typecheck PASS。未新增 Artifact authority，未触发科学重算。
+
+## Continuous optimization — Improvement #96 / CO-032 (2026-09-05)
+
+- Provider request/error、Queue Job/Tool/依赖 failure event 与 Report failure
+  summary 使用统一递归敏感信息脱敏和 sentinel scanner。
+- 覆盖 credential、Bearer/API token、Redis/MinIO/S3 endpoint 与绝对路径，
+  同时确定性保留科学数值、单位、sample/version identity 与 evidence refs。
+- focused `37 passed`；Provider/scanner subset `11 passed`；compileall、Ruff、
+  web typecheck 与 diff check PASS。
+
+## Continuous optimization — Improvement #97 / CO-069 (2026-09-05)
+
+- 修复 generic Plotly 异步创建完成晚于 unmount 时的重复 purge：释放路径
+  现在幂等。
+- Scene/Trajectory/Phonon/Volumetric viewer 已审计其 engine/worker/request/
+  listener cleanup；focused renderer cleanup `60 passed`，typecheck PASS。
+
+## Continuous optimization — Improvement #98 / CO-058 (2026-09-05)
+
+- 复用现有 persisted relations，新增 project-authorized 只读 correlation
+  endpoint，投影 Turn、Job、最多 64 个 ToolCall、Result 与 Report identity。
+- 明确排除参数、路径、storage key、provider payload、queue internals 与
+  credentials；focused API `2 passed`，Ruff/compileall/diff PASS。
+
+## Continuous optimization — Improvement #99 / CO-045 (2026-09-05)
+
+- Global search 使用绑定 user/query/project/type/status 的有界 continuation
+  cursor；每页重做 project authorization，稳定排序与实体去重。
+- ProductShell 增加 SPA 加载更多/重试与扫描上限披露；125 个授权结果六页
+  唯一数 125、私有泄漏 0；后端 `9 passed`、前端 `22 passed`、typecheck PASS。
+
+## Continuous optimization — Improvement #100 / CO-035 (2026-09-05)
+
+- 新增最多 50 条、仅当前标签页、无 prompt/凭据的 Research performance
+  ledger；双 animation frame 记录可见确认，并绑定 exact Turn 的首个
+  persisted progress，跨 App Router route handoff 不丢失。
+- 当前工作树独立 production 前端 `3024`、API `8005` 同栈五次采样：
+  acknowledgement p50/p95 `26/29 ms`；first `RECEIVED` p50/p95
+  `262/293 ms`；browser warn/error 0。
+- helper `5 passed`、focused Research `1 passed`、typecheck/build PASS。
+
+## Continuous optimization — Improvement #101 / CO-136 (2026-09-05)
+
+- 清理旧 acceptance frontend 后，仅保留当前 immutable 3024；新增默认
+  dry-run 的 health-gated rotation 工具。
+- 工具仅接受本仓库 exact Next binary、`next start`、候选端口匹配的
+  `node.exe` listener，排除当前端口及 API/workers/PostgreSQL/Redis/MinIO。
+- live 3025 dry-run/apply 精确识别并停止 PID 26440；3024 和完整后端栈保持
+  健康；focused `2 passed`，diff PASS。
+
+## Continuous optimization — Improvement #102 / CO-071 (2026-09-05)
+
+- Generic Plot 对 heatmap cell、mesh vertex、mesh triangle 分别设置 100,000
+  hard cap；超限进入类型明确的 refused state，不把过重 payload 交给 Plotly。
+- 完整 persisted Artifact 仍可授权打开/下载；未静默截断或触发科学重算。
+- focused `13 passed`，typecheck/diff PASS。
+
+## Continuous optimization — Improvement #103 / CO-030 (2026-09-05)
+
+- Session-expired 统一恢复路径保留 `pathname + search + hash`，并向登录页传递
+  有界 `session-expired` 原因；Research 本地草稿不因 401 被清除。
+- 登录页明确说明重新认证后返回原页面，继续使用 Cookie/session authority，
+  外部或歧义 return URL 仍 fail closed。
+- ProductShell/LandingPage focused `27 passed`，typecheck/diff PASS。
+
+## Continuous optimization — Improvement #104 / CO-052 (2026-09-05)
+
+- Notification Center 的 read/unread 改为 `user_configs` 中非科学、用户私有
+  的持久状态，绑定 user/project/Job/Job updated revision。
+- Job 后续更新会自动重新未读；读写均重验项目权限与 Job/project 精确关系，
+  撤权后不返回对应状态。
+- 后端 `2 passed`、前端/API `14 passed`，typecheck、Ruff、compile/import、
+  route registration 与 diff check PASS。
+
+## Continuous optimization — Improvement #105 / CO-033 (2026-09-05)
+
+- Scientific Presentation 改为逐 block 精确字段白名单，严格验证嵌套 source、
+  reference、confidence 与 evidence，拒绝隐藏 component/module/HTML/URL 字段。
+- Viewer registry 只接受有界声明式 token；Pack 注册原子拒绝动态、可执行或
+  远程 viewer binding；后端 descriptor 标识符同步收紧。
+- 后端 `44 passed`、前端 `29 passed`，typecheck、Ruff、diff PASS。
+
+## Continuous optimization — Improvement #106 / CO-086 (2026-09-05)
+
+- Planner Artifact browse/download 继续共享 exact Job/project 授权并在 storage
+  read 前拒绝越权；inline 与 attachment disposition 保持分离。
+- storage 临时缺失为 typed 404；metadata 保留但无 payload location 为 typed
+  410；超过 64 MiB 浏览传输上限在读取 storage 前为 typed 413；完整性失败仍 422。
+- Viewer/Report 显示对应专业状态且不伪造 retry/download；后端 `11 passed`、
+  前端 `40 passed`，typecheck、Ruff、compileall、diff PASS。
+
+## Continuous optimization — Improvement #107 / CO-105 (2026-09-05)
+
+- Project History 增加 datasets/analyses/activity 各自有界 server cursor，
+  保留未分页兼容调用；Project Home 首屏每区只取 8 条。
+- “继续加载”按区追加稳定服务端页面，不复用旧全量 cache，保持 exact identity
+  与 SPA route。
+- 1000-item 回归；后端 `5 passed`、前端 `5 passed`，typecheck/diff PASS。
+
+## Continuous optimization — Improvement #108 / CO-039 (2026-09-05)
+
+- 新增 typed `local | same-stack` runtime profile；未知 backend、环境 alias 冲突、
+  scheme 不符及缺失 PostgreSQL/Redis/MinIO/Agent 设置均在 serving 前 fail fast。
+- Worker 消费前核对 API 的 exact Redis URL/DB namespace 与队列名；启动脚本
+  明确选择 same-stack，不修改 health 文案来伪装运行时。
+- runtime/worker/health focused `35 passed`，Ruff/diff PASS。
+
+## Continuous optimization — Improvement #109 / CO-046 (2026-09-05)
+
+- Global Search 增加 UTC inclusive date_from/date_to，全部筛选进入 cursor
+  fingerprint，非法范围 typed 422。
+- Result 使用权威 Turn→Session 关系生成 exact SPA destination，并同时核对
+  Project；active/archived/trashed × 六类实体与 Finding 共 18 场景覆盖。
+- 后端 `27 passed`、前端 `28 passed`，typecheck、Ruff、route/diff PASS。
+
+## Continuous optimization — Improvement #110 / CO-029 (2026-09-05)
+
+- 扩展 24-route HTTP 矩阵覆盖 Turn/Context/Correlation/Result/Report/History/
+  Object/Version/Query/Viewer，并增加 exact Report/Evidence/Dataset/Artifact
+  的投影与 storage 前拒绝测试。
+- Project History pytest compatibility 不再吞 403；仅真正缺少 synthetic
+  Project 才进入旧适配路径。
+- HTTP matrix `1 passed`、Report/Evidence `3 passed`、Dataset/Artifact
+  `2 passed`，Ruff/compileall/diff PASS。
+
+## Continuous optimization — Improvement #111 / CO-107 (2026-09-05)
+
+- ContextManifest 默认保持 8 项；展开后采用 32 项窗口与前后导航，不再将
+  大清单一次性渲染进 DOM。
+- 窗口切换保留服务端顺序、exact source/Result/scientific provenance，
+  后端 128-item 权威上限不变。
+- 10,000-item 前端压力回归、focused `3 passed`、后端 ContextManifest
+  `13 passed`，typecheck/diff PASS。
+
+## Continuous optimization — Improvement #112 / CO-031 (2026-09-05)
+
+- 新增 Project role capability contract：owner 可 purge；admin/researcher
+  可写、归档、研究；viewer 只读/导出；平台管理员不隐式获得 Project 权限。
+- `projects.created_by` 保持唯一 owner；协作者不能被提升为 owner，历史重复
+  owner membership 只按 admin 投影，避免 UI 展示服务端会拒绝的永久删除。
+- 后端 `5 passed`；权限/Admin UI `12 passed`；Project/Research UI `9 passed`；
+  typecheck、Ruff、compileall、diff PASS。
+
+## Continuous optimization — Improvement #113 / CO-041 (2026-09-05)
+
+- API、六类 Redis worker 与 frontend 启动统一接入 rotating log runner。
+- 活动日志按 25 MiB/UTC 日切分；每流最多 8 个、14 天归档；只清理严格托管
+  命名，活动日志、手工副本和其他文件不会进入删除集合。
+- focused `5 passed`、Ruff、三个 PowerShell parser、diff PASS；当前服务未重启。
+
+## Continuous optimization — Improvement #114 / CO-074 (2026-09-05)
+
+- Volumetric mixed periodic/non-periodic boundary 保持科学数据有效，但以
+  `mixed_boundary_conditions_unsupported` 明确标记当前 renderer 不支持。
+- 损坏 boundary、payload/grid mismatch、越过声明范围的 inline data 分别返回
+  typed invalid 状态，不再混成一个笼统 schema error。
+- focused `7 passed`、typecheck/diff PASS。
+
+## Continuous optimization — Improvement #115 / CO-047 (2026-09-05)
+
+- Global Search continuation 从 offset 升级为绑定用户与全量筛选条件的 opaque
+  keyset v2；权威排序为 `updatedAt/kind/id`，分页期间插入新记录不会造成既有
+  continuation 重复或漏项。
+- Project、membership、Dataset、Research Session、Report、
+  ScientificObject、ScientificResult 增加迁移管理的复合搜索索引。
+- 1,250 条语料（1,000 可见、250 私有）30 次采样 p95 `15.33 ms`，
+  payload 小于 64 KiB，跨 Project 泄漏为 0。
+- 后端 `27 passed`、迁移 `4 passed`、前端 `32 passed`，Ruff/diff PASS。
+
+## Continuous optimization — Improvement #116 / CO-040 (2026-09-05)
+
+- `/health/runtime` 新增 `RuntimeConfigurationFingerprint/1.0`，组合已声明
+  拓扑与真实 SQL/Redis/MinIO 成功探测，不再只能比较易混淆的 backend 名称。
+- 每个连接只暴露 SHA-256 指纹；密码/Access Key 不参与指纹输入，目标或
+  backend 改变会改变身份，凭据轮换不会形成 secret comparison oracle。
+- live same-stack 三个 `connectionBound=true`，组合指纹 `7e6302…7ad4`。
+- 仅滚动 API `27560 → 26356`；数据库、Redis、MinIO、workers、frontend、
+  browser tabs 均保持运行；focused `3 passed`，Ruff/compileall/diff PASS。
+
+## Continuous optimization — Improvement #117 / CO-043 (2026-09-05)
+
+- 同一跨平台只读磁盘策略现在覆盖 pytest session、npm test/typecheck/build、
+  packaged Playwright evidence、CI 和 API/worker/frontend 启动。
+- 默认 5/10 GiB critical/warning；capacity、path、configuration typed failure，
+  `MDI_DISK_FALLBACK_PATH` 提供经验证的恢复卷信息。
+- focused `11 passed`、前端 `5 passed`、typecheck 和独立 distDir production
+  build PASS；Ruff、compileall、四个 PowerShell parser、diff PASS。
+- 当前 E: 可用 `47,090,618,368` bytes；运行 frontend 保持 HTTP 200。
+
+## Continuous optimization — Improvement #118 / CO-042 (2026-09-05)
+
+- 新增 allowlisted cleanup：默认/显式 dry-run；apply 仅将已审查 regular file
+  移入 `.cleanup_archive`，不做永久删除；symlink 和越界路径 fail closed。
+- live 分类：0 自动候选、1 未过期临时文件、17 release-evidence roots、
+  16 service-data roots、45 protected logs、1 recovery archive entry。
+- `$neat-freak` 要求的复核现场保留：CO-043 独立 build 约 285 MB 已隔离，
+  必须在完整汇报后取得明确清场确认再永久清除。
+- focused `4 passed`，Ruff/compileall/diff PASS。
+
+## Continuous optimization — Improvement #119 / CO-060 (2026-09-05)
+
+- Alembic 自动门禁锁定单一线性 head `0031_product_search_keyset`，全部 revision
+  必须可从 head 到达且同时定义 upgrade/downgrade。
+- AST guard 阻止未经审查的 drop table/column、TRUNCATE、DELETE FROM；
+  guard 自身包含负向检测样例。
+- 0030→0031→0030→0031 数据往返保留 Project、ScientificObject、exact
+  ScientificObjectVersion、ResearchTurn、ScientificResult 身份。
+- migration/fresh/legacy `7 passed`，Ruff/compileall/diff PASS。
+
+## 2026-09-05 — Continuous optimization CO-137
+
+The continuous optimization ledger is now self-validating. Five stale duplicate
+OPEN rows were removed while their completed records were retained, the
+append-only result archive was reconciled for CO-027/CO-028, and a deterministic
+guard now rejects duplicate/non-contiguous IDs, counter drift, invalid CURRENT
+state and completed work without a result record. The live ledger reports
+`137 discovered / 121 completed / 0 blocked / 16 remaining`, and focused
+verification reports `5 passed`.
+
+## 2026-09-05 — Continuous optimization CO-044
+
+npm, Playwright, pytest, tool temporary files and Next output now use bounded,
+configurable workspace-local caches. Overrides outside the repository fail with
+typed configuration errors, and Next output is additionally constrained to the
+web root. Focused routing reports `3 passed`; typecheck and two production
+builds pass without interrupting the live frontend.
+
+## 2026-09-05 — Continuous optimization CO-063
+
+A checked-in `WorkerQueueManifest/1.0` now defines all six Agent2 queue roles,
+names, settings attributes and handlers. API settings, producers, recovery,
+operations, health and launchers consume that same authority. A live blue/green
+rotation proved the new manifest on PostgreSQL/Redis/MinIO: new API PID 25628
+and six generation-tagged workers were validated before all obsolete API/worker
+processes were retired; frontend 3024 remained available.
+
+## 2026-09-05 — Continuous optimization CO-106
+
+Research conversations now use a 100-message navigable DOM window once a
+session exceeds that size. Older/newer controls preserve persisted message IDs
+and focus, while session/Turn changes reset the window safely. A 1,001-message
+component regression keeps the DOM at 100 nodes, 20 projections remain under
+the 100 ms budget, and the complete Research suite reports `92 passed`.
+
+## 2026-09-05 — Continuous optimization CO-061
+
+Same-stack API and worker admission now compares the connected database
+revision with the repository's unique Alembic head. The real qualification
+database was discovered at `0030_account_invitations`; a shadow API refused it
+with `DATABASE_MIGRATION_HEAD_MISMATCH`. After a pg_dump backup and explicit
+upgrade, API/worker startup verified `0031_product_search_keyset`. Alembic now
+recognizes the launcher's `MDI_POSTGRES_HOST` alias. Startup remains read-only
+and never auto-migrates. Final runtime has one API and six current workers;
+obsolete and failed generations were retired.
+
+## 2026-09-05 — Continuous optimization CO-057
+
+Operations alerts now join queue depth, stale Jobs and actual worker
+state/heartbeat health to bounded repository runbooks. The platform-admin
+surface displays sanitized metrics and response guidance but cannot mutate
+queues or scientific records. Focused backend reports `21 passed` plus one
+separately executed same-stack integration PASS; frontend reports `8 passed`.
+The live snapshot is healthy with 6/6 workers, empty queues and zero alerts.
+
+## 2026-09-05 — Continuous optimization CO-059
+
+API, worker and browser failures now share `OperationalExceptionEvent/1.0`.
+The contract records release SHA and bounded request/scientific correlation
+identities while excluding exception messages, stacks, prompts, credentials,
+service URLs and filesystem paths. An authenticated live capture through
+frontend 3023/API 8005 returned 202 and was recorded with request identity
+`b7f5745f2d854e4d9907e891555cf959`; focused backend `16 passed`, frontend
+`2 passed`, typecheck/Ruff/diff PASS.
+
+## 2026-09-05 — Continuous optimization CO-101
+
+Research and Task Center now consume one cancellation availability contract.
+Only an explicit modern ResearchTurn may expose Stop; legacy Jobs remain
+read-only and unresolved tasks fail closed. The contract regression reports
+`3 passed` and the combined Task Center/status run reports `14 passed`; its one
+unrelated brittle shared-feed assertion is tracked as CO-138.
+
+## 2026-09-05 — Continuous optimization CO-062
+
+API, worker and operations diagnostics now consume one
+`SameStackRuntimeTopology` builder for PostgreSQL, Redis and MinIO aliases.
+Changing the bounded Redis override reached API settings, worker resolution,
+health probing and operations configuration identically. Focused runtime tests
+report `38 passed` with one existing opt-in live skip; the real same-stack
+snapshot remained healthy with 6 workers, queue depth 0 and
+idle-in-transaction 0.
+
+## 2026-09-05 — Continuous optimization CO-064
+
+Runtime health and operations now share `ServiceFailure/1.0` for PostgreSQL,
+Redis and MinIO. Authentication, configuration, missing resource, timeout,
+unavailable and unknown failures have stable retry metadata and never include
+raw exception messages. Focused classification reports `6 passed`; the live
+same-stack services remain healthy. A separate stale Phase 5 source-text
+assertion discovered during regression is tracked as CO-139.
+
+## 2026-09-05 — Continuous optimization CO-066
+
+Artifact storage now rejects writes above 256 MiB before Local or S3/MinIO
+publication. Local writes use a same-directory `.part` file followed by atomic
+replacement and remove temporary content after interruption. Artifact plus
+upload/input-transport regressions report `22 passed`; existing upload-session
+64/128 MiB limits and scientific authority remain unchanged.
+
+## 2026-09-05 — Continuous optimization CO-065
+
+Research submit now has a synchronous browser single-flight guard while the
+PostgreSQL active-Turn limit remains authoritative and returns typed 429 plus a
+bounded `Retry-After` hint. Global Search propagates `AbortSignal` and cancels
+obsolete requests. A 24-request pressure run persisted exactly 3 Turns and
+limited 21; backend `13 passed`, ProductShell/Search `29 passed`, complete
+Research Pages `93 passed`, typecheck/Ruff/diff PASS.
+
+## 2026-09-05 — Continuous optimization CO-116
+
+CI third-party Actions now use full commit SHAs and PostgreSQL/Redis/MinIO
+service images use immutable manifest digests. A checked-in provenance lock
+records reviewed tags and resolved identities, while focused guards reject
+floating references. The five official Action tags re-resolved exactly and the
+focused suite reports `3 passed`.
+
+## 2026-09-05 — Continuous optimization CO-118
+
+Mandatory PostgreSQL/Redis/MinIO qualification now has one versioned manifest
+for 29 test paths, 34 required identities, minimum 50 passed and zero
+skip/failure. CI and local runbooks invoke the same runner, and enforcement
+uses JUnit structure rather than terminal grep. Focused manifest/validator
+regression reports `6 passed`.
+
+## 2026-09-05 — Continuous optimization CO-138
+
+The Task Center and Notification Center shared-feed regression now validates
+one shared request/refresh transition plus each surface's semantic heading,
+instead of requiring a duplicated project-name text node. The complete
+Task/Notification/feed focused matrix reports `27 passed`.
+
+## 2026-09-05 — Continuous optimization CO-139
+
+The Phase 5 migration-environment regression now follows the current typed
+database authority: `load_settings().database_url`, explicit configuration
+detection and safe Alembic URL injection. The complete runtime infrastructure
+file reports `9 passed, 1 existing skip`.
+
+## 2026-09-05 — Continuous optimization CO-067
+
+Qualification PostgreSQL/MinIO state now has an isolated run manifest,
+ACTIVE/COMPLETED/FAILED lifecycle, active marker, 14-day TTL and indefinite
+release-evidence protection. Retention defaults to read-only planning and an
+explicit apply performs only recoverable moves. Existing legacy service
+directories and current live services are intentionally outside its managed
+scope. Focused tests report `7 passed`; the real repository dry-run found zero
+candidates.
+
+## 2026-09-05 — Continuous optimization CO-068
+
+The operations projection now reports six bounded, read-only and redacted
+storage categories. PostgreSQL uses `pg_database_size`, MinIO has a bounded
+10,000-object scan, filesystem categories do not follow symlinks, and platform
+admin output is allowlisted a second time. A real same-stack snapshot found
+database, MinIO, logs and qualification profiles within budget; repository
+build/test caches consume 40,349,971,256 bytes and exceed the 25 GiB budget.
+Cleanup is deliberately separated into CO-140.
+
+## 2026-09-05 — Continuous optimization CO-120
+
+The canonical release quickstart now describes one lockfile-driven Windows
+retained same-stack path. It builds the exact frontend artifact consumed by
+the launcher, runs the current single Alembic head, validates the real
+PostgreSQL/Redis/MinIO endpoints, uses `/health/runtime`, keeps services
+running by default and limits automated old-process cleanup to the existing
+repository-scoped frontend rotation contract. Focused tests report `5 passed`;
+live `-CheckOnly` confirms the 3023/8005 same-stack topology.
+
+## 2026-09-05 — Continuous optimization CO-140
+
+A fingerprinted, dry-run-first cleanup authority now limits deletion to
+untracked direct `apps/web/.next*` build directories and resolves the active
+localhost frontend BUILD_ID before apply. The reviewed plan removed 105
+historical generated builds / 38,056,000,111 bytes while preserving
+`apps/web/.cache/next-live-20260905`, all source/service/profile/evidence data,
+and the live PID 29664 frontend. Build-cache usage fell from 40.35 GB to
+2.29 GB (8.55% of budget); focused tests report `14 passed`.
+
+## 2026-09-05 — Continuous optimization CO-141
+
+Provider connection authority now follows runtime topology. Local/test can use
+an explicit process adapter; same-stack PostgreSQL uses the new
+`provider_connections` table and requires a stable Fernet key before writing
+ciphertext. Provider mutation is platform-admin-only, browser responses stay
+redacted, and legacy `/me/secrets` fails closed with typed 503 outside
+local/test instead of implying persistence. The live database was backed up
+and migrated from 0031 to the single 0032 head. A shadow 8006 API proved the
+real PostgreSQL/Redis/MinIO topology and authenticated legacy boundary before
+the old 8005 API was replaced; the shadow and old process pairs were then
+stopped. Final 8005 PID is 29280, frontend PID remains 29664, and no duplicate
+API listener remains. Focused backend reports `84 passed`, frontend `40
+passed`, with typecheck/Ruff/compileall/diff PASS.
+
+## 2026-09-05 — Continuous optimization CO-142
+
+FastAPI startup now uses one app-factory-scoped async lifespan rather than two
+deprecated `on_event` registrations. Database migration-head validation
+remains the first admission action and raises before recovery; interrupted
+Research recovery remains bounded best-effort and logs failure without
+claiming scientific completion. Multiple `create_app()` instances retain
+their own immutable settings snapshot. Focused regression reports `49 passed`
+and a strict deprecation gate reports `7 passed`. A real same-stack shadow
+8006 emitted no warning before replacing canonical 8005. Final API PID is
+20748; old and shadow process pairs are stopped, 8006 is closed, and frontend
+PID 29664 remains active.
+
+## 2026-09-05 — Continuous optimization CO-143
+
+The Phase 14-R recovery regression now imports the `UUID` type used by its
+queue annotations. This closes two Ruff F821 failures that pytest had masked
+through postponed annotations, without changing recovery behavior. The
+complete file reports `6 passed`; Ruff, compileall and diff check pass. The
+live single-instance API/frontend/service topology remained unchanged.
+
+## 2026-09-05 — Continuous optimization CO-144
+
+API startup and replacement now have a repository-scoped process authority.
+Each new instance writes an atomic manifest with exact child/runner identity,
+release SHA and runtime fingerprint. Rotation is dry-run by default, validates
+the shadow before stopping canonical, revalidates every PID before stopping
+child then runner, checks the frontend proxy, and closes the shadow on success.
+
+A real same-stack cutover replaced legacy API `20748/16260` with managed API
+`18468/19620`. The old pair is absent, 8005 has one listener, 8006 has none,
+and frontend PID `29664`, all six worker pairs, PostgreSQL, Redis and MinIO
+remained unchanged. Focused regression reports `20 passed`; the post-rotation
+operations snapshot has zero alerts, zero queue depth and zero checked-out DB
+connections. CO-145 now tracks the MinIO scan approaching its bounded limit.
+
+## 2026-09-05 — Continuous optimization CO-145
+
+Bounded MinIO capacity diagnostics now distinguish complete measurements from
+observed lower bounds. Hitting the object scan limit or losing a continuation
+token produces a typed reason, keeps the count/bytes as bounded observations,
+suppresses a false utilization percentage and emits a read-only operations
+warning. The warning explicitly directs operators not to delete scientific
+Artifacts merely to clear monitoring state.
+
+Focused operations/storage/admin regression reports `29 passed` with one
+existing opt-in integration skip. A bounded simulation proves keys are not
+projected, while the real same-stack 8,739/10,000-object scan remains complete
+and alert-free. The code was loaded through managed API rotation; old API
+`18468/19620` exited, canonical is `25704/5060`, and 8006 is closed.
+## Continuous optimization CO-146 (2026-09-06)
+
+API runtime ownership now has an explicit protected path. A shared PowerShell
+helper resolves `.runtime_services/managed/api`; startup writes its atomic
+manifest there, and rotation first checks this path while retaining bounded
+compatibility with the previous `.cache/runtime` location. Legacy metadata is
+removed only after the exact child/runner pair is stopped. Repository cleanup
+classifies `.runtime_services` as protected active service data.
+
+Live same-stack rotation replaced API child/runner `25704/5060` with
+`12044/19996`, retained the frontend and PostgreSQL/Redis/MinIO/workers, closed
+8006, and left one canonical 8005 listener. Focused tests report `21 passed`;
+PowerShell AST, Ruff and diff checks pass. CO-147 is the next open finding:
+worker launchers lack equivalent repository-scoped identity manifests.
+## Continuous optimization CO-147 (2026-09-06)
+
+Stack startup now treats the checked-in worker queue manifest as the expected
+topology rather than using an any-worker shortcut. It temporarily scopes
+`packages/schemas` into `PYTHONPATH`, compares each expected queue with live
+`mdi_workers.worker_entrypoint` command lines, and invokes the worker launcher
+with `-OnlyQueue` only for missing queues. Requested queue names outside the
+manifest fail closed.
+
+The real same-stack startup command completed with all six queues present. The
+12 runner/child process PIDs were identical before and after, so no duplicate
+workers were created and no running service was stopped. Focused regression
+reports `17 passed`; PowerShell AST, Ruff, compileall and diff checks pass.
+CO-148 remains open for per-queue identity manifests and exact future worker
+replacement.
+## Continuous optimization CO-148 (2026-09-06)
+
+Worker ownership now has a durable, protected per-queue manifest. The
+discovery script reads the checked-in queue authority, pairs each
+`worker_entrypoint` child with its log-runner parent by PID, and atomically
+records queue/role/handler, Redis URL, creation FILETIMEs, executable paths,
+command digests and release SHA under `.runtime_services/managed/workers`.
+
+Live discovery wrote six records for the six expected queues without stopping
+any of the existing twelve runner/child processes. Focused regression reports
+`19 passed`; PowerShell AST, Ruff, compileall and diff checks pass. An
+operations scan briefly returned `ARTIFACT_STORAGE_TIMEOUT` but an immediate
+retry completed with zero alerts; CO-149 tracks bounded transient timeout
+classification.
+## Continuous optimization CO-149 (2026-09-06)
+
+MinIO bounded usage diagnostics now retry once only for failures classified as
+retryable by the shared service-failure contract. A 50 ms bounded delay absorbs
+transient list latency; authentication, missing-resource and other
+non-retryable failures remain typed fail-closed with no fabricated usage.
+
+The focused operations/storage/service-failure regression reports `29 passed`
+with one pre-existing opt-in skip. Live same-stack diagnostics now return zero
+alerts with MinIO `8,739/10,000` complete, PostgreSQL/Redis healthy, six idle
+workers and no pool timeout. CO-150 tracks redaction of credential-bearing
+Redis URLs in worker runtime manifests.
+## Continuous optimization CO-150 (2026-09-06)
+
+Worker runtime manifests no longer persist the complete Redis URL. Discovery
+stores only bounded `redisIdentity` data (scheme, host, optional port and
+numeric database), excluding userinfo, password, query string and raw URL.
+All six active manifests were atomically rewritten; a sentinel scan found zero
+forbidden fields, and all twelve worker processes remained alive.
+
+Focused identity/queue regression reports `14 passed`; PowerShell AST, Ruff,
+compileall and diff checks pass. CO-151 tracks explicit stale-manifest state
+without destructive deletion when a queue is temporarily absent.
+## Continuous optimization CO-151 (2026-09-06)
+
+Worker discovery now gives runtime identity an explicit lifecycle state.
+Active records are `RUNNING` with a fresh `lastSeenAt` and null `staleSince`;
+records for temporarily missing queues are atomically rewritten as `MISSING`
+while preserving the old identity and a bounded stale timestamp. No record is
+deleted merely because a worker is absent. Live discovery remains 6/6 and all
+12 worker processes stay running. CO-152 is the next exact rotation-helper
+candidate.
+## Continuous optimization CO-152 (2026-09-06)
+
+Worker replacement now has a manifest-authorized dry-run helper. It validates
+repository token, release SHA, child/runner existence and parentage, creation
+FILETIMEs, executable/command digests, exact queue command and redacted Redis
+identity. Apply is constrained to one queue and explicit `ShouldProcess`;
+current qualification remained dry-run only.
+
+Live validation covered all six queue manifests with all twelve worker PIDs
+unchanged and no service stopped. Focused regression reports `16 passed`;
+PowerShell AST, Ruff, compileall and diff checks pass. CO-153 tracks the
+remaining replacement-health gate before an old pair may be stopped.
+## Continuous optimization CO-153 (2026-09-06)
+
+Worker Apply rotation no longer relies on a fixed delay. A replacement must be
+found through its exact generated worker name and queue, then pass runner/child
+parentage, Redis identity and live-process checks before the old pair can be
+stopped. Admission failure leaves the old pair intact; a replacement found
+before a later failure is revalidated by command digest before rollback.
+
+Focused regression reports `16 passed`; PowerShell AST, Ruff, compileall and
+diff checks pass. Live dry-run preserved all twelve current worker PIDs.
+CO-154 tracks Redis/RQ registration health as the next admission layer.
+## Continuous optimization CO-154 (2026-09-06)
+
+Worker replacement admission now requires a redacted Redis/RQ registration
+probe: exact worker name, exact single queue, `idle|busy` state and heartbeat
+age within the existing 900-second operations contract. Rotation cleans the
+verified old registration with `register_death`; a replacement discovered
+before cutover can be unregistered on rollback. A log-runner command-line
+matcher bug was fixed so the runner is not mistaken for the child.
+
+Real single-queue replacement succeeded for `mdi-jobs`, changing
+`18684/26300` to `29512/2972`; Redis/RQ returned to six workers, queue depth
+was zero, and no service was stopped. Focused registration/rotation tests
+report `7 + 16 passed`; PowerShell AST, Ruff, compileall and diff checks pass.
+CO-155 tracks bounded last-known-complete MinIO observation state.
+## Continuous optimization CO-155 (2026-09-06)
+
+MinIO operations now retain the latest complete aggregate scan in a
+thread-safe, endpoint+bucket keyed in-process cache for five minutes. A later
+timeout keeps the current count/bytes null and `usageScanComplete=false`, while
+optionally exposing a clearly non-authoritative last-known reference with age.
+Expired references expose only an expiry marker. Storage budgets therefore
+remain unknown whenever the current scan is incomplete.
+
+Focused operations/storage/service-failure regression reports `33 passed` with
+one opt-in skip; Ruff, compileall and diff checks pass. The API remains
+PostgreSQL/Redis/MinIO-backed with six healthy workers. CO-156 is complete:
+standalone CLI invocations use a protected SHA-256 keyed, atomic, TTL-bound
+runtime observation file for continuity, while timeout snapshots remain
+current-unknown and stale values are never promoted.

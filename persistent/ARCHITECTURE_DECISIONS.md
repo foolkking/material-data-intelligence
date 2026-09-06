@@ -1,5 +1,13 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-09-01 — Confirmed payload loss remains fail-closed with explicit recovery
+
+When the exact normalized scientific payload is confirmed absent, the product
+must preserve source/version metadata, avoid substitution, and provide a
+project-scoped re-import entry point. This keeps scientific authority
+immutable while giving the user a concrete recovery path. Transient storage
+failures continue to expose retry-only behavior.
+
 ## 2026-08-28 — Phase 14 history resume uses explicit ResearchTurn identity
 
 - Project History and Project Overview must carry the persisted
@@ -5659,3 +5667,201 @@ atom subsetting, and cap expansion remain forbidden without separate authority.
   an exact explicit object exists; this prevents provider ambiguity without
   substituting a version or weakening authorization. Capability eligibility
   still fail-closes when the persisted object lacks required semantic fields.
+
+## ADR: Scientific payload recovery is identity-preserving and fail-closed (2026-09-01)
+
+- PostgreSQL scientific/Artifact references remain authoritative identities;
+  MinIO recovery may restore bytes only when key plus size/SHA-256, content
+  hash, or the normalized metadata identity prove the same object.
+- Missing historical payloads are never regenerated merely to make a Viewer
+  render and are never replaced by a current ScientificObjectVersion or a
+  sibling Artifact.
+- Exact missing content is an application-level typed 404 condition.
+  Non-missing object-store failures are typed 503 conditions. Neither boundary
+  exposes bucket names, storage keys, endpoints or credentials.
+- Product UI distinguishes confirmed source absence from transient failure,
+  preserves provenance and checksums, and does not offer new Research work when
+  the exact source payload is not usable.
+
+## ADR: Dataset Viewer rows use deterministic semantic identity (2026-09-01)
+
+- A readable DataFrame row is not selectable unless it has durable semantic
+  identity. The source object-store projection therefore preserves explicit
+  `sampleRef`/`sample_id`/`id` values and otherwise derives the existing stable
+  sample reference from Dataset/version/object-hash/row identity.
+- The browser may hide only the technical `sampleKey`; it must keep the
+  human-inspectable `sampleRef` and identity-aware selection affordance visible.
+- Sorting, filtering and pagination are presentation operations only and cannot
+  replace semantic row identity with a visual row index.
+## ADR — Platform-admin project membership uses durable project_members (2026-09-01)
+
+Platform administration now reads and mutates project membership through the
+existing `project_members` table only. The API exposes bounded project/member
+projections and owner-protected role/removal mutations; every mutation is
+server-authorized and audited. No second permission model or scientific
+authority is introduced.
+
+## ADR — Legacy frontend port is an inert compatibility alias (2026-09-01)
+
+The production frontend remains the authoritative process on port 3013. A
+separate local HTTP alias may forward port 3000 to 3013 for existing bookmarks
+and browser tabs. The alias owns no state and must not replace runtime health,
+API, PostgreSQL, Redis, MinIO or worker configuration.
+## ADR — payload availability is typed at the UI boundary (2026-09-01)
+
+The Data Platform UI classifies source-resource failures from the existing
+server contract: HTTP 404 or a recognized `SOURCE_MISSING`/`PAYLOAD_MISSING`
+error is a confirmed absence; all other failures remain transient. The UI
+must preserve exact source/version provenance, never substitute another
+scientific version, and offer only bounded retry/recovery language. This is a
+presentation-layer clarification and does not create a new scientific
+authority or alter ScientificObject, ScientificObjectVersion, Artifact,
+ScientificResult or Report records.
+
+## ADR — project-scoped data entry preserves route continuity (2026-09-01)
+
+Once a Project identity is known, Dataset workbench and Project Home data-entry
+actions must target `/projects/{projectId}/datasets/new` and project overview
+routes. The global `/analysis` route remains a bounded compatibility fallback
+only when no project context exists. This keeps Data → Project → Upload
+continuity explicit and reuses the existing ProductNavigation client
+transition layer without introducing a second router or scientific authority.
+
+## ADR — scientific table role names stay stable; guidance is descriptive (2026-09-01)
+
+The validated table scroll container uses a stable role name
+`已验证的数据表，可横向滚动查看完整列` for deterministic navigation and test
+contracts. Additional interaction guidance, including the fixed semantic sample
+identity column, is connected through a per-instance `aria-describedby` target
+generated with React's `useId`. This preserves screen-reader context without
+duplicating ids or making the primary role name unstable across surfaces.
+
+## ADR — administrator-issued account activation is one-time and token-hash backed (2026-09-02)
+
+The deployment uses administrator invitation rather than public registration,
+because no email-delivery authority exists in the product runtime. A
+platform administrator can issue a bounded invitation through the existing
+admin surface; PostgreSQL stores only the SHA-256 token hash, expiry,
+accepted/revoked timestamps and inviter identity. The raw token is returned
+once to the authorized administrator for controlled delivery and is never
+written to audit metadata.
+
+`POST /auth/activate` consumes an unexpired invitation exactly once, creates a
+normal `USER` account, hashes the initial password with the existing scrypt
+helper, records an audit event and establishes a regular auth session. It does
+not create project membership, scientific data, versions, Results or other
+authority. Existing inactive accounts are not silently reactivated through an
+invitation; administrators continue to use the existing server-authoritative
+enable operation. Recovery by email/reset remains outside this bounded seam
+until an approved delivery provider exists.
+
+## ADR — Runtime build and artifact credentials are separate contracts (2026-09-01)
+
+- The API runtime must use the repository-documented MinIO credentials
+  (`mdi-local` / `mdi-local-dev`) when connecting to the persistent local
+  MinIO instance. A healthy MinIO process with incorrect API credentials is a
+  real artifact-storage failure and must not be hidden by health output.
+- The 3013 frontend must serve the exact build directory selected at startup.
+  Serving a stale/default `.next` manifest can produce `ChunkLoadError` on
+  otherwise healthy product routes. The accepted repair is replacing only the
+  frontend process with the current complete build; PostgreSQL, Redis, MinIO,
+  workers and existing browser tabs remain untouched.
+
+## ADR — Account session inventory is bounded by default (2026-09-01)
+
+The Account Center renders the current session and the eight most recent valid
+sessions by default, with an explicit disclosure to inspect the complete
+server-authoritative session inventory. This keeps account/security navigation
+usable on desktop and mobile without deleting, revoking, or otherwise changing
+session state. The server remains authoritative for counts and revocation; the
+bounded presentation is only a read ergonomics policy.
+
+## ADR — Scientific table and viewer failure copy are bounded projections (2026-09-04)
+
+Dataset Explorer tables may expose a mobile scrolling cue and an accessible
+scroll region, but the cue is presentation-only: typed columns, stable semantic
+sample identity and selection behavior remain authoritative in the existing
+Dataset/ScientificResult contracts. Repeated tables must not rely on a global
+DOM identifier.
+
+Exact Report and source identities remain available in a collapsed technical
+disclosure after the readable report sections. This is an audit/navigation aid,
+not a second provenance store. Viewer failures distinguish missing exact
+payload, unsupported renderer and unsafe presentation; each state preserves
+the authoritative record and fails closed without replacing the source version
+or executing arbitrary UI content.
+
+## ADR — API rotation requires repository-scoped process identity (2026-09-05)
+
+Windows same-stack API replacement uses a health-gated shadow only as an
+admission check. Every newly started API records an atomic repository token,
+release SHA, runtime fingerprint, exact Uvicorn/log-runner PIDs, creation times,
+executables and command digests. A rotation may stop only the exact revalidated
+child first and runner second; unknown or drifted listeners fail closed.
+
+The shadow must pass the same PostgreSQL/Redis/MinIO/worker topology before the
+canonical instance is touched. The new canonical and frontend proxy must then
+match the shadow fingerprint before the shadow is stopped. This is a bounded
+Windows rolling replacement with a brief same-port cutover window, not a claim
+of zero-downtime load balancing, and it must not stop frontend, workers or
+infrastructure services.
+
+## ADR — Managed API manifests are protected runtime data (2026-09-06)
+
+API instance manifests are runtime identity authority, not disposable build
+cache. New instances write atomically under
+`.runtime_services/managed/api`; the rotation helper may read the legacy
+`.cache/runtime` location only for bounded migration compatibility and removes
+that legacy file after exact process ownership has been revalidated and
+stopped. Repository cache cleanup explicitly protects `.runtime_services`.
+This keeps cleanup safe without broadening the scientific or service
+authority model.
+
+## ADR — MinIO last-known observations never replace current truth (2026-09-06)
+
+Operations may retain one endpoint+bucket keyed complete aggregate in API
+process memory for a short TTL. When a new bounded scan times out, the current
+measurement remains incomplete/unknown; the prior aggregate is labeled
+non-authoritative and includes freshness age. Expired observations expose no
+values. Standalone diagnostic processes do not share this cache and must not
+pretend otherwise.
+
+## ADR — Standalone MinIO observations use protected runtime continuity (2026-09-06)
+
+Fresh-process operations snapshots may read one repository-managed runtime
+observation file keyed only by a SHA-256 fingerprint of endpoint and bucket.
+The file contains aggregate bytes/count and capture time only, is written with
+`mkstemp`/`fsync`/`os.replace`, expires after five minutes, rejects timestamps
+more than 60 seconds in the future, and is removed when expired. A timeout never
+promotes the observation to current capacity: `storageBytes` and `objectCount`
+remain unknown and the prior values are marked `authoritative=false`.
+
+## ADR — Worker startup repairs queue topology selectively (2026-09-06)
+
+The checked-in `worker_queues` manifest is the expected worker topology.
+`phase14r_start_stack.ps1` compares each expected queue with live
+`mdi_workers.worker_entrypoint` command lines and starts only missing queues
+through `phase14r_start_workers.ps1 -OnlyQueue`. Manifest imports use a
+temporary repository schema path and restore the caller environment. This
+prevents partial-worker loss from being mistaken for a complete stack without
+stopping healthy workers or creating duplicate processes.
+
+## ADR — Worker identity is per queue and atomically discoverable (2026-09-06)
+
+Worker runtime identity is recorded per checked-in queue under
+`.runtime_services/managed/workers`. Discovery pairs a
+`mdi_workers.worker_entrypoint` child with its exact log-runner parent and
+records bounded ownership metadata, including creation FILETIMEs, executable
+paths, command digests, Redis URL and release SHA. Records are written through
+temporary files and atomic moves. Discovery is read-only with respect to
+running services; it does not stop or restart workers.
+
+## ADR — Worker cutover requires Redis registration (2026-09-06)
+
+OS process liveness is insufficient for worker replacement admission. Before
+an old queue worker is stopped, the replacement must be registered in Redis/RQ
+under its exact generated name, listen on exactly one expected queue, report a
+healthy state and have a fresh heartbeat under the shared operations threshold.
+After an exact old pair is stopped, its RQ registration is explicitly marked
+dead. This keeps process and queue authorities convergent without exposing
+connection credentials.
