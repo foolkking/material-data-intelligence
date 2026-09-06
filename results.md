@@ -20511,4 +20511,27 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
   - 测试结果：operations/storage/service-failure `33 passed, 1 skipped`；
     Ruff、compileall、git diff --check 通过；同栈 CLI 运行正常并显示
     PostgreSQL/Redis/MinIO、6 workers。
-  - 提交/CI：待本地聚焦提交；未推送。
+- 提交/CI：待本地聚焦提交；未推送。
+
+## Continuous optimization — final closeout (2026-09-06)
+
+- 任务：Materials Intelligence Platform — Continuous Autonomous Optimization
+- 状态：已完成
+- 完成时间：2026-09-06T12:00:00+08:00
+- 修改摘要：完成 CO-156 受保护跨进程 MinIO observation cache，并完成收口期间
+  发现的报告状态选择器可访问性、Alembic 日志/迁移兼容性、单元测试运行时
+  隔离、mandatory service qualification 同栈环境统一及 Windows Unicode 输出
+  兼容修复。白名单提交包含已验证的连续优化代码、测试、配置、文档和证据；
+  用户-owned 文件与服务运行目录未提交。
+- 验证：
+  - `validate_optimization_ledger.py`：discovered=156, completed=156,
+    blocked=0, remaining=0, current=NONE。
+  - 默认缓存路径全后端：2188 passed, 14 skipped, 108 deselected。
+  - 同栈 PostgreSQL/Redis/MinIO：selected=74, passed=74, failed=0,
+    errors=0, skipped=0。
+  - 前端：117 files / 950 tests passed；typecheck、production build、
+    compileall、Ruff、git diff --check 通过。
+  - `/health/runtime`：database=postgresql、redis=redis、artifactStorage=minio、
+    worker=redis、llmProvider=deepseek。
+- 提交/CI：本地收口提交已创建；本轮未推送，未关闭 API、worker、PostgreSQL、
+  Redis、MinIO 或现有浏览器标签页。

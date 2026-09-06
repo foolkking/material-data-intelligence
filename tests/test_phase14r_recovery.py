@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
-from uuid import uuid4
+from types import SimpleNamespace
+from uuid import UUID, uuid4
 
 from sqlalchemy import create_engine, insert, select
 from sqlalchemy.pool import StaticPool
@@ -90,6 +91,79 @@ def test_qualification_identity_requires_bounded_actor_and_project_convention():
     )
 
 
+def test_stale_recovery_partitions_product_and_qualification_turns() -> None:
+    factory, session_id = _factory()
+    now = datetime.now(timezone.utc) - timedelta(hours=1)
+    product_message = "product-recovery-message"
+    qualification_message = "qualification-recovery-message"
+    with factory.engine.begin() as connection:
+        connection.execute(insert(projects), {
+            "id": "agent2-phase4-project-deadbeef",
+            "organization_id": "org",
+            "name": "Qualification",
+            "created_by": "agent2-phase4-owner-deadbeef",
+        })
+        connection.execute(insert(sessions), {
+            "id": "qualification-session",
+            "project_id": "agent2-phase4-project-deadbeef",
+            "mode": "project",
+            "status": "active",
+            "created_by": "owner",
+        })
+        connection.execute(insert(messages), [
+            {
+                "id": product_message,
+                "session_id": session_id,
+                "role": "user",
+                "content_summary": "recover product turn",
+                "payload_json": {},
+                "created_at": now,
+            },
+            {
+                "id": qualification_message,
+                "session_id": "qualification-session",
+                "role": "user",
+                "content_summary": "retain qualification turn",
+                "payload_json": {},
+                "created_at": now,
+            },
+        ])
+        connection.execute(insert(research_turns), [
+            {
+                "id": uuid4(),
+                "project_id": "product",
+                "research_session_id": session_id,
+                "sequence_no": 1,
+                "user_message_id": product_message,
+                "status": "RECEIVED",
+                "row_version": 1,
+                "created_at": now,
+                "updated_at": now,
+            },
+            {
+                "id": uuid4(),
+                "project_id": "agent2-phase4-project-deadbeef",
+                "research_session_id": "qualification-session",
+                "sequence_no": 1,
+                "user_message_id": qualification_message,
+                "status": "RECEIVED",
+                "row_version": 1,
+                "created_at": now,
+                "updated_at": now,
+            },
+        ])
+
+    product, qualification = StaleResearchRecoveryService(factory).list_stale(
+        stale_minutes=15,
+        limit=10,
+    )
+
+    assert len(product) == 1
+    assert product[0]["project_id"] == "product"
+    assert len(qualification) == 1
+    assert qualification[0]["project_id"] == "agent2-phase4-project-deadbeef"
+
+
 def test_legacy_query_data_recovery_terminalizes_without_scientific_execution():
     factory, session_id = _factory()
     turn_id = uuid4()
@@ -170,6 +244,79 @@ def test_legacy_query_data_recovery_terminalizes_without_scientific_execution():
     assert turn["job_id"] is None
     assert decision["action_dispatch_status"] == "COMPLETED"
     assert events == ["DIRECT_ANSWER_READY", "TURN_COMPLETED"]
+
+
+class _FailOnceRecoveryQueue:
+    def __init__(self) -> None:
+        self.failed = True
+        self.calls: list[UUID] = []
+
+    def enqueue_turn(self, turn_id: UUID) -> SimpleNamespace:
+        self.calls.append(turn_id)
+        if self.failed:
+            self.failed = False
+            raise ConnectionError("simulated Redis outage")
+        return SimpleNamespace(enqueued=True, message="turn queued after recovery")
+
+
+def test_queue_outage_is_retryable_without_mutating_durable_turn() -> None:
+    factory, session_id = _factory()
+    turn_id = uuid4()
+    message_id = "message_queue_outage"
+    now = datetime.now(timezone.utc) - timedelta(hours=1)
+    with factory.engine.begin() as connection:
+        connection.execute(
+            insert(messages),
+            {
+                "id": message_id,
+                "session_id": session_id,
+                "role": "user",
+                "content_summary": "run recovery-safe analysis",
+                "payload_json": {},
+                "created_at": now,
+            },
+        )
+        connection.execute(
+            insert(research_turns),
+            {
+                "id": turn_id,
+                "project_id": "product",
+                "research_session_id": session_id,
+                "sequence_no": 1,
+                "user_message_id": message_id,
+                "action_type": "ANALYZE",
+                "status": "RECEIVED",
+                "row_version": 1,
+                "created_at": now,
+                "updated_at": now,
+            },
+        )
+
+    queue = _FailOnceRecoveryQueue()
+    service = StaleResearchRecoveryService(
+        factory,
+        settings=ApiSettings(queue_backend="redis"),
+        orchestration_queue=queue,
+    )
+    unavailable = service.reconcile_turn(turn_id)
+    assert unavailable.accepted is False
+    assert unavailable.action == "QUEUE_UNAVAILABLE"
+    assert unavailable.detail == "queue backend unavailable; durable state remains retryable"
+
+    with factory.engine.connect() as connection:
+        durable_status = connection.execute(
+            select(research_turns.c.status).where(research_turns.c.id == turn_id)
+        ).scalar_one()
+    assert durable_status == "RECEIVED"
+
+    recovered = service.reconcile_turn(turn_id)
+    assert recovered.accepted is True
+    assert recovered.action == "ORCHESTRATION_REPUBLISHED"
+    assert queue.calls == [turn_id, turn_id]
+    with factory.engine.connect() as connection:
+        assert connection.execute(
+            select(research_turns.c.status).where(research_turns.c.id == turn_id)
+        ).scalar_one() == "RECEIVED"
 
 
 class _FakeRQJob:

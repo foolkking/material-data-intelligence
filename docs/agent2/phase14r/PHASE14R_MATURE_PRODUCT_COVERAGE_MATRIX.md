@@ -282,3 +282,14 @@ For release decisions, the current same-stack evidence is:
 | Context / memory / message provenance | persisted ContextManifest 2.0 and session-memory projection | PASS | PASS | PASS (exact replay and bounded disclosure) | PASS | PASS | PASS | PASS | PASS | PASS |
 | Tasks / notifications / recovery | persisted Job/Turn projections and bounded task center | PASS | PASS | PASS (60 tasks / 45 notifications, recovery state retained) | PASS | PASS | PASS | PASS | PASS | PASS |
 | Search / project organization | authorized bounded search plus non-scientific tags/pins | PASS | PASS | PASS (`mat-2`, archived filters, project tags) | PASS | PASS | PASS | PASS | PASS | PASS |
+
+### 2026-09-04 R7/R8 task identity refinement
+
+The current task/notification feed retains its authorized bounded read model
+and now projects the exact ResearchTurn user-message summary as a maximum
+180-character `researchQuestion`. The human question is used for row titles
+and local findability; Job/Turn IDs remain authoritative and exact navigation
+is unchanged. Persisted update timestamps are visible through semantic
+`<time>` elements. Focused backend/frontend verification passed `15 + 16`
+tests, and the bounded SQL projection remained constant at two queries for both
+one-job and five-job pages.

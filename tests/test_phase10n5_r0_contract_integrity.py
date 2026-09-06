@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import re
 
@@ -157,10 +158,17 @@ def test_n5_queue_state_remains_compatible_through_n6_archive() -> None:
 
 def test_n5_ci_requires_browser_and_service_closure() -> None:
     workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    service_manifest = json.loads(
+        (ROOT / "config/mandatory-service-qualification.json").read_text(
+            encoding="utf-8"
+        )
+    )
     replay = (ROOT / "apps/web/test/replay-sealed-browser-evidence.mjs").read_text(encoding="utf-8")
     assert "replay-sealed-browser-evidence.mjs" in workflow
     assert "--n5-electronic-only" in replay
-    assert "tests/integration/test_phase10n5_electronic_service_backed.py" in workflow
-    assert "test_phase10n5_postgres_redis_minio_band_dos_closure" in workflow
-    threshold = re.search(r'if \[ "\$\{PASSED:-0\}" -lt (\d+) \]; then', workflow)
-    assert threshold and int(threshold.group(1)) >= 47
+    assert (
+        "tests/integration/test_phase10n5_electronic_service_backed.py"
+        in service_manifest["pytest"]["paths"]
+    )
+    assert service_manifest["pytest"]["minimumPassed"] >= 47
+    assert service_manifest["pytest"]["requireZeroSkips"] is True

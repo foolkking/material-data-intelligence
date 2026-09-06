@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import Any, Mapping
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Query
 from sqlalchemy import func, insert, select
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -29,6 +29,10 @@ ARCHIVABLE_JOB_STATUSES = {
 
 def get_project_history(
     project_id: str,
+    limit: int | None = Query(default=None, ge=1, le=100),
+    datasets_cursor: str | None = Query(default=None),
+    analyses_cursor: str | None = Query(default=None),
+    activity_cursor: str | None = Query(default=None),
     current_user: CurrentUser = Depends(get_current_user),
 ) -> dict[str, Any]:
     repositories = _planner_read_repositories(None)
@@ -55,8 +59,11 @@ def get_project_history(
         # 0011 is applied. Do not hide unrelated database failures.
         if not any(table in str(exc).lower() for table in ("project_configs", "research_session_runs")):
             raise
-    except HTTPException:
-        if not os.getenv("PYTEST_CURRENT_TEST"):
+    except HTTPException as error:
+        # Authorization denial is never a legacy-adapter condition.  Only
+        # synthetic pytest fixtures without a durable Project row may use the
+        # owner-scoped compatibility projection below.
+        if error.status_code == 403 or not os.getenv("PYTEST_CURRENT_TEST"):
             raise
         # Unit tests and the legacy in-memory adapter may not have a durable
         # Project row. Keep that compatibility path owner-scoped below.
@@ -75,7 +82,13 @@ def get_project_history(
     owner_id = project.get("createdBy") or project.get("created_by")
     if owner_id and owner_id != current_user.id and os.getenv("PYTEST_CURRENT_TEST"):
         raise HTTPException(status_code=403, detail="Current user cannot access this Project.")
-    history = ProjectHistoryService(repositories, archived_run_ids=archived_run_ids).build(project_id)
+    history = ProjectHistoryService(repositories, archived_run_ids=archived_run_ids).build(
+        project_id,
+        limit=limit,
+        datasets_cursor=datasets_cursor,
+        analyses_cursor=analyses_cursor,
+        activity_cursor=activity_cursor,
+    )
     history["project"]["role"] = access_role
     history["project"]["status"] = project_lifecycle_status
     history["project"]["pinned"] = project_pinned
@@ -233,7 +246,11 @@ def _read_research_context_by_run(
             research_turns.c.status.label("research_turn_status"),
         )
         .join(sessions, sessions.c.id == research_session_runs.c.session_id)
-        .outerjoin(research_turns, research_turns.c.job_id == research_session_runs.c.job_id)
+        .outerjoin(
+            research_turns,
+            (research_turns.c.job_id == research_session_runs.c.job_id)
+            & (research_turns.c.project_id == project_id),
+        )
         .where(sessions.c.project_id == project_id)
         .order_by(research_session_runs.c.created_at.asc(), research_session_runs.c.job_id.asc())
     ).mappings().all()

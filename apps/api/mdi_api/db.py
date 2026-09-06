@@ -39,9 +39,14 @@ users = Table(
     Column("email", String(320), nullable=False, unique=True),
     Column("display_name", String(160), nullable=False),
     Column("password_hash", Text, nullable=True),
+    Column("platform_role", String(32), nullable=False, server_default="USER"),
     Column("is_active", Boolean, nullable=False, server_default="true"),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    CheckConstraint(
+        "platform_role in ('USER', 'PLATFORM_ADMIN')",
+        name="platform_role",
+    ),
 )
 
 organizations = Table(
@@ -130,6 +135,21 @@ auth_sessions = Table(
     Column("revoked_at", DateTime(timezone=True), nullable=True),
 )
 Index("idx_auth_sessions_user_expires", auth_sessions.c.user_id, auth_sessions.c.expires_at)
+
+account_invitations = Table(
+    "account_invitations",
+    metadata,
+    Column("id", String(64), primary_key=True),
+    Column("email", String(320), nullable=False),
+    Column("display_name", String(160), nullable=False),
+    Column("token_hash", String(64), nullable=False, unique=True),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    Column("accepted_at", DateTime(timezone=True), nullable=True),
+    Column("revoked_at", DateTime(timezone=True), nullable=True),
+    Column("invited_by_user_id", String(64), ForeignKey("users.id"), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+Index("idx_account_invitations_email_created", account_invitations.c.email, account_invitations.c.created_at)
 
 analysis_plans = Table(
     "analysis_plans",
@@ -704,6 +724,20 @@ secrets = Table(
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
 
+provider_connections = Table(
+    "provider_connections",
+    metadata,
+    Column("provider", String(64), primary_key=True),
+    Column("label", String(120), nullable=False),
+    Column("kind", String(64), nullable=False),
+    Column("base_url", String(512), nullable=False),
+    Column("model_ids_json", JSON, nullable=False, server_default="[]"),
+    Column("default_model", String(256), nullable=True),
+    Column("encrypted_api_key", Text, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
 audit_logs = Table(
     "audit_logs",
     metadata,
@@ -1104,6 +1138,35 @@ agent2_scientific_report_snapshots = Table(
 Index("idx_projects_org_created", projects.c.organization_id, projects.c.created_at)
 Index("idx_project_members_user", project_members.c.user_id)
 Index("idx_datasets_project_created", datasets.c.project_id, datasets.c.created_at)
+Index(
+    "idx_projects_search_owner_updated",
+    projects.c.created_by,
+    projects.c.updated_at,
+    projects.c.id,
+)
+Index(
+    "idx_project_members_search_user_project",
+    project_members.c.user_id,
+    project_members.c.project_id,
+)
+Index(
+    "idx_datasets_search_project_updated",
+    datasets.c.project_id,
+    datasets.c.updated_at,
+    datasets.c.id,
+)
+Index(
+    "idx_sessions_search_project_created",
+    sessions.c.project_id,
+    sessions.c.created_at,
+    sessions.c.id,
+)
+Index(
+    "idx_reports_search_project_created",
+    reports.c.project_id,
+    reports.c.created_at,
+    reports.c.id,
+)
 Index("idx_files_dataset_created", files.c.dataset_id, files.c.created_at)
 Index("idx_data_profiles_dataset_created", data_profiles.c.dataset_id, data_profiles.c.created_at)
 Index("idx_analysis_plans_project_created", analysis_plans.c.project_id, analysis_plans.c.created_at)
@@ -1125,6 +1188,12 @@ Index("idx_audit_logs_project_created", audit_logs.c.project_id, audit_logs.c.cr
 Index("idx_scientific_objects_project_lifecycle", scientific_objects.c.project_id, scientific_objects.c.lifecycle_status)
 Index("idx_scientific_objects_project_kind", scientific_objects.c.project_id, scientific_objects.c.kind)
 Index("idx_scientific_objects_project_type", scientific_objects.c.project_id, scientific_objects.c.object_type)
+Index(
+    "idx_scientific_objects_search_project_created",
+    scientific_objects.c.project_id,
+    scientific_objects.c.created_at,
+    scientific_objects.c.id,
+)
 Index("idx_scientific_objects_current_version", scientific_objects.c.current_version_id)
 Index("idx_scientific_object_versions_object", scientific_object_versions.c.scientific_object_id)
 Index("idx_scientific_object_versions_type", scientific_object_versions.c.object_type)
@@ -1143,6 +1212,12 @@ Index("idx_research_turn_events_turn", research_turn_events.c.turn_id)
 Index("idx_scientific_result_snapshots_turn", scientific_result_snapshots.c.research_turn_id)
 Index("idx_scientific_result_snapshots_job", scientific_result_snapshots.c.job_id)
 Index("idx_scientific_result_snapshots_project_created", scientific_result_snapshots.c.project_id, scientific_result_snapshots.c.created_at)
+Index(
+    "idx_scientific_results_search_project_created",
+    scientific_result_snapshots.c.project_id,
+    scientific_result_snapshots.c.created_at,
+    scientific_result_snapshots.c.id,
+)
 Index("idx_research_turn_decisions_action_created", research_turn_decisions.c.action, research_turn_decisions.c.created_at)
 Index("idx_research_turn_decisions_fingerprint", research_turn_decisions.c.input_context_fingerprint)
 Index("idx_research_capability_resolutions_fingerprint", research_capability_resolutions.c.registry_fingerprint)

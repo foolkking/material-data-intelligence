@@ -14,7 +14,7 @@ import json
 import os
 import re
 import socket
-from time import perf_counter
+from time import perf_counter, sleep
 from typing import Any, Protocol
 import urllib.error
 import urllib.parse
@@ -22,7 +22,7 @@ import urllib.request
 
 from mdi_schemas import DataProfile, RegisteredTool
 
-from .redaction import redact_credential_values
+from .redaction import redact_sensitive_text
 
 
 DEEPSEEK_PROVIDER_NAME = "deepseek"
@@ -43,6 +43,8 @@ DEEPSEEK_ALLOWED_PURPOSES = frozenset(
 DEEPSEEK_MAX_OUTPUT_TOKENS = 8192
 DEEPSEEK_MAX_TIMEOUT_SECONDS = 120.0
 DEEPSEEK_MAX_PROMPT_BYTES = 524_288
+DEEPSEEK_MAX_TRANSIENT_RETRIES = 1
+DEEPSEEK_RETRY_BACKOFF_SECONDS = 0.25
 
 
 @dataclass(frozen=True)
@@ -91,7 +93,7 @@ class LLMProviderError(RuntimeError):
     """Safe provider error whose text is suitable for API responses."""
 
     def __init__(self, message: str, *, code: str = "LLM_PROVIDER_ERROR", status_code: int | None = None) -> None:
-        safe_message = redact_credential_values(message)
+        safe_message = redact_sensitive_text(message)
         super().__init__(safe_message)
         self.code = code
         self.safe_message = safe_message
@@ -602,11 +604,10 @@ class DeepSeekProvider:
         purpose: str,
     ) -> PlannerRawResponse:
         resolved = _resolve_deepseek_config(user_config, fake=self._transport is not None, purpose=purpose)
-        started = perf_counter()
         safe_messages = [
             {
                 "role": str(message.get("role", "user")),
-                "content": redact_credential_values(str(message.get("content", ""))),
+                "content": redact_sensitive_text(str(message.get("content", ""))),
             }
             for message in messages
         ]
@@ -621,37 +622,48 @@ class DeepSeekProvider:
                 "DeepSeek prompt exceeds the bounded provider payload.",
                 code="DEEPSEEK_PROMPT_TOO_LARGE",
             )
-        try:
-            if self._transport is not None:
-                response = _call_fake_transport(
-                    self._transport,
+        attempt = 0
+        while True:
+            started = perf_counter()
+            try:
+                if self._transport is not None:
+                    response = _call_fake_transport(
+                        self._transport,
+                        model=resolved["model"],
+                        messages=safe_messages,
+                        temperature=0.0,
+                        max_tokens=resolved["max_tokens"],
+                        timeout_seconds=resolved["timeout_seconds"],
+                        response_format={"type": "json_object"},
+                    )
+                else:
+                    response = _post_deepseek_completion(
+                        api_key=resolved["api_key"],
+                        model=resolved["model"],
+                        messages=safe_messages,
+                        max_tokens=resolved["max_tokens"],
+                        timeout_seconds=resolved["timeout_seconds"],
+                        urlopen=self._urlopen or urllib.request.urlopen,
+                    )
+            except LLMProviderError as exc:
+                deepseek_error = _as_deepseek_error(exc)
+                self._record_call(
+                    purpose=purpose,
                     model=resolved["model"],
-                    messages=safe_messages,
-                    temperature=0.0,
-                    max_tokens=resolved["max_tokens"],
-                    timeout_seconds=resolved["timeout_seconds"],
-                    response_format={"type": "json_object"},
+                    prompt_bytes=prompt_bytes,
+                    response=None,
+                    elapsed_ms=(perf_counter() - started) * 1000,
+                    outcome=deepseek_error.code,
                 )
-            else:
-                response = _post_deepseek_completion(
-                    api_key=resolved["api_key"],
-                    model=resolved["model"],
-                    messages=safe_messages,
-                    max_tokens=resolved["max_tokens"],
-                    timeout_seconds=resolved["timeout_seconds"],
-                    urlopen=self._urlopen or urllib.request.urlopen,
-                )
-        except LLMProviderError as exc:
-            deepseek_error = _as_deepseek_error(exc)
-            self._record_call(
-                purpose=purpose,
-                model=resolved["model"],
-                prompt_bytes=prompt_bytes,
-                response=None,
-                elapsed_ms=(perf_counter() - started) * 1000,
-                outcome=deepseek_error.code,
-            )
-            raise deepseek_error from None
+                if (
+                    attempt < DEEPSEEK_MAX_TRANSIENT_RETRIES
+                    and _deepseek_error_is_retryable(deepseek_error)
+                ):
+                    attempt += 1
+                    sleep(DEEPSEEK_RETRY_BACKOFF_SECONDS)
+                    continue
+                raise deepseek_error from None
+            break
 
         try:
             choice = _first_choice(response)
@@ -1035,6 +1047,14 @@ def _as_deepseek_error(error: LLMProviderError) -> LLMProviderError:
     if error.code == "LLM_TIMEOUT":
         return LLMProviderError("DeepSeek request timed out.", code="DEEPSEEK_TIMEOUT")
     return LLMProviderError("DeepSeek provider failed.", code="DEEPSEEK_PROVIDER_FAILED", status_code=error.status_code)
+
+
+def _deepseek_error_is_retryable(error: LLMProviderError) -> bool:
+    return error.code in {
+        "DEEPSEEK_RATE_LIMITED",
+        "DEEPSEEK_PROVIDER_FAILED",
+        "DEEPSEEK_TIMEOUT",
+    }
 
 
 _DEFAULT_ALLOWED_LLM_BASE_URLS = frozenset(

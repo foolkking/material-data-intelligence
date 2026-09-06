@@ -24,6 +24,10 @@ from mdi_api.db import (
     reports,
     research_session_runs,
     research_turns,
+    scientific_objects,
+    scientific_object_versions,
+    scientific_result_snapshots,
+    agent2_scientific_interpretations,
     sessions,
     user_configs,
     users,
@@ -40,6 +44,7 @@ from mdi_api.routers.research import (
     bulk_update_sessions,
     create_session,
     get_session,
+    get_session_dependency_impact,
     reconcile_research_run_projection,
     update_session,
     validate_research_session_project,
@@ -111,6 +116,114 @@ def test_project_access_keeps_viewers_read_only_and_membership_scoped():
             assert getattr(exc, "status_code", None) == 403
         else:
             raise AssertionError("membership must not leak across users")
+
+
+def test_project_role_matrix_preserves_one_owner_and_bounded_member_authority():
+    engine = create_engine(
+        "sqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    metadata.create_all(engine)
+    people = {
+        role: CurrentUser(
+            id=f"user-{role}",
+            email=f"{role}@example.invalid",
+            displayName=role.title(),
+            roles=[role],
+            platformRole="PLATFORM_ADMIN" if role == "platform-admin" else "USER",
+        )
+        for role in (
+            "owner",
+            "admin",
+            "researcher",
+            "viewer",
+            "legacy-owner",
+            "platform-admin",
+        )
+    }
+    with engine.begin() as connection:
+        connection.execute(
+            insert(users),
+            [
+                {
+                    "id": user.id,
+                    "email": user.email,
+                    "display_name": user.displayName,
+                    "platform_role": user.platformRole,
+                    "is_active": True,
+                }
+                for user in people.values()
+            ],
+        )
+        connection.execute(insert(organizations), {"id": "org-role-matrix", "name": "Role matrix"})
+        connection.execute(
+            insert(projects),
+            {
+                "id": "project-role-matrix",
+                "organization_id": "org-role-matrix",
+                "name": "Role matrix",
+                "created_by": people["owner"].id,
+            },
+        )
+        connection.execute(
+            insert(project_members),
+            [
+                {
+                    "project_id": "project-role-matrix",
+                    "user_id": people[role].id,
+                    "role": persisted_role,
+                }
+                for role, persisted_role in (
+                    ("admin", "admin"),
+                    ("researcher", "researcher"),
+                    ("viewer", "viewer"),
+                    ("legacy-owner", "owner"),
+                )
+            ],
+        )
+
+        expected = {
+            "owner": ("owner", True),
+            "admin": ("admin", True),
+            "researcher": ("researcher", True),
+            "viewer": ("viewer", False),
+            # A historical duplicate owner membership retains write access but
+            # cannot acquire the immutable owner's purge identity.
+            "legacy-owner": ("admin", True),
+        }
+        for role, (projected_role, can_write) in expected.items():
+            assert require_project_access(
+                connection,
+                "project-role-matrix",
+                people[role],
+            )["access_role"] == projected_role
+            if can_write:
+                assert require_project_access(
+                    connection,
+                    "project-role-matrix",
+                    people[role],
+                    write=True,
+                )["access_role"] == projected_role
+            else:
+                with pytest.raises(HTTPException) as denied:
+                    require_project_access(
+                        connection,
+                        "project-role-matrix",
+                        people[role],
+                        write=True,
+                    )
+                assert denied.value.status_code == 403
+
+        # Platform administration is operational authority, not implicit
+        # membership in every scientific Project.
+        with pytest.raises(HTTPException) as platform_admin_denied:
+            require_project_access(
+                connection,
+                "project-role-matrix",
+                people["platform-admin"],
+            )
+        assert platform_admin_denied.value.status_code == 403
 
 
 def test_viewer_cannot_create_research_session(monkeypatch: pytest.MonkeyPatch):
@@ -295,6 +408,7 @@ def test_report_bulk_lifecycle_requires_project_write_access(
 
 def test_research_session_lifecycle_is_recoverable_and_preserves_history(monkeypatch: pytest.MonkeyPatch):
     engine, owner, viewer = _management_engine()
+    stranger = CurrentUser(id="stranger", email="stranger@example.invalid", displayName="Stranger", roles=[])
     monkeypatch.setattr("mdi_api.routers.research.create_engine_from_settings", lambda _settings: engine)
     monkeypatch.setattr("mdi_api.routers.research.load_settings", lambda: SimpleNamespace())
     now = datetime.now(timezone.utc)
@@ -322,6 +436,17 @@ def test_research_session_lifecycle_is_recoverable_and_preserves_history(monkeyp
     )
     assert trashed["status"] == "trashed"
     assert trashed["messages"][0]["content"] == "保留历史研究"
+    assert trashed["retentionPolicy"]["manualPurge"] == "NOT_SUPPORTED_FOR_ENTITY"
+    impact = get_session_dependency_impact("research-lifecycle", owner)
+    assert impact["entity"] == "research_session"
+    assert impact["dependencyCount"] >= 1
+    assert any(item["kind"] == "messages" and item["count"] == 1 for item in impact["dependencies"])
+    assert impact["canDelete"] is False
+    assert impact["retentionPolicy"]["manualPurge"] == "NOT_SUPPORTED_FOR_ENTITY"
+    assert get_session_dependency_impact("research-lifecycle", viewer)["entityId"] == "research-lifecycle"
+    with pytest.raises(HTTPException) as impact_stranger_error:
+        get_session_dependency_impact("research-lifecycle", stranger)
+    assert impact_stranger_error.value.status_code == 403
     with pytest.raises(HTTPException) as write_error:
         from mdi_api.routers.research import ResearchMessageCreate, create_message
         create_message("research-lifecycle", ResearchMessageCreate(content="不应写入"), owner)
@@ -900,6 +1025,201 @@ def test_product_search_matches_authorized_project_organization_tags(monkeypatch
     assert "XRD" in result["items"][0]["subtitle"]
 
 
+def test_product_search_matches_authoritative_dataset_object_and_result_semantics(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    import mdi_api.routers.secured_runtime as secured_runtime
+
+    engine, owner, _viewer = _management_engine()
+    monkeypatch.setattr(secured_runtime, "create_engine_from_settings", lambda _settings: engine)
+    monkeypatch.setattr(secured_runtime, "load_settings", lambda: SimpleNamespace())
+
+    object_id = uuid4()
+    version_id = uuid4()
+    turn_id = uuid4()
+    interpretation_id = uuid4()
+    with engine.begin() as connection:
+        connection.execute(
+            update(datasets)
+            .where(datasets.c.id == "dataset")
+            .values(
+                metadata_json={
+                    "sampleIdentity": "sample_id",
+                    "rows": [
+                        {"sample_id": "mat-2", "formula": "SiO2", "band_gap": 2.4},
+                    ],
+                    "semanticDescription": "band gap screening dataset",
+                }
+            ),
+        )
+        connection.execute(
+            insert(scientific_objects),
+            {
+                "id": object_id,
+                "project_id": "used",
+                "kind": "structure",
+                "object_type": "structure",
+                "display_name": "Silicon oxide structure",
+                "lifecycle_status": "ACTIVE",
+                "current_version_id": None,
+                "created_by_user_id": owner.id,
+            },
+        )
+        connection.execute(
+            insert(scientific_object_versions),
+            {
+                "id": version_id,
+                "scientific_object_id": object_id,
+                "version_no": 1,
+                "object_type": "structure",
+                "object_schema_version": "2.0",
+                "source_resource_refs_json": [],
+                "parent_object_version_refs_json": [],
+                "semantic_profile_ref_json": None,
+                "normalized_payload_ref_json": {"storageKey": "objects/structure.json"},
+                "content_hash": "c" * 64,
+                "semantic_hash": "s" * 64,
+                "canonical_metadata_json": {
+                    "formula": "SiO2",
+                    "space_group": "Pnma",
+                    "sample_id": "structure-7",
+                },
+                "availability_status": "AVAILABLE",
+                "created_by_user_id": owner.id,
+            },
+        )
+        connection.execute(
+            update(scientific_objects)
+            .where(scientific_objects.c.id == object_id)
+            .values(current_version_id=version_id),
+        )
+        connection.execute(
+            insert(sessions),
+            {
+                "id": "search-semantic-session",
+                "project_id": "used",
+                "dataset_id": "dataset",
+                "mode": "project",
+                "status": "active",
+                "created_by": owner.id,
+            },
+        )
+        connection.execute(
+            insert(messages),
+            {
+                "id": "search-semantic-message",
+                "session_id": "search-semantic-session",
+                "role": "user",
+                "content_summary": "分析 mat-2 的 band gap",
+                "payload_json": {},
+            },
+        )
+        connection.execute(
+            insert(research_turns),
+            {
+                "id": turn_id,
+                "project_id": "used",
+                "research_session_id": "search-semantic-session",
+                "sequence_no": 1,
+                "user_message_id": "search-semantic-message",
+                "action_type": "ANALYZE",
+                "status": "COMPLETED",
+            },
+        )
+        connection.execute(
+            insert(scientific_result_snapshots),
+            {
+                "id": uuid4(),
+                "project_id": "used",
+                "research_turn_id": turn_id,
+                "job_id": None,
+                "schema_version": "1.0",
+                "projection_version": "test/1.0",
+                "execution_status": "SUCCESS",
+                "relevance_status": "CURRENT",
+                "source_fingerprint": "r" * 64,
+                "bundle_json": {
+                    "research_question": "What is the band gap of mat-2?",
+                    "result_items": [
+                        {"id": "dataset.item.mat-2", "title": "Band gap for mat-2"}
+                    ],
+                    "facts": [
+                        {
+                            "fact_id": "dataset.band_gap.mat-2",
+                            "predicate": "band_gap",
+                            "subject_ref": "mat-2",
+                            "value": 2.4,
+                            "unit": "eV",
+                        }
+                    ],
+                },
+            },
+        )
+        result_id = connection.execute(
+            select(scientific_result_snapshots.c.id).where(
+                scientific_result_snapshots.c.research_turn_id == turn_id
+            )
+        ).scalar_one()
+        connection.execute(
+            insert(agent2_scientific_interpretations),
+            {
+                "id": interpretation_id,
+                "research_turn_id": turn_id,
+                "result_snapshot_id": result_id,
+                "project_id": "used",
+                "contract_version": "1.0",
+                "prompt_version": "test",
+                "provider": "test",
+                "model": "test",
+                "provider_request_id": None,
+                "repair_attempted": False,
+                "input_fingerprint": "i" * 64,
+                "grounding_status": "VALID",
+                "output_json": {
+                    "answer_lead": "mat-2 的 band gap 为 2.4 eV。",
+                    "primary_findings": [
+                        {
+                            "finding_id": "finding.mat-2.band-gap",
+                            "statement": "mat-2 的 band gap 为 2.4 eV。",
+                        }
+                    ],
+                },
+            },
+        )
+
+    dataset_sample = secured_runtime.search_product_secured(
+        q="mat-2", kind="dataset", current_user=owner
+    )
+    assert dataset_sample["count"] == 1
+    assert dataset_sample["items"][0]["id"] == "dataset"
+
+    dataset_formula = secured_runtime.search_product_secured(
+        q="SiO2", kind="dataset", current_user=owner
+    )
+    assert dataset_formula["count"] == 1
+    assert dataset_formula["items"][0]["id"] == "dataset"
+
+    object_metadata = secured_runtime.search_product_secured(
+        q="Pnma", kind="scientific_object", current_user=owner
+    )
+    assert object_metadata["count"] == 1
+    assert object_metadata["items"][0]["id"] == str(object_id)
+
+    result_fact = secured_runtime.search_product_secured(
+        q="2.4", kind="result", current_user=owner
+    )
+    assert result_fact["count"] == 1
+    assert result_fact["items"][0]["id"] == str(result_id)
+
+    result_finding = secured_runtime.search_product_secured(
+        q="为", kind="result", current_user=owner
+    )
+    assert result_finding["count"] == 1
+    assert result_finding["items"][0]["id"] == str(result_id)
+    assert result_finding["items"][0]["title"] == "What is the band gap of mat-2?"
+    assert result_finding["items"][0]["subtitle"].startswith("结果 ")
+
+
 def test_product_search_projects_human_research_title_instead_of_internal_session_id(
     monkeypatch: pytest.MonkeyPatch,
 ):
@@ -948,11 +1268,21 @@ def test_product_search_projects_human_research_title_instead_of_internal_sessio
 def test_dataset_object_store_missing_payload_fails_closed_with_recovery_guidance(
     monkeypatch: pytest.MonkeyPatch,
 ):
+    import mdi_api.phase2_runtime as phase2_runtime
     import mdi_api.routers.datasets as dataset_routes
     import mdi_api.routers.secured_runtime as secured_runtime
 
     owner = CurrentUser(id="owner", email="owner@example.invalid", displayName="Owner", roles=["researcher"])
     monkeypatch.setattr(secured_runtime, "_authorize_dataset", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(
+        phase2_runtime,
+        "get_phase2_dataset",
+        lambda _dataset_id: {
+            "datasetId": "dataset_xrd",
+            "fileCount": 1,
+            "objectCount": 1,
+        },
+    )
 
     def unavailable(_dataset_id: str):
         raise ValueError("Durable normalized source metadata is unavailable.")
@@ -970,11 +1300,34 @@ def test_dataset_object_store_missing_payload_fails_closed_with_recovery_guidanc
     }
 
 
+def test_empty_dataset_object_store_is_a_valid_empty_state(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    import mdi_api.phase2_runtime as phase2_runtime
+    import mdi_api.routers.secured_runtime as secured_runtime
+
+    owner = CurrentUser(id="owner", email="owner@example.invalid", displayName="Owner", roles=["researcher"])
+    monkeypatch.setattr(secured_runtime, "_authorize_dataset", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(
+        phase2_runtime,
+        "get_phase2_dataset",
+        lambda _dataset_id: {"datasetId": "dataset_empty", "fileCount": 0, "objectCount": 0},
+    )
+
+    assert secured_runtime.get_dataset_object_store_secured("dataset_empty", owner) == {
+        "datasetId": "dataset_empty",
+        "resources": [],
+        "availability": "EMPTY",
+    }
+
+
 def test_result_search_prefers_authoritative_turn_route():
     from mdi_api.routers.secured_runtime import _result_search_href
 
     assert _result_search_href("project", "snapshot", "turn-1") == "/projects/project/research?turn=turn-1"
-    assert _result_search_href("project", "snapshot") == "/projects/project/research?result=snapshot"
+    assert _result_search_href("project", "snapshot", "turn-1", "session-1") == "/projects/project/research/session-1?turn=turn-1"
+    assert _result_search_href("project", "snapshot", job_id="job-1") == "/projects/project/research?run=job-1"
+    assert _result_search_href("project", "snapshot") == "/projects/project/research"
 
 
 def test_product_search_filters_archived_lifecycle_without_cross_project_leak(monkeypatch: pytest.MonkeyPatch):
@@ -1291,14 +1644,22 @@ def test_dependency_impact_preview_is_server_derived_and_authorized(monkeypatch:
     assert project_impact["entityId"] == "used"
     assert project_impact["dependencyCount"] >= 2
     assert any(item["kind"] == "datasets" and item["count"] == 2 for item in project_impact["dependencies"])
+    assert next(
+        item["href"]
+        for item in project_impact["dependencies"]
+        if item["kind"] == "datasets"
+    ) == "/projects/used/data"
     assert project_impact["canDelete"] is False
     assert project_impact["impact"]["historicalProvenanceProtected"] is True
+    assert project_impact["retentionPolicy"]["automaticPurge"] == "DISABLED"
+    assert project_impact["retentionPolicy"]["manualPurgeRequiresZeroDependencies"] is True
 
     dataset_impact = secured_runtime.get_dataset_dependency_impact_secured("empty-dataset", owner)
     assert dataset_impact["entity"] == "dataset"
     assert dataset_impact["entityId"] == "empty-dataset"
     assert dataset_impact["dependencyCount"] == 0
     assert dataset_impact["canDelete"] is True
+    assert dataset_impact["retentionPolicy"]["referencedProvenance"] == "PROTECTED_INDEFINITELY"
 
     with pytest.raises(HTTPException) as exc_info:
         secured_runtime.get_project_dependency_impact_secured("used", viewer)
@@ -1328,6 +1689,219 @@ def test_project_export_manifest_is_bounded_authorized_and_non_executable(monkey
     with pytest.raises(HTTPException) as exc_info:
         secured_runtime.get_project_export_manifest_secured("used", stranger)
     assert exc_info.value.status_code == 403
+
+
+def test_legacy_analysis_request_scope_is_authorized_when_project_is_supplied(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    import mdi_api.routers.secured_runtime as secured_runtime
+
+    engine, owner, viewer = _management_engine()
+    stranger = CurrentUser(
+        id="stranger",
+        email="stranger@example.invalid",
+        displayName="Stranger",
+        roles=[],
+    )
+    monkeypatch.setattr(
+        secured_runtime, "create_engine_from_settings", lambda _settings: engine
+    )
+    monkeypatch.setattr(
+        secured_runtime, "load_settings", lambda: SimpleNamespace()
+    )
+
+    owner_response = secured_runtime.submit_analysis_request_secured(
+        {"projectId": "used", "mode": "auto"},
+        owner,
+    )
+    assert owner_response["status"] == "accepted"
+    viewer_response = secured_runtime.submit_analysis_request_secured(
+        {"project_id": "used", "mode": "auto"},
+        viewer,
+    )
+    assert viewer_response["status"] == "accepted"
+
+    with pytest.raises(HTTPException) as denied:
+        secured_runtime.submit_analysis_request_secured(
+            {"projectId": "used", "mode": "auto"},
+            stranger,
+        )
+    assert denied.value.status_code == 403
+
+    # Older clients without a Project scope remain supported by the retired
+    # non-executing compatibility contract.
+    assert secured_runtime.submit_analysis_request_secured({"mode": "auto"}, stranger)["status"] == "accepted"
+
+
+def test_artifact_download_denies_foreign_project_before_storage_read(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    import mdi_api.routers.secured_runtime as secured_runtime
+
+    engine, owner, _viewer = _management_engine()
+    stranger = CurrentUser(
+        id="stranger",
+        email="stranger@example.invalid",
+        displayName="Stranger",
+        roles=[],
+    )
+    monkeypatch.setattr(
+        secured_runtime,
+        "create_engine_from_settings",
+        lambda _settings: engine,
+    )
+    monkeypatch.setattr(
+        secured_runtime,
+        "load_settings",
+        lambda: SimpleNamespace(),
+    )
+    monkeypatch.setattr(
+        "mdi_api.phase2_runtime.get_phase2_artifact",
+        lambda artifact_id: {
+            "id": artifact_id,
+            "jobId": "job-foreign",
+            "projectId": "used",
+            "contentType": "text/plain",
+        },
+    )
+    monkeypatch.setattr(
+        "mdi_api.phase2_runtime.get_phase2_job",
+        lambda _job_id: {"id": "job-foreign", "projectId": "used"},
+    )
+    download_calls: list[str] = []
+
+    def read_download(artifact_id: str) -> dict[str, object]:
+        download_calls.append(artifact_id)
+        return {"id": artifact_id, "content": "authorized payload"}
+
+    monkeypatch.setattr("mdi_api.phase2_runtime.get_phase2_artifact_download", read_download)
+
+    with pytest.raises(HTTPException) as denied:
+        secured_runtime.get_phase2_artifact_download_secured("artifact-foreign", stranger)
+    assert denied.value.status_code == 403
+    assert download_calls == []
+
+    allowed = secured_runtime.get_phase2_artifact_download_secured("artifact-foreign", owner)
+    assert allowed == {"id": "artifact-foreign", "content": "authorized payload"}
+    assert download_calls == ["artifact-foreign"]
+
+
+def test_planner_artifact_browse_and_download_share_authorization_before_storage(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    import mdi_api.routers.secured_planner as secured_planner
+
+    engine, owner, _viewer = _management_engine()
+    stranger = CurrentUser(
+        id="stranger",
+        email="stranger@example.invalid",
+        displayName="Stranger",
+        roles=[],
+    )
+    monkeypatch.delenv("PYTEST_CURRENT_TEST", raising=False)
+    monkeypatch.setattr(
+        secured_planner,
+        "create_engine_from_settings",
+        lambda _settings: engine,
+    )
+    monkeypatch.setattr(
+        secured_planner,
+        "load_settings",
+        lambda: SimpleNamespace(),
+    )
+    monkeypatch.setattr(
+        secured_planner,
+        "get_planner_job",
+        lambda _job_id: {"id": "job-foreign", "projectId": "used"},
+    )
+    reads: list[tuple[str, str, bool]] = []
+    monkeypatch.setattr(
+        secured_planner,
+        "get_planner_job_artifact_content_route",
+        lambda job_id, artifact_id, download=False: reads.append(
+            (job_id, artifact_id, download)
+        )
+        or {"ok": True},
+    )
+
+    for download in (False, True):
+        with pytest.raises(HTTPException) as denied:
+            secured_planner.get_planner_job_artifact_content_secured(
+                "job-foreign",
+                "artifact-foreign",
+                download=download,
+                current_user=stranger,
+            )
+        assert denied.value.status_code == 403
+    assert reads == []
+
+    assert secured_planner.get_planner_job_artifact_content_secured(
+        "job-foreign",
+        "artifact-foreign",
+        current_user=owner,
+    ) == {"ok": True}
+    assert secured_planner.get_planner_job_artifact_content_secured(
+        "job-foreign",
+        "artifact-foreign",
+        download=True,
+        current_user=owner,
+    ) == {"ok": True}
+    assert reads == [
+        ("job-foreign", "artifact-foreign", False),
+        ("job-foreign", "artifact-foreign", True),
+    ]
+
+
+def test_exact_dataset_reads_deny_cross_project_user_before_payload_projection(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    import mdi_api.routers.secured_runtime as secured_runtime
+
+    engine, _owner, _viewer = _management_engine()
+    stranger = CurrentUser(
+        id="stranger",
+        email="stranger@example.invalid",
+        displayName="Stranger",
+        roles=[],
+    )
+    reads: list[str] = []
+    monkeypatch.setattr(
+        secured_runtime,
+        "create_engine_from_settings",
+        lambda _settings: engine,
+    )
+    monkeypatch.setattr(
+        secured_runtime,
+        "load_settings",
+        lambda: SimpleNamespace(),
+    )
+    monkeypatch.setattr(
+        "mdi_api.phase2_runtime.get_phase2_dataset",
+        lambda dataset_id: reads.append(f"dataset:{dataset_id}") or {},
+    )
+    monkeypatch.setattr(
+        "mdi_api.phase2_runtime.get_phase2_dataset_profile",
+        lambda dataset_id: reads.append(f"profile:{dataset_id}") or {},
+    )
+    monkeypatch.setattr(
+        "mdi_api.routers.datasets.get_dataset_object_store",
+        lambda dataset_id: reads.append(f"object-store:{dataset_id}") or {},
+    )
+
+    exact_reads = [
+        lambda: secured_runtime.get_dataset_secured("dataset", stranger),
+        lambda: secured_runtime.get_dataset_profile_secured("dataset", stranger),
+        lambda: secured_runtime.get_dataset_object_store_secured(
+            "dataset",
+            stranger,
+        ),
+    ]
+    for invoke in exact_reads:
+        with pytest.raises(HTTPException) as denied:
+            invoke()
+        assert denied.value.status_code == 403
+        assert "dataset" not in str(denied.value.detail)
+    assert reads == []
 
 
 def test_dataset_management_preserves_pre_archive_status_and_deletes_only_empty(monkeypatch: pytest.MonkeyPatch):

@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from typing import Protocol
 from uuid import UUID
 
+from mdi_schemas.worker_queues import worker_queue_definition
+
 
 @dataclass(frozen=True)
 class ResultProjectionQueueSubmitResult:
@@ -41,7 +43,12 @@ class InMemoryResultProjectionQueue:
 class RedisRQResultProjectionQueue:
     """Identity-only durable wakeup for deterministic result projection."""
 
-    def __init__(self, *, redis_url: str, queue_name: str = "mdi-agent-results") -> None:
+    def __init__(
+        self,
+        *,
+        redis_url: str,
+        queue_name: str = worker_queue_definition("result_projection").default_name,
+    ) -> None:
         self.redis_url = redis_url
         self.queue_name = queue_name
 
@@ -59,7 +66,7 @@ class RedisRQResultProjectionQueue:
                 return ResultProjectionQueueSubmitResult(turn_id, False, "rq", "turn already queued")
             existing.delete()
         queue.enqueue(
-            "mdi_api.scientific_results.worker.run_queued_result_projection",
+            worker_queue_definition("result_projection").handler,
             str(turn_id),
             job_id=job_id,
         )
@@ -71,6 +78,12 @@ def result_projection_queue_from_settings(settings: object) -> ResultProjectionQ
     if enabled and str(getattr(settings, "queue_backend", "local")) == "redis":
         return RedisRQResultProjectionQueue(
             redis_url=str(getattr(settings, "redis_url")),
-            queue_name=str(getattr(settings, "agent2_result_queue_name", "mdi-agent-results")),
+            queue_name=str(
+                getattr(
+                    settings,
+                    "agent2_result_queue_name",
+                    worker_queue_definition("result_projection").default_name,
+                )
+            ),
         )
     return DisabledResultProjectionQueue()

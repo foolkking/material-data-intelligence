@@ -421,6 +421,53 @@ def test_job_list_and_workspace_get_never_create_hidden_projection() -> None:
     assert repos.workspaces.list_by_project("project_1") == []
 
 
+def test_global_task_feed_is_bounded_and_stably_ordered() -> None:
+    repos = InMemoryRepositoryBundle.create()
+    _seed_legacy(repos, job_id="job_a")
+    repos.jobs.records["job_a"]["createdAt"] = "2026-09-01T00:00:00Z"
+    repos.jobs.records["job_a"]["updatedAt"] = "2026-09-01T00:00:00Z"
+    for job_id in ("job_b", "job_c"):
+        repos.jobs.save(
+            {
+                "id": job_id,
+                "projectId": "project_1",
+                "datasetId": "dataset_1",
+                "status": "completed",
+                "createdBy": "user_local",
+                "createdAt": "2026-09-01T00:00:00Z",
+                "updatedAt": "2026-09-01T00:00:00Z",
+            }
+        )
+    service = WorkspaceProjectionService(repos)
+    projects = (
+        {
+            "id": "project_1",
+            "projectId": "project_1",
+            "name": "Project",
+            "role": "owner",
+            "status": "active",
+        },
+    )
+
+    first = service.list_task_feed(projects=projects, limit=1, cursor=None)
+    assert [item["jobId"] for item in first["items"]] == ["job_c"]
+    assert len(first["nextCursor"]) == 64
+    assert first["truncated"] is True
+    assert first["projectCount"] == 1
+
+    second = service.list_task_feed(
+        projects=projects,
+        limit=1,
+        cursor=first["nextCursor"],
+    )
+    assert [item["jobId"] for item in second["items"]] == ["job_b"]
+    assert len(second["nextCursor"]) == 64
+    assert second["nextCursor"] != first["nextCursor"]
+    with pytest.raises(WorkspaceDomainError) as invalid:
+        service.list_task_feed(projects=projects, limit=1, cursor="missing")
+    assert invalid.value.code == "CURSOR_INVALID"
+
+
 def test_modern_identity_chain_and_unsupported_artifact_are_projected_safely() -> None:
     incomplete = InMemoryRepositoryBundle.create()
     _seed_modern(incomplete)
@@ -527,7 +574,6 @@ def test_workspace_api_create_get_patch_panels_history_and_concurrency(
         headers={"If-Match": etag},
         json={"title": "Stale write"},
     ).status_code == 412
-
     panels = client.get(f"/workspaces/{workspace_id}/panels")
     history = client.get(f"/workspaces/{workspace_id}/layout-revisions")
     exact = client.get(f"/workspaces/{workspace_id}/layout-revisions/1")
@@ -535,6 +581,77 @@ def test_workspace_api_create_get_patch_panels_history_and_concurrency(
     assert len(panels.json()["items"]) == len(created.json()["panels"])
     assert [item["revision"] for item in history.json()["items"]] == [0, 1]
     assert exact.json()["revision"] == 1
+
+
+def test_global_task_feed_api_is_authorized_paginated_and_cross_project_safe(
+    workspace_api: tuple[TestClient, InMemoryRepositoryBundle],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from mdi_api.routers import secured_runtime
+
+    client, repos = workspace_api
+    repos.projects.save(
+        {
+            "projectId": "project_hidden",
+            "name": "Hidden",
+            "createdBy": "another_user",
+        }
+    )
+    repos.jobs.save(
+        {
+            "id": "job_hidden",
+            "projectId": "project_hidden",
+            "datasetId": "dataset_hidden",
+            "status": "completed",
+            "createdBy": "another_user",
+        }
+    )
+    repos.jobs.save(
+        {
+            "id": "job_second",
+            "projectId": "project_1",
+            "datasetId": "dataset_1",
+            "status": "completed",
+            "createdBy": "user_local",
+        }
+    )
+    monkeypatch.setattr(
+        secured_runtime,
+        "list_projects_secured",
+        lambda _current_user: [
+            {
+                "id": "project_1",
+                "projectId": "project_1",
+                "name": "Project",
+                "role": "owner",
+                "status": "active",
+            }
+        ],
+    )
+
+    first = client.get("/api/tasks/feed", params={"limit": 1})
+    assert first.status_code == 200
+    payload = first.json()
+    assert payload["schemaVersion"] == "ProductTaskFeed/1.0"
+    assert payload["projectCount"] == 1
+    assert payload["truncated"] is True
+    assert len(payload["items"]) == 1
+    assert len(payload["nextCursor"]) == 64
+    assert payload["items"][0]["projectId"] == "project_1"
+    assert payload["items"][0]["projectName"] == "Project"
+    assert payload["items"][0]["jobId"] != "job_hidden"
+
+    second = client.get(
+        "/api/tasks/feed",
+        params={"limit": 1, "cursor": payload["nextCursor"]},
+    )
+    assert second.status_code == 200
+    assert second.json()["items"][0]["projectId"] == "project_1"
+    assert second.json()["items"][0]["jobId"] != payload["items"][0]["jobId"]
+    assert client.get(
+        "/api/tasks/feed",
+        params={"limit": 1, "cursor": "missing"},
+    ).status_code == 400
 
 
 def test_workspace_api_rejects_unsafe_conflicts_and_cross_project_access(

@@ -5,6 +5,7 @@ import type { ScientificWorkspace, WorkspaceSelectionContext, WorkspaceSelection
 import { artifactChecksum, artifactIdentity } from "./workspace-renderer-registry";
 
 type Payload = Record<string, unknown> & { artifactType: "electronic.band_structure" | "electronic.dos"; schemaVersion: string; sourceResource: Record<string, unknown>; warnings: string[]; limitations: string[] };
+const MAX_PLOT_POINTS = 2_400;
 
 export function ElectronicStructurePanel({ artifacts, selected, workspace, onSelection }: Readonly<{ artifacts: Artifact[]; selected: Artifact; workspace: ScientificWorkspace; onSelection: (selection: WorkspaceSelectionContext) => void }>) {
   const current = parse(selected);
@@ -30,18 +31,26 @@ export function ElectronicStructurePanel({ artifacts, selected, workspace, onSel
 
 function BandView({ artifact, payload, workspace, onSelection }: PanelItemProps) {
   const gap = record(payload.gap), bands = records(payload.bands), kpoints = records(payload.kpoints), states = records(payload.states);
+  const plotBands = bands.slice(0, 48).map((band) => boundedNumbers(band.energiesEv));
+  const plotDomain = numericDomain(plotBands);
+  const hasPlotData = plotBands.some((values) => values.length > 0);
   return <section aria-label="电子能带结构" data-testid="electronic-band-view"><h6>电子能带</h6>
     <p><strong>采样带隙：</strong> {gap?.valueEv === null || gap?.valueEv === undefined ? "不可用" : `${String(gap.valueEv)} eV`} · {String(gap?.directness)} · {String(gap?.classification)} <button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_GAP", {}, onSelection)}>选择带隙</button></p>
-    <svg viewBox="0 0 640 220" role="img" aria-label="供应方能带曲线；数值可在表格中查看" data-testid="electronic-band-plot"><title>供应方电子能带曲线</title>{bands.slice(0, 48).map((band, index) => <polyline key={String(band.bandIdentity)} fill="none" stroke={String(band.spinChannel) === "down" ? "#b42318" : "#176b87"} strokeDasharray={String(band.spinChannel) === "down" ? "6 4" : undefined} strokeWidth="2" points={polyline(numbers(band.energiesEv), index, bands)} />)}</svg>
-    <div className="workspace-table-scroll"><table><caption>能带状态数值表</caption><thead><tr><th>选择</th><th>自旋</th><th>能带</th><th>k 点</th><th>坐标</th><th>能量（eV）</th></tr></thead><tbody>{states.slice(0, 500).map((state) => { const point = kpoints.find((item) => item.kpointId === state.kpointId); return <tr key={String(state.stateId)}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_STATE", { spinChannelId: state.spinChannel, bandId: state.bandId, kpointId: state.kpointId, bandStateId: state.stateId }, onSelection)}>选择</button></td><td>{String(state.spinChannel)}</td><td>{String(state.bandId)}</td><td>{String(state.kpointId)}</td><td>{Array.isArray(point?.fractionalCoordinates) ? point.fractionalCoordinates.join(", ") : ""}</td><td>{String(state.energyEv)}</td></tr>; })}</tbody></table></div>
+    {hasPlotData ? <svg viewBox="0 0 640 220" role="img" aria-label="供应方能带曲线；数值可在表格中查看" data-testid="electronic-band-plot"><title>供应方能带曲线（有界显示）</title>{plotBands.map((values, index) => <polyline key={String(bands[index].bandIdentity)} fill="none" stroke={String(bands[index].spinChannel) === "down" ? "#b42318" : "#176b87"} strokeDasharray={String(bands[index].spinChannel) === "down" ? "6 4" : undefined} strokeWidth="2" points={polyline(values, plotDomain)} />)}</svg> : <p role="status">当前能带结果没有可绘制的有限数值；完整原始表仍可供检查。</p>}
+    {plotBands.some((values, index) => numbers(bands[index].energiesEv).length > values.length) ? <p className="notice" role="status">能带图为有界预览；完整数值仍保留在下方表格与原始结果中。</p> : null}
+    <div className="workspace-table-scroll"><table><caption>能带状态数值表</caption><thead><tr><th scope="col">选择</th><th scope="col">自旋</th><th scope="col">能带</th><th scope="col">k 点</th><th scope="col">坐标</th><th scope="col">能量（eV）</th></tr></thead><tbody>{states.slice(0, 500).map((state) => { const point = kpoints.find((item) => item.kpointId === state.kpointId); return <tr key={String(state.stateId)}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_STATE", { spinChannelId: state.spinChannel, bandId: state.bandId, kpointId: state.kpointId, bandStateId: state.stateId }, onSelection)}>选择</button></td><td>{String(state.spinChannel)}</td><td>{String(state.bandId)}</td><td>{String(state.kpointId)}</td><td>{Array.isArray(point?.fractionalCoordinates) ? point.fractionalCoordinates.join(", ") : ""}</td><td>{String(state.energyEv)}</td></tr>; })}</tbody></table></div>
   </section>;
 }
 
 function DosView({ artifact, payload, workspace, onSelection }: PanelItemProps) {
   const energies = numbers(payload.energiesEv), points = strings(payload.energyPointIds), total = records(payload.totalDos), projections = records(payload.projections), channels = [...total, ...projections];
+  const plotChannels = channels.slice(0, 24).map((channel) => boundedNumbers(channel.values));
+  const plotDomain = numericDomain(plotChannels);
+  const hasPlotData = plotChannels.some((values) => values.length > 0);
   return <section aria-label="电子态密度" data-testid="electronic-dos-view"><h6>电子态密度（DOS）</h6><p><strong>投影覆盖：</strong> {String(payload.projectionCompleteness)} · <strong>单位：</strong> {String(payload.dosUnitSemantic)}</p>
-    <svg viewBox="0 0 640 220" role="img" aria-label="供应方态密度通道；数值可在表格中查看" data-testid="electronic-dos-plot"><title>供应方电子态密度</title>{channels.slice(0, 24).map((channel, index) => <polyline key={String(channel.channelIdentity)} fill="none" stroke={String(channel.spinChannel) === "down" ? "#b42318" : index === 0 ? "#176b87" : "#627d32"} strokeDasharray={String(channel.spinChannel) === "down" ? "6 4" : undefined} strokeWidth="2" points={polyline(numbers(channel.values), index, channels)} />)}</svg>
-    <div className="workspace-table-scroll"><table><caption>态密度数值表</caption><thead><tr><th>选择</th><th>通道</th><th>自旋</th><th>能量（eV）</th><th>DOS</th></tr></thead><tbody>{channels.flatMap((channel) => energies.slice(0, 500).map((energy, index) => <tr key={`${String(channel.channelIdentity)}:${points[index]}`}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_DOS_POINT", { spinChannelId: channel.spinChannel, dosChannelId: channel.channelId, projectionId: channel.projectionKind ? channel.channelIdentity : undefined, energyPointId: points[index] }, onSelection)}>选择</button></td><td>{String(channel.label ?? channel.channelId)}</td><td>{String(channel.spinChannel)}</td><td>{energy}</td><td>{numbers(channel.values)[index]}</td></tr>))}</tbody></table></div>
+    {hasPlotData ? <svg viewBox="0 0 640 220" role="img" aria-label="供应方态密度通道；数值可在表格中查看" data-testid="electronic-dos-plot"><title>供应方电子态密度（有界显示）</title>{plotChannels.map((values, index) => <polyline key={String(channels[index].channelIdentity)} fill="none" stroke={String(channels[index].spinChannel) === "down" ? "#b42318" : index === 0 ? "#176b87" : "#627d32"} strokeDasharray={String(channels[index].spinChannel) === "down" ? "6 4" : undefined} strokeWidth="2" points={polyline(values, plotDomain)} />)}</svg> : <p role="status">当前 DOS 结果没有可绘制的有限数值；完整原始表仍可供检查。</p>}
+    {plotChannels.some((values, index) => numbers(channels[index].values).length > values.length) ? <p className="notice" role="status">DOS 图为有界预览；完整数值仍保留在下方表格与原始结果中。</p> : null}
+    <div className="workspace-table-scroll"><table><caption>态密度数值表</caption><thead><tr><th scope="col">选择</th><th scope="col">通道</th><th scope="col">自旋</th><th scope="col">能量（eV）</th><th scope="col">DOS</th></tr></thead><tbody>{channels.flatMap((channel) => energies.slice(0, 500).map((energy, index) => <tr key={`${String(channel.channelIdentity)}:${points[index]}`}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_DOS_POINT", { spinChannelId: channel.spinChannel, dosChannelId: channel.channelId, projectionId: channel.projectionKind ? channel.channelIdentity : undefined, energyPointId: points[index] }, onSelection)}>选择</button></td><td>{String(channel.label ?? channel.channelId)}</td><td>{String(channel.spinChannel)}</td><td>{energy}</td><td>{numbers(channel.values)[index]}</td></tr>))}</tbody></table></div>
   </section>;
 }
 
@@ -67,10 +76,23 @@ function parse(artifact: Artifact): Payload | null {
   if (type === "electronic.dos" && (!Array.isArray(payload.energiesEv) || !Array.isArray(payload.energyPointIds) || !Array.isArray(payload.totalDos) || !Array.isArray(payload.projections))) return null;
   return payload as Payload;
 }
-function polyline(values: number[], offset: number, all: Array<Record<string, unknown>>): string { const flat = all.flatMap((item) => numbers(item.energiesEv ?? item.values)); const min = Math.min(...flat, 0), max = Math.max(...flat, 1), range = max - min || 1; return values.map((value, index) => `${20 + index * (600 / Math.max(1, values.length - 1))},${200 - ((value - min) / range) * 180 + (offset % 2) * 0}`).join(" "); }
+function polyline(values: number[], domain: readonly [number, number]): string { const [min, max] = domain, range = max - min || 1; return values.map((value, index) => `${20 + index * (600 / Math.max(1, values.length - 1))},${200 - ((value - min) / range) * 180}`).join(" "); }
 function record(value: unknown): Record<string, unknown> | null { return value !== null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null; }
 function records(value: unknown): Array<Record<string, unknown>> { return Array.isArray(value) ? value.filter((item): item is Record<string, unknown> => record(item) !== null) : []; }
 function numbers(value: unknown): number[] { return Array.isArray(value) ? value.filter((item): item is number => typeof item === "number" && Number.isFinite(item)) : []; }
+function boundedNumbers(value: unknown): number[] {
+  const values = numbers(value);
+  if (values.length <= MAX_PLOT_POINTS) return values;
+  return Array.from({ length: MAX_PLOT_POINTS }, (_, index) => values[Math.round(index * (values.length - 1) / (MAX_PLOT_POINTS - 1))]);
+}
+function numericDomain(series: readonly number[][]): [number, number] {
+  let min = 0, max = 1;
+  for (const values of series) for (const value of values) {
+    if (value < min) min = value;
+    if (value > max) max = value;
+  }
+  return [min, max];
+}
 function strings(value: unknown): string[] { return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : []; }
 function boundedJson(value: unknown, depth = 0): boolean {
   if (depth > 12) return false;

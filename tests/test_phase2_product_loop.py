@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+import pytest
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
 from mdi_api import create_app
@@ -34,6 +36,68 @@ def _seed_project_and_dataset(tmp_path, repo_root):
         )
     )
     return runtime, project, dataset
+
+
+def test_direct_upload_request_matches_upload_session_file_and_total_caps(monkeypatch):
+    monkeypatch.setattr(phase2_runtime, "MAX_FILES_PER_UPLOAD", 2)
+    monkeypatch.setattr(phase2_runtime, "MAX_FILE_BYTES", 4)
+    monkeypatch.setattr(phase2_runtime, "MAX_TOTAL_UPLOAD_BYTES", 6)
+
+    with pytest.raises(ValueError, match="UPLOAD_FILE_COUNT_CAP_EXCEEDED"):
+        DatasetUploadRequest(
+            projectId="project",
+            files=[
+                {"fileName": "a.txt", "content": "a"},
+                {"fileName": "b.txt", "content": "b"},
+                {"fileName": "c.txt", "content": "c"},
+            ],
+        )
+
+    with pytest.raises(ValueError, match="UPLOAD_PER_FILE_BYTE_CAP_EXCEEDED"):
+        DatasetUploadRequest(
+            projectId="project",
+            files=[{"fileName": "large.txt", "content": "12345"}],
+        )
+
+    with pytest.raises(ValueError, match="UPLOAD_TOTAL_BYTE_CAP_EXCEEDED"):
+        DatasetUploadRequest(
+            projectId="project",
+            files=[
+                {"fileName": "a.txt", "content": "1234"},
+                {"fileName": "b.txt", "content": "1234"},
+            ],
+        )
+
+
+def test_direct_upload_path_preflights_size_before_creating_dataset_bytes(tmp_path, monkeypatch):
+    source = tmp_path / "oversized.bin"
+    source.write_bytes(b"012345")
+    runtime = phase2_runtime.Phase2ProductRuntime(tmp_path / "artifacts")
+    runtime.ensure_project("project")
+    request = DatasetUploadRequest(projectId="project", filePaths=[str(source)])
+
+    monkeypatch.setattr(phase2_runtime, "MAX_FILE_BYTES", 4)
+    with pytest.raises(ValueError, match="UPLOAD_PER_FILE_BYTE_CAP_EXCEEDED"):
+        runtime.upload_dataset(request)
+
+    assert not (runtime.artifact_root / "projects" / "project" / "datasets" / "dataset_0001" / "raw").exists()
+
+
+def test_api_call_redacts_missing_upload_paths_from_http_detail():
+    private_path = r"C:\Users\researcher\AppData\Local\Secrets\materials.csv"
+
+    def missing_source():
+        raise FileNotFoundError(f"Upload file does not exist: {private_path}")
+
+    with pytest.raises(HTTPException) as exc_info:
+        phase2_runtime._api_call(missing_source)
+
+    assert exc_info.value.status_code == 400
+    assert exc_info.value.detail == {
+        "code": "UPLOAD_SOURCE_NOT_FOUND",
+        "message": "Upload source file is not available.",
+    }
+    assert private_path not in str(exc_info.value.detail)
 
 
 def test_durable_dataset_listing_batches_dataset_and_profile_reads(monkeypatch):

@@ -27,7 +27,26 @@ PostgreSQL/Redis/MinIO evidence package for that row.
 | `electronic.dos` | core.electronic | `electronic.dos` | `electronic.dos` | `agent2.electronic.dos` | figure/finding | DOS Viewer | supported | PASS |
 | `data.composition_space` | core.data | `materials.dataset`/`materials.table` | `dataset.composition_space` | `agent2.data.composition_space` | figure/table | Materials Explorer | supported | PASS |
 | `data.materials_explorer` | core.data | `materials.dataset`/`materials.table` | `dataset.materials_explorer` | `agent2.data.materials_explorer` | table/finding | Scientific Table | supported | PASS |
-| `ml.regression_evaluation` | core.data | `materials.dataset` | `ml.regression_evaluation` | `agent2.ml.regression_evaluation` | metric/table | N/A | supported | PASS |
+| `ml.regression_evaluation` | core.other | `materials.dataset` | `ml.regression_evaluation` | `agent2.ml.regression_evaluation` | metric/table | N/A | supported | PASS |
+
+### 2026-09-04 current-worktree object route recheck
+
+An authenticated in-app browser tab on the isolated production build
+`127.0.0.1:3022` opened every exact object/version link exposed by the active
+qualification project:
+
+| Scope | Count | Result |
+| --- | ---: | --- |
+| Exact ScientificObject/Version routes | 13 | `13/13` readable |
+| Valid-route `role=alert` failures | 13 | `0` |
+| Browser error-log entries | 13 | `0` |
+| Desktop document-width overflow | 13 | `0 px` |
+| Real canvas routes | 3 | trajectory/structure content mounted |
+
+Table, electronic, phonon and ML families used bounded reviewed renderers;
+trajectory and structure families mounted real canvas surfaces. This is a
+current-worktree route qualification, not a claim that every declared
+capability family has completed a separate human real-source campaign.
 
 ### 2026-08-31 trajectory diffusion real-source product path
 
@@ -444,3 +463,37 @@ Agent2 ResearchTurn/ScientificResultSnapshot, so it remains compatibility
 evidence only. The canonical Agent2 MSD/diffusion acceptance documented above
 provides the missing snapshot, mobile, historical and archived evidence and is
 the authority for the current `PASS` status.
+
+### 2026-09-04 current-worktree route-level recheck
+
+Against the current production frontend on `127.0.0.1:3020`, an authenticated
+read-only sweep opened all `13/13` populated ScientificObject /
+ScientificObjectVersion entries in the active project. Electronic DOS,
+Phonon Band/DOS, Dataset and ML tables, Electronic Band, Structure, Trajectory
+and Diffusion surfaces all reached their declared renderer or bounded fallback
+after hydration. No route rendered `Internal Server Error`, `Application
+error`, `SOURCE_MISSING`, or an alert failure; desktop overflow was `0 px`.
+Structure and trajectory entries mounted real canvas renderers, and the
+Structure detail showed a real `Si` site/cell payload plus exact-version
+metadata. This recheck does not change the historical `PARTIAL` boundaries for
+capability families not yet covered by an independent real-user campaign.
+
+### 2026-09-04 explicit safe state for static/download-only artifacts
+
+The workspace renderer registry already classifies `preview_png`,
+`figure_pdf`, `matterviz_snapshot_png`, `plotly_html`, `figure_svg` and
+other non-executable file contracts as `STATIC_METADATA` or `DOWNLOAD_ONLY`.
+The renderer previously had no explicit branch for those classifications, so
+they fell through to generic inert-fallback copy even though the registry had
+intentionally made a safe disposition. The bounded renderer now presents an
+explicit researcher-facing metadata/download state with artifact contract,
+filename/size where available and checksum summary. It does not inline or
+execute HTML, script, image payloads or arbitrary renderer code, and directs
+users to the existing result-directory download action for the original bytes.
+
+Deterministic frontend coverage is `8/8` for the workspace gallery and
+renderer registry, including a metadata-only `preview_png` and a
+download-only `plotly_html` containing a script token. The script token is
+not rendered or executed. This closes the renderer-wiring gap for the
+declared safe classifications without changing scientific authority,
+provenance, or version resolution.

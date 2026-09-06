@@ -1,0 +1,18 @@
+{
+  "improvementId": "CO-090",
+  "status": "PASS",
+  "date": "2026-09-05",
+  "change": "Repeated presentation evidence, inspector, finding and viewer ARIA identities are instance-scoped.",
+  "files": [
+    "apps/web/app/components/ScientificPresentationBlocks.tsx",
+    "apps/web/app/components/ScientificPresentationBlocks.test.tsx",
+    "apps/web/app/components/scientific-viewer/ScientificViewerShell.tsx",
+    "apps/web/app/components/scientific-viewer/ScientificViewerShell.test.tsx"
+  ],
+  "verification": {
+    "focusedTests": "35 passed",
+    "typecheck": "PASS",
+    "diffCheck": "PASS"
+  },
+  "scientificAuthorityChanged": false
+}

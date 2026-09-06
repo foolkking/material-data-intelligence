@@ -127,8 +127,16 @@ export type ScientificReportDependencyImpact = {
   displayName: string;
   lifecycleStatus: "ACTIVE" | "ARCHIVED" | "TRASHED";
   dependencyCount: number;
-  dependencies: Array<{ kind: string; id: string; label: string }>;
+  dependencies: Array<{ kind: string; id: string; label: string; href?: string }>;
   canDelete: boolean;
+  retentionPolicy?: {
+    schemaVersion: string;
+    automaticPurge: "ENABLED" | "DISABLED";
+    referencedProvenance: string;
+    unreferencedTrash: string;
+    manualPurge: "SERVER_ZERO_DEPENDENCY_ONLY" | "NOT_SUPPORTED_FOR_ENTITY";
+    manualPurgeRequiresZeroDependencies: boolean;
+  };
   impact: {
     removedFromActiveDiscovery: boolean;
     historicalProvenanceProtected: boolean;

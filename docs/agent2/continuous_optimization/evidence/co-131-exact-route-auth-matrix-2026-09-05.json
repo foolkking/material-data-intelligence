@@ -1,0 +1,15 @@
+{
+  "id": "CO-131",
+  "date": "2026-09-05",
+  "problem": "Authorization was covered by separate tests, but there was no consolidated regression over the high-value exact ResearchTurn and ScientificObject routes.",
+  "change": "Added one TestClient matrix using persisted project-owned Turn/Object identities and a foreign user across turn detail/context/cancel/dispatch/progress/result/project-result/interpretation/events plus object metadata/dependency/version/query/viewer/relationship routes.",
+  "files": [
+    "tests/test_agent2_api.py"
+  ],
+  "verification": {
+    "focused_test": "1 passed, 27 deselected",
+    "expected_status": "403 for every covered foreign-user request",
+    "leakage_assertions": "object, version, and sentinel metadata absent from denial responses"
+  },
+  "result": "High-value exact-id Research and ScientificObject boundaries now have a single regression proving fail-closed authorization before downstream work."
+}

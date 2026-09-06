@@ -1,0 +1,2740 @@
+{
+  "generatedAt": "2026-09-01T15:23:49.696Z",
+  "origin": "http://127.0.0.1:3013",
+  "routes": [
+    {
+      "name": "projects",
+      "route": "/projects",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1261,
+      "url": "http://127.0.0.1:3013/projects",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1838,
+        "h1": [
+          "材料研究项目"
+        ],
+        "h2": [
+          "Phase 项目",
+          "其他项目与历史记录"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 2
+        },
+        "links": 19,
+        "buttons": 24,
+        "inputs": 1,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n材料数据与科学分析\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n\n项目\n\n材料研究项目\n\n项目是数据、研究过程和分析报告的长期边界。\n\n新建项目\n搜索项目、Case 或科学能力\n当前\n已归档\n回收站\n全部\n选择\n16 个项目\n\n阶段能力记录\n\nPhase 项目\n3 个\nPhase 3 Project\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nPhase 13 Browser Qualification\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nPhase 13 Structure Browser Qualification\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\n其他项目与历史记录\n13 个\nAPI Phase 2 Project\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nInput transport regression\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nLive Project\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nLive Project 2\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nP14R 回收恢复验收 2026-09-01\n一次性项目，用于恢复路径验收。\n打开项目 →\n⋯\nproject_8c_route\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_capability_641df0fd6c35\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_capability_a4fc81d56c0b\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_capability_cd9b1d478faa\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_intent_9ae2ece0719b\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_intent_9b95455d21da\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_intent_6950765c7483\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_local\n查看数据、研究过程与分析报告\n打开项目 →\n⋯"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_projects.png"
+    },
+    {
+      "name": "project",
+      "route": "/projects/project_0002_1a0af866391f412d",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1233,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 910,
+        "h1": [
+          "Phase 13 Structure Browser Qualification"
+        ],
+        "h2": [
+          "项目数据",
+          "最近研究"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "header": 2
+        },
+        "links": 21,
+        "buttons": 2,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n项目 · Phase 13 Structure Browser Qualification\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n概览\n数据\n研究\n报告\n\n项目概览\n\nPhase 13 Structure Browser Qualification\n\n围绕项目数据继续研究，并保留每次分析的科学结果。\n\n继续研究\n查看数据\n项目数据\n全部数据\nPhase14R Composition ML Stable Identity\n\n1 个文件 · 3 个记录\n\n查看 →\nPhase14R Composition ML Qualification\n\n1 个文件 · 3 个记录\n\n查看 →\nPhase14R Diffusion Unwrapped Qualification\n\n1 个文件 · 1 个记录\n\n查看 →\nPhase14R MSD Unwrapped Qualification Current Runtime\n\n1 个文件 · 1 个记录\n\n查看 →\nPhase14R MSD Unwrapped Qualification\n\n1 个文件 · 1 个记录\n\n查看 →\n最近研究\n研究记录\n请重新分析所选 Dataset 样本 mat-2 的 band_gap，并与该精确 Dataset 版本中的中位数比较；保留样本身份、来源版本、证据和限制。\n\n分析完成\n\n打开 →\n均方位移（MSD）与轨迹扩散\n\n分析完成\n\n打开 →\n均方位移（MSD）与轨迹扩散\n\n分析失败\n\n打开 →\n材料组成空间分析\n\n分析完成\n\n打开 →\n均方位移（MSD）与轨迹扩散\n\n分析完成\n\n打开 →"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_project.png"
+    },
+    {
+      "name": "data",
+      "route": "/projects/project_0002_1a0af866391f412d/data",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1243,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/data",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 764,
+        "h1": [
+          "Phase 13 Structure Browser Qualification"
+        ],
+        "h2": [
+          "科研对象",
+          "Phase14R Composition ML Stable Identity"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "header": 4
+        },
+        "links": 36,
+        "buttons": 42,
+        "inputs": 5,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [
+          {
+            "tag": "INPUT",
+            "type": "search",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          }
+        ],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n项目 · Phase 13 Structure Browser Qualification\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n概览\n数据\n研究\n报告\n\n项目数据\n\nPhase 13 Structure Browser Qualification\n当前\n已归档\n回收站\n✓\nPhase14R Composition ML Stable Identity\n1 个文件 · 表格\n正在查看\n⋯\nPhase14R Composition ML Qualification\n1 个文件 · 表格\n⋯\nPhase14R Diffusion Unwrapped Qualification\n1 个文件 · 轨迹\n⋯\nPhase14R MSD Unwrapped Qualification Current Runtime\n1 个文件 · 轨迹\n⋯\nPhase14R MSD Unwrapped Qualification\n1 个文件 · 轨迹\n⋯\nPhase14R Phonon Surface Qualification\n3 个文件 · 结构\n⋯\nPhase14R Trajectory Surface Qualification\n1 个文件 · 轨迹\n⋯\nPhase14R Electronic Surface Qualification\n2 个文件 · 电子结构\n⋯\nPhase14R Band Gap Acceptance\n1 个文件 · 电子结构\n⋯\nPhase14R XRD Validation\n2 个文件 · XRD\n⋯\nPhase13 Canonical Dataset\n1 个文件 · 表格\n⋯\nPhase13 Dataset Grounding\n1 个文件 · 表格\n⋯\nPhase13 Fresh Structure Source\n1 个文件 · 结构\n⋯\nStructure presentation qualification\n1 个文件 · 结构\n⋯\n科研对象\nPhase14R Electronic DOS\n电子态密度\n⋯\nPhase14R Phonon Band\n声子能带\n⋯\nPhase13 Dataset Presentation\n科研材料表\n⋯\nPhase14R Band Gap Acceptance\n科研材料表\n⋯\nPhase14R Composition ML Qualification\n科研材料表\n⋯\nPhase13 Canonical Dataset\n科研材料表\n⋯\nPhase14R Electronic Band\n电子能带\n⋯\nPhase14R Composition ML Stable Identity\n科研材料表\n⋯\nPhase14R Atomic Trajectory\n原子轨迹\n⋯\nPhase13 Fresh Structure\n晶体结构\n⋯\nPhase14R Phonon DOS\n声子态密度\n⋯\nSi Structure Presentation\n晶体结构\n⋯\nPhase14R Diffusion Unwrapped Qualification\n原子轨迹\n⋯\n上传数据\nPhase14R Composition ML Stable Identity\n\n1 个文件 · 3 个记录\n\n研究此数据\n已验证的数据表\n\n3 / 3 行 · 单位沿用源数据字段。\n\n搜索\n列显示\n选择\tformula\tsample_id\ty_pred\ty_true\n选择\tSi\tsample-si\t1\t1.1\n选择\tFe2O3\tsample-fe2o3\t2.5\t2.2\n选择\tLiFePO4\tsample-lifepo4\t2.9\t3.1\n查看来源与属性"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_data.png"
+    },
+    {
+      "name": "dataset_detail",
+      "route": "/projects/project_0002_1a0af866391f412d/datasets/dataset_0001_441637edf69740aa",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1245,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/datasets/dataset_0001_441637edf69740aa",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2024,
+        "h1": [
+          "dataset_0001_441637edf69740aa"
+        ],
+        "h2": [
+          "上传记录",
+          "该数据集的分析",
+          "数据上下文查看器",
+          "自然语言需求",
+          "对话与计划 chunks",
+          "分析计划",
+          "运行控制"
+        ],
+        "landmarks": {
+          "main": 2,
+          "nav": 2,
+          "header": 2
+        },
+        "links": 11,
+        "buttons": 13,
+        "inputs": 1,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n项目研究\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n概览\n数据\n研究\n报告\n项目\n/\nproject_0002_1a0af866391f412d\n/\ndataset_0001_441637edf69740aa\n\n数据工作台\n\ndataset_0001_441637edf69740aa\n\n正在读取数据集记录...\n\n返回项目\n导入其他数据\n导入\nProfile\n分析\n结果\n解析状态\n未知\n表格行数\n—\n列数\n—\n可用能力\n0\n最近分析\n未开始\n结果 / 报告\n—\n\n来源与推导\n\n上传记录\n0\n源文件\n\n暂无源文件明细。\n\n规范化资源\n\n0 个资源已关联到当前数据集\n\nProfile 尚未生成\n\n结果记录\n\n该数据集的分析\n0\n\n当前数据集还没有分析结果。\n\n跳到分析工作区\n数据上下文查看器\n收起\n\n请选择数据集，或加载演示数据\n\n数据集 ID\ndataset_0001_441637edf69740aa\nPROFILE ID\nProfile 尚未生成，可手动输入或点击生成。\n数据类型\n未知\n数据状态\n未知\n\n请选择数据集，或加载演示数据\n\nAgent 过程\n对话与 Plan\n结果与导出\n分析路径\n选择数据后开始\n-\n数据上下文\n-\n意图理解\n-\n分析计划\n-\n执行状态\n-\n结果\n自然语言需求\nDeepSeek / deepseek-v4-flash\n1\n请计算 y_true 和 y_pred 的基础误差指标，并生成报告摘要。\n2\n请统计材料组成中的元素分布。\n3\n请找出预测误差最大的样本。\n4\n请基于当前结构数据生成 3D 可视化。\n\nDeepSeek / deepseek-v4-flash · dataset_0001_441637edf69740aa\n\n创建并运行\n对话与计划 chunks\n1\n用户需求 chunk\n用户需求 chunk\n请计算 y_true 和 y_pred 的基础误差指标，并生成报告摘要。\n分析计划\n尚未生成分析计划\n\n尚未生成分析计划\n\n运行控制\n未知\n任务 ID\n尚未创建任务\n计划 ID\n生成计划后将显示审计信息\n计划审计\n生成计划后将显示审计信息\n队列状态\n未进入队列\n\n运行入口位于上方需求提交区；此处仅保留任务状态与审计信息。"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_dataset_detail.png"
+    },
+    {
+      "name": "viewer_table",
+      "route": "/projects/project_0002_1a0af866391f412d/data?object=8a425466-b697-4c85-9a43-199414a22865&version=be02266a-7d4f-4ebb-9f28-3132855167d0",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1259,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/data?object=8a425466-b697-4c85-9a43-199414a22865&version=be02266a-7d4f-4ebb-9f28-3132855167d0",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 764,
+        "h1": [
+          "Phase 13 Structure Browser Qualification"
+        ],
+        "h2": [
+          "科研对象",
+          "Phase13 Canonical Dataset"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "header": 4
+        },
+        "links": 36,
+        "buttons": 40,
+        "inputs": 3,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [
+          {
+            "tag": "INPUT",
+            "type": "search",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          }
+        ],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n项目 · Phase 13 Structure Browser Qualification\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n概览\n数据\n研究\n报告\n\n项目数据\n\nPhase 13 Structure Browser Qualification\n当前\n已归档\n回收站\n✓\nPhase14R Composition ML Stable Identity\n1 个文件 · 表格\n⋯\nPhase14R Composition ML Qualification\n1 个文件 · 表格\n⋯\nPhase14R Diffusion Unwrapped Qualification\n1 个文件 · 轨迹\n⋯\nPhase14R MSD Unwrapped Qualification Current Runtime\n1 个文件 · 轨迹\n⋯\nPhase14R MSD Unwrapped Qualification\n1 个文件 · 轨迹\n⋯\nPhase14R Phonon Surface Qualification\n3 个文件 · 结构\n⋯\nPhase14R Trajectory Surface Qualification\n1 个文件 · 轨迹\n⋯\nPhase14R Electronic Surface Qualification\n2 个文件 · 电子结构\n⋯\nPhase14R Band Gap Acceptance\n1 个文件 · 电子结构\n⋯\nPhase14R XRD Validation\n2 个文件 · XRD\n⋯\nPhase13 Canonical Dataset\n1 个文件 · 表格\n⋯\nPhase13 Dataset Grounding\n1 个文件 · 表格\n⋯\nPhase13 Fresh Structure Source\n1 个文件 · 结构\n⋯\nStructure presentation qualification\n1 个文件 · 结构\n⋯\n科研对象\nPhase14R Electronic DOS\n电子态密度\n⋯\nPhase14R Phonon Band\n声子能带\n⋯\nPhase13 Dataset Presentation\n科研材料表\n⋯\nPhase14R Band Gap Acceptance\n科研材料表\n⋯\nPhase14R Composition ML Qualification\n科研材料表\n⋯\nPhase13 Canonical Dataset\n科研材料表\n⋯\nPhase14R Electronic Band\n电子能带\n⋯\nPhase14R Composition ML Stable Identity\n科研材料表\n⋯\nPhase14R Atomic Trajectory\n原子轨迹\n⋯\nPhase13 Fresh Structure\n晶体结构\n⋯\nPhase14R Phonon DOS\n声子态密度\n⋯\nSi Structure Presentation\n晶体结构\n⋯\nPhase14R Diffusion Unwrapped Qualification\n原子轨迹\n⋯\n上传数据\n\n科研材料表\n\nPhase13 Canonical Dataset\n\n版本 1\n\n归档科研对象\n研究此数据\n已验证的数据表\n\n3 / 3 行 · 单位沿用源数据字段。\n\n搜索\n列显示\n选择\tband_gap\tsample_id\n选择\t1.2\tmat-1\n选择\t2.5\tmat-2\n选择\t3.1\tmat-3\n精确版本\n科学元数据\n技术详情"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_viewer_table.png"
+    },
+    {
+      "name": "viewer_structure",
+      "route": "/projects/project_0002_1a0af866391f412d/data?object=dc3c3eee-f254-4edf-a0fa-c955402b3069&version=8859cb49-0766-48cd-8a56-e44f5332e0c5",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1257,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/data?object=dc3c3eee-f254-4edf-a0fa-c955402b3069&version=8859cb49-0766-48cd-8a56-e44f5332e0c5",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 764,
+        "h1": [
+          "Phase 13 Structure Browser Qualification"
+        ],
+        "h2": [
+          "科研对象",
+          "Phase13 Fresh Structure"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "header": 3
+        },
+        "links": 36,
+        "buttons": 75,
+        "inputs": 22,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [
+          {
+            "tag": "INPUT",
+            "type": "number",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "number",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "number",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "number",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "number",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          }
+        ],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n项目 · Phase 13 Structure Browser Qualification\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n概览\n数据\n研究\n报告\n\n项目数据\n\nPhase 13 Structure Browser Qualification\n当前\n已归档\n回收站\n✓\nPhase14R Composition ML Stable Identity\n1 个文件 · 表格\n⋯\nPhase14R Composition ML Qualification\n1 个文件 · 表格\n⋯\nPhase14R Diffusion Unwrapped Qualification\n1 个文件 · 轨迹\n⋯\nPhase14R MSD Unwrapped Qualification Current Runtime\n1 个文件 · 轨迹\n⋯\nPhase14R MSD Unwrapped Qualification\n1 个文件 · 轨迹\n⋯\nPhase14R Phonon Surface Qualification\n3 个文件 · 结构\n⋯\nPhase14R Trajectory Surface Qualification\n1 个文件 · 轨迹\n⋯\nPhase14R Electronic Surface Qualification\n2 个文件 · 电子结构\n⋯\nPhase14R Band Gap Acceptance\n1 个文件 · 电子结构\n⋯\nPhase14R XRD Validation\n2 个文件 · XRD\n⋯\nPhase13 Canonical Dataset\n1 个文件 · 表格\n⋯\nPhase13 Dataset Grounding\n1 个文件 · 表格\n⋯\nPhase13 Fresh Structure Source\n1 个文件 · 结构\n⋯\nStructure presentation qualification\n1 个文件 · 结构\n⋯\n科研对象\nPhase14R Electronic DOS\n电子态密度\n⋯\nPhase14R Phonon Band\n声子能带\n⋯\nPhase13 Dataset Presentation\n科研材料表\n⋯\nPhase14R Band Gap Acceptance\n科研材料表\n⋯\nPhase14R Composition ML Qualification\n科研材料表\n⋯\nPhase13 Canonical Dataset\n科研材料表\n⋯\nPhase14R Electronic Band\n电子能带\n⋯\nPhase14R Composition ML Stable Identity\n科研材料表\n⋯\nPhase14R Atomic Trajectory\n原子轨迹\n⋯\nPhase13 Fresh Structure\n晶体结构\n⋯\nPhase14R Phonon DOS\n声子态密度\n⋯\nSi Structure Presentation\n晶体结构\n⋯\nPhase14R Diffusion Unwrapped Qualification\n原子轨迹\n⋯\n上传数据\n\n晶体结构\n\nPhase13 Fresh Structure\n\n版本 1\n\n归档科研对象\n研究此数据\n\n方向键旋转，Shift 加方向键平移，加号和减号缩放。N 选择下一个原子，B 选择下一条键，Backspace 撤销上一步，0 或 R 重置相机，Escape 清除选择。\n\n结构场景已渲染，共 1 个显示位点。\n\n三维结构查看器\n已就绪\n重置相机\n键合\n交互式画布显示 1 个位点、1 种元素和 0 条受限键。\n化学式\nSi\n规范位点\n1\n元素种类\n1\n晶格\n[3, 0, 1.8369701987210297e-16] [4.82436794902991e-16, 3, 1.8369701987210297e-16] [0, 0, 3]\n规范键合\n0\n跨边界键合\n0\n自周期键合\n0\n渲染模式\ninteractive\n超晶胞扩展\n1 × 1 × 1\n显示位点\n1\n显示键合\n0\n选择\n无\n已选键合\n无\n裁剪\n已停用\n相机视角\ndefault\n晶格轴\n已隐藏\n警告\n无\n超晶胞\nA 轴\nB 轴\nC 轴\n1 × 1 × 1\n2 × 1 × 1\n2 × 2 × 1\n2 × 2 × 2\n3 × 3 × 3\n应用\n重置为 1 × 1 × 1\n下载视图状态\n草稿 1 × 1 × 1：1 个晶胞，1 个原子，0 条键，模式：interactive。\n已应用 1 × 1 × 1\n视图控制\n裁剪\n启用裁剪\n重置裁剪\nX 平面\nY 平面\nZ 平面\n裁剪已停用。\n晶胞与晶格\n晶胞\n超晶胞边界\n晶格轴\nA 晶格矢量\n3.000 Å\nB 晶格矢量\n3.000 Å\nC 晶格矢量\n3.000 Å\n相机\n默认\n顶部\n前方\n侧面\n等轴\n当前相机视角：default。\n下载视图状态\n高级导出\n选择\n距离\n角度\n二面角\n撤销\n清除\n下载测量 JSON\n显示坐标\n最小周期像\n\n已选位点：无（0/1）\n\n测量使用当前结构场景中的显示坐标。\n\n尚未选择位点。请选择原子以查看规范身份和周期身份。\n\n规范结构场景：1 个位点；当前查看器视图：1 个位点、1 种元素、0 条同晶胞键。\n\nSi\n技术详情\n精确版本\n科学元数据\n技术详情"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_viewer_structure.png"
+    },
+    {
+      "name": "research_index",
+      "route": "/projects/project_0002_1a0af866391f412d/research",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1263,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/research",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 720,
+        "h1": [
+          "研究时间线"
+        ],
+        "h2": [
+          "项目数据与最近研究"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 2,
+          "header": 4
+        },
+        "links": 22,
+        "buttons": 9,
+        "inputs": 3,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n项目 · Phase 13 Structure Browser Qualification\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n概览\n数据\n研究\n报告\n跳到研究工作台\n\nPhase 13 Structure Browser Qualification · 研究时间线\n\n研究时间线\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式\n研究记录\n本会话上下文\n固定对象 Phase14R Diffusion Unwrapped Qualification\n×\n正在显示最近 10 条消息\n查看完整会话\n你\n\n请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。\n\n研究助手\n\n在 1 ps 至 6 ps 的显式拟合窗口内，扩散系数估计为 0.03861808 Å²/ps。扩散拟合在 1 ps 至 6 ps 窗口内使用 11 个点，拟合持续时间为 5 ps，R² 为 0.9703018，RMSE 为 0.06409487 Å²。 完整结构化结果已在右侧工作台提供。\n\n你\n\n请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。\n\n研究助手\n\n在 1 至 6 ps 的拟合窗口内，扩散系数估计为 0.03861808 Å²/ps。扩散拟合在 1 至 6 ps 窗口内使用 11 个点，拟合持续 5 ps，R² 为 0.9703018，RMSE 为 0.06409487 Å²。 完整结构化结果已在右侧工作台提供。\n\n你\n\n请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。\n\n研究助手\n\n在 1 ps 至 6 ps 的拟合窗口内，扩散系数为 0.03861808 Å²/ps。扩散拟合在 1 ps 至 6 ps 窗口内使用 11 个点，持续 5 ps，R² 为 0.9703018，RMSE 为 0.06409487 Å²。 完整结构化结果已在右侧工作台提供。\n\n你\n\n请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。\n\n研究助手\n\n在 1 ps 至 6 ps 的拟合窗口内，扩散系数估计为 0.03861808 Å²/ps。扩散拟合的 R² 为 0.9703018，RMSE 为 0.06409487 Å²，拟合窗口包含 11 个点，持续 5 ps。 完整结构化结果已在右侧工作台提供。\n\n你\n\n请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。\n\n研究助手\n\n在 1 ps 至 6 ps 的拟合窗口内，扩散系数估计为 0.03861808 Å²/ps，拟合点数为 11，拟合持续时间为 5 ps。扩散拟合的 R² 为 0.9703018，RMSE 为 0.06409487 Å²，且扩散区间诊断状态为 DIFFUSIVE_WINDOW_ACCEPTED。 完整结构化结果已在右侧工作台提供。\n\n✓ 分析完成\n请重新分析所选 Dataset 样本 mat-2 的 band_gap，并与该精确 Dataset 版本中的中位数比较；保留样本身份、来源版本、证据和限制。\n1 个步骤 · 查看结果\n✓ 分析完成\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看结果\n分析失败\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看过程\n✓ 分析完成\n材料组成空间分析\n2 个步骤 · 查看结果\n✓ 分析完成\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看结果\n分析失败\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看过程\n询问此项目中的数据\n项目数据\ndeepseek-v4-flash · 标准\n开始分析\n\n当前研究上下文\n\n项目数据与最近研究\n\n这里保留可用于分析的数据范围，以及已经完成的研究结果。\n\n项目数据\n14 个数据集\nPhase14R Composition ML Stable Identity\n3 个记录 · 科学数据\nPhase14R Composition ML Qualification\n3 个记录 · 科学数据\nPhase14R Diffusion Unwrapped Qualification\n1 个记录 · 原子轨迹\nPhase14R MSD Unwrapped Qualification Current Runtime\n1 个记录 · 原子轨迹\n最近研究\n查看报告\n请重新分析所选 Dataset 样本 mat-2 的 band_gap，并与该精确 Dataset 版本中的中位数比较；保留样本身份、来源版本、证据和限制。\n已完成\n均方位移（MSD）与轨迹扩散\n已完成\n均方位移（MSD）与轨迹扩散\n未完成"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_research_index.png"
+    },
+    {
+      "name": "research_complete",
+      "route": "/projects/project_0002_1a0af866391f412d/research/research_fbf038934dc84ffeaa5aed9e7c906095?run=job_agent2_92fcd73e38034dcfbc7aa63fbcf2a70e&turn=92fcd73e-3803-4dcf-bc7a-a63fbcf2a70e",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1257,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/research/research_fbf038934dc84ffeaa5aed9e7c906095?run=job_agent2_92fcd73e38034dcfbc7aa63fbcf2a70e&turn=92fcd73e-3803-4dcf-bc7a-a63fbcf2a70e",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 720,
+        "h1": [
+          "研究时间线"
+        ],
+        "h2": [],
+        "landmarks": {
+          "main": 1,
+          "nav": 2,
+          "header": 3
+        },
+        "links": 16,
+        "buttons": 18,
+        "inputs": 3,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n项目 · Phase 13 Structure Browser Qualification\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n概览\n数据\n研究\n报告\n跳到研究工作台\n\nPhase 13 Structure Browser Qualification · 研究时间线\n\n研究时间线\n请分析当前项目中的硅晶体结构组成、晶格参数和密度，并给出可追溯的科学结论。\n本次上下文\n研究记录\n本次研究使用的上下文\n用于理解问题· 2 项\n正在显示最近 10 条消息\n查看完整会话\n研究助手\n\nPhase13 Canonical Dataset 包含 3 个样本、1 个属性、3 行和 2 列。三个样本的 band_gap 值分别为 1.2、2.5 和 3.1。 完整结构化结果已在右侧工作台提供。\n\n研究助手\n\nPhase13 Canonical Dataset 包含 3 个样本、1 个属性、3 行和 2 列。数据集中所有样本的带隙值分别为 1.2、2.5 和 3.1。 完整结构化结果已在右侧工作台提供。\n\n研究助手\n\nPhase13 Canonical Dataset（版本 be02266a-7d4f-4ebb-9f28-3132855167d0）包含 3 个样本、1 个属性、3 行和 2 列。带隙属性的最小值为 1.2，最大值为 3.1，均值为 2.266667，中位数为 2.5。 完整结构化结果已在右侧工作台提供。\n\n研究助手\n\n样本 mat-2 的 band_gap 值为 2.5。分析基于 Phase13 Canonical Dataset，对象 ID 8a425466-b697-4c85-9a43-199414a22865，版本 ID be02266a-7d4f-4ebb-9f28-3132855167d0。 完整结构化结果已在右侧工作台提供。\n\n你\n\n请分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出有来源的科学结论。\n\n研究助手\n\n根据 Phase13 Canonical Dataset（版本 be02266a-7d4f-4ebb-9f28-3132855167d0）的精确数据，样本 mat-2 的 band_gap 数值为 2.5（无单位）。该数据集包含 3 个样本、1 个属性（band_gap），band_gap 的最小值为 1.2，最大值为 3.1，平均值为 2.266667，中位数为 2.5。 完整结构化结果已在右侧工作台提供。\n\n你\n\n请分析所选 Dataset 样本 mat-2 的 band_gap 及其在当前 Dataset 中的分布位置，比较它与数据集范围的关系，并基于精确版本给出有来源的科学结论与限制。\n\n研究助手\n\n根据 Phase13 Canonical Dataset（版本 be02266a-7d4f-4ebb-9f28-3132855167d0）的精确数据，样本 mat-2 的 band_gap 数值为 2.5（无单位）。该数据集包含 3 个样本、1 个属性（band_gap），band_gap 的最小值为 1.2，最大值为 3.1，平均值为 2.266667，中位数为 2.5。 完整结构化结果已在右侧工作台提供。\n\n你\n\n请重新分析所选 Dataset 样本 mat-2 的 band_gap，并与该精确 Dataset 版本中的中位数比较；保留样本身份、来源版本、证据和限制。\n\n研究助手\n\n样本 mat-2 的 band_gap 值为 2.5（无单位）。该精确数据集版本中 band_gap 属性的中位数为 2.5（无单位）。 完整结构化结果已在右侧工作台提供。\n\n科学解释已准备\n1/1\n✓\n浏览材料数据集已完成\n已有输出\n\n已有 1 项真实执行输出可查看。\n\n生成科学报告\n\n将已验证结果和解释整理为持久报告，不会重新计算。\n\n生成报告\n✓ 分析完成\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看结果\n分析失败\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看过程\n✓ 分析完成\n材料组成空间分析\n2 个步骤 · 查看结果\n✓ 分析完成\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看结果\n分析失败\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看过程\n分析失败\n均方位移（MSD）\n1 个步骤 · 查看过程\n询问此项目中的数据\n项目数据\ndeepseek-v4-flash · 标准\n开始分析\n\n科学呈现 · 1.0\n\n科学呈现\n绑定 1 个精确源版本\n权威指标\ndataset.sample id\nmat-2\ndataset.sample.band gap\n2.5\ndataset.sample count\n3\ncount\ndataset.property count\n1\ncount\ndataset.row count\n3\ncount\ndataset.column count\n2\ncount\ncomposition.valid count\n0\ncount\ncomposition.invalid count\n0\ncount\nquality.invalid formula count\n0\ncount\ndataset.sample id\nmat-1\ndataset.sample.band gap\n1.2\ndataset.sample id\nmat-3\n结果入口\n表格\n材料数据集概览\n精确版本 be02266a-7d4f-4ebb-9f28-3132855167d0\n在页内查看\n打开原始 Artifact\n查看器\nPhase13 Canonical Dataset\n精确版本 be02266a-7d4f-4ebb-9f28-3132855167d0\n打开查看器\n证据路径 · 1 项\n继续这项研究\n\n下面的操作会明确区分继续、重新计算与仅重新解释。\n\n继续研究\n编辑问题\n重新解释（不重算科学结果）\n重新研究（新运行）\n固定到研究上下文\n固定来源版本"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_research_complete.png"
+    },
+    {
+      "name": "research_payload_missing",
+      "route": "/projects/project_0002_1a0af866391f412d/research/research_13cc758206ea45de9a537716ba7972dd?run=job_dc63f3f5d57742009c6be09e",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 3641,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/research/research_13cc758206ea45de9a537716ba7972dd?run=job_dc63f3f5d57742009c6be09e",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 720,
+        "h1": [
+          "研究时间线"
+        ],
+        "h2": [
+          "扩散分析"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 2,
+          "header": 10
+        },
+        "links": 16,
+        "buttons": 45,
+        "inputs": 3,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n项目 · Phase 13 Structure Browser Qualification\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n概览\n数据\n研究\n报告\n跳到研究工作台\n\nPhase 13 Structure Browser Qualification · 研究时间线\n\n研究时间线\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式\n研究记录\n你\n\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质；报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。\n\n研究助手\n\n当前已验证的分析能力无法完整覆盖这个问题。请尝试缩小问题范围，或选择更匹配的数据。没有创建分析运行。\n\n你\n\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质；报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。\n\n研究助手\n\n本次分析将以数据集“Phase14R Diffusion Unwrapped Qualification”为范围。 分析方案： 1. 根据均方位移估计扩散行为 2. 计算轨迹中的均方位移\n\n研究助手\n\n分析方案未能通过当前数据和科学能力的验证，因此没有创建分析运行。\n\n你\n\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质；报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。\n\n研究助手\n\n本次分析将以数据集“Phase14R Diffusion Unwrapped Qualification”为范围。 分析方案： 1. 根据均方位移估计扩散行为 2. 计算轨迹中的均方位移\n\n研究助手\n\n分析已经完成。 可以在右侧查看科学结果、依据与来源。\n\n✓ 分析完成 · 2 个步骤\n✓ 分析完成\n请重新分析所选 Dataset 样本 mat-2 的 band_gap，并与该精确 Dataset 版本中的中位数比较；保留样本身份、来源版本、证据和限制。\n1 个步骤 · 查看结果\n✓ 分析完成\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看结果\n分析失败\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看过程\n✓ 分析完成\n材料组成空间分析\n2 个步骤 · 查看结果\n✓ 分析完成\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看结果\n分析失败\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看过程\n询问此项目中的数据\n项目数据\ndeepseek-v4-flash · 标准\n开始分析\n\n科学结果\n\n扩散分析\n查看数据\n打开分析报告\n主要结果\n4 个科学输出\n权威图表\n扩散分析\n轨迹扩散分析\n\n读取已持久化的科学结果；浏览器只负责展示，不会重新计算。\n\n拟合区间满足扩散判据\n设为当前诊断\n扩散拟合诊断\n拟合区间 (ps)\t1–6选择区间\n斜率 (Å²/ps)\t0.2317085\n决定系数 R²\t0.9703018\n扩散指数 α\t0.9240323\n限定扩散系数 D (Å²/ps)\t0.03861808\n来源与限制\n轨迹校验值\nsha256:5df26441c7ecc75e200609a0ab818a58acd2da0c38af69444fea219d83031823\n结果契约\nphase10n4.trajectory_diffusion.v1\n扩散系数仅针对明确选择的拟合区间，不代表无条件的长时间体扩散系数。\n\n图表与单位来自本次分析的已验证结果。\n\n支持性结果 · 3 项\n主要发现\n\n在 1 ps 到 6 ps 内，限定扩散系数为 0.0386181 Å^2/ps（11 个拟合点，R² = 0.970302，α = 0.924032）；轨迹末端 11.5 ps 的总 MSD 为 0.641793 Å^2。\n\n限制\n\n该扩散系数只对用户显式选择的拟合窗口、当前轨迹与采样条件有效，不是无条件的长时间体扩散系数。\n\n依据 · 10 项\n来源与过程\n技术详情"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_research_payload_missing.png"
+    },
+    {
+      "name": "reports",
+      "route": "/projects/project_0002_1a0af866391f412d/reports",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1234,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/reports",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 5513,
+        "h1": [
+          "科学报告"
+        ],
+        "h2": [
+          "已验证科学报告",
+          "历史运行报告"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "header": 2
+        },
+        "links": 51,
+        "buttons": 18,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n项目 · Phase 13 Structure Browser Qualification\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n概览\n数据\n研究\n报告\n\n项目报告\n\n科学报告\n\n将已验证的研究结果整理为可阅读、可引用、可复现的持久科学记录。\n\n已验证结果\n\n已验证科学报告\n11 份\n当前已归档回收站全部\n批量管理\n结构配位数分布统计报告\n对当前精确结构版本使用固定距离截断统计配位数分布，给出总体和按元素的配位直方图、位点数量、截断半径以及方法限制。 · 2026/8/31 22:50:16 · 2 项主要发现 · 1 幅图\n已固定 · 第 1 版 · 当前结果\n⋯\n结构配位数分布统计报告（修订 2）\n对当前精确结构版本使用固定距离截断统计配位数分布，给出总体和按元素的配位直方图、位点数量、截断半径以及方法限制。 · 2026/9/1 15:43:33 · 2 项主要发现 · 1 幅图\n第 2 版 · 当前结果\n⋯\nLi 扩散性质评估（1–6 ps 拟合窗口）\n基于当前精确轨迹版本计算 Li 的均方位移（MSD），并在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质，报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。 · 2026/9/1 00:45:43 · 3 项主要发现 · 2 幅图\n第 1 版 · 当前结果\n⋯\n材料组成空间与回归评估结果\n构建组成空间并评估预测值相对真实值的回归性能，保留 sample-fe2o3 的稳定样本身份，报告 MAE、RMSE、R²、残差和误差最大的样本，并说明单位、方法边界与证据。这是一次新的研究运行，不要覆盖之前的结果。 · 2026/8/31 20:53:31 · 2 项主要发现\n第 1 版 · 当前结果\n⋯\n轨迹径向分布函数（RDF）计算结果\n基于当前精确轨迹版本计算轨迹径向分布函数（RDF），报告实际纳入帧数、原子数、RDF 距离范围、分箱数、证据和适用限制，不将 RDF 峰自动解释为化学键或配位壳。 · 2026/8/31 13:25:09 · 5 项主要发现 · 1 幅图\n第 1 版 · 当前结果\n⋯\n联合分析电子能带与态密度来源\n联合分析当前精确电子能带与态密度来源，说明权威能量单位、能量参考、费米信息和投影完整性，并分别展示 Band 与 DOS 的证据和限制。除非权威结果明确支持，否则不要推断带隙、金属性或半导体类型。 · 2026/8/31 12:47:32 · 3 项主要发现 · 2 幅图\n第 1 版 · 当前结果\n⋯\n声子能带\n分析这两个精确的声子能带与声子态密度版本的主要特征，生成可查看的图表，并明确仅根据权威数据能够得出的结论与限制。 · 2026/8/31 08:22:52 · 3 项主要发现 · 3 幅图\n第 1 版 · 当前结果\n⋯\nCrystalNN 与 VoronoiNN 对 Phase13 Fresh Structure 的局域配位分析\n比较精确结构版本 obj_1 的 CrystalNN 和 VoronoiNN 局部配位环境，并说明各自限制。 · 2026/8/31 03:23:25 · 2 项主要发现\n第 1 版 · 当前结果\n⋯\n硅晶体结构局部配位环境分析：CrystalNN 与 VoronoiNN 结果比较\n分析硅晶体结构的局部配位环境，比较 CrystalNN 与 VoronoiNN 的结果，并基于当前精确版本数据给出可追溯结论。 · 2026/8/30 14:58:50 · 2 项主要发现\n第 1 版 · 当前结果\n⋯\nmat-2 band_gap 数值分析\n分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。 · 2026/8/29 20:39:08 · 3 项主要发现\n第 1 版 · 当前结果\n⋯\nmat-2 band_gap 数值分析\n分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。 · 2026/8/27 23:58:29 · 2 项主要发现\n第 1 版 · 当前结果\n⋯\n\n历史运行\n\n历史运行报告\n33 份\n可恢复研究会话\n请重新分析所选 Dataset 样本 mat-2 的 band_gap，并与该精确 Dataset 版本中的中位数比较；保留样本身份、来源版本、证据和限制。\n\nPhase13 Canonical Dataset · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n均方位移（MSD）与轨迹扩散\n\nPhase14R Diffusion Unwrapped Qualification · 8 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n均方位移（MSD）与轨迹扩散\n\nPhase14R Diffusion Unwrapped Qualification · 8 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n材料组成空间分析\n\nPhase14R Composition ML Stable Identity · 7 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n均方位移（MSD）与轨迹扩散\n\nPhase14R Diffusion Unwrapped Qualification · 8 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n均方位移（MSD）与轨迹扩散\n\nPhase14R Diffusion Unwrapped Qualification · 8 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n材料组成空间分析\n\nPhase14R Composition ML Stable Identity · 7 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n材料组成空间分析\n\nPhase14R Composition ML Stable Identity · 7 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 4 个结果 · 1 个步骤\n\n阅读旧版\n兼容历史运行\n均方位移（MSD）与轨迹扩散\n\nPhase14R Diffusion Unwrapped Qualification · 8 个结果 · 2 个步骤\n\n阅读旧版\n兼容历史运行\n均方位移（MSD）\n\nPhase14R MSD Unwrapped Qualification Current Runtime · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。\n\nPhase13 Canonical Dataset · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n声子色散与态密度\n\nPhase14R Phonon Surface Qualification · 21 个结果 · 3 个步骤\n\n阅读旧版\n可恢复研究会话\n声子色散与态密度\n\nPhase14R Phonon Surface Qualification · 14 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n声子色散与态密度\n\nPhase14R Phonon Surface Qualification · 14 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n声子色散与态密度\n\nPhase14R Phonon Surface Qualification · 14 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n轨迹径向分布函数（RDF）\n\nPhase14R Trajectory Surface Qualification · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n电子能带与态密度\n\nPhase14R Electronic Surface Qualification · 8 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n静态结构径向分布函数（RDF）\n\nPhase13 Fresh Structure Source · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n静态结构径向分布函数（RDF）\n\nPhase13 Fresh Structure Source · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n静态结构径向分布函数（RDF）\n\nPhase13 Fresh Structure Source · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 6 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 6 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 6 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 6 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 6 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n请分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。\n\nPhase14R Band Gap Acceptance · 4 个结果 · 1 个步骤\n\n阅读旧版\n兼容历史运行\n请分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。\n\nPhase14R Band Gap Acceptance · 3 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。\n\nPhase13 Canonical Dataset · 4 个结果 · 1 个步骤\n\n阅读旧版\n兼容历史运行\n材料组成空间分析\n\nPhase13 Fresh Structure Source · 3 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n请分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。\n\nPhase13 Canonical Dataset · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 6 个结果 · 2 个步骤\n\n阅读旧版\n兼容历史运行\n材料组成空间分析\n\nStructure presentation qualification · 3 个结果 · 1 个步骤\n\n阅读旧版"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_reports.png"
+    },
+    {
+      "name": "report_good",
+      "route": "/projects/project_0002_1a0af866391f412d/reports/agent2_report_819f458171ba2d3219717895bf12eaf9",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1248,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/reports/agent2_report_819f458171ba2d3219717895bf12eaf9",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2577,
+        "h1": [
+          "mat-2 band_gap 数值分析"
+        ],
+        "h2": [
+          "分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。",
+          "数据与方法",
+          "科学讨论",
+          "主要数据表",
+          "主要发现",
+          "限制与适用范围",
+          "结论"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 3,
+          "header": 3
+        },
+        "links": 19,
+        "buttons": 5,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n项目 · Phase 13 Structure Browser Qualification\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n概览\n数据\n研究\n报告\n返回报告\n打开来源研究\n导出 Markdown\n导出复现清单\n\n经验证科学报告\n\nmat-2 band_gap 数值分析\n\n2026/8/27 23:58:29 · 第 1 版 · 1 项主要发现\n\n章节\n研究问题\n数据与方法\n主要发现\n数据表\n科学讨论\n限制\n结论\n\n研究问题\n\n分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。\n\n在 Phase13 Canonical Dataset（版本 be02266a-7d4f-4ebb-9f28-3132855167d0）中，样本 mat-2 的 band_gap 数值为 2.5（无单位）；该数据集中 band_gap 的最小值为 1.2，最大值为 3.1，平均值为 2.266667，中位数为 2.5。\n\n数据与方法\n\n方法信息来自已验证的 ScientificResult，并保留执行时的参数与来源版本。\n\nPhase13 Canonical Dataset\n材料数据表 · 版本 be02266a-7d4f-4ebb-9f28-3132855167d0 · 当前版本\n\n科学呈现 · 1.0\n\n科学呈现\n绑定 1 个精确源版本\n结果入口\n查看器\nPhase13 Canonical Dataset\n精确版本 be02266a-7d4f-4ebb-9f28-3132855167d0\n打开查看器\n证据路径 · 1 项\n科学讨论\n\n该数据集中 band_gap 的最小值为 1.2，最大值为 3.1，平均值为 2.266667，中位数为 2.5。\n\n主要数据表\n表格 01\n材料数据集探索\ntable.bf3896f29ae3554e977725d327b4ebba\n\n精确版本 be02266a-7d4f-4ebb-9f28-3132855167d0 · 读取已持久化数据，不会重新执行科学计算。\n\n打开权威数据表\n主要发现\n01\n\n在 Phase13 Canonical Dataset（版本 be02266a-7d4f-4ebb-9f28-3132855167d0）中，样本 mat-2 的 band_gap 数值为 2.5（无单位）。\n\n限制与适用范围\n当前结果仅包含通过语义 Profile 授权的有界 Dataset 投影。\n结论\n\n在 Phase13 Canonical Dataset（版本 be02266a-7d4f-4ebb-9f28-3132855167d0）中，样本 mat-2 的 band_gap 数值为 2.5（无单位）；该数据集中 band_gap 的最小值为 1.2，最大值为 3.1，平均值为 2.266667，中位数为 2.5。\n\n科学依据 · 1\n来源数据 · 1\n复现信息"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_report_good.png"
+    },
+    {
+      "name": "report_payload_missing",
+      "route": "/projects/project_0002_1a0af866391f412d/reports/job_dc63f3f5d57742009c6be09e",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 3546,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/reports/job_dc63f3f5d57742009c6be09e",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2870,
+        "h1": [
+          "均方位移（MSD）"
+        ],
+        "h2": [
+          "主要结果",
+          "主要结论",
+          "限制",
+          "研究问题",
+          "方法与依据"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "header": 4
+        },
+        "links": 9,
+        "buttons": 52,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n项目研究\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n概览\n数据\n研究\n报告\n← 返回报告\n\n分析报告 · 单次运行\n\n返回研究\n均方位移（MSD）\n\n项目数据 · 4 个输出 · 2 个步骤\n\n主要结果\n主要结果\n均方位移（MSD）\n均方位移（MSD）\n\n读取已持久化的科学结果；浏览器只负责展示，不会重新计算。\n\n选择 all 的 MSD 序列\n均方位移数值表\n选择\t滞后时间 (ps)\t总 MSD (Å²)\tx\ty\tz\t时间原点数\n选择\t0.5\t0.1323571\t0.06088181\t0.04882439\t0.02265092\t23\n选择\t1\t0.2795295\t0.137165\t0.1003845\t0.0419799\t22\n选择\t1.5\t0.424001\t0.1920047\t0.1666382\t0.06535796\t21\n选择\t2\t0.46287\t0.2049856\t0.1906969\t0.06718752\t20\n选择\t2.5\t0.5238947\t0.227443\t0.242692\t0.05375963\t19\n选择\t3\t0.6453974\t0.2571805\t0.3176718\t0.0705451\t18\n选择\t3.5\t0.8106373\t0.3006714\t0.4321961\t0.07776984\t17\n选择\t4\t1.019247\t0.3572108\t0.5535597\t0.1084762\t16\n选择\t4.5\t1.163381\t0.4159497\t0.6317374\t0.1156938\t15\n选择\t5\t1.272219\t0.3786436\t0.754894\t0.1386818\t14\n选择\t5.5\t1.268179\t0.2559558\t0.8818307\t0.1303929\t13\n选择\t6\t1.336806\t0.2073663\t0.9956651\t0.1337749\t12\n选择\t6.5\t1.410709\t0.1816456\t1.08217\t0.1468938\t11\n选择\t7\t1.38295\t0.1277323\t1.131216\t0.1240018\t10\n选择\t7.5\t1.337319\t0.06029682\t1.164893\t0.112129\t9\n选择\t8\t1.221922\t0.06006616\t1.084923\t0.07693272\t8\n选择\t8.5\t1.266197\t0.06264103\t1.097637\t0.105919\t7\n选择\t9\t1.324648\t0.07123355\t1.1108\t0.1426146\t6\n选择\t9.5\t1.361476\t0.05201672\t1.110966\t0.1984942\t5\n选择\t10\t1.244551\t0.07321279\t1.01942\t0.1519177\t4\n选择\t10.5\t1.051529\t0.1679542\t0.7684832\t0.1150914\t3\n选择\t11\t0.9179779\t0.2968194\t0.5156702\t0.1054883\t2\n选择\t11.5\t0.6417934\t0.2241795\t0.2750079\t0.1426059\t1\n来源与限制\n轨迹校验值\nsha256:5df26441c7ecc75e200609a0ab818a58acd2da0c38af69444fea219d83031823\n结果契约\nphase10n4.trajectory_msd.v1\nMSD uses Cartesian x/y/z axes and is not automatically crystallographic a/b/c diffusion.\nNo center-of-mass drift correction is applied.\n\n图表、表格和单位来自本次运行的已验证输出。\n\n主要结论\n\n在 1 ps 到 6 ps 内，限定扩散系数为 0.0386181 Å^2/ps（11 个拟合点，R² = 0.970302，α = 0.924032）；轨迹末端 11.5 ps 的总 MSD 为 0.641793 Å^2。\n\n限制\n\n该扩散系数只对用户显式选择的拟合窗口、当前轨迹与采样条件有效，不是无条件的长时间体扩散系数。\n\n支持性结果 · 3 项\n研究问题\n\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质；报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。\n\n方法与依据\n\n分析方案、来源数据、输出与可复现信息由运行记录提供。\n\n依据 · 10 项\n来源与过程\n复现信息"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_report_payload_missing.png"
+    },
+    {
+      "name": "tasks",
+      "route": "/tasks",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "loadMs": 1233,
+      "url": "http://127.0.0.1:3013/tasks",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 720,
+        "h1": [
+          "任务中心"
+        ],
+        "h2": [],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 2
+        },
+        "links": 3,
+        "buttons": 3,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n材料数据与科学分析\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n\n后台任务\n\n任务中心\n\n跨项目查看研究执行状态。任务状态来自持久化运行记录，离开页面后仍可从这里继续查看。\n\n正在加载…\n正在加载后台任务…"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_tasks.png"
+    },
+    {
+      "name": "notifications",
+      "route": "/notifications",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "loadMs": 1333,
+      "url": "http://127.0.0.1:3013/notifications",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 720,
+        "h1": [],
+        "h2": [],
+        "landmarks": {
+          "main": 0,
+          "nav": 0,
+          "header": 0
+        },
+        "links": 0,
+        "buttons": 0,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "正在恢复登录状态…"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_notifications.png"
+    },
+    {
+      "name": "trash",
+      "route": "/trash",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "loadMs": 1249,
+      "url": "http://127.0.0.1:3013/trash",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 720,
+        "h1": [
+          "回收站"
+        ],
+        "h2": [
+          "当前筛选下没有内容"
+        ],
+        "landmarks": {
+          "main": 2,
+          "nav": 0,
+          "header": 2
+        },
+        "links": 3,
+        "buttons": 9,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n材料数据与科学分析\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n\n内容管理\n\n回收站\n\n集中恢复已移除的项目、数据、科学对象、研究会话与报告。科学来源和历史证据受保护，不会因界面隐藏而删除。\n\n重新加载\n可恢复保留\n\n当前不自动清空回收站。只有无依赖的空项目或空数据集可由服务器确认后永久删除；受引用的科学版本、结果与报告继续保留以保证可复现性。\n\n全部 0项目 0数据集 0科学对象 0研究会话 0科学报告 0\n当前筛选下没有内容\n\n从项目、数据、研究或报告页面移入回收站的内容会显示在这里。"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_trash.png"
+    },
+    {
+      "name": "settings_models",
+      "route": "/settings/models",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "loadMs": 1232,
+      "url": "http://127.0.0.1:3013/console?settings=models",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 720,
+        "h1": [
+          "继续你的材料研究"
+        ],
+        "h2": [
+          "模型服务"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 3
+        },
+        "links": 4,
+        "buttons": 6,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n材料数据与科学分析\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n\n研究助手\n\n模型服务\n\n添加一个兼容模型服务。密钥仅在保存时发送给服务端，之后不会再次显示。\n\n×\n正在读取模型服务…\n具体模型与思考深度在研究对话中选择\n完成\n\n控制台\n\n继续你的材料研究\n\n回到最近的项目、数据和分析报告。\n\n新建项目\n搜索项目\n模型设置\n正在加载研究内容…"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_settings_models.png"
+    },
+    {
+      "name": "console",
+      "route": "/console",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "loadMs": 1240,
+      "url": "http://127.0.0.1:3013/console",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 720,
+        "h1": [],
+        "h2": [],
+        "landmarks": {
+          "main": 0,
+          "nav": 0,
+          "header": 0
+        },
+        "links": 0,
+        "buttons": 0,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "正在恢复登录状态…"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_console.png"
+    },
+    {
+      "name": "analysis_legacy",
+      "route": "/analysis",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "loadMs": 1250,
+      "url": "http://127.0.0.1:3013/analysis",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 720,
+        "h1": [
+          "历史链接暂时无法解析"
+        ],
+        "h2": [],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 1
+        },
+        "links": 4,
+        "buttons": 2,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n材料数据与科学分析\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n历史链接暂时无法解析\n\n记录没有被删除。可以从项目列表重新打开对应的研究结果。\n\n查看项目"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_analysis_legacy.png"
+    },
+    {
+      "name": "global_search_overlay",
+      "route": "http://127.0.0.1:3013/analysis",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "metrics": {
+        "bodyText": "M\n材料智能平台\n材料数据与科学分析\n任务\n通知\n⌕\n本\n本地研究者\n⌄\n打开账户菜单\n\n全局搜索\n\n查找科学工作\n×\n项目、数据、研究或报告\nCtrl/⌘ K\n\n搜索已授权的项目、数据、研究、结果与报告。\n\n类型\n全部类型\n项目\n数据集\n科学对象\n研究会话\n科学报告\n科学结果\n状态\n全部状态\n当前\n已归档\n回收站\n已保存\n选择检索\nP14R 浏览器保存检索 2026-09-01\n保存当前检索\n\n至少 找到 140 项，显示前 40 项\n\n结构配位数分布统计报告（修订 2）\n当前\n科学报告\n打开\nP14R 回收恢复验收 2026-09-01\n当前\n项目 · 一次性项目，用于恢复路径验收。\n打开\n查看数据\n进入研究\n硅结构研究管理验收 mti0ey21\n已归档\n研究会话\n打开\n硅结构研究管理验收 mthz86iq\n已归档\n研究会话\n打开\nScientificResult 8868c3f3-a19\n当前\n科学结果 · 1.0\n打开\n硅结构研究管理验收 mthvis77\n已归档\n研究会话\n打开\n硅结构研究管理验收 mthrutka\n已归档\n研究会话\n打开\nLive Project\n当前\n项目 · 材料研究项目\n打开\n查看数据\n进入研究\nScientificResult 8d506aa2-024\n当前\n科学结果 · 1.0\n打开\nScientificResult 2fb945cf-37a\n当前\n科学结果 · 1.0\n打开\nScientificResult 5c9969c4-16b\n当前\n科学结果 · 1.0\n打开\nLi 扩散性质评估（1–6 ps 拟合窗口）\n当前\n科学报告\n打开\nScientificResult 26127c48-d73\n当前\n科学结果 · 1.0\n打开\nScientificResult 64645cca-fb3\n当前\n科学结果 · 1.0\n打开\nScientificResult 85112cca-2d6\n当前\n科学结果 · 1.0\n打开\nScientificResult e4c89b46-8f9\n当前\n科学结果 · 1.0\n打开\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式\n当前\n研究会话\n打开\nPhase14R Diffusion Unwrapped Qualification\n当前\n科学对象 · trajectory.atomic\n打开\n请基于当前已选择的未包裹原子轨迹，计算均方位移随时间的变化；若时间轴和长时拟合窗口足以支持，请估\n当前\n研究会话\n打开\n结构配位数分布统计报告\n当前\n科学报告\n打开\n材料组成空间与回归评估结果\n当前\n科学报告\n打开\nScientificResult d984bb18-acc\n当前\n科学结果 · 1.0\n打开\nScientificResult 78ffba3f-bf7\n当前\n科学结果 · 1.0\n打开\n请对当前选择的数据表构建组成空间，并评估预测值相对真实值的回归性能。请保留 sample-fe2\n当前\n研究会话\n打开\n请对当前材料数据构建二维组成空间并保留每个样本的稳定身份，同时评估预测值相对真实值的回归性能，报\n当前\n研究会话\n打开\nPhase14R Composition ML Stable Identity\n当前\n科学对象 · materials.table\n打开\nPhase14R Composition ML Stable Identity\n当前\n数据集\n打开\n请对当前材料数据构建二维组成空间，保留每种材料公式对应的稳定身份；同时评估预测值相对真实值的回归\n当前\n研究会话\n打开\nPhase14R Composition ML Qualification\n当前\n科学对象 · materials.table\n打开\nPhase14R Composition ML Qualification\n当前\n数据集\n打开\nScientificResult 2382b0eb-b05\n当前\n科学结果 · 1.0\n打开\n请对当前精确结构版本使用固定距离截断统计配位数分布，给出总体和按元素的配位直方图、位点数量、截断\n当前\n研究会话\n打开\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式\n当前\n研究会话\n打开\nPhase14R Diffusion Unwrapped Qualification\n当前\n数据集\n打开\n请基于当前精确轨迹版本计算均方位移（MSD）；只报告有效滞后、末端 MSD 和证据。如果轨迹过短\n当前\n研究会话\n打开\nPhase14R MSD Unwrapped Qualification Current Runtime\n当前\n数据集\n打开\nPhase14R MSD Unwrapped Qualification\n当前\n数据集\n打开\n轨迹径向分布函数（RDF）计算结果\n当前\n科学报告\n打开\n联合分析电子能带与态密度来源\n当前\n科学报告\n打开\nScientificResult 8445cb9f-637\n当前\n科学结果 · 1.0\n打开\n查看全部项目\n关闭\n\n项目\n\n材料研究项目\n\n项目是数据、研究过程和分析报告的长期边界。\n\n新建项目\n搜索项目、Case 或科学能力\n当前\n已归档\n回收站\n全部\n选择\n16 个项目\n\n阶段能力记录\n\nPhase 项目\n3 个\nPhase 3 Project\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nPhase 13 Browser Qualification\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nPhase 13 Structure Browser Qualification\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\n其他项目与历史记录\n13 个\nAPI Phase 2 Project\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nInput transport regression\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nLive Project\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nLive Project 2\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nP14R 回收恢复验收 2026-09-01\n一次性项目，用于恢复路径验收。\n打开项目 →\n⋯\nproject_8c_route\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_capability_641df0fd6c35\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_capability_a4fc81d56c0b\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_capability_cd9b1d478faa\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_intent_9ae2ece0719b\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_intent_9b95455d21da\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_intent_6950765c7483\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_local\n查看数据、研究过程与分析报告\n打开项目 →\n⋯",
+        "duplicateIds": [],
+        "horizontalOverflow": false,
+        "scrollWidth": 1280,
+        "clientWidth": 1280
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_global_search_overlay.png"
+    },
+    {
+      "name": "projects",
+      "route": "/projects",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1246,
+      "url": "http://127.0.0.1:3013/projects",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 2387,
+        "h1": [
+          "材料研究项目"
+        ],
+        "h2": [
+          "Phase 项目",
+          "其他项目与历史记录"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 2
+        },
+        "links": 19,
+        "buttons": 24,
+        "inputs": 1,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n\n项目\n\n材料研究项目\n\n项目是数据、研究过程和分析报告的长期边界。\n\n新建项目\n搜索项目、Case 或科学能力\n当前\n已归档\n回收站\n全部\n选择\n16 个项目\n\n阶段能力记录\n\nPhase 项目\n3 个\nPhase 3 Project\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nPhase 13 Browser Qualification\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nPhase 13 Structure Browser Qualification\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\n其他项目与历史记录\n13 个\nAPI Phase 2 Project\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nInput transport regression\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nLive Project\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nLive Project 2\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nP14R 回收恢复验收 2026-09-01\n一次性项目，用于恢复路径验收。\n打开项目 →\n⋯\nproject_8c_route\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_capability_641df0fd6c35\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_capability_a4fc81d56c0b\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_capability_cd9b1d478faa\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_intent_9ae2ece0719b\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_intent_9b95455d21da\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_intent_6950765c7483\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_local\n查看数据、研究过程与分析报告\n打开项目 →\n⋯"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_projects.png"
+    },
+    {
+      "name": "project",
+      "route": "/projects/project_0002_1a0af866391f412d",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1239,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 1634,
+        "h1": [
+          "Phase 13 Structure Browser Qualification"
+        ],
+        "h2": [
+          "项目数据",
+          "最近研究"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "header": 2
+        },
+        "links": 21,
+        "buttons": 2,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n概览\n数据\n研究\n报告\n\n项目概览\n\nPhase 13 Structure Browser Qualification\n\n围绕项目数据继续研究，并保留每次分析的科学结果。\n\n继续研究\n查看数据\n项目数据\n全部数据\nPhase14R Composition ML Stable Identity\n\n1 个文件 · 3 个记录\n\n查看 →\nPhase14R Composition ML Qualification\n\n1 个文件 · 3 个记录\n\n查看 →\nPhase14R Diffusion Unwrapped Qualification\n\n1 个文件 · 1 个记录\n\n查看 →\nPhase14R MSD Unwrapped Qualification Current Runtime\n\n1 个文件 · 1 个记录\n\n查看 →\nPhase14R MSD Unwrapped Qualification\n\n1 个文件 · 1 个记录\n\n查看 →\n最近研究\n研究记录\n请重新分析所选 Dataset 样本 mat-2 的 band_gap，并与该精确 Dataset 版本中的中位数比较；保留样本身份、来源版本、证据和限制。\n\n分析完成\n\n打开 →\n均方位移（MSD）与轨迹扩散\n\n分析完成\n\n打开 →\n均方位移（MSD）与轨迹扩散\n\n分析失败\n\n打开 →\n材料组成空间分析\n\n分析完成\n\n打开 →\n均方位移（MSD）与轨迹扩散\n\n分析完成\n\n打开 →"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_project.png"
+    },
+    {
+      "name": "data",
+      "route": "/projects/project_0002_1a0af866391f412d/data",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1247,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/data",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 958,
+        "h1": [
+          "Phase 13 Structure Browser Qualification"
+        ],
+        "h2": [
+          "科研对象",
+          "Phase14R Composition ML Stable Identity"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "header": 4
+        },
+        "links": 36,
+        "buttons": 42,
+        "inputs": 5,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [
+          {
+            "tag": "INPUT",
+            "type": "search",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "cls": ""
+          }
+        ],
+        "horizontalOverflow": false,
+        "offscreenElements": [
+          {
+            "tag": "TABLE",
+            "id": "",
+            "cls": "",
+            "left": 0,
+            "right": 400,
+            "w": 400,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "THEAD",
+            "id": "",
+            "cls": "",
+            "left": 0,
+            "right": 400,
+            "w": 400,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TR",
+            "id": "",
+            "cls": "",
+            "left": 0,
+            "right": 400,
+            "w": 400,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TH",
+            "id": "",
+            "cls": "",
+            "left": 328,
+            "right": 400,
+            "w": 72,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TBODY",
+            "id": "",
+            "cls": "",
+            "left": 0,
+            "right": 400,
+            "w": 400,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TR",
+            "id": "",
+            "cls": "",
+            "left": 0,
+            "right": 400,
+            "w": 400,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TD",
+            "id": "",
+            "cls": "",
+            "left": 328,
+            "right": 400,
+            "w": 72,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TR",
+            "id": "",
+            "cls": "",
+            "left": 0,
+            "right": 400,
+            "w": 400,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TD",
+            "id": "",
+            "cls": "",
+            "left": 328,
+            "right": 400,
+            "w": 72,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TR",
+            "id": "",
+            "cls": "",
+            "left": 0,
+            "right": 400,
+            "w": 400,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TD",
+            "id": "",
+            "cls": "",
+            "left": 328,
+            "right": 400,
+            "w": 72,
+            "overflowX": "visible"
+          }
+        ],
+        "internalHorizontalScrollers": [
+          {
+            "tag": "DIV",
+            "id": "",
+            "cls": "workspace-table-scroll",
+            "client": 390,
+            "scroll": 400
+          }
+        ],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n概览\n数据\n研究\n报告\n\n项目数据\n\nPhase 13 Structure Browser Qualification\n显示数据\n当前\n已归档\n回收站\n✓\nPhase14R Composition ML Stable Identity\n\n1 个文件 · 3 个记录\n\n研究此数据\n已验证的数据表\n\n3 / 3 行 · 单位沿用源数据字段。\n\n搜索\n列显示\n选择\tformula\tsample_id\ty_pred\ty_true\n选择\tSi\tsample-si\t1\t1.1\n选择\tFe2O3\tsample-fe2o3\t2.5\t2.2\n选择\tLiFePO4\tsample-lifepo4\t2.9\t3.1\n查看来源与属性"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_data.png"
+    },
+    {
+      "name": "dataset_detail",
+      "route": "/projects/project_0002_1a0af866391f412d/datasets/dataset_0001_441637edf69740aa",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1251,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/datasets/dataset_0001_441637edf69740aa",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 3943,
+        "h1": [
+          "Phase14R Diffusion Unwrapped Qualification"
+        ],
+        "h2": [
+          "上传记录",
+          "该数据集的分析",
+          "数据上下文查看器",
+          "自然语言需求",
+          "对话与计划 chunks",
+          "分析计划",
+          "运行控制"
+        ],
+        "landmarks": {
+          "main": 2,
+          "nav": 2,
+          "header": 2
+        },
+        "links": 19,
+        "buttons": 13,
+        "inputs": 1,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [
+          {
+            "tag": "DIV",
+            "id": "",
+            "cls": "dataset-progress-step progress-done",
+            "left": 285,
+            "right": 395,
+            "w": 110,
+            "overflowX": "visible"
+          }
+        ],
+        "internalHorizontalScrollers": [
+          {
+            "tag": "DIV",
+            "id": "",
+            "cls": "dataset-progress",
+            "client": 358,
+            "scroll": 379
+          },
+          {
+            "tag": "DIV",
+            "id": "",
+            "cls": "main-tab-surface",
+            "client": 372,
+            "scroll": 381
+          }
+        ],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n概览\n数据\n研究\n报告\n项目\n/\nPhase 13 Structure Browser Qualification\n/\nPhase14R Diffusion Unwrapped Qualification\n\n数据工作台\n\nPhase14R Diffusion Unwrapped Qualification\n\n1 个源文件 · Profile 已就绪 · 8 次分析\n\n返回项目\n导入其他数据\n✓\n导入\n✓\nProfile\n✓\n分析\n✓\n结果\n解析状态\n已完成\n表格行数\n—\n列数\n0\n可用能力\n0\n最近分析\n已完成\n结果 / 报告\n52 / 1\n导入\n已完成\n1 个源文件\nProfile\n已就绪\n已生成\n分析\n部分完成\n8 次分析\n结果\n已就绪\n52 个结果，1 份报告\n\n来源与推导\n\n上传记录\n1\n源文件\nphase14r_diffusion_unwrapped.extxyz\nextxyz · 已完成\n规范化资源\n\n1 个资源已关联到当前数据集\n\nProfile 2 · 0 列\n\n结果记录\n\n该数据集的分析\n8\n请基于当前精确轨迹版本重新计算 Li 的均方位移（MSD），并在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质；报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。\n8 个结果 · 0 份报告 · 已完成\n→\n请基于当前精确轨迹版本重新计算 Li 的均方位移（MSD），并在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质；报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。\n8 个结果 · 0 份报告 · 已完成\n→\n请重新执行同一个科学研究问题：基于当前精确轨迹版本计算 Li 的均方位移（MSD），并在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质，报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。。这是一次新的研究运行，不要覆盖之前的结果。\n8 个结果 · 1 份报告 · 已完成\n→\n请重新执行同一个科学研究问题：基于当前精确轨迹版本计算 Li 的均方位移（MSD），并在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质，报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。。这是一次新的研究运行，不要覆盖之前的结果。\n8 个结果 · 0 份报告 · 已完成\n→\n请重新执行同一个科学研究问题：基于当前精确轨迹版本计算 Li 的均方位移（MSD），并在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质，报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。。这是一次新的研究运行，不要覆盖之前的结果。\n4 个结果 · 0 份报告 · partial_success\n→\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质；报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。\n4 个结果 · 0 份报告 · partial_success\n→\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质；报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。\n8 个结果 · 0 份报告 · 已完成\n→\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质；报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。\n4 个结果 · 0 份报告 · 失败\n→\n跳到分析工作区\n数据上下文查看器\n收起\n\n请选择数据集，或加载演示数据\n\n数据集 ID\ndataset_0001_441637edf69740aa\nPROFILE ID\nProfile 尚未生成，可手动输入或点击生成。\n数据类型\n未知\n数据状态\n未知\n\n请选择数据集，或加载演示数据\n\nAgent 过程\n对话与 Plan\n结果与导出\n分析路径\n选择数据后开始\n-\n数据上下文\n-\n意图理解\n-\n分析计划\n-\n执行状态\n-\n结果\n自然语言需求\nDeepSeek / deepseek-v4-flash\n1\n请计算 y_true 和 y_pred 的基础误差指标，并生成报告摘要。\n2\n请统计材料组成中的元素分布。\n3\n请找出预测误差最大的样本。\n4\n请基于当前结构数据生成 3D 可视化。\n\nDeepSeek / deepseek-v4-flash · dataset_0001_441637edf69740aa\n\n创建并运行\n对话与计划 chunks\n1\n用户需求 chunk\n用户需求 chunk\n请计算 y_true 和 y_pred 的基础误差指标，并生成报告摘要。\n分析计划\n尚未生成分析计划\n\n尚未生成分析计划\n\n运行控制\n未知\n任务 ID\n尚未创建任务\n计划 ID\n生成计划后将显示审计信息\n计划审计\n生成计划后将显示审计信息\n队列状态\n未进入队列\n\n运行入口位于上方需求提交区；此处仅保留任务状态与审计信息。"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_dataset_detail.png"
+    },
+    {
+      "name": "viewer_table",
+      "route": "/projects/project_0002_1a0af866391f412d/data?object=8a425466-b697-4c85-9a43-199414a22865&version=be02266a-7d4f-4ebb-9f28-3132855167d0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1242,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/data?object=8a425466-b697-4c85-9a43-199414a22865&version=be02266a-7d4f-4ebb-9f28-3132855167d0",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 888,
+        "h1": [
+          "Phase 13 Structure Browser Qualification"
+        ],
+        "h2": [
+          "科研对象"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "header": 2
+        },
+        "links": 35,
+        "buttons": 34,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n概览\n数据\n研究\n报告\n\n项目数据\n\nPhase 13 Structure Browser Qualification\n显示数据\n当前\n已归档\n回收站\n✓\n正在加载科学视图…"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_viewer_table.png"
+    },
+    {
+      "name": "viewer_structure",
+      "route": "/projects/project_0002_1a0af866391f412d/data?object=dc3c3eee-f254-4edf-a0fa-c955402b3069&version=8859cb49-0766-48cd-8a56-e44f5332e0c5",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1252,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/data?object=dc3c3eee-f254-4edf-a0fa-c955402b3069&version=8859cb49-0766-48cd-8a56-e44f5332e0c5",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 888,
+        "h1": [
+          "Phase 13 Structure Browser Qualification"
+        ],
+        "h2": [
+          "科研对象",
+          "Phase13 Fresh Structure"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "header": 3
+        },
+        "links": 36,
+        "buttons": 35,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n概览\n数据\n研究\n报告\n\n项目数据\n\nPhase 13 Structure Browser Qualification\n显示数据\n当前\n已归档\n回收站\n✓\n\n晶体结构\n\nPhase13 Fresh Structure\n\n版本 1\n\n归档科研对象\n研究此数据\n正在加载科学查看器…\n精确版本\n科学元数据\n技术详情"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_viewer_structure.png"
+    },
+    {
+      "name": "research_index",
+      "route": "/projects/project_0002_1a0af866391f412d/research",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1273,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/research",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "h1": [
+          "研究时间线"
+        ],
+        "h2": [
+          "项目数据与最近研究"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 2,
+          "header": 4
+        },
+        "links": 22,
+        "buttons": 9,
+        "inputs": 3,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n概览\n数据\n研究\n报告\n跳到研究工作台\n对话\n工作台\n\nPhase 13 Structure Browser Qualification · 研究时间线\n\n研究时间线\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式\n研究记录\n本会话上下文\n固定对象 Phase14R Diffusion Unwrapped Qualification\n×\n正在显示最近 10 条消息\n查看完整会话\n你\n\n请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。\n\n研究助手\n\n在 1 ps 至 6 ps 的显式拟合窗口内，扩散系数估计为 0.03861808 Å²/ps。扩散拟合在 1 ps 至 6 ps 窗口内使用 11 个点，拟合持续时间为 5 ps，R² 为 0.9703018，RMSE 为 0.06409487 Å²。 完整结构化结果已在右侧工作台提供。\n\n你\n\n请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。\n\n研究助手\n\n在 1 至 6 ps 的拟合窗口内，扩散系数估计为 0.03861808 Å²/ps。扩散拟合在 1 至 6 ps 窗口内使用 11 个点，拟合持续 5 ps，R² 为 0.9703018，RMSE 为 0.06409487 Å²。 完整结构化结果已在右侧工作台提供。\n\n你\n\n请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。\n\n研究助手\n\n在 1 ps 至 6 ps 的拟合窗口内，扩散系数为 0.03861808 Å²/ps。扩散拟合在 1 ps 至 6 ps 窗口内使用 11 个点，持续 5 ps，R² 为 0.9703018，RMSE 为 0.06409487 Å²。 完整结构化结果已在右侧工作台提供。\n\n你\n\n请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。\n\n研究助手\n\n在 1 ps 至 6 ps 的拟合窗口内，扩散系数估计为 0.03861808 Å²/ps。扩散拟合的 R² 为 0.9703018，RMSE 为 0.06409487 Å²，拟合窗口包含 11 个点，持续 5 ps。 完整结构化结果已在右侧工作台提供。\n\n你\n\n请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。\n\n研究助手\n\n在 1 ps 至 6 ps 的拟合窗口内，扩散系数估计为 0.03861808 Å²/ps，拟合点数为 11，拟合持续时间为 5 ps。扩散拟合的 R² 为 0.9703018，RMSE 为 0.06409487 Å²，且扩散区间诊断状态为 DIFFUSIVE_WINDOW_ACCEPTED。 完整结构化结果已在右侧工作台提供。\n\n✓ 分析完成\n请重新分析所选 Dataset 样本 mat-2 的 band_gap，并与该精确 Dataset 版本中的中位数比较；保留样本身份、来源版本、证据和限制。\n1 个步骤 · 查看结果\n✓ 分析完成\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看结果\n分析失败\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看过程\n✓ 分析完成\n材料组成空间分析\n2 个步骤 · 查看结果\n✓ 分析完成\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看结果\n分析失败\n均方位移（MSD）与轨迹扩散\n2 个步骤 · 查看过程\n询问此项目中的数据\n项目数据\ndeepseek-v4-flash · 标准\n开始分析"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_research_index.png"
+    },
+    {
+      "name": "research_complete",
+      "route": "/projects/project_0002_1a0af866391f412d/research/research_fbf038934dc84ffeaa5aed9e7c906095?run=job_agent2_92fcd73e38034dcfbc7aa63fbcf2a70e&turn=92fcd73e-3803-4dcf-bc7a-a63fbcf2a70e",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1276,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/research/research_fbf038934dc84ffeaa5aed9e7c906095?run=job_agent2_92fcd73e38034dcfbc7aa63fbcf2a70e&turn=92fcd73e-3803-4dcf-bc7a-a63fbcf2a70e",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "h1": [
+          "研究时间线"
+        ],
+        "h2": [],
+        "landmarks": {
+          "main": 1,
+          "nav": 2,
+          "header": 2
+        },
+        "links": 14,
+        "buttons": 8,
+        "inputs": 3,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n概览\n数据\n研究\n报告\n跳到研究工作台\n对话\n工作台\n\n正在读取已验证的科学结果…"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_research_complete.png"
+    },
+    {
+      "name": "research_payload_missing",
+      "route": "/projects/project_0002_1a0af866391f412d/research/research_13cc758206ea45de9a537716ba7972dd?run=job_dc63f3f5d57742009c6be09e",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 3706,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/research/research_13cc758206ea45de9a537716ba7972dd?run=job_dc63f3f5d57742009c6be09e",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "h1": [
+          "研究时间线"
+        ],
+        "h2": [
+          "扩散分析"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 2,
+          "header": 7
+        },
+        "links": 16,
+        "buttons": 17,
+        "inputs": 3,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [
+          {
+            "tag": "SPAN",
+            "id": "",
+            "cls": "",
+            "left": 239,
+            "right": 450,
+            "w": 211,
+            "overflowX": "visible"
+          }
+        ],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n概览\n数据\n研究\n报告\n跳到研究工作台\n对话\n工作台\n\n科学结果\n\n扩散分析\n查看数据\n打开分析报告\n主要结果\n4 个科学输出\n权威图表\n扩散分析\n正在加载科学查看器…\n\n图表与单位来自本次分析的已验证结果。\n\n支持性结果 · 3 项\n主要发现\n\n在 1 ps 到 6 ps 内，限定扩散系数为 0.0386181 Å^2/ps（11 个拟合点，R² = 0.970302，α = 0.924032）；轨迹末端 11.5 ps 的总 MSD 为 0.641793 Å^2。\n\n限制\n\n该扩散系数只对用户显式选择的拟合窗口、当前轨迹与采样条件有效，不是无条件的长时间体扩散系数。\n\n依据 · 10 项\n来源与过程\n技术详情"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_research_payload_missing.png"
+    },
+    {
+      "name": "reports",
+      "route": "/projects/project_0002_1a0af866391f412d/reports",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1241,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/reports",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 7558,
+        "h1": [
+          "科学报告"
+        ],
+        "h2": [
+          "已验证科学报告",
+          "历史运行报告"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "header": 2
+        },
+        "links": 51,
+        "buttons": 18,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n概览\n数据\n研究\n报告\n\n项目报告\n\n科学报告\n\n将已验证的研究结果整理为可阅读、可引用、可复现的持久科学记录。\n\n已验证结果\n\n已验证科学报告\n11 份\n当前已归档回收站全部\n批量管理\n结构配位数分布统计报告\n对当前精确结构版本使用固定距离截断统计配位数分布，给出总体和按元素的配位直方图、位点数量、截断半径以及方法限制。 · 2026/8/31 22:50:16 · 2 项主要发现 · 1 幅图\n已固定 · 第 1 版 · 当前结果\n⋯\n结构配位数分布统计报告（修订 2）\n对当前精确结构版本使用固定距离截断统计配位数分布，给出总体和按元素的配位直方图、位点数量、截断半径以及方法限制。 · 2026/9/1 15:43:33 · 2 项主要发现 · 1 幅图\n第 2 版 · 当前结果\n⋯\nLi 扩散性质评估（1–6 ps 拟合窗口）\n基于当前精确轨迹版本计算 Li 的均方位移（MSD），并在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质，报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。 · 2026/9/1 00:45:43 · 3 项主要发现 · 2 幅图\n第 1 版 · 当前结果\n⋯\n材料组成空间与回归评估结果\n构建组成空间并评估预测值相对真实值的回归性能，保留 sample-fe2o3 的稳定样本身份，报告 MAE、RMSE、R²、残差和误差最大的样本，并说明单位、方法边界与证据。这是一次新的研究运行，不要覆盖之前的结果。 · 2026/8/31 20:53:31 · 2 项主要发现\n第 1 版 · 当前结果\n⋯\n轨迹径向分布函数（RDF）计算结果\n基于当前精确轨迹版本计算轨迹径向分布函数（RDF），报告实际纳入帧数、原子数、RDF 距离范围、分箱数、证据和适用限制，不将 RDF 峰自动解释为化学键或配位壳。 · 2026/8/31 13:25:09 · 5 项主要发现 · 1 幅图\n第 1 版 · 当前结果\n⋯\n联合分析电子能带与态密度来源\n联合分析当前精确电子能带与态密度来源，说明权威能量单位、能量参考、费米信息和投影完整性，并分别展示 Band 与 DOS 的证据和限制。除非权威结果明确支持，否则不要推断带隙、金属性或半导体类型。 · 2026/8/31 12:47:32 · 3 项主要发现 · 2 幅图\n第 1 版 · 当前结果\n⋯\n声子能带\n分析这两个精确的声子能带与声子态密度版本的主要特征，生成可查看的图表，并明确仅根据权威数据能够得出的结论与限制。 · 2026/8/31 08:22:52 · 3 项主要发现 · 3 幅图\n第 1 版 · 当前结果\n⋯\nCrystalNN 与 VoronoiNN 对 Phase13 Fresh Structure 的局域配位分析\n比较精确结构版本 obj_1 的 CrystalNN 和 VoronoiNN 局部配位环境，并说明各自限制。 · 2026/8/31 03:23:25 · 2 项主要发现\n第 1 版 · 当前结果\n⋯\n硅晶体结构局部配位环境分析：CrystalNN 与 VoronoiNN 结果比较\n分析硅晶体结构的局部配位环境，比较 CrystalNN 与 VoronoiNN 的结果，并基于当前精确版本数据给出可追溯结论。 · 2026/8/30 14:58:50 · 2 项主要发现\n第 1 版 · 当前结果\n⋯\nmat-2 band_gap 数值分析\n分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。 · 2026/8/29 20:39:08 · 3 项主要发现\n第 1 版 · 当前结果\n⋯\nmat-2 band_gap 数值分析\n分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。 · 2026/8/27 23:58:29 · 2 项主要发现\n第 1 版 · 当前结果\n⋯\n\n历史运行\n\n历史运行报告\n33 份\n可恢复研究会话\n请重新分析所选 Dataset 样本 mat-2 的 band_gap，并与该精确 Dataset 版本中的中位数比较；保留样本身份、来源版本、证据和限制。\n\nPhase13 Canonical Dataset · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n均方位移（MSD）与轨迹扩散\n\nPhase14R Diffusion Unwrapped Qualification · 8 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n均方位移（MSD）与轨迹扩散\n\nPhase14R Diffusion Unwrapped Qualification · 8 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n材料组成空间分析\n\nPhase14R Composition ML Stable Identity · 7 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n均方位移（MSD）与轨迹扩散\n\nPhase14R Diffusion Unwrapped Qualification · 8 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n均方位移（MSD）与轨迹扩散\n\nPhase14R Diffusion Unwrapped Qualification · 8 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n材料组成空间分析\n\nPhase14R Composition ML Stable Identity · 7 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n材料组成空间分析\n\nPhase14R Composition ML Stable Identity · 7 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 4 个结果 · 1 个步骤\n\n阅读旧版\n兼容历史运行\n均方位移（MSD）与轨迹扩散\n\nPhase14R Diffusion Unwrapped Qualification · 8 个结果 · 2 个步骤\n\n阅读旧版\n兼容历史运行\n均方位移（MSD）\n\nPhase14R MSD Unwrapped Qualification Current Runtime · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。\n\nPhase13 Canonical Dataset · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n声子色散与态密度\n\nPhase14R Phonon Surface Qualification · 21 个结果 · 3 个步骤\n\n阅读旧版\n可恢复研究会话\n声子色散与态密度\n\nPhase14R Phonon Surface Qualification · 14 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n声子色散与态密度\n\nPhase14R Phonon Surface Qualification · 14 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n声子色散与态密度\n\nPhase14R Phonon Surface Qualification · 14 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n轨迹径向分布函数（RDF）\n\nPhase14R Trajectory Surface Qualification · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n电子能带与态密度\n\nPhase14R Electronic Surface Qualification · 8 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n静态结构径向分布函数（RDF）\n\nPhase13 Fresh Structure Source · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n静态结构径向分布函数（RDF）\n\nPhase13 Fresh Structure Source · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n静态结构径向分布函数（RDF）\n\nPhase13 Fresh Structure Source · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 6 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 6 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 6 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 6 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 6 个结果 · 2 个步骤\n\n阅读旧版\n可恢复研究会话\n请分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。\n\nPhase14R Band Gap Acceptance · 4 个结果 · 1 个步骤\n\n阅读旧版\n兼容历史运行\n请分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。\n\nPhase14R Band Gap Acceptance · 3 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。\n\nPhase13 Canonical Dataset · 4 个结果 · 1 个步骤\n\n阅读旧版\n兼容历史运行\n材料组成空间分析\n\nPhase13 Fresh Structure Source · 3 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n请分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。\n\nPhase13 Canonical Dataset · 4 个结果 · 1 个步骤\n\n阅读旧版\n可恢复研究会话\n局部配位环境分析\n\nPhase13 Fresh Structure Source · 6 个结果 · 2 个步骤\n\n阅读旧版\n兼容历史运行\n材料组成空间分析\n\nStructure presentation qualification · 3 个结果 · 1 个步骤\n\n阅读旧版"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_reports.png"
+    },
+    {
+      "name": "report_good",
+      "route": "/projects/project_0002_1a0af866391f412d/reports/agent2_report_819f458171ba2d3219717895bf12eaf9",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 1246,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/reports/agent2_report_819f458171ba2d3219717895bf12eaf9",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 3155,
+        "h1": [
+          "mat-2 band_gap 数值分析"
+        ],
+        "h2": [
+          "分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。",
+          "数据与方法",
+          "科学讨论",
+          "主要数据表",
+          "主要发现",
+          "限制与适用范围",
+          "结论"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 3,
+          "header": 3
+        },
+        "links": 19,
+        "buttons": 5,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [
+          {
+            "tag": "A",
+            "id": "",
+            "cls": "",
+            "left": 403,
+            "right": 427,
+            "w": 24,
+            "overflowX": "visible"
+          }
+        ],
+        "internalHorizontalScrollers": [
+          {
+            "tag": "NAV",
+            "id": "",
+            "cls": "scientific-report-contents",
+            "client": 356,
+            "scroll": 422
+          }
+        ],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n概览\n数据\n研究\n报告\n返回报告\n打开来源研究\n导出 Markdown\n导出复现清单\n\n经验证科学报告\n\nmat-2 band_gap 数值分析\n\n2026/8/27 23:58:29 · 第 1 版 · 1 项主要发现\n\n章节\n研究问题\n数据与方法\n主要发现\n数据表\n科学讨论\n限制\n结论\n\n研究问题\n\n分析所选 Dataset 样本 mat-2 的 band_gap 数值，并基于精确 Dataset 版本给出带来源的科学结论。\n\n在 Phase13 Canonical Dataset（版本 be02266a-7d4f-4ebb-9f28-3132855167d0）中，样本 mat-2 的 band_gap 数值为 2.5（无单位）；该数据集中 band_gap 的最小值为 1.2，最大值为 3.1，平均值为 2.266667，中位数为 2.5。\n\n数据与方法\n\n方法信息来自已验证的 ScientificResult，并保留执行时的参数与来源版本。\n\nPhase13 Canonical Dataset\n材料数据表 · 版本 be02266a-7d4f-4ebb-9f28-3132855167d0 · 当前版本\n\n科学呈现 · 1.0\n\n科学呈现\n绑定 1 个精确源版本\n结果入口\n查看器\nPhase13 Canonical Dataset\n精确版本 be02266a-7d4f-4ebb-9f28-3132855167d0\n打开查看器\n证据路径 · 1 项\n科学讨论\n\n该数据集中 band_gap 的最小值为 1.2，最大值为 3.1，平均值为 2.266667，中位数为 2.5。\n\n主要数据表\n表格 01\n材料数据集探索\ntable.bf3896f29ae3554e977725d327b4ebba\n\n精确版本 be02266a-7d4f-4ebb-9f28-3132855167d0 · 读取已持久化数据，不会重新执行科学计算。\n\n打开权威数据表\n主要发现\n01\n\n在 Phase13 Canonical Dataset（版本 be02266a-7d4f-4ebb-9f28-3132855167d0）中，样本 mat-2 的 band_gap 数值为 2.5（无单位）。\n\n限制与适用范围\n当前结果仅包含通过语义 Profile 授权的有界 Dataset 投影。\n结论\n\n在 Phase13 Canonical Dataset（版本 be02266a-7d4f-4ebb-9f28-3132855167d0）中，样本 mat-2 的 band_gap 数值为 2.5（无单位）；该数据集中 band_gap 的最小值为 1.2，最大值为 3.1，平均值为 2.266667，中位数为 2.5。\n\n科学依据 · 1\n来源数据 · 1\n复现信息"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_report_good.png"
+    },
+    {
+      "name": "report_payload_missing",
+      "route": "/projects/project_0002_1a0af866391f412d/reports/job_dc63f3f5d57742009c6be09e",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 404,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/api/scientific-reports/job_dc63f3f5d57742009c6be09e"
+        }
+      ],
+      "loadMs": 3536,
+      "url": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/reports/job_dc63f3f5d57742009c6be09e",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 3337,
+        "h1": [
+          "均方位移（MSD）"
+        ],
+        "h2": [
+          "主要结果",
+          "主要结论",
+          "限制",
+          "研究问题",
+          "方法与依据"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "header": 5
+        },
+        "links": 10,
+        "buttons": 55,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [
+          {
+            "tag": "TABLE",
+            "id": "",
+            "cls": "",
+            "left": 40,
+            "right": 631,
+            "w": 591,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "CAPTION",
+            "id": "",
+            "cls": "",
+            "left": 40,
+            "right": 631,
+            "w": 591,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "THEAD",
+            "id": "",
+            "cls": "",
+            "left": 40,
+            "right": 631,
+            "w": 591,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TR",
+            "id": "",
+            "cls": "",
+            "left": 40,
+            "right": 631,
+            "w": 591,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TH",
+            "id": "",
+            "cls": "",
+            "left": 373,
+            "right": 461,
+            "w": 89,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TH",
+            "id": "",
+            "cls": "",
+            "left": 461,
+            "right": 550,
+            "w": 89,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TH",
+            "id": "",
+            "cls": "",
+            "left": 550,
+            "right": 631,
+            "w": 81,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TBODY",
+            "id": "",
+            "cls": "",
+            "left": 40,
+            "right": 631,
+            "w": 591,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TR",
+            "id": "",
+            "cls": "",
+            "left": 40,
+            "right": 631,
+            "w": 591,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TD",
+            "id": "",
+            "cls": "",
+            "left": 373,
+            "right": 461,
+            "w": 89,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TD",
+            "id": "",
+            "cls": "",
+            "left": 461,
+            "right": 550,
+            "w": 89,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TD",
+            "id": "",
+            "cls": "",
+            "left": 550,
+            "right": 631,
+            "w": 81,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TR",
+            "id": "",
+            "cls": "",
+            "left": 40,
+            "right": 631,
+            "w": 591,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TD",
+            "id": "",
+            "cls": "",
+            "left": 373,
+            "right": 461,
+            "w": 89,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TD",
+            "id": "",
+            "cls": "",
+            "left": 461,
+            "right": 550,
+            "w": 89,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TD",
+            "id": "",
+            "cls": "",
+            "left": 550,
+            "right": 631,
+            "w": 81,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TR",
+            "id": "",
+            "cls": "",
+            "left": 40,
+            "right": 631,
+            "w": 591,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TD",
+            "id": "",
+            "cls": "",
+            "left": 373,
+            "right": 461,
+            "w": 89,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TD",
+            "id": "",
+            "cls": "",
+            "left": 461,
+            "right": 550,
+            "w": 89,
+            "overflowX": "visible"
+          },
+          {
+            "tag": "TD",
+            "id": "",
+            "cls": "",
+            "left": 550,
+            "right": 631,
+            "w": 81,
+            "overflowX": "visible"
+          }
+        ],
+        "internalHorizontalScrollers": [
+          {
+            "tag": "DIV",
+            "id": "",
+            "cls": "workspace-table-scroll",
+            "client": 310,
+            "scroll": 591
+          },
+          {
+            "tag": "DIV",
+            "id": "",
+            "cls": "workspace-table-scroll",
+            "client": 310,
+            "scroll": 591
+          }
+        ],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n概览\n数据\n研究\n报告\n← 返回报告\n\n分析报告 · 单次运行\n\n查看数据\n返回研究\n归档此报告\n均方位移（MSD）\n\nPhase14R Diffusion Unwrapped Qualification · 4 个输出 · 2 个步骤\n\n主要结果\n主要结果\n均方位移（MSD）\n均方位移（MSD）\n\n读取已持久化的科学结果；浏览器只负责展示，不会重新计算。\n\n选择 all 的 MSD 序列\n均方位移数值表\n选择\t滞后时间 (ps)\t总 MSD (Å²)\tx\ty\tz\t时间原点数\n选择\t0.5\t0.1323571\t0.06088181\t0.04882439\t0.02265092\t23\n选择\t1\t0.2795295\t0.137165\t0.1003845\t0.0419799\t22\n选择\t1.5\t0.424001\t0.1920047\t0.1666382\t0.06535796\t21\n选择\t2\t0.46287\t0.2049856\t0.1906969\t0.06718752\t20\n选择\t2.5\t0.5238947\t0.227443\t0.242692\t0.05375963\t19\n选择\t3\t0.6453974\t0.2571805\t0.3176718\t0.0705451\t18\n选择\t3.5\t0.8106373\t0.3006714\t0.4321961\t0.07776984\t17\n选择\t4\t1.019247\t0.3572108\t0.5535597\t0.1084762\t16\n选择\t4.5\t1.163381\t0.4159497\t0.6317374\t0.1156938\t15\n选择\t5\t1.272219\t0.3786436\t0.754894\t0.1386818\t14\n选择\t5.5\t1.268179\t0.2559558\t0.8818307\t0.1303929\t13\n选择\t6\t1.336806\t0.2073663\t0.9956651\t0.1337749\t12\n选择\t6.5\t1.410709\t0.1816456\t1.08217\t0.1468938\t11\n选择\t7\t1.38295\t0.1277323\t1.131216\t0.1240018\t10\n选择\t7.5\t1.337319\t0.06029682\t1.164893\t0.112129\t9\n选择\t8\t1.221922\t0.06006616\t1.084923\t0.07693272\t8\n选择\t8.5\t1.266197\t0.06264103\t1.097637\t0.105919\t7\n选择\t9\t1.324648\t0.07123355\t1.1108\t0.1426146\t6\n选择\t9.5\t1.361476\t0.05201672\t1.110966\t0.1984942\t5\n选择\t10\t1.244551\t0.07321279\t1.01942\t0.1519177\t4\n选择\t10.5\t1.051529\t0.1679542\t0.7684832\t0.1150914\t3\n选择\t11\t0.9179779\t0.2968194\t0.5156702\t0.1054883\t2\n选择\t11.5\t0.6417934\t0.2241795\t0.2750079\t0.1426059\t1\n来源与限制\n轨迹校验值\nsha256:5df26441c7ecc75e200609a0ab818a58acd2da0c38af69444fea219d83031823\n结果契约\nphase10n4.trajectory_msd.v1\nMSD uses Cartesian x/y/z axes and is not automatically crystallographic a/b/c diffusion.\nNo center-of-mass drift correction is applied.\n\n图表、表格和单位来自本次运行的已验证输出。\n\n主要结论\n\n在 1 ps 到 6 ps 内，限定扩散系数为 0.0386181 Å^2/ps（11 个拟合点，R² = 0.970302，α = 0.924032）；轨迹末端 11.5 ps 的总 MSD 为 0.641793 Å^2。\n\n限制\n\n该扩散系数只对用户显式选择的拟合窗口、当前轨迹与采样条件有效，不是无条件的长时间体扩散系数。\n\n支持性结果 · 3 项\n研究问题\n\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式拟合窗口内评估扩散性质；报告拟合点数、R²、扩散区间诊断和扩散系数，并说明该估计只对所选时间窗有效。\n\n方法与依据\n\n分析方案、来源数据、输出与可复现信息由运行记录提供。\n\n依据 · 10 项\n来源与过程\n复现信息"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_report_payload_missing.png"
+    },
+    {
+      "name": "tasks",
+      "route": "/tasks",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "loadMs": 1242,
+      "url": "http://127.0.0.1:3013/tasks",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "h1": [
+          "任务中心"
+        ],
+        "h2": [],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 2
+        },
+        "links": 3,
+        "buttons": 3,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n\n后台任务\n\n任务中心\n\n跨项目查看研究执行状态。任务状态来自持久化运行记录，离开页面后仍可从这里继续查看。\n\n正在加载…\n正在加载后台任务…"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_tasks.png"
+    },
+    {
+      "name": "notifications",
+      "route": "/notifications",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "loadMs": 1572,
+      "url": "http://127.0.0.1:3013/notifications",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "h1": [],
+        "h2": [],
+        "landmarks": {
+          "main": 0,
+          "nav": 0,
+          "header": 0
+        },
+        "links": 0,
+        "buttons": 0,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "正在恢复登录状态…"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_notifications.png"
+    },
+    {
+      "name": "trash",
+      "route": "/trash",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "loadMs": 1237,
+      "url": "http://127.0.0.1:3013/trash",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 868,
+        "h1": [
+          "回收站"
+        ],
+        "h2": [
+          "当前筛选下没有内容"
+        ],
+        "landmarks": {
+          "main": 2,
+          "nav": 0,
+          "header": 2
+        },
+        "links": 3,
+        "buttons": 9,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n\n内容管理\n\n回收站\n\n集中恢复已移除的项目、数据、科学对象、研究会话与报告。科学来源和历史证据受保护，不会因界面隐藏而删除。\n\n重新加载\n可恢复保留\n\n当前不自动清空回收站。只有无依赖的空项目或空数据集可由服务器确认后永久删除；受引用的科学版本、结果与报告继续保留以保证可复现性。\n\n全部 0\n项目 0\n数据集 0\n科学对象 0\n研究会话 0\n科学报告 0\n当前筛选下没有内容\n\n从项目、数据、研究或报告页面移入回收站的内容会显示在这里。"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_trash.png"
+    },
+    {
+      "name": "settings_models",
+      "route": "/settings/models",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "loadMs": 1240,
+      "url": "http://127.0.0.1:3013/console?settings=models",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 1173,
+        "h1": [
+          "继续你的材料研究"
+        ],
+        "h2": [
+          "模型服务",
+          "P14R 回收恢复验收 2026-09-01",
+          "最近项目"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 3
+        },
+        "links": 12,
+        "buttons": 16,
+        "inputs": 4,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [
+          {
+            "tag": "INPUT",
+            "type": null,
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": null,
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "url",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "password",
+            "cls": ""
+          }
+        ],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n\n研究助手\n\n模型服务\n\n添加一个兼容模型服务。密钥仅在保存时发送给服务端，之后不会再次显示。\n\n×\n◎\n当前服务\nDeepSeek\n\n系统已配置服务端模型；连接密钥由服务端维护。\n\n系统托管\nProvider 标识\n显示名称\nBase URL\nAPI Key\n\n支持 OpenAI-compatible 的 /chat/completions 与 /models。保存后密钥立即从输入框清除，界面只保留“已保存”状态；需要修改时重新输入，或删除后重新添加。\n\n保存 Provider\n\n模型目录\n\n从 Provider 读取模型\n\n先读取 Provider 返回的全部模型，默认全部加入模型组；取消选择后，对话页只显示保留的模型。\n\n刷新模型\n测试连接\n\n保存连接后可读取 /models。如果 Provider 不提供目录，需要先配置默认模型，之后可在对话中选择已知模型名。\n\n安全与协议说明\n具体模型与思考深度在研究对话中选择\n完成\n\n控制台\n\n继续你的材料研究\n\n回到最近的项目、数据和分析报告。\n\n新建项目\n搜索项目\n模型设置\n继续研究\nP14R 回收恢复验收 2026-09-01\n\n一次性项目，用于恢复路径验收。\n\n继续研究\n快速查看\n最近项目\n查看全部\nP14R 回收恢复验收 2026-09-01\n一次性项目，用于恢复路径验收。\n打开 →\n⋯\nLive Project\n材料研究项目\n打开 →\n⋯\nproject_capability_cd9b1d478faa\n材料研究项目\n打开 →\n⋯\nproject_intent_9b95455d21da\n材料研究项目\n打开 →\n⋯\nInput transport regression\n材料研究项目\n打开 →\n⋯\nproject_8c_route\n材料研究项目\n打开 →\n⋯"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_settings_models.png"
+    },
+    {
+      "name": "console",
+      "route": "/console",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "loadMs": 1242,
+      "url": "http://127.0.0.1:3013/console",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 1173,
+        "h1": [
+          "继续你的材料研究"
+        ],
+        "h2": [
+          "P14R 回收恢复验收 2026-09-01",
+          "最近项目"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 2
+        },
+        "links": 12,
+        "buttons": 11,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n\n控制台\n\n继续你的材料研究\n\n回到最近的项目、数据和分析报告。\n\n新建项目\n搜索项目\n模型设置\n继续研究\nP14R 回收恢复验收 2026-09-01\n\n一次性项目，用于恢复路径验收。\n\n继续研究\n快速查看\n最近项目\n查看全部\nP14R 回收恢复验收 2026-09-01\n一次性项目，用于恢复路径验收。\n打开 →\n⋯\nLive Project\n材料研究项目\n打开 →\n⋯\nproject_capability_cd9b1d478faa\n材料研究项目\n打开 →\n⋯\nproject_intent_9b95455d21da\n材料研究项目\n打开 →\n⋯\nInput transport regression\n材料研究项目\n打开 →\n⋯\nproject_8c_route\n材料研究项目\n打开 →\n⋯"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_console.png"
+    },
+    {
+      "name": "analysis_legacy",
+      "route": "/analysis",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "loadMs": 1239,
+      "url": "http://127.0.0.1:3013/analysis",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "h1": [
+          "历史链接暂时无法解析"
+        ],
+        "h2": [],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 1
+        },
+        "links": 4,
+        "buttons": 2,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n历史链接暂时无法解析\n\n记录没有被删除。可以从项目列表重新打开对应的研究结果。\n\n查看项目"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_analysis_legacy.png"
+    },
+    {
+      "name": "global_search_overlay",
+      "route": "http://127.0.0.1:3013/analysis",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResponses": [],
+      "metrics": {
+        "bodyText": "M\n任务\n通知\n⌕\n本\n打开账户菜单\n\n全局搜索\n\n查找科学工作\n×\n项目、数据、研究或报告\nCtrl/⌘ K\n\n搜索已授权的项目、数据、研究、结果与报告。\n\n类型\n全部类型\n项目\n数据集\n科学对象\n研究会话\n科学报告\n科学结果\n状态\n全部状态\n当前\n已归档\n回收站\n已保存\n选择检索\nP14R 浏览器保存检索 2026-09-01\n保存当前检索\n\n至少 找到 140 项，显示前 40 项\n\n结构配位数分布统计报告（修订 2）\n当前\n科学报告\n打开\nP14R 回收恢复验收 2026-09-01\n当前\n项目 · 一次性项目，用于恢复路径验收。\n打开\n查看数据\n进入研究\n硅结构研究管理验收 mti0ey21\n已归档\n研究会话\n打开\n硅结构研究管理验收 mthz86iq\n已归档\n研究会话\n打开\nScientificResult 8868c3f3-a19\n当前\n科学结果 · 1.0\n打开\n硅结构研究管理验收 mthvis77\n已归档\n研究会话\n打开\n硅结构研究管理验收 mthrutka\n已归档\n研究会话\n打开\nLive Project\n当前\n项目 · 材料研究项目\n打开\n查看数据\n进入研究\nScientificResult 8d506aa2-024\n当前\n科学结果 · 1.0\n打开\nScientificResult 2fb945cf-37a\n当前\n科学结果 · 1.0\n打开\nScientificResult 5c9969c4-16b\n当前\n科学结果 · 1.0\n打开\nLi 扩散性质评估（1–6 ps 拟合窗口）\n当前\n科学报告\n打开\nScientificResult 26127c48-d73\n当前\n科学结果 · 1.0\n打开\nScientificResult 64645cca-fb3\n当前\n科学结果 · 1.0\n打开\nScientificResult 85112cca-2d6\n当前\n科学结果 · 1.0\n打开\nScientificResult e4c89b46-8f9\n当前\n科学结果 · 1.0\n打开\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式\n当前\n研究会话\n打开\nPhase14R Diffusion Unwrapped Qualification\n当前\n科学对象 · trajectory.atomic\n打开\n请基于当前已选择的未包裹原子轨迹，计算均方位移随时间的变化；若时间轴和长时拟合窗口足以支持，请估\n当前\n研究会话\n打开\n结构配位数分布统计报告\n当前\n科学报告\n打开\n材料组成空间与回归评估结果\n当前\n科学报告\n打开\nScientificResult d984bb18-acc\n当前\n科学结果 · 1.0\n打开\nScientificResult 78ffba3f-bf7\n当前\n科学结果 · 1.0\n打开\n请对当前选择的数据表构建组成空间，并评估预测值相对真实值的回归性能。请保留 sample-fe2\n当前\n研究会话\n打开\n请对当前材料数据构建二维组成空间并保留每个样本的稳定身份，同时评估预测值相对真实值的回归性能，报\n当前\n研究会话\n打开\nPhase14R Composition ML Stable Identity\n当前\n科学对象 · materials.table\n打开\nPhase14R Composition ML Stable Identity\n当前\n数据集\n打开\n请对当前材料数据构建二维组成空间，保留每种材料公式对应的稳定身份；同时评估预测值相对真实值的回归\n当前\n研究会话\n打开\nPhase14R Composition ML Qualification\n当前\n科学对象 · materials.table\n打开\nPhase14R Composition ML Qualification\n当前\n数据集\n打开\nScientificResult 2382b0eb-b05\n当前\n科学结果 · 1.0\n打开\n请对当前精确结构版本使用固定距离截断统计配位数分布，给出总体和按元素的配位直方图、位点数量、截断\n当前\n研究会话\n打开\n请基于当前精确轨迹版本先计算 Li 的均方位移（MSD），再只在 1 ps 到 6 ps 的显式\n当前\n研究会话\n打开\nPhase14R Diffusion Unwrapped Qualification\n当前\n数据集\n打开\n请基于当前精确轨迹版本计算均方位移（MSD）；只报告有效滞后、末端 MSD 和证据。如果轨迹过短\n当前\n研究会话\n打开\nPhase14R MSD Unwrapped Qualification Current Runtime\n当前\n数据集\n打开\nPhase14R MSD Unwrapped Qualification\n当前\n数据集\n打开\n轨迹径向分布函数（RDF）计算结果\n当前\n科学报告\n打开\n联合分析电子能带与态密度来源\n当前\n科学报告\n打开\nScientificResult 8445cb9f-637\n当前\n科学结果 · 1.0\n打开\n查看全部项目\n关闭\n\n项目\n\n材料研究项目\n\n项目是数据、研究过程和分析报告的长期边界。\n\n新建项目\n搜索项目、Case 或科学能力\n当前\n已归档\n回收站\n全部\n选择\n16 个项目\n\n阶段能力记录\n\nPhase 项目\n3 个\nPhase 3 Project\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nPhase 13 Browser Qualification\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nPhase 13 Structure Browser Qualification\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\n其他项目与历史记录\n13 个\nAPI Phase 2 Project\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nInput transport regression\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nLive Project\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nLive Project 2\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nP14R 回收恢复验收 2026-09-01\n一次性项目，用于恢复路径验收。\n打开项目 →\n⋯\nproject_8c_route\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_capability_641df0fd6c35\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_capability_a4fc81d56c0b\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_capability_cd9b1d478faa\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_intent_9ae2ece0719b\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_intent_9b95455d21da\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_intent_6950765c7483\n查看数据、研究过程与分析报告\n打开项目 →\n⋯\nproject_local\n查看数据、研究过程与分析报告\n打开项目 →\n⋯",
+        "duplicateIds": [],
+        "horizontalOverflow": false,
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_global_search_overlay.png"
+    }
+  ],
+  "navigation": {
+    "1280x720": [
+      {
+        "href": "/projects/project_0002_1a0af866391f412d",
+        "before": "http://127.0.0.1:3013/projects",
+        "after": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d",
+        "markerPreserved": true,
+        "documentRequests": 0
+      },
+      {
+        "href": "/projects/project_0002_1a0af866391f412d/data",
+        "before": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d",
+        "after": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/data",
+        "markerPreserved": true,
+        "documentRequests": 0
+      },
+      {
+        "href": "/projects/project_0002_1a0af866391f412d/research",
+        "before": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/data",
+        "after": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/research",
+        "markerPreserved": true,
+        "documentRequests": 0
+      },
+      {
+        "href": "/projects/project_0002_1a0af866391f412d/reports",
+        "before": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/research",
+        "after": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/reports",
+        "markerPreserved": true,
+        "documentRequests": 0
+      },
+      {
+        "href": "/tasks",
+        "before": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/reports",
+        "after": "http://127.0.0.1:3013/tasks",
+        "markerPreserved": true,
+        "documentRequests": 0
+      },
+      {
+        "href": "/notifications",
+        "before": "http://127.0.0.1:3013/tasks",
+        "after": "http://127.0.0.1:3013/notifications",
+        "markerPreserved": true,
+        "documentRequests": 0
+      },
+      {
+        "href": "/trash",
+        "clickable": false,
+        "current": "http://127.0.0.1:3013/notifications"
+      }
+    ],
+    "390x844": [
+      {
+        "href": "/projects/project_0002_1a0af866391f412d",
+        "before": "http://127.0.0.1:3013/projects",
+        "after": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d",
+        "markerPreserved": true,
+        "documentRequests": 0
+      },
+      {
+        "href": "/projects/project_0002_1a0af866391f412d/data",
+        "before": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d",
+        "after": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/data",
+        "markerPreserved": true,
+        "documentRequests": 0
+      },
+      {
+        "href": "/projects/project_0002_1a0af866391f412d/research",
+        "before": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/data",
+        "after": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/research",
+        "markerPreserved": true,
+        "documentRequests": 0
+      },
+      {
+        "href": "/projects/project_0002_1a0af866391f412d/reports",
+        "before": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/research",
+        "after": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/reports",
+        "markerPreserved": true,
+        "documentRequests": 0
+      },
+      {
+        "href": "/tasks",
+        "before": "http://127.0.0.1:3013/projects/project_0002_1a0af866391f412d/reports",
+        "after": "http://127.0.0.1:3013/tasks",
+        "markerPreserved": true,
+        "documentRequests": 0
+      },
+      {
+        "href": "/notifications",
+        "before": "http://127.0.0.1:3013/tasks",
+        "after": "http://127.0.0.1:3013/notifications",
+        "markerPreserved": true,
+        "documentRequests": 0
+      },
+      {
+        "href": "/trash",
+        "clickable": false,
+        "current": "http://127.0.0.1:3013/notifications"
+      }
+    ]
+  },
+  "unauthenticated": [
+    {
+      "name": "unauth_landing",
+      "route": "/",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 401,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/auth/me"
+        },
+        {
+          "status": 401,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/auth/me"
+        },
+        {
+          "status": 401,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/auth/me"
+        }
+      ],
+      "loadMs": 1250,
+      "url": "http://127.0.0.1:3013/",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2226,
+        "h1": [
+          "材料智能平台"
+        ],
+        "h2": [
+          "数据、分析与结果始终处于同一研究脉络",
+          "从主要图表开始阅读，也能一路追溯到来源",
+          "让下一次材料分析从数据事实开始"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 2
+        },
+        "links": 0,
+        "buttons": 3,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n登录\n\n面向材料科研的科学研究工作台\n\n材料智能平台\n\n将真实材料数据、经过验证的科学工具和可追溯结果放进一个持续的研究项目。查看数据，提出问题，获得有依据的图表、发现与限制。\n\n开始使用\nPerovskite stability study\n项目研究\n项目数据\nmaterials.csv\nBaTiO3.cif\nAIMD trajectory\n\n形成能与带隙\n\n主要发现\n\n形成能降低时，样本的带隙整体呈上升趋势。\n\n查看数据\n\n在项目中浏览表格、结构、轨迹与科学属性。\n\n提出问题\n\n用自然语言描述想要验证的材料科学关系。\n\n获得有依据的结果\n\n图表、发现、限制与来源过程一起保留。\n\n以项目为研究边界\n\n数据、分析与结果始终处于同一研究脉络\n\n不是把材料数据塞进通用聊天窗口，而是让每一次提问都建立在明确的数据范围和科学语义之上。\n\n专业数据查看\n\n直接检查表格属性、晶体结构和模拟轨迹，让数据本身成为页面主角。\n\nmaterials.csv · BaTiO3.cif · AIMD trajectory\n受约束的科学分析\n\n研究问题先转化为可验证的分析方案，再由已注册工具执行，不把任意代码交给模型运行。\n\n形成能（formation energy）· 带隙（band gap）· 密度\n可追溯的研究结果\n\n图、表、主要发现与限制一起保存，并可继续查看数据来源和分析过程。\n\nFigure · Finding · Limitation · Evidence\n\n科学结果，而不是答案卡片\n\n从主要图表开始阅读，也能一路追溯到来源\n\n结果按科研阅读顺序组织：图与单位、主要发现、限制、支持输出、方法与依据。技术细节保持可达，但不会抢占研究工作流。\n\n主结果\n清晰呈现变量、单位与样本范围\n科学解释\n区分观察、推断与当前限制\n来源与过程\n需要时查看数据、工具与输出关系\n主要结果\n形成能与带隙的关系\n64 个钙钛矿样本 · formation_energy (eV/atom) · band_gap (eV)\n主要发现\n\n在当前样本范围内，形成能降低与带隙增大呈中等相关；这一关系不代表因果。\n\n开始一个真实研究项目\n\n让下一次材料分析从数据事实开始\n登录并开始"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_unauth_landing.png"
+    },
+    {
+      "name": "unauth_protected_projects",
+      "route": "/projects",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 401,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/auth/me"
+        },
+        {
+          "status": 401,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/auth/me"
+        }
+      ],
+      "loadMs": 1251,
+      "url": "http://127.0.0.1:3013/?login=1&returnTo=%2Fprojects",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 1280,
+        "innerHeight": 720,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2226,
+        "h1": [
+          "材料智能平台"
+        ],
+        "h2": [
+          "数据、分析与结果始终处于同一研究脉络",
+          "从主要图表开始阅读，也能一路追溯到来源",
+          "让下一次材料分析从数据事实开始",
+          "登录"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 2
+        },
+        "links": 0,
+        "buttons": 5,
+        "inputs": 2,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [
+          {
+            "tag": "INPUT",
+            "type": "email",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "password",
+            "cls": ""
+          }
+        ],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n登录\n\n面向材料科研的科学研究工作台\n\n材料智能平台\n\n将真实材料数据、经过验证的科学工具和可追溯结果放进一个持续的研究项目。查看数据，提出问题，获得有依据的图表、发现与限制。\n\n开始使用\nPerovskite stability study\n项目研究\n项目数据\nmaterials.csv\nBaTiO3.cif\nAIMD trajectory\n\n形成能与带隙\n\n主要发现\n\n形成能降低时，样本的带隙整体呈上升趋势。\n\n查看数据\n\n在项目中浏览表格、结构、轨迹与科学属性。\n\n提出问题\n\n用自然语言描述想要验证的材料科学关系。\n\n获得有依据的结果\n\n图表、发现、限制与来源过程一起保留。\n\n以项目为研究边界\n\n数据、分析与结果始终处于同一研究脉络\n\n不是把材料数据塞进通用聊天窗口，而是让每一次提问都建立在明确的数据范围和科学语义之上。\n\n专业数据查看\n\n直接检查表格属性、晶体结构和模拟轨迹，让数据本身成为页面主角。\n\nmaterials.csv · BaTiO3.cif · AIMD trajectory\n受约束的科学分析\n\n研究问题先转化为可验证的分析方案，再由已注册工具执行，不把任意代码交给模型运行。\n\n形成能（formation energy）· 带隙（band gap）· 密度\n可追溯的研究结果\n\n图、表、主要发现与限制一起保存，并可继续查看数据来源和分析过程。\n\nFigure · Finding · Limitation · Evidence\n\n科学结果，而不是答案卡片\n\n从主要图表开始阅读，也能一路追溯到来源\n\n结果按科研阅读顺序组织：图与单位、主要发现、限制、支持输出、方法与依据。技术细节保持可达，但不会抢占研究工作流。\n\n主结果\n清晰呈现变量、单位与样本范围\n科学解释\n区分观察、推断与当前限制\n来源与过程\n需要时查看数据、工具与输出关系\n主要结果\n形成能与带隙的关系\n64 个钙钛矿样本 · formation_energy (eV/atom) · band_gap (eV)\n主要发现\n\n在当前样本范围内，形成能降低与带隙增大呈中等相关；这一关系不代表因果。\n\n开始一个真实研究项目\n\n让下一次材料分析从数据事实开始\n登录并开始\n×\n\n材料智能平台\n\n登录\n\n继续你的材料研究项目。\n\n邮箱\n密码\n登录"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\1280x720_unauth_protected_projects.png"
+    },
+    {
+      "name": "unauth_landing",
+      "route": "/",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 401,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/auth/me"
+        },
+        {
+          "status": 401,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/auth/me"
+        },
+        {
+          "status": 401,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/auth/me"
+        }
+      ],
+      "loadMs": 1365,
+      "url": "http://127.0.0.1:3013/",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 3228,
+        "h1": [
+          "材料智能平台"
+        ],
+        "h2": [
+          "数据、分析与结果始终处于同一研究脉络",
+          "从主要图表开始阅读，也能一路追溯到来源",
+          "让下一次材料分析从数据事实开始"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 2
+        },
+        "links": 0,
+        "buttons": 3,
+        "inputs": 0,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n登录\n\n面向材料科研的科学研究工作台\n\n材料智能平台\n\n将真实材料数据、经过验证的科学工具和可追溯结果放进一个持续的研究项目。查看数据，提出问题，获得有依据的图表、发现与限制。\n\n开始使用\nPerovskite stability study\n项目研究\n项目数据\nmaterials.csv\nBaTiO3.cif\nAIMD trajectory\n\n形成能与带隙\n\n主要发现\n\n形成能降低时，样本的带隙整体呈上升趋势。\n\n查看数据\n\n在项目中浏览表格、结构、轨迹与科学属性。\n\n提出问题\n\n用自然语言描述想要验证的材料科学关系。\n\n获得有依据的结果\n\n图表、发现、限制与来源过程一起保留。\n\n以项目为研究边界\n\n数据、分析与结果始终处于同一研究脉络\n\n不是把材料数据塞进通用聊天窗口，而是让每一次提问都建立在明确的数据范围和科学语义之上。\n\n专业数据查看\n\n直接检查表格属性、晶体结构和模拟轨迹，让数据本身成为页面主角。\n\nmaterials.csv · BaTiO3.cif · AIMD trajectory\n受约束的科学分析\n\n研究问题先转化为可验证的分析方案，再由已注册工具执行，不把任意代码交给模型运行。\n\n形成能（formation energy）· 带隙（band gap）· 密度\n可追溯的研究结果\n\n图、表、主要发现与限制一起保存，并可继续查看数据来源和分析过程。\n\nFigure · Finding · Limitation · Evidence\n\n科学结果，而不是答案卡片\n\n从主要图表开始阅读，也能一路追溯到来源\n\n结果按科研阅读顺序组织：图与单位、主要发现、限制、支持输出、方法与依据。技术细节保持可达，但不会抢占研究工作流。\n\n主结果\n清晰呈现变量、单位与样本范围\n科学解释\n区分观察、推断与当前限制\n来源与过程\n需要时查看数据、工具与输出关系\n主要结果\n形成能与带隙的关系\n64 个钙钛矿样本 · formation_energy (eV/atom) · band_gap (eV)\n主要发现\n\n在当前样本范围内，形成能降低与带隙增大呈中等相关；这一关系不代表因果。\n\n开始一个真实研究项目\n\n让下一次材料分析从数据事实开始\n登录并开始"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_unauth_landing.png"
+    },
+    {
+      "name": "unauth_protected_projects",
+      "route": "/projects",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "pageErrors": [],
+      "failedResponses": [
+        {
+          "status": 401,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/auth/me"
+        },
+        {
+          "status": 401,
+          "method": "GET",
+          "url": "http://127.0.0.1:3013/api/auth/me"
+        }
+      ],
+      "loadMs": 1243,
+      "url": "http://127.0.0.1:3013/?login=1&returnTo=%2Fprojects",
+      "title": "Material Data Intelligence",
+      "metrics": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 3228,
+        "h1": [
+          "材料智能平台"
+        ],
+        "h2": [
+          "数据、分析与结果始终处于同一研究脉络",
+          "从主要图表开始阅读，也能一路追溯到来源",
+          "让下一次材料分析从数据事实开始",
+          "登录"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "header": 2
+        },
+        "links": 0,
+        "buttons": 5,
+        "inputs": 2,
+        "duplicateIds": [],
+        "brokenAria": [],
+        "unnamedControls": [
+          {
+            "tag": "INPUT",
+            "type": "email",
+            "cls": ""
+          },
+          {
+            "tag": "INPUT",
+            "type": "password",
+            "cls": ""
+          }
+        ],
+        "horizontalOverflow": false,
+        "offscreenElements": [],
+        "internalHorizontalScrollers": [
+          {
+            "tag": "DIV",
+            "id": "",
+            "cls": "product-modal-backdrop",
+            "client": 390,
+            "scroll": 398
+          }
+        ],
+        "smallTouchTargets": [],
+        "bodyText": "M\n材料智能平台\n登录\n\n面向材料科研的科学研究工作台\n\n材料智能平台\n\n将真实材料数据、经过验证的科学工具和可追溯结果放进一个持续的研究项目。查看数据，提出问题，获得有依据的图表、发现与限制。\n\n开始使用\nPerovskite stability study\n项目研究\n项目数据\nmaterials.csv\nBaTiO3.cif\nAIMD trajectory\n\n形成能与带隙\n\n主要发现\n\n形成能降低时，样本的带隙整体呈上升趋势。\n\n查看数据\n\n在项目中浏览表格、结构、轨迹与科学属性。\n\n提出问题\n\n用自然语言描述想要验证的材料科学关系。\n\n获得有依据的结果\n\n图表、发现、限制与来源过程一起保留。\n\n以项目为研究边界\n\n数据、分析与结果始终处于同一研究脉络\n\n不是把材料数据塞进通用聊天窗口，而是让每一次提问都建立在明确的数据范围和科学语义之上。\n\n专业数据查看\n\n直接检查表格属性、晶体结构和模拟轨迹，让数据本身成为页面主角。\n\nmaterials.csv · BaTiO3.cif · AIMD trajectory\n受约束的科学分析\n\n研究问题先转化为可验证的分析方案，再由已注册工具执行，不把任意代码交给模型运行。\n\n形成能（formation energy）· 带隙（band gap）· 密度\n可追溯的研究结果\n\n图、表、主要发现与限制一起保存，并可继续查看数据来源和分析过程。\n\nFigure · Finding · Limitation · Evidence\n\n科学结果，而不是答案卡片\n\n从主要图表开始阅读，也能一路追溯到来源\n\n结果按科研阅读顺序组织：图与单位、主要发现、限制、支持输出、方法与依据。技术细节保持可达，但不会抢占研究工作流。\n\n主结果\n清晰呈现变量、单位与样本范围\n科学解释\n区分观察、推断与当前限制\n来源与过程\n需要时查看数据、工具与输出关系\n主要结果\n形成能与带隙的关系\n64 个钙钛矿样本 · formation_energy (eV/atom) · band_gap (eV)\n主要发现\n\n在当前样本范围内，形成能降低与带隙增大呈中等相关；这一关系不代表因果。\n\n开始一个真实研究项目\n\n让下一次材料分析从数据事实开始\n登录并开始\n×\n\n材料智能平台\n\n登录\n\n继续你的材料研究项目。\n\n邮箱\n密码\n登录"
+      },
+      "screenshot": "E:\\1project\\Material Data Intelligence\\docs\\agent2\\phase14r\\evidence\\product_reality_before_2026-09-01\\390x844_unauth_protected_projects.png"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "phase14r.exact-dataset-source-recovery.v1",
+  "date": "2026-09-03",
+  "datasetId": "dataset_0002_cb403e1b78f54d32",
+  "projectId": "project_0002_1a0af866391f412d",
+  "sourceEndpoint": "http://127.0.0.1:9102",
+  "targetEndpoint": "http://127.0.0.1:9000",
+  "databaseRowsChanged": 0,
+  "items": [
+    {
+      "storageKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0002_cb403e1b78f54d32/raw/file_001/si.cif",
+      "action": "RESTORED",
+      "sizeBytes": 441,
+      "sha256": "4aeaf0107a36ef4bf587da1e52d20ca2739063dd5a548dcb3dac29efc0331198"
+    },
+    {
+      "storageKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0002_cb403e1b78f54d32/normalized/obj_structure_72a5ab29a949/metadata.json",
+      "action": "RESTORED",
+      "sizeBytes": 605,
+      "sha256": "f9d8d3e9677fb2613568051a88cebfd9ac87880a823e333bf97bf58d430b49c1"
+    },
+    {
+      "storageKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0002_cb403e1b78f54d32/normalized/obj_structure_72a5ab29a949/structure.json",
+      "action": "NOOP",
+      "sizeBytes": 832,
+      "sha256": "067bc07a01eb9d27021cfcb9406a6358b7b0c81910ca4beb2531dfbfc35217a6"
+    }
+  ],
+  "postRecovery": {
+    "durableObjectStoreResolver": "PASS",
+    "resolvedStructureCount": 1,
+    "desktopBrowser": {
+      "viewport": "1280x720",
+      "consoleErrors": 0,
+      "pageErrors": 0,
+      "failedResponses": 0,
+      "horizontalOverflow": 0,
+      "viewerVisible": true
+    },
+    "mobileBrowser": {
+      "viewport": "390x844",
+      "consoleErrors": 0,
+      "pageErrors": 0,
+      "failedResponses": 0,
+      "horizontalOverflow": 0,
+      "viewerVisible": true
+    }
+  }
+}

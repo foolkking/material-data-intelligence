@@ -7,7 +7,6 @@ export type PlannerJobRequest = {
   provider?: string;
   baseUrl?: string;
   model?: string;
-  secretId?: string;
   temperature?: number;
   maxTokens?: number;
   timeoutSeconds?: number;
@@ -699,6 +698,7 @@ export type ProductSearchResponse = {
   items: ProductSearchItem[];
   count: number;
   truncated?: boolean;
+  nextCursor?: string | null;
 };
 
 export type ProjectHistory = {
@@ -791,6 +791,11 @@ export type ProjectHistory = {
     workspaceId?: string | null;
     href: string;
   }>;
+  pagination?: {
+    datasets: { nextCursor: string | null };
+    analyses: { nextCursor: string | null };
+    activity: { nextCursor: string | null };
+  };
 };
 
 export type DataProfileSummary = {
@@ -908,7 +913,6 @@ export type ProviderResolveRequest = {
   provider: string;
   baseUrl?: string;
   model?: string;
-  secretId?: string;
   temperature?: number;
   maxTokens?: number;
   timeoutSeconds?: number;
@@ -926,7 +930,6 @@ export type ProviderTestRequest = {
   provider: string;
   baseUrl?: string;
   model?: string;
-  secretId?: string;
   temperature?: number;
   maxTokens?: number;
   timeoutSeconds?: number;
@@ -963,25 +966,6 @@ export type ProviderModelList = {
   models: string[];
   source?: string;
   message?: string;
-};
-
-export type SecretSummary = {
-  id: string;
-  secret_id?: string;
-  alias?: string;
-  provider?: string;
-  created_at?: string;
-  createdAt?: string;
-  lastUsedAt?: string | null;
-  status?: string;
-  maskedPreview?: string;
-};
-
-export type CreateSecretRequest = {
-  provider: string;
-  alias?: string;
-  value: string;
-  type?: "api_key" | "base_url" | "custom";
 };
 
 export type UploadDatasetRequest = {
@@ -1062,13 +1046,26 @@ export async function clarifyAnalysisIntent(
   });
 }
 
-export async function getPlannerJob(jobId: string): Promise<PlannerJobDetail> {
-  return apiFetch<PlannerJobDetail>(`/planner/jobs/${encodeURIComponent(jobId)}`);
+export async function getPlannerJob(
+  jobId: string,
+  options: Readonly<{ signal?: AbortSignal }> = {},
+): Promise<PlannerJobDetail> {
+  return apiFetch<PlannerJobDetail>(
+    `/planner/jobs/${encodeURIComponent(jobId)}`,
+    { signal: options.signal },
+  );
 }
 
-export async function getPlannerJobEvents(jobId: string, afterSeq = 0): Promise<JobEvent[]> {
+export async function getPlannerJobEvents(
+  jobId: string,
+  afterSeq = 0,
+  options: Readonly<{ signal?: AbortSignal }> = {},
+): Promise<JobEvent[]> {
   const query = afterSeq > 0 ? `?after_seq=${encodeURIComponent(String(afterSeq))}` : "";
-  return apiFetch<JobEvent[]>(`/planner/jobs/${encodeURIComponent(jobId)}/events${query}`);
+  return apiFetch<JobEvent[]>(
+    `/planner/jobs/${encodeURIComponent(jobId)}/events${query}`,
+    { signal: options.signal },
+  );
 }
 
 export function getPlannerJobEventsStreamUrl(jobId: string, afterSeq = 0): string {
@@ -1096,7 +1093,6 @@ export async function createPlannerJobInterpretation(
     provider?: string;
     baseUrl?: string;
     model?: string;
-    secretId?: string;
     temperature?: number;
     maxTokens?: number;
     timeoutSeconds?: number;
@@ -1142,7 +1138,18 @@ export async function getPlannerArtifactContent(
     `${API_BASE}/planner/jobs/${encodeURIComponent(jobId)}/artifacts/${encodeURIComponent(artifactId)}/content`,
     { method: "GET", signal: options.signal, credentials: "include" },
   );
-  if (!response.ok) throw new Error("ARTIFACT_CONTENT_LOAD_FAILED");
+  if (!response.ok) {
+    if (response.status === 401 && typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("mdi:session-expired"));
+    }
+    const text = await response.text();
+    const body = text ? safeParseJson(text) : null;
+    throw new PlannerApiError(
+      errorMessage(body) || "Artifact content could not be loaded.",
+      response.status,
+      body,
+    );
+  }
   const declared = Number(response.headers.get("content-length") ?? response.headers.get("x-content-length-validated"));
   if (!Number.isSafeInteger(declared) || declared <= 0 || declared > maximumBytes) {
     throw new Error("ARTIFACT_CONTENT_LIMIT_EXCEEDED");
@@ -1205,7 +1212,16 @@ export async function listProjects(options: Readonly<{ forceRefresh?: boolean }>
 
 export async function searchProduct(
   query: string,
-  options: { projectId?: string; kind?: ProductSearchItem["kind"]; status?: "active" | "archived" | "trashed" | "all"; limit?: number } = {},
+  options: {
+    projectId?: string;
+    kind?: ProductSearchItem["kind"];
+    status?: "active" | "archived" | "trashed" | "all";
+    limit?: number;
+    cursor?: string;
+    dateFrom?: string;
+    dateTo?: string;
+    signal?: AbortSignal;
+  } = {},
 ): Promise<ProductSearchResponse> {
   const params = new URLSearchParams();
   if (query.trim()) params.set("q", query.trim());
@@ -1213,7 +1229,12 @@ export async function searchProduct(
   if (options.kind) params.set("kind", options.kind);
   if (options.status) params.set("status", options.status);
   if (options.limit) params.set("limit", String(options.limit));
-  return apiFetch<ProductSearchResponse>(`/search?${params.toString()}`);
+  if (options.cursor) params.set("cursor", options.cursor);
+  if (options.dateFrom) params.set("date_from", options.dateFrom);
+  if (options.dateTo) params.set("date_to", options.dateTo);
+  return apiFetch<ProductSearchResponse>(`/search?${params.toString()}`, {
+    signal: options.signal,
+  });
 }
 
 export async function createProject(name: string): Promise<ProjectSummary> {
@@ -1275,7 +1296,15 @@ export type DependencyImpact = {
   displayName: string;
   canDelete: boolean;
   dependencyCount: number;
-  dependencies: Array<{ kind: string; label: string; count: number }>;
+  dependencies: Array<{ kind: string; label: string; count: number; href?: string }>;
+  retentionPolicy?: {
+    schemaVersion: string;
+    automaticPurge: "ENABLED" | "DISABLED";
+    referencedProvenance: string;
+    unreferencedTrash: string;
+    manualPurge: "SERVER_ZERO_DEPENDENCY_ONLY" | "NOT_SUPPORTED_FOR_ENTITY";
+    manualPurgeRequiresZeroDependencies: boolean;
+  };
   impact: {
     removedFromActiveDiscovery: boolean;
     historicalProvenanceProtected: boolean;
@@ -1325,7 +1354,7 @@ export async function getProjectExportManifest(projectId: string): Promise<Proje
 const PROJECT_HISTORY_WARM_TTL_MS = 30_000;
 const projectHistoryRequests = new Map<
   string,
-  { expiresAt: number; promise: Promise<ProjectHistory> }
+  { expiresAt: number; promise: Promise<ProjectHistory>; value?: ProjectHistory }
 >();
 
 export function invalidateProjectHistory(projectId?: string): void {
@@ -1333,25 +1362,62 @@ export function invalidateProjectHistory(projectId?: string): void {
   else projectHistoryRequests.clear();
 }
 
+/**
+ * Return the last successfully resolved history snapshot without starting a
+ * request. Route components use this to paint immediately after navigation
+ * when ProductShell has already warmed the same project ledger.
+ */
+export function getCachedProjectHistory(projectId: string): ProjectHistory | null {
+  const cached = projectHistoryRequests.get(projectId);
+  if (!cached || cached.expiresAt <= Date.now() || !cached.value) return null;
+  return cached.value;
+}
+
 export async function getProjectHistory(
   projectId: string,
-  options: Readonly<{ forceRefresh?: boolean }> = {},
+  options: Readonly<{ forceRefresh?: boolean; limit?: number; datasetsCursor?: string; analysesCursor?: string; activityCursor?: string }> = {},
 ): Promise<ProjectHistory> {
+  const continuation = Boolean(options.datasetsCursor || options.analysesCursor || options.activityCursor);
+  const cacheable = !continuation;
+  const requestsBoundedPage = options.limit !== undefined;
   const cached = projectHistoryRequests.get(projectId);
-  if (!options.forceRefresh && cached && cached.expiresAt > Date.now()) {
+  if (
+    cacheable
+    && !options.forceRefresh
+    && cached
+    && cached.expiresAt > Date.now()
+    && (!requestsBoundedPage || cached.value?.pagination)
+  ) {
     return cached.promise;
   }
   const promise = apiFetch<ProjectHistory>(
-    "/projects/" + encodeURIComponent(projectId) + "/history",
-  ).catch((error) => {
-    projectHistoryRequests.delete(projectId);
+    "/projects/" + encodeURIComponent(projectId) + "/history" + historyQuery(options),
+  ).then((value) => {
+    const current = projectHistoryRequests.get(projectId);
+    if (cacheable && current?.promise === promise) current.value = value;
+    return value;
+  }).catch((error) => {
+    const current = projectHistoryRequests.get(projectId);
+    if (cacheable && current?.promise === promise) projectHistoryRequests.delete(projectId);
     throw error;
   });
-  projectHistoryRequests.set(projectId, {
-    expiresAt: Date.now() + PROJECT_HISTORY_WARM_TTL_MS,
-    promise,
-  });
+  if (cacheable) {
+    projectHistoryRequests.set(projectId, {
+      expiresAt: Date.now() + PROJECT_HISTORY_WARM_TTL_MS,
+      promise,
+    });
+  }
   return promise;
+}
+
+function historyQuery(options: Readonly<{ limit?: number; datasetsCursor?: string; analysesCursor?: string; activityCursor?: string }>): string {
+  const params = new URLSearchParams();
+  if (options.limit !== undefined) params.set("limit", String(Math.max(1, Math.min(100, Math.floor(options.limit)))));
+  if (options.datasetsCursor) params.set("datasets_cursor", options.datasetsCursor);
+  if (options.analysesCursor) params.set("analyses_cursor", options.analysesCursor);
+  if (options.activityCursor) params.set("activity_cursor", options.activityCursor);
+  const query = params.toString();
+  return query ? `?${query}` : "";
 }
 
 export async function archiveProjectRun(projectId: string, jobId: string): Promise<{ projectId: string; jobId: string; archived: boolean }> {
@@ -1585,22 +1651,6 @@ export async function listProviderModels(provider: string): Promise<ProviderMode
 
 export async function removePlannerProvider(provider: string): Promise<{ ok: boolean; provider: string }> {
   return apiFetch<{ ok: boolean; provider: string }>(`/planner/providers/${encodeURIComponent(provider)}`, { method: "DELETE" });
-}
-
-export async function createSecret(payload: CreateSecretRequest): Promise<SecretSummary> {
-  return apiFetch<SecretSummary>("/me/secrets", {
-    method: "POST",
-    body: JSON.stringify({ ...payload, type: payload.type || "api_key" })
-  });
-}
-
-export async function listSecrets(): Promise<SecretSummary[]> {
-  const result = await apiFetch<SecretSummary[] | { value: SecretSummary[] }>("/me/secrets");
-  return Array.isArray(result) ? result : result.value;
-}
-
-export async function deleteSecret(secretId: string): Promise<boolean> {
-  return apiFetch<boolean>(`/me/secrets/${encodeURIComponent(secretId)}`, { method: "DELETE" });
 }
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {

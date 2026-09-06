@@ -1,0 +1,31 @@
+{
+  "improvementId": "CO-074",
+  "date": "2026-09-05",
+  "rootCause": "Volumetric validation required all three boundary conditions to be identical, conflating a valid mixed-boundary scientific grid with malformed data.",
+  "typedOutcomes": {
+    "validMixedBoundary": {
+      "bundleValid": true,
+      "rendererSupported": false,
+      "reason": "mixed_boundary_conditions_unsupported"
+    },
+    "malformedBoundary": {
+      "bundleValid": false,
+      "error": "VOLUME_GRID_SCHEMA_INVALID"
+    },
+    "payloadGridMismatch": {
+      "bundleValid": false,
+      "error": "VOLUME_PAYLOAD_GRID_MISMATCH"
+    },
+    "outOfRangeInlineValues": {
+      "bundleValid": false,
+      "error": "VOLUME_PAYLOAD_DATA_INVALID"
+    }
+  },
+  "verification": {
+    "volumetricFocused": "7 passed",
+    "typescriptTypecheck": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "scientificValuesRecomputed": false,
+  "servicesRestarted": false
+}

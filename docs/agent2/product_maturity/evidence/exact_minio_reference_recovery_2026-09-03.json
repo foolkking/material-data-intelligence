@@ -1,0 +1,205 @@
+{
+  "bucket": "mdi-artifacts",
+  "createdAt": "2026-09-03T09:16:44.029900+00:00",
+  "items": [
+    {
+      "action": "RESTORED",
+      "artifactType": "recipe_json",
+      "authority": "artifact",
+      "contentType": "application/json",
+      "id": "call_job_0572c9e8b705412eb38cb4af_step_001-recipe_json",
+      "jobId": "job_0572c9e8b705412eb38cb4af",
+      "name": "recipe.json",
+      "projectId": "project_0002_1a0af866391f412d",
+      "sha256": "bcb2dfcc1815c3d6934adf68f71774928611bf450fa04d850b5427c3134d6f8c",
+      "sizeBytes": 596,
+      "source": {
+        "sourceKey": "projects/project_0002_1a0af866391f412d/jobs/job_0572c9e8b705412eb38cb4af/tool_calls/call_job_0572c9e8b705412eb38cb4af_step_001/recipe.json",
+        "sourceStore": "source-2"
+      },
+      "storageProvider": "s3",
+      "targetKey": "projects/project_0002_1a0af866391f412d/jobs/job_0572c9e8b705412eb38cb4af/tool_calls/call_job_0572c9e8b705412eb38cb4af_step_001/recipe.json",
+      "toolCallId": "call_job_0572c9e8b705412eb38cb4af_step_001"
+    },
+    {
+      "action": "RESTORED",
+      "artifactType": "summary_md",
+      "authority": "artifact",
+      "contentType": "application/json",
+      "id": "call_job_0572c9e8b705412eb38cb4af_step_001-summary_md",
+      "jobId": "job_0572c9e8b705412eb38cb4af",
+      "name": "summary.md",
+      "projectId": "project_0002_1a0af866391f412d",
+      "sha256": "0bf6755a068840e9eb4a0969c4afb44545730cd757255564bfc2417990bee89f",
+      "sizeBytes": 243,
+      "source": {
+        "sourceKey": "projects/project_0002_1a0af866391f412d/jobs/job_c4ed9c864f104e5b884c6bae/tool_calls/call_job_c4ed9c864f104e5b884c6bae_step_001/summary.md",
+        "sourceStore": "target"
+      },
+      "storageProvider": "s3",
+      "targetKey": "projects/project_0002_1a0af866391f412d/jobs/job_0572c9e8b705412eb38cb4af/tool_calls/call_job_0572c9e8b705412eb38cb4af_step_001/summary.md",
+      "toolCallId": "call_job_0572c9e8b705412eb38cb4af_step_001"
+    },
+    {
+      "action": "RESTORED",
+      "artifactType": "table_json",
+      "authority": "artifact",
+      "contentType": "application/json",
+      "id": "call_job_0572c9e8b705412eb38cb4af_step_001-table_json",
+      "jobId": "job_0572c9e8b705412eb38cb4af",
+      "name": "structure_composition.json",
+      "projectId": "project_0002_1a0af866391f412d",
+      "sha256": "fc7146f26fffcf52b46919e883c5256e50d1a35de3fbe7c0c5a20fba1f49347f",
+      "sizeBytes": 460,
+      "source": {
+        "sourceKey": "projects/project_0002_1a0af866391f412d/jobs/job_c4ed9c864f104e5b884c6bae/tool_calls/call_job_c4ed9c864f104e5b884c6bae_step_001/structure_composition.json",
+        "sourceStore": "target"
+      },
+      "storageProvider": "s3",
+      "targetKey": "projects/project_0002_1a0af866391f412d/jobs/job_0572c9e8b705412eb38cb4af/tool_calls/call_job_0572c9e8b705412eb38cb4af_step_001/structure_composition.json",
+      "toolCallId": "call_job_0572c9e8b705412eb38cb4af_step_001"
+    },
+    {
+      "action": "RESTORED",
+      "artifactType": "recipe_json",
+      "authority": "artifact",
+      "contentType": "application/json",
+      "id": "call_job_9a63cc82cf574e25a88529c7_step_001-recipe_json",
+      "jobId": "job_9a63cc82cf574e25a88529c7",
+      "name": "recipe.json",
+      "projectId": "project_0002_1a0af866391f412d",
+      "sha256": "ef3ddf0ee4deb97a2d0b2455e4e3eaba806d7bce1e1cf3298eecf5ab32ff2b69",
+      "sizeBytes": 620,
+      "source": {
+        "sourceKey": "projects/project_0002_1a0af866391f412d/jobs/job_9a63cc82cf574e25a88529c7/tool_calls/call_job_9a63cc82cf574e25a88529c7_step_001/recipe.json",
+        "sourceStore": "source-2"
+      },
+      "storageProvider": "s3",
+      "targetKey": "projects/project_0002_1a0af866391f412d/jobs/job_9a63cc82cf574e25a88529c7/tool_calls/call_job_9a63cc82cf574e25a88529c7_step_001/recipe.json",
+      "toolCallId": "call_job_9a63cc82cf574e25a88529c7_step_001"
+    },
+    {
+      "action": "RESTORED",
+      "artifactType": "summary_md",
+      "authority": "artifact",
+      "contentType": "application/json",
+      "id": "call_job_9a63cc82cf574e25a88529c7_step_001-summary_md",
+      "jobId": "job_9a63cc82cf574e25a88529c7",
+      "name": "summary.md",
+      "projectId": "project_0002_1a0af866391f412d",
+      "sha256": "46fe876b50c5025652facf8dc8fcea69159638ba8c27600acd9a1ce11353a8a4",
+      "sizeBytes": 145,
+      "source": {
+        "sourceKey": "projects/project_0002_1a0af866391f412d/jobs/job_9a63cc82cf574e25a88529c7/tool_calls/call_job_9a63cc82cf574e25a88529c7_step_001/summary.md",
+        "sourceStore": "source-2"
+      },
+      "storageProvider": "s3",
+      "targetKey": "projects/project_0002_1a0af866391f412d/jobs/job_9a63cc82cf574e25a88529c7/tool_calls/call_job_9a63cc82cf574e25a88529c7_step_001/summary.md",
+      "toolCallId": "call_job_9a63cc82cf574e25a88529c7_step_001"
+    },
+    {
+      "action": "RESTORED",
+      "artifactType": "table_json",
+      "authority": "artifact",
+      "contentType": "application/json",
+      "id": "call_job_9a63cc82cf574e25a88529c7_step_001-table_json",
+      "jobId": "job_9a63cc82cf574e25a88529c7",
+      "name": "distribution_summary.json",
+      "projectId": "project_0002_1a0af866391f412d",
+      "sha256": "f279a7770bc2aa378242bf3420622d56ec5b314c38c652a7648fc65e19f4bdeb",
+      "sizeBytes": 601,
+      "source": {
+        "sourceKey": "projects/project_0002_1a0af866391f412d/jobs/job_9a63cc82cf574e25a88529c7/tool_calls/call_job_9a63cc82cf574e25a88529c7_step_001/distribution_summary.json",
+        "sourceStore": "source-2"
+      },
+      "storageProvider": "s3",
+      "targetKey": "projects/project_0002_1a0af866391f412d/jobs/job_9a63cc82cf574e25a88529c7/tool_calls/call_job_9a63cc82cf574e25a88529c7_step_001/distribution_summary.json",
+      "toolCallId": "call_job_9a63cc82cf574e25a88529c7_step_001"
+    },
+    {
+      "action": "RESTORED",
+      "artifactType": "quality_issues_json",
+      "authority": "artifact",
+      "contentType": "application/json",
+      "id": "call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1-quality_issues_json",
+      "jobId": "job_agent2_9c3a827869cf4f9e973ae0b5d0e46779",
+      "name": "dataset_quality.json",
+      "projectId": "project_0002_1a0af866391f412d",
+      "sha256": "9e8d44288d69a1599afdbe506ddd4d6de448a87c64f090e40ea08192f52db9bc",
+      "sizeBytes": 212,
+      "source": {
+        "sourceKey": "projects/project_0002_1a0af866391f412d/jobs/job_agent2_3b85fa42dcc842b3ac68f5f54b610df4/tool_calls/call_job_agent2_3b85fa42dcc842b3ac68f5f54b610df4_step_1/dataset_quality.json",
+        "sourceStore": "target"
+      },
+      "storageProvider": "s3",
+      "targetKey": "projects/project_0002_1a0af866391f412d/jobs/job_agent2_9c3a827869cf4f9e973ae0b5d0e46779/tool_calls/call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1/dataset_quality.json",
+      "toolCallId": "call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1"
+    },
+    {
+      "action": "RESTORED",
+      "artifactType": "recipe_json",
+      "authority": "artifact",
+      "contentType": "application/json",
+      "id": "call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1-recipe_json",
+      "jobId": "job_agent2_9c3a827869cf4f9e973ae0b5d0e46779",
+      "name": "recipe.json",
+      "projectId": "project_0002_1a0af866391f412d",
+      "sha256": "5e68439bcf631631fc87c1780dc0a172d94b8bedec7701ac62661dd8c067b6af",
+      "sizeBytes": 1179,
+      "source": {
+        "sourceKey": "projects/project_0002_1a0af866391f412d/jobs/job_agent2_9c3a827869cf4f9e973ae0b5d0e46779/tool_calls/call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1/recipe.json",
+        "sourceStore": "source-2"
+      },
+      "storageProvider": "s3",
+      "targetKey": "projects/project_0002_1a0af866391f412d/jobs/job_agent2_9c3a827869cf4f9e973ae0b5d0e46779/tool_calls/call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1/recipe.json",
+      "toolCallId": "call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1"
+    },
+    {
+      "action": "RESTORED",
+      "artifactType": "summary_md",
+      "authority": "artifact",
+      "contentType": "application/json",
+      "id": "call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1-summary_md",
+      "jobId": "job_agent2_9c3a827869cf4f9e973ae0b5d0e46779",
+      "name": "summary.md",
+      "projectId": "project_0002_1a0af866391f412d",
+      "sha256": "eb2896565d4798a7561f4d51beb5f6599ee0a4f1881d48771ece800fc6eb60d4",
+      "sizeBytes": 382,
+      "source": {
+        "sourceKey": "projects/project_0002_1a0af866391f412d/jobs/job_agent2_d47d2a1a3a194d40b872183d9abee965/tool_calls/call_job_agent2_d47d2a1a3a194d40b872183d9abee965_step_2/summary.md",
+        "sourceStore": "target"
+      },
+      "storageProvider": "s3",
+      "targetKey": "projects/project_0002_1a0af866391f412d/jobs/job_agent2_9c3a827869cf4f9e973ae0b5d0e46779/tool_calls/call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1/summary.md",
+      "toolCallId": "call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1"
+    },
+    {
+      "action": "RESTORED",
+      "artifactType": "table_json",
+      "authority": "artifact",
+      "contentType": "application/json",
+      "id": "call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1-table_json",
+      "jobId": "job_agent2_9c3a827869cf4f9e973ae0b5d0e46779",
+      "name": "dataset_materials_explorer.json",
+      "projectId": "project_0002_1a0af866391f412d",
+      "sha256": "0b8add2c0e40f3d7aca122550fc27d504e072fa90cde4cde5f41dcbe5af443c1",
+      "sizeBytes": 3930,
+      "source": {
+        "sourceKey": "projects/project_0002_1a0af866391f412d/jobs/job_agent2_d47d2a1a3a194d40b872183d9abee965/tool_calls/call_job_agent2_d47d2a1a3a194d40b872183d9abee965_step_2/dataset_materials_explorer.json",
+        "sourceStore": "target"
+      },
+      "storageProvider": "s3",
+      "targetKey": "projects/project_0002_1a0af866391f412d/jobs/job_agent2_9c3a827869cf4f9e973ae0b5d0e46779/tool_calls/call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1/dataset_materials_explorer.json",
+      "toolCallId": "call_job_agent2_9c3a827869cf4f9e973ae0b5d0e46779_step_1"
+    }
+  ],
+  "noopCount": 0,
+  "referenceCountBefore": 10,
+  "restoredCount": 10,
+  "schemaVersion": "phase14r.exact-minio-reference-recovery.v1",
+  "sourceEndpoints": [
+    "http://127.0.0.1:9000",
+    "http://127.0.0.1:9102"
+  ],
+  "targetEndpoint": "http://127.0.0.1:9000"
+}

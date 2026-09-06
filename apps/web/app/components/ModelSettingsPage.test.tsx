@@ -35,7 +35,7 @@ beforeEach(() => {
 });
 
 it("renders generic provider configuration without exposing a saved key", async () => {
-  render(<ModelSettingsDialog open onClose={vi.fn()} />);
+  render(<ModelSettingsDialog open onClose={vi.fn()} canManage />);
 
   expect(await screen.findByRole("heading", { name: "模型服务" })).toBeInTheDocument();
   expect(screen.getByText("当前服务")).toBeInTheDocument();
@@ -46,7 +46,7 @@ it("renders generic provider configuration without exposing a saved key", async 
 
 it("clears the API key input after saving", async () => {
   const user = userEvent.setup();
-  render(<ModelSettingsDialog open onClose={vi.fn()} />);
+  render(<ModelSettingsDialog open onClose={vi.fn()} canManage />);
   const key = await screen.findByLabelText("API Key");
   await user.clear(key);
   await user.type(key, "temporary-test-key");
@@ -57,7 +57,7 @@ it("clears the API key input after saving", async () => {
 
 it("runs a redacted provider connection test", async () => {
   const user = userEvent.setup();
-  render(<ModelSettingsDialog open onClose={vi.fn()} />);
+  render(<ModelSettingsDialog open onClose={vi.fn()} canManage />);
 
   await user.click(await screen.findByRole("button", { name: "测试连接" }));
   expect(mocks.testPlannerProvider).toHaveBeenCalledWith({ provider: "custom-compatible", model: "model-a" });
@@ -66,7 +66,7 @@ it("runs a redacted provider connection test", async () => {
 
 it("saves the selected model group without asking for the key again", async () => {
   const user = userEvent.setup();
-  render(<ModelSettingsDialog open onClose={vi.fn()} />);
+  render(<ModelSettingsDialog open onClose={vi.fn()} canManage />);
   await screen.findByRole("heading", { name: "模型服务" });
   const modelB = await screen.findByRole("checkbox", { name: "model-b" });
   await user.click(modelB);
@@ -77,8 +77,44 @@ it("saves the selected model group without asking for the key again", async () =
 it("closes from Escape", async () => {
   const user = userEvent.setup();
   const onClose = vi.fn();
-  render(<ModelSettingsDialog open onClose={onClose} />);
+  render(<ModelSettingsDialog open onClose={onClose} canManage />);
   await screen.findByRole("heading", { name: "模型服务" });
   await user.keyboard("{Escape}");
   expect(onClose).toHaveBeenCalledTimes(1);
+});
+
+it("keeps platform model configuration read-only for ordinary researchers", async () => {
+  const user = userEvent.setup();
+  mocks.getPlannerProviderStatus.mockResolvedValue({
+    ok: true,
+    provider: "deepseek",
+    model: "deepseek-v4-flash",
+    status: "ready",
+    allowedModels: ["deepseek-v4-flash"],
+    configurationSource: "server_environment",
+  });
+  mocks.listPlannerProviders.mockResolvedValue({
+    providers: [{
+      id: "deepseek",
+      label: "DeepSeek",
+      provider: "deepseek",
+      defaultModel: "deepseek-v4-flash",
+      allowedModels: ["deepseek-v4-flash"],
+      models: ["deepseek-v4-flash"],
+      secretConfigured: false,
+      configurationSource: "server_environment",
+    }],
+  });
+
+  render(<ModelSettingsDialog open onClose={vi.fn()} />);
+
+  expect(await screen.findByText("平台托管配置")).toBeInTheDocument();
+  expect(await screen.findByRole("heading", { name: "DeepSeek" })).toBeInTheDocument();
+  expect(screen.queryByLabelText("API Key")).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: /保存 Provider|删除连接|保存模型组/ })).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "测试连接" }));
+  expect(mocks.testPlannerProvider).toHaveBeenCalledWith({
+    provider: "deepseek",
+    model: "deepseek-v4-flash",
+  });
 });

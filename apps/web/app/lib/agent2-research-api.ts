@@ -133,9 +133,26 @@ export type Agent2ResearchTurnInterpretation = {
   interpretation?: PersistedScientificInterpretation | null;
 };
 
+function notifySessionExpired(response: Response): void {
+  if (response.status === 401 && typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("mdi:session-expired"));
+  }
+}
+
+export class Agent2ReadError extends Error {
+  readonly status: number;
+
+  constructor(status: number) {
+    super(`科学呈现暂时无法读取 (${status})`);
+    this.name = "Agent2ReadError";
+    this.status = status;
+  }
+}
+
 async function readAgent2<T>(path: string): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, { credentials: "include" });
-  if (!response.ok) throw new Error(`科学呈现暂时无法读取 (${response.status})`);
+  notifySessionExpired(response);
+  if (!response.ok) throw new Agent2ReadError(response.status);
   return response.json() as Promise<T>;
 }
 
@@ -147,6 +164,7 @@ export async function createAgent2ResearchTurn(projectId: string, sessionId: str
   const response = await fetch(`${API_BASE}/api/projects/${encodeURIComponent(projectId)}/research/sessions/${encodeURIComponent(sessionId)}/turns`, {
     method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input),
   });
+  notifySessionExpired(response);
   if (!response.ok) {
     let detail = `研究请求失败 (${response.status})`;
     try {
@@ -215,6 +233,7 @@ export async function dispatchAgent2ResearchTurn(turnId: string): Promise<{ turn
     method: "POST",
     credentials: "include",
   });
+  notifySessionExpired(response);
   if (!response.ok) {
     let detail = `研究执行失败 (${response.status})`;
     try { const body = await response.json() as { detail?: string }; if (body.detail) detail = body.detail; } catch { /* bounded product error */ }

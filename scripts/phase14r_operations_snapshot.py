@@ -10,6 +10,7 @@ from pathlib import Path
 # a site package in the local qualification environment.
 REPO_ROOT = Path(__file__).resolve().parents[1]
 for package_root in (
+    REPO_ROOT,
     REPO_ROOT / "apps" / "api",
     # Operations snapshots resolve the configured provider to classify runtime
     # health. Keep the standalone diagnostic entrypoint usable from a clean
@@ -95,27 +96,11 @@ def _configure_same_stack() -> None:
     runtime variables on Windows, so make that selection explicit rather than
     silently reporting the SQLite/local fallback.
     """
-    values = {
-        "MDI_RUNTIME_BACKEND": "postgresql",
-        "MDI_QUEUE_BACKEND": "redis",
-        "MDI_ARTIFACT_BACKEND": "minio",
-        "DATABASE_URL": "postgresql+psycopg://mdi@127.0.0.1:55434/mdi",
-        "MDI_DATABASE_URL": "postgresql+psycopg://mdi@127.0.0.1:55434/mdi",
-        "POSTGRES_HOST": "127.0.0.1",
-        "POSTGRES_PORT": "55434",
-        "POSTGRES_DB": "mdi",
-        "POSTGRES_USER": "mdi",
-        "REDIS_URL": "redis://127.0.0.1:6379/13",
-        "MDI_REDIS_URL": "redis://127.0.0.1:6379/13",
-        "MINIO_ENDPOINT": "http://127.0.0.1:9000",
-        "MINIO_ACCESS_KEY": "mdi-local",
-        "MINIO_SECRET_KEY": "mdi-local-dev",
-        "MINIO_BUCKET": "mdi-artifacts",
-    }
-    for key, value in values.items():
-        import os
+    from scripts.phase14r_runtime_environment import apply_same_stack_environment
 
-        os.environ.setdefault(key, value)
+    # The shared builder overwrites all supported aliases together, so a stale
+    # parent shell cannot send only diagnostics to a different service.
+    apply_same_stack_environment()
 
 
 if __name__ == "__main__":

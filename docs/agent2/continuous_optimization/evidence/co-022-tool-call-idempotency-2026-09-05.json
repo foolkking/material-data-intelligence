@@ -1,0 +1,23 @@
+{
+  "id": "CO-022",
+  "status": "COMPLETED",
+  "date": "2026-09-05",
+  "problem": "Independent workers could race between the ToolCall idempotency existence check and INSERT, allowing a database uniqueness error to escape on duplicate delivery.",
+  "change": {
+    "file": "apps/api/mdi_api/repositories.py",
+    "details": [
+      "SqlAlchemyToolCallRepository.save now catches a losing IntegrityError, reloads the committed idempotent ToolCall, and returns it.",
+      "Unrelated integrity failures and conflicting tool-step bindings still fail closed."
+    ]
+  },
+  "verification": {
+    "command": "MDI_TEST_DATABASE_URL=postgresql+psycopg://mdi@127.0.0.1:55434/mdi MDI_RUN_INTEGRATION=1 pytest -q tests/test_phase6_integration.py -k \"concurrent_seq or duplicate_delivery\"",
+    "result": "3 passed, 17 deselected",
+    "assertions": [
+      "same-repository event concurrency remains gap-free",
+      "cross-repository event concurrency remains gap-free",
+      "48 concurrent duplicate ToolCall saves converge to exactly one row"
+    ]
+  },
+  "production_changes": "bounded repository idempotency recovery only; scientific authority unchanged"
+}

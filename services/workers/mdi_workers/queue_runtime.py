@@ -13,6 +13,7 @@ from mdi_api.artifact_storage import ArtifactStorage, ArtifactStorageMetadata, L
 from mdi_api.config import load_settings
 from mdi_api.database import create_repository_factory
 from mdi_api.repositories import InMemoryRepositoryBundle
+from mdi_llm import redact_sensitive_text
 from mdi_api.unit_of_work import RepositoryFactory
 from mdi_schemas import (
     AnalysisPlan,
@@ -30,6 +31,7 @@ from mdi_schemas import (
     dependency_semantic_hash,
     deterministic_dependency_id,
 )
+from mdi_schemas.worker_queues import worker_queue_definition
 from mdi_tool_registry import (
     ToolRegistry,
     build_artifact_port_inventory,
@@ -123,7 +125,12 @@ class RedisRQQueueBackend:
     service or the optional RQ runtime to be imported at module load time.
     """
 
-    def __init__(self, *, redis_url: str, queue_name: str = "mdi-jobs") -> None:
+    def __init__(
+        self,
+        *,
+        redis_url: str,
+        queue_name: str = worker_queue_definition("execution").default_name,
+    ) -> None:
         self.redis_url = redis_url
         self.queue_name = queue_name
 
@@ -138,7 +145,11 @@ class RedisRQQueueBackend:
         queue = Queue(self.queue_name, connection=connection)
         if queue.fetch_job(job_id) is not None:
             return QueueSubmitResult(job_id=job_id, enqueued=False, backend="rq", message=f"job already queued on {self.queue_name}")
-        queue.enqueue("mdi_workers.queue_runtime.run_queued_job", job_id, job_id=job_id)
+        queue.enqueue(
+            worker_queue_definition("execution").handler,
+            job_id,
+            job_id=job_id,
+        )
         return QueueSubmitResult(job_id=job_id, enqueued=True, backend="rq", message=f"job queued on {self.queue_name}")
 
 
@@ -265,7 +276,7 @@ class QueueWorkerRuntime:
                 job_id,
                 event_type="job.failed",
                 status="error",
-                message=str(exc),
+                message=redact_sensitive_text(str(exc)),
                 payload={"errorType": type(exc).__name__},
                 progress=1.0,
             )
@@ -441,7 +452,7 @@ class QueueWorkerRuntime:
                             "resolvedArtifactInputRef": None,
                         }
                     )
-                    binding_failure = (code, str(exc))
+                    binding_failure = (code, redact_sensitive_text(str(exc)))
                     break
             if binding_failure is not None:
                 states[step_id] = DependencyStepExecution(
@@ -455,7 +466,7 @@ class QueueWorkerRuntime:
                     job_id,
                     event_type="dependency.binding_failed",
                     status="error",
-                    message=binding_failure[1],
+                    message=redact_sensitive_text(binding_failure[1]),
                     payload={"stepId": step_id, "errorCode": binding_failure[0]},
                     progress=1.0,
                 )
@@ -502,7 +513,7 @@ class QueueWorkerRuntime:
                     state=StepExecutionState.failed,
                     toolCallId=str((_find_tool_call(repos, job_id=job_id, step_id=step_id) or {}).get("id") or "") or None,
                     errorCode="ADAPTER_EXECUTION_FAILED",
-                    errorMessage=str(exc)[:1024],
+                    errorMessage=redact_sensitive_text(str(exc))[:1024],
                 )
 
         ordered_states = [states[item] for item in dependency_validation.topological_order]
@@ -955,14 +966,14 @@ class QueueWorkerRuntime:
                     "status": "failed",
                     "idempotencyKey": f"{job_id}:{step_id}",
                     "params": request.params,
-                    "error": {"message": str(exc), "type": type(exc).__name__},
+                    "error": {"message": redact_sensitive_text(str(exc)), "type": type(exc).__name__},
                 }
             )
             repos.job_events.append_event(
                 job_id,
                 event_type="tool.failed",
                 status="error",
-                message=str(exc),
+                message=redact_sensitive_text(str(exc)),
                 payload={"toolCallId": tool_call_id, "toolId": tool_id, "stepId": step_id},
                 progress=1.0,
             )

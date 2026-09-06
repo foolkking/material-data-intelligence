@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import socket
 import urllib.error
+from dataclasses import replace
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -10,6 +11,7 @@ from sqlalchemy import create_engine
 
 from mdi_artifact_core import LocalArtifactExporter
 from mdi_api.db import metadata
+from mdi_api.config import ApiSettings
 from mdi_api.main import create_app
 from mdi_api.repositories import InMemoryRepositoryBundle, SqlAlchemyRepositoryBundle
 from mdi_api.phase2_runtime import reset_phase2_runtime
@@ -29,6 +31,7 @@ from mdi_api.routers.planner_providers import (
     resolve_planner_provider,
     test_planner_provider as run_provider_test,
 )
+from mdi_schemas.worker_queues import configured_worker_queue_names
 from mdi_llm import MockLLMProvider
 from mdi_schemas import DataProfile
 from mdi_tool_registry import load_manifests
@@ -77,6 +80,76 @@ def test_runtime_health_endpoint_reports_workspace_dependencies() -> None:
     body = response.json()
     assert body["api"]["status"] == "ok"
     assert {"database", "redis", "artifactStorage", "worker", "llmProvider"}.issubset(body)
+    assert body["worker"]["queueManifestVersion"] == "WorkerQueueManifest/1.0"
+    assert tuple(body["worker"]["queues"]) == configured_worker_queue_names(ApiSettings())
+    fingerprint = body["runtimeConfiguration"]
+    assert fingerprint["schemaVersion"] == "RuntimeConfigurationFingerprint/1.0"
+    assert fingerprint["redacted"] is True
+    assert len(fingerprint["fingerprint"]) == 64
+    assert set(fingerprint["connectionBound"]) == {
+        "database",
+        "redis",
+        "artifactStorage",
+    }
+
+
+def test_runtime_configuration_fingerprint_tracks_topology_without_secret_oracle() -> None:
+    from mdi_api.routers.health import _runtime_configuration_fingerprint
+
+    components = {
+        "database": {
+            "status": "ok",
+            "backend": "postgresql",
+            "connectionFingerprint": "d" * 64,
+        },
+        "redis": {
+            "status": "ok",
+            "backend": "redis",
+            "connectionFingerprint": "r" * 64,
+        },
+        "artifact_storage": {
+            "status": "ok",
+            "backend": "minio",
+            "connectionFingerprint": "a" * 64,
+        },
+        "worker": {"status": "ok", "backend": "redis"},
+        "llm_provider": {
+            "status": "ok",
+            "provider": "deepseek",
+            "model": "deepseek-v4-flash",
+            "configured": True,
+        },
+    }
+    first_settings = ApiSettings(
+        runtime_profile="same-stack",
+        runtime_backend="postgresql",
+        database_url="postgresql+psycopg://mdi:first-secret@db:5432/mdi",
+        queue_backend="redis",
+        redis_url="redis://:first-secret@cache:6379/0",
+        artifact_backend="minio",
+        minio_endpoint="http://objects:9000",
+        minio_access_key="first-access",
+        minio_secret_key="first-secret",
+    )
+    rotated_secrets = replace(
+        first_settings,
+        database_url="postgresql+psycopg://mdi:second-secret@db:5432/mdi",
+        redis_url="redis://:second-secret@cache:6379/0",
+        minio_access_key="second-access",
+        minio_secret_key="second-secret",
+    )
+    moved_database = replace(
+        rotated_secrets,
+        database_url="postgresql+psycopg://mdi:second-secret@db-2:5432/mdi",
+    )
+
+    first = _runtime_configuration_fingerprint(first_settings, **components)
+    rotated = _runtime_configuration_fingerprint(rotated_secrets, **components)
+    moved = _runtime_configuration_fingerprint(moved_database, **components)
+
+    assert first["fingerprint"] == rotated["fingerprint"]
+    assert moved["fingerprint"] != first["fingerprint"]
+    assert "secret" not in json.dumps((first, rotated, moved))
 
 
 def test_runtime_health_sqlite_missing_db_is_unknown_without_creating_file(monkeypatch, tmp_path: Path) -> None:
@@ -253,7 +326,7 @@ def test_secret_store_isolated_by_user_scope_and_delete_cannot_cross_scope() -> 
     assert [item.id for item in store.list_secrets("user-a")] == [first.id]
     assert [item.id for item in store.list_secrets("user-b")] == [second.id]
     assert store.delete_secret(second.id, scope_id="user-a") is False
-    assert store.get_secret(second.id) is not None
+    assert store.get_secret(second.id, "user-b") is not None
     assert store.delete_secret(second.id, scope_id="user-b") is True
 
 

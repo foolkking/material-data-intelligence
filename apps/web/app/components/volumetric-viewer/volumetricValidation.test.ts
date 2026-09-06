@@ -41,4 +41,35 @@ describe("Phase 10J-2 volumetric compatibility gate", () => {
     (dataset as { relationships: unknown[] }).relationships=[{relationship_id:"collinear:total_equals_up_plus_down:v1",kind:"total_equals_up_plus_down",input_field_ids:[dataset.fields[0].field_id,dataset.fields[0].field_id],output_field_id:dataset.fields[0].field_id,status:"validated",residual:0}];
     expect(validateVolumetricArtifacts(dataset,fixture.manifest)).toMatchObject({ok:false,errors:expect.arrayContaining(["VOLUME_RELATIONSHIP_INVALID"])});
   });
+
+  it("accepts valid non-uniform boundaries but marks the renderer unsupported", () => {
+    const dataset=structuredClone(fixture.raw_dataset);
+    dataset.grid.boundary_conditions=["periodic","non_periodic","periodic"];
+    const result=validateVolumetricArtifacts(dataset,fixture.manifest);
+    expect(result.ok).toBe(true);
+    if(result.ok) {
+      expect(result.bundle.grid.boundaryConditions).toEqual(["periodic","non_periodic","periodic"]);
+      expect(result.bundle.fields[0].supported).toBe(false);
+      expect(result.bundle.fields[0].reasons).toContain("mixed_boundary_conditions_unsupported");
+    }
+  });
+
+  it("distinguishes damaged boundaries and out-of-range inline data as invalid", () => {
+    const damaged=structuredClone(fixture.raw_dataset);
+    damaged.grid.boundary_conditions=["periodic","broken","periodic"];
+    expect(validateVolumetricArtifacts(damaged,fixture.manifest)).toMatchObject({
+      ok:false, errors:expect.arrayContaining(["VOLUME_GRID_SCHEMA_INVALID"]),
+    });
+
+    const outOfRange=structuredClone(fixture.raw_dataset);
+    const inlinePayload=outOfRange.payloads[0] as { encoding: string; inline_values: number[] | null; artifact_name: string | null };
+    inlinePayload.encoding="inline_json";
+    const inlineValues = Array.from({ length: 64 }, () => 2);
+    inlinePayload.inline_values=inlineValues;
+    inlinePayload.artifact_name=null;
+    inlineValues[0]=99;
+    expect(validateVolumetricArtifacts(outOfRange,fixture.manifest)).toMatchObject({
+      ok:false, errors:expect.arrayContaining(["VOLUME_PAYLOAD_DATA_INVALID"]),
+    });
+  });
 });

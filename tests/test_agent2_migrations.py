@@ -31,7 +31,10 @@ def test_agent2_migrations_upgrade_from_previous_head_and_preserve_order(tmp_pat
     assert {item["name"] for item in inspector.get_unique_constraints("scientific_object_versions")} >= {"uq_scientific_object_versions_object_version"}
     assert {item["name"] for item in inspector.get_unique_constraints("research_turns")} >= {"uq_research_turns_session_sequence", "uq_research_turns_user_message_id"}
     assert {item["name"] for item in inspector.get_indexes("scientific_result_snapshots")} >= {
-        "idx_scientific_result_snapshots_turn", "idx_scientific_result_snapshots_job", "idx_scientific_result_snapshots_project_created",
+        "idx_scientific_result_snapshots_turn",
+        "idx_scientific_result_snapshots_job",
+        "idx_scientific_result_snapshots_project_created",
+        "idx_scientific_results_search_project_created",
     }
     assert {item["name"] for item in inspector.get_unique_constraints("research_turn_decisions")} >= {
         "uq_research_turn_decisions_turn",
@@ -39,6 +42,12 @@ def test_agent2_migrations_upgrade_from_previous_head_and_preserve_order(tmp_pat
     assert {item["name"] for item in inspector.get_indexes("research_turn_decisions")} >= {
         "idx_research_turn_decisions_action_created", "idx_research_turn_decisions_fingerprint",
     }
+    assert "platform_role" in {item["name"] for item in inspector.get_columns("users")}
+    user_checks = {
+        item["name"]: str(item.get("sqltext", ""))
+        for item in inspector.get_check_constraints("users")
+    }
+    assert "platform_role" in user_checks["ck_users_platform_role"]
     assert {item["name"] for item in inspector.get_unique_constraints("research_capability_resolutions")} >= {"uq_research_capability_resolutions_turn"}
     assert {item["name"] for item in inspector.get_unique_constraints("research_capability_plans")} >= {"uq_research_capability_plans_turn"}
     fk_tables = {item["referred_table"] for item in inspector.get_foreign_keys("research_turns")}

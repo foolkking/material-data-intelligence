@@ -3,7 +3,7 @@
 import { ProductLink as Link } from "./ProductNavigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { getProjectHistory, listProjects, type ProjectHistory, type ProjectSummary } from "../lib/planner-api";
+import { getCachedProjectHistory, getProjectHistory, listProjects, type ProjectHistory, type ProjectSummary } from "../lib/planner-api";
 
 type LoadState = "loading" | "ready" | "error";
 
@@ -13,6 +13,11 @@ export function ProjectHome() {
   const [history, setHistory] = useState<ProjectHistory | null>(null);
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [error, setError] = useState("");
+  const [retrySequence, setRetrySequence] = useState(0);
+  const [datasetLimit, setDatasetLimit] = useState(8);
+  const [analysisLimit, setAnalysisLimit] = useState(8);
+  const [activityLimit, setActivityLimit] = useState(8);
+  const [historyLoadingMore, setHistoryLoadingMore] = useState<"datasets" | "analyses" | "activity" | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -30,7 +35,7 @@ export function ProjectHome() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [retrySequence]);
 
   useEffect(() => {
     if (!selectedProjectId) {
@@ -38,13 +43,21 @@ export function ProjectHome() {
       return;
     }
     let active = true;
-    setLoadState("loading");
     setError("");
+    const cached = getCachedProjectHistory(selectedProjectId);
+    if (cached?.pagination) {
+      setHistory(cached);
+      setLoadState("ready");
+      return () => {
+        active = false;
+      };
+    }
+    setLoadState("loading");
     // History reads already use the shared bounded directory cache. Mutating
     // operations invalidate that cache explicitly, so forcing a refresh on
     // every project selection only adds a full-latency round trip when users
     // navigate back to the project home.
-    void getProjectHistory(selectedProjectId)
+    void getProjectHistory(selectedProjectId, { limit: 8 })
       .then((nextHistory) => {
         if (!active) return;
         setHistory(nextHistory);
@@ -58,12 +71,44 @@ export function ProjectHome() {
     return () => {
       active = false;
     };
-  }, [projects.length, selectedProjectId]);
+  }, [projects.length, retrySequence, selectedProjectId]);
 
   const projectId = selectedProjectId || history?.project.projectId || history?.project.id || "";
+  const uploadHref = projectId
+    ? `/projects/${encodeURIComponent(projectId)}/datasets/new`
+    : "/analysis";
   const summary = history?.summary;
   const datasets = useMemo(() => history?.datasets || [], [history]);
   const analyses = useMemo(() => history?.analyses || [], [history]);
+  const visibleDatasets = datasets.slice(0, datasetLimit);
+  const visibleAnalyses = analyses.slice(0, analysisLimit);
+  const visibleActivity = (history?.activity || []).slice(0, activityLimit);
+  const loadMoreHistory = async (section: "datasets" | "analyses" | "activity") => {
+    if (!history || historyLoadingMore) return;
+    const cursor = history.pagination?.[section].nextCursor;
+    if (!cursor) return;
+    setHistoryLoadingMore(section);
+    try {
+      const next = await getProjectHistory(projectId, {
+        limit: 100,
+        datasetsCursor: section === "datasets" ? cursor : undefined,
+        analysesCursor: section === "analyses" ? cursor : undefined,
+        activityCursor: section === "activity" ? cursor : undefined,
+      });
+      setHistory((current) => current ? {
+        ...current,
+        datasets: section === "datasets" ? [...current.datasets, ...next.datasets] : current.datasets,
+        analyses: section === "analyses" ? [...current.analyses, ...next.analyses] : current.analyses,
+        activity: section === "activity" ? [...current.activity, ...next.activity] : current.activity,
+        pagination: next.pagination,
+      } : current);
+      if (section === "datasets") setDatasetLimit((value) => value + next.datasets.length);
+      if (section === "analyses") setAnalysisLimit((value) => value + next.analyses.length);
+      if (section === "activity") setActivityLimit((value) => value + next.activity.length);
+    } finally {
+      setHistoryLoadingMore(null);
+    }
+  };
 
   return (
     <main className="project-home" data-testid="project-home">
@@ -74,7 +119,7 @@ export function ProjectHome() {
           <p className="project-home-lede">材料项目、数据与分析记录</p>
         </div>
         <div className="project-home-actions">
-          <Link className="primary-action" href="/analysis">导入数据并分析</Link>
+          <Link className="primary-action" href={uploadHref}>导入数据并分析</Link>
         </div>
       </header>
 
@@ -101,14 +146,17 @@ export function ProjectHome() {
         <section className="project-state project-state-error" role="alert">
           <strong>项目历史暂时不可用</strong>
           <span>{error}</span>
-          <Link className="secondary-action" href="/analysis">进入分析工作台</Link>
+          <div className="project-state-actions">
+            <button className="secondary-action" type="button" onClick={() => setRetrySequence((value) => value + 1)}>重新加载</button>
+            <Link className="secondary-action" href={uploadHref}>进入分析工作台</Link>
+          </div>
         </section>
       ) : null}
       {loadState === "ready" && !history && projects.length === 0 ? (
         <section className="project-state">
           <strong>还没有项目数据</strong>
           <span>先导入一个数据集，系统会在这里保留导入、分析和结果记录。</span>
-          <Link className="primary-action" href="/analysis">开始导入</Link>
+          <Link className="primary-action" href={uploadHref}>开始导入</Link>
         </section>
       ) : null}
 
@@ -123,14 +171,18 @@ export function ProjectHome() {
           </section>
 
           <section className="project-band" aria-labelledby="datasets-heading">
-            <div className="band-heading">
-              <div><p className="section-kicker">数据记录</p><h2 id="datasets-heading">数据集</h2></div>
-              <Link className="text-action" href="/analysis">导入新数据</Link>
+              <div className="band-heading">
+                <div><p className="section-kicker">数据记录</p><h2 id="datasets-heading">数据集</h2></div>
+                <Link className="text-action" href={uploadHref}>导入新数据</Link>
             </div>
             {datasets.length === 0 ? <p className="empty-inline">当前项目还没有数据集。</p> : (
               <div className="dataset-history-list">
-                {datasets.map((dataset) => (
-                  <Link className="dataset-history-row" href={"/projects/" + projectId + "/datasets/" + dataset.datasetId} key={dataset.datasetId}>
+                {visibleDatasets.map((dataset) => (
+                  <Link
+                    className="dataset-history-row"
+                    href={`/projects/${projectId}/data?dataset=${encodeURIComponent(dataset.datasetId)}`}
+                    key={dataset.datasetId}
+                  >
                     <span className="dataset-history-main">
                       <strong>{dataset.name}</strong>
                       <span>{dataset.import.fileCount} 个源文件 · {dataset.import.parseOutcome === "succeeded" ? "解析完成" : dataset.import.parseOutcome} · {dataset.resultSummary?.artifactCount || 0} 个结果</span>
@@ -144,6 +196,7 @@ export function ProjectHome() {
                 ))}
               </div>
             )}
+            {history?.pagination?.datasets.nextCursor ? <button className="project-history-load-more" type="button" onClick={() => void loadMoreHistory("datasets")} disabled={historyLoadingMore === "datasets"}>继续加载数据集</button> : visibleDatasets.length < datasets.length ? <button className="project-history-load-more" type="button" onClick={() => setDatasetLimit((value) => value + 8)}>显示更多数据集（还剩 {datasets.length - visibleDatasets.length} 个）</button> : null}
           </section>
 
           <div className="project-lower-grid">
@@ -154,7 +207,7 @@ export function ProjectHome() {
               </div>
               {analyses.length === 0 ? <p className="empty-inline">暂无分析记录。</p> : (
                 <div className="analysis-history-list">
-                  {analyses.slice(0, 8).map((analysis) => (
+                  {visibleAnalyses.map((analysis) => (
                     <Link className="analysis-history-row" href={analysisHref(projectId, analysis)} key={analysis.jobId}>
                       <span>
                         <strong>{analysis.userQuestion || "未命名分析"}</strong>
@@ -165,13 +218,14 @@ export function ProjectHome() {
                   ))}
                 </div>
               )}
+              {history?.pagination?.analyses.nextCursor ? <button className="project-history-load-more" type="button" onClick={() => void loadMoreHistory("analyses")} disabled={historyLoadingMore === "analyses"}>继续加载分析</button> : visibleAnalyses.length < analyses.length ? <button className="project-history-load-more" type="button" onClick={() => setAnalysisLimit((value) => value + 8)}>显示更多分析（还剩 {analyses.length - visibleAnalyses.length} 项）</button> : null}
             </section>
 
             <section className="project-band" aria-labelledby="activity-heading">
               <div className="band-heading"><div><p className="section-kicker">活动记录</p><h2 id="activity-heading">最近活动</h2></div></div>
               {history.activity.length === 0 ? <p className="empty-inline">暂无活动记录。</p> : (
                 <div className="activity-list">
-                  {history.activity.slice(0, 8).map((item) => (
+                  {visibleActivity.map((item) => (
                     <Link className="activity-row" href={item.href} key={item.activityId}>
                       <span className="activity-marker" aria-hidden="true" />
                       <span><strong>{item.title}</strong><span>{item.detail}</span></span>
@@ -180,6 +234,7 @@ export function ProjectHome() {
                   ))}
                 </div>
               )}
+              {history?.pagination?.activity.nextCursor ? <button className="project-history-load-more" type="button" onClick={() => void loadMoreHistory("activity")} disabled={historyLoadingMore === "activity"}>继续加载活动</button> : visibleActivity.length < history.activity.length ? <button className="project-history-load-more" type="button" onClick={() => setActivityLimit((value) => value + 8)}>显示更多活动（还剩 {history.activity.length - visibleActivity.length} 项）</button> : null}
             </section>
           </div>
         </>

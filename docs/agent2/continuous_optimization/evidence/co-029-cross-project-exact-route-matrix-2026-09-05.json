@@ -1,0 +1,46 @@
+{
+  "improvementId": "CO-029",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "coverage": {
+    "httpRouteCases": 24,
+    "domains": [
+      "Data",
+      "ResearchTurn",
+      "ContextManifest",
+      "Correlation",
+      "ScientificResult",
+      "Artifact",
+      "ScientificObjectVersion",
+      "Viewer",
+      "Evidence",
+      "ScientificReport",
+      "ProjectHistory"
+    ],
+    "expected": "403 before projection, mutation or storage",
+    "oracleSafeEvidenceMismatch": 404
+  },
+  "verification": {
+    "httpMatrix": {
+      "passed": 1,
+      "failed": 0
+    },
+    "reportEvidence": {
+      "passed": 3,
+      "failed": 0
+    },
+    "datasetArtifact": {
+      "passed": 2,
+      "failed": 0
+    },
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "diffCheck": "PASS_WITH_LINE_ENDING_WARNINGS_ONLY"
+  },
+  "leakage": {
+    "targetIds": "NO",
+    "privateTitles": "NO",
+    "storageReadAfterDenial": "NO",
+    "downstreamMutationAfterDenial": "NO"
+  }
+}

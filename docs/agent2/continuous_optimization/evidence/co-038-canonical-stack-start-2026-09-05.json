@@ -1,0 +1,30 @@
+{
+  "improvement": "CO-038",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "problem": "API, worker and frontend startup were split across separate scripts without one idempotent readiness gate, making service recovery prone to false health.",
+  "change": {
+    "script": "scripts/phase14r_start_stack.ps1",
+    "behavior": [
+      "starts only missing API/frontend processes",
+      "starts workers only when no worker entrypoint process is present",
+      "never stops or closes existing services",
+      "waits for PostgreSQL, Redis, MinIO, API and frontend ports",
+      "probes direct API /health/runtime and rejects SQLite/local/fake worker modes"
+    ]
+  },
+  "verification": {
+    "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\phase14r_start_stack.ps1 -CheckOnly -FrontendPort 3023 -TimeoutSeconds 10",
+    "result": {
+      "postgresql": "ok",
+      "redis": "ok",
+      "minio": "ok",
+      "worker": "redis/ok",
+      "llm": "deepseek-v4-flash/configured"
+    },
+    "git_diff_check": "PASS"
+  },
+  "files": [
+    "scripts/phase14r_start_stack.ps1"
+  ]
+}

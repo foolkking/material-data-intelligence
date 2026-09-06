@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "mdi.continuous-optimization-evidence/1.0",
+  "improvementId": "CO-145",
+  "completedAt": "2026-09-05T22:00:00+08:00",
+  "change": {
+    "incompleteReasonCodes": [
+      "MINIO_USAGE_SCAN_LIMIT_REACHED",
+      "MINIO_USAGE_SCAN_CONTINUATION_MISSING"
+    ],
+    "incompleteUtilizationPercent": null,
+    "observedValuesSemantics": "lower bounds",
+    "operationsAlert": "OPS_MINIO_USAGE_SCAN_INCOMPLETE",
+    "readOnly": true,
+    "deletesArtifacts": false
+  },
+  "verification": {
+    "focusedPassed": 29,
+    "existingIntegrationSkipped": 1,
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "diffCheck": "PASS",
+    "boundedSimulation": {
+      "maximumObjects": 3,
+      "objectCount": 3,
+      "storageBytes": 6,
+      "usageScanComplete": false,
+      "usageReason": "MINIO_USAGE_SCAN_LIMIT_REACHED",
+      "objectKeysProjected": false
+    },
+    "liveSameStack": {
+      "objectCount": 8739,
+      "usageObjectLimit": 10000,
+      "usageScanComplete": true,
+      "operationsAlerts": 0,
+      "database": "postgresql",
+      "redis": "redis",
+      "artifactStorage": "minio",
+      "worker": "redis"
+    }
+  },
+  "runtimeRotation": {
+    "oldCanonicalChildPid": 18468,
+    "oldCanonicalRunnerPid": 19620,
+    "newCanonicalChildPid": 25704,
+    "newCanonicalRunnerPid": 5060,
+    "oldPairAlive": false,
+    "canonicalListenerCount": 1,
+    "shadowListenerCount": 0,
+    "frontendAndInfrastructureUnchanged": true
+  }
+}

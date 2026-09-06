@@ -1,0 +1,37 @@
+{
+  "improvementId": "CO-107",
+  "date": "2026-09-05",
+  "problem": "Expanded ContextManifest disclosure rendered every included item into the DOM, making large or synthetic manifests unbounded.",
+  "implementation": {
+    "defaultVisibleItems": 8,
+    "expandedWindowItems": 32,
+    "navigation": [
+      "previous window",
+      "next window"
+    ],
+    "preserved": [
+      "authoritative item order",
+      "exact server-side source identity",
+      "exact result and scientific source provenance",
+      "critical context priority"
+    ],
+    "backendManifestMaxItems": 128
+  },
+  "verification": {
+    "frontendFocused": "3 passed",
+    "existingProvenanceRegression": "passed",
+    "backendContextManifest": "13 passed",
+    "typescriptTypecheck": "passed",
+    "gitDiffCheck": "passed",
+    "largeCorpus": {
+      "items": 10000,
+      "defaultRendered": 8,
+      "expandedRendered": 32,
+      "firstSourceIdentity": "result-0",
+      "lastSourceIdentity": "result-31"
+    }
+  },
+  "knownUnrelatedObservation": "A pre-existing retry timing test failed once in a full-file run and passed when rerun in isolation.",
+  "scientificAuthorityChanged": false,
+  "servicesRestarted": false
+}

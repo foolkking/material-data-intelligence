@@ -215,3 +215,34 @@ def test_project_history_keeps_legacy_job_readable_when_plan_payload_is_malforme
 def test_archive_projection_config_is_bounded_and_ignores_malformed_values() -> None:
     assert _archived_run_ids_from_config({"archivedRunIds": ["job_1", "", 42, None, "job_1"]}) == {"job_1"}
     assert _archived_run_ids_from_config(None) == set()
+
+
+def test_project_history_paginates_large_dataset_history_with_stable_cursor() -> None:
+    datasets = [{
+        "id": f"dataset_{index:04d}",
+        "datasetId": f"dataset_{index:04d}",
+        "projectId": "project_1",
+        "name": f"materials-{index:04d}.csv",
+        "status": "ready",
+        "createdAt": f"2026-12-31T23:59:{index:04d}Z",
+    } for index in range(1000)]
+    repositories = SimpleNamespace(
+        projects=Records([{"id": "project_1", "projectId": "project_1", "name": "Project"}]),
+        datasets=Records(datasets), data_profiles=Records([]),
+        jobs=Records([]), tool_calls=Records([]), artifacts=Records([]),
+        workspaces=Records([]), reports=Records([]), recipes=Records([]),
+        interpretations=Records([]), analysis_intents=IntentRecords([]),
+        analysis_plans=PlanRecords([]),
+    )
+
+    first = ProjectHistoryService(repositories).build("project_1", limit=8)
+    second = ProjectHistoryService(repositories).build(
+        "project_1", limit=100, datasets_cursor=first["pagination"]["datasets"]["nextCursor"],
+    )
+
+    assert len(first["datasets"]) == 8
+    assert first["datasets"][0]["datasetId"] == "dataset_0999"
+    assert first["pagination"]["datasets"]["nextCursor"] == "8"
+    assert len(second["datasets"]) == 100
+    assert second["datasets"][0]["datasetId"] == "dataset_0991"
+    assert second["pagination"]["datasets"]["nextCursor"] == "108"

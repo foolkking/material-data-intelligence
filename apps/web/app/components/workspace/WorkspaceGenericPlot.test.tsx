@@ -1,7 +1,11 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { sanitizePlotSpec, WorkspaceGenericPlot } from "./WorkspaceGenericPlot";
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
 describe("Phase 10M-4 generic Plotly renderer", () => {
   it("renders only bounded backend data through a stripped application layout", () => {
@@ -25,11 +29,43 @@ describe("Phase 10M-4 generic Plotly renderer", () => {
     expect(sanitizePlotSpec({ figure: { data: [{ type: "heatmap", z: [[1, 2], [3, 4]] }] } }, 2)).toMatchObject({ ok: false, code: "PLOTLY_POINT_CAP_EXCEEDED" });
   });
 
+  it("rejects oversized heatmap cells and mesh triangles without truncating authority", () => {
+    const heatmap = Array.from({ length: 317 }, () => Array.from({ length: 317 }, () => 1));
+    expect(sanitizePlotSpec({ figure: { data: [{ type: "heatmap", z: heatmap }] } }, 200_000)).toMatchObject({
+      ok: false,
+      code: "PLOTLY_HEATMAP_CELL_CAP_EXCEEDED",
+    });
+    const triangles = 100_001;
+    const indices = Array.from({ length: triangles }, (_, index) => index % 3);
+    expect(sanitizePlotSpec({
+      figure: { data: [{ type: "mesh3d", x: [0, 1, 0], y: [0, 0, 1], z: [0, 0, 0], i: indices, j: indices, k: indices }] },
+    }, 10)).toMatchObject({ ok: false, code: "PLOTLY_MESH_CAP_EXCEEDED" });
+  });
+
   it("uses deterministic extrema-preserving sampling when line data exceeds the display cap", () => {
     const result = sanitizePlotSpec({ figure: { data: [{ type: "scatter", x: [0, 1, 2, 3, 4, 5], y: [0, -9, 2, 3, 8, 1] }] } }, 4);
-    expect(result).toMatchObject({ ok: true, pointCount: 4, decimated: true });
+    expect(result).toMatchObject({ ok: true, pointCount: 4, totalPointCount: 6, decimated: true, samplingStrategy: "固定端点 + 全局最小/最大值 + 分桶局部极值" });
     if (!result.ok) return;
     expect(result.data[0]).toMatchObject({ x: [0, 1, 4, 5], y: [0, -9, 8, 1] });
+  });
+
+  it("keeps global extrema even when they occur outside the first local bucket", () => {
+    const result = sanitizePlotSpec({ figure: { data: [{ type: "scatter", x: [0, 1, 2, 3, 4, 5, 6, 7], y: [0, 1, 2, 3, 100, 5, -100, 7] }] } }, 4);
+    expect(result).toMatchObject({ ok: true, pointCount: 4, totalPointCount: 8, decimated: true });
+    if (!result.ok) return;
+    expect(result.data[0]).toMatchObject({ x: [0, 4, 6, 7], y: [0, 100, -100, 7] });
+  });
+
+  it("discloses the total source point count when the bounded preview samples", async () => {
+    render(
+      <WorkspaceGenericPlot
+        content={{ figure: { data: [{ type: "scatter", x: [0, 1, 2, 3, 4, 5], y: [0, -9, 2, 3, 8, 1] }] } }}
+        maximumPoints={4}
+        plotlyLoader={async () => ({ newPlot: async () => undefined, purge: () => undefined })}
+      />,
+    );
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("已渲染 1 个数据系列和 4/6 个保真抽样数值"));
+    expect(screen.getByRole("status")).toHaveTextContent("策略：固定端点 + 全局最小/最大值 + 分桶局部极值");
   });
 
   it("projects the persisted static-chart contract into bounded Plotly traces", () => {
@@ -133,5 +169,60 @@ describe("Phase 10M-4 generic Plotly renderer", () => {
       />,
     );
     await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("已渲染 1 个数据系列"));
+  });
+
+  it("resizes Plotly when its container changes size and disconnects on unmount", async () => {
+    let resizeCallback: ResizeObserverCallback | null = null;
+    const observe = vi.fn();
+    const disconnect = vi.fn();
+    class MockResizeObserver {
+      constructor(callback: ResizeObserverCallback) {
+        resizeCallback = callback;
+      }
+      observe = observe;
+      disconnect = disconnect;
+    }
+    vi.stubGlobal("ResizeObserver", MockResizeObserver);
+
+    const resize = vi.fn();
+    const view = render(
+      <WorkspaceGenericPlot
+        content={{ figure: { data: [{ type: "scatter", x: [1], y: [2] }] } }}
+        maximumPoints={10}
+        plotlyLoader={async () => ({
+          newPlot: async () => undefined,
+          purge: () => undefined,
+          Plots: { resize },
+        })}
+      />,
+    );
+
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("已渲染 1 个数据系列"));
+    expect(observe).toHaveBeenCalledWith(screen.getByTestId("workspace-generic-plot-canvas"));
+    expect(resizeCallback).toBeTypeOf("function");
+    (resizeCallback as unknown as ResizeObserverCallback)([], {} as ResizeObserver);
+    expect(resize).toHaveBeenCalledTimes(1);
+
+    view.unmount();
+    expect(disconnect).toHaveBeenCalledTimes(1);
+  });
+
+  it("purges a Plotly surface when unmounted during asynchronous plot creation", async () => {
+    let resolvePlot: ((value?: void | PromiseLike<void>) => void) | undefined;
+    const newPlot = vi.fn(() => new Promise<void>((resolve) => { resolvePlot = resolve; }));
+    const purge = vi.fn();
+    const view = render(
+      <WorkspaceGenericPlot
+        content={{ figure: { data: [{ type: "scatter", x: [1], y: [2] }] } }}
+        maximumPoints={10}
+        plotlyLoader={async () => ({ newPlot, purge })}
+      />,
+    );
+    await waitFor(() => expect(newPlot).toHaveBeenCalledOnce());
+    view.unmount();
+    const finish = resolvePlot;
+    if (finish) finish();
+    await waitFor(() => expect(purge).toHaveBeenCalledWith(expect.any(HTMLElement)));
+    expect(purge).toHaveBeenCalledTimes(1);
   });
 });

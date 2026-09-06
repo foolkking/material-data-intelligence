@@ -36,6 +36,26 @@ describe("ElectronicStructurePanel", () => {
     render(<ElectronicStructurePanel artifacts={[band]} selected={band} workspace={workspaceSnapshotFixture().workspace} onSelection={vi.fn()} />);
     expect(screen.getByRole("alert")).toHaveTextContent("N5_ELECTRONIC_CONTRACT_INVALID");
   });
+
+  it("keeps large persisted curves bounded and avoids spread-based range failures", () => {
+    const band = bandArtifact();
+    const content = band.content as Record<string, any>;
+    content.bands[0].energiesEv = Array.from({ length: 10_000 }, (_, index) => Math.sin(index / 20));
+    render(<ElectronicStructurePanel artifacts={[band]} selected={band} workspace={workspaceSnapshotFixture().workspace} onSelection={vi.fn()} />);
+    const points = screen.getByTestId("electronic-band-plot").querySelector("polyline")?.getAttribute("points") ?? "";
+    expect(points.split(" ").filter(Boolean)).toHaveLength(2_400);
+    expect(screen.getByText(/有界预览/u)).toBeTruthy();
+  });
+
+  it("shows a truthful empty state when a valid contract has no finite curve values", () => {
+    const band = bandArtifact();
+    const content = band.content as Record<string, any>;
+    content.bands = [];
+    content.states = [];
+    render(<ElectronicStructurePanel artifacts={[band]} selected={band} workspace={workspaceSnapshotFixture().workspace} onSelection={vi.fn()} />);
+    expect(screen.queryByTestId("electronic-band-plot")).toBeNull();
+    expect(screen.getByText(/没有可绘制的有限数值/u)).toBeTruthy();
+  });
 });
 
 function base(type: "electronic.band_structure" | "electronic.dos", id: string): Artifact {

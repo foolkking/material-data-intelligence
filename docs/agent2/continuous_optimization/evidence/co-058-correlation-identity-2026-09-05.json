@@ -1,0 +1,32 @@
+{
+  "improvement": "CO-058",
+  "date": "2026-09-05",
+  "status": "PASS",
+  "route": "GET /api/research/turns/{turn_id}/correlation",
+  "included": [
+    "project, research session and ResearchTurn identity",
+    "Job identity and status",
+    "bounded ToolCall identity, step and status",
+    "ScientificResult logical and snapshot identities",
+    "Report and Report snapshot identities",
+    "typed integrity warning codes"
+  ],
+  "excluded": [
+    "Tool parameters",
+    "raw error payloads",
+    "artifact paths and storage keys",
+    "provider payloads",
+    "queue internals",
+    "credentials"
+  ],
+  "bounds": {
+    "tool_call_limit": 64,
+    "truncation_disclosed": true
+  },
+  "verification": {
+    "focused_api": "2 passed",
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "diff_check": "PASS"
+  }
+}

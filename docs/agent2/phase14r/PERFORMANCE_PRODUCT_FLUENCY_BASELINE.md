@@ -1,5 +1,46 @@
 # Performance / Product Fluency Baseline
 
+## 2026-09-05 Research submit and first-truthful-progress baseline
+
+The current worktree was built into the isolated `.next-contopt-0905`
+production directory and served on `127.0.0.1:3024` without stopping the
+existing `3023` frontend. Both frontends use API `8005`; `/health/runtime`
+reported PostgreSQL, Redis, MinIO, Redis workers and configured DeepSeek
+healthy.
+
+Research now records a bounded current-tab diagnostic across the App Router
+handoff:
+
+```text
+submit
+→ second animation frame visible acknowledgement
+→ exact ResearchTurn binding
+→ first persisted progress status
+```
+
+It stores no prompt, Result data, credentials or infrastructure secrets and
+retains at most 50 samples. Five authenticated non-computing Research requests
+produced:
+
+| Metric | p50 | p95 | Budget |
+| --- | ---: | ---: | ---: |
+| double-paint acknowledgement | 26 ms | 29 ms | 500 ms |
+| first exact persisted `RECEIVED` | 262 ms | 293 ms | 1500 ms |
+
+Exact Turn IDs:
+
+```text
+44a0fef8-fe87-4265-8de7-c4403cfd8760
+857a7e5e-d634-4c91-bad5-d01f1f7fd6ab
+84eeb963-7d56-4422-aec4-7698d58cdff5
+1d5a494a-9dc2-45c1-9168-055baaf663c2
+fac4a3e5-e04c-4973-a69f-6aefa2065a52
+```
+
+Browser warnings/errors were zero. Focused helper/Research tests, typecheck and
+the isolated production build passed. The first progress state is durable
+server state; no synthetic “thinking” phase was introduced.
+
 ## 2026-09-01 immutable production navigation seal
 
 The latest current-worktree frontend was built into the immutable
@@ -498,3 +539,30 @@ navigation does not pay that cost: the shared ProductShell feed and App Router
 transition remain in the `47–67 ms` warm range. The retained bounded
 30-record window, request coalescing and explicit refresh preserve truthful
 state without an unbounded preload.
+
+## 2026-09-04 current-worktree production build and feed projection
+
+The current worktree was rebuilt into isolated production directories without
+overwriting the still-running validation instances. The latest build
+`.next-phase14r-0904e` is served on `127.0.0.1:3023` and proxies the same-stack
+API on `127.0.0.1:8005`.
+
+```text
+shared first-load JS = 104 kB
+Data / Project shell = 151 kB
+Research workbench = 183 kB
+Report reader = 148 kB
+Task Center = 130 kB
+Notification Center = 128 kB
+production build = PASS
+```
+
+The task/notification feed now uses one bounded cross-project API projection
+instead of issuing one client request per project. Backend regression confirms
+that both one-Job and five-Job samples use two SQL statements. The feed
+projects the persisted Research question and update time, so researchers can
+recognize and search their work without opening technical IDs.
+
+This closes the demonstrated N+1 and generic-title fluency seams. Provider-scale
+submit/cancel p95 and long-duration recovery campaigns remain separate open
+Phase 14-R acceptance work.

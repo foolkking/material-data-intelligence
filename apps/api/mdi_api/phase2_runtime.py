@@ -17,7 +17,9 @@ from pydantic import BaseModel, Field, model_validator
 from mdi_api.artifact_storage import LocalFileArtifactStorage
 from mdi_api.input_transport import (
     CreateUploadSessionRequest,
+    MAX_FILES_PER_UPLOAD,
     MAX_FILE_BYTES,
+    MAX_TOTAL_UPLOAD_BYTES,
     UPLOAD_SESSION_SCHEMA_VERSION,
     UploadFileDeclaration,
 )
@@ -83,6 +85,13 @@ class DatasetUploadRequest(BaseModel):
     def require_files(self) -> "DatasetUploadRequest":
         if not self.filePaths and not self.files:
             raise ValueError("filePaths or files must contain at least one file.")
+        if len(self.filePaths) + len(self.files) > MAX_FILES_PER_UPLOAD:
+            raise ValueError("UPLOAD_FILE_COUNT_CAP_EXCEEDED")
+        inline_sizes = [len(item.content.encode("utf-8")) for item in self.files]
+        if any(size > MAX_FILE_BYTES for size in inline_sizes):
+            raise ValueError("UPLOAD_PER_FILE_BYTE_CAP_EXCEEDED")
+        if sum(inline_sizes) > MAX_TOTAL_UPLOAD_BYTES:
+            raise ValueError("UPLOAD_TOTAL_BYTE_CAP_EXCEEDED")
         return self
 
 
@@ -811,13 +820,27 @@ class Phase2ProductRuntime:
         }
 
     def _materialize_uploads(self, request: DatasetUploadRequest, dataset_id: str) -> list[MaterializedUpload]:
+        if len(request.filePaths) + len(request.files) > MAX_FILES_PER_UPLOAD:
+            raise ValueError("UPLOAD_FILE_COUNT_CAP_EXCEEDED")
+        path_sizes: list[int] = []
+        for file_path in request.filePaths:
+            path = Path(file_path)
+            if not path.exists():
+                raise FileNotFoundError(f"Upload file does not exist: {file_path}")
+            size = path.stat().st_size
+            if size > MAX_FILE_BYTES:
+                raise ValueError("UPLOAD_PER_FILE_BYTE_CAP_EXCEEDED")
+            path_sizes.append(size)
+        inline_sizes = [len(item.content.encode("utf-8")) for item in request.files]
+        total_bytes = sum(path_sizes) + sum(inline_sizes)
+        if total_bytes > MAX_TOTAL_UPLOAD_BYTES:
+            raise ValueError("UPLOAD_TOTAL_BYTE_CAP_EXCEEDED")
+
         raw_dir = self.artifact_root / "projects" / request.projectId / "datasets" / dataset_id / "raw"
         raw_dir.mkdir(parents=True, exist_ok=True)
         uploads: list[MaterializedUpload] = []
         for file_path in request.filePaths:
             path = Path(file_path)
-            if not path.exists():
-                raise FileNotFoundError(f"Upload file does not exist: {file_path}")
             file_id = f"file_{len(uploads) + 1:03d}"
             target = raw_dir / file_id / path.name
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -1793,7 +1816,23 @@ def _api_call(fn: Any) -> Any:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
         except ImportError:
             raise
-    except (FileNotFoundError, ValueError) as exc:
+    except FileNotFoundError:
+        try:
+            from fastapi import HTTPException
+
+            # Never expose the caller's absolute filesystem path in an API
+            # response. The path can contain usernames, workspace layout or
+            # sensitive filenames; callers only need a stable retryable code.
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "code": "UPLOAD_SOURCE_NOT_FOUND",
+                    "message": "Upload source file is not available.",
+                },
+            ) from None
+        except ImportError:
+            raise
+    except ValueError as exc:
         try:
             from fastapi import HTTPException
 

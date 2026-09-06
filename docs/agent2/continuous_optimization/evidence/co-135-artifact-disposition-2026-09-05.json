@@ -1,0 +1,23 @@
+{
+  "improvement": "CO-135",
+  "date": "2026-09-05",
+  "status": "PASS",
+  "problem": "Artifact open and download actions lacked distinct HTTP disposition semantics.",
+  "authority": "The existing project-authorized Artifact content route remains the sole byte authority.",
+  "changes": [
+    "Normal Artifact open remains inline.",
+    "Explicit download appends download=true.",
+    "Only explicit download receives a sanitized attachment Content-Disposition."
+  ],
+  "verification": {
+    "backend_artifact_content": "7 passed",
+    "frontend_artifact_presentation_report": "35 passed",
+    "typecheck": "PASS"
+  },
+  "recompute": {
+    "job_delta": 0,
+    "tool_call_delta": 0,
+    "scientific_artifact_delta": 0,
+    "scientific_result_delta": 0
+  }
+}

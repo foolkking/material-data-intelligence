@@ -4,6 +4,7 @@ import {
   deleteEmptyProject,
   getProjectHistory,
   invalidateProjectHistory,
+  searchProduct,
   updateDataset,
   uploadDatasetFiles,
 } from "./planner-api";
@@ -11,6 +12,64 @@ import {
 afterEach(() => {
   invalidateProjectHistory();
   vi.unstubAllGlobals();
+});
+
+it("serializes bounded global-search scope and date filters", async () => {
+  const fetchMock = vi.fn(async (_input: string | URL | Request) => new Response(JSON.stringify({
+    query: "silicon",
+    count: 0,
+    items: [],
+    truncated: false,
+    nextCursor: null,
+  }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  }));
+  vi.stubGlobal("fetch", fetchMock);
+
+  await searchProduct(" silicon ", {
+    projectId: "project-1",
+    kind: "result",
+    status: "archived",
+    dateFrom: "2026-08-01",
+    dateTo: "2026-08-31",
+    limit: 25,
+    cursor: "cursor-1",
+  });
+
+  const requestUrl = new URL(
+    String(fetchMock.mock.calls[0]?.[0]),
+    "http://localhost",
+  );
+  expect(requestUrl.pathname).toBe("/api/search");
+  expect(Object.fromEntries(requestUrl.searchParams)).toEqual({
+    q: "silicon",
+    project_id: "project-1",
+    kind: "result",
+    status: "archived",
+    limit: "25",
+    cursor: "cursor-1",
+    date_from: "2026-08-01",
+    date_to: "2026-08-31",
+  });
+});
+
+it("propagates cancellation to obsolete global-search requests", async () => {
+  const controller = new AbortController();
+  const fetchMock = vi.fn(
+    async (_input: string | URL | Request, init?: RequestInit) => {
+      expect(init?.signal).toBe(controller.signal);
+      return new Response(
+        JSON.stringify({ query: "silicon", count: 0, items: [] }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    },
+  );
+  vi.stubGlobal("fetch", fetchMock);
+
+  await searchProduct("silicon", { signal: controller.signal });
+
+  expect(fetchMock).toHaveBeenCalledTimes(1);
 });
 
 it("keeps the authenticated browser session on upload-session file PUT requests", async () => {

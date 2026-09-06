@@ -1,0 +1,42 @@
+{
+  "improvementId": "CO-067",
+  "improvementNumber": 136,
+  "date": "2026-09-05",
+  "problem": "Qualification PostgreSQL and MinIO directories lacked safe run identity, lifecycle status and retention authority.",
+  "change": {
+    "schemaVersion": "mdi.qualification-run-retention/1.0",
+    "runPath": ".qualification_runs/<run-id>/{postgresql,minio}",
+    "runIdPattern": "qual-YYYYMMDDTHHMMSSZ-<8 hex>",
+    "states": [
+      "ACTIVE",
+      "COMPLETED",
+      "FAILED"
+    ],
+    "ttlDays": 14,
+    "releaseEvidenceRetention": "INDEFINITE",
+    "defaultMode": "dry-run",
+    "applyMode": "MOVE_RECOVERABLE",
+    "legacyDirectoriesManaged": false
+  },
+  "verification": {
+    "focused": {
+      "selected": 7,
+      "passed": 7
+    },
+    "realRepositoryDryRun": {
+      "candidateCount": 0,
+      "legacyDirectoriesManaged": false,
+      "movedCount": 0
+    },
+    "liveRuntime": {
+      "database": "postgresql:ok",
+      "redis": "redis:ok",
+      "artifactStorage": "minio:ok",
+      "worker": "redis:ok"
+    },
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "result": "Future isolated qualification state can expire without targeting active services or release evidence; current legacy service directories remain protected."
+}

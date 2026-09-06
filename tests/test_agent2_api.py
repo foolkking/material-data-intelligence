@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
+from types import SimpleNamespace
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -12,13 +13,18 @@ from sqlalchemy import create_engine, insert
 from sqlalchemy.pool import StaticPool
 
 from mdi_api.db import metadata, organizations, project_members, projects, sessions, users
+from mdi_api.agent2_errors import ScientificResultSnapshotNotFound
 from mdi_api.artifact_storage import LocalFileArtifactStorage
 from mdi_api.main import create_app
 from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.research_agent.llm.schemas import StructuredLLMResult
 from mdi_api.research_agent.orchestration.processor import AgentTurnProcessor
 from mdi_api.research_agent.registry_validation import build_default_agent2_registries
-from mdi_api.routers.agent2 import _research_progress_response_kind
+from mdi_api.routers.agent2 import (
+    _http_error,
+    _research_progress_response_kind,
+    research_turn_correlation_payload,
+)
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_api.scientific_objects.registry import build_default_object_type_registry
 from mdi_api.scientific_objects.schemas import (
@@ -59,6 +65,14 @@ def api(monkeypatch):
     monkeypatch.setattr("mdi_api.routers.agent2.get_research_turn_service", lambda: turn_service)
     monkeypatch.setattr("mdi_api.routers.agent2.get_scientific_object_service", lambda: object_service)
     monkeypatch.setattr("mdi_api.routers.agent2.create_repository_factory", lambda: factory)
+    monkeypatch.setattr(
+        "mdi_api.routers.scientific_reports.create_repository_factory",
+        lambda: factory,
+    )
+    monkeypatch.setattr(
+        "mdi_api.routers.project_history.create_engine_from_settings",
+        lambda _settings: engine,
+    )
     app = create_app()
     active_user = {"value": owner}
     app.dependency_overrides[get_current_user] = lambda: active_user["value"]
@@ -84,6 +98,12 @@ def create_ref(service: ScientificObjectService, project_id: str) -> ScientificO
     )
 
 
+def test_missing_result_reference_is_normalized_to_not_found() -> None:
+    error = _http_error(ScientificResultSnapshotNotFound("missing-result"))
+    assert error.status_code == 404
+    assert error.detail == "请求的 Agent 2.0 资源不存在。"
+
+
 def test_create_get_list_and_cancel_turn(api):
     client, _active, _owner, _viewer, _stranger, _objects = api
     created = client.post(
@@ -107,6 +127,130 @@ def test_create_get_list_and_cancel_turn(api):
     assert canceled.status_code == 200 and canceled.json()["status"] == "CANCELED"
     terminal = client.post(f"/api/research/turns/{turn_id}/cancel")
     assert terminal.status_code == 409 and terminal.json()["detail"]["code"] == "TURN_TERMINAL"
+
+
+def test_research_turn_correlation_is_bounded_authorized_and_secret_free(api):
+    client, active, _owner, _viewer, stranger, _objects = api
+    created = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json={"message": "Trace the persisted research lineage"},
+    )
+    turn_id = created.json()["turn_id"]
+
+    empty = client.get(f"/api/research/turns/{turn_id}/correlation")
+    assert empty.status_code == 200
+    assert empty.json() == {
+        "contract_version": "1.0",
+        "project_id": "project",
+        "research_session_id": "session",
+        "research_turn_id": turn_id,
+        "job": None,
+        "tool_calls": [],
+        "tool_calls_truncated": False,
+        "scientific_result": None,
+        "report": None,
+        "integrity_warnings": [],
+    }
+
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/correlation").status_code == 403
+
+
+def test_research_turn_correlation_projects_exact_bounded_lineage():
+    turn_id = uuid4()
+    result_snapshot_id = uuid4()
+    result_id = uuid4()
+    report_snapshot_id = uuid4()
+    calls = [
+        {
+            "id": f"call-{index:02d}",
+            "stepId": f"step-{index:02d}",
+            "status": "completed",
+            "params": {"secret": "must-not-leak"},
+        }
+        for index in range(65)
+    ]
+
+    class Jobs:
+        @staticmethod
+        def get(job_id):
+            assert job_id == "job-exact"
+            return {"id": job_id, "status": "completed", "createdBy": "internal"}
+
+    class ToolCalls:
+        @staticmethod
+        def list_for_job(job_id):
+            assert job_id == "job-exact"
+            return calls
+
+    class Results:
+        @staticmethod
+        def get_latest_for_turn(requested_turn_id):
+            assert requested_turn_id == turn_id
+            return {
+                "id": result_snapshot_id,
+                "project_id": "project",
+                "research_turn_id": turn_id,
+                "job_id": "job-exact",
+                "execution_status": "SUCCESS",
+                "bundle_json": {"result_id": str(result_id)},
+            }
+
+    class Reports:
+        @staticmethod
+        def get_for_turn(requested_turn_id):
+            assert requested_turn_id == turn_id
+            return {
+                "id": report_snapshot_id,
+                "report_id": "report-exact",
+                "project_id": "project",
+                "research_turn_id": turn_id,
+                "scientific_result_snapshot_id": result_snapshot_id,
+                "grounding_status": "VALID",
+            }
+
+    session = SimpleNamespace(
+        repositories=SimpleNamespace(jobs=Jobs(), tool_calls=ToolCalls()),
+        agent2=SimpleNamespace(
+            scientific_result_snapshots=Results(),
+            scientific_reports=Reports(),
+        ),
+    )
+    payload = research_turn_correlation_payload(
+        session,
+        {
+            "id": turn_id,
+            "project_id": "project",
+            "research_session_id": "session",
+            "job_id": "job-exact",
+        },
+    )
+
+    assert payload["research_turn_id"] == str(turn_id)
+    assert payload["job"] == {"job_id": "job-exact", "status": "completed"}
+    assert len(payload["tool_calls"]) == 64
+    assert payload["tool_calls_truncated"] is True
+    assert payload["tool_calls"][0] == {
+        "tool_call_id": "call-00",
+        "step_id": "step-00",
+        "status": "completed",
+    }
+    assert payload["scientific_result"] == {
+        "result_snapshot_id": str(result_snapshot_id),
+        "result_id": str(result_id),
+        "execution_status": "SUCCESS",
+        "job_id": "job-exact",
+    }
+    assert payload["report"] == {
+        "report_id": "report-exact",
+        "report_snapshot_id": str(report_snapshot_id),
+        "grounding_status": "VALID",
+    }
+    assert payload["integrity_warnings"] == []
+    serialized = str(payload)
+    assert "must-not-leak" not in serialized
+    assert "storage_key" not in serialized
+    assert "provider_request_id" not in serialized
 
 
 def test_context_manifest_endpoint_returns_bounded_manifest_and_enforces_project_access(api):
@@ -296,6 +440,74 @@ def test_get_turn_and_scientific_object_are_project_isolated(api):
     active["value"] = owner
 
 
+def test_exact_turn_and_object_routes_fail_closed_for_foreign_user(api):
+    """Exercise the high-value exact-id read/write boundaries as one matrix.
+
+    Each request starts from a persisted project-owned Turn/Object.  The
+    stranger must receive the same authorization denial before any route can
+    disclose status, metadata, version content, or trigger a mutation.
+    """
+    client, active, owner, _viewer, stranger, objects = api
+    turn = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json={"message": "Authorization matrix"},
+    ).json()
+    ref = create_ref(objects, "project")
+    turn_id = turn["turn_id"]
+    object_id = str(ref.object_id)
+    version_id = str(ref.version_id)
+
+    route_cases = [
+        ("get", f"/api/research/turns/{turn_id}"),
+        ("get", f"/api/research/turns/{turn_id}/context-manifest"),
+        ("get", f"/api/research/turns/{turn_id}/correlation"),
+        ("post", f"/api/research/turns/{turn_id}/cancel"),
+        ("post", f"/api/research/turns/{turn_id}/dispatch"),
+        ("get", f"/api/research/turns/{turn_id}/progress"),
+        ("get", f"/api/research/turns/{turn_id}/result"),
+        ("post", f"/api/research/turns/{turn_id}/project-result"),
+        ("post", f"/api/research/turns/{turn_id}/interpret"),
+        ("get", f"/api/research/turns/{turn_id}/interpretation"),
+        ("post", f"/api/research/turns/{turn_id}/report"),
+        ("get", f"/api/research/turns/{turn_id}/report"),
+        ("get", f"/api/research/turns/{turn_id}/report-status"),
+        ("get", f"/api/research/turns/{turn_id}/events"),
+        ("get", "/projects/project/history"),
+        ("get", f"/api/scientific-objects/{object_id}"),
+        ("get", f"/api/scientific-objects/{object_id}/dependency-impact"),
+        ("patch", f"/api/scientific-objects/{object_id}", {"display_name": "泄漏"}),
+        ("get", f"/api/scientific-objects/{object_id}/versions"),
+        ("post", f"/api/scientific-objects/{object_id}/versions", {
+            "dataset_id": "foreign-attempt",
+            "resource_id": "foreign-attempt",
+        }),
+        ("get", f"/api/scientific-objects/{object_id}/versions/{version_id}"),
+        ("post", f"/api/scientific-objects/{object_id}/versions/{version_id}/query", {
+            "filters": [],
+            "limit": 1,
+        }),
+        ("get", f"/api/scientific-objects/{object_id}/versions/{version_id}/viewer"),
+        ("get", f"/api/scientific-objects/{object_id}/relationships"),
+    ]
+
+    active["value"] = stranger
+    try:
+        for case in route_cases:
+            method, path, *payload = case
+            kwargs = {"json": payload[0]} if payload else {}
+            response = getattr(client, method)(path, **kwargs)
+            assert response.status_code == 403, (
+                f"{method.upper()} {path} leaked or bypassed authorization: "
+                f"{response.status_code} {response.text}"
+            )
+            assert "泄漏" not in response.text
+            assert turn_id not in response.text
+            assert object_id not in response.text
+            assert version_id not in response.text
+    finally:
+        active["value"] = owner
+
+
 def test_scientific_object_read_api_lists_exact_versions_and_relationships(api):
     client, _active, _owner, _viewer, _stranger, objects = api
     left = create_ref(objects, "project")
@@ -320,6 +532,13 @@ def test_scientific_object_read_api_lists_exact_versions_and_relationships(api):
         "scientific_object_versions",
         "scientific_object_relationships",
     }
+    assert all(
+        item["href"]
+        == f"/projects/project/data?object={left.object_id}"
+        for item in impact.json()["dependencies"]
+        if item["kind"]
+        in {"scientific_object_versions", "scientific_object_relationships"}
+    )
 
 
 def test_scientific_object_metadata_update_is_authorized_and_version_stable(api):

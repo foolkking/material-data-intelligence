@@ -1,0 +1,25 @@
+{
+  "id": "CO-025",
+  "status": "COMPLETED",
+  "date": "2026-09-05",
+  "problem": "MinIO backup/restore, checksum integrity and missing-source behavior lacked a live qualification.",
+  "change": {
+    "file": "tests/test_phase6_integration.py",
+    "details": [
+      "Added a unique-prefix MinIO test object and server-side backup copy.",
+      "Verifies exact size and SHA-256 before and after backup.",
+      "Deletes only the test source key, verifies typed absence, reads the backup, and removes both test keys."
+    ]
+  },
+  "verification": {
+    "command": "MDI_RUN_INTEGRATION=1 pytest -q tests/test_phase6_integration.py -k \"minio_backup_restore_checksum or minio_put_get_exists\"",
+    "result": "2 passed, 20 deselected",
+    "runtime": "MinIO at the configured same-stack endpoint",
+    "assertions": [
+      "backup bytes equal source bytes",
+      "backup checksum equals authoritative source checksum",
+      "missing source does not hide or regenerate the backup"
+    ]
+  },
+  "production_changes": "none; test uses isolated temporary object keys"
+}

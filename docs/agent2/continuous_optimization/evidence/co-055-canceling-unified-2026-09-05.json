@@ -1,0 +1,18 @@
+{
+  "improvement": "CO-055",
+  "date": "2026-09-05",
+  "status": "PASS",
+  "summary": "Research and Task Center share truthful cancellation semantics and terminal polling.",
+  "verification": {
+    "focused_tests": "25 passed",
+    "typecheck": "PASS",
+    "diff_check": "PASS_WITH_CRLF_WARNINGS_ONLY"
+  },
+  "behavior": {
+    "accepted_statuses": ["CANCELING", "cancel_requested"],
+    "pending_label": "正在取消研究",
+    "poll_interval_ms": 1800,
+    "duplicate_stop_prevented": true,
+    "completion_fabrication": false
+  }
+}

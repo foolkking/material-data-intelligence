@@ -1,17 +1,42 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
 import logging
 from typing import Any, Callable
 
 from mdi_api.config import load_settings
-from mdi_api.routers.auth import CurrentUser, get_current_user, login, logout
+from mdi_api.routers.auth import (
+    CurrentUser,
+    activate_account,
+    change_password,
+    deactivate_account,
+    get_current_user,
+    list_auth_sessions,
+    login,
+    logout,
+    revoke_auth_session,
+    revoke_other_auth_sessions,
+    update_profile,
+)
+from mdi_api.routers.platform_admin import (
+    get_platform_admin_overview,
+    list_platform_audit,
+    list_platform_project_members,
+    list_platform_projects,
+    list_platform_users,
+    remove_platform_project_member,
+    update_platform_project_member,
+    update_platform_user,
+    create_platform_invitation,
+)
 from mdi_api.routers.research import (
     bulk_update_sessions,
     create_assistant_projection,
     create_message,
     create_session,
     get_session,
+    get_session_dependency_impact,
     list_sessions,
     update_session,
     resolve_scope,
@@ -47,11 +72,13 @@ from mdi_api.routers.secured_runtime import (
     list_datasets_secured,
     list_projects_secured,
     list_saved_product_searches,
+    list_notification_read_states,
     search_product_secured,
     create_saved_product_search,
     update_saved_product_search,
     delete_saved_product_search,
     execute_saved_product_search,
+    update_notification_read_state,
     update_project_secured,
     bulk_project_action_secured,
     delete_empty_project_secured,
@@ -82,6 +109,7 @@ from mdi_api.routers.secured_planner import (
     planner_validate_secured,
 )
 from mdi_api.routers.health import health, runtime_health
+from mdi_api.routers.observability import capture_client_exception
 from mdi_api.routers.planner_providers import (
     configure_planner_provider,
     update_planner_provider_models,
@@ -116,6 +144,7 @@ from mdi_api.routers.agent2 import (
     create_research_turn,
     get_research_turn,
     get_research_turn_context_manifest,
+    get_research_turn_correlation,
     get_research_turn_progress,
     get_research_turn_result,
     project_research_turn_result,
@@ -163,6 +192,7 @@ from mdi_api.routers.workspaces import (
     get_workspace_panel,
     list_analysis_jobs,
     list_project_workspaces,
+    list_task_feed,
     list_workspace_layout_revisions,
     list_workspace_panels,
     patch_workspace,
@@ -191,13 +221,36 @@ class AppSpec:
 ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/health", health, ("GET",), ("health",)),
     RouteSpec("/health/runtime", runtime_health, ("GET",), ("health",)),
+    RouteSpec(
+        "/api/observability/client-exceptions",
+        capture_client_exception,
+        ("POST",),
+        ("observability",),
+    ),
     RouteSpec("/auth/me", get_current_user, ("GET",), ("auth",), CurrentUser),
     RouteSpec("/auth/login", login, ("POST",), ("auth",), CurrentUser),
+    RouteSpec("/auth/activate", activate_account, ("POST",), ("auth",), CurrentUser),
     RouteSpec("/auth/logout", logout, ("POST",), ("auth",)),
+    RouteSpec("/auth/profile", update_profile, ("PATCH",), ("auth",), CurrentUser),
+    RouteSpec("/auth/sessions", list_auth_sessions, ("GET",), ("auth",)),
+    RouteSpec("/auth/sessions/revoke-others", revoke_other_auth_sessions, ("POST",), ("auth",)),
+    RouteSpec("/auth/sessions/{session_id}", revoke_auth_session, ("DELETE",), ("auth",)),
+    RouteSpec("/auth/change-password", change_password, ("POST",), ("auth",)),
+    RouteSpec("/auth/deactivate", deactivate_account, ("POST",), ("auth",)),
+    RouteSpec("/api/admin/overview", get_platform_admin_overview, ("GET",), ("admin",)),
+    RouteSpec("/api/admin/users", list_platform_users, ("GET",), ("admin",)),
+    RouteSpec("/api/admin/users/{user_id}", update_platform_user, ("PATCH",), ("admin",)),
+    RouteSpec("/api/admin/invitations", create_platform_invitation, ("POST",), ("admin",)),
+    RouteSpec("/api/admin/projects", list_platform_projects, ("GET",), ("admin",)),
+    RouteSpec("/api/admin/projects/{project_id}/members", list_platform_project_members, ("GET",), ("admin",)),
+    RouteSpec("/api/admin/projects/{project_id}/members/{user_id}", update_platform_project_member, ("PUT",), ("admin",)),
+    RouteSpec("/api/admin/projects/{project_id}/members/{user_id}", remove_platform_project_member, ("DELETE",), ("admin",)),
+    RouteSpec("/api/admin/audit", list_platform_audit, ("GET",), ("admin",)),
     RouteSpec("/projects/{project_id}/research-sessions", list_sessions, ("GET",), ("research",)),
     RouteSpec("/projects/{project_id}/research-sessions", create_session, ("POST",), ("research",)),
     RouteSpec("/projects/{project_id}/research-sessions/bulk", bulk_update_sessions, ("POST",), ("research",)),
     RouteSpec("/research-sessions/{session_id}", get_session, ("GET",), ("research",)),
+    RouteSpec("/research-sessions/{session_id}/dependency-impact", get_session_dependency_impact, ("GET",), ("research",)),
     RouteSpec("/research-sessions/{session_id}", update_session, ("PATCH",), ("research",)),
     RouteSpec("/research-sessions/{session_id}/messages", create_message, ("POST",), ("research",)),
     RouteSpec("/research-sessions/{session_id}/assistant-projections", create_assistant_projection, ("POST",), ("research",)),
@@ -210,6 +263,7 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/api/projects/{project_id}/research/sessions/{session_id}/memory/pinned-objects", unpin_research_object, ("DELETE",), ("agent2", "research")),
     RouteSpec("/api/research/turns/{turn_id}", get_research_turn, ("GET",), ("agent2", "research")),
     RouteSpec("/api/research/turns/{turn_id}/context-manifest", get_research_turn_context_manifest, ("GET",), ("agent2", "research")),
+    RouteSpec("/api/research/turns/{turn_id}/correlation", get_research_turn_correlation, ("GET",), ("agent2", "research")),
     RouteSpec("/api/research/turns/{turn_id}/cancel", cancel_research_turn, ("POST",), ("agent2", "research")),
     RouteSpec("/api/research/turns/{turn_id}/dispatch", dispatch_research_turn, ("POST",), ("agent2", "research")),
     RouteSpec("/api/research/turns/{turn_id}/progress", get_research_turn_progress, ("GET",), ("agent2", "research")),
@@ -252,6 +306,8 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/saved-searches/{saved_search_id}", update_saved_product_search, ("PATCH",), ("search",)),
     RouteSpec("/saved-searches/{saved_search_id}", delete_saved_product_search, ("DELETE",), ("search",)),
     RouteSpec("/saved-searches/{saved_search_id}/execute", execute_saved_product_search, ("POST",), ("search",)),
+    RouteSpec("/api/notifications/read-state", list_notification_read_states, ("GET",), ("notifications",)),
+    RouteSpec("/api/notifications/{project_id}/{job_id}/read-state", update_notification_read_state, ("PATCH",), ("notifications",)),
     RouteSpec("/projects", create_project_secured, ("POST",), ("projects",)),
     RouteSpec("/projects/bulk", bulk_project_action_secured, ("POST",), ("projects",)),
     RouteSpec("/projects/{project_id}", update_project_secured, ("PATCH",), ("projects",)),
@@ -323,6 +379,7 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/workspaces/{workspace_id}", patch_workspace, ("PATCH",), ("workspaces",)),
     RouteSpec("/projects/{project_id}/workspaces", list_project_workspaces, ("GET",), ("workspaces",)),
     RouteSpec("/projects/{project_id}/analysis-jobs", list_analysis_jobs, ("GET",), ("workspaces",)),
+    RouteSpec("/api/tasks/feed", list_task_feed, ("GET",), ("workspaces",)),
     RouteSpec("/workspaces/{workspace_id}/panels", list_workspace_panels, ("GET",), ("workspaces",)),
     RouteSpec("/workspaces/{workspace_id}/panels/{panel_id}", get_workspace_panel, ("GET",), ("workspaces",)),
     RouteSpec(
@@ -355,8 +412,9 @@ ROUTES: tuple[RouteSpec, ...] = (
 def create_app() -> Any:
     settings = load_settings()
     try:
-        from fastapi import FastAPI
+        from fastapi import FastAPI, Request
         from fastapi.middleware.cors import CORSMiddleware
+        from fastapi.responses import JSONResponse
     except ImportError:
         return AppSpec(title=settings.app_name, version="0.1.0", routes=ROUTES)
 
@@ -370,32 +428,25 @@ def create_app() -> Any:
         DEFAULT_AGENT2_REGISTRIES,
         ToolRegistry(version="agent2-startup", tools=tuple(list_registered_tools())),
     )
-    app = FastAPI(
-        title=settings.app_name,
-        version="0.1.0",
-        description="Controlled API boundary for material data intelligence workflows.",
+    from mdi_api.migration_head import (
+        migration_head_guard_required,
+        validate_database_migration_head,
     )
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=list(settings.cors_origins),
-        allow_credentials=True,
-        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        allow_headers=["*"],
-        expose_headers=["ETag", "X-Idempotent-Replay"],
-    )
-    for route in ROUTES:
-        app.add_api_route(
-            route.path,
-            route.endpoint,
-            methods=list(route.methods),
-            tags=list(route.tags),
-            response_model=route.response_model,
-        )
-    if settings.agent2_startup_recovery_enabled:
-        @app.on_event("startup")
-        def recover_interrupted_research() -> None:
-            """Wake durable non-terminal work without blocking API admission."""
 
+    @asynccontextmanager
+    async def lifespan(_app: Any) -> Any:
+        """Validate admission first, then best-effort recover durable work."""
+
+        if migration_head_guard_required(settings):
+            status = validate_database_migration_head(settings)
+            if status is not None:
+                logger.info(
+                    "database_migration_head_verified current=%s expected=%s",
+                    ",".join(status.current_heads),
+                    ",".join(status.expected_heads),
+                )
+
+        if settings.agent2_startup_recovery_enabled:
             try:
                 from mdi_api.research_agent.recovery import run_startup_recovery
 
@@ -415,10 +466,69 @@ def create_app() -> Any:
                 )
             except Exception:
                 # Recovery is operational hardening, not an alternate API
-                # authority.  A failed wakeup remains visible in the
+                # authority. A failed wakeup remains visible in the
                 # operations snapshot and must not make the API lie about
                 # scientific completion.
                 logger.exception("research_startup_recovery_failed")
+
+        yield
+
+    app = FastAPI(
+        title=settings.app_name,
+        version="0.1.0",
+        description="Controlled API boundary for material data intelligence workflows.",
+        lifespan=lifespan,
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=list(settings.cors_origins),
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["*"],
+        expose_headers=["ETag", "X-Idempotent-Replay", "X-Request-ID"],
+    )
+    from mdi_api.observability import (
+        log_exception_event,
+        request_correlation,
+        request_id,
+    )
+
+    @app.middleware("http")
+    async def operational_exception_boundary(
+        request: Request,
+        call_next: Callable[..., Any],
+    ) -> Any:
+        request.state.request_id = request_id(request.headers.get("x-request-id"))
+        request.state.context_manifest_id = request.headers.get(
+            "x-mdi-context-manifest-id"
+        )
+        try:
+            response = await call_next(request)
+        except Exception as exc:
+            log_exception_event(
+                logger,
+                component="api",
+                error=exc,
+                correlation=request_correlation(request),
+            )
+            return JSONResponse(
+                status_code=500,
+                content={
+                    "detail": "请求处理失败。",
+                    "requestId": request.state.request_id,
+                },
+                headers={"X-Request-ID": request.state.request_id},
+            )
+        response.headers["X-Request-ID"] = request.state.request_id
+        return response
+    for route in ROUTES:
+        app.add_api_route(
+            route.path,
+            route.endpoint,
+            methods=list(route.methods),
+            tags=list(route.tags),
+            response_model=route.response_model,
+        )
     return app
 
 

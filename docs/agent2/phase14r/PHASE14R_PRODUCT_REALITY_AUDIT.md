@@ -2426,6 +2426,18 @@ last-message editor is opened. Presentation heading IDs are Turn-scoped and
 duplicate-free. This seam is `PASS`; provider-scale overflow/replay and
 complete message lifecycle acceptance remain `NOT_QUALIFIED`.
 
+### 2026-09-04 — explicit safe viewer states for non-executable artifacts
+
+The workspace renderer audit found that registry entries classified as
+`STATIC_METADATA` or `DOWNLOAD_ONLY` had no corresponding renderer branch.
+They were therefore presented through generic inert-fallback copy rather than
+the intended safe product state. The renderer now exposes bounded metadata or
+download-only states with contract/version, filename/size where available and
+checksum summary. The exact source remains preserved; HTML, scripts, image
+payloads and arbitrary renderer code are not executed or guessed. Focused
+coverage is `8/8` for the gallery and registry, including a `preview_png`
+metadata case and a script-bearing `plotly_html` case.
+
 ### 2026-08-31 — Fresh same-stack service regression
 
 The current-worktree service/context regression ran against the real
@@ -2723,3 +2735,119 @@ rewriting the historical record:
 
 The release state remains pending only until the exact P14R-A/P14R-B CI
 sequence is completed. No Phase 15 work has been started.
+
+## 2026-09-04 — current-worktree scientific surface recheck
+
+The same-stack authenticated browser was re-run against the current production
+build on `127.0.0.1:3020` without restarting or replacing the existing
+services/tabs. The populated project exposed `13` exact ScientificObject /
+ScientificObjectVersion routes (Electronic DOS, Phonon Band/DOS, Dataset,
+Electronic Band, ML/composition tables, trajectories, Structure and
+Diffusion). After allowing each route to hydrate, all `13/13` rendered their
+declared scientific surface without `Internal Server Error`, `Application
+error`, `SOURCE_MISSING`, or browser alert failures; structure/trajectory
+families mounted a real canvas (`4` routes), while table/plot families exposed
+their bounded semantic projections. Desktop document width was `1265/1265`
+with zero overflow. The Structure route rendered `1` site, `Si` chemistry,
+cell metadata, camera controls and exact version disclosure.
+
+This is a read-only rendering proof. It does not upgrade any historical source
+payload, create a new scientific Result, or substitute a newer version. The
+older screenshots that show “原始来源当前不可访问” remain truthful for their
+specific unavailable payloads; that state is fail-closed data availability,
+not a missing PostgreSQL/Redis/MinIO service.
+## 2026-09-04 current-worktree recovery-control and regression reconciliation
+
+The Research context inspector and the unified Trash Center now expose bounded,
+in-place recovery actions when their authorized read projections fail:
+
+```text
+ContextManifest read failure
+→ 重新读取上下文
+→ reread the same persisted manifest
+→ no scientific execution mutation
+
+Trash inventory read failure
+→ 重新加载回收站
+→ reread authorized lifecycle inventory
+→ no lifecycle mutation
+```
+
+Focused verification after the shared-worktree changes:
+
+```text
+ResearchPages = 70 passed
+TrashCenterPage = 5 passed
+focused total = 75 passed
+frontend typecheck = PASS
+```
+
+The current authenticated same-stack product check also retains:
+
+```text
+PostgreSQL / Redis / MinIO / six Redis workers = healthy
+active project scientific object routes = 13/13 readable
+core desktop/mobile route combinations = 22 valid
+admin route combinations = 2 expected fail-closed authorization states
+global horizontal overflow = 0 on exercised mobile routes
+unexpected browser errors = 0
+```
+
+The two reported historical `SOURCE_MISSING` presentations are not evidence of
+a stopped service. They are typed fail-closed states for exact source bytes that
+are no longer present in artifact storage. The product preserves metadata and
+exact-version identity, provides retry/source navigation, and never substitutes
+a newer version. The broader mature-product release remains `PARTIAL` because
+capability-wide human acceptance, retention/export/operations review and a new
+exact-SHA Phase 14-R release sequence remain open.
+
+## 2026-09-04 latest isolated production browser recheck
+
+To verify the recovery-control changes without disturbing the existing browser
+tabs or production instances, the current worktree was built into
+`.next-phase14r-0904d` and served on `127.0.0.1:3022` against the same-stack
+API (`127.0.0.1:8005`). An authenticated in-app browser tab opened the console,
+Data Platform and all 13 exact ScientificObject/Version links from the active
+qualification project.
+
+```text
+13/13 object routes = readable
+bounded renderer or real canvas = present where applicable
+role=alert = empty on valid object routes
+browser error logs = 0
+document width = client width (1265/1265 desktop)
+```
+
+This confirms the previously reported “像图片一样/无法打开” states are not
+caused by the current PostgreSQL, Redis, MinIO or API services. Exact historical
+payloads that are genuinely absent remain explicit `SOURCE_MISSING`/metadata
+states; the UI does not fabricate a replacement payload or silently upgrade to
+another version.
+
+## 2026-09-04 — R7/R8 human task identity remediation
+
+A scoped code/evidence audit found that the authorized Global Search and
+persisted Task/Notification recovery architecture were already present. The
+remaining user-visible defect was that modern ResearchTurn-backed rows exposed
+generic titles and local task search indexed only Project, Job ID and status.
+
+The existing one-query metadata projection now joins the exact ResearchTurn
+user message and returns one bounded `researchQuestion`. Task Center and
+Notification Center use it as the human title and searchable text while
+retaining the exact Job/Turn identities and routes. Each row also exposes its
+persisted update/create time through a semantic `<time>` element.
+
+```text
+new search/task authority = NO
+Job/ResearchTurn identity changed = NO
+cross-project scope changed = NO
+scientific execution delta = 0
+task-feed SQL query count (1 job / 5 jobs) = 2 / 2
+backend focused = 15 passed
+frontend focused = 16 passed
+typecheck / Ruff / diff = PASS
+```
+
+The bounded R7/R8 product seam is now PASS. Production-volume pagination,
+external push delivery and the wider Phase 14-R human-acceptance campaign are
+not claimed by this focused repair.

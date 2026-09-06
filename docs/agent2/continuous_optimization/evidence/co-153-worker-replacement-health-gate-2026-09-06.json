@@ -1,0 +1,33 @@
+{
+  "improvement": "CO-153",
+  "date": "2026-09-06",
+  "problem": "Worker Apply rotation used a fixed delay and could stop the old pair before proving the replacement process identity and liveness.",
+  "implementation": {
+    "script": "scripts/phase14r_rotate_workers.ps1",
+    "timeoutSeconds": 20,
+    "replacementChecks": [
+      "new child PID differs from old child",
+      "generation-bound worker name",
+      "exact queue command",
+      "child parent is replacement runner",
+      "redacted Redis identity matches old manifest",
+      "runner and child processes remain alive"
+    ],
+    "failureBehavior": "Old pair remains running if replacement validation fails; any discovered replacement is stopped through exact digest revalidation."
+  },
+  "liveQualification": {
+    "mode": "dry-run",
+    "validatedQueues": 6,
+    "workerProcessesBefore": 12,
+    "workerProcessesAfter": 12,
+    "pidSetUnchanged": true,
+    "servicesStopped": false
+  },
+  "verification": {
+    "focusedTests": "16 passed",
+    "powershellAst": "PASS",
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "gitDiffCheck": "PASS"
+  }
+}

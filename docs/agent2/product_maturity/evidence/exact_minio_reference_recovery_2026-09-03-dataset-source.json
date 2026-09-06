@@ -1,0 +1,13 @@
+{
+  "bucket": "mdi-artifacts",
+  "createdAt": "2026-09-03T11:31:24.778925+00:00",
+  "items": [],
+  "noopCount": 0,
+  "referenceCountBefore": 0,
+  "restoredCount": 0,
+  "schemaVersion": "phase14r.exact-minio-reference-recovery.v1",
+  "sourceEndpoints": [
+    "http://127.0.0.1:9102"
+  ],
+  "targetEndpoint": "http://127.0.0.1:9000"
+}

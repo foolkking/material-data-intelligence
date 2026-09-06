@@ -1,0 +1,39 @@
+{
+  "improvementId": "CO-041",
+  "date": "2026-09-05",
+  "rootCause": "API, worker and frontend launchers redirected output to fixed files without rotation or bounded retention.",
+  "policy": {
+    "rotation": [
+      "25 MiB active-file threshold",
+      "UTC date boundary"
+    ],
+    "maximumArchivesPerStream": 8,
+    "maximumArchiveAgeDays": 14,
+    "environmentOverrides": [
+      "MDI_LOG_MAX_BYTES",
+      "MDI_LOG_MAX_ARCHIVES",
+      "MDI_LOG_MAX_AGE_DAYS"
+    ],
+    "activeLogDeletion": false,
+    "managedArchivePattern": "<stem>.YYYYMMDDTHHMMSSZ.NNNN<suffix>",
+    "dryRunMaintenance": true
+  },
+  "integrations": [
+    "API launcher",
+    "six Redis worker launchers",
+    "frontend launcher"
+  ],
+  "verification": {
+    "focusedTests": "5 passed",
+    "ruff": "passed",
+    "powershellParsers": {
+      "phase14r_start_api.ps1": "passed",
+      "phase14r_start_workers.ps1": "passed",
+      "phase14r_start_stack.ps1": "passed"
+    },
+    "gitDiffCheck": "passed",
+    "currentRuntimeHealth": "PostgreSQL, Redis, MinIO, Redis workers and DeepSeek healthy"
+  },
+  "currentServicesRestarted": false,
+  "currentServicesStopped": false
+}

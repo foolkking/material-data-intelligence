@@ -99,6 +99,7 @@ function PhononBandSummary({ band, summary }: { band: JsonRecord; summary: JsonR
   const qpoints = records(band.qpoints);
   const segments = records(band.segments);
   const frequencies = branches.flatMap((branch) => numbers(branch.frequencies));
+  const frequencyRange = numericRange(frequencies);
   const species = Array.isArray(band.species) ? band.species.map(String) : [];
   return <dl className="phonon-band-summary" data-testid="phonon-band-summary">
     <div><dt>Atoms</dt><dd>{String(band.atom_count)}</dd></div>
@@ -106,7 +107,7 @@ function PhononBandSummary({ band, summary }: { band: JsonRecord; summary: JsonR
     <div><dt>Branches</dt><dd>{branches.length}</dd></div>
     <div><dt>Q-points</dt><dd>{qpoints.length}</dd></div>
     <div><dt>Segments</dt><dd>{segments.length}</dd></div>
-    <div><dt>Frequency range</dt><dd>{finite(summary?.frequency_min) ? summary?.frequency_min : Math.min(...frequencies)} to {finite(summary?.frequency_max) ? summary?.frequency_max : Math.max(...frequencies)} THz</dd></div>
+    <div><dt>Frequency range</dt><dd>{finite(summary?.frequency_min) ? summary?.frequency_min : frequencyRange?.[0] ?? "unavailable"} to {finite(summary?.frequency_max) ? summary?.frequency_max : frequencyRange?.[1] ?? "unavailable"} THz</dd></div>
   </dl>;
 }
 
@@ -134,7 +135,7 @@ function PhononBandTable({ band }: { band: JsonRecord }) {
     return result;
   }, [band]);
   const total = records(band.qpoints).length * records(band.branches).length;
-  return <div className="phonon-band-table-wrap"><p>{rows.length < total ? `Showing first ${rows.length} of ${total} rows. Canonical JSON is complete.` : `${total} rows.`}</p><table data-testid="phonon-band-table"><caption>Phonon band q-point and branch frequencies</caption><thead><tr><th>Q-point</th><th>Segment</th><th>q coordinates</th><th>Label</th><th>Path distance (rad/angstrom)</th><th>Branch</th><th>Frequency (THz)</th><th>Classification</th></tr></thead><tbody>{rows.map((row) => <tr key={`${row.qpoint}:${row.branch}`}><td>{row.qpoint}</td><td>{row.segment}</td><td>[{row.coordinates.map(format).join(", ")}]</td><td>{row.label || "-"}</td><td>{format(row.distance)}</td><td>{row.branch}</td><td>{format(row.frequency)}</td><td>{row.classification}</td></tr>)}</tbody></table></div>;
+  return <div className="phonon-band-table-wrap"><p>{rows.length < total ? `Showing first ${rows.length} of ${total} rows. Canonical JSON is complete.` : `${total} rows.`}</p><table data-testid="phonon-band-table"><caption>Phonon band q-point and branch frequencies</caption><thead><tr><th scope="col">Q-point</th><th scope="col">Segment</th><th scope="col">q coordinates</th><th scope="col">Label</th><th scope="col">Path distance (rad/angstrom)</th><th scope="col">Branch</th><th scope="col">Frequency (THz)</th><th scope="col">Classification</th></tr></thead><tbody>{rows.map((row) => <tr key={`${row.qpoint}:${row.branch}`}><td>{row.qpoint}</td><td>{row.segment}</td><td>[{row.coordinates.map(format).join(", ")}]</td><td>{row.label || "-"}</td><td>{format(row.distance)}</td><td>{row.branch}</td><td>{format(row.frequency)}</td><td>{row.classification}</td></tr>)}</tbody></table></div>;
 }
 
 function PhononBandFallback({ payload, errors }: { payload: unknown; errors: readonly string[] }) {
@@ -181,6 +182,16 @@ function record(value: unknown): value is JsonRecord { return typeof value === "
 function records(value: unknown): JsonRecord[] { return Array.isArray(value) ? value.filter(record) : []; }
 function numbers(value: unknown): number[] { return Array.isArray(value) ? value.filter(finite) : []; }
 function finite(value: unknown): value is number { return typeof value === "number" && Number.isFinite(value); }
+function numericRange(values: readonly number[]): [number, number] | null {
+  if (!values.length) return null;
+  let minimum = values[0], maximum = values[0];
+  for (let index = 1; index < values.length; index += 1) {
+    const value = values[index];
+    if (value < minimum) minimum = value;
+    if (value > maximum) maximum = value;
+  }
+  return [minimum, maximum];
+}
 function format(value: number): string { return Math.abs(value) >= 1000 || (Math.abs(value) < 0.001 && value !== 0) ? value.toExponential(4) : value.toFixed(5); }
 
 export function phononAnimationHandoff(band:JsonRecord,artifact:Artifact,animation:JsonRecord|null):{ok:true;modeId:string;qpointIndex:number;branchIndex:number}|{ok:false;code:string}{

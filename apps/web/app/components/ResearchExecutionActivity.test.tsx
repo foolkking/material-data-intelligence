@@ -32,6 +32,31 @@ describe("ResearchExecutionActivity", () => {
     expect(screen.getByText("科学结果已准备")).toBeInTheDocument();
   });
 
+  it("uses the shared cancellation language and removes conflicting stop controls while CANCELING", () => {
+    render(
+      <ResearchExecutionActivity
+        onCancel={() => undefined}
+        progress={{
+          contract_version: "1.0",
+          turn_id: "turn-canceling",
+          status: "CANCELING",
+          steps: [],
+          active_step_ids: [],
+          completed_step_count: 1,
+          total_step_count: 2,
+          incremental_outputs: [],
+          warnings: [],
+          execution_outcome: null,
+          result_projection_pending: false,
+        }}
+      />,
+    );
+
+    expect(screen.getByText("正在取消研究")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("等待服务端确认");
+    expect(screen.queryByRole("button", { name: "停止研究" })).toBeNull();
+  });
+
   it("distinguishes interpretation progress and partial final interpretation", () => {
     const base = { contract_version: "1.0" as const, turn_id: "turn-4", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: "PARTIAL" as const, result_projection_pending: false };
     const { rerender } = render(<ResearchExecutionActivity progress={{ ...base, status: "INTERPRETING" }} />);

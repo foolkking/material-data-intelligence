@@ -44,7 +44,10 @@ class ResearchExecutionDispatcher:
         settings = load_settings()
         if settings.queue_backend == "redis":
             from mdi_workers.queue_runtime import RedisRQQueueBackend
-            return RedisRQQueueBackend(redis_url=settings.redis_url, queue_name="mdi-jobs")
+            return RedisRQQueueBackend(
+                redis_url=settings.redis_url,
+                queue_name=settings.agent2_execution_queue_name,
+            )
         return DisabledExecutionQueue()
 
     def dispatch_turn(self, turn_id: UUID) -> DispatchResult:

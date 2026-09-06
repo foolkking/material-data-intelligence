@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from threading import Lock, RLock
-from typing import Any, ContextManager, Iterator, Mapping, Protocol
+from typing import Any, ContextManager, Iterator, Mapping, Protocol, Sequence
 
 from sqlalchemy import and_, delete, func, insert, or_, select, text, update
 from sqlalchemy.exc import IntegrityError
@@ -26,9 +26,11 @@ from mdi_api.db import (
     datasets,
     job_events,
     jobs,
+    messages,
     organizations,
     projects,
     reports,
+    research_turns,
     scientific_evidence_bundles,
     scientific_interpretation_runs,
     scientific_interpretation_claims,
@@ -36,6 +38,7 @@ from mdi_api.db import (
     scientific_interpretations,
     scientific_workspaces,
     plan_dependency_bindings,
+    project_members,
     runtime_artifact_binding_resolutions,
     tool_calls,
     users,
@@ -1475,8 +1478,44 @@ class SqlAlchemyProjectRepository(_SqlAlchemyRepository):
 
         def run(connection: Connection) -> None:
             _ensure_actor_and_org(connection, user_id=created_by, organization_id=organization_id)
-            connection.execute(delete(projects).where(projects.c.id == project_id))
-            connection.execute(insert(projects).values(**values))
+            existing = connection.execute(
+                select(projects.c.id).where(projects.c.id == project_id)
+            ).scalar_one_or_none()
+            if existing is None:
+                connection.execute(insert(projects).values(**values))
+            else:
+                # Project persistence is an upsert boundary.  Re-saving a
+                # project must not delete child scientific records or its
+                # membership rows merely to refresh metadata.
+                connection.execute(
+                    update(projects)
+                    .where(projects.c.id == project_id)
+                    .values(
+                        organization_id=organization_id,
+                        name=values["name"],
+                        description=values["description"],
+                        created_by=created_by,
+                    )
+                )
+            # Project ownership is an explicit membership as well as the
+            # backwards-compatible `created_by` authority.  This keeps a
+            # newly-created project visible to membership-scoped surfaces and
+            # gives future collaborators a stable role boundary without
+            # changing scientific data ownership semantics.
+            owner_membership = connection.execute(
+                select(project_members.c.role).where(
+                    project_members.c.project_id == project_id,
+                    project_members.c.user_id == created_by,
+                )
+            ).scalar_one_or_none()
+            if owner_membership is None:
+                connection.execute(
+                    insert(project_members).values(
+                        project_id=project_id,
+                        user_id=created_by,
+                        role="owner",
+                    )
+                )
 
         self._with_connection(run)
         return self.get(project_id)
@@ -2009,6 +2048,111 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
         statement = select(jobs).where(jobs.c.project_id == project_id).order_by(jobs.c.created_at.desc(), jobs.c.id)
         return [_job_from_row(row) for row in self._fetch_all_dicts(statement)]
 
+    def list_task_feed_projection(
+        self,
+        job_ids: Sequence[str],
+    ) -> list[dict[str, Any]]:
+        """Load the bounded task-feed source projection in one SQL statement."""
+
+        normalized_ids = tuple(dict.fromkeys(str(job_id) for job_id in job_ids if job_id))
+        if not normalized_ids:
+            return []
+
+        fallback_plans = analysis_plans.alias("fallback_analysis_plans")
+        fallback_plan_id = (
+            select(fallback_plans.c.id)
+            .where(fallback_plans.c.job_id == jobs.c.id)
+            .order_by(fallback_plans.c.created_at.desc(), fallback_plans.c.id)
+            .limit(1)
+            .correlate(jobs)
+            .scalar_subquery()
+        )
+        effective_plan_id = func.coalesce(jobs.c.plan_id, fallback_plan_id)
+        artifact_count = (
+            select(func.count())
+            .select_from(artifacts)
+            .where(artifacts.c.job_id == jobs.c.id)
+            .scalar_subquery()
+        )
+        interpretation_count = (
+            select(func.count())
+            .select_from(scientific_interpretations)
+            .where(scientific_interpretations.c.job_id == jobs.c.id)
+            .scalar_subquery()
+        )
+        source = (
+            jobs
+            .outerjoin(datasets, datasets.c.id == jobs.c.dataset_id)
+            .outerjoin(analysis_plans, analysis_plans.c.id == effective_plan_id)
+            .outerjoin(data_profiles, data_profiles.c.id == analysis_plans.c.profile_id)
+            .outerjoin(
+                analysis_intent_executions,
+                analysis_intent_executions.c.job_id == jobs.c.id,
+            )
+            .outerjoin(
+                analysis_intents,
+                analysis_intents.c.id == analysis_intent_executions.c.intent_id,
+            )
+            .outerjoin(
+                capability_planning_executions,
+                capability_planning_executions.c.job_id == jobs.c.id,
+            )
+            .outerjoin(
+                capability_planning_decisions,
+                capability_planning_decisions.c.id
+                == capability_planning_executions.c.decision_id,
+            )
+            .outerjoin(
+                capability_eligibility_resolutions,
+                capability_eligibility_resolutions.c.id
+                == capability_planning_decisions.c.resolution_id,
+            )
+            .outerjoin(
+                dependency_execution_records,
+                dependency_execution_records.c.job_id == jobs.c.id,
+            )
+            .outerjoin(research_turns, research_turns.c.job_id == jobs.c.id)
+            .outerjoin(messages, messages.c.id == research_turns.c.user_message_id)
+            .outerjoin(
+                scientific_workspaces,
+                and_(
+                    scientific_workspaces.c.project_id == jobs.c.project_id,
+                    scientific_workspaces.c.source_job_id == jobs.c.id,
+                ),
+            )
+        )
+        statement = (
+            select(
+                jobs.c.id.label("job_id"),
+                datasets.c.id.label("dataset_exists_id"),
+                analysis_plans.c.id.label("plan_id"),
+                analysis_plans.c.dataset_id.label("plan_dataset_id"),
+                analysis_plans.c.profile_id.label("plan_profile_id"),
+                analysis_plans.c.analysis_plan_json.label("plan_json"),
+                analysis_plans.c.plan_hash.label("plan_hash"),
+                data_profiles.c.id.label("profile_id"),
+                data_profiles.c.profile_json.label("profile_json"),
+                analysis_intents.c.id.label("intent_id"),
+                analysis_intents.c.intent_json.label("intent_json"),
+                capability_eligibility_resolutions.c.id.label("resolution_id"),
+                capability_eligibility_resolutions.c.resolution_json.label(
+                    "resolution_json"
+                ),
+                capability_planning_decisions.c.id.label("decision_id"),
+                capability_planning_decisions.c.decision_json.label("decision_json"),
+                dependency_execution_records.c.record_json.label("dependency_json"),
+                dependency_execution_records.c.outcome.label("dependency_outcome"),
+                research_turns.c.id.label("research_turn_id"),
+                messages.c.content_summary.label("research_question"),
+                scientific_workspaces.c.workspace_id.label("workspace_id"),
+                artifact_count.label("artifact_count"),
+                interpretation_count.label("interpretation_count"),
+            )
+            .select_from(source)
+            .where(jobs.c.id.in_(normalized_ids))
+        )
+        return self._fetch_all_dicts(statement)
+
 
 class SqlAlchemyJobEventRepository(_SqlAlchemyRepository):
     POSTGRES_ADVISORY_LOCK_SQL = "SELECT pg_advisory_xact_lock(hashtext('mdi_job_events'), hashtext(:job_id))"
@@ -2108,7 +2252,33 @@ class SqlAlchemyToolCallRepository(_SqlAlchemyRepository):
             connection.execute(tool_calls.update().where(tool_calls.c.id == existing_id).values(**update_values, updated_at=func.now()))
             return existing_id
 
-        stored_id = self._with_connection(run)
+        try:
+            stored_id = self._with_connection(run)
+        except IntegrityError as exc:
+            # Independent workers can race between the existence check and
+            # INSERT.  The database uniqueness boundary is authoritative:
+            # after the losing transaction rolls back, converge on the
+            # committed ToolCall instead of surfacing a duplicate-delivery
+            # error.  Re-raise unrelated integrity failures.
+            existing = self._fetch_one_dict(
+                select(tool_calls).where(
+                    or_(
+                        tool_calls.c.id == tool_call_id,
+                        and_(tool_calls.c.job_id == job_id, tool_calls.c.step_id == step_id),
+                        and_(tool_calls.c.job_id == job_id, tool_calls.c.idempotency_key == idempotency_key),
+                    )
+                )
+            )
+            if existing is None:
+                raise
+            existing_row = _row_to_json_dict(existing)
+            if (
+                str(existing_row.get("tool_id") or "") != str(record["toolId"])
+                or str(existing_row.get("job_id") or "") != job_id
+                or str(existing_row.get("step_id") or "") != step_id
+            ):
+                raise ValueError("ToolCall idempotency key is already bound to a different tool step.") from exc
+            stored_id = str(existing_row["id"])
         return self.get(stored_id)
 
     def get(self, tool_call_id: str) -> dict[str, Any]:
@@ -2173,7 +2343,36 @@ class SqlAlchemyArtifactRepository(_SqlAlchemyRepository):
             connection.execute(artifacts.update().where(artifacts.c.id == existing_id).values(**{**values, "id": existing_id}))
             return existing_id
 
-        stored_id = self._with_connection(run)
+        try:
+            stored_id = self._with_connection(run)
+        except IntegrityError as exc:
+            # A duplicate worker can race on the job/storage/checksum
+            # uniqueness boundary.  Reuse the committed Artifact after the
+            # losing transaction rolls back; never mint a second provenance
+            # row for the same persisted bytes.
+            existing = self._fetch_one_dict(
+                select(artifacts).where(
+                    or_(
+                        artifacts.c.id == artifact_id,
+                        and_(
+                            artifacts.c.job_id == values["job_id"],
+                            artifacts.c.storage_key == values["storage_key"],
+                            artifacts.c.sha256 == values["sha256"],
+                        ),
+                    )
+                )
+            )
+            if existing is None:
+                raise
+            existing_row = _row_to_json_dict(existing)
+            if (
+                str(existing_row.get("project_id") or "") != values["project_id"]
+                or str(existing_row.get("job_id") or "") != values["job_id"]
+                or str(existing_row.get("storage_key") or "") != values["storage_key"]
+                or str(existing_row.get("sha256") or "") != values["sha256"]
+            ):
+                raise ValueError("Artifact idempotency key is already bound to a different persisted object.") from exc
+            stored_id = str(existing_row["id"])
         return self.get(stored_id)
 
     def get(self, artifact_id: str) -> dict[str, Any]:

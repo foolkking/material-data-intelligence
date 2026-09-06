@@ -1,0 +1,26 @@
+{
+  "improvementId": "CO-119",
+  "status": "PASS",
+  "date": "2026-09-05",
+  "ciArtifacts": [
+    "integration.log",
+    "integration.exit",
+    "integration.junit.xml",
+    "integration.runtime.json"
+  ],
+  "verification": {
+    "workflowYaml": "PASS",
+    "operationsTests": "11 passed, 1 historical skip",
+    "sameStack": {
+      "status": "ok",
+      "database": "postgresql",
+      "redis": "ok",
+      "artifactStorage": "minio",
+      "workerCount": 6,
+      "dbActive": 1,
+      "dbIdle": 5,
+      "idleInTransaction": 0
+    }
+  },
+  "secretsIncluded": false
+}

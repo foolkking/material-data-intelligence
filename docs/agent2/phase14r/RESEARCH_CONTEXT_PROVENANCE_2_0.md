@@ -112,3 +112,13 @@ and exact version `a22745f2-17b6-434f-ba4c-3fe6bd244841`.
 
 The earlier 2026-08-30 “stress matrix remains open” sentence is retained as a
 historical checkpoint; the current contract is `PASS`.
+
+## Long-manifest inspection affordance (2026-09-04)
+
+The Research disclosure keeps the first eight included context items as its
+default bounded preview, but now exposes an accessible expand/collapse control
+when the persisted manifest contains more than eight items. The expanded view
+reads the same authorized `included_items` projection and does not change
+selection, provider payloads, scientific authority, or execution. Expansion is
+reset when the selected ResearchTurn changes, so a branch cannot inherit the
+previous Turn's display state.

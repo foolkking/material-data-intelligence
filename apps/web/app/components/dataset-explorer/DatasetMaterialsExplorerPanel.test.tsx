@@ -4,7 +4,10 @@ import { describe, expect, it } from "vitest";
 
 import type { Artifact } from "../../lib/planner-api";
 import { compositionSpaceArtifact } from "../composition-space/testFixtures";
-import { DatasetMaterialsExplorerPanel } from "./DatasetMaterialsExplorerPanel";
+import {
+  DatasetMaterialsExplorerPanel,
+  scientificDataTableRowKeys,
+} from "./DatasetMaterialsExplorerPanel";
 
 function payload() {
   return {
@@ -47,6 +50,7 @@ describe("DatasetMaterialsExplorerPanel", () => {
     await user.click(screen.getByRole("tab", { name: "组成" }));
     expect(screen.getByTestId("dataset-element-bars")).toHaveTextContent("Si");
     expect(screen.getByTestId("dataset-explorer-composition")).toHaveTextContent("Cl-Na");
+    expect(screen.getByText("左右滑动查看完整列；表格仅展示当前已验证结果，不改变科学数据。")).toBeInTheDocument();
 
     await user.click(screen.getByRole("tab", { name: "性质" }));
     await user.selectOptions(screen.getByRole("combobox", { name: "性质" }), "density");
@@ -54,8 +58,17 @@ describe("DatasetMaterialsExplorerPanel", () => {
     expect(screen.getByTestId("dataset-property-histogram").children).toHaveLength(3);
 
     await user.click(screen.getByRole("tab", { name: "样本" }));
+    expect(screen.getByText(/样本引用是稳定身份；源行号仅用于源文件定位/)).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "sample-2 from obj_table" }));
-    expect(screen.getByTestId("dataset-sample-inspector")).toHaveTextContent("NaCl");
+    const inspector = screen.getByTestId("dataset-sample-inspector");
+    expect(inspector).toHaveTextContent("稳定样本 ID");
+    expect(inspector).toHaveTextContent("obj_table:sample-2");
+    expect(inspector).toHaveTextContent("样本引用");
+    expect(inspector).toHaveTextContent("NaCl");
+    expect(screen.getByTestId("dataset-sample-source-row")).toHaveTextContent("源行（辅助定位）");
+    expect(screen.getByLabelText("源数据第 1 行，仅用于定位")).toBeInTheDocument();
+    expect(screen.getByRole("columnheader", { name: "样本引用（稳定）" })).toBeInTheDocument();
+    expect(screen.getByRole("columnheader", { name: "源行（辅助）" })).toBeInTheDocument();
     expect(container.querySelector("script")).toBeNull();
     expect(container.querySelector("iframe")).toBeNull();
     expect(container.querySelector("canvas")).toBeNull();
@@ -131,6 +144,57 @@ describe("DatasetMaterialsExplorerPanel", () => {
     await user.click(screen.getByRole("button", { name: "shared from obj_b" }));
     expect(screen.getByTestId("dataset-sample-inspector")).toHaveTextContent("obj_b:shared");
     expect(screen.getByTestId("dataset-sample-inspector")).toHaveTextContent("NaCl");
+  });
+
+  it("keeps sample totals separate from bounded index pages and disables pagination at both boundaries", async () => {
+    const user = userEvent.setup();
+    const large = payload();
+    large.overview = { ...large.overview, sampleCount: 1000 };
+    large.sampleIndex = Array.from({ length: 123 }, (_, index) => ({
+      sampleKey: `obj_table:sample-${index + 1}`,
+      sampleRef: `sample-${index + 1}`,
+      objectId: "obj_table",
+      rowIndex: index,
+      formula: "Si",
+      reducedFormula: "Si",
+    }));
+    render(<DatasetMaterialsExplorerPanel artifacts={[artifact(large)]} />);
+    await user.click(screen.getByRole("tab", { name: "样本" }));
+
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "当前显示 1-50 / 123 个已投影样本索引；数据集总样本 1,000 个。",
+    );
+    expect(screen.getByRole("button", { name: "上一页" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "下一页" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "sample-1 from obj_table" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "sample-51 from obj_table" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "下一页" }));
+    expect(screen.getByRole("status")).toHaveTextContent("当前显示 51-100 / 123 个已投影样本索引");
+    await user.click(screen.getByRole("button", { name: "下一页" }));
+    expect(screen.getByRole("status")).toHaveTextContent("当前显示 101-123 / 123 个已投影样本索引");
+    expect(screen.getByRole("button", { name: "下一页" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "sample-123 from obj_table" })).toBeInTheDocument();
+  });
+
+  it("keeps generic scientific table rows stable across display reordering", () => {
+    const silicon = { key: "chemical-system:Si", cells: ["Si", "2"] };
+    const oxide = { key: "chemical-system:Fe-O", cells: ["Fe-O", "1"] };
+    const original = scientificDataTableRowKeys([silicon, oxide]);
+    const reordered = scientificDataTableRowKeys([oxide, silicon]);
+    expect(original[0]).toBe(reordered[1]);
+    expect(original[1]).toBe(reordered[0]);
+    expect(original[0]).not.toBe(original[1]);
+  });
+
+  it("disambiguates duplicated upstream row identities without using visual position by default", () => {
+    const rows = [
+      { key: "property:band_gap", cells: ["band_gap", "eV", "2.1"] },
+      { key: "property:band_gap", cells: ["band_gap", "eV", "2.3"] },
+    ];
+    const keys = scientificDataTableRowKeys(rows);
+    expect(new Set(keys).size).toBe(2);
+    expect(keys.every((key) => key.startsWith("duplicate:property:band_gap:"))).toBe(true);
   });
 
   it("renders malicious labels as inert text", async () => {

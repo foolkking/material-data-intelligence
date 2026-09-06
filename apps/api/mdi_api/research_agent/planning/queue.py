@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from uuid import UUID
 
+from mdi_schemas.worker_queues import worker_queue_definition
+
 
 @dataclass(frozen=True)
 class PlanningQueueSubmitResult:
@@ -34,7 +36,12 @@ class InMemoryCapabilityPlanningQueue:
 
 
 class RedisRQCapabilityPlanningQueue:
-    def __init__(self, *, redis_url: str, queue_name: str = "mdi-agent-plans") -> None:
+    def __init__(
+        self,
+        *,
+        redis_url: str,
+        queue_name: str = worker_queue_definition("planning").default_name,
+    ) -> None:
         self.redis_url = redis_url
         self.queue_name = queue_name
 
@@ -49,5 +56,9 @@ class RedisRQCapabilityPlanningQueue:
             if status in {"queued", "started", "deferred", "scheduled"}:
                 return PlanningQueueSubmitResult(turn_id, False, "rq", "turn already queued")
             existing.delete()
-        queue.enqueue("mdi_api.research_agent_planning_worker.run_queued_planning", str(turn_id), job_id=job_id)
+        queue.enqueue(
+            worker_queue_definition("planning").handler,
+            str(turn_id),
+            job_id=job_id,
+        )
         return PlanningQueueSubmitResult(turn_id, True, "rq", "turn queued")

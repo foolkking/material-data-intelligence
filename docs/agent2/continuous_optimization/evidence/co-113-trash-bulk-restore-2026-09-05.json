@@ -1,0 +1,15 @@
+{
+  "improvementId": "CO-113",
+  "status": "PASS",
+  "date": "2026-09-05",
+  "behavior": [
+    "Selected trash items restore through existing server-authorized atomic batch APIs.",
+    "Only fully successful batches leave the Trash list.",
+    "Failed or unauthorized groups remain selected with typed partial-failure feedback."
+  ],
+  "verification": {
+    "focusedTests": "8 passed",
+    "typecheck": "PASS",
+    "diffCheck": "PASS"
+  }
+}

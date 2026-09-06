@@ -1,0 +1,39 @@
+{
+  "improvementId": "CO-106",
+  "improvementNumber": 123,
+  "date": "2026-09-05",
+  "problem": "Expanded Research conversations rendered the complete message history, making 1000+ message sessions unbounded and increasingly slow.",
+  "change": {
+    "recentDefault": 10,
+    "expandedWindowSize": 100,
+    "navigation": [
+      "older",
+      "newer"
+    ],
+    "identity": "persisted data-message-id",
+    "windowResetScope": [
+      "research session",
+      "ResearchTurn"
+    ]
+  },
+  "verification": {
+    "corpusMessages": 1001,
+    "renderedDomMessages": 100,
+    "windowProjectionIterations": 20,
+    "windowProjectionBudgetMilliseconds": 100,
+    "messageIdentityPreserved": true,
+    "navigationFocusPreserved": true,
+    "researchPageTests": {
+      "selected": 92,
+      "passed": 92,
+      "failed": 0
+    },
+    "frontendTypecheck": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "authority": {
+    "messageContentChanged": false,
+    "researchTurnIdentityChanged": false,
+    "scientificRecomputationTriggered": false
+  }
+}

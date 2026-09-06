@@ -45,6 +45,8 @@ material-data-intelligence-*.zip
 # Local qualification workspaces and diagnostic output are not release source.
 _qualification/
 ._diag_volume/
+.qualification_runs/
+.cleanup_archive/
 
 # OS / editor
 .DS_Store

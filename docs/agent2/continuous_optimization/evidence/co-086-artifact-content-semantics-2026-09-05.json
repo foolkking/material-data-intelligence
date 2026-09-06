@@ -1,0 +1,50 @@
+{
+  "improvementId": "CO-086",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "contract": {
+    "browse": "Inline content without attachment disposition",
+    "download": "Same authorized content route with attachment disposition",
+    "authorization": "Exact Job project access before any storage read",
+    "temporaryMissing": {
+      "http": 404,
+      "code": "ARTIFACT_CONTENT_NOT_FOUND"
+    },
+    "permanentlyUnavailablePayload": {
+      "http": 410,
+      "code": "ARTIFACT_CONTENT_GONE"
+    },
+    "browserTransferLimit": {
+      "maximumBytes": 67108864,
+      "http": 413,
+      "code": "ARTIFACT_CONTENT_TOO_LARGE"
+    },
+    "integrityFailure": {
+      "http": 422
+    }
+  },
+  "verification": {
+    "backendFocused": {
+      "passed": 11,
+      "failed": 0
+    },
+    "viewerReportFocused": {
+      "passed": 28,
+      "failed": 0
+    },
+    "linkPresentationFocused": {
+      "passed": 12,
+      "failed": 0
+    },
+    "typecheck": "PASS",
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "diffCheck": "PASS_WITH_LINE_ENDING_WARNINGS_ONLY"
+  },
+  "invariants": {
+    "storageReadBeforeDeniedAuthorization": "NO",
+    "forcedDownload": "NO",
+    "scientificRecomputation": "NO",
+    "latestVersionSubstitution": "NO"
+  }
+}

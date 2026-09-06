@@ -377,6 +377,59 @@ describe("scientific presentation compiler", () => {
     })).toBe(false);
   });
 
+  it("fails closed for unknown runtime block types", () => {
+    expect(isSafePresentationBlock({
+      id: "unknown",
+      type: "remote_component",
+      label: "ignored",
+    })).toBe(false);
+  });
+
+  it("rejects executable UI fields hidden inside otherwise supported blocks", () => {
+    const base = {
+      id: "safe-narrative",
+      type: "narrative",
+      text: "Grounded scientific summary.",
+      source: { resultId: "result-1" },
+    };
+    expect(isSafePresentationBlock({
+      ...base,
+      component: "RemoteScientificWidget",
+    })).toBe(false);
+    expect(isSafePresentationBlock({
+      ...base,
+      modulePath: "https://plugins.invalid/widget.js",
+    })).toBe(false);
+    expect(isSafePresentationBlock({
+      ...base,
+      html: "<img src=x onerror=alert(1)>",
+    })).toBe(false);
+    expect(isSafePresentationBlock({
+      ...base,
+      source: {
+        resultId: "result-1",
+        url: "https://plugins.invalid/result",
+      },
+    })).toBe(false);
+  });
+
+  it("rejects remote or executable identities before building artifact routes", () => {
+    expect(isSafePresentationBlock({
+      id: "unsafe-figure",
+      type: "figure",
+      title: "Persisted figure",
+      artifactId: "https://plugins.invalid/figure.json",
+      source: { artifactId: "https://plugins.invalid/figure.json", jobId: "job-1" },
+    })).toBe(false);
+    expect(isSafePresentationBlock({
+      id: "unsafe-viewer",
+      type: "viewer_reference",
+      title: "Viewer",
+      label: "Open source",
+      source: { objectId: "javascript:alert(1)", versionId: "version-1" },
+    })).toBe(false);
+  });
+
   it("maps immutable report fields without inventing facts", () => {
     const view = {
       report_id: "report-1",

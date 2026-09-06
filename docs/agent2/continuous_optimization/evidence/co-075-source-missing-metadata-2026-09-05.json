@@ -1,0 +1,15 @@
+{
+  "improvementId": "CO-075",
+  "status": "PASS",
+  "date": "2026-09-05",
+  "behavior": [
+    "Source-missing viewers expose exact version, fingerprint and bounded source identity.",
+    "Metadata export excludes scientific payload.",
+    "No replacement version or recomputation is requested."
+  ],
+  "verification": {
+    "focusedTests": "6 passed",
+    "typecheck": "PASS"
+  },
+  "scientificAuthorityChanged": false
+}

@@ -76,6 +76,70 @@ def test_deepseek_call_audit_contains_hashes_and_usage_but_no_payload_or_key(mon
     assert "must-never-enter-audit" not in serialized
 
 
+def test_deepseek_retries_one_transient_failure_and_audits_each_attempt(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    attempts = 0
+    backoffs: list[float] = []
+
+    def transport(**_kwargs):
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            raise LLMProviderError(
+                "temporary provider response",
+                code="LLM_HTTP_ERROR",
+                status_code=429,
+            )
+        return _completion()
+
+    monkeypatch.setattr("mdi_llm.providers.sleep", backoffs.append)
+    provider = DeepSeekProvider(transport=transport)
+    response = provider.complete_json(
+        messages=[{"role": "user", "content": "Return strict JSON."}],
+        purpose="PROVIDER_CONNECTION_TEST",
+    )
+
+    assert response.raw_json == {"status": "ok"}
+    assert attempts == 2
+    assert backoffs == [0.25]
+    assert [item["outcome"] for item in provider.call_audit] == [
+        "DEEPSEEK_RATE_LIMITED",
+        "SUCCESS",
+    ]
+
+
+def test_deepseek_does_not_retry_authentication_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    attempts = 0
+    backoffs: list[float] = []
+
+    def transport(**_kwargs):
+        nonlocal attempts
+        attempts += 1
+        raise LLMProviderError(
+            "invalid credential",
+            code="LLM_HTTP_ERROR",
+            status_code=401,
+        )
+
+    monkeypatch.setattr("mdi_llm.providers.sleep", backoffs.append)
+    provider = DeepSeekProvider(transport=transport)
+    with pytest.raises(LLMProviderError) as exc:
+        provider.complete_json(
+            messages=[{"role": "user", "content": "Return strict JSON."}],
+            purpose="PROVIDER_CONNECTION_TEST",
+        )
+
+    assert exc.value.code == "DEEPSEEK_AUTH_FAILED"
+    assert attempts == 1
+    assert backoffs == []
+    assert [item["outcome"] for item in provider.call_audit] == [
+        "DEEPSEEK_AUTH_FAILED",
+    ]
+
+
 @pytest.mark.parametrize(
     "credential_text",
     [

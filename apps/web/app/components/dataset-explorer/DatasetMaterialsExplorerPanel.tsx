@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 
 import type { Artifact } from "../../lib/planner-api";
 import { CompositionSpaceExplorerBody, validateCompositionSpacePayload } from "../composition-space/CompositionSpaceExplorerPanel";
@@ -31,6 +31,7 @@ const MAX_STRUCTURES = 256;
 const MAX_COLUMNS = 512;
 const MAX_WARNINGS = 128;
 const MAX_HISTOGRAM_BINS = 100;
+const SAMPLE_PAGE_SIZE = 50;
 
 export type DatasetExplorerSampleSelection = Readonly<{ objectId: string; sampleRef: string; sampleKey: string }>;
 
@@ -52,6 +53,10 @@ export function DatasetMaterialsExplorerPanel({ artifacts, externalSampleKey, on
   const [tab, setTab] = useState<ExplorerTab>("overview");
   const [selectedProperty, setSelectedProperty] = useState("");
   const [selectedSample, setSelectedSample] = useState("");
+  const [samplesPage, setSamplesPage] = useState(0);
+  useEffect(() => {
+    setSamplesPage(0);
+  }, [artifact?.artifactId]);
   const tabs = integration.hasCompatibleEmbeddedCompositionSpace
     ? [...TABS.slice(0, 2), { id: "composition_space" as const, label: "组成空间" }, ...TABS.slice(2)]
     : TABS;
@@ -61,7 +66,7 @@ export function DatasetMaterialsExplorerPanel({ artifacts, externalSampleKey, on
     return (
       <section className="panel dataset-explorer" data-testid="dataset-materials-explorer-invalid" role="status" aria-label="材料数据视图校验状态">
         <header className="panel-heading"><div><span>材料数据</span><h2>当前结果无法使用专业视图显示</h2></div><span className="badge">不可用</span></header>
-        <p>结果未通过当前视图的结构校验；原始结构化内容仍可在技术详情中复核。</p>
+        <p>结果未通过当前视图的结构校验。科学数据没有被改写；你仍可在技术详情中复核原始结构化内容，或返回来源结果选择其他可用视图。</p>
         <details><summary>技术详情</summary><code>{validation.reason}</code><pre>{JSON.stringify(payload, null, 2)}</pre></details>
       </section>
     );
@@ -76,6 +81,9 @@ export function DatasetMaterialsExplorerPanel({ artifacts, externalSampleKey, on
   const quality = record(explorer.quality);
   const comparison = record(explorer.comparison);
   const samples = records(explorer.sampleIndex).slice(0, MAX_ROWS);
+  const sampleTotal = Math.max(samples.length, number(overview.sampleCount));
+  const samplePageCount = Math.max(1, Math.ceil(samples.length / SAMPLE_PAGE_SIZE));
+  const visibleSamples = samples.slice(samplesPage * SAMPLE_PAGE_SIZE, (samplesPage + 1) * SAMPLE_PAGE_SIZE);
   const activeProperty = properties.find((item) => text(item.column) === selectedProperty) || properties[0];
   const activeSample = samples.find((item) => canonicalSampleKey(item) === (externalSampleKey ?? selectedSample));
 
@@ -116,11 +124,20 @@ export function DatasetMaterialsExplorerPanel({ artifacts, externalSampleKey, on
         {tab === "quality" ? <QualityView quality={quality} /> : null}
         {tab === "comparison" ? <ComparisonView comparison={comparison} /> : null}
         {tab === "samples" ? (
-          <SamplesView samples={samples} active={activeSample} onSelect={(key) => {
+          <SamplesView
+            samples={visibleSamples}
+            totalSamples={sampleTotal}
+            indexedSamples={samples.length}
+            page={samplesPage}
+            pageCount={samplePageCount}
+            active={activeSample}
+            onPageChange={setSamplesPage}
+            onSelect={(key) => {
             setSelectedSample(key);
             const sample = samples.find((item) => canonicalSampleKey(item) === key);
             if (sample && validSampleIdentity(sample)) onSampleSelection?.({ objectId: text(sample.objectId), sampleRef: text(sample.sampleRef), sampleKey: key });
-          }} />
+            }}
+          />
         ) : null}
       </div>
     </section>
@@ -161,7 +178,10 @@ function CompositionView({ composition }: { composition: JsonRecord }) {
       </div>
     )}
     <h3>化学体系</h3>
-    <DataTable columns={["化学体系", "数量"]} rows={systems.map((item) => [text(item.chemicalSystem), numberText(item.count)])} empty="没有可展示的化学体系。" />
+    <DataTable columns={["化学体系", "数量"]} rows={systems.map((item) => ({
+      key: `chemical-system:${text(item.chemicalSystem)}`,
+      cells: [text(item.chemicalSystem), numberText(item.count)],
+    }))} empty="没有可展示的化学体系。" />
   </div>;
 }
 
@@ -171,7 +191,10 @@ function StructuresView({ structures }: { structures: JsonRecord }) {
     <dl className="mini-grid"><Field label="状态" value={statusLabel(text(structures.status))} /><Field label="结构" value={numberText(structures.structureCount)} /></dl>
     <DataTable
       columns={["来源对象", "化学式", "位点", "体积 (Å³)", "密度 (g/cm³)", "空间群", "晶系"]}
-      rows={rows.map((item) => [text(item.objectId), text(item.formula), numberText(item.siteCount), format(item.volumeAngstrom3), format(item.densityGramCm3), text(item.spacegroup), text(item.crystalSystem)])}
+      rows={rows.map((item) => ({
+        key: `structure:${text(item.objectId)}`,
+        cells: [text(item.objectId), text(item.formula), numberText(item.siteCount), format(item.volumeAngstrom3), format(item.densityGramCm3), text(item.spacegroup), text(item.crystalSystem)],
+      }))}
       empty="当前数据没有绑定可展示的标准结构。"
     />
     <p className="dataset-method-note">对称性来自固定的结构适配策略；结构重复判断基于标准化对象的一致性。</p>
@@ -231,9 +254,15 @@ function QualityView({ quality }: { quality: JsonRecord }) {
       <Field label="近重复分析" value={statusLabel(text(quality.nearDuplicateAnalysis))} />
     </dl>
     <h3>字段问题</h3>
-    <DataTable columns={["字段", "缺失", "非有限值", "歧义"]} rows={columnIssues.map((item) => [text(item.column), numberText(item.missingCount), numberText(item.nonFiniteCount), textList(item.ambiguities).join(", ") || "无"])} empty="没有字段问题。" />
+    <DataTable columns={["字段", "缺失", "非有限值", "歧义"]} rows={columnIssues.map((item) => ({
+      key: `column-issue:${text(item.column)}`,
+      cells: [text(item.column), numberText(item.missingCount), numberText(item.nonFiniteCount), textList(item.ambiguities).join(", ") || "无"],
+    }))} empty="没有字段问题。" />
     <h3>重复标识值</h3>
-    <DataTable columns={["字段", "值", "数量"]} rows={duplicates.map((item) => [text(item.column), text(item.value), numberText(item.count)])} empty="没有重复的显式标识值。" />
+    <DataTable columns={["字段", "值", "数量"]} rows={duplicates.map((item) => ({
+      key: `duplicate:${text(item.column)}:${text(item.value)}`,
+      cells: [text(item.column), text(item.value), numberText(item.count)],
+    }))} empty="没有重复的显式标识值。" />
   </div>;
 }
 
@@ -248,17 +277,30 @@ function ComparisonView({ comparison }: { comparison: JsonRecord }) {
       <ListSection title="仅左侧" values={textList(overlap.leftOnly)} empty="无" />
       <ListSection title="仅右侧" values={textList(overlap.rightOnly)} empty="无" />
     </div>
-    <DataTable columns={["性质", "单位", "可比较", "左侧中位数", "右侧中位数"]} rows={rows.map((item) => [text(item.column), text(item.unit) || "-", Boolean(item.comparable) ? "是" : "否", format(record(item.left).median), format(record(item.right).median)])} empty="没有可比较的材料性质。" />
+    <DataTable columns={["性质", "单位", "可比较", "左侧中位数", "右侧中位数"]} rows={rows.map((item) => ({
+      key: `property:${text(item.column)}`,
+      cells: [text(item.column), text(item.unit) || "-", Boolean(item.comparable) ? "是" : "否", format(record(item.left).median), format(record(item.right).median)],
+    }))} empty="没有可比较的材料性质。" />
     <p className="dataset-method-note">{text(comparison.semantics)}</p>
   </div>;
 }
 
-function SamplesView({ samples, active, onSelect }: { samples: JsonRecord[]; active?: JsonRecord; onSelect: (value: string) => void }) {
+function SamplesView({ samples, totalSamples, indexedSamples, page, pageCount, active, onPageChange, onSelect }: { samples: JsonRecord[]; totalSamples: number; indexedSamples: number; page: number; pageCount: number; active?: JsonRecord; onPageChange: (page: number) => void; onSelect: (value: string) => void }) {
+  const hintId = `dataset-sample-table-hint-${useId().replace(/[^A-Za-z0-9_-]/g, "")}`;
+  const shownStart = indexedSamples ? page * SAMPLE_PAGE_SIZE + 1 : 0;
+  const shownEnd = Math.min((page + 1) * SAMPLE_PAGE_SIZE, indexedSamples);
+  const indexIsBounded = indexedSamples < totalSamples;
   return <div data-testid="dataset-explorer-samples">
-    {active ? <dl className="mini-grid dataset-sample-inspector" aria-live="polite" data-testid="dataset-sample-inspector"><Field label="样本键" value={canonicalSampleKey(active)} /><Field label="样本" value={text(active.sampleRef)} /><Field label="化学式" value={text(active.formula)} /><Field label="最简式" value={text(active.reducedFormula)} /><Field label="来源" value={`${text(active.objectId)} · 第 ${numberText(active.rowIndex)} 行`} /></dl> : <p className="empty-state">选择一个稳定样本以查看其来源行。</p>}
-    <div className="compact-table-wrap" role="region" aria-label="稳定样本索引，可横向滚动查看完整列" tabIndex={0}><table className="compact-table"><caption>稳定样本索引</caption><thead><tr><th>样本引用</th><th>化学式</th><th>最简式</th><th>来源对象</th><th>行</th></tr></thead><tbody>
-      {samples.map((item) => <tr key={canonicalSampleKey(item)}><td><button type="button" className="link-button" aria-label={`${text(item.sampleRef)} from ${text(item.objectId) || "legacy source"}`} onClick={() => onSelect(canonicalSampleKey(item))}>{text(item.sampleRef)}</button></td><td>{text(item.formula) || "-"}</td><td>{text(item.reducedFormula) || "-"}</td><td>{text(item.objectId)}</td><td>{numberText(item.rowIndex)}</td></tr>)}
-    </tbody></table></div>
+    {active ? <dl className="mini-grid dataset-sample-inspector" aria-live="polite" data-testid="dataset-sample-inspector"><Field label="稳定样本 ID" value={canonicalSampleKey(active)} /><Field label="样本引用" value={text(active.sampleRef)} /><Field label="化学式" value={text(active.formula)} /><Field label="最简式" value={text(active.reducedFormula)} /><Field label="来源对象" value={text(active.objectId)} /><div data-testid="dataset-sample-source-row"><dt>源行（辅助定位）</dt><dd><small>第 {numberText(active.rowIndex)} 行</small></dd></div></dl> : <p className="empty-state">选择一个稳定样本以查看其来源行。</p>}
+    <p className="dataset-sample-count" role="status" aria-live="polite">
+      {indexedSamples ? `当前显示 ${shownStart.toLocaleString("zh-CN")}-${shownEnd.toLocaleString("zh-CN")} / ${indexedSamples.toLocaleString("zh-CN")} 个已投影样本索引；数据集总样本 ${totalSamples.toLocaleString("zh-CN")} 个。` : `数据集总样本 ${totalSamples.toLocaleString("zh-CN")} 个，当前没有可用的样本索引。`}
+    </p>
+    {indexIsBounded ? <p className="dataset-method-note" role="note">样本索引为有界 payload；未投影的样本仍保留在权威数据集中，不会伪装成当前页。</p> : null}
+    <p id={hintId} className="compact-table-mobile-hint" role="note">样本引用是稳定身份；源行号仅用于源文件定位，不是样本身份。左右滑动查看来源对象与其他列。</p>
+    <div className="compact-table-frame"><div className="compact-table-wrap" role="region" aria-label="稳定样本索引，可横向滚动查看完整列" aria-describedby={hintId} tabIndex={0}><table className="compact-table"><caption>稳定样本索引（样本引用为主身份）</caption><thead><tr><th scope="col">样本引用（稳定）</th><th scope="col">化学式</th><th scope="col">最简式</th><th scope="col">来源对象</th><th scope="col">源行（辅助）</th></tr></thead><tbody>
+      {samples.map((item) => <tr key={canonicalSampleKey(item)}><td><button type="button" className="link-button" aria-label={`${text(item.sampleRef)} from ${text(item.objectId) || "legacy source"}`} onClick={() => onSelect(canonicalSampleKey(item))}><strong>{text(item.sampleRef)}</strong></button></td><td>{text(item.formula) || "-"}</td><td>{text(item.reducedFormula) || "-"}</td><td>{text(item.objectId)}</td><td><small aria-label={`源数据第 ${numberText(item.rowIndex)} 行，仅用于定位`}>第 {numberText(item.rowIndex)} 行</small></td></tr>)}
+    </tbody></table></div></div>
+    {pageCount > 1 ? <nav className="table-pagination" aria-label="样本索引分页"><button type="button" disabled={page === 0} onClick={() => onPageChange(Math.max(0, page - 1))}>上一页</button><span>第 {page + 1} / {pageCount} 页</span><button type="button" disabled={page >= pageCount - 1} onClick={() => onPageChange(Math.min(pageCount - 1, page + 1))}>下一页</button></nav> : null}
   </div>;
 }
 
@@ -273,9 +315,26 @@ function Field({ label, value, testId }: { label: string; value: string; testId?
 function ListSection({ title, values, empty }: { title: string; values: string[]; empty: string }) { return <section><h3>{title}</h3>{values.length ? <ul>{values.map((value) => <li key={value}>{value}</li>)}</ul> : <p className="empty-state">{empty}</p>}</section>; }
 function BarRow({ label, value, max }: { label: string; value: number; max: number }) { return <div><strong>{label}</strong><span><i style={{ width: `${value / max * 100}%` }} /></span><small>{value}</small></div>; }
 
-function DataTable({ columns, rows, empty }: { columns: string[]; rows: string[][]; empty: string }) {
+type ScientificDataTableRow = Readonly<{ key: string; cells: string[] }>;
+
+function DataTable({ columns, rows, empty }: { columns: string[]; rows: ScientificDataTableRow[]; empty: string }) {
   if (!rows.length) return <p className="empty-state">{empty}</p>;
-  return <div className="compact-table-wrap" role="region" aria-label="科学数据表，可横向滚动查看完整列" tabIndex={0}><table className="compact-table"><thead><tr>{columns.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={index}>{row.map((value, column) => <td key={column}>{value || "-"}</td>)}</tr>)}</tbody></table></div>;
+  const rowKeys = scientificDataTableRowKeys(rows);
+  return <div className="compact-table-frame"><p className="compact-table-mobile-hint" role="note">左右滑动查看完整列；表格仅展示当前已验证结果，不改变科学数据。</p><div className="compact-table-wrap" role="region" aria-label="科学数据表，可横向滚动查看完整列" tabIndex={0}><table className="compact-table"><thead><tr>{columns.map((column) => <th key={column} scope="col">{column}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={rowKeys[index]}>{row.cells.map((value, column) => <td key={column}>{value || "-"}</td>)}</tr>)}</tbody></table></div></div>;
+}
+
+export function scientificDataTableRowKeys(rows: readonly ScientificDataTableRow[]): string[] {
+  const normalized = rows.map((row) => row.key.trim() || `content:${JSON.stringify(row.cells)}`);
+  const counts = new Map<string, number>();
+  normalized.forEach((key) => counts.set(key, (counts.get(key) || 0) + 1));
+  const occurrences = new Map<string, number>();
+  return normalized.map((key, index) => {
+    if (counts.get(key) === 1) return `semantic:${key}`;
+    const contentKey = `${key}:${JSON.stringify(rows[index].cells)}`;
+    const occurrence = occurrences.get(contentKey) || 0;
+    occurrences.set(contentKey, occurrence + 1);
+    return `duplicate:${contentKey}:${occurrence}`;
+  });
 }
 
 export function validateDatasetExplorerPayload(payload: JsonRecord | null): { ok: true; payload: JsonRecord } | { ok: false; reason: string } {

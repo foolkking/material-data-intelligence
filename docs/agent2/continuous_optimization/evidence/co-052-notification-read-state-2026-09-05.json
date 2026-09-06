@@ -1,0 +1,32 @@
+{
+  "improvementId": "CO-052",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "problem": "Notification read state was transient and inferred from Job failure status.",
+  "authority": {
+    "readState": "User-private non-scientific configuration",
+    "taskState": "Persisted Job state remains authoritative",
+    "authorization": "Project access and exact Job/project relation are revalidated server-side"
+  },
+  "behavior": [
+    "Read markers are bound to user, project, Job and Job update revision.",
+    "A newer Job revision becomes unread automatically.",
+    "Revoked project access removes markers from authorized reads.",
+    "Notification Center supports unread count, filter and explicit read/unread actions."
+  ],
+  "verification": {
+    "backend": {
+      "passed": 2,
+      "failed": 0
+    },
+    "frontendAndApi": {
+      "passed": 14,
+      "failed": 0
+    },
+    "typecheck": "PASS",
+    "ruff": "PASS",
+    "pythonCompileImport": "PASS",
+    "routeRegistration": "PASS",
+    "diffCheck": "PASS"
+  }
+}

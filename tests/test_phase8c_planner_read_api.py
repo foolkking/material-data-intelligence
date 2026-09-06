@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from botocore.exceptions import ClientError
 from fastapi.testclient import TestClient
 from fastapi import HTTPException
 import pytest
@@ -120,10 +121,159 @@ def test_planner_job_artifact_content_is_job_scoped_and_hash_validated() -> None
     assert response.headers["cache-control"] == "private, no-store"
     assert response.headers["x-content-type-options"] == "nosniff"
     assert response.headers["x-content-sha256"] == artifact["contentHash"]
+    assert "content-disposition" not in response.headers
     assert response.body
+    download = get_planner_job_artifact_content(
+        ids["job"],
+        artifact["id"],
+        download=True,
+        repositories=repos,
+        queue_runtime=runtime,
+    )
+    assert download.headers["content-disposition"].startswith(
+        'attachment; filename="'
+    )
+    assert "\n" not in download.headers["content-disposition"]
     with pytest.raises(HTTPException) as raised:
         get_planner_job_artifact_content("another_job", artifact["id"], repositories=repos, queue_runtime=runtime)
     assert raised.value.status_code == 404
+
+
+@pytest.mark.parametrize("error_code", ["NoSuchKey", "NoSuchBucket", "NotFound", "404"])
+def test_planner_job_artifact_content_maps_missing_object_storage_to_typed_404(
+    error_code: str,
+) -> None:
+    repos, ids, _ = _seed_persisted_plan_repos()
+    runtime = QueueWorkerRuntime(repositories=repos, tool_executor=_fake_executor)
+    assert runtime.handle_job(ids["job"]).status == "completed"
+    artifact = repos.artifacts.list_for_job(ids["job"])[0]
+
+    def missing(_: str) -> bytes:
+        raise ClientError(
+            {"Error": {"Code": error_code, "Message": "internal object-store detail"}},
+            "GetObject",
+        )
+
+    runtime.artifact_storage.get_bytes = missing
+    with pytest.raises(HTTPException) as raised:
+        get_planner_job_artifact_content(
+            ids["job"],
+            artifact["id"],
+            repositories=repos,
+            queue_runtime=runtime,
+        )
+    assert raised.value.status_code == 404
+    assert raised.value.detail == {
+        "code": "ARTIFACT_CONTENT_NOT_FOUND",
+        "message": "The exact Artifact payload is currently unavailable.",
+    }
+    assert "internal object-store detail" not in str(raised.value.detail)
+
+
+def test_planner_job_artifact_content_maps_local_missing_file_to_typed_404() -> None:
+    repos, ids, _ = _seed_persisted_plan_repos()
+    runtime = QueueWorkerRuntime(repositories=repos, tool_executor=_fake_executor)
+    assert runtime.handle_job(ids["job"]).status == "completed"
+    artifact = repos.artifacts.list_for_job(ids["job"])[0]
+
+    def missing(_: str) -> bytes:
+        raise FileNotFoundError("private local storage path")
+
+    runtime.artifact_storage.get_bytes = missing
+    with pytest.raises(HTTPException) as raised:
+        get_planner_job_artifact_content(
+            ids["job"],
+            artifact["id"],
+            repositories=repos,
+            queue_runtime=runtime,
+        )
+    assert raised.value.status_code == 404
+    assert raised.value.detail["code"] == "ARTIFACT_CONTENT_NOT_FOUND"
+    assert "private local storage path" not in str(raised.value.detail)
+
+
+def test_planner_job_artifact_content_distinguishes_gone_metadata_from_missing_storage() -> None:
+    repos, ids, _ = _seed_persisted_plan_repos()
+    runtime = QueueWorkerRuntime(repositories=repos, tool_executor=_fake_executor)
+    assert runtime.handle_job(ids["job"]).status == "completed"
+    artifact = repos.artifacts.list_for_job(ids["job"])[0]
+    stored = repos.artifacts.records[artifact["id"]]
+    stored["storageKey"] = ""
+    stored["storage_key"] = ""
+
+    with pytest.raises(HTTPException) as raised:
+        get_planner_job_artifact_content(
+            ids["job"],
+            artifact["id"],
+            repositories=repos,
+            queue_runtime=runtime,
+        )
+
+    assert raised.value.status_code == 410
+    assert raised.value.detail == {
+        "code": "ARTIFACT_CONTENT_GONE",
+        "message": (
+            "Artifact metadata is retained, but the exact persisted payload is "
+            "no longer available."
+        ),
+    }
+
+
+def test_planner_job_artifact_content_rejects_large_browser_transfer_before_storage() -> None:
+    repos, ids, _ = _seed_persisted_plan_repos()
+    runtime = QueueWorkerRuntime(repositories=repos, tool_executor=_fake_executor)
+    assert runtime.handle_job(ids["job"]).status == "completed"
+    artifact = repos.artifacts.list_for_job(ids["job"])[0]
+    stored = repos.artifacts.records[artifact["id"]]
+    stored["sizeBytes"] = 67_108_865
+    stored["size_bytes"] = 67_108_865
+    reads: list[str] = []
+    runtime.artifact_storage.get_bytes = lambda key: reads.append(key) or b""
+
+    with pytest.raises(HTTPException) as raised:
+        get_planner_job_artifact_content(
+            ids["job"],
+            artifact["id"],
+            repositories=repos,
+            queue_runtime=runtime,
+        )
+
+    assert raised.value.status_code == 413
+    assert raised.value.detail == {
+        "code": "ARTIFACT_CONTENT_TOO_LARGE",
+        "message": "The exact Artifact exceeds the bounded browser transfer limit.",
+        "maximumBytes": 67_108_864,
+        "sizeBytes": 67_108_865,
+    }
+    assert reads == []
+
+
+def test_planner_job_artifact_content_maps_non_missing_storage_error_to_typed_503() -> None:
+    repos, ids, _ = _seed_persisted_plan_repos()
+    runtime = QueueWorkerRuntime(repositories=repos, tool_executor=_fake_executor)
+    assert runtime.handle_job(ids["job"]).status == "completed"
+    artifact = repos.artifacts.list_for_job(ids["job"])[0]
+
+    def denied(_: str) -> bytes:
+        raise ClientError(
+            {"Error": {"Code": "AccessDenied", "Message": "private bucket detail"}},
+            "GetObject",
+        )
+
+    runtime.artifact_storage.get_bytes = denied
+    with pytest.raises(HTTPException) as raised:
+        get_planner_job_artifact_content(
+            ids["job"],
+            artifact["id"],
+            repositories=repos,
+            queue_runtime=runtime,
+        )
+    assert raised.value.status_code == 503
+    assert raised.value.detail == {
+        "code": "ARTIFACT_STORAGE_UNAVAILABLE",
+        "message": "Artifact storage is temporarily unavailable.",
+    }
+    assert "private bucket detail" not in str(raised.value.detail)
 
 
 def _seed_persisted_plan_repos() -> tuple[InMemoryRepositoryBundle, dict[str, str], str]:

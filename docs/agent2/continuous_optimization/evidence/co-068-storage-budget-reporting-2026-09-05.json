@@ -1,0 +1,50 @@
+{
+  "improvementId": "CO-068",
+  "improvementNumber": 137,
+  "date": "2026-09-05",
+  "problem": "Disk preflight could not attribute capacity to bounded product/service categories.",
+  "change": {
+    "schemaVersion": "phase14r-storage-budget/1.0",
+    "categories": [
+      "workspace",
+      "database",
+      "minio",
+      "logs",
+      "profiles",
+      "buildCaches"
+    ],
+    "readOnly": true,
+    "redacted": true,
+    "filesystemEntryLimit": 100000,
+    "minioObjectLimit": 10000,
+    "cacheSeconds": 30
+  },
+  "verification": {
+    "focused": {
+      "selected": 21,
+      "passed": 20,
+      "skipped": 1,
+      "skipClassification": "existing explicit integration test"
+    },
+    "dedicatedStorageTests": {
+      "selected": 6,
+      "passed": 6
+    },
+    "liveSameStack": {
+      "workspaceBytes": 346324669,
+      "databaseBytes": 46659251,
+      "minioBytes": 139815841,
+      "minioObjects": 8739,
+      "logsBytes": 871980,
+      "profilesBytes": 23911527,
+      "buildCachesBytes": 40349971256,
+      "buildCachesEntries": 36279,
+      "buildCachesUtilizationPercent": 150.32,
+      "buildCachesState": "exceeded",
+      "scanComplete": true
+    },
+    "ruff": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "result": "Operators can distinguish redacted capacity attention from service failure; no data was deleted."
+}

@@ -568,6 +568,104 @@ export function presentationBlockLabel(block: ScientificPresentationBlock): stri
   return "";
 }
 
-export function isSafePresentationBlock(block: ScientificPresentationBlock): boolean {
-  return !/[<>]|javascript:|data:text\/html/i.test(presentationBlockLabel(block));
+const PRESENTATION_BLOCK_TYPES = new Set([
+  "narrative",
+  "finding",
+  "metric",
+  "table",
+  "figure",
+  "viewer_reference",
+  "evidence_reference",
+  "limitation",
+  "warning",
+]);
+
+const PRESENTATION_SOURCE_KEYS = new Set([
+  "resultId",
+  "interpretationId",
+  "factId",
+  "evidenceId",
+  "artifactId",
+  "jobId",
+  "toolCallId",
+  "objectId",
+  "versionId",
+]);
+
+const PRESENTATION_BLOCK_KEYS: Readonly<Record<string, ReadonlySet<string>>> = {
+  narrative: new Set(["id", "type", "title", "text", "source"]),
+  finding: new Set(["id", "type", "title", "text", "confidence", "source", "evidenceIds"]),
+  metric: new Set(["id", "type", "title", "value", "unit", "source"]),
+  table: new Set(["id", "type", "title", "artifactId", "source"]),
+  figure: new Set(["id", "type", "title", "artifactId", "source"]),
+  viewer_reference: new Set(["id", "type", "title", "label", "source"]),
+  evidence_reference: new Set(["id", "type", "title", "label", "source"]),
+  limitation: new Set(["id", "type", "text", "source"]),
+  warning: new Set(["id", "type", "text", "source"]),
+};
+
+const EXECUTABLE_PRESENTATION_TEXT = /[<>]|javascript:|vbscript:|data:text\/html/iu;
+const REMOTE_OR_EXECUTABLE_REFERENCE = /[<>]|(?:javascript|vbscript|data:text\/html):|https?:\/\/|^\/\//iu;
+
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function hasOnlyKeys(value: Record<string, unknown>, allowed: ReadonlySet<string>): boolean {
+  return Object.keys(value).every((key) => allowed.has(key));
+}
+
+function isSafeDisplayText(value: unknown, optional = false): value is string | undefined {
+  if (optional && value === undefined) return true;
+  return typeof value === "string"
+    && value.length <= 16_000
+    && !EXECUTABLE_PRESENTATION_TEXT.test(value);
+}
+
+function isSafeReference(value: unknown, optional = false): value is string | null | undefined {
+  if (optional && (value === undefined || value === null)) return true;
+  return typeof value === "string"
+    && value.length > 0
+    && value.length <= 256
+    && !REMOTE_OR_EXECUTABLE_REFERENCE.test(value);
+}
+
+function isSafePresentationSource(value: unknown): value is PresentationSource {
+  if (!isPlainRecord(value) || !hasOnlyKeys(value, PRESENTATION_SOURCE_KEYS)) return false;
+  return Object.values(value).every((item) => isSafeReference(item, true));
+}
+
+export function isSafePresentationBlock(block: unknown): block is ScientificPresentationBlock {
+  if (!isPlainRecord(block)) return false;
+  const candidate = block as Record<string, unknown>;
+  if (typeof candidate.type !== "string" || !PRESENTATION_BLOCK_TYPES.has(candidate.type)) return false;
+  const allowedKeys = PRESENTATION_BLOCK_KEYS[candidate.type];
+  if (!allowedKeys || !hasOnlyKeys(candidate, allowedKeys)) return false;
+  if (!isSafeReference(candidate.id) || !isSafePresentationSource(candidate.source)) return false;
+
+  if (candidate.type === "narrative") {
+    return isSafeDisplayText(candidate.title, true) && isSafeDisplayText(candidate.text);
+  }
+  if (candidate.type === "finding") {
+    return isSafeDisplayText(candidate.title)
+      && isSafeDisplayText(candidate.text)
+      && ["DIRECT", "QUALIFIED", "LIMITED"].includes(String(candidate.confidence))
+      && Array.isArray(candidate.evidenceIds)
+      && candidate.evidenceIds.length <= 12
+      && candidate.evidenceIds.every((item) => isSafeReference(item));
+  }
+  if (candidate.type === "metric") {
+    return isSafeDisplayText(candidate.title)
+      && isSafeDisplayText(candidate.value)
+      && (candidate.unit === null || isSafeDisplayText(candidate.unit, true));
+  }
+  if (candidate.type === "table" || candidate.type === "figure") {
+    return isSafeDisplayText(candidate.title) && isSafeReference(candidate.artifactId);
+  }
+  if (candidate.type === "viewer_reference" || candidate.type === "evidence_reference") {
+    return isSafeDisplayText(candidate.title) && isSafeDisplayText(candidate.label);
+  }
+  return isSafeDisplayText(candidate.text);
 }

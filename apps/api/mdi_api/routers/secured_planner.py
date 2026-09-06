@@ -116,9 +116,18 @@ def get_planner_job_result_secured(job_id: str, current_user: CurrentUser = Depe
     return get_planner_job_result(job_id)
 
 
-def get_planner_job_artifact_content_secured(job_id: str, artifact_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> Any:
+def get_planner_job_artifact_content_secured(
+    job_id: str,
+    artifact_id: str,
+    download: bool = False,
+    current_user: CurrentUser = Depends(get_current_user_compat),
+) -> Any:
     _require_job(job_id, current_user)
-    return get_planner_job_artifact_content_route(job_id, artifact_id)
+    return get_planner_job_artifact_content_route(
+        job_id,
+        artifact_id,
+        download=download,
+    )
 
 
 def create_planner_job_interpretation_secured(job_id: str, request: PlannerInterpretationRequest, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
@@ -152,7 +161,14 @@ def get_planner_interpretation_evidence_secured(interpretation_id: str, current_
         # Evidence without a resolvable source Job has no Project boundary and
         # must never be returned through an authenticated API.
         raise HTTPException(status_code=404, detail="依据所属运行不存在。")
-    _require_job(job_id, current_user)
+    job = _require_job(job_id, current_user)
+    evidence_project_id = str(result.get("projectId") or result.get("project_id") or "")
+    job_project_id = str(job.get("projectId") or job.get("project_id") or "")
+    if evidence_project_id and job_project_id and evidence_project_id != job_project_id:
+        # A tampered or stale interpretation/snapshot relation must not let a
+        # caller authorized for the Job's project read another project's
+        # evidence bundle through a guessed interpretation id.
+        raise HTTPException(status_code=404, detail="依据所属运行不存在。")
     return result
 
 

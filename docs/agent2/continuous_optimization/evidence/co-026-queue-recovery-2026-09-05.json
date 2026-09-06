@@ -1,0 +1,44 @@
+{
+  "improvement": "CO-026",
+  "date": "2026-09-05",
+  "category": "queue_recovery",
+  "rootCause": "Redis/RQ outage escaped stale recovery and could abort the recovery scan.",
+  "change": {
+    "recoveryOutcome": "QUEUE_UNAVAILABLE",
+    "durableStateMutationOnOutage": false,
+    "queueIdentityReuse": true,
+    "errorDetailRedacted": true,
+    "injectedQueueQualification": true
+  },
+  "evidence": {
+    "test": "tests/test_phase14r_recovery.py::test_queue_outage_is_retryable_without_mutating_durable_turn",
+    "outage": {
+      "accepted": false,
+      "action": "QUEUE_UNAVAILABLE",
+      "detail": "queue backend unavailable; durable state remains retryable",
+      "durableStatus": "RECEIVED"
+    },
+    "recovery": {
+      "accepted": true,
+      "action": "ORCHESTRATION_REPUBLISHED",
+      "sameTurnEnqueuedTwice": true
+    },
+    "focusedTests": {
+      "phase14rRecoveryAndAgent2Execution": "15 passed",
+      "operationsAndRetention": "14 passed, 1 skipped"
+    },
+    "compileall": "PASS",
+    "diffCheck": "PASS"
+  },
+  "scientificSafety": {
+    "duplicateToolCalls": "protected by existing CO-022 regression",
+    "duplicateArtifacts": "protected by existing CO-123 regression",
+    "duplicateResults": "protected by existing idempotent worker/result regressions",
+    "scientificAuthorityChanged": false
+  },
+  "services": {
+    "redis": "not restarted or flushed; shared service preserved",
+    "postgresql": "unchanged",
+    "minio": "unchanged"
+  }
+}

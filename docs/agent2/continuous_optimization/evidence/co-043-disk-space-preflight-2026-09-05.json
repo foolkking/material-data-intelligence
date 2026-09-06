@@ -1,0 +1,47 @@
+{
+  "improvementId": "CO-043",
+  "date": "2026-09-05",
+  "rootCause": "Service, test, build and browser-evidence entry points could allocate new processes and write caches before checking whether their storage volumes had safe capacity.",
+  "contract": {
+    "schemaVersion": "phase14r-disk-preflight/1.0",
+    "readOnly": true,
+    "defaultMinimumFreeBytes": 5368709120,
+    "defaultWarningFreeBytes": 10737418240,
+    "typedOutcomes": {
+      "success": "MDI_DISK_PREFLIGHT_OK",
+      "critical": "MDI_DISK_SPACE_CRITICAL",
+      "pathUnavailable": "MDI_DISK_PATH_UNAVAILABLE",
+      "invalidConfiguration": "MDI_DISK_PREFLIGHT_CONFIGURATION_INVALID"
+    },
+    "entryPoints": [
+      "pytest session",
+      "frontend tests",
+      "frontend typecheck",
+      "frontend production build",
+      "packaged browser evidence",
+      "CI unit and frontend jobs",
+      "API",
+      "workers",
+      "frontend service"
+    ],
+    "configuredFallback": "MDI_DISK_FALLBACK_PATH"
+  },
+  "liveCheck": {
+    "volume": "E:\\",
+    "availableFreeBytes": 47090618368,
+    "state": "ok",
+    "sameStackHealth": "passed",
+    "frontendStatus": 200
+  },
+  "verification": {
+    "diskAndLogFocused": "11 passed",
+    "frontendPreflightTest": "5 passed",
+    "typescriptTypecheck": "passed with preflight",
+    "productionBuild": "passed with isolated distDir",
+    "ruff": "passed",
+    "compileall": "passed",
+    "powershellParsers": "4 passed",
+    "gitDiffCheck": "passed"
+  },
+  "servicesRestarted": false
+}

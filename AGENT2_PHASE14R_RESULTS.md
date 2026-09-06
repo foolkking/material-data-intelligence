@@ -1,8 +1,12 @@
 # Agent-2.0 Phase 14-R Results
 
-Date: 2026-08-28
-Status: `PARTIAL` — this document records current evidence without
-claiming the mature-product release gate.
+Date: 2026-09-02
+Status: `PARTIAL` — historical P14R-A/P14R-B seal evidence and current
+same-stack product re-audits are recorded below. The historical seal remains
+valid for its original scope; the broader mature-product program was reopened
+by later requirements and is not currently sealed. Earlier dated entries
+intentionally retain their historical checkpoint verdicts and must not be read
+as the current final status.
 
 ## 2026-09-01 shared context control and exact reuse requalification
 
@@ -4459,3 +4463,391 @@ READY_FOR_MATURE_PRODUCTION_USE = YES
 PHASE15_CREATED = NO
 PHASE15_STARTED = NO
 ```
+
+## 2026-09-02 report Artifact inline preview follow-up
+
+The current-worktree report reader now closes a concrete product readability
+gap without reopening Phase 14 scientific authority. Persisted Figure/Table
+references can be opened on demand inside the report through the existing
+Artifact content endpoint. Figure previews are deterministic bounded SVG
+projections of persisted finite series; Table previews are bounded to 24 rows
+and 8 columns with researcher-readable labels and the original Artifact link
+retained. The path is read-only and does not create scientific work.
+
+Same-stack authenticated browser evidence:
+
+```text
+report = agent2_report_19a0d0c261c28577101de81532464893
+figure = 2 persisted finite points
+table = 1 persisted row / 8 columns
+browser error/warn = 0
+```
+
+Current verification:
+
+```text
+ScientificReportArtifactPreview = 3 passed
+ScientificReportRoute = 23 passed
+frontend full regression = 109 files / 792 tests passed
+TypeScript typecheck = PASS
+production build = PASS
+PostgreSQL/Redis/MinIO/worker health = PASS
+```
+
+This is a bounded UI/readability repair. The broader Product Maturity
+umbrella remains tracked in `TASKS.md`; no new phase was created and no
+services or browser tabs were closed.
+
+## Current-worktree UX and runtime reconciliation — 2026-09-03
+
+The current worktree remains on the existing sealed Phase 14R line; no Phase 15
+work was introduced. The frontend production artifact was rebuilt and three
+instances remain available on `3000`, `3013`, and `3016`; the API remains on
+`8005`. PostgreSQL `55434`, Redis `6379`, MinIO `9000/9001`, six Redis workers,
+and retained browser tabs were not closed.
+
+Current evidence:
+
+- Task Center/Notification Center search, sorting and recovery; Report mobile
+  chapter navigation; Dataset source-to-result terminology; Project Home
+  progressive list expansion and history reload.
+- Authorized semantic search covers Dataset sample/formula metadata,
+  ScientificObject version metadata, ScientificResult facts and grounded
+  findings; Result links preserve explicit ResearchTurn identity.
+- focused list/report/data coverage `44 passed`; full frontend
+  `110 files / 803 tests passed`; typecheck, build, compileall, lock and diff
+  checks PASS; project-access backend focus `32 passed`.
+- Authenticated Chromium route sweep: 12 core routes × 3 frontend instances ×
+  2 viewports = `72/72` HTTP 200; Internal Server Error, unavailable-payload
+  placeholder on current active routes, page/console errors, 5xx and global
+  overflow all `0`.
+- Current ScientificObject Data/Version/Viewer projections: `13/13` objects,
+  `26/26` loads, payload `READY`, viewer support `PROFESSIONAL`.
+- Same-stack `/health/runtime`: PostgreSQL, Redis, MinIO, Redis worker and
+  DeepSeek healthy; operations snapshot alerts `0`, queue depth `0`, stale
+  jobs/turns `0`, idle-in-transaction `0`, pool checked out `0`.
+
+Historical source payloads that are genuinely unavailable remain explicitly
+fail-closed; no replacement scientific bytes or newer version are fabricated.
+No commit or push was made in this batch.
+
+The later route-recovery and Admin confirmation contract updates were rechecked
+after the production rebuild. Focused Product/Data/Project/Task/Notification/
+Report/Admin coverage is `101 passed`; the complete frontend suite is now
+`110 files / 810 tests passed`. This supersedes the earlier `803` count for
+the current worktree.
+
+Account/Admin follow-up added independent account/session recovery, explicit
+administrator mutation confirmation, bounded user/project continuation loading,
+and invitation-copy fallback feedback. The corresponding focused UI coverage is
+`13 passed`, backend account/admin authorization is `8 passed`, and the same
+desktop/mobile route matrix remains `24/24 HTTP 200` with zero page errors,
+zero 5xx responses and zero global overflow. No commit or push was made.
+
+## Current production report/table verification (2026-09-03)
+
+The rebuilt production frontend was reloaded on ports `3000`, `3013`, and `3016`
+with `MDI_NEXT_DIST_DIR=.next` and API proxy `http://127.0.0.1:8005`; API,
+PostgreSQL, Redis, MinIO, workers, and existing user browser tabs remained open.
+Authenticated in-app browser verification on `3000` reopened the report
+`agent2_report_19a0d0c261c28577101de81532464893` without the previous stale-chunk
+failure. The report exposed immutable revision links, exact source version
+`8859cb49-0766-48cd-8a56-e44f5332e0c5`, persisted Figure/Table Artifact links,
+an inline Figure preview (`All sites`, `Si`, one finite point each), and a
+typed Table preview with caption and exact-version disclosure. Browser
+console error/warn count was `0`.
+
+At `390x844`, the authenticated Dataset workbench showed `3/3` validated rows,
+stable sample IDs `sample-si`, `sample-fe2o3`, and `sample-lifepo4`, selection
+controls, and the deliberate horizontal-scroll cue. Document/body widths were
+`375/375/375`, so global overflow was `0`.
+
+Current verification counts: full frontend `110 files / 813 tests passed`;
+backend focused `56 passed / 1 historical compatibility skip`; production
+build, typecheck, compileall, `uv lock --check`, and `git diff --check` PASS.
+Same-stack operations snapshot remained healthy with PostgreSQL active `1`,
+idle `5`, idle-in-transaction `0`, pool checked-out `0`; Redis workers `6`
+idle with queue depth `0`; MinIO bucket `mdi-artifacts` `ok`.
+
+This is a qualification batch only. No commit/push was made, and no user files,
+historical evidence, temporary files, or logs were deleted.
+
+## Navigation / Research control / scientific surface batch (2026-09-03)
+
+The current worktree adds a small, bounded continuity batch without reopening
+scientific authority. Authenticated users now have a direct Console escape from
+the product brand and global navigation. Continue child Turns explicitly bind
+the parent exact Result snapshot when one exists, and a PLAN_READY/Stop race
+reconciles the durable terminal state before surfacing an error. Electronic/DOS,
+Phonon Band/DOS and Volumetric projections use safe iteration and bounded
+plotting for large valid payloads, with explicit empty states and semantic table
+column scopes. Top-level Projects, Console, Account and Admin routes now expose
+the shared loading frame during server-rendered route transitions.
+
+Verification for this batch: focused frontend `99 passed`; full frontend
+`110 files / 818 tests passed`; backend focused `56 passed, 1 skipped`;
+typecheck, production build, compileall, `uv lock --check`, touched Ruff and
+`git diff --check` passed. The current build was served on preserved port
+`3018` for authenticated browser checks: desktop core routes `11/11` and
+mobile `11/11`, with zero page/console errors, zero Internal Server Error and
+zero global overflow. Same-stack operations remained PostgreSQL/Redis/MinIO
+`ok`, six workers idle, queue depth zero, and idle-in-transaction zero.
+
+No commit or push was made. Existing services and browser tabs remain open.
+
+The same current build also traversed `13/13` real ScientificObject/Version
+entries in the populated project (Electronic DOS, Phonon Band/DOS, Dataset,
+Electronic Band, Trajectory, Structure and related surfaces). Each loaded
+without `Internal Server Error`, page/console errors, `SOURCE_MISSING`, or
+global overflow. Any genuinely unavailable historical payload remains an
+explicit fail-closed state rather than a fabricated replacement.
+
+## Data hierarchy / navigation fluency batch (2026-09-04)
+
+### Data information architecture
+
+The Project Data Navigator now opens with a bounded authority legend:
+
+```text
+Dataset
+  = source scope, imported files, records and query
+Scientific Object / Version
+  = parsed scientific identity and immutable exact state
+```
+
+The legend explicitly states that Viewer and Research outputs retain exact
+object-version bindings. It is presentation-only and does not create a second
+scientific authority.
+
+### Navigation fluency
+
+`getCachedProjectHistory` returns only a resolved, non-expired snapshot already
+warmed by the shared ProductShell request. Overview/Data/Research routes reuse it
+without a duplicate history request or a second blank loading state. Console warms
+the primary active project's ledger and opts its primary Research action into
+framework prefetch.
+
+### Verification
+
+```text
+ProductPages + ProjectHome + ProductShell focused = 69 passed
+typecheck = PASS
+production build = PASS
+git diff --check = PASS
+same-stack API = PostgreSQL / Redis / MinIO / Redis worker / DeepSeek ok
+browser build = 127.0.0.1:3020
+desktop data hierarchy = visible
+mobile data page width = 375 / 375, overflow = 0
+browser page/console errors = 0
+```
+
+Historical unavailable payloads remain typed fail-closed states; no version
+substitution, scientific mutation or service restart was performed.
+
+## R2 report finding provenance remediation (2026-09-04)
+
+The Report reader now exposes a collapsed, per-finding `查看科学依据` disclosure
+for every main finding. Each disclosure retains the immutable Report snapshot's
+ScientificResult snapshot ID, exact source object/version, Result fact refs,
+evidence refs, and optional finding refs. The readable report body is not
+polluted with internal identifiers, and the disclosure is read-only.
+
+Evidence:
+
+```text
+ScientificReportRoute = 25 passed
+Report/presentation focused suite = 62 passed
+per-finding exact Result/source/fact/evidence disclosure = PASS
+```
+
+No second scientific authority or recomputation path was introduced.
+
+## R5 ContextManifest full-list inspection affordance (2026-09-04)
+
+The Research context disclosure previously reported the total number of
+included items while rendering only the first eight, with no way for a user to
+inspect the remainder. The disclosure now keeps the bounded eight-item default
+for product fluency and adds an accessible `查看全部上下文（N 项）` toggle.
+The expanded list is still the same read-only server-projected
+`ContextManifest.included_items`; it does not alter context selection, provider
+payloads, ScientificResult authority, or execution state. The expanded state is
+reset whenever the selected ResearchTurn changes.
+
+Evidence:
+
+```text
+ResearchPages focused = 69 passed
+typecheck = PASS
+git diff --check = PASS
+scientific execution delta = unchanged (no Job/ToolCall/Artifact/Result created)
+```
+
+This closes the specific long-manifest inspection UX seam only. Phase 14-R
+overall remains `PARTIAL` pending the broader mature-product gates.
+
+## R1 safe static/download-only viewer states (2026-09-04)
+
+Closed a renderer-wiring gap for Artifact contracts that are intentionally
+non-executable. `ScientificArtifactRenderer` now handles the registry's
+`STATIC_METADATA` and `DOWNLOAD_ONLY` classifications explicitly instead of
+falling through to a generic inert renderer. The new bounded states expose
+contract/version, filename or size where available, and checksum summary;
+they explain that the exact source remains preserved and direct the user to
+the existing result-directory download action. HTML, script, image payloads
+and arbitrary renderer code remain inert.
+
+Evidence:
+
+```text
+WorkspaceArtifactGallery + workspace-renderer-registry = 8 passed
+typecheck = PASS
+metadata-only preview_png = explicit safe metadata state
+download-only plotly_html with script token = inert, token not rendered/executed
+scientific authority/version/provenance = unchanged
+```
+
+## Current-worktree status reconciliation (2026-09-04)
+
+Earlier `PASS` blocks in this append-only evidence file describe the historical
+P14R release checkpoint and must not be read as proof that the broader mature
+product umbrella is closed after later scope expansion. The authoritative
+current status is:
+
+```text
+PHASE14R_STATUS = PARTIAL
+MATURE_PRODUCT_GAPS = PRESENT
+P14R_RELEASE_REOPENED = NO
+```
+
+## R7/R8 current-worktree task identity closure (2026-09-04)
+
+The existing authorized Global Search, saved-search and persisted
+Task/Notification recovery architecture was retained. The bounded task-feed SQL
+projection now follows the authoritative Job → ResearchTurn → user message
+relationship and exposes a maximum 180-character `researchQuestion` for
+communication only. Task and Notification rows use it as their human title and
+local searchable text, while exact Job/Turn routes and technical identities
+remain unchanged. Persisted update/create time is now visible in a semantic
+`<time>` element.
+
+```text
+new search authority = NO
+new task authority = NO
+cross-project authorization changed = NO
+scientific computation delta = 0
+task-feed query count = constant (2 for 1 job; 2 for 5 jobs)
+backend focused = 15 passed
+frontend focused = 16 passed
+frontend typecheck = PASS
+touched Ruff = PASS
+git diff check = PASS
+```
+
+This closes the bounded R7/R8 human-findability defect. It does not claim
+production-volume pagination, external push notification delivery, the broader
+human-acceptance campaign or a new exact-SHA Phase 14-R release.
+
+Current evidence is strong for the exercised same-stack paths (frontend
+`110 files / 823 tests`, backend `1983 passed / 84 skipped`, PostgreSQL/Redis/
+MinIO healthy, active ScientificObject routes `13/13` readable), but a complete
+capability-wide real-user campaign, retention/export/operations maturity review,
+human acceptance review and a new P14R exact-SHA release sequence have not been
+performed for this current worktree. Those gates remain open rather than being
+inferred from the historical seal.
+
+## R4 primary Research Stop affordance (2026-09-04)
+
+The active Research composer now turns its primary submit action into an explicit
+`停止研究` control whenever an exact persisted ResearchTurn is in planning or
+running state. The control calls the existing cancellation authority and shares
+the same terminal-state race reconciliation as the process card; it does not
+invent a frontend-only cancellation state or discard committed partial outputs.
+If no persisted Turn identity exists, the UI remains truthfully read-only instead
+of claiming that a stop can be persisted.
+
+Evidence:
+
+```text
+ResearchPages focused = 71 passed
+frontend typecheck = PASS
+cancel authority = existing ResearchTurn cancellation endpoint
+partial Artifact/Result retention semantics = unchanged
+services/browser tabs = preserved
+```
+
+This closes the primary-action discoverability seam only. Phase 14-R remains
+`PARTIAL` under the current-worktree reconciliation above.
+
+## Latest isolated production object-route browser recheck (2026-09-04)
+
+The current worktree was rebuilt into `.next-phase14r-0904d` and served on
+`127.0.0.1:3022`, with the same-stack API at `127.0.0.1:8005`. An authenticated
+in-app browser tab opened the console, Data Platform and all 13 exact
+ScientificObject/ScientificObjectVersion links from the active qualification
+project.
+
+```text
+13/13 routes readable
+valid-route alerts = 0
+browser error logs = 0
+desktop document width = client width (1265/1265)
+real canvas routes = 3
+PostgreSQL / Redis / MinIO / six workers = healthy
+```
+
+The route check confirms that current services are running and that the
+professional fail-closed `SOURCE_MISSING` state is reserved for genuinely
+unavailable historical payloads. It does not replace the broader
+capability-wide real-user acceptance campaign, which remains open.
+
+## Current-worktree consolidated regression update (2026-09-04)
+
+```text
+full frontend = 110 files / 826 tests passed
+Research controls = 71 passed
+Task/Notification frontend = 16 passed
+Task-feed/backend focused = 21 passed
+frontend typecheck = PASS
+latest production build = PASS
+compileall = PASS
+uv lock --check = PASS
+touched Ruff = PASS
+git diff --check = PASS
+full backend retained evidence = 1983 passed / 84 skipped
+```
+
+Runtime after the campaign:
+
+```text
+PostgreSQL active/idle/idle-in-transaction = 1 / 5 / 0
+Redis workers = 6 idle
+queue depth = 0
+recent queue failures = 0
+MinIO = healthy
+resource-governance alerts = 0
+```
+
+No Phase 14-R release commit or push was created in this shared dirty worktree.
+The current mature-product verdict remains `PARTIAL`.
+
+## Neat-freak workspace and knowledge closeout (2026-09-04)
+
+After explicit user confirmation, only twelve stale untracked project log files
+were removed: `.phase14r-api-8005-payload-remediation.out.log`,
+`api-batch.out.log`, `api-batch.err.log`, `.codex-web-wave2.err.log`,
+`.codex-web-wave2.out.log`, `.codex-ux-v13-web.err.log`,
+`.codex-ux-v13-web.out.log`, `.codex-api-8000.out.log`,
+`.codex-api-8000.err.log`, `.codex-api-wave2.out.log`,
+`.codex-api-wave2.err.log`, and `phase10-worker.log`.
+
+The removed files totaled `656,867` bytes. Active API, worker, PostgreSQL,
+Redis, MinIO and browser runtime files were preserved. Post-cleanup checks still
+show API `8005`, frontend `3023`, PostgreSQL `5432/55434`, Redis `6379`, and
+MinIO `9000` listening. No commit or push was made.
+
+The read-only storage report is
+`E:\storage-analysis-phase14r-20260904\storage-report.html`; C: remains
+critically full (approximately `80 MB` free at inspection). No Chrome, Codex,
+service, scientific-data, or active-runtime cleanup was performed without a
+separate confirmation. Phase 14-R remains `PARTIAL` with mature-product gaps
+present.

@@ -1,0 +1,70 @@
+{
+  "improvement": "CO-036",
+  "date": "2026-09-05",
+  "baseUrl": "http://127.0.0.1:3023",
+  "projectId": "project_0002_1a0af866391f412d",
+  "browser": "Chromium",
+  "authenticated": true,
+  "marker": "PRODUCT_NAVIGATION_SPA_ACCEPTANCE_PASS",
+  "transitions": [
+    {
+      "label": "reports-to-data",
+      "from": "/projects/project_0002_1a0af866391f412d/reports",
+      "to": "/projects/project_0002_1a0af866391f412d/data",
+      "elapsedMs": 63,
+      "documentRequests": 0,
+      "timeOriginPreserved": true,
+      "runtimeStatePreserved": true
+    },
+    {
+      "label": "data-to-research",
+      "from": "/projects/project_0002_1a0af866391f412d/data",
+      "to": "/projects/project_0002_1a0af866391f412d/research",
+      "elapsedMs": 76,
+      "documentRequests": 0,
+      "timeOriginPreserved": true,
+      "runtimeStatePreserved": true
+    },
+    {
+      "label": "research-to-reports",
+      "from": "/projects/project_0002_1a0af866391f412d/research",
+      "to": "/projects/project_0002_1a0af866391f412d/reports",
+      "elapsedMs": 139,
+      "documentRequests": 0,
+      "timeOriginPreserved": true,
+      "runtimeStatePreserved": true
+    },
+    {
+      "label": "reports-to-report-detail",
+      "from": "/projects/project_0002_1a0af866391f412d/reports",
+      "to": "/projects/project_0002_1a0af866391f412d/reports/agent2_report_19a0d0c261c28577101de81532464893",
+      "elapsedMs": 37,
+      "documentRequests": 0,
+      "timeOriginPreserved": true,
+      "runtimeStatePreserved": true
+    },
+    {
+      "label": "report-to-source-research",
+      "from": "/projects/project_0002_1a0af866391f412d/reports/agent2_report_19a0d0c261c28577101de81532464893",
+      "to": "/projects/project_0002_1a0af866391f412d/research/research_90dab4ba870946058a297c3cda95a9bc?turn=63d21ee3-6e18-49b3-ad6b-b3fb578563c5",
+      "elapsedMs": 84,
+      "documentRequests": 0,
+      "timeOriginPreserved": true,
+      "runtimeStatePreserved": true
+    },
+    {
+      "label": "research-to-viewer",
+      "from": "/projects/project_0002_1a0af866391f412d/research/research_90dab4ba870946058a297c3cda95a9bc?turn=63d21ee3-6e18-49b3-ad6b-b3fb578563c5",
+      "to": "/projects/project_0002_1a0af866391f412d/data?object=dc3c3eee-f254-4edf-a0fa-c955402b3069&version=8859cb49-0766-48cd-8a56-e44f5332e0c5",
+      "elapsedMs": 52,
+      "documentRequests": 0,
+      "timeOriginPreserved": true,
+      "runtimeStatePreserved": true
+    }
+  ],
+  "browserHealth": {
+    "consoleErrors": 0,
+    "server5xxResponses": 0
+  },
+  "result": "PASS"
+}

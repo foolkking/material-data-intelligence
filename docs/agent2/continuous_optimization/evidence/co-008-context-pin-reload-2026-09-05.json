@@ -1,0 +1,21 @@
+{
+  "improvement": "CO-008",
+  "title": "Protect persisted Research context pin state across repository reload",
+  "date": "2026-09-05",
+  "root_cause": "Pin/unpin service behavior was implemented, but no regression closed the persistence contract across separate repository sessions.",
+  "change": {
+    "file": "tests/test_agent2_phase7_memory.py",
+    "behavior": "Added a repository-lifecycle test that pins an exact persisted Result, reloads session memory, unpins it, and reloads again."
+  },
+  "verification": {
+    "command": "pytest tests/test_agent2_phase7_memory.py -q",
+    "result": "10 passed",
+    "ruff": "passed",
+    "diff_check": "passed"
+  },
+  "assertions": [
+    "Pinned Result ID survives transaction close and a fresh repository session.",
+    "Unpin mutation is persisted and observed by a later repository read.",
+    "Scientific Result authority remains immutable; only session context state changes."
+  ]
+}

@@ -98,3 +98,15 @@ npm run build
 Service-backed and browser gates require the same services and pinned browser
 runtime declared in the workflow. A task is not archived from `TASKS.md` until
 its current HEAD has passed the required remote workflow.
+
+The checked-in
+`config/mandatory-service-qualification.json` is the single selection
+authority for the mandatory PostgreSQL/Redis/MinIO campaign: test paths,
+required test identities, minimum pass count, and zero-skip/failure policy.
+After starting and configuring those services, local and CI qualification use
+the same runner:
+
+```powershell
+uv run python scripts/mandatory_service_qualification.py run --junit integration.junit.xml --log integration.log
+uv run python scripts/mandatory_service_qualification.py validate --junit integration.junit.xml
+```

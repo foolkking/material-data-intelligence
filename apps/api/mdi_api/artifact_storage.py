@@ -2,11 +2,24 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import tempfile
+from botocore.exceptions import ClientError
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any, Protocol
 from urllib.parse import quote
+
+
+MAX_ARTIFACT_BYTES = 256 * 1024 * 1024
+
+
+def _validate_artifact_size(content: bytes) -> None:
+    if len(content) > MAX_ARTIFACT_BYTES:
+        raise ValueError(
+            f"Artifact exceeds the maximum storage size of {MAX_ARTIFACT_BYTES} bytes."
+        )
 
 
 @dataclass(frozen=True)
@@ -113,9 +126,23 @@ class LocalFileArtifactStorage:
         content_type: str,
         preview_key: str | None = None,
     ) -> ArtifactStorageMetadata:
+        _validate_artifact_size(content)
         target = self._resolve(storage_key)
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(content)
+        temporary_path: Path | None = None
+        try:
+            descriptor, temporary_name = tempfile.mkstemp(
+                dir=target.parent,
+                prefix=f".{target.name}.",
+                suffix=".part",
+            )
+            os.close(descriptor)
+            temporary_path = Path(temporary_name)
+            temporary_path.write_bytes(content)
+            temporary_path.replace(target)
+        finally:
+            if temporary_path is not None:
+                temporary_path.unlink(missing_ok=True)
         return ArtifactStorageMetadata(
             storage_key=storage_key,
             content_type=content_type,
@@ -261,6 +288,7 @@ class S3CompatibleArtifactStorage:
         content_type: str,
         preview_key: str | None = None,
     ) -> ArtifactStorageMetadata:
+        _validate_artifact_size(content)
         client = self._require_client()
         key = self._full_key(storage_key)
         client.put_object(Bucket=self.bucket, Key=key, Body=content, ContentType=content_type)
@@ -280,7 +308,12 @@ class S3CompatibleArtifactStorage:
         client = self._require_client()
         response = client.get_object(Bucket=self.bucket, Key=self._full_key(storage_key))
         body = response["Body"]
-        data = body.read()
+        try:
+            data = body.read()
+        finally:
+            close = getattr(body, "close", None)
+            if callable(close):
+                close()
         return data if isinstance(data, bytes) else bytes(data)
 
     def get_bytes_bounded(self, storage_key: str, *, max_bytes: int) -> bytes:
@@ -348,7 +381,14 @@ class S3CompatibleArtifactStorage:
             raise NotImplementedError("S3/MinIO existence checks require a configured object-storage client.")
         try:
             client.head_object(Bucket=self.bucket, Key=self._full_key(storage_key))
-        except Exception:
+        except ClientError as exc:
+            code = str((exc.response or {}).get("Error", {}).get("Code", ""))
+            if code in {"404", "NoSuchKey", "NoSuchBucket", "NotFound"}:
+                return False
+            raise
+        except KeyError:
+            # Preserve the lightweight fake-client contract used by local
+            # deterministic tests; real S3 clients report ClientError.
             return False
         return True
 

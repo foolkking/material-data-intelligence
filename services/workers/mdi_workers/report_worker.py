@@ -5,6 +5,7 @@ import os
 from uuid import UUID
 
 from mdi_api.database import create_repository_factory
+from mdi_llm import redact_sensitive_text
 from mdi_api.scientific_reports.client import FakeStructuredReportComposerClient
 from mdi_api.scientific_reports.service import ScientificReportError, ScientificReportService
 
@@ -29,7 +30,12 @@ def run_queued_report_generation(generation_id: str) -> dict:
         report = ScientificReportService(factory, client=client).generate_for_turn(generation["research_turn_id"], created_by=str(generation["requested_by"]))
     except ScientificReportError as exc:
         with factory.unit_of_work() as unit:
-            unit.agent2.scientific_report_generations.set_status(identifier, "FAILED", error_code=exc.code, error_summary=str(exc)[:1000])
+            unit.agent2.scientific_report_generations.set_status(
+                identifier,
+                "FAILED",
+                error_code=exc.code,
+                error_summary=redact_sensitive_text(str(exc))[:1000],
+            )
         raise
     except Exception as exc:
         # Unexpected runtime failures must not strand durable product state in
@@ -40,7 +46,7 @@ def run_queued_report_generation(generation_id: str) -> dict:
                 identifier,
                 "FAILED",
                 error_code="REPORT_GENERATION_FAILED",
-                error_summary=str(exc)[:1000],
+                error_summary=redact_sensitive_text(str(exc))[:1000],
             )
         raise
     with factory.unit_of_work() as unit:

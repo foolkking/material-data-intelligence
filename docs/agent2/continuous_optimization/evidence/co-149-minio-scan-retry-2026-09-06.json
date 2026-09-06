@@ -1,0 +1,33 @@
+{
+  "improvement": "CO-149",
+  "date": "2026-09-06",
+  "problem": "A transient MinIO bounded-list timeout could turn a healthy bucket into a temporary unknown-capacity warning.",
+  "implementation": {
+    "module": "apps/api/mdi_api/operations.py",
+    "retryableOnly": true,
+    "retryAttempts": 1,
+    "delaySeconds": 0.05,
+    "nonRetryableBehavior": "fail closed with typed ServiceFailure code and no fabricated usage"
+  },
+  "deterministicVerification": {
+    "transientTimeoutThenSuccess": "PASS; two list calls, complete usage and usageRetryCount=1",
+    "authenticationFailure": "PASS; one list call, ARTIFACT_STORAGE_AUTHENTICATION, usageRetryCount=0",
+    "focusedTests": "29 passed, 1 skipped"
+  },
+  "liveVerification": {
+    "command": "python scripts/phase14r_operations_snapshot.py --same-stack --fail-on-attention --compact",
+    "status": "ok",
+    "alerts": 0,
+    "minioObjects": 8739,
+    "minioObjectLimit": 10000,
+    "scanComplete": true,
+    "database": "postgresql",
+    "redis": "redis",
+    "workers": 6
+  },
+  "static": {
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "gitDiffCheck": "PASS"
+  }
+}

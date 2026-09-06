@@ -6,17 +6,24 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from mdi_api.config import load_settings
+from mdi_api.config import database_configuration_declared, load_settings
 from mdi_api.db import metadata
 
 
 config = context.config
 
 if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
+    # Alembic may run inside the same Python process as API/worker tests.
+    # Its logging configuration must not disable already-created application
+    # loggers, otherwise later operational events silently disappear.
+    fileConfig(config.config_file_name, disable_existing_loggers=False)
 
 runtime_database_url = load_settings().database_url
-if os.getenv("DATABASE_URL") or os.getenv("MDI_DATABASE_URL") or os.getenv("POSTGRES_HOST"):
+configured_database_url = config.get_main_option("sqlalchemy.url")
+if (
+    database_configuration_declared(os.environ)
+    and configured_database_url == "sqlite:///./mdi_phase5.db"
+):
     config.set_main_option("sqlalchemy.url", runtime_database_url.replace("%", "%%"))
 
 target_metadata = metadata

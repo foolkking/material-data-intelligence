@@ -1,0 +1,57 @@
+{
+  "improvementId": "CO-140",
+  "improvementNumber": 139,
+  "date": "2026-09-05",
+  "problem": "Repository-local Next build caches exceeded the budget while active and obsolete build identities were not safely separated.",
+  "change": {
+    "schemaVersion": "mdi.repo-build-cache-cleanup/1.0",
+    "candidateScope": "direct apps/web/.next* directories only",
+    "minimumAgeHours": 24,
+    "requiresGitTrackingComplete": true,
+    "requiresActiveFrontendResolution": true,
+    "requiresExactPlanFingerprint": true,
+    "activeBuildId": "8sfvpRz5rhQnpDvDpnPdW",
+    "activeBuildPath": "apps/web/.cache/next-live-20260905",
+    "planFingerprint": "a461a0a39483c4b5717d242a5bc979bbd183c017ea6e84370b451a655326e10b"
+  },
+  "verification": {
+    "focused": {
+      "selected": 14,
+      "passed": 14
+    },
+    "before": {
+      "directoryCount": 113,
+      "observedBytes": 40349635642,
+      "candidateCount": 105,
+      "candidateBytes": 38056000111
+    },
+    "apply": {
+      "removedCount": 105,
+      "removedBytes": 38056000111,
+      "recoverable": false,
+      "reproducibleGeneratedContent": true
+    },
+    "after": {
+      "directoryCount": 8,
+      "observedBytes": 2293972298,
+      "candidateCount": 0,
+      "storageBudgetState": "within",
+      "storageBudgetUtilizationPercent": 8.55
+    },
+    "runtime": {
+      "frontendStatus": 200,
+      "frontendPid": 29664,
+      "frontendPidUnchanged": true,
+      "database": "postgresql:ok",
+      "redis": "redis:ok",
+      "artifactStorage": "minio:ok",
+      "worker": "redis:ok",
+      "obsoleteFrontendPort3024": "not listening",
+      "obsoleteApiPort8006": "not listening"
+    },
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "result": "35.44 GiB of reproducible historical build output was removed without interrupting the live product or scientific service authority."
+}

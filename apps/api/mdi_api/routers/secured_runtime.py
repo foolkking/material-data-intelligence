@@ -1,13 +1,28 @@
 from __future__ import annotations
 
+import base64
+import binascii
+import hashlib
+import json
 import os
-from datetime import datetime, timezone
-from typing import Any, Literal
+from datetime import datetime, timedelta, timezone
+from typing import Any, Literal, Mapping
 from uuid import uuid4
 
 from fastapi import Depends, HTTPException, Request
 from pydantic import BaseModel, Field, model_validator
-from sqlalchemy import delete, func, insert, inspect, select, update
+from sqlalchemy import (
+    Text,
+    cast,
+    delete,
+    exists,
+    func,
+    insert,
+    inspect,
+    literal,
+    select,
+    update,
+)
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from mdi_api.access import require_project_access
@@ -16,6 +31,7 @@ from mdi_api.database import create_engine_from_settings
 from mdi_api.db import (
     audit_logs,
     datasets,
+    jobs,
     messages,
     metadata,
     project_configs,
@@ -27,6 +43,7 @@ from mdi_api.db import (
     scientific_object_versions,
     scientific_result_snapshots,
     agent2_scientific_report_snapshots,
+    agent2_scientific_interpretations,
     sessions,
     user_configs,
 )
@@ -35,6 +52,7 @@ from mdi_api.phase2_runtime import CreateJobRequest, CreateProjectRequest, Datas
 from mdi_api.routers.datasets import BulkDatasetActionRequest, UpdateDatasetRequest
 from mdi_api.routers.projects import BulkProjectActionRequest, UpdateProjectRequest
 from mdi_api.input_transport import CreateUploadSessionRequest
+from mdi_api.lifecycle_policy import evaluate_purge, retention_policy_snapshot
 
 
 _DEPENDENCY_LABELS = {
@@ -57,8 +75,29 @@ _DEPENDENCY_LABELS = {
     "recipes": "Recipe",
     "audit_logs": "审计记录",
 }
+_DATA_DEPENDENCY_KINDS = {
+    "datasets",
+    "data_profiles",
+    "dataset_source_resources",
+    "scientific_objects",
+    "scientific_object_versions",
+    "scientific_object_relationships",
+}
+_RESEARCH_DEPENDENCY_KINDS = {
+    "sessions",
+    "research_turns",
+    "research_session_runs",
+    "jobs",
+    "tool_calls",
+    "artifacts",
+    "scientific_result_snapshots",
+    "workspaces",
+    "recipes",
+}
+_REPORT_DEPENDENCY_KINDS = {"scientific_reports", "reports"}
 
 _SAVED_PRODUCT_SEARCH_KIND = "savedProductSearch"
+_NOTIFICATION_READ_STATE_KIND = "notificationReadState"
 _SAVED_PRODUCT_SEARCH_TYPES = {
     "project",
     "dataset",
@@ -68,6 +107,10 @@ _SAVED_PRODUCT_SEARCH_TYPES = {
     "result",
 }
 _SAVED_PRODUCT_SEARCH_STATUSES = {"active", "archived", "trashed", "all"}
+_PRODUCT_SEARCH_CURSOR_VERSION = 2
+_PRODUCT_SEARCH_MAX_CURSOR_LENGTH = 512
+_PRODUCT_SEARCH_MAX_CANDIDATES_PER_KIND = 1_000
+_PRODUCT_SEARCH_MAX_CURSOR_ITEMS = 6 * _PRODUCT_SEARCH_MAX_CANDIDATES_PER_KIND
 
 
 class SavedProductSearchCreate(BaseModel):
@@ -131,6 +174,177 @@ class SavedProductSearchUpdate(BaseModel):
 
 class SavedProductSearchExecute(BaseModel):
     limit: int = Field(default=40, ge=1, le=100)
+
+
+class NotificationReadStateUpdate(BaseModel):
+    read: bool
+
+
+def _notification_read_state_id(
+    user_id: str,
+    project_id: str,
+    job_id: str,
+) -> str:
+    digest = hashlib.sha256(
+        f"{user_id}\0{project_id}\0{job_id}".encode("utf-8")
+    ).hexdigest()
+    return f"notification_read_{digest[:46]}"
+
+
+def _notification_read_state_view(
+    row: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    config = row.get("config_json")
+    if (
+        not isinstance(config, dict)
+        or config.get("configKind") != _NOTIFICATION_READ_STATE_KIND
+    ):
+        return None
+    project_id = str(config.get("projectId") or "")
+    job_id = str(config.get("jobId") or "")
+    read_at = config.get("readAt")
+    notification_updated_at = config.get("notificationUpdatedAt")
+    if not project_id or not job_id or not read_at or not notification_updated_at:
+        return None
+    return {
+        "projectId": project_id,
+        "jobId": job_id,
+        "read": True,
+        "readAt": read_at,
+        "notificationUpdatedAt": notification_updated_at,
+    }
+
+
+def list_notification_read_states(
+    current_user: CurrentUser = Depends(get_current_user_compat),
+) -> dict[str, Any]:
+    """Return durable read markers for notifications the user can still see.
+
+    A marker is valid only for the exact persisted Job revision that was read.
+    If the Job changes later, the notification becomes unread again without
+    mutating or duplicating the scientific execution record.
+    """
+
+    engine = create_engine_from_settings(load_settings())
+    with engine.connect() as connection:
+        visible_projects = _visible_project_ids(connection, current_user)
+        if not visible_projects:
+            return {
+                "schemaVersion": "NotificationReadState/1.0",
+                "items": [],
+                "count": 0,
+            }
+        rows = connection.execute(
+            select(user_configs)
+            .where(user_configs.c.user_id == current_user.id)
+            .order_by(user_configs.c.updated_at.desc())
+        ).mappings().all()
+        candidates = [
+            state
+            for row in rows
+            if (state := _notification_read_state_view(dict(row))) is not None
+            and state["projectId"] in visible_projects
+        ]
+        job_rows = connection.execute(
+            select(jobs.c.id, jobs.c.project_id, jobs.c.updated_at).where(
+                jobs.c.project_id.in_(visible_projects),
+                jobs.c.id.in_([state["jobId"] for state in candidates]),
+            )
+        ).mappings().all() if candidates else []
+        revisions = {
+            (str(row["project_id"]), str(row["id"])): (
+                row["updated_at"].isoformat() if row.get("updated_at") else None
+            )
+            for row in job_rows
+        }
+        items = [
+            state
+            for state in candidates
+            if revisions.get((state["projectId"], state["jobId"]))
+            == state["notificationUpdatedAt"]
+        ]
+    return {
+        "schemaVersion": "NotificationReadState/1.0",
+        "items": items,
+        "count": len(items),
+    }
+
+
+def update_notification_read_state(
+    project_id: str,
+    job_id: str,
+    request: NotificationReadStateUpdate,
+    current_user: CurrentUser = Depends(get_current_user_compat),
+) -> dict[str, Any]:
+    """Persist this user's read state after re-authorizing the source Job."""
+
+    engine = create_engine_from_settings(load_settings())
+    state_id = _notification_read_state_id(current_user.id, project_id, job_id)
+    with engine.begin() as connection:
+        require_project_access(connection, project_id, current_user, write=False)
+        job = connection.execute(
+            select(jobs.c.id, jobs.c.project_id, jobs.c.updated_at).where(
+                jobs.c.id == job_id,
+                jobs.c.project_id == project_id,
+            )
+        ).mappings().one_or_none()
+        if job is None:
+            raise HTTPException(status_code=404, detail="通知不存在或无权访问。")
+        if not request.read:
+            connection.execute(
+                delete(user_configs).where(
+                    user_configs.c.id == state_id,
+                    user_configs.c.user_id == current_user.id,
+                )
+            )
+            return {
+                "projectId": project_id,
+                "jobId": job_id,
+                "read": False,
+                "readAt": None,
+                "notificationUpdatedAt": (
+                    job["updated_at"].isoformat()
+                    if job.get("updated_at")
+                    else None
+                ),
+            }
+
+        now = datetime.now(timezone.utc)
+        config = {
+            "configKind": _NOTIFICATION_READ_STATE_KIND,
+            "schemaVersion": "1.0",
+            "projectId": project_id,
+            "jobId": job_id,
+            "readAt": now.isoformat(),
+            "notificationUpdatedAt": (
+                job["updated_at"].isoformat() if job.get("updated_at") else None
+            ),
+        }
+        existing = connection.execute(
+            select(user_configs.c.id).where(
+                user_configs.c.id == state_id,
+                user_configs.c.user_id == current_user.id,
+            )
+        ).scalar_one_or_none()
+        if existing is None:
+            connection.execute(
+                insert(user_configs).values(
+                    id=state_id,
+                    user_id=current_user.id,
+                    config_json=config,
+                    updated_at=now,
+                )
+            )
+        else:
+            connection.execute(
+                update(user_configs)
+                .where(
+                    user_configs.c.id == state_id,
+                    user_configs.c.user_id == current_user.id,
+                )
+                .values(config_json=config, updated_at=now)
+            )
+    return _notification_read_state_view({"config_json": config}) or {}
 
 
 def _saved_product_search_view(row: dict[str, Any]) -> dict[str, Any] | None:
@@ -343,11 +557,24 @@ def execute_saved_product_search(
     return {"savedSearch": saved_search, **search_result}
 
 
-def _result_search_href(project_id: str, result_id: str, research_turn_id: Any = None) -> str:
+def _result_search_href(
+    project_id: str,
+    result_id: str,
+    research_turn_id: Any = None,
+    research_session_id: Any = None,
+    job_id: Any = None,
+) -> str:
     """Prefer the persisted ResearchTurn route for an authorized Result hit."""
+    if research_session_id and research_turn_id:
+        return (
+            f"/projects/{project_id}/research/{research_session_id}"
+            f"?turn={research_turn_id}"
+        )
     if research_turn_id:
         return f"/projects/{project_id}/research?turn={research_turn_id}"
-    return f"/projects/{project_id}/research?result={result_id}"
+    if job_id:
+        return f"/projects/{project_id}/research?run={job_id}"
+    return f"/projects/{project_id}/research"
 
 
 def _research_search_title(summary: Any) -> str:
@@ -453,6 +680,9 @@ def search_product_secured(
     kind: str | None = None,
     status: str | None = None,
     limit: int = 40,
+    cursor: str | None = None,
+    date_from: str | None = None,
+    date_to: str | None = None,
     current_user: CurrentUser = Depends(get_current_user_compat),
 ) -> dict[str, Any]:
     """Return a bounded, project-authorized product search projection.
@@ -473,6 +703,39 @@ def search_product_secured(
     requested_status = status.strip().lower() if status else None
     if requested_status and requested_status not in {"active", "archived", "trashed", "all"}:
         raise HTTPException(status_code=422, detail="不支持的生命周期筛选。")
+    date_start = _parse_product_search_date(date_from, end_of_day=False)
+    date_end = _parse_product_search_date(date_to, end_of_day=True)
+    if date_start and date_end and date_start >= date_end:
+        raise HTTPException(status_code=422, detail="搜索日期范围无效。")
+    cursor_status = None if requested_status in {None, "all"} else requested_status
+    cursor_fingerprint = hashlib.sha256(
+        json.dumps(
+            {
+                "q": query,
+                "project": project_id,
+                "kind": requested_kind,
+                "status": cursor_status,
+                "dateFrom": date_from,
+                "dateTo": date_to,
+                "user": current_user.id,
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+    cursor_seen, cursor_key = _decode_product_search_cursor(
+        cursor,
+        expected_fingerprint=cursor_fingerprint,
+    )
+    scan_limit = min(
+        _PRODUCT_SEARCH_MAX_CANDIDATES_PER_KIND,
+        (
+            _PRODUCT_SEARCH_MAX_CANDIDATES_PER_KIND
+            if cursor_status is not None or date_start is not None or date_end is not None
+            else bounded_limit + 1
+        ),
+    )
 
     engine = create_engine_from_settings(load_settings())
     with engine.connect() as connection:
@@ -490,11 +753,31 @@ def search_product_secured(
                 raise HTTPException(status_code=404, detail="项目不存在或无权访问。")
             visible_ids = {project_id}
         if not visible_ids:
-            return {"query": query, "items": [], "count": 0}
+            return {
+                "query": query,
+                "items": [],
+                "count": 0,
+                "truncated": False,
+                "nextCursor": None,
+            }
 
         pattern = f"%{query.lower()}%" if query else "%"
         items: list[dict[str, Any]] = []
         search_truncated = False
+
+        # JSON fields are read-only navigation metadata.  Casting the
+        # authoritative JSON projection to text keeps this endpoint portable
+        # across the PostgreSQL qualification stack and SQLite compatibility
+        # tests without introducing a second search/fact authority.
+        def json_matches(column: Any) -> Any:
+            json_text = func.lower(cast(column, Text))
+            escaped_query = json.dumps(query, ensure_ascii=True)[1:-1].lower()
+            escaped_pattern = f"%{escaped_query}%"
+            # SQLite's JSON serializer escapes non-ASCII text while
+            # PostgreSQL commonly keeps it readable.  Match both encodings so
+            # the same semantic search remains portable without loading raw
+            # JSON into Python or exposing it in the response.
+            return json_text.like(pattern) | json_text.like(escaped_pattern)
 
         def add_item(
             *,
@@ -510,6 +793,21 @@ def search_product_secured(
         ) -> None:
             if requested_kind and requested_kind != item_kind:
                 return
+            normalized_updated_at = updated_at
+            if normalized_updated_at and normalized_updated_at.tzinfo is None:
+                normalized_updated_at = normalized_updated_at.replace(
+                    tzinfo=timezone.utc
+                )
+            if date_start and (
+                normalized_updated_at is None
+                or normalized_updated_at < date_start
+            ):
+                return
+            if date_end and (
+                normalized_updated_at is None
+                or normalized_updated_at >= date_end
+            ):
+                return
             items.append({
                 "kind": item_kind,
                 "id": item_id,
@@ -519,7 +817,11 @@ def search_product_secured(
                 "href": href,
                 "researchTurnId": research_turn_id,
                 "status": status,
-                "updatedAt": updated_at.isoformat() if updated_at else None,
+                "updatedAt": (
+                    normalized_updated_at.isoformat()
+                    if normalized_updated_at
+                    else None
+                ),
             })
 
         def status_matches(value: str | None) -> bool:
@@ -531,6 +833,32 @@ def search_product_secured(
             if requested_status == "trashed":
                 return normalized == "trashed"
             return normalized not in {"archived", "ARCHIVED".lower(), "trashed", "purged"}
+
+        def apply_cursor(
+            statement: Any,
+            *,
+            updated_column: Any,
+            item_kind: str,
+            id_column: Any,
+        ) -> Any:
+            """Continue strictly below the last globally ordered search hit."""
+
+            if cursor_key is None:
+                return statement
+            cursor_time, cursor_kind, cursor_id = cursor_key
+            same_time_after_kind = (
+                literal(item_kind) < cursor_kind
+            ) | (
+                (literal(item_kind) == cursor_kind)
+                & (cast(id_column, Text) < cursor_id)
+            )
+            return statement.where(
+                (updated_column < cursor_time)
+                | (
+                    (updated_column == cursor_time)
+                    & same_time_after_kind
+                )
+            )
 
         archived_project_ids: set[str] = set()
         trashed_project_ids: set[str] = set()
@@ -563,17 +891,27 @@ def search_product_secured(
             trashed_project_ids = set()
 
         if not requested_kind or requested_kind == "project":
+            project_query = select(projects).where(
+                projects.c.id.in_(visible_ids),
+                (
+                    func.lower(projects.c.name).like(pattern)
+                    | func.lower(projects.c.description).like(pattern)
+                    | projects.c.id.in_(tagged_project_ids)
+                ),
+            )
+            project_query = apply_cursor(
+                project_query,
+                updated_column=projects.c.updated_at,
+                item_kind="project",
+                id_column=projects.c.id,
+            )
             project_rows = connection.execute(
-                select(projects).where(
-                    projects.c.id.in_(visible_ids),
-                    (
-                        func.lower(projects.c.name).like(pattern)
-                        | func.lower(projects.c.description).like(pattern)
-                        | projects.c.id.in_(tagged_project_ids)
-                    ),
-                ).order_by(projects.c.updated_at.desc()).limit(bounded_limit)
+                project_query.order_by(
+                    projects.c.updated_at.desc(),
+                    projects.c.id.desc(),
+                ).limit(scan_limit)
             ).mappings().all()
-            search_truncated = search_truncated or len(project_rows) >= bounded_limit
+            search_truncated = search_truncated or len(project_rows) >= scan_limit
             for row in project_rows:
                 project_status = (
                     "trashed"
@@ -598,13 +936,24 @@ def search_product_secured(
                 )
 
         if not requested_kind or requested_kind == "dataset":
+            dataset_query = select(datasets).where(
+                datasets.c.project_id.in_(visible_ids),
+                func.lower(datasets.c.name).like(pattern)
+                | json_matches(datasets.c.metadata_json),
+            )
+            dataset_query = apply_cursor(
+                dataset_query,
+                updated_column=datasets.c.updated_at,
+                item_kind="dataset",
+                id_column=datasets.c.id,
+            )
             dataset_rows = connection.execute(
-                select(datasets).where(
-                    datasets.c.project_id.in_(visible_ids),
-                    func.lower(datasets.c.name).like(pattern),
-                ).order_by(datasets.c.updated_at.desc()).limit(bounded_limit)
+                dataset_query.order_by(
+                    datasets.c.updated_at.desc(),
+                    datasets.c.id.desc(),
+                ).limit(scan_limit)
             ).mappings().all()
-            search_truncated = search_truncated or len(dataset_rows) >= bounded_limit
+            search_truncated = search_truncated or len(dataset_rows) >= scan_limit
             for row in dataset_rows:
                 dataset_status = _dataset_lifecycle_status(dict(row))
                 if not status_matches(dataset_status):
@@ -621,14 +970,33 @@ def search_product_secured(
                 )
 
         if not requested_kind or requested_kind == "scientific_object":
+            object_query = select(scientific_objects).where(
+                scientific_objects.c.project_id.in_(visible_ids),
+                func.lower(scientific_objects.c.display_name).like(pattern)
+                | func.lower(scientific_objects.c.object_type).like(pattern)
+                | exists(
+                    select(1).where(
+                        scientific_object_versions.c.scientific_object_id
+                        == scientific_objects.c.id,
+                        json_matches(
+                            scientific_object_versions.c.canonical_metadata_json
+                        ),
+                    )
+                ),
+            )
+            object_query = apply_cursor(
+                object_query,
+                updated_column=scientific_objects.c.created_at,
+                item_kind="scientific_object",
+                id_column=scientific_objects.c.id,
+            )
             object_rows = connection.execute(
-                select(scientific_objects).where(
-                    scientific_objects.c.project_id.in_(visible_ids),
-                    func.lower(scientific_objects.c.display_name).like(pattern)
-                    | func.lower(scientific_objects.c.object_type).like(pattern),
-                ).order_by(scientific_objects.c.created_at.desc()).limit(bounded_limit)
+                object_query.order_by(
+                    scientific_objects.c.created_at.desc(),
+                    scientific_objects.c.id.desc(),
+                ).limit(scan_limit)
             ).mappings().all()
-            search_truncated = search_truncated or len(object_rows) >= bounded_limit
+            search_truncated = search_truncated or len(object_rows) >= scan_limit
             for row in object_rows:
                 object_status = str(row.get("lifecycle_status") or "")
                 if not status_matches(object_status):
@@ -661,15 +1029,36 @@ def search_product_secured(
                 .scalar_subquery()
                 .label("first_user_message")
             )
-            session_rows = connection.execute(
-                select(sessions, first_user_message).join(messages, messages.c.session_id == sessions.c.id, isouter=True).where(
+            session_query = (
+                select(sessions, first_user_message)
+                .join(
+                    messages,
+                    messages.c.session_id == sessions.c.id,
+                    isouter=True,
+                )
+                .where(
                     sessions.c.project_id.in_(visible_ids),
                     func.lower(sessions.c.id).like(pattern)
                     | func.lower(messages.c.content_summary).like(pattern)
-                    | func.lower(func.coalesce(sessions.c.title_override, "")).like(pattern),
-                ).distinct().order_by(sessions.c.is_pinned.desc(), sessions.c.created_at.desc()).limit(bounded_limit)
+                    | func.lower(
+                        func.coalesce(sessions.c.title_override, "")
+                    ).like(pattern),
+                )
+                .distinct()
+            )
+            session_query = apply_cursor(
+                session_query,
+                updated_column=sessions.c.created_at,
+                item_kind="research",
+                id_column=sessions.c.id,
+            )
+            session_rows = connection.execute(
+                session_query.order_by(
+                    sessions.c.created_at.desc(),
+                    sessions.c.id.desc(),
+                ).limit(scan_limit)
             ).mappings().all()
-            search_truncated = search_truncated or len(session_rows) >= bounded_limit
+            search_truncated = search_truncated or len(session_rows) >= scan_limit
             for row in session_rows:
                 session_status = str(row.get("status") or "")
                 if not status_matches(session_status):
@@ -741,14 +1130,24 @@ def search_product_secured(
                 for report_id, organization in report_organization_by_id.items()
                 if query.casefold() in str(organization.get("titleOverride") or "").casefold()
             ]
+            report_query = select(reports).where(
+                reports.c.project_id.in_(visible_ids),
+                func.lower(reports.c.title).like(pattern)
+                | reports.c.id.in_(matching_organization_ids),
+            )
+            report_query = apply_cursor(
+                report_query,
+                updated_column=reports.c.created_at,
+                item_kind="report",
+                id_column=reports.c.id,
+            )
             report_rows = connection.execute(
-                select(reports).where(
-                    reports.c.project_id.in_(visible_ids),
-                    func.lower(reports.c.title).like(pattern)
-                    | reports.c.id.in_(matching_organization_ids),
-                ).order_by(reports.c.created_at.desc()).limit(bounded_limit)
+                report_query.order_by(
+                    reports.c.created_at.desc(),
+                    reports.c.id.desc(),
+                ).limit(scan_limit)
             ).mappings().all()
-            search_truncated = search_truncated or len(report_rows) >= bounded_limit
+            search_truncated = search_truncated or len(report_rows) >= scan_limit
             for row in report_rows:
                 report_status = report_lifecycle_by_id.get(str(row["id"]), "active")
                 if not status_matches(report_status):
@@ -768,47 +1167,242 @@ def search_product_secured(
                 )
 
         if not requested_kind or requested_kind == "result":
-            result_rows = connection.execute(
+            # ScientificResult facts are stored in the immutable bundle.  A
+            # grounded human-readable finding is stored in the linked
+            # interpretation projection, so include it through an authorized
+            # EXISTS predicate while keeping the result item itself a bounded
+            # navigation projection.
+            def result_display_title(row: Mapping[str, Any], result_id: str) -> str:
+                bundle = row.get("bundle_json")
+                if isinstance(bundle, dict):
+                    question = str(bundle.get("research_question") or "").strip()
+                    if question:
+                        return question[:160]
+                    result_items = bundle.get("result_items")
+                    if isinstance(result_items, list):
+                        for result_item in result_items:
+                            if isinstance(result_item, dict):
+                                title = str(result_item.get("title") or "").strip()
+                                if title:
+                                    return title[:160]
+                return f"科学结果 {result_id[:12]}"
+
+            interpretation_matches = exists(
+                select(1).where(
+                    agent2_scientific_interpretations.c.result_snapshot_id
+                    == scientific_result_snapshots.c.id,
+                    agent2_scientific_interpretations.c.project_id
+                    == scientific_result_snapshots.c.project_id,
+                    json_matches(agent2_scientific_interpretations.c.output_json),
+                )
+            )
+            result_query = (
                 select(
                     scientific_result_snapshots,
                     research_turns.c.id.label("snapshot_research_turn_id"),
+                    research_turns.c.research_session_id.label(
+                        "snapshot_research_session_id"
+                    ),
+                    sessions.c.status.label("snapshot_research_session_status"),
                 ).outerjoin(
                     research_turns,
-                    scientific_result_snapshots.c.research_turn_id == research_turns.c.id,
+                    (
+                        scientific_result_snapshots.c.research_turn_id
+                        == research_turns.c.id
+                    )
+                    & (
+                        scientific_result_snapshots.c.project_id
+                        == research_turns.c.project_id
+                    ),
+                ).outerjoin(
+                    sessions,
+                    (research_turns.c.research_session_id == sessions.c.id)
+                    & (scientific_result_snapshots.c.project_id == sessions.c.project_id),
                 ).where(
                     scientific_result_snapshots.c.project_id.in_(visible_ids),
-                ).order_by(scientific_result_snapshots.c.created_at.desc()).limit(bounded_limit * 2)
+                    (
+                        func.lower(cast(scientific_result_snapshots.c.id, Text)).like(pattern)
+                        | func.lower(scientific_result_snapshots.c.schema_version).like(pattern)
+                        | json_matches(scientific_result_snapshots.c.bundle_json)
+                        | interpretation_matches
+                    ),
+                )
+            )
+            result_query = apply_cursor(
+                result_query,
+                updated_column=scientific_result_snapshots.c.created_at,
+                item_kind="result",
+                id_column=scientific_result_snapshots.c.id,
+            )
+            result_rows = connection.execute(
+                result_query.order_by(
+                    scientific_result_snapshots.c.created_at.desc(),
+                    scientific_result_snapshots.c.id.desc(),
+                ).limit(scan_limit)
             ).mappings().all()
-            search_truncated = search_truncated or len(result_rows) >= bounded_limit * 2
+            search_truncated = search_truncated or len(result_rows) >= scan_limit
             for row in result_rows:
                 result_id = str(row["id"])
-                if query and query.lower() not in result_id.lower() and query.lower() not in str(row.get("schema_version") or "").lower():
-                    continue
-                if not status_matches(str(row.get("relevance_status") or "active")):
+                result_status = str(
+                    row.get("snapshot_research_session_status")
+                    or row.get("relevance_status")
+                    or "active"
+                )
+                if not status_matches(result_status):
                     continue
                 research_turn_id = row.get("snapshot_research_turn_id")
+                research_session_id = row.get("snapshot_research_session_id")
                 add_item(
                     item_kind="result",
                     item_id=result_id,
                     item_project_id=str(row["project_id"]),
-                    title=f"ScientificResult {result_id[:12]}",
-                    subtitle=str(row.get("schema_version") or "科学结果"),
-                    href=_result_search_href(str(row["project_id"]), result_id, research_turn_id),
+                    title=result_display_title(row, result_id),
+                    subtitle=f"结果 {result_id[:12]} · {row.get('schema_version') or '1.0'}",
+                    href=_result_search_href(
+                        str(row["project_id"]),
+                        result_id,
+                        research_turn_id,
+                        research_session_id,
+                        row.get("job_id"),
+                    ),
                     research_turn_id=str(research_turn_id) if research_turn_id else None,
-                    status=str(row.get("relevance_status") or ""),
+                    status=result_status,
                     updated_at=row.get("created_at"),
                 )
 
-    items.sort(key=lambda item: item.get("updatedAt") or "", reverse=True)
+    items.sort(
+        key=lambda item: (
+            item.get("updatedAt") or "",
+            item["kind"],
+            item["id"],
+        ),
+        reverse=True,
+    )
+    unique_items: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
+    for item in items:
+        identity = (item["kind"], item["projectId"], item["id"])
+        if identity in seen:
+            continue
+        seen.add(identity)
+        unique_items.append(item)
+    page_items = unique_items[:bounded_limit]
+    next_seen = cursor_seen + len(page_items)
+    has_more = len(unique_items) > bounded_limit
+    next_cursor = (
+        _encode_product_search_cursor(
+            seen=next_seen,
+            fingerprint=cursor_fingerprint,
+            sort_key=(
+                str(page_items[-1].get("updatedAt") or ""),
+                str(page_items[-1]["kind"]),
+                str(page_items[-1]["id"]),
+            ),
+        )
+        if has_more and page_items
+        else None
+    )
     # Keep the response payload bounded. When a category reached its bounded
     # query window, disclose that the candidate count is a lower bound rather
     # than implying an exact total that would require unbounded loading.
     return {
         "query": query,
-        "items": items[:bounded_limit],
-        "count": len(items),
-        "truncated": search_truncated,
+        "items": page_items,
+        "count": cursor_seen + len(unique_items),
+        "truncated": search_truncated or has_more,
+        "nextCursor": next_cursor,
     }
+
+
+def _parse_product_search_date(
+    value: str | None,
+    *,
+    end_of_day: bool,
+) -> datetime | None:
+    if value is None or not value.strip():
+        return None
+    normalized = value.strip()
+    try:
+        parsed = datetime.fromisoformat(normalized.replace("Z", "+00:00"))
+    except ValueError:
+        raise HTTPException(status_code=422, detail="搜索日期格式无效。") from None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    else:
+        parsed = parsed.astimezone(timezone.utc)
+    if end_of_day and len(normalized) == 10:
+        parsed += timedelta(days=1)
+    return parsed
+
+
+def _encode_product_search_cursor(
+    *,
+    seen: int,
+    fingerprint: str,
+    sort_key: tuple[str, str, str],
+) -> str:
+    payload = json.dumps(
+        {
+            "v": _PRODUCT_SEARCH_CURSOR_VERSION,
+            "n": seen,
+            "f": fingerprint,
+            "k": list(sort_key),
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return base64.urlsafe_b64encode(payload).decode("ascii").rstrip("=")
+
+
+def _decode_product_search_cursor(
+    cursor: str | None,
+    *,
+    expected_fingerprint: str,
+) -> tuple[int, tuple[datetime, str, str] | None]:
+    if not cursor:
+        return 0, None
+    if len(cursor) > _PRODUCT_SEARCH_MAX_CURSOR_LENGTH:
+        raise HTTPException(status_code=422, detail="搜索游标无效。")
+    try:
+        padding = "=" * (-len(cursor) % 4)
+        payload = json.loads(
+            base64.urlsafe_b64decode(f"{cursor}{padding}").decode("utf-8")
+        )
+        version = int(payload["v"])
+        seen = int(payload["n"])
+        fingerprint = str(payload["f"])
+        sort_key = payload["k"]
+        if not isinstance(sort_key, list) or len(sort_key) != 3:
+            raise ValueError("invalid cursor sort key")
+        updated_at = datetime.fromisoformat(
+            str(sort_key[0]).replace("Z", "+00:00")
+        )
+        if updated_at.tzinfo is None:
+            updated_at = updated_at.replace(tzinfo=timezone.utc)
+        else:
+            updated_at = updated_at.astimezone(timezone.utc)
+        item_kind = str(sort_key[1])
+        item_id = str(sort_key[2])
+    except (
+        binascii.Error,
+        KeyError,
+        TypeError,
+        ValueError,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+    ):
+        raise HTTPException(status_code=422, detail="搜索游标无效。") from None
+    if (
+        version != _PRODUCT_SEARCH_CURSOR_VERSION
+        or fingerprint != expected_fingerprint
+        or seen <= 0
+        or seen > _PRODUCT_SEARCH_MAX_CURSOR_ITEMS
+        or item_kind not in _SAVED_PRODUCT_SEARCH_TYPES
+        or not item_id
+        or len(item_id) > 160
+    ):
+        raise HTTPException(status_code=422, detail="搜索游标与当前条件不匹配。")
+    return seen, (updated_at, item_kind, item_id)
 
 
 def create_project_secured(request: CreateProjectRequest, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
@@ -901,10 +1495,12 @@ def delete_empty_project_secured(
             count = int(connection.execute(select(func.count()).select_from(table).where(table.c.project_id == project_id)).scalar_one())
             if count:
                 blockers[table.name] = count
-        if blockers:
+        purge_decision = evaluate_purge(sum(blockers.values()), mode="manual")
+        if not purge_decision["eligible"]:
             raise HTTPException(status_code=409, detail={
                 "message": "项目包含数据或研究记录，不能物理删除。请改为归档。",
                 "blockers": blockers,
+                "retentionPolicy": purge_decision["policy"],
             })
         if audit_logs.name in existing_tables:
             connection.execute(delete(audit_logs).where(audit_logs.c.project_id == project_id))
@@ -942,6 +1538,7 @@ def get_project_dependency_impact_secured(
         entity_id=project_id,
         display_name=str(project.get("name") or project_id),
         blockers=blockers,
+        project_id=project_id,
     )
 
 
@@ -1417,10 +2014,12 @@ def delete_empty_dataset_secured(
             count = int(connection.execute(select(func.count()).select_from(table).where(table.c.dataset_id == dataset_id)).scalar_one())
             if count:
                 blockers[table.name] = count
-        if blockers:
+        purge_decision = evaluate_purge(sum(blockers.values()), mode="manual")
+        if not purge_decision["eligible"]:
             raise HTTPException(status_code=409, detail={
                 "message": "数据集包含源文件、语义档案或研究记录，不能物理删除。请改为归档。",
                 "blockers": blockers,
+                "retentionPolicy": purge_decision["policy"],
             })
         connection.execute(delete(datasets).where(datasets.c.id == dataset_id))
     try:
@@ -1450,6 +2049,8 @@ def get_dataset_dependency_impact_secured(
         entity_id=dataset_id,
         display_name=str(row.get("name") or dataset_id),
         blockers=blockers,
+        project_id=str(row["project_id"]),
+        data_href=f"/projects/{row['project_id']}/data?dataset={dataset_id}",
     )
 
 
@@ -1515,19 +2116,37 @@ def _dependency_impact_response(
     entity_id: str,
     display_name: str,
     blockers: dict[str, int],
+    project_id: str,
+    data_href: str | None = None,
 ) -> dict[str, Any]:
+    def product_href(kind: str) -> str | None:
+        if kind in _DATA_DEPENDENCY_KINDS:
+            return data_href or f"/projects/{project_id}/data"
+        if kind in _RESEARCH_DEPENDENCY_KINDS:
+            return f"/projects/{project_id}/research"
+        if kind in _REPORT_DEPENDENCY_KINDS:
+            return f"/projects/{project_id}/reports"
+        return None
+
     dependencies = [
-        {"kind": table_name, "label": _DEPENDENCY_LABELS.get(table_name, table_name), "count": count}
+        {
+            "kind": table_name,
+            "label": _DEPENDENCY_LABELS.get(table_name, table_name),
+            "count": count,
+            **({"href": href} if (href := product_href(table_name)) else {}),
+        }
         for table_name, count in sorted(blockers.items())
     ]
     total = sum(item["count"] for item in dependencies)
+    purge_decision = evaluate_purge(total, mode="manual")
     return {
         "entity": entity,
         "entityId": entity_id,
         "displayName": display_name,
-        "canDelete": not dependencies,
+        "canDelete": purge_decision["eligible"],
         "dependencyCount": total,
         "dependencies": dependencies,
+        "retentionPolicy": retention_policy_snapshot(),
         "impact": {
             "removedFromActiveDiscovery": bool(dependencies),
             "historicalProvenanceProtected": bool(dependencies),
@@ -1545,7 +2164,20 @@ def get_dataset_profile_secured(dataset_id: str, current_user: CurrentUser = Dep
 
 def get_dataset_object_store_secured(dataset_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
     _authorize_dataset(dataset_id, current_user)
+    from mdi_api.phase2_runtime import get_phase2_dataset
     from mdi_api.routers.datasets import get_dataset_object_store
+
+    # An intentionally empty Dataset is a valid product state, not a storage
+    # outage. Returning an empty canonical resource collection lets the
+    # frontend present an import/empty state while keeping a real missing
+    # normalized payload fail-closed below.
+    dataset = get_phase2_dataset(dataset_id)
+    if int(dataset.get("objectCount") or 0) == 0 and int(dataset.get("fileCount") or 0) == 0:
+        return {
+            "datasetId": dataset_id,
+            "resources": [],
+            "availability": "EMPTY",
+        }
 
     try:
         return get_dataset_object_store(dataset_id)
@@ -1731,7 +2363,20 @@ def stream_phase1_job_events_secured(job_id: str, current_user: CurrentUser = De
 
 def submit_analysis_request_secured(body: dict[str, Any] | None = None, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
     """Authenticate the retired compatibility analysis endpoint."""
-    del current_user
+    requested_project_id = ""
+    if isinstance(body, dict):
+        requested_project_id = str(
+            body.get("projectId")
+            or body.get("project_id")
+            or ""
+        ).strip()
+    if requested_project_id:
+        engine = create_engine_from_settings(load_settings())
+        with engine.connect() as connection:
+            # The compatibility endpoint is non-executing, but a supplied
+            # Project scope is still an authorization boundary. Preserve the
+            # legacy unscoped call while failing closed for foreign projects.
+            require_project_access(connection, requested_project_id, current_user)
     from mdi_api.phase1_demo import submit_analysis_request_stub
 
     return submit_analysis_request_stub(body)

@@ -4,6 +4,7 @@ import type { Viewport } from "next";
 import { ProductNavigationProvider } from "./components/ProductNavigation";
 import { ProductRouteFrame } from "./components/ProductRouteFrame";
 import { RouteTransitionProgress } from "./components/RouteTransitionProgress";
+import { ClientObservability } from "./components/ClientObservability";
 
 export const metadata = {
   title: "Material Data Intelligence",
@@ -20,6 +21,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="zh-CN">
       <body>
+        <ClientObservability
+          releaseSha={process.env.MDI_RELEASE_SHA || process.env.GITHUB_SHA}
+        />
         <ProductNavigationProvider>
           <RouteTransitionProgress />
           <ProductRouteFrame>{children}</ProductRouteFrame>

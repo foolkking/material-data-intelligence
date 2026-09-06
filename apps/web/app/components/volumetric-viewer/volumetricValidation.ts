@@ -54,6 +54,17 @@ export function validateVolumetricArtifacts(datasetValue: unknown, manifestValue
   const payloadById = new Map(payloads.map((payload) => [payload.payloadId, payload]));
   const fields = fieldValues.map((value) => validateField(value, errors)).filter((value): value is ValidatedVolumetricField => value !== null);
   if (new Set(payloads.map((value) => value.payloadId)).size !== payloads.length || new Set(fields.map((value) => value.fieldId)).size !== fields.length) errors.push("VOLUME_CANONICAL_ORDER_INVALID");
+  if (grid) fields.forEach((field) => {
+    const payload = payloadById.get(field.payloadId);
+    if (!payload || payload.gridShape.some((value, axis) => value !== grid.shape[axis])) {
+      errors.push("VOLUME_PAYLOAD_GRID_MISMATCH");
+    } else if (payload.inlineValues && payload.inlineValues.some((value) => {
+      const tolerance = Math.max(1e-12, Math.max(Math.abs(field.minimum), Math.abs(field.maximum)) * 1e-9);
+      return value < field.minimum - tolerance || value > field.maximum + tolerance;
+    })) {
+      errors.push("VOLUME_PAYLOAD_DATA_INVALID");
+    }
+  });
   if (payloads.map((value) => value.payloadId).join("|") !== [...payloads].sort((a,b)=>a.payloadId.localeCompare(b.payloadId)).map((value)=>value.payloadId).join("|")) errors.push("VOLUME_CANONICAL_ORDER_INVALID");
   if (fields.map((value) => value.fieldId).join("|") !== [...fields].sort((a,b)=>a.fieldId.localeCompare(b.fieldId)).map((value)=>value.fieldId).join("|")) errors.push("VOLUME_CANONICAL_ORDER_INVALID");
   const fieldIds = new Set(fields.map((field) => field.fieldId));
@@ -70,6 +81,7 @@ export function validateVolumetricArtifacts(datasetValue: unknown, manifestValue
     if (field.valueKind !== "real" || field.fieldRank !== "scalar" || field.storedComponentCount !== 1) reasons.push("real_scalar_required");
     if (grid?.sampleLocation !== "node") reasons.push("node_samples_required");
     if (grid?.shape.some((value) => value < 2)) reasons.push("grid_axis_too_small");
+    if (grid && new Set(grid.boundaryConditions).size > 1) reasons.push("mixed_boundary_conditions_unsupported");
     return payload ? Object.freeze({ field, payload, supported: reasons.length === 0, reasons: Object.freeze(reasons) }) : null;
   }).filter((value): value is NonNullable<typeof value> => value !== null);
   if (compatibility.length !== fields.length) errors.push("VOLUME_FIELD_PAYLOAD_MISMATCH");
@@ -103,12 +115,13 @@ function validateGrid(value: unknown, errors: string[]): ValidatedVolumetricGrid
   if (!record(value) || !exactKeys(value, GRID_KEYS) || value.schema_version !== "phase10j.volumetric_grid.v1" || value.coordinate_space !== "real_cartesian" || value.length_unit !== "angstrom") { errors.push("VOLUME_GRID_SCHEMA_INVALID"); return null; }
   const shape = int3(value.shape); const origin = vector3(value.origin_cartesian); const steps = matrix3(value.step_matrix);
   const boundaries = string3(value.boundary_conditions);
-  if (!shape || shape.some((item) => item < 1 || item > 512) || !origin || !steps || !boundaries || boundaries.some((item) => item !== "periodic" && item !== "non_periodic") || new Set(boundaries).size !== 1) { errors.push("VOLUME_GRID_SCHEMA_INVALID"); return null; }
+  if (!shape || shape.some((item) => item < 1 || item > 512) || !origin || !steps || !boundaries || boundaries.some((item) => item !== "periodic" && item !== "non_periodic")) { errors.push("VOLUME_GRID_SCHEMA_INVALID"); return null; }
   if (!wellConditioned(steps)) { errors.push("VOLUME_GRID_BASIS_ILL_CONDITIONED"); return null; }
   if (!safeId(value.grid_id) || !sha(value.content_hash) || !["node","cell_center"].includes(String(value.sample_location)) || !["excluded","included","not_applicable"].includes(String(value.endpoint_policy))) errors.push("VOLUME_GRID_SCHEMA_INVALID");
-  const periodic = boundaries[0] === "periodic";
+  const hasPeriodicAxis = boundaries.some((item) => item === "periodic");
+  const periodic = boundaries.every((item) => item === "periodic");
   let binding: ValidatedVolumetricGrid["structureBinding"] = null;
-  if (periodic) {
+  if (hasPeriodicAxis) {
     const source = value.structure_binding;
     if (!record(source) || !exactKeys(source, ["structure_sha256","lattice_sha256","lattice_matrix","basis_role"]) || !sha(source.structure_sha256) || !sha(source.lattice_sha256) || source.basis_role !== "canonical_structure_cell") errors.push("VOLUME_STRUCTURE_BINDING_INVALID");
     else {

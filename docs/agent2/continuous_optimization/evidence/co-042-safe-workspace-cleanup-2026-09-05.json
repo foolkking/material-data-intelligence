@@ -1,0 +1,44 @@
+{
+  "improvementId": "CO-042",
+  "date": "2026-09-05",
+  "rootCause": "Workspace residue had no single dry-run-first classifier separating repository-owned temporary files from active runtime data, release evidence, current logs and recoverable cleanup archives.",
+  "contract": {
+    "defaultMode": "dry-run",
+    "explicitDryRun": true,
+    "applyBehavior": "move to .cleanup_archive",
+    "permanentDeletion": false,
+    "eligible": [
+      "root .tmp-* files with bounded suffixes",
+      ".pytest_tmp regular files",
+      ".managed_logs direct .log files"
+    ],
+    "protected": [
+      "release evidence",
+      "active service data",
+      "runtime logs",
+      "database data",
+      "MinIO data",
+      "symlinks",
+      "files outside the resolved repository root"
+    ]
+  },
+  "liveDryRun": {
+    "candidateCount": 0,
+    "retainedTemporary": 1,
+    "protectedReleaseEvidenceRoots": 17,
+    "protectedActiveServiceDataRoots": 16,
+    "protectedRuntimeLogs": 45,
+    "recoverableCleanupArchiveEntries": 1
+  },
+  "verification": {
+    "focused": "4 passed",
+    "ruff": "passed",
+    "compileall": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "neatFreakDisposition": {
+    "knowledgeSurfaces": "current continuous-optimization ledgers remain authoritative",
+    "permanentCleanup": "deferred until post-report explicit confirmation",
+    "reviewSitePreserved": ".cleanup_archive/co043-next-build-20260905"
+  }
+}

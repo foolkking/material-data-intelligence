@@ -11,6 +11,7 @@ from uuid import UUID, uuid4, uuid5, NAMESPACE_URL
 from pydantic import ValidationError
 
 from mdi_api.interpretation.grounding import project_grounded_communication
+from mdi_api.lifecycle_policy import retention_policy_snapshot
 from mdi_api.interpretation.schemas import ScientificInterpretationOutput
 from mdi_api.scientific_results.relevance import ScientificResultRelevanceEvaluator
 from mdi_api.scientific_results.schemas import ScientificResultBundle
@@ -1213,26 +1214,52 @@ class ScientificReportService:
             report = view.get("report") if isinstance(view.get("report"), dict) else {}
             dependencies: list[dict[str, str]] = []
 
-            def add(kind: str, identity: Any, label: str) -> None:
+            source_research_href = (
+                f"/projects/{project_id}/research/{row['research_session_id']}"
+                f"?turn={row['research_turn_id']}"
+                if row.get("research_session_id") and row.get("research_turn_id")
+                else f"/projects/{project_id}/research"
+            )
+
+            def add(
+                kind: str,
+                identity: Any,
+                label: str,
+                href: str | None = None,
+            ) -> None:
                 value = str(identity or "").strip()
                 if not value or any(item["kind"] == kind and item["id"] == value for item in dependencies):
                     return
-                dependencies.append({"kind": kind, "id": value, "label": label})
+                dependencies.append(
+                    {
+                        "kind": kind,
+                        "id": value,
+                        "label": label,
+                        **({"href": href} if href else {}),
+                    }
+                )
 
-            add("RESEARCH_TURN", row.get("research_turn_id"), "研究回合")
-            add("SCIENTIFIC_RESULT", row.get("scientific_result_snapshot_id"), "ScientificResult")
-            add("INTERPRETATION", row.get("scientific_interpretation_id"), "科学解释")
+            add("RESEARCH_TURN", row.get("research_turn_id"), "研究回合", source_research_href)
+            add("SCIENTIFIC_RESULT", row.get("scientific_result_snapshot_id"), "ScientificResult", source_research_href)
+            add("INTERPRETATION", row.get("scientific_interpretation_id"), "科学解释", source_research_href)
             for source in view.get("viewer_sources") or []:
                 if isinstance(source, dict):
-                    add("SCIENTIFIC_OBJECT_VERSION", source.get("version_id"), f"来源版本 · {source.get('display_name') or '科学对象'}")
+                    object_id = source.get("object_id")
+                    version_id = source.get("version_id")
+                    href = (
+                        f"/projects/{project_id}/data?object={object_id}&version={version_id}"
+                        if object_id and version_id
+                        else f"/projects/{project_id}/data"
+                    )
+                    add("SCIENTIFIC_OBJECT_VERSION", version_id, f"来源版本 · {source.get('display_name') or '科学对象'}", href)
             for source in view.get("figure_sources") or []:
                 if not isinstance(source, dict):
                     continue
                 for artifact_id in source.get("artifact_ids") or []:
-                    add("ARTIFACT", artifact_id, "图表 Artifact")
+                    add("ARTIFACT", artifact_id, "图表 Artifact", source_research_href)
             if isinstance(report, dict):
                 for evidence_id in report.get("evidence_refs") or []:
-                    add("EVIDENCE", evidence_id, "科学证据")
+                    add("EVIDENCE", evidence_id, "科学证据", source_research_href)
                 for source_id in report.get("data_sources") or []:
                     add("DATA_SOURCE", source_id, "报告数据来源")
             dependencies = dependencies[:64]
@@ -1244,6 +1271,9 @@ class ScientificReportService:
                 "dependencyCount": len(dependencies),
                 "dependencies": dependencies,
                 "canDelete": False,
+                "retentionPolicy": retention_policy_snapshot(
+                    manual_purge_supported=False
+                ),
                 "impact": {
                     "removedFromActiveDiscovery": True,
                     "historicalProvenanceProtected": True,

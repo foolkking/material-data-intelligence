@@ -8,10 +8,21 @@ import {
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, it, vi } from "vitest";
 
-import type { Agent2TurnDetail } from "../lib/agent2-research-api";
+import {
+  Agent2ReadError,
+  type Agent2ResearchTurnResult,
+  type Agent2ContextManifest,
+  type Agent2TurnDetail,
+} from "../lib/agent2-research-api";
 import type { InterpretationEvidenceResponse, ProjectHistory } from "../lib/planner-api";
+import {
+  CONTEXT_MANIFEST_RENDER_WINDOW,
+  contextManifestRenderItems,
+  evidenceProvenanceSummary,
+} from "./ResearchPages";
 
 const mocks = vi.hoisted(() => ({
+  routerPush: vi.fn(),
   createResearchMessage: vi.fn(),
   createResearchAssistantProjection: vi.fn(),
   createResearchSession: vi.fn(),
@@ -48,7 +59,13 @@ const mocks = vi.hoisted(() => ({
   getAgent2ResearchTurnResult: vi.fn(),
 }));
 
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mocks.routerPush,
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+  }),
+}));
 
 vi.mock("../lib/product-api", () => ({
   createResearchMessage: mocks.createResearchMessage,
@@ -91,6 +108,15 @@ vi.mock("../lib/agent2-execution-api", () => ({
   cancelAgent2Execution: mocks.cancelAgent2Execution,
 }));
 vi.mock("../lib/agent2-research-api", () => ({
+  Agent2ReadError: class Agent2ReadError extends Error {
+    readonly status: number;
+
+    constructor(status: number) {
+      super(`科学呈现暂时无法读取 (${status})`);
+      this.name = "Agent2ReadError";
+      this.status = status;
+    }
+  },
   getAgent2ContextManifest: mocks.getAgent2ContextManifest,
   listAgent2ResearchTurns: mocks.listAgent2ResearchTurns,
   dispatchAgent2ResearchTurn: mocks.dispatchAgent2ResearchTurn,
@@ -125,22 +151,127 @@ import {
   agent2ProgressNeedsRefresh,
   agent2RetryInput,
   contextOperationSequenceLabel,
+  contextManifestVisibleItems,
   dedupeResearchTimelineMessages,
   displayResearchMessage,
+  editBranchSubmissionAllowed,
   groundedEvidenceNarrative,
   mergeArtifacts,
   mergeJobEvents,
   ResearchPage,
   researchBranchChoices,
+  researchBranchDescriptor,
   researchBranchNavigation,
   researchMessageVisibleInTimeline,
   researchMessageWindow,
   researchStateForAgent2Progress,
   researchStarterPrompts,
   researchTechnicalSummary,
+  retryLineageForTurn,
+  requestWasAborted,
+  resolveAgent2TurnForRecovery,
   runProcessStepState,
+  shouldSuppressAgent2DispatchError,
   userFacingPlanStep,
 } from "./ResearchPages";
+
+it("recognizes only typed abort failures as canceled requests", () => {
+  const abort = new Error("aborted");
+  abort.name = "AbortError";
+  expect(requestWasAborted(abort)).toBe(true);
+  expect(requestWasAborted(new Error("network failed"))).toBe(false);
+  expect(requestWasAborted("AbortError")).toBe(false);
+});
+
+it("allows Edit-last-message submission only after the authoritative Turn is ready", () => {
+  const turn = {
+    turn_id: "turn-edit",
+    research_session_id: "session-1",
+    project_id: "project-1",
+    sequence_no: 1,
+    parent_turn_id: null,
+    status: "COMPLETED",
+    user_message: { id: "message-1", role: "user", content: "原问题" },
+    context: null,
+    created_at: "2026-09-05T00:00:00Z",
+  } satisfies Agent2TurnDetail;
+
+  expect(editBranchSubmissionAllowed(undefined, "idle", null)).toBe(true);
+  expect(editBranchSubmissionAllowed("turn-edit", "loading", null)).toBe(false);
+  expect(editBranchSubmissionAllowed("turn-edit", "error", null)).toBe(false);
+  expect(editBranchSubmissionAllowed("turn-edit", "ready", null)).toBe(false);
+  expect(editBranchSubmissionAllowed("turn-edit", "ready", turn)).toBe(true);
+});
+
+it("keeps context disclosures bounded by default but lets researchers inspect every included item", () => {
+  const manifest = {
+    context_manifest_id: "manifest",
+    operation: "PLANNER",
+    project_id: "project",
+    research_session_id: "session",
+    research_turn_id: "turn",
+    policy_version: "2.0",
+    included_items: Array.from({ length: 9 }, (_, index) => ({
+      item_id: `item-${index}`,
+      kind: "SCIENTIFIC_RESULT",
+      authority_class: "SCIENTIFIC_RESULT",
+      server_side_source_identity: `result-${index}`,
+      provider_opaque_ref: `result_${index}`,
+      exact_object_id: null,
+      exact_object_version_id: null,
+      result_ref: `result-${index}`,
+      inclusion_reason: "explicit referenced prior Result",
+      selection_mode: "EXPLICIT",
+      authorization_checked: true,
+      content_fingerprint: "a".repeat(64),
+      estimated_tokens: 5,
+      was_compacted: false,
+      was_truncated: false,
+      superseded_state: "CURRENT",
+    })),
+    excluded_items: [],
+    estimated_input_tokens: 45,
+    input_budget: 10000,
+    reserved_output_tokens: 1000,
+    repair_margin: 100,
+    compaction_state: "NONE",
+    truncation_state: "NONE",
+    context_fingerprint: "b".repeat(64),
+    created_at: "2026-09-04T00:00:00Z",
+  } as Agent2ContextManifest;
+
+  expect(contextManifestVisibleItems(manifest, false)).toHaveLength(8);
+  expect(contextManifestVisibleItems(manifest, true)).toHaveLength(9);
+  expect(contextManifestVisibleItems(null, true)).toEqual([]);
+});
+
+it("keeps huge context disclosures bounded while preserving ordered provenance", () => {
+  const item = (index: number) => ({
+    item_id: `item-${index}`,
+    kind: "SCIENTIFIC_RESULT" as const,
+    authority_class: "SCIENTIFIC_RESULT" as const,
+    server_side_source_identity: `result-${index}`,
+    provider_opaque_ref: `opaque-${index}`,
+    result_ref: `result-${index}`,
+    inclusion_reason: "explicit referenced prior Result",
+    selection_mode: "EXPLICIT" as const,
+    authorization_checked: true,
+    content_fingerprint: "a".repeat(64),
+    estimated_tokens: 5,
+    was_compacted: false,
+    was_truncated: false,
+    superseded_state: "CURRENT" as const,
+  });
+  const manifest = {
+    included_items: Array.from({ length: 10_000 }, (_, index) => item(index)),
+  } as Agent2ContextManifest;
+
+  expect(contextManifestRenderItems(manifest, false)).toHaveLength(8);
+  const expanded = contextManifestRenderItems(manifest, true);
+  expect(expanded).toHaveLength(CONTEXT_MANIFEST_RENDER_WINDOW);
+  expect(expanded[0].server_side_source_identity).toBe("result-0");
+  expect(expanded.at(-1)?.server_side_source_identity).toBe("result-31");
+});
 
 it("collapses adjacent duplicate persisted messages without hiding deliberate repeats", () => {
   const base = (id: string, role: "user" | "assistant", content: string) => ({
@@ -202,6 +333,105 @@ it("refreshes persisted conversation messages when a Turn reaches a terminal sta
   expect(agent2ProgressHasFreshSessionMessages("CANCELED")).toBe(true);
 });
 
+it("resolves recovery state only for the exact authorized Project/Session/Turn scope", () => {
+  const turn = {
+    turn_id: "turn-exact",
+    research_session_id: "session-exact",
+    project_id: "project-exact",
+    sequence_no: 1,
+    parent_turn_id: null,
+    status: "COMPLETED",
+    user_message: { id: "message-exact", role: "user", content: "原问题" },
+    created_at: "2026-09-05T00:00:00Z",
+  };
+  expect(
+    resolveAgent2TurnForRecovery(
+      [turn],
+      "project-exact",
+      "session-exact",
+      "turn-exact",
+    ),
+  ).toEqual(turn);
+  expect(
+    resolveAgent2TurnForRecovery(
+      [turn],
+      "project-other",
+      "session-exact",
+      "turn-exact",
+    ),
+  ).toBeNull();
+  expect(
+    resolveAgent2TurnForRecovery(
+      [turn],
+      "project-exact",
+      "session-other",
+      "turn-exact",
+    ),
+  ).toBeNull();
+  expect(
+    resolveAgent2TurnForRecovery(
+      [turn],
+      "project-exact",
+      "session-exact",
+      "turn-missing",
+    ),
+  ).toBeNull();
+});
+
+it("reconstructs the exact persisted Turn message after remount and reconnect", async () => {
+  const session = {
+    id: "session-recover",
+    project_id: "project_1",
+    title: "可恢复研究",
+    status: "active",
+    messages: [],
+  };
+  const turn = {
+    turn_id: "turn-recover",
+    research_session_id: "session-recover",
+    project_id: "project_1",
+    sequence_no: 2,
+    parent_turn_id: null,
+    status: "RUNNING",
+    user_message: {
+      id: "message-recover",
+      role: "user",
+      content: "关闭页面后仍应恢复这条研究",
+    },
+    created_at: "2026-09-05T00:00:00Z",
+  };
+  mocks.listResearchSessions.mockResolvedValue([session]);
+  mocks.getResearchSession.mockResolvedValue(session);
+  mocks.listAgent2ResearchTurns.mockResolvedValue([turn]);
+
+  const first = render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session-recover"
+      agent2TurnId="turn-recover"
+    />,
+  );
+  expect(await screen.findByText("关闭页面后仍应恢复这条研究")).toBeInTheDocument();
+  first.unmount();
+
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session-recover"
+      agent2TurnId="turn-recover"
+    />,
+  );
+  expect(await screen.findByText("关闭页面后仍应恢复这条研究")).toBeInTheDocument();
+
+  mocks.listResearchSessions.mockClear();
+  mocks.getProjectHistory.mockClear();
+  window.dispatchEvent(new Event("online"));
+  await waitFor(() => {
+    expect(mocks.listResearchSessions).toHaveBeenCalled();
+    expect(mocks.getProjectHistory).toHaveBeenCalled();
+  });
+});
+
 it("builds retry input from the exact failed Turn rather than the session tail", () => {
   expect(
     agent2RetryInput({
@@ -259,6 +489,48 @@ it("builds retry input from the exact failed Turn rather than the session tail",
   });
 });
 
+it("accepts a retry lineage only when the persisted parent is the preserved failed Turn", () => {
+  const turns = [
+    {
+      turn_id: "turn-failed",
+      research_session_id: "session-1",
+      project_id: "project-1",
+      sequence_no: 1,
+      parent_turn_id: null,
+      status: "FAILED",
+      user_message: { id: "message-failed", role: "user", content: "分析结构" },
+      created_at: "2026-09-05T00:00:00Z",
+    },
+    {
+      turn_id: "turn-retry",
+      research_session_id: "session-1",
+      project_id: "project-1",
+      sequence_no: 2,
+      parent_turn_id: "turn-failed",
+      status: "ORCHESTRATING",
+      user_message: { id: "message-retry", role: "user", content: "分析结构" },
+      created_at: "2026-09-05T00:01:00Z",
+    },
+  ];
+
+  expect(
+    retryLineageForTurn(turns, "turn-retry", "turn-failed"),
+  ).toMatchObject({
+    current: { turn_id: "turn-retry" },
+    source: { turn_id: "turn-failed", status: "FAILED" },
+  });
+  expect(
+    retryLineageForTurn(turns, "turn-retry", "turn-other"),
+  ).toBeNull();
+  expect(
+    retryLineageForTurn(
+      [{ ...turns[0], status: "COMPLETED" }, turns[1]],
+      "turn-retry",
+      "turn-failed",
+    ),
+  ).toBeNull();
+});
+
 it("builds Continue input from the exact selected Turn with a new question", () => {
   const turn = {
     turn_id: "turn-canceled",
@@ -302,6 +574,42 @@ it("builds Continue input from the exact selected Turn with a new question", () 
   });
 });
 
+it("binds Continue to an exact reusable Result snapshot when one is available", () => {
+  const turn = {
+    turn_id: "turn-canceled",
+    id: "turn-canceled",
+    research_session_id: "session-1",
+    project_id: "project-1",
+    sequence_no: 4,
+    parent_turn_id: "turn-parent",
+    status: "CANCELED",
+    user_message: {
+      id: "message-canceled",
+      role: "user",
+      content: "旧问题",
+    },
+    context: {
+      scope: [],
+      selection: [],
+      scientific_selection: [],
+    },
+    created_at: "2026-08-30T00:00:00Z",
+  } satisfies Agent2TurnDetail;
+
+  expect(agent2ContinueInput(turn, "换一个角度解释", "snapshot-exact")).toEqual({
+    message: "换一个角度解释",
+    reply_to_turn_id: "turn-canceled",
+    ui_context: {
+      active_object_refs: [],
+      selection_refs: [],
+      scientific_selections: [],
+      explicit_object_refs: [],
+      explicit_result_ids: ["snapshot-exact"],
+      explicit_finding_refs: [],
+    },
+  });
+});
+
 it("focuses a long conversation on the exact selected research branch", () => {
   const messages = Array.from({ length: 24 }, (_, index) => ({
     id: `message-${index + 1}`,
@@ -319,6 +627,101 @@ it("focuses a long conversation on the exact selected research branch", () => {
   expect(bounded.hiddenBefore).toBe(8);
   expect(bounded.hiddenAfter).toBe(14);
   expect(researchMessageWindow(messages, "message-9", true).visible).toHaveLength(24);
+});
+
+it("bounds the expanded conversation DOM window for 1000+ messages", () => {
+  const messages = Array.from({ length: 1001 }, (_, index) => ({
+    id: `message-${index + 1}`,
+    session_id: "session-long",
+    role: index % 2 === 0 ? "user" as const : "assistant" as const,
+    content: `message ${index + 1}`,
+    created_at: `2026-09-05T00:${String(index).padStart(4, "0")}Z`,
+  }));
+  const window = researchMessageWindow(messages, null, true);
+  expect(window.visible).toHaveLength(100);
+  expect(window.hiddenBefore).toBe(0);
+  expect(window.visible[0].id).toBe("message-1");
+  expect(window.visible.at(-1)?.id).toBe("message-100");
+  expect(window.visible.every((message) =>
+    messages.some((candidate) => candidate.id === message.id),
+  )).toBe(true);
+});
+
+it("keeps the real conversation DOM bounded and navigable across message windows", async () => {
+  const messages = Array.from({ length: 1001 }, (_, index) => ({
+    id: `message-${index + 1}`,
+    session_id: "session-windowed",
+    role: index % 2 === 0 ? "user" as const : "assistant" as const,
+    content: `window message ${index + 1}`,
+    created_at: `2026-09-05T00:${String(index).padStart(4, "0")}Z`,
+  }));
+  mocks.listResearchSessions.mockResolvedValue([
+    { id: "session-windowed", project_id: "project_1", title: "长研究", status: "active" },
+  ]);
+  mocks.getResearchSession.mockResolvedValue({
+    id: "session-windowed",
+    project_id: "project_1",
+    title: "长研究",
+    status: "active",
+    messages,
+  });
+
+  const started = performance.now();
+  for (let index = 0; index < 20; index += 1) researchMessageWindow(messages, null, true);
+  const elapsed = performance.now() - started;
+  expect(elapsed).toBeLessThan(100);
+
+  const user = userEvent.setup();
+  render(<ResearchPage projectId="project_1" sessionId="session-windowed" />);
+  expect(await screen.findByText("window message 1001")).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "查看会话窗口" }));
+  const stream = screen.getByRole("log", { name: "研究对话" });
+  expect(stream.querySelectorAll("[data-message-id]")).toHaveLength(100);
+  expect(within(stream).getByText("window message 1")).toBeInTheDocument();
+  expect(within(stream).queryByText("window message 101")).toBeNull();
+
+  const next = screen.getByRole("button", { name: "查看更新消息" });
+  await user.click(next);
+  expect(next).toHaveFocus();
+  expect(within(stream).getByText("window message 101")).toBeInTheDocument();
+  expect(within(stream).queryByText("window message 1")).toBeNull();
+  expect(stream.querySelectorAll("[data-message-id]")).toHaveLength(100);
+});
+
+it("describes a research branch from persisted message revision and parent Turn identities", () => {
+  const root = {
+    turn_id: "turn-root",
+    research_session_id: "session-1",
+    project_id: "project-1",
+    sequence_no: 1,
+    parent_turn_id: null,
+    status: "COMPLETED",
+    user_message: {
+      id: "message-revision-root",
+      role: "user",
+      content: "计算 MSD",
+    },
+    created_at: "2026-09-05T00:00:00Z",
+  };
+  const branch = {
+    ...root,
+    turn_id: "turn-branch",
+    sequence_no: 2,
+    parent_turn_id: "turn-root",
+    user_message: {
+      id: "message-revision-branch",
+      role: "user",
+      content: "限定 1–6 ps 重新评估扩散",
+    },
+  };
+
+  expect(researchBranchDescriptor([root, branch], branch)).toEqual({
+    turnId: "turn-branch",
+    messageRevisionId: "message-revision-branch",
+    title: "限定 1–6 ps 重新评估扩散",
+    sourceTurnId: "turn-root",
+    sourceTitle: "计算 MSD",
+  });
 });
 
 it("does not render sibling or duplicated user projections beside the selected branch", () => {
@@ -494,6 +897,7 @@ it("summarizes structured result metadata without loading payloads", () => {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  window.sessionStorage.clear();
   mocks.listResearchSessions.mockResolvedValue([]);
   mocks.bulkUpdateResearchSessions.mockResolvedValue({
     action: "ARCHIVE",
@@ -633,6 +1037,260 @@ beforeEach(() => {
   mocks.getAgent2ResearchTurnResult.mockResolvedValue(null);
 });
 
+it("creates Retry as a new ResearchTurn lineage and carries the preserved failed Turn into navigation", async () => {
+  const user = userEvent.setup();
+  mocks.listResearchSessions.mockResolvedValue([
+    {
+      id: "session_1",
+      project_id: "project_1",
+      title: "失败研究",
+      status: "active",
+    },
+  ]);
+  mocks.getResearchSession.mockResolvedValue({
+    id: "session_1",
+    project_id: "project_1",
+    title: "失败研究",
+    status: "active",
+    messages: [],
+  });
+  mocks.getAgent2ExecutionProgress.mockResolvedValue({
+    turn_id: "turn-failed",
+    status: "FAILED",
+    completed_step_count: 0,
+    total_step_count: 1,
+    steps: [],
+    incremental_outputs: [],
+    warnings: [],
+  });
+  mocks.getAgent2ResearchTurn.mockResolvedValue({
+    turn_id: "turn-failed",
+    research_session_id: "session_1",
+    project_id: "project_1",
+    sequence_no: 1,
+    parent_turn_id: null,
+    status: "FAILED",
+    user_message: {
+      id: "message-failed",
+      role: "user",
+      content: "分析这个结构的局部环境",
+    },
+    context: {
+      scope: [],
+      selection: [],
+      scientific_selection: [],
+    },
+    created_at: "2026-09-05T00:00:00Z",
+  });
+  mocks.createAgent2ResearchTurn.mockResolvedValue({
+    turn_id: "turn-retry",
+    research_session_id: "session_1",
+    project_id: "project_1",
+    sequence_no: 2,
+    parent_turn_id: "turn-failed",
+    status: "ORCHESTRATING",
+    user_message: {
+      id: "message-retry",
+      role: "user",
+      content: "分析这个结构的局部环境",
+    },
+    created_at: "2026-09-05T00:01:00Z",
+  });
+
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      agent2TurnId="turn-failed"
+    />,
+  );
+
+  await user.click(
+    await screen.findByRole("button", { name: "重新研究（新运行）" }),
+  );
+
+  await waitFor(() =>
+    expect(mocks.createAgent2ResearchTurn).toHaveBeenCalledWith(
+      "project_1",
+      "session_1",
+      expect.objectContaining({
+        message: "分析这个结构的局部环境",
+        reply_to_turn_id: "turn-failed",
+      }),
+    ),
+  );
+  expect(mocks.routerPush).toHaveBeenCalledWith(
+    "/projects/project_1/research/session_1?turn=turn-retry&retryOf=turn-failed",
+  );
+});
+
+it("opens a failed Turn with retry intent by creating one new lineage and preserving the original", async () => {
+  mocks.listResearchSessions.mockResolvedValue([
+    {
+      id: "session_1",
+      project_id: "project_1",
+      title: "失败研究",
+      status: "active",
+    },
+  ]);
+  mocks.getResearchSession.mockResolvedValue({
+    id: "session_1",
+    project_id: "project_1",
+    title: "失败研究",
+    status: "active",
+    messages: [],
+  });
+  mocks.getAgent2ExecutionProgress.mockResolvedValue({
+    turn_id: "turn-failed",
+    status: "FAILED",
+    completed_step_count: 0,
+    total_step_count: 1,
+    steps: [],
+    incremental_outputs: [],
+    warnings: [],
+  });
+  mocks.getAgent2ResearchTurn.mockResolvedValue({
+    turn_id: "turn-failed",
+    research_session_id: "session_1",
+    project_id: "project_1",
+    sequence_no: 4,
+    parent_turn_id: null,
+    status: "FAILED",
+    user_message: {
+      id: "message-failed",
+      role: "user",
+      content: "解释这个结构的局部环境",
+    },
+    context: {
+      scope: [],
+      selection: [],
+      scientific_selection: [],
+    },
+    created_at: "2026-09-05T00:00:00Z",
+  });
+  mocks.createAgent2ResearchTurn.mockResolvedValue({
+    turn_id: "turn-retry",
+    research_session_id: "session_1",
+    project_id: "project_1",
+    sequence_no: 5,
+    parent_turn_id: "turn-failed",
+    status: "ORCHESTRATING",
+    user_message: {
+      id: "message-retry",
+      role: "user",
+      content: "解释这个结构的局部环境",
+    },
+    created_at: "2026-09-05T00:01:00Z",
+  });
+
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      agent2TurnId="turn-failed"
+      retryRequested
+    />,
+  );
+
+  await waitFor(() =>
+    expect(mocks.createAgent2ResearchTurn).toHaveBeenCalledWith(
+      "project_1",
+      "session_1",
+      expect.objectContaining({
+        message: "解释这个结构的局部环境",
+        reply_to_turn_id: "turn-failed",
+      }),
+    ),
+  );
+  expect(mocks.getAgent2ResearchTurn).toHaveBeenCalledWith("turn-failed");
+  expect(mocks.routerPush).toHaveBeenCalledWith(
+    "/projects/project_1/research/session_1?turn=turn-retry&retryOf=turn-failed",
+  );
+  expect(mocks.createAgent2ResearchTurn).toHaveBeenCalledTimes(1);
+});
+
+it("shows a validated Retry identity and a navigation link to the preserved failed Turn", async () => {
+  mocks.listResearchSessions.mockResolvedValue([
+    {
+      id: "session_1",
+      project_id: "project_1",
+      title: "重试研究",
+      status: "active",
+    },
+  ]);
+  mocks.getResearchSession.mockResolvedValue({
+    id: "session_1",
+    project_id: "project_1",
+    title: "重试研究",
+    status: "active",
+    messages: [],
+  });
+  mocks.listAgent2ResearchTurns.mockResolvedValue([
+    {
+      id: "turn-failed",
+      turn_id: "turn-failed",
+      research_session_id: "session_1",
+      project_id: "project_1",
+      sequence_no: 1,
+      parent_turn_id: null,
+      status: "FAILED",
+      user_message: {
+        id: "message-failed",
+        role: "user",
+        content: "分析这个结构的局部环境",
+      },
+      created_at: "2026-09-05T00:00:00Z",
+    },
+    {
+      id: "turn-retry",
+      turn_id: "turn-retry",
+      research_session_id: "session_1",
+      project_id: "project_1",
+      sequence_no: 2,
+      parent_turn_id: "turn-failed",
+      status: "COMPLETED",
+      user_message: {
+        id: "message-retry",
+        role: "user",
+        content: "分析这个结构的局部环境",
+      },
+      created_at: "2026-09-05T00:01:00Z",
+    },
+  ]);
+  mocks.getAgent2ExecutionProgress.mockResolvedValue({
+    turn_id: "turn-retry",
+    status: "COMPLETED",
+    completed_step_count: 1,
+    total_step_count: 1,
+    steps: [],
+    incremental_outputs: [],
+    warnings: [],
+  });
+
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      agent2TurnId="turn-retry"
+      retryOfTurnId="turn-failed"
+    />,
+  );
+
+  const lineage = await screen.findByRole("status", {
+    name: "研究重试关系",
+  });
+  expect(lineage).toHaveTextContent("已创建新的 ResearchTurn");
+  expect(lineage).toHaveTextContent("原未完成运行及其失败证据仍被保留");
+  expect(
+    within(lineage).getByRole("link", { name: "查看保留的原运行" }),
+  ).toHaveAttribute(
+    "href",
+    "/projects/project_1/research/session_1?turn=turn-failed",
+  );
+  expect(within(lineage).getByText("turn-retry")).toBeInTheDocument();
+  expect(within(lineage).getByText("turn-failed")).toBeInTheDocument();
+});
+
 it("uses one authoritative completed ResearchTurn presentation without rendering the legacy workbench result twice", async () => {
   mocks.listResearchSessions.mockResolvedValue([
     { id: "session_1", project_id: "project_1", title: "研究会话", status: "active" },
@@ -672,6 +1330,91 @@ it("uses one authoritative completed ResearchTurn presentation without rendering
   expect(screen.queryByText("✓ 分析完成 · 0 个步骤")).not.toBeInTheDocument();
 });
 
+it("does not hydrate or poll legacy Job execution state when an explicit ResearchTurn is present", async () => {
+  mocks.listResearchSessions.mockResolvedValue([
+    { id: "session_1", project_id: "project_1", title: "研究会话", status: "active" },
+  ]);
+  mocks.getResearchSession.mockResolvedValue({
+    id: "session_1",
+    project_id: "project_1",
+    title: "研究会话",
+    status: "active",
+    messages: [],
+  });
+  mocks.getProjectHistory.mockResolvedValue({
+    project: { id: "project_1", name: "研究项目", role: "owner" },
+    datasets: [],
+    analyses: [{
+      jobId: "job-related",
+      researchSessionId: "session_1",
+      researchTurnId: "turn-related",
+      status: "running",
+      userQuestion: "分析精确结构",
+      toolIds: [],
+      stepCount: 1,
+      artifactCount: 0,
+      artifactTypes: [],
+      interpretationCount: 0,
+      reportCount: 0,
+      recipeCount: 0,
+    }],
+  });
+  mocks.getAgent2ExecutionProgress.mockResolvedValue({
+    contract_version: "1.0",
+    turn_id: "turn-related",
+    status: "RUNNING",
+    response_kind: "SCIENTIFIC_EXECUTION",
+    completed_step_count: 0,
+    total_step_count: 1,
+    active_step_ids: ["step-1"],
+    steps: [],
+    incremental_outputs: [],
+    warnings: [],
+    execution_outcome: null,
+    result_projection_pending: false,
+  });
+
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      runId="job-related"
+      agent2TurnId="turn-related"
+    />,
+  );
+
+  expect(await screen.findByRole("region", { name: "分析进度" })).toBeInTheDocument();
+  expect(mocks.getPlannerJob).not.toHaveBeenCalled();
+  expect(mocks.getPlannerJobEvents).not.toHaveBeenCalled();
+  expect(mocks.getPlannerJobArtifacts).not.toHaveBeenCalled();
+});
+
+it("aborts an in-flight ResearchTurn poll and prevents duplicate online polling after navigation", async () => {
+  let progressSignal: AbortSignal | undefined;
+  mocks.getAgent2ExecutionProgress.mockImplementationOnce(
+    (_turnId: string, options?: { signal?: AbortSignal }) => {
+      progressSignal = options?.signal;
+      return new Promise(() => undefined);
+    },
+  );
+
+  const { unmount } = render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      agent2TurnId="turn-in-flight"
+    />,
+  );
+
+  await waitFor(() => expect(progressSignal).toBeDefined());
+  window.dispatchEvent(new Event("online"));
+  expect(mocks.getAgent2ExecutionProgress).toHaveBeenCalledTimes(1);
+  unmount();
+  expect(progressSignal?.aborted).toBe(true);
+  window.dispatchEvent(new Event("online"));
+  expect(mocks.getAgent2ExecutionProgress).toHaveBeenCalledTimes(1);
+});
+
 it("presents used context as researcher-facing provenance with technical identity behind disclosure", async () => {
   mocks.listResearchSessions.mockResolvedValue([
     { id: "session_1", project_id: "project_1", title: "研究会话", status: "active" },
@@ -703,6 +1446,24 @@ it("presents used context as researcher-facing provenance with technical identit
           was_truncated: false,
           superseded_state: "CURRENT",
         },
+        ...Array.from({ length: 8 }, (_, index) => ({
+          item_id: `result-${index + 2}`,
+          kind: "SCIENTIFIC_RESULT",
+          authority_class: "SCIENTIFIC_RESULT",
+          server_side_source_identity: `result-extra-${index + 2}`,
+          provider_opaque_ref: `result_${index + 2}`,
+          exact_object_id: null,
+          exact_object_version_id: null,
+          result_ref: `result-extra-${index + 2}`,
+          inclusion_reason: "explicit referenced prior Result",
+          selection_mode: "EXPLICIT",
+          authorization_checked: true,
+          content_fingerprint: "f".repeat(64),
+          estimated_tokens: 8,
+          was_compacted: false,
+          was_truncated: false,
+          superseded_state: "CURRENT",
+        })),
       ],
       excluded_items: ["old-conversation-4"],
       estimated_input_tokens: 24,
@@ -799,7 +1560,7 @@ it("presents used context as researcher-facing provenance with technical identit
   );
 
   const disclosure = await screen.findByText("本次研究使用的上下文");
-  expect(disclosure.closest("summary")).toHaveTextContent(/用于规划分析\s*·\s*1 项/);
+  expect(disclosure.closest("summary")).toHaveTextContent(/用于规划分析\s*·\s*9 项/);
   const contextDetails = disclosure.closest("details");
   expect(contextDetails).not.toHaveAttribute("open");
   expect(contextDetails).toHaveAttribute("aria-label", "本次研究使用的上下文");
@@ -816,6 +1577,16 @@ it("presents used context as researcher-facing provenance with technical identit
   expect(screen.queryByText("active scientific scope")).not.toBeInTheDocument();
   expect(screen.getByText("从界面选择 · 科学数据权威")).toBeInTheDocument();
   expect(screen.getByText("精确版本")).toHaveTextContent("version-1");
+  expect(screen.queryByText("result-extra-9")).not.toBeInTheDocument();
+  const expandContext = screen.getByRole("button", {
+    name: "查看全部上下文（9 项）",
+  });
+  expect(expandContext).toHaveAttribute("aria-expanded", "false");
+  await userEvent.setup().click(expandContext);
+  expect(
+    screen.getByRole("button", { name: "收起上下文列表" }),
+  ).toHaveAttribute("aria-expanded", "true");
+  expect(screen.getByText("result-extra-9")).toBeInTheDocument();
   expect(screen.getByText(/有 1 项较低优先级内容未纳入/)).toBeInTheDocument();
   const operations = screen.getByRole("group", { name: "已记录的操作上下文" });
   expect(operations).toHaveTextContent("理解问题");
@@ -824,6 +1595,57 @@ it("presents used context as researcher-facing provenance with technical identit
   expect(screen.getByText("审计详情").closest("details"))
     .toHaveAttribute("aria-label", "上下文审计详情");
   expect(screen.getByText("审计详情").closest("details")).not.toHaveAttribute("open");
+});
+
+it("offers an in-place retry when the persisted context manifest is temporarily unavailable", async () => {
+  const user = userEvent.setup();
+  const manifest = {
+    context_manifest_id: "manifest-retry",
+    operation: "PLANNER",
+    project_id: "project_1",
+    research_session_id: "session_1",
+    research_turn_id: "turn-context-retry",
+    policy_version: "2.0",
+    included_items: [],
+    excluded_items: [],
+    estimated_input_tokens: 0,
+    input_budget: 10000,
+    reserved_output_tokens: 1000,
+    repair_margin: 100,
+    compaction_state: "NONE",
+    truncation_state: "NONE",
+    context_fingerprint: "a".repeat(64),
+    created_at: "2026-09-04T00:00:00Z",
+  } as Agent2ContextManifest;
+  mocks.getAgent2ContextManifest
+    .mockRejectedValueOnce(new Error("temporarily unavailable"))
+    .mockResolvedValueOnce({ manifest });
+  mocks.getAgent2ExecutionProgress.mockResolvedValue({
+    turn_id: "turn-context-retry",
+    status: "COMPLETED",
+    completed_step_count: 1,
+    total_step_count: 1,
+    steps: [],
+    incremental_outputs: [],
+    warnings: [],
+  });
+
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      agent2TurnId="turn-context-retry"
+    />,
+  );
+
+  expect(
+    await screen.findByText("本次研究的上下文清单暂时无法读取"),
+  ).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "重新读取上下文" }));
+  expect(
+    await screen.findByText("本次研究使用的上下文"),
+  ).toBeInTheDocument();
+  expect(mocks.getAgent2ContextManifest).toHaveBeenCalledTimes(2);
 });
 
 it("reconciles a Stop race when the scientific run finishes before cancellation", async () => {
@@ -883,6 +1705,60 @@ it("reconciles a Stop race when the scientific run finishes before cancellation"
   expect(screen.queryByText("取消请求未能提交 (409)")).toBeNull();
 });
 
+it("turns the primary composer action into Stop while scientific work is active", async () => {
+  mocks.listResearchSessions.mockResolvedValue([
+    { id: "session_1", project_id: "project_1", title: "研究会话", status: "active" },
+  ]);
+  mocks.getResearchSession.mockResolvedValue({
+    id: "session_1",
+    project_id: "project_1",
+    title: "研究会话",
+    status: "active",
+    messages: [],
+  });
+  mocks.getAgent2ExecutionProgress.mockResolvedValue({
+    contract_version: "1.0",
+    turn_id: "turn-primary-stop",
+    status: "RUNNING",
+    response_kind: "SCIENTIFIC_EXECUTION",
+    completed_step_count: 0,
+    total_step_count: 1,
+    active_step_ids: ["step-1"],
+    steps: [],
+    incremental_outputs: [],
+    warnings: [],
+    execution_outcome: null,
+    result_projection_pending: false,
+  });
+  mocks.cancelAgent2Execution.mockResolvedValue({
+    turn_id: "turn-primary-stop",
+    status: "CANCELED",
+  });
+
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      agent2TurnId="turn-primary-stop"
+    />,
+  );
+
+  const primaryStop = await screen.findByRole("button", {
+    name: "从输入区停止研究",
+  });
+  expect(screen.queryByRole("button", { name: "开始分析" })).toBeNull();
+  fireEvent.click(primaryStop);
+
+  await waitFor(() =>
+    expect(mocks.cancelAgent2Execution).toHaveBeenCalledWith(
+      "turn-primary-stop",
+    ),
+  );
+  expect(
+    await screen.findByText("研究已停止。已经提交的有效输出仍会保留；继续研究不会自动重算。"),
+  ).toBeInTheDocument();
+});
+
 it("reconciles a queued Stop notice when durable progress reaches CANCELED", async () => {
   mocks.listResearchSessions.mockResolvedValue([
     { id: "session_1", project_id: "project_1", title: "研究会话", status: "active" },
@@ -938,7 +1814,7 @@ it("reconciles a queued Stop notice when durable progress reaches CANCELED", asy
     await screen.findByText("停止请求已记录，正在等待运行中的科学步骤安全结束。"),
   ).toBeInTheDocument();
   expect(
-    await screen.findByText("研究已停止；已经提交的有效科学输出仍会保留。", {}, { timeout: 3000 }),
+    await screen.findByText("研究已停止。已经提交的有效输出仍会保留；继续研究不会自动重算。", {}, { timeout: 3000 }),
   ).toBeInTheDocument();
   expect(screen.queryByText("停止请求已记录，正在等待运行中的科学步骤安全结束。")).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: "继续研究" }));
@@ -1014,7 +1890,225 @@ it("reconciles a queued Stop notice when durable progress reaches CANCELED", asy
       },
     ),
   );
+  expect(
+    screen.getByText(
+      "原研究没有可复用的科学结果；本次继续将创建新的科学执行，历史 ResearchTurn 保持不变。",
+    ),
+  ).toBeInTheDocument();
   expect(mocks.resolveResearchScope).not.toHaveBeenCalled();
+});
+
+it("carries an exact persisted Result as an explicit Continue reuse candidate", async () => {
+  mocks.listResearchSessions.mockResolvedValue([
+    { id: "session_1", project_id: "project_1", title: "研究会话", status: "active" },
+  ]);
+  mocks.getResearchSession.mockResolvedValue({
+    id: "session_1",
+    project_id: "project_1",
+    title: "研究会话",
+    status: "active",
+    messages: [],
+  });
+  mocks.getAgent2ExecutionProgress.mockResolvedValue({
+    turn_id: "turn-reusable",
+    status: "CANCELED",
+    action: "ANALYZE",
+    plan_id: "plan-reusable",
+    job_id: "job-reusable",
+    total_step_count: 1,
+    completed_step_count: 1,
+    failed_step_count: 0,
+    active_step_ids: [],
+    execution_outcome: "CANCELED",
+    interpretation_status: null,
+    interpretation_id: null,
+    steps: [],
+    incremental_outputs: [],
+    warnings: [],
+    result_projection_pending: false,
+  });
+  mocks.getAgent2ResearchTurn.mockResolvedValue({
+    turn_id: "turn-reusable",
+    research_session_id: "session_1",
+    project_id: "project_1",
+    sequence_no: 2,
+    parent_turn_id: null,
+    status: "CANCELED",
+    user_message: {
+      id: "message-reusable",
+      role: "user",
+      content: "分析精确结构版本",
+    },
+    context: {
+      scope: [],
+      selection: [],
+      scientific_selection: [],
+    },
+    created_at: "2026-08-30T00:00:00Z",
+  });
+  mocks.getAgent2ResearchTurnResult.mockResolvedValue({
+    result_id: "result-readable",
+    result_snapshot_id: "result-snapshot-exact",
+    research_turn_id: "turn-reusable",
+    research_question: "分析精确结构版本",
+    execution_status: "PARTIAL",
+    relevance_status: "CURRENT",
+    source_object_refs: [],
+    result_items: [],
+    facts: [],
+    figures: [],
+    tables: [],
+    evidence: [],
+    artifacts: [],
+    scientific_selections: [],
+  } satisfies Agent2ResearchTurnResult);
+
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      agent2TurnId="turn-reusable"
+    />,
+  );
+
+  fireEvent.click(await screen.findByRole("button", { name: "继续研究" }));
+  fireEvent.change(screen.getByLabelText("询问此项目中的数据"), {
+    target: { value: "基于现有结果说明局限性" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "开始分析" }));
+
+  await waitFor(() =>
+    expect(mocks.createAgent2ResearchTurn).toHaveBeenCalledWith(
+      "project_1",
+      "session_1",
+      expect.objectContaining({
+        reply_to_turn_id: "turn-reusable",
+        ui_context: expect.objectContaining({
+          explicit_result_ids: ["result-snapshot-exact"],
+        }),
+      }),
+    ),
+  );
+  expect(
+    screen.getByText(
+      "已将精确结果 result-snapshot-exact 作为复用候选；只有问题超出其证据范围时才会规划新分析。",
+    ),
+  ).toBeInTheDocument();
+});
+
+it("fails closed when Continue cannot determine whether an exact Result exists", async () => {
+  mocks.listResearchSessions.mockResolvedValue([
+    { id: "session_1", project_id: "project_1", title: "研究会话", status: "active" },
+  ]);
+  mocks.getResearchSession.mockResolvedValue({
+    id: "session_1",
+    project_id: "project_1",
+    title: "研究会话",
+    status: "active",
+    messages: [],
+  });
+  mocks.getAgent2ExecutionProgress.mockResolvedValue({
+    turn_id: "turn-result-unavailable",
+    status: "FAILED",
+    action: "ANALYZE",
+    plan_id: "plan-unavailable",
+    job_id: "job-unavailable",
+    total_step_count: 1,
+    completed_step_count: 0,
+    failed_step_count: 1,
+    active_step_ids: [],
+    execution_outcome: "FAILED",
+    interpretation_status: null,
+    interpretation_id: null,
+    steps: [],
+    incremental_outputs: [],
+    warnings: [],
+    result_projection_pending: false,
+  });
+  mocks.getAgent2ResearchTurnResult.mockRejectedValue(
+    new Agent2ReadError(503),
+  );
+
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      agent2TurnId="turn-result-unavailable"
+    />,
+  );
+
+  fireEvent.click(await screen.findByRole("button", { name: "继续研究" }));
+  fireEvent.change(screen.getByLabelText("询问此项目中的数据"), {
+    target: { value: "继续完成尚未执行的分析" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "开始分析" }));
+
+  expect(
+    await screen.findByText("科学呈现暂时无法读取 (503)"),
+  ).toBeInTheDocument();
+  expect(mocks.createAgent2ResearchTurn).not.toHaveBeenCalled();
+  expect(mocks.createResearchAssistantProjection).not.toHaveBeenCalled();
+});
+
+it("coalesces same-tick Research submissions before durable admission returns", async () => {
+  let resolveTurn!: (value: { turn_id: string }) => void;
+  const session = {
+    id: "session_1",
+    project_id: "project_1",
+    title: "研究会话",
+    status: "active",
+    messages: [],
+  };
+  mocks.listResearchSessions.mockReset().mockResolvedValue([session]);
+  mocks.getResearchSession.mockReset().mockResolvedValue(session);
+  mocks.getProjectHistory.mockReset().mockResolvedValue({
+    project: { id: "project_1", name: "研究项目", role: "owner" },
+    datasets: [{ datasetId: "dataset_a" }, { datasetId: "dataset_b" }],
+    analyses: [],
+  });
+  mocks.createAgent2ResearchTurn.mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        resolveTurn = resolve;
+      }),
+  );
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      viewerContext={{
+        objectId: "object-exact",
+        versionId: "version-exact",
+        objectType: "structure.crystal",
+      }}
+    />,
+  );
+  const input = await screen.findByLabelText("询问此项目中的数据");
+  fireEvent.change(input, { target: { value: "分析这个精确结构版本" } });
+  const form = screen.getByRole("button", { name: "开始分析" }).closest("form");
+  expect(form).not.toBeNull();
+
+  fireEvent.submit(form!);
+  fireEvent.submit(form!);
+
+  await waitFor(() =>
+    expect(mocks.createAgent2ResearchTurn).toHaveBeenCalledTimes(1),
+  );
+  resolveTurn({ turn_id: "turn-single-flight" });
+  await waitFor(() =>
+    expect(mocks.routerPush).toHaveBeenCalledWith(
+      "/projects/project_1/research/session_1?turn=turn-single-flight",
+    ),
+  );
+});
+
+it("suppresses stale dispatch errors only after a durable terminal outcome", () => {
+  expect(shouldSuppressAgent2DispatchError("CANCELED")).toBe(true);
+  expect(shouldSuppressAgent2DispatchError("COMPLETED")).toBe(true);
+  expect(shouldSuppressAgent2DispatchError("PARTIAL")).toBe(true);
+  expect(shouldSuppressAgent2DispatchError("FAILED")).toBe(true);
+  expect(shouldSuppressAgent2DispatchError("PLAN_READY")).toBe(false);
+  expect(shouldSuppressAgent2DispatchError("RUNNING")).toBe(false);
 });
 
 it("puts a capability-aware starter question in the composer without submitting", async () => {
@@ -1033,29 +2127,156 @@ it("puts a capability-aware starter question in the composer without submitting"
   expect(screen.queryByText("可以尝试")).not.toBeInTheDocument();
 });
 
-it("replaces a doomed empty-project composer with the permitted upload action", async () => {
+it("persists a running-turn draft in the current browser tab and restores it after reload", async () => {
+  mocks.listResearchSessions.mockResolvedValue([
+    { id: "session_1", project_id: "project_1", title: "研究会话", status: "active" },
+  ]);
+  mocks.getResearchSession.mockResolvedValue({
+    id: "session_1",
+    project_id: "project_1",
+    title: "研究会话",
+    status: "active",
+    messages: [],
+  });
+  mocks.getAgent2ExecutionProgress.mockResolvedValue({
+    turn_id: "turn-running-draft",
+    status: "RUNNING",
+    action: "ANALYZE",
+    plan_id: "plan-running",
+    job_id: "job-running",
+    total_step_count: 2,
+    completed_step_count: 1,
+    failed_step_count: 0,
+    active_step_ids: ["step-2"],
+    execution_outcome: null,
+    interpretation_status: null,
+    interpretation_id: null,
+    steps: [],
+    incremental_outputs: [],
+    warnings: [],
+    result_projection_pending: false,
+  });
+
+  const first = render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      agent2TurnId="turn-running-draft"
+    />,
+  );
+  const composer = await screen.findByLabelText("询问此项目中的数据");
+  expect(
+    await screen.findByText(
+      /草稿仅保存在当前浏览器标签页，刷新后可恢复/,
+    ),
+  ).toBeInTheDocument();
+  fireEvent.change(composer, {
+    target: { value: "下一步比较第二个配位模型" },
+  });
+  await waitFor(() =>
+    expect(
+      window.sessionStorage.getItem(
+        "mdi:research-draft:project_1:session_1:turn-running-draft",
+      ),
+    ).toBe("下一步比较第二个配位模型"),
+  );
+
+  first.unmount();
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      agent2TurnId="turn-running-draft"
+    />,
+  );
+
+  expect(
+    await screen.findByDisplayValue("下一步比较第二个配位模型"),
+  ).toBeInTheDocument();
+});
+
+it("replaces a doomed empty-project composer with the Data import and selection entry", async () => {
   mocks.getProjectHistory.mockResolvedValue({
-    project: { id: "project_1", name: "空项目", role: "owner" },
+    project: { id: "project_1", name: "空项目", role: "owner", status: "active" },
     datasets: [],
     analyses: [],
   });
   render(<ResearchPage projectId="project_1" />);
 
-  expect(await screen.findByRole("heading", { name: "先为项目添加数据" })).toBeInTheDocument();
-  expect(screen.getByRole("link", { name: "上传数据" })).toHaveAttribute("href", "/projects/project_1/datasets/new");
+  expect(await screen.findByRole("heading", { name: "先从项目数据开始" })).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "打开数据平台" })).toHaveAttribute("href", "/projects/project_1/data");
   expect(screen.queryByLabelText("询问此项目中的数据")).not.toBeInTheDocument();
 });
 
-it("keeps the no-data starter read-only for a viewer", async () => {
+it("fails closed when Edit-last-message cannot load the authoritative original question", async () => {
+  mocks.listResearchSessions.mockResolvedValue([
+    {
+      id: "session_1",
+      project_id: "project_1",
+      title: "研究会话",
+      status: "active",
+    },
+  ]);
+  mocks.getAgent2ResearchTurn.mockRejectedValueOnce(
+    new Error("turn unavailable"),
+  );
+  mocks.getAgent2ResearchTurnResult.mockRejectedValueOnce(
+    new Error("result unavailable"),
+  );
+
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      editTurnId="turn-missing"
+    />,
+  );
+
+  const blockedMessage = await screen.findByText(
+    "原问题暂时无法读取；为避免丢失历史上下文，编辑与提交已停用。",
+  );
+  expect(blockedMessage.closest("[role='alert']")).toBeInTheDocument();
+  const editor = screen.getByLabelText("编辑问题");
+  expect(editor).toBeDisabled();
+  expect(editor).toHaveAttribute("aria-describedby", "research-edit-status");
+  const submit = screen.getByRole("button", { name: "开始分析" });
+  expect(submit).toBeDisabled();
+
+  fireEvent.change(editor, { target: { value: "不安全的替代问题" } });
+  fireEvent.submit(editor.closest("form")!);
+
+  expect(mocks.createAgent2ResearchTurn).not.toHaveBeenCalled();
+  expect(mocks.createResearchMessage).not.toHaveBeenCalled();
+  expect(mocks.createPlannerJob).not.toHaveBeenCalled();
+});
+
+it("keeps the no-data starter read-only while preserving a Data navigation path for a viewer", async () => {
   mocks.getProjectHistory.mockResolvedValue({
-    project: { id: "project_1", name: "共享空项目", role: "viewer" },
+    project: { id: "project_1", name: "共享空项目", role: "viewer", status: "active" },
     datasets: [],
     analyses: [],
   });
   render(<ResearchPage projectId="project_1" />);
 
   expect(await screen.findByRole("heading", { name: "这个项目还没有可研究的数据" })).toBeInTheDocument();
-  expect(screen.queryByRole("link", { name: "上传数据" })).not.toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "查看数据平台" })).toHaveAttribute("href", "/projects/project_1/data");
+  expect(screen.getByRole("note")).toHaveTextContent("此项目为只读");
+  expect(screen.queryByRole("link", { name: "打开数据平台" })).not.toBeInTheDocument();
+  expect(screen.queryByLabelText("询问此项目中的数据")).not.toBeInTheDocument();
+});
+
+it("prevents archived projects from importing or researching while keeping preserved Data reachable", async () => {
+  mocks.getProjectHistory.mockResolvedValue({
+    project: { id: "project_1", name: "已归档项目", role: "owner", status: "archived" },
+    datasets: [],
+    analyses: [],
+  });
+  render(<ResearchPage projectId="project_1" />);
+
+  expect(await screen.findByRole("heading", { name: "这个项目已归档" })).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "查看保留的数据" })).toHaveAttribute("href", "/projects/project_1/data");
+  expect(screen.getByRole("note")).toHaveTextContent("恢复为活跃状态后才能继续导入与研究");
+  expect(screen.queryByRole("link", { name: "打开数据平台" })).not.toBeInTheDocument();
   expect(screen.queryByLabelText("询问此项目中的数据")).not.toBeInTheDocument();
 });
 
@@ -1086,7 +2307,7 @@ it("shows bounded session constraints without exposing internal ids", async () =
 
   const context = await screen.findByRole("region", { name: "当前研究会话上下文" });
   expect(context).toHaveTextContent("后续 RDF cutoff 固定为 8 Å");
-  expect(context).toHaveTextContent("固定结果 1");
+  expect(context).toHaveTextContent("上下文结果 1");
   expect(context).not.toHaveTextContent("internal-result-id");
   expect(context).not.toHaveTextContent("constraint-id");
 });
@@ -1124,7 +2345,7 @@ it("lets users remove a pinned result without exposing its internal identity", a
   render(<ResearchPage projectId="project_1" sessionId="session_1" />);
 
   const context = await screen.findByRole("region", { name: "当前研究会话上下文" });
-  const remove = await within(context).findByRole("button", { name: "取消固定结果 1" });
+  const remove = await within(context).findByRole("button", { name: "从本会话上下文移除结果 1" });
   await user.click(remove);
   await waitFor(() =>
     expect(mocks.unpinAgent2Result).toHaveBeenCalledWith(
@@ -1702,11 +2923,11 @@ it("organizes research records with current, archived and trash views", async ()
   expect(screen.queryByText("已归档研究")).not.toBeInTheDocument();
 
   await user.click(screen.getByRole("button", { name: "管理 可管理研究" }));
-  await user.click(screen.getByRole("menuitem", { name: "固定到顶部" }));
+  await user.click(screen.getByRole("menuitem", { name: "列表置顶" }));
   expect(mocks.updateResearchSession).toHaveBeenCalledWith("session_active", {
     pinned: true,
   });
-  expect(await screen.findByText("已固定 · 可继续")).toBeInTheDocument();
+  expect(await screen.findByText("列表置顶 · 可继续")).toBeInTheDocument();
 
   await user.click(screen.getByRole("button", { name: "管理 可管理研究" }));
   await user.click(screen.getByRole("menuitem", { name: "重命名" }));
@@ -1725,6 +2946,12 @@ it("organizes research records with current, archived and trash views", async ()
     lifecycle: "ARCHIVED",
   });
   expect(screen.queryByText("硅结构复核")).not.toBeInTheDocument();
+  await waitFor(() =>
+    expect(document.activeElement).toBe(
+      screen.getByRole("button", { name: "当前 0" }),
+    ),
+  );
+  expect(screen.getByText("“硅结构复核”已归档。")).toBeInTheDocument();
 
   await user.click(screen.getByRole("button", { name: "已归档 2" }));
   expect(await screen.findByText("硅结构复核")).toBeInTheDocument();
@@ -1737,6 +2964,59 @@ it("organizes research records with current, archived and trash views", async ()
   expect(mocks.updateResearchSession).toHaveBeenCalledWith("session_trashed", {
     lifecycle: "ACTIVE",
   });
+  await waitFor(() =>
+    expect(document.activeElement).toBe(
+      screen.getByRole("button", { name: "回收站 0" }),
+    ),
+  );
+  expect(screen.getByText("“已回收研究”已恢复。")).toBeInTheDocument();
+});
+
+it("names the research status filters and supports directional keyboard selection", async () => {
+  const user = userEvent.setup();
+  mocks.listResearchSessions.mockResolvedValue([
+    {
+      id: "session_active",
+      project_id: "project_1",
+      title: "当前研究",
+      status: "active",
+    },
+    {
+      id: "session_archived",
+      project_id: "project_1",
+      title: "归档研究",
+      status: "archived",
+    },
+    {
+      id: "session_trashed",
+      project_id: "project_1",
+      title: "回收研究",
+      status: "trashed",
+    },
+  ]);
+  render(<ResearchPage projectId="project_1" />);
+  await user.click(await screen.findByRole("button", { name: "研究记录" }));
+
+  const filters = screen.getByRole("group", { name: "研究记录状态" });
+  const current = within(filters).getByRole("button", { name: "当前 1" });
+  const archived = within(filters).getByRole("button", { name: "已归档 1" });
+  const trashed = within(filters).getByRole("button", { name: "回收站 1" });
+  current.focus();
+
+  await user.keyboard("{ArrowRight}");
+  expect(archived).toHaveFocus();
+  expect(archived).toHaveAttribute("aria-pressed", "true");
+  expect(screen.getByText("归档研究")).toBeInTheDocument();
+
+  await user.keyboard("{End}");
+  expect(trashed).toHaveFocus();
+  expect(trashed).toHaveAttribute("aria-pressed", "true");
+  expect(screen.getByText("回收研究")).toBeInTheDocument();
+
+  await user.keyboard("{ArrowRight}");
+  expect(current).toHaveFocus();
+  expect(current).toHaveAttribute("aria-pressed", "true");
+  expect(screen.getByText("当前研究")).toBeInTheDocument();
 });
 
 it("applies research record bulk actions through one atomic project request", async () => {
@@ -1967,6 +3247,7 @@ it("provides a single-view mobile switch between conversation and workbench", as
 });
 
 it("keeps branch navigation with the conversation timeline instead of scientific results", async () => {
+  const user = userEvent.setup();
   mocks.listResearchSessions.mockResolvedValue([
     {
       id: "session_branch",
@@ -2030,12 +3311,31 @@ it("keeps branch navigation with the conversation timeline instead of scientific
     name: "研究分支",
   });
   expect(branchNavigation).toHaveTextContent("2 / 2");
+  expect(branchNavigation).toHaveTextContent("限定 1–6 ps 重新评估扩散");
+  expect(branchNavigation).toHaveTextContent("源自“计算 MSD”");
   expect(
-    within(branchNavigation).getByRole("link", { name: "上一个研究分支" }),
+    within(branchNavigation).getByRole("link", {
+      name: "上一个研究分支：计算 MSD",
+    }),
   ).toHaveAttribute(
     "href",
     "/projects/project_1/research/session_branch?turn=turn_root",
   );
+  await user.click(
+    within(branchNavigation).getByText("查看全部 2 个分支"),
+  );
+  expect(
+    within(branchNavigation).getByRole("link", { name: /1\. 计算 MSD/ }),
+  ).toHaveAttribute(
+    "href",
+    "/projects/project_1/research/session_branch?turn=turn_root",
+  );
+  const currentBranch = within(branchNavigation).getByRole("link", {
+    name: /2\. 限定 1–6 ps 重新评估扩散/,
+  });
+  expect(currentBranch).toHaveAttribute("aria-current", "page");
+  expect(currentBranch).toHaveTextContent("ResearchTurn turn_branch");
+  expect(currentBranch).toHaveTextContent("消息修订 message_branch");
   expect(
     within(workbench).queryByRole("navigation", { name: "研究分支" }),
   ).not.toBeInTheDocument();
@@ -3006,4 +4306,17 @@ it("projects user-facing findings only from persisted scientific evidence", () =
     limitation:
       "局部环境分类来自所选配位算法与几何参考匹配，不等同于确定的化学键或价态判定。",
   });
+});
+
+it("exposes a bounded, navigable provenance summary for evidence rows", () => {
+  expect(
+    evidenceProvenanceSummary({
+      sourceArtifactId: "artifact-rdf-1",
+      sourceArtifactChecksum: "a".repeat(64),
+      sourceToolId: "tool-rdf",
+      fieldLocator: { fieldId: "trajectory.rdf.included_frames" },
+    }),
+  ).toBe(
+    `字段 trajectory.rdf.included_frames · Artifact artifact-rdf-1 · ToolCall tool-rdf · SHA-256 ${"a".repeat(64)}`,
+  );
 });

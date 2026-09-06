@@ -355,14 +355,17 @@ export function Agent2ScientificPresentation({
           {followUpPending === "rerun" ? "正在创建新的研究运行…" : "重新研究（新运行）"}
         </button>
         <button type="button" className="product-secondary-action" onClick={() => void togglePinnedResult()} disabled={pinPending}>
-          {pinPending ? "正在更新上下文…" : resultPinned ? "取消固定结果" : "固定到研究上下文"}
+          {pinPending ? "正在更新上下文…" : resultPinned ? "从本会话上下文移除结果" : "将结果加入本会话上下文"}
         </button>
         {result.source_object_refs?.length ? (
           <button type="button" className="product-secondary-action" onClick={() => void togglePinnedSources()} disabled={pinPending}>
-            {pinPending ? "正在更新来源…" : sourcesPinned ? "取消固定来源版本" : "固定来源版本"}
+            {pinPending ? "正在更新来源…" : sourcesPinned ? "从本会话上下文移除来源版本" : "将来源版本加入本会话上下文"}
           </button>
         ) : null}
       </div>
+      <p className="scientific-presentation-action-status">
+        本会话上下文会影响后续研究；列表置顶只改变排序，不会进入科学上下文。
+      </p>
       {followUpError ? <p className="product-form-error" role="alert">{followUpError}</p> : null}
       {reinterpretError ? <p className="product-form-error" role="alert">{reinterpretError}</p> : null}
       {pinError ? <p className="product-form-error" role="alert">{pinError}</p> : null}

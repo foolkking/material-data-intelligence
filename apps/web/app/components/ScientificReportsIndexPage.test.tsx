@@ -47,9 +47,24 @@ beforeEach(() => {
     lifecycleStatus: "ACTIVE",
     dependencyCount: 3,
     dependencies: [
-      { kind: "RESEARCH_TURN", id: "turn-1", label: "研究回合" },
-      { kind: "SCIENTIFIC_RESULT", id: "result-1", label: "ScientificResult" },
-      { kind: "SCIENTIFIC_OBJECT_VERSION", id: "version-1", label: "来源版本 · 结构" },
+      {
+        kind: "RESEARCH_TURN",
+        id: "turn-1",
+        label: "研究回合",
+        href: "/projects/project-1/research/session-1?turn=turn-1",
+      },
+      {
+        kind: "SCIENTIFIC_RESULT",
+        id: "result-1",
+        label: "ScientificResult",
+        href: "/projects/project-1/research/session-1?turn=turn-1",
+      },
+      {
+        kind: "SCIENTIFIC_OBJECT_VERSION",
+        id: "version-1",
+        label: "来源版本 · 结构",
+        href: "/projects/project-1/data?object=object-1&version=version-1",
+      },
     ],
     canDelete: false,
     impact: {
@@ -173,6 +188,14 @@ it("moves an active report to the recycle bin and restores it", async () => {
   const user = await openReportMenu("结构分析报告");
   await user.click(screen.getByRole("menuitem", { name: "移入回收站" }));
   expect(await screen.findByRole("dialog", { name: "移入回收站前确认" })).toHaveTextContent("ScientificResult");
+  expect(screen.getByRole("link", { name: "研究回合" })).toHaveAttribute(
+    "href",
+    "/projects/project-1/research/session-1?turn=turn-1",
+  );
+  expect(screen.getByRole("link", { name: "来源版本 · 结构" })).toHaveAttribute(
+    "href",
+    "/projects/project-1/data?object=object-1&version=version-1",
+  );
   await user.click(screen.getByRole("button", { name: "确认移入回收站" }));
   expect(mocks.updateScientificReportLifecycle).toHaveBeenCalledWith("report-1", "TRASHED");
 
@@ -259,13 +282,13 @@ it("renames and pins reports as organization metadata without replacing their ro
 
   render(<ScientificReportsIndexPage projectId="project-1" />);
   const user = await openReportMenu("原始报告标题");
-  await user.click(screen.getByRole("menuitem", { name: "固定到顶部" }));
+  await user.click(screen.getByRole("menuitem", { name: "列表置顶" }));
 
   expect(mocks.updateScientificReportOrganization).toHaveBeenCalledWith(
     "report-organized",
     { pinned: true },
   );
-  expect(await screen.findByText("已固定 · 第 1 版 · 当前结果")).toBeInTheDocument();
+  expect(await screen.findByText("列表置顶 · 第 1 版 · 当前结果")).toBeInTheDocument();
 
   await openReportMenu("原始报告标题");
   await user.click(screen.getByRole("menuitem", { name: "重命名" }));
@@ -570,4 +593,66 @@ it("surfaces lifecycle request failures without dropping the report", async () =
     await screen.findByRole("alert"),
   ).toHaveTextContent("报告依赖影响暂时无法读取");
   expect(screen.getByRole("button", { name: "管理 失败回滚报告" })).toBeEnabled();
+});
+
+it("searches both report authorities and progressively reveals long ledgers", async () => {
+  const grounded = Array.from({ length: 15 }, (_, index) => ({
+    report_id: `report-${index + 1}`,
+    snapshot_id: `snapshot-${index + 1}`,
+    project_id: "project-1",
+    research_turn_id: `turn-${index + 1}`,
+    scientific_result_snapshot_id: `result-${index + 1}`,
+    scientific_interpretation_id: `interpretation-${index + 1}`,
+    title: index === 14 ? "目标结构报告" : `已验证报告 ${index + 1}`,
+    relevance_at_generation: "CURRENT" as const,
+    current_effective_relevance: "CURRENT" as const,
+    grounding_status: "VALID" as const,
+    lifecycle_status: "ACTIVE" as const,
+    scientific_context: index === 14 ? "CrystalNN target" : "Dataset",
+    finding_count: 1,
+    figure_count: 0,
+    source_fingerprint: `fingerprint-${index + 1}`,
+    created_at:
+      index === 14
+        ? "2026-07-01T00:00:00Z"
+        : `2026-08-${String(index + 1).padStart(2, "0")}T00:00:00Z`,
+  }));
+  mocks.listScientificReports.mockResolvedValue({ items: grounded });
+  mocks.getProjectHistory.mockResolvedValue({
+    project: { projectId: "project-1", name: "研究项目" },
+    datasets: [{ datasetId: "dataset-1", name: "高熵合金数据" }],
+    analyses: Array.from({ length: 15 }, (_, index) => ({
+      jobId: `job-${index + 1}`,
+      datasetId: "dataset-1",
+      status: "completed",
+      userQuestion: index === 14 ? "目标历史运行" : `历史问题 ${index + 1}`,
+      toolIds: [index === 14 ? "structure.target" : "structure.rdf"],
+      artifactTypes: [],
+      stepCount: 1,
+      artifactCount: 1,
+      reportCount: 1,
+      researchContextKind: "RESEARCH_TURN",
+    })),
+  });
+
+  render(<ScientificReportsIndexPage projectId="project-1" />);
+  const user = userEvent.setup();
+
+  expect(await screen.findAllByRole("link", { name: /已验证报告/ })).toHaveLength(12);
+  expect(screen.queryByRole("link", { name: /目标结构报告/ })).toBeNull();
+  expect(screen.getByRole("button", { name: /加载更多已验证报告/ })).toHaveTextContent("还剩 3 份");
+  expect(screen.getByRole("button", { name: /加载更多历史运行/ })).toHaveTextContent("还剩 3 份");
+
+  await user.click(screen.getByRole("button", { name: /加载更多已验证报告/ }));
+  expect(screen.getByRole("link", { name: /目标结构报告/ })).toBeInTheDocument();
+
+  const search = screen.getByRole("searchbox", { name: "搜索报告" });
+  await user.type(search, "目标");
+  expect(screen.getByRole("link", { name: /目标结构报告/ })).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: /阅读旧版/ })).toHaveAttribute(
+    "href",
+    "/projects/project-1/reports/job-15",
+  );
+  expect(screen.getByText("找到 1 份已验证报告和 1 份历史运行报告")).toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: /已验证报告 1/ })).toBeNull();
 });

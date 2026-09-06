@@ -72,15 +72,20 @@ vi.mock("../lib/task-center-data", () => ({
   }),
 }));
 vi.mock("./ModelSettingsPage", () => ({
-  ModelSettingsDialog: ({ open }: { open: boolean }) => open ? <div role="dialog" aria-label="模型服务测试替身" /> : null,
+  ModelSettingsDialog: ({ open, canManage }: { open: boolean; canManage?: boolean }) => open ? <div role="dialog" aria-label="模型服务测试替身" data-can-manage={String(Boolean(canManage))} /> : null,
 }));
 
-import { ProductShell } from "./ProductShell";
+import {
+  currentProductReturnTo,
+  ProductShell,
+  scheduleBoundedRoutePrefetch,
+  sessionExpiredLoginHref,
+} from "./ProductShell";
 import { ProductNavigationProvider } from "./ProductNavigation";
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mocks.getAuthUser.mockResolvedValue({ id: "user_1", displayName: "验收研究员", email: "acceptance.researcher@local.invalid" });
+  mocks.getAuthUser.mockResolvedValue({ id: "user_1", displayName: "验收研究员", email: "acceptance.researcher@local.invalid", roles: ["owner"], platformRole: "USER" });
   mocks.listSavedProductSearches.mockResolvedValue([]);
   mocks.createSavedProductSearch.mockResolvedValue({
     id: "saved_new",
@@ -131,6 +136,64 @@ beforeEach(() => {
   mocks.logout.mockResolvedValue(undefined);
   mocks.getProjectHistory.mockResolvedValue({ project: {}, datasets: [], analyses: [] });
   mocks.listResearchSessions.mockResolvedValue([]);
+});
+
+it("spaces speculative route prefetches and cancels the remaining queue", () => {
+  vi.useFakeTimers();
+  const target = window as Window;
+  const dispose = scheduleBoundedRoutePrefetch(mocks, ["/one", "/two", "/three"], target);
+
+  expect(mocks.prefetch).not.toHaveBeenCalled();
+  vi.advanceTimersByTime(49);
+  expect(mocks.prefetch).not.toHaveBeenCalled();
+  vi.advanceTimersByTime(1);
+  expect(mocks.prefetch).toHaveBeenCalledTimes(1);
+  expect(mocks.prefetch).toHaveBeenLastCalledWith("/one");
+
+  dispose();
+  vi.advanceTimersByTime(200);
+  expect(mocks.prefetch).toHaveBeenCalledTimes(1);
+  vi.useRealTimers();
+});
+
+it("preserves the exact return URL and browser draft when the session expires", async () => {
+  window.history.replaceState(
+    {},
+    "",
+    "/projects/project_1/research?session=session_1&turn=turn_1#evidence-result_1",
+  );
+  window.sessionStorage.setItem(
+    "mdi:research-composer-draft:project_1:session_1:turn_1",
+    "尚未提交的晶体配位问题",
+  );
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+  await screen.findByText("研究内容");
+
+  window.dispatchEvent(new CustomEvent("mdi:session-expired"));
+
+  expect(mocks.replace).toHaveBeenCalledWith(
+    "/?login=1&reason=session-expired&returnTo=%2Fprojects%2Fproject_1%2Fresearch%3Fsession%3Dsession_1%26turn%3Dturn_1%23evidence-result_1",
+  );
+  expect(
+    window.sessionStorage.getItem(
+      "mdi:research-composer-draft:project_1:session_1:turn_1",
+    ),
+  ).toBe("尚未提交的晶体配位问题");
+});
+
+it("builds browser-friendly reauthentication URLs without dropping fragments", () => {
+  window.history.replaceState(
+    {},
+    "",
+    "/projects/project_1/reports/report_1?revision=2#provenance",
+  );
+
+  expect(currentProductReturnTo()).toBe(
+    "/projects/project_1/reports/report_1?revision=2#provenance",
+  );
+  expect(sessionExpiredLoginHref(currentProductReturnTo())).toBe(
+    "/?login=1&reason=session-expired&returnTo=%2Fprojects%2Fproject_1%2Freports%2Freport_1%3Frevision%3D2%23provenance",
+  );
 });
 
 it("prewarms authoritative project data without leaving the App Router shell", async () => {
@@ -212,6 +275,7 @@ it("keeps global search and the account menu available on project routes", async
   render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
 
   expect(await screen.findByRole("button", { name: "搜索科学工作" })).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "控制台" })).toHaveAttribute("href", "/console");
   const accountTrigger = await screen.findByRole("button", { name: /打开账户菜单/ });
   expect(accountTrigger).not.toHaveAttribute("aria-controls");
   expect(screen.queryByRole("link", { name: "返回主页" })).not.toBeInTheDocument();
@@ -220,15 +284,25 @@ it("keeps global search and the account menu available on project routes", async
   expect(accountTrigger).toHaveAttribute("aria-controls", "product-account-menu");
   expect(screen.getByRole("menu", { name: "账户菜单" })).toBeInTheDocument();
   expect(screen.getByText("acceptance.researcher@local.invalid")).toBeInTheDocument();
-  expect(screen.getByRole("menuitem", { name: "回收站" })).toHaveFocus();
+  expect(screen.getByRole("menuitem", { name: "账户中心" })).toHaveFocus();
+  expect(screen.getByRole("menuitem", { name: "账户中心" })).toHaveAttribute("href", "/account");
   expect(screen.getByRole("menuitem", { name: "回收站" })).toHaveAttribute("href", "/trash");
 
+  await user.keyboard("{ArrowDown}");
+  expect(screen.getByRole("menuitem", { name: "回收站" })).toHaveFocus();
   await user.keyboard("{ArrowDown}");
   expect(screen.getByRole("menuitem", { name: "模型设置" })).toHaveFocus();
   await user.keyboard("{Escape}");
   expect(screen.queryByRole("menu", { name: "账户菜单" })).not.toBeInTheDocument();
   expect(accountTrigger).not.toHaveAttribute("aria-controls");
   await waitFor(() => expect(accountTrigger).toHaveFocus());
+});
+
+it("keeps the product brand as a stable Console exit from deep product routes", async () => {
+  render(<ProductShell><div>任务内容</div></ProductShell>);
+
+  const brand = await screen.findByRole("link", { name: "材料智能平台控制台" });
+  expect(brand).toHaveAttribute("href", "/console");
 });
 
 it("opens project search from an internal route and restores focus after outside close", async () => {
@@ -240,7 +314,9 @@ it("opens project search from an internal route and restores focus after outside
   const searchInput = await screen.findByLabelText("项目、数据、研究或报告");
   await waitFor(() => expect(searchInput).toHaveFocus());
   const dialog = screen.getByRole("dialog", { name: "查找科学工作" });
-  expect(await within(dialog).findByRole("link", { name: "打开" })).toHaveAttribute("href", "/projects/project_1");
+  expect(within(dialog).getByText(/不会在空白条件下加载全部历史记录/)).toBeInTheDocument();
+  expect(within(dialog).queryByRole("link", { name: "打开" })).not.toBeInTheDocument();
+  expect(mocks.searchProduct).not.toHaveBeenCalled();
   fireEvent.mouseDown(dialog.parentElement!);
   expect(screen.queryByRole("dialog", { name: "查找项目" })).not.toBeInTheDocument();
   await waitFor(() => expect(searchTrigger).toHaveFocus());
@@ -272,30 +348,149 @@ it("opens model settings from the compact account menu", async () => {
   await user.click(await screen.findByRole("button", { name: /打开账户菜单/ }));
   await user.click(screen.getByRole("menuitem", { name: "模型设置" }));
   expect(screen.queryByRole("menu", { name: "账户菜单" })).not.toBeInTheDocument();
-  expect(screen.getByRole("dialog", { name: "模型服务测试替身" })).toBeInTheDocument();
+  expect(screen.getByRole("dialog", { name: "模型服务测试替身" })).toHaveAttribute("data-can-manage", "false");
+});
+
+it("passes platform administration authority to model settings", async () => {
+  const user = userEvent.setup();
+  mocks.getAuthUser.mockResolvedValue({
+    id: "admin_1",
+    displayName: "平台管理员",
+    email: "admin@local.invalid",
+    roles: [],
+    platformRole: "PLATFORM_ADMIN",
+  });
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+
+  await user.click(await screen.findByRole("button", { name: /打开账户菜单/ }));
+  expect(screen.getByRole("menuitem", { name: "平台管理" })).toHaveAttribute("href", "/admin");
+  await user.click(screen.getByRole("menuitem", { name: "模型设置" }));
+  expect(screen.getByRole("dialog", { name: "模型服务测试替身" })).toHaveAttribute("data-can-manage", "true");
+});
+
+it("keeps platform management hidden from ordinary users", async () => {
+  const user = userEvent.setup();
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+
+  await user.click(await screen.findByRole("button", { name: /打开账户菜单/ }));
+  expect(screen.queryByRole("menuitem", { name: "平台管理" })).not.toBeInTheDocument();
+});
+
+it("keeps the current project identity visible in the mobile navigation contract", async () => {
+  mocks.getProjectHistory.mockResolvedValue({
+    project: { id: "project_1", name: "高温扩散研究", role: "owner" },
+    datasets: [],
+    analyses: [],
+  });
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+
+  const projectIdentity = await screen.findByRole("link", { name: "高温扩散研究" });
+  expect(projectIdentity).toHaveAttribute("href", "/projects/project_1");
+  expect(projectIdentity).toHaveAttribute("title", "高温扩散研究");
+});
+
+it("does not allow saving an unbounded blank search", async () => {
+  const user = userEvent.setup();
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+
+  await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
+  expect(screen.getByRole("button", { name: "保存当前检索" })).toBeDisabled();
+  expect(mocks.searchProduct).not.toHaveBeenCalled();
 });
 
 it("searches across authorized scientific work after the query changes", async () => {
   const user = userEvent.setup();
-  mocks.searchProduct
-    .mockResolvedValueOnce({ query: "", count: 1, items: [{
-      kind: "project", id: "project_1", projectId: "project_1", title: "结构研究",
-      subtitle: "RDF 与局部环境", href: "/projects/project_1", status: "active",
-    }] })
-    .mockResolvedValueOnce({ query: "band", count: 1, items: [{
-      kind: "result", id: "result_1", projectId: "project_1", title: "ScientificResult result_1",
-      subtitle: "1.0", href: "/projects/project_1/research?result=result_1", status: "CURRENT",
+  mocks.searchProduct.mockResolvedValue({ query: "band", count: 1, items: [{
+      kind: "result", id: "result_1", projectId: "project_1", title: "分析所选结构的带隙与来源",
+      subtitle: "结果 result_1 · 1.0", href: "/projects/project_1/research?result=result_1", status: "CURRENT",
     }] });
   render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
   await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
   const input = await screen.findByLabelText("项目、数据、研究或报告");
   await user.clear(input);
   await user.type(input, "band");
-  await waitFor(() => expect(mocks.searchProduct).toHaveBeenLastCalledWith("band"));
-  expect(await screen.findByText("ScientificResult result_1")).toBeInTheDocument();
-  expect(screen.getByText("科学结果 · 1.0")).toBeInTheDocument();
+  await waitFor(() =>
+    expect(mocks.searchProduct).toHaveBeenLastCalledWith(
+      "band",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    ),
+  );
+  expect(await screen.findByText("分析所选结构的带隙与来源")).toBeInTheDocument();
+  expect(screen.getByText("科学结果 · 结果 result_1 · 1.0")).toBeInTheDocument();
+  expect(screen.getByText(/科学结果与结果中的已验证发现/)).toBeInTheDocument();
   expect(document.querySelector(".product-search-status")).toHaveTextContent("当前");
   expect(screen.getByRole("link", { name: "打开" })).toHaveClass("product-primary-action");
+});
+
+it("continues an authorized search without duplicates or a hard refresh", async () => {
+  const user = userEvent.setup();
+  mocks.searchProduct
+    .mockResolvedValueOnce({
+      query: "band",
+      count: 3,
+      truncated: true,
+      nextCursor: "cursor-page-2",
+      items: [
+        {
+          kind: "result",
+          id: "result_1",
+          projectId: "project_1",
+          title: "带隙结果一",
+          subtitle: "结果 result_1",
+          href: "/projects/project_1/research?result=result_1",
+          status: "CURRENT",
+        },
+        {
+          kind: "result",
+          id: "result_2",
+          projectId: "project_1",
+          title: "带隙结果二",
+          subtitle: "结果 result_2",
+          href: "/projects/project_1/research?result=result_2",
+          status: "CURRENT",
+        },
+      ],
+    })
+    .mockResolvedValueOnce({
+      query: "band",
+      count: 3,
+      truncated: false,
+      nextCursor: null,
+      items: [
+        {
+          kind: "result",
+          id: "result_2",
+          projectId: "project_1",
+          title: "带隙结果二",
+          subtitle: "结果 result_2",
+          href: "/projects/project_1/research?result=result_2",
+          status: "CURRENT",
+        },
+        {
+          kind: "result",
+          id: "result_3",
+          projectId: "project_1",
+          title: "带隙结果三",
+          subtitle: "结果 result_3",
+          href: "/projects/project_1/research?result=result_3",
+          status: "CURRENT",
+        },
+      ],
+    });
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+
+  await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
+  await user.type(screen.getByLabelText("项目、数据、研究或报告"), "band");
+  await user.click(await screen.findByRole("button", { name: "加载更多" }));
+
+  await waitFor(() =>
+    expect(mocks.searchProduct).toHaveBeenLastCalledWith("band", {
+      cursor: "cursor-page-2",
+    }),
+  );
+  expect(screen.getAllByText("带隙结果二")).toHaveLength(1);
+  expect(screen.getByText("带隙结果三")).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "加载更多" })).not.toBeInTheDocument();
 });
 
 it("surfaces a recoverable offline state without changing scientific work", async () => {
@@ -307,7 +502,7 @@ it("surfaces a recoverable offline state without changing scientific work", asyn
   await waitFor(() => expect(screen.queryByText("连接已中断")).not.toBeInTheDocument());
 });
 
-it("supports bounded type and lifecycle filters for global search", async () => {
+it("supports bounded type, lifecycle and date filters for global search", async () => {
   const user = userEvent.setup();
   mocks.searchProduct.mockResolvedValue({ query: "silicon", count: 0, items: [] });
   render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
@@ -317,7 +512,20 @@ it("supports bounded type and lifecycle filters for global search", async () => 
   await user.type(input, "silicon");
   fireEvent.change(screen.getByLabelText("类型"), { target: { value: "scientific_object" } });
   fireEvent.change(screen.getByLabelText("状态"), { target: { value: "archived" } });
-  await waitFor(() => expect(mocks.searchProduct).toHaveBeenLastCalledWith("silicon", { kind: "scientific_object", status: "archived" }));
+  fireEvent.change(screen.getByLabelText("起始日期"), { target: { value: "2026-08-01" } });
+  fireEvent.change(screen.getByLabelText("结束日期"), { target: { value: "2026-08-31" } });
+  await waitFor(() =>
+    expect(mocks.searchProduct).toHaveBeenLastCalledWith(
+      "silicon",
+      expect.objectContaining({
+        kind: "scientific_object",
+        status: "archived",
+        dateFrom: "2026-08-01",
+        dateTo: "2026-08-31",
+        signal: expect.any(AbortSignal),
+      }),
+    ),
+  );
 });
 
 it("applies, saves and deletes user-owned searches without persisting results", async () => {
@@ -403,9 +611,11 @@ it("keeps a late search response from replacing the newer query", async () => {
     }>;
   };
   const pending = new Map<string, (value: SearchResponse) => void>();
+  const searchSignals = new Map<string, AbortSignal>();
   mocks.searchProduct.mockImplementation(
-    (query: string) =>
+    (query: string, options?: { signal?: AbortSignal }) =>
       new Promise<SearchResponse>((resolve) => {
+        if (options?.signal) searchSignals.set(query, options.signal);
         pending.set(query, resolve);
       }),
   );
@@ -418,6 +628,8 @@ it("keeps a late search response from replacing the newer query", async () => {
   await user.clear(input);
   await user.type(input, "new");
   await new Promise((resolve) => window.setTimeout(resolve, 220));
+  expect(searchSignals.get("old")?.aborted).toBe(true);
+  expect(searchSignals.get("new")?.aborted).toBe(false);
   pending.get("new")?.({
     query: "new",
     count: 1,
@@ -431,4 +643,58 @@ it("keeps a late search response from replacing the newer query", async () => {
   });
   await new Promise((resolve) => window.setTimeout(resolve, 30));
   expect(screen.queryByText("旧结果")).not.toBeInTheDocument();
+});
+
+it("retries a failed search in place without clearing the current criteria", async () => {
+  const user = userEvent.setup();
+  mocks.searchProduct
+    .mockRejectedValueOnce(new Error("temporary search failure"))
+    .mockResolvedValueOnce({
+      query: "silicon",
+      count: 1,
+      items: [{
+        kind: "scientific_object",
+        id: "object_1",
+        projectId: "project_1",
+        title: "Silicon structure",
+        subtitle: "structure.crystal",
+        href: "/projects/project_1/data?object=object_1",
+        status: "active",
+      }],
+    });
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+
+  await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
+  const input = screen.getByLabelText("项目、数据、研究或报告");
+  await user.type(input, "silicon");
+  expect(await screen.findByRole("alert")).toHaveTextContent("当前条件已保留");
+  expect(input).toHaveValue("silicon");
+
+  await user.click(screen.getByRole("button", { name: "重试搜索" }));
+  expect(await screen.findByText("Silicon structure")).toBeInTheDocument();
+  expect(input).toHaveValue("silicon");
+  expect(mocks.searchProduct).toHaveBeenCalledTimes(2);
+});
+
+it("retries loading saved searches without closing the global search", async () => {
+  const user = userEvent.setup();
+  mocks.listSavedProductSearches
+    .mockRejectedValueOnce(new Error("temporary saved-search failure"))
+    .mockResolvedValueOnce([{
+      id: "saved_retry",
+      name: "恢复后的检索",
+      query: "silicon",
+      type: "scientific_object",
+      project: "project_1",
+      status: "active",
+    }]);
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+
+  await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
+  expect(await screen.findByText("已保存检索暂时无法读取。")).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "重试读取已保存检索" }));
+
+  expect(await screen.findByRole("option", { name: "恢复后的检索" })).toBeInTheDocument();
+  expect(screen.getByRole("dialog", { name: "查找科学工作" })).toBeInTheDocument();
+  expect(mocks.listSavedProductSearches).toHaveBeenCalledTimes(2);
 });

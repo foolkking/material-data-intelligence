@@ -1,0 +1,18 @@
+{
+  "id": "CO-078",
+  "date": "2026-09-05",
+  "problem": "Optional companion Artifact failures were silently dropped after Promise.allSettled, making a partial scientific result appear complete.",
+  "change": "Track rejected companion loads, normalize parse failures to ARTIFACT_CONTENT_INVALID, and render a bounded partial-availability status with per-Artifact labels/codes and retry.",
+  "files": [
+    "apps/web/app/components/ScientificViewerAdapter.tsx",
+    "apps/web/app/components/ScientificViewerAdapter.effect.test.tsx",
+    "apps/web/app/globals.css"
+  ],
+  "verification": {
+    "focused_tests": "8 passed",
+    "typecheck": "PASS",
+    "selected_artifact_behavior": "selected result remains readable",
+    "failure_behavior": "partial availability is explicit and retryable"
+  },
+  "result": "Viewer no longer hides partial companion failures or raw parser errors while preserving read-only scientific authority."
+}

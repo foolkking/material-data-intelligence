@@ -1,0 +1,18 @@
+{
+  "improvement": "CO-103",
+  "date": "2026-09-05",
+  "status": "PASS",
+  "summary": "ProductShell speculative route prefetch is bounded, idle-scheduled, and cancelable.",
+  "verification": {
+    "focused_test": "1 passed",
+    "typecheck": "PASS",
+    "diff_check": "PASS_WITH_CRLF_WARNINGS_ONLY"
+  },
+  "behavior": {
+    "routes_per_idle_slot": 1,
+    "timer_fallback_ms": 50,
+    "cleanup_on_unmount_or_route_change": true,
+    "scientific_authority_changed": false,
+    "primary_navigation_blocked": false
+  }
+}

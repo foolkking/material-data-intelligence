@@ -1,13 +1,19 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
+  invalidateResearchSessionList,
+  listNotificationReadStates,
+  listResearchSessions,
   executeSavedProductSearch,
   login,
   safeApiDetail,
+  updateResearchSession,
   updateSavedProductSearch,
+  updateNotificationReadState,
 } from "./product-api";
 
 afterEach(() => {
+  invalidateResearchSessionList();
   vi.unstubAllGlobals();
 });
 
@@ -123,6 +129,94 @@ describe("saved search API", () => {
         method: "POST",
         body: JSON.stringify({ limit: 25 }),
       }),
+    );
+  });
+});
+
+describe("notification read state API", () => {
+  it("loads and persists user-owned read markers through the authorized routes", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        schemaVersion: "NotificationReadState/1.0",
+        items: [],
+        count: 0,
+      }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        projectId: "project_1",
+        jobId: "job_1",
+        read: true,
+        readAt: "2026-09-05T08:00:00Z",
+        notificationUpdatedAt: "2026-09-05T07:00:00Z",
+      }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await listNotificationReadStates();
+    await updateNotificationReadState("project_1", "job_1", true);
+
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      1,
+      "/api/api/notifications/read-state",
+      expect.objectContaining({ credentials: "include" }),
+    );
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      "/api/api/notifications/project_1/job_1/read-state",
+      expect.objectContaining({
+        method: "PATCH",
+        body: JSON.stringify({ read: true }),
+      }),
+    );
+  });
+});
+
+describe("research session list cache", () => {
+  it("invalidates prewarmed lifecycle state after a session mutation", async () => {
+    const active = {
+      id: "session_1",
+      project_id: "project_1",
+      title: "结构研究",
+      status: "active",
+      lifecycle: "ACTIVE",
+    };
+    const archived = { ...active, lifecycle: "ARCHIVED" };
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify([active]), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }))
+      .mockResolvedValueOnce(new Response(JSON.stringify(archived), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }))
+      .mockResolvedValueOnce(new Response(JSON.stringify([archived]), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const first = await listResearchSessions("project_1");
+    const prewarmed = await listResearchSessions("project_1");
+    expect(first).toEqual([active]);
+    expect(prewarmed).toBe(first);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    await updateResearchSession("session_1", { lifecycle: "ARCHIVED" });
+    const refreshed = await listResearchSessions("project_1");
+
+    expect(refreshed).toEqual([archived]);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      3,
+      "/api/projects/project_1/research-sessions",
+      expect.objectContaining({ credentials: "include" }),
     );
   });
 });

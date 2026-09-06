@@ -59,3 +59,64 @@ def test_source_viewer_receives_canonical_trajectory_payload_not_execution_wrapp
     projected = dataset_routes.get_dataset_object_store("dataset_1")
 
     assert projected["resources"][0]["payload"] == payload
+
+
+def test_source_table_projects_profile_defined_stable_sample_identity(monkeypatch):
+    object_hash = "a" * 64
+    monkeypatch.setattr(
+        "mdi_api.phase2_runtime.get_phase2_dataset_object_store",
+        lambda _dataset_id: {
+            "__mdi_source_resources__": {
+                "table_1": {
+                    "objectId": "table_1",
+                    "objectType": "DataFrame",
+                    "objectHash": object_hash,
+                    "datasetId": "dataset_1",
+                },
+            },
+            "table_1": [{"formula": "Si", "value": 1}],
+        },
+    )
+    monkeypatch.setattr(
+        "mdi_api.phase2_runtime.get_phase2_dataset_profile",
+        lambda _dataset_id: {"version": "2"},
+    )
+
+    projected = dataset_routes.get_dataset_object_store("dataset_1")
+    row = projected["resources"][0]["payload"][0]
+
+    assert row == {
+        "formula": "Si",
+        "value": 1,
+        "objectId": "table_1",
+        "sampleRef": "dataset_1@2:aaaaaaaaaaaaaaaa:0",
+        "sampleKey": "table_1:dataset_1@2:aaaaaaaaaaaaaaaa:0",
+    }
+
+
+def test_source_table_preserves_explicit_sample_identity(monkeypatch):
+    monkeypatch.setattr(
+        "mdi_api.phase2_runtime.get_phase2_dataset_object_store",
+        lambda _dataset_id: {
+            "__mdi_source_resources__": {
+                "table_1": {
+                    "objectId": "table_1",
+                    "objectType": "DataFrame",
+                    "objectHash": "b" * 64,
+                    "datasetId": "dataset_1",
+                },
+            },
+            "table_1": [{"sample_id": "mat-2", "formula": "Si"}],
+        },
+    )
+    monkeypatch.setattr(
+        "mdi_api.phase2_runtime.get_phase2_dataset_profile",
+        lambda _dataset_id: {"version": "3"},
+    )
+
+    projected = dataset_routes.get_dataset_object_store("dataset_1")
+    row = projected["resources"][0]["payload"][0]
+
+    assert row["sample_id"] == "mat-2"
+    assert row["sampleRef"] == "mat-2"
+    assert row["sampleKey"] == "table_1:mat-2"

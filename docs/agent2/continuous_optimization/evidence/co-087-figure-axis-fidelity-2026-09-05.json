@@ -1,0 +1,17 @@
+{
+  "id": "CO-087",
+  "date": "2026-09-05",
+  "problem": "Inline report Figure previews exposed axis titles but not authoritative ranges, ticks, or units.",
+  "change": "Read bounded Plotly axis range/tickvals/ticktext/title metadata from the persisted Artifact and render it in a visible axis summary plus SVG desc. Missing metadata remains explicitly 'Artifact 未提供'.",
+  "files": [
+    "apps/web/app/components/ScientificReportArtifactPreview.tsx",
+    "apps/web/app/components/ScientificReportArtifactPreview.test.tsx",
+    "apps/web/app/globals.css"
+  ],
+  "verification": {
+    "focused_tests": "10 passed",
+    "typecheck": "PASS",
+    "scientific_fidelity": "No units/ranges are inferred when absent"
+  },
+  "result": "Band/XRD/RDF-style previews now communicate the authoritative axis contract and remain accessible without changing ScientificResult data."
+}

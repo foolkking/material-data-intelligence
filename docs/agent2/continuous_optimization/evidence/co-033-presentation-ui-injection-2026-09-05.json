@@ -1,0 +1,33 @@
+{
+  "improvementId": "CO-033",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "problem": "Presentation, Viewer and Capability Pack descriptors admitted undeclared or fuzzy runtime fields that could weaken the reviewed-renderer boundary.",
+  "changes": [
+    "Exact field allowlists for every bounded Presentation block.",
+    "Strict nested source, reference, confidence and evidence validation.",
+    "Bounded declarative Viewer token resolution with safe fallback.",
+    "Atomic rejection of executable, dynamic and remote Capability Pack viewer bindings.",
+    "Bounded backend Viewer descriptor identifiers."
+  ],
+  "verification": {
+    "backend": {
+      "passed": 44,
+      "failed": 0
+    },
+    "frontend": {
+      "passed": 29,
+      "failed": 0
+    },
+    "typecheck": "PASS",
+    "ruff": "PASS",
+    "diffCheck": "PASS"
+  },
+  "invariants": {
+    "arbitraryReact": "REJECTED",
+    "dynamicImports": "REJECTED",
+    "htmlScript": "REJECTED",
+    "remoteViewerBinding": "REJECTED",
+    "rawToolExposure": "NO"
+  }
+}

@@ -327,6 +327,7 @@ export type WorkspaceAnalysisJobSummary = {
   jobStatus: string | null;
   workspaceProjectionStatus: WorkspaceStatus;
   researchTurnId?: string | null;
+  researchQuestion?: string | null;
   analysisPlanSchemaVersion: string | null;
   dependencyOutcome: string | null;
   artifactCount: number;
@@ -335,6 +336,15 @@ export type WorkspaceAnalysisJobSummary = {
   workspaceExists: boolean;
   createdAt: string | null;
   updatedAt: string | null;
+};
+
+export type WorkspaceTaskFeed = {
+  schemaVersion: "ProductTaskFeed/1.0";
+  items: Array<WorkspaceAnalysisJobSummary & { projectName: string }>;
+  nextCursor: string | null;
+  limit: number;
+  projectCount: number;
+  truncated: boolean;
 };
 
 export type WorkspacePage<T> = {
@@ -450,6 +460,15 @@ export async function listWorkspaceAnalysisJobs(
 ): Promise<WorkspaceApiResult<WorkspacePage<WorkspaceAnalysisJobSummary>>> {
   return workspaceFetch<WorkspacePage<WorkspaceAnalysisJobSummary>>(
     `/projects/${encodeURIComponent(projectId)}/analysis-jobs${paginationQuery(options)}`,
+    { method: "GET", signal: options.signal },
+  );
+}
+
+export async function listWorkspaceTaskFeed(
+  options: { limit?: number; cursor?: string; signal?: AbortSignal } = {},
+): Promise<WorkspaceApiResult<WorkspaceTaskFeed>> {
+  return workspaceFetch<WorkspaceTaskFeed>(
+    `/api/tasks/feed${paginationQuery(options)}`,
     { method: "GET", signal: options.signal },
   );
 }

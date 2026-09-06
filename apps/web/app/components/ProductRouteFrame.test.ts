@@ -13,6 +13,8 @@ describe("ProductRouteFrame route classification", () => {
     expect(isProductRoutePath("/tasks")).toBe(true);
     expect(isProductRoutePath("/notifications")).toBe(true);
     expect(isProductRoutePath("/trash")).toBe(true);
+    expect(isProductRoutePath("/account")).toBe(true);
+    expect(isProductRoutePath("/admin")).toBe(true);
     expect(isProductRoutePath("/settings/models")).toBe(true);
   });
 

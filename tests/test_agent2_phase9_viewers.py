@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import hashlib
 import json
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from botocore.exceptions import ClientError
 from fastapi.testclient import TestClient
+import pytest
 from sqlalchemy import create_engine, func, insert, select
 from sqlalchemy.pool import StaticPool
 
@@ -31,7 +32,7 @@ from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_api.scientific_objects.schemas import ScientificObjectKind, StorageRef
 from mdi_api.scientific_objects.service import ScientificObjectService
-from mdi_api.scientific_viewers import ScientificViewerProjectionService, build_scientific_viewer_registry
+from mdi_api.scientific_viewers import RESULT_ONLY_VIEWER_TYPES, ScientificViewerProjectionService, build_scientific_viewer_registry
 from mdi_api.unit_of_work import RepositoryFactory
 
 
@@ -81,16 +82,101 @@ def _object(objects, storage, *, object_type: str, kind: ScientificObjectKind, p
     return logical, version
 
 
+_HISTORICAL_VIEWER_CASES = (
+    ("materials.dataset", ScientificObjectKind.DATASET, {"rows": [{"sample_id": "v1"}]}),
+    ("materials.table", ScientificObjectKind.TABLE, {"rows": [{"sample_id": "v1"}]}),
+    ("structure.crystal", ScientificObjectKind.STRUCTURE, {"sites": [{"species": "Si", "abc": [0, 0, 0]}]}),
+    ("trajectory.atomic", ScientificObjectKind.TRAJECTORY, {"frames": [{"time_ps": 0, "positions": []}]}),
+    ("diffraction.xrd.experimental", ScientificObjectKind.DIFFRACTION, {"x": [1.0], "y": [2.0]}),
+    ("diffraction.xrd.theoretical", ScientificObjectKind.DIFFRACTION, {"x": [1.0], "y": [3.0]}),
+    ("electronic.band_structure", ScientificObjectKind.ELECTRONIC, {"kpoints": [0.0], "bands": [[1.0]], "energy_unit": "eV"}),
+    ("electronic.dos", ScientificObjectKind.ELECTRONIC, {"energy": [0.0], "density": [1.0]}),
+    ("phonon.band_structure", ScientificObjectKind.PHONON, {"qpoints": [0.0], "bands": [[1.0]]}),
+    ("phonon.dos", ScientificObjectKind.PHONON, {"energy": [0.0], "density": [1.0]}),
+    ("volumetric.charge_density", ScientificObjectKind.VOLUMETRIC, {"shape": [1, 1, 1], "values": [0.0]}),
+)
+
+
+@pytest.mark.parametrize("object_type,kind,payload", _HISTORICAL_VIEWER_CASES)
+def test_phase14r_historical_viewers_remain_exact_after_new_version_and_archive(
+    tmp_path,
+    object_type: str,
+    kind: ScientificObjectKind,
+    payload: dict,
+):
+    """Every registered viewer must remain bound to the requested old version."""
+
+    _engine, factory, storage, objects, _owner, _stranger = _environment(tmp_path)
+    logical, first = _object(
+        objects,
+        storage,
+        object_type=object_type,
+        kind=kind,
+        payload=payload,
+        name=f"Historical {object_type}",
+    )
+    raw_v2 = json.dumps({**payload, "revision": "v2"}, sort_keys=True, separators=(",", ":")).encode()
+    stored_v2 = storage.put_bytes(
+        f"phase9/{uuid4().hex}-v2.json",
+        raw_v2,
+        content_type="application/json",
+    )
+    second = objects.create_version(
+        logical["id"],
+        object_type=object_type,
+        object_schema_version="1.0",
+        source_resource_refs=[{"scope": "system_fixture", "resource_id": f"{object_type}-v2"}],
+        # A new immutable version of the same logical object is linked by
+        # object identity/current-version state; parent refs are reserved for
+        # derived objects and must not create a same-object cycle.
+        parent_object_version_refs=[],
+        normalized_payload_ref=StorageRef(
+            storage_backend="local",
+            object_key=stored_v2.storage_key,
+            checksum=stored_v2.sha256,
+            media_type="application/json",
+            byte_size=stored_v2.size_bytes,
+        ),
+        content_hash=hashlib.sha256(raw_v2).hexdigest(),
+        semantic_hash=f"semantic-{uuid4().hex}",
+        canonical_metadata={"revision": "v2"},
+        created_by_user_id="owner",
+    )
+    objects.set_current_version(logical["id"], second["id"])
+    objects.update_metadata(logical["id"], lifecycle="ARCHIVED")
+
+    projection = ScientificViewerProjectionService(
+        factory, storage, build_scientific_viewer_registry()
+    ).project(logical["id"], first["id"])
+
+    impact = objects.dependency_impact(logical["id"])
+    assert impact["retentionPolicy"]["automaticPurge"] == "DISABLED"
+    assert impact["retentionPolicy"]["manualPurge"] == "NOT_SUPPORTED_FOR_ENTITY"
+    assert impact["retentionPolicy"]["manualPurgeRequiresZeroDependencies"] is False
+
+    assert projection.object_id == UUID(str(logical["id"]))
+    assert projection.version_id == UUID(str(first["id"]))
+    assert projection.version_id != UUID(str(second["id"]))
+    assert projection.is_current_version is False
+    assert projection.payload_status == "READY"
+
+    restored = objects.update_metadata(logical["id"], lifecycle="ACTIVE")
+    assert restored["id"] == logical["id"]
+    assert restored["current_version_id"] == second["id"]
+    assert [item["id"] for item in objects.list_versions(logical["id"])] == [first["id"], second["id"]]
+
+
 def test_phase9_registry_covers_every_current_scientific_object_type():
     registry = build_scientific_viewer_registry()
     expected = {
         "materials.dataset", "materials.table", "structure.crystal", "trajectory.atomic",
         "diffraction.xrd.experimental", "diffraction.xrd.theoretical",
-        "analysis.rdf", "reciprocal.brillouin_zone",
         "electronic.band_structure", "electronic.dos",
         "phonon.band_structure", "phonon.dos", "volumetric.charge_density",
     }
     assert {item.object_type for item in registry.list()} == expected
+    assert RESULT_ONLY_VIEWER_TYPES == {"analysis.rdf", "reciprocal.brillouin_zone"}
+    assert RESULT_ONLY_VIEWER_TYPES.isdisjoint(expected)
     assert all(item.support == "PROFESSIONAL" for item in registry.list())
     assert registry.resolve("archive.generic").support == "FALLBACK"
 
@@ -198,9 +284,23 @@ def test_phase9_minio_no_such_key_is_a_source_missing_projection(tmp_path):
     assert any("artifact storage" in item.lower() for item in projection.limitations)
 
 
-def test_phase9_authorized_viewer_api_is_read_only_and_cross_project_safe(tmp_path, monkeypatch):
+@pytest.mark.parametrize("object_type,kind,payload", _HISTORICAL_VIEWER_CASES)
+def test_phase9_authorized_viewer_api_is_read_only_and_cross_project_safe(
+    tmp_path,
+    monkeypatch,
+    object_type: str,
+    kind: ScientificObjectKind,
+    payload: dict,
+):
     engine, factory, storage, objects, owner, stranger = _environment(tmp_path)
-    logical, version = _object(objects, storage, object_type="structure.crystal", kind=ScientificObjectKind.STRUCTURE, payload={"sites": [{"species": "Li", "abc": [0, 0, 0]}]})
+    logical, version = _object(
+        objects,
+        storage,
+        object_type=object_type,
+        kind=kind,
+        payload=payload,
+        name=f"Authorized {object_type}",
+    )
     monkeypatch.setattr("mdi_api.routers.agent2.get_scientific_object_service", lambda: objects)
     monkeypatch.setattr("mdi_api.routers.agent2.create_repository_factory", lambda: factory)
     monkeypatch.setattr("mdi_api.routers.agent2.create_artifact_storage_from_settings", lambda _settings: storage)
@@ -217,7 +317,7 @@ def test_phase9_authorized_viewer_api_is_read_only_and_cross_project_safe(tmp_pa
         after = [connection.execute(select(func.count()).select_from(table)).scalar_one() for table in tables]
     assert response.status_code == 200
     assert response.json()["version_id"] == str(version["id"])
-    assert response.json()["viewer"]["renderer_key"] == "structure-3d"
+    assert response.json()["viewer"]["renderer_key"]
     assert before == after == [0, 0, 0, 0, 0]
 
     active["user"] = stranger

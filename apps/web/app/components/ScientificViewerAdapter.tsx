@@ -12,6 +12,7 @@ import { VOLUMETRIC_BROWSER_CAPS } from "./volumetric-viewer/volumetricViewerTyp
 import { sha256HexSync } from "./volumetric-viewer/volumetricHash";
 import { ScientificArtifactRenderer } from "./workspace/WorkspaceArtifactGallery";
 import { artifactIdentity, resolveArtifactRenderer, resolveLoadedArtifactRenderer } from "./workspace/workspace-renderer-registry";
+import { ProductLink as Link } from "./ProductNavigation";
 
 export function ScientificSourceViewer({ projectId, resource, resources = [resource], onSelection = () => undefined }: Readonly<{ projectId: string; resource: DatasetSourceResource; resources?: readonly DatasetSourceResource[]; onSelection?: (selection: WorkspaceSelectionContext) => void }>) {
   const artifacts = useMemo(() => sourceResourceArtifacts(resource, resources), [resource, resources]);
@@ -44,7 +45,12 @@ export function ScientificResultViewer({
   artifacts: readonly Artifact[];
 }>) {
   const [loaded, setLoaded] = useState<Artifact[]>([]);
-  const [state, setState] = useState<"loading" | "ready" | "failed">("loading");
+  const [state, setState] = useState<
+    "loading" | "ready" | "missing" | "gone" | "oversized" | "failed"
+  >("loading");
+  const [failureCode, setFailureCode] = useState("");
+  const [partialFailures, setPartialFailures] = useState<Array<{ artifactId: string; label: string; code: string }>>([]);
+  const [retryAttempt, setRetryAttempt] = useState(0);
   const viewerSelected = normalizeResultArtifactForViewer(selected);
   const descriptor = resolveArtifactRenderer(viewerSelected).descriptor;
   const bundleTypes = new Set(descriptor?.bundleArtifactTypes ?? [viewerSelected.type]);
@@ -54,6 +60,8 @@ export function ScientificResultViewer({
   useEffect(() => {
     const controller = new AbortController();
     setState("loading");
+    setFailureCode("");
+    setPartialFailures([]);
     void Promise.allSettled(bundle.map(async (artifact) => {
       const id = artifactIdentity(artifact);
       if (!id || artifact.content !== undefined) return artifact;
@@ -62,25 +70,156 @@ export function ScientificResultViewer({
     })).then((results) => {
       if (controller.signal.aborted) return;
       const items = results.flatMap((result) => result.status === "fulfilled" ? [result.value] : []);
+      const failures = results.flatMap((result, index) => {
+        if (result.status !== "rejected") return [];
+        const artifactId = artifactIdentity(bundle[index]);
+        if (!artifactId) return [];
+        return [{
+          artifactId,
+          label: String(bundle[index]?.name || artifactId || `Artifact ${index + 1}`),
+          code: artifactContentFailureCode(result.reason),
+        }];
+      });
       const selectedIdentity = artifactIdentity(selected);
       const selectedLoaded = items.some((item) => artifactIdentity(item) === selectedIdentity);
       // A selected result is required; optional companions are best-effort so
       // one corrupt sibling cannot hide an otherwise readable scientific result.
-      if (!selectedLoaded) setState("failed");
-      else { setLoaded(items); setState("ready"); }
+      if (!selectedLoaded) {
+        const selectedIndex = bundle.findIndex((item) => artifactIdentity(item) === selectedIdentity);
+        const selectedFailure = selectedIndex >= 0 ? results[selectedIndex] : undefined;
+        const code = selectedFailure?.status === "rejected"
+          ? artifactContentFailureCode(selectedFailure.reason)
+          : "ARTIFACT_CONTENT_LOAD_FAILED";
+        setFailureCode(code);
+        setState(
+          code === "ARTIFACT_CONTENT_NOT_FOUND"
+            ? "missing"
+            : code === "ARTIFACT_CONTENT_GONE"
+              ? "gone"
+              : code === "ARTIFACT_CONTENT_TOO_LARGE"
+                ? "oversized"
+                : "failed",
+        );
+      }
+      else {
+        setLoaded(items);
+        setPartialFailures(failures);
+        setState("ready");
+      }
     }).catch(() => {
-      if (!controller.signal.aborted) setState("failed");
+      if (!controller.signal.aborted) {
+        setFailureCode("ARTIFACT_CONTENT_LOAD_FAILED");
+        setState("failed");
+      }
     });
     return () => controller.abort();
-  }, [loadKey]);
+  }, [loadKey, retryAttempt]);
 
   const workspace = useMemo(() => resultViewerContext(projectId, datasetId, jobId, viewerSelected), [datasetId, jobId, projectId, viewerSelected]);
-  if (state === "loading") return <div className="product-loading" role="status">正在加载科学结果…</div>;
-  if (state === "failed") return <div className="product-state" role="alert"><h3>此结果暂时无法打开</h3><p>结果元数据仍然保留，可以稍后重试。</p></div>;
+  if (state === "loading") return <ResultViewerLoadingState artifact={viewerSelected} projectId={projectId} datasetId={datasetId} />;
+  if (state === "missing") return <div className="product-state" role="status">
+    <p className="product-kicker">Artifact 可用性</p>
+    <h3>原始结果内容当前不可用</h3>
+    <p>Artifact 元数据、校验值与科学谱系仍然保留；系统没有替换为其他结果或较新版本。</p>
+    <div className="product-row-actions">
+      <button type="button" className="product-secondary-action" onClick={() => setRetryAttempt((value) => value + 1)}>重新检查存储</button>
+      {datasetId ? <Link className="product-secondary-action" href={`/projects/${encodeURIComponent(projectId)}/data?dataset=${encodeURIComponent(datasetId)}`}>返回数据源</Link> : null}
+    </div>
+    <ViewerArtifactMetadata artifact={selected} />
+  </div>;
+  if (state === "gone") return <div className="product-state" role="status">
+    <p className="product-kicker">Artifact 历史可用性</p>
+    <h3>原始 Artifact 已永久不可用</h3>
+    <p>Artifact 元数据、校验值与科学谱系继续保留；此状态不可通过重试恢复，系统也不会替换为其他结果或较新版本。</p>
+    {datasetId ? <Link className="product-secondary-action" href={`/projects/${encodeURIComponent(projectId)}/data?dataset=${encodeURIComponent(datasetId)}`}>返回数据源</Link> : null}
+    <ViewerArtifactMetadata artifact={selected} />
+  </div>;
+  if (state === "oversized") return <div className="product-state" role="status">
+    <p className="product-kicker">Artifact 浏览上限</p>
+    <h3>此 Artifact 超出安全浏览范围</h3>
+    <p>为了避免冻结浏览器，系统未读取此大型 payload。科学结果、精确 Artifact 身份与校验值保持不变。</p>
+    {datasetId ? <Link className="product-secondary-action" href={`/projects/${encodeURIComponent(projectId)}/data?dataset=${encodeURIComponent(datasetId)}`}>返回数据源</Link> : null}
+    <ViewerArtifactMetadata artifact={selected} />
+    <details><summary>技术详情</summary><code>{failureCode}</code></details>
+  </div>;
+  if (state === "failed") return <div className="product-state" role="alert">
+    <p className="product-kicker">科学结果</p>
+    <h3>科学结果加载失败</h3>
+    <p>这可能是临时服务或网络问题。已保存的 Result 与 Artifact 元数据不会因重新加载而改变。</p>
+    <div className="product-row-actions">
+      <button type="button" className="product-primary-action" onClick={() => setRetryAttempt((value) => value + 1)}>重新加载</button>
+      {datasetId ? <Link className="product-secondary-action" href={`/projects/${encodeURIComponent(projectId)}/data?dataset=${encodeURIComponent(datasetId)}`}>返回数据源</Link> : null}
+    </div>
+    <ViewerArtifactMetadata artifact={selected} />
+    <details><summary>技术详情</summary><code>{failureCode || "ARTIFACT_CONTENT_LOAD_FAILED"}</code></details>
+  </div>;
   const normalized = loaded.map(normalizeResultArtifactForViewer);
   const loadedSelected = normalized.find((item) => artifactIdentity(item) === artifactIdentity(selected)) ?? viewerSelected;
   const rendererSelected = selectProductRendererArtifact(loadedSelected, normalized);
-  return <ScientificArtifactRenderer selected={rendererSelected} artifacts={normalized} workspace={workspace} />;
+  return (
+    <>
+      {partialFailures.length ? (
+        <div className="product-state scientific-viewer-partial-state" role="status">
+          <strong>部分 Artifact 暂时不可用</strong>
+          <p>已保留可读取的科学结果；以下辅助内容需要稍后重试，不会替换为其他版本。</p>
+          <ul>
+            {partialFailures.map((failure) => (
+              <li key={failure.artifactId}>
+                <span>{failure.label}</span>
+                <code>{failure.code}</code>
+              </li>
+            ))}
+          </ul>
+          <button type="button" className="product-secondary-action" onClick={() => setRetryAttempt((value) => value + 1)}>重新加载缺失内容</button>
+        </div>
+      ) : null}
+      <ScientificArtifactRenderer selected={rendererSelected} artifacts={normalized} workspace={workspace} />
+    </>
+  );
+}
+
+function ResultViewerLoadingState({ artifact, projectId, datasetId }: { artifact: Artifact; projectId: string; datasetId?: string | null }) {
+  return <div className="product-loading" role="status" aria-label="科学结果载荷正在加载">
+    <p className="product-kicker">Artifact metadata ready</p>
+    <h3>正在加载科学结果载荷…</h3>
+    <p>精确身份、来源与恢复入口已可用；仅专业查看器等待已验证 payload。</p>
+    <ViewerArtifactMetadata artifact={artifact} />
+    {datasetId ? <div className="product-row-actions"><Link className="product-secondary-action" href={`/projects/${encodeURIComponent(projectId)}/data?dataset=${encodeURIComponent(datasetId)}`}>返回数据源</Link></div> : null}
+  </div>;
+}
+
+function ViewerArtifactMetadata({ artifact }: { artifact: Artifact }) {
+  const identity = artifactIdentity(artifact);
+  const projectId = typeof artifact.metadata?.projectId === "string" ? artifact.metadata.projectId : null;
+  return <details open>
+    <summary>精确 Artifact 身份与来源</summary>
+    <p>Artifact：<code>{identity || "未提供"}</code></p>
+    <p>类型：<code>{artifact.type || "未提供"}@{artifact.version || "1"}</code></p>
+    {artifact.name ? <p>名称：{artifact.name}</p> : null}
+    {artifact.toolCallId ? <p>来源 ToolCall：<code>{artifact.toolCallId}</code></p> : null}
+    {projectId ? <p>项目：<code>{projectId}</code></p> : null}
+    {artifact.sha256 || artifact.contentHash ? <p>SHA-256：<code>{artifact.sha256 || artifact.contentHash}</code></p> : null}
+  </details>;
+}
+
+function artifactContentFailureCode(reason: unknown): string {
+  if (reason instanceof SyntaxError) return "ARTIFACT_CONTENT_INVALID";
+  if (reason && typeof reason === "object") {
+    const details = "details" in reason ? (reason as { details?: unknown }).details : undefined;
+    if (details && typeof details === "object" && "detail" in details) {
+      const detail = (details as { detail?: unknown }).detail;
+      if (detail && typeof detail === "object" && "code" in detail && typeof detail.code === "string") {
+        return detail.code;
+      }
+    }
+    if ("message" in reason && typeof reason.message === "string") {
+      if (/json|unexpected token|expected property name/i.test(reason.message)) {
+        return "ARTIFACT_CONTENT_INVALID";
+      }
+      return reason.message;
+    }
+  }
+  return "ARTIFACT_CONTENT_LOAD_FAILED";
 }
 
 /** Keep a composite viewer's request set semantic and bounded. The registry

@@ -17,4 +17,18 @@ describe("Agent2 Phase 9 ScientificViewerRegistry", () => {
     }
     expect(resolveScientificViewer({ objectType: "archive.generic" })).toMatchObject({ support: "FALLBACK", rendererKey: "generic-safe-fallback" });
   });
+
+  it("does not select or propagate renderers from executable or remote descriptor text", () => {
+    for (const input of [
+      { objectType: "remote_component", semanticRole: "<script>rdf</script>" },
+      { objectType: "https://plugins.invalid/viewer.js", schemaVersion: "https://plugins.invalid/xrd" },
+      { objectType: "javascript:alert(1)", semanticRole: "import(module)" },
+    ]) {
+      expect(resolveScientificViewer(input)).toMatchObject({
+        scientificType: "unsupported.inert",
+        rendererKey: "generic-safe-fallback",
+        support: "FALLBACK",
+      });
+    }
+  });
 });

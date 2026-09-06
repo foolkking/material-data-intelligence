@@ -12,8 +12,9 @@ from .queue import RedisRQInterpretationQueue
 class ScientificInterpretationReconciler:
     """Republish only durable RESULT_READY identities; never reruns execution."""
 
-    def __init__(self, repository_factory=None) -> None:
+    def __init__(self, repository_factory=None, *, queue=None) -> None:
         self.repository_factory = repository_factory or create_repository_factory()
+        self.queue = queue
 
     def reconcile_turn(self, turn_id: UUID):
         settings = load_settings()
@@ -30,7 +31,11 @@ class ScientificInterpretationReconciler:
                 return {"turn_id": str(turn_id), "republished": False, "reason": "not_result_ready"}
         if settings.queue_backend != "redis" or not settings.agent2_interpretation_enabled:
             return {"turn_id": str(turn_id), "republished": False, "reason": "queue_disabled"}
-        result = RedisRQInterpretationQueue(redis_url=settings.redis_url, queue_name=settings.agent2_interpretation_queue_name).enqueue_turn(turn_id)
+        queue = self.queue or RedisRQInterpretationQueue(
+            redis_url=settings.redis_url,
+            queue_name=settings.agent2_interpretation_queue_name,
+        )
+        result = queue.enqueue_turn(turn_id)
         return {"turn_id": str(turn_id), "republished": result.enqueued, "backend": result.backend}
 
 

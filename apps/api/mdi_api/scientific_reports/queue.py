@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from uuid import UUID
 
+from mdi_schemas.worker_queues import worker_queue_definition
+
 
 @dataclass(frozen=True)
 class ReportQueueSubmitResult:
@@ -34,7 +36,12 @@ class InMemoryReportQueue:
 
 
 class RedisRQReportQueue:
-    def __init__(self, *, redis_url: str, queue_name: str = "mdi-agent-reports") -> None:
+    def __init__(
+        self,
+        *,
+        redis_url: str,
+        queue_name: str = worker_queue_definition("report").default_name,
+    ) -> None:
         self.redis_url = redis_url
         self.queue_name = queue_name
 
@@ -50,7 +57,11 @@ class RedisRQReportQueue:
             if status in {"queued", "started", "deferred", "scheduled", "finished"}:
                 return ReportQueueSubmitResult(generation_id, False, "rq", "report generation already queued")
             existing.delete()
-        queue.enqueue("mdi_workers.report_worker.run_queued_report_generation", str(generation_id), job_id=job_id)
+        queue.enqueue(
+            worker_queue_definition("report").handler,
+            str(generation_id),
+            job_id=job_id,
+        )
         return ReportQueueSubmitResult(generation_id, True, "rq", f"report generation queued on {self.queue_name}")
 
 

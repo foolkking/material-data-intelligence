@@ -30,12 +30,14 @@ export function DatasetWorkbenchPage({ projectId, datasetId }: { projectId: stri
   const analysisCount = dataset?.analysisCount || 0;
   const resultSummary = dataset?.resultSummary;
   const datasetAnalyses = (history?.analyses || []).filter((item) => item.datasetId === datasetId);
+  const projectHref = `/projects/${encodeURIComponent(projectId)}`;
+  const datasetUploadHref = `${projectHref}/datasets/new`;
 
   return (
     <div className="dataset-workbench-page" data-testid="dataset-workbench-page">
       <header className="dataset-workbench-header">
         <div className="dataset-breadcrumb">
-          <Link href="/">项目</Link>
+          <Link href={projectHref}>项目</Link>
           <span aria-hidden="true">/</span>
           <span>{history?.project.name || projectId}</span>
           <span aria-hidden="true">/</span>
@@ -45,29 +47,70 @@ export function DatasetWorkbenchPage({ projectId, datasetId }: { projectId: stri
           <div>
             <p className="eyebrow">数据工作台</p>
             <h1>{dataset?.name || datasetId}</h1>
-            <p>{dataset ? dataset.import.fileCount + " 个源文件 · " + (profile ? "Profile 已就绪" : "Profile 待生成") + " · " + analysisCount + " 次分析" : "正在读取数据集记录..."}</p>
+            <p>{dataset ? dataset.import.fileCount + " 个源文件 · " + (profile ? "语义档案已就绪" : "语义档案待生成") + " · " + analysisCount + " 次科学分析" : "正在读取数据集记录..."}</p>
           </div>
           <div className="dataset-workbench-actions">
-            <Link className="secondary-action" href="/">返回项目</Link>
-            <Link className="primary-action" href="/analysis">导入其他数据</Link>
+            <Link className="secondary-action" href={projectHref}>返回项目</Link>
+            <Link className="primary-action" href={datasetUploadHref}>导入其他数据</Link>
           </div>
         </div>
         <div className="dataset-progress" aria-label="数据工作流">
           <ProgressStep label="导入" state={dataset ? "done" : "active"} />
-          <ProgressStep label="Profile" state={profile ? "done" : dataset ? "active" : "pending"} />
-          <ProgressStep label="分析" state={analysisCount ? "done" : profile ? "active" : "pending"} />
-          <ProgressStep label="结果" state={resultSummary?.artifactCount ? "done" : analysisCount ? "active" : "pending"} />
+          <ProgressStep label="语义档案" state={profile ? "done" : dataset ? "active" : "pending"} />
+          <ProgressStep label="科学分析" state={analysisCount ? "done" : profile ? "active" : "pending"} />
+          <ProgressStep label="分析结果" state={resultSummary?.artifactCount ? "done" : analysisCount ? "active" : "pending"} />
         </div>
+        <aside className="dataset-context-note" role="note">
+          <strong>这是数据集详情页</strong>
+          <p>数据集负责保存导入范围；科学对象与不可变版本由数据平台维护。语义档案只描述可用字段和能力，分析结果不会改写源文件。</p>
+          <details>
+            <summary>术语说明</summary>
+            <ul>
+              <li><strong>语义档案（Profile）</strong>：从源数据生成的可审计结构、字段和语义摘要。</li>
+              <li><strong>科学资源</strong>：供查看器、表格和分析读取的持久化资源；它不改变源文件。</li>
+              <li><strong>分析结果（ScientificResult）</strong>：已完成分析产生的权威科学事实，以及它引用的 Artifact 和报告。</li>
+            </ul>
+          </details>
+        </aside>
+        <section className="dataset-layer-guide" aria-labelledby="dataset-layer-guide-title">
+          <div className="dataset-layer-guide-heading">
+            <p className="section-kicker">边界说明</p>
+            <h2 id="dataset-layer-guide-title">从来源到结果：每一层负责什么</h2>
+            <p>这些层级相互关联，但职责不同；打开查看器或分析结果时，页面会保留对应的精确来源。</p>
+          </div>
+          <ol>
+            <li>
+              <span>01 · Dataset</span>
+              <strong>来源范围</strong>
+              <small>记录导入文件、数据集范围和处理状态。</small>
+            </li>
+            <li>
+              <span>02 · Profile</span>
+              <strong>语义档案</strong>
+              <small>描述字段、样本和可用能力，不是新的科学结果。</small>
+            </li>
+            <li>
+              <span>03 · ScientificObject / Version</span>
+              <strong>科学身份与状态</strong>
+              <small>对象代表科学身份；版本保存不可变的精确状态。</small>
+            </li>
+            <li>
+              <span>04 · ScientificResult</span>
+              <strong>分析事实</strong>
+              <small>保存已完成分析的权威事实，并回链到对象版本和证据。</small>
+            </li>
+          </ol>
+        </section>
         {error ? <p className="dataset-inline-error" role="alert">{error}</p> : null}
       </header>
 
       <section className="dataset-record-strip" aria-label="当前数据记录摘要">
         <div><span>解析状态</span><strong>{friendlyProcessStatus(dataset?.import.parseOutcome || "unknown")}</strong></div>
-        <div><span>表格行数</span><strong>{profile?.rowCount ?? "—"}</strong></div>
+        <div><span>记录数</span><strong>{profile?.rowCount ?? profile?.objectCount ?? "—"}</strong></div>
         <div><span>列数</span><strong>{profile?.columnCount ?? "—"}</strong></div>
-        <div><span>可用能力</span><strong>{profile?.readyCapabilities?.length ?? 0}</strong></div>
+        <div><span>可用分析</span><strong>{profile?.readyCapabilities?.length ?? 0}</strong></div>
         <div><span>最近分析</span><strong>{friendlyProcessStatus(dataset?.lastAnalysisStatus || "not_started")}</strong></div>
-        <div><span>结果 / 报告</span><strong>{resultSummary ? resultSummary.artifactCount + " / " + resultSummary.reportCount : "—"}</strong></div>
+        <div><span>分析结果 / 报告</span><strong>{resultSummary ? resultSummary.artifactCount + " / " + resultSummary.reportCount : "—"}</strong></div>
       </section>
 
       <section className="dataset-process-strip" aria-label="数据处理过程">
@@ -82,7 +125,7 @@ export function DatasetWorkbenchPage({ projectId, datasetId }: { projectId: stri
 
       <section className="dataset-source-band" aria-labelledby="dataset-source-heading">
         <div className="band-heading">
-          <div><p className="section-kicker">来源与推导</p><h2 id="dataset-source-heading">上传记录</h2></div>
+          <div><p className="section-kicker">来源与推导</p><h2 id="dataset-source-heading">来源文件与科学资源</h2></div>
           <span className="band-count">{dataset?.import.fileCount || 0}</span>
         </div>
         <div className="dataset-source-grid">
@@ -100,16 +143,16 @@ export function DatasetWorkbenchPage({ projectId, datasetId }: { projectId: stri
             ) : <p className="empty-inline">暂无源文件明细。</p>}
           </div>
           <div>
-            <span className="source-label">规范化资源</span>
+            <span className="source-label">可查看的科学资源</span>
             <p className="source-value">{dataset?.import.resources.length || 0} 个资源已关联到当前数据集</p>
-            <p className="source-value">{profile ? "Profile " + (profile.version || "") + " · " + (profile.columnCount || 0) + " 列" : "Profile 尚未生成"}</p>
+            <p className="source-value">{profile ? "语义档案 " + (profile.version || "") + " · " + (profile.columnCount || 0) + " 列" : "语义档案尚未生成"}</p>
           </div>
         </div>
       </section>
 
       <section className="dataset-analysis-band" aria-labelledby="dataset-analysis-heading">
         <div className="band-heading">
-          <div><p className="section-kicker">结果记录</p><h2 id="dataset-analysis-heading">该数据集的分析</h2></div>
+          <div><p className="section-kicker">结果记录</p><h2 id="dataset-analysis-heading">基于此数据集的分析</h2></div>
           <span className="band-count">{datasetAnalyses.length}</span>
         </div>
         {datasetAnalyses.length ? (
@@ -124,7 +167,7 @@ export function DatasetWorkbenchPage({ projectId, datasetId }: { projectId: stri
               })}>
                 <span>
                   <strong>{analysis.userQuestion || "未命名分析"}</strong>
-                  <span>{analysis.artifactCount} 个结果 · {analysis.reportCount} 份报告 · {friendlyProcessStatus(analysis.status)}</span>
+                  <span>{analysis.artifactCount} 个分析结果 · {analysis.reportCount} 份报告 · {friendlyProcessStatus(analysis.status)}</span>
                 </span>
                 <span className="row-chevron" aria-hidden="true">→</span>
               </Link>

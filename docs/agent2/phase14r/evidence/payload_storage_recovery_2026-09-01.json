@@ -1,0 +1,492 @@
+{
+  "schemaVersion": "phase14r.payload-storage-recovery.v1",
+  "createdAt": "2026-09-01T13:17:42.186801+00:00",
+  "database": "mdi",
+  "bucket": "mdi-artifacts",
+  "activeEndpoint": "http://127.0.0.1:9000",
+  "sourceStores": [
+    ".phase14r-minio-single4",
+    ".phase14r-minio-fresh"
+  ],
+  "authorityRule": "restore only same key with exact size/SHA-256 or validated normalized metadata identity; never substitute object/version",
+  "referenceKeyCount": 1805,
+  "presentBefore": 249,
+  "recoveredUniqueObjects": 1551,
+  "presentAfter": 1800,
+  "recoveredBySource": {
+    "fresh": 99,
+    "old": 1431
+  },
+  "recoveredAuthorityCoverage": {
+    "artifact": 1335,
+    "datasetMetadata": 14,
+    "datasetNormalized": 17,
+    "datasetRaw": 17,
+    "scientificObjectVersion": 159
+  },
+  "recoveredEntryFingerprint": "093c98feb0d106fdaac36457a4e8f4b583f821753ccd91176bb6cb598d104bb0",
+  "unresolvedCount": 5,
+  "unresolved": [
+    {
+      "key": "live/metrics.json",
+      "reason": "no_exact_source",
+      "authorities": [
+        {
+          "authority": "artifact",
+          "id": "art_live_1",
+          "projectId": "proj_p6_1",
+          "jobId": "job_p6_1",
+          "kind": "metrics_json",
+          "size": 100,
+          "sha": "abc_live",
+          "contentType": "application/json"
+        }
+      ]
+    },
+    {
+      "key": "projects/proj_p6_9/jobs/job_p6_9/tool_calls/call_job_p6_9_step_metrics/art_loop.json",
+      "reason": "no_exact_source",
+      "authorities": [
+        {
+          "authority": "artifact",
+          "id": "art_loop",
+          "projectId": "proj_p6_9",
+          "jobId": "job_p6_9",
+          "kind": "metrics_json",
+          "size": 39,
+          "sha": "5cb1b8bbfe76eccb4b7c789ce2c8f1d251d59d043932b18e32f5fdfaa4d6183a",
+          "contentType": "application/json"
+        }
+      ]
+    },
+    {
+      "key": "projects/project_0001_d286007db78e427e/datasets/dataset_0001_a0b09e3324e44ca4/normalized/obj_dataframe_60c91184df02/data.json",
+      "reason": "no_exact_source",
+      "authorities": [
+        {
+          "authority": "datasetNormalized",
+          "id": "dataset_0001_a0b09e3324e44ca4",
+          "projectId": "project_0001_d286007db78e427e",
+          "objectId": "obj_dataframe_60c91184df02",
+          "sha": "d9067205ffb2aba89112d17662fef3eeaca2dabc0ba02a2a4a00063a24561daf",
+          "contentType": "application/json"
+        }
+      ]
+    },
+    {
+      "key": "projects/project_0001_d286007db78e427e/datasets/dataset_0001_a0b09e3324e44ca4/normalized/obj_dataframe_60c91184df02/metadata.json",
+      "reason": "no_exact_source",
+      "authorities": [
+        {
+          "authority": "datasetMetadata",
+          "id": "dataset_0001_a0b09e3324e44ca4",
+          "projectId": "project_0001_d286007db78e427e",
+          "objectId": "obj_dataframe_60c91184df02",
+          "expectedContentHash": "d9067205ffb2aba89112d17662fef3eeaca2dabc0ba02a2a4a00063a24561daf",
+          "expectedStorageKey": "projects/project_0001_d286007db78e427e/datasets/dataset_0001_a0b09e3324e44ca4/normalized/obj_dataframe_60c91184df02/data.json",
+          "contentType": "application/json"
+        }
+      ]
+    },
+    {
+      "key": "projects/project_0001_d286007db78e427e/datasets/dataset_0001_a0b09e3324e44ca4/raw/file_001_7309387f/materials.zip",
+      "reason": "no_exact_source",
+      "authorities": [
+        {
+          "authority": "datasetRaw",
+          "id": "dataset_0001_a0b09e3324e44ca4",
+          "projectId": "project_0001_d286007db78e427e",
+          "size": 143,
+          "sha": "b75f9a1d398de4636e4494f2aaa04977326ca66a96356fcc1be87e86a3a520c4",
+          "contentType": "application/octet-stream"
+        }
+      ]
+    }
+  ],
+  "sampleRecovered": [
+    {
+      "key": "phase10k3-ml-5292252351/projects/project_phase10k3_5292252351/jobs/job_02a3060338474a9cb1cb4bbf/tool_calls/call_job_02a3060338474a9cb1cb4bbf_step_001/materials_ml_classification.json",
+      "sha256": "56f89c28a375b9a5049c018d1008531fe8148001d4aaa5e5a45ec4ca7a34b0d5",
+      "sizeBytes": 3673,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k3-ml-5292252351/projects/project_phase10k3_5292252351/jobs/job_02a3060338474a9cb1cb4bbf/tool_calls/call_job_02a3060338474a9cb1cb4bbf_step_001/recipe.json",
+      "sha256": "70fbdf57990e6da11d31a3d6cef5f5f216a69d95b1dde7547b81a7940e11114c",
+      "sizeBytes": 1332,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k3-ml-5292252351/projects/project_phase10k3_5292252351/jobs/job_02a3060338474a9cb1cb4bbf/tool_calls/call_job_02a3060338474a9cb1cb4bbf_step_001/summary.md",
+      "sha256": "fe87d7e0b378eb8a99025879b42a41f0cda9ca64b664144dfc9733b54ac53a0f",
+      "sizeBytes": 315,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k3-ml-5292252351/projects/project_phase10k3_5292252351/jobs/job_5c648918be804e55b6826c7e/tool_calls/call_job_5c648918be804e55b6826c7e_step_001/materials_ml_uncertainty.json",
+      "sha256": "1285091de53e449c76375fd38579adccc1ccd1dc0f2bec29a0b02e43e84932f4",
+      "sizeBytes": 4874,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k3-ml-5292252351/projects/project_phase10k3_5292252351/jobs/job_5c648918be804e55b6826c7e/tool_calls/call_job_5c648918be804e55b6826c7e_step_001/recipe.json",
+      "sha256": "c785a20611e7f0e97b3fe6c13256e0bd9df7d1957ab07885b0a44dddb912e310",
+      "sizeBytes": 1317,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k3-ml-5292252351/projects/project_phase10k3_5292252351/jobs/job_5c648918be804e55b6826c7e/tool_calls/call_job_5c648918be804e55b6826c7e_step_001/summary.md",
+      "sha256": "1d46218d056023dc126b323fcc5ee09510e204671e781db98219fa55d7ce2619",
+      "sizeBytes": 312,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k3-ml-5292252351/projects/project_phase10k3_5292252351/jobs/job_8207fe6974e6406d9f607725/tool_calls/call_job_8207fe6974e6406d9f607725_step_001/materials_ml_regression.json",
+      "sha256": "9f4f00a684d59060215d0deaf41276c49d2987deaf95cde9f4935940be4c956b",
+      "sizeBytes": 6700,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k3-ml-5292252351/projects/project_phase10k3_5292252351/jobs/job_8207fe6974e6406d9f607725/tool_calls/call_job_8207fe6974e6406d9f607725_step_001/recipe.json",
+      "sha256": "fb61f06e5d2f659f0829baa66b4d90715f0eb6cc134c7c43c4c21eda2bde0b3d",
+      "sizeBytes": 1355,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k3-ml-5292252351/projects/project_phase10k3_5292252351/jobs/job_8207fe6974e6406d9f607725/tool_calls/call_job_8207fe6974e6406d9f607725_step_001/summary.md",
+      "sha256": "a6ddd92f65076d77c890a5cd792d1ddf498b97d979048d70be15e3c1e9bfa8b8",
+      "sizeBytes": 311,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k4-composition-space-b863faf61d/projects/project_phase10k4_b863faf61d/jobs/job_4dfe0eee83ef4c23abac2a11/tool_calls/call_job_4dfe0eee83ef4c23abac2a11_step_001/composition_space.json",
+      "sha256": "f9e85dbe13ce48da4f182e54c5dda25dc13241da1bddd816ed0878df3532154b",
+      "sizeBytes": 6731,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k4-composition-space-b863faf61d/projects/project_phase10k4_b863faf61d/jobs/job_4dfe0eee83ef4c23abac2a11/tool_calls/call_job_4dfe0eee83ef4c23abac2a11_step_001/composition_space_plot.json",
+      "sha256": "0deca300efc1e2b86f2978bc272db4896eacfb81451a8817dff0be05678bf545",
+      "sizeBytes": 765,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k4-composition-space-b863faf61d/projects/project_phase10k4_b863faf61d/jobs/job_4dfe0eee83ef4c23abac2a11/tool_calls/call_job_4dfe0eee83ef4c23abac2a11_step_001/recipe.json",
+      "sha256": "f79b4347ef079f639bf61cd66ba91f8fd08a318b463675d2aa3f864c640c4e62",
+      "sizeBytes": 1644,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k4-composition-space-b863faf61d/projects/project_phase10k4_b863faf61d/jobs/job_4dfe0eee83ef4c23abac2a11/tool_calls/call_job_4dfe0eee83ef4c23abac2a11_step_001/summary.md",
+      "sha256": "0f697a8feab412a939caffc21e73bede742eff92422f123f70ad3336b1120749",
+      "sizeBytes": 329,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k5-material-intelligence-e5b5e8070b/projects/project_phase10k5_e5b5e8070b/jobs/job_55f982d2618a4a0f881f2053/tool_calls/call_job_55f982d2618a4a0f881f2053_step_001/dataset_materials_explorer.json",
+      "sha256": "7f14b0150533742c958e790fe603151163c1e60dd1775c7264820f352225fb7b",
+      "sizeBytes": 4656,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k5-material-intelligence-e5b5e8070b/projects/project_phase10k5_e5b5e8070b/jobs/job_55f982d2618a4a0f881f2053/tool_calls/call_job_55f982d2618a4a0f881f2053_step_001/dataset_quality.json",
+      "sha256": "78bd24f0d06f15e736f2c5b0d263acd6186e7fd1e37f4423c0e1e1385a72230e",
+      "sizeBytes": 212,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k5-material-intelligence-e5b5e8070b/projects/project_phase10k5_e5b5e8070b/jobs/job_55f982d2618a4a0f881f2053/tool_calls/call_job_55f982d2618a4a0f881f2053_step_001/recipe.json",
+      "sha256": "0a092d849e69127720b75233c5303c198da28645779f43e34cc18dab2bba7ab8",
+      "sizeBytes": 1327,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k5-material-intelligence-e5b5e8070b/projects/project_phase10k5_e5b5e8070b/jobs/job_55f982d2618a4a0f881f2053/tool_calls/call_job_55f982d2618a4a0f881f2053_step_001/summary.md",
+      "sha256": "a8f071f20c09c8c081801749e81b51564b164aa9575b2ee45d3f216da8e8a0e1",
+      "sizeBytes": 374,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k5-material-intelligence-e5b5e8070b/projects/project_phase10k5_e5b5e8070b/jobs/job_59abb047e88e4639b7d0c16b/tool_calls/call_job_59abb047e88e4639b7d0c16b_step_001/materials_ml_regression.json",
+      "sha256": "bbaaceb136719961f45e534e5a92163ffec0b6b27a6dc2cffd0b3d3620a5450b",
+      "sizeBytes": 6700,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k5-material-intelligence-e5b5e8070b/projects/project_phase10k5_e5b5e8070b/jobs/job_59abb047e88e4639b7d0c16b/tool_calls/call_job_59abb047e88e4639b7d0c16b_step_001/recipe.json",
+      "sha256": "ead7fd1c5b05333cdc66392be0114041a34974398519bb832cfeb49311f98b0c",
+      "sizeBytes": 1355,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    },
+    {
+      "key": "phase10k5-material-intelligence-e5b5e8070b/projects/project_phase10k5_e5b5e8070b/jobs/job_59abb047e88e4639b7d0c16b/tool_calls/call_job_59abb047e88e4639b7d0c16b_step_001/summary.md",
+      "sha256": "a99154758aec80fbfed7627f83a0a4ef37d14a2de12f254574a71d8b51ce074a",
+      "sizeBytes": 311,
+      "source": "old",
+      "authorities": [
+        "artifact"
+      ]
+    }
+  ],
+  "deterministicRepairAt": "2026-09-01T13:34:15.684027+00:00",
+  "deterministicRepairs": {
+    "count": 21,
+    "crossKeyExactByteCount": 12,
+    "canonicalMetadataCount": 9,
+    "entryFingerprint": "a34e2a75e4ebce6e0d1dccaa4748ca70ab7f898995a5b1ef4b7b828f254f1875",
+    "items": [
+      {
+        "key": "projects/project_0001_ddd3e3ee88004fe6/datasets/dataset_0001_44e26b062e97479d/raw/file_001/si.cif",
+        "kind": "raw",
+        "sha256": "4aeaf0107a36ef4bf587da1e52d20ca2739063dd5a548dcb3dac29efc0331198",
+        "sizeBytes": 441,
+        "method": "cross-key exact-byte recovery",
+        "sourceKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0001_d3fa456a289c4c46/raw/file_001_a87f65f3/si-phase13-fresh.cif"
+      },
+      {
+        "key": "projects/project_0001_ddd3e3ee88004fe6/datasets/dataset_0001_44e26b062e97479d/raw/file_002/POSCAR",
+        "kind": "raw",
+        "sha256": "591467cc579dcb99f9c84a19fe5ca7b52f381f543193d06292ecf1ed19db2dc8",
+        "sizeBytes": 78,
+        "method": "cross-key exact-byte recovery",
+        "sourceKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0003_00f31c9a6a6d426a/raw/file_003_af378e75/phase14r_structure.vasp"
+      },
+      {
+        "key": "projects/project_0001_ddd3e3ee88004fe6/datasets/dataset_0001_44e26b062e97479d/raw/file_003/ml_results.csv",
+        "kind": "raw",
+        "sha256": "9d1b1119204ad8f4496ff6fd3593722eb3e8fe734bd81e8a20e9bd38c3a55565",
+        "sizeBytes": 69,
+        "method": "cross-key exact-byte recovery",
+        "sourceKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0001_297971804fe54c8e/raw/file_001_91017949/ml_results.csv"
+      },
+      {
+        "key": "projects/project_0001_ddd3e3ee88004fe6/datasets/dataset_0001_44e26b062e97479d/normalized/obj_structure_72a5ab29a949/structure.json",
+        "kind": "normalized",
+        "sha256": "067bc07a01eb9d27021cfcb9406a6358b7b0c81910ca4beb2531dfbfc35217a6",
+        "sizeBytes": 832,
+        "method": "cross-key exact-byte recovery",
+        "sourceKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0001_a3f92a7657f4493e/normalized/obj_structure_72a5ab29a949/structure.json"
+      },
+      {
+        "key": "projects/project_0001_ddd3e3ee88004fe6/datasets/dataset_0001_44e26b062e97479d/normalized/obj_structure_72a5ab29a949/metadata.json",
+        "kind": "metadata",
+        "sha256": "67447468bbe46c25a6b70c07e0f091a02059a753c98971b7311f43528edb23ae",
+        "sizeBytes": 605,
+        "method": "deterministic durable metadata reconstruction",
+        "templateIdentity": {
+          "objectId": "obj_structure_72a5ab29a949",
+          "contentHash": "067bc07a01eb9d27021cfcb9406a6358b7b0c81910ca4beb2531dfbfc35217a6"
+        }
+      },
+      {
+        "key": "projects/project_0001_ddd3e3ee88004fe6/datasets/dataset_0001_44e26b062e97479d/normalized/obj_structure_e49de8a0940d/structure.json",
+        "kind": "normalized",
+        "sha256": "a68f93c39571a106efb5fe1b5e8b74b40a5738c3272cf7d498b2f4a2174531e6",
+        "sizeBytes": 776,
+        "method": "cross-key exact-byte recovery",
+        "sourceKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0003_00f31c9a6a6d426a/normalized/obj_structure_e49de8a0940d/structure.json"
+      },
+      {
+        "key": "projects/project_0001_ddd3e3ee88004fe6/datasets/dataset_0001_44e26b062e97479d/normalized/obj_structure_e49de8a0940d/metadata.json",
+        "kind": "metadata",
+        "sha256": "911f56e5801c03296f44e168163b4521511a1138970e91a067d132776b486652",
+        "sizeBytes": 608,
+        "method": "deterministic durable metadata reconstruction",
+        "templateIdentity": {
+          "objectId": "obj_structure_e49de8a0940d",
+          "contentHash": "a68f93c39571a106efb5fe1b5e8b74b40a5738c3272cf7d498b2f4a2174531e6"
+        }
+      },
+      {
+        "key": "projects/project_0001_ddd3e3ee88004fe6/datasets/dataset_0001_44e26b062e97479d/normalized/obj_dataframe_a0ebd1d365af/data.json",
+        "kind": "normalized",
+        "sha256": "b20f5860b419ebb83871f307c78c9b77e2dbec4dc014717899ca0ccd57a16346",
+        "sizeBytes": 211,
+        "method": "cross-key exact-byte recovery",
+        "sourceKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0001_297971804fe54c8e/normalized/obj_dataframe_a0ebd1d365af/data.json"
+      },
+      {
+        "key": "projects/project_0001_ddd3e3ee88004fe6/datasets/dataset_0001_44e26b062e97479d/normalized/obj_dataframe_a0ebd1d365af/metadata.json",
+        "kind": "metadata",
+        "sha256": "65daf622ade0a3f444f40cbcf52b7e270193e764fbc750f05cfd203f2f74265f",
+        "sizeBytes": 692,
+        "method": "deterministic durable metadata reconstruction",
+        "templateIdentity": {
+          "objectId": "obj_dataframe_a0ebd1d365af",
+          "contentHash": "b20f5860b419ebb83871f307c78c9b77e2dbec4dc014717899ca0ccd57a16346"
+        }
+      },
+      {
+        "key": "projects/project_0002_1a0af866391f412d/datasets/dataset_0001_a3f92a7657f4493e/normalized/obj_structure_72a5ab29a949/metadata.json",
+        "kind": "metadata",
+        "sha256": "ef72f2cece32041fa6cff172dfd0ea3f8881086597fe12a97ca389e90bbce7a2",
+        "sizeBytes": 605,
+        "method": "deterministic durable metadata reconstruction",
+        "templateIdentity": {
+          "objectId": "obj_structure_72a5ab29a949",
+          "contentHash": "067bc07a01eb9d27021cfcb9406a6358b7b0c81910ca4beb2531dfbfc35217a6"
+        }
+      },
+      {
+        "key": "projects/project_0002_1a0af866391f412d/datasets/dataset_0001_a3f92a7657f4493e/normalized/obj_dataframe_4e34572e413c/metadata.json",
+        "kind": "metadata",
+        "sha256": "f53aa2d0ad8797d5f1912698dea36788e73f907cf6a14cb3de12aab5cbec2920",
+        "sizeBytes": 1007,
+        "method": "deterministic durable metadata reconstruction",
+        "templateIdentity": {
+          "objectId": "obj_dataframe_4e34572e413c",
+          "contentHash": "98635ed480d1898c01a9ed142a86eef6bb182ec18d51208616336ddda4fbde3b"
+        }
+      },
+      {
+        "key": "projects/project_0001_19cebf1e7ad0415e/datasets/dataset_0001_c1d643c9805e4663/raw/file_001/si.cif",
+        "kind": "raw",
+        "sha256": "4aeaf0107a36ef4bf587da1e52d20ca2739063dd5a548dcb3dac29efc0331198",
+        "sizeBytes": 441,
+        "method": "cross-key exact-byte recovery",
+        "sourceKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0001_d3fa456a289c4c46/raw/file_001_a87f65f3/si-phase13-fresh.cif"
+      },
+      {
+        "key": "projects/project_0001_19cebf1e7ad0415e/datasets/dataset_0001_c1d643c9805e4663/raw/file_002/POSCAR",
+        "kind": "raw",
+        "sha256": "591467cc579dcb99f9c84a19fe5ca7b52f381f543193d06292ecf1ed19db2dc8",
+        "sizeBytes": 78,
+        "method": "cross-key exact-byte recovery",
+        "sourceKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0003_00f31c9a6a6d426a/raw/file_003_af378e75/phase14r_structure.vasp"
+      },
+      {
+        "key": "projects/project_0001_19cebf1e7ad0415e/datasets/dataset_0001_c1d643c9805e4663/raw/file_003/ml_results.csv",
+        "kind": "raw",
+        "sha256": "9d1b1119204ad8f4496ff6fd3593722eb3e8fe734bd81e8a20e9bd38c3a55565",
+        "sizeBytes": 69,
+        "method": "cross-key exact-byte recovery",
+        "sourceKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0001_297971804fe54c8e/raw/file_001_91017949/ml_results.csv"
+      },
+      {
+        "key": "projects/project_0001_19cebf1e7ad0415e/datasets/dataset_0001_c1d643c9805e4663/normalized/obj_structure_72a5ab29a949/structure.json",
+        "kind": "normalized",
+        "sha256": "067bc07a01eb9d27021cfcb9406a6358b7b0c81910ca4beb2531dfbfc35217a6",
+        "sizeBytes": 832,
+        "method": "cross-key exact-byte recovery",
+        "sourceKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0001_a3f92a7657f4493e/normalized/obj_structure_72a5ab29a949/structure.json"
+      },
+      {
+        "key": "projects/project_0001_19cebf1e7ad0415e/datasets/dataset_0001_c1d643c9805e4663/normalized/obj_structure_72a5ab29a949/metadata.json",
+        "kind": "metadata",
+        "sha256": "c36e759f830a35ffa024174d582b5a0ee11e7dabda77a92fa67c73be2f759f09",
+        "sizeBytes": 605,
+        "method": "deterministic durable metadata reconstruction",
+        "templateIdentity": {
+          "objectId": "obj_structure_72a5ab29a949",
+          "contentHash": "067bc07a01eb9d27021cfcb9406a6358b7b0c81910ca4beb2531dfbfc35217a6"
+        }
+      },
+      {
+        "key": "projects/project_0001_19cebf1e7ad0415e/datasets/dataset_0001_c1d643c9805e4663/normalized/obj_structure_e49de8a0940d/structure.json",
+        "kind": "normalized",
+        "sha256": "a68f93c39571a106efb5fe1b5e8b74b40a5738c3272cf7d498b2f4a2174531e6",
+        "sizeBytes": 776,
+        "method": "cross-key exact-byte recovery",
+        "sourceKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0003_00f31c9a6a6d426a/normalized/obj_structure_e49de8a0940d/structure.json"
+      },
+      {
+        "key": "projects/project_0001_19cebf1e7ad0415e/datasets/dataset_0001_c1d643c9805e4663/normalized/obj_structure_e49de8a0940d/metadata.json",
+        "kind": "metadata",
+        "sha256": "d88e274f3566a7a74c2aa2043276443ff7bd45963dc0dcd413e86021b3ef4552",
+        "sizeBytes": 608,
+        "method": "deterministic durable metadata reconstruction",
+        "templateIdentity": {
+          "objectId": "obj_structure_e49de8a0940d",
+          "contentHash": "a68f93c39571a106efb5fe1b5e8b74b40a5738c3272cf7d498b2f4a2174531e6"
+        }
+      },
+      {
+        "key": "projects/project_0001_19cebf1e7ad0415e/datasets/dataset_0001_c1d643c9805e4663/normalized/obj_dataframe_a0ebd1d365af/data.json",
+        "kind": "normalized",
+        "sha256": "b20f5860b419ebb83871f307c78c9b77e2dbec4dc014717899ca0ccd57a16346",
+        "sizeBytes": 211,
+        "method": "cross-key exact-byte recovery",
+        "sourceKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0001_297971804fe54c8e/normalized/obj_dataframe_a0ebd1d365af/data.json"
+      },
+      {
+        "key": "projects/project_0001_19cebf1e7ad0415e/datasets/dataset_0001_c1d643c9805e4663/normalized/obj_dataframe_a0ebd1d365af/metadata.json",
+        "kind": "metadata",
+        "sha256": "a8d20eec9527972cc63f211c16005650193d9dc6bf8a69bb0a91c18931a175da",
+        "sizeBytes": 692,
+        "method": "deterministic durable metadata reconstruction",
+        "templateIdentity": {
+          "objectId": "obj_dataframe_a0ebd1d365af",
+          "contentHash": "b20f5860b419ebb83871f307c78c9b77e2dbec4dc014717899ca0ccd57a16346"
+        }
+      },
+      {
+        "key": "projects/project_0002_1a0af866391f412d/datasets/dataset_0002_53c12dddfa984a80/normalized/obj_dataframe_1e826b907da7/metadata.json",
+        "kind": "metadata",
+        "sha256": "60735fae85590927837b19c3f5017b6d61e82d45d649271d505562e4fb8588c7",
+        "sizeBytes": 591,
+        "method": "deterministic durable metadata reconstruction",
+        "templateIdentity": {
+          "objectId": "obj_dataframe_1e826b907da7",
+          "contentHash": "15ca268ba84983ac037a55bfab1805c577bae8ab3d21988be50050e982bfe578"
+        }
+      }
+    ]
+  }
+}

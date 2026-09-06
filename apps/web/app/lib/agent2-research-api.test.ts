@@ -1,7 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
+  Agent2ReadError,
   createAgent2ResearchTurn,
+  dispatchAgent2ResearchTurn,
+  getAgent2ResearchTurn,
+  getAgent2ResearchTurnResult,
   normalizeAgent2TurnDetail,
   normalizeAgent2TurnListItem,
 } from "./agent2-research-api";
@@ -115,6 +119,25 @@ describe("Agent2 ResearchTurn list normalization", () => {
 });
 
 describe("Agent2 ResearchTurn admission errors", () => {
+  it("preserves the HTTP status for bounded Result-read decisions", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ detail: "服务暂时不可用。" }), {
+          status: 503,
+          headers: { "Content-Type": "application/json" },
+        }),
+      ),
+    );
+
+    await expect(
+      getAgent2ResearchTurnResult("turn-unavailable"),
+    ).rejects.toEqual(expect.objectContaining<Partial<Agent2ReadError>>({
+      name: "Agent2ReadError",
+      status: 503,
+    }));
+  });
+
   it("renders the typed project resource limit as a bounded product message", async () => {
     vi.stubGlobal(
       "fetch",
@@ -149,5 +172,44 @@ describe("Agent2 ResearchTurn admission errors", () => {
         },
       }),
     ).rejects.toThrow("当前项目已有 4 项进行中的研究。请等待完成或先停止一项后再试。");
+  });
+});
+
+describe("Agent2 session expiry", () => {
+  it.each([
+    ["read", () => getAgent2ResearchTurn("turn-expired")],
+    [
+      "create",
+      () =>
+        createAgent2ResearchTurn("project-1", "session-1", {
+          message: "继续分析。",
+          ui_context: {
+            active_object_refs: [],
+            selection_refs: [],
+            scientific_selections: [],
+            explicit_object_refs: [],
+            explicit_result_ids: [],
+            explicit_finding_refs: [],
+          },
+        }),
+    ],
+    ["dispatch", () => dispatchAgent2ResearchTurn("turn-expired")],
+  ])("emits the shared session-expired event for %s requests", async (_label, operation) => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ detail: "登录状态已失效。" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }),
+      ),
+    );
+    const expired = vi.fn();
+    window.addEventListener("mdi:session-expired", expired);
+
+    await expect(operation()).rejects.toThrow();
+
+    expect(expired).toHaveBeenCalledTimes(1);
+    window.removeEventListener("mdi:session-expired", expired);
   });
 });

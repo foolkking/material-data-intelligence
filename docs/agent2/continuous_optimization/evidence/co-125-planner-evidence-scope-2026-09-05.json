@@ -1,0 +1,28 @@
+{
+  "improvementId": "CO-125",
+  "date": "2026-09-05",
+  "category": "authorization",
+  "problem": "Secured Planner interpretation evidence relied only on the source Job project boundary.",
+  "change": {
+    "evidenceProjectId": "projectId",
+    "mismatchStatus": 404,
+    "mismatchDetail": "依据所属运行不存在。"
+  },
+  "verification": {
+    "command": "pytest -q tests/test_phase14r_authorization.py tests/test_phase8c_planner_read_api.py tests/test_phase10l4_api_persistence.py",
+    "result": "26 passed",
+    "compileall": "PASS",
+    "diffCheck": "PASS"
+  },
+  "securityAssertions": {
+    "matchingProjectReadable": true,
+    "crossProjectRelationFailsClosed": true,
+    "identifierOracleAvoided": true,
+    "scientificAuthorityMutated": false
+  },
+  "services": {
+    "postgresql": "not exercised in this deterministic route regression",
+    "redis": "not exercised",
+    "minio": "not exercised"
+  }
+}

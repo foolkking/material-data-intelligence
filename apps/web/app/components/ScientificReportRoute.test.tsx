@@ -8,6 +8,7 @@ const mocks = vi.hoisted(() => ({
   compareScientificReportRevisions: vi.fn(),
   getScientificReport: vi.fn(),
   listScientificReportRevisions: vi.fn(),
+  replace: vi.fn(),
 }));
 
 vi.mock("../lib/scientific-report-api", async () => {
@@ -21,6 +22,13 @@ vi.mock("../lib/scientific-report-api", async () => {
   };
 });
 vi.mock("./ProductShell", () => ({ ProductShell: ({ children }: { children: React.ReactNode }) => <>{children}</>, RequireProductAuth: ({ children }: { children: React.ReactNode }) => <>{children}</> }));
+vi.mock("./ProductNavigation", async () => {
+  const actual = await vi.importActual<typeof import("./ProductNavigation")>("./ProductNavigation");
+  return {
+    ...actual,
+    useProductRouter: () => ({ replace: mocks.replace }),
+  };
+});
 vi.mock("./ResearchPages", () => ({ ReportReaderPage: () => <div>Legacy report</div> }));
 
 const report: ScientificReportView = {
@@ -86,12 +94,50 @@ describe("ScientificReportRoute", () => {
     mocks.getScientificReport.mockReset();
     mocks.compareScientificReportRevisions.mockReset();
     mocks.listScientificReportRevisions.mockReset();
+    mocks.replace.mockReset();
     mocks.listScientificReportRevisions.mockResolvedValue({
       revision_group_id: report.report_id,
       current_report_id: report.report_id,
       items: [report],
       count: 1,
     });
+  });
+
+  it("redirects a report opened under the wrong project to its authoritative project route", async () => {
+    mocks.getScientificReport.mockResolvedValue({
+      ...report,
+      project_id: "project_authoritative",
+    });
+    render(
+      <ScientificReportRoute
+        projectId="project_route_guess"
+        reportId={report.report_id}
+      />,
+    );
+
+    expect(
+      await screen.findByText("正在返回报告所属项目…"),
+    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(mocks.replace).toHaveBeenCalledWith(
+        "/projects/project_authoritative/reports/agent2_report_1",
+      );
+    });
+    expect(
+      screen.queryByRole("heading", { name: report.title }),
+    ).toBeNull();
+  });
+
+  it("opens legacy Job report links without probing the modern report endpoint", async () => {
+    render(
+      <ScientificReportRoute
+        projectId="project_1"
+        reportId="job_dc63f3f5d57742009c6be09e"
+      />,
+    );
+
+    expect(await screen.findByText("Legacy report")).toBeInTheDocument();
+    expect(mocks.getScientificReport).not.toHaveBeenCalled();
   });
 
   it("renders meaning and limitations before technical provenance", async () => {
@@ -112,7 +158,51 @@ describe("ScientificReportRoute", () => {
     expect(screen.getByRole("heading", { name: "限制与适用范围" })).toBeInTheDocument();
     expect(screen.getByText("结果受有限截断范围约束。")).toBeInTheDocument();
     expect(screen.getByText("复现信息")).toBeInTheDocument();
+    expect(screen.getByText("技术详情（用于复现与排查）")).toBeInTheDocument();
+    const technicalDetails = screen.getByText("技术详情（用于复现与排查）").closest("details");
+    expect(technicalDetails).not.toBeNull();
+    expect(technicalDetails).toHaveTextContent("result_1");
+    expect(technicalDetails).toHaveTextContent("version_1");
     expect(screen.queryByText(/job_|toolcall_|artifact_private/i)).toBeNull();
+  });
+
+  it("keeps each finding traceable to its exact Result and evidence refs", async () => {
+    mocks.getScientificReport.mockResolvedValue(report);
+    render(<ScientificReportRoute projectId="project_1" reportId="agent2_report_1" />);
+
+    expect(await screen.findByRole("heading", { name: "主要发现" })).toBeInTheDocument();
+    const disclosure = screen.getByText("查看科学依据");
+    expect(disclosure).toBeInTheDocument();
+    fireEvent.click(disclosure);
+    const evidence = disclosure.closest("details");
+    expect(evidence).not.toBeNull();
+    expect(evidence).toHaveTextContent("result_1");
+    expect(evidence).toHaveTextContent("rdf.peak");
+    expect(evidence).toHaveTextContent("evidence.rdf");
+    expect(evidence).toHaveTextContent("version_1");
+  });
+
+  it("offers an accessible chapter jump control for narrow report layouts", async () => {
+    mocks.getScientificReport.mockResolvedValue(report);
+    render(<ScientificReportRoute projectId="project_1" reportId="agent2_report_1" />);
+
+    const chapterSelect = await screen.findByRole("combobox", {
+      name: "跳转报告章节",
+    });
+    const target = document.getElementById("report-agent2_report_1-findings");
+    expect(chapterSelect).toBeInTheDocument();
+    expect(chapterSelect).toHaveDisplayValue("选择章节");
+    expect(target).not.toBeNull();
+    target!.scrollIntoView = vi.fn();
+
+    fireEvent.change(chapterSelect, {
+      target: { value: "report-agent2_report_1-findings" },
+    });
+
+    expect(target!.scrollIntoView).toHaveBeenCalledWith({
+      behavior: "smooth",
+      block: "start",
+    });
   });
 
   it("switches immutable revisions and compares only the communication layer", async () => {
@@ -388,6 +478,10 @@ describe("ScientificReportRoute", () => {
       "href",
       "/api/planner/jobs/job.rdf/artifacts/artifact.rdf/content",
     );
+    expect(screen.getByRole("link", { name: "下载权威 Artifact" })).toHaveAttribute(
+      "download",
+      "figure.rdf.figure.json",
+    );
   });
 
   it("creates a real attached Markdown download anchor without changing report state", async () => {
@@ -402,7 +496,7 @@ describe("ScientificReportRoute", () => {
     fireEvent.click(screen.getByRole("button", { name: "导出 Markdown" }));
     expect(createObjectURL).toHaveBeenCalledOnce();
     expect(click).toHaveBeenCalledOnce();
-    expect(screen.getByRole("status", { name: "" })).toHaveTextContent("Markdown 已准备下载");
+    expect(screen.getByRole("status", { name: "报告导出状态" })).toHaveTextContent("Markdown 已准备下载");
     await waitFor(() => expect(revokeObjectURL).toHaveBeenCalledWith("blob:report"));
     click.mockRestore();
   });
@@ -419,7 +513,7 @@ describe("ScientificReportRoute", () => {
     fireEvent.click(screen.getByRole("button", { name: "导出复现清单" }));
     expect(createObjectURL).toHaveBeenCalledOnce();
     expect(click).toHaveBeenCalledOnce();
-    expect(screen.getByRole("status", { name: "" })).toHaveTextContent("复现清单已准备下载");
+    expect(screen.getByRole("status", { name: "报告导出状态" })).toHaveTextContent("复现清单已准备下载");
     await waitFor(() => expect(revokeObjectURL).toHaveBeenCalledWith("blob:manifest"));
     click.mockRestore();
   });
@@ -431,7 +525,7 @@ describe("ScientificReportRoute", () => {
     render(<ScientificReportRoute projectId="project_1" reportId="agent2_report_1" />);
     await screen.findByRole("heading", { name: report.title });
     fireEvent.click(screen.getByRole("button", { name: "导出 Markdown" }));
-    expect(screen.getByRole("status", { name: "" })).toHaveTextContent("导出失败，请稍后重试");
+    expect(screen.getByRole("status", { name: "报告导出状态" })).toHaveTextContent("导出失败，请稍后重试");
     Object.defineProperty(URL, "createObjectURL", { configurable: true, value: originalCreateObjectURL });
   });
 });

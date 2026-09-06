@@ -201,6 +201,17 @@ export function artifactIdentity(artifact: Artifact): string | null { return art
 export function artifactChecksum(artifact: Artifact): string | null { return artifact.sha256 ?? artifact.contentHash ?? null; }
 export function artifactVersion(artifact: Artifact): string { return typeof artifact.version === "string" ? artifact.version : typeof artifact.metadata?.artifactVersion === "string" ? artifact.metadata.artifactVersion : "1"; }
 
+/** Build once per artifact collection so active-renderer selection is O(1)
+ * instead of rescanning the full metadata/payload bundle on every render. */
+export function indexArtifactsByIdentity(artifacts: readonly Artifact[]): ReadonlyMap<string, Artifact> {
+  const index = new Map<string, Artifact>();
+  for (const artifact of artifacts) {
+    const identity = artifactIdentity(artifact);
+    if (identity && !index.has(identity)) index.set(identity, artifact);
+  }
+  return index;
+}
+
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value !== null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
 }

@@ -1,0 +1,32 @@
+{
+  "improvement": "CO-151",
+  "date": "2026-09-06",
+  "problem": "A worker manifest could remain present after its queue process disappeared, making stale identity look active.",
+  "implementation": {
+    "script": "scripts/phase14r_discover_workers.ps1",
+    "activeState": "RUNNING with lastSeenAt and staleSince=null",
+    "missingState": "MISSING with preserved lastSeenAt and bounded staleSince",
+    "deletionPolicy": "No manifest deletion on missing or transient discovery failure",
+    "legacyRedaction": "Migration path removes redisUrl and rewrites redisIdentity"
+  },
+  "liveQualification": {
+    "expectedQueues": 6,
+    "discoveredQueues": 6,
+    "missingQueues": 0,
+    "manifests": 6,
+    "allStatuses": "RUNNING",
+    "allHaveLastSeenAt": true,
+    "staleSinceCount": 0,
+    "workerProcessesAlive": 12,
+    "servicesStopped": false
+  },
+  "verification": {
+    "focusedTests": "14 passed",
+    "powershellAst": "PASS",
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "gitDiffCheck": "PASS",
+    "liveDiscovery": "PASS",
+    "staleSimulation": "NOT RUN to preserve all current workers"
+  }
+}

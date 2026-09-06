@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "mdi.continuous-optimization-evidence/1.0",
+  "improvementId": "CO-142",
+  "completedAt": "2026-09-05T20:36:00+08:00",
+  "change": {
+    "deprecatedStartupHandlersRemoved": 2,
+    "lifespanInstalled": true,
+    "migrationValidationOrder": "FIRST_FAIL_FAST",
+    "researchRecoveryPolicy": "BEST_EFFORT",
+    "appFactorySettingsIsolation": true
+  },
+  "verification": {
+    "combinedFocusedPassed": 49,
+    "strictDeprecationGatePassed": 7,
+    "startupHandlers": 0,
+    "shutdownHandlers": 0,
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "diffCheck": "PASS"
+  },
+  "runtime": {
+    "shadowPort": 8006,
+    "shadowDeprecatedWarning": false,
+    "oldCanonicalChildPid": 29280,
+    "oldCanonicalParentPid": 27464,
+    "oldCanonicalStopped": true,
+    "newCanonicalPort": 8005,
+    "newCanonicalChildPid": 20748,
+    "newCanonicalParentPid": 16260,
+    "shadowChildPid": 19060,
+    "shadowParentPid": 21200,
+    "shadowStopped": true,
+    "shadowPortClosed": true,
+    "frontendPort": 3023,
+    "frontendPid": 29664,
+    "frontendInterrupted": false,
+    "frontendProxyDatabase": "postgresql"
+  }
+}

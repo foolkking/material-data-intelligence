@@ -11,6 +11,8 @@ export function isProductRoutePath(pathname: string): boolean {
     pathname === "/notifications" ||
     pathname === "/tasks" ||
     pathname === "/trash" ||
+    pathname === "/account" ||
+    pathname === "/admin" ||
     pathname.startsWith("/projects") ||
     pathname.startsWith("/settings/")
   );

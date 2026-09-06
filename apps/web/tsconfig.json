@@ -26,11 +26,20 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    ".cache/next/types/**/*.ts",
+    ".cache\\next/types/**/*.ts",
+    ".next-phase14r-0904/types/**/*.ts",
+    ".next-phase14r-0904b/types/**/*.ts",
+    ".next-phase14r-0904c/types/**/*.ts",
+    ".next-phase14r-0904d/types/**/*.ts",
+    ".next-phase14r-0904e/types/**/*.ts",
+    ".next-phase9-closure/types/**/*.ts",
     ".next-phase9-smoke/types/**/*.ts",
+    ".next-prod-maturity-20260901/types/**/*.ts",
+    ".next-prod-maturity-20260902/types/**/*.ts",
     ".next-wave2/types/**/*.ts",
     ".next/types/**/*.ts",
-    "next-env.d.ts",
-    ".next-phase9-closure/types/**/*.ts"
+    "next-env.d.ts"
   ],
   "exclude": [
     "node_modules"

@@ -1,0 +1,17 @@
+{
+  "id": "CO-089",
+  "date": "2026-09-05",
+  "problem": "Bounded report table previews truncated rows and columns without revealing exact omission counts.",
+  "change": "Added exact omitted row/column counts and an accessible disclosure listing hidden column labels while retaining the existing authorized full Artifact link outside the preview.",
+  "files": [
+    "apps/web/app/components/ScientificReportArtifactPreview.tsx",
+    "apps/web/app/components/ScientificReportArtifactPreview.test.tsx",
+    "apps/web/app/globals.css"
+  ],
+  "verification": {
+    "focused_tests": "11 passed",
+    "typecheck": "PASS",
+    "bounded_preview": "24 rows and 8 columns remain the visible cap"
+  },
+  "result": "Researchers can distinguish bounded preview from absent data and navigate the existing authorized full-data path."
+}

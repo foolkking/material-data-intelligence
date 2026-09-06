@@ -1,0 +1,62 @@
+{
+  "improvementId": "CO-031",
+  "date": "2026-09-05",
+  "rootCause": "Project collaboration roles were duplicated as ad-hoc frontend write checks, while the platform-admin member editor allowed a non-creator collaborator to be assigned owner even though owner-only purge remained bound to projects.created_by.",
+  "authority": {
+    "immutableProjectOwner": "projects.created_by",
+    "projectRoles": [
+      "owner",
+      "admin",
+      "researcher",
+      "viewer"
+    ],
+    "platformAdminImplicitProjectMembership": false
+  },
+  "capabilityMatrix": {
+    "owner": [
+      "read",
+      "export",
+      "write",
+      "archive",
+      "research",
+      "purge"
+    ],
+    "admin": [
+      "read",
+      "export",
+      "write",
+      "archive",
+      "research"
+    ],
+    "researcher": [
+      "read",
+      "export",
+      "write",
+      "archive",
+      "research"
+    ],
+    "viewer": [
+      "read",
+      "export"
+    ]
+  },
+  "repairs": [
+    "centralized frontend project role capability checks",
+    "rejected assignment of owner to a non-creator collaborator",
+    "projected legacy duplicate-owner memberships as admin",
+    "removed owner from collaborator role choices",
+    "kept platform administration separate from scientific project membership"
+  ],
+  "verification": {
+    "backendRoleAndLifecycle": "5 passed",
+    "frontendPermissionAndAdmin": "12 passed",
+    "frontendProjectActions": "6 passed",
+    "frontendResearchReadOnly": "3 passed",
+    "typescriptTypecheck": "passed",
+    "ruff": "passed",
+    "compileall": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "scientificAuthorityChanged": false,
+  "servicesRestarted": false
+}

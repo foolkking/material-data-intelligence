@@ -8,7 +8,7 @@ from typing import Any, Literal
 
 from fastapi import Depends, HTTPException
 from pydantic import BaseModel, Field, model_validator
-from sqlalchemy import func, insert, select, update
+from sqlalchemy import func, insert, inspect, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
 from mdi_api.config import load_settings
@@ -24,10 +24,12 @@ from mdi_api.db import (
     research_turns,
     scientific_result_snapshots,
     sessions,
+    metadata,
 )
 from mdi_api.interpretation.grounding import project_grounded_communication
 from mdi_api.interpretation.projector import AssistantResponseProjector
 from mdi_api.interpretation.schemas import ScientificInterpretationOutput
+from mdi_api.lifecycle_policy import retention_policy_snapshot
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_api.scientific_results.schemas import ScientificResultBundle
 from mdi_llm.research_roles import orchestrate_research_turn
@@ -234,6 +236,72 @@ def get_session(session_id: str, current_user: CurrentUser = Depends(get_current
             raise HTTPException(status_code=404, detail="研究会话不存在。")
         _require_project(connection, row["project_id"], current_user)
         return _session_view(row, connection)
+
+
+def get_session_dependency_impact(
+    session_id: str,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Return a bounded, server-derived impact preview for a Research Session.
+
+    Sessions own immutable turns and their context/history records. They are
+    therefore never physically purgeable; this endpoint exists so lifecycle
+    clients can inspect the authoritative dependency boundary before archive,
+    trash, or restore operations.
+    """
+
+    engine = create_engine_from_settings(load_settings())
+    with engine.connect() as connection:
+        row = connection.execute(
+            select(sessions).where(sessions.c.id == session_id)
+        ).mappings().first()
+        if not row:
+            raise HTTPException(status_code=404, detail="研究会话不存在。")
+        require_project_access(connection, row["project_id"], current_user)
+
+        dependencies: list[dict[str, Any]] = []
+        existing_tables = set(inspect(connection).get_table_names())
+        excluded = {"sessions", "auth_sessions"}
+        for table in metadata.tables.values():
+            if table.name in excluded or table.name not in existing_tables:
+                continue
+            column = table.c.get("research_session_id")
+            if column is None:
+                column = table.c.get("session_id")
+            if column is None:
+                continue
+            count = int(
+                connection.execute(
+                    select(func.count()).select_from(table).where(column == session_id)
+                ).scalar_one()
+            )
+            if count:
+                dependencies.append(
+                    {
+                        "kind": table.name,
+                        "label": table.name,
+                        "count": count,
+                    }
+                )
+        dependencies.sort(key=lambda item: (str(item["kind"]), int(item["count"])))
+        dependencies = dependencies[:64]
+        return {
+            "entity": "research_session",
+            "entityId": session_id,
+            "displayName": str(row.get("title_override") or session_id),
+            "canDelete": False,
+            "dependencyCount": sum(item["count"] for item in dependencies),
+            "dependencies": dependencies,
+            "retentionPolicy": retention_policy_snapshot(
+                manual_purge_supported=False
+            ),
+            "impact": {
+                "removedFromActiveDiscovery": True,
+                "historicalProvenanceProtected": True,
+                "historicalResearchRemainsAccessible": True,
+                "scientificSnapshotMutated": False,
+            },
+        }
 
 
 def update_session(
@@ -1034,6 +1102,9 @@ def _session_view(row, connection) -> dict[str, Any]:
         ],
         "runIds": [item["job_id"] for item in run_rows],
         "runReferences": run_references,
+        "retentionPolicy": retention_policy_snapshot(
+            manual_purge_supported=False
+        ),
     }
 
 

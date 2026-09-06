@@ -39,6 +39,31 @@ docker compose down -v
 
 ## 4. PostgreSQL Setup
 
+### Retained Windows API rotation
+
+When the same-stack API already owns port 8005, do not start another canonical
+process or stop Python processes by name. First inspect the repository-scoped
+rotation plan:
+
+```powershell
+.\scripts\phase14r_rotate_api.ps1
+```
+
+The default is dry-run. For a manifest-managed canonical instance, apply the
+validated replacement with:
+
+```powershell
+.\scripts\phase14r_rotate_api.ps1 -Apply -Confirm:$false
+```
+
+The helper starts and validates a shadow on 8006, stops only the exact
+revalidated 8005 Uvicorn child and its log runner, starts the new canonical,
+validates the 3023 frontend proxy, then stops the shadow. A pre-manifest legacy
+instance additionally requires its exact current listener PID through
+`-ExpectedCanonicalPid`; never guess it. Success must leave exactly one 8005
+listener and no 8006 listener. PostgreSQL, Redis, MinIO, workers and frontend
+are intentionally outside the stop authority.
+
 ### Default credentials (from `.env` / `.env.example`)
 
 ```env
@@ -112,10 +137,15 @@ All Phase 2/3/4/5 unit tests pass with SQLite fallback.
 docker compose up -d postgres
 export MDI_RUN_INTEGRATION=1
 export DATABASE_URL="postgresql+psycopg://mdi:mdi-local-dev@localhost:5432/mdi"
-python -m pytest -q -m integration
+python scripts/mandatory_service_qualification.py run --junit integration.junit.xml --log integration.log
+python scripts/mandatory_service_qualification.py validate --junit integration.junit.xml
 ```
 
 If Docker/unavailable, integration tests skip with reason noted.
+
+`config/mandatory-service-qualification.json` owns the mandatory
+PostgreSQL/Redis/MinIO test paths, required test identities, minimum pass
+count, and zero-skip/failure policy used by both this local command and CI.
 
 ## 7. Queue Worker
 
@@ -207,6 +237,30 @@ This ensures `python -m pytest -q` always works without Docker.
 
 Do not remove named volumes or recursively clear buckets when user or
 production data may be present. Reproduction uses isolated test identities.
+
+## Operations Alert Response
+
+The platform-admin operations surface and
+`scripts/phase14r_operations_snapshot.py` use the same typed alert and
+runbook identities. Always collect the read-only snapshot before changing a
+worker or queue:
+
+```bash
+python scripts/phase14r_operations_snapshot.py \
+  --same-stack \
+  --fail-on-attention \
+  --compact
+```
+
+| Runbook ID | Signals | Safe first response |
+|---|---|---|
+| `OPS-RUNBOOK-QUEUE-BACKLOG` | `OPS_QUEUE_DEPTH_EXCEEDED` | Inspect `queues.items` to identify the accumulating queue and verify that its canonical worker is consuming. Do not clear the queue or retry every Job as a first response. |
+| `OPS-RUNBOOK-STALE-JOBS` | `OPS_STALE_JOBS` | Inspect Job age and its owning ResearchTurn. Use the existing bounded recovery command only after confirming the persisted state; never delete the Job, Artifact, or Result rows manually. |
+| `OPS-RUNBOOK-WORKER-HEALTH` | `OPS_WORKER_COUNT_BELOW_MINIMUM`, `OPS_WORKER_HEALTH_DEGRADED` | Check canonical queue coverage, RQ state and heartbeat freshness. Start or replace only the missing/degraded role, avoiding duplicate consumers. |
+
+Re-run the snapshot after the bounded response. An alert is closed only when
+the authoritative signal returns within its threshold; hiding the alert in
+the UI does not change queue, Job, or worker state.
 
 ## 11. Phase 6 Integration Tests
 
@@ -339,6 +393,18 @@ docker compose logs minio
 # Create bucket via console at http://localhost:9001
 # Or via mc client:
 docker compose exec minio mc mb local/mdi-artifacts
+```
+
+### MinIO capacity scan is incomplete
+
+`OPS_MINIO_USAGE_SCAN_INCOMPLETE` means the read-only diagnostic reached its
+bounded object limit or could not continue pagination. Reported bytes and
+objects are lower bounds, and utilization is intentionally unknown. Do not
+delete scientific Artifacts to clear this warning. Verify storage-side
+aggregate metrics or increase only the bounded observation capacity, then run:
+
+```bash
+python scripts/phase14r_operations_snapshot.py --same-stack --fail-on-attention --compact
 ```
 
 ### Signed URL invalid

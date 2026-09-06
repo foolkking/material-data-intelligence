@@ -66,8 +66,12 @@ def test_phase5_alembic_env_and_runbook_are_present(repo_root: Path) -> None:
     env_py = (repo_root / "apps/api/alembic/env.py").read_text(encoding="utf-8")
     runbook = (repo_root / "docs/16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md").read_text(encoding="utf-8")
 
-    assert "DATABASE_URL" in env_py
-    assert "load_settings().database_url" in env_py
+    assert "from mdi_api.config import database_configuration_declared, load_settings" in env_py
+    assert "runtime_database_url = load_settings().database_url" in env_py
+    assert "database_configuration_declared(os.environ)" in env_py
+    assert 'configured_database_url == "sqlite:///./mdi_phase5.db"' in env_py
+    assert 'config.set_main_option("sqlalchemy.url", runtime_database_url.replace("%", "%%"))' in env_py
+    assert "disable_existing_loggers=False" in env_py
     assert "docker compose up -d postgres redis minio" in runbook
     assert "python -m alembic -c apps/api/alembic.ini upgrade head" in runbook
 
@@ -221,6 +225,21 @@ class _FakeS3Client:
         assert ClientMethod == "get_object"
         assert HttpMethod == "GET"
         return f"http://fake-minio/{Params['Bucket']}/{Params['Key']}?expires={ExpiresIn}"
+
+
+def test_s3_exists_does_not_mask_non_missing_storage_errors() -> None:
+    from botocore.exceptions import ClientError
+
+    class DeniedClient(_FakeS3Client):
+        def head_object(self, *, Bucket: str, Key: str) -> dict[str, object]:
+            raise ClientError(
+                {"Error": {"Code": "AccessDenied", "Message": "private"}},
+                "HeadObject",
+            )
+
+    storage = S3CompatibleArtifactStorage(bucket="mdi-artifacts", client=DeniedClient())
+    with pytest.raises(ClientError):
+        storage.exists("private/object.json")
 
 
 def _seed_in_memory_repos() -> InMemoryRepositoryBundle:

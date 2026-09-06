@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 
 import type { Artifact } from "../../lib/planner-api";
 
@@ -50,6 +50,7 @@ export function CoordinationHistogramPanel({ artifacts }: Readonly<{ artifacts: 
   const limits = record(payload.limits);
   const series = histogramSeries(payload);
   const activeSeries = series.find((item) => item.id === seriesId) ?? series[0];
+  const chartSummaryId = useId();
   const pairs = records(payload.pair_counts).slice(0, MAX_PAIRS);
   const warnings = textList(payload.warnings).slice(0, MAX_WARNINGS);
 
@@ -89,7 +90,7 @@ export function CoordinationHistogramPanel({ artifacts }: Readonly<{ artifacts: 
             <strong>{activeSeries.label}</strong>
             <span>横轴为配位数，纵轴为位点数量；百分比按该范围内位点计算。</span>
           </figcaption>
-          <HistogramChart series={activeSeries} />
+          <HistogramChart series={activeSeries} summaryId={chartSummaryId} />
         </figure>
 
         <section className="coordination-histogram-table" aria-label="配位数分布数值表">
@@ -179,20 +180,25 @@ export function inspectCoordinationHistogram(
   return { ok: true, payload, plot };
 }
 
-function HistogramChart({ series }: Readonly<{ series: HistogramSeries }>) {
+function HistogramChart({ series, summaryId }: Readonly<{ series: HistogramSeries; summaryId: string }>) {
   const maximum = Math.max(1, ...series.bins.map((item) => item.count));
   return (
-    <div className="coordination-histogram-chart" role="img" aria-label={`${series.label}配位数分布，共 ${series.totalSites} 个位点`}>
-      {series.bins.map((bin) => (
-        <div className="coordination-histogram-bar-column" key={bin.coordinationNumber}>
-          <span className="coordination-histogram-bar-value">{bin.count}</span>
-          <span className="coordination-histogram-bar-track">
-            <span className="coordination-histogram-bar" style={{ height: `${Math.max(3, bin.count / maximum * 100)}%` }} />
-          </span>
-          <span className="coordination-histogram-bar-label">{bin.coordinationNumber}</span>
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="coordination-histogram-chart" role="img" aria-label={`${series.label}配位数分布，共 ${series.totalSites} 个位点`} aria-describedby={summaryId}>
+        {series.bins.map((bin) => (
+          <div className="coordination-histogram-bar-column" key={bin.coordinationNumber}>
+            <span className="coordination-histogram-bar-value">{bin.count}</span>
+            <span className="coordination-histogram-bar-track">
+              <span className="coordination-histogram-bar" style={{ height: `${Math.max(3, bin.count / maximum * 100)}%` }} />
+            </span>
+            <span className="coordination-histogram-bar-label">{bin.coordinationNumber}</span>
+          </div>
+        ))}
+      </div>
+      <p id={summaryId} className="sr-only" data-testid="coordination-histogram-accessible-summary">
+        {series.label}数据摘要：{series.bins.map((bin) => `配位数 ${bin.coordinationNumber}，${bin.count} 个位点，占比 ${percent(bin.fraction)}`).join("；")}。
+      </p>
+    </>
   );
 }
 

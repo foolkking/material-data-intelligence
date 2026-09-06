@@ -387,6 +387,27 @@ async def list_analysis_jobs(
         raise _safe_http_error(exc) from None
 
 
+async def list_task_feed(
+    limit: int = Query(default=100, ge=1, le=100),
+    cursor: str | None = Query(default=None, min_length=1, max_length=192),
+    current_user: CurrentUser = Depends(get_current_user_compat),
+) -> dict[str, Any]:
+    try:
+        # Reuse the product's canonical owner/member visibility projection.
+        # This keeps global task retrieval fail-closed without requiring the
+        # browser to enumerate Projects and issue one request for each.
+        from mdi_api.routers.secured_runtime import list_projects_secured
+
+        projects = list_projects_secured(current_user)
+        return _service().list_task_feed(
+            projects=projects,
+            limit=limit,
+            cursor=cursor,
+        )
+    except Exception as exc:
+        raise _safe_http_error(exc) from None
+
+
 async def list_workspace_panels(
     workspace_id: str,
     request: Request,

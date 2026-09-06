@@ -1,0 +1,39 @@
+{
+  "improvement": "CO-152",
+  "date": "2026-09-06",
+  "problem": "Worker manifests existed but no bounded helper consumed them for exact ownership validation and safe replacement planning.",
+  "implementation": {
+    "script": "scripts/phase14r_rotate_workers.ps1",
+    "defaultMode": "dry-run",
+    "authorization": [
+      "repository token",
+      "release SHA",
+      "runner/child existence",
+      "child parent relationship",
+      "creation FILETIMEs",
+      "command digests",
+      "queue command",
+      "redacted Redis identity"
+    ],
+    "applyGuard": "Apply requires exactly one queue and ShouldProcess confirmation"
+  },
+  "liveQualification": {
+    "validatedQueues": 6,
+    "validatedWorkers": 6,
+    "plannedActions": [
+      "validate-exact-worker-ownership"
+    ],
+    "workerProcessesBefore": 12,
+    "workerProcessesAfter": 12,
+    "pidSetUnchanged": true,
+    "servicesStopped": false
+  },
+  "verification": {
+    "focusedTests": "16 passed",
+    "powershellAst": "PASS",
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "gitDiffCheck": "PASS",
+    "dryRun": "PASS"
+  }
+}

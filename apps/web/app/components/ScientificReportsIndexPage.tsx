@@ -1,7 +1,7 @@
 "use client";
 
 import { ProductLink as Link } from "./ProductNavigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getProjectHistory, type ProjectHistory } from "../lib/planner-api";
 import { researchRunTitle } from "../lib/research-display";
 import {
@@ -17,6 +17,8 @@ import {
 import { ManagedObjectRow, ProductModal } from "./ObjectManagement";
 import { ProductShell, RequireProductAuth } from "./ProductShell";
 
+const REPORT_PAGE_SIZE = 12;
+
 export function ScientificReportsIndexPage({
   projectId,
 }: {
@@ -28,6 +30,9 @@ export function ScientificReportsIndexPage({
   const [filter, setFilter] = useState<
     "active" | "archived" | "trashed" | "all"
   >("active");
+  const [query, setQuery] = useState("");
+  const [groundedLimit, setGroundedLimit] = useState(REPORT_PAGE_SIZE);
+  const [legacyLimit, setLegacyLimit] = useState(REPORT_PAGE_SIZE);
   const [busyReportId, setBusyReportId] = useState<string | null>(null);
   const [selectedReportIds, setSelectedReportIds] = useState<string[]>([]);
   const [selectionMode, setSelectionMode] = useState(false);
@@ -64,25 +69,69 @@ export function ScientificReportsIndexPage({
       active = false;
     };
   }, [projectId]);
-  const legacyReports =
-    history?.analyses.filter(
-      (item) =>
-        item.visibleInReports !== false &&
-        (item.reportCount > 0 ||
-          ["completed", "succeeded", "success"].includes(
-            item.status.toLowerCase(),
-          )),
-    ) || [];
-  const visibleGrounded = grounded
-    .filter((report) => {
-      const status = String(report.lifecycle_status || "ACTIVE").toLowerCase();
-      return filter === "all" || status === filter;
-    })
-    .sort((left, right) =>
-      Number(Boolean(right.pinned)) - Number(Boolean(left.pinned))
-      || Date.parse(right.created_at) - Date.parse(left.created_at)
-    );
-  const selectableReports = visibleGrounded.filter((report) =>
+  const normalizedQuery = query.trim().toLocaleLowerCase("zh-CN");
+  const legacyReports = useMemo(
+    () =>
+      (history?.analyses || []).filter((item) => {
+        if (
+          item.visibleInReports === false ||
+          !(
+            item.reportCount > 0 ||
+            ["completed", "succeeded", "success"].includes(
+              item.status.toLowerCase(),
+            )
+          )
+        ) {
+          return false;
+        }
+        if (!normalizedQuery) return true;
+        const dataset = history?.datasets.find(
+          (candidate) => candidate.datasetId === item.datasetId,
+        );
+        return [
+          researchRunTitle(item),
+          item.userQuestion,
+          dataset?.name,
+          ...(item.toolIds || []),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLocaleLowerCase("zh-CN")
+          .includes(normalizedQuery);
+      }),
+    [history, normalizedQuery],
+  );
+  const visibleGrounded = useMemo(
+    () =>
+      grounded
+        .filter((report) => {
+          const status = String(
+            report.lifecycle_status || "ACTIVE",
+          ).toLowerCase();
+          if (filter !== "all" && status !== filter) return false;
+          if (!normalizedQuery) return true;
+          return [
+            report.title,
+            report.source_title,
+            report.scientific_context,
+            report.grounding_status,
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLocaleLowerCase("zh-CN")
+            .includes(normalizedQuery);
+        })
+        .sort(
+          (left, right) =>
+            Number(Boolean(right.pinned)) -
+              Number(Boolean(left.pinned)) ||
+            Date.parse(right.created_at) - Date.parse(left.created_at),
+        ),
+    [filter, grounded, normalizedQuery],
+  );
+  const displayedGrounded = visibleGrounded.slice(0, groundedLimit);
+  const displayedLegacy = legacyReports.slice(0, legacyLimit);
+  const selectableReports = displayedGrounded.filter((report) =>
     ["active", "archived"].includes(String(report.lifecycle_status || "ACTIVE").toLowerCase()),
   );
   const selectedReports = selectableReports.filter((report) =>
@@ -364,7 +413,10 @@ export function ScientificReportsIndexPage({
                 <ul>
                   {impactPreview.impact.dependencies.slice(0, 8).map((item) => (
                     <li key={`${item.kind}:${item.id}`}>
-                      <strong>{item.label}</strong> <code>{item.id}</code>
+                      <strong>
+                        {item.href ? <Link href={item.href}>{item.label}</Link> : item.label}
+                      </strong>{" "}
+                      <code>{item.id}</code>
                     </li>
                   ))}
                 </ul>
@@ -376,6 +428,28 @@ export function ScientificReportsIndexPage({
           ) : null}
           {state === "ready" ? (
             <>
+              <div className="scientific-report-discovery">
+                <label htmlFor="scientific-report-search">
+                  搜索报告
+                  <input
+                    id="scientific-report-search"
+                    type="search"
+                    value={query}
+                    placeholder="按标题、科学内容、数据或方法搜索"
+                    onChange={(event) => {
+                      setQuery(event.target.value);
+                      setGroundedLimit(REPORT_PAGE_SIZE);
+                      setLegacyLimit(REPORT_PAGE_SIZE);
+                      setSelectedReportIds([]);
+                      setSelectionMode(false);
+                    }}
+                  />
+                </label>
+                <p aria-live="polite">
+                  找到 {visibleGrounded.length} 份已验证报告
+                  {legacyReports.length ? `和 ${legacyReports.length} 份历史运行报告` : ""}
+                </p>
+              </div>
               <section
                 className="scientific-report-index-section"
                 aria-labelledby="grounded-reports"
@@ -401,6 +475,7 @@ export function ScientificReportsIndexPage({
                         aria-pressed={filter === value}
                         onClick={() => {
                           setFilter(value);
+                          setGroundedLimit(REPORT_PAGE_SIZE);
                           setSelectedReportIds([]);
                           setSelectionMode(false);
                           setLifecycleError(null);
@@ -499,7 +574,7 @@ export function ScientificReportsIndexPage({
                   </div>
                 ) : null}
                 <div className="report-list report-managed-list">
-                  {visibleGrounded.map((report) => {
+                  {displayedGrounded.map((report) => {
                     const status = String(
                       report.lifecycle_status || "ACTIVE",
                     ).toLowerCase();
@@ -513,7 +588,7 @@ export function ScientificReportsIndexPage({
                           : "回收站";
                     const revisionLabel = `第 ${report.revision_number || 1} 版`;
                     const trailing = report.pinned
-                      ? `已固定 · ${revisionLabel} · ${statusLabel}`
+                      ? `列表置顶 · ${revisionLabel} · ${statusLabel}`
                       : `${revisionLabel} · ${statusLabel}`;
                     const description = [
                       report.scientific_context,
@@ -552,7 +627,7 @@ export function ScientificReportsIndexPage({
                                       setRenameEditor({ report, title: report.title }),
                                   },
                                   {
-                                    label: report.pinned ? "取消固定" : "固定到顶部",
+                                    label: report.pinned ? "取消列表置顶" : "列表置顶",
                                     onSelect: () =>
                                       void changeOrganization(report, { pinned: !report.pinned }),
                                   },
@@ -584,7 +659,7 @@ export function ScientificReportsIndexPage({
                                         setRenameEditor({ report, title: report.title }),
                                     },
                                     {
-                                      label: report.pinned ? "取消固定" : "固定到顶部",
+                                      label: report.pinned ? "取消列表置顶" : "列表置顶",
                                       onSelect: () =>
                                         void changeOrganization(report, { pinned: !report.pinned }),
                                     },
@@ -621,11 +696,27 @@ export function ScientificReportsIndexPage({
                   })}
                   {visibleGrounded.length === 0 ? (
                     <div className="product-state">
-                      <h3>当前筛选下没有报告</h3>
-                      <p>已生成的报告仍保留在其他状态筛选中。</p>
+                      <h3>{normalizedQuery ? "没有匹配的已验证报告" : "当前筛选下没有报告"}</h3>
+                      <p>
+                        {normalizedQuery
+                          ? "尝试缩短关键词，或切换报告状态。"
+                          : "已生成的报告仍保留在其他状态筛选中。"}
+                      </p>
                     </div>
                   ) : null}
                 </div>
+                {displayedGrounded.length < visibleGrounded.length ? (
+                  <button
+                    type="button"
+                    className="product-secondary-action scientific-report-load-more"
+                    onClick={() =>
+                      setGroundedLimit((value) => value + REPORT_PAGE_SIZE)
+                    }
+                  >
+                    加载更多已验证报告（还剩{" "}
+                    {visibleGrounded.length - displayedGrounded.length} 份）
+                  </button>
+                ) : null}
               </section>
               {legacyReports.length ? (
                 <section
@@ -640,7 +731,7 @@ export function ScientificReportsIndexPage({
                     <span>{legacyReports.length} 份</span>
                   </div>
                   <div className="report-list">
-                    {legacyReports.map((run) => {
+                    {displayedLegacy.map((run) => {
                       const dataset = history?.datasets.find(
                         (item) => item.datasetId === run.datasetId,
                       );
@@ -672,6 +763,18 @@ export function ScientificReportsIndexPage({
                       );
                     })}
                   </div>
+                  {displayedLegacy.length < legacyReports.length ? (
+                    <button
+                      type="button"
+                      className="product-secondary-action scientific-report-load-more"
+                      onClick={() =>
+                        setLegacyLimit((value) => value + REPORT_PAGE_SIZE)
+                      }
+                    >
+                      加载更多历史运行（还剩{" "}
+                      {legacyReports.length - displayedLegacy.length} 份）
+                    </button>
+                  ) : null}
                 </section>
               ) : null}
             </>

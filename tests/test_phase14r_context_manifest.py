@@ -20,6 +20,7 @@ from mdi_api.research_agent.context.schemas import (
 )
 from mdi_api.research_agent.context.policy import ContextOperation, context_budget_policy
 from mdi_api.research_agent.service import ResearchTurnService
+from mdi_api.routers.agent2 import _compat_context_manifest_from_snapshot
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 
 
@@ -328,6 +329,90 @@ def test_context_compiler_compacts_conversation_before_exact_scientific_identity
     assert compact.objects[0].ref_key == "obj_1"
     assert compact.current_user_message == candidates.current_user_message
     assert len(compact.recent_conversation) < len(candidates.recent_messages)
+
+
+def test_legacy_context_manifest_projection_compacts_noncritical_overflow() -> None:
+    turn_id = uuid4()
+    snapshot_id = uuid4()
+    object_id = uuid4()
+    version_id = uuid4()
+    manifest = _compat_context_manifest_from_snapshot(
+        {
+            "id": str(turn_id),
+            "project_id": "project",
+            "research_session_id": "session",
+        },
+        {
+            "id": str(snapshot_id),
+            "project_id": "project",
+            "research_session_id": "session",
+            "active_scope_refs_json": [{
+                "object_id": str(object_id),
+                "version_id": str(version_id),
+                "project_id": "project",
+                "object_type": "materials.table",
+                "display_name": "Dataset",
+            }],
+            "selection_refs_json": [],
+            "scientific_selections_json": [],
+            "referenced_result_refs_json": [],
+            "effective_constraints_json": ["x" * 2000 for _ in range(32)],
+            "research_goal": "Inspect the selected dataset",
+            "context_fingerprint": "a" * 64,
+        },
+    )
+
+    assert manifest["estimated_input_tokens"] <= manifest["input_budget"]
+    assert manifest["compaction_state"] == "COMPACTED"
+    assert manifest["excluded_items"]
+    assert any(
+        item["exact_object_version_id"] == str(version_id)
+        for item in manifest["included_items"]
+    )
+
+
+def test_legacy_context_manifest_projection_fails_closed_for_critical_overflow() -> None:
+    turn_id = uuid4()
+    snapshot_id = uuid4()
+    object_id = uuid4()
+    version_id = uuid4()
+    large_locator = {f"field_{index}": "x" * 300 for index in range(23)}
+
+    with pytest.raises(ValueError, match="critical scientific context exceeds the operation budget"):
+        _compat_context_manifest_from_snapshot(
+            {
+                "id": str(turn_id),
+                "project_id": "project",
+                "research_session_id": "session",
+            },
+            {
+                "id": str(snapshot_id),
+                "project_id": "project",
+                "research_session_id": "session",
+                "active_scope_refs_json": [],
+                "selection_refs_json": [],
+                "scientific_selections_json": [
+                    {
+                        "object_ref": {
+                            "object_id": str(object_id),
+                            "version_id": str(version_id),
+                            "project_id": "project",
+                            "object_type": "structure.crystal",
+                            "display_name": "Silicon",
+                        },
+                        "viewer_id": "structure.viewer",
+                        "selection_type": "SITE",
+                        "semantic_locator": {**large_locator, "site_id": index},
+                        "display_label": f"Site {index}",
+                    }
+                    for index in range(16)
+                ],
+                "referenced_result_refs_json": [],
+                "effective_constraints_json": [],
+                "research_goal": None,
+                "context_fingerprint": "b" * 64,
+            },
+        )
 
 
 def test_child_branch_does_not_inherit_recent_results_without_explicit_binding() -> None:

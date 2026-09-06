@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from typing import Protocol
 from uuid import UUID
 
+from mdi_schemas.worker_queues import worker_queue_definition
+
 
 @dataclass(frozen=True)
 class TurnQueueSubmitResult:
@@ -41,7 +43,12 @@ class InMemoryAgentTurnQueue:
 
 
 class RedisRQAgentTurnQueue:
-    def __init__(self, *, redis_url: str, queue_name: str = "mdi-agent-turns") -> None:
+    def __init__(
+        self,
+        *,
+        redis_url: str,
+        queue_name: str = worker_queue_definition("orchestration").default_name,
+    ) -> None:
         self.redis_url = redis_url
         self.queue_name = queue_name
 
@@ -59,7 +66,7 @@ class RedisRQAgentTurnQueue:
                 return TurnQueueSubmitResult(turn_id, False, "rq", "turn already queued")
             existing.delete()
         queue.enqueue(
-            "mdi_api.research_agent_worker.run_queued_turn",
+            worker_queue_definition("orchestration").handler,
             str(turn_id),
             job_id=rq_job_id,
         )

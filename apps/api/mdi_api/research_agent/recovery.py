@@ -89,9 +89,22 @@ class StaleResearchRecoveryService:
         repository_factory: Any | None = None,
         *,
         settings: ApiSettings | None = None,
+        orchestration_queue: Any | None = None,
+        planning_queue: Any | None = None,
+        execution_queue: Any | None = None,
+        result_queue: Any | None = None,
+        interpretation_queue: Any | None = None,
     ) -> None:
         self.repository_factory = repository_factory or create_repository_factory()
         self.settings = settings or load_settings()
+        # Queue adapters are injectable for deterministic outage/recovery
+        # qualification.  Production keeps the existing settings-backed
+        # adapters; the durable PostgreSQL identities remain authoritative.
+        self.orchestration_queue = orchestration_queue
+        self.planning_queue = planning_queue
+        self.execution_queue = execution_queue
+        self.result_queue = result_queue
+        self.interpretation_queue = interpretation_queue
 
     def list_stale(
         self,
@@ -167,21 +180,35 @@ class StaleResearchRecoveryService:
             status = ResearchTurnStatus(str(turn["status"]))
 
         if status == ResearchTurnStatus.RECEIVED:
-            queued = RedisRQAgentTurnQueue(
+            queue = self.orchestration_queue or RedisRQAgentTurnQueue(
                 redis_url=self.settings.redis_url,
                 queue_name=self.settings.agent2_queue_name,
-            ).enqueue_turn(turn_id)
+            )
+            try:
+                queued = queue.enqueue_turn(turn_id)
+            except Exception as exc:
+                return self._queue_unavailable(turn_id, status, "ORCHESTRATION_REPUBLISH", exc)
             return RecoveryOutcome(turn_id, status.value, "ORCHESTRATION_REPUBLISHED", True, queued.message)
 
         if status == ResearchTurnStatus.READY_TO_PLAN:
-            queued = RedisRQCapabilityPlanningQueue(
+            queue = self.planning_queue or RedisRQCapabilityPlanningQueue(
                 redis_url=self.settings.redis_url,
-                queue_name="mdi-agent-plans",
-            ).enqueue_turn(turn_id)
+                queue_name=self.settings.agent2_planning_queue_name,
+            )
+            try:
+                queued = queue.enqueue_turn(turn_id)
+            except Exception as exc:
+                return self._queue_unavailable(turn_id, status, "PLANNING_REPUBLISH", exc)
             return RecoveryOutcome(turn_id, status.value, "PLANNING_REPUBLISHED", True, queued.message)
 
         if status in {ResearchTurnStatus.PLAN_READY, ResearchTurnStatus.QUEUED}:
-            result = ResearchExecutionReconciler(self.repository_factory).reconcile_turn(turn_id)
+            try:
+                result = ResearchExecutionReconciler(
+                    self.repository_factory,
+                    queue=self.execution_queue,
+                ).reconcile_turn(turn_id)
+            except Exception as exc:
+                return self._queue_unavailable(turn_id, status, "EXECUTION_RECONCILE", exc)
             return RecoveryOutcome(
                 turn_id,
                 status.value,
@@ -191,10 +218,14 @@ class StaleResearchRecoveryService:
             )
 
         if status == ResearchTurnStatus.RESULT_PENDING:
-            result = ScientificResultReconciler(
-                self.repository_factory,
-                result_projection_queue_from_settings(self.settings),
-            ).reconcile_turn(turn_id)
+            queue = self.result_queue or result_projection_queue_from_settings(self.settings)
+            try:
+                result = ScientificResultReconciler(
+                    self.repository_factory,
+                    queue,
+                ).reconcile_turn(turn_id)
+            except Exception as exc:
+                return self._queue_unavailable(turn_id, status, "RESULT_PROJECTION_REPUBLISH", exc)
             return RecoveryOutcome(
                 turn_id,
                 status.value,
@@ -204,7 +235,13 @@ class StaleResearchRecoveryService:
             )
 
         if status in {ResearchTurnStatus.RESULT_READY, ResearchTurnStatus.INTERPRETING}:
-            result = ScientificInterpretationReconciler(self.repository_factory).reconcile_turn(turn_id)
+            try:
+                result = ScientificInterpretationReconciler(
+                    self.repository_factory,
+                    queue=self.interpretation_queue,
+                ).reconcile_turn(turn_id)
+            except Exception as exc:
+                return self._queue_unavailable(turn_id, status, "INTERPRETATION_RECONCILE", exc)
             accepted = bool(result and (result.get("republished") or result.get("reason") == "not_result_ready"))
             return RecoveryOutcome(
                 turn_id,
@@ -230,6 +267,30 @@ class StaleResearchRecoveryService:
             "MANUAL_ATTENTION_REQUIRED",
             False,
             "state cannot be replayed without risking duplicate or unauthorized scientific work",
+        )
+
+    @staticmethod
+    def _queue_unavailable(
+        turn_id: UUID,
+        status: ResearchTurnStatus,
+        operation: str,
+        error: Exception,
+    ) -> RecoveryOutcome:
+        logger.warning(
+            "research_recovery_queue_unavailable",
+            extra={
+                "turn_id": str(turn_id),
+                "status": status.value,
+                "operation": operation,
+                "error_type": type(error).__name__,
+            },
+        )
+        return RecoveryOutcome(
+            turn_id,
+            status.value,
+            "QUEUE_UNAVAILABLE",
+            False,
+            "queue backend unavailable; durable state remains retryable",
         )
 
     def _finalize_legacy_query_data(self, turn_id: UUID) -> bool:

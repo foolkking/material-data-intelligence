@@ -1,6 +1,10 @@
 "use client";
 
 import type { Agent2ProgressView } from "../lib/agent2-execution-api";
+import {
+  RESEARCH_CANCELLING_LABEL,
+  isResearchCancellationPending,
+} from "../lib/research-status";
 
 const statusLabel: Record<Agent2ProgressView["status"], string> = {
   ORCHESTRATING: "正在组织研究",
@@ -9,7 +13,7 @@ const statusLabel: Record<Agent2ProgressView["status"], string> = {
   PLAN_READY: "分析方案已准备",
   QUEUED: "等待执行资源",
   RUNNING: "正在执行分析",
-  CANCELING: "正在取消分析",
+   CANCELING: RESEARCH_CANCELLING_LABEL,
   RESULT_PENDING: "执行已完成，正在整理科学结果",
   RESULT_READY: "科学结果已准备",
   INTERPRETING: "正在生成科学解释",
@@ -23,6 +27,7 @@ const statusLabel: Record<Agent2ProgressView["status"], string> = {
 export function ResearchExecutionActivity({ progress, onCancel, cancelPending = false, onContinue, onRetry, retryPending = false, onEdit }: { progress: Agent2ProgressView; onCancel?: () => void; cancelPending?: boolean; onContinue?: () => void; onRetry?: () => void; retryPending?: boolean; onEdit?: () => void }) {
   const importantStatus = progress.status === "FAILED" || progress.status === "CANCELED" || progress.status === "RESULT_PENDING" || progress.status === "RESULT_READY" || progress.status === "INTERPRETING" || progress.status === "COMPLETED" || progress.status === "PARTIAL";
   const cancelable = progress.status === "ORCHESTRATING" || progress.status === "READY_TO_PLAN" || progress.status === "PLANNING" || progress.status === "PLAN_READY" || progress.status === "QUEUED" || progress.status === "RUNNING";
+  const cancellationPending = isResearchCancellationPending(progress.status);
   const retryable = progress.status === "FAILED" || progress.status === "CANCELED";
   const warnings = Array.from(
     new Map(
@@ -42,7 +47,7 @@ export function ResearchExecutionActivity({ progress, onCancel, cancelPending = 
               ? "已基于现有科学结果继续回答"
               : "回答已完成"
           : statusLabel[progress.status]}</strong>
-        <div>{progress.total_step_count > 0 ? <span>{progress.completed_step_count}/{progress.total_step_count}</span> : null}{cancelable && onCancel ? <button type="button" className="product-link-button research-execution-cancel" onClick={onCancel} disabled={cancelPending}>{cancelPending ? "正在停止…" : "停止研究"}</button> : null}</div>
+        <div>{progress.total_step_count > 0 ? <span>{progress.completed_step_count}/{progress.total_step_count}</span> : null}{cancelable && onCancel ? <button type="button" className="product-link-button research-execution-cancel" onClick={onCancel} disabled={cancelPending}>{cancelPending ? "正在提交停止…" : "停止研究"}</button> : cancellationPending ? <span className="research-execution-cancel-state" role="status">{RESEARCH_CANCELLING_LABEL}，等待服务端确认</span> : null}</div>
       </div>
       <ol className="research-execution-steps">
         {progress.steps.map((step) => (

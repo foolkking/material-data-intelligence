@@ -37,6 +37,12 @@ const VIEWERS: readonly ScientificViewerDescriptor[] = Object.freeze([
 ]);
 
 const BY_TYPE = new Map(VIEWERS.map((item) => [item.scientificType, item]));
+const SAFE_REGISTRY_TOKEN = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/u;
+const EXECUTABLE_REGISTRY_SEGMENT = /(?:^|[._-])(?:component|import|module|script|html|css|url|remote)(?:$|[._-])/iu;
+
+function isSafeRegistryToken(value: string): boolean {
+  return SAFE_REGISTRY_TOKEN.test(value) && !EXECUTABLE_REGISTRY_SEGMENT.test(value);
+}
 
 const LEGACY_TYPES: Record<string, string> = {
   DataFrame: "materials.dataset",
@@ -53,11 +59,16 @@ const LEGACY_TYPES: Record<string, string> = {
 };
 
 export function resolveScientificViewer(input: ResolveInput): ScientificViewerDescriptor {
-  const semantic = String(input.semanticRole || "").toLowerCase();
-  const schema = String(input.schemaVersion || "").toLowerCase();
+  const semanticValue = String(input.semanticRole || "");
+  const schemaValue = String(input.schemaVersion || "");
+  const objectTypeValue = String(input.objectType || "");
+  const semantic = isSafeRegistryToken(semanticValue) ? semanticValue.toLowerCase() : "";
+  const schema = isSafeRegistryToken(schemaValue) ? schemaValue.toLowerCase() : "";
   if (semantic.includes("rdf") || schema.includes("rdf")) return BY_TYPE.get("analysis.rdf")!;
   if (semantic.includes("xrd") || schema.includes("xrd")) return BY_TYPE.get(semantic.includes("experimental") ? "diffraction.xrd.experimental" : "diffraction.xrd.theoretical")!;
-  const scientificType = LEGACY_TYPES[input.objectType] || input.objectType;
+  const scientificType = isSafeRegistryToken(objectTypeValue)
+    ? LEGACY_TYPES[objectTypeValue] || objectTypeValue
+    : "unsupported.inert";
   return BY_TYPE.get(scientificType) || Object.freeze({
     viewerId: "scientific.generic-safe-fallback",
     viewerVersion: "1.0",

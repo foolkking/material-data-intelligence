@@ -1,0 +1,19 @@
+{
+  "improvement": "CO-134",
+  "date": "2026-09-05",
+  "status": "PASS",
+  "summary": "Artifact download filenames are bounded before reaching the browser download attribute.",
+  "verification": {
+    "focused_tests": "3 passed",
+    "typecheck": "PASS",
+    "diff_check": "PASS"
+  },
+  "behavior": {
+    "control_characters_removed": true,
+    "path_separators_replaced": true,
+    "leading_dot_traversal_removed": true,
+    "max_length": 120,
+    "dot_only_names_rejected": true,
+    "artifact_route_authorization_changed": false
+  }
+}

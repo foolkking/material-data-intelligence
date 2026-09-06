@@ -1,3 +1,5 @@
+import { invalidateProductDirectories, invalidateProjectHistory } from "./planner-api";
+
 const API_BASE = (
   process.env.NEXT_PUBLIC_MDI_API_BASE_URL ||
   (typeof window === "undefined" ? "http://127.0.0.1:8000" : "/api")
@@ -8,6 +10,106 @@ export type AuthUser = {
   displayName: string;
   email: string;
   roles: string[];
+  platformRole?: "USER" | "PLATFORM_ADMIN";
+};
+
+export type AuthSession = {
+  id: string;
+  createdAt: string;
+  lastSeenAt: string;
+  expiresAt: string;
+  isCurrent: boolean;
+};
+
+export type PlatformAdminOverview = {
+  schemaVersion: string;
+  counts: {
+    users: number;
+    activeUsers: number;
+    platformAdmins: number;
+    projects: number;
+    activeSessions: number;
+  };
+  operations: {
+    status?: string | null;
+    capturedAt?: string | null;
+    alertSummary?: Record<string, unknown>;
+    alertsSchemaVersion?: string | null;
+    alerts?: Array<{
+      code: string;
+      severity: "WARNING" | "CRITICAL";
+      component: string;
+      observed: unknown;
+      threshold: unknown;
+      message: string;
+      runbook?: {
+        id?: string;
+        reference?: string;
+        operatorAction?: string;
+        recheckCommand?: string;
+      };
+    }>;
+    database?: Record<string, unknown>;
+    queues?: Record<string, unknown>;
+    artifactStorage?: Record<string, unknown>;
+    resourceGovernance?: Record<string, unknown>;
+  };
+};
+
+export type PlatformAdminUser = {
+  id: string;
+  email: string;
+  displayName: string;
+  platformRole: "USER" | "PLATFORM_ADMIN";
+  isActive: boolean;
+  projectCount: number;
+  activeSessionCount: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PlatformAdminAuditItem = {
+  id: string;
+  actor: {
+    id?: string | null;
+    email?: string | null;
+  };
+  action: string;
+  targetType: string;
+  targetId: string;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+};
+
+export type PlatformAdminProject = {
+  id: string;
+  name: string;
+  description: string;
+  owner: {
+    id: string;
+    email: string;
+    displayName: string;
+  };
+  memberCount: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PlatformAdminProjectMember = {
+  userId: string;
+  email: string;
+  displayName: string;
+  role: "owner" | "admin" | "researcher" | "viewer";
+  isActive: boolean;
+  createdAt: string;
+};
+
+export type PlatformInvitation = {
+  id: string;
+  email: string;
+  displayName: string;
+  expiresAt: string;
+  activationToken: string;
 };
 
 export type ResearchMessage = {
@@ -61,7 +163,43 @@ export type ResearchSession = {
     createdAt?: string | null;
     researchTurnId?: string | null;
   }>;
+  retentionPolicy?: {
+    schemaVersion: string;
+    automaticPurge: "ENABLED" | "DISABLED";
+    referencedProvenance: string;
+    unreferencedTrash: string;
+    manualPurge: "SERVER_ZERO_DEPENDENCY_ONLY" | "NOT_SUPPORTED_FOR_ENTITY";
+    manualPurgeRequiresZeroDependencies: boolean;
+  };
 };
+
+export type ResearchSessionDependencyImpact = {
+  entity: "research_session";
+  entityId: string;
+  displayName: string;
+  canDelete: false;
+  dependencyCount: number;
+  dependencies: Array<{ kind: string; label: string; count: number }>;
+  retentionPolicy?: {
+    schemaVersion: string;
+    automaticPurge: "ENABLED" | "DISABLED";
+    referencedProvenance: string;
+    unreferencedTrash: string;
+    manualPurge: "SERVER_ZERO_DEPENDENCY_ONLY" | "NOT_SUPPORTED_FOR_ENTITY";
+    manualPurgeRequiresZeroDependencies: boolean;
+  };
+  impact: {
+    removedFromActiveDiscovery: boolean;
+    historicalProvenanceProtected: boolean;
+    historicalResearchRemainsAccessible: boolean;
+    scientificSnapshotMutated: false;
+  };
+};
+
+export const getResearchSessionDependencyImpact = (sessionId: string) =>
+  request<ResearchSessionDependencyImpact>(
+    `/research-sessions/${encodeURIComponent(sessionId)}/dependency-impact`,
+  );
 
 export type ResearchSessionBulkAction =
   | "PIN"
@@ -94,6 +232,7 @@ export type SavedProductSearchExecution = {
   query: string;
   count: number;
   truncated?: boolean;
+  nextCursor?: string | null;
   items: Array<{
     kind: SavedProductSearchType;
     id: string;
@@ -105,6 +244,20 @@ export type SavedProductSearchExecution = {
     status?: string | null;
     updatedAt?: string | null;
   }>;
+};
+
+export type NotificationReadState = {
+  projectId: string;
+  jobId: string;
+  read: boolean;
+  readAt: string | null;
+  notificationUpdatedAt: string | null;
+};
+
+export type NotificationReadStateCollection = {
+  schemaVersion: "NotificationReadState/1.0";
+  items: NotificationReadState[];
+  count: number;
 };
 
 export type ScopeResolution = {
@@ -177,7 +330,14 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     throw new Error("服务暂时不可用，请检查连接后重试。");
   }
   if (!response.ok) {
-    if (response.status === 401) authUserCache = undefined;
+    if (response.status === 401) {
+      authUserCache = undefined;
+      // Read projections are authorized per session.  Never let a cached
+      // project/history directory survive an expired session and become
+      // visible after another user signs in in the same SPA instance.
+      invalidateProductDirectories();
+      invalidateProjectHistory();
+    }
     if (
       response.status === 401 &&
       typeof window !== "undefined" &&
@@ -228,13 +388,179 @@ export const login = (email: string, password: string) =>
     method: "POST",
     body: JSON.stringify({ email, password }),
   }).then((user) => {
+    invalidateProductDirectories();
+    invalidateProjectHistory();
     authUserCache = user;
     return user;
   });
 export const logout = () =>
   request<void>("/auth/logout", { method: "POST" }).finally(() => {
     authUserCache = undefined;
+    invalidateProductDirectories();
+    invalidateProjectHistory();
   });
+export const updateAuthProfile = (displayName: string) =>
+  request<AuthUser>("/auth/profile", {
+    method: "PATCH",
+    body: JSON.stringify({ displayName }),
+  }).then((user) => {
+    invalidateProductDirectories();
+    invalidateProjectHistory();
+    authUserCache = user;
+    return user;
+  });
+export const listAuthSessions = () =>
+  request<{ items: AuthSession[]; count: number }>("/auth/sessions");
+export const revokeAuthSession = (sessionId: string) =>
+  request<{ ok: boolean }>(
+    `/auth/sessions/${encodeURIComponent(sessionId)}`,
+    { method: "DELETE" },
+  );
+export const revokeOtherAuthSessions = () =>
+  request<{ ok: boolean; revokedCount: number }>(
+    "/auth/sessions/revoke-others",
+    { method: "POST" },
+  );
+export const changeAuthPassword = (
+  currentPassword: string,
+  newPassword: string,
+) =>
+  request<{ ok: boolean; otherSessionsRevoked: number }>(
+    "/auth/change-password",
+    {
+      method: "POST",
+      body: JSON.stringify({ currentPassword, newPassword }),
+    },
+  );
+export const deactivateAuthAccount = (
+  password: string,
+  confirmEmail: string,
+) =>
+  request<{
+    ok: boolean;
+    provenanceRetained: boolean;
+    retentionPolicy: {
+      schemaVersion: string;
+      automaticPurge: "ENABLED" | "DISABLED";
+      referencedProvenance: string;
+      unreferencedTrash: string;
+      manualPurge: "SERVER_ZERO_DEPENDENCY_ONLY" | "NOT_SUPPORTED_FOR_ENTITY";
+      manualPurgeRequiresZeroDependencies: boolean;
+    };
+  }>("/auth/deactivate", {
+    method: "POST",
+    body: JSON.stringify({ password, confirmEmail }),
+  }).finally(() => {
+    authUserCache = undefined;
+    invalidateProductDirectories();
+    invalidateProjectHistory();
+  });
+export const activateAuthAccount = (
+  token: string,
+  password: string,
+  displayName?: string,
+) =>
+  request<AuthUser>("/auth/activate", {
+    method: "POST",
+    body: JSON.stringify({
+      token,
+      password,
+      ...(displayName?.trim() ? { displayName: displayName.trim() } : {}),
+    }),
+  }).then((user) => {
+    invalidateProductDirectories();
+    invalidateProjectHistory();
+    authUserCache = user;
+    return user;
+  });
+
+export const getPlatformAdminOverview = () =>
+  request<PlatformAdminOverview>("/api/admin/overview");
+export const createPlatformInvitation = (
+  email: string,
+  displayName: string,
+  expiresInDays = 7,
+) =>
+  request<PlatformInvitation>("/api/admin/invitations", {
+    method: "POST",
+    body: JSON.stringify({ email, displayName, expiresInDays }),
+  });
+export const listPlatformAdminUsers = (options?: Readonly<{
+  query?: string;
+  status?: "ALL" | "ACTIVE" | "INACTIVE";
+  role?: "ALL" | "USER" | "PLATFORM_ADMIN";
+  limit?: number;
+  offset?: number;
+}>) => {
+  const params = new URLSearchParams();
+  if (options?.query?.trim()) params.set("q", options.query.trim());
+  if (options?.status && options.status !== "ALL")
+    params.set("status", options.status);
+  if (options?.role && options.role !== "ALL")
+    params.set("role", options.role);
+  if (options?.limit) params.set("limit", String(options.limit));
+  if (options?.offset) params.set("offset", String(options.offset));
+  const query = params.toString();
+  return request<{
+    items: PlatformAdminUser[];
+    count: number;
+    total: number;
+    limit: number;
+    offset: number;
+  }>(`/api/admin/users${query ? `?${query}` : ""}`);
+};
+export const updatePlatformAdminUser = (
+  userId: string,
+  changes: Readonly<{
+    platformRole?: "USER" | "PLATFORM_ADMIN";
+    isActive?: boolean;
+  }>,
+) =>
+  request<PlatformAdminUser>(
+    `/api/admin/users/${encodeURIComponent(userId)}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(changes),
+    },
+  );
+export const listPlatformAdminAudit = (limit = 30) =>
+  request<{ items: PlatformAdminAuditItem[]; count: number }>(
+    `/api/admin/audit?limit=${encodeURIComponent(String(limit))}`,
+  );
+export const listPlatformAdminProjects = (options?: Readonly<{ query?: string; limit?: number; offset?: number }>) => {
+  const params = new URLSearchParams();
+  if (options?.query?.trim()) params.set("q", options.query.trim());
+  if (options?.limit) params.set("limit", String(options.limit));
+  if (options?.offset) params.set("offset", String(options.offset));
+  const query = params.toString();
+  return request<{
+    items: PlatformAdminProject[];
+    count: number;
+    total: number;
+    limit: number;
+    offset: number;
+  }>(`/api/admin/projects${query ? `?${query}` : ""}`);
+};
+export const listPlatformAdminProjectMembers = (projectId: string) =>
+  request<{
+    project: { id: string; name: string; ownerId: string };
+    items: PlatformAdminProjectMember[];
+    count: number;
+  }>(`/api/admin/projects/${encodeURIComponent(projectId)}/members`);
+export const updatePlatformAdminProjectMember = (
+  projectId: string,
+  userId: string,
+  role: PlatformAdminProjectMember["role"],
+) =>
+  request<{ projectId: string; userId: string; role: PlatformAdminProjectMember["role"] }>(
+    `/api/admin/projects/${encodeURIComponent(projectId)}/members/${encodeURIComponent(userId)}`,
+    { method: "PUT", body: JSON.stringify({ role }) },
+  );
+export const removePlatformAdminProjectMember = (projectId: string, userId: string) =>
+  request<{ projectId: string; userId: string; removed: boolean }>(
+    `/api/admin/projects/${encodeURIComponent(projectId)}/members/${encodeURIComponent(userId)}`,
+    { method: "DELETE" },
+  );
 
 // Session mutations invalidate this cache. A 30-second read window lets Data,
 // Viewer, History and Research share the same authorized session inventory
@@ -367,6 +693,20 @@ export const executeSavedProductSearch = (
     {
       method: "POST",
       body: JSON.stringify({ limit }),
+    },
+  );
+export const listNotificationReadStates = () =>
+  request<NotificationReadStateCollection>("/api/notifications/read-state");
+export const updateNotificationReadState = (
+  projectId: string,
+  jobId: string,
+  read: boolean,
+) =>
+  request<NotificationReadState>(
+    `/api/notifications/${encodeURIComponent(projectId)}/${encodeURIComponent(jobId)}/read-state`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ read }),
     },
   );
 export const createResearchMessage = (

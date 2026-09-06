@@ -19,12 +19,69 @@ import {
   searchProduct,
   type ProductSearchItem,
 } from "../lib/planner-api";
+import {
+  publishSavedSearchesChanged,
+  subscribeSavedSearchesChanged,
+} from "../lib/saved-search-sync";
 import { getProductTaskFeed } from "../lib/task-center-data";
 import { ModelSettingsDialog } from "./ModelSettingsPage";
 import { ProductLink as Link, useProductNavigation, useProductRouter } from "./ProductNavigation";
 
 const ProductShellFrameContext = createContext(false);
 const ProductAuthFrameContext = createContext(false);
+
+type RoutePrefetcher = { prefetch: (href: string) => void };
+
+export function currentProductReturnTo(target: Location = window.location): string {
+  return `${target.pathname}${target.search}${target.hash}`;
+}
+
+export function sessionExpiredLoginHref(returnTo: string): string {
+  return `/?login=1&reason=session-expired&returnTo=${encodeURIComponent(returnTo)}`;
+}
+
+/**
+ * Keep speculative route work out of the critical navigation path.  A single
+ * idle callback is allowed to enqueue one route; the next route waits for a
+ * later idle slot.  The returned disposer cancels both browser idle callbacks
+ * and the timer fallback used by test/older browser runtimes.
+ */
+export function scheduleBoundedRoutePrefetch(
+  router: RoutePrefetcher,
+  hrefs: string[],
+  target: Window = window,
+): () => void {
+  let cancelled = false;
+  let index = 0;
+  let timerId: number | null = null;
+  let idleId: number | null = null;
+  const idleWindow = target as Window & {
+    requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+    cancelIdleCallback?: (id: number) => void;
+  };
+  const schedule = () => {
+    if (cancelled || index >= hrefs.length) return;
+    const run = () => {
+      timerId = null;
+      idleId = null;
+      if (cancelled || index >= hrefs.length) return;
+      router.prefetch(hrefs[index]);
+      index += 1;
+      schedule();
+    };
+    if (idleWindow.requestIdleCallback) {
+      idleId = idleWindow.requestIdleCallback(run, { timeout: 1000 });
+    } else {
+      timerId = target.setTimeout(run, 50);
+    }
+  };
+  schedule();
+  return () => {
+    cancelled = true;
+    if (timerId !== null) target.clearTimeout(timerId);
+    if (idleId !== null) idleWindow.cancelIdleCallback?.(idleId);
+  };
+}
 
 export function ProductShell({ children, projectId }: { children: ReactNode; projectId?: string }) {
   const framed = useContext(ProductShellFrameContext);
@@ -45,12 +102,19 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
   const [searchKind, setSearchKind] = useState<ProductSearchItem["kind"] | "">("");
   const [searchStatus, setSearchStatus] = useState<"active" | "archived" | "trashed" | "all">("all");
   const [searchProject, setSearchProject] = useState("");
+  const [searchDateFrom, setSearchDateFrom] = useState("");
+  const [searchDateTo, setSearchDateTo] = useState("");
   const [searchItems, setSearchItems] = useState<ProductSearchItem[]>([]);
   const [searchCount, setSearchCount] = useState(0);
   const [searchTruncated, setSearchTruncated] = useState(false);
+  const [searchNextCursor, setSearchNextCursor] = useState<string | null>(null);
+  const [searchLoadingMore, setSearchLoadingMore] = useState(false);
+  const [searchLoadMoreError, setSearchLoadMoreError] = useState(false);
   const [searchState, setSearchState] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [searchRetryToken, setSearchRetryToken] = useState(0);
   const [savedSearches, setSavedSearches] = useState<SavedProductSearch[]>([]);
   const [savedSearchState, setSavedSearchState] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [savedSearchRetryToken, setSavedSearchRetryToken] = useState(0);
   const [selectedSavedSearchId, setSelectedSavedSearchId] = useState("");
   const [savedSearchEditing, setSavedSearchEditing] = useState(false);
   const [savedSearchName, setSavedSearchName] = useState("");
@@ -64,6 +128,7 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchDialogRef = useRef<HTMLElement | null>(null);
   const searchRequestSeqRef = useRef(0);
+  const searchAbortControllerRef = useRef<AbortController | null>(null);
   const skipNextFilterSearchRef = useRef(false);
   const researchSessionsPrefetchRef = useRef(new Set<string>());
   const taskFeedPrefetchRef = useRef(false);
@@ -103,8 +168,7 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
   useEffect(() => {
     const onExpired = () => {
       if (pathname === "/") return;
-      const returnTo = `${window.location.pathname}${window.location.search}`;
-      router.replace(`/?login=1&returnTo=${encodeURIComponent(returnTo)}`);
+      router.replace(sessionExpiredLoginHref(currentProductReturnTo()));
     };
     window.addEventListener("mdi:session-expired", onExpired);
     return () => window.removeEventListener("mdi:session-expired", onExpired);
@@ -136,14 +200,21 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
   }
 
   function closeSearch() {
+    searchAbortControllerRef.current?.abort();
+    searchAbortControllerRef.current = null;
     setSearchOpen(false);
     setSearchQuery("");
     setSearchKind("");
     setSearchStatus("all");
     setSearchProject("");
+    setSearchDateFrom("");
+    setSearchDateTo("");
     setSearchItems([]);
     setSearchCount(0);
     setSearchTruncated(false);
+    setSearchNextCursor(null);
+    setSearchLoadingMore(false);
+    setSearchLoadMoreError(false);
     setSearchState("idle");
     setSelectedSavedSearchId("");
     setSavedSearchEditing(false);
@@ -156,7 +227,7 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
     setModelSettingsOpen(false);
     setAccountOpen(false);
     setSearchOpen(true);
-    setSearchState("loading");
+    setSearchState("idle");
   }
 
   function closeAccount(restoreFocus = false) {
@@ -220,41 +291,89 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
     return () => {
       active = false;
     };
+  }, [savedSearchRetryToken, searchOpen, user]);
+
+  useEffect(() => {
+    if (!user) return;
+    return subscribeSavedSearchesChanged(() => {
+      if (searchOpen) setSavedSearchRetryToken((current) => current + 1);
+    });
   }, [searchOpen, user]);
 
   useEffect(() => {
     if (!searchOpen) {
       searchRequestSeqRef.current += 1;
+      searchAbortControllerRef.current?.abort();
+      searchAbortControllerRef.current = null;
       return;
     }
     if (skipNextFilterSearchRef.current) {
       skipNextFilterSearchRef.current = false;
       return;
     }
+    const hasCriteria = Boolean(
+      searchQuery.trim() ||
+      searchKind ||
+      searchProject ||
+      searchDateFrom ||
+      searchDateTo ||
+      searchStatus !== "all",
+    );
+    if (!hasCriteria) {
+      searchRequestSeqRef.current += 1;
+      searchAbortControllerRef.current?.abort();
+      searchAbortControllerRef.current = null;
+      setSearchItems([]);
+      setSearchCount(0);
+      setSearchTruncated(false);
+      setSearchNextCursor(null);
+      setSearchLoadingMore(false);
+      setSearchLoadMoreError(false);
+      setSearchState("idle");
+      return;
+    }
     const requestSeq = ++searchRequestSeqRef.current;
+    let controller: AbortController | null = null;
     const timer = window.setTimeout(() => {
+      searchAbortControllerRef.current?.abort();
+      controller = new AbortController();
+      searchAbortControllerRef.current = controller;
       setSearchState("loading");
       const options = {
         ...(searchProject ? { projectId: searchProject } : {}),
         ...(searchKind ? { kind: searchKind } : {}),
         ...(searchStatus !== "all" ? { status: searchStatus } : {}),
+        ...(searchDateFrom ? { dateFrom: searchDateFrom } : {}),
+        ...(searchDateTo ? { dateTo: searchDateTo } : {}),
+        signal: controller.signal,
       };
-      const request = Object.keys(options).length ? searchProduct(searchQuery, options) : searchProduct(searchQuery);
+      const request = searchProduct(searchQuery, options);
       void request.then((result) => {
         if (requestSeq !== searchRequestSeqRef.current) return;
         setSearchItems(result.items);
         setSearchCount(result.count);
         setSearchTruncated(Boolean(result.truncated));
+        setSearchNextCursor(result.nextCursor || null);
+        setSearchLoadMoreError(false);
         setSearchState("ready");
-      }).catch(() => {
+      }).catch((error) => {
+        if (controller?.signal.aborted || (error instanceof DOMException && error.name === "AbortError")) return;
         if (requestSeq === searchRequestSeqRef.current) setSearchState("error");
+      }).finally(() => {
+        if (searchAbortControllerRef.current === controller) {
+          searchAbortControllerRef.current = null;
+        }
       });
     }, searchQuery.trim() ? 180 : 0);
     return () => {
       window.clearTimeout(timer);
+      controller?.abort();
+      if (searchAbortControllerRef.current === controller) {
+        searchAbortControllerRef.current = null;
+      }
       if (requestSeq === searchRequestSeqRef.current) searchRequestSeqRef.current += 1;
     };
-  }, [searchKind, searchOpen, searchProject, searchQuery, searchStatus]);
+  }, [searchDateFrom, searchDateTo, searchKind, searchOpen, searchProject, searchQuery, searchRetryToken, searchStatus]);
 
   useEffect(() => {
     if (!accountOpen) return;
@@ -311,15 +430,17 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
     }
     if (!projectId) {
       if (hasSharedNavigation) return;
+      let disposePrefetch: () => void = () => undefined;
       const timeout = window.setTimeout(() => {
-        router.prefetch("/projects");
-        router.prefetch("/tasks");
-        router.prefetch("/notifications");
-        router.prefetch("/trash");
+        disposePrefetch = scheduleBoundedRoutePrefetch(router, ["/projects", "/tasks", "/notifications", "/trash"]);
       }, 240);
-      return () => window.clearTimeout(timeout);
+      return () => {
+        window.clearTimeout(timeout);
+        disposePrefetch();
+      };
     }
     let active = true;
+    let disposePrefetch: () => void = () => undefined;
     const timeout = window.setTimeout(() => {
       // RootLayout supplies ProductNavigationProvider in production. Its
       // ProductLink owns route prefetch, so do not issue a second eager RSC
@@ -327,14 +448,14 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
       // functional without duplicating requests in the real product.
       if (!hasSharedNavigation) {
         const projectRoot = `/projects/${projectId}`;
-        [
+        disposePrefetch = scheduleBoundedRoutePrefetch(router, [
           projectRoot,
           `${projectRoot}/data`,
           `${projectRoot}/research`,
           `${projectRoot}/reports`,
           "/tasks",
           "/notifications",
-        ].forEach((href) => router.prefetch(href));
+        ]);
       }
       void warmProjectHistory(projectId)
         .then((history) => {
@@ -356,10 +477,26 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
     return () => {
       active = false;
       window.clearTimeout(timeout);
+      disposePrefetch();
     };
   }, [hasSharedNavigation, projectId, router, warmProjectHistory]);
 
   const matchingItems = searchItems;
+  const searchOptions = {
+    ...(searchProject ? { projectId: searchProject } : {}),
+    ...(searchKind ? { kind: searchKind } : {}),
+    ...(searchStatus !== "all" ? { status: searchStatus } : {}),
+    ...(searchDateFrom ? { dateFrom: searchDateFrom } : {}),
+    ...(searchDateTo ? { dateTo: searchDateTo } : {}),
+  };
+  const hasSearchCriteria = Boolean(
+    searchQuery.trim() ||
+    searchKind ||
+    searchProject ||
+    searchDateFrom ||
+    searchDateTo ||
+    searchStatus !== "all",
+  );
   async function applySavedSearch(savedSearchId: string) {
     setSelectedSavedSearchId(savedSearchId);
     const savedSearch = savedSearches.find((item) => item.id === savedSearchId);
@@ -369,6 +506,8 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
     setSearchKind(savedSearch.type || "");
     setSearchProject(savedSearch.project || "");
     setSearchStatus(savedSearch.status || "all");
+    setSearchDateFrom("");
+    setSearchDateTo("");
     setSavedSearchEditing(false);
     setSavedSearchError("");
     setSearchState("loading");
@@ -379,6 +518,8 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
       setSearchItems(result.items);
       setSearchCount(result.count);
       setSearchTruncated(Boolean(result.truncated));
+      setSearchNextCursor(result.nextCursor || null);
+      setSearchLoadMoreError(false);
       setSearchState("ready");
     } catch (reason) {
       if (requestSeq !== searchRequestSeqRef.current) return;
@@ -388,6 +529,41 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
       );
     }
     window.requestAnimationFrame(() => searchInputRef.current?.focus());
+  }
+
+  async function loadMoreSearchResults() {
+    if (!searchNextCursor || searchLoadingMore) return;
+    const requestSeq = searchRequestSeqRef.current;
+    setSearchLoadingMore(true);
+    setSearchLoadMoreError(false);
+    try {
+      const result = await searchProduct(searchQuery, {
+        ...searchOptions,
+        cursor: searchNextCursor,
+      });
+      if (requestSeq !== searchRequestSeqRef.current) return;
+      setSearchItems((current) => {
+        const seen = new Set(
+          current.map((item) => `${item.kind}:${item.projectId}:${item.id}`),
+        );
+        return [
+          ...current,
+          ...result.items.filter((item) => {
+            const identity = `${item.kind}:${item.projectId}:${item.id}`;
+            if (seen.has(identity)) return false;
+            seen.add(identity);
+            return true;
+          }),
+        ];
+      });
+      setSearchCount((current) => Math.max(current, result.count));
+      setSearchTruncated(Boolean(result.truncated));
+      setSearchNextCursor(result.nextCursor || null);
+    } catch {
+      if (requestSeq === searchRequestSeqRef.current) setSearchLoadMoreError(true);
+    } finally {
+      if (requestSeq === searchRequestSeqRef.current) setSearchLoadingMore(false);
+    }
   }
 
   async function saveCurrentSearch() {
@@ -413,6 +589,7 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
       setSelectedSavedSearchId(saved.id);
       setSavedSearchEditing(false);
       setSavedSearchName("");
+      publishSavedSearchesChanged({ notifyCurrentDocument: false });
     } catch (reason) {
       setSavedSearchError(
         reason instanceof Error ? reason.message : "保存检索失败。",
@@ -440,6 +617,7 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
         items.filter((item) => item.id !== selectedSavedSearchId),
       );
       setSelectedSavedSearchId("");
+      publishSavedSearchesChanged({ notifyCurrentDocument: false });
     } catch (reason) {
       setSavedSearchError(
         reason instanceof Error ? reason.message : "删除检索失败。",
@@ -463,6 +641,7 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
       setSavedSearches((items) =>
         items.map((item) => (item.id === updated.id ? updated : item)),
       );
+      publishSavedSearchesChanged({ notifyCurrentDocument: false });
     } catch (reason) {
       setSavedSearchError(
         reason instanceof Error ? reason.message : "更新检索失败。",
@@ -534,7 +713,7 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
     <ProductShellFrameContext.Provider value>
     <div className="product-shell">
       <header className="product-global-bar">
-        <Link href="/" className="product-brand" aria-label="Material Data Intelligence 首页">
+        <Link href="/console" className="product-brand" aria-label="材料智能平台控制台">
           <span className="product-brand-mark" aria-hidden="true">M</span>
           <span>材料智能平台</span>
         </Link>
@@ -544,8 +723,10 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
             : <span>材料数据与科学分析</span>}
         </div>
         <div className="product-global-actions">
+          <Link className="product-secondary-action product-console-link" href="/console">控制台</Link>
           <Link className="product-secondary-action product-task-link" href="/tasks" onMouseEnter={() => prefetchTaskSurface("/tasks")} onFocus={() => prefetchTaskSurface("/tasks")}>任务</Link>
           <Link className="product-secondary-action product-task-link" href="/notifications" onMouseEnter={() => prefetchTaskSurface("/notifications")} onFocus={() => prefetchTaskSurface("/notifications")}>通知</Link>
+          <Link className="product-secondary-action product-task-link product-trash-link" href="/trash" title="回收站">回收站</Link>
           <button ref={searchTriggerRef} type="button" className="product-icon-action" aria-label="搜索科学工作" onClick={openSearch}>⌕</button>
           {checking ? <span className="product-user-skeleton" aria-label="正在读取账户" /> : user ? (
             <div ref={accountRef} className="product-account">
@@ -557,7 +738,9 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
               </button>
               {accountOpen ? <div ref={accountMenuRef} id="product-account-menu" className="product-account-menu" role="menu" aria-label="账户菜单">
                 <div className="product-account-identity"><strong>{user.displayName}</strong><span>{user.email}</span></div>
+                <Link role="menuitem" href="/account" onClick={() => closeAccount(false)}>账户中心</Link>
                 <Link role="menuitem" href="/trash" onClick={() => closeAccount(false)}>回收站</Link>
+                {user.platformRole === "PLATFORM_ADMIN" ? <Link role="menuitem" href="/admin" onClick={() => closeAccount(false)}>平台管理</Link> : null}
                 <button type="button" role="menuitem" onClick={openModelSettings}>模型设置</button>
                 <button type="button" role="menuitem" onClick={() => void handleLogout()}>退出登录</button>
               </div> : null}
@@ -571,6 +754,14 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
         aria-busy={Boolean(pendingProjectPath)}
         data-navigation-pending={pendingProjectPath || undefined}
       >
+        <Link
+          className="product-project-mobile-identity"
+          href={`/projects/${projectId}`}
+          title={projectName || "当前项目"}
+        >
+          <span aria-hidden="true">项目</span>
+          <strong>{projectName || "当前项目"}</strong>
+        </Link>
         <Link className={projectNavClass(`/projects/${projectId}`, Boolean(pathname?.endsWith(`/projects/${projectId}`)))} aria-current={pathname?.endsWith(`/projects/${projectId}`) ? "page" : undefined} href={`/projects/${projectId}`} prefetch onMouseEnter={() => prefetchRoute(`/projects/${projectId}`, "overview")} onFocus={() => prefetchRoute(`/projects/${projectId}`, "overview")}>概览</Link>
         <Link className={projectNavClass(`/projects/${projectId}/data`, Boolean(pathname?.includes("/data")))} aria-current={pathname?.includes("/data") ? "page" : undefined} href={`/projects/${projectId}/data`} prefetch onMouseEnter={() => prefetchRoute(`/projects/${projectId}/data`, "data")} onFocus={() => prefetchRoute(`/projects/${projectId}/data`, "data")}>数据</Link>
         <Link className={projectNavClass(`/projects/${projectId}/research`, Boolean(pathname?.includes("/research")))} aria-current={pathname?.includes("/research") ? "page" : undefined} href={`/projects/${projectId}/research`} prefetch onMouseEnter={() => prefetchRoute(`/projects/${projectId}/research`, "research")} onFocus={() => prefetchRoute(`/projects/${projectId}/research`, "research")}>研究</Link>
@@ -585,7 +776,7 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
             <input ref={searchInputRef} id="product-project-search" aria-label="搜索项目、数据、研究或报告" value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="例如：硅、band_gap、研究报告" aria-describedby="product-search-help" />
             {searchQuery ? <button type="button" className="product-search-clear" aria-label="清除搜索" onClick={() => { setSearchQuery(""); searchInputRef.current?.focus(); }}>×</button> : null}
           </div>
-          <p id="product-search-help" className="product-form-hint product-search-help">搜索已授权的项目、数据、研究、结果与报告。</p>
+          <p id="product-search-help" className="product-form-hint product-search-help">搜索已授权的项目、数据、研究、科学结果与结果中的已验证发现，以及报告。</p>
           <div className="product-search-filters" role="group" aria-label="搜索筛选">
             <label htmlFor="product-search-kind">类型</label>
             <select id="product-search-kind" value={searchKind} onChange={(event) => setSearchKind(event.target.value as ProductSearchItem["kind"] | "")}>
@@ -595,7 +786,7 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
               <option value="scientific_object">科学对象</option>
               <option value="research">研究会话</option>
               <option value="report">科学报告</option>
-              <option value="result">科学结果</option>
+              <option value="result">科学结果 / 发现</option>
             </select>
             <label htmlFor="product-search-status">状态</label>
             <select id="product-search-status" value={searchStatus} onChange={(event) => setSearchStatus(event.target.value as "active" | "archived" | "trashed" | "all")}>
@@ -617,6 +808,22 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
                 </select>
               </>
             ) : null}
+            <label htmlFor="product-search-date-from">起始日期</label>
+            <input
+              id="product-search-date-from"
+              type="date"
+              value={searchDateFrom}
+              max={searchDateTo || undefined}
+              onChange={(event) => setSearchDateFrom(event.target.value)}
+            />
+            <label htmlFor="product-search-date-to">结束日期</label>
+            <input
+              id="product-search-date-to"
+              type="date"
+              value={searchDateTo}
+              min={searchDateFrom || undefined}
+              onChange={(event) => setSearchDateTo(event.target.value)}
+            />
           </div>
           <div className="product-search-saved" aria-label="已保存检索">
             <label htmlFor="product-saved-search">已保存</label>
@@ -629,6 +836,8 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
               <option value="">
                 {savedSearchState === "loading"
                   ? "正在读取…"
+                  : savedSearchState === "error"
+                    ? "读取失败"
                   : savedSearches.length
                     ? "选择检索"
                     : "暂无已保存检索"}
@@ -642,7 +851,7 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
             <button
               type="button"
               className="product-secondary-action"
-              disabled={savedSearchMutation}
+              disabled={savedSearchMutation || !hasSearchCriteria}
               onClick={() => {
                 setSavedSearchEditing(true);
                 setSavedSearchError("");
@@ -711,20 +920,50 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
             </form>
           ) : null}
           {savedSearchError ? (
-            <p className="product-form-error product-search-saved-error" role="alert">
-              {savedSearchError}
-            </p>
+            <div className="product-search-recovery product-search-saved-error">
+              <p className="product-form-error" role="alert">{savedSearchError}</p>
+              {savedSearchState === "error" ? (
+                <button
+                  type="button"
+                  className="product-secondary-action"
+                  onClick={() => setSavedSearchRetryToken((current) => current + 1)}
+                >
+                  重试读取已保存检索
+                </button>
+              ) : null}
+            </div>
           ) : null}
           <div className="product-search-results" aria-live="polite">
-            {searchState === "loading" ? <p className="product-form-hint" role="status">正在搜索…</p> : searchState === "error" ? <p className="product-form-error" role="alert">搜索暂时无法读取，请稍后重试。</p> : matchingItems.length ? <>
+            {searchState === "idle" ? <p className="product-form-hint">输入关键词，或选择项目、类型与状态后开始搜索。不会在空白条件下加载全部历史记录。</p> : searchState === "loading" ? <p className="product-form-hint" role="status">正在搜索…</p> : searchState === "error" ? <div className="product-search-recovery"><p className="product-form-error" role="alert">搜索暂时无法读取，当前条件已保留。</p><button type="button" className="product-secondary-action" onClick={() => setSearchRetryToken((current) => current + 1)}>重试搜索</button></div> : matchingItems.length ? <>
               <p className="product-search-count" role="status" aria-label={`${searchTruncated ? "至少 " : ""}找到 ${searchCount} 项，显示前 ${matchingItems.length} 项`}>{searchTruncated ? "至少 " : ""}找到 {searchCount} 项，显示前 {matchingItems.length} 项</p>
               {matchingItems.map((item) => <div className="product-search-result" key={`${item.kind}-${item.id}`}><div><strong>{item.title}</strong><span><em className={`product-search-status status-${String(item.status || "active").toLowerCase()}`}>{searchStatusLabel(item.status)}</em>{kindLabels[item.kind]}{item.subtitle && item.subtitle !== kindLabels[item.kind] ? ` · ${item.subtitle}` : ""}</span></div><div className="product-row-actions"><Link className="product-primary-action" href={item.href} onClick={closeSearch}>打开</Link>{item.kind === "project" ? <><Link className="product-secondary-action" href={`/projects/${item.projectId}/data`} onClick={closeSearch}>查看数据</Link><Link className="product-secondary-action" href={`/projects/${item.projectId}/research`} onClick={closeSearch}>进入研究</Link></> : null}</div></div>)}
+              {searchNextCursor ? (
+                <>
+                  {searchLoadMoreError ? (
+                    <p className="product-form-error" role="alert">更多结果暂时无法读取，已加载内容仍可使用。</p>
+                  ) : null}
+                  <button
+                    type="button"
+                    className="product-secondary-action product-search-load-more"
+                    disabled={searchLoadingMore}
+                    onClick={() => void loadMoreSearchResults()}
+                  >
+                    {searchLoadingMore ? "正在加载…" : searchLoadMoreError ? "重试加载更多" : "加载更多"}
+                  </button>
+                </>
+              ) : searchTruncated ? (
+                <p className="product-form-hint">已达到当前有界检索范围，可缩小筛选条件继续查找。</p>
+              ) : null}
             </> : <p className="product-form-hint">没有匹配的科学工作。</p>}
           </div>
           <footer><Link className="product-primary-action" href="/projects" onClick={closeSearch}>查看全部项目</Link><button type="button" className="product-secondary-action" onClick={closeSearch}>关闭</button></footer>
         </section>
       </div>}
-      <ModelSettingsDialog open={modelSettingsOpen} onClose={closeModelSettings} />
+      <ModelSettingsDialog
+        open={modelSettingsOpen}
+        onClose={closeModelSettings}
+        canManage={user?.platformRole === "PLATFORM_ADMIN"}
+      />
       <main
         className={`product-main ${navigation?.isPending || navigation?.intent ? "is-navigating" : ""}`}
         aria-busy={navigation?.isPending || navigation?.intent ? "true" : undefined}
@@ -747,7 +986,7 @@ function ProductAuthFrame({ children }: { children: ReactNode }) {
   const [state, setState] = useState<"checking" | "ready" | "unauthenticated">("checking");
   useEffect(() => {
     let active = true;
-    void getAuthUser().then(() => { if (active) setState("ready"); }).catch(() => { if (active) { setState("unauthenticated"); const returnTo = `${window.location.pathname}${window.location.search}`; router.replace(`/?login=1&returnTo=${encodeURIComponent(returnTo)}`); } });
+    void getAuthUser().then(() => { if (active) setState("ready"); }).catch(() => { if (active) { setState("unauthenticated"); const returnTo = currentProductReturnTo(); router.replace(`/?login=1&returnTo=${encodeURIComponent(returnTo)}`); } });
     return () => { active = false; };
   }, [router]);
   if (state === "checking") return <div className="product-loading" role="status" aria-live="polite">正在恢复登录状态…</div>;

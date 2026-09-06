@@ -1,0 +1,42 @@
+{
+  "improvement": "CO-154",
+  "date": "2026-09-06",
+  "problem": "Worker replacement admission validated OS processes but not Redis/RQ registration, and forced process stop left stale RQ registrations.",
+  "implementation": {
+    "probe": "scripts/phase14r_worker_registration.py",
+    "rotation": "scripts/phase14r_rotate_workers.ps1",
+    "registrationChecks": [
+      "exact worker name",
+      "exact single queue",
+      "idle or busy state",
+      "heartbeat age <= 900 seconds",
+      "redacted output"
+    ],
+    "cleanup": "Exact old worker registration calls register_death after verified child/runner stop; replacement rollback unregisters its registration when old pair is still active."
+  },
+  "qualification": {
+    "initialApply": "fail-closed before old stop when replacement discovery misclassified its log runner",
+    "rootCauseFixed": "replacement child matcher now excludes phase14r_log_runner.py",
+    "successfulQueue": "mdi-jobs",
+    "oldRunnerPid": 18684,
+    "oldChildPid": 26300,
+    "newRunnerPid": 29512,
+    "newChildPid": 2972,
+    "newWorkerName": "phase14r-mdi-jobs-co154c",
+    "oldPairExited": true,
+    "failedReplacementPairsExited": true,
+    "rqWorkerCountAfter": 6,
+    "rqQueueState": "mdi-jobs idle",
+    "otherQueuesUnchanged": true
+  },
+  "verification": {
+    "focusedTests": "7 registration tests + 16 rotation tests passed",
+    "powershellAst": "PASS",
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "gitDiffCheck": "PASS",
+    "liveOperations": "workerCount=6; queueDepth=0; DB idle-in-transaction=0",
+    "servicesStopped": false
+  },
+  "note": "A transient MinIO timeout occurred during one operations snapshot and remains tracked separately as CO-149 follow-up evidence."
+}

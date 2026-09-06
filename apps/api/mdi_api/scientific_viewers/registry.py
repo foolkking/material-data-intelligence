@@ -3,6 +3,15 @@ from __future__ import annotations
 from mdi_api.scientific_viewers.schemas import ScientificViewerDescriptor
 
 
+# These renderer contracts are produced by Result/Artifact pipelines and do
+# not represent persisted ScientificObject types. Keeping them explicit avoids
+# advertising object-level version/archive routes that cannot be resolved.
+RESULT_ONLY_VIEWER_TYPES = frozenset({
+    "analysis.rdf",
+    "reciprocal.brillouin_zone",
+})
+
+
 class ScientificViewerRegistry:
     def __init__(self, descriptors: list[ScientificViewerDescriptor]) -> None:
         self._descriptors = {item.object_type: item for item in descriptors}
@@ -55,14 +64,12 @@ def build_scientific_viewer_registry() -> ScientificViewerRegistry:
         _descriptor("trajectory.atomic", "trajectory", interactions=["frame_navigation", "playback", "inspect_time"], selections=["TRAJECTORY_FRAME", "TRAJECTORY_ATOM"], maximum_payload_bytes=32 * mib),
         _descriptor("diffraction.xrd.experimental", "xrd", interactions=["zoom", "inspect_series", "inspect_peaks"], selections=["XRD_PEAK"], maximum_payload_bytes=8 * mib),
         _descriptor("diffraction.xrd.theoretical", "xrd", interactions=["zoom", "inspect_series", "inspect_peaks"], selections=["XRD_PEAK"], maximum_payload_bytes=8 * mib),
-        _descriptor("analysis.rdf", "rdf", interactions=["zoom", "inspect_curve", "inspect_validated_peaks"], selections=["RDF_RANGE", "RDF_PEAK"], maximum_payload_bytes=8 * mib),
         _descriptor("electronic.band_structure", "band-structure", interactions=["zoom", "inspect_k_path", "inspect_energy"], selections=["BAND_POINT", "BAND_SEGMENT"], maximum_payload_bytes=16 * mib),
         _descriptor("electronic.dos", "density-of-states", interactions=["zoom", "inspect_series", "inspect_energy"], selections=["DOS_SERIES", "ENERGY_INTERVAL"], maximum_payload_bytes=16 * mib),
         _descriptor("phonon.band_structure", "phonon-band", interactions=["zoom", "inspect_q_path"], selections=["PHONON_Q_POINT", "PHONON_BRANCH"], maximum_payload_bytes=16 * mib),
         _descriptor("phonon.dos", "phonon-dos", interactions=["zoom", "inspect_series"], selections=["PHONON_BRANCH", "ENERGY_INTERVAL"], maximum_payload_bytes=16 * mib),
-        _descriptor("reciprocal.brillouin_zone", "brillouin-zone", interactions=["rotate", "zoom", "inspect_path"], selections=["RECIPROCAL_POINT", "PATH_SEGMENT"], maximum_payload_bytes=8 * mib),
         _descriptor("volumetric.charge_density", "volumetric", interactions=["isosurface", "slice", "inspect_field"], selections=["VOLUMETRIC_REGION"], maximum_payload_bytes=16 * mib),
     ])
 
 
-__all__ = ["ScientificViewerRegistry", "build_scientific_viewer_registry"]
+__all__ = ["RESULT_ONLY_VIEWER_TYPES", "ScientificViewerRegistry", "build_scientific_viewer_registry"]

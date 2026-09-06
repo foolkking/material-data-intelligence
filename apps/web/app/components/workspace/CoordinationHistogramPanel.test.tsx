@@ -11,6 +11,7 @@ describe("CoordinationHistogramPanel", () => {
     expect(screen.getByRole("heading", { name: "配位数分布" })).toBeInTheDocument();
     expect(screen.getByText("2.1 Å")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "全部位点配位数分布，共 3 个位点" })).toBeInTheDocument();
+    expect(screen.getByTestId("coordination-histogram-accessible-summary")).toHaveTextContent("配位数 1，2 个位点，占比 66.67%");
     const table = screen.getByRole("table", { name: "配位数分布数值表" });
     expect(within(table).getByRole("row", { name: "1 2 66.67%" })).toBeInTheDocument();
 

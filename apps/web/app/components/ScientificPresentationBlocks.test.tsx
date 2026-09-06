@@ -73,19 +73,35 @@ describe("ScientificPresentationBlocks evidence inspector", () => {
     expect(screen.getByText("当前声子态密度 Artifact 不包含特征向量，因此不提供模式动画依据。")).toBeInTheDocument();
   });
 
-  it("assigns unique accessible heading ids to repeated presentation instances", () => {
+  it("assigns unique accessible ids and relationships to repeated presentation instances", async () => {
+    const user = userEvent.setup();
     const { container } = render(
       <>
         <ScientificPresentationBlocks presentation={presentation} projectId="project-1" />
         <ScientificPresentationBlocks presentation={presentation} projectId="project-1" />
       </>,
     );
+    for (const trigger of container.querySelectorAll<HTMLButtonElement>("button[aria-controls]")) {
+      await user.click(trigger);
+    }
     const sections = [...container.querySelectorAll<HTMLElement>("section.scientific-presentation")];
     const ids = sections.map((section) => section.getAttribute("aria-labelledby"));
     expect(ids).toHaveLength(2);
     expect(ids[0]).toBeTruthy();
     expect(ids[0]).not.toBe(ids[1]);
     expect(ids.every((id) => id && document.getElementById(id)?.tagName === "H3")).toBe(true);
+    const allIds = [...container.querySelectorAll<HTMLElement>("[id]")].map((node) => node.id);
+    expect(new Set(allIds).size).toBe(allIds.length);
+
+    const evidenceItems = [...container.querySelectorAll<HTMLElement>(".scientific-presentation-evidence-item")];
+    expect(evidenceItems).toHaveLength(2);
+    expect(evidenceItems[0].id).not.toBe(evidenceItems[1].id);
+    const inspectorIds = evidenceItems.map((item) =>
+      item.querySelector<HTMLButtonElement>("button[aria-controls]")?.getAttribute("aria-controls"),
+    );
+    expect(inspectorIds.every(Boolean)).toBe(true);
+    expect(new Set(inspectorIds).size).toBe(inspectorIds.length);
+    inspectorIds.forEach((id) => expect(document.getElementById(id!)).not.toBeNull());
   });
 
   it("opens a bounded exact source chain without exposing raw infrastructure details", async () => {
@@ -128,9 +144,92 @@ describe("ScientificPresentationBlocks evidence inspector", () => {
     expect(await screen.findByRole("region", { name: "证据链 evidence-1" })).toHaveTextContent("version-2");
     expect(screen.getByRole("region", { name: "证据链 evidence-1" })).toHaveTextContent("data.materials_explorer");
     expect(screen.getByRole("region", { name: "证据链 evidence-1" })).toHaveTextContent("band_gap · 2.5 eV");
+    const evidenceTrigger = screen.getByRole("button", { name: "收起证据链" });
+    expect(evidenceTrigger).toHaveAttribute("aria-controls", "scientific-evidence-inspector-turn-1-evidence-1");
+    expect(document.activeElement).toBe(screen.getByRole("region", { name: "证据链 evidence-1" }));
     expect(screen.getByRole("region", { name: "证据链 evidence-1" })).not.toHaveTextContent("redis://");
     expect(screen.getByRole("link", { name: "打开权威 Artifact" })).toHaveAttribute("href", "/api/planner/jobs/job-1/artifacts/artifact-1/content");
+    await user.click(evidenceTrigger);
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "检查证据链" }));
     await waitFor(() => expect(mocks.getPlannerInterpretationEvidence).toHaveBeenCalledWith("interpretation-1"));
+  });
+
+  it("lets a finding open its exact linked evidence chain directly", async () => {
+    mocks.getPlannerInterpretationEvidence.mockResolvedValue({
+      interpretationId: "interpretation-finding",
+      bundleId: "bundle-finding",
+      jobId: "job-finding",
+      planId: "plan-finding",
+      evidenceItems: [{
+        schemaVersion: "1.0",
+        evidenceItemId: "evidence-finding",
+        semanticRole: "coordination_number",
+        subjectId: "site-14",
+        displayValue: "4",
+        unit: null,
+        sourceArtifactId: "artifact-finding",
+        sourceToolId: "core.structure",
+        fieldLocator: { fieldId: "coordination_number", entityId: "site-14" },
+        warnings: [],
+        limitations: [],
+      }],
+      sourceArtifactIds: ["artifact-finding"],
+      sourceObjectRefs: [{ objectId: "object-finding", versionId: "version-1", objectType: "structure.crystal" }],
+      artifacts: [{ artifactId: "artifact-finding", jobId: "job-finding" }],
+      toolCalls: [{ id: "call-finding", toolId: "core.structure", status: "completed" }],
+      bundleWarnings: [],
+      bundleLimitations: [],
+    });
+    const user = userEvent.setup();
+    render(<ScientificPresentationBlocks
+      projectId="project-finding"
+      presentation={{
+        schemaVersion: "1.0",
+        exactSourceRefs: [{ objectId: "object-finding", versionId: "version-1" }],
+        blocks: [
+          {
+            id: "finding-1",
+            type: "finding",
+            title: "配位发现",
+            text: "site-14 has four nearest neighbours.",
+            confidence: "DIRECT",
+            source: {
+              resultId: "result-finding",
+              interpretationId: "interpretation-finding",
+              evidenceId: "evidence-finding",
+              objectId: "object-finding",
+              versionId: "version-1",
+            },
+            evidenceIds: ["evidence-finding"],
+          },
+          {
+            id: "evidence-finding",
+            type: "evidence_reference",
+            title: "证据",
+            label: "coordination_number = 4",
+            source: {
+              resultId: "result-finding",
+              interpretationId: "interpretation-finding",
+              evidenceId: "evidence-finding",
+              artifactId: "artifact-finding",
+              jobId: "job-finding",
+              toolCallId: "call-finding",
+              objectId: "object-finding",
+              versionId: "version-1",
+            },
+          },
+        ],
+      }}
+    />);
+
+    const link = screen.getByRole("link", { name: "查看证据链" });
+    const evidenceTarget = document.querySelector<HTMLElement>(".scientific-presentation-evidence-item");
+    expect(evidenceTarget).not.toBeNull();
+    expect(link).toHaveAttribute("href", `#${evidenceTarget!.id}`);
+    expect(link).toHaveAttribute("aria-controls", evidenceTarget!.id);
+    await user.click(link);
+    expect(await screen.findByRole("region", { name: "证据链 evidence-finding" })).toHaveTextContent("version-1");
+    expect(mocks.getPlannerInterpretationEvidence).toHaveBeenCalledWith("interpretation-finding");
   });
 
   it("opens one persisted Figure or Table through the existing scientific renderer without leaving Research", async () => {
@@ -170,7 +269,30 @@ describe("ScientificPresentationBlocks evidence inspector", () => {
       "href",
       "/api/planner/jobs/job-1/artifacts/artifact-plot/content",
     );
+    expect(screen.getByRole("link", { name: "下载原始 Artifact" })).toHaveAttribute(
+      "download",
+      "figure-1.figure.json",
+    );
     await user.click(screen.getByRole("button", { name: "关闭预览" }));
     expect(screen.queryByTestId("inline-scientific-result-viewer")).not.toBeInTheDocument();
+  });
+
+  it("surfaces a bounded status when an unknown runtime block is rejected", () => {
+    render(<ScientificPresentationBlocks
+      projectId="project-1"
+      instanceId="turn-unsafe"
+      presentation={{
+        schemaVersion: "1.0",
+        exactSourceRefs: [],
+        blocks: [{
+          id: "unknown",
+          type: "remote_component",
+          label: "<script>blocked</script>",
+        } as never],
+      }}
+    />);
+
+    expect(screen.getByRole("status")).toHaveTextContent("1 个呈现块未通过安全校验");
+    expect(screen.queryByText("<script>blocked</script>")).not.toBeInTheDocument();
   });
 });

@@ -100,3 +100,26 @@ attributable, and the unsupported provider conclusion that both methods were
 Report explicitly states that it will not add unsourced algorithm folklore.
 Opening the Report through the Research link produced no console errors or
 warnings.
+
+## Report finding provenance disclosure remediation (2026-09-04)
+
+The authenticated Report reader now gives every main finding a bounded
+`查看科学依据` disclosure. The collapsed report body remains readable, while
+the disclosure exposes the exact `ScientificResult` snapshot, exact source
+object/version, Result fact refs, evidence refs, and any finding refs supplied
+by the immutable report snapshot. These are read-only references; opening the
+disclosure cannot create a Job, ToolCall, Artifact, or ScientificResult.
+
+This closes the R2 product gap where report findings were readable but their
+per-finding provenance was only available indirectly through the generic
+evidence section. The implementation reuses the existing report snapshot and
+does not add a report-side scientific fact store.
+
+Verification:
+
+```text
+ScientificReportRoute focused = 25 passed
+Report / presentation focused suite = 62 passed
+exact Result/source/fact/evidence refs rendered in the disclosure = PASS
+mobile layout remains bounded by existing report responsive rules = PASS
+```

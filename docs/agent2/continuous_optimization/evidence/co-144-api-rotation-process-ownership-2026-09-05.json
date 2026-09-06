@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "mdi.continuous-optimization-evidence/1.0",
+  "improvementId": "CO-144",
+  "completedAt": "2026-09-05T21:47:33+08:00",
+  "change": {
+    "startScript": "scripts/phase14r_start_api.ps1",
+    "rotationScript": "scripts/phase14r_rotate_api.ps1",
+    "defaultMode": "dry-run",
+    "ownership": "repository token, exact port, PID, parent PID, creation file time, executable and command digest",
+    "stopOrder": "uvicorn child then log runner",
+    "healthGate": "shadow direct runtime, new canonical direct runtime and frontend proxy runtime fingerprints"
+  },
+  "failureEvidence": {
+    "firstShadowChildPid": 15632,
+    "firstShadowRunnerPid": 4872,
+    "failure": "API_INSTANCE_MANIFEST_MISMATCH",
+    "rootCause": "ambiguous PowerShell comma/equality parsing in the aggregate check array",
+    "repair": "named and fully parenthesized ordered checks with bounded failed-field reporting",
+    "canonicalStoppedBeforeRepair": false,
+    "failedShadowFullyReclaimed": true
+  },
+  "liveRotation": {
+    "repositoryHead": "9864e79c433536cc90b24c6a4c68c5bebd940daa",
+    "oldCanonicalChildPid": 20748,
+    "oldCanonicalRunnerPid": 16260,
+    "newCanonicalChildPid": 18468,
+    "newCanonicalRunnerPid": 19620,
+    "oldCanonicalAliveAfterCutover": false,
+    "oldRunnerAliveAfterCutover": false,
+    "canonicalListenerCount": 1,
+    "shadowListenerCount": 0,
+    "shadowManifestPresent": false,
+    "frontendPidBeforeAfter": 29664,
+    "postgresPidBeforeAfter": 11720,
+    "redisPidBeforeAfter": 7284,
+    "minioPidBeforeAfter": 12552,
+    "workerProcessPairsUnchanged": 6,
+    "runtimeFingerprint": "ee8baa498d3aef0aacbdbbafeb37453fde9c3c430469500009b0a42906e4a619",
+    "frontendProxyFingerprintMatched": true
+  },
+  "verification": {
+    "focusedTestsPassed": 20,
+    "powershellAst": "PASS",
+    "diffCheck": "PASS",
+    "operationsAlerts": 0,
+    "databaseIdleInTransaction": 0,
+    "poolCheckedOut": 0,
+    "queueDepth": 0,
+    "healthyWorkers": 6
+  }
+}

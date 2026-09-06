@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
@@ -7,6 +8,12 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("../lib/planner-api", () => ({
   getPlannerArtifactContent: mocks.getPlannerArtifactContent,
+}));
+
+vi.mock("next/link", () => ({
+  default: ({ children, href, prefetch: _prefetch, ...props }: { children: React.ReactNode; href: string; prefetch?: boolean | null }) => (
+    <a href={href} {...props}>{children}</a>
+  ),
 }));
 
 vi.mock("./workspace/WorkspaceArtifactGallery", () => ({
@@ -29,6 +36,8 @@ it("keeps an in-flight artifact load across equivalent polling prop identities",
     jobId: "job_1",
     type: "table_json",
     version: "1",
+    name: "主结果表",
+    toolCallId: "tool_call_1",
     sha256: "a".repeat(64),
     sizeBytes: 28,
     contentType: "application/json",
@@ -38,6 +47,13 @@ it("keeps an in-flight artifact load across equivalent polling prop identities",
   );
 
   expect(screen.getByRole("status")).toHaveTextContent("正在加载科学结果");
+  expect(screen.getByRole("status")).toHaveTextContent("Artifact metadata ready");
+  expect(screen.getByText("artifact_1")).toBeInTheDocument();
+  expect(screen.getByText("tool_call_1")).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "返回数据源" })).toHaveAttribute(
+    "href",
+    "/projects/project_1/data?dataset=dataset_1",
+  );
   rerender(
     <ScientificResultViewer projectId="project_1" datasetId="dataset_1" jobId="job_1" selected={artifact()} artifacts={[artifact()]} />,
   );
@@ -81,6 +97,94 @@ it("keeps the selected result readable when an optional companion fails", async 
   render(<ScientificResultViewer projectId="project_1" datasetId="dataset_1" jobId="job_table" selected={selected} artifacts={[selected, companion]} />);
   await waitFor(() => expect(screen.getByTestId("loaded-scientific-renderer")).toHaveTextContent("Si"));
   expect(screen.queryByText("此结果暂时无法打开")).not.toBeInTheDocument();
+  expect(screen.getByRole("status")).toHaveTextContent("部分 Artifact 暂时不可用");
+  expect(screen.getByRole("status")).toHaveTextContent("辅助表");
+  expect(screen.getByRole("status")).toHaveTextContent("ARTIFACT_CONTENT_INVALID");
+});
+
+it("distinguishes an unavailable exact Artifact from a transient Viewer failure", async () => {
+  const user = userEvent.setup();
+  const missing = Object.assign(new Error("The exact Artifact payload is currently unavailable."), {
+    status: 404,
+    details: {
+      detail: {
+        code: "ARTIFACT_CONTENT_NOT_FOUND",
+        message: "The exact Artifact payload is currently unavailable.",
+      },
+    },
+  });
+  mocks.getPlannerArtifactContent
+    .mockRejectedValueOnce(missing)
+    .mockResolvedValueOnce(new TextEncoder().encode(JSON.stringify({ rows: [{ formula: "Si" }] })).buffer);
+  const selected = {
+    artifactId: "artifact_missing",
+    jobId: "job_missing",
+    type: "table_json",
+    name: "missing table",
+    contentType: "application/json",
+    sizeBytes: 24,
+    sha256: "b".repeat(64),
+  };
+
+  render(<ScientificResultViewer projectId="project_1" datasetId="dataset_1" jobId="job_missing" selected={selected} artifacts={[selected]} />);
+
+  expect(
+    await screen.findByRole("heading", { name: "原始结果内容当前不可用" }),
+  ).toBeInTheDocument();
+  expect(screen.getByRole("status")).toHaveTextContent("原始结果内容当前不可用");
+  expect(screen.getByText("artifact_missing")).toBeInTheDocument();
+  expect(screen.getByText("b".repeat(64))).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "返回数据源" })).toHaveAttribute(
+    "href",
+    "/projects/project_1/data?dataset=dataset_1",
+  );
+  expect(screen.queryByText("科学结果加载失败")).not.toBeInTheDocument();
+
+  await user.click(screen.getByRole("button", { name: "重新检查存储" }));
+  await waitFor(() => expect(screen.getByTestId("loaded-scientific-renderer")).toHaveTextContent("Si"));
+  expect(mocks.getPlannerArtifactContent).toHaveBeenCalledTimes(2);
+});
+
+it.each([
+  {
+    code: "ARTIFACT_CONTENT_GONE",
+    status: 410,
+    heading: "原始 Artifact 已永久不可用",
+    detail: "不可通过重试恢复",
+  },
+  {
+    code: "ARTIFACT_CONTENT_TOO_LARGE",
+    status: 413,
+    heading: "此 Artifact 超出安全浏览范围",
+    detail: "系统未读取此大型 payload",
+  },
+])("shows a bounded non-retrying state for $status Artifact content", async ({
+  code,
+  status,
+  heading,
+  detail,
+}) => {
+  mocks.getPlannerArtifactContent.mockRejectedValueOnce(Object.assign(new Error(code), {
+    status,
+    details: { detail: { code } },
+  }));
+  const selected = {
+    artifactId: `artifact_${status}`,
+    jobId: `job_${status}`,
+    type: "table_json",
+    name: "bounded table",
+    contentType: "application/json",
+    sizeBytes: status === 413 ? 67_108_865 : 24,
+    sha256: "c".repeat(64),
+  };
+
+  render(<ScientificResultViewer projectId="project_1" datasetId="dataset_1" jobId={`job_${status}`} selected={selected} artifacts={[selected]} />);
+
+  expect(await screen.findByRole("heading", { name: heading })).toBeInTheDocument();
+  expect(screen.getByRole("status")).toHaveTextContent(detail);
+  expect(screen.queryByRole("button", { name: /重新/u })).not.toBeInTheDocument();
+  expect(screen.getByText(`artifact_${status}`)).toBeInTheDocument();
+  expect(screen.getByText("c".repeat(64))).toBeInTheDocument();
 });
 
 it("bounds composite phonon loads to the selected result bundle", () => {

@@ -1,0 +1,22 @@
+{
+  "improvement": "CO-085",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "problem": "Report Figure/Table preview failures surfaced unstable raw errors instead of typed user-safe availability states.",
+  "changes": [
+    "Mapped 401, 403, 404 and 410 responses to stable safe messages.",
+    "Mapped invalid JSON and bounded content failures to typed content states.",
+    "Preserved safe uppercase domain error codes without exposing infrastructure details.",
+    "Kept the authorized full Artifact path and retry behavior unchanged."
+  ],
+  "files": [
+    "apps/web/app/components/ScientificReportArtifactPreview.tsx",
+    "apps/web/app/components/ScientificReportArtifactPreview.test.tsx"
+  ],
+  "verification": {
+    "tests": "12 passed",
+    "typecheck": "PASS",
+    "scientific_authority_changed": false,
+    "recompute_triggered": false
+  }
+}

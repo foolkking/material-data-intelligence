@@ -4,6 +4,7 @@ import type { Artifact } from "../../lib/planner-api";
 import {
   WORKSPACE_ARTIFACT_TYPES,
   WORKSPACE_RENDERER_REGISTRY,
+  indexArtifactsByIdentity,
   resolveArtifactRenderer,
   resolveLoadedArtifactRenderer,
 } from "./workspace-renderer-registry";
@@ -47,6 +48,19 @@ describe("Phase 10M-4 typed renderer registry", () => {
     expect(heavy.length).toBeGreaterThan(0);
     expect(heavy.every((item) => item.payloadMode === "BUNDLE" || item.artifactType === "structure_json")).toBe(true);
     expect(WORKSPACE_RENDERER_REGISTRY.every((item) => ["TABLE", "TEXT_SUMMARY", "METADATA"].includes(item.accessibilityFallback))).toBe(true);
+  });
+
+  it("indexes large artifact bundles deterministically for O(1) renderer selection", () => {
+    const artifacts = Array.from({ length: 500 }, (_, index) => artifact({
+      id: `artifact_${index}`,
+      artifactId: `artifact_${index}`,
+      name: `artifact-${index}.json`,
+    }));
+    const index = indexArtifactsByIdentity(artifacts);
+    expect(index.size).toBe(500);
+    expect(index.get("artifact_0")?.name).toBe("artifact-0.json");
+    expect(index.get("artifact_499")?.name).toBe("artifact-499.json");
+    expect([...index.keys()].slice(0, 3)).toEqual(["artifact_0", "artifact_1", "artifact_2"]);
   });
 });
 

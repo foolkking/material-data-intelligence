@@ -1,0 +1,36 @@
+{
+  "improvement": "CO-015",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "problem": "Research and Report Figure/Table presentation exposed only a trusted open link, while the existing Workbench had a separate validated download path.",
+  "change": {
+    "component": "ArtifactDownloadLink",
+    "trusted_route": "/api/planner/jobs/{jobId}/artifacts/{artifactId}/content",
+    "behavior": "same-origin native download with bounded route validation",
+    "surfaces": [
+      "ScientificPresentationBlocks figure/table",
+      "ScientificPresentationBlocks evidence artifact",
+      "ScientificReportRoute figure/table"
+    ]
+  },
+  "zero_recompute": {
+    "Job_delta": 0,
+    "ToolCall_delta": 0,
+    "Artifact_delta": 0,
+    "ScientificResult_delta": 0,
+    "basis": "native anchor download; no planner or scientific execution call"
+  },
+  "verification": {
+    "frontend_tests": "ArtifactDownloadLink + ScientificPresentationBlocks + ScientificReportRoute: 32 passed",
+    "typecheck": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "files": [
+    "apps/web/app/components/ArtifactDownloadLink.tsx",
+    "apps/web/app/components/ArtifactDownloadLink.test.tsx",
+    "apps/web/app/components/ScientificPresentationBlocks.tsx",
+    "apps/web/app/components/ScientificPresentationBlocks.test.tsx",
+    "apps/web/app/components/ScientificReportRoute.tsx",
+    "apps/web/app/components/ScientificReportRoute.test.tsx"
+  ]
+}

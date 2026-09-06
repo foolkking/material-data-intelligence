@@ -1,0 +1,35 @@
+{
+  "improvement": "CO-092",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "problem": "Opening the Evidence inspector did not move keyboard focus to the newly revealed provenance content, and the trigger did not identify the controlled region.",
+  "root_cause": "EvidenceReference only toggled local open state and rendered an unlabeled region without focus lifecycle handling.",
+  "change": {
+    "file": "apps/web/app/components/ScientificPresentationBlocks.tsx",
+    "behavior": "The evidence trigger now has aria-controls; the inspector is focusable and focus moves into it on open, then returns to the trigger on close. Auto-open from a Finding uses the same lifecycle."
+  },
+  "verification": {
+    "component_test": {
+      "command": "npm run test -- --run app/components/ScientificPresentationBlocks.test.tsx",
+      "result": "7 passed"
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "result": "passed"
+    },
+    "diff_check": {
+      "command": "git diff --check -- apps/web/app/components/ScientificPresentationBlocks.tsx apps/web/app/components/ScientificPresentationBlocks.test.tsx",
+      "result": "passed; only normal line-ending warnings"
+    },
+    "assertions": [
+      "open inspector receives document focus",
+      "aria-controls points to the inspector id",
+      "closing inspector restores focus to the trigger",
+      "existing exact evidence fetch contract remains unchanged"
+    ]
+  },
+  "services_or_data_mutated": false,
+  "new_findings": [
+    "CO-029 remains the highest-priority open authorization campaign."
+  ]
+}

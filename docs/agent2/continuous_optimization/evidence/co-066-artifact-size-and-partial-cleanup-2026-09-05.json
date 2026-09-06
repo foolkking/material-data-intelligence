@@ -1,0 +1,30 @@
+{
+  "improvementId": "CO-066",
+  "improvementNumber": 130,
+  "date": "2026-09-05",
+  "problem": "Artifact storage had no backend-wide write ceiling and local interrupted writes could leave a partial target.",
+  "change": {
+    "maximumArtifactBytes": 268435456,
+    "localWrite": "same-directory temporary .part followed by atomic replace",
+    "localFailureCleanup": true,
+    "s3MinioPreflight": "reject oversize before client put_object",
+    "uploadSessionLimitsChanged": false,
+    "scientificAuthorityChanged": false
+  },
+  "verification": {
+    "focusedArtifacts": {
+      "passed": 4
+    },
+    "productAndInputTransport": {
+      "passed": 18
+    },
+    "totalPassed": 22,
+    "oversizeCreatesTarget": false,
+    "oversizeCallsS3Client": false,
+    "interruptedLocalWriteLeavesPart": false,
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "remainingRisk": "S3CompatibleArtifactStorage uses a single put_object operation; no multipart upload lifecycle was introduced or qualified."
+}

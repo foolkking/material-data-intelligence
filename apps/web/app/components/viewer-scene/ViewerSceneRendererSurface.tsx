@@ -84,6 +84,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const [cameraPreset, setCameraPreset] = useState<CameraPreset>("default");
   const [clipState, setClipState] = useState<ViewerClipState>(() => mapping.ok ? initialViewerClipState(mapping.scene) : Object.freeze({ enabled:false, planes:Object.freeze(VIEWER_CLIP_AXES.map((axis)=>Object.freeze({axis,position:0,enabled:false}))) }));
   const [snapshot, setSnapshot] = useState<ViewerRendererSnapshot | null>(null);
+  const [rendererError, setRendererError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [selection, setSelection] = useState(initialViewerSelection());
   const [selectedBondId, setSelectedBondId] = useState<string | null>(null);
@@ -109,6 +110,13 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   const parsedRepeatDraft = useMemo(() => repeatDraft.map((value) => value === "" ? Number.NaN : Number(value)) as unknown as SupercellRepeat, [repeatDraft]);
   const supercellEstimate = useMemo(() => mapping.ok ? estimatePeriodicSupercell(mapping.scene, parsedRepeatDraft) : Object.freeze({ expansion: DEFAULT_REPEAT, totalCells:0, displayedAtoms:0, displayedBonds:0, mode:"refused" as const, warnings:Object.freeze([]), error:"VIEWER_SUPERCELL_SCENE_UNSUPPORTED" }), [mapping, parsedRepeatDraft]);
   const performanceDecision = useMemo(() => renderScene ? classifyViewerPerformance(renderScene) : null, [renderScene]);
+  const truncationWarning = useMemo(
+    () => mapping.ok
+      ? mapping.scene.warnings.find((warning) => warning.includes("当前显示前"))
+        ?? mapping.scene.warnings.find((warning) => warning.startsWith("VIEWER_SCENE_SITES_TRUNCATED"))
+      : undefined,
+    [mapping],
+  );
   const clipBounds = useMemo(() => renderScene ? sceneClipBounds(renderScene) : Object.freeze({x:[-1,1] as const,y:[-1,1] as const,z:[-1,1] as const}), [renderScene]);
   const latticeLengths = useMemo(() => (mapping.ok ? mapping.scene.lattice.matrix.map((vector)=>Math.hypot(...vector)) : [0,0,0]) as [number,number,number], [mapping]);
   const onSitePick = useCallback((site: PeriodicSiteRef | null) => {
@@ -154,6 +162,7 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
   useEffect(() => {
     setState(mapping.ok ? "ready" : "validation_failed");
     setSnapshot(null);
+    setRendererError(null);
     if (!mapping.ok || !renderScene || !performanceDecision) return;
     if (performanceDecision.tier === "refused") {
       setState("scene_over_renderer_cap");
@@ -203,7 +212,11 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       setState("rendered");
       setAnnouncement(`结构场景已渲染，共 ${renderScene.atoms.length} 个显示位点。`);
     }).catch((error: unknown) => {
-      if (!cancelled) setState(error instanceof ViewerRendererError && error.code === "VIEWER_RENDERER_CHUNK_LOAD_FAILED" ? "chunk_load_failed" : "renderer_failed");
+      if (!cancelled) {
+        const code = error instanceof ViewerRendererError ? error.code : "VIEWER_RENDERER_INITIALIZATION_FAILED";
+        setRendererError(code);
+        setState(code === "VIEWER_RENDERER_CHUNK_LOAD_FAILED" ? "chunk_load_failed" : "renderer_failed");
+      }
     });
     return () => {
       cancelled = true;
@@ -422,14 +435,14 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       {!mapping.ok ? (
         <div className="viewer-renderer-fallback" data-testid="viewer-scene-renderer-invalid">
           <strong>场景校验失败</strong>
-          <p>当前结构数据无法进入三维查看器，源数据仍然保留。</p>
+          <p role="status" aria-live="polite">当前结构数据无法进入三维查看器，源数据仍然保留；可继续查看下方有界摘要或下载已校验场景。</p>
           <details><summary>技术详情</summary><code>{mapping.validation.errors.join(", ")}</code></details>
         </div>
       ) : null}
       {mapping.ok && state === "unsupported" ? (
         <div className="viewer-renderer-fallback" data-testid="viewer-scene-renderer-unavailable">
           <strong>交互式渲染器不可用</strong>
-          <p>当前浏览器没有可用的图形环境；结构数据和来源记录仍然保留。</p>
+          <p role="status" aria-live="polite">当前浏览器没有可用的图形环境；结构数据和来源记录仍然保留，可继续查看有界摘要或下载场景。</p>
         </div>
       ) : null}
       {mapping.ok && state === "scene_over_renderer_cap" ? (
@@ -442,8 +455,9 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
       {mapping.ok && (state === "renderer_failed" || state === "chunk_load_failed" || state === "context_lost") ? (
         <div className="viewer-renderer-fallback" data-testid="viewer-scene-renderer-fallback">
           <strong>{state === "context_lost" ? "图形上下文已中断" : state === "chunk_load_failed" ? "渲染模块不可用" : "渲染器初始化失败"}</strong>
-          <p>已校验的结构数据仍然保留，未执行任何文件内容。</p>
-          {state === "chunk_load_failed" || state === "context_lost" ? <button type="button" className="compact secondary" onClick={retry}>重试渲染</button> : null}
+          <p role="status" aria-live="polite">已校验的结构数据仍然保留，未执行任何文件内容；可重试本地渲染器或查看下方摘要。</p>
+          {state === "chunk_load_failed" || state === "context_lost" || state === "renderer_failed" ? <button type="button" className="compact secondary" onClick={retry}>重试渲染</button> : null}
+          {rendererError ? <details><summary>技术详情</summary><code>{rendererError}</code></details> : null}
         </div>
       ) : null}
       {mapping.ok && state === "initializing_renderer" ? <p className="viewer-renderer-loading">正在加载本地渲染器……</p> : null}
@@ -474,6 +488,11 @@ export function ViewerSceneRendererSurface({ payload, capabilityOverride, engine
           <div><dt>警告</dt><dd>{mapping.scene.warnings.length ? mapping.scene.warnings.join(", ") : "无"}</dd></div>
         </dl>
         {performanceDecision?.warning ? <p className="notice" role="status" data-testid="viewer-scene-renderer-performance-warning">当前结构较大，查看器已降低像素密度以保持交互；所有通过校验的原子与键合仍会显示。</p> : null}
+        {truncationWarning ? (
+          <p className="notice viewer-scene-truncation-warning" role="status" data-testid="viewer-scene-renderer-truncation-warning">
+            {truncationWarning.includes("当前显示前") ? truncationWarning : "当前结构已按查看器安全上限截断；完整结构仍保留在源数据中。"}
+          </p>
+        ) : null}
         <ViewerSupercellControls draft={repeatDraft} applied={repeat} estimate={supercellError ? Object.freeze({...supercellEstimate,error:supercellError,mode:"refused" as const}) : supercellEstimate} onDraft={(axis,value)=>{const next=[...repeatDraft];next[axis]=value;setRepeatDraft(next);setSupercellError(null);}} onApply={applySupercell} onReset={resetSupercell} onPreset={(value)=>{setRepeatDraft(value.map(String));setSupercellError(null);}} onDownload={downloadSupercellState} />
         <ViewerViewControls clip={clipState} bounds={clipBounds} display={{unitCell:showCell,supercellBoundary:showSupercellBoundary,latticeAxes:showLatticeAxes}} preset={cameraPreset} latticeLengths={latticeLengths} onClipEnabled={(enabled)=>{const next=Object.freeze({...clipState,enabled});updateClipState(next);setAnnouncement(enabled?"已启用裁剪。":"已停用裁剪。");}} onPlaneEnabled={(axis,enabled)=>updateClipPlane(axis,{enabled})} onPosition={(axis,position)=>updateClipPlane(axis,{position})} onResetClip={()=>{const next=renderScene?initialViewerClipState(renderScene):clipState;updateClipState(next);setAnnouncement("已重置裁剪。");}} onDisplay={applyViewDisplay} onPreset={applyCameraPreset} onDownload={downloadViewState} />
         <details className="viewer-progressive-details viewer-advanced-export"><summary>高级导出</summary><ViewerExportPanel request={exportRequest} busy={exportBusy||state!=="rendered"} status={exportStatus} bundleReady={Boolean(exportBundle)} onChange={(request)=>{setExportRequest(request);setExportBundle(null);setExportStatus("导出设置已变化，请重新准备导出。");}} onExport={()=>void prepareExport()} onDownload={downloadPrepared}/></details>

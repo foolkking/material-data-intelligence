@@ -12,6 +12,7 @@ import {
   deleteEmptyProject,
   getDatasetDependencyImpact,
   getDatasetSourceResources,
+  getCachedProjectHistory,
   getProjectDependencyImpact,
   getProjectExportManifest,
   getProjectHistory,
@@ -40,6 +41,10 @@ import {
 } from "./ObjectManagement";
 import type { WorkspaceSelectionContext } from "../lib/workspace-api";
 import {
+  decodeWorkspaceSelectionUrl,
+  encodeWorkspaceSelectionUrl,
+} from "./workspace/workspace-selection-contract";
+import {
   researchRunStatusLabel,
   researchRunTitle,
 } from "../lib/research-display";
@@ -52,11 +57,21 @@ import {
   type ScientificObjectSummary,
 } from "../lib/scientific-viewer-api";
 import { RouteLoading } from "./RouteLoading";
+import { projectRoleAllows } from "../lib/project-permissions";
 
 type LoadState = "loading" | "ready" | "error";
 
-function canManageProject(role?: string | null) {
-  return role === "owner" || role === "admin" || role === "researcher";
+function DependencyImpactEntry({
+  item,
+}: {
+  item: { label: string; count: number; href?: string };
+}) {
+  return (
+    <>
+      {item.href ? <Link href={item.href}>{item.label}</Link> : item.label}：
+      {item.count}
+    </>
+  );
 }
 
 function projectHistoryRunHref(
@@ -98,11 +113,21 @@ function useProjects() {
 }
 
 function useProject(projectId: string) {
-  const [history, setHistory] = useState<ProjectHistory | null>(null);
-  const [state, setState] = useState<LoadState>("loading");
+  const [history, setHistory] = useState<ProjectHistory | null>(() => getCachedProjectHistory(projectId));
+  const [state, setState] = useState<LoadState>(() => getCachedProjectHistory(projectId) ? "ready" : "loading");
   const [error, setError] = useState("");
+  const [loadAttempt, setLoadAttempt] = useState(0);
   useEffect(() => {
     let active = true;
+    setError("");
+    const cached = getCachedProjectHistory(projectId);
+    if (cached) {
+      setHistory(cached);
+      setState("ready");
+      return () => {
+        active = false;
+      };
+    }
     setState("loading");
     // ProductShell prefetches this ledger on navigation intent. Reuse the
     // shared in-flight/warm request so switching project surfaces does not
@@ -123,18 +148,20 @@ function useProject(projectId: string) {
     return () => {
       active = false;
     };
-  }, [projectId]);
-  return { history, setHistory, state, error };
+  }, [projectId, loadAttempt]);
+  return { history, setHistory, state, error, retry: () => setLoadAttempt((attempt) => attempt + 1) };
 }
 
 function EmptyOrError({
   state,
   error,
   loading,
+  onRetry,
 }: {
   state: LoadState;
   error: string;
   loading?: ReactNode;
+  onRetry?: () => void;
 }) {
   if (state === "loading")
     return loading ?? (
@@ -147,6 +174,13 @@ function EmptyOrError({
       <div className="product-state" role="alert">
         <h2>暂时无法加载</h2>
         <p>{error}</p>
+        {onRetry ? (
+          <div className="product-row-actions">
+            <button type="button" className="product-primary-action" onClick={onRetry}>
+              重新加载项目数据
+            </button>
+          </div>
+        ) : null}
       </div>
     );
   return null;
@@ -414,7 +448,7 @@ function ProjectEditDialog({
                 <ul>
                   {impact.dependencies.map((item) => (
                     <li key={item.kind}>
-                      {item.label}：{item.count}
+                      <DependencyImpactEntry item={item} />
                     </li>
                   ))}
                 </ul>
@@ -471,7 +505,7 @@ function ProjectEditDialog({
               <ul>
                 {impact.dependencies.map((item) => (
                   <li key={item.kind}>
-                    {item.label}：{item.count}
+                    <DependencyImpactEntry item={item} />
                   </li>
                 ))}
               </ul>
@@ -574,7 +608,7 @@ function projectNavigationActions(project: ProjectSummary): ObjectAction[] {
     { label: "研究记录", href: `/projects/${id}/research` },
     { label: "查看报告", href: `/projects/${id}/reports` },
   ];
-  if (canManageProject(project.role)) {
+  if (projectRoleAllows(project.role, "write")) {
     actions.push({ label: "上传数据", href: `/projects/${id}/datasets/new` });
     actions.push({
       label: "管理项目",
@@ -634,7 +668,7 @@ function ScientificObjectTrashDialog({
               <ul>
                 {impact.dependencies.map((dependency) => (
                   <li key={dependency.kind}>
-                    {dependency.label}：{dependency.count}
+                    <DependencyImpactEntry item={dependency} />
                   </li>
                 ))}
               </ul>
@@ -651,6 +685,96 @@ function ScientificObjectTrashDialog({
             {error}
           </p>
         ) : null}
+      </div>
+    </ProductModal>
+  );
+}
+
+function ProjectBulkTrashDialog({
+  items,
+  impacts,
+  busy,
+  error,
+  onClose,
+  onConfirm,
+}: {
+  items: ProjectSummary[];
+  impacts: DependencyImpact[] | null;
+  busy: boolean;
+  error: string;
+  onClose: () => void;
+  onConfirm: () => void;
+}) {
+  const dependencyTotals = new Map<string, { label: string; count: number }>();
+  for (const impact of impacts || []) {
+    for (const dependency of impact.dependencies) {
+      const current = dependencyTotals.get(dependency.kind);
+      dependencyTotals.set(dependency.kind, {
+        label: dependency.label,
+        count: (current?.count || 0) + dependency.count,
+      });
+    }
+  }
+  const totalDependencies = (impacts || []).reduce(
+    (total, impact) => total + impact.dependencyCount,
+    0,
+  );
+  return (
+    <ProductModal
+      eyebrow="项目管理"
+      title={`将 ${items.length} 个项目移入回收站`}
+      description="批量操作会先检查每个项目的服务器依赖；数据、研究结果、历史版本与报告不会被删除。"
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" className="product-secondary-action" onClick={onClose}>
+            取消
+          </button>
+          <button
+            type="button"
+            className="product-danger-action"
+            disabled={busy || !impacts || impacts.length !== items.length}
+            onClick={onConfirm}
+          >
+            {busy ? "正在移动…" : "确认移入回收站"}
+          </button>
+        </>
+      }
+    >
+      <div className="product-form-grid danger-zone">
+        <p>
+          已选择 <strong>{items.length}</strong> 个项目，服务器报告共{" "}
+          <strong>{totalDependencies}</strong> 项受保护依赖。
+        </p>
+        <ul className="bulk-lifecycle-targets">
+          {items.slice(0, 8).map((item) => (
+            <li key={item.projectId || item.id}>
+              <strong>{item.name}</strong>
+              <span>{item.role === "owner" ? "所有者" : "协作项目"}</span>
+            </li>
+          ))}
+          {items.length > 8 ? <li>另有 {items.length - 8} 个项目…</li> : null}
+        </ul>
+        {impacts ? (
+          <div role="status">
+            <strong>依赖影响汇总</strong>
+            {dependencyTotals.size ? (
+              <ul>
+                {Array.from(dependencyTotals.entries()).map(([kind, value]) => (
+                  <li key={kind}>
+                    {value.label}：{value.count}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>未发现已持久化的科学依赖。</p>
+            )}
+            <p>项目会从新的工作发现中移除；历史研究和 exact source provenance 仍可访问。</p>
+          </div>
+        ) : (
+          <p role="status">正在检查 {items.length} 个项目的依赖影响…</p>
+        )}
+        {error ? <p className="product-form-error" role="alert">{error}</p> : null}
       </div>
     </ProductModal>
   );
@@ -958,7 +1082,7 @@ function DatasetEditDialog({
                 <ul>
                   {impact.dependencies.map((item) => (
                     <li key={item.kind}>
-                      {item.label}：{item.count}
+                      <DependencyImpactEntry item={item} />
                     </li>
                   ))}
                 </ul>
@@ -1015,7 +1139,7 @@ function DatasetEditDialog({
               <ul>
                 {impact.dependencies.map((item) => (
                   <li key={item.kind}>
-                    {item.label}：{item.count}
+                    <DependencyImpactEntry item={item} />
                   </li>
                 ))}
               </ul>
@@ -1100,6 +1224,8 @@ export function ConsolePage() {
   const activeProjects = projects.filter(
     (project) => project.status !== "archived" && project.status !== "trashed",
   );
+  const primaryProjectId =
+    activeProjects[0]?.projectId || activeProjects[0]?.id || "";
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const wasPreviewOpenRef = useRef(false);
   const closePreview = () => {
@@ -1122,6 +1248,18 @@ export function ConsolePage() {
     document.addEventListener("keydown", close);
     return () => document.removeEventListener("keydown", close);
   }, [preview]);
+  useEffect(() => {
+    if (!primaryProjectId) return;
+    // Warm the same bounded project ledger used by the overview/data/research
+    // routes while the user is still on the console. The request is deduped by
+    // planner-api and is intentionally fire-and-forget: navigation remains
+    // fully client-side, while the first project page can paint immediately
+    // from the resolved snapshot instead of waiting for a second round trip.
+    const timer = window.setTimeout(() => {
+      void getProjectHistory(primaryProjectId).catch(() => undefined);
+    }, 160);
+    return () => window.clearTimeout(timer);
+  }, [primaryProjectId]);
   return (
     <RequireProductAuth>
       <ProductShell>
@@ -1196,7 +1334,8 @@ export function ConsolePage() {
                   <div className="product-row-actions">
                     <Link
                       className="product-primary-action"
-                      href={`/projects/${activeProjects[0].projectId || activeProjects[0].id}/research`}
+                      href={`/projects/${primaryProjectId}/research`}
+                      prefetch
                     >
                       继续研究
                     </Link>
@@ -1262,6 +1401,7 @@ function ProjectQuickPreview({
   const [resource, setResource] = useState<DatasetSourceResource | null>(null);
   const [resources, setResources] = useState<DatasetSourceResource[]>([]);
   const [state, setState] = useState<LoadState>("loading");
+  const [loadAttempt, setLoadAttempt] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
     setState("loading");
@@ -1288,7 +1428,7 @@ function ProjectQuickPreview({
         if (!controller.signal.aborted) setState("error");
       });
     return () => controller.abort();
-  }, [projectId]);
+  }, [projectId, loadAttempt]);
   return (
     <aside className="quick-preview" aria-label="数据快速查看">
       <header className="quick-preview-header">
@@ -1310,7 +1450,16 @@ function ProjectQuickPreview({
         {state === "error" ? (
           <div className="product-state" role="alert">
             <h3>暂时无法加载数据</h3>
-            <p>项目数据仍然保留，可以打开项目数据页重试。</p>
+            <p>项目数据仍然保留；可以在当前快速查看面板重试，或打开项目数据页继续检查。</p>
+            <div className="product-row-actions">
+              <button
+                type="button"
+                className="product-primary-action"
+                onClick={() => setLoadAttempt((attempt) => attempt + 1)}
+              >
+                重新加载数据
+              </button>
+            </div>
           </div>
         ) : null}
         {state === "ready" && dataset && resource ? (
@@ -1325,6 +1474,20 @@ function ProjectQuickPreview({
               resources={resources}
             />
           </>
+        ) : null}
+        {state === "ready" && dataset && !resource ? (
+          <div className="product-state">
+            <h3>
+              {Number(dataset.import.fileCount || 0) === 0
+                ? "项目还没有科学数据"
+                : "当前数据没有可预览的科学对象"}
+            </h3>
+            <p>
+              {Number(dataset.import.fileCount || 0) === 0
+                ? "上传受支持的源文件后，可以在这里快速查看科学对象。"
+                : "数据记录仍保留；请打开项目数据页检查来源、解析状态与恢复操作。"}
+            </p>
+          </div>
         ) : null}
         {state === "ready" && !dataset ? (
           <div className="product-state">
@@ -1360,6 +1523,12 @@ export function ProjectsPage({
     project: ProjectSummary;
     mode: "edit" | "trash" | "delete";
   } | null>(null);
+  const [projectBulkTrashTargets, setProjectBulkTrashTargets] = useState<
+    ProjectSummary[] | null
+  >(null);
+  const [projectBulkTrashImpacts, setProjectBulkTrashImpacts] = useState<
+    DependencyImpact[] | null
+  >(null);
   const [mutationError, setMutationError] = useState("");
   const [mutationNotice, setMutationNotice] = useState("");
   const [busy, setBusy] = useState(false);
@@ -1370,6 +1539,28 @@ export function ProjectsPage({
     );
     if (project) setDialog({ project, mode: "edit" });
   }, [dialog, manageId, projects, state]);
+  useEffect(() => {
+    if (!projectBulkTrashTargets) {
+      setProjectBulkTrashImpacts(null);
+      return;
+    }
+    let active = true;
+    setProjectBulkTrashImpacts(null);
+    void Promise.all(
+      projectBulkTrashTargets.map((project) =>
+        getProjectDependencyImpact(project.projectId || project.id),
+      ),
+    )
+      .then((impacts) => {
+        if (active) setProjectBulkTrashImpacts(impacts);
+      })
+      .catch(() => {
+        if (active) setProjectBulkTrashImpacts(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [projectBulkTrashTargets]);
   const filteredProjects = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase();
     return projects.filter((project) => {
@@ -1422,7 +1613,7 @@ export function ProjectsPage({
     )
     .sort(byCatalogName);
   const hasSelectableProjects = projects.some((project) =>
-    canManageProject(project.role),
+    projectRoleAllows(project.role, "write"),
   );
   const updateLocal = (next: ProjectSummary) =>
     setProjects((current) =>
@@ -1502,6 +1693,27 @@ export function ProjectsPage({
       setBusy(false);
     }
   }
+  function requestProjectBulkTrash() {
+    const targets = filteredProjects.filter((project) =>
+      selectedIds.has(project.projectId || project.id),
+    );
+    if (targets.length) {
+      setMutationError("");
+      setProjectBulkTrashTargets(targets);
+    }
+  }
+  function confirmProjectBulkTrash() {
+    if (
+      !projectBulkTrashTargets ||
+      !projectBulkTrashImpacts ||
+      projectBulkTrashImpacts.length !== projectBulkTrashTargets.length
+    ) {
+      return;
+    }
+    setProjectBulkTrashTargets(null);
+    setProjectBulkTrashImpacts(null);
+    void applyBatch("trash");
+  }
   async function exportProject(project: ProjectSummary) {
     if (busy) return;
     setBusy(true);
@@ -1528,10 +1740,17 @@ export function ProjectsPage({
     }
   }
   function actionsFor(project: ProjectSummary): ObjectAction[] {
-    const canWrite = canManageProject(project.role);
+    const canWrite = projectRoleAllows(project.role, "write");
     const actions = projectNavigationActions(project).filter(
       (action) => action.label !== "管理项目",
     );
+    // Export is a read-only provenance operation. The API authorizes it with
+    // project read access, so shared viewers must be able to discover it even
+    // though lifecycle and metadata mutations remain write-gated below.
+    actions.push({
+      label: "导出项目清单",
+      onSelect: () => void exportProject(project),
+    });
     if (!canWrite) return actions;
     if (project.status === "trashed") {
       const historicalActions = actions.filter(
@@ -1554,11 +1773,7 @@ export function ProjectsPage({
       onSelect: () => setDialog({ project, mode: "edit" }),
     });
     actions.push({
-      label: "导出项目清单",
-      onSelect: () => void exportProject(project),
-    });
-    actions.push({
-      label: project.pinned ? "取消固定" : "固定到顶部",
+      label: project.pinned ? "取消列表置顶" : "列表置顶",
       onSelect: () => void setPinned(project, !project.pinned),
     });
     actions.push({
@@ -1599,15 +1814,15 @@ export function ProjectsPage({
               ? "回收站"
               : project.status === "archived"
                 ? project.pinned
-                  ? "已固定 · 已归档"
+                  ? "列表置顶 · 已归档"
                   : "已归档"
                 : project.pinned
-                  ? "已固定 · 打开项目 →"
+                  ? "列表置顶 · 打开项目 →"
                   : "打开项目 →"
           }
           actions={actionsFor(project)}
           selectionMode={selectionMode}
-          selectable={canManageProject(project.role)}
+          selectable={projectRoleAllows(project.role, "write")}
           selected={selectedIds.has(project.projectId || project.id)}
           onSelectedChange={(selected) => toggleSelected(project, selected)}
         />
@@ -1615,7 +1830,7 @@ export function ProjectsPage({
     </div>
   );
   const selectableIds = filteredProjects
-    .filter((project) => canManageProject(project.role))
+    .filter((project) => projectRoleAllows(project.role, "write"))
     .map((project) => project.projectId || project.id);
   return (
     <RequireProductAuth>
@@ -1753,7 +1968,7 @@ export function ProjectsPage({
                         disabled={!selectedIds.size || busy}
                         onClick={() => void applyBatch("pin")}
                       >
-                        固定到顶部
+                        列表置顶
                       </button>
                       <button
                         type="button"
@@ -1761,7 +1976,7 @@ export function ProjectsPage({
                         disabled={!selectedIds.size || busy}
                         onClick={() => void applyBatch("unpin")}
                       >
-                        取消固定
+                        取消列表置顶
                       </button>
                       <button
                         type="button"
@@ -1779,7 +1994,7 @@ export function ProjectsPage({
                         type="button"
                         className="product-danger-action"
                         disabled={!selectedIds.size || busy}
-                        onClick={() => void applyBatch("trash")}
+                        onClick={requestProjectBulkTrash}
                       >
                         移入回收站
                       </button>
@@ -1806,6 +2021,19 @@ export function ProjectsPage({
                 <p className="product-form-success catalog-notice" role="status">
                   {mutationNotice}
                 </p>
+              ) : null}
+              {projectBulkTrashTargets ? (
+                <ProjectBulkTrashDialog
+                  items={projectBulkTrashTargets}
+                  impacts={projectBulkTrashImpacts}
+                  busy={busy}
+                  error={mutationError}
+                  onClose={() => {
+                    setProjectBulkTrashTargets(null);
+                    setProjectBulkTrashImpacts(null);
+                  }}
+                  onConfirm={confirmProjectBulkTrash}
+                />
               ) : null}
               {caseProjects.length > 0 && (
                 <section
@@ -1894,8 +2122,8 @@ export function ProjectsPage({
 }
 
 export function ProjectOverviewPage({ projectId }: { projectId: string }) {
-  const { history, state, error } = useProject(projectId);
-  const canWriteProject = canManageProject(history?.project.role);
+  const { history, state, error, retry } = useProject(projectId);
+  const canWriteProject = projectRoleAllows(history?.project.role, "write");
   return (
     <RequireProductAuth>
       <ProductShell projectId={projectId}>
@@ -1903,6 +2131,7 @@ export function ProjectOverviewPage({ projectId }: { projectId: string }) {
           <EmptyOrError
             state={state}
             error={error}
+            onRetry={retry}
             loading={
               <RouteLoading embedded section="项目数据" variant="data" />
             }
@@ -2107,7 +2336,12 @@ export function ProjectDataPage({
     : hasRouteQuery
       ? ""
       : initialObjectVersionId;
-  const { history, setHistory, state, error } = useProject(projectId);
+  const queryTableSearch = searchParams?.get("tableQuery") || "";
+  const queryTableSort =
+    searchParams?.get("tableSort") === "desc" ? "desc" : "asc";
+  const queryTableRow = searchParams?.get("tableRow") || "";
+  const querySelectionToken = searchParams?.get("selection") || "";
+  const { history, setHistory, state, error, retry } = useProject(projectId);
   const [selectedId, setSelectedId] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "active" | "archived" | "trashed"
@@ -2128,6 +2362,9 @@ export function ProjectDataPage({
   const [mobileNavigatorCollapsed, setMobileNavigatorCollapsed] = useState(false);
   const [scientificSelection, setScientificSelection] =
     useState<WorkspaceSelectionContext | null>(null);
+  const [selectedSourceAvailability, setSelectedSourceAvailability] = useState<
+    "loading" | "ready" | "empty" | "unavailable"
+  >("loading");
   const [scientificObjects, setScientificObjects] = useState<
     ScientificObjectSummary[]
   >([]);
@@ -2316,11 +2553,26 @@ export function ProjectDataPage({
   const selected = visibleDatasets.find(
     (item) => item.datasetId === selectedId,
   );
+  useEffect(() => {
+    setScientificSelection(
+      resolveDataPageSelection(
+        querySelectionToken,
+        projectId,
+        selected?.datasetId,
+      ),
+    );
+  }, [projectId, querySelectionToken, selected?.datasetId]);
+  useEffect(() => {
+    setSelectedSourceAvailability("loading");
+  }, [selected?.datasetId]);
   const selectedScientificObject = scientificObjects.find(
     (item) => item.id === queryObjectId,
   );
+  const objectRouteMissingVersion = Boolean(
+    queryObjectId && !queryObjectVersionId,
+  );
   const kind = selected ? inferDataKind(selected) : "generic";
-  const canWriteProject = canManageProject(history?.project.role);
+  const canWriteProject = projectRoleAllows(history?.project.role, "write");
   const allVisibleDatasetsSelected =
     visibleDatasets.length > 0 &&
     visibleDatasets.every((dataset) =>
@@ -2331,7 +2583,32 @@ export function ProjectDataPage({
     scientificObjects.every((item) => selectedScientificObjectIds.has(item.id));
   const handleSelection = (selection: WorkspaceSelectionContext) => {
     setScientificSelection(selection);
+    try {
+      const token = encodeWorkspaceSelectionUrl(selection);
+      const next = dataTableViewHref(window.location.href, {
+        selection: token,
+      });
+      window.history.pushState(
+        { ...(window.history.state || {}), scientificSelection: true },
+        "",
+        next,
+      );
+    } catch {
+      // Keep the in-tab selection usable. Only validated, bounded exact
+      // selections may become shareable URL state.
+    }
     openInspector();
+  };
+  const updateTableViewRoute = (
+    changes: DataTableRouteState,
+    mode: "push" | "replace",
+  ) => {
+    const next = dataTableViewHref(window.location.href, changes);
+    window.history[mode === "push" ? "pushState" : "replaceState"](
+      { ...(window.history.state || {}), dataTableView: true },
+      "",
+      next,
+    );
   };
   async function setScientificObjectLifecycle(
     item: ScientificObjectSummary,
@@ -2570,7 +2847,7 @@ export function ProjectDataPage({
           label: "查看研究记录",
           href: `/projects/${projectId}/research`,
         });
-      if (history?.project.role === "owner")
+      if (projectRoleAllows(history?.project.role, "purge"))
         actions.push({
           label: "永久删除空数据集",
           destructive: true,
@@ -2596,7 +2873,7 @@ export function ProjectDataPage({
         onSelect: () =>
           void setDatasetArchived(dataset, dataset.status !== "archived"),
       });
-      if (history?.project.role === "owner")
+      if (projectRoleAllows(history?.project.role, "purge"))
         actions.push({
           label: "移入回收站",
           destructive: true,
@@ -2676,7 +2953,7 @@ export function ProjectDataPage({
           />
         ) : null}
         <section className="data-workbench">
-          <EmptyOrError state={state} error={error} />
+          <EmptyOrError state={state} error={error} onRetry={retry} />
           {history && (
             <>
               <aside className="data-navigator">
@@ -2753,6 +3030,28 @@ export function ProjectDataPage({
                   className="data-navigator-content"
                   data-mobile-collapsed={mobileNavigatorCollapsed}
                 >
+                <section
+                  className="data-authority-legend"
+                  aria-labelledby="data-authority-legend-title"
+                >
+                  <p className="product-kicker">阅读提示</p>
+                  <h2 id="data-authority-legend-title">来源数据与科学身份</h2>
+                  <p className="data-authority-legend-intro">
+                    左侧按两种层级组织数据；查看器和研究结果始终回链到精确对象版本。
+                  </p>
+                  <div className="data-authority-legend-items">
+                    <div>
+                      <span className="data-authority-legend-token">Dataset</span>
+                      <strong>来源范围</strong>
+                      <small>管理导入文件、记录与查询，不代表不可变科学状态。</small>
+                    </div>
+                    <div>
+                      <span className="data-authority-legend-token">Scientific Object</span>
+                      <strong>科研对象 / 版本</strong>
+                      <small>保存解析后的科学身份；打开时不会按名称替换版本。</small>
+                    </div>
+                  </div>
+                </section>
                 {selectionMode ? (
                   <div
                     className="data-batch-actions"
@@ -2891,6 +3190,13 @@ export function ProjectDataPage({
                     {mutationError}
                   </p>
                 ) : null}
+                <div className="data-navigator-section-heading">
+                  <div>
+                    <p className="product-kicker">来源范围</p>
+                    <strong>数据集</strong>
+                  </div>
+                  <span>{visibleDatasets.length} 个</span>
+                </div>
                 <div className="data-tree managed-data-tree">
                   {visibleDatasets.map((dataset) => (
                     <ManagedObjectRow
@@ -2922,12 +3228,67 @@ export function ProjectDataPage({
                     />
                   ))}
                 </div>
+                {selected && scientificObjects.length ? (
+                  <section
+                    className="data-authority-map"
+                    aria-labelledby="data-authority-map-title"
+                  >
+                    <p className="product-kicker">数据权威层级</p>
+                    <h2 id="data-authority-map-title">
+                      来源 Dataset → 科研对象 → 不可变版本
+                    </h2>
+                    <ol>
+                      <li>
+                        <span>来源 Dataset</span>
+                        <strong>{productProjectName(selected.name)}</strong>
+                        <small>{selected.import.fileCount} 个源文件</small>
+                      </li>
+                      <li>
+                        <span>项目科研对象</span>
+                        <strong>{scientificObjects.length} 个</strong>
+                        <small>由解析与科学身份流程管理</small>
+                      </li>
+                      <li>
+                        <span>当前不可变版本</span>
+                        <strong>
+                          {
+                            scientificObjects.filter(
+                              (item) => item.current_version_id,
+                            ).length
+                          }{" "}
+                          个已绑定
+                        </strong>
+                        <small>选择下方对象查看精确版本</small>
+                      </li>
+                    </ol>
+                    <p>
+                      Dataset 负责来源组织；科研对象及其版本是科学权威。
+                      重命名或归档 Dataset 不会改写不可变科学版本。
+                    </p>
+                    <details>
+                      <summary>如何核对一一对应关系</summary>
+                      <p>
+                        打开下方科研对象后，以查看器显示的精确对象、版本与来源绑定为准；
+                        本页不会按名称猜测或替换版本。
+                      </p>
+                    </details>
+                  </section>
+                ) : null}
                 {scientificObjects.length ? (
                   <section
                     className="scientific-object-list"
                     aria-labelledby="scientific-object-list-title"
                   >
-                    <h2 id="scientific-object-list-title">科研对象</h2>
+                    <div className="data-navigator-section-heading scientific-object-section-heading">
+                      <div>
+                        <p className="product-kicker">解析后的科学身份</p>
+                        <h2 id="scientific-object-list-title">科研对象</h2>
+                      </div>
+                      <span>{scientificObjects.length} 个</span>
+                    </div>
+                    <p className="data-navigator-section-hint">
+                      选择对象后查看其精确不可变版本；它不是 Dataset 的替代入口。
+                    </p>
                     <div className="managed-scientific-object-list">
                       {scientificObjects.map((item) =>
                         item.current_version_id ? (
@@ -2987,8 +3348,23 @@ export function ProjectDataPage({
                 </div>
               </aside>
               <section className="scientific-viewer">
-                {selectedScientificObject && queryObjectVersionId ? (
-          <LazyScientificObjectViewer
+                {objectRouteMissingVersion ? (
+                  <div className="product-state" role="alert">
+                    <p className="product-kicker">精确科学来源</p>
+                    <h2>需要指定科研对象版本</h2>
+                    <p>
+                      此链接只指定了科研对象，没有指定不可变版本。为避免静默替换为最新版本，
+                      请从左侧科研对象列表重新打开精确版本。
+                    </p>
+                    <Link
+                      className="product-secondary-action"
+                      href={`/projects/${projectId}/data`}
+                    >
+                      返回项目数据
+                    </Link>
+                  </div>
+                ) : selectedScientificObject && queryObjectVersionId ? (
+                  <LazyScientificObjectViewer
                     projectId={projectId}
                     objectId={selectedScientificObject.id}
                     versionId={queryObjectVersionId}
@@ -3007,7 +3383,15 @@ export function ProjectDataPage({
                         </p>
                       </div>
                       <div>
-                        {canWriteProject && selected.status !== "trashed" ? (
+                        {canWriteProject &&
+                        selected.status !== "trashed" &&
+                        selectedSourceAvailability === "ready" &&
+                        Number(selected.import.fileCount || 0) > 0 &&
+                        Number(
+                          selected.profile?.objectCount ??
+                            selected.profile?.rowCount ??
+                            0,
+                        ) > 0 ? (
                           <Link
                             className="product-primary-action"
                             href={`/projects/${projectId}/research?dataset=${encodeURIComponent(selected.datasetId)}${
@@ -3027,6 +3411,13 @@ export function ProjectDataPage({
                       kind={kind}
                       onInspect={openInspector}
                       onSelection={handleSelection}
+                      onAvailabilityChange={setSelectedSourceAvailability}
+                      tableRouteState={{
+                        query: queryTableSearch,
+                        sort: queryTableSort,
+                        row: queryTableRow,
+                      }}
+                      onTableRouteChange={updateTableViewRoute}
                     />
                   </>
                 ) : (
@@ -3150,6 +3541,7 @@ export function DatasetUploadPage({ projectId }: { projectId: string }) {
     history,
     state: projectState,
     error: projectError,
+    retry: retryProject,
   } = useProject(projectId);
   const [name, setName] = useState("");
   const [files, setFiles] = useState<File[]>([]);
@@ -3209,7 +3601,7 @@ export function DatasetUploadPage({ projectId }: { projectId: string }) {
     }
   }
   const dataHref = "/projects/" + projectId + "/data";
-  const canUpload = canManageProject(history?.project.role);
+  const canUpload = projectRoleAllows(history?.project.role, "write");
   return (
     <RequireProductAuth>
       <ProductShell projectId={projectId}>
@@ -3222,7 +3614,7 @@ export function DatasetUploadPage({ projectId }: { projectId: string }) {
             <h1>上传数据</h1>
             <p>上传后，系统会识别文件格式并生成可用于研究的数据档案。</p>
           </header>
-          <EmptyOrError state={projectState} error={projectError} />
+          <EmptyOrError state={projectState} error={projectError} onRetry={retryProject} />
           {history && !canUpload ? (
             <div className="product-state">
               <h2>此项目为只读</h2>
@@ -3376,81 +3768,126 @@ function ScientificDataView({
   kind,
   onInspect,
   onSelection,
+  onAvailabilityChange,
+  tableRouteState,
+  onTableRouteChange,
 }: {
   projectId: string;
   dataset: ProjectHistory["datasets"][number];
   kind: DataKind;
   onInspect: () => void;
   onSelection: (selection: WorkspaceSelectionContext) => void;
+  onAvailabilityChange: (
+    state: "loading" | "ready" | "empty" | "unavailable",
+  ) => void;
+  tableRouteState: DataTableViewState;
+  onTableRouteChange: (
+    changes: DataTableRouteState,
+    mode: "push" | "replace",
+  ) => void;
 }) {
   const [resources, setResources] = useState<DatasetSourceResource[] | null>(
     null,
   );
   const [resourceError, setResourceError] = useState<string | null>(null);
+  const [resourceErrorKind, setResourceErrorKind] = useState<
+    "TRANSIENT" | "CONFIRMED_MISSING"
+  >("TRANSIENT");
   const [selectedId, setSelectedId] = useState("");
   const [loadAttempt, setLoadAttempt] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
     setResources(null);
     setResourceError(null);
+    setResourceErrorKind("TRANSIENT");
     setSelectedId("");
+    onAvailabilityChange("loading");
     void getDatasetSourceResources(dataset.datasetId, controller.signal)
       .then((items) => {
         setResources(items);
         setSelectedId(
           preferredResource(items, kind)?.objectId || items[0]?.objectId || "",
         );
+        onAvailabilityChange(items.length ? "ready" : "empty");
       })
       .catch((reason) => {
         if (controller.signal.aborted) return;
         setResources([]);
+        setResourceErrorKind(classifySourceLoadFailure(reason));
         setResourceError(
           reason instanceof Error
             ? reason.message
             : "SOURCE_RESOURCE_LOAD_FAILED",
         );
+        onAvailabilityChange("unavailable");
       });
     return () => controller.abort();
-  }, [dataset.datasetId, kind, loadAttempt]);
+  }, [dataset.datasetId, kind, loadAttempt, onAvailabilityChange]);
   if (resources === null)
     return (
       <div className="product-loading" role="status">
         正在加载科学数据…
       </div>
     );
-  if (resourceError && kind !== "table")
+  if (resourceError && kind !== "table") {
+    const confirmedMissing = resourceErrorKind === "CONFIRMED_MISSING";
+    const fallbackTitleId = `science-fallback-title-${dataset.datasetId}-${kind}`.replace(
+      /[^a-zA-Z0-9_-]/g,
+      "-",
+    );
+    const uploadHref = `/projects/${encodeURIComponent(projectId)}/datasets/new`;
     return (
       <div
         className={`science-canvas science-canvas-fallback source-load-failure ${kind}`}
         role="alert"
+        aria-labelledby={fallbackTitleId}
       >
         <div className="science-canvas-label">
           <span>{dataKindLabel(kind)}</span>
-          <strong>当前解析资源暂时无法读取</strong>
+          <strong id={fallbackTitleId}>
+            {confirmedMissing
+              ? "原始解析 payload 当前不可用"
+              : "当前科学资源暂时无法读取"}
+          </strong>
         </div>
-        <p>{resourceError}</p>
+        <p>
+          {confirmedMissing
+            ? "系统已确认声明位置没有原始 payload；数据档案、精确来源与解析记录仍然保留，不会用其他版本替代。请重新导入或恢复原始文件。"
+            : "数据档案、精确来源与解析记录仍然保留；当前规范化 payload 暂时未能通过存储读取。"}
+        </p>
+        <p className="source-load-failure-status" role="status">
+          <span>读取状态</span>
+          <strong>{confirmedMissing ? "已确认缺失" : "暂时失败，可重试"}</strong>
+        </p>
         <div className="source-load-failure-actions">
           <button
             type="button"
             className="product-primary-action"
-            onClick={() => setLoadAttempt((attempt) => attempt + 1)}
-          >
-            重试加载
-          </button>
-          <button
-            type="button"
-            className="product-secondary-action"
             onClick={onInspect}
           >
             查看来源与属性
           </button>
+          <button
+            type="button"
+            className="product-secondary-action"
+            onClick={() => setLoadAttempt((attempt) => attempt + 1)}
+          >
+            {confirmedMissing ? "再次确认来源" : "重新检查存储"}
+          </button>
+          {confirmedMissing ? (
+            <Link className="product-secondary-action" href={uploadHref}>
+              重新导入源文件
+            </Link>
+          ) : null}
         </div>
         <details>
           <summary>技术详情</summary>
-          <p>源文件与数据记录仍保留；当前规范化科学资源不可用。</p>
+          <p>{resourceError}</p>
+          <p>未选择其他 Dataset、ScientificObjectVersion 或 Artifact 作为替代。</p>
         </details>
       </div>
     );
+  }
   const selected =
     resources.find((item) => item.objectId === selectedId) ||
     preferredResource(resources, kind);
@@ -3519,21 +3956,47 @@ function ScientificDataView({
       </section>
     );
   if (kind === "table")
-    return <TableScientificView dataset={dataset} onInspect={onInspect} />;
+    return (
+      <TableScientificView
+        dataset={dataset}
+        onInspect={onInspect}
+        initialQuery={tableRouteState.query}
+        initialSort={tableRouteState.sort}
+        initialSelectedRow={tableRouteState.row}
+        onRouteStateChange={onTableRouteChange}
+      />
+    );
+  const isEmptyDataset =
+    Number(dataset.import.fileCount || 0) === 0 &&
+    Number(dataset.profile?.objectCount || 0) === 0;
   return (
-    <div
+      <div
       className="science-canvas science-canvas-fallback"
       role="region"
-      aria-labelledby="science-fallback-title"
+      aria-labelledby={`science-fallback-title-${dataset.datasetId}-${kind}`.replace(
+        /[^a-zA-Z0-9_-]/g,
+        "-",
+      )}
     >
       <div className="science-canvas-label">
         <span>{dataKindLabel(kind)}</span>
-        <strong id="science-fallback-title">当前没有可渲染的科学对象</strong>
+        <strong
+          id={`science-fallback-title-${dataset.datasetId}-${kind}`.replace(
+            /[^a-zA-Z0-9_-]/g,
+            "-",
+          )}
+        >
+          {isEmptyDataset ? "尚未导入科学对象" : "当前没有可渲染的科学对象"}
+        </strong>
       </div>
-      <p>
-        数据档案和来源信息仍然保留，但当前没有通过 Viewer contract
-        验证的资源可供交互查看。
-      </p>
+      {isEmptyDataset ? (
+        <p>该数据集尚未接收源文件。请使用本页的“导入数据”操作添加受支持的科学数据。</p>
+      ) : (
+        <p>
+          数据档案和来源信息仍然保留，但当前没有通过 Viewer contract
+          验证的资源可供交互查看。
+        </p>
+      )}
       <button
         type="button"
         className="product-secondary-action"
@@ -3564,6 +4027,21 @@ function preferredResource(
     resources.find((item) => types[kind].includes(item.objectType)) ||
     resources[0]
   );
+}
+
+function classifySourceLoadFailure(reason: unknown): "TRANSIENT" | "CONFIRMED_MISSING" {
+  if (!reason || typeof reason !== "object") return "TRANSIENT";
+  const candidate = reason as { status?: unknown; errorType?: unknown; details?: unknown };
+  const status = Number(candidate.status);
+  const errorType = String(candidate.errorType || "");
+  const detail = candidate.details && typeof candidate.details === "object"
+    ? candidate.details as { errorType?: unknown; code?: unknown }
+    : {};
+  const detailType = String(detail.errorType || detail.code || "");
+  return status === 404
+    || /(?:SOURCE_MISSING|OBJECT_STORE_SOURCE_MISSING|SOURCE_RESOURCE_MISSING|PAYLOAD_MISSING)/i.test(`${errorType} ${detailType}`)
+    ? "CONFIRMED_MISSING"
+    : "TRANSIENT";
 }
 
 function sourceTypeLabel(objectType: string) {
@@ -3617,16 +4095,85 @@ function resourceDisplayName(
   return sameTypeCount > 1 ? `${label} · 第 ${index + 1} 项` : label;
 }
 
+export type DataTableViewState = Readonly<{
+  query: string;
+  sort: "asc" | "desc";
+  row: string;
+}>;
+
+export type DataTableRouteState = Partial<
+  DataTableViewState & { selection: string }
+>;
+
+export function resolveDataPageSelection(
+  token: string,
+  projectId: string,
+  datasetId?: string,
+): WorkspaceSelectionContext | null {
+  if (!token) return null;
+  try {
+    const restored = decodeWorkspaceSelectionUrl(token);
+    const primary = restored.primary;
+    if (
+      !primary ||
+      primary.projectId !== projectId ||
+      (primary.datasetId && datasetId && primary.datasetId !== datasetId)
+    ) {
+      return null;
+    }
+    return restored;
+  } catch {
+    return null;
+  }
+}
+
+export function dataTableViewHref(
+  currentHref: string,
+  changes: DataTableRouteState,
+): string {
+  const url = new URL(currentHref, "http://localhost");
+  if (changes.query !== undefined) {
+    if (changes.query) url.searchParams.set("tableQuery", changes.query);
+    else url.searchParams.delete("tableQuery");
+  }
+  if (changes.sort !== undefined) {
+    if (changes.sort === "desc") url.searchParams.set("tableSort", "desc");
+    else url.searchParams.delete("tableSort");
+  }
+  if (changes.row !== undefined) {
+    if (changes.row) url.searchParams.set("tableRow", changes.row);
+    else url.searchParams.delete("tableRow");
+  }
+  if (changes.selection !== undefined) {
+    if (changes.selection) url.searchParams.set("selection", changes.selection);
+    else url.searchParams.delete("selection");
+  }
+  return `${url.pathname}${url.search}${url.hash}`;
+}
+
 export function TableScientificView({
   dataset,
   onInspect,
+  initialQuery = "",
+  initialSort = "asc",
+  initialSelectedRow = "",
+  onRouteStateChange,
 }: {
   dataset: ProjectHistory["datasets"][number];
   onInspect: () => void;
+  initialQuery?: string;
+  initialSort?: "asc" | "desc";
+  initialSelectedRow?: string;
+  onRouteStateChange?: (
+    changes: DataTableRouteState,
+    mode: "push" | "replace",
+  ) => void;
 }) {
-  const [query, setQuery] = useState("");
-  const [sortAsc, setSortAsc] = useState(true);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [query, setQuery] = useState(initialQuery);
+  const [sortAsc, setSortAsc] = useState(initialSort !== "desc");
+  const [selected, setSelected] = useState<string | null>(
+    initialSelectedRow || null,
+  );
   const [visible, setVisible] = useState({
     property: true,
     semantic: true,
@@ -3657,22 +4204,43 @@ export function TableScientificView({
         ),
     [dataset.profile?.semanticRoles, query, sortAsc],
   );
+  useEffect(() => setQuery(initialQuery), [initialQuery]);
+  useEffect(() => setSortAsc(initialSort !== "desc"), [initialSort]);
+  useEffect(
+    () => setSelected(initialSelectedRow || null),
+    [initialSelectedRow],
+  );
   const choose = (id: string) => {
     setSelected(id);
+    onRouteStateChange?.({ row: id }, "push");
     onInspect();
   };
   return (
     <div className="table-view">
       <div className="table-tools">
         <input
+          type="search"
           aria-label="搜索表格"
           placeholder="搜索属性…"
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event) => {
+            const next = event.target.value;
+            setQuery(next);
+            onRouteStateChange?.({ query: next }, "replace");
+          }}
         />
         <button
           type="button"
-          onClick={() => setSortAsc((value) => !value)}
+          onClick={() =>
+            setSortAsc((value) => {
+              const next = !value;
+              onRouteStateChange?.(
+                { sort: next ? "asc" : "desc" },
+                "push",
+              );
+              return next;
+            })
+          }
           aria-label="切换排序"
         >
           按属性 {sortAsc ? "↑" : "↓"}
@@ -3704,6 +4272,13 @@ export function TableScientificView({
           </div>
         </details>
       </div>
+      <p className="table-route-state-note" role="status">
+        当前查询、排序与所选行会保存在此页面地址中；复制地址可恢复同一数据视图。
+      </p>
+      <p className="table-scroll-hint" role="note">
+        <span aria-hidden="true">↔</span>
+        <span>左右滑动查看完整列；选择一行可查看对应科学属性。</span>
+      </p>
       <div className="table-scroll" role="region" aria-label="科学属性表，可横向滚动查看完整列" tabIndex={0}>
         <table aria-label={`${productProjectName(dataset.name)}科学属性`}>
           <caption className="sr-only">

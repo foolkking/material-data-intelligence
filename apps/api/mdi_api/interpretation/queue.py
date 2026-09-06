@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from uuid import UUID
 
+from mdi_schemas.worker_queues import worker_queue_definition
+
 
 @dataclass(frozen=True)
 class InterpretationQueueSubmitResult:
@@ -34,7 +36,12 @@ class InMemoryInterpretationQueue:
 
 
 class RedisRQInterpretationQueue:
-    def __init__(self, *, redis_url: str, queue_name: str = "mdi-agent-interpretations") -> None:
+    def __init__(
+        self,
+        *,
+        redis_url: str,
+        queue_name: str = worker_queue_definition("interpretation").default_name,
+    ) -> None:
         self.redis_url = redis_url
         self.queue_name = queue_name
 
@@ -50,7 +57,11 @@ class RedisRQInterpretationQueue:
             if status in {"queued", "started", "deferred", "scheduled", "finished"}:
                 return InterpretationQueueSubmitResult(turn_id, False, "rq", "turn already queued")
             existing.delete()
-        queue.enqueue("mdi_workers.interpretation_worker.run_queued_interpretation", str(turn_id), job_id=job_id)
+        queue.enqueue(
+            worker_queue_definition("interpretation").handler,
+            str(turn_id),
+            job_id=job_id,
+        )
         return InterpretationQueueSubmitResult(turn_id, True, "rq", f"turn queued on {self.queue_name}")
 
 

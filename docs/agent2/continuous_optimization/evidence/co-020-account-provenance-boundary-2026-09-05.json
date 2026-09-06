@@ -1,0 +1,31 @@
+{
+  "improvement": "CO-020",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "change": {
+    "accountDeactivationResponse": {
+      "ok": true,
+      "provenanceRetained": true,
+      "retentionPolicy": {
+        "automaticPurge": "DISABLED",
+        "manualPurge": "NOT_SUPPORTED_FOR_ENTITY",
+        "referencedProvenance": "PROTECTED_INDEFINITELY"
+      }
+    },
+    "projectDeletion": "remains server-gated to empty projects with zero dependencies"
+  },
+  "verification": {
+    "accountAndLogoutRegression": "8 passed",
+    "deactivationAndLogoutSubset": "2 passed",
+    "frontendTypecheck": "PASS",
+    "apiCompileall": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "safety": {
+    "scientificResultsDeleted": false,
+    "scientificObjectVersionsDeleted": false,
+    "auditRecordWritten": true,
+    "activeSessionsRevoked": true,
+    "logoutContractRegressed": false
+  }
+}

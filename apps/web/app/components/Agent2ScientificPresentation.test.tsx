@@ -129,10 +129,10 @@ describe("Agent2ScientificPresentation", () => {
     mocks.unpinAgent2Result.mockResolvedValue({ pinned_result_refs: [] });
 
     render(<Agent2ScientificPresentation turnId="turn-1" projectId="project-1" sessionId="session-1" />);
-    const pin = await screen.findByRole("button", { name: "固定到研究上下文" });
+    const pin = await screen.findByRole("button", { name: "将结果加入本会话上下文" });
     fireEvent.click(pin);
     await waitFor(() => expect(mocks.pinAgent2Result).toHaveBeenCalledWith("project-1", "session-1", "snapshot-1"));
-    const unpin = await screen.findByRole("button", { name: "取消固定结果" });
+    const unpin = await screen.findByRole("button", { name: "从本会话上下文移除结果" });
     fireEvent.click(unpin);
     await waitFor(() => expect(mocks.unpinAgent2Result).toHaveBeenCalledWith("project-1", "session-1", "snapshot-1"));
   });
@@ -145,12 +145,12 @@ describe("Agent2ScientificPresentation", () => {
     mocks.unpinAgent2Object.mockResolvedValue({ pinned_result_refs: [], pinned_object_refs: [] });
 
     render(<Agent2ScientificPresentation turnId="turn-1" projectId="project-1" sessionId="session-1" />);
-    fireEvent.click(await screen.findByRole("button", { name: "固定来源版本" }));
+    fireEvent.click(await screen.findByRole("button", { name: "将来源版本加入本会话上下文" }));
     await waitFor(() => expect(mocks.pinAgent2Object).toHaveBeenCalledWith("project-1", "session-1", expect.objectContaining({
       object_id: source.object_id,
       version_id: source.version_id,
     })));
-    fireEvent.click(await screen.findByRole("button", { name: "取消固定来源版本" }));
+    fireEvent.click(await screen.findByRole("button", { name: "从本会话上下文移除来源版本" }));
     await waitFor(() => expect(mocks.unpinAgent2Object).toHaveBeenCalledWith("project-1", "session-1", expect.objectContaining({
       object_id: source.object_id,
       version_id: source.version_id,
@@ -191,7 +191,7 @@ describe("Agent2ScientificPresentation", () => {
     );
 
     expect(
-      await screen.findByRole("button", { name: "取消固定来源版本" }),
+      await screen.findByRole("button", { name: "从本会话上下文移除来源版本" }),
     ).toBeInTheDocument();
 
     rerender(
@@ -212,7 +212,7 @@ describe("Agent2ScientificPresentation", () => {
     );
 
     expect(
-      await screen.findByRole("button", { name: "固定来源版本" }),
+      await screen.findByRole("button", { name: "将来源版本加入本会话上下文" }),
     ).toBeInTheDocument();
     expect(mocks.getAgent2SessionMemory).not.toHaveBeenCalled();
   });
@@ -227,11 +227,11 @@ describe("Agent2ScientificPresentation", () => {
     mocks.pinAgent2Result.mockResolvedValue({ pinned_result_refs: ["snapshot-1"] });
 
     render(<Agent2ScientificPresentation turnId="turn-1" projectId="project-1" sessionId="session-1" />);
-    const pin = await screen.findByRole("button", { name: "固定到研究上下文" });
+    const pin = await screen.findByRole("button", { name: "将结果加入本会话上下文" });
     fireEvent.click(pin);
-    const unpin = await screen.findByRole("button", { name: "取消固定结果" });
+    const unpin = await screen.findByRole("button", { name: "从本会话上下文移除结果" });
 
     resolveMemory?.({ pinned_result_refs: [] });
-    await waitFor(() => expect(screen.getByRole("button", { name: "取消固定结果" })).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole("button", { name: "从本会话上下文移除结果" })).toBeInTheDocument());
   });
 });

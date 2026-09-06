@@ -1,0 +1,25 @@
+{
+  "improvement": "CO-130",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "problem": "The direct Artifact download URL had no focused regression proving that cross-project callers are denied before storage content is read.",
+  "root_cause": "Authorization existed in the secured wrapper, but the security boundary was not protected by a test that observes the downstream download call.",
+  "change": {
+    "file": "tests/test_project_access.py",
+    "behavior": "Added an owner/stranger regression around get_phase2_artifact_download_secured; the foreign-project branch must raise 403 and must not invoke get_phase2_artifact_download."
+  },
+  "verification": {
+    "command": "pytest -q tests/test_project_access.py -k 'artifact_download_denies_foreign_project'",
+    "result": "1 passed, 33 deselected",
+    "assertions": [
+      "foreign user receives 403",
+      "storage/download function call count remains zero for denied access",
+      "authorized owner can read the same Artifact",
+      "authorized download is invoked exactly once"
+    ]
+  },
+  "services_or_data_mutated": false,
+  "new_findings": [
+    "CO-029 remains open for broader cross-project/cross-user fuzzing across exact routes."
+  ]
+}

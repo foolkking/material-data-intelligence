@@ -1,6 +1,6 @@
 "use client";
 
-import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { getPlannerJobArtifacts, type Artifact } from "../../lib/planner-api";
 import type { ScientificWorkspace, WorkspacePanel, WorkspaceSelectionContext } from "../../lib/workspace-api";
 import { WorkspaceArtifactLoader, WorkspaceArtifactLoadError, validateArtifactScope, type WorkspaceArtifactLoadScope } from "./workspace-artifact-loader";
@@ -8,6 +8,7 @@ import {
   artifactChecksum,
   artifactIdentity,
   artifactVersion,
+  indexArtifactsByIdentity,
   resolveArtifactRenderer,
   resolveLoadedArtifactRenderer,
   type RendererComponent,
@@ -48,6 +49,10 @@ type GalleryProps = Readonly<{
 }>;
 
 export function WorkspaceArtifactGallery({ workspace, panel, delivery, onSelection, onNavigateReference }: GalleryProps) {
+  const galleryInstanceId = useId().replace(/[^A-Za-z0-9_-]/g, "");
+  const galleryTitleId = `workspace-artifact-gallery-title-${galleryInstanceId}`;
+  const activeArtifactTitleId = `workspace-active-artifact-title-${galleryInstanceId}`;
+  const artifactGroupId = (group: string) => `artifact-group-${galleryInstanceId}-${slug(group)}`;
   const [metadataState, setMetadataState] = useState<"LOADING" | "READY" | "EMPTY" | "FAILED" | "CAP_EXCEEDED">("LOADING");
   const [artifacts, setArtifacts] = useState<readonly Artifact[]>([]);
   const [metadataMessage, setMetadataMessage] = useState("Loading Artifact metadata only.");
@@ -155,20 +160,20 @@ export function WorkspaceArtifactGallery({ workspace, panel, delivery, onSelecti
     if (selection) onNavigateReference(selection, destination);
   };
 
-  return <section className="workspace-artifact-gallery" aria-labelledby="workspace-artifact-gallery-title" data-testid="workspace-artifact-gallery">
+  return <section className="workspace-artifact-gallery" aria-labelledby={galleryTitleId} data-testid="workspace-artifact-gallery">
     <header className="workspace-gallery-heading">
-      <div><span className="eyebrow">Persisted results</span><h3 id="workspace-artifact-gallery-title">Result gallery</h3><p>{metadataMessage}</p></div>
+      <div><span className="eyebrow">Persisted results</span><h3 id={galleryTitleId}>Result gallery</h3><p>{metadataMessage}</p></div>
       <span className="workspace-gallery-count" aria-label={`${artifacts.length} Artifacts loaded`}>{artifacts.length} / {workspace.artifactCount}</span>
     </header>
     {metadataState === "LOADING" ? <GalleryState title="Loading metadata" message="Scientific payloads are not requested during initial Workspace loading." /> : null}
     {metadataState === "EMPTY" ? <GalleryState title="No Artifacts" message={metadataMessage} /> : null}
     {["FAILED", "CAP_EXCEEDED"].includes(metadataState) ? <GalleryState title="Artifact Gallery unavailable" message={metadataMessage} error /> : null}
-    {metadataState === "READY" ? <div className="workspace-artifact-groups">{grouped.map(([group, items]) => <section key={group} aria-labelledby={`artifact-group-${slug(group)}`}>
-      <h4 id={`artifact-group-${slug(group)}`}>{group}</h4>
+    {metadataState === "READY" ? <div className="workspace-artifact-groups">{grouped.map(([group, items]) => <section key={group} aria-labelledby={artifactGroupId(group)}>
+      <h4 id={artifactGroupId(group)}>{group}</h4>
       <ul className="workspace-artifact-list">{items.map((artifact) => <ArtifactCard key={artifactIdentity(artifact)!} artifact={artifact} panelState={panel.state} active={artifactIdentity(artifact) === activeArtifactId} selected={delivery?.context?.primary?.artifactId === artifactIdentity(artifact)} onOpen={() => openArtifact(artifact)} onDownload={() => downloadArtifact(artifact)} onSelect={() => selectArtifact(artifact)} onEvidence={() => navigateArtifact(artifact, "EVIDENCE")} onLineage={() => navigateArtifact(artifact, "PROVENANCE")} />)}</ul>
     </section>)}</div> : null}
-    {activeArtifact ? <section className="workspace-active-artifact workspace-scientific-viewer" aria-labelledby="workspace-active-artifact-title" data-testid="workspace-scientific-viewer">
-      <header className="workspace-viewer-chrome"><div><span className="eyebrow">Scientific viewer</span><h4 id="workspace-active-artifact-title">{safeTitle(activeArtifact)}</h4><p>Validated, exact-scope payload. Viewer controls affect presentation only.</p></div><button type="button" className="secondary" onClick={() => { payloadRequestRef.current += 1; payloadControllerRef.current?.abort(); setActiveArtifactId(null); setLoadedArtifacts([]); setPayloadState("IDLE"); }}>Close viewer</button></header>
+    {activeArtifact ? <section className="workspace-active-artifact workspace-scientific-viewer" aria-labelledby={activeArtifactTitleId} data-testid="workspace-scientific-viewer">
+      <header className="workspace-viewer-chrome"><div><span className="eyebrow">Scientific viewer</span><h4 id={activeArtifactTitleId}>{safeTitle(activeArtifact)}</h4><p>Validated, exact-scope payload. Viewer controls affect presentation only.</p></div><button type="button" className="secondary" onClick={() => { payloadRequestRef.current += 1; payloadControllerRef.current?.abort(); setActiveArtifactId(null); setLoadedArtifacts([]); setPayloadState("IDLE"); }}>Close viewer</button></header>
       <div role="status" className={`workspace-artifact-load-state tone-${payloadState === "FAILED" ? "danger" : payloadState === "READY" ? "success" : "muted"}`}>{payloadMessage}</div>
       {payloadState === "READY" ? <WorkspaceArtifactRenderer selected={activeArtifact} artifacts={loadedArtifacts} workspace={workspace} delivery={delivery} onSelection={onSelection} /> : null}
     </section> : null}
@@ -195,7 +200,8 @@ function ArtifactCard({ artifact, panelState, active, selected, onOpen, onDownlo
 }
 
 export function ScientificArtifactRenderer({ selected, artifacts, workspace, delivery = null, onSelection = () => undefined }: Readonly<{ selected: Artifact; artifacts?: readonly Artifact[]; workspace: ScientificWorkspace; delivery?: WorkspaceSelectionDelivery | null; onSelection?: (selection: WorkspaceSelectionContext) => void }>) {
-  const loadedSelected = (artifacts ?? []).find((item) => artifactIdentity(item) === artifactIdentity(selected)) ?? selected;
+  const artifactIndex = useMemo(() => indexArtifactsByIdentity(artifacts ?? []), [artifacts]);
+  const loadedSelected = artifactIndex.get(artifactIdentity(selected) ?? "") ?? selected;
   const resolution = resolveLoadedArtifactRenderer(loadedSelected);
   const descriptor = resolution.descriptor;
   if (!descriptor) return <InertFallback artifact={selected} reason={resolution.reason} />;
@@ -230,6 +236,8 @@ export function ScientificArtifactRenderer({ selected, artifacts, workspace, del
     case "GENERIC_TABLE": return <TableFallback content={loadedSelected.content} descriptor={descriptor} workspace={workspace} onSelection={onSelection} />;
     case "GENERIC_PLOT": return <PlotFallback content={loadedSelected.content} descriptor={descriptor} workspace={workspace} onSelection={onSelection} />;
     case "JSON": return <JsonFallback content={loadedSelected.content} />;
+    case "STATIC_METADATA": return <StaticMetadataFallback artifact={loadedSelected} />;
+    case "DOWNLOAD_ONLY": return <DownloadOnlyFallback artifact={loadedSelected} />;
     default: return <InertFallback artifact={selected} reason="RENDERER_METADATA_ONLY" />;
   } })();
   return descriptor.heavy
@@ -244,13 +252,16 @@ function WorkspaceArtifactRenderer({ selected, artifacts, workspace, delivery, o
 function LazyBoundary({ children }: { children: ReactNode }) { return <Suspense fallback={<div className="workspace-gallery-state" role="status">正在加载科学查看器…</div>}>{children}</Suspense>; }
 
 function TableFallback({ content, descriptor, workspace, onSelection }: Readonly<{ content: unknown; descriptor: WorkspaceRendererDescriptor; workspace: ScientificWorkspace; onSelection: (selection: WorkspaceSelectionContext) => void }>) {
+  const hintId = `workspace-table-scroll-hint-${useId().replace(/[^A-Za-z0-9_-]/g, "")}`;
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
   const [visible, setVisible] = useState<Set<string> | null>(null);
   const [page, setPage] = useState(0);
   const allRows = tableRows(content);
   const rows = allRows.slice(0, descriptor.maximumRows);
-  const columns = [...new Set(rows.slice(0, 256).flatMap((row) => Object.keys(row)))].slice(0, 32);
+  const columns = [...new Set(rows.slice(0, 256).flatMap((row) => (
+    Object.keys(row).filter((key) => !DATASET_ROW_IDENTITY_FIELDS.has(key))
+  )))].slice(0, 32);
   const previewTruncated = allRows.length > rows.length;
   useEffect(() => { setPage(0); }, [query, sort, visible]);
   if (!rows.length || !columns.length) return <JsonFallback content={content} />;
@@ -265,12 +276,65 @@ function TableFallback({ content, descriptor, workspace, onSelection }: Readonly
   const pageSize = 100;
   const pageCount = Math.max(1, Math.ceil(orderedRows.length / pageSize));
   const visibleRows = orderedRows.slice(page * pageSize, (page + 1) * pageSize);
+  const shownStart = visibleRows.length ? page * pageSize + 1 : 0;
+  const shownEnd = visibleRows.length ? page * pageSize + visibleRows.length : 0;
+  const tableCount = previewTruncated
+    ? `当前显示 ${shownStart.toLocaleString("zh-CN")}-${shownEnd.toLocaleString("zh-CN")} / ${orderedRows.length.toLocaleString("zh-CN")} 个交互预览匹配行；源结果共 ${allRows.length.toLocaleString("zh-CN")} 行。`
+    : `当前显示 ${shownStart.toLocaleString("zh-CN")}-${shownEnd.toLocaleString("zh-CN")} / ${orderedRows.length.toLocaleString("zh-CN")} 行。`;
   const selectRow = (row: Record<string, unknown>) => {
     const identity = datasetSampleIdentityFromTableRow(row, workspace.datasetId);
     if (identity) onSelection(datasetSampleSelection(workspace, identity));
   };
-  return <section className="workspace-generic-renderer" aria-label="已验证的数据表"><header className="scientific-figure-header"><div><h5>已验证的数据表</h5><p>{filteredRows.length} / {allRows.length} 行 · 单位沿用源数据字段。</p>{previewTruncated ? <p className="workspace-table-preview-note" role="note">当前为前 {rows.length.toLocaleString("zh-CN")} 行交互预览，完整数据仍保留在结果中。</p> : null}</div><label>搜索 <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索公式或属性" /></label></header><details className="table-column-controls"><summary>列显示</summary><div>{columns.map((column) => <label key={column}><input type="checkbox" checked={!visible || visible.has(column)} onChange={(event) => { const next = new Set(visible || columns); event.target.checked ? next.add(column) : next.delete(column); setVisible(next.size ? next : new Set([columns[0]])); }} />{column}</label>)}</div></details><div className="workspace-table-scroll" role="region" aria-label="已验证的数据表，可横向滚动查看完整列" tabIndex={0}><table><thead><tr><th scope="col">选择</th>{activeColumns.map((column) => <th key={column} scope="col"><button type="button" className="table-sort-button" onClick={() => setSort((current) => ({ key: column, direction: current?.key === column && current.direction === "asc" ? "desc" : "asc" }))}>{column}{sort?.key === column ? (sort.direction === "asc" ? " ↑" : " ↓") : ""}</button></th>)}</tr></thead><tbody>{visibleRows.map((row, index) => { const absoluteIndex = page * pageSize + index; const sampleIdentity = datasetSampleIdentityFromTableRow(row, workspace.datasetId); return <tr key={stableRowKey(row, absoluteIndex)}><td><button type="button" className="table-row-select" aria-label={sampleIdentity ? `选择第 ${absoluteIndex + 1} 行` : `第 ${absoluteIndex + 1} 行缺少稳定样本标识`} disabled={!sampleIdentity} onClick={() => selectRow(row)} onKeyDown={(event) => { if (sampleIdentity && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); selectRow(row); } }}>{sampleIdentity ? "选择" : "不可选择"}</button></td>{activeColumns.map((column) => <td key={column}>{displayScalar(row[column])}</td>)}</tr>; })}</tbody></table></div>{pageCount > 1 ? <nav className="table-pagination" aria-label="数据表分页"><button type="button" disabled={page === 0} onClick={() => setPage((value) => Math.max(0, value - 1))}>上一页</button><span>第 {page + 1} / {pageCount} 页</span><button type="button" disabled={page >= pageCount - 1} onClick={() => setPage((value) => Math.min(pageCount - 1, value + 1))}>下一页</button></nav> : null}</section>;
+  return <section className="workspace-generic-renderer" aria-label="已验证的数据表">
+    <header className="scientific-figure-header">
+      <div>
+        <h5>已验证的数据表</h5>
+        <p data-testid="workspace-table-count" role="status" aria-live="polite">{tableCount} 单位沿用源数据字段。</p>
+        {previewTruncated ? <p className="workspace-table-preview-note" role="note">当前为前 {rows.length.toLocaleString("zh-CN")} 行交互预览，完整数据仍保留在结果中。</p> : null}
+      </div>
+      <label>搜索 <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索公式或属性" /></label>
+    </header>
+    <details className="table-column-controls">
+      <summary>列显示</summary>
+      <div>{columns.map((column) => <label key={column}><input type="checkbox" checked={!visible || visible.has(column)} onChange={(event) => { const next = new Set(visible || columns); event.target.checked ? next.add(column) : next.delete(column); setVisible(next.size ? next : new Set([columns[0]])); }} />{column}</label>)}</div>
+    </details>
+    <p id={hintId} className="workspace-table-mobile-hint" role="note">
+      左右滑动查看完整属性；样本身份与选择操作固定在左侧。
+    </p>
+    <div className="workspace-table-frame">
+      <div className="workspace-table-scroll" role="region" aria-label="已验证的数据表，可横向滚动查看完整列" aria-describedby={hintId} tabIndex={0}>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col" className="workspace-table-identity-column">样本 / 选择</th>
+              {activeColumns.map((column) => <th key={column} scope="col"><button type="button" className="table-sort-button" onClick={() => setSort((current) => ({ key: column, direction: current?.key === column && current.direction === "asc" ? "desc" : "asc" }))}>{column}{sort?.key === column ? (sort.direction === "asc" ? " ↑" : " ↓") : ""}</button></th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {visibleRows.map((row, index) => {
+              const absoluteIndex = page * pageSize + index;
+              const sampleIdentity = datasetSampleIdentityFromTableRow(row, workspace.datasetId);
+              return <tr key={stableRowKey(row, absoluteIndex)}>
+                <td className="workspace-table-identity-column">
+                  <button type="button" className="table-row-select" aria-label={sampleIdentity ? `选择样本 ${sampleIdentity.sampleRef}` : `第 ${absoluteIndex + 1} 行缺少稳定样本标识`} disabled={!sampleIdentity} onClick={() => selectRow(row)} onKeyDown={(event) => { if (sampleIdentity && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); selectRow(row); } }}>
+                    {sampleIdentity ? "选择" : "不可选择"}
+                  </button>
+                  <small>{sampleIdentity?.sampleRef ?? `第 ${absoluteIndex + 1} 行`}</small>
+                </td>
+                {activeColumns.map((column) => <td key={column}>{displayScalar(row[column])}</td>)}
+              </tr>;
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {pageCount > 1 ? <nav className="table-pagination" aria-label="数据表分页"><button type="button" aria-label="数据表上一页" disabled={page === 0} onClick={() => setPage((value) => Math.max(0, value - 1))}>上一页</button><span aria-live="polite">第 {page + 1} / {pageCount} 页</span><button type="button" aria-label="数据表下一页" disabled={page >= pageCount - 1} onClick={() => setPage((value) => Math.min(pageCount - 1, value + 1))}>下一页</button></nav> : null}
+  </section>;
 }
+
+const DATASET_ROW_IDENTITY_FIELDS = new Set([
+  "sampleKey",
+]);
 
 function PlotFallback({ content, descriptor, workspace, onSelection }: Readonly<{ content: unknown; descriptor: WorkspaceRendererDescriptor; workspace: ScientificWorkspace; onSelection: (selection: WorkspaceSelectionContext) => void }>) {
   const figure = normalizedPlotFigure(content);
@@ -280,11 +344,45 @@ function PlotFallback({ content, descriptor, workspace, onSelection }: Readonly<
 }
 
 function TextFallback({ content }: { content: unknown }) { return <section className="workspace-generic-renderer"><h5>文本结果</h5><pre>{typeof content === "string" ? content.slice(0, MAX_JSON_PREVIEW_CHARS) : "文本内容暂时无法读取。"}</pre></section>; }
+function StaticMetadataFallback({ artifact }: { artifact: Artifact }) {
+  return <section className="workspace-generic-renderer workspace-metadata-fallback" role="status" aria-label="科学资源元数据">
+    <p className="product-kicker">安全元数据预览</p>
+    <h5>原始文件保留，可查看元数据</h5>
+    <p>当前资源类型不在浏览器中展开渲染；原始科学文件没有被替换、重算或伪装成图片预览。</p>
+    <dl>
+      <dt>资源契约</dt><dd>{artifact.type || "未知"}@{artifactVersion(artifact)}</dd>
+      <dt>文件名</dt><dd>{safeTitle(artifact)}</dd>
+      <dt>文件大小</dt><dd>{formatBytes(artifact.sizeBytes)}</dd>
+      <dt>校验摘要</dt><dd><code>{compact(artifactChecksum(artifact), 24)}</code></dd>
+    </dl>
+    <p className="workspace-metadata-fallback-note">请使用结果目录中的“Download”获取原始文件；科学来源、版本与校验信息仍保持不变。</p>
+  </section>;
+}
+function DownloadOnlyFallback({ artifact }: { artifact: Artifact }) {
+  return <section className="workspace-generic-renderer workspace-metadata-fallback" role="status" aria-label="科学资源下载">
+    <p className="product-kicker">原始文件</p>
+    <h5>该资源通过安全下载访问</h5>
+    <p>此文件不在浏览器中执行或内联渲染。请从结果目录下载原始内容，以保留完整的科学文件语义。</p>
+    <dl><dt>资源契约</dt><dd>{artifact.type || "未知"}@{artifactVersion(artifact)}</dd><dt>校验摘要</dt><dd><code>{compact(artifactChecksum(artifact), 24)}</code></dd></dl>
+  </section>;
+}
 export function structuredDataPreview(content: unknown): { text: string; summary: string; state: "READY" | "EMPTY" | "UNAVAILABLE"; truncated: boolean } {
   if (content === undefined) return { text: "当前 Artifact 未提供可预览的结构化内容。", summary: "无可用内容", state: "UNAVAILABLE", truncated: false };
+  const previewState: StructuredPreviewState = {
+    remainingNodes: 2_048,
+    omittedArrayItems: 0,
+    omittedObjectFields: 0,
+    omittedStringCharacters: 0,
+    reachedNodeLimit: false,
+    activeObjects: new WeakSet<object>(),
+  };
   let serialized: string;
   try {
-    serialized = JSON.stringify(content, null, 2);
+    serialized = JSON.stringify(
+      boundedStructuredPreviewValue(content, previewState, 0),
+      null,
+      2,
+    );
   } catch {
     return { text: "当前 Artifact 内容无法安全序列化；原始结果仍保留在持久化 Artifact 中。", summary: "预览不可用", state: "UNAVAILABLE", truncated: false };
   }
@@ -292,13 +390,141 @@ export function structuredDataPreview(content: unknown): { text: string; summary
   const topLevelCount = Array.isArray(content) ? content.length : content && typeof content === "object" ? Object.keys(content).length : 1;
   const kind = Array.isArray(content) ? "数组" : content === null ? "空值" : typeof content === "object" ? "对象" : "标量";
   const empty = content === null || serialized === "" || (typeof content === "object" && topLevelCount === 0);
-  const truncated = serialized.length > MAX_JSON_PREVIEW_CHARS;
-  const text = truncated ? `${serialized.slice(0, MAX_JSON_PREVIEW_CHARS)}\n[预览已限制；完整内容仍保留在 Artifact 中]` : serialized;
+  const serializedOverLimit = serialized.length > MAX_JSON_PREVIEW_CHARS;
+  const truncated = serializedOverLimit
+    || previewState.omittedArrayItems > 0
+    || previewState.omittedObjectFields > 0
+    || previewState.omittedStringCharacters > 0
+    || previewState.reachedNodeLimit;
+  const boundedText = serializedOverLimit
+    ? serialized.slice(0, MAX_JSON_PREVIEW_CHARS)
+    : serialized;
+  const text = truncated
+    ? `${boundedText}\n${structuredPreviewLimitNote(previewState, serializedOverLimit)}`
+    : serialized;
   return { text, summary: `${kind} · ${topLevelCount} ${Array.isArray(content) ? "项" : "个顶层字段"}${truncated ? " · 有界预览" : ""}`, state: empty ? "EMPTY" : "READY", truncated };
 }
+
+type StructuredPreviewState = {
+  remainingNodes: number;
+  omittedArrayItems: number;
+  omittedObjectFields: number;
+  omittedStringCharacters: number;
+  reachedNodeLimit: boolean;
+  activeObjects: WeakSet<object>;
+};
+
+function boundedStructuredPreviewValue(
+  value: unknown,
+  state: StructuredPreviewState,
+  depth: number,
+): unknown {
+  if (typeof value === "string") {
+    const maximumStringCharacters = 4_000;
+    if (value.length <= maximumStringCharacters) return value;
+    state.omittedStringCharacters += value.length - maximumStringCharacters;
+    return `${value.slice(0, maximumStringCharacters)}…`;
+  }
+  if (
+    value === null
+    || typeof value === "number"
+    || typeof value === "boolean"
+    || value === undefined
+  ) return value;
+  if (typeof value !== "object") {
+    throw new TypeError("Unsupported JSON preview value.");
+  }
+  if (state.activeObjects.has(value)) {
+    throw new TypeError("Circular JSON preview value.");
+  }
+  if (state.remainingNodes <= 0 || depth >= 12) {
+    state.reachedNodeLimit = true;
+    return "[预览层级或节点预算已达上限]";
+  }
+  state.remainingNodes -= 1;
+  state.activeObjects.add(value);
+  try {
+    if (Array.isArray(value)) {
+      const maximumItems = Math.min(value.length, 128);
+      const result: unknown[] = [];
+      for (let index = 0; index < maximumItems; index += 1) {
+        if (state.remainingNodes <= 0) {
+          state.reachedNodeLimit = true;
+          state.omittedArrayItems += value.length - index;
+          break;
+        }
+        result.push(boundedStructuredPreviewValue(value[index], state, depth + 1));
+      }
+      if (maximumItems < value.length && !state.reachedNodeLimit) {
+        state.omittedArrayItems += value.length - maximumItems;
+      }
+      return result;
+    }
+    const source = value as Record<string, unknown>;
+    const keys = Object.keys(source);
+    const maximumFields = Math.min(keys.length, 64);
+    const result: Record<string, unknown> = {};
+    for (let index = 0; index < maximumFields; index += 1) {
+      if (state.remainingNodes <= 0) {
+        state.reachedNodeLimit = true;
+        state.omittedObjectFields += keys.length - index;
+        break;
+      }
+      const key = keys[index];
+      result[key] = boundedStructuredPreviewValue(source[key], state, depth + 1);
+    }
+    if (maximumFields < keys.length && !state.reachedNodeLimit) {
+      state.omittedObjectFields += keys.length - maximumFields;
+    }
+    return result;
+  } finally {
+    state.activeObjects.delete(value);
+  }
+}
+
+function structuredPreviewLimitNote(
+  state: StructuredPreviewState,
+  serializedOverLimit: boolean,
+): string {
+  const details = [
+    state.omittedArrayItems ? `省略 ${state.omittedArrayItems.toLocaleString("zh-CN")} 个数组项` : "",
+    state.omittedObjectFields ? `省略 ${state.omittedObjectFields.toLocaleString("zh-CN")} 个对象字段` : "",
+    state.omittedStringCharacters ? `省略 ${state.omittedStringCharacters.toLocaleString("zh-CN")} 个长文本字符` : "",
+    state.reachedNodeLimit ? "达到预览层级或节点预算" : "",
+    serializedOverLimit ? "达到显示字符上限" : "",
+  ].filter(Boolean);
+  return `[预览已限制${details.length ? `：${details.join("；")}` : ""}；完整内容仍保留在 Artifact 中]`;
+}
 function JsonFallback({ content }: { content: unknown }) { const preview = structuredDataPreview(content); return <section className="workspace-generic-renderer workspace-structured-preview" aria-label="结构化数据预览"><header><h5>结构化数据</h5><span>{preview.summary}</span></header>{preview.state === "EMPTY" ? <p className="workspace-structured-empty" role="note">该结果的结构化内容为空；下方保留精确 JSON 表示。</p> : null}<pre tabIndex={0} aria-label="结构化数据 JSON">{preview.text}</pre></section>; }
-function InertFallback({ artifact, reason }: { artifact: Artifact; reason: string }) { return <section className="workspace-generic-renderer" role="status"><h5>Inert Artifact fallback</h5><p>{reason}. No HTML, JavaScript, iframe, dynamic module, external URL or guessed renderer is executed.</p><dl><dt>Contract</dt><dd>{artifact.type || "unknown"}@{artifactVersion(artifact)}</dd><dt>Checksum</dt><dd>{compact(artifactChecksum(artifact), 20)}</dd></dl></section>; }
-function GalleryState({ title, message, error = false }: { title: string; message: string; error?: boolean }) { return <div className="workspace-gallery-state" role={error ? "alert" : "status"}><strong>{title}</strong><span>{message}</span></div>; }
+function InertFallback({ artifact, reason }: { artifact: Artifact; reason: string }) {
+  const copy = inertReasonCopy(reason);
+  return <section className="workspace-generic-renderer workspace-inert-fallback" role="status">
+    <h5>{copy.title}</h5>
+    <p>{copy.body}</p>
+    <details><summary>查看技术详情</summary><p className="workspace-inert-fallback-code"><code>{reason}</code></p></details>
+    <dl><dt>数据契约</dt><dd>{artifact.type || "未知"}@{artifactVersion(artifact)}</dd><dt>校验摘要</dt><dd>{compact(artifactChecksum(artifact), 20)}</dd></dl>
+  </section>;
+}
+function inertReasonCopy(reason: string): { title: string; body: string } {
+  if (reason === "ARTIFACT_PAYLOAD_MISSING" || reason.includes("PAYLOAD_MISSING")) {
+    return { title: "当前解析资源暂时无法读取", body: "科学结果和来源元数据仍被保留，但当前精确 payload 不可用。请稍后重试或打开来源与属性；系统不会用其他版本替代它。" };
+  }
+  if (reason.includes("UNSUPPORTED") || reason.includes("METADATA_ONLY")) {
+    return { title: "当前资源没有可用的专业查看器", body: "该资源契约暂未映射到受信任的查看器；你仍可查看有界元数据或原始结构化内容，系统不会执行未知组件。" };
+  }
+  return { title: "当前资源无法安全呈现", body: "查看器拒绝了当前资源的呈现请求。原始科学记录没有被改写，也不会执行 HTML、脚本、外部页面或猜测出的渲染器。" };
+}
+function GalleryState({ title, message, error = false }: { title: string; message: string; error?: boolean }) {
+  const titleCopy = title === "Artifact Gallery unavailable" ? "科学结果暂时无法读取" : title === "No Artifacts" ? "暂无已保存的科学结果" : title === "Loading metadata" ? "正在读取结果目录" : title;
+  const messageCopy = message === "Scientific payloads are not requested during initial Workspace loading."
+    ? "正在读取已保存结果的元数据；初始加载不会请求科学 payload。"
+    : message === "No persisted Artifacts are available for this Job."
+      ? "当前分析尚未保存可查看的科学结果。"
+      : error
+        ? "结果目录暂时无法读取；科学记录没有被修改，请稍后重试。"
+        : message;
+  return <div className="workspace-gallery-state" role={error ? "alert" : "status"}><strong>{titleCopy}</strong><span>{messageCopy}</span></div>;
+}
 
 function scope(workspace: ScientificWorkspace) { return { workspaceId: workspace.workspaceId, workspaceRevision: workspace.revision, projectId: workspace.projectId, sourceJobId: workspace.sourceJobId }; }
 
@@ -326,6 +552,13 @@ function formatBytes(value: unknown) { if (!Number.isSafeInteger(value) || Numbe
 function errorCode(error: unknown) { if (error instanceof WorkspaceArtifactLoadError) return error.code; if (error instanceof Error) return error.message.replace(/[\r\n\t]/g, " ").slice(0, 160); return "ARTIFACT_GALLERY_FAILED"; }
 function asRecord(value: unknown): Record<string, unknown> | null { return value !== null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null; }
 function tableRows(content: unknown): Record<string, unknown>[] { const record = asRecord(content); const candidates = [record?.rows, record?.data, record?.records]; for (const candidate of candidates) if (Array.isArray(candidate)) return candidate.filter((item): item is Record<string, unknown> => asRecord(item) !== null); return []; }
-function stableRowKey(row: Record<string, unknown>, index: number) { for (const key of ["objectId", "sampleRef", "sample_id", "sampleKey", "id"]) if (typeof row[key] === "string") return `${key}:${row[key]}`; return `display-row-${index}`; }
+function stableRowKey(row: Record<string, unknown>, index: number) {
+  const objectId = typeof row.objectId === "string" ? row.objectId : "";
+  for (const key of ["sampleKey", "sample_id", "sampleRef", "id"]) {
+    if (typeof row[key] === "string" && row[key]) return `${key}:${objectId ? `${objectId}:` : ""}${row[key]}`;
+  }
+  if (objectId) return `objectId:${objectId}:row-${index}`;
+  return `display-row-${index}`;
+}
 function displayScalar(value: unknown) { if (typeof value === "number") return Number.isFinite(value) ? String(value) : "invalid"; if (["string", "boolean"].includes(typeof value)) return String(value).slice(0, 200); return value === null ? "null" : "[structured]"; }
 function plotRows(value: unknown, traceIndex: number, cap: number): Record<string, unknown>[] { const trace = asRecord(value); const x = Array.isArray(trace?.x) ? trace.x : []; const y = Array.isArray(trace?.y) ? trace.y : []; const values = Array.isArray(trace?.values) ? trace.values : []; const count = Math.min(Math.max(x.length, y.length, values.length), cap); return Array.from({ length: count }, (_, index) => ({ trace: traceIndex + 1, point: index + 1, x: x[index] ?? null, y: y[index] ?? null, value: values[index] ?? null })); }

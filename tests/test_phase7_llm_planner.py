@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import urllib.error
 
 import pytest
@@ -12,10 +11,9 @@ import mdi_llm.providers as provider_module
 from mdi_api.secrets import InMemorySecretStore
 from mdi_api.repositories import InMemoryRepositoryBundle
 from mdi_llm import LLMProviderError, MockLLMProvider, OpenAICompatibleProvider, PlannerRequest, PlannerRawResponse, PlannerUserConfig, redact_params_for_log
-from mdi_llm.planner_prompt import build_planner_prompt
-from mdi_schemas import AnalysisPlan, AnalysisStep, ArtifactType, DataProfile
+from mdi_schemas import AnalysisPlan, DataProfile
 from mdi_tool_registry import ToolRegistry, load_manifests
-from mdi_tool_registry.plan_validator import PlanValidationError, validate_plan
+from mdi_tool_registry.plan_validator import validate_plan
 from mdi_workers import InMemoryQueueBackend, QueueWorkerRuntime
 
 
@@ -384,17 +382,19 @@ def test_secret_list_never_returns_plaintext_value() -> None:
 def test_secret_store_get_returns_value_for_internal_use() -> None:
     store = InMemorySecretStore()
     s = store.create_secret("user1", "openai", "my-key")
-    sd = store.get_secret(s.id)
+    sd = store.get_secret(s.id, "user1")
     assert sd is not None
     assert sd.value == "my-key"
+    assert store.get_secret(s.id, "user2") is None
 
 
 def test_secret_store_delete() -> None:
     store = InMemorySecretStore()
     s = store.create_secret("user1", "openai", "tmp")
-    assert store.delete_secret(s.id) is True
-    assert store.get_secret(s.id) is None
-    assert store.delete_secret("nonexistent") is False
+    assert store.delete_secret(s.id, "user2") is False
+    assert store.delete_secret(s.id, "user1") is True
+    assert store.get_secret(s.id, "user1") is None
+    assert store.delete_secret("nonexistent", "user1") is False
 
 
 # ── 12. Redaction helper ───────────────────────────────────────────

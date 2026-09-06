@@ -441,7 +441,14 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
   }, [selection]);
 
   if (loadState === "LOADING") return <WorkspaceLoadState title="Loading Workspace" message={loadMessage} />;
-  if (loadState === "NOT_FOUND") return <WorkspaceLoadState title="Workspace not found" message="The exact Workspace ID is unavailable in this project." actionHref="/" />;
+  if (loadState === "NOT_FOUND") return <WorkspaceLoadState
+    title="Workspace not found"
+    message="The exact Workspace ID is unavailable. No scientific source or historical result was changed."
+    actionHref="/projects"
+    actionLabel="查看项目"
+    secondaryActionHref="/console"
+    secondaryActionLabel="返回控制台"
+  />;
   if (loadState === "ERROR" || !snapshot) return <WorkspaceLoadState title="Workspace unavailable" message={loadMessage} actionLabel="Retry" onAction={load} />;
 
   const workspace = snapshot.workspace;
@@ -789,8 +796,24 @@ function WorkspaceEmptyState({ panelCount }: { panelCount: number }) {
   return <div className="workspace-empty-state" role="status"><h2>No active panel</h2><p>{panelCount ? "Choose an available Workspace section." : "This Workspace has no visible panel descriptors."}</p></div>;
 }
 
-function WorkspaceLoadState({ title, message, actionHref, actionLabel, onAction }: { title: string; message: string; actionHref?: string; actionLabel?: string; onAction?: () => void }) {
-  return <main className="workspace-route-state"><section role="status"><span className="eyebrow">Scientific Workspace</span><h1>{title}</h1><p>{message}</p>{actionHref ? <Link href={actionHref}>Back to planner</Link> : null}{onAction ? <button type="button" onClick={onAction}>{actionLabel || "Retry"}</button> : null}</section></main>;
+function WorkspaceLoadState({
+  title,
+  message,
+  actionHref,
+  actionLabel,
+  secondaryActionHref,
+  secondaryActionLabel,
+  onAction,
+}: {
+  title: string;
+  message: string;
+  actionHref?: string;
+  actionLabel?: string;
+  secondaryActionHref?: string;
+  secondaryActionLabel?: string;
+  onAction?: () => void;
+}) {
+  return <main className="workspace-route-state"><section role="status"><span className="eyebrow">Scientific Workspace</span><h1>{title}</h1><p>{message}</p><div className="workspace-route-actions">{onAction ? <button type="button" className="product-primary-action" onClick={onAction}>{actionLabel || "Retry"}</button> : null}{actionHref ? <Link className="product-primary-action" href={actionHref}>{actionLabel || "继续"}</Link> : null}{secondaryActionHref ? <Link className="product-secondary-action" href={secondaryActionHref}>{secondaryActionLabel || "返回"}</Link> : null}</div></section></main>;
 }
 
 function Metadata({ label, value }: { label: string; value: string }) {

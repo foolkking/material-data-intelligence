@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "phase14r.exact-minio-availability-verification.v1",
+  "verifiedAt": "2026-09-03T09:19:29+00:00",
+  "database": "postgresql://127.0.0.1:55434/mdi",
+  "bucket": "mdi-artifacts",
+  "acceptanceScope": {
+    "owner": "user_local",
+    "scientificObjectVersions": {
+      "referenced": 13,
+      "exactPayloadPresent": 13,
+      "missing": 0
+    },
+    "minioArtifacts": {
+      "referenced": 241,
+      "exactPayloadPresent": 241,
+      "missing": 0
+    }
+  },
+  "recoveredScientificObjectVersion": {
+    "scientificObjectId": "f6cdd30c-4797-4484-ab61-77010f8783cb",
+    "scientificObjectVersionId": "200bdc49-c728-4b67-9d15-607e9e98ad2b",
+    "storageKey": "projects/project_0002_1a0af866391f412d/datasets/dataset_0002_cb403e1b78f54d32/normalized/obj_structure_72a5ab29a949/structure.json",
+    "byteSize": 832,
+    "sha256": "067bc07a01eb9d27021cfcb9406a6358b7b0c81910ca4beb2531dfbfc35217a6",
+    "sourceStore": "http://127.0.0.1:9102",
+    "sameKey": true,
+    "databaseRowsChanged": 0
+  },
+  "recoveredArtifactsEvidence": "docs/agent2/product_maturity/evidence/exact_minio_reference_recovery_2026-09-03.json",
+  "scientificIdentityChanged": false,
+  "silentLatestSubstitution": false
+}

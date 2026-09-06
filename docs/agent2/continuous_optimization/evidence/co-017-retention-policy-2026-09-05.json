@@ -1,0 +1,35 @@
+{
+  "improvement": "CO-017",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "rootCause": "Lifecycle retention behavior was documented in the UI but not represented by one reusable server-side policy contract.",
+  "change": {
+    "policy": {
+      "schemaVersion": "phase14r-retention/1.0",
+      "automaticPurge": "DISABLED",
+      "referencedProvenance": "PROTECTED_INDEFINITELY",
+      "unreferencedTrash": "MANUAL_OWNER_PURGE",
+      "manualPurge": "SERVER_ZERO_DEPENDENCY_ONLY",
+      "manualPurgeRequiresZeroDependencies": true
+    },
+    "enforcement": [
+      "Project and Dataset dependency previews use the shared manual purge decision.",
+      "Project and Dataset physical deletion uses the same decision and returns the policy on protected 409 responses.",
+      "Trash Center surfaces the server-derived policy during purge inspection."
+    ]
+  },
+  "verification": {
+    "backendPolicy": "3 passed",
+    "lifecycleAndDependency": "6 passed, 29 deselected",
+    "frontendTrashCenter": "5 passed",
+    "compileall": "PASS",
+    "gitDiffCheck": "PASS",
+    "typecheck": "PASS"
+  },
+  "safety": {
+    "automaticScientificExpiry": false,
+    "referencedScientificProvenanceDeleted": false,
+    "newScientificAuthority": false,
+    "servicesStopped": false
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "improvement": "CO-045",
+  "date": "2026-09-05",
+  "status": "PASS",
+  "authority": "Authorized global search remains a navigation projection, not scientific fact authority.",
+  "pagination": {
+    "authorized_results": 125,
+    "page_sizes": [23, 23, 23, 23, 23, 10],
+    "unique_results": 125,
+    "unauthorized_results": 0,
+    "cursor_bound_to": ["user", "query", "project", "type", "status"],
+    "cross_scope_cursor_status": 422
+  },
+  "verification": {
+    "backend": "9 passed",
+    "frontend": "22 passed",
+    "typecheck": "PASS",
+    "ruff": "PASS",
+    "diff_check": "PASS"
+  }
+}

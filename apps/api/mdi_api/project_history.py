@@ -7,6 +7,16 @@ from typing import Any, Mapping
 PROJECT_HISTORY_SCHEMA_VERSION = "ProjectHistoryView/1.0"
 
 
+def _page(items: list[dict[str, Any]], cursor: str | None, limit: int) -> tuple[list[dict[str, Any]], str | None]:
+    try:
+        offset = max(0, int(cursor or "0"))
+    except (TypeError, ValueError):
+        offset = 0
+    page = items[offset:offset + limit]
+    next_cursor = str(offset + limit) if offset + limit < len(items) else None
+    return page, next_cursor
+
+
 class ProjectHistoryService:
     """Build a bounded user-facing audit view from persisted product records."""
 
@@ -14,7 +24,15 @@ class ProjectHistoryService:
         self.repositories = repositories
         self.archived_run_ids = set(archived_run_ids or ())
 
-    def build(self, project_id: str) -> dict[str, Any]:
+    def build(
+        self,
+        project_id: str,
+        *,
+        limit: int | None = None,
+        datasets_cursor: str | None = None,
+        analyses_cursor: str | None = None,
+        activity_cursor: str | None = None,
+    ) -> dict[str, Any]:
         project = _record(self.repositories.projects.get(project_id))
         datasets = _records(self.repositories.datasets.list_for_project(project_id))
         profiles = _records(self.repositories.data_profiles.list_by_project(project_id))
@@ -65,6 +83,14 @@ class ProjectHistoryService:
         activity = self._activity(project_id, dataset_views, analysis_views)
         activity_times = [str(item["occurredAt"]) for item in activity if item.get("occurredAt")]
 
+        if limit is not None:
+            datasets_page, datasets_next = _page(dataset_views, datasets_cursor, limit)
+            analyses_page, analyses_next = _page(analysis_views, analyses_cursor, limit)
+            activity_page, activity_next = _page(activity[:100], activity_cursor, limit)
+        else:
+            datasets_page, datasets_next = dataset_views, None
+            analyses_page, analyses_next = analysis_views, None
+            activity_page, activity_next = activity[:100], None
         return {
             "schemaVersion": PROJECT_HISTORY_SCHEMA_VERSION,
             "project": {
@@ -87,9 +113,14 @@ class ProjectHistoryService:
                 "reportCount": len(reports),
                 "lastActivityAt": max(activity_times) if activity_times else project.get("updatedAt") or project.get("createdAt"),
             },
-            "datasets": dataset_views,
-            "analyses": analysis_views,
-            "activity": activity[:100],
+            "datasets": datasets_page,
+            "analyses": analyses_page,
+            "activity": activity_page,
+            "pagination": {
+                "datasets": {"nextCursor": datasets_next},
+                "analyses": {"nextCursor": analyses_next},
+                "activity": {"nextCursor": activity_next},
+            },
         }
 
     def _dataset_view(

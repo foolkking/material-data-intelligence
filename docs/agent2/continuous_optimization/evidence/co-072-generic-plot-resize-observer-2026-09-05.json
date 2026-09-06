@@ -1,0 +1,15 @@
+{
+  "id": "CO-072",
+  "date": "2026-09-05",
+  "problem": "Generic Plot only reacted to window resize and could remain mis-sized after container or split-pane changes.",
+  "change": "Observe the Plotly host with ResizeObserver, retain window resize compatibility, and disconnect on unmount.",
+  "files": [
+    "apps/web/app/components/workspace/WorkspaceGenericPlot.tsx",
+    "apps/web/app/components/workspace/WorkspaceGenericPlot.test.tsx"
+  ],
+  "verification": {
+    "focused_tests": "9 passed",
+    "typecheck": "PASS"
+  },
+  "result": "Plots follow real workspace/container geometry without changing scientific data or triggering computation."
+}

@@ -5,8 +5,10 @@ import os
 from collections.abc import Sequence
 from typing import Any
 
+from mdi_schemas.worker_queues import worker_queue_definition
 
-DEFAULT_QUEUE_NAME = "mdi-jobs"
+
+DEFAULT_QUEUE_NAME = worker_queue_definition("execution").default_name
 DEFAULT_REDIS_URL = "redis://localhost:6379/0"
 
 
@@ -38,7 +40,14 @@ def create_worker(
     connection = Redis.from_url(redis_url)
     connection.ping()
     worker_class = resolve_worker_class(platform_name=platform_name)
-    return worker_class(list(queue_names), connection=connection, name=name)
+    from mdi_workers.observability import rq_exception_handler
+
+    return worker_class(
+        list(queue_names),
+        connection=connection,
+        name=name,
+        exception_handlers=[rq_exception_handler],
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -55,8 +64,21 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    redis_url = resolve_redis_url(args.redis_url)
+    if os.getenv("MDI_RUNTIME_PROFILE", "local").strip().lower() == "same-stack":
+        from mdi_api.config import load_settings, validate_runtime_settings
+        from mdi_api.migration_head import validate_database_migration_head
+
+        settings = load_settings()
+        validate_runtime_settings(
+            settings,
+            process_role="worker",
+            worker_redis_url=redis_url,
+            worker_queue_names=tuple(args.queues),
+        )
+        validate_database_migration_head(settings)
     worker = create_worker(
-        redis_url=resolve_redis_url(args.redis_url),
+        redis_url=redis_url,
         queue_names=args.queues,
         name=args.name,
     )

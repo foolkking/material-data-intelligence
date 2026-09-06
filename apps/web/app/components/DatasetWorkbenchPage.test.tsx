@@ -64,8 +64,14 @@ it("uses a distinct dataset frame and embeds the planner for the selected datase
   expect(await screen.findByRole("heading", { name: "materials.csv" })).toBeInTheDocument();
   expect(screen.getByText("解析状态")).toBeInTheDocument();
   expect(screen.getAllByText("已完成")).toHaveLength(2);
-  expect(screen.getByRole("heading", { name: "上传记录" })).toBeInTheDocument();
-  expect(screen.getByRole("heading", { name: "该数据集的分析" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "来源文件与科学资源" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "基于此数据集的分析" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "从来源到结果：每一层负责什么" })).toBeInTheDocument();
+  expect(screen.getByText("科学身份与状态")).toBeInTheDocument();
+  expect(screen.getByText("语义档案（Profile）")).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "项目" })).toHaveAttribute("href", "/projects/project_1");
+  expect(screen.getByRole("link", { name: "返回项目" })).toHaveAttribute("href", "/projects/project_1");
+  expect(screen.getByRole("link", { name: "导入其他数据" })).toHaveAttribute("href", "/projects/project_1/datasets/new");
   expect(screen.getByRole("link", { name: /Show the distribution of band gap/ })).toHaveAttribute("href", "/projects/project_1/research?run=job_1");
 
   const planner = screen.getByTestId("embedded-planner");

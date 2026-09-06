@@ -1,0 +1,33 @@
+{
+  "improvement": "CO-127",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "problem": "The project export manifest is authorized with read access on the server, but the Projects actions menu exposed export only to write-capable roles.",
+  "root_cause": "Frontend placed the read-only export action inside the canManageProject branch.",
+  "change": {
+    "files": [
+      "apps/web/app/components/ProductPages.tsx",
+      "apps/web/app/components/ProductPages.test.tsx"
+    ],
+    "behavior": "Shared viewer members now see and can invoke the bounded provenance export; write-only lifecycle and metadata actions remain hidden."
+  },
+  "authority": {
+    "api": "GET /api/projects/{project_id}/export-manifest",
+    "authorization": "require_project_access(read)"
+  },
+  "verification": {
+    "command": "npm run test -- --run app/components/ProductPages.test.tsx",
+    "result": "46 passed",
+    "checks": [
+      "viewer export action is discoverable",
+      "viewer mutation actions remain hidden",
+      "authorized manifest request is invoked",
+      "download is initiated",
+      "owner export regression remains covered"
+    ]
+  },
+  "services_or_data_mutated": false,
+  "new_findings": [
+    "CO-029 remains the next P0 authorization candidate: cross-project/cross-user fuzzing across exact routes."
+  ]
+}

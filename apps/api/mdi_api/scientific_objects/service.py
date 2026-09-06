@@ -22,6 +22,7 @@ from mdi_api.db import (
     scientific_result_snapshots,
 )
 from mdi_api.artifact_storage import ArtifactStorage
+from mdi_api.lifecycle_policy import retention_policy_snapshot
 from mdi_api.scientific_objects.registry import ObjectTypeRegistry
 from mdi_api.scientific_objects.schemas import (
     ScientificObjectAvailability,
@@ -667,11 +668,36 @@ class ScientificObjectService:
                 )
 
             dependencies = [
-                {"kind": "scientific_object_versions", "label": "科学对象版本", "count": len(versions)},
-                {"kind": "scientific_object_relationships", "label": "科学对象关系", "count": len(relationships)},
-                {"kind": "scientific_result_snapshots", "label": "ScientificResult", "count": len(result_snapshot_ids)},
-                {"kind": "research_turns", "label": "ResearchTurn", "count": len(turn_ids)},
-                {"kind": "scientific_reports", "label": "科学报告", "count": report_count},
+                {
+                    "kind": "scientific_object_versions",
+                    "label": "科学对象版本",
+                    "count": len(versions),
+                    "href": f"/projects/{logical['project_id']}/data?object={object_id}",
+                },
+                {
+                    "kind": "scientific_object_relationships",
+                    "label": "科学对象关系",
+                    "count": len(relationships),
+                    "href": f"/projects/{logical['project_id']}/data?object={object_id}",
+                },
+                {
+                    "kind": "scientific_result_snapshots",
+                    "label": "ScientificResult",
+                    "count": len(result_snapshot_ids),
+                    "href": f"/projects/{logical['project_id']}/research",
+                },
+                {
+                    "kind": "research_turns",
+                    "label": "ResearchTurn",
+                    "count": len(turn_ids),
+                    "href": f"/projects/{logical['project_id']}/research",
+                },
+                {
+                    "kind": "scientific_reports",
+                    "label": "科学报告",
+                    "count": report_count,
+                    "href": f"/projects/{logical['project_id']}/reports",
+                },
             ]
             dependencies = [item for item in dependencies if item["count"]]
             total = sum(item["count"] for item in dependencies)
@@ -682,6 +708,9 @@ class ScientificObjectService:
                 "canDelete": False,
                 "dependencyCount": total,
                 "dependencies": dependencies,
+                "retentionPolicy": retention_policy_snapshot(
+                    manual_purge_supported=False
+                ),
                 "impact": {
                     "removedFromActiveDiscovery": True,
                     "historicalProvenanceProtected": bool(dependencies),

@@ -1,0 +1,24 @@
+{
+  "improvementId": "CO-139",
+  "improvementNumber": 135,
+  "date": "2026-09-05",
+  "problem": "The Phase 5 Alembic regression required an obsolete literal DATABASE_URL token instead of the current typed configuration authority.",
+  "change": {
+    "test": "tests/test_phase5_runtime_infrastructure.py",
+    "assertedAuthority": [
+      "load_settings().database_url",
+      "database_configuration_declared(os.environ)",
+      "Alembic sqlalchemy.url injection",
+      "percent escaping"
+    ]
+  },
+  "verification": {
+    "selected": 10,
+    "passed": 9,
+    "skipped": 1,
+    "skipClassification": "pre-existing runtime compatibility skip",
+    "ruff": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "result": "The test now verifies semantic database configuration authority instead of source spelling."
+}

@@ -20,9 +20,20 @@ FOUNDATION_TABLES = {
 }
 
 EXPECTED_INDEXES = {
-    "project_members": {"idx_project_members_user"},
+    "project_members": {
+        "idx_project_members_user",
+        "idx_project_members_search_user_project",
+    },
     "files": {"idx_files_dataset_created"},
     "audit_logs": {"idx_audit_logs_project_created"},
+    "projects": {"idx_projects_search_owner_updated"},
+    "datasets": {"idx_datasets_search_project_updated"},
+    "sessions": {"idx_sessions_search_project_created"},
+    "reports": {"idx_reports_search_project_created"},
+    "scientific_objects": {"idx_scientific_objects_search_project_created"},
+    "scientific_result_snapshots": {
+        "idx_scientific_results_search_project_created"
+    },
 }
 
 
@@ -162,7 +173,7 @@ def test_fresh_upgrade_creates_complete_foundation_schema(tmp_path: Path) -> Non
     with engine.connect() as connection:
         assert connection.execute(
             text("SELECT version_num FROM alembic_version")
-        ).scalar_one() == "0028_foundation_schema_reconciliation"
+        ).scalar_one() == "0032_provider_connections"
     engine.dispose()
 
 

@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   devIndicators: false,
-  distDir: process.env.MDI_NEXT_DIST_DIR || ".next",
+  distDir: process.env.MDI_NEXT_DIST_DIR || ".cache/next",
   webpack(config) {
     config.ignoreWarnings = [
       ...(config.ignoreWarnings || []),

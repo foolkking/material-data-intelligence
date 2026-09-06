@@ -21,6 +21,11 @@ from mdi_api.research_agent.schemas import CapabilityManifest, CapabilityStatus
 
 
 _IDENTIFIER = re.compile(r"^[a-z][a-z0-9_.-]{2,127}$")
+_EXECUTABLE_UI_BINDING = re.compile(
+    r"(?:https?://|^//|[<>]|javascript:|data:text/html|"
+    r"(?:^|[._-])(?:component|import|module|script|html|css|url|remote)(?:$|[._-]))",
+    re.IGNORECASE,
+)
 
 
 def _digest(value: Any) -> str:
@@ -159,6 +164,14 @@ class CapabilityExtensionRegistry:
                 errors.append(f"UNKNOWN_RESULT_PROJECTOR:{manifest.result_projector}")
             if progress_projectors is not None and not progress_projectors.contains(manifest.progress_projector):
                 errors.append(f"UNKNOWN_PROGRESS_PROJECTOR:{manifest.progress_projector}")
+            for viewer_binding in manifest.viewer_bindings:
+                if (
+                    not _IDENTIFIER.fullmatch(viewer_binding)
+                    or _EXECUTABLE_UI_BINDING.search(viewer_binding)
+                ):
+                    errors.append(
+                        f"EXECUTABLE_VIEWER_BINDING_FORBIDDEN:{manifest.capability_id}"
+                    )
         return PackValidationResult(
             accepted=not errors,
             pack_id=pack.pack_id,

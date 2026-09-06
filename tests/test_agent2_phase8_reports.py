@@ -613,6 +613,28 @@ def test_report_contains_bounded_discussion_conclusion_and_next_steps() -> None:
     assert ReportGroundingValidator().validate(report, bundle=_bundle(), interpretation=interpretation) == []
 
 
+def test_xrd_report_contains_grounded_discussion_conclusion_and_limitations() -> None:
+    bundle, interpretation = _xrd_bundle_and_interpretation()
+    report = DeterministicScientificReportComposer().compose(
+        bundle=bundle,
+        interpretation=interpretation,
+        relevance_status="CURRENT",
+    )
+
+    assert report.discussion is not None
+    assert "17 个峰" in report.discussion.text
+    assert report.discussion.fact_refs == ["xrd.matched_peak_count"]
+    assert report.conclusion is not None
+    assert "17 个峰" in report.conclusion.text
+    assert report.conclusion.fact_refs == ["xrd.matched_peak_count"]
+    assert report.limitations
+    assert ReportGroundingValidator().validate(
+        report,
+        bundle=bundle,
+        interpretation=interpretation,
+    ) == []
+
+
 def test_provider_report_is_projected_back_to_validated_scientific_authority() -> None:
     bundle_payload = _bundle().model_dump(mode="json")
     bundle_payload["research_question"] = "比较精确结构版本 obj_1 的局域环境。"
@@ -1272,8 +1294,15 @@ def test_report_lifecycle_is_recoverable_without_mutating_immutable_snapshot() -
     assert {item["kind"] for item in impact["dependencies"]} >= {
         "RESEARCH_TURN", "SCIENTIFIC_RESULT", "INTERPRETATION",
     }
+    assert next(
+        item["href"]
+        for item in impact["dependencies"]
+        if item["kind"] == "RESEARCH_TURN"
+    ).startswith("/projects/project_1/research/")
     assert impact["impact"]["historicalProvenanceProtected"] is True
     assert impact["impact"]["scientificSnapshotMutated"] is False
+    assert impact["retentionPolicy"]["automaticPurge"] == "DISABLED"
+    assert impact["retentionPolicy"]["manualPurge"] == "NOT_SUPPORTED_FOR_ENTITY"
     trashed = service.set_lifecycle(created["report_id"], "TRASHED")
     assert trashed["lifecycle_status"] == "TRASHED"
     assert service.get_by_report_id(created["report_id"])["lifecycle_status"] == "TRASHED"

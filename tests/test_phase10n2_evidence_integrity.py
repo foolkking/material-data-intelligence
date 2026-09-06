@@ -46,10 +46,17 @@ def test_n2_evidence_records_one_tool_and_no_recomputation() -> None:
 
 def test_n2_ci_requires_browser_and_zero_skip_service_closure() -> None:
     workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    service_manifest = json.loads(
+        (ROOT / "config/mandatory-service-qualification.json").read_text(
+            encoding="utf-8"
+        )
+    )
     replay = (ROOT / "apps/web/test/replay-sealed-browser-evidence.mjs").read_text(encoding="utf-8")
     assert "replay-sealed-browser-evidence.mjs" in workflow
     assert "--n2-local-environment-only" in replay
-    assert "test_phase10n2_local_environment_service_backed.py" in workflow
-    assert "test_phase10n2_postgres_redis_minio_exact_n1_dependency_closure" in workflow
-    threshold = re.search(r'if \[ "\$\{PASSED:-0\}" -lt (\d+) \]; then', workflow)
-    assert threshold and int(threshold.group(1)) >= 45
+    assert (
+        "tests/integration/test_phase10n2_local_environment_service_backed.py"
+        in service_manifest["pytest"]["paths"]
+    )
+    assert service_manifest["pytest"]["minimumPassed"] >= 45
+    assert service_manifest["pytest"]["requireZeroSkips"] is True

@@ -573,7 +573,7 @@ function jsonResponse(value, status = 200) { return { status, contentType: "appl
 async function writeJson(relative, value) { const target = path.join(OUTPUT, relative); await mkdir(path.dirname(target), { recursive: true }); await writeFile(target, `${JSON.stringify(value, null, 2)}\n`, "utf8"); }
 function argumentValue(name) { const index = process.argv.indexOf(name); return index >= 0 ? process.argv[index + 1] : null; }
 function startServer() {
-  const distDir = process.env.MDI_NEXT_DIST_DIR || ".next";
+  const distDir = process.env.MDI_NEXT_DIST_DIR || ".cache/next";
   const mode = process.env.MDI_PHASE10M4_SERVER_MODE || (existsSync(path.join(ROOT, "apps", "web", distDir, "BUILD_ID")) ? "start" : "dev");
   const command = process.platform === "win32" ? "cmd.exe" : "npm";
   const args = process.platform === "win32"

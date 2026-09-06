@@ -62,6 +62,18 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     const bounded = structuredDataPreview({ values: "x".repeat(81_000) });
     expect(bounded.truncated).toBe(true);
     expect(bounded.text).toContain("完整内容仍保留在 Artifact 中");
+    let distantItemRead = false;
+    const largeSeries = new Array(100_000).fill(1);
+    Object.defineProperty(largeSeries, 99_999, {
+      get() {
+        distantItemRead = true;
+        return 2;
+      },
+    });
+    const largePreview = structuredDataPreview({ values: largeSeries });
+    expect(largePreview).toMatchObject({ state: "READY", truncated: true });
+    expect(largePreview.text).toContain("省略 99,872 个数组项");
+    expect(distantItemRead).toBe(false);
   });
 
   it("loads metadata-first and renders the sealed shell with one active panel", async () => {
@@ -334,6 +346,8 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     getWorkspaceMock.mockRejectedValueOnce(Object.assign(new Error("missing"), { status: 404 }));
     const { rerender } = render(<ScientificWorkspaceShell workspaceId="missing" />);
     expect(await screen.findByRole("heading", { name: "Workspace not found" })).not.toBeNull();
+    expect(screen.getByRole("link", { name: "查看项目" })).toHaveAttribute("href", "/projects");
+    expect(screen.getByRole("link", { name: "返回控制台" })).toHaveAttribute("href", "/console");
     getWorkspaceMock.mockRejectedValueOnce(new Error("private\nstack\tmessage"));
     rerender(<ScientificWorkspaceShell workspaceId="error" />);
     expect(await screen.findByRole("heading", { name: "Workspace unavailable" })).not.toBeNull();

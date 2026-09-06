@@ -16,7 +16,14 @@ def run_queued_turn(turn_id: str) -> ProcessTurnResult:
     """RQ entry point. The queue supplies only the Turn identity."""
 
     settings = load_settings()
-    planning_queue = RedisRQCapabilityPlanningQueue(redis_url=settings.redis_url) if settings.agent2_orchestration_enabled and settings.queue_backend == "redis" else DisabledCapabilityPlanningQueue()
+    planning_queue = (
+        RedisRQCapabilityPlanningQueue(
+            redis_url=settings.redis_url,
+            queue_name=settings.agent2_planning_queue_name,
+        )
+        if settings.agent2_orchestration_enabled and settings.queue_backend == "redis"
+        else DisabledCapabilityPlanningQueue()
+    )
     interpretation_queue = (
         RedisRQInterpretationQueue(redis_url=settings.redis_url, queue_name=settings.agent2_interpretation_queue_name)
         if settings.agent2_interpretation_enabled and settings.queue_backend == "redis"

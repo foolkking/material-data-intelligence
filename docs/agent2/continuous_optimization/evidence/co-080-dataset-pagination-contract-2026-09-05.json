@@ -1,0 +1,24 @@
+{
+  "improvement": "CO-080",
+  "date": "2026-09-05",
+  "status": "COMPLETED",
+  "problem": "Dataset and scientific table previews did not expose one consistent shown/total/paging contract for bounded data.",
+  "changes": [
+    "Added bounded 50-row Dataset Explorer pagination with current range and authoritative total.",
+    "Added stable first/last boundary behavior for previous/next controls.",
+    "Added current-page range and total-row disclosure to the generic scientific table while preserving maximumRows bounds.",
+    "Preserved sample_id/sampleRef semantic identity and selection behavior."
+  ],
+  "files": [
+    "apps/web/app/components/dataset-explorer/DatasetMaterialsExplorerPanel.tsx",
+    "apps/web/app/components/dataset-explorer/DatasetMaterialsExplorerPanel.test.tsx",
+    "apps/web/app/components/workspace/WorkspaceArtifactGallery.tsx",
+    "apps/web/app/components/workspace/WorkspaceArtifactGallery.test.tsx"
+  ],
+  "verification": {
+    "tests": "17 passed",
+    "typecheck": "PASS",
+    "diff_check": "PASS",
+    "payload_remains_bounded": true
+  }
+}

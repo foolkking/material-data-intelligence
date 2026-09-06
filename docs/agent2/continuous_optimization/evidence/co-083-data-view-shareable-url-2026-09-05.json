@@ -1,0 +1,14 @@
+{
+  "improvement": "CO-083",
+  "date": "2026-09-05",
+  "status": "PASS",
+  "summary": "Data table query, sort, row and canonical exact selection are shareable route state; Dataset, ScientificObject and immutable version parameters are preserved.",
+  "verification": {
+    "data_tests": "48 passed",
+    "typecheck": "PASS",
+    "diff_check": "PASS_WITH_CRLF_WARNINGS_ONLY",
+    "foreign_project_selection": "REJECTED",
+    "foreign_dataset_selection": "REJECTED",
+    "malformed_selection": "REJECTED"
+  }
+}

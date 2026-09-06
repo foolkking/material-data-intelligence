@@ -12,11 +12,14 @@ type PlotlyApi = Readonly<{
 }>;
 
 type PlotlyLoader = () => Promise<PlotlyApi>;
-type PlotSpec = Readonly<{ ok: true; data: unknown[]; layout: JsonRecord; pointCount: number; decimated: boolean }> | Readonly<{ ok: false; code: string }>;
+type PlotSpec = Readonly<{ ok: true; data: unknown[]; layout: JsonRecord; pointCount: number; totalPointCount: number; decimated: boolean; samplingStrategy: string }> | Readonly<{ ok: false; code: string }>;
 
 const ALLOWED_TRACE_TYPES = new Set(["scatter", "scattergl", "scatter3d", "mesh3d", "bar", "heatmap", "treemap", "sunburst"]);
 const MAX_TRACE_COUNT = 128;
 const MAX_TYPED_ARRAY_BYTES = 8_000_000;
+const MAX_HEATMAP_CELLS = 100_000;
+const MAX_MESH_VERTICES = 100_000;
+const MAX_MESH_TRIANGLES = 100_000;
 const PALETTE = ["#176b87", "#b84c3b", "#558b2f", "#7a5ca8", "#a26a00", "#2f6f6d"];
 
 export function WorkspaceGenericPlot({ content, maximumPoints, plotlyLoader = loadPlotly }: Readonly<{ content: unknown; maximumPoints: number; plotlyLoader?: PlotlyLoader }>) {
@@ -27,11 +30,17 @@ export function WorkspaceGenericPlot({ content, maximumPoints, plotlyLoader = lo
   useEffect(() => {
     const host = hostRef.current;
     if (!host || !spec.ok) {
-      if (!spec.ok) setStatus("当前图表超出交互显示范围，完整数值仍然保留在技术详情中。");
+      if (!spec.ok) setStatus(`${plotLimitMessage(spec.code)} 完整数值仍然保留在技术详情中。`);
       return;
     }
     let active = true;
     let api: PlotlyApi | null = null;
+    let purged = false;
+    const purge = () => {
+      if (purged || !api) return;
+      purged = true;
+      api.purge(host);
+    };
     setStatus("正在加载科学图表渲染器。");
     void plotlyLoader().then(async (loaded) => {
       if (!active) return;
@@ -44,11 +53,11 @@ export function WorkspaceGenericPlot({ content, maximumPoints, plotlyLoader = lo
         staticPlot: false,
       });
       if (!active) {
-        api.purge(host);
+        purge();
         return;
       }
       setStatus(spec.decimated
-        ? `已渲染 ${spec.data.length} 个数据系列和 ${spec.pointCount} 个保真抽样数值；完整数值仍然保留。`
+        ? `已渲染 ${spec.data.length} 个数据系列和 ${spec.pointCount}/${spec.totalPointCount} 个保真抽样数值（策略：${spec.samplingStrategy}）；完整数值仍然保留。`
         : `已渲染 ${spec.data.length} 个数据系列和 ${spec.pointCount} 个数值。`);
     }).catch((error: unknown) => {
       if (!active) return;
@@ -57,11 +66,14 @@ export function WorkspaceGenericPlot({ content, maximumPoints, plotlyLoader = lo
       setStatus("科学图表暂时无法渲染，完整数值仍然保留。" + (detail ? ` (${code})` : ""));
     });
     const resize = () => api?.Plots?.resize(host);
+    const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize);
+    resizeObserver?.observe(host);
     window.addEventListener("resize", resize);
     return () => {
       active = false;
+      resizeObserver?.disconnect();
       window.removeEventListener("resize", resize);
-      if (api) api.purge(host);
+      purge();
     };
   }, [plotlyLoader, spec]);
 
@@ -71,6 +83,13 @@ export function WorkspaceGenericPlot({ content, maximumPoints, plotlyLoader = lo
       ? <p className="workspace-artifact-warning" role="status" aria-live="polite">{status}</p>
       : <p className="sr-only" role="status" aria-live="polite">{status}</p>}
   </section>;
+}
+
+function plotLimitMessage(code: string): string {
+  if (code === "PLOTLY_HEATMAP_CELL_CAP_EXCEEDED") return "热图网格超过交互显示上限，已拒绝渲染，未静默截断。";
+  if (code === "PLOTLY_MESH_CAP_EXCEEDED") return "Mesh 顶点或三角面超过交互显示上限，已拒绝渲染，未静默截断。";
+  if (code === "PLOTLY_POINT_CAP_EXCEEDED") return "图表点数超过交互显示上限，已拒绝渲染，未静默截断。";
+  return "当前图表超出交互显示范围，已拒绝渲染，未静默截断。";
 }
 
 export function sanitizePlotSpec(content: unknown, maximumPoints: number): PlotSpec {
@@ -87,6 +106,16 @@ export function sanitizePlotSpec(content: unknown, maximumPoints: number): PlotS
     if (!ALLOWED_TRACE_TYPES.has(type)) return Object.freeze({ ok: false, code: "PLOTLY_TRACE_TYPE_UNSUPPORTED" });
     const sanitized = sanitizeTrace(type, trace, index);
     if (!sanitized) return Object.freeze({ ok: false, code: "PLOTLY_TRACE_INVALID" });
+    if (type === "heatmap" && tracePointCount(type, sanitized) > MAX_HEATMAP_CELLS) {
+      return Object.freeze({ ok: false, code: "PLOTLY_HEATMAP_CELL_CAP_EXCEEDED" });
+    }
+    if (type === "mesh3d") {
+      const vertexCount = tracePointCount(type, sanitized);
+      const triangleCount = meshTriangleCount(sanitized);
+      if (vertexCount > MAX_MESH_VERTICES || triangleCount > MAX_MESH_TRIANGLES) {
+        return Object.freeze({ ok: false, code: "PLOTLY_MESH_CAP_EXCEEDED" });
+      }
+    }
     data.push(sanitized);
   }
   const rawPointCount = data.reduce((total, trace) => total + tracePointCount(String(trace.type), trace), 0);
@@ -109,7 +138,9 @@ export function sanitizePlotSpec(content: unknown, maximumPoints: number): PlotS
     ok: true,
     data,
     pointCount,
+    totalPointCount: rawPointCount,
     decimated,
+    samplingStrategy: decimated ? "固定端点 + 全局最小/最大值 + 分桶局部极值" : "无抽样（完整有限点）",
     layout: Object.freeze({
       autosize: true,
       margin: { l: 66, r: 28, t: 48, b: 64 },
@@ -206,13 +237,27 @@ function tracePointCount(type: string, trace: JsonRecord): number {
   return Array.isArray(trace.x) ? trace.x.length : Array.isArray(trace.labels) ? trace.labels.length : 0;
 }
 
+function meshTriangleCount(trace: JsonRecord): number {
+  const indices = [trace.i, trace.j, trace.k].map((value) => Array.isArray(value) ? value.length : 0);
+  return Math.min(...indices);
+}
+
 function decimateTrace(trace: JsonRecord, target: number): { x: Array<number | string>; y: Array<number | string> } {
   const x = Array.isArray(trace.x) ? trace.x as Array<number | string> : [];
   const y = Array.isArray(trace.y) ? trace.y as Array<number | string> : [];
   if (x.length <= target || x.length !== y.length || target < 3) return { x: x.slice(0, target), y: y.slice(0, target) };
   const indices = new Set<number>([0, x.length - 1]);
+  let globalMinIndex = 0;
+  let globalMaxIndex = 0;
+  for (let index = 1; index < y.length; index += 1) {
+    if (numericValue(y[index]) < numericValue(y[globalMinIndex])) globalMinIndex = index;
+    if (numericValue(y[index]) > numericValue(y[globalMaxIndex])) globalMaxIndex = index;
+  }
+  if (indices.size < target) indices.add(globalMinIndex);
+  if (indices.size < target) indices.add(globalMaxIndex);
   const buckets = Math.max(1, Math.floor((target - 2) / 2));
-  for (let bucket = 0; bucket < buckets && indices.size < target; bucket += 1) {
+  const localExtrema: number[] = [];
+  for (let bucket = 0; bucket < buckets; bucket += 1) {
     const start = Math.floor((bucket * (x.length - 1)) / buckets);
     const end = Math.max(start + 1, Math.floor(((bucket + 1) * (x.length - 1)) / buckets));
     let minIndex = start;
@@ -221,8 +266,11 @@ function decimateTrace(trace: JsonRecord, target: number): { x: Array<number | s
       if (numericValue(y[index]) < numericValue(y[minIndex])) minIndex = index;
       if (numericValue(y[index]) > numericValue(y[maxIndex])) maxIndex = index;
     }
-    indices.add(minIndex);
-    if (indices.size < target) indices.add(maxIndex);
+    localExtrema.push(minIndex, maxIndex);
+  }
+  for (const index of localExtrema) {
+    if (indices.size >= target) break;
+    indices.add(index);
   }
   for (let index = 1; indices.size < target && index < x.length - 1; index += 1) indices.add(index);
   const ordered = [...indices].sort((a, b) => a - b).slice(0, target);

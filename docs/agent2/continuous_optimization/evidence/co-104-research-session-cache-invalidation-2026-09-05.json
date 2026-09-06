@@ -1,0 +1,15 @@
+{
+  "improvementId": "CO-104",
+  "status": "PASS",
+  "date": "2026-09-05",
+  "behavior": [
+    "Repeated prewarm reads reuse one authorized request within the cache window.",
+    "A Research session lifecycle mutation invalidates the cache.",
+    "The next list read fetches the new archived state from the API."
+  ],
+  "verification": {
+    "productApiTests": "7 passed",
+    "typecheck": "PASS",
+    "diffCheck": "PASS"
+  }
+}

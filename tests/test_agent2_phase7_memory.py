@@ -6,7 +6,7 @@ from uuid import uuid4
 from sqlalchemy import create_engine, insert
 from sqlalchemy.pool import StaticPool
 
-from mdi_api.db import metadata, organizations, projects, sessions, users
+from mdi_api.db import metadata, organizations, projects, sessions, users, scientific_result_snapshots
 from mdi_api.research_agent.memory.retriever import ResearchMemoryRetriever, RetrievedMemory
 from mdi_api.research_agent.memory.service import ResearchSessionMemoryService
 from mdi_api.research_agent.context.compiler import ResearchContextCompiler
@@ -48,6 +48,63 @@ def test_session_constraint_is_explicit_and_persistent():
     assert state.version == 2
     assert state.session_constraints[0].structured_constraint == {"name": "cutoff", "value": 8.0, "unit": "Å"}
     assert state.session_constraints[0].source_message_id == received.user_message.id
+
+
+def test_pinned_result_survives_repository_reload_and_unpin() -> None:
+    _engine, owner, factory = foundation()
+    result_id = uuid4()
+    turn_id = uuid4()
+    with factory.unit_of_work() as unit:
+        user_message_id = f"memory-test-message-{turn_id.hex[:12]}"
+        unit.agent2.research_turns.add_message({
+            "id": user_message_id,
+            "session_id": "session",
+            "role": "user",
+            "content_summary": "Inspect RDF",
+            "payload_json": {},
+        })
+        unit.agent2.research_turns.add({
+            "id": turn_id,
+            "project_id": "project",
+            "research_session_id": "session",
+            "sequence_no": 1,
+            "status": "COMPLETED",
+            "row_version": 1,
+            "user_message_id": user_message_id,
+        })
+        unit.connection.execute(insert(scientific_result_snapshots).values(
+            id=result_id,
+            project_id="project",
+            research_turn_id=turn_id,
+            job_id=None,
+            schema_version="1.0",
+            projection_version="test",
+            execution_status="SUCCESS",
+            relevance_status="CURRENT",
+            source_fingerprint="f" * 64,
+            bundle_json={"research_question": "Inspect RDF", "result_items": []},
+        ))
+        memory = ResearchSessionMemoryService()
+        pinned = memory.pin_result(unit, session_id="session", project_id="project", result_id=result_id)
+        assert pinned.pinned_result_refs == [result_id]
+
+    with factory.session() as session:
+        reloaded = ResearchSessionMemoryService().get_state(
+            session, session_id="session", project_id="project"
+        )
+        assert reloaded.pinned_result_refs == [result_id]
+
+    with factory.unit_of_work() as unit:
+        unpinned = ResearchSessionMemoryService().unpin_result(
+            unit, session_id="session", project_id="project", result_id=result_id
+        )
+        assert unpinned.pinned_result_refs == []
+
+    with factory.session() as session:
+        final = ResearchSessionMemoryService().get_state(
+            session, session_id="session", project_id="project"
+        )
+        assert final.pinned_result_refs == []
 
 
 def test_turn_scoped_constraint_is_not_promoted_to_session():

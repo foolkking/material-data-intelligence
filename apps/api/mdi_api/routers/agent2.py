@@ -394,8 +394,34 @@ def _compat_context_manifest_from_snapshot(
         fingerprint = hashlib.sha256(
             json.dumps(snapshot, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
         ).hexdigest()
-    estimated = sum(item.estimated_tokens for item in items)
     policy = context_budget_policy(ContextOperation.ORCHESTRATOR)
+    priority = {
+        "SCIENTIFIC_OBJECT": 0,
+        "SCIENTIFIC_SELECTION": 0,
+        "SCIENTIFIC_RESULT": 1,
+        "SCIENTIFIC_EVIDENCE": 1,
+        "USER_CONSTRAINT": 2,
+        "RESEARCH_GOAL": 3,
+    }
+    critical_kinds = {"SCIENTIFIC_OBJECT", "SCIENTIFIC_SELECTION", "SCIENTIFIC_RESULT", "SCIENTIFIC_EVIDENCE"}
+    ordered = sorted(
+        enumerate(items),
+        key=lambda pair: (priority.get(pair[1].kind, 99), pair[0]),
+    )
+    included: list[ContextManifestItem] = []
+    excluded: list[str] = []
+    estimated = 0
+    for index, item in ordered:
+        exceeds_budget = estimated + item.estimated_tokens > policy.effective_input_budget
+        exceeds_item_limit = len(included) >= 128
+        if not exceeds_budget and not exceeds_item_limit:
+            included.append(item)
+            estimated += item.estimated_tokens
+            continue
+        if item.kind in critical_kinds:
+            raise ValueError("critical scientific context exceeds the operation budget")
+        excluded.append(item.item_id)
+    over_budget = bool(excluded)
     created_at = snapshot.get("created_at") or datetime.now(timezone.utc)
     manifest = ContextManifest(
         context_manifest_id=uuid5(
@@ -407,13 +433,13 @@ def _compat_context_manifest_from_snapshot(
         research_session_id=session_id,
         research_turn_id=UUID(str(turn["id"])),
         policy_version="agent2.context-compat/1.0",
-        included_items=items,
-        excluded_items=[],
+        included_items=included,
+        excluded_items=excluded[:64],
         estimated_input_tokens=estimated,
         input_budget=policy.effective_input_budget,
         reserved_output_tokens=policy.reserved_output_tokens,
         repair_margin=policy.repair_margin,
-        compaction_state="NONE",
+        compaction_state="COMPACTED" if over_budget else "NONE",
         truncation_state="NONE",
         context_fingerprint=fingerprint.lower(),
         created_at=created_at,
@@ -575,6 +601,124 @@ def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depend
                 return _historical_terminal_progress(turn_id, str(turn["status"]))
             raise
         return jsonable_encoder(view.model_dump(mode="json") if hasattr(view, "model_dump") else view)
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+
+def research_turn_correlation_payload(
+    session: Any,
+    turn: dict[str, Any],
+) -> dict[str, Any]:
+    """Project a bounded, non-secret operational lineage for one exact Turn.
+
+    The repositories remain authoritative. This view exposes only stable
+    identities and lifecycle states required to correlate a user-visible
+    ResearchTurn with persisted execution and communication records.
+    """
+
+    turn_id = UUID(str(turn["id"]))
+    project_id = str(turn["project_id"])
+    job_id = str(turn.get("job_id") or "") or None
+    warnings: list[str] = []
+    job: dict[str, Any] | None = None
+    tool_call_rows: list[dict[str, Any]] = []
+    if job_id:
+        try:
+            stored_job = session.repositories.jobs.get(job_id)
+            job = {
+                "job_id": job_id,
+                "status": str(stored_job.get("status") or "unknown"),
+            }
+        except (LookupError, KeyError):
+            job = {"job_id": job_id, "status": "missing"}
+            warnings.append("JOB_RECORD_MISSING")
+        tool_call_rows = list(session.repositories.tool_calls.list_for_job(job_id))
+
+    tool_calls = [
+        {
+            "tool_call_id": str(item.get("id") or ""),
+            "step_id": str(item.get("stepId") or item.get("step_id") or ""),
+            "status": str(item.get("status") or "unknown"),
+        }
+        for item in tool_call_rows[:64]
+        if item.get("id")
+    ]
+
+    scientific_result: dict[str, Any] | None = None
+    try:
+        result_row = session.agent2.scientific_result_snapshots.get_latest_for_turn(
+            turn_id,
+        )
+    except ScientificResultSnapshotNotFound:
+        result_row = None
+    if result_row is not None:
+        bundle = dict(result_row.get("bundle_json") or {})
+        if str(result_row.get("project_id")) != project_id:
+            warnings.append("RESULT_PROJECT_MISMATCH")
+        else:
+            scientific_result = {
+                "result_snapshot_id": str(result_row["id"]),
+                "result_id": (
+                    str(bundle["result_id"]) if bundle.get("result_id") else None
+                ),
+                "execution_status": str(
+                    result_row.get("execution_status") or "unknown"
+                ),
+                "job_id": (
+                    str(result_row["job_id"])
+                    if result_row.get("job_id")
+                    else None
+                ),
+            }
+
+    report_row = session.agent2.scientific_reports.get_for_turn(turn_id)
+    report: dict[str, Any] | None = None
+    if report_row is not None:
+        if str(report_row.get("project_id")) != project_id:
+            warnings.append("REPORT_PROJECT_MISMATCH")
+        elif (
+            scientific_result is not None
+            and str(report_row.get("scientific_result_snapshot_id"))
+            != scientific_result["result_snapshot_id"]
+        ):
+            warnings.append("REPORT_RESULT_MISMATCH")
+        else:
+            report = {
+                "report_id": str(report_row["report_id"]),
+                "report_snapshot_id": str(report_row["id"]),
+                "grounding_status": str(
+                    report_row.get("grounding_status") or "unknown"
+                ),
+            }
+
+    return {
+        "contract_version": "1.0",
+        "project_id": project_id,
+        "research_session_id": str(turn["research_session_id"]),
+        "research_turn_id": str(turn_id),
+        "job": job,
+        "tool_calls": tool_calls,
+        "tool_calls_truncated": len(tool_call_rows) > 64,
+        "scientific_result": scientific_result,
+        "report": report,
+        "integrity_warnings": sorted(set(warnings)),
+    }
+
+
+def get_research_turn_correlation(
+    turn_id: UUID,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    try:
+        factory = create_repository_factory()
+        with factory.session() as session:
+            turn = session.agent2.research_turns.get(turn_id)
+            require_project_access(
+                session.connection,
+                str(turn["project_id"]),
+                current_user,
+            )
+            return research_turn_correlation_payload(session, turn)
     except Exception as exc:
         raise _http_error(exc) from exc
 
@@ -1095,7 +1239,16 @@ def _sse_event_name(event_type: str) -> str:
 def _http_error(exc: Exception) -> HTTPException:
     if isinstance(exc, HTTPException):
         return exc
-    if isinstance(exc, (ResearchTurnNotFound, ScientificObjectNotFound, ScientificObjectVersionNotFound, ResearchSessionProjectMismatch)):
+    if isinstance(
+        exc,
+        (
+            ResearchTurnNotFound,
+            ScientificObjectNotFound,
+            ScientificObjectVersionNotFound,
+            ScientificResultSnapshotNotFound,
+            ResearchSessionProjectMismatch,
+        ),
+    ):
         return HTTPException(status_code=404, detail="请求的 Agent 2.0 资源不存在。")
     if isinstance(exc, UnauthorizedScientificObjectReference):
         return HTTPException(status_code=403, detail="科研对象引用不属于当前项目。")
@@ -1105,6 +1258,7 @@ def _http_error(exc: Exception) -> HTTPException:
     if isinstance(exc, ResearchResourceLimitExceeded):
         return HTTPException(
             status_code=429,
+            headers={"Retry-After": "5"},
             detail={
                 "code": "PROJECT_ACTIVE_RESEARCH_LIMIT",
                 "summary": str(exc),

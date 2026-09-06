@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "mdi.continuous-optimization-evidence/1.0",
+  "improvementId": "CO-143",
+  "completedAt": "2026-09-05T20:40:00+08:00",
+  "change": {
+    "file": "tests/test_phase14r_recovery.py",
+    "missingSymbol": "UUID",
+    "runtimeBehaviorChanged": false
+  },
+  "verification": {
+    "recoveryTestsPassed": 6,
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "diffCheck": "PASS"
+  },
+  "runtime": {
+    "frontendStatus": 200,
+    "frontendPid": 29664,
+    "apiStatus": "ok",
+    "apiPid": 20748,
+    "database": "postgresql",
+    "redis": "redis",
+    "artifactStorage": "minio",
+    "worker": "redis",
+    "shadowPort8006Listening": false
+  }
+}

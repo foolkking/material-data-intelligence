@@ -8,9 +8,12 @@ export function LandingPage() {
   const router = useProductRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [open, setOpen] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   useEffect(() => {
-    setOpen(new URLSearchParams(window.location.search).get("login") === "1");
+    const params = new URLSearchParams(window.location.search);
+    setOpen(params.get("login") === "1");
+    setSessionExpired(params.get("reason") === "session-expired");
     void getAuthUser().then(setUser).catch(() => undefined);
   }, []);
   return <main className="landing-page">
@@ -77,7 +80,7 @@ export function LandingPage() {
       <div><p className="product-kicker">开始一个真实研究项目</p><h2 id="landing-final-title">让下一次材料分析从数据事实开始</h2></div>
       {user ? <Link className="product-primary-action" href="/console">进入控制台</Link> : <button className="product-primary-action" onClick={() => setOpen(true)}>登录并开始</button>}
     </section>
-    {open && <LoginModal onClose={() => setOpen(false)} onLogin={(next) => {
+    {open && <LoginModal sessionExpired={sessionExpired} onClose={() => setOpen(false)} onLogin={(next) => {
       setUser(next);
       setOpen(false);
       const returnTo = safeProductReturnTo(new URLSearchParams(window.location.search).get("returnTo"));
@@ -96,7 +99,7 @@ export function safeProductReturnTo(value: string | null): string | null {
   }
 }
 
-function LoginModal({ onClose, onLogin }: { onClose: () => void; onLogin: (user: AuthUser) => void }) {
+function LoginModal({ onClose, onLogin, sessionExpired = false }: { onClose: () => void; onLogin: (user: AuthUser) => void; sessionExpired?: boolean }) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const [email, setEmail] = useState("");
@@ -121,7 +124,7 @@ function LoginModal({ onClose, onLogin }: { onClose: () => void; onLogin: (user:
   return <div className="product-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) onClose(); }}>
     <div ref={dialogRef} className="product-modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
       <button className="product-modal-close" onClick={onClose} aria-label="关闭登录窗口">×</button>
-      <p className="product-kicker">材料智能平台</p><h2 id="login-title">登录</h2><p>继续你的材料研究项目。</p>
+      <p className="product-kicker">材料智能平台</p><h2 id="login-title">{sessionExpired ? "登录已过期" : "登录"}</h2><p>{sessionExpired ? "重新登录后将返回刚才的页面；本浏览器中尚未提交的研究草稿会保留。" : "继续你的材料研究项目。"}</p>
       <form onSubmit={(event) => void submit(event)}>
         <label>邮箱<input type="email" autoComplete="username" required value={email} onChange={(event) => setEmail(event.target.value)} /></label>
         <label>密码<input type="password" autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} /></label>

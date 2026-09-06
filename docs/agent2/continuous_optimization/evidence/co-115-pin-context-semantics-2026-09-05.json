@@ -1,0 +1,16 @@
+{
+  "improvement": "CO-115",
+  "date": "2026-09-05",
+  "status": "PASS",
+  "summary": "List organization is labeled as list pinning, while exact Result and source-version actions explicitly add to or remove from the current research-session context. A visible note explains that only the latter can affect subsequent Agent context.",
+  "authority": {
+    "organization": "Non-scientific ordering metadata only",
+    "research_context": "Authorized exact Result and ScientificObjectVersion references",
+    "scientific_result_or_version_mutation": "NONE"
+  },
+  "verification": {
+    "frontend_focused": "151 passed",
+    "typecheck": "PASS",
+    "diff_check": "PASS_WITH_CRLF_WARNINGS_ONLY"
+  }
+}

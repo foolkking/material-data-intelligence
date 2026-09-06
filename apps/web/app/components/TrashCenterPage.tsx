@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  bulkDatasetAction,
+  bulkProjectAction,
   deleteEmptyDataset,
   deleteEmptyProject,
   getDatasetDependencyImpact,
@@ -12,9 +14,18 @@ import {
   type DependencyImpact,
   type ProductSearchItem,
 } from "../lib/planner-api";
-import { updateResearchSession } from "../lib/product-api";
-import { updateScientificReportLifecycle } from "../lib/scientific-report-api";
-import { updateScientificObject } from "../lib/scientific-viewer-api";
+import {
+  bulkUpdateResearchSessions,
+  updateResearchSession,
+} from "../lib/product-api";
+import {
+  bulkUpdateScientificReportLifecycle,
+  updateScientificReportLifecycle,
+} from "../lib/scientific-report-api";
+import {
+  bulkUpdateScientificObjects,
+  updateScientificObject,
+} from "../lib/scientific-viewer-api";
 import { ProductModal } from "./ObjectManagement";
 import { ProductLink as Link } from "./ProductNavigation";
 import { ProductShell, RequireProductAuth } from "./ProductShell";
@@ -23,6 +34,11 @@ type TrashKind = Exclude<ProductSearchItem["kind"], "result">;
 type PurgeTarget = {
   item: ProductSearchItem;
   impact: DependencyImpact;
+};
+type RestoreBatch = {
+  label: string;
+  items: ProductSearchItem[];
+  run: () => Promise<{ count: number }>;
 };
 
 const KIND_LABELS: Record<TrashKind, string> = {
@@ -45,6 +61,22 @@ function itemIdentity(item: ProductSearchItem) {
   return `${item.kind}:${item.id}`;
 }
 
+function purgeConfirmationToken(item: ProductSearchItem) {
+  // Titles are user-editable and can collide. Require the stable server
+  // identity instead so a destructive confirmation cannot be ambiguous.
+  return itemIdentity(item);
+}
+
+function groupByProject(items: ProductSearchItem[]) {
+  const groups = new Map<string, ProductSearchItem[]>();
+  for (const item of items) {
+    const projectItems = groups.get(item.projectId) || [];
+    projectItems.push(item);
+    groups.set(item.projectId, projectItems);
+  }
+  return groups;
+}
+
 function formatUpdatedAt(value?: string | null) {
   if (!value) return "更新时间未知";
   const parsed = new Date(value);
@@ -62,6 +94,8 @@ export function TrashCenterPage() {
   const [state, setState] = useState<"loading" | "ready" | "error">("loading");
   const [filter, setFilter] = useState<TrashKind | "all">("all");
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [feedback, setFeedback] = useState<{ tone: "success" | "error"; text: string } | null>(null);
   const [purgeTarget, setPurgeTarget] = useState<PurgeTarget | null>(null);
   const [confirmText, setConfirmText] = useState("");
@@ -78,6 +112,7 @@ export function TrashCenterPage() {
             String(item.status || "").toLowerCase() === "trashed",
         ),
       );
+      setSelectedKeys([]);
       setState("ready");
     } catch {
       setState("error");
@@ -97,6 +132,141 @@ export function TrashCenterPage() {
     return next;
   }, [items]);
   const visibleItems = filter === "all" ? items : items.filter((item) => item.kind === filter);
+  const selectedItems = items.filter((item) =>
+    selectedKeys.includes(itemIdentity(item)),
+  );
+  const allVisibleSelected =
+    visibleItems.length > 0 &&
+    visibleItems.every((item) => selectedKeys.includes(itemIdentity(item)));
+
+  function toggleSelection(item: ProductSearchItem) {
+    const key = itemIdentity(item);
+    setSelectedKeys((current) =>
+      current.includes(key)
+        ? current.filter((candidate) => candidate !== key)
+        : [...current, key],
+    );
+  }
+
+  function toggleVisibleSelection() {
+    const visibleKeys = visibleItems.map(itemIdentity);
+    setSelectedKeys((current) =>
+      allVisibleSelected
+        ? current.filter((key) => !visibleKeys.includes(key))
+        : [...new Set([...current, ...visibleKeys])],
+    );
+  }
+
+  function restoreBatches(targets: ProductSearchItem[]): RestoreBatch[] {
+    const batches: RestoreBatch[] = [];
+    const projects = targets.filter((item) => item.kind === "project");
+    const datasets = targets.filter((item) => item.kind === "dataset");
+    if (projects.length) {
+      batches.push({
+        label: "项目",
+        items: projects,
+        run: () => bulkProjectAction(projects.map((item) => item.id), "restore"),
+      });
+    }
+    if (datasets.length) {
+      batches.push({
+        label: "数据集",
+        items: datasets,
+        run: () => bulkDatasetAction(datasets.map((item) => item.id), "restore"),
+      });
+    }
+    for (const [projectId, projectItems] of groupByProject(
+      targets.filter((item) => item.kind === "scientific_object"),
+    )) {
+      batches.push({
+        label: "科学对象",
+        items: projectItems,
+        run: () =>
+          bulkUpdateScientificObjects(
+            projectId,
+            projectItems.map((item) => item.id),
+            "ACTIVE",
+          ),
+      });
+    }
+    for (const [projectId, projectItems] of groupByProject(
+      targets.filter((item) => item.kind === "research"),
+    )) {
+      batches.push({
+        label: "研究会话",
+        items: projectItems,
+        run: () =>
+          bulkUpdateResearchSessions(
+            projectId,
+            projectItems.map((item) => item.id),
+            "RESTORE",
+          ),
+      });
+    }
+    for (const [projectId, projectItems] of groupByProject(
+      targets.filter((item) => item.kind === "report"),
+    )) {
+      batches.push({
+        label: "科学报告",
+        items: projectItems,
+        run: () =>
+          bulkUpdateScientificReportLifecycle(
+            projectId,
+            projectItems.map((item) => item.id),
+            "ACTIVE",
+          ),
+      });
+    }
+    return batches;
+  }
+
+  async function restoreSelected() {
+    if (!selectedItems.length || bulkBusy) return;
+    setBulkBusy(true);
+    setFeedback(null);
+    const batches = restoreBatches(selectedItems);
+    const outcomes = await Promise.allSettled(
+      batches.map(async (batch) => {
+        const result = await batch.run();
+        if (result.count !== batch.items.length) {
+          throw new Error(`${batch.label}批次返回数量不完整`);
+        }
+        return batch;
+      }),
+    );
+    const restoredKeys = new Set(
+      outcomes.flatMap((outcome) =>
+        outcome.status === "fulfilled"
+          ? outcome.value.items.map(itemIdentity)
+          : [],
+      ),
+    );
+    const failedBatches = outcomes.flatMap((outcome, index) =>
+      outcome.status === "rejected" ? [batches[index]] : [],
+    );
+    setItems((current) =>
+      current.filter((item) => !restoredKeys.has(itemIdentity(item))),
+    );
+    setSelectedKeys((current) =>
+      current.filter((key) => !restoredKeys.has(key)),
+    );
+    if (failedBatches.length) {
+      const failedCount = failedBatches.reduce(
+        (total, batch) => total + batch.items.length,
+        0,
+      );
+      setFeedback({
+        tone: "error",
+        text: `已恢复 ${restoredKeys.size} 项；${failedCount} 项未恢复（${failedBatches.map((batch) => batch.label).join("、")}）。失败项仍保留在回收站并保持选中，请检查权限或服务后重试。`,
+      });
+    } else {
+      setFeedback({
+        tone: "success",
+        text: `已恢复 ${restoredKeys.size} 项；科学历史与精确来源未发生变化。`,
+      });
+    }
+    setBulkBusy(false);
+  }
 
   async function restore(item: ProductSearchItem) {
     const key = itemIdentity(item);
@@ -110,6 +280,7 @@ export function TrashCenterPage() {
       else if (item.kind === "report") await updateScientificReportLifecycle(item.id, "ACTIVE");
       else return;
       setItems((current) => current.filter((candidate) => itemIdentity(candidate) !== key));
+      setSelectedKeys((current) => current.filter((candidate) => candidate !== key));
       setFeedback({ tone: "success", text: `“${item.title}”已恢复；科学历史与精确来源未发生变化。` });
     } catch (error) {
       setFeedback({
@@ -141,7 +312,12 @@ export function TrashCenterPage() {
   }
 
   async function purge() {
-    if (!purgeTarget || !purgeTarget.impact.canDelete || confirmText !== purgeTarget.item.title) return;
+    if (
+      !purgeTarget ||
+      !purgeTarget.impact.canDelete ||
+      confirmText !== purgeConfirmationToken(purgeTarget.item)
+    )
+      return;
     const { item } = purgeTarget;
     const key = itemIdentity(item);
     setBusyId(key);
@@ -185,7 +361,19 @@ export function TrashCenterPage() {
 
           {feedback ? <p className={feedback.tone === "success" ? "product-form-success" : "product-form-error"} role={feedback.tone === "error" ? "alert" : "status"}>{feedback.text}</p> : null}
           {state === "loading" ? <div className="product-loading" role="status">正在读取回收站…</div> : null}
-          {state === "error" ? <div className="product-state" role="alert"><h2>回收站暂时无法读取</h2><p>内容仍保留在服务器中，请检查连接后重新加载。</p></div> : null}
+          {state === "error" ? (
+            <div className="product-state" role="alert">
+              <h2>回收站暂时无法读取</h2>
+              <p>内容仍保留在服务器中，请检查连接后重新加载。</p>
+              <button
+                type="button"
+                className="product-primary-action"
+                onClick={() => void load()}
+              >
+                重新加载回收站
+              </button>
+            </div>
+          ) : null}
 
           {state === "ready" ? (
             <>
@@ -197,6 +385,33 @@ export function TrashCenterPage() {
                   </button>
                 ))}
               </div>
+              {visibleItems.length ? (
+                <div
+                  className="product-filter-row"
+                  role="group"
+                  aria-label="批量恢复"
+                >
+                  <button
+                    type="button"
+                    className="product-secondary-action"
+                    onClick={toggleVisibleSelection}
+                    disabled={bulkBusy}
+                  >
+                    {allVisibleSelected ? "取消选择当前筛选" : "选择当前筛选"}
+                  </button>
+                  <span aria-live="polite">已选 {selectedItems.length} 项</span>
+                  <button
+                    type="button"
+                    className="product-primary-action"
+                    onClick={() => void restoreSelected()}
+                    disabled={!selectedItems.length || bulkBusy}
+                  >
+                    {bulkBusy
+                      ? "正在恢复所选内容…"
+                      : `恢复所选（${selectedItems.length}）`}
+                  </button>
+                </div>
+              ) : null}
               <section className="trash-center-list" aria-label="回收站内容" aria-live="polite">
                 {visibleItems.length ? visibleItems.map((item) => {
                   const key = itemIdentity(item);
@@ -215,14 +430,33 @@ export function TrashCenterPage() {
                       </details>
                     </div>
                     <div className="product-row-actions trash-center-row-actions">
-                      <button type="button" className="product-primary-action" onClick={() => void restore(item)} disabled={busyId === key}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={selectedKeys.includes(key)}
+                          onChange={() => toggleSelection(item)}
+                          disabled={bulkBusy || busyId === key}
+                          aria-label={`选择恢复${KIND_LABELS[item.kind as TrashKind]}“${item.title}”`}
+                        />
+                        选择
+                      </label>
+                      <button type="button" className="product-primary-action" onClick={() => void restore(item)} disabled={bulkBusy || busyId === key}>
                         {busyId === key ? "处理中…" : "恢复"}
                       </button>
                       <Link className="product-secondary-action" href={item.href}>查看历史</Link>
                       {canInspectPurge ? <button type="button" className="product-link-button danger" onClick={() => void inspectPurge(item)} disabled={busyId === key}>永久删除…</button> : null}
                     </div>
                   </article>;
-                }) : <div className="product-state trash-center-empty"><h2>当前筛选下没有内容</h2><p>从项目、数据、研究或报告页面移入回收站的内容会显示在这里。</p></div>}
+                }) : (
+                  <div className="product-state trash-center-empty">
+                    <h2>当前筛选下没有内容</h2>
+                    <p>从项目、数据、研究或报告页面移入回收站的内容会显示在这里。</p>
+                    <div className="trash-center-empty-actions">
+                      <Link className="product-primary-action" href="/projects">查看项目</Link>
+                      <Link className="product-secondary-action" href="/console">返回控制台</Link>
+                    </div>
+                  </div>
+                )}
               </section>
             </>
           ) : null}
@@ -234,12 +468,31 @@ export function TrashCenterPage() {
             onClose={() => { setPurgeTarget(null); setConfirmText(""); }}
             footer={<>
               <button type="button" className="product-secondary-action" onClick={() => { setPurgeTarget(null); setConfirmText(""); }}>关闭</button>
-              {purgeTarget.impact.canDelete ? <button type="button" className="product-primary-action" disabled={confirmText !== purgeTarget.item.title || busyId === itemIdentity(purgeTarget.item)} onClick={() => void purge()}>确认永久删除</button> : null}
+              {purgeTarget.impact.canDelete ? <button type="button" className="product-primary-action" disabled={confirmText !== purgeConfirmationToken(purgeTarget.item) || busyId === itemIdentity(purgeTarget.item)} onClick={() => void purge()}>确认永久删除</button> : null}
             </>}
           >
-            {purgeTarget.impact.dependencies.length ? <ul className="trash-dependency-list">{purgeTarget.impact.dependencies.map((dependency) => <li key={dependency.kind}><span>{dependency.label}</span><strong>{dependency.count}</strong></li>)}</ul> : <p>服务器未发现研究、结果、Artifact、报告或科学版本依赖。</p>}
+            {purgeTarget.impact.dependencies.length ? <ul className="trash-dependency-list">{purgeTarget.impact.dependencies.map((dependency) => <li key={dependency.kind}><span>{dependency.href ? <Link href={dependency.href}>{dependency.label}</Link> : dependency.label}</span><strong>{dependency.count}</strong></li>)}</ul> : <p>服务器未发现研究、结果、Artifact、报告或科学版本依赖。</p>}
+            {purgeTarget.impact.retentionPolicy ? (
+              <p className="product-form-hint">
+                留存策略：自动清理已禁用；受引用科学 provenance 永久保护；永久删除仅允许服务器确认零依赖的内容。
+              </p>
+            ) : null}
             <p className="product-form-hint">✓ 回收站恢复不受影响 · ✓ 历史 provenance 不会被级联破坏</p>
-            {purgeTarget.impact.canDelete ? <label className="trash-confirm-field">输入 <strong>{purgeTarget.item.title}</strong> 以确认<input value={confirmText} onChange={(event) => setConfirmText(event.target.value)} autoComplete="off" /></label> : <p className="product-form-error" role="status">请使用“恢复”，或保留该记录以维护科学历史。</p>}
+            {purgeTarget.impact.canDelete ? (
+              <label className="trash-confirm-field">
+                输入稳定身份 <strong>{purgeConfirmationToken(purgeTarget.item)}</strong> 以确认
+                <input
+                  value={confirmText}
+                  onChange={(event) => setConfirmText(event.target.value)}
+                  autoComplete="off"
+                  aria-label={`输入 ${purgeConfirmationToken(purgeTarget.item)} 以确认永久删除`}
+                  aria-describedby="trash-purge-confirmation-help"
+                />
+                <span id="trash-purge-confirmation-help">
+                  标题可能重复；类型与 ID 用于确认当前选中的确切实体。
+                </span>
+              </label>
+            ) : <p className="product-form-error" role="status">请使用“恢复”，或保留该记录以维护科学历史。</p>}
           </ProductModal> : null}
         </main>
       </ProductShell>

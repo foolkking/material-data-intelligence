@@ -66,6 +66,7 @@ _ALL_SELECTION_KINDS = (
     *_ARTIFACT_DERIVED_SELECTION_KINDS,
     *_EVIDENCE_SELECTION_KINDS,
 )
+_TASK_RESEARCH_QUESTION_MAX_LENGTH = 180
 
 _PANEL_SELECTION_DECLARATIONS: dict[
     str, tuple[tuple[WorkspaceSelectionKind, ...], tuple[WorkspaceSelectionKind, ...]]
@@ -177,6 +178,17 @@ def _iso_value(value: Any) -> str | None:
         current = value if value.tzinfo is not None else value.replace(tzinfo=timezone.utc)
         return current.astimezone(timezone.utc).isoformat()
     return str(value)
+
+
+def _task_research_question(value: Any) -> str | None:
+    """Return one bounded human label without changing ResearchTurn authority."""
+
+    normalized = " ".join(str(value or "").split())
+    if not normalized:
+        return None
+    if len(normalized) <= _TASK_RESEARCH_QUESTION_MAX_LENGTH:
+        return normalized
+    return f"{normalized[: _TASK_RESEARCH_QUESTION_MAX_LENGTH - 1]}…"
 
 
 def _record(value: Any) -> Mapping[str, Any] | None:
@@ -949,6 +961,242 @@ class WorkspaceProjectionService:
                 }
             )
         return {"items": items, "nextCursor": next_cursor, "limit": limit}
+
+    def list_task_feed(
+        self,
+        *,
+        projects: Sequence[Mapping[str, Any]],
+        limit: int,
+        cursor: str | None,
+    ) -> dict[str, Any]:
+        """Project an authorized, globally ordered, metadata-only task feed.
+
+        The caller supplies the already-authorized Project set.  Scientific Job
+        records remain the durable authority; this method only removes the
+        browser's one-request-per-Project fan-out and never creates a Workspace.
+        """
+
+        normalized_projects: list[dict[str, Any]] = []
+        candidates: list[tuple[Mapping[str, Any], Mapping[str, Any]]] = []
+        for project in projects:
+            project_id = _identity(project, "projectId", "id")
+            if not project_id:
+                continue
+            normalized = {
+                "id": project_id,
+                "projectId": project_id,
+                "name": str(project.get("name") or project_id),
+                "role": project.get("role"),
+                "status": project.get("status"),
+            }
+            normalized_projects.append(normalized)
+            for job in _repo_list(
+                getattr(self.repositories, "jobs", None),
+                "list_by_project",
+                project_id,
+            ):
+                candidates.append((normalized, job))
+
+        def ordered_key(
+            candidate: tuple[Mapping[str, Any], Mapping[str, Any]],
+        ) -> tuple[str, str, str]:
+            project, job = candidate
+            return (
+                str(job.get("updatedAt") or job.get("createdAt") or ""),
+                str(project["projectId"]),
+                str(job.get("jobId") or job.get("id") or ""),
+            )
+
+        ordered = sorted(candidates, key=ordered_key, reverse=True)
+
+        def cursor_identity(
+            candidate: tuple[Mapping[str, Any], Mapping[str, Any]],
+        ) -> str:
+            project, job = candidate
+            return workspace_semantic_hash(
+                {
+                    "projectId": project["projectId"],
+                    "jobId": _identity(job, "jobId", "id"),
+                }
+            )
+
+        page, next_cursor = self._page_by_id(
+            ordered,
+            cursor,
+            limit,
+            cursor_identity,
+        )
+        metadata_loader = getattr(
+            getattr(self.repositories, "jobs", None),
+            "list_task_feed_projection",
+            None,
+        )
+        metadata_by_job: dict[str, Mapping[str, Any]] = {}
+        if callable(metadata_loader):
+            metadata_by_job = {
+                str(record["job_id"]): record
+                for record in _records(
+                    metadata_loader(
+                        [
+                            str(job.get("jobId") or job.get("id"))
+                            for _, job in page
+                        ]
+                    )
+                )
+            }
+        items: list[dict[str, Any]] = []
+        for project, job in page:
+            project_id = str(project["projectId"])
+            job_id = str(job.get("jobId") or job.get("id"))
+            metadata = metadata_by_job.get(job_id)
+            summary = (
+                self._analysis_job_summary_from_metadata(
+                    project=project,
+                    job=job,
+                    metadata=metadata,
+                )
+                if metadata is not None
+                else self._analysis_job_summary(project_id=project_id, job=job)
+            )
+            items.append({**summary, "projectName": project["name"]})
+        return {
+            "schemaVersion": "ProductTaskFeed/1.0",
+            "items": items,
+            "nextCursor": next_cursor,
+            "limit": limit,
+            "projectCount": len(normalized_projects),
+            "truncated": next_cursor is not None,
+        }
+
+    def _analysis_job_summary(
+        self,
+        *,
+        project_id: str,
+        job: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        job_id = str(job.get("jobId") or job.get("id"))
+        try:
+            existing = self.repositories.workspaces.get_by_project_job(
+                project_id, job_id
+            )
+        except (KeyError, LookupError):
+            existing = None
+        source = self._collect_source(job_id, allow_missing_job=False)
+        return {
+            "jobId": job_id,
+            "projectId": project_id,
+            "datasetId": _identity(job, "datasetId", "dataset_id"),
+            "jobStatus": _identity(job, "status"),
+            "workspaceProjectionStatus": source.status.value,
+            "researchTurnId": source.research_turn_id,
+            "analysisPlanSchemaVersion": source.plan_schema_version,
+            "dependencyOutcome": source.dependency_outcome,
+            "artifactCount": len(source.artifacts),
+            "interpretationCount": len(source.interpretations),
+            "workspaceId": (
+                _identity(_record(existing), "workspaceId", "workspace_id")
+                if existing is not None
+                else None
+            ),
+            "workspaceExists": existing is not None,
+            "createdAt": job.get("createdAt"),
+            "updatedAt": job.get("updatedAt"),
+        }
+
+    def _analysis_job_summary_from_metadata(
+        self,
+        *,
+        project: Mapping[str, Any],
+        job: Mapping[str, Any],
+        metadata: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        job_id = str(job.get("jobId") or job.get("id"))
+        plan_payload = metadata.get("plan_json")
+        plan = _record(plan_payload) if plan_payload is not None else None
+        plan_record = (
+            {
+                "planId": metadata.get("plan_id"),
+                "datasetId": metadata.get("plan_dataset_id"),
+                "profileId": metadata.get("plan_profile_id"),
+                "planHash": metadata.get("plan_hash"),
+                "analysisPlan": plan,
+            }
+            if metadata.get("plan_id") is not None
+            else None
+        )
+        profile = (
+            _record(metadata.get("profile_json"))
+            if metadata.get("profile_id") is not None
+            else None
+        )
+        intent = (
+            _record(metadata.get("intent_json"))
+            if metadata.get("intent_id") is not None
+            else None
+        )
+        eligibility_resolution = (
+            _record(metadata.get("resolution_json"))
+            if metadata.get("resolution_id") is not None
+            else None
+        )
+        selection_decision = (
+            _record(metadata.get("decision_json"))
+            if metadata.get("decision_id") is not None
+            else None
+        )
+        dependency = (
+            {
+                **_record(metadata.get("dependency_json")),
+                "outcome": metadata.get("dependency_outcome"),
+            }
+            if metadata.get("dependency_outcome") is not None
+            else None
+        )
+        status, _, _, _ = self._project_status(
+            job=job,
+            project=project,
+            dataset=(
+                {"datasetId": metadata.get("dataset_exists_id")}
+                if metadata.get("dataset_exists_id") is not None
+                else None
+            ),
+            profile=profile,
+            intent=intent,
+            eligibility_resolution=eligibility_resolution,
+            selection_decision=selection_decision,
+            plan_record=plan_record,
+            plan=plan,
+            dependency=dependency,
+        )
+        workspace_id = metadata.get("workspace_id")
+        research_turn_id = metadata.get("research_turn_id")
+        return {
+            "jobId": job_id,
+            "projectId": str(project["projectId"]),
+            "datasetId": _identity(job, "datasetId", "dataset_id"),
+            "jobStatus": _identity(job, "status"),
+            "workspaceProjectionStatus": status.value,
+            "researchTurnId": (
+                str(research_turn_id) if research_turn_id is not None else None
+            ),
+            "researchQuestion": _task_research_question(
+                metadata.get("research_question")
+            ),
+            "analysisPlanSchemaVersion": _identity(plan, "schemaVersion"),
+            "dependencyOutcome": (
+                str(metadata["dependency_outcome"])
+                if metadata.get("dependency_outcome") is not None
+                else None
+            ),
+            "artifactCount": int(metadata.get("artifact_count") or 0),
+            "interpretationCount": int(
+                metadata.get("interpretation_count") or 0
+            ),
+            "workspaceId": str(workspace_id) if workspace_id is not None else None,
+            "workspaceExists": workspace_id is not None,
+            "createdAt": job.get("createdAt"),
+            "updatedAt": job.get("updatedAt"),
+        }
 
     def list_panels(self, workspace_id: str) -> tuple[WorkspacePanel, ...]:
         workspace = self.get_stored_workspace(workspace_id)

@@ -1,0 +1,34 @@
+{
+  "improvement": "CO-012",
+  "date": "2026-09-05",
+  "problem": "The Phase 14-R scientific surface matrix was maintained manually and had no regression against the live capability and trusted-pack registries.",
+  "observed_drift": {
+    "capability_count": 17,
+    "matrix_row_count": 17,
+    "mismatch": {
+      "capability_id": "ml.regression_evaluation",
+      "documented_pack": "core.data",
+      "live_pack": "core.other"
+    }
+  },
+  "change": {
+    "test": "tests/test_phase14r_surface_coverage.py",
+    "documentation": "docs/agent2/phase14r/SCIENTIFIC_SURFACE_COVERAGE_MATRIX.md",
+    "guarded_contract": [
+      "active capability IDs exactly match matrix rows",
+      "every capability resolves to exactly one trusted pack",
+      "tool binding and result projector cells match the live manifest",
+      "all matrix coverage cells are non-empty and use an allowed status",
+      "every active result projector is registered"
+    ]
+  },
+  "verification": {
+    "pytest": {
+      "command": "pytest tests/test_phase14r_surface_coverage.py -q",
+      "result": "1 passed"
+    },
+    "ruff": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "benefit": "Registry, Pack and human coverage documentation now fail fast on capability drift instead of silently diverging."
+}

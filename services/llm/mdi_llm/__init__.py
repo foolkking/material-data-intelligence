@@ -38,7 +38,14 @@ from .capability_planner import (
     project_eligible_candidates,
     resolve_eligibility,
 )
-from .redaction import is_credential_key, redact_credential_values, redact_params_for_log
+from .redaction import (
+    find_sensitive_sentinels,
+    is_credential_key,
+    redact_credential_values,
+    redact_params_for_log,
+    redact_sensitive_payload,
+    redact_sensitive_text,
+)
 from .grounded_interpretation import (
     ARTIFACT_PROJECTOR_CONTRACTS,
     PROJECTOR_VERSION,
@@ -96,6 +103,7 @@ __all__ = [
     "build_planner_prompt",
     "detect_goal_language",
     "is_credential_key",
+    "find_sensitive_sentinels",
     "LLMProviderError",
     "LLMPlannerProvider",
     "MockLLMProvider",
@@ -113,6 +121,8 @@ __all__ = [
     "provider_safe_projection",
     "redact_credential_values",
     "redact_params_for_log",
+    "redact_sensitive_payload",
+    "redact_sensitive_text",
     "resolve_eligibility",
     "strict_provider_interpret",
     "validate_grounded_interpretation",

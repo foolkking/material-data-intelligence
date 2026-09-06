@@ -1,0 +1,34 @@
+{
+  "improvementId": "CO-116",
+  "improvementNumber": 132,
+  "date": "2026-09-05",
+  "problem": "CI referenced third-party Actions and service images by mutable tags.",
+  "change": {
+    "workflow": ".github/workflows/ci.yml",
+    "provenanceLock": ".github/workflows/provenance.lock.json",
+    "actionsPinned": 5,
+    "serviceImagesPinned": 3,
+    "actionAuthority": "official repository tag resolved to full commit SHA",
+    "imageAuthority": "registry multi-platform manifest digest"
+  },
+  "verification": {
+    "focused": {
+      "selected": 3,
+      "passed": 3
+    },
+    "officialActionTagResolution": {
+      "checked": 5,
+      "matched": 5
+    },
+    "workflowYaml": "PASS",
+    "provenanceJson": "PASS",
+    "ruff": "PASS",
+    "gitDiffCheck": "PASS",
+    "floatingActionReferences": 0,
+    "floatingServiceImageReferences": 0
+  },
+  "remainingRisk": [
+    "GitHub hosted runner labels such as ubuntu-latest and windows-latest remain rolling platform environments.",
+    "A multi-platform image digest selects a platform-specific child manifest at runtime."
+  ]
+}

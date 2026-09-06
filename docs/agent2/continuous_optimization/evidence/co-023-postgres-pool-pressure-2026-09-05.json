@@ -1,0 +1,23 @@
+{
+  "id": "CO-023",
+  "status": "COMPLETED",
+  "date": "2026-09-05",
+  "problem": "PostgreSQL connection-pool behavior lacked a repeated concurrent pressure qualification.",
+  "change": {
+    "file": "tests/test_database_pool_lifecycle.py",
+    "details": [
+      "Added a same-stack integration campaign with eight concurrent workers, each opening 40 repository transactions.",
+      "Verifies process-scoped engine reuse, all connections returned, and zero idle-in-transaction sessions."
+    ]
+  },
+  "verification": {
+    "command": "MDI_TEST_DATABASE_URL=postgresql+psycopg://mdi@127.0.0.1:55434/mdi MDI_RUN_INTEGRATION=1 pytest -q tests/test_database_pool_lifecycle.py",
+    "result": "2 passed",
+    "assertions": [
+      "repeated requests reuse one cached engine",
+      "pool checked-out count returns to zero",
+      "pg_stat_activity idle-in-transaction count is zero"
+    ]
+  },
+  "production_changes": "none; existing pool configuration retained"
+}

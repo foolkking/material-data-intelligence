@@ -1,6 +1,8 @@
-import { DatasetWorkbenchPage } from "../../../../components/DatasetWorkbenchPage";
+import { redirect } from "next/navigation";
 
 export default async function DatasetPage({ params }: { params: Promise<{ projectId: string; datasetId: string }> }) {
   const resolved = await params;
-  return <DatasetWorkbenchPage projectId={resolved.projectId} datasetId={resolved.datasetId} />;
+  redirect(
+    `/projects/${encodeURIComponent(resolved.projectId)}/data?dataset=${encodeURIComponent(resolved.datasetId)}`,
+  );
 }

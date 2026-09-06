@@ -26,8 +26,14 @@ export type Agent2ProgressView = {
   result_projection_pending: boolean;
 };
 
-async function request<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, { credentials: "include" });
+async function request<T>(
+  path: string,
+  options: Readonly<{ signal?: AbortSignal }> = {},
+): Promise<T> {
+  const response = await fetch(`${API_BASE}${path}`, {
+    credentials: "include",
+    signal: options.signal,
+  });
   if (!response.ok) throw new Error(`执行进度暂时无法读取 (${response.status})`);
   return (await response.json()) as T;
 }
@@ -38,5 +44,11 @@ async function mutate<T>(path: string): Promise<T> {
   return (await response.json()) as T;
 }
 
-export const getAgent2ExecutionProgress = (turnId: string) => request<Agent2ProgressView>(`/api/research/turns/${encodeURIComponent(turnId)}/progress`);
+export const getAgent2ExecutionProgress = (
+  turnId: string,
+  options: Readonly<{ signal?: AbortSignal }> = {},
+) => request<Agent2ProgressView>(
+  `/api/research/turns/${encodeURIComponent(turnId)}/progress`,
+  options,
+);
 export const cancelAgent2Execution = (turnId: string) => mutate<{ turn_id: string; status: Agent2ExecutionStatus }>(`/api/research/turns/${encodeURIComponent(turnId)}/cancel`);

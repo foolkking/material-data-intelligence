@@ -1,0 +1,61 @@
+{
+  "improvementId": "CO-062",
+  "improvementNumber": 128,
+  "date": "2026-09-05",
+  "problem": "API, worker and operations launch paths duplicated the same PostgreSQL, Redis and MinIO qualification settings.",
+  "change": {
+    "authority": "scripts/phase14r_runtime_environment.py",
+    "schema": "SameStackRuntimeTopology",
+    "consumers": [
+      "phase14r_start_api.ps1",
+      "phase14r_start_workers.ps1",
+      "phase14r_operations_snapshot.py"
+    ],
+    "boundedOverrides": [
+      "MDI_PHASE14R_POSTGRES_HOST",
+      "MDI_PHASE14R_POSTGRES_PORT",
+      "MDI_PHASE14R_POSTGRES_DB",
+      "MDI_PHASE14R_POSTGRES_USER",
+      "MDI_PHASE14R_REDIS_URL",
+      "MDI_PHASE14R_MINIO_ENDPOINT",
+      "MDI_PHASE14R_MINIO_ACCESS_KEY",
+      "MDI_PHASE14R_MINIO_SECRET_KEY",
+      "MDI_PHASE14R_MINIO_BUCKET"
+    ]
+  },
+  "verification": {
+    "focused": {
+      "selected": 39,
+      "passed": 38,
+      "skippedExistingLiveIntegration": 1
+    },
+    "redisOverride": {
+      "value": "redis://127.0.0.1:6388/12",
+      "api": "PASS",
+      "worker": "PASS",
+      "health": "PASS",
+      "operations": "PASS"
+    },
+    "liveSameStack": {
+      "status": "ok",
+      "database": "postgresql",
+      "redisWorkers": 6,
+      "artifactStorage": "minio",
+      "idleInTransaction": 0,
+      "queued": 0
+    },
+    "powershellParse": "PASS",
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "runtimePreservation": {
+    "frontend3023": "preserved",
+    "api8005": "preserved",
+    "postgres55434": "preserved",
+    "redis6379": "preserved",
+    "minio9000": "preserved",
+    "oldPorts3024And8006": "stopped",
+    "oldWorkerGenerations": "stopped"
+  }
+}

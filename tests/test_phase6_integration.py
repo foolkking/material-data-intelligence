@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import hashlib
 import os
+import uuid
 from pathlib import Path
 from typing import Any
 
@@ -91,32 +93,26 @@ def _live_minio_client(endpoint, access, secret):
     return client
 
 
-_shared_project_counter = 0
-
-
 def _seed_repos(repos: SqlAlchemyRepositoryBundle) -> dict[str, str]:
     """Seed a project/dataset/job for integration tests.
 
-    Each call uses a unique project_id to avoid FK violations.
-    SqlAlchemyProjectRepository.save() does DELETE-then-INSERT per
-    project_id.  If two _seed_repos calls in the same test file used
-    the same ID, the second DELETE would cascade-fail because datasets
-    and jobs still reference the old project row.
+    IDs include a process-local random suffix so repeated live campaigns
+    cannot collide with rows left by an earlier process.  The repositories'
+    save methods use DELETE-then-INSERT semantics, so deterministic IDs
+    would otherwise attempt to delete a dataset still referenced by jobs.
     """
-    global _shared_project_counter
-    _shared_project_counter += 1
-    n = _shared_project_counter
-    proj_id = f"proj_p6_{n}"
-    ds_id = f"ds_p6_{n}"
-    job_id = f"job_p6_{n}"
+    suffix = uuid.uuid4().hex[:12]
+    proj_id = f"proj_p6_{suffix}"
+    ds_id = f"ds_p6_{suffix}"
+    job_id = f"job_p6_{suffix}"
 
     repos.projects.save({
-        "id": proj_id, "name": f"Phase 6 #{n}",
-        "organizationId": f"org_test_{n}", "createdBy": "test_user",
+        "id": proj_id, "name": f"Phase 6 {suffix}",
+        "organizationId": f"org_test_{suffix}", "createdBy": "test_user",
     })
     repos.datasets.save({
         "id": ds_id, "projectId": proj_id,
-        "name": f"Dataset #{n}", "createdBy": "test_user",
+        "name": f"Dataset {suffix}", "createdBy": "test_user",
     })
     repos.jobs.save({
         "id": job_id, "projectId": proj_id, "datasetId": ds_id,
@@ -472,6 +468,136 @@ def test_phase6_job_event_concurrent_seq_live() -> None:
     engine.dispose()
 
 
+@pytest.mark.integration
+def test_phase6_job_event_concurrent_seq_across_repository_instances_live() -> None:
+    """Exercise the database lock rather than one repository's process lock."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    engine = _pg_engine()
+    metadata.create_all(engine)
+    seed_repos = SqlAlchemyRepositoryBundle.create(engine)
+    ids = _seed_repos(seed_repos)
+    repositories = [
+        SqlAlchemyRepositoryBundle.create(engine)
+        for _ in range(4)
+    ]
+
+    def append(index: int) -> int:
+        repository = repositories[index % len(repositories)]
+        return repository.job_events.append_event(
+            ids["job"],
+            event_type=f"multi_repo.{index}",
+            status="info",
+            message=f"multi repository event {index}",
+            payload={"index": index},
+        ).seq
+
+    try:
+        with ThreadPoolExecutor(max_workers=12) as pool:
+            seqs = list(pool.map(append, range(48)))
+
+        assert sorted(seqs) == list(range(1, 49))
+        events = repositories[0].job_events.list_for_job(ids["job"])
+        assert [event.seq for event in events] == list(range(1, 49))
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.integration
+def test_phase6_tool_call_duplicate_delivery_converges_live() -> None:
+    """Independent workers converge on one idempotent ToolCall row."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    engine = _pg_engine()
+    metadata.create_all(engine)
+    seed_repos = SqlAlchemyRepositoryBundle.create(engine)
+    ids = _seed_repos(seed_repos)
+    repositories = [
+        SqlAlchemyRepositoryBundle.create(engine)
+        for _ in range(4)
+    ]
+    record = {
+        "id": f"call_{ids['job']}_step_01",
+        "jobId": ids["job"],
+        "stepId": "step_01",
+        "toolId": "structure.xrd",
+        "status": "planned",
+        "idempotencyKey": f"{ids['job']}:step_01",
+        "params": {"source": "duplicate-delivery"},
+    }
+
+    try:
+        with ThreadPoolExecutor(max_workers=12) as pool:
+            stored = list(pool.map(
+                lambda index: repositories[index % len(repositories)].tool_calls.save(record),
+                range(48),
+            ))
+
+        assert {str(item["id"]) for item in stored} == {record["id"]}
+        calls = repositories[0].tool_calls.list_for_job(ids["job"])
+        assert len(calls) == 1
+        assert calls[0]["id"] == record["id"]
+        assert calls[0]["idempotencyKey"] == record["idempotencyKey"]
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.integration
+def test_phase6_artifact_duplicate_delivery_converges_live() -> None:
+    """Independent workers persist one Artifact for the same bytes."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    engine = _pg_engine()
+    metadata.create_all(engine)
+    seed_repos = SqlAlchemyRepositoryBundle.create(engine)
+    ids = _seed_repos(seed_repos)
+    tool_call = seed_repos.tool_calls.save(
+        {
+            "id": f"call_{ids['job']}_step_02",
+            "jobId": ids["job"],
+            "stepId": "step_02",
+            "toolId": "structure.xrd",
+            "status": "completed",
+            "idempotencyKey": f"{ids['job']}:step_02",
+            "params": {},
+        }
+    )
+    repositories = [
+        SqlAlchemyRepositoryBundle.create(engine)
+        for _ in range(4)
+    ]
+    record = {
+        "id": f"artifact_{ids['job']}_step_02",
+        "projectId": ids["project"],
+        "jobId": ids["job"],
+        "toolCallId": tool_call["id"],
+        "type": "metrics_json",
+        "name": "metrics.json",
+        "storageKey": f"phase6/{ids['job']}/metrics.json",
+        "storageProvider": "local",
+        "sizeBytes": 7,
+        "contentType": "application/json",
+        "contentHash": "a" * 64,
+        "sha256": "a" * 64,
+        "metadata": {"provenance": {"schemaVersion": "1.0"}},
+    }
+
+    try:
+        with ThreadPoolExecutor(max_workers=12) as pool:
+            stored = list(pool.map(
+                lambda index: repositories[index % len(repositories)].artifacts.save(record),
+                range(48),
+            ))
+
+        assert {str(item["id"]) for item in stored} == {record["id"]}
+        artifacts = repositories[0].artifacts.list_for_job(ids["job"])
+        assert len(artifacts) == 1
+        assert artifacts[0]["storageKey"] == record["storageKey"]
+        assert artifacts[0]["sha256"] == record["sha256"]
+    finally:
+        engine.dispose()
+
+
 # ===================================================================
 # 5. Redis queue live integration
 # ===================================================================
@@ -654,6 +780,43 @@ def test_phase6_minio_put_get_exists_signed_url_live() -> None:
     assert signed.storage_key.endswith("obj/test.json")
     assert "test-phase6-ops/obj/test.json" in signed.url
     assert signed.expires_in_sec == 300
+
+
+@pytest.mark.integration
+def test_phase6_minio_backup_restore_checksum_and_missing_source_live() -> None:
+    storage = _minio_storage("test-phase6-backup")
+    suffix = uuid.uuid4().hex
+    source_key = f"backup/{suffix}/source.bin"
+    backup_key = f"backup/{suffix}/source.bin.bak"
+    payload = b"phase14r-minio-backup\x00scientific-artifact"
+    client = storage._require_client()
+    source_full = storage._full_key(source_key)
+    backup_full = storage._full_key(backup_key)
+    try:
+        metadata_record = storage.put_bytes(
+            source_key,
+            payload,
+            content_type="application/octet-stream",
+        )
+        assert metadata_record.size_bytes == len(payload)
+        assert metadata_record.sha256 == hashlib.sha256(payload).hexdigest()
+
+        client.copy_object(
+            Bucket=storage.bucket,
+            CopySource={"Bucket": storage.bucket, "Key": source_full},
+            Key=backup_full,
+            MetadataDirective="COPY",
+        )
+        assert storage.get_bytes(backup_key) == payload
+        assert hashlib.sha256(storage.get_bytes(backup_key)).hexdigest() == metadata_record.sha256
+
+        client.delete_object(Bucket=storage.bucket, Key=source_full)
+        assert storage.exists(source_key) is False
+        assert storage.exists(backup_key) is True
+        assert storage.get_bytes(backup_key) == payload
+    finally:
+        client.delete_object(Bucket=storage.bucket, Key=source_full)
+        client.delete_object(Bucket=storage.bucket, Key=backup_full)
 
 
 @pytest.mark.integration

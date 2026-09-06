@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field, model_validator
 from starlette.requests import Request
 
 from mdi_api.input_transport import CreateUploadSessionRequest, input_transport_capability_contract
+from mdi_material_parsers import stable_sample_reference
 
 
 _DEFAULT_JSON_LIST_LIMIT = 100_000
@@ -68,9 +69,13 @@ def get_dataset_object_store(dataset_id: str) -> dict[str, object]:
     canonical, identity-bearing resources into bounded JSON; aliases and
     execution-only helper keys are omitted.
     """
-    from mdi_api.phase2_runtime import get_phase2_dataset_object_store
+    from mdi_api.phase2_runtime import (
+        get_phase2_dataset_object_store,
+        get_phase2_dataset_profile,
+    )
 
     store = get_phase2_dataset_object_store(dataset_id)
+    dataset_version: str | None = None
     index = store.get("__mdi_source_resources__") if isinstance(store, dict) else {}
     if not isinstance(index, dict):
         return {"datasetId": dataset_id, "resources": []}
@@ -85,15 +90,73 @@ def get_dataset_object_store(dataset_id: str) -> dict[str, object]:
         if canonical_id in seen or identity.get("alias"):
             continue
         value = _canonical_source_payload(store.get(canonical_id))
+        object_hash = str(identity.get("objectHash") or "")
+        payload = _json_safe_resource(value)
+        if identity.get("objectType") == "DataFrame":
+            if dataset_version is None:
+                dataset_version = str(
+                    get_phase2_dataset_profile(dataset_id).get("version") or "unknown"
+                )
+            payload = _project_dataset_row_identities(
+                payload,
+                dataset_id=dataset_id,
+                dataset_version=dataset_version,
+                object_id=canonical_id,
+                object_hash=object_hash,
+            )
         resources.append({
             "objectId": canonical_id,
             "objectType": identity.get("objectType"),
-            "objectHash": identity.get("objectHash"),
+            "objectHash": object_hash,
             "datasetId": identity.get("datasetId") or dataset_id,
-            "payload": _json_safe_resource(value),
+            "payload": payload,
         })
         seen.add(canonical_id)
     return {"datasetId": dataset_id, "resources": resources}
+
+
+def _project_dataset_row_identities(
+    payload: object,
+    *,
+    dataset_id: str,
+    dataset_version: str,
+    object_id: str,
+    object_hash: str,
+) -> object:
+    """Project the Data Profile's durable sample identity into Viewer rows.
+
+    This adds provenance metadata only. Source scientific values remain
+    unchanged, while sorting and filtering can preserve exact row identity
+    without treating the visual row position as scientific authority.
+    """
+
+    if not isinstance(payload, list) or not object_hash:
+        return payload
+    projected: list[object] = []
+    for row_index, item in enumerate(payload):
+        if not isinstance(item, dict):
+            projected.append(item)
+            continue
+        row = dict(item)
+        explicit = next(
+            (
+                str(row[key]).strip()
+                for key in ("sampleRef", "sample_id", "id")
+                if row.get(key) is not None and str(row[key]).strip()
+            ),
+            None,
+        )
+        sample_ref = explicit or stable_sample_reference(
+            dataset_id=dataset_id,
+            dataset_version=dataset_version,
+            object_hash=object_hash,
+            row_index=row_index,
+        )
+        row["objectId"] = object_id
+        row["sampleRef"] = sample_ref
+        row["sampleKey"] = f"{object_id}:{sample_ref}"
+        projected.append(row)
+    return projected
 
 
 def _canonical_source_payload(value: object) -> object:

@@ -73,5 +73,14 @@ def require_project_access(
     is_owner = project["created_by"] == current_user.id
     if not is_owner and membership not in allowed_roles:
         raise HTTPException(status_code=403, detail="当前用户无权访问此项目。")
-    access_role = "owner" if is_owner else str(membership)
+    # Project ownership is the immutable ``projects.created_by`` identity.
+    # Historical/admin-created rows may contain a second ``owner`` membership;
+    # retain its write access but never project owner-only purge authority.
+    access_role = (
+        "owner"
+        if is_owner
+        else "admin"
+        if membership == "owner"
+        else str(membership)
+    )
     return {**dict(project), "access_role": access_role}

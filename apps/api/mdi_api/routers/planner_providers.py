@@ -7,7 +7,12 @@ from typing import Any, Callable
 
 from pydantic import BaseModel, Field
 from fastapi import Depends
-from mdi_api.routers.auth import CurrentUser, get_current_user, get_current_user_compat
+from mdi_api.routers.auth import (
+    CurrentUser,
+    get_current_user,
+    get_current_user_compat,
+    require_platform_admin,
+)
 
 from mdi_llm import (
     DEEPSEEK_ALLOWED_MODELS,
@@ -18,6 +23,7 @@ from mdi_llm import (
     LLMProviderError,
 )
 from mdi_api.provider_connections import (
+    ProviderConnectionConfigurationError,
     decrypt_api_key,
     delete_connection,
     get_connection,
@@ -119,7 +125,7 @@ class ProviderModelsUpdateRequest(BaseModel):
 
 
 def configure_planner_provider(request: ProviderConfigureRequest, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
-    del current_user
+    require_platform_admin(current_user)
     try:
         if request.apiKey:
             connection = save_connection(
@@ -138,12 +144,23 @@ def configure_planner_provider(request: ProviderConfigureRequest, current_user: 
                 default_model=request.defaultModel,
             )
     except ValueError as exc:
-        return _provider_error("provider_configuration_invalid", str(exc), "字段校验失败", ["检查 Provider、Base URL 和 API Key"], error_code="PROVIDER_CONFIGURATION_INVALID")
+        error_code = (
+            exc.code
+            if isinstance(exc, ProviderConnectionConfigurationError)
+            else "PROVIDER_CONFIGURATION_INVALID"
+        )
+        return _provider_error(
+            "provider_configuration_invalid",
+            str(exc),
+            "字段校验失败",
+            ["检查 Provider、Base URL 和 API Key"],
+            error_code=error_code,
+        )
     return {"ok": True, "provider": public_connection(connection), "message": "Provider 已安全保存；API Key 不会再次显示。", "redacted": True}
 
 
 def update_planner_provider_models(provider: str, request: ProviderModelsUpdateRequest, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
-    del current_user
+    require_platform_admin(current_user)
     try:
         connection = update_connection_models(provider=provider, model_ids=request.modelIds, default_model=request.defaultModel)
     except ValueError as exc:
@@ -152,7 +169,7 @@ def update_planner_provider_models(provider: str, request: ProviderModelsUpdateR
 
 
 def remove_planner_provider(provider: str, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
-    del current_user
+    require_platform_admin(current_user)
     return {"ok": delete_connection(provider), "provider": provider, "redacted": True}
 
 

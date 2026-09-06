@@ -7,9 +7,11 @@ from dataclasses import dataclass, field, replace
 import hashlib
 import json
 import os
+import re
 from typing import Any, Literal, Mapping
 import uuid
 
+from botocore.exceptions import BotoCoreError, ClientError
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
@@ -23,7 +25,6 @@ from mdi_api.db import (
     tool_calls,
 )
 from mdi_api.repositories import InMemoryRepositoryBundle, compute_plan_hash
-from mdi_api.secrets import InMemorySecretStore
 from mdi_api.provider_connections import decrypt_api_key, get_connection, thinking_budget
 from mdi_llm import (
     ARTIFACT_PROJECTOR_CONTRACTS,
@@ -78,7 +79,6 @@ from mdi_tool_registry.plan_validator import PlanValidationError, PlanValidation
 
 
 _LLM_PROVIDER = MockLLMProvider()
-_SECRET_STORE = InMemorySecretStore()
 _IN_MEMORY_REPOSITORIES = InMemoryRepositoryBundle.create()
 _IN_MEMORY_QUEUE_BACKEND = InMemoryQueueBackend()
 _IN_MEMORY_QUEUE_RUNTIME = QueueWorkerRuntime(
@@ -1250,6 +1250,7 @@ def _get_agent2_interpretation_evidence(interpretation_id: str, repos: Any) -> d
             "bundleId": f"agent2-result-{snapshot['id']}",
             "bundleHash": str(snapshot.get("source_fingerprint") or ""),
             "jobId": job_id,
+            "projectId": str(interpretation.get("project_id") or snapshot.get("project_id") or ""),
             "planId": str(provenance.get("analysis_plan_id") or ""),
             "evidenceItems": evidence_items,
             "sourceArtifactIds": list(dict.fromkeys(source_artifact_ids)),
@@ -1331,6 +1332,7 @@ def get_planner_interpretation_evidence(interpretation_id: str, *, repositories:
         "bundleId": bundle["bundleId"],
         "bundleHash": bundle["bundleHash"],
         "jobId": job_id,
+        "projectId": str(bundle.get("projectId") or bundle.get("project_id") or "") or None,
         "planId": bundle["planId"],
         "evidenceItems": bundle["evidenceItems"],
         "sourceArtifactIds": bundle["sourceArtifactIds"],
@@ -1730,6 +1732,7 @@ def get_planner_job_artifact_content(
     job_id: str,
     artifact_id: str,
     *,
+    download: bool = False,
     repositories: Any = None,
     queue_runtime: QueueWorkerRuntime | None = None,
 ) -> Any:
@@ -1750,9 +1753,37 @@ def get_planner_job_artifact_content(
             raise LookupError("Artifact does not belong to the requested job.")
         size = int(artifact.get("sizeBytes") or artifact.get("size_bytes") or 0)
         maximum = 67_108_864
-        if size <= 0 or size > maximum:
+        if size <= 0:
             raise ValueError("Artifact content exceeds the browser transfer cap.")
         storage_key = str(artifact.get("storageKey") or artifact.get("storage_key") or "")
+        if not storage_key:
+            from fastapi import HTTPException
+
+            raise HTTPException(
+                status_code=410,
+                detail={
+                    "code": "ARTIFACT_CONTENT_GONE",
+                    "message": (
+                        "Artifact metadata is retained, but the exact persisted "
+                        "payload is no longer available."
+                    ),
+                },
+            )
+        if size > maximum:
+            from fastapi import HTTPException
+
+            raise HTTPException(
+                status_code=413,
+                detail={
+                    "code": "ARTIFACT_CONTENT_TOO_LARGE",
+                    "message": (
+                        "The exact Artifact exceeds the bounded browser transfer "
+                        "limit."
+                    ),
+                    "maximumBytes": maximum,
+                    "sizeBytes": size,
+                },
+            )
         content = runtime.artifact_storage.get_bytes(storage_key)
         expected_hash = str(artifact.get("sha256") or artifact.get("contentHash") or artifact.get("content_hash") or "")
         if len(content) != size or hashlib.sha256(content).hexdigest() != expected_hash:
@@ -1773,19 +1804,65 @@ def get_planner_job_artifact_content(
         }
         if media_type not in allowed:
             raise ValueError("Artifact media type is not available through the bounded content route.")
+        headers = {
+            "X-Content-SHA256": expected_hash,
+            "X-Content-Length-Validated": str(size),
+            "Cache-Control": "private, no-store",
+            "X-Content-Type-Options": "nosniff",
+        }
+        if download:
+            raw_name = str(artifact.get("name") or f"{artifact_id}.artifact")
+            safe_name = re.sub(r"[^A-Za-z0-9._-]+", "-", raw_name).lstrip(".")[:120]
+            if not safe_name:
+                safe_name = f"{artifact_id}.artifact"
+            headers["Content-Disposition"] = f'attachment; filename="{safe_name}"'
         return Response(
             content=content,
             media_type=media_type,
-            headers={
-                "X-Content-SHA256": expected_hash,
-                "X-Content-Length-Validated": str(size),
-                "Cache-Control": "private, no-store",
-                "X-Content-Type-Options": "nosniff",
-            },
+            headers=headers,
         )
 
     try:
         return make_response()
+    except FileNotFoundError as error:
+        from fastapi import HTTPException
+
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "code": "ARTIFACT_CONTENT_NOT_FOUND",
+                "message": "The exact Artifact payload is currently unavailable.",
+            },
+        ) from error
+    except ClientError as error:
+        from fastapi import HTTPException
+
+        error_code = str((error.response or {}).get("Error", {}).get("Code", ""))
+        if error_code in {"NoSuchKey", "NoSuchBucket", "NotFound", "404"}:
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "code": "ARTIFACT_CONTENT_NOT_FOUND",
+                    "message": "The exact Artifact payload is currently unavailable.",
+                },
+            ) from error
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "code": "ARTIFACT_STORAGE_UNAVAILABLE",
+                "message": "Artifact storage is temporarily unavailable.",
+            },
+        ) from error
+    except BotoCoreError as error:
+        from fastapi import HTTPException
+
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "code": "ARTIFACT_STORAGE_UNAVAILABLE",
+                "message": "Artifact storage is temporarily unavailable.",
+            },
+        ) from error
     except LookupError as error:
         from fastapi import HTTPException
 
@@ -1796,10 +1873,14 @@ def get_planner_job_artifact_content(
         raise HTTPException(status_code=422, detail="Planner artifact content failed bounded validation.") from error
 
 
-def get_planner_job_artifact_content_route(job_id: str, artifact_id: str) -> Any:
+def get_planner_job_artifact_content_route(
+    job_id: str,
+    artifact_id: str,
+    download: bool = False,
+) -> Any:
     """HTTP boundary for bounded job-scoped artifact bytes."""
 
-    return get_planner_job_artifact_content(job_id, artifact_id)
+    return get_planner_job_artifact_content(job_id, artifact_id, download=download)
 
 
 def get_planner_job_result(job_id: str, *, repositories: Any = None) -> dict[str, Any]:

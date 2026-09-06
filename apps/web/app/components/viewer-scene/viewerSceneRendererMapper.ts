@@ -57,6 +57,16 @@ export function mapViewerSceneForRenderer(payload: unknown): MappingResult {
   const source = isRecord(payload.source) ? payload.source : {};
   const metadata = isRecord(payload.metadata) ? payload.metadata : {};
   const warnings = [...validation.warnings];
+  if (Array.isArray(payload.warnings)) {
+    for (const warning of payload.warnings) {
+      const message = typeof warning === "string"
+        ? warning.slice(0, 512)
+        : isRecord(warning) && typeof warning.message === "string"
+          ? warning.message.slice(0, 512)
+          : "";
+      if (message && !warnings.includes(message)) warnings.push(message);
+    }
+  }
   if (!periodic && bonds.length > 0) warnings.push("VIEWER_SCENE_LEGACY_SAME_CELL_TOPOLOGY");
   const scene: ValidatedRenderScene = Object.freeze({
     contractVersion: periodic ? "viewer_scene.v2" : "viewer_scene.v1",

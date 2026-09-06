@@ -194,6 +194,16 @@ describe("ViewerSceneRendererSurface", () => {
     expect(screen.getByTestId("viewer-scene-renderer-performance-warning").textContent).toContain("当前结构较大");
   });
 
+  it("surfaces an authoritative shown/total truncation warning", async () => {
+    const payload = structuredClone(minimalScene) as Record<string, any>;
+    payload.warnings = [{ code: "VIEWER_SCENE_SITES_TRUNCATED", message: "当前显示前 256 / 512 个站点；完整结构仍保留在源数据中。" }];
+    const factory = vi.fn(async () => fakeEngine()) satisfies ViewerRendererEngineFactory;
+    render(<ViewerSceneRendererSurface payload={payload} capabilityOverride engineFactory={factory} />);
+    await waitFor(() => expect(factory).toHaveBeenCalledOnce());
+    expect(screen.getByTestId("viewer-scene-renderer-truncation-warning").textContent).toContain("256 / 512");
+    expect(screen.getByTestId("viewer-scene-renderer-summary").textContent).toContain("1 个位点");
+  });
+
   it("disposes a stale asynchronous engine generation after a scene switch", async () => {
     let resolveFirst: ((engine: ViewerRendererEngine) => void) | undefined;
     const stale = fakeEngine();
@@ -412,6 +422,19 @@ describe("ViewerSceneRendererSurface", () => {
     const user = userEvent.setup();
     render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={factory} />);
     await waitFor(() => expect(screen.getByText("渲染模块不可用")).toBeTruthy());
+    await user.click(screen.getByRole("button", { name: "重试渲染" }));
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("已就绪"));
+    expect(factory).toHaveBeenCalledTimes(2);
+  });
+
+  it("distinguishes renderer initialization failure and offers a safe retry", async () => {
+    const factory = vi.fn()
+      .mockRejectedValueOnce(new (await import("./viewerSceneRendererErrors")).ViewerRendererError("VIEWER_RENDERER_INITIALIZATION_FAILED", "no context"))
+      .mockResolvedValueOnce(fakeEngine()) as ViewerRendererEngineFactory;
+    const user = userEvent.setup();
+    render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={factory} />);
+    await waitFor(() => expect(screen.getByText("渲染器初始化失败")).toBeInTheDocument());
+    expect(screen.getByText("VIEWER_RENDERER_INITIALIZATION_FAILED")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "重试渲染" }));
     await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toContain("已就绪"));
     expect(factory).toHaveBeenCalledTimes(2);

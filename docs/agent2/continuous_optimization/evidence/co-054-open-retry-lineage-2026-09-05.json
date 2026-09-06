@@ -1,0 +1,18 @@
+{
+  "improvement": "CO-054",
+  "date": "2026-09-05",
+  "status": "PASS",
+  "summary": "Open and Open-and-retry now have explicit, distinct ResearchTurn lineage semantics.",
+  "verification": {
+    "combined_research_task_tests": "99 passed",
+    "typecheck": "PASS",
+    "diff_check": "PASS_WITH_CRLF_WARNINGS_ONLY"
+  },
+  "behavior": {
+    "open": "EXACT_EXISTING_TURN_NO_NEW_LINEAGE",
+    "retry": "NEW_CHILD_TURN_WITH_PARENT_TURN_ID",
+    "retry_route_flag": "retry=1",
+    "original_evidence_preserved": true,
+    "duplicate_retry_prevented": true
+  }
+}

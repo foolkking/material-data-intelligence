@@ -1,0 +1,14 @@
+{
+  "improvementId": "CO-102",
+  "status": "PASS",
+  "date": "2026-09-05",
+  "behavior": [
+    "Active writable empty projects route to Data Platform import/selection.",
+    "Read-only projects retain a safe data-view route.",
+    "Archived and trashed projects do not gain Research write access from role alone."
+  ],
+  "verification": {
+    "researchPages": "77 passed",
+    "typecheck": "PASS"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "improvement": "CO-032",
+  "date": "2026-09-05",
+  "status": "PASS",
+  "problem": "Nested Provider and durable worker failure payloads needed a shared secret, endpoint and path sentinel scan.",
+  "coverage": [
+    "credential keys and values",
+    "Bearer and API tokens",
+    "Redis, MinIO and S3 endpoints",
+    "absolute filesystem paths",
+    "Provider transport payloads and errors",
+    "Job, ToolCall and dependency failure summaries",
+    "Report generation failure summaries"
+  ],
+  "scientific_fidelity": [
+    "numeric values preserved",
+    "units preserved",
+    "sample and version identities preserved",
+    "evidence references preserved"
+  ],
+  "verification": {
+    "focused_secret_safety": "37 passed",
+    "scanner_provider_subset": "11 passed",
+    "report_export_authorization_regression": "PASS",
+    "web_typecheck": "PASS",
+    "touched_compileall": "PASS",
+    "touched_ruff": "PASS",
+    "diff_check": "PASS"
+  }
+}
