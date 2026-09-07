@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from threading import Lock, RLock
 from typing import Any, ContextManager, Iterator, Mapping, Protocol
 
-from sqlalchemy import and_, delete, func, insert, or_, select, text, update
+from sqlalchemy import and_, func, insert, or_, select, text, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.engine import Connection, Engine
 
@@ -80,6 +80,18 @@ from mdi_api.state_machine import (  # noqa: F401
     validate_tool_call_transition,
 )
 from mdi_api.application.data.ports import DataProfileRepository, DatasetRepository  # noqa: F401
+from mdi_api.application.reports.ports import RecipeRepository, ReportRepository  # noqa: F401
+from mdi_api.infrastructure.persistence.memory_reports import (
+    InMemoryRecipeRepository,
+    InMemoryReportRepository,
+)
+from mdi_api.infrastructure.persistence.sqlalchemy_reports import (
+    SqlAlchemyRecipeRepository,
+    SqlAlchemyReportRepository,
+    _recipe_from_row,  # noqa: F401
+    _report_from_row,  # noqa: F401
+    _assert_immutable_delivery_compatible,  # noqa: F401
+)
 from mdi_api.application.artifacts.ports import ArtifactRepository  # noqa: F401
 from mdi_api.infrastructure.persistence.memory_artifacts import InMemoryArtifactRepository
 from mdi_api.infrastructure.persistence.sqlalchemy_artifacts import (
@@ -117,7 +129,7 @@ from mdi_api.infrastructure.persistence.base import (
     _enum_value,
     _iso,
     _json_copy,
-    _model_to_record,
+    _model_to_record,  # noqa: F401
     _parse_iso,
     _required_id,
     _row_to_json_dict,
@@ -218,35 +230,8 @@ class DependencyExecutionRepository(Protocol):
 
 
 
-class RecipeRepository(Protocol):
-    def save(self, recipe: VisualizationRecipe | Mapping[str, Any]) -> dict[str, Any]:
-        ...
-
-    def create_immutable(self, recipe: Mapping[str, Any]) -> dict[str, Any]:
-        ...
-
-    def get(self, recipe_id: str) -> dict[str, Any]:
-        ...
-
-    def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
-        ...
 
 
-class ReportRepository(Protocol):
-    def save(self, report: Mapping[str, Any]) -> dict[str, Any]:
-        ...
-
-    def create_immutable(self, report: Mapping[str, Any]) -> dict[str, Any]:
-        ...
-
-    def get(self, report_id: str) -> dict[str, Any]:
-        ...
-
-    def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
-        ...
-
-    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
-        ...
 
 
 class ScientificInterpretationRepository(Protocol):
@@ -529,57 +514,8 @@ class InMemoryAnalysisPlanRepository(_InMemoryRecordRepository):
 
 
 
-class InMemoryRecipeRepository(_InMemoryRecordRepository):
-    def save(self, recipe: VisualizationRecipe | Mapping[str, Any]) -> dict[str, Any]:
-        record = _model_to_record(recipe)
-        return self._save(record, record_id=_required_id(record, "recipeId"))
-
-    def create_immutable(self, recipe: Mapping[str, Any]) -> dict[str, Any]:
-        record = _json_copy(recipe)
-        recipe_id = _required_id(record, "recipeId")
-        with self._record_lock:
-            existing = self.records.get(recipe_id)
-            if existing is not None:
-                _assert_immutable_delivery_compatible(existing, record, kind="Recipe")
-                return _json_copy(existing)
-            return self._save(record, record_id=recipe_id)
-
-    def get(self, recipe_id: str) -> dict[str, Any]:
-        return self._get(recipe_id)
-
-    def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
-        return [_json_copy(record) for record in self.records.values() if record.get("sourceJobId") == job_id]
-
-    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
-        return [_json_copy(record) for record in self.records.values() if record.get("projectId") == project_id]
 
 
-class InMemoryReportRepository(_InMemoryRecordRepository):
-    def save(self, report: Mapping[str, Any]) -> dict[str, Any]:
-        return self._save(report, record_id=_required_id(report, "reportId"))
-
-    def create_immutable(self, report: Mapping[str, Any]) -> dict[str, Any]:
-        record = _json_copy(report)
-        report_id = _required_id(record, "reportId")
-        with self._record_lock:
-            existing = self.records.get(report_id)
-            if existing is not None:
-                _assert_immutable_delivery_compatible(existing, record, kind="Report")
-                return _json_copy(existing)
-            return self._save(record, record_id=report_id)
-
-    def get(self, report_id: str) -> dict[str, Any]:
-        return self._get(report_id)
-
-    def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
-        return [
-            _json_copy(record)
-            for record in self.records.values()
-            if record.get("jobId") == job_id or record.get("sourceJobId") == job_id
-        ]
-
-    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
-        return [_json_copy(record) for record in self.records.values() if record.get("projectId") == project_id]
 
 
 class InMemoryScientificInterpretationRepository(_InMemoryRecordRepository):
@@ -1258,148 +1194,8 @@ class SqlAlchemyAnalysisPlanRepository(_SqlAlchemyRepository):
 
 
 
-class SqlAlchemyRecipeRepository(_SqlAlchemyRepository):
-    def save(self, recipe: VisualizationRecipe | Mapping[str, Any]) -> dict[str, Any]:
-        record = _model_to_record(recipe)
-        recipe_id = _required_id(record, "recipeId")
-        created_by = str(record.get("createdBy") or record.get("created_by") or "user_local")
-        values = {
-            "id": recipe_id,
-            "project_id": str(record["projectId"]),
-            "source_job_id": record.get("sourceJobId"),
-            "name": str(record.get("name") or recipe_id),
-            "recipe_json": _json_copy(record),
-            "created_by": created_by,
-        }
-
-        def run(connection: Connection) -> None:
-            _ensure_user(connection, user_id=created_by)
-            connection.execute(delete(visualization_recipes).where(visualization_recipes.c.id == recipe_id))
-            connection.execute(insert(visualization_recipes).values(**values))
-
-        self._with_connection(run)
-        return self.get(recipe_id)
-
-    def create_immutable(self, recipe: Mapping[str, Any]) -> dict[str, Any]:
-        record = _json_copy(recipe)
-        recipe_id = _required_id(record, "recipeId")
-        created_by = str(record.get("createdBy") or record.get("created_by") or "user_local")
-        values = {
-            "id": recipe_id,
-            "project_id": str(record["projectId"]),
-            "source_job_id": record.get("sourceJobId"),
-            "name": str(record.get("name") or recipe_id),
-            "recipe_json": record,
-            "created_by": created_by,
-        }
-
-        def run(connection: Connection) -> None:
-            existing = connection.execute(
-                select(visualization_recipes.c.recipe_json).where(visualization_recipes.c.id == recipe_id)
-            ).scalar_one_or_none()
-            if existing is not None:
-                _assert_immutable_delivery_compatible(_json_copy(existing), record, kind="Recipe")
-                return
-            _ensure_user(connection, user_id=created_by)
-            connection.execute(insert(visualization_recipes).values(**values))
-
-        self._with_connection(run)
-        return self.get(recipe_id)
-
-    def get(self, recipe_id: str) -> dict[str, Any]:
-        row = self._fetch_one_dict(select(visualization_recipes).where(visualization_recipes.c.id == recipe_id))
-        return _recipe_from_row(row)
-
-    def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
-        statement = (
-            select(visualization_recipes)
-            .where(visualization_recipes.c.source_job_id == job_id)
-            .order_by(visualization_recipes.c.created_at, visualization_recipes.c.id)
-        )
-        return [_recipe_from_row(row) for row in self._fetch_all_dicts(statement)]
-
-    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
-        statement = (
-            select(visualization_recipes)
-            .where(visualization_recipes.c.project_id == project_id)
-            .order_by(visualization_recipes.c.created_at.desc(), visualization_recipes.c.id)
-        )
-        return [_recipe_from_row(row) for row in self._fetch_all_dicts(statement)]
 
 
-class SqlAlchemyReportRepository(_SqlAlchemyRepository):
-    def save(self, report: Mapping[str, Any]) -> dict[str, Any]:
-        record = _json_copy(report)
-        report_id = _required_id(record, "reportId")
-        created_by = str(record.get("createdBy") or record.get("created_by") or "user_local")
-        job_id_value = record.get("jobId") or record.get("sourceJobId")
-        if not job_id_value:
-            raise ValueError("Report record is missing jobId/sourceJobId")
-        job_id = str(job_id_value)
-        values = {
-            "id": report_id,
-            "project_id": str(record["projectId"]),
-            "dataset_id": record.get("datasetId"),
-            "job_id": job_id,
-            "version": str(record.get("version") or "1"),
-            "title": str(record.get("title") or record.get("name") or report_id),
-            "markdown_key": record.get("markdownKey") or record.get("markdownArtifactKey"),
-            "html_key": record.get("htmlKey") or record.get("htmlArtifactKey"),
-            "report_json": record,
-            "created_by": created_by,
-        }
-
-        def run(connection: Connection) -> None:
-            _ensure_user(connection, user_id=created_by)
-            connection.execute(delete(reports).where(reports.c.id == report_id))
-            connection.execute(insert(reports).values(**values))
-
-        self._with_connection(run)
-        return self.get(report_id)
-
-    def create_immutable(self, report: Mapping[str, Any]) -> dict[str, Any]:
-        record = _json_copy(report)
-        report_id = _required_id(record, "reportId")
-        created_by = str(record.get("createdBy") or record.get("created_by") or "user_local")
-        job_id_value = record.get("jobId") or record.get("sourceJobId")
-        if not job_id_value:
-            raise ValueError("Report record is missing jobId/sourceJobId")
-        values = {
-            "id": report_id,
-            "project_id": str(record["projectId"]),
-            "dataset_id": record.get("datasetId"),
-            "job_id": str(job_id_value),
-            "version": str(record.get("version") or "1"),
-            "title": str(record.get("title") or record.get("name") or report_id),
-            "markdown_key": record.get("markdownKey") or record.get("markdownArtifactKey"),
-            "html_key": record.get("htmlKey") or record.get("htmlArtifactKey"),
-            "report_json": record,
-            "created_by": created_by,
-        }
-
-        def run(connection: Connection) -> None:
-            existing = connection.execute(
-                select(reports.c.report_json).where(reports.c.id == report_id)
-            ).scalar_one_or_none()
-            if existing is not None:
-                _assert_immutable_delivery_compatible(_json_copy(existing), record, kind="Report")
-                return
-            _ensure_user(connection, user_id=created_by)
-            connection.execute(insert(reports).values(**values))
-
-        self._with_connection(run)
-        return self.get(report_id)
-
-    def get(self, report_id: str) -> dict[str, Any]:
-        return _report_from_row(self._fetch_one_dict(select(reports).where(reports.c.id == report_id)))
-
-    def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
-        statement = select(reports).where(reports.c.job_id == job_id).order_by(reports.c.created_at, reports.c.id)
-        return [_report_from_row(row) for row in self._fetch_all_dicts(statement)]
-
-    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
-        statement = select(reports).where(reports.c.project_id == project_id).order_by(reports.c.created_at.desc(), reports.c.id)
-        return [_report_from_row(row) for row in self._fetch_all_dicts(statement)]
 
 
 class SqlAlchemyScientificInterpretationRepository(_SqlAlchemyRepository):
@@ -3173,32 +2969,8 @@ def _analysis_plan_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
 
 
 
-def _recipe_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
-    recipe = _json_copy(row.get("recipe_json") or {})
-    recipe.setdefault("recipeId", row["id"])
-    recipe.setdefault("id", row["id"])
-    recipe.setdefault("projectId", row["project_id"])
-    recipe.setdefault("sourceJobId", row["source_job_id"])
-    recipe.setdefault("name", row["name"])
-    recipe["createdAt"] = _iso(row["created_at"])
-    return recipe
 
 
-def _report_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
-    report = _json_copy(row.get("report_json") or {})
-    report.setdefault("id", row["id"])
-    report.setdefault("reportId", row["id"])
-    report.setdefault("projectId", row["project_id"])
-    report.setdefault("datasetId", row["dataset_id"])
-    report.setdefault("jobId", row["job_id"])
-    report.setdefault("sourceJobId", row["job_id"])
-    report.setdefault("version", row["version"])
-    report.setdefault("title", row["title"])
-    report.setdefault("markdownKey", row["markdown_key"])
-    report.setdefault("htmlKey", row["html_key"])
-    report["createdBy"] = report.get("createdBy") or row["created_by"]
-    report["createdAt"] = report.get("createdAt") or _iso(row["created_at"])
-    return report
 
 
 
@@ -3214,22 +2986,3 @@ def _reject_credential_keys(value: Any) -> None:
     elif isinstance(value, list):
         for item in value:
             _reject_credential_keys(item)
-
-
-def _assert_immutable_delivery_compatible(
-    existing: Mapping[str, Any],
-    candidate: Mapping[str, Any],
-    *,
-    kind: str,
-) -> None:
-    identity_fields = (
-        "requestHash",
-        "compositionHash",
-        "reportId",
-        "recipeId",
-        "projectId",
-        "sourceJobId",
-        "workspaceId",
-    )
-    if any(existing.get(field) != candidate.get(field) for field in identity_fields):
-        raise ValueError(f"{kind} immutable snapshot conflict")
