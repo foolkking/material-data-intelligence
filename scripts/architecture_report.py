@@ -9,7 +9,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Iterable, Sequence
+from typing import Sequence
 
 from scripts.architecture_scan import (
     API_ROOT,
