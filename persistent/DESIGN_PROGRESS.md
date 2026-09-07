@@ -1,5 +1,23 @@
 # DESIGN_PROGRESS
 
+## 2026-09-07 — Autonomous architecture migration milestone
+
+Batch 0 canonical ownership preparation reached the pre-physical-migration
+milestone in the active `mdi-b0-5a1` worktree. Project/Data, planning,
+jobs, artifacts, reports, interpretation, workspace and repository-bundle
+persistence now have canonical application/infrastructure modules while old
+`mdi_api.repositories` paths remain compatibility exports. The legacy
+runtime, database composition and frontend aggregators remain explicitly
+physical-move-later authorities; no second singleton, schema, queue or
+scientific authority was introduced.
+
+B0-6 added a deterministic AST-based canonical import guard with explicit
+transition allowlists. B0-7 added a read-only deterministic architecture
+report covering import edges, cycles, dynamic references, public symbols,
+worker handlers/queues, Tool/Adapter identities, launchers and frontend
+dynamic imports. Guard and report status are PASS. Physical migration remains
+unauthorized pending reviewer approval.
+
 ## 2026-09-02 — Scientific viewer unavailable-state recovery
 
 Scientific object viewers now expose a bounded `重新读取来源` action plus a

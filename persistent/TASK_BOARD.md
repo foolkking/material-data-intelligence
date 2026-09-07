@@ -1,5 +1,20 @@
 # TASK_BOARD
 
+## Autonomous architecture migration milestone (2026-09-07)
+
+- [x] Complete remaining Batch 0 ownership preparation in the active
+      migration worktree without physical file relocation.
+- [x] Add B0-6 deterministic canonical import-boundary guard with bounded
+      allowlisted transition edges; current canonical scope reports zero
+      forbidden edges.
+- [x] Add B0-7 deterministic read-only architecture report; six frozen
+      handlers resolve, six queue names remain unchanged, Tool IDs=62 and
+      Adapter IDs=50.
+- [x] Focused milestone regression: architecture/worker/queue 30 passed;
+      persistence/research selection 209 passed and 4 skipped after excluding
+      known external PostgreSQL API cases. Physical migration remains pending
+      review.
+
 ## Product maturity data reachability batch (2026-09-02)
 
 - [x] Add retry/source navigation controls to unavailable Scientific Viewer

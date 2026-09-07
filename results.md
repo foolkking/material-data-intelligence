@@ -20535,3 +20535,23 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
     worker=redis、llmProvider=deepseek。
 - 提交/CI：本地收口提交 `510f73a` 已创建；本轮未推送，未关闭 API、worker、
   PostgreSQL、Redis、MinIO 或现有浏览器标签页。
+## Materials Intelligence Platform — Autonomous Architecture Migration B0-5 through B0-7
+
+- 状态：已完成，达到 `AUTONOMOUS_MIGRATION_MILESTONE_REACHED`。
+- 完成时间：2026-09-07T00:00:00+08:00。
+- 工作区：`E:/1project/mdi-b0-5a1`，未创建新工作树或分支，未推送。
+- 修改摘要：完成剩余 Batch 0 persistence canonical ownership preparation；
+  新增 B0-6 deterministic canonical import-boundary guard；新增 B0-7
+  read-only deterministic architecture report。保留旧 public/dynamic paths、
+  六个 worker handler dotted identities、六个 queue names、Tool/Adapter
+  identities 和现有 scientific/persistence authorities。未执行物理文件迁移。
+- 提交：`0469ebd`、`6ae2394`、`5824998`。
+- 测试：architecture/worker/queue focused `30 passed`；milestone focused
+  persistence/research `209 passed, 4 skipped`（排除外部 PostgreSQL API
+  用例）；compileall、Ruff、architecture guard、architecture report、
+  `git diff --check` 通过。一个 API 用例因既有外部 PostgreSQL
+  `OperationalError` 失败，分类为 PRE_EXISTING/ENVIRONMENTAL。
+- 硬不变量：API、授权、数据库 schema/Alembic、事务、持久化 ID、queue/
+  handler、Tool/Adapter、scientific identity、UI behavior 均未改变。
+- 后续：等待一次 reviewer 评审后再授权 physical relocation；本轮不执行
+  物理迁移。

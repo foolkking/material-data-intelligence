@@ -1,5 +1,22 @@
 # ARCHITECTURE_DECISIONS
 
+## 2026-09-07 — Pre-physical architecture migration milestone
+
+Canonical ownership preparation may add small application and infrastructure
+modules while retaining legacy public paths as true re-exports. The active
+Batch 0 migration established persistence vertical seams and preserved shared
+repository bundle/session semantics without moving files or changing schema,
+transaction, queue, scientific or API identity. Legacy runtime/database
+composition and frontend aggregator files remain explicit move-later
+authorities.
+
+The canonical scope is protected by a deterministic AST import guard:
+canonical implementations cannot import compatibility, transport, bootstrap,
+or prohibited concrete infrastructure. A separate read-only report inventories
+edges, cycles, dynamic paths, public symbols, worker/queue identities,
+Tool/Adapter identities, launchers and frontend dynamic imports. This guard is
+not a physical migration authorization.
+
 ## 2026-09-01 — Confirmed payload loss remains fail-closed with explicit recovery
 
 When the exact normalized scientific payload is confirmed absent, the product
