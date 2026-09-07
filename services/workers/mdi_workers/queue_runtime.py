@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Any, Callable, Mapping, Protocol
 
 from mdi_adapters import ToolExecutionContext, execute_tool_request
+from mdi_api.application.jobs import execute_queued_job
+from mdi_api.application.research import synchronize_queued_execution_progress
 from mdi_api.artifact_storage import ArtifactStorage, ArtifactStorageMetadata, LocalFileArtifactStorage, create_artifact_storage_from_settings
 from mdi_api.config import load_settings
 from mdi_api.database import create_repository_factory
@@ -768,21 +770,26 @@ class QueueWorkerRuntime:
         successfully persisted ToolCall or Artifact.
         """
         try:
-            from mdi_api.research_agent.execution.supervisor import ResearchExecutionSupervisor
-            from mdi_api.database import create_repository_factory
-            view = ResearchExecutionSupervisor(create_repository_factory()).sync_for_job(job_id)
-            view_status = getattr(view, "status", None) if view is not None else None
-            if getattr(view_status, "value", view_status) == "RESULT_PENDING":
-                from uuid import UUID
-                from mdi_api.scientific_results.queue import result_projection_queue_from_settings
+            from mdi_api.scientific_results import queue as queue_module
 
-                settings = load_settings()
-                result_projection_queue_from_settings(settings).enqueue_turn(UUID(str(view.turn_id)))
+            settings = load_settings()
+            synchronize_queued_execution_progress(
+                job_id,
+                repository_factory=create_repository_factory(settings),
+                result_projection_queue=queue_module.result_projection_queue_from_settings(
+                    settings
+                ),
+            )
         except Exception as exc:
             logger.warning(
                 "agent2_progress_or_result_wakeup_failed",
                 extra={"job_id": job_id, "error_type": type(exc).__name__},
             )
+
+    def notify_job_progress(self, job_id: str) -> None:
+        """Publish committed Job progress through the stable application port."""
+
+        self._notify_agent2_progress(job_id)
 
     def _start_job(self, repos: Any, job: Mapping[str, Any]) -> dict[str, Any]:
         job_id = str(job.get("jobId") or job["id"])
@@ -1234,9 +1241,7 @@ def create_queue_worker_runtime_from_settings() -> QueueWorkerRuntime:
 
 def run_queued_job(job_id: str) -> QueueWorkerResult:
     runtime = create_queue_worker_runtime_from_settings()
-    result = runtime.handle_job(job_id)
-    runtime._notify_agent2_progress(job_id)
-    return result
+    return execute_queued_job(job_id, runtime=runtime)
 
 
 def _find_tool_call(repos: Any, *, job_id: str, step_id: str) -> dict[str, Any] | None:

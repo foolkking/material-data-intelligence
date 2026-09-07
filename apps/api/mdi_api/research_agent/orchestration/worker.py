@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import asyncio
-from uuid import UUID
-
+from mdi_api.application.research.worker_entrypoints import process_queued_turn
 from mdi_api.database import create_repository_factory
 from mdi_api.research_agent.llm.structured_client import DeepSeekStructuredLLMClient
 from mdi_api.research_agent.orchestration.processor import AgentTurnProcessor, ProcessTurnResult
@@ -36,4 +34,4 @@ def run_queued_turn(turn_id: str) -> ProcessTurnResult:
         planning_queue=planning_queue,
         interpretation_queue=interpretation_queue,
     )
-    return asyncio.run(processor.process(UUID(turn_id)))
+    return process_queued_turn(turn_id, processor=processor)

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import os
-from uuid import UUID
 
+from mdi_api.application.scientific_results import project_queued_result
 from mdi_api.artifact_storage import create_artifact_storage_from_settings
 from mdi_api.config import load_settings
 from mdi_api.database import create_repository_factory
@@ -16,15 +16,13 @@ def run_queued_result_projection(turn_id: str) -> dict:
     settings = load_settings()
     storage = create_artifact_storage_from_settings(settings)
 
-    row = ScientificResultProjectionService(
+    projector = ScientificResultProjectionService(
         create_repository_factory(settings),
         artifact_loader=lambda artifact: load_committed_json_artifact(
             storage, artifact
         ),
-    ).project_turn(UUID(turn_id))
+    )
     return {
-        "turn_id": turn_id,
-        "snapshot_id": str(row["id"]),
-        "status": "RESULT_READY",
+        **project_queued_result(turn_id, projector=projector),
         "process_id": os.getpid(),
     }
