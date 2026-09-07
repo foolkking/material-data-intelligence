@@ -17,6 +17,8 @@ from mdi_schemas import (
     deterministic_capability_id,
 )
 
+from .adapter_invocability import AdapterInvocabilityPort, resolve_adapter_invocability
+
 
 PLANNER_METADATA_VERSION = "1.0"
 PLANNER_HIDDEN_TOOL_IDS = frozenset(
@@ -300,7 +302,12 @@ def build_tool_planner_metadata(tool: Any) -> ToolPlannerMetadata:
     )
 
 
-def validate_tool_planner_metadata(tool: Any, metadata: ToolPlannerMetadata) -> None:
+def validate_tool_planner_metadata(
+    tool: Any,
+    metadata: ToolPlannerMetadata,
+    *,
+    adapter_invocability: AdapterInvocabilityPort | None = None,
+) -> None:
     if metadata.toolId != tool.toolId or metadata.toolVersion != tool.version:
         raise ValueError("Planner metadata tool identity does not match the Registry tool.")
     actual_options = _input_type_options(tool)
@@ -317,22 +324,23 @@ def validate_tool_planner_metadata(tool: Any, metadata: ToolPlannerMetadata) -> 
     if metadata.declaredArtifactTypes != actual_artifacts:
         raise ValueError(f"Planner metadata artifacts do not match the tool contract: {tool.toolId}")
     if metadata.availability is PlannerAvailability.available:
-        try:
-            from mdi_adapters.registry import ADAPTER_CLASSES
-        except Exception as exc:  # pragma: no cover - import configuration is tested at integration level
-            raise ValueError("Planner metadata adapter registry is unavailable.") from exc
-        if tool.adapter not in ADAPTER_CLASSES:
+        port = adapter_invocability or resolve_adapter_invocability()
+        if port is not None and not port.is_invocable(tool.adapter):
             raise ValueError(f"Selectable planner tool is not invocable: {tool.toolId}")
 
 
-def build_registry_snapshot(registry: Any) -> tuple[PlannerRegistrySnapshot, dict[str, ToolPlannerMetadata]]:
+def build_registry_snapshot(
+    registry: Any,
+    *,
+    adapter_invocability: AdapterInvocabilityPort | None = None,
+) -> tuple[PlannerRegistrySnapshot, dict[str, ToolPlannerMetadata]]:
     if len(registry.tools) > 64:
         raise ValueError("Registry exceeds the capability-planning candidate cap.")
     metadata_by_id: dict[str, ToolPlannerMetadata] = {}
     entries: list[RegistrySnapshotEntry] = []
     for tool in sorted(registry.tools, key=lambda item: (item.toolId, item.version)):
         metadata = build_tool_planner_metadata(tool)
-        validate_tool_planner_metadata(tool, metadata)
+        validate_tool_planner_metadata(tool, metadata, adapter_invocability=adapter_invocability)
         if metadata.toolId in metadata_by_id:
             raise ValueError(f"Duplicate planner metadata identity: {metadata.toolId}")
         metadata_by_id[metadata.toolId] = metadata
@@ -354,8 +362,12 @@ def build_registry_snapshot(registry: Any) -> tuple[PlannerRegistrySnapshot, dic
     return snapshot, metadata_by_id
 
 
-def planner_visible_tools(registry: Any) -> list[Any]:
-    _snapshot, metadata = build_registry_snapshot(registry)
+def planner_visible_tools(
+    registry: Any,
+    *,
+    adapter_invocability: AdapterInvocabilityPort | None = None,
+) -> list[Any]:
+    _snapshot, metadata = build_registry_snapshot(registry, adapter_invocability=adapter_invocability)
     return [
         tool for tool in sorted(registry.tools, key=lambda item: item.toolId)
         if metadata[tool.toolId].availability is PlannerAvailability.available

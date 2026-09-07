@@ -48,6 +48,12 @@ from .pymatviz import (
 from .pymatviz.ptable_heatmap import PTableHeatmapAdapter
 from .pymatviz.structure_3d import Structure3DAdapter
 from .registry import ADAPTER_CLASSES, create_adapter, get_adapter_class
+from .invocability import register_adapter_invocability_port
+
+# Publish adapter invocability to the Tool Registry contract. This is the
+# allowed direction (adapters -> tool-registry) and replaces the former
+# tool-registry -> mdi_adapters.registry import.
+register_adapter_invocability_port()
 
 __all__ = [
     "ADAPTER_CLASSES",

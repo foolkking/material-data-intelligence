@@ -18,6 +18,12 @@ from .loader import (
     validateManifest,
     validate_manifest,
 )
+from .adapter_invocability import (
+    AdapterInvocabilityPort,
+    AdapterNameInvocability,
+    register_adapter_invocability,
+    resolve_adapter_invocability,
+)
 from .planner_metadata import (
     PLANNER_HIDDEN_TOOL_IDS,
     PLANNER_METADATA_VERSION,
@@ -35,6 +41,8 @@ from .dependency_ports import (
 from .dependency_validator import DependencyValidationResult, validate_dependency_plan
 
 __all__ = [
+    "AdapterInvocabilityPort",
+    "AdapterNameInvocability",
     "ManifestValidationError",
     "DependencyValidationResult",
     "PLANNER_HIDDEN_TOOL_IDS",
@@ -60,6 +68,8 @@ __all__ = [
     "planner_visible_tools",
     "validateManifest",
     "validate_manifest",
+    "register_adapter_invocability",
+    "resolve_adapter_invocability",
     "validate_tool_planner_metadata",
     "validate_tool_artifact_port_metadata",
     "validate_dependency_plan",
