@@ -91,6 +91,18 @@ from mdi_api.state_machine import (
     validate_tool_call_status,
     validate_tool_call_transition,
 )
+from mdi_api.infrastructure.persistence.base import (
+    _InMemoryRecordRepository,
+    _SqlAlchemyRepository,
+    _enum_value,
+    _iso,
+    _json_copy,
+    _model_to_record,
+    _parse_iso,
+    _required_id,
+    _row_to_json_dict,
+    _utc_now,
+)
 
 
 class ProjectRepository(Protocol):
@@ -457,30 +469,6 @@ class InMemoryRepositoryBundle:
             interpretations=InMemoryScientificInterpretationRepository(),
             workspaces=InMemoryWorkspaceRepository(),
         )
-
-
-class _InMemoryRecordRepository:
-    def __init__(self) -> None:
-        self.records: dict[str, dict[str, Any]] = {}
-        self._record_lock = RLock()
-
-    def _save(self, record: Mapping[str, Any], *, record_id: str) -> dict[str, Any]:
-        stored = _json_copy(record)
-        stored.setdefault("id", record_id)
-        self.records[record_id] = stored
-        return _json_copy(stored)
-
-    def _get(self, record_id: str) -> dict[str, Any]:
-        try:
-            return _json_copy(self.records[record_id])
-        except KeyError as exc:
-            raise LookupError(f"Unknown record id: {record_id}") from exc
-
-    def create(self, record: Mapping[str, Any]) -> dict[str, Any]:
-        return self.save(record)  # type: ignore[attr-defined]
-
-    def get_by_id(self, record_id: str) -> dict[str, Any]:
-        return self.get(record_id)  # type: ignore[attr-defined]
 
 
 class InMemoryProjectRepository(_InMemoryRecordRepository):
@@ -1429,38 +1417,6 @@ class SqlAlchemyRepositoryBundle:
             interpretations=SqlAlchemyScientificInterpretationRepository(bind),
             workspaces=SqlAlchemyWorkspaceRepository(bind),
         )
-
-
-class _SqlAlchemyRepository:
-    def __init__(self, bind: Engine | Connection) -> None:
-        self.bind = bind
-
-    def _with_connection(self, fn: Any) -> Any:
-        if isinstance(self.bind, Engine):
-            with self.bind.begin() as connection:
-                return fn(connection)
-        return fn(self.bind)
-
-    def _fetch_one_dict(self, statement: Any) -> dict[str, Any]:
-        def run(connection: Connection) -> dict[str, Any]:
-            row = connection.execute(statement).mappings().first()
-            if row is None:
-                raise LookupError("Record not found")
-            return _row_to_json_dict(row)
-
-        return self._with_connection(run)
-
-    def _fetch_all_dicts(self, statement: Any) -> list[dict[str, Any]]:
-        def run(connection: Connection) -> list[dict[str, Any]]:
-            return [_row_to_json_dict(row) for row in connection.execute(statement).mappings().all()]
-
-        return self._with_connection(run)
-
-    def create(self, record: Mapping[str, Any]) -> dict[str, Any]:
-        return self.save(record)  # type: ignore[attr-defined]
-
-    def get_by_id(self, record_id: str) -> dict[str, Any]:
-        return self.get(record_id)  # type: ignore[attr-defined]
 
 
 class SqlAlchemyProjectRepository(_SqlAlchemyRepository):
