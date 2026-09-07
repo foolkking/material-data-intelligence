@@ -1,0 +1,58 @@
+"""Persistence contracts for execution jobs and their audit records."""
+
+from __future__ import annotations
+
+from typing import Any, Mapping, Protocol, Sequence
+
+from mdi_schemas import JobEvent, JobEventStatus, JobStatus, ToolCall
+
+
+class JobRepository(Protocol):
+    def create(self, job: Mapping[str, Any]) -> dict[str, Any]:
+        ...
+
+    def save(self, job: Mapping[str, Any]) -> dict[str, Any]:
+        ...
+
+    def get(self, job_id: str) -> dict[str, Any]:
+        ...
+
+    def set_status(self, job_id: str, status: JobStatus | str) -> dict[str, Any]:
+        ...
+
+    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
+        ...
+
+    def list_task_feed_projection(self, job_ids: Sequence[str]) -> list[dict[str, Any]]:
+        ...
+
+
+class JobEventRepository(Protocol):
+    def append_event(
+        self,
+        job_id: str,
+        *,
+        event_type: str,
+        status: JobEventStatus | str,
+        message: str,
+        payload: Mapping[str, Any] | None = None,
+        progress: float | None = None,
+    ) -> JobEvent:
+        ...
+
+    def list_for_job(self, job_id: str) -> list[JobEvent]:
+        ...
+
+    def list_events_after_seq(self, job_id: str, after_seq: int) -> list[JobEvent]:
+        ...
+
+
+class ToolCallRepository(Protocol):
+    def save(self, tool_call: ToolCall | Mapping[str, Any]) -> dict[str, Any]:
+        ...
+
+    def list_for_job(self, job_id: str) -> list[dict[str, Any]]:
+        ...
+
+
+__all__ = ["JobEventRepository", "JobRepository", "ToolCallRepository"]
