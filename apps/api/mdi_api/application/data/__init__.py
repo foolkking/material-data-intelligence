@@ -1,0 +1,2 @@
+"""Data application contracts."""
+

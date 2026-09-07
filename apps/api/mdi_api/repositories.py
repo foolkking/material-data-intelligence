@@ -91,6 +91,8 @@ from mdi_api.state_machine import (
     validate_tool_call_status,
     validate_tool_call_transition,
 )
+from mdi_api.application.data.ports import DataProfileRepository, DatasetRepository
+from mdi_api.application.projects.ports import ProjectRepository
 from mdi_api.infrastructure.persistence.base import (
     _InMemoryRecordRepository,
     _SqlAlchemyRepository,
@@ -103,48 +105,17 @@ from mdi_api.infrastructure.persistence.base import (
     _row_to_json_dict,
     _utc_now,
 )
-
-
-class ProjectRepository(Protocol):
-    def save(self, project: Mapping[str, Any]) -> dict[str, Any]:
-        ...
-
-    def get(self, project_id: str) -> dict[str, Any]:
-        ...
-
-    def list(self) -> list[dict[str, Any]]:
-        ...
-
-
-class DatasetRepository(Protocol):
-    def save(self, dataset: Mapping[str, Any]) -> dict[str, Any]:
-        ...
-
-    def get(self, dataset_id: str) -> dict[str, Any]:
-        ...
-
-    def list(self) -> list[dict[str, Any]]:
-        ...
-
-    def list_for_project(self, project_id: str) -> list[dict[str, Any]]:
-        ...
-
-
-class DataProfileRepository(Protocol):
-    def save(self, profile: DataProfile | Mapping[str, Any]) -> dict[str, Any]:
-        ...
-
-    def get(self, profile_id: str) -> dict[str, Any]:
-        ...
-
-    def list(self) -> list[dict[str, Any]]:
-        ...
-
-    def list_for_dataset(self, dataset_id: str) -> list[dict[str, Any]]:
-        ...
-
-    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
-        ...
+from mdi_api.infrastructure.persistence.memory import (
+    InMemoryDataProfileRepository,
+    InMemoryDatasetRepository,
+    InMemoryProjectRepository,
+)
+from mdi_api.infrastructure.persistence.sqlalchemy import (
+    SqlAlchemyDataProfileRepository,
+    SqlAlchemyDatasetRepository,
+    SqlAlchemyProjectRepository,
+    _ensure_user,
+)
 
 
 class AnalysisPlanRepository(Protocol):
@@ -469,63 +440,6 @@ class InMemoryRepositoryBundle:
             interpretations=InMemoryScientificInterpretationRepository(),
             workspaces=InMemoryWorkspaceRepository(),
         )
-
-
-class InMemoryProjectRepository(_InMemoryRecordRepository):
-    def save(self, project: Mapping[str, Any]) -> dict[str, Any]:
-        return self._save(project, record_id=_required_id(project, "projectId"))
-
-    def get(self, project_id: str) -> dict[str, Any]:
-        return self._get(project_id)
-
-    def list(self) -> list[dict[str, Any]]:
-        return [_json_copy(record) for record in self.records.values()]
-
-
-class InMemoryDatasetRepository(_InMemoryRecordRepository):
-    def save(self, dataset: Mapping[str, Any]) -> dict[str, Any]:
-        return self._save(dataset, record_id=_required_id(dataset, "datasetId"))
-
-    def get(self, dataset_id: str) -> dict[str, Any]:
-        return self._get(dataset_id)
-
-    def list(self) -> list[dict[str, Any]]:
-        return [_json_copy(record) for record in self.records.values()]
-
-    def list_for_project(self, project_id: str) -> list[dict[str, Any]]:
-        return [_json_copy(record) for record in self.records.values() if record.get("projectId") == project_id]
-
-    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
-        return self.list_for_project(project_id)
-
-
-class InMemoryDataProfileRepository(_InMemoryRecordRepository):
-    def __init__(self, datasets: InMemoryDatasetRepository | None = None) -> None:
-        super().__init__()
-        self.datasets = datasets
-
-    def save(self, profile: DataProfile | Mapping[str, Any]) -> dict[str, Any]:
-        record = _model_to_record(profile)
-        return self._save(record, record_id=_required_id(record, "profileId"))
-
-    def get(self, profile_id: str) -> dict[str, Any]:
-        return self._get(profile_id)
-
-    def list(self) -> list[dict[str, Any]]:
-        return [_json_copy(record) for record in self.records.values()]
-
-    def list_for_dataset(self, dataset_id: str) -> list[dict[str, Any]]:
-        return [_json_copy(record) for record in self.records.values() if record.get("datasetId") == dataset_id]
-
-    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
-        if self.datasets is None:
-            return [_json_copy(record) for record in self.records.values() if record.get("projectId") == project_id]
-        dataset_ids = {
-            record.get("datasetId") or record.get("id")
-            for record in self.datasets.list_for_project(project_id)
-            if record.get("datasetId") or record.get("id")
-        }
-        return [_json_copy(record) for record in self.records.values() if record.get("datasetId") in dataset_ids]
 
 
 class InMemoryAnalysisIntentRepository(_InMemoryRecordRepository):
@@ -1417,153 +1331,6 @@ class SqlAlchemyRepositoryBundle:
             interpretations=SqlAlchemyScientificInterpretationRepository(bind),
             workspaces=SqlAlchemyWorkspaceRepository(bind),
         )
-
-
-class SqlAlchemyProjectRepository(_SqlAlchemyRepository):
-    def save(self, project: Mapping[str, Any]) -> dict[str, Any]:
-        project_id = _required_id(project, "projectId")
-        organization_id = str(project.get("organizationId") or project.get("organization_id") or "org_local")
-        created_by = str(project.get("createdBy") or project.get("created_by") or "user_local")
-        values = {
-            "id": project_id,
-            "organization_id": organization_id,
-            "name": str(project.get("name") or project_id),
-            "description": str(project.get("description") or ""),
-            "created_by": created_by,
-        }
-
-        def run(connection: Connection) -> None:
-            _ensure_actor_and_org(connection, user_id=created_by, organization_id=organization_id)
-            existing = connection.execute(
-                select(projects.c.id).where(projects.c.id == project_id)
-            ).scalar_one_or_none()
-            if existing is None:
-                connection.execute(insert(projects).values(**values))
-            else:
-                # Project persistence is an upsert boundary.  Re-saving a
-                # project must not delete child scientific records or its
-                # membership rows merely to refresh metadata.
-                connection.execute(
-                    update(projects)
-                    .where(projects.c.id == project_id)
-                    .values(
-                        organization_id=organization_id,
-                        name=values["name"],
-                        description=values["description"],
-                        created_by=created_by,
-                    )
-                )
-            # Project ownership is an explicit membership as well as the
-            # backwards-compatible `created_by` authority.  This keeps a
-            # newly-created project visible to membership-scoped surfaces and
-            # gives future collaborators a stable role boundary without
-            # changing scientific data ownership semantics.
-            owner_membership = connection.execute(
-                select(project_members.c.role).where(
-                    project_members.c.project_id == project_id,
-                    project_members.c.user_id == created_by,
-                )
-            ).scalar_one_or_none()
-            if owner_membership is None:
-                connection.execute(
-                    insert(project_members).values(
-                        project_id=project_id,
-                        user_id=created_by,
-                        role="owner",
-                    )
-                )
-
-        self._with_connection(run)
-        return self.get(project_id)
-
-    def get(self, project_id: str) -> dict[str, Any]:
-        return _project_from_row(self._fetch_one_dict(select(projects).where(projects.c.id == project_id)))
-
-    def list(self) -> list[dict[str, Any]]:
-        return [_project_from_row(row) for row in self._fetch_all_dicts(select(projects).order_by(projects.c.created_at, projects.c.id))]
-
-
-class SqlAlchemyDatasetRepository(_SqlAlchemyRepository):
-    def save(self, dataset: Mapping[str, Any]) -> dict[str, Any]:
-        dataset_id = _required_id(dataset, "datasetId")
-        created_by = str(dataset.get("createdBy") or dataset.get("created_by") or "user_local")
-        values = {
-            "id": dataset_id,
-            "project_id": str(dataset["projectId"]),
-            "name": str(dataset.get("name") or dataset.get("datasetName") or dataset_id),
-            "status": str(dataset.get("status") or "created"),
-            "metadata_json": _json_copy(dataset.get("metadata") or dataset),
-            "created_by": created_by,
-        }
-
-        def run(connection: Connection) -> None:
-            _ensure_user(connection, user_id=created_by)
-            connection.execute(delete(datasets).where(datasets.c.id == dataset_id))
-            connection.execute(insert(datasets).values(**values))
-
-        self._with_connection(run)
-        return self.get(dataset_id)
-
-    def get(self, dataset_id: str) -> dict[str, Any]:
-        return _dataset_from_row(self._fetch_one_dict(select(datasets).where(datasets.c.id == dataset_id)))
-
-    def list(self) -> list[dict[str, Any]]:
-        statement = select(datasets).order_by(datasets.c.project_id, datasets.c.created_at, datasets.c.id)
-        return [_dataset_from_row(row) for row in self._fetch_all_dicts(statement)]
-
-    def list_for_project(self, project_id: str) -> list[dict[str, Any]]:
-        statement = select(datasets).where(datasets.c.project_id == project_id).order_by(datasets.c.created_at, datasets.c.id)
-        return [_dataset_from_row(row) for row in self._fetch_all_dicts(statement)]
-
-    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
-        return self.list_for_project(project_id)
-
-
-class SqlAlchemyDataProfileRepository(_SqlAlchemyRepository):
-    def save(self, profile: DataProfile | Mapping[str, Any]) -> dict[str, Any]:
-        record = _model_to_record(profile)
-        profile_id = _required_id(record, "profileId")
-        values = {
-            "id": profile_id,
-            "dataset_id": str(record["datasetId"]),
-            "version": str(record.get("version") or "1"),
-            "profile_json": _json_copy(record),
-        }
-
-        def run(connection: Connection) -> None:
-            connection.execute(delete(data_profiles).where(data_profiles.c.id == profile_id))
-            connection.execute(insert(data_profiles).values(**values))
-
-        self._with_connection(run)
-        return self.get(profile_id)
-
-    def get(self, profile_id: str) -> dict[str, Any]:
-        return _data_profile_from_row(self._fetch_one_dict(select(data_profiles).where(data_profiles.c.id == profile_id)))
-
-    def list(self) -> list[dict[str, Any]]:
-        statement = select(data_profiles).order_by(
-            data_profiles.c.dataset_id,
-            data_profiles.c.created_at,
-            data_profiles.c.id,
-        )
-        return [_data_profile_from_row(row) for row in self._fetch_all_dicts(statement)]
-
-    def list_for_dataset(self, dataset_id: str) -> list[dict[str, Any]]:
-        statement = (
-            select(data_profiles)
-            .where(data_profiles.c.dataset_id == dataset_id)
-            .order_by(data_profiles.c.created_at, data_profiles.c.id)
-        )
-        return [_data_profile_from_row(row) for row in self._fetch_all_dicts(statement)]
-
-    def list_by_project(self, project_id: str) -> list[dict[str, Any]]:
-        statement = (
-            select(data_profiles)
-            .select_from(data_profiles.join(datasets, data_profiles.c.dataset_id == datasets.c.id))
-            .where(datasets.c.project_id == project_id)
-            .order_by(data_profiles.c.created_at, data_profiles.c.id)
-        )
-        return [_data_profile_from_row(row) for row in self._fetch_all_dicts(statement)]
 
 
 class SqlAlchemyAnalysisIntentRepository(_SqlAlchemyRepository):
@@ -3841,19 +3608,6 @@ def _validate_interpretation_associations(
             raise ValueError("Interpretation claim references evidence outside its bundle")
 
 
-def _ensure_actor_and_org(connection: Connection, *, user_id: str, organization_id: str) -> None:
-    _ensure_user(connection, user_id=user_id)
-    exists = connection.execute(select(organizations.c.id).where(organizations.c.id == organization_id)).first()
-    if exists is None:
-        connection.execute(insert(organizations).values(id=organization_id, name=organization_id))
-
-
-def _ensure_user(connection: Connection, *, user_id: str) -> None:
-    exists = connection.execute(select(users.c.id).where(users.c.id == user_id)).first()
-    if exists is None:
-        connection.execute(insert(users).values(id=user_id, email=f"{user_id}@local.invalid", display_name=user_id))
-
-
 def _job_event_values(event: JobEvent) -> dict[str, Any]:
     return {
         "id": event.id,
@@ -3880,43 +3634,6 @@ def _job_event_from_row(row: Mapping[str, Any]) -> JobEvent:
         payload=_json_copy(row.get("payload_json") or {}),
         createdAt=_iso(row["created_at"]),
     )
-
-
-def _project_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
-    return {
-        "id": row["id"],
-        "projectId": row["id"],
-        "organizationId": row["organization_id"],
-        "name": row["name"],
-        "description": row["description"],
-        "createdBy": row["created_by"],
-        "createdAt": _iso(row["created_at"]),
-        "updatedAt": _iso(row["updated_at"]),
-    }
-
-
-def _dataset_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
-    return {
-        "id": row["id"],
-        "datasetId": row["id"],
-        "projectId": row["project_id"],
-        "name": row["name"],
-        "status": row["status"],
-        "metadata": _json_copy(row.get("metadata_json") or {}),
-        "createdBy": row["created_by"],
-        "createdAt": _iso(row["created_at"]),
-        "updatedAt": _iso(row["updated_at"]),
-    }
-
-
-def _data_profile_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
-    profile = _json_copy(row.get("profile_json") or {})
-    profile.setdefault("id", row["id"])
-    profile.setdefault("profileId", row["id"])
-    profile.setdefault("datasetId", row["dataset_id"])
-    profile.setdefault("version", row["version"])
-    profile["createdAt"] = profile.get("createdAt") or _iso(row["created_at"])
-    return profile
 
 
 def canonical_analysis_plan_json(plan: AnalysisPlan | AnalysisPlanV02 | Mapping[str, Any]) -> str:
@@ -4626,47 +4343,6 @@ def _reject_credential_keys(value: Any) -> None:
             _reject_credential_keys(item)
 
 
-def _required_id(record: Mapping[str, Any], alias: str = "id") -> str:
-    value = record.get("id") or record.get(alias)
-    if not value:
-        raise ValueError(f"Record is missing id/{alias}")
-    return str(value)
-
-
-def _model_to_record(value: Any) -> dict[str, Any]:
-    if hasattr(value, "model_dump"):
-        return value.model_dump(mode="json")
-    return _json_copy(value)
-
-
-def _row_to_json_dict(row: Mapping[str, Any]) -> dict[str, Any]:
-    return {key: value for key, value in row.items()}
-
-
-def _json_copy(value: Any) -> Any:
-    if value is None:
-        return None
-    return json.loads(json.dumps(value, default=str))
-
-
-def _enum_value(value: Any) -> str:
-    if hasattr(value, "value"):
-        return str(value.value)
-    return str(value)
-
-
-def _parse_iso(value: str) -> datetime:
-    return datetime.fromisoformat(value.replace("Z", "+00:00"))
-
-
-def _iso(value: Any) -> str:
-    if isinstance(value, datetime):
-        if value.tzinfo is None:
-            value = value.replace(tzinfo=timezone.utc)
-        return value.astimezone(timezone.utc).isoformat()
-    return str(value)
-
-
 def _assert_immutable_delivery_compatible(
     existing: Mapping[str, Any],
     candidate: Mapping[str, Any],
@@ -4684,7 +4360,3 @@ def _assert_immutable_delivery_compatible(
     )
     if any(existing.get(field) != candidate.get(field) for field in identity_fields):
         raise ValueError(f"{kind} immutable snapshot conflict")
-
-
-def _utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat()
