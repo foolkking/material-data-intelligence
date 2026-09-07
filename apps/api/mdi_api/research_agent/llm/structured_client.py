@@ -8,8 +8,8 @@ from typing import Any, Protocol
 
 from mdi_llm.providers import DeepSeekProvider, PlannerUserConfig
 
+from mdi_api.application.research.transactions import transaction_active
 from mdi_api.research_agent.llm.schemas import StructuredLLMResult
-from mdi_api.unit_of_work import transaction_active
 
 
 PROMPT_VERSION = "research-orchestrator/1.1"

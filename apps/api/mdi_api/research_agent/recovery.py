@@ -398,7 +398,16 @@ def run_startup_recovery(
             "items": [],
             "disabled": True,
         }
-    return StaleResearchRecoveryService(settings=active).reconcile_stale(
+    from mdi_workers.queue_runtime import RedisRQQueueBackend
+
+    return StaleResearchRecoveryService(
+        repository_factory=create_repository_factory(active),
+        settings=active,
+        execution_queue=RedisRQQueueBackend(
+            redis_url=active.redis_url,
+            queue_name=active.agent2_execution_queue_name,
+        ),
+    ).reconcile_stale(
         stale_minutes=stale_minutes,
         limit=limit,
     )

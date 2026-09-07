@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Any, Protocol
 from uuid import UUID, uuid4
 
+from mdi_api.application.research.ports import ResearchRepositoryFactoryPort
 from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus
 from mdi_api.research_agent.turns.state_machine import ensure_transition
 from mdi_api.research_agent.execution.errors import ExecutionPlanNotReady, ExecutionQueuePublishFailed, ExecutionSourceUnavailable
@@ -34,21 +35,14 @@ class DisabledExecutionQueue:
 class ResearchExecutionDispatcher:
     """Attach one persisted AnalysisPlan to one existing Job, then wake a Worker."""
 
-    def __init__(self, repository_factory: Any, *, queue: ExecutionQueue | None = None) -> None:
+    def __init__(
+        self,
+        repository_factory: ResearchRepositoryFactoryPort,
+        *,
+        queue: ExecutionQueue | None = None,
+    ) -> None:
         self.repository_factory = repository_factory
-        self.queue = queue or self._default_queue()
-
-    @staticmethod
-    def _default_queue() -> ExecutionQueue:
-        from mdi_api.config import load_settings
-        settings = load_settings()
-        if settings.queue_backend == "redis":
-            from mdi_workers.queue_runtime import RedisRQQueueBackend
-            return RedisRQQueueBackend(
-                redis_url=settings.redis_url,
-                queue_name=settings.agent2_execution_queue_name,
-            )
-        return DisabledExecutionQueue()
+        self.queue = queue or DisabledExecutionQueue()
 
     def dispatch_turn(self, turn_id: UUID) -> DispatchResult:
         job_id: str

@@ -13,6 +13,11 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from mdi_api.access import require_project_access
+from mdi_api.application.research.ports import (
+    ProjectAccessDenied,
+    ProjectAccessNotFound,
+    ResearchActorContext,
+)
 from mdi_api.agent2_errors import (
     ConcurrentTurnModification,
     InvalidResearchTurnTransition,
@@ -37,7 +42,11 @@ from mdi_api.research_agent.orchestration.queue import (
 )
 from mdi_api.research_agent.registry_validation import DEFAULT_AGENT2_REGISTRIES
 from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchAction, ResearchTurnStatus, TERMINAL_TURN_STATUSES
-from mdi_api.research_agent.execution.dispatcher import ResearchExecutionDispatcher
+from mdi_api.research_agent.execution.dispatcher import (
+    DisabledExecutionQueue,
+    ExecutionQueue,
+    ResearchExecutionDispatcher,
+)
 from mdi_api.research_agent.execution.supervisor import ResearchExecutionSupervisor
 from mdi_api.research_agent.execution.errors import (
     ExecutionCancelRequestFailed,
@@ -102,6 +111,10 @@ def get_research_turn_service() -> ResearchTurnService:
     )
 
 
+def _research_actor(current_user: CurrentUser) -> ResearchActorContext:
+    return ResearchActorContext(id=current_user.id)
+
+
 def get_scientific_object_service() -> ScientificObjectService:
     return ScientificObjectService(create_repository_factory(), DEFAULT_AGENT2_REGISTRIES.object_types)
 
@@ -141,6 +154,18 @@ def get_agent_turn_queue() -> AgentTurnQueue:
     return DisabledAgentTurnQueue()
 
 
+def _research_execution_queue() -> ExecutionQueue:
+    settings = load_settings()
+    if settings.queue_backend == "redis":
+        from mdi_workers.queue_runtime import RedisRQQueueBackend
+
+        return RedisRQQueueBackend(
+            redis_url=settings.redis_url,
+            queue_name=settings.agent2_execution_queue_name,
+        )
+    return DisabledExecutionQueue()
+
+
 def create_research_turn(
     project_id: str,
     session_id: str,
@@ -152,7 +177,7 @@ def create_research_turn(
             project_id=project_id,
             session_id=session_id,
             request=request,
-            current_user=current_user,
+            current_user=_research_actor(current_user),
         )
         try:
             queued = get_agent_turn_queue().enqueue_turn(result.turn_id)
@@ -173,7 +198,7 @@ def create_research_turn(
 
 def get_research_turn(turn_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
     try:
-        return get_research_turn_service().get_turn(turn_id, current_user)
+        return get_research_turn_service().get_turn(turn_id, _research_actor(current_user))
     except Exception as exc:
         raise _http_error(exc) from exc
 
@@ -184,7 +209,10 @@ def get_research_turn_context_manifest(
 ) -> dict[str, Any]:
     """Return the bounded immutable context manifest for a ResearchTurn."""
     try:
-        turn, events = get_research_turn_service().list_events(turn_id, current_user)
+        turn, events = get_research_turn_service().list_events(
+            turn_id,
+            _research_actor(current_user),
+        )
         context_event = next(
             (
                 event
@@ -458,7 +486,7 @@ def list_research_turns(
         items = get_research_turn_service().list_session_turns(
             project_id=project_id,
             session_id=session_id,
-            current_user=current_user,
+            current_user=_research_actor(current_user),
             cursor=cursor,
             limit=limit,
         )
@@ -548,7 +576,10 @@ def unpin_research_object(
 
 def cancel_research_turn(turn_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
     try:
-        turn = get_research_turn_service().cancel_turn(turn_id, current_user)
+        turn = get_research_turn_service().cancel_turn(
+            turn_id,
+            _research_actor(current_user),
+        )
         return {"turn_id": turn["id"], "status": turn["status"], "updated_at": turn["updated_at"]}
     except Exception as exc:
         raise _http_error(exc) from exc
@@ -560,7 +591,10 @@ def dispatch_research_turn(turn_id: UUID, current_user: CurrentUser = Depends(ge
         with factory.session() as session:
             turn = session.agent2.research_turns.get(turn_id)
             require_project_access(session.connection, str(turn["project_id"]), current_user, write=True)
-        result = ResearchExecutionDispatcher(factory).dispatch_turn(turn_id)
+        result = ResearchExecutionDispatcher(
+            factory,
+            queue=_research_execution_queue(),
+        ).dispatch_turn(turn_id)
         return JSONResponse(status_code=202, content=jsonable_encoder({
             "turn_id": str(result.turn_id), "job_attached": True, "status": "QUEUED",
             "queue_backend": result.queue_backend, "queued": result.queued,
@@ -948,7 +982,11 @@ def stream_research_turn_events(
     except ValueError as exc:
         raise HTTPException(status_code=422, detail="Last-Event-ID 必须是非负整数。") from exc
     try:
-        turn, events = get_research_turn_service().list_events(turn_id, current_user, after_sequence=after_sequence)
+        turn, events = get_research_turn_service().list_events(
+            turn_id,
+            _research_actor(current_user),
+            after_sequence=after_sequence,
+        )
     except Exception as exc:
         raise _http_error(exc) from exc
 
@@ -1239,6 +1277,10 @@ def _sse_event_name(event_type: str) -> str:
 def _http_error(exc: Exception) -> HTTPException:
     if isinstance(exc, HTTPException):
         return exc
+    if isinstance(exc, ProjectAccessNotFound):
+        return HTTPException(status_code=404, detail="项目不存在。")
+    if isinstance(exc, ProjectAccessDenied):
+        return HTTPException(status_code=403, detail="当前用户无权访问此项目。")
     if isinstance(
         exc,
         (

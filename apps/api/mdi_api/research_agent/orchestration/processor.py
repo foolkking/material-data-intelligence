@@ -18,6 +18,8 @@ from mdi_api.agent2_errors import (
     OrchestratorTimeout,
 )
 from mdi_api.research_agent.context.assembler import ResearchContextCandidateAssembler
+from mdi_api.application.research.ports import ResearchRepositoryFactoryPort
+from mdi_api.application.research.transactions import transaction_active
 from mdi_api.research_agent.context.compiler import COMPILER_VERSION, ResearchContextCompiler
 from mdi_api.research_agent.context.policy import ContextOperation, context_budget_policy
 from mdi_api.research_agent.context.resolver import DeterministicReferenceResolver, ReferenceResolution
@@ -41,7 +43,6 @@ from mdi_api.research_agent.registry_validation import Agent2Registries
 from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus, ScientificSelectionContext, ResolvedResearchContext, TERMINAL_TURN_STATUSES
 from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
-from mdi_api.unit_of_work import RepositoryFactory, transaction_active
 from mdi_api.research_agent.planning.queue import DisabledCapabilityPlanningQueue
 
 
@@ -70,7 +71,7 @@ class AgentTurnProcessor:
     def __init__(
         self,
         *,
-        repository_factory: RepositoryFactory,
+        repository_factory: ResearchRepositoryFactoryPort,
         registries: Agent2Registries,
         llm_client: StructuredLLMClient,
         planning_queue: Any | None = None,

@@ -9,7 +9,10 @@ import threading
 from typing import Any, Iterator
 from uuid import UUID, uuid4
 
-from mdi_api.access import require_project_access
+from mdi_api.application.research.ports import (
+    ResearchActor,
+    ResearchRepositoryFactoryPort,
+)
 from mdi_api.agent2_errors import (
     ConcurrentTurnModification,
     InvalidResearchTurnTransition,
@@ -31,8 +34,6 @@ from mdi_api.research_agent.context.schemas import ContextManifest, ContextManif
 from mdi_api.research_agent.context.policy import ContextOperation, context_budget_policy
 from mdi_api.research_agent.turns.state_machine import ensure_transition
 from mdi_api.research_agent.memory.service import ResearchSessionMemoryService
-from mdi_api.routers.auth import CurrentUser
-from mdi_api.unit_of_work import RepositoryFactory
 
 
 logger = logging.getLogger(__name__)
@@ -71,7 +72,7 @@ _STATUS_EVENTS = {
 class ResearchTurnService:
     def __init__(
         self,
-        repository_factory: RepositoryFactory,
+        repository_factory: ResearchRepositoryFactoryPort,
         *,
         max_active_turns_per_project: int | None = None,
     ) -> None:
@@ -84,13 +85,18 @@ class ResearchTurnService:
         project_id: str,
         session_id: str,
         request: CreateResearchTurnRequest,
-        current_user: CurrentUser,
+        current_user: ResearchActor,
     ) -> CreateResearchTurnResponse:
         """Persist one user message, one RECEIVED turn, and one event atomically."""
 
         with _keyed_lock(_session_locks, session_id):
             with self.repository_factory.unit_of_work() as unit:
-                require_project_access(unit.connection, project_id, current_user, write=True)
+                self.repository_factory.project_access.require(
+                    unit.connection,
+                    project_id,
+                    current_user,
+                    write=True,
+                )
                 session = unit.agent2.research_turns.lock_session(session_id)
                 if session is None or str(session["project_id"]) != project_id:
                     raise ResearchSessionProjectMismatch(session_id)
@@ -176,10 +182,14 @@ class ResearchTurnService:
             created_at=turn["created_at"],
         )
 
-    def get_turn(self, turn_id: UUID, current_user: CurrentUser) -> dict[str, Any]:
+    def get_turn(self, turn_id: UUID, current_user: ResearchActor) -> dict[str, Any]:
         with self.repository_factory.session() as session:
             turn = session.agent2.research_turns.get(turn_id)
-            require_project_access(session.connection, str(turn["project_id"]), current_user)
+            self.repository_factory.project_access.require(
+                session.connection,
+                str(turn["project_id"]),
+                current_user,
+            )
             return self._turn_view(session, turn)
 
     def list_session_turns(
@@ -187,12 +197,16 @@ class ResearchTurnService:
         *,
         project_id: str,
         session_id: str,
-        current_user: CurrentUser,
+        current_user: ResearchActor,
         cursor: int | None = None,
         limit: int = 50,
     ) -> list[dict[str, Any]]:
         with self.repository_factory.session() as session:
-            require_project_access(session.connection, project_id, current_user)
+            self.repository_factory.project_access.require(
+                session.connection,
+                project_id,
+                current_user,
+            )
             research_session = session.agent2.research_turns.lock_session(session_id)
             if research_session is None or str(research_session["project_id"]) != project_id:
                 raise ResearchSessionProjectMismatch(session_id)
@@ -504,10 +518,15 @@ class ResearchTurnService:
         snapshot = self.create_context_snapshot(turn_id, context)
         return {"turn_id": turn_id, "from_version": resolving["row_version"], "snapshot": snapshot, "status": ResearchTurnStatus.ORCHESTRATING.value}
 
-    def cancel_turn(self, turn_id: UUID, current_user: CurrentUser) -> dict[str, Any]:
+    def cancel_turn(self, turn_id: UUID, current_user: ResearchActor) -> dict[str, Any]:
         with self.repository_factory.session() as session:
             turn = session.agent2.research_turns.get(turn_id)
-            require_project_access(session.connection, str(turn["project_id"]), current_user, write=True)
+            self.repository_factory.project_access.require(
+                session.connection,
+                str(turn["project_id"]),
+                current_user,
+                write=True,
+            )
         status = ResearchTurnStatus(str(turn["status"]))
         if status in TERMINAL_TURN_STATUSES or status == ResearchTurnStatus.RESULT_PENDING:
             raise InvalidResearchTurnTransition("TURN_TERMINAL")
@@ -521,10 +540,14 @@ class ResearchTurnService:
             target_status=ResearchTurnStatus.CANCELED,
         )
 
-    def list_events(self, turn_id: UUID, current_user: CurrentUser, *, after_sequence: int = 0) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    def list_events(self, turn_id: UUID, current_user: ResearchActor, *, after_sequence: int = 0) -> tuple[dict[str, Any], list[dict[str, Any]]]:
         with self.repository_factory.session() as session:
             turn = session.agent2.research_turns.get(turn_id)
-            require_project_access(session.connection, str(turn["project_id"]), current_user)
+            self.repository_factory.project_access.require(
+                session.connection,
+                str(turn["project_id"]),
+                current_user,
+            )
             return turn, session.agent2.research_turn_events.list_for_turn(turn_id, after_sequence=after_sequence)
 
     @staticmethod

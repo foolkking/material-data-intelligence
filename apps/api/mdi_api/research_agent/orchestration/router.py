@@ -5,6 +5,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from mdi_api.agent2_errors import ConcurrentTurnModification, UnauthorizedScientificObjectReference
+from mdi_api.application.research.ports import ResearchRepositoryFactoryPort
 from mdi_api.research_agent.context.schemas import ResearchContextCandidateBundle
 from mdi_api.research_agent.llm.schemas import StructuredLLMResult
 from mdi_api.research_agent.orchestration.schemas import (
@@ -13,11 +14,10 @@ from mdi_api.research_agent.orchestration.schemas import (
     ResearchTurnDecision,
 )
 from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus
-from mdi_api.unit_of_work import RepositoryFactory
 
 
 class ResearchActionRouter:
-    def __init__(self, repository_factory: RepositoryFactory) -> None:
+    def __init__(self, repository_factory: ResearchRepositoryFactoryPort) -> None:
         self.repository_factory = repository_factory
 
     def apply(

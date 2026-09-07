@@ -7,12 +7,12 @@ from typing import Any
 from pydantic import ValidationError
 
 from mdi_api.agent2_errors import CapabilityPlanInvalid
+from mdi_api.application.research.transactions import transaction_active
 from mdi_api.research_agent.capabilities.schemas import CapabilityPlan, CapabilityPlannerInput, CapabilityResolution
 from mdi_api.research_agent.llm.structured_client import StructuredLLMClient
 from mdi_api.research_agent.orchestration.schemas import ResearchTurnDecision
 from mdi_api.research_agent.planning.deterministic import build_deterministic_capability_plan
 from mdi_api.research_agent.planning.validator import CapabilityPlanValidator
-from mdi_api.unit_of_work import transaction_active
 
 
 PROMPT_VERSION = "scientific-capability-planner/1.1"

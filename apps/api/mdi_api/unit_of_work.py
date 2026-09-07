@@ -1,21 +1,19 @@
 from __future__ import annotations
 
 from types import TracebackType
-from contextvars import ContextVar, Token
+from contextvars import Token
 
 from sqlalchemy.engine import Connection, Engine, Transaction
 
 from mdi_api.agent2_repositories import Agent2RepositoryBundle
+from mdi_api.application.research.ports import ResearchProjectAccessPort
+from mdi_api.application.research.transactions import (
+    enter_transaction,
+    exit_transaction,
+    transaction_active,
+)
+from mdi_api.infrastructure.project_access import SQLALCHEMY_PROJECT_ACCESS
 from mdi_api.repositories import SqlAlchemyRepositoryBundle
-
-
-_TRANSACTION_DEPTH: ContextVar[int] = ContextVar("mdi_transaction_depth", default=0)
-
-
-def transaction_active() -> bool:
-    """Return whether the current execution context owns an open repository transaction."""
-
-    return _TRANSACTION_DEPTH.get() > 0
 
 
 class RepositorySession:
@@ -50,7 +48,7 @@ class RepositorySession:
             raise RuntimeError("RepositorySession is already active")
         self._connection = self._engine.connect()
         self._transaction = self._connection.begin()
-        self._transaction_token = _TRANSACTION_DEPTH.set(_TRANSACTION_DEPTH.get() + 1)
+        self._transaction_token = enter_transaction()
         self._repositories = SqlAlchemyRepositoryBundle.create(self._connection)
         self._agent2_repositories = Agent2RepositoryBundle.create(self._connection)
         return self
@@ -76,7 +74,7 @@ class RepositorySession:
         self._repositories = None
         self._agent2_repositories = None
         if self._transaction_token is not None:
-            _TRANSACTION_DEPTH.reset(self._transaction_token)
+            exit_transaction(self._transaction_token)
             self._transaction_token = None
 
     def __enter__(self) -> "RepositorySession":
@@ -103,8 +101,14 @@ class UnitOfWork(RepositorySession):
 
 
 class RepositoryFactory:
-    def __init__(self, engine: Engine) -> None:
+    def __init__(
+        self,
+        engine: Engine,
+        *,
+        project_access: ResearchProjectAccessPort = SQLALCHEMY_PROJECT_ACCESS,
+    ) -> None:
         self.engine = engine
+        self.project_access = project_access
 
     def create_repositories(self) -> SqlAlchemyRepositoryBundle:
         return SqlAlchemyRepositoryBundle.create(self.engine)

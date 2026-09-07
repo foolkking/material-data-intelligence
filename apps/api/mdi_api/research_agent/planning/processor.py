@@ -9,6 +9,7 @@ from uuid import UUID, uuid4
 from mdi_llm.providers import LLMProviderError
 
 from mdi_api.agent2_errors import CapabilityBindingFailed, CapabilityPlanInvalid
+from mdi_api.application.research.ports import ResearchRepositoryFactoryPort
 from mdi_api.research_agent.capabilities.fingerprint import capability_plan_fingerprint
 from mdi_api.research_agent.capabilities.preconditions import build_default_precondition_registry
 from mdi_api.research_agent.capabilities.resolver import CapabilityResolutionService
@@ -25,14 +26,13 @@ from mdi_api.research_agent.context.manifest import build_operation_manifest
 from mdi_api.research_agent.context.policy import ContextOperation
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 from mdi_api.scientific_results.schemas import ScientificResultBundle
-from mdi_api.unit_of_work import RepositoryFactory
 from mdi_tool_registry import load_manifests
 
 logger = logging.getLogger(__name__)
 
 
 class CapabilityPlanningProcessor:
-    def __init__(self, repository_factory: RepositoryFactory, *, registries: Any | None = None, tool_registry: Any | None = None, llm_client: Any | None = None) -> None:
+    def __init__(self, repository_factory: ResearchRepositoryFactoryPort, *, registries: Any | None = None, tool_registry: Any | None = None, llm_client: Any | None = None) -> None:
         self.repository_factory = repository_factory
         self.registries = registries
         self.tool_registry = tool_registry or load_manifests()
