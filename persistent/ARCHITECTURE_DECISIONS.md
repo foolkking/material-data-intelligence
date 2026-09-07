@@ -5865,3 +5865,44 @@ healthy state and have a fresh heartbeat under the shared operations threshold.
 After an exact old pair is stopped, its RQ registration is explicitly marked
 dead. This keeps process and queue authorities convergent without exposing
 connection credentials.
+
+## ADR — Architecture migration contracts frozen after read-only audit (2026-09-06)
+
+The repository architecture, file-move candidates, import boundaries, behavior
+invariants, and UI Layout System V2 requirements are frozen in the five linked
+documents under `docs/`. This is a normative baseline for later human-reviewed
+move-only migration; it is not authorization to move files or change runtime
+behavior.
+
+The freeze remains `ARCHITECTURE_FREEZE_BLOCKED`. The blocking facts are the
+current listener/runtime-manifest conflict, unrelated modified and untracked
+working-tree residue, unresolved qualification/evidence dependencies, broad
+dynamic compatibility surfaces, and existing readers of `TASKS.md`,
+`results.md`, and persistent ledgers. These blockers must be resolved by a
+separate read-only verification or an explicitly approved freeze amendment.
+
+The five documents preserve stable packages and services, migration history,
+scientific and artifact authority, URLs, queue names, worker roles, persisted
+identifiers, and the Phase 9C shell baseline. No `TASKS.md` queue item, runtime
+directory, evidence file, cache, log, database, object store, or source module
+was changed as part of this freeze.
+
+## ADR — Architecture Freeze V2 Amendment (2026-09-06)
+
+`FROZEN_BASELINE_V1` is amended to `FROZEN_BASELINE_V2` after a read-only repository, runtime, ownership and UI-layout verification. The amendment is necessary because V1 incorrectly treated current Research/Data/global-shell geometry as immutable behavior, described mixed modules as whole-file moves, left compatibility capable of becoming an implementation owner, and did not provide deterministic closure for runtime/evidence/path blockers.
+
+The V2 decision is:
+
+- separate hard identity/security/scientific/queue invariants from UX semantic invariants and current implementation geometry;
+- freeze LLM outputs as role-bounded, versioned, schema-constrained, validated and non-executable, while preserving distinct existing role contracts;
+- use symbol-level canonical ownership for mixed backend/frontend modules;
+- keep compatibility as a thin old-path facade/re-export/signature adapter only, never as canonical business-logic ownership;
+- freeze thin Next `app/` route composition with external feature/shared/viewer ownership because no inspected Next, alias, SSR/client, dynamic-import or worker contract blocks it;
+- perform Batch 0 dependency normalization before any physical file relocation;
+- require all future Batch 0/migration execution to use a clean worktree from an approved exact committed SHA;
+- retain release/qualification/hash-referenced evidence and use reverse-reference gates before any future cleanup;
+- plan a bounded future `PROJECT_STATE.md` transition with dual-read compatibility, while retaining ADRs, CI/qualification, evidence, runtime and specialized contract authorities independently.
+
+Current runtime facts reconcile stopped API/frontend/MinIO/workers with stale managed manifests; PostgreSQL `5432` and Redis-compatible `6379` are active. RQ registration and live database migration head were not safely queried and remain explicitly `CURRENT_UNKNOWN`, not inferred. The amendment therefore records `ARCHITECTURE_FREEZE_AMENDED_PENDING_BASELINE_COMMIT`, not `ARCHITECTURE_FREEZE_READY_FOR_BATCH_0`.
+
+No business/runtime source, CSS, tests, database, migration, queue state, runtime service, evidence, cache, screenshot, file move, commit or push was performed by this amendment.

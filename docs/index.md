@@ -940,3 +940,34 @@ and
 | [`13_SHARED_SCHEMA_SPEC.md`](13_SHARED_SCHEMA_SPEC.md#projecthistoryview10) | Durable project-history projection and privacy boundary                 |
 | `apps/web/app/components/ProjectHome.tsx`                                   | Project-level history, data records, activity, and resumable links      |
 | `apps/web/app/components/DatasetWorkbenchPage.tsx`                          | Selected-dataset process view with import/Profile/analysis/result state |
+
+## Architecture Freeze V1 Contracts — Superseded (2026-09-06)
+
+This historical index entry records the former `FROZEN_BASELINE_V1`. It is
+superseded by the V2 amendment below and is not the current execution status.
+
+- [`TARGET_REPOSITORY_ARCHITECTURE.md`](TARGET_REPOSITORY_ARCHITECTURE.md): target tree, ownership, and migration order draft.
+- [`FILE_MOVE_MANIFEST.md`](FILE_MOVE_MANIFEST.md): candidate moves, dynamic contracts, do-not-move list, and freeze gates.
+- [`IMPORT_BOUNDARY_RULES.md`](IMPORT_BOUNDARY_RULES.md): allowed dependency direction and observed exceptions.
+- [`BEHAVIOR_INVARIANTS.md`](BEHAVIOR_INVARIANTS.md): behavior and identity acceptance floor.
+- [`UI_LAYOUT_SYSTEM_V2.md`](UI_LAYOUT_SYSTEM_V2.md): layout archetype, scroll, responsive, zoom, and viewer requirements.
+
+## Architecture Freeze V2 Amendment (2026-09-06)
+
+The former `FROZEN_BASELINE_V1` appendix is superseded by the amended documentation set below. V2 separates hard behavior/UX semantics from current geometry, upgrades migration planning to symbol groups, freezes compatibility as a thin facade, and requires Batch 0 dependency normalization before physical relocation.
+
+- [`TARGET_REPOSITORY_ARCHITECTURE.md`](TARGET_REPOSITORY_ARCHITECTURE.md) — `FROZEN_BASELINE_V2`; canonical layers, compatibility boundary, and thin Next route architecture.
+- [`FILE_MOVE_MANIFEST.md`](FILE_MOVE_MANIFEST.md) — symbol-level proposal only; all `READY_TO_MOVE` values remain `NO`.
+- [`IMPORT_BOUNDARY_RULES.md`](IMPORT_BOUNDARY_RULES.md) — target direction and classified current exceptions.
+- [`BEHAVIOR_INVARIANTS.md`](BEHAVIOR_INVARIANTS.md) — hard invariants, UX semantics, and non-immutable implementation baselines.
+- [`UI_LAYOUT_SYSTEM_V2.md`](UI_LAYOUT_SYSTEM_V2.md) — archetype, scroll, content-state, zoom and readability requirements; no CSS implementation.
+- [`SYMBOL_OWNERSHIP_MANIFEST.md`](SYMBOL_OWNERSHIP_MANIFEST.md) — relevant mixed-module symbol ownership and public export freeze.
+- [`DYNAMIC_CONTRACT_MANIFEST.md`](DYNAMIC_CONTRACT_MANIFEST.md) — deterministic dispositions for RQ, launcher, registry, CI, qualification, evidence, Next, worker and route contracts.
+- [`WORKTREE_OWNERSHIP_MAP.md`](WORKTREE_OWNERSHIP_MAP.md) — current dirty-tree ownership families and clean exact-SHA policy.
+- [`RUNTIME_BASELINE_RECONCILIATION.md`](RUNTIME_BASELINE_RECONCILIATION.md) — current listener/process facts and stale-manifest reconciliation.
+- [`EVIDENCE_REFERENCE_MAP.md`](EVIDENCE_REFERENCE_MAP.md) — evidence reverse references and retention gates.
+- [`PROJECT_STATE_TRANSITION_PLAN.md`](PROJECT_STATE_TRANSITION_PLAN.md) — future bounded state-ledger transition; `PROJECT_STATE.md` is not created by this amendment.
+- [`BATCH0_DEPENDENCY_NORMALIZATION_PLAN.md`](BATCH0_DEPENDENCY_NORMALIZATION_PLAN.md) — independently executable and rollbackable dependency tasks; not executed here.
+- [`ARCHITECTURE_FREEZE_BLOCKER_CLOSURE.md`](ARCHITECTURE_FREEZE_BLOCKER_CLOSURE.md) — amendment closure matrix.
+
+Current amendment state: `ARCHITECTURE_FREEZE_AMENDED_PENDING_BASELINE_COMMIT`. `PHYSICAL_FILE_MOVE_AUTHORIZED = NO`.
