@@ -27,8 +27,6 @@ from mdi_api.db import (
     job_events,
     jobs,
     messages,
-    organizations,
-    projects,
     reports,
     research_turns,
     scientific_evidence_bundles,
@@ -38,23 +36,17 @@ from mdi_api.db import (
     scientific_interpretations,
     scientific_workspaces,
     plan_dependency_bindings,
-    project_members,
     runtime_artifact_binding_resolutions,
     tool_calls,
-    users,
     visualization_recipes,
     workspace_layout_revisions,
     workspace_panels,
 )
 from mdi_schemas import (
-    AnalysisIntent,
     AnalysisPlan,
     AnalysisPlanV02,
     Artifact,
     ArtifactLineageRecord,
-    CapabilityPlanningDecision,
-    DataProfile,
-    EligibilityResolution,
     GroundedScientificInterpretation,
     InterpretationExecutionRecord,
     DependencyBinding,
@@ -74,14 +66,10 @@ from mdi_schemas import (
     WorkspaceStatus,
     WORKSPACE_MAX_LAYOUT_REVISIONS,
     WORKSPACE_MAX_PANELS,
-    compute_analysis_intent_hash,
     canonical_dependency_json,
-    capability_semantic_hash,
     compute_analysis_plan_02_hash,
-    deterministic_capability_id,
     dependency_semantic_hash,
     deterministic_dependency_id,
-    deterministic_intent_id,
     make_layout_revision,
 )
 
@@ -91,8 +79,20 @@ from mdi_api.state_machine import (
     validate_tool_call_status,
     validate_tool_call_transition,
 )
-from mdi_api.application.data.ports import DataProfileRepository, DatasetRepository
-from mdi_api.application.projects.ports import ProjectRepository
+from mdi_api.application.data.ports import DataProfileRepository, DatasetRepository  # noqa: F401
+from mdi_api.application.research.planning.ports import (  # noqa: F401
+    AnalysisIntentRepository,
+    CapabilityPlanningRepository,
+)
+from mdi_api.infrastructure.persistence.memory_planning import (
+    InMemoryAnalysisIntentRepository,
+    InMemoryCapabilityPlanningRepository,
+)
+from mdi_api.infrastructure.persistence.sqlalchemy_planning import (
+    SqlAlchemyAnalysisIntentRepository,
+    SqlAlchemyCapabilityPlanningRepository,
+)
+from mdi_api.application.projects.ports import ProjectRepository  # noqa: F401
 from mdi_api.infrastructure.persistence.base import (
     _InMemoryRecordRepository,
     _SqlAlchemyRepository,
@@ -104,6 +104,20 @@ from mdi_api.infrastructure.persistence.base import (
     _required_id,
     _row_to_json_dict,
     _utc_now,
+)
+from mdi_api.infrastructure.persistence.planning import (  # noqa: F401
+    analysis_intent_from_record as _analysis_intent_from_record,
+    analysis_intent_from_row as _analysis_intent_from_row,
+    analysis_intent_values as _analysis_intent_values,
+    capability_decision_from_row as _capability_decision_from_row,
+    capability_decision_values as _capability_decision_values,
+    capability_execution_from_row as _capability_execution_from_row,
+    capability_resolution_from_row as _capability_resolution_from_row,
+    capability_resolution_values as _capability_resolution_values,
+    intent_execution_from_row as _intent_execution_from_row,
+    normalize_analysis_intent_record as _normalize_analysis_intent_record,
+    normalize_capability_decision_record as _normalize_capability_decision_record,
+    normalize_capability_resolution_record as _normalize_capability_resolution_record,
 )
 from mdi_api.infrastructure.persistence.memory import (
     InMemoryDataProfileRepository,
@@ -132,41 +146,8 @@ class AnalysisPlanRepository(Protocol):
         ...
 
 
-class AnalysisIntentRepository(Protocol):
-    def save_intent(self, record: Mapping[str, Any]) -> dict[str, Any]:
-        ...
-
-    def get_intent(self, intent_id: str) -> dict[str, Any]:
-        ...
-
-    def attach_execution(self, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
-        ...
-
-    def get_execution(self, intent_id: str) -> dict[str, Any] | None:
-        ...
-
-    def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
-        ...
 
 
-class CapabilityPlanningRepository(Protocol):
-    def save_resolution(self, record: Mapping[str, Any]) -> dict[str, Any]:
-        ...
-
-    def get_resolution(self, resolution_id: str) -> dict[str, Any]:
-        ...
-
-    def save_decision(self, record: Mapping[str, Any]) -> dict[str, Any]:
-        ...
-
-    def get_decision(self, decision_id: str) -> dict[str, Any]:
-        ...
-
-    def attach_execution(self, decision_id: str, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
-        ...
-
-    def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
-        ...
 
 
 class DependencyExecutionRepository(Protocol):
@@ -442,102 +423,8 @@ class InMemoryRepositoryBundle:
         )
 
 
-class InMemoryAnalysisIntentRepository(_InMemoryRecordRepository):
-    def __init__(self) -> None:
-        super().__init__()
-        self.executions: dict[tuple[str, str, str], dict[str, Any]] = {}
-
-    def save_intent(self, record: Mapping[str, Any]) -> dict[str, Any]:
-        normalized = _normalize_analysis_intent_record(record)
-        intent_id = _required_id(normalized, "intentId")
-        existing = self.records.get(intent_id)
-        if existing is not None:
-            if existing.get("intentHash") != normalized.get("intentHash"):
-                raise ValueError("AnalysisIntent records are immutable")
-            return _analysis_intent_from_record(existing)
-        return _analysis_intent_from_record(self._save(normalized, record_id=intent_id))
-
-    def get_intent(self, intent_id: str) -> dict[str, Any]:
-        return _analysis_intent_from_record(self._get(intent_id))
-
-    def attach_execution(self, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
-        self.get_intent(intent_id)
-        key = (intent_id, plan_id, job_id)
-        binding = {
-            "id": f"intent_exec_{intent_id.removeprefix('intent_')[:12]}_{plan_id.removeprefix('plan_')[:12]}_{job_id.removeprefix('job_')[:12]}",
-            "intentId": intent_id,
-            "planId": plan_id,
-            "jobId": job_id,
-            "createdAt": _utc_now(),
-        }
-        self.executions.setdefault(key, binding)
-        return _json_copy(self.executions[key])
-
-    def get_execution(self, intent_id: str) -> dict[str, Any] | None:
-        value = next((item for item in self.executions.values() if item["intentId"] == intent_id), None)
-        return _json_copy(value) if value is not None else None
-
-    def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
-        value = next((item for item in self.executions.values() if item["jobId"] == job_id), None)
-        return _json_copy(value) if value is not None else None
 
 
-class InMemoryCapabilityPlanningRepository:
-    def __init__(self) -> None:
-        self.resolutions: dict[str, dict[str, Any]] = {}
-        self.decisions: dict[str, dict[str, Any]] = {}
-        self.executions: dict[tuple[str, str, str], dict[str, Any]] = {}
-
-    def save_resolution(self, record: Mapping[str, Any]) -> dict[str, Any]:
-        normalized = _normalize_capability_resolution_record(record)
-        resolution_id = normalized["resolutionId"]
-        existing = self.resolutions.get(resolution_id)
-        if existing is not None and existing["resolutionHash"] != normalized["resolutionHash"]:
-            raise ValueError("Eligibility Resolution records are immutable")
-        self.resolutions.setdefault(resolution_id, normalized)
-        return _json_copy(self.resolutions[resolution_id])
-
-    def get_resolution(self, resolution_id: str) -> dict[str, Any]:
-        try:
-            return _json_copy(self.resolutions[resolution_id])
-        except KeyError as exc:
-            raise LookupError(f"Unknown Eligibility Resolution: {resolution_id}") from exc
-
-    def save_decision(self, record: Mapping[str, Any]) -> dict[str, Any]:
-        normalized = _normalize_capability_decision_record(record)
-        self.get_resolution(normalized["resolutionId"])
-        decision_id = normalized["decisionId"]
-        existing = self.decisions.get(decision_id)
-        if existing is not None and existing["decisionHash"] != normalized["decisionHash"]:
-            raise ValueError("Capability Planning Decision records are immutable")
-        self.decisions.setdefault(decision_id, normalized)
-        return _json_copy(self.decisions[decision_id])
-
-    def get_decision(self, decision_id: str) -> dict[str, Any]:
-        try:
-            return _json_copy(self.decisions[decision_id])
-        except KeyError as exc:
-            raise LookupError(f"Unknown Capability Planning Decision: {decision_id}") from exc
-
-    def attach_execution(self, decision_id: str, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
-        decision = self.get_decision(decision_id)
-        if decision["intentId"] != intent_id or decision["outcome"] != "PLAN_READY":
-            raise ValueError("Only a matching PLAN_READY decision can be attached to execution")
-        binding = {
-            "id": f"cap_exec_{decision_id.removeprefix('decision_')[:12]}_{plan_id.removeprefix('plan_')[:12]}_{job_id.removeprefix('job_')[:12]}",
-            "decisionId": decision_id,
-            "intentId": intent_id,
-            "planId": plan_id,
-            "jobId": job_id,
-            "createdAt": _utc_now(),
-        }
-        key = (decision_id, plan_id, job_id)
-        self.executions.setdefault(key, binding)
-        return _json_copy(self.executions[key])
-
-    def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
-        value = next((item for item in self.executions.values() if item["jobId"] == job_id), None)
-        return _json_copy(value) if value is not None else None
 
 
 class InMemoryDependencyExecutionRepository:
@@ -1333,180 +1220,8 @@ class SqlAlchemyRepositoryBundle:
         )
 
 
-class SqlAlchemyAnalysisIntentRepository(_SqlAlchemyRepository):
-    def save_intent(self, record: Mapping[str, Any]) -> dict[str, Any]:
-        normalized = _normalize_analysis_intent_record(record)
-        intent_id = _required_id(normalized, "intentId")
-        values = _analysis_intent_values(normalized)
-
-        def run(connection: Connection) -> None:
-            existing = connection.execute(
-                select(analysis_intents).where(analysis_intents.c.id == intent_id)
-            ).mappings().first()
-            if existing is None:
-                connection.execute(insert(analysis_intents).values(**values))
-                return
-            current = _analysis_intent_from_row(_row_to_json_dict(existing))
-            if current["intentHash"] != normalized["intentHash"]:
-                raise ValueError("AnalysisIntent records are immutable")
-
-        self._with_connection(run)
-        return self.get_intent(intent_id)
-
-    def get_intent(self, intent_id: str) -> dict[str, Any]:
-        return _analysis_intent_from_row(
-            self._fetch_one_dict(select(analysis_intents).where(analysis_intents.c.id == intent_id))
-        )
-
-    def attach_execution(self, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
-        binding_id = f"intent_exec_{intent_id.removeprefix('intent_')[:12]}_{plan_id.removeprefix('plan_')[:12]}_{job_id.removeprefix('job_')[:12]}"
-
-        def run(connection: Connection) -> None:
-            exact = connection.execute(
-                select(analysis_intent_executions).where(
-                    analysis_intent_executions.c.intent_id == intent_id,
-                    analysis_intent_executions.c.plan_id == plan_id,
-                    analysis_intent_executions.c.job_id == job_id,
-                )
-            ).mappings().first()
-            if exact is not None:
-                return
-            conflict = connection.execute(
-                select(analysis_intent_executions).where(
-                    or_(
-                        analysis_intent_executions.c.plan_id == plan_id,
-                        analysis_intent_executions.c.job_id == job_id,
-                    )
-                )
-            ).mappings().first()
-            if conflict is not None:
-                raise ValueError("AnalysisIntent execution association is immutable")
-            connection.execute(insert(analysis_intent_executions).values(
-                id=binding_id, intent_id=intent_id, plan_id=plan_id, job_id=job_id,
-            ))
-
-        self._with_connection(run)
-        result = self.get_execution_for_job(job_id)
-        if result is None:
-            raise LookupError(f"Unknown AnalysisIntent execution association: {intent_id}")
-        return result
-
-    def get_execution(self, intent_id: str) -> dict[str, Any] | None:
-        def run(connection: Connection) -> dict[str, Any] | None:
-            row = connection.execute(
-                select(analysis_intent_executions).where(analysis_intent_executions.c.intent_id == intent_id)
-            ).mappings().first()
-            return _intent_execution_from_row(_row_to_json_dict(row)) if row is not None else None
-
-        return self._with_connection(run)
-
-    def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
-        def run(connection: Connection) -> dict[str, Any] | None:
-            row = connection.execute(
-                select(analysis_intent_executions).where(analysis_intent_executions.c.job_id == job_id)
-            ).mappings().first()
-            return _intent_execution_from_row(_row_to_json_dict(row)) if row is not None else None
-
-        return self._with_connection(run)
 
 
-class SqlAlchemyCapabilityPlanningRepository(_SqlAlchemyRepository):
-    def save_resolution(self, record: Mapping[str, Any]) -> dict[str, Any]:
-        normalized = _normalize_capability_resolution_record(record)
-        resolution_id = normalized["resolutionId"]
-        values = _capability_resolution_values(normalized)
-
-        def run(connection: Connection) -> None:
-            existing = connection.execute(
-                select(capability_eligibility_resolutions).where(capability_eligibility_resolutions.c.id == resolution_id)
-            ).mappings().first()
-            if existing is None:
-                connection.execute(insert(capability_eligibility_resolutions).values(**values))
-                return
-            if str(existing["resolution_hash"]) != normalized["resolutionHash"]:
-                raise ValueError("Eligibility Resolution records are immutable")
-
-        self._with_connection(run)
-        return self.get_resolution(resolution_id)
-
-    def get_resolution(self, resolution_id: str) -> dict[str, Any]:
-        return _capability_resolution_from_row(
-            self._fetch_one_dict(
-                select(capability_eligibility_resolutions).where(capability_eligibility_resolutions.c.id == resolution_id)
-            )
-        )
-
-    def save_decision(self, record: Mapping[str, Any]) -> dict[str, Any]:
-        normalized = _normalize_capability_decision_record(record)
-        decision_id = normalized["decisionId"]
-        values = _capability_decision_values(normalized)
-
-        def run(connection: Connection) -> None:
-            existing = connection.execute(
-                select(capability_planning_decisions).where(capability_planning_decisions.c.id == decision_id)
-            ).mappings().first()
-            if existing is None:
-                connection.execute(insert(capability_planning_decisions).values(**values))
-                return
-            if str(existing["decision_hash"]) != normalized["decisionHash"]:
-                raise ValueError("Capability Planning Decision records are immutable")
-
-        self._with_connection(run)
-        return self.get_decision(decision_id)
-
-    def get_decision(self, decision_id: str) -> dict[str, Any]:
-        return _capability_decision_from_row(
-            self._fetch_one_dict(
-                select(capability_planning_decisions).where(capability_planning_decisions.c.id == decision_id)
-            )
-        )
-
-    def attach_execution(self, decision_id: str, intent_id: str, plan_id: str, job_id: str) -> dict[str, Any]:
-        decision = self.get_decision(decision_id)
-        if decision["intentId"] != intent_id or decision["outcome"] != "PLAN_READY":
-            raise ValueError("Only a matching PLAN_READY decision can be attached to execution")
-        binding_id = f"cap_exec_{decision_id.removeprefix('decision_')[:12]}_{plan_id.removeprefix('plan_')[:12]}_{job_id.removeprefix('job_')[:12]}"
-
-        def run(connection: Connection) -> None:
-            exact = connection.execute(
-                select(capability_planning_executions).where(
-                    capability_planning_executions.c.decision_id == decision_id,
-                    capability_planning_executions.c.intent_id == intent_id,
-                    capability_planning_executions.c.plan_id == plan_id,
-                    capability_planning_executions.c.job_id == job_id,
-                )
-            ).mappings().first()
-            if exact is not None:
-                return
-            conflict = connection.execute(
-                select(capability_planning_executions).where(
-                    or_(
-                        capability_planning_executions.c.plan_id == plan_id,
-                        capability_planning_executions.c.job_id == job_id,
-                    )
-                )
-            ).mappings().first()
-            if conflict is not None:
-                raise ValueError("Capability Planning execution association is immutable")
-            connection.execute(insert(capability_planning_executions).values(
-                id=binding_id, decision_id=decision_id, intent_id=intent_id,
-                plan_id=plan_id, job_id=job_id,
-            ))
-
-        self._with_connection(run)
-        result = self.get_execution_for_job(job_id)
-        if result is None:
-            raise LookupError(f"Unknown Capability Planning execution association: {job_id}")
-        return result
-
-    def get_execution_for_job(self, job_id: str) -> dict[str, Any] | None:
-        def run(connection: Connection) -> dict[str, Any] | None:
-            row = connection.execute(
-                select(capability_planning_executions).where(capability_planning_executions.c.job_id == job_id)
-            ).mappings().first()
-            return _capability_execution_from_row(_row_to_json_dict(row)) if row is not None else None
-
-        return self._with_connection(run)
 
 
 class SqlAlchemyDependencyExecutionRepository(_SqlAlchemyRepository):
@@ -3651,208 +3366,28 @@ def compute_plan_hash(plan: AnalysisPlan | AnalysisPlanV02 | Mapping[str, Any]) 
     return hashlib.sha256(canonical_analysis_plan_json(plan).encode("utf-8")).hexdigest()
 
 
-def _normalize_analysis_intent_record(record: Mapping[str, Any]) -> dict[str, Any]:
-    source = _json_copy(record)
-    intent_json = source.get("analysisIntent") or source.get("intentJson") or source.get("intent_json")
-    if intent_json is None:
-        raise ValueError("AnalysisIntent record is missing intent_json")
-    parsed = AnalysisIntent.model_validate(intent_json)
-    computed_hash = compute_analysis_intent_hash(parsed)
-    if parsed.intentHash != computed_hash or parsed.intentId != deterministic_intent_id(computed_hash):
-        raise ValueError("AnalysisIntent identity does not match canonical JSON")
-    intent_id = str(source.get("id") or source.get("intentId") or parsed.intentId)
-    if intent_id != parsed.intentId:
-        raise ValueError("AnalysisIntent record id does not match contract identity")
-    provided_hash = source.get("intentHash") or source.get("intent_hash")
-    if provided_hash and str(provided_hash) != parsed.intentHash:
-        raise ValueError("AnalysisIntent record hash does not match contract identity")
-    payload = parsed.model_dump(mode="json")
-    return {
-        "id": intent_id,
-        "intentId": intent_id,
-        "projectId": str(source.get("projectId") or source.get("project_id") or ""),
-        "datasetId": parsed.datasetId,
-        "profileId": parsed.profileId,
-        "schemaVersion": parsed.schemaVersion,
-        "intentHash": parsed.intentHash,
-        "outcome": parsed.outcome.value,
-        "parentIntentId": parsed.provenance.parentIntentId,
-        "clarificationRound": parsed.clarification.round,
-        "provider": parsed.provenance.provider,
-        "model": parsed.provenance.model,
-        "promptVersion": parsed.provenance.promptVersion,
-        "analysisIntent": payload,
-        "intentJson": payload,
-        "createdBy": str(source.get("createdBy") or source.get("created_by") or "user_local"),
-        "createdAt": source.get("createdAt") or source.get("created_at") or parsed.provenance.createdAt,
-    }
 
 
-def _analysis_intent_values(record: Mapping[str, Any]) -> dict[str, Any]:
-    normalized = _normalize_analysis_intent_record(record)
-    if not normalized["projectId"]:
-        raise ValueError("AnalysisIntent record is missing projectId")
-    return {
-        "id": normalized["intentId"],
-        "project_id": normalized["projectId"],
-        "dataset_id": normalized["datasetId"],
-        "profile_id": normalized["profileId"],
-        "schema_version": normalized["schemaVersion"],
-        "intent_hash": normalized["intentHash"],
-        "outcome": normalized["outcome"],
-        "parent_intent_id": normalized["parentIntentId"],
-        "clarification_round": normalized["clarificationRound"],
-        "provider": normalized["provider"],
-        "model": normalized["model"],
-        "prompt_version": normalized["promptVersion"],
-        "intent_json": _json_copy(normalized["analysisIntent"]),
-        "created_by": normalized["createdBy"],
-    }
 
 
-def _analysis_intent_from_record(record: Mapping[str, Any]) -> dict[str, Any]:
-    return _json_copy(_normalize_analysis_intent_record(record))
 
 
-def _analysis_intent_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
-    return _analysis_intent_from_record(
-        {
-            "id": row["id"],
-            "projectId": row["project_id"],
-            "analysisIntent": _json_copy(row.get("intent_json") or {}),
-            "createdBy": row["created_by"],
-            "createdAt": _iso(row["created_at"]),
-        }
-    )
 
 
-def _intent_execution_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
-    return {
-        "id": row["id"],
-        "intentId": row["intent_id"],
-        "planId": row["plan_id"],
-        "jobId": row["job_id"],
-        "createdAt": _iso(row["created_at"]),
-    }
 
 
-def _normalize_capability_resolution_record(record: Mapping[str, Any]) -> dict[str, Any]:
-    source = _json_copy(record)
-    payload = source.get("eligibilityResolution") or source.get("resolutionJson") or source.get("resolution_json")
-    if payload is None:
-        raise ValueError("Eligibility Resolution record is missing resolution_json")
-    parsed = EligibilityResolution.model_validate(payload)
-    computed_hash = capability_semantic_hash(parsed, identity_fields=("resolutionId", "resolutionHash"))
-    if parsed.resolutionHash != computed_hash or parsed.resolutionId != deterministic_capability_id("resolution", computed_hash):
-        raise ValueError("Eligibility Resolution identity does not match canonical JSON")
-    return {
-        "id": parsed.resolutionId,
-        "resolutionId": parsed.resolutionId,
-        "resolutionHash": parsed.resolutionHash,
-        "intentId": parsed.intentId,
-        "profileId": parsed.profileId,
-        "profileSemanticHash": parsed.profileSemanticHash,
-        "registrySnapshotId": parsed.registrySnapshotId,
-        "registrySnapshotHash": parsed.registrySnapshotHash,
-        "resolverVersion": parsed.provenance.resolverVersion,
-        "eligibilityResolution": parsed.model_dump(mode="json"),
-        "createdBy": str(source.get("createdBy") or source.get("created_by") or "user_local"),
-        "createdAt": source.get("createdAt") or source.get("created_at"),
-    }
 
 
-def _capability_resolution_values(record: Mapping[str, Any]) -> dict[str, Any]:
-    normalized = _normalize_capability_resolution_record(record)
-    return {
-        "id": normalized["resolutionId"],
-        "resolution_hash": normalized["resolutionHash"],
-        "intent_id": normalized["intentId"],
-        "profile_id": normalized["profileId"],
-        "profile_semantic_hash": normalized["profileSemanticHash"],
-        "registry_snapshot_id": normalized["registrySnapshotId"],
-        "registry_snapshot_hash": normalized["registrySnapshotHash"],
-        "resolver_version": normalized["resolverVersion"],
-        "resolution_json": _json_copy(normalized["eligibilityResolution"]),
-        "created_by": normalized["createdBy"],
-    }
 
 
-def _capability_resolution_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
-    record = _normalize_capability_resolution_record(
-        {
-            "eligibilityResolution": _json_copy(row.get("resolution_json") or {}),
-            "createdBy": row["created_by"],
-            "createdAt": _iso(row["created_at"]),
-        }
-    )
-    record["createdAt"] = _iso(row["created_at"])
-    return record
 
 
-def _normalize_capability_decision_record(record: Mapping[str, Any]) -> dict[str, Any]:
-    source = _json_copy(record)
-    payload = source.get("capabilityDecision") or source.get("decisionJson") or source.get("decision_json")
-    if payload is None:
-        raise ValueError("Capability Planning Decision record is missing decision_json")
-    parsed = CapabilityPlanningDecision.model_validate(payload)
-    computed_hash = capability_semantic_hash(parsed, identity_fields=("decisionId", "decisionHash"))
-    if parsed.decisionHash != computed_hash or parsed.decisionId != deterministic_capability_id("decision", computed_hash):
-        raise ValueError("Capability Planning Decision identity does not match canonical JSON")
-    return {
-        "id": parsed.decisionId,
-        "decisionId": parsed.decisionId,
-        "decisionHash": parsed.decisionHash,
-        "intentId": parsed.intentId,
-        "resolutionId": parsed.resolutionId,
-        "outcome": parsed.outcome.value,
-        "provider": parsed.provenance.provider,
-        "providerContractVersion": parsed.provenance.providerContractVersion,
-        "model": parsed.provenance.model,
-        "repairCount": parsed.provenance.repairCount,
-        "capabilityDecision": parsed.model_dump(mode="json"),
-        "createdBy": str(source.get("createdBy") or source.get("created_by") or "user_local"),
-        "createdAt": source.get("createdAt") or source.get("created_at"),
-    }
 
 
-def _capability_decision_values(record: Mapping[str, Any]) -> dict[str, Any]:
-    normalized = _normalize_capability_decision_record(record)
-    return {
-        "id": normalized["decisionId"],
-        "decision_hash": normalized["decisionHash"],
-        "intent_id": normalized["intentId"],
-        "resolution_id": normalized["resolutionId"],
-        "outcome": normalized["outcome"],
-        "provider": normalized["provider"],
-        "provider_contract_version": normalized["providerContractVersion"],
-        "model": normalized["model"],
-        "repair_count": normalized["repairCount"],
-        "decision_json": _json_copy(normalized["capabilityDecision"]),
-        "created_by": normalized["createdBy"],
-    }
 
 
-def _capability_decision_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
-    record = _normalize_capability_decision_record(
-        {
-            "capabilityDecision": _json_copy(row.get("decision_json") or {}),
-            "createdBy": row["created_by"],
-            "createdAt": _iso(row["created_at"]),
-        }
-    )
-    record["createdAt"] = _iso(row["created_at"])
-    return record
 
 
-def _capability_execution_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
-    return {
-        "id": row["id"],
-        "decisionId": row["decision_id"],
-        "intentId": row["intent_id"],
-        "planId": row["plan_id"],
-        "jobId": row["job_id"],
-        "createdAt": _iso(row["created_at"]),
-    }
 
 
 def _normalize_plan_bindings(
