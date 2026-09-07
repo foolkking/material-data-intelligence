@@ -58,9 +58,9 @@ def _provider_report_projection(grounded):
     if os.getenv("PYTEST_CURRENT_TEST") and os.getenv("MDI_TEST_LLM_ROLES") != "1":
         return grounded
     try:
-        from mdi_api.routers.planner import _select_planner_provider
+        from mdi_api.application.providers.selection import select_llm_provider
 
-        provider = _select_planner_provider(None)
+        provider = select_llm_provider(None)
         response = provider.compose_report_json(
             messages=[
                 {

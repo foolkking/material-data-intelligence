@@ -16,6 +16,12 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 
 from mdi_api.config import load_settings
+from mdi_api.application.providers.selection import (
+    _MOCK_PROVIDER as _canonical_mock_provider,
+    requested_provider_name,
+    select_llm_provider,
+    test_providers_allowed,
+)
 from mdi_api.artifact_storage import create_artifact_storage_from_settings
 from mdi_api.database import create_repository_factory
 from mdi_api.db import (
@@ -78,7 +84,7 @@ from mdi_tool_registry import ToolRegistry, load_manifests, validate_dependency_
 from mdi_tool_registry.plan_validator import PlanValidationError, PlanValidationResult, validate_plan
 
 
-_LLM_PROVIDER = MockLLMProvider()
+_LLM_PROVIDER = _canonical_mock_provider
 _IN_MEMORY_REPOSITORIES = InMemoryRepositoryBundle.create()
 _IN_MEMORY_QUEUE_BACKEND = InMemoryQueueBackend()
 _IN_MEMORY_QUEUE_RUNTIME = QueueWorkerRuntime(
@@ -2262,32 +2268,17 @@ def _provider_model(provider: Any) -> str:
 
 
 def _select_planner_provider(requested_provider: str | None, *, provider: Any = None) -> Any:
-    if provider is not None:
-        return provider
-    provider_name = _requested_planner_provider_name(requested_provider)
-    if provider_name in {"", "mock", "mock_llm", "deterministic", "safe_mock"}:
-        if not _test_providers_allowed():
-            raise LLMProviderError(
-                "Test and deterministic providers require the explicit offline test gate.",
-                code="PROVIDER_NOT_ALLOWED",
-            )
-        return _LLM_PROVIDER
-    if provider_name == "deepseek":
-        return DeepSeekProvider()
-    if get_connection(provider_name) is not None:
-        return OpenAICompatibleProvider()
-    raise LLMProviderError(
-        "所选 Provider 尚未配置或不在服务目录中。",
-        code="PROVIDER_NOT_ALLOWED",
-    )
+    """Transport facade over the canonical application provider-selection boundary."""
+
+    return select_llm_provider(requested_provider, provider=provider)
 
 
 def _requested_planner_provider_name(requested_provider: str | None) -> str:
-    return (requested_provider or os.getenv("MDI_LLM_PROVIDER") or "deepseek").strip().lower()
+    return requested_provider_name(requested_provider)
 
 
 def _test_providers_allowed() -> bool:
-    return os.getenv("MDI_ALLOW_TEST_PROVIDERS", "").strip().lower() in {"1", "true", "yes", "on"}
+    return test_providers_allowed()
 
 
 def _planner_user_config_from_request(request: Any, *, selected_provider: Any = None) -> PlannerUserConfig | None:
