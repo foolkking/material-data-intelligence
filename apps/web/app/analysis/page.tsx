@@ -1,4 +1,4 @@
-import { LegacyAnalysisCompatibility } from "../components/LegacyCompatibilityPages";
+import { LegacyAnalysisCompatibility } from "../../features/compatibility/LegacyCompatibilityPages";
 
 /**
  * Compatibility entry point for historical `/analysis?jobId=...` links.

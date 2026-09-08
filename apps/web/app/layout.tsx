@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 import type { Viewport } from "next";
 import { ProductNavigationProvider } from "../shared/layout/ProductNavigation";
 import { ProductRouteFrame } from "../shared/layout/ProductRouteFrame";
-import { RouteTransitionProgress } from "./components/RouteTransitionProgress";
-import { ClientObservability } from "./components/ClientObservability";
+import { RouteTransitionProgress } from "../shared/layout/RouteTransitionProgress";
+import { ClientObservability } from "../shared/observability/ClientObservability";
 
 export const metadata = {
   title: "Material Data Intelligence",

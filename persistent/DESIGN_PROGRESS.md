@@ -8016,3 +8016,11 @@ re-exports and retain the historical test-path surface; canonical Planner and
 viewer adapter code imports the physical viewer owners directly. Dynamic Web
 Worker URLs remain colocated with their clients. Typecheck passes and the
 focused viewer/workspace/planner suite passes (`492/492`).
+
+## Autonomous physical relocation — Shared shell and compatibility surfaces (2026-09-08)
+
+Client observability, route-transition progress, and legacy analysis/workspace
+redirect surfaces now have canonical owners under shared infrastructure and
+feature compatibility. App Router imports use those owners directly, while
+historical component paths remain thin re-exports. Focused observability and
+transition qualification passes (`9/9`) with unchanged routing/auth behavior.

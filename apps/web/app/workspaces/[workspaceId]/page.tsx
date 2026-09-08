@@ -1,4 +1,4 @@
-import { LegacyWorkspaceCompatibility } from "../../components/LegacyCompatibilityPages";
+import { LegacyWorkspaceCompatibility } from "../../../features/compatibility/LegacyCompatibilityPages";
 
 export default async function ScientificWorkspacePage({ params }: { params: Promise<{ workspaceId: string }> }) {
   const { workspaceId } = await params;

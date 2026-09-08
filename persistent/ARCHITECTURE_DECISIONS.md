@@ -6115,3 +6115,11 @@ modules, and scientific Workspace rendering composition belong under
 `app/components/<viewer>` paths are compatibility re-exports so qualification
 and external imports retain symbol identity, while canonical viewer and feature
 code never imports those facades.
+
+## ADR — Shell observability and legacy redirects have canonical owners (2026-09-08)
+
+Client exception observation belongs under `shared/observability`, route
+transition progress belongs under shared layout, and old analysis/workspace
+redirect pages belong under a feature compatibility boundary. App Router
+surfaces import these owners directly; historical component paths remain
+compatibility re-exports until their reverse-reference gates are clear.
