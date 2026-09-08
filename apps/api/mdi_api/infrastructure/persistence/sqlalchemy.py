@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from sqlalchemy import delete, insert, select, update
-from sqlalchemy.engine import Connection, Engine
+from sqlalchemy.engine import Connection
 
 from mdi_schemas import DataProfile
 

@@ -7,11 +7,10 @@ adopt canonical ownership incrementally.
 
 from __future__ import annotations
 
-from contextlib import contextmanager
 from datetime import datetime, timezone
 import json
 from threading import RLock
-from typing import Any, ContextManager, Iterator, Mapping
+from typing import Any, Mapping
 
 from sqlalchemy.engine import Connection, Engine
 
@@ -133,4 +132,3 @@ __all__ = [
     "_row_to_json_dict",
     "_utc_now",
 ]
-
