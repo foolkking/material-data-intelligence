@@ -4,7 +4,14 @@ import json
 from types import SimpleNamespace
 
 from mdi_api.project_history import ProjectHistoryService
+from mdi_api.application.projects.history import (
+    ProjectHistoryService as CanonicalProjectHistoryService,
+)
 from mdi_api.routers.project_history import _archived_run_ids_from_config
+
+
+def test_legacy_project_history_export_is_canonical_symbol() -> None:
+    assert ProjectHistoryService is CanonicalProjectHistoryService
 
 
 class Records:

@@ -7830,3 +7830,10 @@ now lives under `mdi_api.application.workspaces.projection`. The old
 `mdi_api.workspaces` module is a three-symbol identity-preserving facade. Pure
 workspace tests pass (`34 passed`); three API-backed nodes remain the exact
 pre-move PostgreSQL/environmental baseline failures and are not new regressions.
+
+## Autonomous physical relocation — Project history (2026-09-08)
+
+`ProjectHistoryService` and its pure projection helpers now live at
+`mdi_api.application.projects.history`; `mdi_api.project_history` remains a
+true compatibility re-export. Historical schema/version, fallback, ordering,
+and job/run identity behavior are unchanged. Focused Project history tests pass.
