@@ -7858,3 +7858,12 @@ and the concrete snapshot/projection service moved to infrastructure. Existing
 `mdi_api.scientific_results.*` modules remain compatibility facades, including
 the frozen `worker.run_queued_result_projection` path. Focused result, closure,
 domain, registry, and queue tests pass (`55 passed`).
+
+## Autonomous physical relocation — Scientific reports (2026-09-08)
+
+Scientific-report contracts and errors were moved to domain, deterministic input
+assembly/composition/grounding to application, and concrete LLM client, queue,
+request, and repository-backed service implementations to infrastructure. Frozen
+prompt files remain at their established path and the relocated client resolves
+that exact authority. Legacy package modules and worker paths remain compatible.
+Focused report/queue/worker tests pass (`48 passed, 4 skipped, 5 deselected`).

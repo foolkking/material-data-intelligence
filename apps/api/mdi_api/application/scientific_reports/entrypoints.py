@@ -4,7 +4,7 @@ from typing import Any, Protocol
 from uuid import UUID
 
 from mdi_api.application.research.ports import ResearchRepositoryFactoryPort
-from mdi_api.scientific_reports.service import ScientificReportError
+from mdi_api.domain.scientific_reports.errors import ScientificReportError
 from mdi_llm import redact_sensitive_text
 
 

@@ -5960,3 +5960,11 @@ and concrete repository-backed projection service are infrastructure owned.
 Compatibility paths remain true re-exports and the six worker/queue identities
 are unchanged. No result identity, fingerprint algorithm, artifact authority,
 or prompt/version behavior changed.
+
+## ADR — Scientific-report physical ownership (2026-09-08)
+
+Report schemas and typed generation errors are domain contracts; deterministic
+assembly and grounding are application logic; provider client, Redis queue,
+request persistence, and SQLAlchemy-backed report service are infrastructure.
+Compatibility modules remain true aliases. Report identity, grounding authority,
+prompt/version authority, queue name, and persisted handler path are unchanged.
