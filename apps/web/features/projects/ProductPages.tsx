@@ -38,12 +38,12 @@ import {
   ManagedObjectRow,
   ProductModal,
   type ObjectAction,
-} from "../../app/components/ObjectManagement";
+} from "../../shared/ui/ObjectManagement";
 import type { WorkspaceSelectionContext } from "../../app/lib/workspace-api";
 import {
   decodeWorkspaceSelectionUrl,
   encodeWorkspaceSelectionUrl,
-} from "../../app/components/workspace/workspace-selection-contract";
+} from "../../shared/workspace/workspace-selection-contract";
 import {
   researchRunStatusLabel,
   researchRunTitle,
@@ -56,7 +56,7 @@ import {
   type ScientificObjectDependencyImpact,
   type ScientificObjectSummary,
 } from "../../app/lib/scientific-viewer-api";
-import { RouteLoading } from "../../app/components/RouteLoading";
+import { RouteLoading } from "../../shared/ui/RouteLoading";
 import { projectRoleAllows } from "../../app/lib/project-permissions";
 
 type LoadState = "loading" | "ready" | "error";

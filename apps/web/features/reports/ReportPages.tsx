@@ -53,7 +53,7 @@ import {
   type ScopeResolution,
 } from "../../app/lib/product-api";
 import { ProductShell, RequireProductAuth } from "../../app/components/ProductShell";
-import { ManagedObjectRow, ProductModal } from "../../app/components/ObjectManagement";
+import { ManagedObjectRow, ProductModal } from "../../shared/ui/ObjectManagement";
 import { LazyScientificResultViewer } from "../../app/components/LazyScientificViewers";
 import {
   projectScientificArtifacts,
@@ -98,13 +98,13 @@ import {
   type Agent2TurnDetail,
   type Agent2TurnResponse,
 } from "../../app/lib/agent2-research-api";
-import { decodeWorkspaceSelectionUrl } from "../../app/components/workspace/workspace-selection-contract";
+import { decodeWorkspaceSelectionUrl } from "../../shared/workspace/workspace-selection-contract";
 import {
   apiSemanticLocator,
   scientificSelectionFromWorkspace,
   selectionToResearchObjectRef,
-} from "../../app/components/scientific-viewer/scientificSelection";
-import { resolveScientificViewer } from "../../app/components/scientific-viewer/scientificViewerRegistry";
+} from "../../scientific-viewers/scientific-viewer/scientificSelection";
+import { resolveScientificViewer } from "../../scientific-viewers/scientific-viewer/scientificViewerRegistry";
 import { RESEARCH_CANCELLING_POLL_INTERVAL_MS } from "../../app/lib/research-status";
 import {
   beginResearchPerformanceAttempt,

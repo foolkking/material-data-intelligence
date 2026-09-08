@@ -6070,3 +6070,11 @@ panel implementations remain under the legacy component tree until their
 viewer-specific move groups are complete; the planner module imports them as
 feature composition dependencies. The old PlannerWorkbench module remains a
 compatibility re-export with unchanged public exports and props.
+
+## ADR — Workspace selection and common UI primitives are shared frontend infrastructure (2026-09-08)
+
+Workspace selection contracts/runtime, renderer identity helpers, object
+management, and route loading are cross-feature infrastructure. Their
+canonical owners are `apps/web/shared/workspace` and `apps/web/shared/ui`.
+Feature modules and scientific-viewer modules import those owners directly;
+the historical `app/components` paths remain compatibility re-exports.

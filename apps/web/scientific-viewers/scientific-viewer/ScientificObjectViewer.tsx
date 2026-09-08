@@ -8,7 +8,7 @@ import { getScientificViewerProjection, listScientificObjects, updateScientificO
 import type { WorkspaceSelectionContext } from "../../app/lib/workspace-api";
 import { ScientificSourceViewer } from "../ScientificViewerAdapter";
 import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
-import { decodeWorkspaceSelectionUrl, encodeWorkspaceSelectionUrl } from "../../app/components/workspace/workspace-selection-contract";
+import { decodeWorkspaceSelectionUrl, encodeWorkspaceSelectionUrl } from "../../shared/workspace/workspace-selection-contract";
 import { scientificSelectionFromWorkspace, type ScientificSelection } from "./scientificSelection";
 import { ScientificViewerShell } from "./ScientificViewerShell";
 import { resolveScientificViewer } from "./scientificViewerRegistry";

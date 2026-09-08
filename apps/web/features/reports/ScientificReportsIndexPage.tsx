@@ -14,7 +14,7 @@ import {
   updateScientificReportLifecycle,
   updateScientificReportOrganization,
 } from "../../app/lib/scientific-report-api";
-import { ManagedObjectRow, ProductModal } from "../../app/components/ObjectManagement";
+import { ManagedObjectRow, ProductModal } from "../../shared/ui/ObjectManagement";
 import { ProductShell, RequireProductAuth } from "../../app/components/ProductShell";
 
 const REPORT_PAGE_SIZE = 12;

@@ -7969,3 +7969,12 @@ The planning/workbench implementation and its preview exports now live under
 workbench consumes the canonical planning module without changing its props,
 viewer composition, or workflow behavior. Typecheck passes and the focused
 Planner/Dataset/preview suites pass (`39/39`).
+
+## Autonomous physical relocation — Shared workspace/UI seams (2026-09-08)
+
+Cross-feature object management, route loading, workspace selection contracts,
+selection runtime, and renderer registry now live under
+`apps/web/shared/ui` and `apps/web/shared/workspace`. Historical
+`app/components` paths remain re-export facades, while canonical feature and
+scientific-viewer modules consume the shared authorities directly. The focused
+shared/feature qualification passes (`274/274` tests across 10 files).

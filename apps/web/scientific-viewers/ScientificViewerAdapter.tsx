@@ -11,7 +11,7 @@ import type { ScientificWorkspace, WorkspaceSelectionContext } from "../app/lib/
 import { VOLUMETRIC_BROWSER_CAPS } from "../app/components/volumetric-viewer/volumetricViewerTypes";
 import { sha256HexSync } from "../app/components/volumetric-viewer/volumetricHash";
 import { ScientificArtifactRenderer } from "../app/components/workspace/WorkspaceArtifactGallery";
-import { artifactIdentity, resolveArtifactRenderer, resolveLoadedArtifactRenderer } from "../app/components/workspace/workspace-renderer-registry";
+import { artifactIdentity, resolveArtifactRenderer, resolveLoadedArtifactRenderer } from "../shared/workspace/workspace-renderer-registry";
 import { ProductLink as Link } from "../shared/layout/ProductNavigation";
 
 export function ScientificSourceViewer({ projectId, resource, resources = [resource], onSelection = () => undefined }: Readonly<{ projectId: string; resource: DatasetSourceResource; resources?: readonly DatasetSourceResource[]; onSelection?: (selection: WorkspaceSelectionContext) => void }>) {
