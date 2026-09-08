@@ -54,8 +54,8 @@ def test_accessibility_closure_is_honest_and_authority_safe() -> None:
 
 
 def test_production_accessibility_primitives_and_terminology_are_present() -> None:
-    planner = (ROOT / "apps/web/app/components/PlannerWorkbench.tsx").read_text(encoding="utf-8")
-    workspace = (ROOT / "apps/web/app/components/workspace/ScientificWorkspaceShell.tsx").read_text(encoding="utf-8")
+    planner = (ROOT / "apps/web/features/research/planning/PlannerWorkbench.tsx").read_text(encoding="utf-8")
+    workspace = (ROOT / "apps/web/scientific-viewers/workspace/ScientificWorkspaceShell.tsx").read_text(encoding="utf-8")
     css = (ROOT / "apps/web/app/globals.css").read_text(encoding="utf-8")
     en = (ROOT / "apps/web/app/lib/messages/en-US.ts").read_text(encoding="utf-8")
     zh = (ROOT / "apps/web/app/lib/messages/zh-CN.ts").read_text(encoding="utf-8")

@@ -26,7 +26,7 @@ def test_release_critical_findings_are_preserved_not_fixed() -> None:
 
 
 def test_historical_profile_version_gate_conflict_is_preserved_and_superseded() -> None:
-    source = (ROOT / "apps/api/mdi_api/routers/planner.py").read_text(encoding="utf-8")
+    source = (ROOT / "apps/api/mdi_api/transport/routers/planner.py").read_text(encoding="utf-8")
     assert 'profile.profileContractVersion not in {"2.0", "2.1"}' not in source
     assert "is_supported_data_profile_contract_version(profile.profileContractVersion)" in source
     probe = load("planner_entry_probe.json")["records"]

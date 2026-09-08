@@ -6123,3 +6123,11 @@ transition progress belongs under shared layout, and old analysis/workspace
 redirect pages belong under a feature compatibility boundary. App Router
 surfaces import these owners directly; historical component paths remain
 compatibility re-exports until their reverse-reference gates are clear.
+
+## ADR — Source-inspection qualification follows canonical authority (2026-09-08)
+
+Tests that inspect implementation text must follow the canonical source path,
+not assert business markers inside a compatibility re-export. Compatibility
+tests continue to verify old imports separately. Architecture allowlist entries
+are removed when the corresponding edge is physically eliminated; they are not
+retained for historical convenience.

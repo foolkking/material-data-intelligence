@@ -69,7 +69,9 @@ def test_phase1_next_workspace_shell_files_exist(repo_root):
 
     page = (web_root / "app" / "page.tsx").read_text(encoding="utf-8")
     analysis_page = (web_root / "app" / "analysis" / "page.tsx").read_text(encoding="utf-8")
-    workbench = (web_root / "app" / "components" / "PlannerWorkbench.tsx").read_text(encoding="utf-8")
+    workbench = (
+        web_root / "features" / "research" / "planning" / "PlannerWorkbench.tsx"
+    ).read_text(encoding="utf-8")
     combined = f"{analysis_page}\n{workbench}"
     # The public root now owns the product landing boundary; the historical
     # ProjectHome shell remains covered through its compatibility route.

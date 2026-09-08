@@ -58,7 +58,7 @@ def test_n6_all_tools_have_planner_ports_adapter_and_projector() -> None:
 
 
 def test_n6_renderer_and_selection_dispositions_are_complete() -> None:
-    renderer = (ROOT / "apps/web/app/components/workspace/workspace-renderer-registry.ts").read_text(encoding="utf-8")
+    renderer = (ROOT / "apps/web/shared/workspace/workspace-renderer-registry.ts").read_text(encoding="utf-8")
     for contract in ("phase10n1.crystalnn_coordination.v1", "phase10n1.voronoinn_coordination.v1", "phase10n2.local_environment_polyhedra.v1", "phase10n3.experimental_xrd_comparison.v1", "phase10n4.trajectory_rdf.v1", "phase10n4.trajectory_msd.v1", "phase10n4.trajectory_diffusion.v1", "phase10n5.electronic_band_structure.v1", "phase10n5.electronic_dos.v1"):
         assert contract in renderer
     required = {"PERIODIC_SITE", "LOCAL_ENVIRONMENT", "COORDINATION_POLYHEDRON", "EXPERIMENTAL_XRD_PEAK", "THEORETICAL_XRD_PEAK", "XRD_MATCH", "TRAJECTORY_RDF_PAIR", "TRAJECTORY_MSD_LAG", "TRAJECTORY_DIFFUSION_WINDOW", "ELECTRONIC_KPOINT", "ELECTRONIC_BAND_STATE", "ELECTRONIC_DOS_PROJECTION"}

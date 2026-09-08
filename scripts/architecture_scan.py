@@ -37,10 +37,6 @@ ALLOWLISTED_TRANSITION_EDGES: dict[tuple[str, str], str] = {
     ): "B0-3 existing Research execution authority",
     (
         "mdi_api.application.scientific_reports.entrypoints",
-        "mdi_api.scientific_reports.service",
-    ): "B0-3 report generator adapter to retained authority",
-    (
-        "mdi_api.application.scientific_reports.entrypoints",
         "mdi_llm",
     ): "B0-3 stable redaction/provider package",
 }
@@ -333,4 +329,3 @@ def strongly_connected_components(edges: Iterable[ImportEdge]) -> list[list[str]
         if node not in indices:
             visit(node)
     return sorted(components)
-

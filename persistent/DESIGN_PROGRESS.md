@@ -8024,3 +8024,11 @@ redirect surfaces now have canonical owners under shared infrastructure and
 feature compatibility. App Router imports use those owners directly, while
 historical component paths remain thin re-exports. Focused observability and
 transition qualification passes (`9/9`) with unchanged routing/auth behavior.
+
+## Autonomous physical relocation — Qualification path reconciliation (2026-09-08)
+
+Static source-inspection qualifications now read the canonical Planner,
+scientific Workspace, renderer-registry, and transport-router authorities
+instead of compatibility facades. The architecture transition allowlist drops
+the resolved scientific-report service edge from five entries to four. The
+four relocation-caused broad-suite failures now pass (`4/4`).
