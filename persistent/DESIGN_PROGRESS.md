@@ -7940,3 +7940,13 @@ viewing, selection contracts, and viewer registry now live under
 re-exports; dynamic imports stay relative inside the canonical viewer boundary.
 Typecheck passes and focused viewer tests pass (`36/36`) after updating the
 test-only mock target to the canonical adapter.
+
+## Autonomous physical relocation — Projects and Data features (2026-09-08)
+
+The mixed `ProductPages` implementation is now physically split between
+`apps/web/features/projects/ProductPages.tsx` and
+`apps/web/features/data/DataPages.tsx`. Shared project-loading and display
+support has one authority in the Projects module and is consumed explicitly by
+Data. Thin App Router pages import their feature owners directly, while the old
+`app/components/ProductPages` path re-exports all prior symbols. Typecheck and
+the focused ProductPages suite pass (`50/50`) with unchanged UI behavior.

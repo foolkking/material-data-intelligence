@@ -52,10 +52,10 @@ vi.mock("../lib/scientific-viewer-api", () => ({
   getScientificObjectDependencyImpact: mocks.getScientificObjectDependencyImpact,
   updateScientificObject: mocks.updateScientificObject,
 }));
-vi.mock("./ScientificViewerAdapter", () => ({
+vi.mock("../../scientific-viewers/ScientificViewerAdapter", () => ({
   ScientificSourceViewer: ({ resource, onSelection }: { resource: { objectType: string }; onSelection?: (selection: unknown) => void }) => <div data-testid="quick-preview-scientific-viewer">{resource.objectType}{onSelection ? <button type="button" aria-label="选择第一条科学数据" onClick={() => onSelection({ schemaVersion: "1.0", sourceScopeHash: "scope", primary: { kind: "DATASET_SAMPLE", sampleRef: "BaTiO3" }, secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false })}>选择</button> : null}</div>,
 }));
-vi.mock("./scientific-viewer/ScientificObjectViewer", () => ({
+vi.mock("../../scientific-viewers/scientific-viewer/ScientificObjectViewer", () => ({
   ScientificObjectViewer: () => <div data-testid="scientific-object-viewer" />,
 }));
 

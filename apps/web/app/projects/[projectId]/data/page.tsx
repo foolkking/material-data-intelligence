@@ -1,4 +1,4 @@
-import { ProjectDataPage } from "../../../components/ProductPages";
+import { ProjectDataPage } from "../../../../features/data/DataPages";
 
 export default async function ProjectDataRoute({
   params,

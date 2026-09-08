@@ -1,2 +1,2 @@
-import { ProjectOverviewPage } from "../../components/ProductPages";
+import { ProjectOverviewPage } from "../../../features/projects/ProductPages";
 export default async function ProjectRoute({ params }: { params: Promise<{ projectId: string }> }) { const { projectId } = await params; return <ProjectOverviewPage projectId={projectId} />; }

@@ -6040,3 +6040,13 @@ registry belong to `apps/web/scientific-viewers`. Feature pages may load them
 through the stable lazy boundary, while old component paths remain compatibility
 re-exports. Viewer payload validation, Web Worker URLs, source identity,
 selection semantics, and client/server execution boundaries are unchanged.
+
+## ADR — Projects and Data are separate frontend feature owners (2026-09-08)
+
+Project list, creation, overview, and console continuation behavior belongs to
+`apps/web/features/projects`; dataset navigation, upload, table state, and
+scientific data viewing belongs to `apps/web/features/data`. Data may consume
+the narrow project-loading/display support exported by Projects, but neither
+canonical feature imports the old `app/components/ProductPages` facade. The
+legacy module remains a true re-export surface until compatibility references
+can be removed.
