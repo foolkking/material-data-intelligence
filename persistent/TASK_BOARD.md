@@ -4206,3 +4206,9 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
 - [x] CO-120：发布 quickstart 统一为 lockfile-driven Windows retained
       same-stack 路径，包含 production build、动态 Alembic head、
       `/health/runtime`、`-CheckOnly` 和精确旧 frontend 清理；5 passed。
+- [x] Batch 0 autonomous physical relocation：后端 canonical
+      application/domain/infrastructure/bootstrap/transport 与前端
+      features/scientific-viewers/shared 已完成物理归位；旧路径按冻结合同保留
+      薄 facade。architecture guard/checker PASS，worker handler 6/6，
+      backend `2211 passed, 76 failed, 75 skipped`（76 个失败与迁移前基线
+      一致），frontend `117 files / 950 tests`、typecheck、build PASS。

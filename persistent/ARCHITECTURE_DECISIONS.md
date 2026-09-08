@@ -6131,3 +6131,20 @@ not assert business markers inside a compatibility re-export. Compatibility
 tests continue to verify old imports separately. Architecture allowlist entries
 are removed when the corresponding edge is physically eliminated; they are not
 retained for historical convenience.
+
+## ADR — Physical relocation closes at the safe compatibility limit (2026-09-08)
+
+Canonical modules are now the only implementation authorities. Historical
+Python modules and frontend component paths remain only where frozen worker,
+public import, monkeypatch, qualification, or incremental consumer
+compatibility still requires them. These facades may re-export or alias
+canonical symbols, but canonical code must never import them.
+
+Compatibility-path count is not a migration success metric. Removal requires a
+zero reverse-reference scan and no frozen public/dynamic contract. The four
+remaining architecture allowlist entries are accepted pre-existing application
+boundary debt, not relocation exceptions: provider selection still reaches the
+provider catalogue/client package, Research worker entrypoints still reach the
+existing execution authority, and scientific-report entrypoints still use the
+stable LLM redaction/provider package. No new allowlist entry may be added to
+hide a physical-migration violation.

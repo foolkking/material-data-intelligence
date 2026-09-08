@@ -1011,3 +1011,15 @@ Plotly, trajectory, electronic, phonon, BZ, volumetric and table renderers.
 Dedicated PostgreSQL/Redis/MinIO service qualification passes with 3 tests and
 zero skips; authenticated browser golden paths and final current-head CI remain
 closure work. No viewer path creates a scientific Job or calls an LLM.
+
+## Current source architecture (2026-09-08)
+
+Batch 0 architecture preparation and reviewed physical relocation are complete.
+The API implementation is physically organized around `bootstrap`, `transport`,
+`application`, `domain`, and `infrastructure`; historical modules remain only
+as compatibility aliases/re-exports where public or dynamic identity is still
+required. Frontend App Router files are thin and implementation ownership is
+under `features`, `scientific-viewers`, and `shared`. The deterministic
+architecture guard/checker are mandatory: canonical code may not import legacy
+facades, and frozen queue/worker, Tool/Adapter, API, persistence, authorization,
+transaction, and scientific identities remain unchanged.

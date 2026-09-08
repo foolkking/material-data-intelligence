@@ -20555,3 +20555,28 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
   handler、Tool/Adapter、scientific identity、UI behavior 均未改变。
 - 后续：等待一次 reviewer 评审后再授权 physical relocation；本轮不执行
   物理迁移。
+
+## Materials Intelligence Platform — Autonomous Physical Relocation
+
+- 状态：已完成；达到 `AUTONOMOUS_PHYSICAL_MIGRATION_COMPLETE`。
+- 完成时间：2026-09-08T17:42:36+08:00。
+- 工作区：`E:/1project/mdi-b0-5a1`；从
+  `db75aa57136e4512b11b6fe69bb54840ad970323` 开始，未创建新工作树或分支，
+  未推送。
+- 修改摘要：完成后端 persistence/database/workspace/history/scientific
+  object/result/report/interpretation/Agent2/report composition/Phase2/router
+  implementation 的 canonical 物理归位；完成前端 shared layout/UI/workspace/
+  observability、Projects/Data/Research/Reports/Planner/product centers 与
+  scientific viewer 实现归位；保留 frozen worker 与旧 public/test 路径的薄
+  compatibility facade，并将 B0-6 allowlist 从 5 降至 4。
+- 测试结果：architecture guard/checker PASS（forbidden/cycle/canonical-to-
+  compatibility 均为 0，handler 6/6，queue 与 Tool/Adapter identity PASS）；
+  focused architecture `12 passed`；database pool `2 passed, 1 skipped`；
+  backend broad `2211 passed, 76 failed, 75 skipped`，76 个失败节点与迁移前
+  基线一致，新增回归 0；frontend `117 files / 950 tests`、typecheck、build
+  PASS；compileall、Ruff、git diff check PASS。
+- 安全结果：API/auth/schema/Alembic/transaction/persisted IDs/queue/handler/
+  Tool/Adapter/scientific/UI behavior 均未改变；测试生成 evidence 已恢复；
+  未修改 runtime 或 forensic 数据。
+- 提交/CI 状态：物理迁移、兼容调整与本条收口记录形成线性本地提交；
+  最终 SHA 以当前 Git HEAD 为准；未推送，未运行远程 CI。

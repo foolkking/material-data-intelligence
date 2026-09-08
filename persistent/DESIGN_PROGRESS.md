@@ -8032,3 +8032,22 @@ scientific Workspace, renderer-registry, and transport-router authorities
 instead of compatibility facades. The architecture transition allowlist drops
 the resolved scientific-report service edge from five entries to four. The
 four relocation-caused broad-suite failures now pass (`4/4`).
+
+## Autonomous physical relocation — Final closeout (2026-09-08)
+
+The reviewed physical relocation phase is complete at the safe compatibility
+limit. Backend implementations now have physical owners under `application`,
+`domain`, `infrastructure`, `bootstrap`, and `transport`; frozen legacy Python
+paths remain thin aliases/re-exports. Frontend route files remain thin while
+feature, viewer, layout, workspace, UI, and observability implementations live
+under `features`, `scientific-viewers`, and `shared`.
+
+Final deterministic architecture qualification reports zero forbidden edges,
+zero cycles, zero canonical-to-compatibility edges, six of six resolvable
+worker handlers, unchanged queue identities, and unchanged Tool/Adapter
+inventories. The backend broad suite finished with `2211 passed, 76 failed,
+75 skipped`; all 76 failing node IDs match the pre-move baseline failure set,
+so relocation introduced zero backend regressions. Frontend typecheck,
+production build, and all `117` files / `950` tests pass. Test-generated
+phase12 evidence changes were restored and no runtime/forensic data was
+changed.
