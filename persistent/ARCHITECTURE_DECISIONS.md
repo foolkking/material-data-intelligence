@@ -5923,3 +5923,13 @@ The V2 decision is:
 Current runtime facts reconcile stopped API/frontend/MinIO/workers with stale managed manifests; PostgreSQL `5432` and Redis-compatible `6379` are active. RQ registration and live database migration head were not safely queried and remain explicitly `CURRENT_UNKNOWN`, not inferred. The amendment therefore records `ARCHITECTURE_FREEZE_AMENDED_PENDING_BASELINE_COMMIT`, not `ARCHITECTURE_FREEZE_READY_FOR_BATCH_0`.
 
 No business/runtime source, CSS, tests, database, migration, queue state, runtime service, evidence, cache, screenshot, file move, commit or push was performed by this amendment.
+
+## ADR — Database lifecycle and repository composition physical separation (2026-09-08)
+
+Physical migration is authorized from `db75aa57136e4512b11b6fe69bb54840ad970323`.
+Engine creation, process-scoped cache/disposal, and SQLite connection pragmas now
+belong to `mdi_api.infrastructure.persistence.engine`; concrete repository-factory
+composition belongs to `mdi_api.bootstrap.repository_factory`. The established
+`mdi_api.database` path remains a thin identity-preserving facade for production,
+test, script, and monkeypatch compatibility. Engine cache identity, factory
+signature, schema/Alembic state, and transaction behavior are unchanged.

@@ -1,4 +1,19 @@
 ---TASK---
+状态：处理中
+任务名称：Materials Intelligence Platform — Autonomous Physical Relocation
+开始时间：2026-09-08T00:00:00+08:00
+
+执行规范：
+`docs/agent2/autonomous_physical_relocation/AUTONOMOUS_PHYSICAL_RELOCATION_TASK.md`
+
+授权执行已审阅的物理迁移阶段：在单一活动工作树中连续完成后端与前端
+canonical implementation relocation、兼容 facade reduction、B0-6/B0-7
+检查与最终 qualification。不得创建新 worktree/branch，不得 push，不得修改
+schema/Alembic、持久化身份、队列/handler identity、API/auth/transaction 或
+scientific authority，不得清理 forensic/runtime 数据。
+---END---
+
+---TASK---
 状态：已完成
 任务名称：Materials Intelligence Platform — Continuous Autonomous Optimization
 开始时间：2026-09-05T00:00:00+08:00

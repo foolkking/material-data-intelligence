@@ -13,6 +13,21 @@ from mdi_api.database import (
     create_repository_factory,
     dispose_cached_engines,
 )
+from mdi_api.bootstrap.repository_factory import (
+    create_repository_factory as canonical_create_repository_factory,
+)
+from mdi_api.infrastructure.persistence.engine import (
+    create_engine_from_settings as canonical_create_engine_from_settings,
+)
+from mdi_api.infrastructure.persistence.engine import (
+    dispose_cached_engines as canonical_dispose_cached_engines,
+)
+
+
+def test_legacy_database_exports_are_canonical_symbols() -> None:
+    assert create_engine_from_settings is canonical_create_engine_from_settings
+    assert dispose_cached_engines is canonical_dispose_cached_engines
+    assert create_repository_factory is canonical_create_repository_factory
 
 
 def test_repeated_request_engine_creation_reuses_one_pool_and_returns_connections(tmp_path: Path) -> None:

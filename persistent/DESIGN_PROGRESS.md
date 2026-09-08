@@ -7812,3 +7812,12 @@ PostgreSQL/Redis/MinIO-backed with six healthy workers. CO-156 is complete:
 standalone CLI invocations use a protected SHA-256 keyed, atomic, TTL-bound
 runtime observation file for continuity, while timeout snapshots remain
 current-unknown and stale values are never promoted.
+
+## Autonomous physical relocation — database boundary (2026-09-08)
+
+The first physical move group separated database engine lifecycle from repository
+composition while preserving `mdi_api.database`. Focused pool/configuration,
+durable namespace, architecture guard/checker, six worker handlers, queue names,
+and Tool/Adapter inventories pass. Pre-move broad backend baseline is
+`2185 passed, 76 failed, 75 skipped`; the 45 generated phase12/phase13 evidence
+changes from that run were restored before implementation.
