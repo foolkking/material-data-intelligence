@@ -6105,3 +6105,13 @@ Artifact preview belong to Reports. Safe Artifact open/download link policy is
 cross-feature UI and belongs under `shared/ui`. Historical component paths
 remain re-exports, while canonical modules depend only on canonical
 feature/shared/viewer paths.
+
+## ADR — Scientific renderer implementations are physically viewer-owned (2026-09-08)
+
+Scientific rendering engines, contracts, panels, worker clients, Web Worker
+modules, and scientific Workspace rendering composition belong under
+`apps/web/scientific-viewers`. Shared selection/registry contracts remain under
+`shared/workspace`, and shared status UI remains under `shared/ui`. Historical
+`app/components/<viewer>` paths are compatibility re-exports so qualification
+and external imports retain symbol identity, while canonical viewer and feature
+code never imports those facades.

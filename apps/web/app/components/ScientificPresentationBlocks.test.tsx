@@ -11,7 +11,7 @@ vi.mock("../lib/planner-api", () => ({
   getPlannerInterpretationEvidence: mocks.getPlannerInterpretationEvidence,
 }));
 
-vi.mock("./ScientificViewerAdapter", () => ({
+vi.mock("../../scientific-viewers/ScientificViewerAdapter", () => ({
   ScientificResultViewer: ({ jobId, selected }: { jobId: string; selected: { artifactId?: string; id?: string } }) => (
     <div data-testid="inline-scientific-result-viewer">
       {jobId} · {selected.artifactId || selected.id}

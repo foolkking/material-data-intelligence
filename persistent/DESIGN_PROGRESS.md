@@ -8005,3 +8005,14 @@ Artifact open/download controls live under shared UI. Scientific presentation
 blocks retain their single Research-owned authority and are consumed by report
 routes without importing legacy component facades. Typecheck and focused
 Research/report/Artifact qualification pass (`183/183`).
+
+## Autonomous physical relocation — Scientific viewer implementation tree (2026-09-08)
+
+Viewer-scene, trajectory, phonon, Brillouin-zone, volumetric, materials
+intelligence, dataset/composition exploration, and scientific Workspace
+implementations now live under `apps/web/scientific-viewers`. The common status
+label lives under shared UI. Existing `app/components` module paths remain thin
+re-exports and retain the historical test-path surface; canonical Planner and
+viewer adapter code imports the physical viewer owners directly. Dynamic Web
+Worker URLs remain colocated with their clients. Typecheck passes and the
+focused viewer/workspace/planner suite passes (`492/492`).

@@ -7,20 +7,20 @@ import { createTranslator, type Locale, type MessageKey } from "../../../app/lib
 import { buildResearchHref } from "../../../app/lib/research-navigation";
 import { PHONON_BAND_SCHEMA_VERSION, PHONON_DOS_SCHEMA_VERSION } from "../../../app/lib/phononContract";
 import { createWorkspace, listProjectWorkspaces, WorkspaceApiError, type WorkspaceSummary } from "../../../app/lib/workspace-api";
-import { ViewerSceneRendererSurface } from "../../../app/components/viewer-scene/ViewerSceneRendererSurface";
-import { TrajectoryViewerSurface } from "../../../app/components/trajectory-viewer/TrajectoryViewerSurface";
-import { PhononBandPreviewPanel } from "../../../app/components/phonon-band/PhononBandPreviewPanel";
-import { PhononBandDosPreviewPanel } from "../../../app/components/phonon-band-dos/PhononBandDosPreviewPanel";
-import { PhononDosPreviewPanel } from "../../../app/components/phonon-dos/PhononDosPreviewPanel";
-import { PhononAnimationSurface } from "../../../app/components/phonon-animation/PhononAnimationSurface";
-import { BrillouinZonePreviewPanel } from "../../../app/components/brillouin-zone/BrillouinZonePreviewPanel";
-import { BandBZLinkedView } from "../../../app/components/band-bz-link/BandBZLinkedView";
-import { VolumetricPreviewPanel } from "../../../app/components/volumetric-viewer/VolumetricPreviewPanel";
-import { DatasetMaterialsExplorerPanel } from "../../../app/components/dataset-explorer/DatasetMaterialsExplorerPanel";
-import { MaterialsMlEvaluationPanel } from "../../../app/components/materials-ml/MaterialsMlEvaluationPanel";
-import { CompositionSpaceExplorerPanel } from "../../../app/components/composition-space/CompositionSpaceExplorerPanel";
-import { assessMaterialIntelligenceProducts, MaterialIntelligenceIntegrationPanel } from "../../../app/components/material-intelligence/MaterialIntelligenceIntegrationPanel";
-import { viewerManifestCompatibility, viewerSceneCompatibility } from "../../../app/components/viewer-scene/viewerSceneCompatibility";
+import { ViewerSceneRendererSurface } from "../../../scientific-viewers/viewer-scene/ViewerSceneRendererSurface";
+import { TrajectoryViewerSurface } from "../../../scientific-viewers/trajectory-viewer/TrajectoryViewerSurface";
+import { PhononBandPreviewPanel } from "../../../scientific-viewers/phonon-band/PhononBandPreviewPanel";
+import { PhononBandDosPreviewPanel } from "../../../scientific-viewers/phonon-band-dos/PhononBandDosPreviewPanel";
+import { PhononDosPreviewPanel } from "../../../scientific-viewers/phonon-dos/PhononDosPreviewPanel";
+import { PhononAnimationSurface } from "../../../scientific-viewers/phonon-animation/PhononAnimationSurface";
+import { BrillouinZonePreviewPanel } from "../../../scientific-viewers/brillouin-zone/BrillouinZonePreviewPanel";
+import { BandBZLinkedView } from "../../../scientific-viewers/band-bz-link/BandBZLinkedView";
+import { VolumetricPreviewPanel } from "../../../scientific-viewers/volumetric-viewer/VolumetricPreviewPanel";
+import { DatasetMaterialsExplorerPanel } from "../../../scientific-viewers/dataset-explorer/DatasetMaterialsExplorerPanel";
+import { MaterialsMlEvaluationPanel } from "../../../scientific-viewers/materials-ml/MaterialsMlEvaluationPanel";
+import { CompositionSpaceExplorerPanel } from "../../../scientific-viewers/composition-space/CompositionSpaceExplorerPanel";
+import { assessMaterialIntelligenceProducts, MaterialIntelligenceIntegrationPanel } from "../../../scientific-viewers/material-intelligence/MaterialIntelligenceIntegrationPanel";
+import { viewerManifestCompatibility, viewerSceneCompatibility } from "../../../scientific-viewers/viewer-scene/viewerSceneCompatibility";
 import {
   type AnalysisPlan,
   type AnalysisIntent,

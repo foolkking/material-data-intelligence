@@ -16,7 +16,7 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-vi.mock("./workspace/WorkspaceArtifactGallery", () => ({
+vi.mock("../../scientific-viewers/workspace/WorkspaceArtifactGallery", () => ({
   ScientificArtifactRenderer: ({ selected, artifacts }: { selected: { artifactId?: string; type?: string; content?: unknown }; artifacts: Array<{ content?: unknown }> }) => (
     <div data-testid="loaded-scientific-renderer" data-selected={selected.artifactId || selected.type}>{JSON.stringify(selected.content ?? artifacts[0]?.content)}</div>
   ),

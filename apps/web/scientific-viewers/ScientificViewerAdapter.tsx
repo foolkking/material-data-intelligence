@@ -8,9 +8,9 @@ import {
   type DatasetSourceResource,
 } from "../app/lib/planner-api";
 import type { ScientificWorkspace, WorkspaceSelectionContext } from "../app/lib/workspace-api";
-import { VOLUMETRIC_BROWSER_CAPS } from "../app/components/volumetric-viewer/volumetricViewerTypes";
-import { sha256HexSync } from "../app/components/volumetric-viewer/volumetricHash";
-import { ScientificArtifactRenderer } from "../app/components/workspace/WorkspaceArtifactGallery";
+import { VOLUMETRIC_BROWSER_CAPS } from "./volumetric-viewer/volumetricViewerTypes";
+import { sha256HexSync } from "./volumetric-viewer/volumetricHash";
+import { ScientificArtifactRenderer } from "./workspace/WorkspaceArtifactGallery";
 import { artifactIdentity, resolveArtifactRenderer, resolveLoadedArtifactRenderer } from "../shared/workspace/workspace-renderer-registry";
 import { ProductLink as Link } from "../shared/layout/ProductNavigation";
 
