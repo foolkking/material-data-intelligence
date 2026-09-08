@@ -20601,3 +20601,29 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
   transition review，不执行删除或状态 authority 替换。
 - 提交/CI 状态：本地窄修复提交 `0977769`、`f54464b`；本次收口记录另行
   创建本地提交；未推送，未运行远程 CI。
+
+
+## Materials Intelligence Platform — Retention and PROJECT_STATE Transition Review
+
+- 状态：已完成，结论为 `RETENTION_AND_PROJECT_STATE_TRANSITION_REVIEW = PASS`。
+- 完成时间：2026-09-08T21:57:45+08:00。
+- 工作区：`E:/1project/mdi-b0-5a1`；HEAD 为
+  `f3c6fa055d447ec6e25cabc7e9825ebbb769bba8`；未创建新工作树或分支，未推送。
+- 修改摘要：只读盘点 TASKS/results、persistent ledgers、roadmap/scope、
+  frozen architecture/qualification/evidence、runtime-adjacent paths、ignore
+  rules 及 reader/writer/dynamic references。确认现有 authority 分层、未来
+  retention gates、PROJECT_STATE compact snapshot 角色、冲突胜者、staleness
+  model 与 additive dual-read/dual-write phases。
+- 结果：当前 state authorities 已盘点；runtime/user-unknown/historical/
+  qualification/current-operational-ledger 已分类；仅明确生成且非权威的
+  cache/dependency families 可作为未来候选，当前 safe-cleanup dry-run
+  `candidateCount=0`。`TASKS.md` 与 `results.md` 均不可立即退休。
+- 测试/验证：`python -m pytest tests/test_repo_safe_cleanup.py -q` 为
+  `4 passed`；`python scripts/repo_safe_cleanup.py --dry-run --older-than-days 30`
+  为 0 candidates；未运行广泛 suite，未修改 runtime/evidence。
+- 安全状态：FILES_DELETED=0、FILES_ARCHIVED=0、PROJECT_STATE_CREATED=NO、
+  READERS_MIGRATED=NO、RUNTIME_STATE_CHANGED=NO、EVIDENCE_REWRITTEN=NO、
+  SOURCE_ARCHITECTURE_CHANGED=NO。远程 CI 未运行。
+- 后续：可进入“分阶段 PROJECT_STATE 引入 + 有界 retention execution”审查；
+  仍需将 PROJECT_STATE introduction 与 cleanup 作为独立子阶段，历史/
+  qualification authority 暂不退休。

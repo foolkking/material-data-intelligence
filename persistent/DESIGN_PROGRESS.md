@@ -8066,3 +8066,26 @@ identities, and unchanged Tool/Adapter inventories.
 The closeout did not delete compatibility surfaces, alter runtime/forensic data,
 perform cleanup, or create PROJECT_STATE.md. Retention cleanup and PROJECT_STATE
 transition remain separate review stages.
+
+
+## Retention and PROJECT_STATE transition review (2026-09-08)
+
+The read-only retention review verified HEAD `f3c6fa055d447ec6e25cabc7e9825ebbb769bba8`
+and found no source-architecture changes after closeout. Current operational
+ledgers remain `TASKS.md` and `results.md`; persistent ledgers and roadmap/scope
+documents retain their specialized or historical roles. `PROJECT_STATE.md` does
+not exist and was not created.
+
+Runtime databases, PostgreSQL/Redis/MinIO state, object stores, uploads, session
+material, runtime manifests, qualification workspaces, release packages, and
+phase evidence remain protected or unknown. Only explicitly bounded generated
+cache/dependency families such as `.cache`, `.pytest_cache`, `.ruff_cache`,
+`apps/web/node_modules`, and a future `.next` build tree qualify as potential
+cleanup candidates, and only after active-process, reader, ownership, and rebuild
+gates pass. The repository safe-cleanup dry-run found zero candidates.
+
+A future PROJECT_STATE transition is designed as additive: compact human-readable
+current snapshot, specialized-authority pointers, explicit conflict winners,
+commit-based freshness, visible stale state, then dual-read/dual-write and
+reverse-reference review. No reader migration, ledger retirement, cleanup, or
+PROJECT_STATE creation occurred in this review.

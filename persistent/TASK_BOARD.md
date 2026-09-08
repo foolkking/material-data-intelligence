@@ -4224,3 +4224,15 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
       was added.
 - [x] Mark retention/cleanup and PROJECT_STATE transition as separate review
       stages; no deletion, cleanup, or state-authority transition was performed.
+
+
+## 2026-09-08 Retention and PROJECT_STATE transition review
+
+- [x] Inventory current state authorities and build bounded reader/writer/path
+      references for ledgers, qualification, evidence, runtime, and caches.
+- [x] Classify runtime, user/unknown, historical, qualification, operational,
+      redundant-candidate, and generated-candidate surfaces without deletion.
+- [x] Design compact PROJECT_STATE ownership, conflict winners, freshness model,
+      and additive dual-read/dual-write phases; keep specialized authorities.
+- [x] Confirm cleanup dry-run has zero candidates and retain all runtime, user,
+      qualification, historical, and evidence surfaces pending future gates.

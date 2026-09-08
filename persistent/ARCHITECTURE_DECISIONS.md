@@ -6160,3 +6160,21 @@ roots. Remaining legacy paths are retained only for frozen worker identities,
 public imports, monkeypatches, qualification readers, or incremental consumers.
 No schema, API, authorization, transaction, persisted-identity, queue,
 scientific-authority, or UI behavior change is authorized by this closeout.
+
+
+## ADR — Retention classes and additive PROJECT_STATE transition (2026-09-08)
+
+Retention classification is authority-based rather than name-, age-, tracked-,
+or generated-status-based. Runtime-protected, user-owned/unknown, historical,
+qualification, and current operational ledger material is never automatically
+deleted. A redundant-evidence or generated-cleanup candidate requires a known
+owner, zero relevant readers/writers or a preserved authority, rebuildability,
+no runtime/user-data dependency, and a reversible method.
+
+`PROJECT_STATE.md` may own only a compact human-readable current snapshot. CI,
+qualification manifests, ADRs, frozen contracts, dynamic/runtime identities,
+Tool Registry, roadmap/scope, historical evidence, `TASKS.md`, and `results.md`
+remain stronger or specialized authorities. Conflicts are surfaced and resolved
+by the specialized authority; PROJECT_STATE is allowed to become visibly stale
+when HEAD or a stronger source advances. Introduction must be additive and
+proceed through dual-read/dual-write before any retirement review.
