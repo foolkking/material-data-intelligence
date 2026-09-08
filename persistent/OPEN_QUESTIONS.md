@@ -1403,3 +1403,14 @@ is the only remaining work.
   remaining provider/catalog endpoints are authenticated metadata operations;
   persistent user BYOK remains out of scope and server-hosted provider secrets
   remain server-owned.
+## 2026-09-08 PROJECT_STATE stabilization and release gate
+
+- PROJECT_STATE stabilization leaves no state-authority blocker. Three runtime
+  observations remain protected unknowns: live RQ registration, live database
+  migration head, and detailed runtime/user-owned data ownership. Resolve only
+  in a controlled release environment with read-only checks and established
+  credentials/backup boundaries.
+- Future remote release is conditional on pushing an explicitly authorized
+  commit and running current-HEAD GitHub Actions plus the mandatory
+  PostgreSQL/Redis/MinIO qualification. Local documentation/state validation is
+  not remote release evidence.

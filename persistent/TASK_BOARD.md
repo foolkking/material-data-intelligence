@@ -4247,3 +4247,14 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
 - [x] Define controlled snapshot update triggers and visible stale semantics.
 - [x] Complete reverse-reference audit and run bounded cleanup dry-run with
       `candidateCount=0`; no cleanup or retirement was applied.
+
+
+## 2026-09-08 PROJECT_STATE stabilization
+
+- [x] Detect and reconcile bounded Active Work drift against `TASKS.md`.
+- [x] Validate Case A-D freshness behavior and effective-stale handling.
+- [x] Reconfirm specialized reader ownership and all source pointers.
+- [x] Keep RQ registration, live DB head, and runtime/user ownership as
+      protected unknowns.
+- [x] Classify release readiness as conditional on current-HEAD remote CI and
+      mandatory service/runtime qualification; no push or remote run performed.

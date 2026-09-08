@@ -20655,3 +20655,30 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
 - 提交/CI 状态：本地提交 `cd5d3b3`、`c1a790a`、`e87c2d1` 及最终记录提交；
   未推送，未运行远程 CI。下一步为 PROJECT_STATE stabilization/release
   readiness review。
+
+
+## Materials Intelligence Platform — PROJECT_STATE Stabilization and Release Readiness Review
+
+- 状态：已完成；`PROJECT_STATE_STABILIZATION_REVIEW=PASS`，
+  `RELEASE_READINESS_STATUS=CONDITIONAL`。
+- 完成时间：2026-09-08T22:45:00+08:00。
+- 稳定化结果：真实 TASKS 演化暴露一个 bounded Active Work drift；`TASKS.md`
+  始终保持正确 authority。PROJECT_STATE 已协调，并新增 effective-stale
+  检测规则：即使 stored status 为 CURRENT，也必须核对被摘要字段。
+- Freshness：Case A snapshot-only 保持 CURRENT；Case B TASKS 变化要求
+  reconciliation；Case C qualification authority 胜出；Case D architecture
+  authority 胜出并在协调前视为 stale。四类静态验证均 PASS。
+- Dual-read：高层 Agent reader 使用 PROJECT_STATE 做导航；task queue、
+  result ledger、architecture、qualification、runtime/dynamic identity 和
+  Tool Registry readers 未被重定向。
+- Runtime unknown：live RQ registration、live DB migration head、
+  runtime/user-owned data ownership 均为 `STILL_UNKNOWN_PROTECTED`。
+- Release readiness：repository GitHub Actions workflow 和 authenticated
+  `gh` CLI 可用；未推送、未运行 remote CI。未来 release 必须通过单独授权的
+  current-HEAD remote CI 和 mandatory PostgreSQL/Redis/MinIO qualification。
+- 验证：PROJECT_STATE role/pointers/freshness checks PASS；focused
+  task/result/cleanup tests `9 passed`；safe-cleanup dry-run
+  `candidateCount=0`；应用源码 diff=0；`git diff --check` PASS。
+- 安全：FILES_DELETED=0、HISTORICAL_RETIREMENT=0、
+  QUALIFICATION_RETIREMENT=0、RUNTIME_MUTATION=0、
+  SOURCE_ARCHITECTURE_REOPENED=NO、PUSHED=NO。

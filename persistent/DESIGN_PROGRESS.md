@@ -8106,3 +8106,22 @@ Phase D completed a bounded reverse-reference audit. Phase E ran
 no cleanup was applied. Runtime/user-owned/unknown material and all historical
 or qualification authorities remain protected. The transition passed without
 source-architecture, runtime, evidence, or user-data changes.
+
+
+## PROJECT_STATE stabilization and release-readiness review (2026-09-08)
+
+The first real post-introduction state transition exposed a bounded Active Work
+drift: after the previous task was archived, PROJECT_STATE still summarized it
+as active while `TASKS.md` correctly had no active task. The specialized
+authority remained correct. Stabilization reconciled the snapshot and hardened
+the high-level workflow so represented fields are compared with their source
+authorities even when the stored status says `CURRENT`; mismatches are treated
+as effective stale.
+
+Static Case A-D validation passed for snapshot-only, TASKS, qualification, and
+architecture changes. Source pointers and dual-read authority boundaries remain
+valid. Live RQ registration, live database migration head, and runtime/user-data
+ownership remain protected unknowns. GitHub Actions workflow and authenticated
+CLI are available, but no push or remote run occurred. Release readiness is
+conditional on separately authorized current-HEAD CI and mandatory
+PostgreSQL/Redis/MinIO runtime qualification.

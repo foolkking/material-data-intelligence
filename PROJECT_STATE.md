@@ -7,13 +7,13 @@
 
 ## 1. Current Status
 
-- `PROJECT_PHASE`: Source architecture migration closed; additive state
-  transition in progress.
-- `CURRENT_ACCEPTED_COMMIT`: `61cbf084095f395660c2591940141e478866ecd6`
-- `SNAPSHOT_BASE_COMMIT`: `61cbf084095f395660c2591940141e478866ecd6`
+- `PROJECT_PHASE`: Source architecture migration closed; PROJECT_STATE
+  stabilized; remote qualification/release gate pending.
+- `CURRENT_ACCEPTED_COMMIT`: `20b508bb7b714f27e63973b9ae6e8ea8fb0e5b57`
+- `SNAPSHOT_BASE_COMMIT`: `20b508bb7b714f27e63973b9ae6e8ea8fb0e5b57`
 - `WORKTREE_EXPECTATION`: existing migration worktree, detached HEAD, clean
-- `LAST_ACCEPTED_REVIEW`: Retention and PROJECT_STATE Transition Review,
-  `PASS`, 2026-09-08
+- `LAST_ACCEPTED_REVIEW`: PROJECT_STATE Stabilization and Release Readiness
+  Review, `PASS`, 2026-09-08
 - `LAST_UPDATED_AT`: `2026-09-08`
 - `STATE_STATUS`: `CURRENT`
 - `PROJECT_STATE_ACTIVE`: `YES`
@@ -61,12 +61,11 @@ specialized authority requires explicit reconciliation and may set
 
 ## 5. Active Work
 
-- `CURRENT_WORKSTREAM`: PROJECT_STATE additive transition and bounded
-  retention execution.
-- `CURRENT_TASK`: this phased transition task; queue authority remains
-  `TASKS.md`.
-- `NEXT_ACTION`: observe one subsequent state transition, validate freshness
-  behavior, and perform stabilization/release-readiness review.
+- `CURRENT_WORKSTREAM`: remote qualification and release gate review.
+- `CURRENT_TASK`: no follow-on execution is authorized after this review;
+  `TASKS.md` remains the queue authority.
+- `NEXT_ACTION`: run a separately authorized current-HEAD remote CI and
+  mandatory service/runtime qualification before any remote release.
 - `BLOCKED_ITEMS`: live runtime registration and live database migration head
   remain `CURRENT_UNKNOWN` where the runtime reconciliation could not safely
   query them.
@@ -81,13 +80,17 @@ specialized authority requires explicit reconciliation and may set
 - Production build: `PASS`.
 - Architecture: cycles `0`; forbidden edges `0`; dynamic contract errors `0`;
   public surface errors `0`; canonical-to-compatibility edges `0`.
-- Remote CI: not run; remote release should require current-HEAD remote CI.
+- Remote CI: available through the repository GitHub workflow and authenticated
+  local CLI, but not run and no commit was pushed. Remote release requires a
+  separately authorized current-HEAD workflow plus mandatory service/runtime
+  qualification.
 
 ## 7. Current Debt and Risks
 
 - **Architecture debt:** four bounded frozen architecture allowlist edges.
 - **Compatibility debt:** legacy facades and frozen worker/public paths remain.
-- **Verification debt:** no remote CI for the migration/transition commits.
+- **Verification debt:** no remote CI for the migration/transition/stabilization
+  commits.
 - **Environmental/historical debt:** 76 baseline backend failures and
   unresolved live runtime registration/database-head observations.
 
@@ -121,6 +124,9 @@ specialized authority requires explicit reconciliation and may set
 - 2026-09-08: additive PROJECT_STATE snapshot, high-level dual-read workflow,
   freshness rules, reverse-reference audit, and bounded-cleanup no-op passed;
   specialized authorities remain active.
+- 2026-09-08: stabilization detected and reconciled one bounded Active Work
+  drift after task archival; static Case A-D freshness behavior passed. Release
+  readiness is conditional on current-HEAD remote and service qualification.
 
 ## 11. Source Pointers
 
@@ -153,6 +159,9 @@ specialized authority requires explicit reconciliation and may set
   represented here and has not been reconciled. A commit that only updates
   PROJECT_STATE or records this transition does not itself make the snapshot
   stale.
+- High-level readers must compare represented fields with their source
+  authorities even when the stored status is `CURRENT`. A mismatch is
+  effective stale and must be surfaced before reconciliation.
 - On conflict, surface the discrepancy and follow the specialized authority
   named in the State Authorities table. Never silently overwrite stronger
   evidence.

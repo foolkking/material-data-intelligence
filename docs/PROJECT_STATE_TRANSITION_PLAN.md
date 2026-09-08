@@ -74,3 +74,22 @@ Each compact work-log entry contains: date/time, task ID, purpose, files/areas, 
 A proposed entry is rejected from `PROJECT_STATE.md` if it is raw evidence, a full command transcript, a large payload, a duplicate stable contract, or a historical detail that has no current decision/status impact. Each entry must link to a bounded source artifact instead.
 
 No current ledger may be deleted under this amendment.
+
+## Stabilization Validation (2026-09-08)
+
+| CASE | SPECIALIZED CHANGE | EXPECTED SNAPSHOT BEHAVIOR | VALIDATION |
+|---|---|---|---|
+| A | PROJECT_STATE-only synchronization | remain `CURRENT` | PASS |
+| B | active `TASKS.md` work changes | TASKS wins; reconcile Active Work | PASS; bounded prior-task drift detected and reconciled |
+| C | qualification result changes | qualification evidence wins; mirror accepted summary only | PASS |
+| D | architecture acceptance changes | architecture authority wins; effective stale until reconciliation | PASS |
+
+Stored `CURRENT` is not trusted blindly. High-level readers compare represented
+fields against the linked specialized authority; a mismatch is treated as
+effective stale. This remains a procedural synchronization rule and does not
+redirect specialized readers or introduce an automated dual writer.
+
+Remote CI is technically available through the checked-in GitHub workflow and
+authenticated CLI, but no push or workflow run occurred in stabilization.
+Future release readiness is conditional on separately authorized current-HEAD
+remote CI and the mandatory PostgreSQL/Redis/MinIO qualification gate.

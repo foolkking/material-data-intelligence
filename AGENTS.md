@@ -10,7 +10,10 @@
 `results.md` 仍是详细结果账本，ADR、qualification/CI、dynamic/runtime
 identity、Tool Registry、roadmap/scope、历史证据和运行时/用户数据仍在各自
 领域保持权威。发现 `STATE_STATUS: STALE` 时，先按 source pointers 核对专门
-authority，不得静默覆盖或据此删除材料。
+authority，不得静默覆盖或据此删除材料。即使标记为 `CURRENT`，也必须把
+Active Work、verification、architecture、runtime identity 和 roadmap/scope
+摘要与对应专门 authority 做一次有界核对；若不一致，按 effective stale
+处理，先采用专门 authority，再在接受状态后协调 PROJECT_STATE。
 
 ## 项目工作规则
 

@@ -6194,3 +6194,19 @@ for freshness; synchronization-only commits do not create a self-referential
 hash loop. The bounded retention execution completed as a no-op because the
 approved cleanup dry-run found zero eligible candidates. No historical,
 qualification, runtime, user-owned, or unknown material was retired.
+
+
+## ADR — Effective-stale PROJECT_STATE stabilization (2026-09-08)
+
+`STATE_STATUS: CURRENT` is not sufficient by itself. High-level readers must
+compare fields represented in PROJECT_STATE with the linked specialized
+authority. Any mismatch is effective stale: the specialized authority wins,
+the discrepancy is surfaced, and PROJECT_STATE is reconciled only after the
+underlying state is accepted. This closes the bounded Active Work drift observed
+after task archival without introducing an automated writer or changing task,
+result, qualification, architecture, runtime, or Tool Registry authority.
+
+Remote release remains a separate gate. Availability of a GitHub workflow and
+authenticated CLI does not establish release qualification; current-HEAD
+remote CI plus the mandatory PostgreSQL/Redis/MinIO campaign is required before
+future remote release.
