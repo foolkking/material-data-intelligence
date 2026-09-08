@@ -6060,3 +6060,13 @@ report route, and report document behavior belongs to
 authority in Research and are imported explicitly by Reports. Historical
 `app/components/ResearchPages`, `ScientificReportRoute`, and
 `ScientificReportsIndexPage` paths remain compatibility re-exports.
+
+## ADR — Planner workbench is Research planning feature-owned (2026-09-08)
+
+The Planner workbench owns planning orchestration and its deterministic
+scientific preview composition, so its canonical implementation is
+`apps/web/features/research/planning/PlannerWorkbench.tsx`. Existing viewer
+panel implementations remain under the legacy component tree until their
+viewer-specific move groups are complete; the planner module imports them as
+feature composition dependencies. The old PlannerWorkbench module remains a
+compatibility re-export with unchanged public exports and props.

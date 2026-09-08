@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 import { getProjectHistory, type ProjectHistory } from "../lib/planner-api";
 import { buildResearchHref } from "../lib/research-navigation";
-import { PlannerWorkbench } from "./PlannerWorkbench";
+import { PlannerWorkbench } from "../../features/research/planning/PlannerWorkbench";
 
 export function DatasetWorkbenchPage({ projectId, datasetId }: { projectId: string; datasetId: string }) {
   const [history, setHistory] = useState<ProjectHistory | null>(null);

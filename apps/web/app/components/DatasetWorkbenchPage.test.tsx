@@ -3,7 +3,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 import { DatasetWorkbenchPage } from "./DatasetWorkbenchPage";
 
-vi.mock("./PlannerWorkbench", () => ({
+vi.mock("../../features/research/planning/PlannerWorkbench", () => ({
   PlannerWorkbench: (props: { initialProjectId?: string; initialDatasetId?: string; showGlobalContextBar?: boolean }) => (
     <div
       data-testid="embedded-planner"

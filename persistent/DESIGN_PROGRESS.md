@@ -7960,3 +7960,12 @@ components also live under Reports, while App Router pages import the feature
 owners directly and old component paths remain re-export facades. Typecheck
 passes; focused Research and report suites cover `130` tests, with one
 parallel-only timing failure replayed successfully in isolation.
+
+## Autonomous physical relocation — Research planning workbench (2026-09-08)
+
+The planning/workbench implementation and its preview exports now live under
+`apps/web/features/research/planning/PlannerWorkbench.tsx`. The legacy
+`app/components/PlannerWorkbench` path remains a re-export, and the dataset
+workbench consumes the canonical planning module without changing its props,
+viewer composition, or workflow behavior. Typecheck passes and the focused
+Planner/Dataset/preview suites pass (`39/39`).
