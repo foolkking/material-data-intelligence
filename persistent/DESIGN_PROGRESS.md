@@ -7885,3 +7885,12 @@ all repository classes and private helper identities as aliases. Focused
 cross-vertical persistence tests pass (`127 passed, 6 skipped`); architecture
 guard/checker, all six worker handlers, queue names, and Tool/Adapter identities
 remain valid.
+
+## Autonomous physical relocation — Report composition (2026-09-08)
+
+The concrete report-composition implementation now lives under report
+infrastructure, while `mdi_api.report_composition` preserves the established
+service, error, projector, export-limit, and evidence-script symbol identities.
+Transport and operations consumers use the canonical implementation. Focused
+contracts/composition tests report `28 passed`; the one API-backed failure is
+the existing unavailable database baseline rather than a relocation regression.

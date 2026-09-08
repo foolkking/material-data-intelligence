@@ -5988,3 +5988,13 @@ repository bundle retains one shared bind and its original construction order.
 `mdi_api.agent2_repositories` remains an identity-preserving compatibility
 facade. No repository method, table mapping, transaction boundary, persisted ID,
 or worker runtime identity changed.
+
+## ADR — Report composition concrete authority is infrastructure (2026-09-08)
+
+The current report composition service directly owns UnitOfWork selection,
+repository persistence, export safety, and optional provider adaptation.
+Accordingly its executable authority is physically located in
+`mdi_api.infrastructure.reports.composition`; the historical
+`mdi_api.report_composition` module is an identity-preserving facade. This does
+not change report eligibility, deterministic IDs/hashes, grounding, export
+limits, transaction behavior, or provider fail-closed behavior.

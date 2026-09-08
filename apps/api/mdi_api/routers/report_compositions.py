@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
-from mdi_api.report_composition import ReportCompositionDomainError, ReportCompositionService
+from mdi_api.infrastructure.reports.composition import ReportCompositionDomainError, ReportCompositionService
 from mdi_api.routers.auth import CurrentUser, get_current_user_compat
 from mdi_api.routers.planner import _planner_read_repositories
 from mdi_api.routers.workspaces import _require_workspace_access
