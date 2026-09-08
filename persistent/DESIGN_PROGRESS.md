@@ -7837,3 +7837,14 @@ pre-move PostgreSQL/environmental baseline failures and are not new regressions.
 `mdi_api.application.projects.history`; `mdi_api.project_history` remains a
 true compatibility re-export. Historical schema/version, fallback, ordering,
 and job/run identity behavior are unchanged. Focused Project history tests pass.
+
+## Autonomous physical relocation — Scientific objects (2026-09-08)
+
+Scientific-object contracts were moved to `mdi_api.domain.scientific_objects`,
+the type registry to `mdi_api.infrastructure.scientific_objects`, and the
+concrete SQLAlchemy/artifact-backed service to
+`mdi_api.infrastructure.scientific_objects.service`. The implementation's
+concrete dependencies make infrastructure the correct current authority; no
+application-to-infrastructure allowlist was added. Legacy schemas/registry/service
+modules and package exports preserve symbol identity. Focused Agent2 object,
+registry, planning, result, and dataset tests pass (`16 passed`, 87 deselected).

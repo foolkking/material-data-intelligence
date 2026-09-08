@@ -5942,3 +5942,12 @@ Their old `mdi_api.workspaces` exports are true aliases to the canonical
 symbols. This relocation changes neither Workspace persistence, source identity,
 projection semantics, authorization, API error mapping, nor layout/history
 behavior.
+
+## ADR — Scientific-object physical ownership (2026-09-08)
+
+The scientific-object contract/registry/service files were physically separated
+by actual dependency responsibility. Pydantic object/version contracts are domain
+owned, registry implementation is infrastructure owned, and the current service
+implementation is infrastructure owned because it directly performs SQLAlchemy,
+DB metadata, and artifact storage operations. All legacy imports remain true
+aliases; ScientificObject and ScientificObjectVersion identity is unchanged.
