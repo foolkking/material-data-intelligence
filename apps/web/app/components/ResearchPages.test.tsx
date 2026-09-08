@@ -134,7 +134,7 @@ vi.mock("./ProductShell", () => ({
   ),
 }));
 
-vi.mock("./ScientificViewerAdapter", () => ({
+vi.mock("../../scientific-viewers/ScientificViewerAdapter", () => ({
   ScientificResultViewer: () => <div data-testid="scientific-result-viewer" />,
 }));
 vi.mock("./Agent2ScientificPresentation", () => ({

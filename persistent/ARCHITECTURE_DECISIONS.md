@@ -6050,3 +6050,13 @@ the narrow project-loading/display support exported by Projects, but neither
 canonical feature imports the old `app/components/ProductPages` facade. The
 legacy module remains a true re-export surface until compatibility references
 can be removed.
+
+## ADR — Research and Reports have separate frontend authorities (2026-09-08)
+
+Research timeline, session, Agent2 progress, and workbench behavior belongs to
+`apps/web/features/research`; report ledger, legacy report projection, modern
+report route, and report document behavior belongs to
+`apps/web/features/reports`. Shared evidence-display helpers retain one
+authority in Research and are imported explicitly by Reports. Historical
+`app/components/ResearchPages`, `ScientificReportRoute`, and
+`ScientificReportsIndexPage` paths remain compatibility re-exports.

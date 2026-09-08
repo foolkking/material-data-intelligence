@@ -29,7 +29,7 @@ vi.mock("./ProductNavigation", async () => {
     useProductRouter: () => ({ replace: mocks.replace }),
   };
 });
-vi.mock("./ResearchPages", () => ({ ReportReaderPage: () => <div>Legacy report</div> }));
+vi.mock("../../features/reports/ReportPages", () => ({ ReportReaderPage: () => <div>Legacy report</div> }));
 
 const report: ScientificReportView = {
   report_id: "agent2_report_1",

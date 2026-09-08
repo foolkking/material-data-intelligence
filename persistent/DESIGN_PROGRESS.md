@@ -7950,3 +7950,13 @@ support has one authority in the Projects module and is consumed explicitly by
 Data. Thin App Router pages import their feature owners directly, while the old
 `app/components/ProductPages` path re-exports all prior symbols. Typecheck and
 the focused ProductPages suite pass (`50/50`) with unchanged UI behavior.
+
+## Autonomous physical relocation — Research and Reports features (2026-09-08)
+
+The mixed `ResearchPages` implementation is physically split into
+`apps/web/features/research/ResearchPages.tsx` and
+`apps/web/features/reports/ReportPages.tsx`. Modern report list/reader route
+components also live under Reports, while App Router pages import the feature
+owners directly and old component paths remain re-export facades. Typecheck
+passes; focused Research and report suites cover `130` tests, with one
+parallel-only timing failure replayed successfully in isolation.

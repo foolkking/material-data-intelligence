@@ -1,4 +1,4 @@
-import { ResearchPage } from "../../../components/ResearchPages";
+import { ResearchPage } from "../../../../features/research/ResearchPages";
 type ResearchQuery = { dataset?: string | string[]; sample?: string | string[]; run?: string | string[]; turn?: string | string[]; edit?: string | string[]; retryOf?: string | string[]; retry?: string | string[]; new?: string | string[]; object?: string | string[]; version?: string | string[]; type?: string | string[]; name?: string | string[]; selection?: string | string[]; selectionLabel?: string | string[] };
 const first = (value?: string | string[]) => Array.isArray(value) ? value[0] : value;
 export default async function ProjectResearchRoute({ params, searchParams }: { params: Promise<{ projectId: string }>; searchParams?: Promise<ResearchQuery> }) {
