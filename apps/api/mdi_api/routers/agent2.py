@@ -33,7 +33,7 @@ from mdi_api.agent2_errors import (
     ScientificResultProjectionConflict,
     ScientificResultProjectionFailed,
 )
-from mdi_api.database import create_repository_factory
+from mdi_api.bootstrap.repository_factory import create_repository_factory
 from mdi_api.config import load_settings
 from mdi_api.research_agent.orchestration.queue import (
     AgentTurnQueue,
@@ -75,13 +75,13 @@ from mdi_api.scientific_viewers import (
     ScientificViewerProjectionService,
     build_scientific_viewer_registry,
 )
-from mdi_api.scientific_results.schemas import ScientificResultBundle
-from mdi_api.scientific_results.relevance import ScientificResultRelevanceEvaluator
-from mdi_api.scientific_results.artifact_loader import load_committed_json_artifact
-from mdi_api.scientific_results.service import ScientificResultProjectionService
+from mdi_api.domain.scientific_results.contracts import ScientificResultBundle
+from mdi_api.domain.scientific_results.relevance import ScientificResultRelevanceEvaluator
+from mdi_api.infrastructure.scientific_results.artifact_loader import load_committed_json_artifact
+from mdi_api.infrastructure.scientific_results.service import ScientificResultProjectionService
 from mdi_api.artifact_storage import create_artifact_storage_from_settings
-from mdi_api.interpretation.service import InterpretationFailure
-from mdi_api.interpretation.queue import RedisRQInterpretationQueue
+from mdi_api.infrastructure.interpretation.service import InterpretationFailure
+from mdi_api.infrastructure.interpretation.queue import RedisRQInterpretationQueue
 
 
 logger = logging.getLogger(__name__)

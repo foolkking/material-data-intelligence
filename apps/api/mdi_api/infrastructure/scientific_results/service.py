@@ -361,7 +361,7 @@ class ScientificResultProjectionService:
         """Publish only after RESULT_READY commit; failures remain recoverable."""
         try:
             from mdi_api.config import load_settings
-            from mdi_api.interpretation.queue import RedisRQInterpretationQueue
+            from mdi_api.infrastructure.interpretation.queue import RedisRQInterpretationQueue
 
             settings = load_settings()
             if not settings.agent2_interpretation_enabled or settings.queue_backend != "redis":

@@ -12,7 +12,7 @@ from sqlalchemy import func, insert, inspect, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
 from mdi_api.config import load_settings
-from mdi_api.database import create_engine_from_settings
+from mdi_api.infrastructure.persistence.engine import create_engine_from_settings
 from mdi_api.access import require_project_access
 from mdi_api.db import (
     agent2_scientific_interpretations,
@@ -26,12 +26,12 @@ from mdi_api.db import (
     sessions,
     metadata,
 )
-from mdi_api.interpretation.grounding import project_grounded_communication
-from mdi_api.interpretation.projector import AssistantResponseProjector
-from mdi_api.interpretation.schemas import ScientificInterpretationOutput
+from mdi_api.application.interpretation.grounding import project_grounded_communication
+from mdi_api.application.interpretation.projector import AssistantResponseProjector
+from mdi_api.domain.interpretation.contracts import ScientificInterpretationOutput
 from mdi_api.lifecycle_policy import retention_policy_snapshot
 from mdi_api.routers.auth import CurrentUser, get_current_user
-from mdi_api.scientific_results.schemas import ScientificResultBundle
+from mdi_api.domain.scientific_results.contracts import ScientificResultBundle
 from mdi_llm.research_roles import orchestrate_research_turn
 
 

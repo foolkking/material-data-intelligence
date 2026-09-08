@@ -5998,3 +5998,11 @@ Accordingly its executable authority is physically located in
 `mdi_api.report_composition` module is an identity-preserving facade. This does
 not change report eligibility, deterministic IDs/hashes, grounding, export
 limits, transaction behavior, or provider fail-closed behavior.
+
+## ADR — Production composition imports canonical authorities (2026-09-08)
+
+Once a compatibility facade has a proven canonical authority, production
+composition and transport code should import that canonical authority directly.
+Compatibility paths remain for public/test consumers but are not the preferred
+internal dependency. This import migration is semantic-neutral and preserves all
+worker, API, transaction, provider, scientific, and database identities.

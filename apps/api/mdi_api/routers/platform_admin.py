@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import and_, delete, func, insert, or_, select, update
 
 from mdi_api.config import load_settings
-from mdi_api.database import create_engine_from_settings
+from mdi_api.infrastructure.persistence.engine import create_engine_from_settings
 from mdi_api.db import account_invitations, audit_logs, auth_sessions, project_members, projects, users
 from mdi_api.operations import build_operations_snapshot
 from mdi_api.routers.auth import (

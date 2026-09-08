@@ -10,9 +10,9 @@ from uuid import UUID, uuid4, uuid5, NAMESPACE_URL
 
 from pydantic import ValidationError
 
-from mdi_api.interpretation.grounding import project_grounded_communication
+from mdi_api.application.interpretation.grounding import project_grounded_communication
 from mdi_api.lifecycle_policy import retention_policy_snapshot
-from mdi_api.interpretation.schemas import ScientificInterpretationOutput
+from mdi_api.domain.interpretation.contracts import ScientificInterpretationOutput
 from mdi_api.domain.scientific_results.relevance import ScientificResultRelevanceEvaluator
 from mdi_api.domain.scientific_results.contracts import ScientificResultBundle
 from mdi_api.unit_of_work import RepositoryFactory

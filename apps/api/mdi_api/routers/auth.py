@@ -14,7 +14,7 @@ from sqlalchemy import and_, insert, inspect, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
 from mdi_api.config import load_settings
-from mdi_api.database import create_engine_from_settings
+from mdi_api.infrastructure.persistence.engine import create_engine_from_settings
 from mdi_api.db import account_invitations, auth_sessions, project_members, users
 from mdi_api.lifecycle_policy import retention_policy_snapshot
 

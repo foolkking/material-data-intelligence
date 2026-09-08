@@ -13,7 +13,7 @@ from mdi_api.application.jobs import execute_queued_job
 from mdi_api.application.research import synchronize_queued_execution_progress
 from mdi_api.artifact_storage import ArtifactStorage, ArtifactStorageMetadata, LocalFileArtifactStorage, create_artifact_storage_from_settings
 from mdi_api.config import load_settings
-from mdi_api.database import create_repository_factory
+from mdi_api.bootstrap.repository_factory import create_repository_factory
 from mdi_api.repositories import InMemoryRepositoryBundle
 from mdi_llm import redact_sensitive_text
 from mdi_api.unit_of_work import RepositoryFactory

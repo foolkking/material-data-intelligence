@@ -5,7 +5,7 @@ from typing import Any
 from sqlalchemy.exc import SQLAlchemyError
 
 from mdi_api.config import ApiSettings, load_settings
-from mdi_api.database import create_repository_factory
+from mdi_api.bootstrap.repository_factory import create_repository_factory
 
 
 def persist_runtime_project(

@@ -4,9 +4,9 @@ import json
 import os
 
 from mdi_api.application.scientific_reports import generate_queued_report
-from mdi_api.database import create_repository_factory
-from mdi_api.scientific_reports.client import FakeStructuredReportComposerClient
-from mdi_api.scientific_reports.service import ScientificReportService
+from mdi_api.bootstrap.repository_factory import create_repository_factory
+from mdi_api.infrastructure.scientific_reports.client import FakeStructuredReportComposerClient
+from mdi_api.infrastructure.scientific_reports.service import ScientificReportService
 
 
 def run_queued_report_generation(generation_id: str) -> dict:

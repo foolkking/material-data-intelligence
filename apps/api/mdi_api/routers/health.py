@@ -8,7 +8,7 @@ from typing import Any
 from urllib.parse import urlsplit
 
 from mdi_api.config import load_settings
-from mdi_api.database import create_engine_from_settings
+from mdi_api.infrastructure.persistence.engine import create_engine_from_settings
 from mdi_api.service_failures import (
     classify_service_failure,
     configuration_service_failure,

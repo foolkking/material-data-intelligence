@@ -1415,7 +1415,7 @@ def _runtime_backend_is_durable() -> bool:
 
 
 def _durable_read_repositories() -> Any:
-    from mdi_api.database import create_repository_factory
+    from mdi_api.bootstrap.repository_factory import create_repository_factory
 
     return create_repository_factory().create_repositories()
 
@@ -1487,7 +1487,7 @@ def get_phase2_dataset_object_store(dataset_id: str) -> dict[str, Any]:
     if dataset_id not in runtime.datasets:
         from mdi_api.artifact_storage import create_artifact_storage_from_settings
         from mdi_api.config import load_settings
-        from mdi_api.database import create_repository_factory
+        from mdi_api.bootstrap.repository_factory import create_repository_factory
         from mdi_workers.object_store import DurableObjectStoreResolver
 
         repositories = _durable_read_repositories()

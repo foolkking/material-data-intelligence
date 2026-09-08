@@ -21,7 +21,7 @@ from cryptography.fernet import Fernet, InvalidToken
 from sqlalchemy import Engine, delete, insert, select, update
 
 from mdi_api.config import load_settings
-from mdi_api.database import create_engine_from_settings
+from mdi_api.infrastructure.persistence.engine import create_engine_from_settings
 from mdi_api.db import provider_connections
 
 

@@ -8,7 +8,7 @@ from typing import Any, Mapping
 
 from mdi_api.artifact_storage import ArtifactStorage, create_artifact_storage_from_settings
 from mdi_api.config import ApiSettings, load_settings
-from mdi_api.database import create_repository_factory
+from mdi_api.bootstrap.repository_factory import create_repository_factory
 from mdi_api.input_transport import MAX_FILE_BYTES
 from mdi_workers.object_store import DurableObjectStoreResolver
 

@@ -7,7 +7,7 @@ from fastapi import Depends, HTTPException
 
 from mdi_api.access import require_project_access
 from mdi_api.config import load_settings
-from mdi_api.database import create_engine_from_settings
+from mdi_api.infrastructure.persistence.engine import create_engine_from_settings
 from mdi_api.routers.auth import CurrentUser, get_current_user_compat
 from mdi_api.routers.planner import (
     PlannerInterpretationRequest,

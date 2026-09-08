@@ -8,7 +8,7 @@ from fastapi import Depends, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 
 from mdi_api.access import require_project_access
-from mdi_api.database import create_repository_factory
+from mdi_api.bootstrap.repository_factory import create_repository_factory
 from mdi_api.observability import (
     OBSERVABILITY_EVENT_VERSION,
     bounded_correlation,

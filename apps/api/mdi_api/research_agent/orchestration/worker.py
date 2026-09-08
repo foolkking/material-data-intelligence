@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from mdi_api.application.research.worker_entrypoints import process_queued_turn
-from mdi_api.database import create_repository_factory
+from mdi_api.bootstrap.repository_factory import create_repository_factory
 from mdi_api.research_agent.llm.structured_client import DeepSeekStructuredLLMClient
 from mdi_api.research_agent.orchestration.processor import AgentTurnProcessor, ProcessTurnResult
 from mdi_api.research_agent.registry_validation import build_default_agent2_registries
 from mdi_api.research_agent.planning.queue import DisabledCapabilityPlanningQueue, RedisRQCapabilityPlanningQueue
 from mdi_api.config import load_settings
-from mdi_api.interpretation.queue import DisabledInterpretationQueue, RedisRQInterpretationQueue
+from mdi_api.infrastructure.interpretation.queue import DisabledInterpretationQueue, RedisRQInterpretationQueue
 
 
 def run_queued_turn(turn_id: str) -> ProcessTurnResult:

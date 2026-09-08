@@ -9,7 +9,7 @@ from alembic.script import ScriptDirectory
 from sqlalchemy import Engine
 
 from mdi_api.config import ApiSettings
-from mdi_api.database import create_engine_from_settings
+from mdi_api.infrastructure.persistence.engine import create_engine_from_settings
 
 
 class DatabaseMigrationHeadError(RuntimeError):

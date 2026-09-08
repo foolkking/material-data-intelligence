@@ -14,7 +14,7 @@ from typing import Any
 from sqlalchemy import text
 
 from mdi_api.config import ApiSettings, load_settings
-from mdi_api.database import create_engine_from_settings
+from mdi_api.infrastructure.persistence.engine import create_engine_from_settings
 from mdi_api.input_transport import MAX_FILE_BYTES, MAX_TOTAL_UPLOAD_BYTES
 from mdi_api.infrastructure.reports.composition import REPORT_EXPORT_MAX_BYTES
 from mdi_api.research_agent.recovery import is_qualification_project

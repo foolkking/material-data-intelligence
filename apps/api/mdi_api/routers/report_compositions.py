@@ -10,7 +10,7 @@ from mdi_api.infrastructure.reports.composition import ReportCompositionDomainEr
 from mdi_api.routers.auth import CurrentUser, get_current_user_compat
 from mdi_api.routers.planner import _planner_read_repositories
 from mdi_api.routers.workspaces import _require_workspace_access
-from mdi_api.workspaces import WorkspaceDomainError
+from mdi_api.domain.workspaces import WorkspaceDomainError
 from mdi_schemas import (
     REPORT_COMPOSITION_MAX_REQUEST_BYTES,
     ReportCompositionRequest,

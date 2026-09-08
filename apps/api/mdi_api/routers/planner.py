@@ -23,7 +23,7 @@ from mdi_api.application.providers.selection import (
     test_providers_allowed,
 )
 from mdi_api.artifact_storage import create_artifact_storage_from_settings
-from mdi_api.database import create_repository_factory
+from mdi_api.bootstrap.repository_factory import create_repository_factory
 from mdi_api.db import (
     agent2_scientific_interpretations,
     artifacts,

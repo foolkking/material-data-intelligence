@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from mdi_api.config import load_settings
-from mdi_api.database import create_repository_factory
+from mdi_api.bootstrap.repository_factory import create_repository_factory
 
 from mdi_api.infrastructure.interpretation.queue import RedisRQInterpretationQueue
 

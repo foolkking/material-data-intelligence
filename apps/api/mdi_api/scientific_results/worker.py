@@ -5,9 +5,9 @@ import os
 from mdi_api.application.scientific_results import project_queued_result
 from mdi_api.artifact_storage import create_artifact_storage_from_settings
 from mdi_api.config import load_settings
-from mdi_api.database import create_repository_factory
-from mdi_api.scientific_results.artifact_loader import load_committed_json_artifact
-from mdi_api.scientific_results.service import ScientificResultProjectionService
+from mdi_api.bootstrap.repository_factory import create_repository_factory
+from mdi_api.infrastructure.scientific_results.artifact_loader import load_committed_json_artifact
+from mdi_api.infrastructure.scientific_results.service import ScientificResultProjectionService
 
 
 def run_queued_result_projection(turn_id: str) -> dict:

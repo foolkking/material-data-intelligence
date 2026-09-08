@@ -25,7 +25,7 @@ from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType
 from mdi_api.research_agent.context.manifest import build_operation_manifest
 from mdi_api.research_agent.context.policy import ContextOperation
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
-from mdi_api.scientific_results.schemas import ScientificResultBundle
+from mdi_api.domain.scientific_results.contracts import ScientificResultBundle
 from mdi_tool_registry import load_manifests
 
 logger = logging.getLogger(__name__)

@@ -10,9 +10,9 @@ from uuid import UUID, uuid4
 from sqlalchemy import select
 
 from mdi_api.config import ApiSettings, load_settings
-from mdi_api.database import create_repository_factory
+from mdi_api.bootstrap.repository_factory import create_repository_factory
 from mdi_api.db import projects, research_turns
-from mdi_api.interpretation.reconciler import ScientificInterpretationReconciler
+from mdi_api.infrastructure.interpretation.reconciler import ScientificInterpretationReconciler
 from mdi_api.research_agent.execution.reconciler import ResearchExecutionReconciler
 from mdi_api.research_agent.orchestration.queue import RedisRQAgentTurnQueue
 from mdi_api.research_agent.planning.queue import RedisRQCapabilityPlanningQueue

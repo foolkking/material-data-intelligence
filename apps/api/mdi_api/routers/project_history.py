@@ -7,10 +7,10 @@ from fastapi import Depends, HTTPException, Query
 from sqlalchemy import func, insert, select
 from sqlalchemy.exc import SQLAlchemyError
 
-from mdi_api.project_history import ProjectHistoryService
+from mdi_api.application.projects.history import ProjectHistoryService
 from mdi_api.access import require_project_access
 from mdi_api.config import load_settings
-from mdi_api.database import create_engine_from_settings
+from mdi_api.infrastructure.persistence.engine import create_engine_from_settings
 from mdi_api.db import jobs, messages, project_configs, research_session_runs, research_turns, sessions
 from mdi_api.routers.auth import CurrentUser, get_current_user
 from mdi_api.routers.planner import _planner_read_repositories

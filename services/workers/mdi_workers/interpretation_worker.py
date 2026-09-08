@@ -4,9 +4,9 @@ import os
 import json
 
 from mdi_api.application.interpretation import interpret_queued_turn
-from mdi_api.database import create_repository_factory
-from mdi_api.interpretation.client import FakeStructuredInterpreterClient
-from mdi_api.interpretation.service import ScientificInterpretationService
+from mdi_api.bootstrap.repository_factory import create_repository_factory
+from mdi_api.infrastructure.interpretation.client import FakeStructuredInterpreterClient
+from mdi_api.infrastructure.interpretation.service import ScientificInterpretationService
 
 
 def run_queued_interpretation(turn_id: str) -> dict:

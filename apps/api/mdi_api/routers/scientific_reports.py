@@ -10,11 +10,11 @@ from fastapi.encoders import jsonable_encoder
 
 from mdi_api.access import require_project_access
 from mdi_api.config import load_settings
-from mdi_api.database import create_repository_factory
+from mdi_api.bootstrap.repository_factory import create_repository_factory
 from mdi_api.routers.auth import CurrentUser, get_current_user
-from mdi_api.scientific_reports.queue import DisabledReportQueue, RedisRQReportQueue
-from mdi_api.scientific_reports.requests import ScientificReportRequestService
-from mdi_api.scientific_reports.service import ScientificReportError, ScientificReportService
+from mdi_api.infrastructure.scientific_reports.queue import DisabledReportQueue, RedisRQReportQueue
+from mdi_api.infrastructure.scientific_reports.requests import ScientificReportRequestService
+from mdi_api.infrastructure.scientific_reports.service import ScientificReportError, ScientificReportService
 
 
 class ScientificReportLifecycleRequest(BaseModel):

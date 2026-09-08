@@ -7894,3 +7894,12 @@ service, error, projector, export-limit, and evidence-script symbol identities.
 Transport and operations consumers use the canonical implementation. Focused
 contracts/composition tests report `28 passed`; the one API-backed failure is
 the existing unavailable database baseline rather than a relocation regression.
+
+## Autonomous physical relocation — Canonical production imports (2026-09-08)
+
+API transport, workers, recovery, durable services, provider connections, and
+scientific infrastructure now consume the canonical bootstrap, engine,
+interpretation, result, report, Workspace, and Project-history paths rather
+than their compatibility facades. Legacy imports remain available for external
+and test compatibility. Focused worker/database/scientific checks pass
+(`147 passed, 6 skipped`) and all frozen handler/queue identities remain valid.
