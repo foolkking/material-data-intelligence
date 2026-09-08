@@ -20627,3 +20627,31 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
 - 后续：可进入“分阶段 PROJECT_STATE 引入 + 有界 retention execution”审查；
   仍需将 PROJECT_STATE introduction 与 cleanup 作为独立子阶段，历史/
   qualification authority 暂不退休。
+
+
+## Materials Intelligence Platform — Phased PROJECT_STATE Introduction and Bounded Retention Execution
+
+- 状态：已完成，结论为 `PHASED_PROJECT_STATE_AND_RETENTION_EXECUTION = PASS`。
+- 完成时间：2026-09-08T22:20:00+08:00。
+- 修改摘要：创建 `PROJECT_STATE.md` additive snapshot；更新 `AGENTS.md` 和
+  transition plan 以启用高层 dual-read；定义受控 snapshot update/freshness
+  规则；完成 PROJECT_STATE/TASKS/results/persistent/docs/qualification/
+  dynamic-contract/Tool Registry 的 reverse-reference audit。
+- 清理结果：`python scripts/repo_safe_cleanup.py --dry-run
+  --older-than-days 30` 返回 `candidateCount=0`，执行
+  `BOUNDED_CLEANUP_EXECUTION=NO_OP_PASS`；未删除、未归档、未移动任何材料。
+- Authority 状态：`TASKS.md`、`results.md`、ADR、qualification/CI、
+  dynamic/runtime identity、Tool Registry、roadmap/scope、历史证据和
+  runtime/user-owned surfaces 均保留为各自权威；`PROJECT_STATE.md` 仅作
+  当前快照和导航。
+- 测试/验证：state pointer/queue contract PASS；focused task/result/cleanup
+  tests `9 passed`；`git diff --check` PASS；未运行 broad product suites，
+  因为无产品源代码变更。
+- 安全状态：`PROJECT_STATE_CREATED=YES`、`HIGH_LEVEL_DUAL_READ_ACTIVE=YES`、
+  `TASKS_AUTHORITY_PRESERVED=YES`、`RESULTS_AUTHORITY_PRESERVED=YES`、
+  `RUNTIME_STATE_CHANGED=NO`、`USER_OWNED_DATA_CHANGED=NO`、
+  `HISTORICAL_EVIDENCE_RETIRED=NO`、`QUALIFICATION_EVIDENCE_RETIRED=NO`、
+  `SOURCE_ARCHITECTURE_REOPENED=NO`、`PUSHED=NO`。
+- 提交/CI 状态：本地提交 `cd5d3b3`、`c1a790a`、`e87c2d1` 及最终记录提交；
+  未推送，未运行远程 CI。下一步为 PROJECT_STATE stabilization/release
+  readiness review。

@@ -1,6 +1,6 @@
 # Project State Transition Plan
 
-**Status:** `TRANSITION_PHASE_A_ADDITIVE_SNAPSHOT`
+**Status:** `TRANSITION_PHASE_A_TO_E_COMPLETE_NO_RETIREMENT`
 **Canonical file created:** `YES` (additive snapshot only; specialized authorities remain separate)
 **Purpose:** transition from duplicated ledgers to a bounded `PROJECT_STATE.md` without breaking readers.
 
@@ -52,14 +52,22 @@ Each compact work-log entry contains: date/time, task ID, purpose, files/areas, 
 | `persistent/TOOL_REGISTRY_NOTES.md` | stable tool/adapter contract notes | link from Architecture Snapshot; retain specialized contract | yes | tool identity ambiguity | never replaced for registry authority |
 | phase scripts/tests/docs reading historical ledgers | exact paths/markers/content assumptions | explicit adapter/read model, then PROJECT_STATE | yes | hidden reader missed | exhaustive static path scan + current-HEAD verification |
 
-## Phased Strategy
+## Phased Strategy / Execution Status
 
-1. Freeze this schema and reader map; do not create `PROJECT_STATE.md` yet.
-2. Add a bounded transition writer/reader only in a separately approved documentation/task change; dual-write current state while all old ledgers remain.
-3. Compare normalized state against TASKS/results/board/design progress at each task closeout.
-4. Migrate readers one family at a time, retaining compatibility adapters and old files.
-5. After a clean exact-SHA reader scan and reviewer approval, designate `PROJECT_STATE.md` canonical for current state.
-6. Keep ADR, schema, CI/qualification, evidence, runtime and specialized contract documents independent.
+1. **Phase A complete:** `PROJECT_STATE.md` was added additively from current
+   authoritative evidence.
+2. **Phase B complete:** `AGENTS.md` reads PROJECT_STATE for high-level
+   orientation; task, result, qualification, runtime, and specialized readers
+   were not redirected.
+3. **Phase C complete:** procedural update triggers and visible stale semantics
+   were defined without an automated dual writer or self-referential commit
+   loop.
+4. **Phase D complete:** reverse references were audited; TASKS/results and
+   specialized authorities remain required.
+5. **Phase E complete:** the existing safe-cleanup dry-run returned zero
+   candidates; no cleanup was applied.
+6. Historical, qualification, runtime, user-owned, and unknown material remains
+   retained pending separate explicit review.
 
 ## Anti-Bloat Gate
 

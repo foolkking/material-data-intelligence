@@ -6178,3 +6178,19 @@ remain stronger or specialized authorities. Conflicts are surfaced and resolved
 by the specialized authority; PROJECT_STATE is allowed to become visibly stale
 when HEAD or a stronger source advances. Introduction must be additive and
 proceed through dual-read/dual-write before any retirement review.
+
+
+## ADR — PROJECT_STATE transition execution (2026-09-08)
+
+`PROJECT_STATE.md` is now an additive human/Agent orientation snapshot. It does
+not replace `TASKS.md`, `results.md`, ADRs, qualification/CI evidence,
+dynamic/runtime identity manifests, Tool Registry authority, roadmap/scope,
+historical records, or runtime/user-owned state. `AGENTS.md` may read it first
+for high-level orientation, but specialized readers and writers remain
+unchanged.
+
+The snapshot uses `SNAPSHOT_BASE_COMMIT` plus explicit authority reconciliation
+for freshness; synchronization-only commits do not create a self-referential
+hash loop. The bounded retention execution completed as a no-op because the
+approved cleanup dry-run found zero eligible candidates. No historical,
+qualification, runtime, user-owned, or unknown material was retired.

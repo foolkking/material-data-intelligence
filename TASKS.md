@@ -1,19 +1,4 @@
 ---TASK---
-状态：处理中
-任务名称：Materials Intelligence Platform — Phased PROJECT_STATE Introduction and Bounded Retention Execution
-开始时间：2026-09-08T22:00:00+08:00
-
-执行规范：
-`docs/agent2/project_state_transition/PHASED_PROJECT_STATE_AND_RETENTION_EXECUTION_TASK.md`
-
-执行 additive PROJECT_STATE snapshot、保留 specialized authorities、启用高层
-dual-read 规则、定义 snapshot write/freshness、完成 reverse-reference audit，
-并仅运行现有 bounded safe-cleanup dry-run；不得删除/归档运行时、用户-owned、
-历史或 qualification material，不得迁移 specialized readers，不得重开 source
-architecture 或推送。
----END---
-
----TASK---
 状态：已完成
 任务名称：Materials Intelligence Platform — Continuous Autonomous Optimization
 开始时间：2026-09-05T00:00:00+08:00

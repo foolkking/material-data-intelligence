@@ -4236,3 +4236,14 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
       and additive dual-read/dual-write phases; keep specialized authorities.
 - [x] Confirm cleanup dry-run has zero candidates and retain all runtime, user,
       qualification, historical, and evidence surfaces pending future gates.
+
+
+## 2026-09-08 Phased PROJECT_STATE execution
+
+- [x] Add `PROJECT_STATE.md` additively with accepted-state pointers and
+      specialized-authority boundaries.
+- [x] Enable high-level Agent dual-read through `AGENTS.md` without redirecting
+      task, result, qualification, runtime, or contract readers.
+- [x] Define controlled snapshot update triggers and visible stale semantics.
+- [x] Complete reverse-reference audit and run bounded cleanup dry-run with
+      `candidateCount=0`; no cleanup or retirement was applied.

@@ -8089,3 +8089,20 @@ current snapshot, specialized-authority pointers, explicit conflict winners,
 commit-based freshness, visible stale state, then dual-read/dual-write and
 reverse-reference review. No reader migration, ledger retirement, cleanup, or
 PROJECT_STATE creation occurred in this review.
+
+
+## Phased PROJECT_STATE introduction and bounded retention execution (2026-09-08)
+
+Phase A added `PROJECT_STATE.md` as a compact current snapshot based on accepted
+commit `61cbf084095f395660c2591940141e478866ecd6`. Phase B updated only the
+human/Agent orientation entrypoint; `TASKS.md`, `results.md`, qualification,
+runtime, dynamic-contract, Tool Registry, roadmap, and historical readers
+remain on their specialized authorities. Phase C defined procedural update
+triggers and visible `CURRENT`/`STALE` semantics without a self-referential
+commit loop.
+
+Phase D completed a bounded reverse-reference audit. Phase E ran
+`repo_safe_cleanup.py --dry-run --older-than-days 30` and found zero candidates;
+no cleanup was applied. Runtime/user-owned/unknown material and all historical
+or qualification authorities remain protected. The transition passed without
+source-architecture, runtime, evidence, or user-data changes.

@@ -16,6 +16,9 @@
   `PASS`, 2026-09-08
 - `LAST_UPDATED_AT`: `2026-09-08`
 - `STATE_STATUS`: `CURRENT`
+- `PROJECT_STATE_ACTIVE`: `YES`
+- `HIGH_LEVEL_DUAL_READ_ACTIVE`: `YES`
+- `RETENTION_POLICY_ACTIVE`: `YES`
 
 Freshness is based on the snapshot base and represented-authority changes, not
 on a self-referential commit hash. A later commit that only synchronizes this
@@ -115,8 +118,9 @@ specialized authority requires explicit reconciliation and may set
 
 - 2026-09-08: source architecture migration accepted at `f3c6fa0`.
 - 2026-09-08: retention and PROJECT_STATE transition review passed.
-- 2026-09-08: additive PROJECT_STATE snapshot created; specialized authorities
-  remain active.
+- 2026-09-08: additive PROJECT_STATE snapshot, high-level dual-read workflow,
+  freshness rules, reverse-reference audit, and bounded-cleanup no-op passed;
+  specialized authorities remain active.
 
 ## 11. Source Pointers
 
