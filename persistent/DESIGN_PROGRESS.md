@@ -7875,3 +7875,13 @@ projection moved to application; provider client, queue, reconciler, and concret
 repository-backed service moved to infrastructure. Prompt files stay at their
 frozen path and old package modules preserve symbol identity. Focused
 interpretation/queue/worker tests pass (`37 passed, 1 skipped, 7 deselected`).
+
+## Autonomous physical relocation — Agent2 persistence verticals (2026-09-08)
+
+The mixed `mdi_api.agent2_repositories` implementation was split into shared,
+Research, Scientific Object, Scientific Result, Interpretation, Scientific
+Report, and bundle-owned infrastructure modules. The old module now preserves
+all repository classes and private helper identities as aliases. Focused
+cross-vertical persistence tests pass (`127 passed, 6 skipped`); architecture
+guard/checker, all six worker handlers, queue names, and Tool/Adapter identities
+remain valid.

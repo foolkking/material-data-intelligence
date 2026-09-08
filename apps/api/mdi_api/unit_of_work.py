@@ -5,7 +5,7 @@ from contextvars import Token
 
 from sqlalchemy.engine import Connection, Engine, Transaction
 
-from mdi_api.agent2_repositories import Agent2RepositoryBundle
+from mdi_api.infrastructure.persistence.agent2_bundle import Agent2RepositoryBundle
 from mdi_api.application.research.ports import ResearchProjectAccessPort
 from mdi_api.application.research.transactions import (
     enter_transaction,

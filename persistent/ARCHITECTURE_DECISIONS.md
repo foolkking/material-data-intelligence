@@ -5977,3 +5977,14 @@ Redis queue, recovery reconciler, and concrete persistence service are
 infrastructure owned. Compatibility paths are aliases. Grounding, source/result
 references, provider prompt/version, and persisted interpretation identity are
 unchanged.
+
+## ADR — Agent2 persistence is vertically owned infrastructure (2026-09-08)
+
+The legacy Agent2 repository module is no longer the implementation authority.
+Generic bind/transaction execution belongs to shared persistence infrastructure;
+Research, Scientific Object, Scientific Result, Interpretation, and Scientific
+Report repositories each belong to dedicated infrastructure modules, while the
+repository bundle retains one shared bind and its original construction order.
+`mdi_api.agent2_repositories` remains an identity-preserving compatibility
+facade. No repository method, table mapping, transaction boundary, persisted ID,
+or worker runtime identity changed.
