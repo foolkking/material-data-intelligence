@@ -48,7 +48,7 @@ from mdi_api.db import (
     user_configs,
 )
 from mdi_api.routers.auth import CurrentUser, get_current_user_compat
-from mdi_api.phase2_runtime import CreateJobRequest, CreateProjectRequest, DatasetUploadRequest
+from mdi_api.infrastructure.phase2.runtime import CreateJobRequest, CreateProjectRequest, DatasetUploadRequest
 from mdi_api.routers.datasets import BulkDatasetActionRequest, UpdateDatasetRequest
 from mdi_api.routers.projects import BulkProjectActionRequest, UpdateProjectRequest
 from mdi_api.input_transport import CreateUploadSessionRequest
@@ -586,7 +586,7 @@ def _research_search_title(summary: Any) -> str:
 
 
 def list_projects_secured(current_user: CurrentUser = Depends(get_current_user_compat)) -> list[dict[str, Any]]:
-    from mdi_api.phase2_runtime import list_phase2_projects
+    from mdi_api.infrastructure.phase2.runtime import list_phase2_projects
 
     engine = create_engine_from_settings(load_settings())
     visible: list[dict[str, Any]] = []
@@ -1406,7 +1406,7 @@ def _decode_product_search_cursor(
 
 
 def create_project_secured(request: CreateProjectRequest, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
-    from mdi_api.phase2_runtime import create_phase2_project
+    from mdi_api.infrastructure.phase2.runtime import create_phase2_project
 
     return create_phase2_project(request, created_by=current_user.id)
 
@@ -1446,7 +1446,7 @@ def update_project_secured(
     except IntegrityError as exc:
         raise HTTPException(status_code=409, detail="同一组织中已存在同名项目。") from exc
     try:
-        from mdi_api.phase2_runtime import get_phase2_runtime
+        from mdi_api.infrastructure.phase2.runtime import get_phase2_runtime
 
         runtime_project = get_phase2_runtime().projects.get(project_id)
         if runtime_project is not None and request.name is not None:
@@ -1510,7 +1510,7 @@ def delete_empty_project_secured(
             connection.execute(delete(project_members).where(project_members.c.project_id == project_id))
         connection.execute(delete(projects).where(projects.c.id == project_id))
     try:
-        from mdi_api.phase2_runtime import get_phase2_runtime
+        from mdi_api.infrastructure.phase2.runtime import get_phase2_runtime
 
         get_phase2_runtime().projects.pop(project_id, None)
     except Exception:
@@ -1896,7 +1896,7 @@ def _dataset_project_id(dataset_id: str) -> str:
         row = connection.execute(select(datasets.c.project_id).where(datasets.c.id == dataset_id)).scalar_one_or_none()
     if row:
         return str(row)
-    from mdi_api.phase2_runtime import get_phase2_runtime
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_runtime
 
     dataset = get_phase2_runtime().datasets.get(dataset_id)
     if dataset is None:
@@ -1912,14 +1912,14 @@ def _authorize_dataset(dataset_id: str, current_user: CurrentUser) -> None:
 
 
 def list_datasets_secured(current_user: CurrentUser = Depends(get_current_user_compat)) -> list[dict[str, Any]]:
-    from mdi_api.phase2_runtime import list_phase2_datasets
+    from mdi_api.infrastructure.phase2.runtime import list_phase2_datasets
 
     return [item for item in list_phase2_datasets() if _is_project_visible(str(item.get("projectId") or ""), current_user)]
 
 
 def get_dataset_secured(dataset_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
     _authorize_dataset(dataset_id, current_user)
-    from mdi_api.phase2_runtime import get_phase2_dataset
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_dataset
 
     return get_phase2_dataset(dataset_id)
 
@@ -1949,7 +1949,7 @@ def update_dataset_secured(
     except IntegrityError as exc:
         raise HTTPException(status_code=409, detail="同一项目中已存在同名数据集。") from exc
     try:
-        from mdi_api.phase2_runtime import get_phase2_runtime
+        from mdi_api.infrastructure.phase2.runtime import get_phase2_runtime
 
         runtime_dataset = get_phase2_runtime().datasets.get(dataset_id)
         if runtime_dataset is not None:
@@ -1984,7 +1984,7 @@ def bulk_dataset_action_secured(
             final_status[str(row["id"])] = str(values["status"])
             connection.execute(update(datasets).where(datasets.c.id == row["id"]).values(**values, updated_at=func.now()))
     try:
-        from mdi_api.phase2_runtime import get_phase2_runtime
+        from mdi_api.infrastructure.phase2.runtime import get_phase2_runtime
 
         runtime = get_phase2_runtime()
         for dataset_id in request.datasetIds:
@@ -2023,7 +2023,7 @@ def delete_empty_dataset_secured(
             })
         connection.execute(delete(datasets).where(datasets.c.id == dataset_id))
     try:
-        from mdi_api.phase2_runtime import get_phase2_runtime
+        from mdi_api.infrastructure.phase2.runtime import get_phase2_runtime
 
         get_phase2_runtime().datasets.pop(dataset_id, None)
     except Exception:
@@ -2157,14 +2157,14 @@ def _dependency_impact_response(
 
 def get_dataset_profile_secured(dataset_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
     _authorize_dataset(dataset_id, current_user)
-    from mdi_api.phase2_runtime import get_phase2_dataset_profile
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_dataset_profile
 
     return get_phase2_dataset_profile(dataset_id)
 
 
 def get_dataset_object_store_secured(dataset_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
     _authorize_dataset(dataset_id, current_user)
-    from mdi_api.phase2_runtime import get_phase2_dataset
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_dataset
     from mdi_api.routers.datasets import get_dataset_object_store
 
     # An intentionally empty Dataset is a valid product state, not a storage
@@ -2213,7 +2213,7 @@ def create_demo_dataset_secured(current_user: CurrentUser = Depends(get_current_
     except HTTPException:
         if not os.getenv("PYTEST_CURRENT_TEST"):
             raise
-    from mdi_api.phase2_runtime import create_phase2_demo_dataset
+    from mdi_api.infrastructure.phase2.runtime import create_phase2_demo_dataset
 
     return create_phase2_demo_dataset()
 
@@ -2222,20 +2222,20 @@ def upload_dataset_secured(request: DatasetUploadRequest, current_user: CurrentU
     engine = create_engine_from_settings(load_settings())
     with engine.connect() as connection:
         require_project_access(connection, request.projectId, current_user, write=True)
-    from mdi_api.phase2_runtime import upload_phase2_dataset
+    from mdi_api.infrastructure.phase2.runtime import upload_phase2_dataset
 
     return upload_phase2_dataset(request)
 
 
 def create_dataset_profile_secured(dataset_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
     _authorize_dataset(dataset_id, current_user)
-    from mdi_api.phase2_runtime import create_phase2_dataset_profile
+    from mdi_api.infrastructure.phase2.runtime import create_phase2_dataset_profile
 
     return create_phase2_dataset_profile(dataset_id)
 
 
 def _authorize_upload_session(session_id: str, current_user: CurrentUser, *, write: bool = False) -> Any:
-    from mdi_api.phase2_runtime import get_phase2_runtime
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_runtime
 
     session = get_phase2_runtime().upload_sessions.get(session_id)
     if session is None:
@@ -2248,7 +2248,7 @@ def _authorize_upload_session(session_id: str, current_user: CurrentUser, *, wri
 
 async def put_upload_session_file_secured(session_id: str, file_id: str, request: Request, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
     _authorize_upload_session(session_id, current_user, write=True)
-    from mdi_api.phase2_runtime import put_phase2_upload_session_file
+    from mdi_api.infrastructure.phase2.runtime import put_phase2_upload_session_file
 
     return await put_phase2_upload_session_file(
         session_id,
@@ -2260,20 +2260,20 @@ async def put_upload_session_file_secured(session_id: str, file_id: str, request
 
 def complete_upload_session_secured(session_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
     _authorize_upload_session(session_id, current_user, write=True)
-    from mdi_api.phase2_runtime import complete_phase2_upload_session
+    from mdi_api.infrastructure.phase2.runtime import complete_phase2_upload_session
 
     return complete_phase2_upload_session(session_id)
 
 
 def cancel_upload_session_secured(session_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
     _authorize_upload_session(session_id, current_user, write=True)
-    from mdi_api.phase2_runtime import cancel_phase2_upload_session
+    from mdi_api.infrastructure.phase2.runtime import cancel_phase2_upload_session
 
     return cancel_phase2_upload_session(session_id)
 
 
 def _authorize_phase2_job(job_id: str, current_user: CurrentUser) -> dict[str, Any]:
-    from mdi_api.phase2_runtime import get_phase2_job
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_job
 
     job = get_phase2_job(job_id)
     project_id = str(job.get("projectId") or job.get("project_id") or "")
@@ -2286,7 +2286,7 @@ def _authorize_phase2_job(job_id: str, current_user: CurrentUser) -> dict[str, A
 
 
 def create_phase2_job_secured(request: CreateJobRequest, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
-    from mdi_api.phase2_runtime import create_phase2_job
+    from mdi_api.infrastructure.phase2.runtime import create_phase2_job
 
     engine = create_engine_from_settings(load_settings())
     with engine.connect() as connection:
@@ -2300,34 +2300,34 @@ def get_phase2_job_secured(job_id: str, current_user: CurrentUser = Depends(get_
 
 def get_phase2_job_events_secured(job_id: str, after_seq: int = 0, current_user: CurrentUser = Depends(get_current_user_compat)) -> list[dict[str, Any]]:
     _authorize_phase2_job(job_id, current_user)
-    from mdi_api.phase2_runtime import get_phase2_job_events
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_job_events
 
     return get_phase2_job_events(job_id, after_seq=after_seq)
 
 
 def stream_phase2_job_events_secured(job_id: str, after_seq: int = 0, current_user: CurrentUser = Depends(get_current_user_compat)) -> Any:
     _authorize_phase2_job(job_id, current_user)
-    from mdi_api.phase2_runtime import stream_phase2_job_events
+    from mdi_api.infrastructure.phase2.runtime import stream_phase2_job_events
 
     return stream_phase2_job_events(job_id, after_seq=after_seq)
 
 
 def get_phase2_job_tool_calls_secured(job_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> list[dict[str, Any]]:
     _authorize_phase2_job(job_id, current_user)
-    from mdi_api.phase2_runtime import get_phase2_job_tool_calls
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_job_tool_calls
 
     return get_phase2_job_tool_calls(job_id)
 
 
 def get_phase2_job_artifacts_secured(job_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> list[dict[str, Any]]:
     _authorize_phase2_job(job_id, current_user)
-    from mdi_api.phase2_runtime import get_phase2_job_artifacts
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_job_artifacts
 
     return get_phase2_job_artifacts(job_id)
 
 
 def get_phase2_artifact_secured(artifact_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
-    from mdi_api.phase2_runtime import get_phase2_artifact
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_artifact
 
     artifact = get_phase2_artifact(artifact_id)
     job_id = str(artifact.get("jobId") or artifact.get("job_id") or "")
@@ -2338,7 +2338,7 @@ def get_phase2_artifact_secured(artifact_id: str, current_user: CurrentUser = De
 
 
 def get_phase2_artifact_download_secured(artifact_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
-    from mdi_api.phase2_runtime import get_phase2_artifact_download
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_artifact_download
 
     get_phase2_artifact_secured(artifact_id, current_user)
     return get_phase2_artifact_download(artifact_id)

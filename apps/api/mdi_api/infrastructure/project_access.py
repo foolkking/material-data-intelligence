@@ -38,7 +38,7 @@ class SqlAlchemyProjectAccess:
             # closed against durable Project authority.
             if os.getenv("PYTEST_CURRENT_TEST"):
                 try:
-                    from mdi_api.phase2_runtime import get_phase2_runtime
+                    from mdi_api.infrastructure.phase2.runtime import get_phase2_runtime
 
                     runtime_project = get_phase2_runtime().projects.get(project_id)
                 except Exception:  # pragma: no cover - compatibility fallback only

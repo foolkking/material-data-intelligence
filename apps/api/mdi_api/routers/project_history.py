@@ -352,7 +352,7 @@ def _archived_run_ids_from_config(config: Any) -> set[str]:
 def _sync_phase2_project_to_history(repositories: Any, project_id: str) -> dict[str, Any] | None:
     """Project a local Phase 2 project into the planner history read model."""
 
-    from mdi_api.phase2_runtime import get_phase2_runtime
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_runtime
 
     runtime = get_phase2_runtime()
     runtime_project = runtime.projects.get(project_id)

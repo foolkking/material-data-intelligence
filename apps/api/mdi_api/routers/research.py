@@ -841,7 +841,7 @@ def _require_dataset_or_runtime(connection, project_id: str, dataset_id: str) ->
     try:
         return _require_dataset(connection, project_id, dataset_id)
     except HTTPException:
-        from mdi_api.phase2_runtime import get_phase2_runtime
+        from mdi_api.infrastructure.phase2.runtime import get_phase2_runtime
 
         dataset = get_phase2_runtime().datasets.get(dataset_id)
         if dataset is None or dataset.project_id != project_id:
@@ -970,7 +970,7 @@ def _require_run_for_project(run_id: str, project_id: str) -> dict[str, Any]:
     except Exception:
         pass
     try:
-        from mdi_api.phase2_runtime import get_phase2_job
+        from mdi_api.infrastructure.phase2.runtime import get_phase2_job
 
         job = get_phase2_job(run_id)
         if str(job.get("projectId") or job.get("project_id") or "") != project_id:
@@ -985,7 +985,7 @@ def _require_run_for_project(run_id: str, project_id: str) -> dict[str, Any]:
 def _merge_runtime_catalog(project_id: str, catalog: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Include parsed local-runtime datasets missing from the SQL catalog."""
 
-    from mdi_api.phase2_runtime import get_phase2_runtime
+    from mdi_api.infrastructure.phase2.runtime import get_phase2_runtime
 
     known = {str(item.get("datasetId")) for item in catalog}
     runtime = get_phase2_runtime()

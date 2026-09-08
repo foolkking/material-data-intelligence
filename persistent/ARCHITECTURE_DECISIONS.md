@@ -6006,3 +6006,13 @@ composition and transport code should import that canonical authority directly.
 Compatibility paths remain for public/test consumers but are not the preferred
 internal dependency. This import migration is semantic-neutral and preserves all
 worker, API, transaction, provider, scientific, and database identities.
+
+## ADR — Phase2 remains one runtime authority behind a module alias (2026-09-08)
+
+Phase2 request/record models are application contracts and its local artifact
+index is persistence infrastructure. The compatibility runtime, execution
+helpers, and `_PHASE2_RUNTIME` singleton have one implementation authority at
+`mdi_api.infrastructure.phase2.runtime`. The old `mdi_api.phase2_runtime` path
+aliases that module object rather than wrapping it, so historical function and
+monkeypatch identities—including mutable upload-limit test overrides—continue
+to target the same runtime globals.

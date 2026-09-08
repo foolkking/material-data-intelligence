@@ -7903,3 +7903,13 @@ interpretation, result, report, Workspace, and Project-history paths rather
 than their compatibility facades. Legacy imports remain available for external
 and test compatibility. Focused worker/database/scientific checks pass
 (`147 passed, 6 skipped`) and all frozen handler/queue identities remain valid.
+
+## Autonomous physical relocation — Phase2 compatibility runtime (2026-09-08)
+
+Phase2 command/record models now live under application ownership, local
+artifact indexing under persistence infrastructure, and the single runtime,
+facades, planning/object-store helpers, and singleton under canonical Phase2
+infrastructure. `mdi_api.phase2_runtime` is a module-identity compatibility
+alias, preserving old monkeypatch targets, upload-limit overrides, singleton
+identity, reset semantics, and all public functions. Pure focused tests pass
+(`38 passed`, one external-DB API case deselected).

@@ -1989,7 +1989,7 @@ def _ensure_planner_project_dataset(repos: Any, *, project_id: str, dataset_id: 
 
 def _planner_data_profile(dataset_id: str, profile_id: str) -> Any:
     try:
-        from mdi_api.phase2_runtime import get_phase2_dataset_profile_model
+        from mdi_api.infrastructure.phase2.runtime import get_phase2_dataset_profile_model
 
         return get_phase2_dataset_profile_model(dataset_id)
     except Exception:
@@ -2010,7 +2010,7 @@ def _planner_exact_data_profile(repos: Any, dataset_id: str, profile_id: str) ->
         profile = DataProfile.model_validate(stored)
     except LookupError:
         try:
-            from mdi_api.phase2_runtime import get_phase2_dataset_profile_model
+            from mdi_api.infrastructure.phase2.runtime import get_phase2_dataset_profile_model
 
             profile = get_phase2_dataset_profile_model(dataset_id)
         except Exception as exc:
@@ -2166,7 +2166,7 @@ def _planner_jobs_capability_error(
 
 def _phase2_object_store_for_dataset(dataset_id: str) -> dict[str, Any] | None:
     try:
-        from mdi_api.phase2_runtime import get_phase2_dataset_object_store
+        from mdi_api.infrastructure.phase2.runtime import get_phase2_dataset_object_store
 
         return get_phase2_dataset_object_store(dataset_id)
     except Exception:

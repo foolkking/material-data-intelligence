@@ -69,7 +69,7 @@ def get_dataset_object_store(dataset_id: str) -> dict[str, object]:
     canonical, identity-bearing resources into bounded JSON; aliases and
     execution-only helper keys are omitted.
     """
-    from mdi_api.phase2_runtime import (
+    from mdi_api.infrastructure.phase2.runtime import (
         get_phase2_dataset_object_store,
         get_phase2_dataset_profile,
     )
@@ -215,13 +215,13 @@ def get_upload_capabilities() -> dict[str, object]:
 
 
 def create_upload_session(project_id: str, request: CreateUploadSessionRequest) -> dict[str, object]:
-    from mdi_api.phase2_runtime import create_phase2_upload_session
+    from mdi_api.infrastructure.phase2.runtime import create_phase2_upload_session
 
     return create_phase2_upload_session(project_id, request)
 
 
 async def put_upload_session_file(session_id: str, file_id: str, request: Request) -> dict[str, object]:
-    from mdi_api.phase2_runtime import put_phase2_upload_session_file
+    from mdi_api.infrastructure.phase2.runtime import put_phase2_upload_session_file
 
     return await put_phase2_upload_session_file(
         session_id,
@@ -232,12 +232,12 @@ async def put_upload_session_file(session_id: str, file_id: str, request: Reques
 
 
 def complete_upload_session(session_id: str) -> dict[str, object]:
-    from mdi_api.phase2_runtime import complete_phase2_upload_session
+    from mdi_api.infrastructure.phase2.runtime import complete_phase2_upload_session
 
     return complete_phase2_upload_session(session_id)
 
 
 def cancel_upload_session(session_id: str) -> dict[str, object]:
-    from mdi_api.phase2_runtime import cancel_phase2_upload_session
+    from mdi_api.infrastructure.phase2.runtime import cancel_phase2_upload_session
 
     return cancel_phase2_upload_session(session_id)
