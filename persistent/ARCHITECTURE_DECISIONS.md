@@ -6016,3 +6016,11 @@ helpers, and `_PHASE2_RUNTIME` singleton have one implementation authority at
 aliases that module object rather than wrapping it, so historical function and
 monkeypatch identities—including mutable upload-limit test overrides—continue
 to target the same runtime globals.
+
+## ADR — FastAPI routers are physically transport-owned (2026-09-08)
+
+FastAPI router implementations belong to `mdi_api.transport.routers`.
+`mdi_api.routers.*` remains a module-alias compatibility namespace so existing
+imports, dynamic references, monkeypatches, and dependency overrides resolve to
+the same module objects. Canonical production imports point to transport; no
+route inventory, HTTP contract, authorization rule, or error mapping changed.

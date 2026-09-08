@@ -6,7 +6,7 @@ import logging
 from typing import Any, Callable
 
 from mdi_api.config import load_settings
-from mdi_api.routers.auth import (
+from mdi_api.transport.routers.auth import (
     CurrentUser,
     activate_account,
     change_password,
@@ -19,7 +19,7 @@ from mdi_api.routers.auth import (
     revoke_other_auth_sessions,
     update_profile,
 )
-from mdi_api.routers.platform_admin import (
+from mdi_api.transport.routers.platform_admin import (
     get_platform_admin_overview,
     list_platform_audit,
     list_platform_project_members,
@@ -30,7 +30,7 @@ from mdi_api.routers.platform_admin import (
     update_platform_user,
     create_platform_invitation,
 )
-from mdi_api.routers.research import (
+from mdi_api.transport.routers.research import (
     bulk_update_sessions,
     create_assistant_projection,
     create_message,
@@ -41,11 +41,11 @@ from mdi_api.routers.research import (
     update_session,
     resolve_scope,
 )
-from mdi_api.routers.datasets import (
+from mdi_api.transport.routers.datasets import (
     DatasetSummary,
     get_upload_capabilities,
 )
-from mdi_api.routers.secured_runtime import (
+from mdi_api.transport.routers.secured_runtime import (
     create_phase2_job_secured,
     create_demo_dataset_secured,
     upload_dataset_secured,
@@ -87,7 +87,7 @@ from mdi_api.routers.secured_runtime import (
     stream_phase1_job_events_secured,
     submit_analysis_request_secured,
 )
-from mdi_api.routers.secured_planner import (
+from mdi_api.transport.routers.secured_planner import (
     create_planner_job_interpretation_secured,
     create_planner_job_secured,
     get_planner_interpretation_evidence_secured,
@@ -108,9 +108,9 @@ from mdi_api.routers.secured_planner import (
     planner_preview_secured,
     planner_validate_secured,
 )
-from mdi_api.routers.health import health, runtime_health
-from mdi_api.routers.observability import capture_client_exception
-from mdi_api.routers.planner_providers import (
+from mdi_api.transport.routers.health import health, runtime_health
+from mdi_api.transport.routers.observability import capture_client_exception
+from mdi_api.transport.routers.planner_providers import (
     configure_planner_provider,
     update_planner_provider_models,
     list_planner_providers,
@@ -120,9 +120,9 @@ from mdi_api.routers.planner_providers import (
     resolve_planner_provider_route,
     test_planner_provider_route,
 )
-from mdi_api.routers.projects import ProjectSummary
-from mdi_api.routers.project_history import archive_project_run, get_project_history, restore_project_run
-from mdi_api.routers.report_compositions import (
+from mdi_api.transport.routers.projects import ProjectSummary
+from mdi_api.transport.routers.project_history import archive_project_run, get_project_history, restore_project_run
+from mdi_api.transport.routers.report_compositions import (
     export_report_composition,
     finalize_report_composition,
     get_report_composition,
@@ -131,14 +131,14 @@ from mdi_api.routers.report_compositions import (
     list_report_compositions,
     preview_report_composition,
 )
-from mdi_api.routers.secrets import (
+from mdi_api.transport.routers.secrets import (
     SecretSummary,
     create_secret,
     delete_secret,
     list_secrets,
 )
-from mdi_api.routers.tools import list_mvp_tools, list_tools
-from mdi_api.routers.agent2 import (
+from mdi_api.transport.routers.tools import list_mvp_tools, list_tools
+from mdi_api.transport.routers.agent2 import (
     cancel_research_turn,
     dispatch_research_turn,
     create_research_turn,
@@ -171,7 +171,7 @@ from mdi_api.routers.agent2 import (
     promote_dataset_table,
     stream_research_turn_events,
 )
-from mdi_api.routers.scientific_reports import (
+from mdi_api.transport.routers.scientific_reports import (
     bulk_update_scientific_report_lifecycle,
     compare_scientific_report_revisions,
     create_scientific_report_revision,
@@ -185,7 +185,7 @@ from mdi_api.routers.scientific_reports import (
     update_scientific_report_lifecycle,
     update_scientific_report_organization,
 )
-from mdi_api.routers.workspaces import (
+from mdi_api.transport.routers.workspaces import (
     create_workspace,
     get_workspace,
     get_workspace_layout_revision,

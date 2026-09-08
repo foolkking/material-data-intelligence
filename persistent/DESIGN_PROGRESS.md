@@ -7913,3 +7913,12 @@ infrastructure. `mdi_api.phase2_runtime` is a module-identity compatibility
 alias, preserving old monkeypatch targets, upload-limit overrides, singleton
 identity, reset semantics, and all public functions. Pure focused tests pass
 (`38 passed`, one external-DB API case deselected).
+
+## Autonomous physical relocation — HTTP transport routers (2026-09-08)
+
+All eighteen FastAPI router implementations now live under
+`mdi_api.transport.routers`. The historical `mdi_api.routers.*` modules are
+module-identity aliases, preserving dependency overrides, dynamic/monkeypatch
+paths, router objects, endpoint methods, URLs, schemas, and error/auth behavior.
+Focused router/worker/authorization tests pass (`32 passed`); architecture
+guard/checker and all six worker identities remain green.
