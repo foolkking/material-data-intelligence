@@ -6024,3 +6024,11 @@ FastAPI router implementations belong to `mdi_api.transport.routers`.
 imports, dynamic references, monkeypatches, and dependency overrides resolve to
 the same module objects. Canonical production imports point to transport; no
 route inventory, HTTP contract, authorization rule, or error mapping changed.
+
+## ADR — Product shell/navigation are shared frontend layout (2026-09-08)
+
+The global navigation provider, authenticated product shell, and route frame are
+shared layout infrastructure rather than feature-owned components. Their
+canonical location is `apps/web/app/shared/layout`; historical
+`app/components/*` imports remain thin re-exports. No route, scroll ownership,
+responsive behavior, global context bar, or authentication behavior changed.
