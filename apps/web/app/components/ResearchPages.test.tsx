@@ -125,7 +125,7 @@ vi.mock("../lib/agent2-research-api", () => ({
   getAgent2ResearchTurnResult: mocks.getAgent2ResearchTurnResult,
 }));
 
-vi.mock("./ProductShell", () => ({
+vi.mock("../../shared/layout/ProductShell", () => ({
   ProductShell: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
   ),
@@ -137,7 +137,7 @@ vi.mock("./ProductShell", () => ({
 vi.mock("../../scientific-viewers/ScientificViewerAdapter", () => ({
   ScientificResultViewer: () => <div data-testid="scientific-result-viewer" />,
 }));
-vi.mock("./Agent2ScientificPresentation", () => ({
+vi.mock("../../features/research/Agent2ScientificPresentation", () => ({
   Agent2ScientificPresentation: ({ turnId }: { turnId: string }) => (
     <section aria-label="权威 ResearchTurn 科学呈现">Turn {turnId}</section>
   ),

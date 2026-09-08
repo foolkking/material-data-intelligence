@@ -21,8 +21,8 @@ vi.mock("../lib/scientific-report-api", async () => {
     listScientificReportRevisions: mocks.listScientificReportRevisions,
   };
 });
-vi.mock("./ProductShell", () => ({ ProductShell: ({ children }: { children: React.ReactNode }) => <>{children}</>, RequireProductAuth: ({ children }: { children: React.ReactNode }) => <>{children}</> }));
-vi.mock("./ProductNavigation", async () => {
+vi.mock("../../shared/layout/ProductShell", () => ({ ProductShell: ({ children }: { children: React.ReactNode }) => <>{children}</>, RequireProductAuth: ({ children }: { children: React.ReactNode }) => <>{children}</> }));
+vi.mock("../../shared/layout/ProductNavigation", async () => {
   const actual = await vi.importActual<typeof import("./ProductNavigation")>("./ProductNavigation");
   return {
     ...actual,

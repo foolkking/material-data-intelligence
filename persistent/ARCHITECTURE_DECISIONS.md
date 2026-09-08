@@ -6096,3 +6096,12 @@ implementations live under `apps/web/features/projects` and
 `apps/web/features/data`, while old `app/components` paths remain true
 re-exports. This preserves current test/import paths and all server-owned
 project, dataset, recovery, and planning semantics.
+
+## ADR — Research presentation, report lifecycle UI, and Artifact controls have distinct owners (2026-09-08)
+
+Agent2 scientific presentation, execution activity, and shared scientific
+presentation blocks belong to Research. Report generation status and persisted
+Artifact preview belong to Reports. Safe Artifact open/download link policy is
+cross-feature UI and belongs under `shared/ui`. Historical component paths
+remain re-exports, while canonical modules depend only on canonical
+feature/shared/viewer paths.

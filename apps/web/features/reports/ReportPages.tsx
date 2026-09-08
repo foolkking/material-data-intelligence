@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductLink as Link, useProductRouter } from "../../app/components/ProductNavigation";
+import { ProductLink as Link, useProductRouter } from "../../shared/layout/ProductNavigation";
 import React, {
   useEffect,
   useMemo,
@@ -52,16 +52,16 @@ import {
   type ResearchSessionBulkAction,
   type ScopeResolution,
 } from "../../app/lib/product-api";
-import { ProductShell, RequireProductAuth } from "../../app/components/ProductShell";
+import { ProductShell, RequireProductAuth } from "../../shared/layout/ProductShell";
 import { ManagedObjectRow, ProductModal } from "../../shared/ui/ObjectManagement";
-import { LazyScientificResultViewer } from "../../app/components/LazyScientificViewers";
+import { LazyScientificResultViewer } from "../../scientific-viewers/LazyScientificViewers";
 import {
   projectScientificArtifacts,
   scientificResultTitle,
   type ProjectedScientificArtifact,
 } from "../../app/lib/scientific-result-projection";
 import { formatScientificNarrativeNumbers } from "../../app/lib/scientific-presentation";
-import { Agent2ScientificPresentation } from "../../app/components/Agent2ScientificPresentation";
+import { Agent2ScientificPresentation } from "../research/Agent2ScientificPresentation";
 import {
   getReportComposition,
   listReportCompositions,
@@ -73,14 +73,14 @@ import {
   getAgent2ExecutionProgress,
   type Agent2ProgressView,
 } from "../../app/lib/agent2-execution-api";
-import { ResearchExecutionActivity } from "../../app/components/ResearchExecutionActivity";
+import { ResearchExecutionActivity } from "../research/ResearchExecutionActivity";
 import {
   getAgent2SessionMemory,
   unpinAgent2Object,
   unpinAgent2Result,
   type Agent2SessionMemory,
 } from "../../app/lib/agent2-memory-api";
-import { ScientificReportAction } from "../../app/components/ScientificReportAction";
+import { ScientificReportAction } from "./ScientificReportAction";
 import {
   Agent2ReadError,
   createAgent2ResearchTurn,

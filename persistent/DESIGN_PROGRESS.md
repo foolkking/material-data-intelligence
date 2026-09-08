@@ -7996,3 +7996,12 @@ the Projects feature directly, while historical `app/components` paths remain
 thin re-exports for compatibility. Typecheck passes and focused
 Project/Dataset/Trash/Planner consumer qualification passes (`48/48`) without
 changing project, dataset, recovery, navigation, or planning behavior.
+
+## Autonomous physical relocation — Research/report presentation helpers (2026-09-08)
+
+Agent2 result presentation and execution activity now live with Research;
+report request/status and persisted Artifact preview live with Reports; safe
+Artifact open/download controls live under shared UI. Scientific presentation
+blocks retain their single Research-owned authority and are consumed by report
+routes without importing legacy component facades. Typecheck and focused
+Research/report/Artifact qualification pass (`183/183`).

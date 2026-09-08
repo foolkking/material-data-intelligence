@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductLink as Link } from "../../app/components/ProductNavigation";
+import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import {
@@ -15,12 +15,12 @@ import {
   type ScientificReportView,
 } from "../../app/lib/scientific-report-api";
 import { compileReportPresentation, presentationLimitationText, presentationScientificText } from "../../app/lib/scientific-presentation";
-import { ProductShell, RequireProductAuth } from "../../app/components/ProductShell";
-import { useProductRouter } from "../../app/components/ProductNavigation";
-import { ScientificPresentationBlocks } from "../../app/components/ScientificPresentationBlocks";
-import { ArtifactOpenLink } from "../../app/components/ArtifactOpenLink";
-import { ArtifactDownloadLink } from "../../app/components/ArtifactDownloadLink";
-import { ScientificReportArtifactPreview } from "../../app/components/ScientificReportArtifactPreview";
+import { ProductShell, RequireProductAuth } from "../../shared/layout/ProductShell";
+import { useProductRouter } from "../../shared/layout/ProductNavigation";
+import { ScientificPresentationBlocks } from "../research/ScientificPresentationBlocks";
+import { ArtifactOpenLink } from "../../shared/ui/ArtifactOpenLink";
+import { ArtifactDownloadLink } from "../../shared/ui/ArtifactDownloadLink";
+import { ScientificReportArtifactPreview } from "./ScientificReportArtifactPreview";
 
 const LegacyReportReaderPage = dynamic(
   () => import("./ReportPages").then((module) => module.ReportReaderPage),
