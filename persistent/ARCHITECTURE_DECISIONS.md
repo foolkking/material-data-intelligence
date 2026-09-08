@@ -6078,3 +6078,12 @@ management, and route loading are cross-feature infrastructure. Their
 canonical owners are `apps/web/shared/workspace` and `apps/web/shared/ui`.
 Feature modules and scientific-viewer modules import those owners directly;
 the historical `app/components` paths remain compatibility re-exports.
+
+## ADR — Product centers are feature-owned rather than App component-owned (2026-09-08)
+
+Authentication/account settings, administration, background-task center, and
+notification center are independent feature surfaces. Their canonical
+implementations live under `apps/web/features/account`,
+`features/administration`, `features/tasks`, and `features/notifications`.
+App Router files remain transport-like route adapters; old component modules
+remain compatibility re-exports.

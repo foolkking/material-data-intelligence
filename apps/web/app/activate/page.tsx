@@ -1,4 +1,4 @@
-import { AccountActivationPage } from "../components/AccountActivationPage";
+import { AccountActivationPage } from "../../features/account/AccountActivationPage";
 
 export default function ActivatePage() {
   return <AccountActivationPage />;

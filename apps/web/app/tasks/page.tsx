@@ -1,4 +1,4 @@
-import { TaskCenterPage } from "../components/TaskCenterPage";
+import { TaskCenterPage } from "../../features/tasks/TaskCenterPage";
 
 export default function TasksRoute() {
   return <TaskCenterPage />;

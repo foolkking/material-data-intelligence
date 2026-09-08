@@ -7978,3 +7978,12 @@ selection runtime, and renderer registry now live under
 `app/components` paths remain re-export facades, while canonical feature and
 scientific-viewer modules consume the shared authorities directly. The focused
 shared/feature qualification passes (`274/274` tests across 10 files).
+
+## Autonomous physical relocation — Product-center features (2026-09-08)
+
+Account/login/model settings, administration, task center, and notification
+center implementations now live under their canonical
+`apps/web/features/{account,administration,tasks,notifications}` owners. Thin
+App Router pages import those feature modules directly and historical
+`app/components` modules remain re-export facades. Typecheck and the focused
+product-center suites pass (`66/66`).

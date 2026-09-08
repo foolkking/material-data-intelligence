@@ -71,7 +71,7 @@ vi.mock("../lib/task-center-data", () => ({
     loadedAt: "2026-08-30T00:00:00Z",
   }),
 }));
-vi.mock("./ModelSettingsPage", () => ({
+vi.mock("../../features/account/ModelSettingsPage", () => ({
   ModelSettingsDialog: ({ open, canManage }: { open: boolean; canManage?: boolean }) => open ? <div role="dialog" aria-label="模型服务测试替身" data-can-manage={String(Boolean(canManage))} /> : null,
 }));
 

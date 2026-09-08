@@ -1,4 +1,4 @@
-import { NotificationCenterPage } from "../components/NotificationCenterPage";
+import { NotificationCenterPage } from "../../features/notifications/NotificationCenterPage";
 
 export default function NotificationsRoute() {
   return <NotificationCenterPage />;

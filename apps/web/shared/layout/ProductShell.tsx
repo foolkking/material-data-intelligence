@@ -24,7 +24,7 @@ import {
   subscribeSavedSearchesChanged,
 } from "../../app/lib/saved-search-sync";
 import { getProductTaskFeed } from "../../app/lib/task-center-data";
-import { ModelSettingsDialog } from "../../app/components/ModelSettingsPage";
+import { ModelSettingsDialog } from "../../features/account/ModelSettingsPage";
 import { ProductLink as Link, useProductNavigation, useProductRouter } from "./ProductNavigation";
 
 const ProductShellFrameContext = createContext(false);
