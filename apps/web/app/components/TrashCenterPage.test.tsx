@@ -44,11 +44,11 @@ vi.mock("../lib/scientific-viewer-api", () => ({
   updateScientificObject: mocks.updateScientificObject,
   bulkUpdateScientificObjects: mocks.bulkUpdateScientificObjects,
 }));
-vi.mock("./ProductShell", () => ({
+vi.mock("../../shared/layout/ProductShell", () => ({
   ProductShell: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   RequireProductAuth: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
-vi.mock("./ProductNavigation", () => ({
+vi.mock("../../shared/layout/ProductNavigation", () => ({
   ProductLink: ({ children, href, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) => <a href={href} {...props}>{children}</a>,
 }));
 

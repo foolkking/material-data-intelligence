@@ -7987,3 +7987,12 @@ center implementations now live under their canonical
 App Router pages import those feature modules directly and historical
 `app/components` modules remain re-export facades. Typecheck and the focused
 product-center suites pass (`66/66`).
+
+## Autonomous physical relocation — Project/Data supporting pages (2026-09-08)
+
+Project home, dataset workbench, and recoverable trash implementations now live
+under their canonical Projects/Data feature owners. App Router trash imports
+the Projects feature directly, while historical `app/components` paths remain
+thin re-exports for compatibility. Typecheck passes and focused
+Project/Dataset/Trash/Planner consumer qualification passes (`48/48`) without
+changing project, dataset, recovery, navigation, or planning behavior.

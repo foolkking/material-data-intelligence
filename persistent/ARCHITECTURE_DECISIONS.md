@@ -6087,3 +6087,12 @@ implementations live under `apps/web/features/account`,
 `features/administration`, `features/tasks`, and `features/notifications`.
 App Router files remain transport-like route adapters; old component modules
 remain compatibility re-exports.
+
+## ADR — Project/Data supporting pages follow their feature authorities (2026-09-08)
+
+Project history/home and trash lifecycle presentation belong to Projects;
+dataset detail/workbench presentation belongs to Data. Their canonical
+implementations live under `apps/web/features/projects` and
+`apps/web/features/data`, while old `app/components` paths remain true
+re-exports. This preserves current test/import paths and all server-owned
+project, dataset, recovery, and planning semantics.
