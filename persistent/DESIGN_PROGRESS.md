@@ -7867,3 +7867,11 @@ request, and repository-backed service implementations to infrastructure. Frozen
 prompt files remain at their established path and the relocated client resolves
 that exact authority. Legacy package modules and worker paths remain compatible.
 Focused report/queue/worker tests pass (`48 passed, 4 skipped, 5 deselected`).
+
+## Autonomous physical relocation — Interpretation (2026-09-08)
+
+Interpretation contracts moved to domain; input assembly, grounding, and response
+projection moved to application; provider client, queue, reconciler, and concrete
+repository-backed service moved to infrastructure. Prompt files stay at their
+frozen path and old package modules preserve symbol identity. Focused
+interpretation/queue/worker tests pass (`37 passed, 1 skipped, 7 deselected`).

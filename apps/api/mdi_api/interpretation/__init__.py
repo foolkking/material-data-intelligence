@@ -1,6 +1,4 @@
-"""Agent 2.0 grounded scientific interpretation boundary."""
-
-from .schemas import ScientificInterpretationOutput, ScientificFinding
-from .service import ScientificInterpretationService
-
-__all__ = ["ScientificFinding", "ScientificInterpretationOutput", "ScientificInterpretationService"]
+"""Interpretation compatibility package."""
+from .schemas import ScientificFinding, ScientificInterpretationOutput
+from .service import InterpretationFailure, ScientificInterpretationService
+__all__ = ["InterpretationFailure", "ScientificFinding", "ScientificInterpretationOutput", "ScientificInterpretationService"]

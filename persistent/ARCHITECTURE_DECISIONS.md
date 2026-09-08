@@ -5968,3 +5968,12 @@ assembly and grounding are application logic; provider client, Redis queue,
 request persistence, and SQLAlchemy-backed report service are infrastructure.
 Compatibility modules remain true aliases. Report identity, grounding authority,
 prompt/version authority, queue name, and persisted handler path are unchanged.
+
+## ADR — Interpretation physical ownership (2026-09-08)
+
+Structured interpretation contracts are domain owned; deterministic assembly,
+grounding, and user-facing response projection are application owned; LLM client,
+Redis queue, recovery reconciler, and concrete persistence service are
+infrastructure owned. Compatibility paths are aliases. Grounding, source/result
+references, provider prompt/version, and persisted interpretation identity are
+unchanged.
