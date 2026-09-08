@@ -9,7 +9,7 @@ const mocks = vi.hoisted(() => ({
   replace: vi.fn(),
 }));
 
-vi.mock("./ProductNavigation", () => ({
+vi.mock("../../shared/layout/ProductNavigation", () => ({
   ProductLink: ({
     children,
     href,

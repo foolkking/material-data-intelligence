@@ -25,7 +25,7 @@ vi.mock("../lib/scientific-report-api", () => ({
   updateScientificReportLifecycle: mocks.updateScientificReportLifecycle,
   updateScientificReportOrganization: mocks.updateScientificReportOrganization,
 }));
-vi.mock("./ProductShell", () => ({
+vi.mock("../../shared/layout/ProductShell", () => ({
   ProductShell: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   RequireProductAuth: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));

@@ -20,7 +20,7 @@ vi.mock("../lib/task-center-data", () => ({
       return order === "oldest" ? leftTime - rightTime : rightTime - leftTime;
     }),
 }));
-vi.mock("./ProductShell", () => ({
+vi.mock("../../shared/layout/ProductShell", () => ({
   ProductShell: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   RequireProductAuth: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));

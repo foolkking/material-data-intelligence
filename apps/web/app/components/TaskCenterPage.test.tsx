@@ -24,7 +24,7 @@ vi.mock("../lib/task-center-data", () => ({
     }),
 }));
 vi.mock("../lib/agent2-execution-api", () => ({ cancelAgent2Execution: mocks.cancelAgent2Execution }));
-vi.mock("./ProductShell", () => ({
+vi.mock("../../shared/layout/ProductShell", () => ({
   ProductShell: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   RequireProductAuth: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));

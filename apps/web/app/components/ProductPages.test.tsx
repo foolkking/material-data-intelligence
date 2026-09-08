@@ -42,7 +42,7 @@ vi.mock("../lib/planner-api", () => ({
   getDatasetSourceResources: mocks.getDatasetSourceResources,
   uploadDatasetFiles: mocks.uploadDatasetFiles,
 }));
-vi.mock("./ProductShell", () => ({
+vi.mock("../../shared/layout/ProductShell", () => ({
   ProductShell: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   RequireProductAuth: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
