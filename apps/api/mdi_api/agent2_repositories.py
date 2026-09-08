@@ -1,5 +1,7 @@
 """Compatibility facade for Agent2 persistence repositories."""
 
+# ruff: noqa: F401
+
 from mdi_api.infrastructure.persistence.agent2_bundle import Agent2RepositoryBundle
 from mdi_api.infrastructure.persistence.agent2_common import _Repository, _optional_dict
 from mdi_api.infrastructure.persistence.agent2_interpretation import Agent2ScientificInterpretationRepository
