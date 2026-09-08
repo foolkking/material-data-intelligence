@@ -12,7 +12,7 @@ import {
   type AuthSession,
   type AuthUser,
 } from "../../app/lib/product-api";
-import { ProductLink as Link } from "../../app/components/ProductNavigation";
+import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
 
 const roleLabel: Record<string, string> = {
   owner: "项目所有者",

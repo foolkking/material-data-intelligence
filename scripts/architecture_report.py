@@ -14,11 +14,13 @@ from typing import Sequence
 from scripts.architecture_scan import (
     API_ROOT,
     HANDLER_PATHS,
+    LEGACY_COMPATIBILITY_PREFIXES,
     MDI_ROOT,
     QUEUE_NAMES,
     DynamicReference,
     ImportEdge,
     canonical_python_files,
+    frontend_compatibility_edges,
     forbidden_edges,
     layer_for_module,
     module_name,
@@ -229,14 +231,16 @@ def build_architecture_report() -> dict[str, object]:
         "mdi_workers",
     )
     all_edges = sorted(set(canonical_edges + worker_edges))
-    findings = forbidden_edges(canonical_edges)
+    backend_findings = forbidden_edges(canonical_edges)
+    frontend_findings = frontend_compatibility_edges()
+    findings = backend_findings + frontend_findings
     queue = _queue_identity()
     handlers = [_resolve_handler(path) for path in HANDLER_PATHS]
     tool_adapter = _tool_adapter_identity()
     return {
         "schemaVersion": "ArchitectureReport/1.0",
         "scope": {
-            "canonical": "apps/api/mdi_api/{application,domain,infrastructure,bootstrap,compatibility}",
+            "canonical": "apps/api/mdi_api/{application,domain,infrastructure,bootstrap,transport,compatibility}",
             "worker": "services/workers/mdi_workers",
             "frontend": "apps/web",
         },
@@ -246,9 +250,14 @@ def build_architecture_report() -> dict[str, object]:
         "cycles": strongly_connected_components(canonical_edges),
         "compatibilityDirection": {
             "canonicalToCompatibility": sorted(
-                edge.as_dict()
-                for edge in canonical_edges
-                if layer_for_module(edge.target) == "compatibility"
+                [
+                    edge.as_dict()
+                    for edge in canonical_edges
+                    if layer_for_module(edge.target) == "compatibility"
+                    or edge.target.startswith(LEGACY_COMPATIBILITY_PREFIXES)
+                ]
+                + frontend_findings,
+                key=lambda item: tuple(str(item.get(key, "")) for key in ("source", "target", "path", "line")),
             ),
             "legacyFacadeToCanonical": sorted(
                 edge.as_dict()

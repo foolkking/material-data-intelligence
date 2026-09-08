@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductLink as Link } from "../../app/components/ProductNavigation";
+import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
 import { useEffect, useMemo, useState } from "react";
 import { getProjectHistory, type ProjectHistory } from "../../app/lib/planner-api";
 import { researchRunTitle } from "../../app/lib/research-display";
@@ -15,7 +15,7 @@ import {
   updateScientificReportOrganization,
 } from "../../app/lib/scientific-report-api";
 import { ManagedObjectRow, ProductModal } from "../../shared/ui/ObjectManagement";
-import { ProductShell, RequireProductAuth } from "../../app/components/ProductShell";
+import { ProductShell, RequireProductAuth } from "../../shared/layout/ProductShell";
 
 const REPORT_PAGE_SIZE = 12;
 

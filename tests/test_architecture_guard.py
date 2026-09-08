@@ -36,6 +36,22 @@ def test_guard_rejects_canonical_to_compatibility() -> None:
     )
 
 
+def test_guard_rejects_canonical_to_legacy_facade() -> None:
+    finding = is_forbidden_edge(
+        ImportEdge(
+            "mdi_api.transport.routers.planner",
+            "mdi_api.repositories",
+            "fixture.py",
+            1,
+        )
+    )
+
+    assert finding == (
+        "CANONICAL_TO_COMPATIBILITY",
+        "canonical implementation may not import a legacy facade",
+    )
+
+
 def test_guard_rejects_domain_transport_bootstrap_and_infrastructure_edges() -> None:
     cases = (
         ("mdi_api.domain.projects.policy", "mdi_api.routers.projects", "DOMAIN_TO_TRANSPORT"),
@@ -66,4 +82,3 @@ def test_public_symbol_census_is_static_and_sorted() -> None:
     assert symbols == sorted(symbols)
     assert "ProjectRepository" in symbols
     ast.parse(path.read_text(encoding="utf-8"))
-

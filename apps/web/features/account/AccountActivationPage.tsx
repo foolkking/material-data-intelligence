@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { activateAuthAccount } from "../../app/lib/product-api";
-import { ProductLink as Link } from "../../app/components/ProductNavigation";
+import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
 
 export function AccountActivationPage() {
   const [token, setToken] = useState("");

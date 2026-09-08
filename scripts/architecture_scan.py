@@ -18,7 +18,22 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 API_ROOT = REPOSITORY_ROOT / "apps" / "api"
 MDI_ROOT = API_ROOT / "mdi_api"
 
-CANONICAL_LAYERS = ("application", "domain", "infrastructure", "bootstrap", "compatibility")
+CANONICAL_LAYERS = ("application", "domain", "infrastructure", "bootstrap", "transport", "compatibility")
+
+LEGACY_COMPATIBILITY_PREFIXES = (
+    "mdi_api.agent2_repositories",
+    "mdi_api.database",
+    "mdi_api.interpretation",
+    "mdi_api.phase2_runtime",
+    "mdi_api.project_history",
+    "mdi_api.report_composition",
+    "mdi_api.repositories",
+    "mdi_api.routers",
+    "mdi_api.scientific_objects",
+    "mdi_api.scientific_reports",
+    "mdi_api.scientific_results",
+    "mdi_api.workspaces",
+)
 
 # These are explicit, source-specific transition edges retained from the
 # already-completed Batch 0 boundaries.  They are deliberately not wildcards.
@@ -200,7 +215,41 @@ def is_forbidden_edge(edge: ImportEdge) -> tuple[str, str] | None:
             return "APPLICATION_TO_TRANSPORT", "application must not import transport"
         if _starts_with(edge.target, CONCRETE_INFRASTRUCTURE_PREFIXES):
             return "APPLICATION_TO_CONCRETE_INFRASTRUCTURE", "application must use ports"
+    if _starts_with(edge.target, LEGACY_COMPATIBILITY_PREFIXES):
+        return "CANONICAL_TO_COMPATIBILITY", "canonical implementation may not import a legacy facade"
     return None
+
+
+def frontend_compatibility_edges() -> list[dict[str, object]]:
+    """Find canonical frontend modules importing the legacy app/components facades."""
+
+    web_root = REPOSITORY_ROOT / "apps" / "web"
+    canonical_roots = tuple(web_root / name for name in ("features", "scientific-viewers", "shared"))
+    import_pattern = re.compile(
+        r"(?:from\s+|import\(\s*)[\"']([^\"']*app/components/[^\"']+)[\"']"
+    )
+    findings: list[dict[str, object]] = []
+    for root in canonical_roots:
+        if not root.exists():
+            continue
+        for suffix in ("*.ts", "*.tsx", "*.mjs"):
+            for path in sorted(root.rglob(suffix)):
+                text = path.read_text(encoding="utf-8")
+                for match in import_pattern.finditer(text):
+                    findings.append(
+                        {
+                            "source": path.relative_to(REPOSITORY_ROOT).as_posix(),
+                            "target": match.group(1),
+                            "path": path.relative_to(REPOSITORY_ROOT).as_posix(),
+                            "line": text.count("\n", 0, match.start()) + 1,
+                            "rule": "CANONICAL_TO_COMPATIBILITY",
+                            "reason": "canonical frontend module may not import app/components compatibility",
+                        }
+                    )
+    return sorted(
+        findings,
+        key=lambda item: tuple(str(item[key]) for key in ("source", "target", "path", "line")),
+    )
 
 
 def forbidden_edges(edges: Iterable[ImportEdge] | None = None) -> list[dict[str, object]]:

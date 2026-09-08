@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from sqlalchemy.engine import Connection, Engine
 
+from mdi_api.infrastructure.persistence.agent2_bundle import Agent2RepositoryBundle
 from mdi_api.infrastructure.persistence.memory import (
     InMemoryDataProfileRepository,
     InMemoryDatasetRepository,
@@ -125,6 +126,11 @@ class SqlAlchemyRepositoryBundle:
             interpretations=SqlAlchemyScientificInterpretationRepository(bind),
             workspaces=SqlAlchemyWorkspaceRepository(bind),
         )
+
+    def get_research_turn_for_job(self, job_id: str) -> dict[str, object] | None:
+        """Expose the cross-persistence lookup required by Workspace projection."""
+
+        return Agent2RepositoryBundle.create(self.jobs.bind).research_turns.get_for_job(job_id)
 
 
 __all__ = ["InMemoryRepositoryBundle", "SqlAlchemyRepositoryBundle"]

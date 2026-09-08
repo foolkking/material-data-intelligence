@@ -9,6 +9,7 @@ from typing import Sequence
 from scripts.architecture_scan import (
     ALLOWLISTED_TRANSITION_EDGES,
     allowlisted_edges,
+    frontend_compatibility_edges,
     forbidden_edges,
     scan_imports,
 )
@@ -16,9 +17,13 @@ from scripts.architecture_scan import (
 
 def build_guard_report() -> dict[str, object]:
     edges = scan_imports()
+    findings = forbidden_edges(edges) + frontend_compatibility_edges()
     return {
         "schemaVersion": "ArchitectureGuard/1.0",
-        "scope": "apps/api/mdi_api/{application,domain,infrastructure,bootstrap,compatibility}",
+        "scope": (
+            "apps/api/mdi_api/{application,domain,infrastructure,bootstrap,transport,compatibility};"
+            "apps/web/{features,scientific-viewers,shared}"
+        ),
         "rules": [
             "CANONICAL_TO_COMPATIBILITY",
             "DOMAIN_TO_TRANSPORT",
@@ -32,8 +37,8 @@ def build_guard_report() -> dict[str, object]:
             for (source, target), reason in sorted(ALLOWLISTED_TRANSITION_EDGES.items())
         ],
         "allowlistedEdges": allowlisted_edges(edges),
-        "forbiddenEdges": forbidden_edges(edges),
-        "status": "PASS" if not forbidden_edges(edges) else "FAIL",
+        "forbiddenEdges": findings,
+        "status": "PASS" if not findings else "FAIL",
     }
 
 
@@ -51,4 +56,3 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

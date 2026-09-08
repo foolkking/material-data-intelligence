@@ -22,6 +22,7 @@ from mdi_api.application.providers.selection import (
     select_llm_provider,
     test_providers_allowed,
 )
+from mdi_api.application.research.planning.integrity import compute_plan_hash
 from mdi_api.artifact_storage import create_artifact_storage_from_settings
 from mdi_api.bootstrap.repository_factory import create_repository_factory
 from mdi_api.db import (
@@ -30,7 +31,7 @@ from mdi_api.db import (
     scientific_result_snapshots,
     tool_calls,
 )
-from mdi_api.repositories import InMemoryRepositoryBundle, compute_plan_hash
+from mdi_api.infrastructure.persistence.bundles import InMemoryRepositoryBundle
 from mdi_api.provider_connections import decrypt_api_key, get_connection, thinking_budget
 from mdi_llm import (
     ARTIFACT_PROJECTOR_CONTRACTS,

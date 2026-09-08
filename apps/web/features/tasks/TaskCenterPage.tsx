@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductLink as Link } from "../../app/components/ProductNavigation";
+import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
 import { useEffect, useMemo, useState } from "react";
 import { cancelAgent2Execution } from "../../app/lib/agent2-execution-api";
 import { buildResearchHref } from "../../app/lib/research-navigation";
@@ -16,8 +16,8 @@ import {
   refreshSharedProductTaskFeed,
   useProductTaskFeed,
 } from "../../app/lib/use-product-task-feed";
-import { ProductShell, RequireProductAuth } from "../../app/components/ProductShell";
-import { ProductModal } from "../../app/components/ObjectManagement";
+import { ProductShell, RequireProductAuth } from "../../shared/layout/ProductShell";
+import { ProductModal } from "../../shared/ui/ObjectManagement";
 import {
   RESEARCH_CANCELLING_LABEL,
   RESEARCH_CANCELLING_POLL_INTERVAL_MS,

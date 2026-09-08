@@ -1239,15 +1239,10 @@ class WorkspaceProjectionService:
             raise WorkspaceDomainError("JOB_NOT_FOUND", "Analysis job not found.", 404)
 
         research_turn_id: str | None = None
-        agent2_repositories = None
-        job_repository = getattr(self.repositories, "jobs", None)
-        bind = getattr(job_repository, "bind", None)
-        if bind is not None and job is not None:
+        research_turn_lookup = getattr(self.repositories, "get_research_turn_for_job", None)
+        if callable(research_turn_lookup) and job is not None:
             try:
-                from mdi_api.agent2_repositories import Agent2RepositoryBundle
-
-                agent2_repositories = Agent2RepositoryBundle.create(bind)
-                turn = agent2_repositories.research_turns.get_for_job(job_id)
+                turn = research_turn_lookup(job_id)
                 if turn is not None:
                     research_turn_id = _identity(turn, "id", "turnId", "researchTurnId")
             except (KeyError, LookupError, TypeError, ValueError):

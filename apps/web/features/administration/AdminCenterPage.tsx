@@ -19,7 +19,7 @@ import {
   type PlatformAdminProjectMember,
   type PlatformAdminUser,
 } from "../../app/lib/product-api";
-import { ProductLink as Link } from "../../app/components/ProductNavigation";
+import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
 
 type FilterStatus = "ALL" | "ACTIVE" | "INACTIVE";
 type FilterRole = "ALL" | "USER" | "PLATFORM_ADMIN";

@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductLink as Link } from "../../app/components/ProductNavigation";
+import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
@@ -29,11 +29,11 @@ import {
   PHONON_BAND_SCHEMA_VERSION,
   PHONON_DOS_SCHEMA_VERSION,
 } from "../../app/lib/phononContract";
-import { ProductShell, RequireProductAuth } from "../../app/components/ProductShell";
+import { ProductShell, RequireProductAuth } from "../../shared/layout/ProductShell";
 import {
   LazyScientificObjectViewer,
   LazyScientificSourceViewer,
-} from "../../app/components/LazyScientificViewers";
+} from "../../scientific-viewers/LazyScientificViewers";
 import {
   ManagedObjectRow,
   ProductModal,

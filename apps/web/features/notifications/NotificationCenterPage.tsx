@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductLink as Link } from "../../app/components/ProductNavigation";
+import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
 import { useEffect, useMemo, useState } from "react";
 import { buildResearchHref } from "../../app/lib/research-navigation";
 import {
@@ -17,7 +17,7 @@ import {
   refreshSharedProductTaskFeed,
   useProductTaskFeed,
 } from "../../app/lib/use-product-task-feed";
-import { ProductShell, RequireProductAuth } from "../../app/components/ProductShell";
+import { ProductShell, RequireProductAuth } from "../../shared/layout/ProductShell";
 
 type NotificationRow = ProductTaskRow;
 

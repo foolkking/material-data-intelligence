@@ -62,14 +62,14 @@ from mdi_api.research_agent.context.schemas import ContextManifest, ContextManif
 from mdi_api.research_agent.memory.service import ResearchSessionMemoryService
 from mdi_api.research_agent.memory.schemas import PinObjectRequest
 from mdi_api.transport.routers.auth import CurrentUser, get_current_user
-from mdi_api.scientific_objects.schemas import (
+from mdi_api.domain.scientific_objects.contracts import (
     ScientificDatasetQueryRequest,
     ScientificObjectAdmissionRequest,
     ScientificObjectKind,
     ScientificObjectLifecycle,
     ScientificObjectVersionCreateRequest,
 )
-from mdi_api.scientific_objects.service import ScientificObjectService
+from mdi_api.infrastructure.scientific_objects.service import ScientificObjectService
 from mdi_api.scientific_viewers import (
     ScientificViewerProjectionError,
     ScientificViewerProjectionService,

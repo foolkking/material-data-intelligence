@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductLink as Link, useProductRouter } from "../../app/components/ProductNavigation";
+import { ProductLink as Link, useProductRouter } from "../../shared/layout/ProductNavigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { getAuthUser, login, logout, type AuthUser } from "../../app/lib/product-api";
 
