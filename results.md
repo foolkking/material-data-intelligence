@@ -20682,3 +20682,14 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
 - 安全：FILES_DELETED=0、HISTORICAL_RETIREMENT=0、
   QUALIFICATION_RETIREMENT=0、RUNTIME_MUTATION=0、
   SOURCE_ARCHITECTURE_REOPENED=NO、PUSHED=NO。
+
+
+## Materials Intelligence Platform — Exhaustive Pre/Post Capability Parity Audit (2026-09-08)
+
+- 状态：已完成
+- 基线：`db75aa57136e4512b11b6fe69bb54840ad970323` → 当前审计头 `376436df67738bbf9901622edd5153e605ae7c3c`
+- 修改文件：`docs/agent2/capability_parity/EXHAUSTIVE_PRE_POST_CAPABILITY_PARITY_AUDIT_TASK.md`、`docs/agent2/capability_parity/PRE_POST_CAPABILITY_PARITY_AUDIT.md`、`docs/agent2/capability_parity/capability_parity_ledger.json`、`docs/agent2/capability_parity/capability_parity_ledger.md`、`persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`、`TASKS.md`。
+- 修改摘要：独立从 Git baseline/current source 建立前端 35 个 route/support 文件、20 个 page entrypoints、1,771 个 UI 声明记录、后端 168 个 OpenAPI operations、958 个 public/non-HTTP 记录、763 个 reduced-file 记录、198 个缩减实现文件、dynamic/worker/queue/tool/adapter 身份、SLOC 与测试覆盖映射。确认静态能力 parity，无 missing/unaccounted capability；`phase2_runtime._content_type_for_name` 已对账为 canonical `content_type_for_name`。
+- 测试结果：OpenAPI method/path/schema/security/status comparison `168/168`；route set difference `0`；current production-server HTTP smoke `20/20` 返回 `200`；B0-6 guard `PASS`（forbidden `0`，allowlisted `4`）；B0-7 report `PASS`（cycles `0`，canonical→compatibility `0`，handlers `6/6`，queues `PASS`，Tools `62`，Adapters `50`）；`git diff --check` 通过。认证 arbitrary-ID browser render 未宣称通过，标记 `NOT_RUNTIME_VERIFIED`。
+- 审计结论：`PRE_POST_CAPABILITY_PARITY_AUDIT = PASS`；`FULL_PRE_POST_CAPABILITY_PARITY = YES`（static/source-contract scope）；`SAFE_TO_PROCEED_TO_REMOTE_RELEASE_GATE = YES`。
+- 提交/CI 状态：待本地审计提交；未推送；未运行 remote CI；无应用源码、数据库、运行时数据、证据或 forensic baseline 变更。

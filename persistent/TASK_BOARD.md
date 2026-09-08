@@ -4258,3 +4258,17 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
       protected unknowns.
 - [x] Classify release readiness as conditional on current-HEAD remote CI and
       mandatory service/runtime qualification; no push or remote run performed.
+
+
+## 2026-09-08 Exhaustive capability parity audit
+
+- [x] 独立对账 pre-migration/current frontend route/page/support 集合：35 个
+      route/support 文件、20 个 page entrypoints，集合差异 0。
+- [x] 对账 1,771 个前端声明记录、168 个 OpenAPI operations、958 个后端
+      public/non-HTTP 记录、763 个缩减文件符号记录及 198 个缩减实现文件；
+      missing/unaccounted 均为 0。
+- [x] 对账 6 handlers、6 queues、62 Tools、50 Adapters、动态入口、SLOC
+      异常及测试覆盖；`content_type_for_name` 重命名移动已显式记录。
+- [x] 生成 `docs/agent2/capability_parity/` machine-readable/human-readable
+      ledger；静态 parity PASS，认证 arbitrary-ID runtime smoke 保持
+      `NOT_RUNTIME_VERIFIED`，remote release gate 仍需另行执行。

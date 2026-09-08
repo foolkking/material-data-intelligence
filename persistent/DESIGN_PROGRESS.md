@@ -8125,3 +8125,21 @@ ownership remain protected unknowns. GitHub Actions workflow and authenticated
 CLI are available, but no push or remote run occurred. Release readiness is
 conditional on separately authorized current-HEAD CI and mandatory
 PostgreSQL/Redis/MinIO runtime qualification.
+
+
+## Exhaustive pre/post capability parity audit (2026-09-08)
+
+Independently compared the exact pre-migration Git tree
+`db75aa57136e4512b11b6fe69bb54840ad970323` with audit head
+`376436df67738bbf9901622edd5153e605ae7c3c`. The audit reconciled all 35
+frontend route/support files, 20 page entrypoints, 1,771 frontend declaration
+records, 168 normalized OpenAPI operations, 958 backend public/non-HTTP records,
+763 reduced-file symbol records, and 198 reduced implementation files. Worker
+handlers remain 6/6, queues are unchanged, Tools remain 62, Adapters remain 50,
+and no missing/unaccounted capability was found. The Phase2 content-type helper
+was explicitly accounted for as `content_type_for_name` in canonical persistence.
+
+Static capability parity is PASS; authenticated arbitrary-ID browser render is
+reported separately as NOT_RUNTIME_VERIFIED. The full machine/human ledger is
+in `docs/agent2/capability_parity/`. No application behavior, runtime data,
+evidence, or forensic baseline was changed.
