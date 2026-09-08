@@ -7,7 +7,7 @@ import { listResearchSessions } from "../../app/lib/product-api";
 import { getScientificViewerProjection, listScientificObjects, updateScientificObject, type ScientificObjectSummary, type ScientificViewerProjection } from "../../app/lib/scientific-viewer-api";
 import type { WorkspaceSelectionContext } from "../../app/lib/workspace-api";
 import { ScientificSourceViewer } from "../ScientificViewerAdapter";
-import { ProductLink as Link } from "../../app/shared/layout/ProductNavigation";
+import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
 import { decodeWorkspaceSelectionUrl, encodeWorkspaceSelectionUrl } from "../../app/components/workspace/workspace-selection-contract";
 import { scientificSelectionFromWorkspace, type ScientificSelection } from "./scientificSelection";
 import { ScientificViewerShell } from "./ScientificViewerShell";

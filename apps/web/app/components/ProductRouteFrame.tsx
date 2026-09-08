@@ -1,1 +1,1 @@
-export * from "../shared/layout/ProductRouteFrame";
+export * from "../../shared/layout/ProductRouteFrame";

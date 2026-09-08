@@ -1,8 +1,8 @@
 import "./globals.css";
 import type { ReactNode } from "react";
 import type { Viewport } from "next";
-import { ProductNavigationProvider } from "./shared/layout/ProductNavigation";
-import { ProductRouteFrame } from "./shared/layout/ProductRouteFrame";
+import { ProductNavigationProvider } from "../shared/layout/ProductNavigation";
+import { ProductRouteFrame } from "../shared/layout/ProductRouteFrame";
 import { RouteTransitionProgress } from "./components/RouteTransitionProgress";
 import { ClientObservability } from "./components/ClientObservability";
 

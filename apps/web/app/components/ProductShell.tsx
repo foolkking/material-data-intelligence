@@ -1,1 +1,1 @@
-export * from "../shared/layout/ProductShell";
+export * from "../../shared/layout/ProductShell";

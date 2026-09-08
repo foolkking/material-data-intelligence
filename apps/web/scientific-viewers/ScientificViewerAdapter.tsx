@@ -12,7 +12,7 @@ import { VOLUMETRIC_BROWSER_CAPS } from "../app/components/volumetric-viewer/vol
 import { sha256HexSync } from "../app/components/volumetric-viewer/volumetricHash";
 import { ScientificArtifactRenderer } from "../app/components/workspace/WorkspaceArtifactGallery";
 import { artifactIdentity, resolveArtifactRenderer, resolveLoadedArtifactRenderer } from "../app/components/workspace/workspace-renderer-registry";
-import { ProductLink as Link } from "../app/shared/layout/ProductNavigation";
+import { ProductLink as Link } from "../shared/layout/ProductNavigation";
 
 export function ScientificSourceViewer({ projectId, resource, resources = [resource], onSelection = () => undefined }: Readonly<{ projectId: string; resource: DatasetSourceResource; resources?: readonly DatasetSourceResource[]; onSelection?: (selection: WorkspaceSelectionContext) => void }>) {
   const artifacts = useMemo(() => sourceResourceArtifacts(resource, resources), [resource, resources]);

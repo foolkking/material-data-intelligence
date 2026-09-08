@@ -7926,7 +7926,7 @@ guard/checker and all six worker identities remain green.
 ## Autonomous physical relocation — Frontend shared layout (2026-09-08)
 
 `ProductNavigation`, `ProductShell`, and `ProductRouteFrame` now live under
-`apps/web/app/shared/layout`; the old component paths re-export the canonical
+`apps/web/shared/layout`; the old component paths re-export the canonical
 symbols for test and importer compatibility. Root layout consumes the canonical
 provider/frame. Pre-move frontend baseline was typecheck PASS, `950/950` tests
 PASS, and production build PASS with the pre-existing CSS autoprefixer warning.

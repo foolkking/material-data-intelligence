@@ -6029,7 +6029,7 @@ route inventory, HTTP contract, authorization rule, or error mapping changed.
 
 The global navigation provider, authenticated product shell, and route frame are
 shared layout infrastructure rather than feature-owned components. Their
-canonical location is `apps/web/app/shared/layout`; historical
+canonical location is `apps/web/shared/layout`; historical
 `app/components/*` imports remain thin re-exports. No route, scroll ownership,
 responsive behavior, global context bar, or authentication behavior changed.
 

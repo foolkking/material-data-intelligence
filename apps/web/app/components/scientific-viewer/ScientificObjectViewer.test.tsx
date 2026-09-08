@@ -20,7 +20,7 @@ vi.mock("../../lib/product-api", () => ({ listResearchSessions: mocks.listResear
 vi.mock("../../../scientific-viewers/ScientificViewerAdapter", () => ({
   ScientificSourceViewer: () => <div data-testid="source-viewer">source viewer</div>,
 }));
-vi.mock("../../shared/layout/ProductNavigation", () => ({
+vi.mock("../../../shared/layout/ProductNavigation", () => ({
   ProductLink: ({ children, href, ...props }: { children: React.ReactNode; href: string }) => <a href={href} {...props}>{children}</a>,
 }));
 

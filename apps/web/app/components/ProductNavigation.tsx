@@ -1,1 +1,1 @@
-export * from "../shared/layout/ProductNavigation";
+export * from "../../shared/layout/ProductNavigation";

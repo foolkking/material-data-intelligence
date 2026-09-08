@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductLink as Link } from "../../app/shared/layout/ProductNavigation";
+import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
 import { useId, type ReactNode } from "react";
 
 import type { ScientificSelection } from "./scientificSelection";

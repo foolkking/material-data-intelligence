@@ -13,18 +13,18 @@ import {
   type AuthUser,
   type SavedProductSearch,
   updateSavedProductSearch,
-} from "../../lib/product-api";
+} from "../../app/lib/product-api";
 import {
   getProjectHistory,
   searchProduct,
   type ProductSearchItem,
-} from "../../lib/planner-api";
+} from "../../app/lib/planner-api";
 import {
   publishSavedSearchesChanged,
   subscribeSavedSearchesChanged,
-} from "../../lib/saved-search-sync";
-import { getProductTaskFeed } from "../../lib/task-center-data";
-import { ModelSettingsDialog } from "../../components/ModelSettingsPage";
+} from "../../app/lib/saved-search-sync";
+import { getProductTaskFeed } from "../../app/lib/task-center-data";
+import { ModelSettingsDialog } from "../../app/components/ModelSettingsPage";
 import { ProductLink as Link, useProductNavigation, useProductRouter } from "./ProductNavigation";
 
 const ProductShellFrameContext = createContext(false);
