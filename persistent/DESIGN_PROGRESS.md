@@ -7931,3 +7931,12 @@ symbols for test and importer compatibility. Root layout consumes the canonical
 provider/frame. Pre-move frontend baseline was typecheck PASS, `950/950` tests
 PASS, and production build PASS with the pre-existing CSS autoprefixer warning.
 Post-move focused layout tests pass (`35/35`) and typecheck remains green.
+
+## Autonomous physical relocation — Scientific viewer entrypoints (2026-09-08)
+
+Lazy viewer loading, result/source adaptation, immutable Scientific Object
+viewing, selection contracts, and viewer registry now live under
+`apps/web/scientific-viewers`. Existing `app/components` paths remain thin
+re-exports; dynamic imports stay relative inside the canonical viewer boundary.
+Typecheck passes and focused viewer tests pass (`36/36`) after updating the
+test-only mock target to the canonical adapter.

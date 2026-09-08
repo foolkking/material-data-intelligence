@@ -17,10 +17,10 @@ vi.mock("../../lib/scientific-viewer-api", () => ({
 }));
 vi.mock("../../lib/planner-api", () => ({ getProjectHistory: mocks.getProjectHistory }));
 vi.mock("../../lib/product-api", () => ({ listResearchSessions: mocks.listResearchSessions }));
-vi.mock("../ScientificViewerAdapter", () => ({
+vi.mock("../../../scientific-viewers/ScientificViewerAdapter", () => ({
   ScientificSourceViewer: () => <div data-testid="source-viewer">source viewer</div>,
 }));
-vi.mock("../ProductNavigation", () => ({
+vi.mock("../../shared/layout/ProductNavigation", () => ({
   ProductLink: ({ children, href, ...props }: { children: React.ReactNode; href: string }) => <a href={href} {...props}>{children}</a>,
 }));
 

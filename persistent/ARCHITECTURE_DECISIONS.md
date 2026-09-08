@@ -6032,3 +6032,11 @@ shared layout infrastructure rather than feature-owned components. Their
 canonical location is `apps/web/app/shared/layout`; historical
 `app/components/*` imports remain thin re-exports. No route, scroll ownership,
 responsive behavior, global context bar, or authentication behavior changed.
+
+## ADR — Scientific viewer entrypoints are outside feature aggregators (2026-09-08)
+
+Scientific source/result/object viewer entrypoints, selection contracts, and
+registry belong to `apps/web/scientific-viewers`. Feature pages may load them
+through the stable lazy boundary, while old component paths remain compatibility
+re-exports. Viewer payload validation, Web Worker URLs, source identity,
+selection semantics, and client/server execution boundaries are unchanged.
