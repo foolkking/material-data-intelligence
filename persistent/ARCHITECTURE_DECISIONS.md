@@ -5933,3 +5933,12 @@ composition belongs to `mdi_api.bootstrap.repository_factory`. The established
 `mdi_api.database` path remains a thin identity-preserving facade for production,
 test, script, and monkeypatch compatibility. Engine cache identity, factory
 signature, schema/Alembic state, and transaction behavior are unchanged.
+
+## ADR — Workspace policy/application projection physical ownership (2026-09-08)
+
+`WorkspaceDomainError` and `WorkspaceSnapshot` are domain contracts;
+`WorkspaceProjectionService` is application projection/query orchestration.
+Their old `mdi_api.workspaces` exports are true aliases to the canonical
+symbols. This relocation changes neither Workspace persistence, source identity,
+projection semantics, authorization, API error mapping, nor layout/history
+behavior.

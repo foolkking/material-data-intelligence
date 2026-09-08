@@ -1,5 +1,7 @@
 """Application workspace persistence contracts."""
 
+from mdi_api.domain.workspaces import WorkspaceDomainError, WorkspaceSnapshot
+
 from .ports import (
     WorkspaceCapacityError,
     WorkspaceConflictError,
@@ -8,6 +10,7 @@ from .ports import (
     WorkspaceRepositoryError,
     WorkspaceScopeError,
 )
+from .projection import WorkspaceProjectionService
 
 __all__ = [
     "WorkspaceCapacityError",
@@ -16,4 +19,7 @@ __all__ = [
     "WorkspaceRepository",
     "WorkspaceRepositoryError",
     "WorkspaceScopeError",
+    "WorkspaceDomainError",
+    "WorkspaceProjectionService",
+    "WorkspaceSnapshot",
 ]

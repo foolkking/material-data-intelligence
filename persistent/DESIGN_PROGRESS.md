@@ -7821,3 +7821,12 @@ durable namespace, architecture guard/checker, six worker handlers, queue names,
 and Tool/Adapter inventories pass. Pre-move broad backend baseline is
 `2185 passed, 76 failed, 75 skipped`; the 45 generated phase12/phase13 evidence
 changes from that run were restored before implementation.
+
+## Autonomous physical relocation — Workspace projection (2026-09-08)
+
+Workspace request/error and snapshot contracts now live under
+`mdi_api.domain.workspaces`; the metadata-only projection/application service
+now lives under `mdi_api.application.workspaces.projection`. The old
+`mdi_api.workspaces` module is a three-symbol identity-preserving facade. Pure
+workspace tests pass (`34 passed`); three API-backed nodes remain the exact
+pre-move PostgreSQL/environmental baseline failures and are not new regressions.

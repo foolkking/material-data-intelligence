@@ -9,11 +9,22 @@ from mdi_api.main import create_app
 from mdi_api.repositories import InMemoryRepositoryBundle, compute_plan_hash
 from mdi_api.routers import planner
 from mdi_api.workspaces import WorkspaceDomainError, WorkspaceProjectionService
+from mdi_api.application.workspaces.projection import (
+    WorkspaceProjectionService as CanonicalWorkspaceProjectionService,
+)
+from mdi_api.domain.workspaces import (
+    WorkspaceDomainError as CanonicalWorkspaceDomainError,
+)
 from mdi_llm import DeterministicAnalysisIntentBuilder, MockLLMProvider, plan_capabilities
 from mdi_tool_registry import load_manifests
 from mdi_schemas.workspace import workspace_semantic_hash
 
 from tests.test_phase10l1_analysis_intent import _profile, _request
+
+
+def test_legacy_workspace_exports_preserve_canonical_identity() -> None:
+    assert WorkspaceProjectionService is CanonicalWorkspaceProjectionService
+    assert WorkspaceDomainError is CanonicalWorkspaceDomainError
 
 
 def _seed_modern(repos: InMemoryRepositoryBundle, *, job_id: str = "job_m1") -> None:
