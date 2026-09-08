@@ -6148,3 +6148,15 @@ provider catalogue/client package, Research worker entrypoints still reach the
 existing execution authority, and scientific-report entrypoints still use the
 stable LLM redaction/provider package. No new allowlist entry may be added to
 hide a physical-migration violation.
+
+
+## ADR — Final source architecture closeout (2026-09-08)
+
+The post-migration repository is accepted at the safe compatibility limit after
+independent verification and two narrow repair commits (`0977769`, `f54464b`).
+Canonical code must not import legacy compatibility facades; the guard/checker
+therefore covers backend canonical layers and frontend feature/viewer/shared
+roots. Remaining legacy paths are retained only for frozen worker identities,
+public imports, monkeypatches, qualification readers, or incremental consumers.
+No schema, API, authorization, transaction, persisted-identity, queue,
+scientific-authority, or UI behavior change is authorized by this closeout.

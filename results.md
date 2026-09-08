@@ -20580,3 +20580,24 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
   未修改 runtime 或 forensic 数据。
 - 提交/CI 状态：物理迁移、兼容调整与本条收口记录形成线性本地提交；
   最终 SHA 以当前 Git HEAD 为准；未推送，未运行远程 CI。
+
+
+## Materials Intelligence Platform — Final Repository Closeout Review
+
+- 状态：已完成，结论为 `FINAL_REPOSITORY_CLOSEOUT_REVIEW = REPAIRED_AND_PASS`。
+- 完成时间：2026-09-08T21:30:00+08:00。
+- 工作区：`E:/1project/mdi-b0-5a1`；未创建新工作树或分支，未推送。
+- 修改摘要：独立复核 `db75aa57136e4512b11b6fe69bb54840ad970323` 至迁移收口的
+  30 个迁移/修复提交；确认无无关迁移提交、重复 authority 或 canonical 到
+  compatibility 依赖。修复两处真实窄边界缺陷：后端 canonical 模块的旧 facade
+  import，以及前端 feature 模块的旧组件 import，并同步受影响测试 mock。
+- 测试结果：architecture guard/checker PASS；forbidden edges=0、cycles=0、
+  canonical-to-compatibility=0、handler=6/6、queue PASS、Tool IDs=62、
+  Adapter IDs=50；frontend `117 files / 950 tests`、typecheck、build PASS；
+  backend current rerun `2212 passed, 76 failed, 75 skipped`，76 个失败仍与
+  已记录迁移前基线一致，新增回归 0；compileall 与 `git diff --check` PASS。
+- 安全/后续：测试生成 evidence 已恢复；未修改 runtime、Redis、数据库、MinIO
+  或 forensic tree。远程 CI 未运行；后续仅进入 retention 与 PROJECT_STATE
+  transition review，不执行删除或状态 authority 替换。
+- 提交/CI 状态：本地窄修复提交 `0977769`、`f54464b`；本次收口记录另行
+  创建本地提交；未推送，未运行远程 CI。

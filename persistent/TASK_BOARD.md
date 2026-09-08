@@ -4212,3 +4212,15 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
       薄 facade。architecture guard/checker PASS，worker handler 6/6，
       backend `2211 passed, 76 failed, 75 skipped`（76 个失败与迁移前基线
       一致），frontend `117 files / 950 tests`、typecheck、build PASS。
+
+
+## 2026-09-08 Final repository closeout review
+
+- [x] Independently accept the source architecture migration after verifying
+      canonical ownership, compatibility direction, dynamic contracts, frozen
+      queue/handler identities, Tool/Adapter inventories, and hard invariants.
+- [x] Record that the remaining four B0-6 allowlist edges are bounded legacy
+      provider/research/LLM boundaries; no migration-specific allowlist entry
+      was added.
+- [x] Mark retention/cleanup and PROJECT_STATE transition as separate review
+      stages; no deletion, cleanup, or state-authority transition was performed.
