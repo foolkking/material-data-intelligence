@@ -966,7 +966,7 @@ The former `FROZEN_BASELINE_V1` appendix is superseded by the amended documentat
 - [`WORKTREE_OWNERSHIP_MAP.md`](WORKTREE_OWNERSHIP_MAP.md) — current dirty-tree ownership families and clean exact-SHA policy.
 - [`RUNTIME_BASELINE_RECONCILIATION.md`](RUNTIME_BASELINE_RECONCILIATION.md) — current listener/process facts and stale-manifest reconciliation.
 - [`EVIDENCE_REFERENCE_MAP.md`](EVIDENCE_REFERENCE_MAP.md) — evidence reverse references and retention gates.
-- [`PROJECT_STATE_TRANSITION_PLAN.md`](PROJECT_STATE_TRANSITION_PLAN.md) — future bounded state-ledger transition; `PROJECT_STATE.md` is not created by this amendment.
+- [`PROJECT_STATE_TRANSITION_PLAN.md`](PROJECT_STATE_TRANSITION_PLAN.md) — bounded state-ledger transition; the additive `PROJECT_STATE.md` snapshot now exists, while specialized authorities remain separate.
 - [`BATCH0_DEPENDENCY_NORMALIZATION_PLAN.md`](BATCH0_DEPENDENCY_NORMALIZATION_PLAN.md) — independently executable and rollbackable dependency tasks; not executed here.
 - [`ARCHITECTURE_FREEZE_BLOCKER_CLOSURE.md`](ARCHITECTURE_FREEZE_BLOCKER_CLOSURE.md) — amendment closure matrix.
 

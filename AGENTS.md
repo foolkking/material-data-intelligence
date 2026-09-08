@@ -1,9 +1,16 @@
 # AGENTS.md
 
-开始前读取 `persistent/PROJECT_BRIEF.md`、`persistent/DESIGN_PROGRESS.md`、
+开始前优先读取 `PROJECT_STATE.md`（存在时仅作为当前快照和导航），再读取
+`persistent/PROJECT_BRIEF.md`、`persistent/DESIGN_PROGRESS.md`、
 `persistent/TASK_BOARD.md`、`persistent/ARCHITECTURE_DECISIONS.md`、
 `docs/index.md`、`docs/ROADMAP.md`、`docs/FUTURE_SCOPE.md`、
 `docs/NOT_PLANNED_SCOPE.md` 和 `docs/13_SHARED_SCHEMA_SPEC.md`。
+
+`PROJECT_STATE.md` 不替代任何专门 authority：`TASKS.md` 仍是任务队列，
+`results.md` 仍是详细结果账本，ADR、qualification/CI、dynamic/runtime
+identity、Tool Registry、roadmap/scope、历史证据和运行时/用户数据仍在各自
+领域保持权威。发现 `STATE_STATUS: STALE` 时，先按 source pointers 核对专门
+authority，不得静默覆盖或据此删除材料。
 
 ## 项目工作规则
 

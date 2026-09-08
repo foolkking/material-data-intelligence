@@ -1,7 +1,7 @@
 # Project State Transition Plan
 
-**Status:** `FROZEN_BASELINE_V2`
-**Canonical file created:** `NO` (this task only defines the transition)
+**Status:** `TRANSITION_PHASE_A_ADDITIVE_SNAPSHOT`
+**Canonical file created:** `YES` (additive snapshot only; specialized authorities remain separate)
 **Purpose:** transition from duplicated ledgers to a bounded `PROJECT_STATE.md` without breaking readers.
 
 ## Future Authority
