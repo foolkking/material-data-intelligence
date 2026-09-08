@@ -134,3 +134,21 @@ specialized authority requires explicit reconciliation and may set
 - Transition design: [`docs/PROJECT_STATE_TRANSITION_PLAN.md`](docs/PROJECT_STATE_TRANSITION_PLAN.md)
 - Tool Registry notes: [`persistent/TOOL_REGISTRY_NOTES.md`](persistent/TOOL_REGISTRY_NOTES.md)
 - Qualification: [`docs/qualification/`](docs/qualification/), [`_qualification/`](_qualification/)
+
+## 12. Controlled Update and Freshness Rules
+
+- Refresh this snapshot after an accepted phase/review, major workstream
+  transition, qualification or remote-CI state change, architecture-acceptance
+  change, or material risk/debt change.
+- `TASKS.md`, `results.md`, qualification records, CI records, ADRs, manifests,
+  and runtime authorities are written by their existing workflows first.
+  PROJECT_STATE is updated afterward only for the compact fields it summarizes.
+- No automated dual writer is introduced. A human/Agent synchronization step
+  is sufficient; specialized writers are never replaced or redirected.
+- Set `STATE_STATUS: STALE` when a post-base change materially affects a field
+  represented here and has not been reconciled. A commit that only updates
+  PROJECT_STATE or records this transition does not itself make the snapshot
+  stale.
+- On conflict, surface the discrepancy and follow the specialized authority
+  named in the State Authorities table. Never silently overwrite stronger
+  evidence.
