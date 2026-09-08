@@ -5951,3 +5951,12 @@ owned, registry implementation is infrastructure owned, and the current service
 implementation is infrastructure owned because it directly performs SQLAlchemy,
 DB metadata, and artifact storage operations. All legacy imports remain true
 aliases; ScientificObject and ScientificObjectVersion identity is unchanged.
+
+## ADR — Scientific-result physical ownership (2026-09-08)
+
+Scientific result value contracts and fingerprint/relevance semantics are domain
+owned; projection/projector orchestration is application owned; artifact loading
+and concrete repository-backed projection service are infrastructure owned.
+Compatibility paths remain true re-exports and the six worker/queue identities
+are unchanged. No result identity, fingerprint algorithm, artifact authority,
+or prompt/version behavior changed.

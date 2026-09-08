@@ -7848,3 +7848,13 @@ concrete dependencies make infrastructure the correct current authority; no
 application-to-infrastructure allowlist was added. Legacy schemas/registry/service
 modules and package exports preserve symbol identity. Focused Agent2 object,
 registry, planning, result, and dataset tests pass (`16 passed`, 87 deselected).
+
+## Autonomous physical relocation — Scientific results (2026-09-08)
+
+Scientific-result contracts, relevance policy, and fingerprint helpers were
+moved to `mdi_api.domain.scientific_results`; projector implementations moved
+to `mdi_api.application.scientific_results.projectors`; committed-artifact loading
+and the concrete snapshot/projection service moved to infrastructure. Existing
+`mdi_api.scientific_results.*` modules remain compatibility facades, including
+the frozen `worker.run_queued_result_projection` path. Focused result, closure,
+domain, registry, and queue tests pass (`55 passed`).
