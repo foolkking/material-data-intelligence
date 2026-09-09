@@ -104,11 +104,11 @@ def phase6_service_pipeline():
             assert task is not None and task.is_finished
             interpretation_pids.add(int(task.return_value()["process_id"]))
         assert len(interpretation_pids) == 2
-        phase5_pids = {
-            int(rdf["execution_worker_pid"]),
-            int(xrd["execution_worker_pid"]),
-        }
-        assert not interpretation_pids.intersection(phase5_pids | {os.getpid()})
+        # Every interpretation is executed by a separately launched worker
+        # process above. Windows may legally reuse the numeric PID of a Phase
+        # 5 worker after that earlier subprocess has exited, so cross-phase
+        # PID inequality is not a valid process-isolation invariant.
+        assert os.getpid() not in interpretation_pids
         with engine.connect() as connection:
             rows = {name: connection.execute(select(research_turns).where(research_turns.c.id == case["turn_id"])).mappings().one() for name, case in (("rdf", rdf), ("xrd", xrd))}
             counts_after = {
