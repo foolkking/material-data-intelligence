@@ -1,4 +1,18 @@
 ---TASK---
+状态：处理中
+任务名称：Materials Intelligence Platform — Remote Qualification and Release Gate Review
+开始时间：2026-09-09T11:02:02+08:00
+
+执行规范：
+`docs/agent2/release_gate/REMOTE_QUALIFICATION_AND_RELEASE_GATE_REVIEW_TASK.md`
+
+在已关闭的 source/physical migration、capability parity 与 residual ownership
+基础上，只验证最终 exact SHA 的本地 preflight、真实 PostgreSQL/Redis/MinIO/
+worker 资格、关键服务链、认证浏览器运行时、回归状态、供应链与 exact-SHA remote
+CI gate。不得重开迁移、创建 branch/worktree、修改用户运行时数据或自动 push。
+---END---
+
+---TASK---
 状态：已完成
 任务名称：Materials Intelligence Platform — Continuous Autonomous Optimization
 开始时间：2026-09-05T00:00:00+08:00

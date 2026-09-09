@@ -9,9 +9,9 @@
 
 - `PROJECT_PHASE`: Source and physical ownership migration closed; capability
   parity and residual ownership accepted; remote qualification/release gate
-  pending.
-- `CURRENT_ACCEPTED_COMMIT`: `8e91432`
-- `SNAPSHOT_BASE_COMMIT`: `8e91432`
+  in progress.
+- `CURRENT_ACCEPTED_COMMIT`: `b761517`
+- `SNAPSHOT_BASE_COMMIT`: `b761517`
 - `WORKTREE_EXPECTATION`: existing migration worktree, detached HEAD, clean
 - `LAST_ACCEPTED_REVIEW`: Final Residual Ownership and Repository Hygiene
   Review, `REPAIRED_AND_PASS`, 2026-09-09
@@ -62,12 +62,12 @@ specialized authority requires explicit reconciliation and may set
 
 ## 5. Active Work
 
-- `CURRENT_WORKSTREAM`: residual ownership is closed; remote qualification and
-  release gate review is next.
-- `CURRENT_TASK`: no follow-on execution is authorized after this review;
-  `TASKS.md` remains the queue authority.
-- `NEXT_ACTION`: run a separately authorized current-HEAD remote CI and
-  mandatory service/runtime qualification before any remote release.
+- `CURRENT_WORKSTREAM`: exact-SHA remote qualification and release gate review.
+- `CURRENT_TASK`: execute the first active block in `TASKS.md`; that file
+  remains the task queue authority.
+- `NEXT_ACTION`: complete local and mandatory same-stack service/runtime
+  qualification, then determine whether exact-SHA remote CI can run without
+  an unauthorized push.
 - `BLOCKED_ITEMS`: live runtime registration and live database migration head
   remain `CURRENT_UNKNOWN` where the runtime reconciliation could not safely
   query them.
@@ -84,8 +84,9 @@ specialized authority requires explicit reconciliation and may set
   public surface errors `0`; canonical-to-compatibility edges `0`.
 - Residual ownership: 85 backend and 138 frontend production-path files
   classified; unresolved residuals `0`; duplicate business implementations
-  `0`. Two scientific-result runtime residues were mechanically relocated and
-  focused verification passed (`25 passed`).
+  `0`. Two scientific-result runtime residues were mechanically relocated.
+  Ownership-specific queue/worker tests passed (`25 passed`); the expanded
+  residual-review focused suites passed (`57 passed` total).
 - Remote CI: available through the repository GitHub workflow and authenticated
   local CLI, but not run and no commit was pushed. Remote release requires a
   separately authorized current-HEAD workflow plus mandatory service/runtime
