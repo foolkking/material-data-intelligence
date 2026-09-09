@@ -112,6 +112,10 @@ def test_stack_launcher_recovers_only_missing_manifest_queues() -> None:
     assert "Get-RunningWorkerQueues" in stack
     assert "$missingWorkerQueues" in stack
     assert "-OnlyQueue" in stack
+    assert "foreach ($queue in $missingWorkerQueues)" in stack
+    assert '"-OnlyQueue", $queue' in stack
+    assert "phase14r_discover_workers.ps1" in stack
+    assert "-TimeoutSeconds $TimeoutSeconds" in stack
     assert "worker_entrypoint" in stack
     assert "Test-ProcessPattern \"mdi_workers.worker_entrypoint\"" not in stack
 

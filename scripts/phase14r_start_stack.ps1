@@ -112,11 +112,18 @@ if (-not $CheckOnly) {
     $expectedWorkerQueues | Where-Object { $_ -notin $runningWorkerQueues }
   )
   if ($missingWorkerQueues.Count -gt 0) {
-    Start-Process -FilePath "powershell.exe" -ArgumentList @(
-      "-NoProfile", "-ExecutionPolicy", "Bypass",
-      "-File", (Join-Path $repo "scripts\phase14r_start_workers.ps1"),
-      "-OnlyQueue", $missingWorkerQueues
-    ) -WorkingDirectory $repo -WindowStyle Hidden | Out-Null
+    foreach ($queue in $missingWorkerQueues) {
+      Start-Process -FilePath "powershell.exe" -ArgumentList @(
+        "-NoProfile", "-ExecutionPolicy", "Bypass",
+        "-File", (Join-Path $repo "scripts\phase14r_start_workers.ps1"),
+        "-OnlyQueue", $queue
+      ) -WorkingDirectory $repo -WindowStyle Hidden | Out-Null
+    }
+    & powershell.exe `
+      -NoProfile `
+      -ExecutionPolicy Bypass `
+      -File (Join-Path $repo "scripts\phase14r_discover_workers.ps1") `
+      -TimeoutSeconds $TimeoutSeconds | Out-Null
   }
 
   if (-not (Test-TcpPort "127.0.0.1" $FrontendPort)) {
