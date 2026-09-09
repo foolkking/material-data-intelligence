@@ -13,6 +13,8 @@ from mdi_api.config import ApiSettings, load_settings
 from mdi_api.bootstrap.repository_factory import create_repository_factory
 from mdi_api.db import projects, research_turns
 from mdi_api.infrastructure.interpretation.reconciler import ScientificInterpretationReconciler
+from mdi_api.infrastructure.scientific_results.queue import result_projection_queue_from_settings
+from mdi_api.infrastructure.scientific_results.reconciler import ScientificResultReconciler
 from mdi_api.research_agent.execution.reconciler import ResearchExecutionReconciler
 from mdi_api.research_agent.orchestration.queue import RedisRQAgentTurnQueue
 from mdi_api.research_agent.planning.queue import RedisRQCapabilityPlanningQueue
@@ -21,8 +23,6 @@ from mdi_api.research_agent.schemas import (
     ResearchTurnEventType,
     ResearchTurnStatus,
 )
-from mdi_api.scientific_results.queue import result_projection_queue_from_settings
-from mdi_api.scientific_results.reconciler import ScientificResultReconciler
 
 
 logger = logging.getLogger(__name__)
