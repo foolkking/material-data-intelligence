@@ -32,6 +32,8 @@ def test_windows_quickstart_uses_one_locked_same_stack_launch_path():
         "uv sync --frozen --extra test",
         "npm --prefix apps/web ci",
         '$env:MDI_NEXT_DIST_DIR = ".cache/next-production"',
+        '$env:MDI_API_PROXY_TARGET = "http://127.0.0.1:8005"',
+        "$env:MDI_RELEASE_SHA = (git rev-parse HEAD).Trim()",
         "npm --prefix apps/web run build",
         "uv run python -m alembic -c apps/api/alembic.ini upgrade head",
         "-File scripts/phase14r_start_stack.ps1 -FrontendPort 3023",
@@ -69,6 +71,8 @@ def test_windows_quickstart_matches_checked_in_ports_and_production_build():
     assert "[int]$FrontendPort = 3023" in stack
     assert 'process.env.MDI_NEXT_DIST_DIR || ".cache/next-production"' in frontend
     assert "`http://127.0.0.1:8005/health/runtime`" in source
+    assert "http://127.0.0.1:$FrontendPort/api/health/runtime" in stack
+    assert "frontendProxyRuntime" in stack
 
 
 def test_windows_quickstart_uses_current_alembic_head_without_stale_pin():

@@ -160,6 +160,22 @@ if (
 ) {
   throw "Same-stack runtime check failed: $($runtime | ConvertTo-Json -Compress)"
 }
+$frontendRuntime = try {
+  Invoke-RestMethod `
+    -Uri "http://127.0.0.1:$FrontendPort/api/health/runtime" `
+    -Method Get `
+    -TimeoutSec 10
+} catch {
+  throw "Frontend API proxy check failed on port $FrontendPort`: $($_.Exception.Message)"
+}
+if (
+  $frontendRuntime.database.backend -eq "sqlite" -or
+  $frontendRuntime.redis.backend -in @("local", "unknown") -or
+  $frontendRuntime.artifactStorage.backend -eq "local" -or
+  $frontendRuntime.worker.backend -eq "local"
+) {
+  throw "Frontend API proxy runtime check failed: $($frontendRuntime | ConvertTo-Json -Compress)"
+}
 
 [pscustomobject]@{
   postgres = "127.0.0.1:55434"
@@ -169,4 +185,5 @@ if (
   frontend = "http://127.0.0.1:$FrontendPort"
   disk = $diskPreflight
   runtime = $runtime
+  frontendProxyRuntime = $frontendRuntime
 } | ConvertTo-Json -Depth 8

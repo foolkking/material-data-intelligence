@@ -25,15 +25,20 @@ artifact:
 uv sync --frozen --extra test
 npm --prefix apps/web ci
 $env:MDI_NEXT_DIST_DIR = ".cache/next-production"
+$env:MDI_API_PROXY_TARGET = "http://127.0.0.1:8005"
+$env:MDI_RELEASE_SHA = (git rev-parse HEAD).Trim()
 npm --prefix apps/web run build
 uv run python -m alembic -c apps/api/alembic.ini upgrade head
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/phase14r_start_stack.ps1 -FrontendPort 3023
 ```
 
-The launcher performs a disk preflight, starts only missing processes, and
-never replaces an existing listener. It preserves the retained service data
-and checks that API, worker, and artifact backends are PostgreSQL, Redis, and
-MinIO rather than local substitutes.
+The frontend proxy target and release SHA must be present while Next builds
+because rewrites and static layout metadata are compiled into the production
+artifact. The launcher performs a disk preflight, starts only missing
+processes, and never replaces an existing listener. It preserves the retained
+service data and checks both the direct API and the frontend
+`/api/health/runtime` proxy path so that API, worker, and artifact backends are
+PostgreSQL, Redis, and MinIO rather than local substitutes.
 
 Verify readiness and the dynamic migration head:
 
