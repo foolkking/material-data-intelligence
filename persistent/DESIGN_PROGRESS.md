@@ -8162,3 +8162,19 @@ re-exports and recovery imports canonical owners. Focused verification passed
 25 tests plus compile, Ruff, architecture guard/report, six handler resolution,
 queue identity, and Tool/Adapter inventories. Unresolved residuals, duplicate
 business implementations, and canonical-to-compatibility imports are all zero.
+
+## Remote qualification and release gate review (2026-09-09)
+
+Local release preflight, the mandatory PostgreSQL/Redis/MinIO/subprocess-worker
+qualification (`74 passed, 0 failed, 0 errors, 0 skipped`), live Alembic head
+`0032_provider_connections`, worker registration `6/6`, authenticated browser
+runtime, frontend `117 files / 950 tests`, typecheck/build, and supply-chain
+provenance checks pass. Bounded fix-forward commits repaired the retained
+same-stack worker launch path, Windows PID-reuse qualification, and production
+frontend proxy/release-SHA build wiring without changing product contracts.
+
+Release readiness is `CONDITIONAL`: the exact final local SHA is not present on
+`origin`, no push is authorized, and remote CI is therefore not run. Local and
+real-service qualification is complete; the next gate is separately authorized
+publication of the exact final SHA followed by the existing workflow on that
+same SHA.

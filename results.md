@@ -20727,3 +20727,33 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
 - 提交/CI 状态：源码修复提交 `8e91432`；本结果与分类账随最终审查记录提交
   固化（exact hash 以 Git history 为准）；未推送，未运行 remote CI。
 - 后续：`REMOTE_QUALIFICATION_AND_RELEASE_GATE_REVIEW`。
+
+## Materials Intelligence Platform — Remote Qualification and Release Gate Review
+
+- 状态：已完成；`REMOTE_QUALIFICATION_AND_RELEASE_GATE_REVIEW=CONDITIONAL`。
+  `LOCAL_AND_SERVICE_QUALIFICATION=PASS`、`RELEASE_READY_LOCAL=YES`，但最终
+  exact SHA 尚未获准 push，故 `RELEASE_READY=NO`、remote CI 未运行。
+- 完成时间：2026-09-09T13:30:00+08:00。
+- Evidence reconciliation：ownership-specific queue/worker subset 为
+  `25 passed`；expanded residual-review focused suites 总计 `57 passed`，两者
+  scope 不同且均保留。
+- 修复摘要：提交 `0f3f835` 恢复 retained same-stack 六 worker 启动；`e58720d`
+  修复 Windows PID reuse 资格假设；`0b8167b` 固化 production frontend
+  API proxy、release-SHA build wiring 和 exact proxy preflight。未改变 API、
+  auth、schema/Alembic、transaction、persisted identity、queue/handler、
+  Tool/Adapter、scientific 或 UI 语义。
+- 真实服务资格：PostgreSQL connection/pool/repository/rollback PASS，Alembic
+  `0032_provider_connections`；Redis PASS，live workers `6/6`；MinIO
+  qualification-owned put/get/delete PASS；mandatory critical path
+  `74 passed, 0 failed, 0 errors, 0 skipped`。
+- 浏览器/前端：authenticated Chromium representative routes、real API proxy、
+  persisted Project ID reopen PASS；fatal page/server/chunk/import errors=0；
+  frontend `117 files / 950 tests`、typecheck、production build PASS。
+- 本地门禁：architecture cycles/forbidden/canonical→compatibility 均为 0；
+  allowlist 保持 4；handlers 6/6、queues 6、Tools 62、Adapters 50；lock、CI
+  pins、provenance、secret redaction、runtime config、diff check PASS。
+- Remote 状态：`origin`、workflow 和 authenticated `gh` 可用，但最终 SHA 不在
+  remote；`REMOTE_PUSH_AUTHORIZATION_REQUIRED=YES`、`REMOTE_CI_STATUS=NOT_RUN`。
+  下一步仅是在单独授权后 push exact SHA，并对同一 SHA 运行现有 workflow。
+- 安全：未重开 migration/capability parity；未 flush queue、删除用户对象、
+  修改 forensic PostgreSQL、创建 branch/worktree 或 push。

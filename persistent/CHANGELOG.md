@@ -2893,3 +2893,15 @@ was created.
 - Confirmed `mdi_api.repositories` is a public aggregation facade,
   `mdi_api.db` is the stable schema foundation, and no duplicate business
   implementation or canonical-to-compatibility import remains.
+
+## 2026-09-09 — Conditional exact-SHA release qualification
+
+- Repaired the retained same-stack release launcher so all six workers start,
+  Windows service qualification tolerates safe PID reuse, and the production
+  frontend build receives its explicit API proxy target and release SHA.
+- Passed mandatory real PostgreSQL/Redis/MinIO/subprocess-worker qualification
+  (`74/74`), Alembic head `0032_provider_connections`, live worker registration
+  `6/6`, authenticated browser runtime, frontend `950/950`, typecheck/build,
+  architecture, lock, supply-chain pin, and provenance checks.
+- Kept release status conditional because the final exact SHA is not on the
+  remote and no push or remote CI was authorized.

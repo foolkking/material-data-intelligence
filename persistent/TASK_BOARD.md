@@ -4284,3 +4284,18 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
       infrastructure owner，旧路径保留 identity-preserving facade。
 - [x] 验证 duplicate business implementation=0、canonical→compatibility=0、
       handlers 6/6、queues/Tools/Adapters 不变；focused 25 passed。
+
+## 2026-09-09 Remote qualification and release gate
+
+- [x] Reconcile ownership-specific `25 passed` versus expanded residual-review
+      `57 passed` as distinct focused scopes.
+- [x] Pass architecture/dynamic/public/handler/queue/Tool/Adapter preflight with
+      zero forbidden or canonical-to-compatibility edges and four unchanged
+      bounded allowlist edges.
+- [x] Pass PostgreSQL/Redis/MinIO/worker mandatory service qualification
+      (`74/74`), migration head, live worker registration, and authenticated
+      browser runtime.
+- [x] Pass frontend `117 files / 950 tests`, typecheck, production build, lock,
+      supply-chain pin, runtime configuration, and release-SHA provenance gates.
+- [ ] Publish the exact final SHA and run exact-SHA remote CI; blocked only on
+      separate push authorization.

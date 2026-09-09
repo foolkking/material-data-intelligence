@@ -7,14 +7,14 @@
 
 ## 1. Current Status
 
-- `PROJECT_PHASE`: Source and physical ownership migration closed; capability
-  parity and residual ownership accepted; remote qualification/release gate
-  in progress.
-- `CURRENT_ACCEPTED_COMMIT`: `b761517`
-- `SNAPSHOT_BASE_COMMIT`: `b761517`
+- `PROJECT_PHASE`: Source/physical migration and capability parity are closed;
+  local and real-service release qualification passed; remote exact-SHA CI is
+  conditionally pending separate push authorization.
+- `CURRENT_ACCEPTED_COMMIT`: `0b8167b`
+- `SNAPSHOT_BASE_COMMIT`: `0b8167b`
 - `WORKTREE_EXPECTATION`: existing migration worktree, detached HEAD, clean
-- `LAST_ACCEPTED_REVIEW`: Final Residual Ownership and Repository Hygiene
-  Review, `REPAIRED_AND_PASS`, 2026-09-09
+- `LAST_ACCEPTED_REVIEW`: Remote Qualification and Release Gate Review,
+  `CONDITIONAL`, 2026-09-09
 - `LAST_UPDATED_AT`: `2026-09-09`
 - `STATE_STATUS`: `CURRENT`
 - `PROJECT_STATE_ACTIVE`: `YES`
@@ -62,15 +62,14 @@ specialized authority requires explicit reconciliation and may set
 
 ## 5. Active Work
 
-- `CURRENT_WORKSTREAM`: exact-SHA remote qualification and release gate review.
-- `CURRENT_TASK`: execute the first active block in `TASKS.md`; that file
+- `CURRENT_WORKSTREAM`: release candidate awaits separately authorized remote
+  publication and exact-SHA GitHub Actions qualification.
+- `CURRENT_TASK`: no local product or migration repair is pending; `TASKS.md`
   remains the task queue authority.
-- `NEXT_ACTION`: complete local and mandatory same-stack service/runtime
-  qualification, then determine whether exact-SHA remote CI can run without
-  an unauthorized push.
-- `BLOCKED_ITEMS`: live runtime registration and live database migration head
-  remain `CURRENT_UNKNOWN` where the runtime reconciliation could not safely
-  query them.
+- `NEXT_ACTION`: obtain explicit push authorization, publish the exact final
+  release-candidate SHA, and run the existing CI workflow on that same SHA.
+- `BLOCKED_ITEMS`: remote exact-SHA CI cannot run until the local final SHA is
+  authorized for push. There are no unresolved local runtime blockers.
 
 ## 6. Verification State
 
@@ -87,19 +86,29 @@ specialized authority requires explicit reconciliation and may set
   `0`. Two scientific-result runtime residues were mechanically relocated.
   Ownership-specific queue/worker tests passed (`25 passed`); the expanded
   residual-review focused suites passed (`57 passed` total).
-- Remote CI: available through the repository GitHub workflow and authenticated
-  local CLI, but not run and no commit was pushed. Remote release requires a
-  separately authorized current-HEAD workflow plus mandatory service/runtime
-  qualification.
+- Release preflight: architecture guard/report, dynamic/public compatibility,
+  six handlers/queues, 62 Tools, 50 Adapters, lock/provenance checks, and
+  `git diff --check` pass. The bounded allowlist remains four.
+- Mandatory same-stack services: PostgreSQL connection/pool/repository/rollback
+  pass; Alembic head is `0032_provider_connections`; Redis and live worker
+  registration are `6/6`; MinIO qualification-owned put/get/delete passes.
+- Service-backed critical path: `74 passed, 0 failed, 0 errors, 0 skipped`
+  across real PostgreSQL/Redis/MinIO/subprocess workers.
+- Authenticated browser runtime: representative project/data/research/reports/
+  tasks/notifications routes, real API proxy, and persisted-ID reopen pass with
+  zero fatal page, server, chunk, or import errors.
+- Remote CI: workflow and authenticated CLI are available, but the final SHA is
+  not on the remote because push was not authorized. Exact-SHA CI is not run.
+  Local/service readiness is PASS; overall release readiness is CONDITIONAL.
 
 ## 7. Current Debt and Risks
 
 - **Architecture debt:** four bounded frozen architecture allowlist edges.
 - **Compatibility debt:** legacy facades and frozen worker/public paths remain.
-- **Verification debt:** no remote CI for the migration/transition/stabilization
-  commits.
-- **Environmental/historical debt:** 76 baseline backend failures and
-  unresolved live runtime registration/database-head observations.
+- **Verification debt:** the final local SHA has not been pushed and therefore
+  has no exact-SHA remote CI result.
+- **Environmental/historical debt:** 76 accepted backend baseline failures
+  remain historical/environmental; no current runtime observation is unresolved.
 
 ## 8. State Authorities
 
@@ -138,6 +147,12 @@ specialized authority requires explicit reconciliation and may set
   legacy-looking production surface, moved scientific-result queue/reconciler
   implementations to infrastructure, retained old identity-preserving facades,
   and closed physical ownership with zero unresolved or duplicate authority.
+- 2026-09-09: release qualification repaired retained same-stack worker startup,
+  Windows PID-reuse validation, and production frontend proxy/SHA build wiring.
+  Mandatory real-service `74/74`, authenticated browser runtime, frontend
+  `950/950`, typecheck/build, migration head, worker registration, architecture,
+  supply-chain, and provenance gates pass. Remote exact-SHA CI remains pending
+  separately authorized push.
 
 ## 11. Source Pointers
 

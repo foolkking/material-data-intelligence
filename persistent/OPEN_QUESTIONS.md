@@ -1414,3 +1414,12 @@ is the only remaining work.
   commit and running current-HEAD GitHub Actions plus the mandatory
   PostgreSQL/Redis/MinIO qualification. Local documentation/state validation is
   not remote release evidence.
+
+## 2026-09-09 — Remaining remote release gate
+
+- Live database migration head is resolved as `0032_provider_connections`; live
+  worker registration is resolved `6/6`; PostgreSQL, Redis, MinIO, critical-path,
+  and authenticated browser qualification pass locally.
+- The only release blocker is procedural: authorize pushing the exact final SHA
+  to `origin`, then run the existing GitHub Actions workflow on that same SHA.
+  An older-SHA green run cannot satisfy this gate.
