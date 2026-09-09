@@ -7,14 +7,15 @@
 
 ## 1. Current Status
 
-- `PROJECT_PHASE`: Source architecture migration closed; PROJECT_STATE
-  stabilized; remote qualification/release gate pending.
-- `CURRENT_ACCEPTED_COMMIT`: `20b508bb7b714f27e63973b9ae6e8ea8fb0e5b57`
-- `SNAPSHOT_BASE_COMMIT`: `20b508bb7b714f27e63973b9ae6e8ea8fb0e5b57`
+- `PROJECT_PHASE`: Source and physical ownership migration closed; capability
+  parity and residual ownership accepted; remote qualification/release gate
+  pending.
+- `CURRENT_ACCEPTED_COMMIT`: `8e91432`
+- `SNAPSHOT_BASE_COMMIT`: `8e91432`
 - `WORKTREE_EXPECTATION`: existing migration worktree, detached HEAD, clean
-- `LAST_ACCEPTED_REVIEW`: PROJECT_STATE Stabilization and Release Readiness
-  Review, `PASS`, 2026-09-08
-- `LAST_UPDATED_AT`: `2026-09-08`
+- `LAST_ACCEPTED_REVIEW`: Final Residual Ownership and Repository Hygiene
+  Review, `REPAIRED_AND_PASS`, 2026-09-09
+- `LAST_UPDATED_AT`: `2026-09-09`
 - `STATE_STATUS`: `CURRENT`
 - `PROJECT_STATE_ACTIVE`: `YES`
 - `HIGH_LEVEL_DUAL_READ_ACTIVE`: `YES`
@@ -61,7 +62,8 @@ specialized authority requires explicit reconciliation and may set
 
 ## 5. Active Work
 
-- `CURRENT_WORKSTREAM`: remote qualification and release gate review.
+- `CURRENT_WORKSTREAM`: residual ownership is closed; remote qualification and
+  release gate review is next.
 - `CURRENT_TASK`: no follow-on execution is authorized after this review;
   `TASKS.md` remains the queue authority.
 - `NEXT_ACTION`: run a separately authorized current-HEAD remote CI and
@@ -80,6 +82,10 @@ specialized authority requires explicit reconciliation and may set
 - Production build: `PASS`.
 - Architecture: cycles `0`; forbidden edges `0`; dynamic contract errors `0`;
   public surface errors `0`; canonical-to-compatibility edges `0`.
+- Residual ownership: 85 backend and 138 frontend production-path files
+  classified; unresolved residuals `0`; duplicate business implementations
+  `0`. Two scientific-result runtime residues were mechanically relocated and
+  focused verification passed (`25 passed`).
 - Remote CI: available through the repository GitHub workflow and authenticated
   local CLI, but not run and no commit was pushed. Remote release requires a
   separately authorized current-HEAD workflow plus mandatory service/runtime
@@ -127,6 +133,10 @@ specialized authority requires explicit reconciliation and may set
 - 2026-09-08: stabilization detected and reconciled one bounded Active Work
   drift after task archival; static Case A-D freshness behavior passed. Release
   readiness is conditional on current-HEAD remote and service qualification.
+- 2026-09-09: final residual ownership review classified every requested
+  legacy-looking production surface, moved scientific-result queue/reconciler
+  implementations to infrastructure, retained old identity-preserving facades,
+  and closed physical ownership with zero unresolved or duplicate authority.
 
 ## 11. Source Pointers
 

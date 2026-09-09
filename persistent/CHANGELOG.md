@@ -2881,3 +2881,15 @@ was created.
   generation, scientific Report listing and responsive meaning-first reader.
 - Preserved legacy Workspace Report/Recipe compatibility and zero scientific
   recomputation during report creation or reopen.
+
+## 2026-09-09 — Final residual ownership closeout
+
+- Completed an AST/import/reverse-reference review of backend legacy surfaces
+  and frontend `app/components` compatibility paths.
+- Relocated the remaining scientific-result queue and reconciler
+  implementations to `mdi_api.infrastructure.scientific_results`; old module
+  paths remain true aliases and the persisted worker/queue identities are
+  unchanged.
+- Confirmed `mdi_api.repositories` is a public aggregation facade,
+  `mdi_api.db` is the stable schema foundation, and no duplicate business
+  implementation or canonical-to-compatibility import remains.

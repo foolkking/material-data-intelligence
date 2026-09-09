@@ -8143,3 +8143,22 @@ Static capability parity is PASS; authenticated arbitrary-ID browser render is
 reported separately as NOT_RUNTIME_VERIFIED. The full machine/human ledger is
 in `docs/agent2/capability_parity/`. No application behavior, runtime data,
 evidence, or forensic baseline was changed.
+
+
+## Final residual ownership and repository hygiene review (2026-09-09)
+
+Classified 85 backend residual-scope files and 138 frontend legacy
+production-path files using AST declarations, import direction, reverse
+references, runtime identity, and source-volume checks. `repositories.py` is a
+zero-definition public API aggregator; `db.py` is the immutable SQLAlchemy
+metadata/table foundation; frontend `app/components` contains no production
+implementation body.
+
+The review found two genuine physical-ownership residues:
+`scientific_results/queue.py` and `scientific_results/reconciler.py`. Their
+unchanged implementations now live under
+`infrastructure/scientific_results`; old imports are true compatibility
+re-exports and recovery imports canonical owners. Focused verification passed
+25 tests plus compile, Ruff, architecture guard/report, six handler resolution,
+queue identity, and Tool/Adapter inventories. Unresolved residuals, duplicate
+business implementations, and canonical-to-compatibility imports are all zero.

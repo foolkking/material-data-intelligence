@@ -20693,3 +20693,37 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
 - 测试结果：OpenAPI method/path/schema/security/status comparison `168/168`；route set difference `0`；current production-server HTTP smoke `20/20` 返回 `200`；B0-6 guard `PASS`（forbidden `0`，allowlisted `4`）；B0-7 report `PASS`（cycles `0`，canonical→compatibility `0`，handlers `6/6`，queues `PASS`，Tools `62`，Adapters `50`）；`git diff --check` 通过。认证 arbitrary-ID browser render 未宣称通过，标记 `NOT_RUNTIME_VERIFIED`。
 - 审计结论：`PRE_POST_CAPABILITY_PARITY_AUDIT = PASS`；`FULL_PRE_POST_CAPABILITY_PARITY = YES`（static/source-contract scope）；`SAFE_TO_PROCEED_TO_REMOTE_RELEASE_GATE = YES`。
 - 提交/CI 状态：待本地审计提交；未推送；未运行 remote CI；无应用源码、数据库、运行时数据、证据或 forensic baseline 变更。
+
+
+## Materials Intelligence Platform — Final Residual Ownership and Repository Hygiene Review
+
+- 状态：已完成，结论为
+  `FINAL_RESIDUAL_OWNERSHIP_REVIEW = REPAIRED_AND_PASS`。
+- 完成时间：2026-09-09T10:21:13+08:00。
+- 修改摘要：使用 AST、导入图、reverse-reference、runtime identity 与 LOC
+  对 85 个后端和 138 个前端 residual-scope production-path 文件完成逐项
+  ownership 分类。确认 `mdi_api.repositories` 为零实现声明的 public API
+  aggregator，`mdi_api.db` 为稳定 SQLAlchemy metadata/table foundation，
+  frontend `app/components` production implementation body 为 0。
+- 修复：将遗漏在 `mdi_api.scientific_results.queue` 与
+  `mdi_api.scientific_results.reconciler` 的真实实现迁至
+  `mdi_api.infrastructure.scientific_results`，旧模块保留真 re-export；
+  recovery 改用 canonical owner。未改变 queue/handler/job/result/transaction
+  语义。
+- 最终计数：`UNRESOLVED_RESIDUALS=0`、
+  `DUPLICATE_BUSINESS_IMPLEMENTATIONS=0`、
+  `CANONICAL_TO_COMPATIBILITY_IMPORTS=0`、
+  `MIGRATION_RESIDUES_FIXED=2`。合法 compatibility facades 189、runtime
+  entrypoints 4、foundation modules 10。
+- 前端测试债务：`LEGACY_TEST_COLOCATION_DEBT=YES`，98 个 colocated test
+  文件与 4 个 test-only fixture support 文件；`BLOCKING=NO`。
+- 测试/验证：focused ownership/queue/worker/architecture `57 passed`；
+  changed-source compile、Ruff、architecture guard/report、ledger assertions
+  与 `git diff --check` PASS；handlers 6/6、6 queues、62 Tools、50 Adapters
+  不变。
+- 安全状态：source architecture 与 capability parity 未重开；API、auth、
+  schema/Alembic、transaction、persisted identity、scientific authority、UI、
+  runtime/user data、historical/qualification evidence 均未改变。
+- 提交/CI 状态：源码修复提交 `8e91432`；本结果与分类账随最终审查记录提交
+  固化（exact hash 以 Git history 为准）；未推送，未运行 remote CI。
+- 后续：`REMOTE_QUALIFICATION_AND_RELEASE_GATE_REVIEW`。

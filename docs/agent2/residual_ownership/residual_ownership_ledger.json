@@ -1,0 +1,4726 @@
+{
+  "schemaVersion": "ResidualOwnershipLedger/1.0",
+  "reviewDate": "2026-09-09",
+  "baselineCommit": "6d2dbe5199a156f9d20ce4be91b0accbd4c61db4",
+  "migrationBaseline": "db75aa57136e4512b11b6fe69bb54840ad970323",
+  "backendFiles": 85,
+  "frontendFiles": 138,
+  "classificationCounts": {
+    "LEGITIMATE_CANONICAL_AUTHORITY": 8,
+    "LEGITIMATE_COMPATIBILITY_FACADE": 189,
+    "LEGITIMATE_FOUNDATION_MODULE": 10,
+    "LEGITIMATE_PUBLIC_API_AGGREGATOR": 7,
+    "LEGITIMATE_RUNTIME_ENTRYPOINT": 4,
+    "TEMPORARY_COMPATIBILITY_WITH_JUSTIFICATION": 5
+  },
+  "migrationResiduesFixed": [
+    {
+      "path": "apps/api/mdi_api/scientific_results/queue.py",
+      "canonicalOwner": "apps/api/mdi_api/infrastructure/scientific_results/queue.py"
+    },
+    {
+      "path": "apps/api/mdi_api/scientific_results/reconciler.py",
+      "canonicalOwner": "apps/api/mdi_api/infrastructure/scientific_results/reconciler.py"
+    }
+  ],
+  "duplicateBusinessImplementations": 0,
+  "canonicalToCompatibilityImports": 0,
+  "unresolvedResiduals": 0,
+  "legacyTestColocationDebt": {
+    "present": true,
+    "blocking": false,
+    "colocatedTestFiles": 98,
+    "testFixtureSupportFiles": 4
+  },
+  "entries": [
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/__init__.py",
+      "loc": 17,
+      "classification": "LEGITIMATE_PUBLIC_API_AGGREGATOR",
+      "canonicalOwner": "package canonical owners",
+      "topLevelDeclarations": [
+        {
+          "name": "__getattr__",
+          "kind": "FunctionDef",
+          "lines": 10
+        }
+      ],
+      "assignmentCount": 1,
+      "canonicalImports": [],
+      "reverseReferenceCount": 8,
+      "reverseReferences": [
+        "tests/test_api_lifespan.py",
+        "tests/test_phase14r_operations.py",
+        "tests/test_phase14r_storage_budget.py",
+        "tests/test_phase1_scaffold.py",
+        "tests/test_phase2_product_loop.py",
+        "tests/test_phase3_persistence.py",
+        "tests/test_phase8c_planner_read_api.py",
+        "tests/test_service_failure_classification.py"
+      ],
+      "rationale": "Package export surface only; no business implementation authority."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/access.py",
+      "loc": 42,
+      "classification": "LEGITIMATE_CANONICAL_AUTHORITY",
+      "canonicalOwner": "apps/api/mdi_api/access.py",
+      "topLevelDeclarations": [
+        {
+          "name": "require_project_access",
+          "kind": "FunctionDef",
+          "lines": 24
+        }
+      ],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.research.ports",
+        "mdi_api.infrastructure.project_access"
+      ],
+      "reverseReferenceCount": 9,
+      "reverseReferences": [
+        "apps/api/mdi_api/transport/routers/agent2.py",
+        "apps/api/mdi_api/transport/routers/observability.py",
+        "apps/api/mdi_api/transport/routers/project_history.py",
+        "apps/api/mdi_api/transport/routers/research.py",
+        "apps/api/mdi_api/transport/routers/scientific_reports.py",
+        "apps/api/mdi_api/transport/routers/secured_planner.py",
+        "apps/api/mdi_api/transport/routers/secured_runtime.py",
+        "apps/api/mdi_api/transport/routers/workspaces.py",
+        "tests/test_project_access.py"
+      ],
+      "rationale": "Sole implementation authority for an intentionally retained root capability not assigned a compatibility move in FILE_MOVE_MANIFEST; no canonical duplicate found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/agent2_errors.py",
+      "loc": 154,
+      "classification": "LEGITIMATE_CANONICAL_AUTHORITY",
+      "canonicalOwner": "apps/api/mdi_api/agent2_errors.py",
+      "topLevelDeclarations": [
+        {
+          "name": "Agent2DomainError",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "ScientificObjectNotFound",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "ScientificObjectVersionNotFound",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "ScientificObjectTypeNotRegistered",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "InvalidScientificObjectVersion",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "InvalidScientificObjectRelationship",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "ResearchTurnNotFound",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "InvalidResearchTurnTransition",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "ConcurrentTurnModification",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "ResearchResourceLimitExceeded",
+          "kind": "ClassDef",
+          "lines": 5
+        },
+        {
+          "name": "ResearchSessionProjectMismatch",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "UnauthorizedScientificObjectReference",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "RegistryValidationError",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "CapabilityNotRegistered",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "RequirementNotRegistered",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "ScientificResultSnapshotNotFound",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "ResearchTurnDecisionNotFound",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "InvalidResearchTurnDecision",
+          "kind": "ClassDef",
+          "lines": 4
+        },
+        {
+          "name": "OrchestratorProviderUnavailable",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "OrchestratorTimeout",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "ContextAssemblyFailed",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "CapabilityResolutionFailed",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "CapabilityRequirementUnsatisfied",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "CapabilityPlanInvalid",
+          "kind": "ClassDef",
+          "lines": 4
+        },
+        {
+          "name": "CapabilityBindingFailed",
+          "kind": "ClassDef",
+          "lines": 4
+        },
+        {
+          "name": "ScientificResultNotReady",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "ScientificResultProjectionNotSupported",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "ScientificResultProjectionFailed",
+          "kind": "ClassDef",
+          "lines": 4
+        },
+        {
+          "name": "ScientificResultProjectionConflict",
+          "kind": "ClassDef",
+          "lines": 3
+        },
+        {
+          "name": "ScientificResultSourceUnavailable",
+          "kind": "ClassDef",
+          "lines": 3
+        },
+        {
+          "name": "InvalidScientificResultBundle",
+          "kind": "ClassDef",
+          "lines": 3
+        },
+        {
+          "name": "InvalidScientificFactSource",
+          "kind": "ClassDef",
+          "lines": 3
+        },
+        {
+          "name": "UnauthorizedScientificResultReference",
+          "kind": "ClassDef",
+          "lines": 3
+        },
+        {
+          "name": "ResultProjectorNotRegistered",
+          "kind": "ClassDef",
+          "lines": 3
+        }
+      ],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 37,
+      "reverseReferences": [
+        "apps/api/mdi_api/application/scientific_results/projectors/canonical.py",
+        "apps/api/mdi_api/infrastructure/interpretation/service.py",
+        "apps/api/mdi_api/infrastructure/persistence/agent2_research.py",
+        "apps/api/mdi_api/infrastructure/persistence/agent2_results.py",
+        "apps/api/mdi_api/infrastructure/persistence/agent2_scientific_objects.py",
+        "apps/api/mdi_api/infrastructure/scientific_objects/registry.py",
+        "apps/api/mdi_api/infrastructure/scientific_objects/service.py",
+        "apps/api/mdi_api/infrastructure/scientific_results/service.py",
+        "apps/api/mdi_api/research_agent/capabilities/packs.py",
+        "apps/api/mdi_api/research_agent/capabilities/preconditions.py",
+        "apps/api/mdi_api/research_agent/capabilities/registry.py",
+        "apps/api/mdi_api/research_agent/capabilities/resolver.py",
+        "apps/api/mdi_api/research_agent/capabilities/versions.py",
+        "apps/api/mdi_api/research_agent/evaluation/runner.py",
+        "apps/api/mdi_api/research_agent/memory/service.py",
+        "apps/api/mdi_api/research_agent/orchestration/processor.py",
+        "apps/api/mdi_api/research_agent/orchestration/router.py",
+        "apps/api/mdi_api/research_agent/orchestration/validator.py",
+        "apps/api/mdi_api/research_agent/planning/binder.py",
+        "apps/api/mdi_api/research_agent/planning/planner.py",
+        "apps/api/mdi_api/research_agent/planning/processor.py",
+        "apps/api/mdi_api/research_agent/planning/validator.py",
+        "apps/api/mdi_api/research_agent/registry_validation.py",
+        "apps/api/mdi_api/research_agent/requirements/registry.py",
+        "apps/api/mdi_api/research_agent/service.py",
+        "apps/api/mdi_api/research_agent/turns/state_machine.py",
+        "apps/api/mdi_api/transport/routers/agent2.py",
+        "tests/test_agent2_api.py",
+        "tests/test_agent2_contracts_registries.py",
+        "tests/test_agent2_domain.py"
+      ],
+      "rationale": "Sole implementation authority for an intentionally retained root capability not assigned a compatibility move in FILE_MOVE_MANIFEST; no canonical duplicate found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/agent2_repositories.py",
+      "loc": 37,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/infrastructure/persistence/agent2_*",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.infrastructure.persistence.agent2_bundle",
+        "mdi_api.infrastructure.persistence.agent2_common",
+        "mdi_api.infrastructure.persistence.agent2_interpretation",
+        "mdi_api.infrastructure.persistence.agent2_reports",
+        "mdi_api.infrastructure.persistence.agent2_research",
+        "mdi_api.infrastructure.persistence.agent2_results",
+        "mdi_api.infrastructure.persistence.agent2_scientific_objects"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_repository_ownership.py"
+      ],
+      "rationale": "Old public/patch path forwards to canonical owners without a second implementation."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/artifact_storage.py",
+      "loc": 500,
+      "classification": "LEGITIMATE_CANONICAL_AUTHORITY",
+      "canonicalOwner": "apps/api/mdi_api/artifact_storage.py",
+      "topLevelDeclarations": [
+        {
+          "name": "_validate_artifact_size",
+          "kind": "FunctionDef",
+          "lines": 5
+        },
+        {
+          "name": "ArtifactStorageMetadata",
+          "kind": "ClassDef",
+          "lines": 18
+        },
+        {
+          "name": "ArtifactSignedUrl",
+          "kind": "ClassDef",
+          "lines": 10
+        },
+        {
+          "name": "ArtifactStorage",
+          "kind": "ClassDef",
+          "lines": 53
+        },
+        {
+          "name": "LocalFileArtifactStorage",
+          "kind": "ClassDef",
+          "lines": 143
+        },
+        {
+          "name": "S3CompatibleArtifactStorage",
+          "kind": "ClassDef",
+          "lines": 218
+        },
+        {
+          "name": "create_minio_artifact_storage_from_settings",
+          "kind": "FunctionDef",
+          "lines": 11
+        },
+        {
+          "name": "create_artifact_storage_from_settings",
+          "kind": "FunctionDef",
+          "lines": 5
+        },
+        {
+          "name": "_sha256",
+          "kind": "FunctionDef",
+          "lines": 2
+        }
+      ],
+      "assignmentCount": 1,
+      "canonicalImports": [],
+      "reverseReferenceCount": 26,
+      "reverseReferences": [
+        "apps/api/mdi_api/durable_uploads.py",
+        "apps/api/mdi_api/infrastructure/phase2/runtime.py",
+        "apps/api/mdi_api/infrastructure/scientific_objects/service.py",
+        "apps/api/mdi_api/scientific_results/worker.py",
+        "apps/api/mdi_api/scientific_viewers/service.py",
+        "apps/api/mdi_api/transport/routers/agent2.py",
+        "apps/api/mdi_api/transport/routers/planner.py",
+        "scripts/phase9_create_table_fixture.py",
+        "services/workers/mdi_workers/object_store.py",
+        "services/workers/mdi_workers/queue_runtime.py",
+        "tests/integration/test_agent2_phase4_service_backed.py",
+        "tests/integration/test_phase10_product_closure.py",
+        "tests/integration/test_phase10l3_dependency_service_backed.py",
+        "tests/integration/test_phase13_1_c2_resource_preflight_service_backed.py",
+        "tests/integration/test_phase13_2_attempt3_service_backed.py",
+        "tests/test_agent2_api.py",
+        "tests/test_agent2_domain.py",
+        "tests/test_agent2_phase4_exact_sources.py",
+        "tests/test_agent2_phase9_viewers.py",
+        "tests/test_artifacts.py",
+        "tests/test_phase10l4_api_persistence.py",
+        "tests/test_phase13_1_durable_upload_worker_fix_forward_3.py",
+        "tests/test_phase3_persistence.py",
+        "tests/test_phase5_runtime_infrastructure.py",
+        "tests/test_phase6_integration.py",
+        "tests/test_phase8b_persisted_plan_queue.py"
+      ],
+      "rationale": "Sole implementation authority for an intentionally retained root capability not assigned a compatibility move in FILE_MOVE_MANIFEST; no canonical duplicate found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/config.py",
+      "loc": 411,
+      "classification": "LEGITIMATE_FOUNDATION_MODULE",
+      "canonicalOwner": "apps/api/mdi_api/config.py",
+      "topLevelDeclarations": [
+        {
+          "name": "RuntimeConfigurationError",
+          "kind": "ClassDef",
+          "lines": 6
+        },
+        {
+          "name": "ApiSettings",
+          "kind": "ClassDef",
+          "lines": 65
+        },
+        {
+          "name": "load_settings",
+          "kind": "FunctionDef",
+          "lines": 120
+        },
+        {
+          "name": "database_configuration_declared",
+          "kind": "FunctionDef",
+          "lines": 7
+        },
+        {
+          "name": "validate_runtime_settings",
+          "kind": "FunctionDef",
+          "lines": 136
+        },
+        {
+          "name": "_env",
+          "kind": "FunctionDef",
+          "lines": 6
+        },
+        {
+          "name": "_choice",
+          "kind": "FunctionDef",
+          "lines": 5
+        },
+        {
+          "name": "_conflicting_aliases",
+          "kind": "FunctionDef",
+          "lines": 13
+        },
+        {
+          "name": "_build_postgres_url",
+          "kind": "FunctionDef",
+          "lines": 3
+        },
+        {
+          "name": "_parse_bool",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "_parse_csv",
+          "kind": "FunctionDef",
+          "lines": 2
+        }
+      ],
+      "assignmentCount": 5,
+      "canonicalImports": [],
+      "reverseReferenceCount": 47,
+      "reverseReferences": [
+        "apps/api/alembic/env.py",
+        "apps/api/mdi_api/bootstrap/repository_factory.py",
+        "apps/api/mdi_api/durable_projects.py",
+        "apps/api/mdi_api/durable_uploads.py",
+        "apps/api/mdi_api/infrastructure/interpretation/reconciler.py",
+        "apps/api/mdi_api/infrastructure/persistence/engine.py",
+        "apps/api/mdi_api/infrastructure/phase2/runtime.py",
+        "apps/api/mdi_api/infrastructure/scientific_results/service.py",
+        "apps/api/mdi_api/main.py",
+        "apps/api/mdi_api/migration_head.py",
+        "apps/api/mdi_api/operations.py",
+        "apps/api/mdi_api/provider_connections.py",
+        "apps/api/mdi_api/research_agent/orchestration/worker.py",
+        "apps/api/mdi_api/research_agent/recovery.py",
+        "apps/api/mdi_api/scientific_results/worker.py",
+        "apps/api/mdi_api/transport/routers/agent2.py",
+        "apps/api/mdi_api/transport/routers/auth.py",
+        "apps/api/mdi_api/transport/routers/health.py",
+        "apps/api/mdi_api/transport/routers/planner.py",
+        "apps/api/mdi_api/transport/routers/platform_admin.py",
+        "apps/api/mdi_api/transport/routers/project_history.py",
+        "apps/api/mdi_api/transport/routers/research.py",
+        "apps/api/mdi_api/transport/routers/scientific_reports.py",
+        "apps/api/mdi_api/transport/routers/secrets.py",
+        "apps/api/mdi_api/transport/routers/secured_planner.py",
+        "apps/api/mdi_api/transport/routers/secured_runtime.py",
+        "apps/api/mdi_api/transport/routers/workspaces.py",
+        "scripts/phase9_create_table_fixture.py",
+        "services/workers/mdi_workers/queue_runtime.py",
+        "services/workers/mdi_workers/worker_entrypoint.py"
+      ],
+      "rationale": "Single stable shared contract/configuration/schema/transaction-support authority; no duplicate canonical implementation found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/database.py",
+      "loc": 25,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/infrastructure/persistence/engine.py + apps/api/mdi_api/bootstrap/repository_factory.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 9,
+      "canonicalImports": [
+        "mdi_api.bootstrap",
+        "mdi_api.infrastructure.persistence"
+      ],
+      "reverseReferenceCount": 11,
+      "reverseReferences": [
+        "scripts/phase9_create_report_fixture.py",
+        "scripts/phase9_create_table_fixture.py",
+        "tests/integration/test_phase10_product_closure.py",
+        "tests/integration/test_phase_d_r1_durable_namespace_service_backed.py",
+        "tests/test_database_pool_lifecycle.py",
+        "tests/test_phase14r_authorization.py",
+        "tests/test_phase6_integration.py",
+        "tests/test_phase8b_persisted_plan_queue.py",
+        "tests/test_phase_d_r1_durable_namespace.py",
+        "tests/test_project_access.py",
+        "tests/test_provider_configuration.py"
+      ],
+      "rationale": "Old public/patch path forwards to canonical owners without a second implementation."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/db.py",
+      "loc": 1273,
+      "classification": "LEGITIMATE_FOUNDATION_MODULE",
+      "canonicalOwner": "apps/api/mdi_api/db.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 63,
+      "canonicalImports": [],
+      "reverseReferenceCount": 80,
+      "reverseReferences": [
+        "apps/api/alembic/env.py",
+        "apps/api/mdi_api/infrastructure/persistence/agent2_interpretation.py",
+        "apps/api/mdi_api/infrastructure/persistence/agent2_reports.py",
+        "apps/api/mdi_api/infrastructure/persistence/agent2_research.py",
+        "apps/api/mdi_api/infrastructure/persistence/agent2_results.py",
+        "apps/api/mdi_api/infrastructure/persistence/agent2_scientific_objects.py",
+        "apps/api/mdi_api/infrastructure/persistence/sql_common.py",
+        "apps/api/mdi_api/infrastructure/persistence/sqlalchemy.py",
+        "apps/api/mdi_api/infrastructure/persistence/sqlalchemy_analysis_plans.py",
+        "apps/api/mdi_api/infrastructure/persistence/sqlalchemy_artifacts.py",
+        "apps/api/mdi_api/infrastructure/persistence/sqlalchemy_dependency.py",
+        "apps/api/mdi_api/infrastructure/persistence/sqlalchemy_interpretation.py",
+        "apps/api/mdi_api/infrastructure/persistence/sqlalchemy_jobs.py",
+        "apps/api/mdi_api/infrastructure/persistence/sqlalchemy_planning.py",
+        "apps/api/mdi_api/infrastructure/persistence/sqlalchemy_reports.py",
+        "apps/api/mdi_api/infrastructure/persistence/sqlalchemy_workspace.py",
+        "apps/api/mdi_api/infrastructure/project_access.py",
+        "apps/api/mdi_api/infrastructure/scientific_objects/service.py",
+        "apps/api/mdi_api/infrastructure/scientific_reports/service.py",
+        "apps/api/mdi_api/provider_connections.py",
+        "apps/api/mdi_api/repositories.py",
+        "apps/api/mdi_api/research_agent/recovery.py",
+        "apps/api/mdi_api/transport/routers/auth.py",
+        "apps/api/mdi_api/transport/routers/planner.py",
+        "apps/api/mdi_api/transport/routers/platform_admin.py",
+        "apps/api/mdi_api/transport/routers/project_history.py",
+        "apps/api/mdi_api/transport/routers/research.py",
+        "apps/api/mdi_api/transport/routers/secured_runtime.py",
+        "scripts/generate_phase10l1_analysis_intent_evidence.py",
+        "scripts/generate_phase10l2_capability_planner_evidence.py"
+      ],
+      "rationale": "Immutable SQLAlchemy MetaData/Table/Index/constraint authority used by Alembic, repositories, runtime queries, and schema tests; no repository/service/transaction functions."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/durable_projects.py",
+      "loc": 96,
+      "classification": "LEGITIMATE_CANONICAL_AUTHORITY",
+      "canonicalOwner": "apps/api/mdi_api/durable_projects.py",
+      "topLevelDeclarations": [
+        {
+          "name": "persist_runtime_project",
+          "kind": "FunctionDef",
+          "lines": 25
+        },
+        {
+          "name": "list_runtime_projects",
+          "kind": "FunctionDef",
+          "lines": 15
+        },
+        {
+          "name": "hydrate_runtime_project",
+          "kind": "FunctionDef",
+          "lines": 21
+        },
+        {
+          "name": "_runtime_project_summary",
+          "kind": "FunctionDef",
+          "lines": 8
+        },
+        {
+          "name": "_durable_project_summary",
+          "kind": "FunctionDef",
+          "lines": 9
+        }
+      ],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.bootstrap.repository_factory"
+      ],
+      "reverseReferenceCount": 3,
+      "reverseReferences": [
+        "apps/api/mdi_api/infrastructure/phase2/runtime.py",
+        "apps/api/mdi_api/transport/routers/project_history.py",
+        "tests/test_phase_d_r2_1_input_transport.py"
+      ],
+      "rationale": "Sole implementation authority for an intentionally retained root capability not assigned a compatibility move in FILE_MOVE_MANIFEST; no canonical duplicate found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/durable_uploads.py",
+      "loc": 272,
+      "classification": "LEGITIMATE_CANONICAL_AUTHORITY",
+      "canonicalOwner": "apps/api/mdi_api/durable_uploads.py",
+      "topLevelDeclarations": [
+        {
+          "name": "DurableUploadResult",
+          "kind": "ClassDef",
+          "lines": 5
+        },
+        {
+          "name": "persist_phase2_upload",
+          "kind": "FunctionDef",
+          "lines": 83
+        },
+        {
+          "name": "_persist_raw_uploads",
+          "kind": "FunctionDef",
+          "lines": 39
+        },
+        {
+          "name": "_persist_normalized_exports",
+          "kind": "FunctionDef",
+          "lines": 71
+        },
+        {
+          "name": "_put_exact",
+          "kind": "FunctionDef",
+          "lines": 21
+        },
+        {
+          "name": "_put_metadata_exact",
+          "kind": "FunctionDef",
+          "lines": 22
+        },
+        {
+          "name": "_durable_key",
+          "kind": "FunctionDef",
+          "lines": 3
+        }
+      ],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.bootstrap.repository_factory"
+      ],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "apps/api/mdi_api/infrastructure/phase2/runtime.py",
+        "tests/test_phase13_1_durable_upload_worker_fix_forward_3.py"
+      ],
+      "rationale": "Sole implementation authority for an intentionally retained root capability not assigned a compatibility move in FILE_MOVE_MANIFEST; no canonical duplicate found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/input_transport.py",
+      "loc": 86,
+      "classification": "LEGITIMATE_FOUNDATION_MODULE",
+      "canonicalOwner": "apps/api/mdi_api/input_transport.py",
+      "topLevelDeclarations": [
+        {
+          "name": "UploadFileDeclaration",
+          "kind": "ClassDef",
+          "lines": 18
+        },
+        {
+          "name": "CreateUploadSessionRequest",
+          "kind": "ClassDef",
+          "lines": 13
+        },
+        {
+          "name": "input_transport_capability_contract",
+          "kind": "FunctionDef",
+          "lines": 31
+        }
+      ],
+      "assignmentCount": 7,
+      "canonicalImports": [],
+      "reverseReferenceCount": 8,
+      "reverseReferences": [
+        "apps/api/mdi_api/application/phase2/models.py",
+        "apps/api/mdi_api/durable_uploads.py",
+        "apps/api/mdi_api/infrastructure/phase2/runtime.py",
+        "apps/api/mdi_api/operations.py",
+        "apps/api/mdi_api/transport/routers/datasets.py",
+        "apps/api/mdi_api/transport/routers/secured_runtime.py",
+        "scripts/phase9_create_table_fixture.py",
+        "tests/test_phase_d_r2_1_input_transport.py"
+      ],
+      "rationale": "Single stable shared contract/configuration/schema/transaction-support authority; no duplicate canonical implementation found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/interpretation/__init__.py",
+      "loc": 4,
+      "classification": "LEGITIMATE_PUBLIC_API_AGGREGATOR",
+      "canonicalOwner": "package canonical owners",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Package export surface only; no business implementation authority."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/interpretation/assembler.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.application.interpretation.assembler",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.interpretation.assembler"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_phase6_interpretation.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/interpretation/client.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.interpretation.client",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.infrastructure.interpretation.client"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_phase6_interpretation.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/interpretation/grounding.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.application.interpretation.grounding",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.interpretation.grounding"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_phase6_interpretation.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/interpretation/projector.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.application.interpretation.projector",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.interpretation.projector"
+      ],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/interpretation/queue.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.interpretation.queue",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.infrastructure.interpretation.queue"
+      ],
+      "reverseReferenceCount": 3,
+      "reverseReferences": [
+        "tests/integration/test_agent2_phase6_service_backed.py",
+        "tests/test_agent2_phase6_interpretation.py",
+        "tests/test_worker_queue_manifest.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/interpretation/reconciler.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.interpretation.reconciler",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.infrastructure.interpretation.reconciler"
+      ],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/interpretation/schemas.py",
+      "loc": 4,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.domain.interpretation, mdi_api.domain.interpretation.contracts",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.domain.interpretation",
+        "mdi_api.domain.interpretation.contracts"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_phase6_interpretation.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/interpretation/service.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.interpretation.service",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.infrastructure.interpretation.service"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_phase6_interpretation.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/lifecycle_policy.py",
+      "loc": 101,
+      "classification": "LEGITIMATE_CANONICAL_AUTHORITY",
+      "canonicalOwner": "apps/api/mdi_api/lifecycle_policy.py",
+      "topLevelDeclarations": [
+        {
+          "name": "RetentionPolicy",
+          "kind": "ClassDef",
+          "lines": 29
+        },
+        {
+          "name": "retention_policy_snapshot",
+          "kind": "FunctionDef",
+          "lines": 9
+        },
+        {
+          "name": "evaluate_purge",
+          "kind": "FunctionDef",
+          "lines": 37
+        }
+      ],
+      "assignmentCount": 3,
+      "canonicalImports": [],
+      "reverseReferenceCount": 6,
+      "reverseReferences": [
+        "apps/api/mdi_api/infrastructure/scientific_objects/service.py",
+        "apps/api/mdi_api/infrastructure/scientific_reports/service.py",
+        "apps/api/mdi_api/transport/routers/auth.py",
+        "apps/api/mdi_api/transport/routers/research.py",
+        "apps/api/mdi_api/transport/routers/secured_runtime.py",
+        "tests/test_phase14r_retention_policy.py"
+      ],
+      "rationale": "Sole implementation authority for an intentionally retained root capability not assigned a compatibility move in FILE_MOVE_MANIFEST; no canonical duplicate found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/main.py",
+      "loc": 535,
+      "classification": "LEGITIMATE_RUNTIME_ENTRYPOINT",
+      "canonicalOwner": "mdi_api.transport.routers.auth",
+      "topLevelDeclarations": [
+        {
+          "name": "RouteSpec",
+          "kind": "ClassDef",
+          "lines": 6
+        },
+        {
+          "name": "AppSpec",
+          "kind": "ClassDef",
+          "lines": 4
+        },
+        {
+          "name": "create_app",
+          "kind": "FunctionDef",
+          "lines": 121
+        }
+      ],
+      "assignmentCount": 3,
+      "canonicalImports": [
+        "mdi_api.transport.routers.auth",
+        "mdi_api.transport.routers.platform_admin",
+        "mdi_api.transport.routers.research",
+        "mdi_api.transport.routers.datasets",
+        "mdi_api.transport.routers.secured_runtime",
+        "mdi_api.transport.routers.secured_planner",
+        "mdi_api.transport.routers.health",
+        "mdi_api.transport.routers.observability",
+        "mdi_api.transport.routers.planner_providers",
+        "mdi_api.transport.routers.projects",
+        "mdi_api.transport.routers.project_history",
+        "mdi_api.transport.routers.report_compositions",
+        "mdi_api.transport.routers.secrets",
+        "mdi_api.transport.routers.tools",
+        "mdi_api.transport.routers.agent2",
+        "mdi_api.transport.routers.scientific_reports",
+        "mdi_api.transport.routers.workspaces"
+      ],
+      "reverseReferenceCount": 28,
+      "reverseReferences": [
+        "scripts/generate_phase10k1_material_profile_evidence.py",
+        "scripts/generate_phase10l1_analysis_intent_evidence.py",
+        "scripts/generate_phase10l2_capability_planner_evidence.py",
+        "scripts/run_phase13_1_fix_forward_4_demo1_smoke.py",
+        "scripts/run_phase13_1_release_scope_exception_1.py",
+        "scripts/run_phase13_2_attempt4.py",
+        "scripts/run_phase13_2_attempt5.py",
+        "scripts/run_phase13_2_attempt6.py",
+        "tests/integration/test_phase10m1_workspace_service_backed.py",
+        "tests/integration/test_phase10m5_report_recipe_service_backed.py",
+        "tests/integration/test_phase10m6_workspace_recovery_service_backed.py",
+        "tests/integration/test_phase10n1_coordination_service_backed.py",
+        "tests/integration/test_phase10n2_local_environment_service_backed.py",
+        "tests/integration/test_phase10n3_experimental_xrd_service_backed.py",
+        "tests/integration/test_phase10n4_trajectory_analytics_service_backed.py",
+        "tests/integration/test_phase10n5_electronic_service_backed.py",
+        "tests/integration/test_phase13_2_attempt3_service_backed.py",
+        "tests/integration/test_phase_d_r1_durable_namespace_service_backed.py",
+        "tests/test_agent2_api.py",
+        "tests/test_agent2_phase9_viewers.py",
+        "tests/test_phase10l1_analysis_intent.py",
+        "tests/test_phase10m1_workspace_projection_api.py",
+        "tests/test_phase10m5_report_composition.py",
+        "tests/test_phase14r_observability.py",
+        "tests/test_phase9b_demo_workspace_api.py",
+        "tests/test_phase_d_r1_durable_namespace.py",
+        "tests/test_phase_d_r2_1_input_transport.py",
+        "tests/test_provider_configuration.py"
+      ],
+      "rationale": "Stable ASGI or persisted RQ dotted-path boundary; body is limited to lazy forwarding/composition required at process entry."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/migration_head.py",
+      "loc": 68,
+      "classification": "LEGITIMATE_FOUNDATION_MODULE",
+      "canonicalOwner": "apps/api/mdi_api/migration_head.py",
+      "topLevelDeclarations": [
+        {
+          "name": "DatabaseMigrationHeadError",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "DatabaseMigrationHeadStatus",
+          "kind": "ClassDef",
+          "lines": 3
+        },
+        {
+          "name": "migration_head_guard_required",
+          "kind": "FunctionDef",
+          "lines": 4
+        },
+        {
+          "name": "repository_migration_heads",
+          "kind": "FunctionDef",
+          "lines": 8
+        },
+        {
+          "name": "validate_database_migration_head",
+          "kind": "FunctionDef",
+          "lines": 28
+        }
+      ],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.infrastructure.persistence.engine"
+      ],
+      "reverseReferenceCount": 3,
+      "reverseReferences": [
+        "apps/api/mdi_api/main.py",
+        "services/workers/mdi_workers/worker_entrypoint.py",
+        "tests/test_migration_head_startup_guard.py"
+      ],
+      "rationale": "Single stable shared contract/configuration/schema/transaction-support authority; no duplicate canonical implementation found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/migrations.py",
+      "loc": 141,
+      "classification": "LEGITIMATE_FOUNDATION_MODULE",
+      "canonicalOwner": "apps/api/mdi_api/migrations.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 2,
+      "canonicalImports": [],
+      "reverseReferenceCount": 3,
+      "reverseReferences": [
+        "apps/api/alembic/versions/0001_phase4_persistence_baseline.py",
+        "tests/test_phase3_persistence.py",
+        "tests/test_phase4_persistence_hardening.py"
+      ],
+      "rationale": "Single stable shared contract/configuration/schema/transaction-support authority; no duplicate canonical implementation found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/observability.py",
+      "loc": 141,
+      "classification": "LEGITIMATE_FOUNDATION_MODULE",
+      "canonicalOwner": "apps/api/mdi_api/observability.py",
+      "topLevelDeclarations": [
+        {
+          "name": "release_sha",
+          "kind": "FunctionDef",
+          "lines": 7
+        },
+        {
+          "name": "bounded_identifier",
+          "kind": "FunctionDef",
+          "lines": 3
+        },
+        {
+          "name": "request_id",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "bounded_correlation",
+          "kind": "FunctionDef",
+          "lines": 7
+        },
+        {
+          "name": "request_correlation",
+          "kind": "FunctionDef",
+          "lines": 14
+        },
+        {
+          "name": "exception_event",
+          "kind": "FunctionDef",
+          "lines": 25
+        },
+        {
+          "name": "log_exception_event",
+          "kind": "FunctionDef",
+          "lines": 19
+        }
+      ],
+      "assignmentCount": 7,
+      "canonicalImports": [],
+      "reverseReferenceCount": 4,
+      "reverseReferences": [
+        "apps/api/mdi_api/main.py",
+        "apps/api/mdi_api/transport/routers/observability.py",
+        "services/workers/mdi_workers/observability.py",
+        "tests/test_phase14r_observability.py"
+      ],
+      "rationale": "Single stable shared contract/configuration/schema/transaction-support authority; no duplicate canonical implementation found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/operations.py",
+      "loc": 1127,
+      "classification": "LEGITIMATE_CANONICAL_AUTHORITY",
+      "canonicalOwner": "apps/api/mdi_api/operations.py",
+      "topLevelDeclarations": [
+        {
+          "name": "OperationsThresholds",
+          "kind": "ClassDef",
+          "lines": 4
+        },
+        {
+          "name": "build_operations_snapshot",
+          "kind": "FunctionDef",
+          "lines": 48
+        },
+        {
+          "name": "_database_snapshot",
+          "kind": "FunctionDef",
+          "lines": 123
+        },
+        {
+          "name": "_authority_consistency_snapshot",
+          "kind": "FunctionDef",
+          "lines": 81
+        },
+        {
+          "name": "_redis_snapshot",
+          "kind": "FunctionDef",
+          "lines": 74
+        },
+        {
+          "name": "_minio_snapshot",
+          "kind": "FunctionDef",
+          "lines": 113
+        },
+        {
+          "name": "_minio_observation_cache_key",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "_minio_observation_path",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "_persist_minio_observation",
+          "kind": "FunctionDef",
+          "lines": 48
+        },
+        {
+          "name": "_read_minio_observation",
+          "kind": "FunctionDef",
+          "lines": 28
+        },
+        {
+          "name": "_remove_minio_observation",
+          "kind": "FunctionDef",
+          "lines": 5
+        },
+        {
+          "name": "_bounded_minio_usage",
+          "kind": "FunctionDef",
+          "lines": 48
+        },
+        {
+          "name": "_worker_health_snapshot",
+          "kind": "FunctionDef",
+          "lines": 34
+        },
+        {
+          "name": "_resource_governance_snapshot",
+          "kind": "FunctionDef",
+          "lines": 36
+        },
+        {
+          "name": "_resource_governance_violations",
+          "kind": "FunctionDef",
+          "lines": 42
+        },
+        {
+          "name": "_operations_alerts",
+          "kind": "FunctionDef",
+          "lines": 265
+        },
+        {
+          "name": "_alert",
+          "kind": "FunctionDef",
+          "lines": 26
+        },
+        {
+          "name": "_bounded_reason",
+          "kind": "FunctionDef",
+          "lines": 3
+        },
+        {
+          "name": "_as_non_negative_int",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "_as_int",
+          "kind": "FunctionDef",
+          "lines": 5
+        },
+        {
+          "name": "_safe_pool_metric",
+          "kind": "FunctionDef",
+          "lines": 8
+        },
+        {
+          "name": "_as_utc",
+          "kind": "FunctionDef",
+          "lines": 2
+        }
+      ],
+      "assignmentCount": 12,
+      "canonicalImports": [
+        "mdi_api.infrastructure.persistence.engine",
+        "mdi_api.infrastructure.reports.composition"
+      ],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "apps/api/mdi_api/transport/routers/platform_admin.py",
+        "scripts/phase14r_operations_snapshot.py"
+      ],
+      "rationale": "Sole implementation authority for an intentionally retained root capability not assigned a compatibility move in FILE_MOVE_MANIFEST; no canonical duplicate found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/phase1_demo.py",
+      "loc": 683,
+      "classification": "LEGITIMATE_CANONICAL_AUTHORITY",
+      "canonicalOwner": "apps/api/mdi_api/phase1_demo.py",
+      "topLevelDeclarations": [
+        {
+          "name": "Phase1DemoResult",
+          "kind": "ClassDef",
+          "lines": 13
+        },
+        {
+          "name": "run_phase1_demo",
+          "kind": "FunctionDef",
+          "lines": 236
+        },
+        {
+          "name": "build_phase1_plan",
+          "kind": "FunctionDef",
+          "lines": 31
+        },
+        {
+          "name": "summarize_plan",
+          "kind": "FunctionDef",
+          "lines": 16
+        },
+        {
+          "name": "_expected_artifacts_for_steps",
+          "kind": "FunctionDef",
+          "lines": 6
+        },
+        {
+          "name": "remember_phase1_result",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "get_phase1_job_events",
+          "kind": "FunctionDef",
+          "lines": 5
+        },
+        {
+          "name": "get_phase1_job_project_id",
+          "kind": "FunctionDef",
+          "lines": 4
+        },
+        {
+          "name": "get_phase1_job_artifacts",
+          "kind": "FunctionDef",
+          "lines": 5
+        },
+        {
+          "name": "submit_analysis_request_stub",
+          "kind": "FunctionDef",
+          "lines": 7
+        },
+        {
+          "name": "stream_phase1_job_events",
+          "kind": "FunctionDef",
+          "lines": 13
+        },
+        {
+          "name": "_phase1_step",
+          "kind": "FunctionDef",
+          "lines": 34
+        },
+        {
+          "name": "_build_object_store",
+          "kind": "FunctionDef",
+          "lines": 21
+        },
+        {
+          "name": "_export_plan_artifact",
+          "kind": "FunctionDef",
+          "lines": 30
+        },
+        {
+          "name": "_export_report_artifacts",
+          "kind": "FunctionDef",
+          "lines": 31
+        },
+        {
+          "name": "_report_markdown",
+          "kind": "FunctionDef",
+          "lines": 38
+        },
+        {
+          "name": "_report_html",
+          "kind": "FunctionDef",
+          "lines": 9
+        },
+        {
+          "name": "_uploaded_file_summary",
+          "kind": "FunctionDef",
+          "lines": 8
+        },
+        {
+          "name": "_artifact_summary",
+          "kind": "FunctionDef",
+          "lines": 8
+        },
+        {
+          "name": "_default_params_for",
+          "kind": "FunctionDef",
+          "lines": 42
+        },
+        {
+          "name": "_purpose_for",
+          "kind": "FunctionDef",
+          "lines": 16
+        },
+        {
+          "name": "_input_reason_for",
+          "kind": "FunctionDef",
+          "lines": 9
+        },
+        {
+          "name": "_safe_id",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "_utc_now",
+          "kind": "FunctionDef",
+          "lines": 2
+        }
+      ],
+      "assignmentCount": 2,
+      "canonicalImports": [],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "apps/api/mdi_api/transport/routers/secured_runtime.py",
+        "tests/test_phase1_product_acceptance.py"
+      ],
+      "rationale": "Sole implementation authority for an intentionally retained root capability not assigned a compatibility move in FILE_MOVE_MANIFEST; no canonical duplicate found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/phase2_runtime.py",
+      "loc": 22,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/infrastructure/phase2/runtime.py + apps/api/mdi_api/application/phase2/models.py",
+      "topLevelDeclarations": [
+        {
+          "name": "_Phase2CompatibilityModule",
+          "kind": "ClassDef",
+          "lines": 7
+        }
+      ],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.phase2",
+        "mdi_api.infrastructure.phase2"
+      ],
+      "reverseReferenceCount": 38,
+      "reverseReferences": [
+        "scripts/generate_phase10k1_material_profile_evidence.py",
+        "scripts/generate_phase10k2_dataset_explorer_evidence.py",
+        "scripts/generate_phase10k3_materials_ml_evidence.py",
+        "scripts/generate_phase10k4_composition_space_evidence.py",
+        "scripts/generate_phase10l1_analysis_intent_evidence.py",
+        "scripts/generate_phase10l2_capability_planner_evidence.py",
+        "scripts/generate_phase10l5_natural_language_closure_evidence.py",
+        "scripts/generate_phase13_1_durable_upload_worker_fix_forward_3.py",
+        "scripts/generate_phase13_1_runtime_resource_fix_forward_2.py",
+        "scripts/generate_phase13_2_rerun_failure_evidence.py",
+        "scripts/phase9_create_table_fixture.py",
+        "scripts/run_phase13_1_fix_forward_4_demo1_smoke.py",
+        "scripts/run_phase13_1_release_scope_exception_1.py",
+        "scripts/run_phase13_2_attempt4.py",
+        "scripts/run_phase13_2_attempt5.py",
+        "scripts/run_phase13_2_attempt6.py",
+        "scripts/verify_deepseek_historical_browser_flows.py",
+        "tests/integration/test_phase10_product_closure.py",
+        "tests/integration/test_phase13_2_attempt3_service_backed.py",
+        "tests/integration/test_phase_d_r1_durable_namespace_service_backed.py",
+        "tests/test_phase10g3_trajectory_product.py",
+        "tests/test_phase10j1_volumetric_parser_adapter.py",
+        "tests/test_phase10k2_dataset_materials_explorer.py",
+        "tests/test_phase10k3_materials_ml_evaluation.py",
+        "tests/test_phase10k4_composition_space.py",
+        "tests/test_phase10l1_analysis_intent.py",
+        "tests/test_phase13_1_durable_upload_worker_fix_forward_3.py",
+        "tests/test_phase13_1_runtime_resource_fix_forward_2.py",
+        "tests/test_phase13_1_typed_phonon_import.py",
+        "tests/test_phase2_product_loop.py"
+      ],
+      "rationale": "Old public/patch path forwards to canonical owners without a second implementation."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/project_history.py",
+      "loc": 5,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/application/projects/history.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.application.projects.history"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_project_history.py"
+      ],
+      "rationale": "Old public/patch path forwards to canonical owners without a second implementation."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/provider_connections.py",
+      "loc": 362,
+      "classification": "TEMPORARY_COMPATIBILITY_WITH_JUSTIFICATION",
+      "canonicalOwner": "apps/api/mdi_api/provider_connections.py",
+      "topLevelDeclarations": [
+        {
+          "name": "ProviderConnectionConfigurationError",
+          "kind": "ClassDef",
+          "lines": 6
+        },
+        {
+          "name": "_fernet",
+          "kind": "FunctionDef",
+          "lines": 16
+        },
+        {
+          "name": "ProviderConnection",
+          "kind": "ClassDef",
+          "lines": 15
+        },
+        {
+          "name": "_ProviderConnectionStore",
+          "kind": "ClassDef",
+          "lines": 12
+        },
+        {
+          "name": "_InMemoryProviderConnectionStore",
+          "kind": "ClassDef",
+          "lines": 24
+        },
+        {
+          "name": "DatabaseProviderConnectionStore",
+          "kind": "ClassDef",
+          "lines": 58
+        },
+        {
+          "name": "_active_store",
+          "kind": "FunctionDef",
+          "lines": 7
+        },
+        {
+          "name": "_durable_store_enabled",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "validate_base_url",
+          "kind": "FunctionDef",
+          "lines": 17
+        },
+        {
+          "name": "normalize_provider",
+          "kind": "FunctionDef",
+          "lines": 5
+        },
+        {
+          "name": "save_connection",
+          "kind": "FunctionDef",
+          "lines": 29
+        },
+        {
+          "name": "get_connection",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "list_connections",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "delete_connection",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "update_connection_models",
+          "kind": "FunctionDef",
+          "lines": 17
+        },
+        {
+          "name": "reset_connections_for_tests",
+          "kind": "FunctionDef",
+          "lines": 3
+        },
+        {
+          "name": "decrypt_api_key",
+          "kind": "FunctionDef",
+          "lines": 12
+        },
+        {
+          "name": "_connection_from_row",
+          "kind": "FunctionDef",
+          "lines": 18
+        },
+        {
+          "name": "_parse_timestamp",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "_timestamp_text",
+          "kind": "FunctionDef",
+          "lines": 4
+        },
+        {
+          "name": "public_connection",
+          "kind": "FunctionDef",
+          "lines": 18
+        },
+        {
+          "name": "thinking_modes",
+          "kind": "FunctionDef",
+          "lines": 6
+        },
+        {
+          "name": "thinking_budget",
+          "kind": "FunctionDef",
+          "lines": 4
+        }
+      ],
+      "assignmentCount": 5,
+      "canonicalImports": [
+        "mdi_api.infrastructure.persistence.engine"
+      ],
+      "reverseReferenceCount": 4,
+      "reverseReferences": [
+        "apps/api/mdi_api/application/providers/selection.py",
+        "apps/api/mdi_api/transport/routers/planner.py",
+        "apps/api/mdi_api/transport/routers/planner_providers.py",
+        "tests/test_provider_configuration.py"
+      ],
+      "rationale": "Sole provider-connection authority retained behind the bounded B0-6 provider catalogue edge; no duplicate implementation, but layer placement remains explicit compatibility debt."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/report_composition.py",
+      "loc": 21,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/infrastructure/reports/composition.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.infrastructure.reports.composition"
+      ],
+      "reverseReferenceCount": 5,
+      "reverseReferences": [
+        "scripts/generate_phase10m5_evidence.py",
+        "tests/test_phase10m5_report_composition.py",
+        "tests/test_phase10m5_report_contracts.py",
+        "tests/test_phase10m7_workspace_integration.py",
+        "tests/test_report_composition_ownership.py"
+      ],
+      "rationale": "Old public/patch path forwards to canonical owners without a second implementation."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/repositories.py",
+      "loc": 240,
+      "classification": "LEGITIMATE_PUBLIC_API_AGGREGATOR",
+      "canonicalOwner": "distributed application ports and infrastructure persistence implementations",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.data.ports",
+        "mdi_api.infrastructure.persistence.bundles",
+        "mdi_api.application.workspaces.ports",
+        "mdi_api.infrastructure.persistence.memory_workspace",
+        "mdi_api.infrastructure.persistence.sqlalchemy_workspace",
+        "mdi_api.infrastructure.persistence.workspace_common",
+        "mdi_api.application.interpretation.ports",
+        "mdi_api.infrastructure.persistence.memory_interpretation",
+        "mdi_api.infrastructure.persistence.sqlalchemy_interpretation",
+        "mdi_api.infrastructure.persistence.interpretation_common",
+        "mdi_api.infrastructure.persistence.sqlalchemy_interpretation",
+        "mdi_api.application.research.planning.ports",
+        "mdi_api.application.research.planning.integrity",
+        "mdi_api.infrastructure.persistence.memory_analysis_plans",
+        "mdi_api.infrastructure.persistence.memory_dependency",
+        "mdi_api.infrastructure.persistence.sqlalchemy_analysis_plans",
+        "mdi_api.infrastructure.persistence.sqlalchemy_dependency",
+        "mdi_api.infrastructure.persistence.planning_records",
+        "mdi_api.application.reports.ports",
+        "mdi_api.infrastructure.persistence.memory_reports",
+        "mdi_api.infrastructure.persistence.sqlalchemy_reports",
+        "mdi_api.application.artifacts.ports",
+        "mdi_api.infrastructure.persistence.memory_artifacts",
+        "mdi_api.infrastructure.persistence.sqlalchemy_artifacts",
+        "mdi_api.application.jobs.ports",
+        "mdi_api.infrastructure.persistence.memory_jobs",
+        "mdi_api.infrastructure.persistence.sqlalchemy_jobs",
+        "mdi_api.application.research.planning.ports",
+        "mdi_api.infrastructure.persistence.memory_planning",
+        "mdi_api.infrastructure.persistence.sqlalchemy_planning",
+        "mdi_api.application.projects.ports",
+        "mdi_api.infrastructure.persistence.base",
+        "mdi_api.infrastructure.persistence.sqlalchemy_jobs",
+        "mdi_api.infrastructure.persistence.planning",
+        "mdi_api.infrastructure.persistence.memory",
+        "mdi_api.infrastructure.persistence.sqlalchemy"
+      ],
+      "reverseReferenceCount": 92,
+      "reverseReferences": [
+        "apps/api/mdi_api/research_agent/planning/binder.py",
+        "apps/api/mdi_api/unit_of_work.py",
+        "apps/web/test/generate-charge-spin-density-evidence.py",
+        "apps/web/test/generate-electrostatic-potential-evidence.py",
+        "apps/web/test/generate-elf-orbital-evidence.py",
+        "apps/web/test/generate-viewer-scene-live-adapter-evidence.py",
+        "apps/web/test/generate-volumetric-parser-evidence.py",
+        "apps/web/test/generate-volumetric-slice-volume-evidence.py",
+        "scripts/generate_phase10g1_parser_adapter_evidence.py",
+        "scripts/generate_phase10g3_trajectory_product_evidence.py",
+        "scripts/generate_phase10h1_phonon_band_evidence.py",
+        "scripts/generate_phase10h2_phonon_dos_evidence.py",
+        "scripts/generate_phase10h3_phonon_band_dos_evidence.py",
+        "scripts/generate_phase10h5_phonon_animation_evidence.py",
+        "scripts/generate_phase10i1_brillouin_zone_adapter_evidence.py",
+        "scripts/generate_phase10i3_band_bz_evidence.py",
+        "scripts/generate_phase10k2_dataset_explorer_evidence.py",
+        "scripts/generate_phase10k3_materials_ml_evidence.py",
+        "scripts/generate_phase10k4_composition_space_evidence.py",
+        "scripts/generate_phase10l1_analysis_intent_evidence.py",
+        "scripts/generate_phase10l2_capability_planner_evidence.py",
+        "scripts/generate_phase10l3_dependency_evidence.py",
+        "scripts/generate_phase10l4_interpretation_evidence.py",
+        "scripts/generate_phase10l5_natural_language_closure_evidence.py",
+        "scripts/generate_phase10m5_evidence.py",
+        "scripts/generate_phase13_1_product_entry_fix_forward.py",
+        "scripts/generate_phase13_1_runtime_resource_fix_forward_2.py",
+        "scripts/generate_phase13_2_blocker_evidence.py",
+        "scripts/generate_phase13_2_rerun_failure_evidence.py",
+        "scripts/verify_deepseek_historical_browser_flows.py"
+      ],
+      "rationale": "Zero top-level implementation declarations; identity-preserving aggregation of frozen repository symbols, helpers, bundles, and patch targets."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/research_agent_planning_worker.py",
+      "loc": 17,
+      "classification": "LEGITIMATE_RUNTIME_ENTRYPOINT",
+      "canonicalOwner": "apps/api/mdi_api/research_agent_planning_worker.py",
+      "topLevelDeclarations": [
+        {
+          "name": "run_queued_planning",
+          "kind": "FunctionDef",
+          "lines": 4
+        }
+      ],
+      "assignmentCount": 1,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Stable ASGI or persisted RQ dotted-path boundary; body is limited to lazy forwarding/composition required at process entry."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/research_agent_worker.py",
+      "loc": 16,
+      "classification": "LEGITIMATE_RUNTIME_ENTRYPOINT",
+      "canonicalOwner": "apps/api/mdi_api/research_agent_worker.py",
+      "topLevelDeclarations": [
+        {
+          "name": "run_queued_turn",
+          "kind": "FunctionDef",
+          "lines": 5
+        }
+      ],
+      "assignmentCount": 1,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Stable ASGI or persisted RQ dotted-path boundary; body is limited to lazy forwarding/composition required at process entry."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/__init__.py",
+      "loc": 1,
+      "classification": "LEGITIMATE_PUBLIC_API_AGGREGATOR",
+      "canonicalOwner": "package canonical owners",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 10,
+      "reverseReferences": [
+        "tests/test_account_admin_management.py",
+        "tests/test_dataset_object_store_projection.py",
+        "tests/test_legacy_user_secrets_boundary.py",
+        "tests/test_phase10l5_deepseek_provider.py",
+        "tests/test_phase10m1_workspace_projection_api.py",
+        "tests/test_phase10m5_report_composition.py",
+        "tests/test_phase14r_notification_read_state.py",
+        "tests/test_phase14r_search_coverage.py",
+        "tests/test_phase14r_search_pagination.py",
+        "tests/test_service_failure_classification.py"
+      ],
+      "rationale": "Package export surface only; no business implementation authority."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/agent2.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/agent2.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 4,
+      "reverseReferences": [
+        "tests/test_agent2_api.py",
+        "tests/test_batch0_research_boundaries.py",
+        "tests/test_phase14r_context_manifest.py",
+        "tests/test_phase14r_request_backpressure.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/auth.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/auth.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 23,
+      "reverseReferences": [
+        "tests/integration/test_agent2_phase1_service_backed.py",
+        "tests/integration/test_agent2_phase2_service_backed.py",
+        "tests/integration/test_agent2_phase3_service_backed.py",
+        "tests/integration/test_agent2_phase4_service_backed.py",
+        "tests/integration/test_agent2_phase9_service_backed.py",
+        "tests/test_account_admin_management.py",
+        "tests/test_agent2_api.py",
+        "tests/test_agent2_domain.py",
+        "tests/test_agent2_phase2_processor.py",
+        "tests/test_agent2_phase7_memory.py",
+        "tests/test_agent2_phase8_reports.py",
+        "tests/test_agent2_phase9_viewers.py",
+        "tests/test_batch0_research_boundaries.py",
+        "tests/test_legacy_user_secrets_boundary.py",
+        "tests/test_phase14r_authorization.py",
+        "tests/test_phase14r_notification_read_state.py",
+        "tests/test_phase14r_observability.py",
+        "tests/test_phase14r_search_coverage.py",
+        "tests/test_phase14r_search_pagination.py",
+        "tests/test_platform_admin_authorization.py",
+        "tests/test_product_research_scope.py",
+        "tests/test_project_access.py",
+        "tests/test_provider_configuration.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/datasets.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/datasets.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "tests/test_dataset_object_store_projection.py",
+        "tests/test_project_access.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/health.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/health.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 3,
+      "reverseReferences": [
+        "tests/test_phase10l5_deepseek_provider.py",
+        "tests/test_phase14r_runtime_environment_builder.py",
+        "tests/test_phase9b_demo_workspace_api.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/observability.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/observability.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_phase14r_observability.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/planner.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/planner.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 76,
+      "reverseReferences": [
+        "apps/web/test/generate-charge-spin-density-evidence.py",
+        "apps/web/test/generate-electrostatic-potential-evidence.py",
+        "apps/web/test/generate-elf-orbital-evidence.py",
+        "apps/web/test/generate-viewer-scene-live-adapter-evidence.py",
+        "apps/web/test/generate-volumetric-parser-evidence.py",
+        "apps/web/test/generate-volumetric-slice-volume-evidence.py",
+        "scripts/generate_phase10g1_parser_adapter_evidence.py",
+        "scripts/generate_phase10g3_trajectory_product_evidence.py",
+        "scripts/generate_phase10h1_phonon_band_evidence.py",
+        "scripts/generate_phase10h2_phonon_dos_evidence.py",
+        "scripts/generate_phase10h3_phonon_band_dos_evidence.py",
+        "scripts/generate_phase10h5_phonon_animation_evidence.py",
+        "scripts/generate_phase10i1_brillouin_zone_adapter_evidence.py",
+        "scripts/generate_phase10i3_band_bz_evidence.py",
+        "scripts/generate_phase10k2_dataset_explorer_evidence.py",
+        "scripts/generate_phase10k3_materials_ml_evidence.py",
+        "scripts/generate_phase10k4_composition_space_evidence.py",
+        "scripts/generate_phase10l1_analysis_intent_evidence.py",
+        "scripts/generate_phase10l2_capability_planner_evidence.py",
+        "scripts/generate_phase10l3_dependency_evidence.py",
+        "scripts/generate_phase10l4_interpretation_evidence.py",
+        "scripts/generate_phase10l5_natural_language_closure_evidence.py",
+        "scripts/generate_phase10m5_evidence.py",
+        "scripts/generate_phase13_2_attempt5_failure_evidence.py",
+        "scripts/generate_phase13_2_blocker_evidence.py",
+        "scripts/generate_phase13_2_rerun_failure_evidence.py",
+        "scripts/run_phase13_1_fix_forward_4_demo1_smoke.py",
+        "scripts/run_phase13_1_release_scope_exception_1.py",
+        "scripts/run_phase13_2_attempt4.py",
+        "scripts/run_phase13_2_attempt5.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/planner_providers.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/planner_providers.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 4,
+      "reverseReferences": [
+        "tests/test_phase10l5_deepseek_provider.py",
+        "tests/test_phase9b_demo_workspace_api.py",
+        "tests/test_provider_catalog_contract.py",
+        "tests/test_provider_configuration.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/platform_admin.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/platform_admin.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_phase14r_storage_budget.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/project_history.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/project_history.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "tests/test_project_history.py",
+        "tests/test_project_history_research_context.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/projects.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/projects.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_project_access.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/report_compositions.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/report_compositions.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_product_research_scope.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/research.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/research.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 3,
+      "reverseReferences": [
+        "tests/test_agent2_phase6_interpretation.py",
+        "tests/test_product_research_scope.py",
+        "tests/test_project_access.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/scientific_reports.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/scientific_reports.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "tests/test_phase14r_authorization.py",
+        "tests/test_project_access.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/secrets.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/secrets.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/secured_planner.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/secured_planner.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "tests/test_phase14r_authorization.py",
+        "tests/test_project_access.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/secured_runtime.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/secured_runtime.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_project_access.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/tools.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/tools.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "apps/web/test/generate-viewer-3d-product-evidence.py",
+        "tests/test_phase10f27_formal_viewer_product.py"
+      ],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/routers/workspaces.py",
+      "loc": 9,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/transport/routers/workspaces.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.transport.routers"
+      ],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Module identity alias to canonical transport router; preserves monkeypatch/import identity."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_objects/__init__.py",
+      "loc": 41,
+      "classification": "LEGITIMATE_PUBLIC_API_AGGREGATOR",
+      "canonicalOwner": "package canonical owners",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Package export surface only; no business implementation authority."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_objects/registry.py",
+      "loc": 13,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.scientific_objects.registry",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.infrastructure.scientific_objects.registry"
+      ],
+      "reverseReferenceCount": 13,
+      "reverseReferences": [
+        "apps/api/mdi_api/research_agent/registry_validation.py",
+        "scripts/phase9_create_table_fixture.py",
+        "tests/integration/test_agent2_phase1_service_backed.py",
+        "tests/integration/test_agent2_phase2_service_backed.py",
+        "tests/integration/test_agent2_phase3_service_backed.py",
+        "tests/integration/test_agent2_phase4_service_backed.py",
+        "tests/integration/test_agent2_phase7_service_backed.py",
+        "tests/test_agent2_api.py",
+        "tests/test_agent2_contracts_registries.py",
+        "tests/test_agent2_domain.py",
+        "tests/test_agent2_phase2_processor.py",
+        "tests/test_agent2_phase3_planning.py",
+        "tests/test_agent2_phase4_exact_sources.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_objects/schemas.py",
+      "loc": 31,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.domain.scientific_objects.contracts",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.domain.scientific_objects.contracts"
+      ],
+      "reverseReferenceCount": 29,
+      "reverseReferences": [
+        "apps/api/mdi_api/research_agent/capabilities/resolver.py",
+        "apps/api/mdi_api/research_agent/capabilities/schemas.py",
+        "apps/api/mdi_api/research_agent/context/assembler.py",
+        "apps/api/mdi_api/research_agent/context/schemas.py",
+        "apps/api/mdi_api/research_agent/evaluation/runner.py",
+        "apps/api/mdi_api/research_agent/memory/schemas.py",
+        "apps/api/mdi_api/research_agent/memory/service.py",
+        "apps/api/mdi_api/research_agent/orchestration/processor.py",
+        "apps/api/mdi_api/research_agent/planning/processor.py",
+        "apps/api/mdi_api/research_agent/schemas.py",
+        "tests/integration/test_agent2_phase1_service_backed.py",
+        "tests/integration/test_agent2_phase2_service_backed.py",
+        "tests/integration/test_agent2_phase3_service_backed.py",
+        "tests/integration/test_agent2_phase4_service_backed.py",
+        "tests/integration/test_agent2_phase7_service_backed.py",
+        "tests/test_agent2_api.py",
+        "tests/test_agent2_contracts_registries.py",
+        "tests/test_agent2_domain.py",
+        "tests/test_agent2_phase10_capabilities.py",
+        "tests/test_agent2_phase2_contracts.py",
+        "tests/test_agent2_phase2_processor.py",
+        "tests/test_agent2_phase3_planning.py",
+        "tests/test_agent2_phase4_exact_sources.py",
+        "tests/test_agent2_phase5_results.py",
+        "tests/test_agent2_phase6_interpretation.py",
+        "tests/test_agent2_phase7_live.py",
+        "tests/test_agent2_phase7_memory.py",
+        "tests/test_agent2_phase9_viewers.py",
+        "tests/test_phase14r_context_manifest.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_objects/service.py",
+      "loc": 5,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.scientific_objects.service",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.infrastructure.scientific_objects.service"
+      ],
+      "reverseReferenceCount": 12,
+      "reverseReferences": [
+        "scripts/phase9_create_table_fixture.py",
+        "tests/integration/test_agent2_phase1_service_backed.py",
+        "tests/integration/test_agent2_phase2_service_backed.py",
+        "tests/integration/test_agent2_phase3_service_backed.py",
+        "tests/integration/test_agent2_phase4_service_backed.py",
+        "tests/integration/test_agent2_phase7_service_backed.py",
+        "tests/test_agent2_api.py",
+        "tests/test_agent2_domain.py",
+        "tests/test_agent2_phase2_processor.py",
+        "tests/test_agent2_phase3_planning.py",
+        "tests/test_agent2_phase4_exact_sources.py",
+        "tests/test_agent2_phase9_viewers.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_reports/__init__.py",
+      "loc": 6,
+      "classification": "LEGITIMATE_PUBLIC_API_AGGREGATOR",
+      "canonicalOwner": "package canonical owners",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Package export surface only; no business implementation authority."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_reports/assembler.py",
+      "loc": 3,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.application.scientific_reports.assembler",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.application.scientific_reports.assembler"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_phase8_reports.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_reports/client.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.scientific_reports.client",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.infrastructure.scientific_reports.client"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_phase8_reports.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_reports/grounded.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.application.scientific_reports.grounded",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.scientific_reports.grounded"
+      ],
+      "reverseReferenceCount": 3,
+      "reverseReferences": [
+        "scripts/phase9_create_report_fixture.py",
+        "tests/integration/test_agent2_phase8_service_backed.py",
+        "tests/test_agent2_phase8_reports.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_reports/grounding.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.application.scientific_reports.grounding",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.scientific_reports.grounding"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_phase8_reports.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_reports/queue.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.scientific_reports.queue",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.infrastructure.scientific_reports.queue"
+      ],
+      "reverseReferenceCount": 4,
+      "reverseReferences": [
+        "scripts/phase9_create_report_fixture.py",
+        "tests/integration/test_agent2_phase8_service_backed.py",
+        "tests/test_agent2_phase8_reports.py",
+        "tests/test_worker_queue_manifest.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_reports/requests.py",
+      "loc": 3,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.scientific_reports.requests",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.infrastructure.scientific_reports.requests"
+      ],
+      "reverseReferenceCount": 3,
+      "reverseReferences": [
+        "scripts/phase9_create_report_fixture.py",
+        "tests/integration/test_agent2_phase8_service_backed.py",
+        "tests/test_agent2_phase8_reports.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_reports/schemas.py",
+      "loc": 4,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.domain.scientific_reports, mdi_api.domain.scientific_reports.contracts",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.domain.scientific_reports",
+        "mdi_api.domain.scientific_reports.contracts"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_phase8_reports.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_reports/service.py",
+      "loc": 4,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.domain.scientific_reports.errors, mdi_api.infrastructure.scientific_reports.service",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.domain.scientific_reports.errors",
+        "mdi_api.infrastructure.scientific_reports.service"
+      ],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "tests/test_agent2_phase8_reports.py",
+        "tests/test_batch0_worker_entrypoints.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/__init__.py",
+      "loc": 7,
+      "classification": "LEGITIMATE_PUBLIC_API_AGGREGATOR",
+      "canonicalOwner": "package canonical owners",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "services/workers/mdi_workers/queue_runtime.py"
+      ],
+      "rationale": "Package export surface only; no business implementation authority."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/artifact_loader.py",
+      "loc": 3,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.scientific_results.artifact_loader",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.infrastructure.scientific_results.artifact_loader"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_phase5_results.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/fingerprint.py",
+      "loc": 7,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.domain.scientific_results.fingerprint",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.domain.scientific_results.fingerprint"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_phase5_results.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/projectors/__init__.py",
+      "loc": 6,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.application.scientific_results.projectors.registry",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.application.scientific_results.projectors.registry"
+      ],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/projectors/artifact_payloads.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.application.scientific_results.projectors.artifact_payloads",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.scientific_results.projectors.artifact_payloads"
+      ],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/projectors/base.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.application.scientific_results.projectors.base",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.scientific_results.projectors.base"
+      ],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "tests/test_agent2_phase10_capabilities.py",
+        "tests/test_agent2_phase5_results.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/projectors/canonical.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.application.scientific_results.projectors.canonical",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.scientific_results.projectors.canonical"
+      ],
+      "reverseReferenceCount": 3,
+      "reverseReferences": [
+        "tests/integration/test_agent2_phase5_service_backed.py",
+        "tests/test_agent2_phase10_capabilities.py",
+        "tests/test_agent2_phase5_results.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/projectors/registry.py",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.application.scientific_results.projectors.registry",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.scientific_results.projectors.registry"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_contracts_registries.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/queue.py",
+      "loc": 3,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.scientific_results.queue",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.infrastructure.scientific_results.queue"
+      ],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "tests/test_agent2_phase5_closure.py",
+        "tests/test_worker_queue_manifest.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/reconciler.py",
+      "loc": 3,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.scientific_results.reconciler",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.infrastructure.scientific_results.reconciler"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/test_agent2_phase5_closure.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/relevance.py",
+      "loc": 3,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.domain.scientific_results.relevance",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.domain.scientific_results.relevance"
+      ],
+      "reverseReferenceCount": 1,
+      "reverseReferences": [
+        "tests/integration/test_agent2_phase7_service_backed.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/schemas.py",
+      "loc": 5,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.domain.scientific_results, mdi_api.domain.scientific_results.contracts",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.domain.scientific_results",
+        "mdi_api.domain.scientific_results.contracts"
+      ],
+      "reverseReferenceCount": 8,
+      "reverseReferences": [
+        "scripts/phase9_create_report_fixture.py",
+        "tests/integration/test_agent2_phase8_service_backed.py",
+        "tests/test_agent2_api.py",
+        "tests/test_agent2_contracts_registries.py",
+        "tests/test_agent2_domain.py",
+        "tests/test_agent2_phase5_results.py",
+        "tests/test_agent2_phase6_interpretation.py",
+        "tests/test_agent2_phase8_reports.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/service.py",
+      "loc": 6,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "mdi_api.infrastructure.scientific_results.service",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.infrastructure.scientific_results.service"
+      ],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "tests/test_agent2_domain.py",
+        "tests/test_agent2_phase5_results.py"
+      ],
+      "rationale": "Import/re-export compatibility surface with no top-level implementation declarations."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/scientific_results/worker.py",
+      "loc": 28,
+      "classification": "LEGITIMATE_RUNTIME_ENTRYPOINT",
+      "canonicalOwner": "mdi_api.application.scientific_results",
+      "topLevelDeclarations": [
+        {
+          "name": "run_queued_result_projection",
+          "kind": "FunctionDef",
+          "lines": 16
+        }
+      ],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.application.scientific_results",
+        "mdi_api.bootstrap.repository_factory",
+        "mdi_api.infrastructure.scientific_results.artifact_loader",
+        "mdi_api.infrastructure.scientific_results.service"
+      ],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Stable ASGI or persisted RQ dotted-path boundary; body is limited to lazy forwarding/composition required at process entry."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/service_failures.py",
+      "loc": 233,
+      "classification": "LEGITIMATE_FOUNDATION_MODULE",
+      "canonicalOwner": "apps/api/mdi_api/service_failures.py",
+      "topLevelDeclarations": [
+        {
+          "name": "ServiceFailure",
+          "kind": "ClassDef",
+          "lines": 9
+        },
+        {
+          "name": "classify_service_failure",
+          "kind": "FunctionDef",
+          "lines": 16
+        },
+        {
+          "name": "configuration_service_failure",
+          "kind": "FunctionDef",
+          "lines": 4
+        },
+        {
+          "name": "_classify_database_failure",
+          "kind": "FunctionDef",
+          "lines": 9
+        },
+        {
+          "name": "_classify_redis_failure",
+          "kind": "FunctionDef",
+          "lines": 21
+        },
+        {
+          "name": "_classify_artifact_storage_failure",
+          "kind": "FunctionDef",
+          "lines": 45
+        },
+        {
+          "name": "_failure",
+          "kind": "FunctionDef",
+          "lines": 12
+        },
+        {
+          "name": "_exception_chain",
+          "kind": "FunctionDef",
+          "lines": 14
+        },
+        {
+          "name": "_contains_timeout",
+          "kind": "FunctionDef",
+          "lines": 5
+        },
+        {
+          "name": "_contains_connection_failure",
+          "kind": "FunctionDef",
+          "lines": 6
+        },
+        {
+          "name": "_sqlstate",
+          "kind": "FunctionDef",
+          "lines": 6
+        },
+        {
+          "name": "_is_sqlalchemy_operational_error",
+          "kind": "FunctionDef",
+          "lines": 6
+        }
+      ],
+      "assignmentCount": 7,
+      "canonicalImports": [],
+      "reverseReferenceCount": 3,
+      "reverseReferences": [
+        "apps/api/mdi_api/operations.py",
+        "apps/api/mdi_api/transport/routers/health.py",
+        "tests/test_service_failure_classification.py"
+      ],
+      "rationale": "Single stable shared contract/configuration/schema/transaction-support authority; no duplicate canonical implementation found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/state_machine.py",
+      "loc": 102,
+      "classification": "LEGITIMATE_FOUNDATION_MODULE",
+      "canonicalOwner": "apps/api/mdi_api/state_machine.py",
+      "topLevelDeclarations": [
+        {
+          "name": "InvalidStatusTransition",
+          "kind": "ClassDef",
+          "lines": 7
+        },
+        {
+          "name": "normalize_tool_call_status",
+          "kind": "FunctionDef",
+          "lines": 5
+        },
+        {
+          "name": "validate_job_status",
+          "kind": "FunctionDef",
+          "lines": 5
+        },
+        {
+          "name": "validate_tool_call_status",
+          "kind": "FunctionDef",
+          "lines": 5
+        },
+        {
+          "name": "validate_job_transition",
+          "kind": "FunctionDef",
+          "lines": 8
+        },
+        {
+          "name": "validate_tool_call_transition",
+          "kind": "FunctionDef",
+          "lines": 8
+        },
+        {
+          "name": "_status_value",
+          "kind": "FunctionDef",
+          "lines": 4
+        }
+      ],
+      "assignmentCount": 4,
+      "canonicalImports": [],
+      "reverseReferenceCount": 5,
+      "reverseReferences": [
+        "apps/api/mdi_api/infrastructure/persistence/memory_jobs.py",
+        "apps/api/mdi_api/infrastructure/persistence/sqlalchemy_jobs.py",
+        "apps/api/mdi_api/repositories.py",
+        "tests/test_phase4_persistence_hardening.py",
+        "tests/test_phase6_integration.py"
+      ],
+      "rationale": "Single stable shared contract/configuration/schema/transaction-support authority; no duplicate canonical implementation found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/storage_budget.py",
+      "loc": 350,
+      "classification": "LEGITIMATE_FOUNDATION_MODULE",
+      "canonicalOwner": "apps/api/mdi_api/storage_budget.py",
+      "topLevelDeclarations": [
+        {
+          "name": "StorageBudgetPolicy",
+          "kind": "ClassDef",
+          "lines": 32
+        },
+        {
+          "name": "build_storage_budget_snapshot",
+          "kind": "FunctionDef",
+          "lines": 70
+        },
+        {
+          "name": "_positive_budget",
+          "kind": "FunctionDef",
+          "lines": 11
+        },
+        {
+          "name": "_workspace_roots",
+          "kind": "FunctionDef",
+          "lines": 34
+        },
+        {
+          "name": "_log_roots",
+          "kind": "FunctionDef",
+          "lines": 9
+        },
+        {
+          "name": "_profile_roots",
+          "kind": "FunctionDef",
+          "lines": 2
+        },
+        {
+          "name": "_build_cache_roots",
+          "kind": "FunctionDef",
+          "lines": 14
+        },
+        {
+          "name": "_filesystem_measurements",
+          "kind": "FunctionDef",
+          "lines": 19
+        },
+        {
+          "name": "_measure_paths",
+          "kind": "FunctionDef",
+          "lines": 55
+        },
+        {
+          "name": "_service_measurement",
+          "kind": "FunctionDef",
+          "lines": 24
+        },
+        {
+          "name": "_category",
+          "kind": "FunctionDef",
+          "lines": 33
+        }
+      ],
+      "assignmentCount": 6,
+      "canonicalImports": [],
+      "reverseReferenceCount": 2,
+      "reverseReferences": [
+        "apps/api/mdi_api/operations.py",
+        "tests/test_phase14r_storage_budget.py"
+      ],
+      "rationale": "Single stable shared contract/configuration/schema/transaction-support authority; no duplicate canonical implementation found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/unit_of_work.py",
+      "loc": 120,
+      "classification": "LEGITIMATE_FOUNDATION_MODULE",
+      "canonicalOwner": "apps/api/mdi_api/unit_of_work.py",
+      "topLevelDeclarations": [
+        {
+          "name": "RepositorySession",
+          "kind": "ClassDef",
+          "lines": 78
+        },
+        {
+          "name": "UnitOfWork",
+          "kind": "ClassDef",
+          "lines": 2
+        },
+        {
+          "name": "RepositoryFactory",
+          "kind": "ClassDef",
+          "lines": 18
+        }
+      ],
+      "assignmentCount": 0,
+      "canonicalImports": [
+        "mdi_api.infrastructure.persistence.agent2_bundle",
+        "mdi_api.application.research.ports",
+        "mdi_api.application.research.transactions",
+        "mdi_api.infrastructure.project_access"
+      ],
+      "reverseReferenceCount": 32,
+      "reverseReferences": [
+        "apps/api/mdi_api/bootstrap/repository_factory.py",
+        "apps/api/mdi_api/database.py",
+        "apps/api/mdi_api/infrastructure/interpretation/client.py",
+        "apps/api/mdi_api/infrastructure/interpretation/service.py",
+        "apps/api/mdi_api/infrastructure/reports/composition.py",
+        "apps/api/mdi_api/infrastructure/scientific_objects/service.py",
+        "apps/api/mdi_api/infrastructure/scientific_reports/requests.py",
+        "apps/api/mdi_api/infrastructure/scientific_reports/service.py",
+        "apps/api/mdi_api/infrastructure/scientific_results/service.py",
+        "apps/api/mdi_api/scientific_viewers/service.py",
+        "services/workers/mdi_workers/object_store.py",
+        "services/workers/mdi_workers/queue_runtime.py",
+        "tests/integration/test_agent2_phase1_service_backed.py",
+        "tests/integration/test_agent2_phase2_service_backed.py",
+        "tests/integration/test_agent2_phase3_service_backed.py",
+        "tests/integration/test_agent2_phase4_service_backed.py",
+        "tests/integration/test_agent2_phase7_service_backed.py",
+        "tests/integration/test_agent2_phase8_service_backed.py",
+        "tests/integration/test_agent2_phase9_service_backed.py",
+        "tests/test_agent2_api.py",
+        "tests/test_agent2_domain.py",
+        "tests/test_agent2_phase2_processor.py",
+        "tests/test_agent2_phase3_planning.py",
+        "tests/test_agent2_phase4_exact_sources.py",
+        "tests/test_agent2_phase4_execution.py",
+        "tests/test_agent2_phase7_memory.py",
+        "tests/test_agent2_phase8_reports.py",
+        "tests/test_agent2_phase9_viewers.py",
+        "tests/test_phase14r_recovery.py",
+        "tests/test_phase4_persistence_hardening.py"
+      ],
+      "rationale": "Single stable shared contract/configuration/schema/transaction-support authority; no duplicate canonical implementation found."
+    },
+    {
+      "surface": "BACKEND",
+      "path": "apps/api/mdi_api/workspaces.py",
+      "loc": 6,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "apps/api/mdi_api/application/workspaces/projection.py + apps/api/mdi_api/domain/workspaces/contracts.py",
+      "topLevelDeclarations": [],
+      "assignmentCount": 1,
+      "canonicalImports": [
+        "mdi_api.application.workspaces.projection",
+        "mdi_api.domain.workspaces.contracts"
+      ],
+      "reverseReferenceCount": 8,
+      "reverseReferences": [
+        "scripts/generate_phase10m5_evidence.py",
+        "tests/integration/test_phase10m1_workspace_service_backed.py",
+        "tests/integration/test_phase10m5_report_recipe_service_backed.py",
+        "tests/integration/test_phase10m6_workspace_recovery_service_backed.py",
+        "tests/test_phase10m1_workspace_performance.py",
+        "tests/test_phase10m1_workspace_projection_api.py",
+        "tests/test_phase10m5_report_composition.py",
+        "tests/test_phase10m7_workspace_integration.py"
+      ],
+      "rationale": "Old public/patch path forwards to canonical owners without a second implementation."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/AccountActivationPage.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/account/AccountActivationPage",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/AdminCenterPage.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/administration/AdminCenterPage",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/Agent2ScientificPresentation.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/research/Agent2ScientificPresentation",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ArtifactDownloadLink.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../shared/ui/ArtifactDownloadLink",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ArtifactOpenLink.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../shared/ui/ArtifactOpenLink",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/band-bz-link/BandBZLinkedView.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/band-bz-link/BandBZLinkedView",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/band-bz-link/bandBZLinkModel.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/band-bz-link/bandBZLinkModel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/band-bz-link/bandBZLinkState.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/band-bz-link/bandBZLinkState",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/band-bz-link/bandBZLinkTestFixture.ts",
+      "loc": 46,
+      "classification": "TEMPORARY_COMPATIBILITY_WITH_JUSTIFICATION",
+      "canonicalOwner": "apps/web/app/components/band-bz-link/bandBZLinkTestFixture.ts",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Test-fixture support colocated under the former production tree; reverse references are test-only and it is not shipped as a product implementation authority."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/band-bz-link/bandBZLinkTypes.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/band-bz-link/bandBZLinkTypes",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/brillouin-zone/brillouinZoneEngine.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/brillouin-zone/brillouinZoneEngine",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/brillouin-zone/brillouinZoneMapper.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/brillouin-zone/brillouinZoneMapper",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/brillouin-zone/BrillouinZonePreviewPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/brillouin-zone/BrillouinZonePreviewPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/brillouin-zone/BrillouinZoneSurface.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/brillouin-zone/BrillouinZoneSurface",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/brillouin-zone/brillouinZoneTriangulation.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/brillouin-zone/brillouinZoneTriangulation",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/brillouin-zone/brillouinZoneTypes.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/brillouin-zone/brillouinZoneTypes",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ClientObservability.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../shared/observability/ClientObservability",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/composition-space/CompositionSpaceExplorerPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/composition-space/CompositionSpaceExplorerPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/composition-space/testFixtures.ts",
+      "loc": 59,
+      "classification": "TEMPORARY_COMPATIBILITY_WITH_JUSTIFICATION",
+      "canonicalOwner": "apps/web/app/components/composition-space/testFixtures.ts",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Test-fixture support colocated under the former production tree; reverse references are test-only and it is not shipped as a product implementation authority."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/dataset-explorer/DatasetMaterialsExplorerPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/dataset-explorer/DatasetMaterialsExplorerPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/DatasetWorkbenchPage.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/data/DatasetWorkbenchPage",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/design-system/StatusLabel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../shared/ui/StatusLabel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/LandingPage.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/account/LandingPage",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/LazyScientificViewers.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../scientific-viewers/LazyScientificViewers",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/LegacyCompatibilityPages.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/compatibility/LegacyCompatibilityPages",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/material-intelligence/materialIntelligenceIntegration.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/material-intelligence/materialIntelligenceIntegration",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/material-intelligence/MaterialIntelligenceIntegrationPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/material-intelligence/MaterialIntelligenceIntegrationPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/materials-ml/MaterialsMlEvaluationPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/materials-ml/MaterialsMlEvaluationPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ModelSettingsPage.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/account/ModelSettingsPage",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/NotificationCenterPage.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/notifications/NotificationCenterPage",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ObjectManagement.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../shared/ui/ObjectManagement",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/phonon-animation/phononAnimationContract.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/phonon-animation/phononAnimationContract",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/phonon-animation/phononAnimationMapper.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/phonon-animation/phononAnimationMapper",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/phonon-animation/PhononAnimationSurface.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/phonon-animation/PhononAnimationSurface",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/phonon-animation/phononAnimationTestFixture.ts",
+      "loc": 5,
+      "classification": "TEMPORARY_COMPATIBILITY_WITH_JUSTIFICATION",
+      "canonicalOwner": "apps/web/app/components/phonon-animation/phononAnimationTestFixture.ts",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Test-fixture support colocated under the former production tree; reverse references are test-only and it is not shipped as a product implementation authority."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/phonon-band/PhononBandPreviewPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/phonon-band/PhononBandPreviewPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/phonon-band-dos/PhononBandDosPreviewPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/phonon-band-dos/PhononBandDosPreviewPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/phonon-dos/PhononDosPreviewPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/phonon-dos/PhononDosPreviewPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/PlannerWorkbench.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/research/planning/PlannerWorkbench",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ProductNavigation.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../shared/layout/ProductNavigation",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ProductPages.tsx",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/projects/ProductPages; ../../features/data/DataPages",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ProductRouteFrame.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../shared/layout/ProductRouteFrame",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ProductShell.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../shared/layout/ProductShell",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ProjectHome.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/projects/ProjectHome",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ResearchExecutionActivity.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/research/ResearchExecutionActivity",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ResearchPages.tsx",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/research/ResearchPages; ../../features/reports/ReportPages",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/RouteLoading.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../shared/ui/RouteLoading",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/RouteTransitionProgress.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../shared/layout/RouteTransitionProgress",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/scientific-viewer/ScientificObjectViewer.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/scientific-viewer/ScientificObjectViewer",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/scientific-viewer/scientificSelection.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/scientific-viewer/scientificSelection",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/scientific-viewer/scientificViewerRegistry.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/scientific-viewer/scientificViewerRegistry",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/scientific-viewer/ScientificViewerShell.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/scientific-viewer/ScientificViewerShell",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/scientific-viewer/selectionLinkResolver.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/scientific-viewer/selectionLinkResolver",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ScientificPresentationBlocks.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/research/ScientificPresentationBlocks",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ScientificReportAction.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/reports/ScientificReportAction",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ScientificReportArtifactPreview.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/reports/ScientificReportArtifactPreview",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ScientificReportRoute.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/reports/ScientificReportRoute",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ScientificReportsIndexPage.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/reports/ScientificReportsIndexPage",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/ScientificViewerAdapter.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../scientific-viewers/ScientificViewerAdapter",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/TaskCenterPage.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/tasks/TaskCenterPage",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/trajectory-viewer/trajectoryFrameCache.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/trajectory-viewer/trajectoryFrameCache",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/trajectory-viewer/trajectoryFrameMapper.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/trajectory-viewer/trajectoryFrameMapper",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/trajectory-viewer/trajectoryViewerPerformance.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/trajectory-viewer/trajectoryViewerPerformance",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/trajectory-viewer/trajectoryViewerState.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/trajectory-viewer/trajectoryViewerState",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/trajectory-viewer/TrajectoryViewerSurface.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/trajectory-viewer/TrajectoryViewerSurface",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/trajectory-viewer/trajectoryViewerTypes.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/trajectory-viewer/trajectoryViewerTypes",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/TrashCenterPage.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/projects/TrashCenterPage",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/UserCenterPage.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../features/account/UserCenterPage",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/orbitControlsLifecycle.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/orbitControlsLifecycle",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/ViewerBondInspector.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/ViewerBondInspector",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/ViewerExportPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/ViewerExportPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/ViewerMeasurementPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/ViewerMeasurementPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneCompatibility.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneCompatibility",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneExport.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneExport",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneMeasurementArtifact.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneMeasurementArtifact",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneMeasurements.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneMeasurements",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerScenePerformance.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerScenePerformance",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerScenePeriodicBondTestFixture.ts",
+      "loc": 21,
+      "classification": "TEMPORARY_COMPATIBILITY_WITH_JUSTIFICATION",
+      "canonicalOwner": "apps/web/app/components/viewer-scene/viewerScenePeriodicBondTestFixture.ts",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Test-fixture support colocated under the former production tree; reverse references are test-only and it is not shipped as a product implementation authority."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerScenePeriodicGeometry.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerScenePeriodicGeometry",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneRendererEngine.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneRendererEngine",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneRendererErrors.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneRendererErrors",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneRendererGeometry.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneRendererGeometry",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneRendererMapper.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneRendererMapper",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/ViewerSceneRendererSurface.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/ViewerSceneRendererSurface",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneRendererTypes.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneRendererTypes",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneRendererValidation.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneRendererValidation",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneSelection.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneSelection",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneSupercell.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneSupercell",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneSupercellState.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneSupercellState",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerSceneViewState.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerSceneViewState",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/ViewerSiteInspector.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/ViewerSiteInspector",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/ViewerSupercellControls.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/ViewerSupercellControls",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/ViewerViewControls.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/ViewerViewControls",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/viewer-scene/viewerWebglCapability.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/viewer-scene/viewerWebglCapability",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/chargeSpinDensityProduct.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/chargeSpinDensityProduct",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/electrostaticPotentialProduct.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/electrostaticPotentialProduct",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/elfOrbitalProduct.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/elfOrbitalProduct",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/isosurface.worker.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/isosurface.worker",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/isosurfaceExtraction.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/isosurfaceExtraction",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/isosurfaceWorkerClient.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/isosurfaceWorkerClient",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricHash.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricHash",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/VolumetricIsosurfaceSurface.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/VolumetricIsosurfaceSurface",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricOverlayMapper.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricOverlayMapper",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricOverlaySupercell.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricOverlaySupercell",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricPayloadLoader.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricPayloadLoader",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricPngExport.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricPngExport",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/VolumetricPreviewPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/VolumetricPreviewPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricRendererEngine.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricRendererEngine",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricSlice.worker.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricSlice.worker",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricSliceDisplay.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricSliceDisplay",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricSliceModel.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricSliceModel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricSliceRendererEngine.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricSliceRendererEngine",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/VolumetricSliceVolumeSurface.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/VolumetricSliceVolumeSurface",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricSliceWorkerClient.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricSliceWorkerClient",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricValidation.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricValidation",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricViewerTypes.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricViewerTypes",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricVolumeModel.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricVolumeModel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricVolumeRendererEngine.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricVolumeRendererEngine",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/volumetric-viewer/volumetricVolumeShader.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/volumetric-viewer/volumetricVolumeShader",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/CoordinationHistogramPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/CoordinationHistogramPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/CoordinationResultPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/CoordinationResultPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/ElectronicStructurePanel.tsx",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/ElectronicStructurePanel; ../../../scientific-viewers/workspace/ElectronicStructurePanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/ExperimentalXrdComparisonPanel.tsx",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/ExperimentalXrdComparisonPanel; ../../../scientific-viewers/workspace/ExperimentalXrdComparisonPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/LocalEnvironmentPolyhedraPanel.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/LocalEnvironmentPolyhedraPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/ScientificWorkspaceShell.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/ScientificWorkspaceShell",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/TrajectoryAnalyticsPanel.tsx",
+      "loc": 2,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/TrajectoryAnalyticsPanel; ../../../scientific-viewers/workspace/TrajectoryAnalyticsPanel",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/workspace-artifact-loader.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/workspace-artifact-loader",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/workspace-heavy-viewer-gate.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/workspace-heavy-viewer-gate",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/workspace-plot-contract.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/workspace-plot-contract",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/workspace-recovery-model.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/workspace-recovery-model",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/workspace-renderer-registry.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../shared/workspace/workspace-renderer-registry",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/workspace-selection-contract.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../shared/workspace/workspace-selection-contract",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/workspace-selection-runtime.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../shared/workspace/workspace-selection-runtime",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/workspace-shell-model.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/workspace-shell-model",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/workspace-test-fixture.ts",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/workspace-test-fixture",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/WorkspaceArtifactGallery.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/WorkspaceArtifactGallery",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/WorkspaceGenericPlot.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/WorkspaceGenericPlot",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    },
+    {
+      "surface": "FRONTEND",
+      "path": "apps/web/app/components/workspace/WorkspaceReportComposer.tsx",
+      "loc": 1,
+      "classification": "LEGITIMATE_COMPATIBILITY_FACADE",
+      "canonicalOwner": "../../../scientific-viewers/workspace/WorkspaceReportComposer",
+      "topLevelDeclarations": [],
+      "assignmentCount": 0,
+      "canonicalImports": [],
+      "reverseReferenceCount": 0,
+      "reverseReferences": [],
+      "rationale": "Pure legacy-path re-export with no production implementation body."
+    }
+  ]
+}

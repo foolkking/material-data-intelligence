@@ -6210,3 +6210,20 @@ Remote release remains a separate gate. Availability of a GitHub workflow and
 authenticated CLI does not establish release qualification; current-HEAD
 remote CI plus the mandatory PostgreSQL/Redis/MinIO campaign is required before
 future remote release.
+
+
+## ADR — Residual ownership closes with schema foundation retained (2026-09-09)
+
+`mdi_api.db` remains the canonical schema foundation at its stable path. It owns
+the single SQLAlchemy `MetaData` plus table/index/constraint identities consumed
+by Alembic, repositories, runtime queries, and tests. It does not own repository
+behavior, transaction composition, application services, or transport logic;
+splitting it for directory symmetry would create identity and migration risk.
+
+`mdi_api.repositories` remains an identity-preserving public aggregation
+surface with no implementation declarations. Scientific-result queue and
+reconciliation implementations belong to
+`mdi_api.infrastructure.scientific_results`; their old modules are compatibility
+re-exports. The frozen result worker dotted path remains the runtime entrypoint.
+This bounded correction closes physical ownership without reopening source
+architecture or capability parity.

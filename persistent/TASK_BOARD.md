@@ -4272,3 +4272,15 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
 - [x] 生成 `docs/agent2/capability_parity/` machine-readable/human-readable
       ledger；静态 parity PASS，认证 arbitrary-ID runtime smoke 保持
       `NOT_RUNTIME_VERIFIED`，remote release gate 仍需另行执行。
+
+
+## 2026-09-09 Final residual ownership review
+
+- [x] 对 85 个后端与 138 个前端 legacy-looking production-path 文件完成
+      AST/import/reverse-reference/runtime identity 分类，`UNRESOLVED=0`。
+- [x] 确认 `repositories.py` 为 public API aggregator，`db.py` 为 schema
+      foundation，`app/components` production implementation body 为 0。
+- [x] 将遗漏的 scientific-result queue/reconciler 实现迁至既有
+      infrastructure owner，旧路径保留 identity-preserving facade。
+- [x] 验证 duplicate business implementation=0、canonical→compatibility=0、
+      handlers 6/6、queues/Tools/Adapters 不变；focused 25 passed。
