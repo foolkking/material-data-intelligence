@@ -156,6 +156,17 @@ qualification authorities.
 - [`agent2/autonomy/generated/autonomy_evaluation.json`](agent2/autonomy/generated/autonomy_evaluation.json):
   generated bounded golden-scenario evaluation.
 
+## Agent 2.0 Scientific Research Strategy
+
+- [`agent2/strategy/SCIENTIFIC_RESEARCH_STRATEGY.md`](agent2/strategy/SCIENTIFIC_RESEARCH_STRATEGY.md):
+  bounded evidence-state, question, gap, cross-family and minimum-sufficient
+  research strategy over the existing autonomy lifecycle.
+- [`agent2/strategy/HYPOTHESIS_AND_EVIDENCE_POLICY.md`](agent2/strategy/HYPOTHESIS_AND_EVIDENCE_POLICY.md):
+  non-authoritative hypotheses, evidence lineage, comparison and contradiction
+  rules.
+- [`agent2/strategy/generated/strategy_evaluation.json`](agent2/strategy/generated/strategy_evaluation.json):
+  generated 12-case deterministic strategy corpus.
+
 ## Agent 2.0 Phase 8 Grounded Scientific Reports
 
 - [`agent2/scientific-report.md`](agent2/scientific-report.md)

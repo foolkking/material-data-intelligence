@@ -267,7 +267,7 @@ def _safe_event(event: Mapping[str, Any] | None) -> dict[str, Any] | None:
     }
 
 
-def _autonomy_projection(
+def build_autonomy_projection(
     events: Iterable[Mapping[str, Any]],
 ) -> dict[str, Any]:
     """Project bounded autonomy provenance from existing Turn events.
@@ -317,6 +317,18 @@ def _autonomy_projection(
         if isinstance(assessment.get("qualification"), Mapping)
         else received.get("qualification")
         if isinstance(received.get("qualification"), Mapping)
+        else {}
+    )
+    strategy = (
+        assessment.get("strategy_summary")
+        if isinstance(assessment.get("strategy_summary"), Mapping)
+        else received.get("strategy")
+        if isinstance(received.get("strategy"), Mapping)
+        else {}
+    )
+    strategy_decision = (
+        assessment.get("strategy_decision")
+        if isinstance(assessment.get("strategy_decision"), Mapping)
         else {}
     )
     evidence = assessment.get("evidence_result_ids") or stopped.get(
@@ -375,6 +387,14 @@ def _autonomy_projection(
                     or []
                 )[:64]
             ],
+            "context_snapshot_id": (
+                str(assessment["context_snapshot_id"])
+                if assessment.get("context_snapshot_id")
+                else None
+            ),
+            "context_snapshot_fingerprint": assessment.get(
+                "context_snapshot_fingerprint"
+            ),
             "qualification_level": qualification.get("qualification_level"),
             "qualification_reason": qualification.get("reason_code"),
             "limitations": list(
@@ -383,6 +403,29 @@ def _autonomy_projection(
                 or qualification.get("known_limitations")
                 or []
             )[:16],
+            "strategy": {
+                "action": strategy_decision.get("action"),
+                "evidence_state_fingerprint": strategy.get(
+                    "evidence_state_fingerprint"
+                )
+                or strategy_decision.get("evidence_state_fingerprint"),
+                "evidence_strength": strategy.get("evidence_strength"),
+                "question_count": strategy.get("question_count"),
+                "resolved_question_count": strategy.get(
+                    "resolved_question_count"
+                ),
+                "open_question_count": strategy.get("open_question_count"),
+                "evidence_gap_count": strategy.get("evidence_gap_count"),
+                "hypothesis_count": strategy.get("hypothesis_count"),
+                "unresolved_contradiction_count": strategy.get(
+                    "unresolved_contradiction_count"
+                ),
+                "current_question": strategy.get("current_question"),
+                "active_evidence_gap": strategy.get("active_evidence_gap"),
+                "active_hypothesis": strategy.get("active_hypothesis"),
+                "evidence_value": strategy_decision.get("evidence_value"),
+                "comparison_status": strategy_decision.get("comparison_status"),
+            },
         },
         "continuation": {
             "child_turn_id": (
@@ -595,13 +638,14 @@ def build_lifecycle_projection(
             "error_summary_present": bool(turn.get("error_summary")),
             "stale": bool(stale),
         },
-        "autonomy": _autonomy_projection(event_rows),
+        "autonomy": build_autonomy_projection(event_rows),
         "latest_event": _safe_event(latest_event),
     }
 
 
 __all__ = [
     "LifecycleFailureCategory",
+    "build_autonomy_projection",
     "build_lifecycle_projection",
     "classify_failure",
     "is_stale_active_turn",

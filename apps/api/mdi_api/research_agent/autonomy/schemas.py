@@ -8,6 +8,11 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field
 
+from mdi_api.research_agent.strategy.schemas import (
+    ResearchStrategyDecision,
+    ResearchStrategySummary,
+)
+
 
 class AutonomyProgressOutcome(StrEnum):
     GOAL_SATISFIED = "GOAL_SATISFIED"
@@ -88,11 +93,17 @@ class AutonomyAssessment(BaseModel):
     selected_parameters: dict[str, object] = Field(default_factory=dict)
     qualification: CapabilityQualificationSnapshot | None = None
     exact_source_version_ids: list[UUID] = Field(default_factory=list, max_length=64)
+    context_snapshot_id: UUID | None = None
+    context_snapshot_fingerprint: str | None = Field(
+        default=None, pattern=r"^[0-9a-f]{64}$"
+    )
     semantic_step_signature: str | None = Field(
         default=None, pattern=r"^[0-9a-f]{64}$"
     )
     reason_codes: list[str] = Field(min_length=1, max_length=16)
     limitations: list[str] = Field(default_factory=list, max_length=16)
+    strategy_decision: ResearchStrategyDecision | None = None
+    strategy_summary: ResearchStrategySummary | None = None
     policy_version: str
     policy_fingerprint: str = Field(pattern=r"^[0-9a-f]{64}$")
 

@@ -20927,3 +20927,59 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
   Reasoning`。有限、持久、可恢复、质量感知的 autonomy mechanics 已建立；
   当前主要瓶颈是更丰富且可评估的跨 family 科学策略，而不是再造 workflow
   infrastructure。
+
+## Material Data Intelligence — Workstream F: Scientific Research Strategy & Advanced Reasoning
+
+- 状态：已完成；`SCIENTIFIC_STRATEGY_MODEL=COHERENT`，
+  `SCIENTIFIC_AGENT_STRATEGY_MATURITY=BOUNDED_READY`，
+  `UNRESOLVED_STRATEGY_BLOCKERS=0`。
+- 完成时间：2026-09-10T19:35:38+08:00。
+- 实现摘要：在既有 Workstream E autonomy 上新增只读
+  `ResearchEvidenceState`、typed scientific question/evidence gap、
+  non-authoritative hypothesis、comparison compatibility、contradiction
+  classification 和 bounded `ResearchStrategyDecision`。策略先定义缺失证据，
+  再调用既有 Capability planning；未创建新 Planner、Job、Tool Registry、
+  scientific authority 或无界 Agent loop。
+- 科学策略：优先复用 authoritative ScientificResult；对 trajectory、
+  dataset/ML、structure、diffraction 和 supplied electronic semantics 建立
+  minimum-sufficient evidence。支持由目标与证据驱动的 ML → composition、
+  transport → structural context 跨 family 决策，同时拒绝能力可用但与问题
+  无关的执行。
+- 安全/恢复：provider proposal 仅能引用 bounded Context 中的 question、
+  gap、Result、hypothesis 和 requirement；deterministic validator 检查
+  project/source、qualification、scope expansion、重复分析和 hypothesis
+  epistemic status，最多一次 guided repair。每轮仍使用既有 ContextSnapshot、
+  Turn event、child Turn、recovery/cancellation 和 policy fingerprint。
+- 可见性：progress API 与 Research activity UI 对 autonomous Turn 显示当前
+  科学问题、缺失证据、待检验假设、继续/停止依据和 bounded limitation；
+  不显示 prompt、scratchpad、hidden chain-of-thought、worker 或原始
+  Tool/Adapter ID。
+- 评估指标：`STRATEGY_EVALUATION_CASES=12`，
+  `REAL_LLM_STRATEGY_CASES=3`，`CROSS_FAMILY_CASES=1`，
+  `HYPOTHESIS_TEST_CASES=1`，`CONTRADICTION_CASES=1`；
+  `CORRECT_SCIENTIFIC_STOPS=7/7`，
+  `CORRECT_CROSS_FAMILY_TRANSITIONS=1/1`；
+  irrelevant Capability executions、redundant executions、hypothesis
+  overclaim、comparison compatibility、qualification policy 和 unsupported
+  claim violations 均为 `0`。
+- 测试结果：focused A-F backend `105 passed, 3 skipped`；API progress
+  `31 passed`；Research strategy UI `13 passed`；canonical service-backed
+  trajectory MSD → diffusion recovery/reuse、ML evaluation → composition-space
+  cross-family planning、real composition-space path 均 PASS；sanitized live
+  DeepSeek strategy cases `3/3` PASS；Ruff、compileall、typecheck、frontend
+  build、strategy report 与 diff check PASS。
+- Runtime：canonical API `http://127.0.0.1:8007/health/runtime` 验证
+  PostgreSQL、Redis、MinIO、DeepSeek 配置与六个 queue identity 全部 healthy；
+  所有验证从 `E:\1project\mdi-b0-5a1` 加载。
+- 已知边界：策略仍是当前 capability families 上的 bounded typed policy，
+  不声称 arbitrary-domain general strategy、literature authority、causal
+  inference、unrestricted hypothesis exploration 或 indivisible ToolCall
+  checkpoint/resume。
+- 修改文件：`research_agent/strategy/`、autonomy/lifecycle/structured LLM
+  integration、Research progress API/UI、strategy evaluator/tests、
+  service-backed verification、shared schema、strategy docs 及 canonical
+  state/progress/board/changelog/results authorities。
+- 提交/CI 状态：本地工作树完成并验证；未 push，未运行 remote CI。
+- 后续建议：`Workstream G — Scientist UX & Product Maturity`。科学策略和
+  runtime foundation 已达到 bounded-ready；当前更明显的瓶颈是让科研用户
+  控制、理解、比较和复核多轮研究，而不是继续扩大内部 orchestration。

@@ -8,16 +8,16 @@
 ## 1. Current Status
 
 - `PROJECT_PHASE`: Source/physical migration and capability parity are closed;
-  Workstreams A-E now provide lifecycle reliability, context/scientific-memory,
+  Workstreams A-F now provide lifecycle reliability, context/scientific-memory,
   a validated scientific-capability extension foundation, evidence-backed
-  scientific qualification, and bounded Result-driven multi-step autonomy in
-  the canonical migrated repository. Remote exact-SHA CI remains a separately
-  authorized release gate.
+  scientific qualification, bounded Result-driven multi-step autonomy, and a
+  typed evidence-driven scientific strategy layer in the canonical migrated
+  repository. Remote exact-SHA CI remains a separately authorized release gate.
 - `CURRENT_ACCEPTED_COMMIT`: `1eec2bba7629f7666aaf68281e2fce6f0e802aa0`
 - `SNAPSHOT_BASE_COMMIT`: `1eec2bba7629f7666aaf68281e2fce6f0e802aa0`
 - `WORKTREE_EXPECTATION`: existing migration worktree, detached HEAD, clean
-- `LAST_ACCEPTED_REVIEW`: Workstream E — Bounded Agent Autonomy & Multi-Step
-  Scientific Research, `PASS`, 2026-09-10
+- `LAST_ACCEPTED_REVIEW`: Workstream F — Scientific Research Strategy &
+  Advanced Reasoning, `PASS`, 2026-09-10
 - `LAST_UPDATED_AT`: `2026-09-10`
 - `STATE_STATUS`: `CURRENT`
 - `PROJECT_STATE_ACTIVE`: `YES`
@@ -65,20 +65,20 @@ specialized authority requires explicit reconciliation and may set
 
 ## 5. Active Work
 
-- `CURRENT_WORKSTREAM`: Workstream E bounded scientific autonomy is complete
-  in the canonical migrated repository.
-- `CURRENT_TASK`: no active queued task after Workstream E closeout;
+- `CURRENT_WORKSTREAM`: Workstream F bounded scientific research strategy is
+  complete in the canonical migrated repository.
+- `CURRENT_TASK`: no active queued task after Workstream F closeout;
   `TASKS.md` remains the task queue authority.
-- `NEXT_ACTION`: Workstream F should focus on Scientific Research Strategy &
-  Advanced Reasoning. The bounded mechanics, durability, quality gates and stop
-  model are ready; broader cross-family strategy is now the dominant Agent
-  limitation. Remote release qualification remains a separate exact-SHA/
-  push-authorized operation.
-- `BLOCKED_ITEMS`: no unresolved Workstream A/B/C/D/E blocker. Broader
+- `NEXT_ACTION`: the next workstream should focus on Scientist UX & Product
+  Maturity. The bounded strategy core now chooses and stops coherently, while
+  scientist-facing control, comparison review, research-map disclosure and
+  clarification UX are the dominant product gap. Broader capability expansion
+  remains the next scientific-breadth dependency.
+- `BLOCKED_ITEMS`: no unresolved Workstream A/B/C/D/E/F blocker. Broader
   independent solver/library benchmarks, expert interpretation evaluation,
-  cross-family research strategy, long-running Tool checkpointing, context
-  quality and scale stress remain explicit future evaluation rather than
-  authority defects.
+  broad-domain strategy beyond the typed families, long-running Tool
+  checkpointing, context quality and scale stress remain explicit future
+  evaluation rather than authority defects.
 
 ## 6. Verification State
 
@@ -159,6 +159,25 @@ specialized authority requires explicit reconciliation and may set
   failure, executed diffusion without recomputing MSD and stopped with
   `GOAL_SATISFIED`. A sanitized live DeepSeek ingress case passed and selected
   the bounded trajectory entry; downstream autonomy remained deterministic.
+- Workstream F scientific strategy: a derived `ResearchEvidenceState`, typed
+  scientific questions/evidence gaps/hypotheses, comparison/contradiction
+  semantics, minimum-sufficient evidence rules and bounded validated provider
+  proposals are integrated into the existing autonomy lifecycle. The progress
+  API/UI expose the current question, evidence gap, tentative hypothesis,
+  continuation basis or typed stop reason without hidden reasoning.
+- Workstream F focused verification: deterministic strategy corpus `12/12`;
+  correct scientific stops `7/7`; correct cross-family transitions `1/1`;
+  irrelevant Capability executions, redundant executions, hypothesis
+  overclaims, comparison violations, qualification violations and unsupported
+  claims all `0`. Focused A-F backend suites passed `105` with `3` expected
+  skips; API progress tests passed `31`; Research strategy UI passed `13`;
+  typecheck, Ruff, compileall and generated strategy report pass.
+- Workstream F canonical provider/service evidence: three sanitized live
+  DeepSeek strategy cases pass; a fresh-worker MSD → diffusion recovery/reuse
+  path, an ML evaluation → composition-space Result-driven cross-family
+  planning path and the real composition-space capability path pass against
+  qualification-owned PostgreSQL, Redis/RQ and MinIO. Canonical API port 8007
+  reports all backends and six queues healthy.
 - Remote CI: workflow and authenticated CLI are available, but the final SHA is
   not on the remote because push was not authorized. Exact-SHA CI is not run.
   Local/service readiness is PASS; overall release readiness is CONDITIONAL.
@@ -187,11 +206,12 @@ specialized authority requires explicit reconciliation and may set
   Artifact-port, projector and Viewer authorities remain explicit centralized
   registration points. The path is bounded and documented, but not a
   zero-central-edit plugin system.
-- **Autonomy strategy debt:** the durable finite control model is ready, but
-  current Result-driven continuation is intentionally conservative and
-  hand-coded for golden trajectory, dataset/materials and structure families.
-  Arbitrary DAGs, broad cross-family scientific strategy and multi-hour
-  checkpoint/resume are not claimed.
+- **Scientific strategy breadth debt:** the durable finite strategy model is
+  ready, including selected cross-family transitions, hypotheses,
+  contradiction handling and minimum-sufficient stopping. It remains
+  intentionally typed for current capability families; arbitrary scientific
+  strategy, literature authority, causal inference and universal method
+  comparison are not claimed.
 
 ## 8. State Authorities
 
@@ -257,6 +277,11 @@ specialized authority requires explicit reconciliation and may set
   Result-grounded downstream parameters, duplicate/loop prevention, typed stop
   reasons, durable child-Turn recovery, cancellation preservation, lifecycle
   observability and bounded golden/real-provider/service-backed evidence.
+- 2026-09-10: completed Workstream F with Result-first evidence-state
+  projection, typed questions/gaps/hypotheses, objective-driven cross-family
+  strategy, comparison/contradiction safeguards, minimum-sufficient stopping,
+  one-repair structured provider validation, concise Research strategy
+  visibility and canonical real-provider/service-backed evidence.
 
 ## 11. Source Pointers
 
@@ -285,6 +310,10 @@ specialized authority requires explicit reconciliation and may set
   [`docs/agent2/autonomy/BOUNDED_SCIENTIFIC_AUTONOMY.md`](docs/agent2/autonomy/BOUNDED_SCIENTIFIC_AUTONOMY.md),
   [`docs/agent2/autonomy/AUTONOMY_POLICY_AND_QUALITY_RULES.md`](docs/agent2/autonomy/AUTONOMY_POLICY_AND_QUALITY_RULES.md),
   [`docs/agent2/autonomy/generated/autonomy_evaluation.json`](docs/agent2/autonomy/generated/autonomy_evaluation.json)
+- Scientific research strategy:
+  [`docs/agent2/strategy/SCIENTIFIC_RESEARCH_STRATEGY.md`](docs/agent2/strategy/SCIENTIFIC_RESEARCH_STRATEGY.md),
+  [`docs/agent2/strategy/HYPOTHESIS_AND_EVIDENCE_POLICY.md`](docs/agent2/strategy/HYPOTHESIS_AND_EVIDENCE_POLICY.md),
+  [`docs/agent2/strategy/generated/strategy_evaluation.json`](docs/agent2/strategy/generated/strategy_evaluation.json)
 
 ## 12. Controlled Update and Freshness Rules
 

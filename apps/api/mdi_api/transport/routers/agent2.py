@@ -43,6 +43,7 @@ from mdi_api.research_agent.orchestration.queue import (
 from mdi_api.research_agent.registry_validation import DEFAULT_AGENT2_REGISTRIES
 from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchAction, ResearchTurnStatus, TERMINAL_TURN_STATUSES
 from mdi_api.research_agent.lifecycle import (
+    build_autonomy_projection,
     build_lifecycle_projection,
     is_stale_active_turn,
 )
@@ -615,14 +616,20 @@ def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depend
             require_project_access(session.connection, str(turn["project_id"]), current_user)
             job_id = str(turn.get("job_id") or "")
             decision = session.agent2.research_turn_decisions.get_for_turn(turn_id)
+            autonomy = build_autonomy_projection(
+                session.agent2.research_turn_events.list_for_turn(turn_id)
+            )
         if not job_id:
-            return {
+            payload = {
                 "contract_version": "1.0", "turn_id": str(turn_id), "status": turn["status"],
                 "response_kind": _research_progress_response_kind(turn, decision),
                 "plan_title": None, "steps": [], "active_step_ids": [], "completed_step_count": 0,
                 "total_step_count": 0, "incremental_outputs": [], "warnings": [],
                 "execution_outcome": None, "result_projection_pending": False,
             }
+            if autonomy["enabled"]:
+                payload["autonomy"] = autonomy
+            return payload
         try:
             view = ResearchExecutionSupervisor(factory).sync_for_job(job_id)
         except ValueError as exc:
@@ -638,7 +645,12 @@ def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depend
             ):
                 return _historical_terminal_progress(turn_id, str(turn["status"]))
             raise
-        return jsonable_encoder(view.model_dump(mode="json") if hasattr(view, "model_dump") else view)
+        payload = jsonable_encoder(
+            view.model_dump(mode="json") if hasattr(view, "model_dump") else view
+        )
+        if autonomy["enabled"]:
+            payload["autonomy"] = autonomy
+        return payload
     except Exception as exc:
         raise _http_error(exc) from exc
 

@@ -10,6 +10,32 @@ export type Agent2ProgressStep = {
   output_available: boolean;
   warning?: string | null;
 };
+export type Agent2AutonomyProgress = {
+  enabled: boolean;
+  mode: string;
+  cycle_index: number;
+  objective?: string | null;
+  subgoal?: string | null;
+  decision?: {
+    outcome?: string | null;
+    reason_codes?: string[];
+    qualification_level?: string | null;
+    limitations?: string[];
+    strategy?: {
+      action?: string | null;
+      evidence_strength?: string | null;
+      current_question?: { statement?: string | null } | null;
+      active_evidence_gap?: { statement?: string | null; gap_type?: string | null } | null;
+      active_hypothesis?: { statement?: string | null; status?: string | null } | null;
+      evidence_value?: string | null;
+      comparison_status?: string | null;
+    } | null;
+  } | null;
+  stop?: {
+    stopped?: boolean;
+    reason?: string | null;
+  } | null;
+};
 export type Agent2ProgressView = {
   contract_version: "1.0";
   turn_id: string;
@@ -24,6 +50,7 @@ export type Agent2ProgressView = {
   warnings: Array<{ code: string; message: string }>;
   execution_outcome?: "SUCCESS" | "PARTIAL" | "FAILED" | "CANCELED" | null;
   result_projection_pending: boolean;
+  autonomy?: Agent2AutonomyProgress;
 };
 
 async function request<T>(

@@ -555,6 +555,16 @@ def test_durable_cycle_creation_is_idempotent_and_memory_is_result_grounded() ->
     assert second.enqueued is False
     assert first.assessment.evidence_result_ids == [result_snapshot_id]
     assert first.assessment.exact_source_version_ids == [source.version_id]
+    assert first.assessment.strategy_decision is not None
+    assert first.assessment.strategy_summary is not None
+    assert (
+        first.assessment.strategy_decision.current_question_id
+        == "q-transport"
+    )
+    assert (
+        first.assessment.strategy_summary.evidence_state_fingerprint
+        == first.assessment.strategy_decision.evidence_state_fingerprint
+    )
     with factory.session() as session:
         turns = session.agent2.research_turns.list_for_session("session", limit=20)
         assert len(turns) == 2
@@ -812,6 +822,78 @@ def test_lifecycle_projection_exposes_bounded_autonomy_without_reasoning() -> No
     assert autonomy["decision"]["qualification_level"] == "DOMAIN_VALIDATED"
     assert autonomy["policy"]["max_cycles"] == 4
     assert "hidden_reasoning" not in str(autonomy)
+
+
+def test_lifecycle_projection_exposes_strategy_without_hidden_reasoning() -> None:
+    now = datetime.now(timezone.utc)
+    turn_id = uuid4()
+    projection = build_lifecycle_projection(
+        {
+            "id": turn_id,
+            "status": "COMPLETED",
+            "created_at": now,
+            "updated_at": now,
+            "completed_at": now,
+        },
+        events=[
+            {
+                "event_type": "TURN_RECEIVED",
+                "sequence_no": 1,
+                "created_at": now,
+                "payload_json": {
+                    "autonomy": {
+                        "mode": "BOUNDED_AUTONOMOUS",
+                        "cycle_index": 2,
+                    }
+                },
+            },
+            {
+                "event_type": "AUTONOMY_ASSESSMENT_RECORDED",
+                "sequence_no": 2,
+                "created_at": now,
+                "payload_json": {
+                    "assessment": {
+                        "outcome": "CONTINUE_WITH_ANALYSIS",
+                        "strategy_decision": {
+                            "action": "TEST_HYPOTHESIS",
+                            "current_question_id": "q-transport-structure",
+                            "evidence_state_fingerprint": "a" * 64,
+                            "reasoning": "must not be projected",
+                        },
+                        "strategy_summary": {
+                            "evidence_state_fingerprint": "a" * 64,
+                            "evidence_strength": "WELL_SUPPORTED",
+                            "question_count": 2,
+                            "resolved_question_count": 1,
+                            "open_question_count": 1,
+                            "evidence_gap_count": 1,
+                            "hypothesis_count": 1,
+                            "unresolved_contradiction_count": 0,
+                            "result_count": 2,
+                            "lineage_count": 2,
+                            "current_question": {
+                                "question_id": "q-transport-structure",
+                                "statement": "Does local evidence help?",
+                            },
+                            "active_evidence_gap": {
+                                "gap_id": "gap-local-transport-structure",
+                                "gap_type": "STRUCTURAL_CONTEXT_MISSING",
+                            },
+                            "active_hypothesis": {
+                                "hypothesis_id": "hypothesis-local-constraint",
+                                "status": "PROPOSED",
+                            },
+                        },
+                    }
+                },
+            },
+        ],
+    )
+    strategy = projection["autonomy"]["decision"]["strategy"]
+    assert strategy["action"] == "TEST_HYPOTHESIS"
+    assert strategy["current_question"]["question_id"] == "q-transport-structure"
+    assert strategy["active_hypothesis"]["status"] == "PROPOSED"
+    assert "reasoning" not in str(strategy)
 
 
 def test_budget_exhaustion_is_authoritative_even_when_assessor_wants_to_continue() -> None:

@@ -8275,3 +8275,31 @@ scientific-authority contract changed.
 - Verified focused backend `218 passed, 7 skipped`, frontend `101 passed`,
   service-backed `1 passed`, live provider `1 passed`, Ruff, compileall,
   typecheck, production build, architecture and diff checks.
+
+## 2026-09-10 Workstream F — Scientific Research Strategy & Advanced Reasoning
+
+- Added a bounded, read-only `ResearchEvidenceState` over authoritative
+  ScientificResults with exact source/version lineage, typed scientific
+  questions, evidence gaps, hypotheses, comparison compatibility,
+  contradictions, limitations and evidence strength.
+- Added minimum-sufficient-evidence and existing-evidence-first strategy rules
+  for trajectory, dataset/ML, structure, diffraction and supplied electronic
+  semantics, including justified ML → composition and transport → structural
+  cross-family transitions.
+- Added a structured `ResearchStrategyDecision` boundary with deterministic
+  source/project/requirement/qualification/duplicate validation and at most
+  one bounded provider repair. No prompt, scratchpad or hidden reasoning is
+  persisted.
+- Integrated strategy summaries into existing autonomy events, ContextSnapshot
+  provenance, recovery and memory. The progress API and Research activity UI
+  expose only the current question, evidence gap, tentative hypothesis,
+  continuation/stop basis and bounded limitations.
+- Generated a 12-case strategy corpus: 12/12 accepted, scientific stops 7/7,
+  cross-family transition 1/1 and zero irrelevant, redundant, overclaim,
+  comparison, qualification or unsupported-claim violations.
+- Verified 105 focused A-F backend tests with 3 expected skips, 31 API tests,
+  13 Research strategy UI tests, three sanitized live-provider cases and
+  canonical PostgreSQL/Redis/RQ/MinIO fresh-worker trajectory and
+  dataset/composition service paths.
+- Maturity is `BOUNDED_READY`: broad arbitrary-domain strategy, literature
+  authority and causal inference are deliberately not claimed.

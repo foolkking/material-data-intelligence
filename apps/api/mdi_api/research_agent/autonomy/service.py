@@ -156,6 +156,9 @@ class BoundedAutonomyService:
             current_result_row = session.agent2.scientific_result_snapshots.get_latest_for_turn(
                 turn_id
             )
+            context_snapshot = (
+                session.agent2.research_context_snapshots.get_for_turn(turn_id)
+            )
             current_bundle = ScientificResultBundle.model_validate(
                 current_result_row["bundle_json"]
             )
@@ -185,6 +188,7 @@ class BoundedAutonomyService:
             completed_bundles: list[ScientificResultBundle] = []
             completed_result_ids: list[UUID] = []
             completed_capability_ids: set[str] = set()
+            result_parent_ids: dict[str, tuple[str, ...]] = {}
             llm_decision_calls = 0
             for item in lineage:
                 decision = session.agent2.research_turn_decisions.get_for_turn(
@@ -209,6 +213,12 @@ class BoundedAutonomyService:
                         item["id"]
                     )
                 )
+                item_autonomy = self._turn_autonomy_payload(session, item)
+                evidence_parent = item_autonomy.get("evidence_result_id")
+                if evidence_parent:
+                    result_parent_ids[str(result_row["id"])] = (
+                        str(evidence_parent),
+                    )
                 completed_result_ids.append(result_row["id"])
                 bundle = ScientificResultBundle.model_validate(result_row["bundle_json"])
                 completed_bundles.append(bundle)
@@ -247,7 +257,10 @@ class BoundedAutonomyService:
                 "objective": objective,
                 "current_result_row": current_result_row,
                 "current_bundle": current_bundle,
+                "context_snapshot": context_snapshot,
                 "completed_result_ids": completed_result_ids,
+                "completed_bundles": completed_bundles,
+                "result_parent_ids": result_parent_ids,
                 "completed_capability_ids": completed_capability_ids,
                 "capability_execution_count": capability_execution_count,
                 "llm_decision_calls": llm_decision_calls,
@@ -264,6 +277,9 @@ class BoundedAutonomyService:
             objective=state["objective"],
             current=current,
             completed_capability_ids=completed,
+            completed_bundles=state["completed_bundles"],
+            completed_result_ids=state["completed_result_ids"],
+            result_parent_ids=state["result_parent_ids"],
         )
         outcome = base.outcome
         reason_codes = list(base.reason_codes)
@@ -333,12 +349,31 @@ class BoundedAutonomyService:
             selected_parameters=selected_parameters,
             qualification=qualification,
             exact_source_version_ids=sorted(
-                {ref.version_id for ref in current.source_object_refs},
+                {
+                    ref.version_id
+                    for bundle in state["completed_bundles"]
+                    for ref in [
+                        *bundle.source_object_refs,
+                        *bundle.output_object_refs,
+                    ]
+                },
                 key=str,
+            ),
+            context_snapshot_id=(
+                state["context_snapshot"].get("id")
+                if state["context_snapshot"]
+                else None
+            ),
+            context_snapshot_fingerprint=(
+                state["context_snapshot"].get("context_fingerprint")
+                if state["context_snapshot"]
+                else None
             ),
             semantic_step_signature=signature,
             reason_codes=reason_codes,
             limitations=sorted(set(limitations))[:16],
+            strategy_decision=base.strategy_decision,
+            strategy_summary=base.strategy_summary,
             policy_version=policy.version,
             policy_fingerprint=policy.fingerprint,
         )
@@ -349,8 +384,14 @@ class BoundedAutonomyService:
         assessment: AutonomyAssessment,
         policy: AutonomyPolicy,
     ) -> Any:
-        bundle: ScientificResultBundle = state["current_bundle"]
-        source_refs = list(bundle.source_object_refs)
+        source_refs = []
+        seen_source_versions: set[UUID] = set()
+        for bundle in state["completed_bundles"]:
+            for ref in [*bundle.source_object_refs, *bundle.output_object_refs]:
+                if ref.version_id in seen_source_versions:
+                    continue
+                seen_source_versions.add(ref.version_id)
+                source_refs.append(ref)
         assessment_payload = assessment.model_dump(mode="json")
         assessment_signature = hashlib.sha256(
             json.dumps(
@@ -373,6 +414,11 @@ class BoundedAutonomyService:
             ],
             "semantic_step_signature": assessment.semantic_step_signature,
             "assessment_signature": assessment_signature,
+            "strategy": (
+                assessment.strategy_summary.model_dump(mode="json")
+                if assessment.strategy_summary
+                else None
+            ),
             "qualification": (
                 assessment.qualification.model_dump(mode="json")
                 if assessment.qualification
@@ -410,6 +456,11 @@ class BoundedAutonomyService:
             "semantic_step_signature": assessment.semantic_step_signature,
             "policy_version": assessment.policy_version,
             "policy_fingerprint": assessment.policy_fingerprint,
+            "strategy": (
+                assessment.strategy_summary.model_dump(mode="json")
+                if assessment.strategy_summary
+                else None
+            ),
         }
         with self.repository_factory.unit_of_work() as unit:
             self._event(
@@ -447,6 +498,28 @@ class BoundedAutonomyService:
                             ],
                             "capability_ids": assessment.completed_capability_ids,
                             "outcome": assessment.outcome.value,
+                            "strategy_action": (
+                                assessment.strategy_decision.action.value
+                                if assessment.strategy_decision
+                                else None
+                            ),
+                            "question_id": (
+                                assessment.strategy_decision.current_question_id
+                                if assessment.strategy_decision
+                                else None
+                            ),
+                            "evidence_gap_id": (
+                                assessment.strategy_decision.evidence_gap.gap_id
+                                if assessment.strategy_decision
+                                and assessment.strategy_decision.evidence_gap
+                                else None
+                            ),
+                            "hypothesis_id": (
+                                assessment.strategy_decision.hypothesis.hypothesis_id
+                                if assessment.strategy_decision
+                                and assessment.strategy_decision.hypothesis
+                                else None
+                            ),
                             "provenance_refs": [
                                 memory_identity,
                                 *(
@@ -465,6 +538,60 @@ class BoundedAutonomyService:
                         "updated_at": datetime.now(timezone.utc),
                     }
                 )
+            hypothesis = (
+                assessment.strategy_decision.hypothesis
+                if assessment.strategy_decision
+                else None
+            )
+            if hypothesis is not None:
+                hypothesis_identity = (
+                    f"strategy-hypothesis:{assessment.research_turn_id}:"
+                    f"{hypothesis.hypothesis_id}"
+                )
+                if not any(
+                    hypothesis_identity
+                    in set(
+                        (item.get("ref_json") or {}).get("provenance_refs")
+                        or []
+                    )
+                    for item in memory_items
+                ):
+                    unit.agent2.research_session_memory.add_item(
+                        {
+                            "id": uuid4(),
+                            "session_id": str(turn["research_session_id"]),
+                            "project_id": str(turn["project_id"]),
+                            "item_type": ResearchContextItemType.OPEN_QUESTION.value,
+                            "scope": ContextScope.TURN.value,
+                            "ref_json": {
+                                "authority_class": "MEMORY",
+                                "epistemic_status": "HYPOTHESIS",
+                                "freshness": "CURRENT",
+                                "hypothesis_id": hypothesis.hypothesis_id,
+                                "hypothesis_status": hypothesis.status.value,
+                                "question_id": hypothesis.question_id,
+                                "result_ids": [
+                                    str(value)
+                                    for value in hypothesis.supporting_result_ids
+                                ],
+                                "provenance_refs": [
+                                    hypothesis_identity,
+                                    *(
+                                        f"result:{value}"
+                                        for value in hypothesis.supporting_result_ids
+                                    ),
+                                ],
+                            },
+                            "statement": hypothesis.statement,
+                            "structured_constraint_json": None,
+                            "source_message_id": None,
+                            "explicitly_requested": False,
+                            "active": True,
+                            "version": 1,
+                            "created_at": datetime.now(timezone.utc),
+                            "updated_at": datetime.now(timezone.utc),
+                        }
+                    )
 
     def _record_stop(self, assessment: AutonomyAssessment) -> None:
         with self.repository_factory.unit_of_work() as unit:
@@ -547,6 +674,18 @@ class BoundedAutonomyService:
                 if autonomy:
                     return dict(autonomy)
         return {"mode": AutonomyMode.STANDARD.value}
+
+    @staticmethod
+    def _turn_autonomy_payload(
+        session: Any, turn: dict[str, Any]
+    ) -> dict[str, Any]:
+        for event in session.agent2.research_turn_events.list_for_turn(turn["id"]):
+            if event["event_type"] != ResearchTurnEventType.TURN_RECEIVED.value:
+                continue
+            autonomy = (event.get("payload_json") or {}).get("autonomy") or {}
+            if autonomy:
+                return dict(autonomy)
+        return {}
 
     @staticmethod
     def _memory_statement(assessment: AutonomyAssessment) -> str:

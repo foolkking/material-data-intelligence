@@ -4371,3 +4371,26 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
       PostgreSQL/Redis/MinIO fresh-worker MSD→diffusion recovery/reuse flow.
 - Next recommended workstream: Scientific Research Strategy & Advanced
   Reasoning, while retaining the finite policy and current quality gates.
+
+## 2026-09-10 Workstream F — Scientific Research Strategy & Advanced Reasoning
+
+- [x] Project authoritative ScientificResults into bounded evidence state with
+      exact source/version lineage.
+- [x] Model scientific questions, evidence gaps, hypotheses, comparisons and
+      contradictions without creating a second scientific authority.
+- [x] Prefer existing evidence and minimum-sufficient paths before requesting
+      another qualified Capability.
+- [x] Support evidence-driven cross-family transitions without family-wide
+      sweeps or capability-availability routing.
+- [x] Validate structured provider proposals, source/project scope,
+      qualification, duplicate steps and hypothesis epistemic status with at
+      most one bounded repair.
+- [x] Preserve existing autonomy caps, recovery, cancellation, ContextSnapshot
+      provenance and zero redundant execution expectation.
+- [x] Expose bounded strategy question/gap/hypothesis/continue/stop semantics
+      in lifecycle progress and the Research activity surface without hidden
+      reasoning.
+- [x] Pass 12/12 deterministic strategy cases, 3 sanitized live-provider cases
+      and canonical cross-family/recovery/reuse service-backed paths.
+- Next recommended workstream: Scientist UX & Product Maturity, with broader
+  capability expansion retained as the next scientific-breadth dependency.

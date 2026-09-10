@@ -87,5 +87,7 @@ class DeepSeekStructuredLLMClient:
             latency_ms=max(0, round((perf_counter() - started) * 1000)),
             usage=audit.get("tokenUsage") if isinstance(audit, dict) else None,
             repair_attempted=repair,
-            prompt_version=PROMPT_VERSION,
+            prompt_version=str(
+                request_context.get("prompt_version") or PROMPT_VERSION
+            ),
         )

@@ -114,6 +114,44 @@ describe("ResearchExecutionActivity", () => {
     expect(screen.queryByText("数据查询已完成")).toBeNull();
   });
 
+  it("shows bounded scientific strategy without exposing hidden reasoning or runtime ids", () => {
+    render(<ResearchExecutionActivity progress={{
+      contract_version: "1.0",
+      turn_id: "turn-strategy",
+      status: "RESULT_READY",
+      steps: [],
+      active_step_ids: [],
+      completed_step_count: 1,
+      total_step_count: 1,
+      incremental_outputs: [],
+      warnings: [],
+      execution_outcome: "SUCCESS",
+      result_projection_pending: false,
+      autonomy: {
+        enabled: true,
+        mode: "BOUNDED_AUTONOMOUS",
+        cycle_index: 2,
+        decision: {
+          outcome: "CONTINUE_WITH_ANALYSIS",
+          limitations: ["该关系目前仍是方法依赖的解释。"],
+          strategy: {
+            action: "TEST_HYPOTHESIS",
+            current_question: { statement: "局部结构是否能解释输运异常？" },
+            active_evidence_gap: { statement: "缺少局部结构证据。" },
+            active_hypothesis: { statement: "较弱的局部约束可能与较高扩散相关。", status: "PROPOSED" },
+          },
+        },
+        stop: { stopped: false, reason: null },
+      },
+    }} />);
+
+    expect(screen.getByRole("complementary", { name: "研究策略" })).toHaveTextContent("第 2 轮");
+    expect(screen.getByText("局部结构是否能解释输运异常？")).toBeInTheDocument();
+    expect(screen.getByText("较弱的局部约束可能与较高扩散相关。")).toBeInTheDocument();
+    expect(screen.getByText("将用下一项分析检验当前假设")).toBeInTheDocument();
+    expect(screen.queryByText(/hidden_reasoning|tool\\.|adapter\\.|job_/i)).toBeNull();
+  });
+
   it("deduplicates repeated execution warnings without duplicate React keys", () => {
     render(<ResearchExecutionActivity progress={{
       contract_version: "1.0",

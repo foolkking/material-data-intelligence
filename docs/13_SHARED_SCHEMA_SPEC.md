@@ -2857,3 +2857,34 @@ trajectory.msd_lag_count
 
 They are the downstream diffusion fit-window authority. Missing or invalid
 facts fail closed; no fit interval is guessed.
+
+### Scientific research strategy 1.0
+
+`ResearchEvidenceState` is a bounded read-only strategy projection. It records
+the objective, exact Result/ScientificObjectVersion identities, typed
+observations, Result lineage, bounded questions, evidence gaps, hypotheses,
+comparison compatibility, contradictions, limitations and evidence strength.
+It is not a new scientific truth authority.
+
+`ResearchStrategyDecision` selects one bounded action:
+
+```text
+SYNTHESIZE
+CONTINUE_ANALYSIS
+REUSE_RESULT
+TEST_HYPOTHESIS
+COMPARE
+NEEDS_CLARIFICATION
+CONFLICTING_EVIDENCE
+STOP_WITH_LIMITATIONS
+```
+
+Continuing decisions carry an evidence requirement and registered Capability
+need; existing Capability Resolution, qualification, planning and execution
+remain authoritative. Hypotheses retain explicit status and source Result
+references and never become ScientificResult facts.
+
+`AutonomyAssessment 1.0` additively carries the full bounded strategy decision
+and a compact strategy summary/fingerprint. Existing ResearchTurn events and
+lifecycle projections expose only observable question/gap/hypothesis and
+evidence metadata; prompts and hidden reasoning are forbidden.

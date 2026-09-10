@@ -8,6 +8,12 @@ from typing import Iterable
 
 from mdi_api.domain.scientific_results.contracts import ScientificResultBundle
 from mdi_api.research_agent.autonomy.schemas import AutonomyProgressOutcome
+from mdi_api.research_agent.strategy.engine import ScientificResearchStrategyEngine
+from mdi_api.research_agent.strategy.schemas import (
+    ResearchStrategyAction,
+    ResearchStrategyDecision,
+    ResearchStrategySummary,
+)
 
 
 @dataclass(frozen=True)
@@ -18,6 +24,8 @@ class ProposedAutonomyStep:
     requirement_id: str | None = None
     parameters: tuple[tuple[str, float], ...] = ()
     limitations: tuple[str, ...] = ()
+    strategy_decision: ResearchStrategyDecision | None = None
+    strategy_summary: ResearchStrategySummary | None = None
 
     @property
     def parameter_dict(self) -> dict[str, float]:
@@ -41,7 +49,7 @@ def semantic_step_signature(
 
 
 class ResearchProgressAssessor:
-    """Conservative deterministic follow-up rules for validated golden families.
+    """Compatibility entry point over bounded scientific strategy.
 
     The assessor chooses only a scientific need. Registry eligibility,
     qualification, authorization, binding, and execution remain separate
@@ -68,6 +76,12 @@ class ResearchProgressAssessor:
         "配位",
     )
     _CAUSAL_TERMS = ("prove", "causes", "causal", "证明", "导致", "因果")
+
+    def __init__(
+        self,
+        strategy_engine: ScientificResearchStrategyEngine | None = None,
+    ) -> None:
+        self.strategy_engine = strategy_engine or ScientificResearchStrategyEngine()
 
     @staticmethod
     def _numeric_fact(
@@ -129,92 +143,63 @@ class ResearchProgressAssessor:
         objective: str,
         current: ScientificResultBundle,
         completed_capability_ids: set[str],
+        completed_bundles: Iterable[ScientificResultBundle] = (),
+        completed_result_ids: Iterable[str] | None = None,
+        result_parent_ids: dict[str, tuple[str, ...]] | None = None,
     ) -> ProposedAutonomyStep:
-        lowered = objective.lower()
-        result_types = {item.result_type for item in current.result_items}
-        capability_ids = {item.capability_id for item in current.methods}
+        from uuid import UUID
 
-        if any(term in lowered for term in self._CAUSAL_TERMS):
-            return ProposedAutonomyStep(
-                outcome=AutonomyProgressOutcome.STOP_WITH_LIMITATIONS,
-                reason_codes=("UNSUPPORTED_CAUSAL_INFERENCE",),
-                limitations=(
-                    "Available computational evidence does not establish causality.",
-                ),
-            )
-
-        if (
-            any(term in lowered for term in self._DIFFUSION_TERMS)
-            and (
-                "trajectory.msd" in result_types
-                or "trajectory.msd" in capability_ids
-            )
-            and "trajectory.diffusion" not in completed_capability_ids
-        ):
+        result_ids = (
+            [UUID(str(value)) for value in completed_result_ids]
+            if completed_result_ids is not None
+            else None
+        )
+        state, strategy = self.strategy_engine.decide(
+            objective=objective,
+            current=current,
+            completed_bundles=completed_bundles,
+            completed_result_ids=result_ids,
+            result_parent_ids={
+                UUID(str(result_id)): tuple(UUID(str(value)) for value in parents)
+                for result_id, parents in (result_parent_ids or {}).items()
+            },
+            completed_capability_ids=completed_capability_ids,
+        )
+        summary = ResearchStrategySummary.from_state(state, strategy)
+        action_outcomes = {
+            ResearchStrategyAction.SYNTHESIZE: AutonomyProgressOutcome.GOAL_SATISFIED,
+            ResearchStrategyAction.CONTINUE_ANALYSIS: AutonomyProgressOutcome.CONTINUE_WITH_ANALYSIS,
+            ResearchStrategyAction.REUSE_RESULT: AutonomyProgressOutcome.REUSE_EXISTING_RESULT,
+            ResearchStrategyAction.TEST_HYPOTHESIS: AutonomyProgressOutcome.CONTINUE_WITH_ANALYSIS,
+            ResearchStrategyAction.COMPARE: AutonomyProgressOutcome.CONTINUE_WITH_ANALYSIS,
+            ResearchStrategyAction.NEEDS_CLARIFICATION: AutonomyProgressOutcome.NEEDS_CLARIFICATION,
+            ResearchStrategyAction.CONFLICTING_EVIDENCE: AutonomyProgressOutcome.CONFLICTING_EVIDENCE,
+            ResearchStrategyAction.STOP_WITH_LIMITATIONS: AutonomyProgressOutcome.STOP_WITH_LIMITATIONS,
+        }
+        parameters: dict[str, float] = {}
+        limitations = list(strategy.limitations)
+        if strategy.selected_capability_id == "trajectory.diffusion":
             parameters, refusal = self._diffusion_parameters(current)
             if refusal is not None:
-                return refusal
-            assert parameters is not None
-            return ProposedAutonomyStep(
-                outcome=AutonomyProgressOutcome.CONTINUE_WITH_ANALYSIS,
-                capability_id="trajectory.diffusion",
-                requirement_id="trajectory.estimate_diffusion",
-                parameters=tuple(sorted(parameters.items())),
-                reason_codes=(
-                    "OBJECTIVE_REQUIRES_TRANSPORT_EVIDENCE",
-                    "MSD_EVIDENCE_AVAILABLE",
-                    "FIT_WINDOW_GROUNDED_IN_MSD_RESULT",
-                ),
+                return ProposedAutonomyStep(
+                    outcome=refusal.outcome,
+                    reason_codes=refusal.reason_codes,
+                    limitations=refusal.limitations,
+                    strategy_decision=strategy,
+                    strategy_summary=summary,
+                )
+            limitations.append(
+                "The diffusion fit interval is grounded in persisted MSD facts."
             )
-
-        if (
-            any(term in lowered for term in self._DATA_PATTERN_TERMS)
-            and completed_capability_ids.intersection(
-                {"ml.regression_evaluation", "data.materials_explorer"}
-            )
-            and "data.composition_space" not in completed_capability_ids
-        ):
-            return ProposedAutonomyStep(
-                outcome=AutonomyProgressOutcome.CONTINUE_WITH_ANALYSIS,
-                capability_id="data.composition_space",
-                requirement_id="data.explore_composition_space",
-                reason_codes=(
-                    "OBJECTIVE_REQUIRES_MATERIAL_PATTERN_EVIDENCE",
-                    "DATASET_EVIDENCE_AVAILABLE",
-                ),
-            )
-
-        if (
-            any(term in lowered for term in self._LOCAL_ENV_TERMS)
-            and "structure.rdf" in completed_capability_ids
-            and not completed_capability_ids.intersection(
-                {
-                    "structure.coordination_hist",
-                    "structure.coordination_crystalnn",
-                    "structure.coordination_voronoinn",
-                }
-            )
-        ):
-            return ProposedAutonomyStep(
-                outcome=AutonomyProgressOutcome.CONTINUE_WITH_ANALYSIS,
-                capability_id="structure.coordination_hist",
-                requirement_id="structure.inspect_coordination_hist",
-                reason_codes=(
-                    "OBJECTIVE_REQUIRES_LOCAL_COORDINATION_EVIDENCE",
-                    "STRUCTURAL_DISTANCE_EVIDENCE_AVAILABLE",
-                ),
-            )
-
-        if current.execution_status.value == "PARTIAL":
-            return ProposedAutonomyStep(
-                outcome=AutonomyProgressOutcome.STOP_WITH_LIMITATIONS,
-                reason_codes=("PARTIAL_RESULT_REQUIRES_BOUNDED_STOP",),
-                limitations=tuple(item.message for item in current.limitations[:8]),
-            )
-
         return ProposedAutonomyStep(
-            outcome=AutonomyProgressOutcome.GOAL_SATISFIED,
-            reason_codes=("NO_ADDITIONAL_MATERIAL_EVIDENCE_REQUIRED",),
+            outcome=action_outcomes[strategy.action],
+            reason_codes=tuple(strategy.reason_codes),
+            capability_id=strategy.selected_capability_id,
+            requirement_id=strategy.capability_need,
+            parameters=tuple(sorted(parameters.items())),
+            limitations=tuple(sorted(set(limitations))),
+            strategy_decision=strategy,
+            strategy_summary=summary,
         )
 
 

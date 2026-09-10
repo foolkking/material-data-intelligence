@@ -1,0 +1,193 @@
+{
+  "accepted": true,
+  "cases": [
+    {
+      "action": "CONTINUE_ANALYSIS",
+      "case_id": "trajectory-quantify",
+      "evidence_gap": "PROPERTY_NOT_QUANTIFIED",
+      "hypothesis_id": null,
+      "objective": "Analyze diffusion behavior.",
+      "passed": true,
+      "reason_codes": [
+        "OBJECTIVE_REQUIRES_TRANSPORT_EVIDENCE",
+        "MSD_EVIDENCE_AVAILABLE"
+      ],
+      "selected_capability_id": "trajectory.diffusion",
+      "stop": false,
+      "violations": []
+    },
+    {
+      "action": "TEST_HYPOTHESIS",
+      "case_id": "trajectory-explain",
+      "evidence_gap": "STRUCTURAL_CONTEXT_MISSING",
+      "hypothesis_id": "hypothesis-local-constraint",
+      "objective": "Explain the diffusion transport behavior.",
+      "passed": true,
+      "reason_codes": [
+        "TRANSPORT_RESULT_AVAILABLE",
+        "OBJECTIVE_REQUESTS_STRUCTURAL_EXPLANATION",
+        "LOCAL_STRUCTURE_EVIDENCE_MISSING"
+      ],
+      "selected_capability_id": "trajectory.rdf",
+      "stop": false,
+      "violations": []
+    },
+    {
+      "action": "COMPARE",
+      "case_id": "dataset-chemistry",
+      "evidence_gap": "MODEL_ERROR_PATTERN_UNEXPLAINED",
+      "hypothesis_id": null,
+      "objective": "Investigate model error and its chemistry pattern.",
+      "passed": true,
+      "reason_codes": [
+        "MODEL_ERROR_EVIDENCE_AVAILABLE",
+        "OBJECTIVE_REQUESTS_CHEMISTRY_PATTERN"
+      ],
+      "selected_capability_id": "data.composition_space",
+      "stop": false,
+      "violations": []
+    },
+    {
+      "action": "COMPARE",
+      "case_id": "xrd-compare",
+      "evidence_gap": "COMPARISON_MISSING",
+      "hypothesis_id": null,
+      "objective": "Compare the experimental XRD agreement.",
+      "passed": true,
+      "reason_codes": [
+        "EXPERIMENTAL_AND_THEORETICAL_DIFFRACTION_AVAILABLE",
+        "COMPARISON_EVIDENCE_MISSING"
+      ],
+      "selected_capability_id": "diffraction.experimental_theoretical_comparison",
+      "stop": false,
+      "violations": []
+    },
+    {
+      "action": "CONTINUE_ANALYSIS",
+      "case_id": "structure-followup",
+      "evidence_gap": "STRUCTURAL_CONTEXT_MISSING",
+      "hypothesis_id": null,
+      "objective": "Explain the local structural environment.",
+      "passed": true,
+      "reason_codes": [
+        "STRUCTURAL_DISTANCE_EVIDENCE_AVAILABLE",
+        "COORDINATION_EVIDENCE_MISSING"
+      ],
+      "selected_capability_id": "structure.coordination_hist",
+      "stop": false,
+      "violations": []
+    },
+    {
+      "action": "NEEDS_CLARIFICATION",
+      "case_id": "structure-baseline",
+      "evidence_gap": "REFERENCE_BASELINE_MISSING",
+      "hypothesis_id": null,
+      "objective": "Is this local environment unusual?",
+      "passed": true,
+      "reason_codes": [
+        "STRUCTURAL_COMPARISON_BASELINE_REQUIRED"
+      ],
+      "selected_capability_id": null,
+      "stop": true,
+      "violations": []
+    },
+    {
+      "action": "SYNTHESIZE",
+      "case_id": "electronic-limit",
+      "evidence_gap": null,
+      "hypothesis_id": null,
+      "objective": "Inspect the electronic band gap.",
+      "passed": true,
+      "reason_codes": [
+        "SUPPLIED_ELECTRONIC_RESULT_AVAILABLE"
+      ],
+      "selected_capability_id": null,
+      "stop": true,
+      "violations": []
+    },
+    {
+      "action": "STOP_WITH_LIMITATIONS",
+      "case_id": "causal-limit",
+      "evidence_gap": null,
+      "hypothesis_id": null,
+      "objective": "Prove this structure causes better transport.",
+      "passed": true,
+      "reason_codes": [
+        "UNSUPPORTED_CAUSAL_INFERENCE"
+      ],
+      "selected_capability_id": null,
+      "stop": true,
+      "violations": []
+    },
+    {
+      "action": "STOP_WITH_LIMITATIONS",
+      "case_id": "partial-limit",
+      "evidence_gap": null,
+      "hypothesis_id": null,
+      "objective": "Analyze this trajectory.",
+      "passed": true,
+      "reason_codes": [
+        "PARTIAL_RESULT_REQUIRES_BOUNDED_STOP"
+      ],
+      "selected_capability_id": null,
+      "stop": true,
+      "violations": []
+    },
+    {
+      "action": "SYNTHESIZE",
+      "case_id": "existing-evidence",
+      "evidence_gap": null,
+      "hypothesis_id": null,
+      "objective": "Summarize the available dataset evidence.",
+      "passed": true,
+      "reason_codes": [
+        "EXISTING_EVIDENCE_ADDRESSES_REQUESTED_SCOPE"
+      ],
+      "selected_capability_id": null,
+      "stop": true,
+      "violations": []
+    },
+    {
+      "action": "CONFLICTING_EVIDENCE",
+      "case_id": "contradiction",
+      "evidence_gap": "CONTRADICTORY_RESULTS",
+      "hypothesis_id": null,
+      "objective": "Assess the diffusion coefficient.",
+      "passed": true,
+      "reason_codes": [
+        "UNRESOLVED_AUTHORITATIVE_RESULT_CONTRADICTION"
+      ],
+      "selected_capability_id": null,
+      "stop": true,
+      "violations": []
+    },
+    {
+      "action": "NEEDS_CLARIFICATION",
+      "case_id": "xrd-missing-source",
+      "evidence_gap": "REFERENCE_BASELINE_MISSING",
+      "hypothesis_id": null,
+      "objective": "Compare the diffraction pattern.",
+      "passed": true,
+      "reason_codes": [
+        "EXPERIMENTAL_DIFFRACTION_REFERENCE_REQUIRED"
+      ],
+      "selected_capability_id": null,
+      "stop": true,
+      "violations": []
+    }
+  ],
+  "comparison_compatibility_violations": 0,
+  "contract_version": "agent2.research-strategy-evaluation/1.0",
+  "contradiction_cases": 1,
+  "correct_scientific_stops": 7,
+  "cross_family_cases": 1,
+  "expected_scientific_stops": 7,
+  "hypothesis_overclaim_violations": 0,
+  "hypothesis_test_cases": 1,
+  "irrelevant_capability_executions": 0,
+  "passed_cases": 12,
+  "qualification_policy_violations": 0,
+  "redundant_executions": 0,
+  "strategy_evaluation_cases": 12,
+  "unsupported_claim_violations": 0
+}

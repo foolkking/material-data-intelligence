@@ -6279,3 +6279,25 @@ Downstream scientific parameters must be grounded in durable authority. For
 the reference trajectory chain, diffusion fit bounds come from exact MSD
 ScientificResult facts; the Agent may not invent a default interval. Completed
 Artifacts, Results and Interpretations survive cancellation and recovery.
+
+## ADR — Scientific strategy is a derived evidence projection (2026-09-10)
+
+Scientific research strategy sits above bounded autonomy and below the
+existing Capability planner. It decides which scientific evidence is worth
+seeking; it does not decide authorization, eligibility, Tool/Adapter binding,
+parameters or execution. `ResearchEvidenceState` is reconstructed from exact
+ScientificResult and source-version identities and never becomes a second
+scientific authority.
+
+Questions, evidence gaps, hypotheses, comparisons and contradictions use
+bounded typed contracts. Hypotheses are explicitly non-authoritative and
+source-referenced. Comparisons require compatible quantity/unit semantics, and
+common Result ancestry is retained to avoid counting a derived chain as
+independent evidence. Genuine disagreement remains visible instead of using
+latest-wins selection.
+
+The existing `AutonomyAssessment` and Turn events retain the durable strategy
+decision and compact evidence-state fingerprint. Provider strategy is optional,
+structured, source-reference validated and limited to one repair. Capability
+eligibility, current scientific qualification, duplicate prevention and
+Workstream E budgets remain deterministic authorities.

@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+from datetime import datetime, timezone
 from uuid import uuid4
 
 from alembic import command as alembic_command
@@ -33,6 +34,7 @@ from mdi_api.domain.scientific_results.contracts import (
     ResultExecutionStatus,
     ResultRelevanceStatus,
     ScientificFact,
+    ScientificLimitation,
     ScientificResultBundle,
     ScientificResultItem,
     ScientificResultRole,
@@ -65,6 +67,7 @@ from tests.integration.test_agent2_phase4_service_backed import (
 from tests.integration.test_phase10m1_workspace_service_backed import (
     _schema_database_url,
 )
+from tests.integration.test_phase10_product_closure import _materials_ml_profile
 from tests.test_phase10n4_trajectory_analytics import _execute, _trajectory
 
 
@@ -152,6 +155,390 @@ def _interpretation_fixture(
             "follow_up_suggestions": [],
         }
     )
+
+
+@pytest.mark.integration
+def test_bounded_autonomy_persists_cross_family_ml_to_composition_strategy(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    """A durable ML Result may justify one qualified composition-space cycle."""
+
+    if os.getenv("MDI_RUN_INTEGRATION") != "1":
+        pytest.skip(
+            "Set MDI_RUN_INTEGRATION=1 with PostgreSQL and Redis running"
+        )
+    base_url = os.environ["MDI_TEST_DATABASE_URL"]
+    suffix = uuid4().hex[:12]
+    schema_name = f"strategy_f_{suffix}"
+    database_url = _schema_database_url(base_url, schema_name)
+    redis_url = os.getenv("MDI_REDIS_URL") or os.getenv("REDIS_URL")
+    assert redis_url
+    queue_names = {
+        "turn": f"mdi-f-turn-{suffix}",
+        "plan": f"mdi-f-plan-{suffix}",
+    }
+    base_engine = create_engine(base_url, future=True)
+    engine = None
+    redis = Redis.from_url(redis_url)
+    try:
+        with base_engine.begin() as connection:
+            connection.execute(CreateSchema(schema_name))
+        monkeypatch.setenv("DATABASE_URL", database_url)
+        monkeypatch.setenv("MDI_DATABASE_URL", database_url)
+        config = AlembicConfig("apps/api/alembic.ini")
+        config.set_main_option("script_location", "apps/api/alembic")
+        config.set_main_option("sqlalchemy.url", database_url.replace("%", "%%"))
+        alembic_command.upgrade(config, "head")
+        engine = create_engine(database_url, future=True, pool_pre_ping=True)
+
+        owner = CurrentUser(
+            id=f"strategy-owner-{suffix}",
+            email=f"strategy-{suffix}@example.invalid",
+            displayName="Workstream F qualification",
+            roles=[],
+        )
+        project_id = f"strategy-project-{suffix}"
+        session_id = f"strategy-session-{suffix}"
+        dataset_id = f"strategy-dataset-{suffix}"
+        profile, _objects = _materials_ml_profile(tmp_path, dataset_id)
+        with engine.begin() as connection:
+            connection.execute(
+                insert(users),
+                {
+                    "id": owner.id,
+                    "email": owner.email,
+                    "display_name": owner.displayName,
+                    "is_active": True,
+                },
+            )
+            connection.execute(
+                insert(organizations),
+                {"id": f"strategy-org-{suffix}", "name": "Workstream F"},
+            )
+            connection.execute(
+                insert(projects),
+                {
+                    "id": project_id,
+                    "organization_id": f"strategy-org-{suffix}",
+                    "name": "Workstream F qualification",
+                    "created_by": owner.id,
+                },
+            )
+            connection.execute(
+                insert(datasets),
+                {
+                    "id": dataset_id,
+                    "project_id": project_id,
+                    "name": "Qualification materials dataset",
+                    "status": "profile_ready",
+                    "metadata_json": {},
+                    "created_by": owner.id,
+                },
+            )
+            connection.execute(
+                insert(data_profiles),
+                {
+                    "id": profile.profileId,
+                    "dataset_id": dataset_id,
+                    "version": profile.version,
+                    "profile_json": profile.model_dump(mode="json"),
+                },
+            )
+            connection.execute(
+                insert(sessions),
+                {
+                    "id": session_id,
+                    "project_id": project_id,
+                    "dataset_id": dataset_id,
+                    "mode": "project",
+                    "status": "active",
+                    "created_by": owner.id,
+                },
+            )
+
+        factory = RepositoryFactory(engine)
+        objects = ScientificObjectService(
+            factory, build_default_object_type_registry()
+        )
+        logical = objects.create_object(
+            project_id=project_id,
+            kind=ScientificObjectKind.DATASET,
+            object_type="materials.dataset",
+            display_name="Qualification materials dataset",
+            created_by_user_id=owner.id,
+        )
+        version = objects.create_version(
+            logical["id"],
+            object_type="materials.dataset",
+            object_schema_version="1.0",
+            source_resource_refs=[
+                {"project_id": project_id, "dataset_id": dataset_id}
+            ],
+            parent_object_version_refs=[],
+            normalized_payload_ref=StorageRef(
+                storage_backend="minio",
+                object_key=f"workstream-f/{suffix}/materials.json",
+                checksum=f"strategy-materials-{suffix}",
+                media_type="application/json",
+            ),
+            content_hash=f"strategy-content-{suffix}",
+            semantic_hash=f"strategy-semantic-{suffix}",
+            canonical_metadata={
+                "row_count": 4,
+                "semantic_roles": [
+                    "material_formula",
+                    "regression_target",
+                    "regression_prediction",
+                ],
+            },
+            created_by_user_id=owner.id,
+        )
+        source_ref = ScientificObjectRef(
+            object_id=logical["id"],
+            version_id=version["id"],
+            project_id=project_id,
+            object_type="materials.dataset",
+            display_name=logical["display_name"],
+        )
+        objective = (
+            "Investigate where this model performs poorly and whether the "
+            "errors have a meaningful materials chemistry pattern."
+        )
+        root = ResearchTurnService(factory).receive_turn(
+            project_id=project_id,
+            session_id=session_id,
+            current_user=owner,
+            request=CreateResearchTurnRequest(
+                message=objective,
+                autonomy_mode=AutonomyMode.BOUNDED_AUTONOMOUS,
+                ui_context=ResearchTurnUIContext(
+                    active_object_refs=[source_ref],
+                    selection_refs=[source_ref],
+                    explicit_object_refs=[source_ref],
+                ),
+            ),
+        )
+        result_snapshot_id = uuid4()
+        result_item_id = "ml.regression.evaluation"
+        fact_id = "ml.rmse"
+        bundle = ScientificResultBundle(
+            schema_version="1.0",
+            result_id=uuid4(),
+            project_id=project_id,
+            research_session_id=session_id,
+            research_turn_id=root.turn_id,
+            research_question=objective,
+            source_object_refs=[source_ref],
+            execution_status=ResultExecutionStatus.SUCCESS,
+            relevance_status=ResultRelevanceStatus.CURRENT,
+            result_items=[
+                ScientificResultItem(
+                    id=result_item_id,
+                    result_type=result_item_id,
+                    role=ScientificResultRole.PRIMARY,
+                    title="Regression evaluation",
+                    artifact_ids=[],
+                    scientific_object_refs=[],
+                    fact_refs=[fact_id],
+                    evidence_refs=[],
+                )
+            ],
+            facts=[
+                ScientificFact(
+                    fact_id=fact_id,
+                    predicate="ml.regression.rmse",
+                    subject_ref=str(source_ref.version_id),
+                    value=0.22,
+                    unit="eV",
+                    source=FactSourceLocator(artifact_locator="/metrics/rmse"),
+                )
+            ],
+            figures=[],
+            tables=[],
+            output_object_refs=[],
+            evidence=[],
+            methods=[
+                MethodRecord(
+                    method_id="method:ml.regression_evaluation",
+                    capability_id="ml.regression_evaluation",
+                    capability_version="1.0",
+                    tool_id="ml.regression_evaluation",
+                    tool_version="0.1.0",
+                    source_object_refs=[source_ref],
+                )
+            ],
+            limitations=[
+                ScientificLimitation(
+                    limitation_id="ml.global-metrics-not-causal",
+                    code="DESCRIPTIVE_NOT_CAUSAL",
+                    message=(
+                        "Global regression metrics do not establish a "
+                        "chemistry-conditioned error mechanism."
+                    ),
+                    source_ref=f"result:{result_snapshot_id}",
+                )
+            ],
+            warnings=[],
+            provenance=ProvenanceRecord(
+                research_turn_id=root.turn_id,
+                source_object_version_ids=[source_ref.version_id],
+            ),
+            projection_version="workstream-f-ml/1.0",
+        )
+        now = datetime.now(timezone.utc)
+        with factory.unit_of_work() as unit:
+            unit.connection.execute(
+                update(research_turns)
+                .where(research_turns.c.id == root.turn_id)
+                .values(
+                    status="COMPLETED",
+                    action_type="ANALYZE",
+                    completed_at=now,
+                    updated_at=now,
+                )
+            )
+            unit.agent2.research_context_snapshots.add(
+                {
+                    "id": uuid4(),
+                    "project_id": project_id,
+                    "research_session_id": session_id,
+                    "research_turn_id": root.turn_id,
+                    "snapshot_schema_version": "1.1",
+                    "active_scope_refs_json": [
+                        source_ref.model_dump(mode="json")
+                    ],
+                    "selection_refs_json": [
+                        source_ref.model_dump(mode="json")
+                    ],
+                    "scientific_selections_json": [],
+                    "resolved_references_json": [],
+                    "referenced_result_refs_json": [],
+                    "relevant_finding_refs_json": [],
+                    "effective_constraints_json": [],
+                    "research_goal": objective,
+                    "unresolved_questions_json": [],
+                    "context_fingerprint": "f" * 64,
+                    "compiler_version": "workstream-f-service-fixture/1.0",
+                }
+            )
+            unit.agent2.scientific_result_snapshots.add(
+                {
+                    "id": result_snapshot_id,
+                    "project_id": project_id,
+                    "research_turn_id": root.turn_id,
+                    "job_id": None,
+                    "schema_version": "1.0",
+                    "projection_version": bundle.projection_version,
+                    "execution_status": "SUCCESS",
+                    "relevance_status": "CURRENT",
+                    "source_fingerprint": "e" * 64,
+                    "bundle_json": bundle.model_dump(mode="json"),
+                    "created_at": now,
+                }
+            )
+            unit.agent2.interpretations.add(
+                {
+                    "id": uuid4(),
+                    "research_turn_id": root.turn_id,
+                    "result_snapshot_id": result_snapshot_id,
+                    "project_id": project_id,
+                    "contract_version": "1.0",
+                    "prompt_version": "workstream-f-fixture/1.0",
+                    "provider": "fixture",
+                    "model": "fixture",
+                    "provider_request_id": None,
+                    "repair_attempted": False,
+                    "input_fingerprint": "d" * 64,
+                    "grounding_status": "VALID",
+                    "output_json": {
+                        "summary": "Model error evidence is available."
+                    },
+                    "created_at": now,
+                }
+            )
+
+        advanced = BoundedAutonomyService(
+            factory,
+            queue=RedisRQAgentTurnQueue(
+                redis_url=redis_url,
+                queue_name=queue_names["turn"],
+            ),
+        ).advance_after_interpretation(root.turn_id)
+        assert advanced is not None
+        assert advanced.enqueued is True
+        assert advanced.assessment.selected_capability_id == (
+            "data.composition_space"
+        )
+        assert advanced.assessment.unresolved_requirement_id == (
+            "data.explore_composition_space"
+        )
+        assert advanced.assessment.context_snapshot_fingerprint == "f" * 64
+        assert advanced.assessment.strategy_decision is not None
+        assert advanced.assessment.strategy_decision.action.value == "COMPARE"
+
+        environment = _worker_environment(database_url)
+        environment.update(
+            {
+                "MDI_ENV": "ci",
+                "MDI_QUEUE_BACKEND": "redis",
+                "REDIS_URL": redis_url,
+                "MDI_REDIS_URL": redis_url,
+                "MDI_AGENT2_ORCHESTRATION_ENABLED": "1",
+                "MDI_AGENT2_QUEUE_NAME": queue_names["turn"],
+                "MDI_AGENT2_PLANNING_QUEUE_NAME": queue_names["plan"],
+            }
+        )
+        _run_worker(
+            queue_names["turn"],
+            redis_url=redis_url,
+            environment=environment,
+        )
+        _run_worker(
+            queue_names["plan"],
+            redis_url=redis_url,
+            environment=environment,
+        )
+        with factory.session() as session:
+            child = session.agent2.research_turns.get(advanced.child_turn_id)
+            child_snapshot = (
+                session.agent2.research_context_snapshots.get_for_turn(
+                    advanced.child_turn_id
+                )
+            )
+            child_plan = session.agent2.research_capability_plans.get_for_turn(
+                advanced.child_turn_id
+            )
+            analysis_plan = session.repositories.analysis_plans.get_plan(
+                str(child["analysis_plan_id"])
+            )
+        assert child["status"] == "PLAN_READY"
+        assert child_snapshot["context_fingerprint"]
+        selected_versions = {
+            item["version_id"]
+            for item in [
+                *child_snapshot["selection_refs_json"],
+                *child_snapshot["active_scope_refs_json"],
+            ]
+        }
+        assert selected_versions == {str(source_ref.version_id)}
+        assert child_plan["plan_json"]["steps"][0]["capability_ref_key"]
+        assert analysis_plan["analysisPlan"]["steps"][0]["toolId"] == (
+            "dataset.composition_space"
+        )
+    finally:
+        for queue_name in queue_names.values():
+            try:
+                Queue(queue_name, connection=redis).delete(delete_jobs=True)
+            except Exception:
+                pass
+        if engine is not None:
+            engine.dispose()
+        try:
+            with base_engine.begin() as connection:
+                connection.execute(DropSchema(schema_name, cascade=True))
+        finally:
+            base_engine.dispose()
 
 
 @pytest.mark.integration

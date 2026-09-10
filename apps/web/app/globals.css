@@ -6466,6 +6466,12 @@ body:has(.research-workbench) {
 .research-execution-heading span { color: var(--product-secondary); font-size: 12px; }
 .research-execution-cancel { min-width: 44px; min-height: 44px; }
 .research-execution-cancel-state { color: var(--product-secondary); font-size: 12px; }
+.research-strategy-progress { display: grid; gap: 7px; margin-top: 11px; padding: 10px 12px; border-left: 3px solid var(--product-accent); background: var(--product-surface, #fff); color: var(--product-secondary); font-size: 12px; line-height: 1.5; }
+.research-strategy-progress > div { display: flex; justify-content: space-between; gap: 12px; }
+.research-strategy-progress > div strong { color: var(--product-ink); font-size: 13px; }
+.research-strategy-progress > div span { color: var(--product-tertiary); }
+.research-strategy-progress p { display: grid; grid-template-columns: minmax(72px, auto) minmax(0, 1fr); gap: 8px; margin: 0; }
+.research-strategy-progress p b { color: var(--product-ink); font-weight: 600; }
 .research-execution-steps { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
 .research-execution-step { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: start; gap: 7px; color: var(--product-secondary); font-size: 13px; line-height: 1.45; }
 .research-execution-step.status-succeeded { color: var(--product-accent); }

@@ -2959,3 +2959,18 @@ was created.
 - Added lifecycle observability, Research UI activation, golden autonomy
   evaluation, sanitized real-provider ingress validation and canonical
   PostgreSQL/Redis/MinIO fresh-worker recovery/reuse verification.
+
+## 2026-09-10 — Evidence-driven scientific research strategy
+
+- Added a bounded Result-first evidence projection with typed scientific
+  questions, evidence gaps, hypotheses, comparisons, contradictions and
+  exact-version lineage.
+- Added minimum-sufficient-evidence, existing-evidence-first and objective-led
+  cross-family strategy while retaining the existing finite autonomy policy,
+  qualification gates and execution authorities.
+- Added deterministic strategy validation, one bounded provider repair,
+  generated 12-case evaluation and sanitized live-provider coverage.
+- Added concise strategy visibility to the Research progress API/UI without
+  exposing prompts, hidden reasoning or runtime implementation identifiers.
+- Verified canonical PostgreSQL/Redis/RQ/MinIO trajectory recovery/reuse and
+  ML-to-composition cross-family paths.

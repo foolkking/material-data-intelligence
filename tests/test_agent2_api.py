@@ -1149,6 +1149,81 @@ def test_phase4_progress_and_dispatch_are_project_authorized(api):
     active["value"] = owner
 
 
+def test_research_progress_exposes_bounded_strategy_without_hidden_reasoning(api):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    turn = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json={"message": "Explain the transport behavior autonomously"},
+    ).json()
+    turn_id = UUID(turn["turn_id"])
+    with objects.repository_factory.unit_of_work() as unit:
+        for event_type, payload in (
+            (
+                "AUTONOMY_CYCLE_CREATED",
+                {
+                    "mode": "BOUNDED_AUTONOMOUS",
+                    "cycle_index": 2,
+                    "research_objective": "Explain the transport behavior",
+                    "policy_version": "bounded-autonomy/1.0",
+                },
+            ),
+            (
+                "AUTONOMY_ASSESSMENT_RECORDED",
+                {
+                    "assessment": {
+                        "outcome": "CONTINUE_WITH_ANALYSIS",
+                        "strategy_decision": {
+                            "action": "TEST_HYPOTHESIS",
+                            "reasoning": "must not be exposed",
+                        },
+                        "strategy_summary": {
+                            "evidence_state_fingerprint": "a" * 64,
+                            "evidence_strength": "WELL_SUPPORTED",
+                            "question_count": 2,
+                            "resolved_question_count": 1,
+                            "open_question_count": 1,
+                            "evidence_gap_count": 1,
+                            "hypothesis_count": 1,
+                            "unresolved_contradiction_count": 0,
+                            "current_question": {
+                                "question_id": "q-structure",
+                                "statement": "Does local structure explain transport?",
+                            },
+                            "active_evidence_gap": {
+                                "gap_id": "gap-structure",
+                                "statement": "Local structural evidence is missing.",
+                            },
+                            "active_hypothesis": {
+                                "hypothesis_id": "hypothesis-constraint",
+                                "statement": "Weaker local constraint may accompany diffusion.",
+                                "status": "PROPOSED",
+                            },
+                        },
+                    }
+                },
+            ),
+        ):
+            unit.agent2.research_turn_events.append_turn_event({
+                "id": uuid4(),
+                "turn_id": turn_id,
+                "sequence_no": unit.agent2.research_turn_events.next_sequence_no(turn_id),
+                "event_type": event_type,
+                "payload_json": payload,
+            })
+
+    response = client.get(f"/api/research/turns/{turn_id}/progress")
+    assert response.status_code == 200
+    autonomy = response.json()["autonomy"]
+    assert autonomy["enabled"] is True
+    assert autonomy["cycle_index"] == 2
+    assert autonomy["decision"]["strategy"]["action"] == "TEST_HYPOTHESIS"
+    assert (
+        autonomy["decision"]["strategy"]["current_question"]["statement"]
+        == "Does local structure explain transport?"
+    )
+    assert "reasoning" not in str(autonomy)
+
+
 def test_terminal_history_progress_uses_read_only_fallback_when_legacy_plan_payload_is_missing(api, monkeypatch):
     client, _active, _owner, _viewer, _stranger, objects = api
     turn = client.post(

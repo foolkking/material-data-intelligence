@@ -24,6 +24,27 @@ const statusLabel: Record<Agent2ProgressView["status"], string> = {
   ANSWERED: "回答已完成",
 };
 
+const strategyActionLabel: Record<string, string> = {
+  SYNTHESIZE: "现有证据已足够，正在形成结论",
+  CONTINUE_ANALYSIS: "仍有关键证据缺口，需要继续分析",
+  REUSE_RESULT: "已有科学结果可以直接复用",
+  TEST_HYPOTHESIS: "将用下一项分析检验当前假设",
+  COMPARE: "需要可比证据完成科学比较",
+  NEEDS_CLARIFICATION: "继续研究前需要补充明确条件",
+  CONFLICTING_EVIDENCE: "现有证据存在尚未解决的冲突",
+  STOP_WITH_LIMITATIONS: "当前证据不足以支持进一步结论",
+};
+
+const stopReasonLabel: Record<string, string> = {
+  GOAL_SATISFIED: "研究问题已由现有证据充分回答",
+  NO_QUALIFIED_CAPABILITY: "当前没有适用且满足质量要求的进一步分析",
+  NEEDS_CLARIFICATION: "继续研究需要用户明确关键条件",
+  BUDGET_EXHAUSTED: "本次自主研究已达到执行边界",
+  NON_PROGRESS: "继续执行只会重复已有分析",
+  CONFLICTING_EVIDENCE: "证据冲突尚不能可靠消解",
+  STOP_WITH_LIMITATIONS: "现有数据或方法不足以支持更强结论",
+};
+
 export function ResearchExecutionActivity({ progress, onCancel, cancelPending = false, onContinue, onRetry, retryPending = false, onEdit }: { progress: Agent2ProgressView; onCancel?: () => void; cancelPending?: boolean; onContinue?: () => void; onRetry?: () => void; retryPending?: boolean; onEdit?: () => void }) {
   const importantStatus = progress.status === "FAILED" || progress.status === "CANCELED" || progress.status === "RESULT_PENDING" || progress.status === "RESULT_READY" || progress.status === "INTERPRETING" || progress.status === "COMPLETED" || progress.status === "PARTIAL";
   const cancelable = progress.status === "ORCHESTRATING" || progress.status === "READY_TO_PLAN" || progress.status === "PLANNING" || progress.status === "PLAN_READY" || progress.status === "QUEUED" || progress.status === "RUNNING";
@@ -37,6 +58,11 @@ export function ResearchExecutionActivity({ progress, onCancel, cancelPending = 
       ]),
     ).values(),
   );
+  const autonomy = progress.autonomy?.enabled ? progress.autonomy : null;
+  const strategy = autonomy?.decision?.strategy;
+  const strategySummary = autonomy?.stop?.stopped
+    ? stopReasonLabel[autonomy.stop.reason || ""] || "自主研究已在当前科学边界停止"
+    : strategyActionLabel[strategy?.action || ""] || null;
   return (
     <section className="research-execution-activity" aria-label="分析进度">
       <div className="research-execution-heading">
@@ -49,6 +75,19 @@ export function ResearchExecutionActivity({ progress, onCancel, cancelPending = 
           : statusLabel[progress.status]}</strong>
         <div>{progress.total_step_count > 0 ? <span>{progress.completed_step_count}/{progress.total_step_count}</span> : null}{cancelable && onCancel ? <button type="button" className="product-link-button research-execution-cancel" onClick={onCancel} disabled={cancelPending}>{cancelPending ? "正在提交停止…" : "停止研究"}</button> : cancellationPending ? <span className="research-execution-cancel-state" role="status">{RESEARCH_CANCELLING_LABEL}，等待服务端确认</span> : null}</div>
       </div>
+      {autonomy ? (
+        <aside className="research-strategy-progress" aria-label="研究策略">
+          <div>
+            <strong>研究策略</strong>
+            <span>第 {autonomy.cycle_index} 轮</span>
+          </div>
+          {strategy?.current_question?.statement ? <p><b>当前问题</b>{strategy.current_question.statement}</p> : null}
+          {strategy?.active_evidence_gap?.statement ? <p><b>待补证据</b>{strategy.active_evidence_gap.statement}</p> : null}
+          {strategy?.active_hypothesis?.statement ? <p><b>待检验假设</b>{strategy.active_hypothesis.statement}</p> : null}
+          {strategySummary ? <p><b>{autonomy.stop?.stopped ? "停止原因" : "下一步依据"}</b>{strategySummary}</p> : null}
+          {autonomy.decision?.limitations?.length ? <p><b>科学限制</b>{autonomy.decision.limitations[0]}</p> : null}
+        </aside>
+      ) : null}
       <ol className="research-execution-steps">
         {progress.steps.map((step) => (
           <li key={step.step_id} className={`research-execution-step status-${step.status.toLowerCase()}`}>
