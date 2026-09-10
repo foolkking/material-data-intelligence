@@ -2931,3 +2931,18 @@ was created.
   before planning.
 - Added focused extension-contract tests, developer guidance and canonical
   PostgreSQL/Redis/MinIO fresh-worker verification.
+
+## 2026-09-10 — Evidence-backed scientific qualification
+
+- Added canonical, version-aware quality evidence for all 17 scientific
+  capabilities, separating structural integration from demonstrated
+  scientific quality.
+- Added explicit reference origins, tolerances, units/conventions,
+  applicability, limitations, reproducibility and scientific-contract
+  fingerprints, plus generated machine/human quality inventories.
+- Added cross-domain reference, invariant, negative, Result projection,
+  interpretation, report and viewer semantic checks without claiming that
+  external libraries or solvers were independently validated.
+- Verified canonical PostgreSQL/Redis/RQ/MinIO scientific paths across
+  structure/XRD, trajectory, electronic and phonon families; no bounded-corpus
+  scientific defect was found.

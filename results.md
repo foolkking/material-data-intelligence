@@ -20817,3 +20817,52 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
   可自动证明，但大多数 capability qualification metadata 仍保守标记为
   `STRUCTURAL_ONLY`；应先建立 capability-specific reference fixtures、
   limitations 和 scientific benchmark evidence，再扩大自主多步选择。
+
+## Material Data Intelligence — Workstream D: Scientific Quality, Qualification & Evaluation
+
+- 状态：已完成；`SCIENTIFIC_QUALITY_MODEL=COHERENT`，
+  `QUALIFICATION_IS_EVIDENCE_BACKED=PASS`，
+  `SCIENTIFIC_QUALITY_REPORT=PASS`，
+  `REMAINING_SCIENTIFIC_QUALITY_BLOCKERS=0`。
+- 完成时间：2026-09-10T14:38:47+08:00。
+- 实现摘要：在 canonical Capability registry 上新增 source-referenced、
+  version-aware 的科学质量证据合同与 validator；资格状态由实际 reference/
+  invariant/domain-negative/Result/interpretation/report evidence 派生，不可由
+  manifest 标志手工升级。科学合同 fingerprint 覆盖 capability、Tool、
+  Adapter、projector 与呈现绑定，发生相关变化时旧证据显式 stale。
+- Inventory：总计 17 个 Capability；`DOMAIN_VALIDATED=6`，
+  `REFERENCE_VALIDATED=3`，
+  `EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED=8`，
+  `STRUCTURAL_ONLY=0`。证据计数：reference 9、invariant 8、
+  domain-negative 17、Result projection 2、interpretation 7、report 2；
+  validator errors 0。
+- 科学诚实边界：external-semantics 类只证明本平台拥有的解析、单位、投影、
+  limitation 与呈现语义，不声称独立验证 pymatgen、DFT 或 phonon solver。
+  Deterministic interpretation/report 检查证明 bounded corpus 内的数值、单位、
+  source、limitation 与 epistemic restraint，不等价于专家级科学洞见。
+- 修改文件：`research_agent/capabilities/quality_evidence.py`、
+  `quality_validation.py`、Capability schema/defaults/packs/inventory projection、
+  `scripts/scientific_quality_report.py`、focused tests、scientific-quality
+  docs/generated inventory，以及当前 state/progress/ADR/board/changelog。
+- 测试结果：quality/capability focused `20 passed`；Structure/XRD/
+  Trajectory/Electronic/Dataset/ML/Phonon cross-domain `196 passed`；
+  Result/Interpretation/Report bounded suite `111 passed, 4 skipped,
+  1 deselected`（4 个为 live-provider gate）；frontend semantic presentation
+  `5 files / 41 tests passed`；architecture `9 passed` 且 canonical forbidden
+  edges 0；Ruff、compileall、quality/capability report checks、diff check PASS。
+- 真实服务：canonical qualification-owned PostgreSQL、Redis/RQ、MinIO 下
+  `6 passed`，覆盖 RDF/XRD Research 执行及 coordination、trajectory、
+  electronic、phonon 跨持久化/队列/对象存储语义。
+- 已知非 blocker：受保护 Phase 11 历史 evidence byte manifest 在 Windows
+  checkout 因 CRLF 为 78 bytes、记录为 74 bytes；相关 substantive tests
+  均通过，未改写历史证据。该项是历史 evidence-integrity debt，不是新增科学
+  或产品 regression。
+- 科学缺陷：`SCIENTIFIC_DEFECTS_DISCOVERED=0`，
+  `SCIENTIFIC_DEFECTS_FIXED=0`。
+- 提交/CI 状态：实现提交
+  `a8cc0c0fd138c2bf0bd742c36636b8c4a6ac438f`；本状态/结果归档由随后本地
+  closeout commit 固化；未 push，未运行 remote CI。
+- 后续：`READY_FOR_AGENT_AUTONOMY=CONDITIONAL`。Workstream E 可在资格等级、
+  applicability、limitations 与 external-semantics 限制下开始；不得把
+  structurally available 或外部 solver 语义验证等同于自主科学选择的高置信
+  authority。

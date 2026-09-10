@@ -8227,3 +8227,25 @@ scientific-authority contract changed.
   PostgreSQL/Redis/MinIO fresh-worker Agent paths for RDF and two-step XRD.
   Canonical API health also passed with PostgreSQL, Redis, MinIO and Redis
   worker backends.
+
+## 2026-09-10 Workstream D — Scientific Quality, Qualification & Evaluation
+
+- Added an evidence-backed qualification authority integrated with the
+  canonical Capability registry. All 17 capabilities now have explicit status,
+  applicability, limitations, reproducibility and source-linked evidence.
+- Added version-aware scientific-contract fingerprints so Tool, Adapter,
+  projector, semantic or presentation-binding changes make qualification
+  evidence stale instead of inheriting it silently.
+- Added reference provenance, explicit numerical tolerance/unit conventions,
+  invariant/domain-negative/result-projection evidence and bounded
+  interpretation/report scientific rubrics.
+- Generated canonical JSON/Markdown scientific-quality inventory:
+  6 `DOMAIN_VALIDATED`, 3 `REFERENCE_VALIDATED`, 8
+  `EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED`, errors 0.
+- Verification passed 20 quality/capability contract tests, 196 cross-domain
+  scientific tests, 111 bounded Result/Interpretation/Report tests
+  (4 provider-gated skips), 41 frontend semantic presentation tests and
+  6 canonical PostgreSQL/Redis/MinIO/RQ real-service paths.
+- No scientific defect was discovered in the bounded corpus. The historical
+  Phase 11 byte-manifest CRLF mismatch remains protected evidence-integrity
+  debt and is not a product/scientific regression.

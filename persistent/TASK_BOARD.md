@@ -4330,3 +4330,21 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
 - Next recommended workstream: scientific quality and evaluation metadata/
   benchmark execution before materially increasing autonomous multi-step
   selection.
+
+## 2026-09-10 Workstream D — Scientific Quality, Qualification & Evaluation
+
+- [x] Separate structural completeness from evidence-backed scientific
+      qualification in the canonical Capability inventory.
+- [x] Classify all 17 capabilities honestly: 6 domain validated, 3 reference
+      validated and 8 external implementation semantics validated.
+- [x] Validate evidence provenance, applicability, limitations, numerical
+      tolerances/units and scientific-contract fingerprint freshness.
+- [x] Add generated machine/human quality inventory and a deterministic
+      `scientific_quality_report.py --check` gate.
+- [x] Cover scientific invariants, domain-negative behavior, Artifact/Result
+      semantics, interpretation restraint, report consistency and frontend
+      presentation semantics.
+- [x] Verify six canonical service-backed cross-domain paths using
+      qualification-owned PostgreSQL, Redis/RQ and MinIO state.
+- Next recommended workstream: Agent autonomy may proceed conditionally with
+  policy constrained by qualification level, applicability and limitations.

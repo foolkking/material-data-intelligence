@@ -6227,3 +6227,27 @@ reconciliation implementations belong to
 re-exports. The frozen result worker dotted path remains the runtime entrypoint.
 This bounded correction closes physical ownership without reopening source
 architecture or capability parity.
+
+
+## ADR — Scientific qualification is evidence-backed and version-aware (2026-09-10)
+
+Capability structural completeness and scientific qualification are separate
+claims. The canonical Capability registry retains the current qualification
+summary, while `research_agent.capabilities.quality_evidence` owns the
+source-referenced evidence records used to derive that summary. A capability
+may be `REFERENCE_VALIDATED`, `DOMAIN_VALIDATED`, or explicitly limited to
+`EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED`; no status may be promoted by a
+registration flag alone.
+
+Each qualified record binds to a fingerprint of the scientific contract,
+including capability semantics and Tool/Adapter/projector/presentation
+bindings, while excluding the qualification summary itself. Changes to that
+contract make existing evidence stale instead of silently carrying
+qualification forward. Numerical evidence requires an explicit origin, units
+where applicable, and scientifically justified tolerance. Upstream
+library/solver semantics are not claimed as independently validated when this
+repository owns only parsing, units, projection, limitations, or presentation.
+
+Eligibility remains a deterministic input/precondition question; qualification
+describes demonstrated quality within a declared applicability domain; planning
+selects among eligible capabilities. These authorities must not be collapsed.

@@ -8,15 +8,15 @@
 ## 1. Current Status
 
 - `PROJECT_PHASE`: Source/physical migration and capability parity are closed;
-  Workstreams A-C now provide lifecycle reliability, context/scientific-memory,
-  and a validated scientific-capability extension foundation in the canonical
-  migrated repository. Remote exact-SHA CI remains a separately authorized
-  release gate.
-- `CURRENT_ACCEPTED_COMMIT`: `aac8ef4`
-- `SNAPSHOT_BASE_COMMIT`: `aac8ef4`
+  Workstreams A-D now provide lifecycle reliability, context/scientific-memory,
+  a validated scientific-capability extension foundation, and evidence-backed
+  scientific qualification in the canonical migrated repository. Remote
+  exact-SHA CI remains a separately authorized release gate.
+- `CURRENT_ACCEPTED_COMMIT`: `a8cc0c0`
+- `SNAPSHOT_BASE_COMMIT`: `a8cc0c0`
 - `WORKTREE_EXPECTATION`: existing migration worktree, detached HEAD, clean
-- `LAST_ACCEPTED_REVIEW`: Workstream C — Scientific Capability Extension
-  Platform, `PASS`, 2026-09-10
+- `LAST_ACCEPTED_REVIEW`: Workstream D — Scientific Quality, Qualification &
+  Evaluation, `PASS`, 2026-09-10
 - `LAST_UPDATED_AT`: `2026-09-10`
 - `STATE_STATUS`: `CURRENT`
 - `PROJECT_STATE_ACTIVE`: `YES`
@@ -64,17 +64,20 @@ specialized authority requires explicit reconciliation and may set
 
 ## 5. Active Work
 
-- `CURRENT_WORKSTREAM`: Workstream C scientific capability extension platform
-  is complete in the canonical migrated repository.
+- `CURRENT_WORKSTREAM`: Workstream D scientific quality, qualification and
+  evaluation is complete in the canonical migrated repository.
 - `CURRENT_TASK`: no active queued task after canonical recovery closeout;
   `TASKS.md` remains the task queue authority.
-- `NEXT_ACTION`: prioritize Workstream D — Scientific Quality & Evaluation;
-  multi-step Agent autonomy should build on capability-specific quality
-  evidence rather than structural completeness alone. Remote release
-  qualification remains a separate exact-SHA/push-authorized operation.
-- `BLOCKED_ITEMS`: no unresolved Workstream A/B/C blocker. Broader scientific
-  benchmark coverage, context quality and scale stress remain future
-  evaluation rather than authority defects.
+- `NEXT_ACTION`: Workstream E — Agent Autonomy & Multi-Step Scientific Research
+  may proceed conditionally: autonomous policy must respect qualification
+  level, declared applicability and limitations, and must not treat external
+  solver/library semantic validation as independent scientific validation.
+  Remote release qualification remains a separate exact-SHA/push-authorized
+  operation.
+- `BLOCKED_ITEMS`: no unresolved Workstream A/B/C/D blocker. Broader
+  independent solver/library benchmarks, expert interpretation evaluation,
+  context quality and scale stress remain explicit future evaluation rather
+  than authority defects.
 
 ## 6. Verification State
 
@@ -121,6 +124,21 @@ specialized authority requires explicit reconciliation and may set
   Agent paths passed `2/2` for RDF and two-step XRD projection. A canonical
   API process on port 8006 reported PostgreSQL/Redis/MinIO/worker backends
   healthy.
+- Scientific quality inventory: all `17` capabilities have explicit,
+  evidence-backed, version-aware status: `6 DOMAIN_VALIDATED`,
+  `3 REFERENCE_VALIDATED`, and
+  `8 EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED`; validation errors `0`.
+  Evidence totals are `9` reference, `8` invariant, `17` domain-negative,
+  `2` Result-projection, `7` interpretation and `2` report cases.
+- Workstream D focused verification: scientific quality/capability contracts
+  `20 passed`; cross-domain Adapter/scientific suites `196 passed`; bounded
+  Result/Interpretation/Report quality suites `111 passed, 4 skipped,
+  1 deselected`; frontend scientific presentation semantics `41 passed`;
+  architecture checks `9 passed` plus zero forbidden canonical edges.
+- Workstream D canonical real-service verification: `6 passed` across
+  qualification-owned PostgreSQL, Redis/RQ and MinIO, covering RDF/XRD
+  Research execution and coordination, trajectory, electronic and phonon
+  semantics through fresh subprocess workers.
 - Remote CI: workflow and authenticated CLI are available, but the final SHA is
   not on the remote because push was not authorized. Exact-SHA CI is not run.
   Local/service readiness is PASS; overall release readiness is CONDITIONAL.
@@ -136,9 +154,15 @@ specialized authority requires explicit reconciliation and may set
 - **Context quality/scale debt:** provider token estimates vary and broader
   near-budget, very-large-Dataset and edited-branch stress evaluation remains
   future work; source authority and bounded behavior are established.
-- **Capability quality debt:** structural completeness is now machine-checked,
-  but scientific quality levels remain capability-specific and most manifests
-  conservatively declare `STRUCTURAL_ONLY`.
+- **Capability quality debt:** all capabilities now have explicit evidence
+  status and none are anonymously structural-only. Eight library/solver-backed
+  capabilities remain deliberately scoped to platform-owned parsing, units,
+  projection and limitation semantics; independent validation of the upstream
+  scientific implementation is not claimed.
+- **Scientific communication debt:** deterministic interpretation/report
+  fidelity and restraint pass the bounded corpus, but expert-level insight,
+  broad domain generalization and LLM scientific reasoning quality remain
+  future evaluation.
 - **Extension coupling debt:** built-in Requirement, Capability, Tool, Adapter,
   Artifact-port, projector and Viewer authorities remain explicit centralized
   registration points. The path is bounded and documented, but not a
@@ -198,6 +222,11 @@ specialized authority requires explicit reconciliation and may set
   inventory/orphan classification, explicit optional presentation semantics,
   project-scope fail-closed resolution, developer guidance and canonical
   real-service RDF/XRD verification.
+- 2026-09-10: completed Workstream D with evidence-backed qualification levels,
+  reference provenance and tolerance contracts, applicability/invariant/
+  negative evidence, version-aware scientific fingerprints, bounded
+  interpretation/report rubrics, generated quality inventory and canonical
+  cross-domain real-service verification.
 
 ## 11. Source Pointers
 
@@ -218,6 +247,10 @@ specialized authority requires explicit reconciliation and may set
 - Capability extension:
   [`docs/capabilities/SCIENTIFIC_CAPABILITY_EXTENSION_PLATFORM.md`](docs/capabilities/SCIENTIFIC_CAPABILITY_EXTENSION_PLATFORM.md),
   [`docs/capabilities/generated/capability_inventory.md`](docs/capabilities/generated/capability_inventory.md)
+- Scientific quality:
+  [`docs/scientific-quality/SCIENTIFIC_QUALITY_AND_QUALIFICATION.md`](docs/scientific-quality/SCIENTIFIC_QUALITY_AND_QUALIFICATION.md),
+  [`docs/scientific-quality/ADDING_REFERENCE_EVIDENCE.md`](docs/scientific-quality/ADDING_REFERENCE_EVIDENCE.md),
+  [`docs/scientific-quality/generated/scientific_quality_inventory.md`](docs/scientific-quality/generated/scientific_quality_inventory.md)
 
 ## 12. Controlled Update and Freshness Rules
 
