@@ -223,6 +223,25 @@ class _Interpreter:
         return {"id": self.interpretation_id}
 
 
+class _AutonomyAdvance:
+    def model_dump(self, *, mode: str) -> dict:
+        assert mode == "json"
+        return {
+            "outcome": "CONTINUE_WITH_ANALYSIS",
+            "cycle_index": 1,
+            "child_turn_id": str(uuid4()),
+        }
+
+
+class _Autonomy:
+    def __init__(self) -> None:
+        self.turn_id: UUID | None = None
+
+    def advance_after_interpretation(self, turn_id: UUID) -> _AutonomyAdvance:
+        self.turn_id = turn_id
+        return _AutonomyAdvance()
+
+
 def test_interpretation_entrypoint_returns_persisted_status() -> None:
     turn_id = uuid4()
     interpretation_id = uuid4()
@@ -240,6 +259,31 @@ def test_interpretation_entrypoint_returns_persisted_status() -> None:
         "status": "COMPLETED",
     }
     assert interpreter.turn_id == turn_id
+
+
+def test_interpretation_entrypoint_advances_bounded_autonomy_only_after_terminal_state() -> None:
+    turn_id = uuid4()
+    autonomy = _Autonomy()
+
+    completed = interpret_queued_turn(
+        str(turn_id),
+        interpreter=_Interpreter(uuid4()),
+        repository_factory=_InterpretationFactory("COMPLETED"),
+        autonomy=autonomy,
+    )
+
+    assert autonomy.turn_id == turn_id
+    assert completed["autonomy"]["outcome"] == "CONTINUE_WITH_ANALYSIS"
+
+    nonterminal_autonomy = _Autonomy()
+    running = interpret_queued_turn(
+        str(turn_id),
+        interpreter=_Interpreter(uuid4()),
+        repository_factory=_InterpretationFactory("INTERPRETING"),
+        autonomy=nonterminal_autonomy,
+    )
+    assert "autonomy" not in running
+    assert nonterminal_autonomy.turn_id is None
 
 
 class _ReportGenerationRepository:

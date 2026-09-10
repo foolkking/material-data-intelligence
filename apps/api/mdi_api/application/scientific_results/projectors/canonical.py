@@ -235,6 +235,35 @@ def _dataset_facts(artifact: dict[str, Any], payload: dict[str, Any]) -> list[Sc
     return result
 
 
+def _trajectory_msd_facts(
+    artifact: dict[str, Any], payload: dict[str, Any]
+) -> list[ScientificFact]:
+    """Expose only the exact lag boundaries needed by downstream science.
+
+    The full MSD series remains committed Artifact data.  These two bounded
+    scalar facts let later durable decisions select an explicit fit interval
+    without loading raw Artifact bytes or inventing a physical-time window.
+    """
+
+    lag_times = payload.get("lagTimesPs")
+    if not isinstance(lag_times, list) or not lag_times:
+        return []
+    last_index = len(lag_times) - 1
+    facts: list[ScientificFact] = []
+    for predicate, pointer in (
+        ("trajectory.msd_first_lag_time", "/lagTimesPs/0"),
+        ("trajectory.msd_last_lag_time", f"/lagTimesPs/{last_index}"),
+    ):
+        fact = _fact(
+            artifact,
+            payload,
+            FactDeclaration(predicate, pointer, "picosecond"),
+        )
+        if fact is not None:
+            facts.append(fact)
+    return facts
+
+
 def _project(context: ScientificResultProjectionContext, contract: ProjectorContract) -> ScientificResultProjection:
     recognized: list[tuple[dict[str, Any], dict[str, Any], str]] = []
     accepted = {*contract.primary_schemas, *contract.figure_schemas, *contract.table_schemas}
@@ -451,7 +480,8 @@ def _contracts() -> tuple[ProjectorContract, ...]:
             "agent2.trajectory.msd", "轨迹均方位移", "trajectory.msd",
             ("phase10n4.trajectory_msd.v1",), ("phase10n4.trajectory_plot.v1",), (),
             facts=(count("/coverage/frames", "trajectory.frame_count"), count("/coverage/validLags", "trajectory.msd_lag_count")),
-            limitations=(("MSD_SERIES_NOT_SCALAR_FACTS", "MSD series values remain referenced structured data and are not expanded into scalar facts."),),
+            fact_builder=_trajectory_msd_facts,
+            limitations=(("MSD_SERIES_NOT_SCALAR_FACTS", "MSD series values remain referenced structured data; only exact lag-time boundaries are projected for downstream parameter authority."),),
         ),
         ProjectorContract(
             "agent2.trajectory.diffusion", "轨迹扩散性质", "trajectory.diffusion",

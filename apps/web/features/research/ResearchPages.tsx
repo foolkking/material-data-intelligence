@@ -1031,6 +1031,9 @@ export function ResearchPage({
   const [sessions, setSessions] = useState<ResearchSession[]>([]);
   const [history, setHistory] = useState<ProjectHistory | null>(null);
   const [question, setQuestion] = useState("");
+  const [autonomyMode, setAutonomyMode] = useState<
+    "STANDARD" | "BOUNDED_AUTONOMOUS"
+  >("STANDARD");
   const [state, setState] = useState<ResearchState>("idle");
   const [scope, setScope] = useState<ScopeResolution | null>(null);
   const [job, setJob] = useState<PlannerJobCreateResult | null>(null);
@@ -2218,6 +2221,7 @@ export function ResearchPage({
           {
             message: question.trim(),
             reply_to_turn_id: editTurnId,
+            autonomy_mode: autonomyMode,
             ui_context: {
               active_object_refs: refs,
               selection_refs: resultRefs.length ? refs : selectionRefs,
@@ -2254,11 +2258,10 @@ export function ResearchPage({
         const created = await createAgent2ResearchTurn(
           projectId,
           activeSession.id,
-          agent2ContinueInput(
-            exactTurn,
-            question,
-            reusableResultId,
-          ),
+          {
+            ...agent2ContinueInput(exactTurn, question, reusableResultId),
+            autonomy_mode: autonomyMode,
+          },
         );
         bindResearchPerformanceTurn(performanceAttemptId, created.turn_id);
         continuationNoticeTurnRef.current = created.turn_id;
@@ -2311,6 +2314,7 @@ export function ResearchPage({
           activeSession.id,
           {
             message: question.trim(),
+            autonomy_mode: autonomyMode,
             // A deep-linked Viewer context is already an explicit, exact object/version
             // selection. Preserve it in the resolver's explicit channel as well as the
             // bounded active/selection channels so ambiguous project history cannot
@@ -2390,6 +2394,7 @@ export function ResearchPage({
           activeSession.id,
           {
             message: question.trim(),
+            autonomy_mode: autonomyMode,
             ui_context: {
               active_object_refs: [explicitDataset.objectRef],
               selection_refs: explicitDataset.selections.length
@@ -2518,6 +2523,7 @@ export function ResearchPage({
           activeSession.id,
           {
             message: question.trim(),
+            autonomy_mode: autonomyMode,
             ui_context: {
               active_object_refs: [explicitDataset.objectRef],
               selection_refs: explicitDataset.selections.length
@@ -4196,7 +4202,21 @@ export function ResearchPage({
                   </p>
                 ) : null}
                 <div className="research-composer-footer">
-                  <span>项目数据</span>
+                  <label className="research-autonomy-control">
+                    <input
+                      type="checkbox"
+                      checked={autonomyMode === "BOUNDED_AUTONOMOUS"}
+                      onChange={(event) =>
+                        setAutonomyMode(
+                          event.target.checked
+                            ? "BOUNDED_AUTONOMOUS"
+                            : "STANDARD",
+                        )
+                      }
+                      disabled={state === "planning" || state === "running"}
+                    />
+                    <span>有界多步研究</span>
+                  </label>
                   <details className="research-model-menu">
                     <summary>
                       {providerLoadState === "loading"

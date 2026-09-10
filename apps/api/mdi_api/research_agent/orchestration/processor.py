@@ -22,7 +22,11 @@ from mdi_api.application.research.ports import ResearchRepositoryFactoryPort
 from mdi_api.application.research.transactions import transaction_active
 from mdi_api.research_agent.context.compiler import COMPILER_VERSION, ResearchContextCompiler
 from mdi_api.research_agent.context.policy import ContextOperation, context_budget_policy
-from mdi_api.research_agent.context.resolver import DeterministicReferenceResolver, ReferenceResolution
+from mdi_api.research_agent.context.resolver import (
+    DeterministicReferenceResolver,
+    ReferenceResolution,
+    candidate_source_priority,
+)
 from mdi_api.research_agent.context.schemas import CompactResearchContext, ResearchContextCandidateBundle, ReferenceCandidateSource
 from mdi_api.research_agent.llm.schemas import StructuredLLMResult
 from mdi_api.research_agent.llm.structured_client import (
@@ -35,12 +39,13 @@ from mdi_api.research_agent.orchestration.schemas import (
     ClarificationRequest,
     OrchestratorConfidence,
     OrchestratorRequirementOption,
+    ProposedRequirement,
     ResearchOrchestratorInput,
     ResearchTurnDecision,
 )
 from mdi_api.research_agent.orchestration.validator import ResearchTurnDecisionValidator
 from mdi_api.research_agent.registry_validation import Agent2Registries
-from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus, ScientificSelectionContext, ResolvedResearchContext, TERMINAL_TURN_STATUSES
+from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus, ScientificSelectionContext, ResolvedResearchContext, RequirementCriticality, TERMINAL_TURN_STATUSES
 from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 from mdi_api.research_agent.planning.queue import DisabledCapabilityPlanningQueue
@@ -56,6 +61,7 @@ class PreparedTurn:
     compact_context: CompactResearchContext
     resolution: ReferenceResolution
     user_message: str
+    autonomy: dict[str, Any]
 
 
 @dataclass(frozen=True)
@@ -150,7 +156,25 @@ class AgentTurnProcessor:
             return ProcessTurnResult("CLARIFICATION", routed.turn_status, 0)
 
         orchestrator_input = self._orchestrator_input(prepared)
-        provider_result, decision, calls = await self._generate_validated(prepared, orchestrator_input)
+        autonomy_decision = self._autonomy_decision(prepared)
+        if autonomy_decision is not None:
+            decision = self.validator.validate(
+                decision=autonomy_decision,
+                input_context=orchestrator_input,
+                candidate_bundle=prepared.bundle,
+                continuation_turn_available=True,
+            )
+            provider_result = StructuredLLMResult(
+                provider="deterministic_bounded_autonomy",
+                model="none",
+                parsed=decision.model_dump(mode="json"),
+                latency_ms=0,
+                repair_attempted=False,
+                prompt_version="agent2.autonomy-decision/1.0",
+            )
+            calls = 0
+        else:
+            provider_result, decision, calls = await self._generate_validated(prepared, orchestrator_input)
         try:
             routed = self.router.apply(
                 turn_id=turn_id,
@@ -228,7 +252,8 @@ class AgentTurnProcessor:
                  if event["event_type"] == ResearchTurnEventType.TURN_RECEIVED.value),
                 None,
             )
-            raw_selections = ((received_event or {}).get("payload_json") or {}).get("ui_context", {}).get("scientific_selections") or []
+            received_payload = (received_event or {}).get("payload_json") or {}
+            raw_selections = (received_payload.get("ui_context") or {}).get("scientific_selections") or []
             scientific_selections = [
                 ScientificSelectionContext.model_validate(item).model_dump(mode="json")
                 for item in raw_selections
@@ -305,7 +330,79 @@ class AgentTurnProcessor:
                 compact_context=compact,
                 resolution=resolution,
                 user_message=str(message["content_summary"]),
+                autonomy=dict(received_payload.get("autonomy") or {}),
             )
+
+    def _autonomy_decision(self, prepared: PreparedTurn) -> ResearchTurnDecision | None:
+        autonomy = prepared.autonomy
+        if (
+            autonomy.get("mode") != "BOUNDED_AUTONOMOUS"
+            or not autonomy.get("assessment_signature")
+        ):
+            return None
+        requirement_id = str(autonomy.get("requirement_id") or "")
+        capability_id = str(autonomy.get("selected_capability_id") or "")
+        if not requirement_id or not capability_id:
+            raise InvalidResearchTurnDecision(
+                "Autonomous cycle is missing its persisted scientific subgoal",
+                code="AUTONOMY_DECISION_INVALID",
+            )
+        requirement = self.registries.requirements.require(requirement_id)
+        selected_scope = [
+            item.candidate_key
+            for item in prepared.bundle.active_object_candidates
+            if (
+                item.object_ref is not None
+                and (
+                    not requirement.accepted_object_types
+                    or item.object_ref.object_type in requirement.accepted_object_types
+                )
+            )
+        ]
+        if not selected_scope:
+            raise InvalidResearchTurnDecision(
+                "Autonomous cycle has no exact eligible source object",
+                code="AUTONOMY_SOURCE_UNAVAILABLE",
+            )
+        highest = min(
+            candidate_source_priority(item.source)
+            for item in prepared.bundle.active_object_candidates
+            if item.candidate_key in selected_scope
+        )
+        selected_scope = [
+            item.candidate_key
+            for item in prepared.bundle.active_object_candidates
+            if item.candidate_key in selected_scope
+            and candidate_source_priority(item.source) == highest
+        ]
+        reusable = [
+            item.candidate_key
+            for item in prepared.bundle.result_candidates
+            if str(item.result_id) == str(autonomy.get("evidence_result_id"))
+        ]
+        return ResearchTurnDecision(
+            contract_version="1.0",
+            action=ResearchAction.CONTINUE_ANALYSIS,
+            assistant_message=(
+                "现有科学结果仍有一个明确未解决的研究需求；"
+                "系统将在限定策略内执行最小的下一项分析。"
+            ),
+            research_objective=str(
+                autonomy.get("research_objective") or prepared.user_message
+            )[:2048],
+            selected_scope_ref_keys=selected_scope,
+            scientific_requirements=[
+                ProposedRequirement(
+                    requirement_id=requirement_id,
+                    criticality=RequirementCriticality.REQUIRED,
+                    subject_ref_keys=selected_scope,
+                    constraints=dict(autonomy.get("constraints") or {}),
+                )
+            ],
+            reusable_result_ref_keys=reusable,
+            clarification=None,
+            confidence=OrchestratorConfidence.HIGH,
+        )
 
     def _orchestrator_input(self, prepared: PreparedTurn) -> ResearchOrchestratorInput:
         return ResearchOrchestratorInput(

@@ -21,9 +21,11 @@ from mdi_api.agent2_errors import (
     UnauthorizedScientificObjectReference,
 )
 from mdi_api.research_agent.schemas import (
+    AutonomyMode,
     CreateResearchTurnRequest,
     CreateResearchTurnResponse,
     ResolvedResearchContext,
+    ResearchTurnUIContext,
     ScientificSelectionContext,
     ResearchTurnEventType,
     ResearchTurnMessageDTO,
@@ -127,8 +129,13 @@ class ResearchTurnService:
                         )
                 self._authorize_ui_context(unit, project_id, request)
                 now = datetime.now(timezone.utc)
+                turn_id = uuid4()
                 message_id = f"message_{uuid4().hex}"
                 ui_context = request.ui_context.model_dump(mode="json") if request.ui_context else None
+                autonomy = self._root_autonomy_payload(
+                    mode=request.autonomy_mode,
+                    root_turn_id=turn_id,
+                )
                 message = unit.agent2.research_turns.add_message({
                     "id": message_id,
                     "session_id": session_id,
@@ -138,6 +145,7 @@ class ResearchTurnService:
                         "source": "agent2_research_turn",
                         "uiContext": ui_context,
                         "replyToTurnId": str(parent_turn_id) if parent_turn_id else None,
+                        "autonomy": autonomy,
                     },
                     "created_at": now,
                 })
@@ -149,7 +157,6 @@ class ResearchTurnService:
                     unit, session_id=session_id, project_id=project_id,
                     message=request.message, message_id=message_id,
                 )
-                turn_id = uuid4()
                 turn = unit.agent2.research_turns.add({
                     "id": turn_id,
                     "project_id": project_id,
@@ -168,9 +175,21 @@ class ResearchTurnService:
                     unit,
                     turn_id,
                     ResearchTurnEventType.TURN_RECEIVED,
-                    {"status": ResearchTurnStatus.RECEIVED.value, "ui_context": ui_context},
+                    {
+                        "status": ResearchTurnStatus.RECEIVED.value,
+                        "ui_context": ui_context,
+                        "autonomy": autonomy,
+                    },
                     created_at=now,
                 )
+                if request.autonomy_mode == AutonomyMode.BOUNDED_AUTONOMOUS:
+                    self._append_event(
+                        unit,
+                        turn_id,
+                        ResearchTurnEventType.AUTONOMY_CYCLE_CREATED,
+                        autonomy,
+                        created_at=now,
+                    )
         self._log_lifecycle(turn, ResearchTurnEventType.TURN_RECEIVED)
         return CreateResearchTurnResponse(
             turn_id=turn_id,
@@ -179,6 +198,180 @@ class ResearchTurnService:
             sequence_no=int(turn["sequence_no"]),
             status=ResearchTurnStatus.RECEIVED,
             user_message=ResearchTurnMessageDTO(id=message_id, role="USER", content=str(message["content_summary"])),
+            created_at=turn["created_at"],
+        )
+
+    def receive_autonomous_turn(
+        self,
+        *,
+        project_id: str,
+        session_id: str,
+        parent_turn_id: UUID,
+        message: str,
+        ui_context: ResearchTurnUIContext,
+        autonomy: dict[str, Any],
+    ) -> CreateResearchTurnResponse:
+        """Create one durable internal continuation without mutating user memory.
+
+        The parent Turn is the authorization and lineage authority. The
+        generated message is deliberately marked as an autonomous subgoal and
+        never passed through the user-memory writer.
+        """
+
+        assessment_signature = str(autonomy.get("assessment_signature") or "")
+        if not assessment_signature:
+            raise ValueError("autonomous turn requires assessment_signature")
+        with _keyed_lock(_session_locks, session_id):
+            with self.repository_factory.unit_of_work() as unit:
+                session = unit.agent2.research_turns.lock_session(session_id)
+                if session is None or str(session["project_id"]) != project_id:
+                    raise ResearchSessionProjectMismatch(session_id)
+                parent = unit.agent2.research_turns.get_for_update(parent_turn_id)
+                if (
+                    str(parent["project_id"]) != project_id
+                    or str(parent["research_session_id"]) != session_id
+                ):
+                    raise ResearchSessionProjectMismatch(
+                        "autonomy parent is outside the Research Session"
+                    )
+                if parent["status"] not in {
+                    status.value for status in TERMINAL_TURN_STATUSES
+                }:
+                    raise InvalidResearchTurnTransition(
+                        "autonomy parent must be terminal"
+                    )
+                for event in unit.agent2.research_turn_events.list_for_turn(
+                    parent_turn_id
+                ):
+                    payload = event.get("payload_json") or {}
+                    if (
+                        event["event_type"]
+                        == ResearchTurnEventType.AUTONOMY_CHILD_TURN_CREATED.value
+                        and payload.get("assessment_signature")
+                        == assessment_signature
+                        and payload.get("child_turn_id")
+                    ):
+                        existing = unit.agent2.research_turns.get(
+                            UUID(str(payload["child_turn_id"]))
+                        )
+                        existing_message = unit.agent2.research_turns.get_message(
+                            str(existing["user_message_id"])
+                        )
+                        return CreateResearchTurnResponse(
+                            turn_id=existing["id"],
+                            research_session_id=session_id,
+                            project_id=project_id,
+                            sequence_no=int(existing["sequence_no"]),
+                            status=ResearchTurnStatus(str(existing["status"])),
+                            user_message=ResearchTurnMessageDTO(
+                                id=str(existing["user_message_id"]),
+                                role="USER",
+                                content=str(existing_message["content_summary"]),
+                            ),
+                            created_at=existing["created_at"],
+                        )
+                self._authorize_context_refs(
+                    unit,
+                    project_id,
+                    [
+                        *ui_context.active_object_refs,
+                        *ui_context.selection_refs,
+                        *(item.object_ref for item in ui_context.scientific_selections),
+                        *ui_context.explicit_object_refs,
+                    ],
+                )
+                for result_id in ui_context.explicit_result_ids:
+                    result = unit.agent2.scientific_result_snapshots.get(result_id)
+                    source_turn = unit.agent2.research_turns.get(
+                        result["research_turn_id"]
+                    )
+                    if (
+                        str(result["project_id"]) != project_id
+                        or str(source_turn["research_session_id"]) != session_id
+                    ):
+                        raise UnauthorizedScientificObjectReference(
+                            "autonomous Result is outside the Research Session"
+                        )
+                now = datetime.now(timezone.utc)
+                child_turn_id = uuid4()
+                message_id = f"message_{uuid4().hex}"
+                ui_payload = ui_context.model_dump(mode="json")
+                generated_message = unit.agent2.research_turns.add_message(
+                    {
+                        "id": message_id,
+                        "session_id": session_id,
+                        "role": "user",
+                        "content_summary": message.strip()[:16_000],
+                        "payload_json": {
+                            "source": "agent2_bounded_autonomy",
+                            "generatedByAutonomy": True,
+                            "uiContext": ui_payload,
+                            "replyToTurnId": str(parent_turn_id),
+                            "autonomy": autonomy,
+                        },
+                        "created_at": now,
+                    }
+                )
+                turn = unit.agent2.research_turns.add(
+                    {
+                        "id": child_turn_id,
+                        "project_id": project_id,
+                        "research_session_id": session_id,
+                        "sequence_no": unit.agent2.research_turns.allocate_sequence(
+                            session_id
+                        ),
+                        "parent_turn_id": parent_turn_id,
+                        "continuation_of_turn_id": parent_turn_id,
+                        "user_message_id": message_id,
+                        "action_type": None,
+                        "status": ResearchTurnStatus.RECEIVED.value,
+                        "row_version": 1,
+                        "created_at": now,
+                        "updated_at": now,
+                    }
+                )
+                received_payload = {
+                    "status": ResearchTurnStatus.RECEIVED.value,
+                    "ui_context": ui_payload,
+                    "autonomy": autonomy,
+                }
+                self._append_event(
+                    unit,
+                    child_turn_id,
+                    ResearchTurnEventType.TURN_RECEIVED,
+                    received_payload,
+                    created_at=now,
+                )
+                self._append_event(
+                    unit,
+                    child_turn_id,
+                    ResearchTurnEventType.AUTONOMY_CYCLE_CREATED,
+                    autonomy,
+                    created_at=now,
+                )
+                self._append_event(
+                    unit,
+                    parent_turn_id,
+                    ResearchTurnEventType.AUTONOMY_CHILD_TURN_CREATED,
+                    {
+                        "child_turn_id": str(child_turn_id),
+                        "cycle_index": autonomy.get("cycle_index"),
+                        "assessment_signature": assessment_signature,
+                    },
+                    created_at=now,
+                )
+        self._log_lifecycle(turn, ResearchTurnEventType.AUTONOMY_CYCLE_CREATED)
+        return CreateResearchTurnResponse(
+            turn_id=child_turn_id,
+            research_session_id=session_id,
+            project_id=project_id,
+            sequence_no=int(turn["sequence_no"]),
+            status=ResearchTurnStatus.RECEIVED,
+            user_message=ResearchTurnMessageDTO(
+                id=message_id,
+                role="USER",
+                content=str(generated_message["content_summary"]),
+            ),
             created_at=turn["created_at"],
         )
 
@@ -600,6 +793,25 @@ class ResearchTurnService:
                     *request.ui_context.explicit_object_refs,
                 ],
             )
+
+    @staticmethod
+    def _root_autonomy_payload(
+        *, mode: AutonomyMode, root_turn_id: UUID
+    ) -> dict[str, Any]:
+        if mode == AutonomyMode.STANDARD:
+            return {"mode": mode.value}
+        from mdi_api.research_agent.autonomy.policy import DEFAULT_AUTONOMY_POLICY
+
+        return {
+            "mode": mode.value,
+            "root_turn_id": str(root_turn_id),
+            "cycle_index": 1,
+            "policy": DEFAULT_AUTONOMY_POLICY.model_dump(
+                mode="json", exclude={"fingerprint"}
+            ),
+            "policy_version": DEFAULT_AUTONOMY_POLICY.version,
+            "policy_fingerprint": DEFAULT_AUTONOMY_POLICY.fingerprint,
+        }
 
     @staticmethod
     def _authorize_context_refs(unit: Any, project_id: str, refs: list[Any]) -> None:

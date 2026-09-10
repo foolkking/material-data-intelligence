@@ -6,7 +6,6 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from mdi_api.research_agent.schemas import CapabilityManifest, ResearchTurnStatus
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 
 
@@ -151,6 +150,12 @@ class PlannerCapabilityView(BaseModel):
     reusable_result_bindings: dict[str, list[str]] = Field(default_factory=dict)
     missing_input_slots: list[str] = Field(default_factory=list)
     possible_producer_ref_keys: dict[str, list[str]] = Field(default_factory=dict)
+    qualification_level: str = "UNKNOWN"
+    qualification_evidence_version: str | None = None
+    qualification_evidence_fingerprint: str | None = None
+    scientific_contract_fingerprint: str | None = None
+    validated_domains: list[str] = Field(default_factory=list, max_length=16)
+    known_limitations: list[str] = Field(default_factory=list, max_length=3)
 
 
 class PlannerSourceRef(BaseModel):

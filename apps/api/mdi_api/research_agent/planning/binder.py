@@ -76,16 +76,46 @@ class CapabilityBinder:
                         input_refs.append(InputRef(refType="normalized_object", ref=exact_ref, fieldRole=slot_name, objectType=_OBJECT_TYPE_TO_EXEC.get(next(slot for slot in manifest.input_slots if slot.name == slot_name).accepted_object_types[0], "RawUnsupported")))
                     elif item.kind == CapabilityBindingKind.PREVIOUS_RESULT:
                         result_ref = (context.get("result_object_refs") or {}).get(item.result_ref_key or "")
-                        if result_ref is None:
-                            raise CapabilityBindingFailed("previous Result has no exact ScientificObjectVersion output", code="CAPABILITY_PLAN_UNKNOWN_REFERENCE")
                         slot = next(slot for slot in manifest.input_slots if slot.name == slot_name)
-                        if result_ref.object_type not in slot.accepted_object_types:
-                            raise CapabilityBindingFailed("previous Result output is incompatible with capability input", code="CAPABILITY_PLAN_PORT_MISMATCH")
+                        if result_ref is not None:
+                            if result_ref.object_type not in slot.accepted_object_types:
+                                raise CapabilityBindingFailed("previous Result output is incompatible with capability input", code="CAPABILITY_PLAN_PORT_MISMATCH")
+                            input_refs.append(InputRef(
+                                refType="normalized_object",
+                                ref=str(result_ref.version_id),
+                                fieldRole=slot_name,
+                                objectType=_OBJECT_TYPE_TO_EXEC.get(result_ref.object_type, "RawUnsupported"),
+                            ))
+                            continue
+                        result_artifacts = (
+                            context.get("result_artifact_refs") or {}
+                        ).get(item.result_ref_key or "", {})
+                        artifact_ids = sorted({
+                            artifact_id
+                            for result_type, values in result_artifacts.items()
+                            if result_type in slot.accepted_object_types
+                            for artifact_id in values
+                        })
+                        ports = build_tool_artifact_port_metadata(tool)
+                        port = next(
+                            (
+                                value
+                                for value in ports.inputPorts
+                                if value.portId == slot_name
+                                or value.inputFieldRole == f"{slot_name}_artifact"
+                            ),
+                            None,
+                        )
+                        if len(artifact_ids) != 1 or port is None:
+                            raise CapabilityBindingFailed(
+                                "previous Result has no exact reusable output",
+                                code="CAPABILITY_PLAN_UNKNOWN_REFERENCE",
+                            )
                         input_refs.append(InputRef(
-                            refType="normalized_object",
-                            ref=str(result_ref.version_id),
-                            fieldRole=slot_name,
-                            objectType=_OBJECT_TYPE_TO_EXEC.get(result_ref.object_type, "RawUnsupported"),
+                            refType="artifact",
+                            ref=artifact_ids[0],
+                            fieldRole=port.inputFieldRole,
+                            objectType=port.inputObjectType,
                         ))
             artifact_outputs = [out.result_type for out in manifest.output_slots]
             for out in manifest.output_slots:

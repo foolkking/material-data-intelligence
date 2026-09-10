@@ -388,3 +388,128 @@ def test_tampered_artifact_bytes_fail_checksum_before_consumer_adapter_invocatio
     combined = next(item for item in execution["steps"] if item["stepId"] == "step_combined")
     assert combined["state"] == "FAILED"
     assert combined["errorCode"] == "CHECKSUM_MISMATCH"
+
+
+def test_persisted_msd_artifact_is_reused_cross_run_without_recomputation(
+    tmp_path: Path,
+) -> None:
+    """An autonomous diffusion cycle may reuse the exact durable MSD output."""
+
+    artifact_id = "artifact_prior_msd"
+    plan = AnalysisPlanV02.model_validate(
+        {
+            "schemaVersion": "0.2",
+            "goal": "Estimate diffusion from an existing exact MSD Result.",
+            "datasetId": "dataset_l3_runtime",
+            "profileId": "profile_l3_runtime",
+            "toolRegistryVersion": load_manifests().version,
+            "assumptions": [],
+            "warnings": [],
+            "steps": [
+                _step(
+                    "step_diffusion",
+                    "trajectory.diffusion",
+                    refs=[
+                        {
+                            "refType": "artifact",
+                            "ref": artifact_id,
+                            "fieldRole": "msd_artifact",
+                            "objectType": "Trajectory",
+                        }
+                    ],
+                    artifacts=["table_json"],
+                )
+                | {
+                    "params": {
+                        "fit_start_time_ps": 1.0,
+                        "fit_end_time_ps": 8.0,
+                        "minimum_fit_points": 5,
+                        "minimum_fit_duration_ps": 1.0,
+                        "minimum_r_squared": 0.9,
+                    }
+                }
+            ],
+            "expectedArtifacts": [
+                {
+                    "name": "trajectory_diffusion.json",
+                    "type": "table_json",
+                    "fromStepId": "step_diffusion",
+                }
+            ],
+            "graphHash": compute_dependency_graph_hash([]),
+            "dependencyBindings": [],
+        }
+    )
+    registry = load_manifests()
+    validation = validate_dependency_plan(plan, registry=registry)
+    assert validation.ok
+
+    repos, job_id, _plan_hash = _seed(plan)
+    runtime = QueueWorkerRuntime(
+        repositories=repos,
+        registry=registry,
+        artifact_root=tmp_path / "adapter",
+    )
+    msd_payload = {
+        "artifactType": "trajectory.msd",
+        "schema_version": "phase10n4.trajectory_msd.v1",
+        "trajectory": {
+            "resourceId": "sha256:" + "1" * 64,
+            "trajectoryHash": "sha256:" + "1" * 64,
+            "contractVersion": "phase10g.trajectory.v1",
+            "frameCount": 20,
+            "atomCount": 4,
+        },
+        "parameterHash": "2" * 64,
+        "lagTimesPs": [float(value) for value in range(1, 9)],
+        "totalMsdAngstrom2": [0.6 * value for value in range(1, 9)],
+        "directionalMsdAngstrom2": {
+            axis: [0.2 * value for value in range(1, 9)]
+            for axis in ("x", "y", "z")
+        },
+        "originCounts": list(range(20, 12, -1)),
+    }
+    encoded = json.dumps(msd_payload, sort_keys=True).encode("utf-8")
+    stored = runtime.artifact_storage.put_bytes(
+        "prior/msd.json",
+        encoded,
+        content_type="application/json",
+    )
+    repos.artifacts.save(
+        {
+            "id": artifact_id,
+            "projectId": "project_l3_runtime",
+            "datasetId": plan.datasetId,
+            "jobId": "job_prior_msd",
+            "toolCallId": "call_prior_msd",
+            "type": "table_json",
+            "name": "Persisted MSD",
+            "version": "1",
+            "storageKey": stored.storage_key,
+            "storageProvider": stored.storage_provider,
+            "sizeBytes": stored.size_bytes,
+            "contentType": stored.content_type,
+            "contentHash": stored.sha256,
+            "sha256": stored.sha256,
+            "metadata": {
+                "createdAt": "2026-09-10T00:00:00Z",
+                "provenance": {
+                    "schemaVersion": "phase10n4.trajectory_msd.v1",
+                },
+            },
+        }
+    )
+
+    result = runtime.handle_job(job_id, object_store={})
+
+    assert result.status == "completed"
+    calls = repos.tool_calls.list_for_job(job_id)
+    assert [(item["stepId"], item["toolId"]) for item in calls] == [
+        ("step_diffusion", "trajectory.diffusion")
+    ]
+    assert not any(item["toolId"] == "trajectory.msd" for item in calls)
+    produced = repos.artifacts.list_for_job(job_id)
+    assert len(produced) == 1
+    payload = runtime.artifact_storage.get_json(produced[0]["storageKey"])
+    assert payload["sourceMsd"]["artifactId"] == artifact_id
+    assert payload["runtimeDiagnostics"]["msdRecomputation"] is False

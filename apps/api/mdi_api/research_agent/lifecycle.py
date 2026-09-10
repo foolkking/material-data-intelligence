@@ -72,11 +72,19 @@ _STAGE_EVENTS: dict[str, frozenset[str]] = {
 
 _SAFE_EVENT_PAYLOAD_KEYS = frozenset({
     "attempt",
+    "child_turn_id",
+    "cycle_index",
+    "enqueued",
     "failure_category",
+    "outcome",
+    "policy_fingerprint",
+    "policy_version",
     "queue_name",
     "recovery_reason",
     "recovered",
     "result_snapshot_id",
+    "selected_capability_id",
+    "stop_reason",
     "status",
 })
 
@@ -255,6 +263,138 @@ def _safe_event(event: Mapping[str, Any] | None) -> dict[str, Any] | None:
             key: payload[key]
             for key in sorted(_SAFE_EVENT_PAYLOAD_KEYS)
             if isinstance(payload, Mapping) and key in payload
+        },
+    }
+
+
+def _autonomy_projection(
+    events: Iterable[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Project bounded autonomy provenance from existing Turn events.
+
+    Event payloads remain the durable authority. This view deliberately omits
+    generated messages, prompts, and model reasoning.
+    """
+
+    ordered = sorted(
+        events,
+        key=lambda item: int(item.get("sequence_no") or item.get("sequenceNo") or 0),
+    )
+    received: Mapping[str, Any] = {}
+    assessment: Mapping[str, Any] = {}
+    child: Mapping[str, Any] = {}
+    publish: Mapping[str, Any] = {}
+    stopped: Mapping[str, Any] = {}
+    for event in ordered:
+        event_type = str(event.get("event_type") or event.get("eventType") or "")
+        payload = event.get("payload_json") or event.get("payload") or {}
+        if not isinstance(payload, Mapping):
+            continue
+        if event_type == "TURN_RECEIVED":
+            candidate = payload.get("autonomy")
+            if isinstance(candidate, Mapping):
+                received = candidate
+        elif event_type == "AUTONOMY_CYCLE_CREATED":
+            received = payload
+        elif event_type == "AUTONOMY_ASSESSMENT_RECORDED":
+            candidate = payload.get("assessment")
+            assessment = candidate if isinstance(candidate, Mapping) else payload
+        elif event_type == "AUTONOMY_CHILD_TURN_CREATED":
+            child = payload
+        elif event_type in {
+            "AUTONOMY_QUEUE_PUBLISHED",
+            "AUTONOMY_QUEUE_PUBLISH_FAILED",
+        }:
+            publish = {"event_type": event_type, **payload}
+        elif event_type == "AUTONOMY_STOPPED":
+            stopped = payload
+
+    mode = str(received.get("mode") or "STANDARD")
+    enabled = mode == "BOUNDED_AUTONOMOUS"
+    policy = received.get("policy") if isinstance(received.get("policy"), Mapping) else {}
+    qualification = (
+        assessment.get("qualification")
+        if isinstance(assessment.get("qualification"), Mapping)
+        else received.get("qualification")
+        if isinstance(received.get("qualification"), Mapping)
+        else {}
+    )
+    evidence = assessment.get("evidence_result_ids") or stopped.get(
+        "evidence_result_ids"
+    ) or []
+    return {
+        "enabled": enabled,
+        "mode": mode,
+        "root_turn_id": (
+            str(received["root_turn_id"]) if received.get("root_turn_id") else None
+        ),
+        "cycle_index": int(
+            assessment.get("cycle_index")
+            or received.get("cycle_index")
+            or stopped.get("cycle_index")
+            or 1
+        ),
+        "objective": received.get("research_objective"),
+        "subgoal": received.get("subgoal"),
+        "policy": {
+            "version": received.get("policy_version")
+            or assessment.get("policy_version"),
+            "fingerprint": received.get("policy_fingerprint")
+            or assessment.get("policy_fingerprint"),
+            "max_cycles": policy.get("max_cycles"),
+            "max_capability_executions": policy.get(
+                "max_capability_executions"
+            ),
+            "max_dependency_steps_per_cycle": policy.get(
+                "max_dependency_steps_per_cycle"
+            ),
+            "max_llm_decision_calls": policy.get("max_llm_decision_calls"),
+        },
+        "decision": {
+            "outcome": assessment.get("outcome") or stopped.get("stop_reason"),
+            "reason_codes": list(
+                assessment.get("reason_codes")
+                or stopped.get("reason_codes")
+                or []
+            )[:16],
+            "selected_capability_id": assessment.get(
+                "selected_capability_id"
+            )
+            or received.get("selected_capability_id"),
+            "selected_parameters": dict(
+                assessment.get("selected_parameters")
+                or received.get("constraints")
+                or {}
+            ),
+            "evidence_result_ids": [str(value) for value in list(evidence)[:16]],
+            "exact_source_version_ids": [
+                str(value)
+                for value in list(
+                    assessment.get("exact_source_version_ids")
+                    or received.get("source_version_ids")
+                    or []
+                )[:64]
+            ],
+            "qualification_level": qualification.get("qualification_level"),
+            "qualification_reason": qualification.get("reason_code"),
+            "limitations": list(
+                assessment.get("limitations")
+                or stopped.get("limitations")
+                or qualification.get("known_limitations")
+                or []
+            )[:16],
+        },
+        "continuation": {
+            "child_turn_id": (
+                str(child["child_turn_id"]) if child.get("child_turn_id") else None
+            ),
+            "queue_status": publish.get("event_type"),
+            "enqueued": publish.get("enqueued"),
+            "failure_category": publish.get("failure_category"),
+        },
+        "stop": {
+            "stopped": bool(stopped),
+            "reason": stopped.get("stop_reason"),
         },
     }
 
@@ -455,6 +595,7 @@ def build_lifecycle_projection(
             "error_summary_present": bool(turn.get("error_summary")),
             "stale": bool(stale),
         },
+        "autonomy": _autonomy_projection(event_rows),
         "latest_event": _safe_event(latest_event),
     }
 

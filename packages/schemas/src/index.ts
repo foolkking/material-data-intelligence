@@ -256,7 +256,9 @@ export type AnalysisPlan = {
 
 export type ArtifactCardinality = "EXACTLY_ONE";
 export type ArtifactContentTrust = "INERT_DATA";
-export type IdentityCompatibility = "EXACT_PLAN_JOB_DATASET_RESOURCE";
+export type IdentityCompatibility =
+  | "EXACT_PLAN_JOB_DATASET_RESOURCE"
+  | "EXACT_PROJECT_DATASET_ARTIFACT";
 
 export type DependencyDiagnosticCode =
   | "OUTPUT_PORT_NOT_DECLARED"

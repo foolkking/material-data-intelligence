@@ -577,8 +577,11 @@
             "type": "integer"
           },
           "identityPolicy": {
-            "const": "EXACT_PLAN_JOB_DATASET_RESOURCE",
             "default": "EXACT_PLAN_JOB_DATASET_RESOURCE",
+            "enum": [
+              "EXACT_PLAN_JOB_DATASET_RESOURCE",
+              "EXACT_PROJECT_DATASET_ARTIFACT"
+            ],
             "title": "Identitypolicy",
             "type": "string"
           },

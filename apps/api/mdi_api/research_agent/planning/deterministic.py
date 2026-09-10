@@ -83,8 +83,6 @@ def build_deterministic_capability_plan(*, decision: ResearchTurnDecision, resol
             mapping = manifest.tool_bindings[0].parameter_mapping if manifest.tool_bindings else {}
             for key, value in requirement.constraints.items():
                 params[str(mapping.get(key) or key)] = value
-        if manifest.capability_id == "trajectory.diffusion":
-            params = {"fit_start_time_ps": 0.0, "fit_end_time_ps": 1.0, **params}
         steps.append(CapabilityPlanStep(
             step_id=f"step_{index}", capability_ref_key=keys[f"{candidate.capability_id}@{candidate.capability_version}"],
             satisfies_requirement_ids=list(candidate.satisfies_requirement_ids), input_bindings=input_bindings, parameters=params,

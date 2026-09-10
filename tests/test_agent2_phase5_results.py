@@ -76,7 +76,12 @@ CASES = (
         "artifactType": "trajectory.msd", "schema_version": "phase10n4.trajectory_msd.v1",
         "lagTimesPs": [1.0, 2.0], "totalMsdAngstrom2": [0.1, 0.4],
         "coverage": {"frames": 20, "atoms": 4, "validLags": 2},
-    }, {"trajectory.frame_count", "trajectory.msd_lag_count"}),
+    }, {
+        "trajectory.frame_count",
+        "trajectory.msd_lag_count",
+        "trajectory.msd_first_lag_time",
+        "trajectory.msd_last_lag_time",
+    }),
     ("agent2.trajectory.rdf", {
         "artifactType": "trajectory.rdf", "schema_version": "phase10n4.trajectory_rdf.v1",
         "trajectory": {"frameCount": 20, "atomCount": 4},

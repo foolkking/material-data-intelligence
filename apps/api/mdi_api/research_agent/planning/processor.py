@@ -11,6 +11,7 @@ from mdi_llm.providers import LLMProviderError
 from mdi_api.agent2_errors import CapabilityBindingFailed, CapabilityPlanInvalid
 from mdi_api.application.research.ports import ResearchRepositoryFactoryPort
 from mdi_api.research_agent.capabilities.fingerprint import capability_plan_fingerprint
+from mdi_api.research_agent.capabilities.quality_evidence import scientific_contract_fingerprint
 from mdi_api.research_agent.capabilities.preconditions import build_default_precondition_registry
 from mdi_api.research_agent.capabilities.resolver import CapabilityResolutionService
 from mdi_api.research_agent.capabilities.schemas import (
@@ -79,6 +80,9 @@ class CapabilityPlanningProcessor:
                 planner_input=planner_input,
                 context=prepared["snapshot"],
             ))
+            self._enforce_autonomy_plan_budget(
+                prepared["turn"], plan
+            )
             with self.repository_factory.unit_of_work() as unit:
                 turn = unit.agent2.research_turns.get_for_update(turn_id)
                 if turn["status"] != ResearchTurnStatus.PLANNING.value:
@@ -91,9 +95,15 @@ class CapabilityPlanningProcessor:
                     for key, value in reusable_results.items()
                     if value.get("usable") and value.get("output_object_refs")
                 }
+                result_artifact_refs = {
+                    key: value["artifact_ids_by_result_type"]
+                    for key, value in reusable_results.items()
+                    if value.get("usable") and value.get("artifact_ids_by_result_type")
+                }
                 context = self._plan_context(unit, str(turn["project_id"]), [*object_refs.values(), *result_object_refs.values()])
                 context["object_refs"] = object_refs
                 context["result_object_refs"] = result_object_refs
+                context["result_artifact_refs"] = result_artifact_refs
                 analysis_plan, plan_hash = CapabilityBinder(self.tool_registry).bind(capability_plan=plan, resolution=prepared["resolution"], context=context, registry=registries.capabilities)
                 plan_fp = capability_plan_fingerprint(plan, registry_fingerprint=prepared["resolution"].registry_fingerprint)
                 capability_plan_id = uuid4()
@@ -147,6 +157,9 @@ class CapabilityPlanningProcessor:
                 context_snapshot=snapshot,
                 reusable_results=reusable_results,
             )
+            resolution = self._enforce_autonomy_resolution(
+                unit, turn_id, resolution, registries
+            )
             resolution_id = uuid4()
             unit.agent2.research_capability_resolutions.add({"id": resolution_id, "research_turn_id": turn_id, "contract_version": resolution.contract_version, "requirement_snapshot_json": {"objective": resolution.objective, "requirements": [item.model_dump(mode="json") for item in decision.scientific_requirements]}, "resolution_json": resolution.model_dump(mode="json"), "registry_fingerprint": resolution.registry_fingerprint, "resolver_version": resolution.resolver_version})
             if resolution.unsatisfied_required_requirement_ids:
@@ -155,7 +168,18 @@ class CapabilityPlanningProcessor:
                 self._event(unit, turn_id, ResearchTurnEventType.CAPABILITY_UNSUPPORTED, {"status": updated["status"], "requirements": resolution.unsatisfied_required_requirement_ids})
                 return {"terminal": True, "result": {"status": updated["status"], "turn_id": str(turn_id)}}
             self._event(unit, turn_id, ResearchTurnEventType.CAPABILITY_RESOLUTION_COMPLETED, {"candidate_count": len(resolution.candidates), "registry_fingerprint": resolution.registry_fingerprint})
-            return {"terminal": False, "turn": turn, "decision": decision, "snapshot": snapshot, "resolution": resolution, "resolution_id": resolution_id, "reusable_results": reusable_results}
+            return {
+                "terminal": False,
+                "turn": {
+                    **turn,
+                    "_autonomy": self._turn_autonomy(unit, turn_id),
+                },
+                "decision": decision,
+                "snapshot": snapshot,
+                "resolution": resolution,
+                "resolution_id": resolution_id,
+                "reusable_results": reusable_results,
+            }
 
     @staticmethod
     def _planner_input(decision: ResearchTurnDecision, resolution: Any, snapshot: dict[str, Any], reusable_results: dict[str, dict[str, Any]], registries: Any) -> CapabilityPlannerInput:
@@ -194,6 +218,16 @@ class CapabilityPlanningProcessor:
                     slot: [capability_keys[value] for value in values if value in capability_keys]
                     for slot, values in item.possible_producers.items()
                 },
+                qualification_level=manifest.qualification.level,
+                qualification_evidence_version=manifest.qualification.evidence_version,
+                qualification_evidence_fingerprint=manifest.qualification.evidence_fingerprint,
+                scientific_contract_fingerprint=scientific_contract_fingerprint(
+                    manifest
+                ),
+                validated_domains=list(manifest.qualification.validated_domains),
+                known_limitations=list(
+                    manifest.qualification.known_limitations[:3]
+                ),
             ))
         results = []
         for key, item in sorted(reusable_results.items()):
@@ -201,7 +235,10 @@ class CapabilityPlanningProcessor:
                 ref_key=key,
                 result_id=item["snapshot_id"],
                 relevance_status=item["relevance_status"],
-                output_object_types=sorted({ref.object_type for ref in item.get("output_object_refs") or []}),
+                output_object_types=sorted({
+                    *(ref.object_type for ref in item.get("output_object_refs") or []),
+                    *(item.get("result_types") or []),
+                }),
             ))
         return CapabilityPlannerInput(
             research_objective=decision.research_objective or resolution.objective,
@@ -336,7 +373,33 @@ class CapabilityPlanningProcessor:
     @staticmethod
     def _load_reusable_results(unit: Any, turn: dict[str, Any], decision: ResearchTurnDecision, snapshot: dict[str, Any]) -> dict[str, dict[str, Any]]:
         requested = set(decision.reusable_result_ref_keys)
-        recompute = decision.action == ResearchAction.CONTINUE_ANALYSIS or any(item.constraints for item in decision.scientific_requirements)
+        received = next(
+            (
+                event
+                for event in unit.agent2.research_turn_events.list_for_turn(turn["id"])
+                if event["event_type"] == ResearchTurnEventType.TURN_RECEIVED.value
+            ),
+            None,
+        )
+        autonomy = ((received or {}).get("payload_json") or {}).get("autonomy") or {}
+        autonomous_reuse = (
+            autonomy.get("mode") == "BOUNDED_AUTONOMOUS"
+            and bool(autonomy.get("assessment_signature"))
+        )
+        # A normal CONTINUE_ANALYSIS request means rerun/recompute, including
+        # when the user changes parameters.  A persisted autonomous child is
+        # different: its constraints parameterize the *new downstream*
+        # capability selected from a durable Result (for example an MSD fit
+        # window for diffusion).  Treating those constraints as a request to
+        # recompute the parent evidence removes the only valid input binding
+        # and defeats reuse-before-recompute.
+        recompute = not autonomous_reuse and (
+            decision.action == ResearchAction.CONTINUE_ANALYSIS
+            or any(
+                item.constraints
+                for item in decision.scientific_requirements
+            )
+        )
         result: dict[str, dict[str, Any]] = {}
         project_id = str(turn["project_id"])
         for item in snapshot.get("referenced_result_refs_json") or []:
@@ -349,6 +412,27 @@ class CapabilityPlanningProcessor:
                 raise CapabilityBindingFailed("previous Result belongs to another project")
             bundle = ScientificResultBundle.model_validate(row["bundle_json"])
             output_refs = list(bundle.output_object_refs)
+            artifact_ids_by_result_type: dict[str, list[str]] = {}
+            for result_item in bundle.result_items:
+                if result_item.artifact_ids:
+                    artifact_ids_by_result_type.setdefault(
+                        result_item.result_type, []
+                    ).extend(result_item.artifact_ids)
+            for result_type, artifact_ids in artifact_ids_by_result_type.items():
+                artifact_ids_by_result_type[result_type] = sorted(set(artifact_ids))
+                for artifact_id in artifact_ids_by_result_type[result_type]:
+                    artifact = unit.repositories.artifacts.get(artifact_id)
+                    if (
+                        str(artifact.get("projectId") or "") != project_id
+                        or (
+                            row.get("job_id")
+                            and str(artifact.get("jobId") or "")
+                            != str(row["job_id"])
+                        )
+                    ):
+                        raise CapabilityBindingFailed(
+                            "previous Result Artifact is unauthorized"
+                        )
             for ref in output_refs:
                 logical = unit.agent2.scientific_objects.get_object(ref.object_id)
                 version = unit.agent2.scientific_objects.get_version(ref.version_id)
@@ -365,9 +449,92 @@ class CapabilityPlanningProcessor:
                 "snapshot_id": row["id"],
                 "relevance_status": relevance,
                 "output_object_refs": output_refs,
-                "usable": relevance == "CURRENT" and bool(output_refs) and not recompute,
+                "result_types": sorted(artifact_ids_by_result_type),
+                "artifact_ids_by_result_type": artifact_ids_by_result_type,
+                "usable": (
+                    relevance == "CURRENT"
+                    and bool(output_refs or artifact_ids_by_result_type)
+                    and not recompute
+                ),
             }
         return result
+
+    @staticmethod
+    def _enforce_autonomy_resolution(
+        unit: Any, turn_id: UUID, resolution: Any, registries: Any
+    ) -> Any:
+        received = next(
+            (
+                event
+                for event in unit.agent2.research_turn_events.list_for_turn(turn_id)
+                if event["event_type"] == ResearchTurnEventType.TURN_RECEIVED.value
+            ),
+            None,
+        )
+        autonomy = ((received or {}).get("payload_json") or {}).get("autonomy") or {}
+        if (
+            autonomy.get("mode") != "BOUNDED_AUTONOMOUS"
+            or not autonomy.get("assessment_signature")
+        ):
+            return resolution
+        from mdi_api.research_agent.autonomy.policy import CapabilityAutonomyPolicy
+        from mdi_api.research_agent.autonomy.schemas import AutonomyPolicy
+
+        capability_id = str(autonomy.get("selected_capability_id") or "")
+        version = str(autonomy.get("selected_capability_version") or "1.0")
+        manifest = registries.capabilities.require(capability_id, version)
+        policy = AutonomyPolicy.model_validate(autonomy.get("policy") or {})
+        current = CapabilityAutonomyPolicy(policy).qualification_snapshot(manifest)
+        recorded = autonomy.get("qualification") or {}
+        if (
+            not current.allowed_for_autonomy
+            or recorded.get("evidence_fingerprint") != current.evidence_fingerprint
+            or recorded.get("scientific_contract_fingerprint")
+            != current.scientific_contract_fingerprint
+        ):
+            raise CapabilityPlanInvalid(
+                "Autonomous capability qualification is stale or insufficient",
+                code="AUTONOMY_QUALIFICATION_INVALID",
+            )
+        selected = [
+            item
+            for item in resolution.candidates
+            if item.capability_id == capability_id
+            and item.capability_version == version
+        ]
+        if not selected:
+            raise CapabilityPlanInvalid(
+                "Persisted autonomous capability is no longer eligible",
+                code="AUTONOMY_CAPABILITY_INELIGIBLE",
+            )
+        return resolution.model_copy(update={"candidates": selected})
+
+    @staticmethod
+    def _enforce_autonomy_plan_budget(turn: dict[str, Any], plan: Any) -> None:
+        autonomy = dict(turn.get("_autonomy") or {})
+        if not autonomy:
+            return
+        policy = autonomy.get("policy") or {}
+        limit = int(policy.get("max_dependency_steps_per_cycle") or 4)
+        if len(plan.steps) > limit:
+            raise CapabilityPlanInvalid(
+                "Autonomous capability plan exceeds its persisted step budget",
+                code="AUTONOMY_DEPENDENCY_STEP_LIMIT_REACHED",
+            )
+
+    @staticmethod
+    def _turn_autonomy(unit: Any, turn_id: UUID) -> dict[str, Any]:
+        received = next(
+            (
+                event
+                for event in unit.agent2.research_turn_events.list_for_turn(turn_id)
+                if event["event_type"] == ResearchTurnEventType.TURN_RECEIVED.value
+            ),
+            None,
+        )
+        return dict(
+            ((received or {}).get("payload_json") or {}).get("autonomy") or {}
+        )
 
     def _fail(self, turn_id: UUID, code: str, summary: str, *, target: ResearchTurnStatus = ResearchTurnStatus.PLAN_REJECTED) -> None:
         with self.repository_factory.unit_of_work() as unit:

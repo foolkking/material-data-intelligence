@@ -15,6 +15,7 @@ from mdi_schemas import (
 )
 
 from .dependency_ports import build_artifact_compatibility_matrix
+from .dependency_ports import build_artifact_port_inventory
 
 
 @dataclass(frozen=True)
@@ -50,6 +51,58 @@ def validate_dependency_plan(
     }
     steps = {item.stepId: item for item in parsed.steps}
     errors: list[DependencyDiagnostic] = []
+    port_inventory = build_artifact_port_inventory(registry)
+    bound_consumer_ports = {
+        (binding.consumerStepId, binding.consumerInputPort)
+        for binding in parsed.dependencyBindings
+    }
+    for step in parsed.steps:
+        direct_artifacts = [ref for ref in step.inputRefs if ref.refType == "artifact"]
+        seen_roles: set[str] = set()
+        for ref in direct_artifacts:
+            ports = port_inventory.get(step.toolId)
+            port = next(
+                (
+                    item
+                    for item in (ports.inputPorts if ports is not None else [])
+                    if item.inputFieldRole == ref.fieldRole
+                ),
+                None,
+            )
+            if port is None:
+                errors.append(
+                    _diagnostic(
+                        DependencyDiagnosticCode.input_port_not_declared,
+                        "steps.inputRefs",
+                        "Persisted Artifact input does not match a declared Tool input port.",
+                    )
+                )
+                continue
+            if port.identityPolicy.value != "EXACT_PROJECT_DATASET_ARTIFACT":
+                errors.append(
+                    _diagnostic(
+                        DependencyDiagnosticCode.external_authority_rejected,
+                        "steps.inputRefs",
+                        "Tool input port does not permit a persisted cross-run Artifact.",
+                    )
+                )
+            if ref.objectType is None or ref.objectType.value != port.inputObjectType:
+                errors.append(
+                    _diagnostic(
+                        DependencyDiagnosticCode.resource_version_mismatch,
+                        "steps.inputRefs.objectType",
+                        "Persisted Artifact input object type does not match its Tool port.",
+                    )
+                )
+            if port.portId in seen_roles or (step.stepId, port.portId) in bound_consumer_ports:
+                errors.append(
+                    _diagnostic(
+                        DependencyDiagnosticCode.duplicate_consumer_port,
+                        "steps.inputRefs",
+                        "A Tool input port may be supplied only once.",
+                    )
+                )
+            seen_roles.add(port.portId)
     for binding in parsed.dependencyBindings:
         expected_id = deterministic_binding_id(binding.model_dump(mode="json", exclude={"bindingId"}))
         if binding.bindingId != expected_id:

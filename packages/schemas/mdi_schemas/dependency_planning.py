@@ -44,6 +44,7 @@ class ArtifactContentTrust(str, Enum):
 
 class IdentityCompatibility(str, Enum):
     exact_plan_job_dataset_resource = "EXACT_PLAN_JOB_DATASET_RESOURCE"
+    exact_project_dataset_artifact = "EXACT_PROJECT_DATASET_ARTIFACT"
 
 
 class DependencyDiagnosticCode(str, Enum):
@@ -120,7 +121,10 @@ class ArtifactInputPort(StrictDependencyModel):
     mediaTypes: list[str] = Field(min_length=1, max_length=8)
     cardinality: Literal[ArtifactCardinality.exactly_one] = ArtifactCardinality.exactly_one
     maxBytes: int = Field(gt=0, le=268_435_456)
-    identityPolicy: Literal[IdentityCompatibility.exact_plan_job_dataset_resource] = IdentityCompatibility.exact_plan_job_dataset_resource
+    identityPolicy: Literal[
+        IdentityCompatibility.exact_plan_job_dataset_resource,
+        IdentityCompatibility.exact_project_dataset_artifact,
+    ] = IdentityCompatibility.exact_plan_job_dataset_resource
     requiredSemanticRoles: list[str] = Field(min_length=1, max_length=8)
     materializationPermitted: bool = True
     baseResourceRequired: bool = False
@@ -203,8 +207,6 @@ class AnalysisPlanV02(StrictDependencyModel):
         step_ids = [item.stepId for item in self.steps]
         if len(step_ids) != len(set(step_ids)):
             raise ValueError("AnalysisPlan 0.2 step IDs must be unique.")
-        if any(ref.refType == "artifact" for step in self.steps for ref in step.inputRefs):
-            raise ValueError("AnalysisPlan 0.2 artifact dependencies are represented only by dependencyBindings.")
         expected = compute_dependency_graph_hash(self.dependencyBindings)
         if self.graphHash != expected:
             raise ValueError("graphHash does not match dependencyBindings.")

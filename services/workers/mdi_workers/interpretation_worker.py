@@ -5,8 +5,14 @@ import json
 
 from mdi_api.application.interpretation import interpret_queued_turn
 from mdi_api.bootstrap.repository_factory import create_repository_factory
+from mdi_api.config import load_settings
 from mdi_api.infrastructure.interpretation.client import FakeStructuredInterpreterClient
 from mdi_api.infrastructure.interpretation.service import ScientificInterpretationService
+from mdi_api.research_agent.autonomy.service import BoundedAutonomyService
+from mdi_api.research_agent.orchestration.queue import (
+    DisabledAgentTurnQueue,
+    RedisRQAgentTurnQueue,
+)
 
 
 def run_queued_interpretation(turn_id: str) -> dict:
@@ -14,11 +20,21 @@ def run_queued_interpretation(turn_id: str) -> dict:
     fixture = os.getenv("MDI_AGENT2_INTERPRETATION_FIXTURE_JSON")
     if fixture and os.getenv("MDI_ENV", "").lower() in {"test", "ci"}:
         client = FakeStructuredInterpreterClient(json.loads(fixture))
-    factory = create_repository_factory()
+    settings = load_settings()
+    factory = create_repository_factory(settings)
+    autonomy_queue = (
+        RedisRQAgentTurnQueue(
+            redis_url=settings.redis_url,
+            queue_name=settings.agent2_queue_name,
+        )
+        if settings.agent2_orchestration_enabled and settings.queue_backend == "redis"
+        else DisabledAgentTurnQueue()
+    )
     result = interpret_queued_turn(
         turn_id,
         interpreter=ScientificInterpretationService(factory, client=client),
         repository_factory=factory,
+        autonomy=BoundedAutonomyService(factory, queue=autonomy_queue),
     )
     return {**result, "process_id": os.getpid()}
 

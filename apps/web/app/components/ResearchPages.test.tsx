@@ -1868,6 +1868,7 @@ it("reconciles a queued Stop notice when durable progress reaches CANCELED", asy
       "project_1",
       "session_1",
       {
+        autonomy_mode: "STANDARD",
         message: "计算这个精确结构版本的 RDF",
         reply_to_turn_id: "turn-queued",
         ui_context: {
@@ -2553,6 +2554,7 @@ it("admits one exact trajectory resource and uses the modern ResearchTurn path",
     composer,
     "在 1 ps 到 6 ps 的拟合窗口内计算 MSD 并评估扩散性质",
   );
+  await user.click(screen.getByLabelText("有界多步研究"));
   await user.click(screen.getByRole("button", { name: "开始分析" }));
 
   await waitFor(() =>
@@ -2567,6 +2569,7 @@ it("admits one exact trajectory resource and uses the modern ResearchTurn path",
     "project_1",
     "session_1",
     expect.objectContaining({
+      autonomy_mode: "BOUNDED_AUTONOMOUS",
       ui_context: expect.objectContaining({
         active_object_refs: [
           expect.objectContaining({

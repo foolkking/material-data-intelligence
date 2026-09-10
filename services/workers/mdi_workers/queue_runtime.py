@@ -355,6 +355,13 @@ class QueueWorkerRuntime:
         artifacts_by_step: dict[str, list[dict[str, Any]]] = {}
         resolved_by_consumer: dict[str, list[ResolvedArtifactInputRef]] = {}
         ports = build_artifact_port_inventory(self.registry)
+        object_store = self._hydrate_persisted_artifact_inputs(
+            repos,
+            job=job,
+            plan=plan,
+            object_store=object_store,
+            ports=ports,
+        )
 
         for index, step_id in enumerate(dependency_validation.topological_order, start=1):
             if self._cancel_requested(repos, job_id):
@@ -386,7 +393,9 @@ class QueueWorkerRuntime:
                 continue
 
             step_store = dict(object_store)
-            step_store["__mdi_artifact_bindings__"] = {}
+            step_store["__mdi_artifact_bindings__"] = dict(
+                object_store.get("__mdi_artifact_bindings__", {})
+            )
             step_payload = step.model_dump(mode="json")
             incoming_refs: list[ResolvedArtifactInputRef] = []
             binding_failure: tuple[str, str] | None = None
@@ -597,6 +606,119 @@ class QueueWorkerRuntime:
             payload={"errorCode": code, "executionId": record.executionId}, progress=1.0,
         )
         return self._result(repos, job_id, message=f"dependency validation aborted: {message}", plan_record=plan_record)
+
+    def _hydrate_persisted_artifact_inputs(
+        self,
+        repos: Any,
+        *,
+        job: Mapping[str, Any],
+        plan: AnalysisPlanV02,
+        object_store: Mapping[str, Any],
+        ports: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        """Materialize exact, authorized cross-run Artifact roots.
+
+        Dependency bindings remain the authority for same-plan producer /
+        consumer edges.  A direct Artifact input is reserved for a previously
+        committed Result whose Tool port explicitly permits
+        ``EXACT_PROJECT_DATASET_ARTIFACT`` reuse.
+        """
+
+        hydrated = dict(object_store)
+        artifact_bindings = dict(hydrated.get("__mdi_artifact_bindings__", {}))
+        project_id = str(job.get("projectId") or job.get("project_id") or "")
+        dataset_id = str(job.get("datasetId") or job.get("dataset_id") or "")
+        for step in plan.steps:
+            tool_ports = ports.get(step.toolId)
+            for input_ref in step.inputRefs:
+                if input_ref.refType != "artifact":
+                    continue
+                port = next(
+                    (
+                        item
+                        for item in (
+                            tool_ports.inputPorts if tool_ports is not None else []
+                        )
+                        if item.inputFieldRole == input_ref.fieldRole
+                    ),
+                    None,
+                )
+                if (
+                    port is None
+                    or port.identityPolicy.value
+                    != "EXACT_PROJECT_DATASET_ARTIFACT"
+                ):
+                    raise DependencyBindingError(
+                        "EXTERNAL_AUTHORITY_REJECTED",
+                        "Tool port does not permit persisted cross-run Artifact reuse.",
+                    )
+                artifact = repos.artifacts.get(input_ref.ref)
+                if str(artifact.get("projectId") or "") != project_id:
+                    raise DependencyBindingError(
+                        "SCOPE_MISMATCH",
+                        "Persisted Artifact belongs to another project.",
+                    )
+                artifact_dataset = str(artifact.get("datasetId") or "")
+                if artifact_dataset and dataset_id and artifact_dataset != dataset_id:
+                    raise DependencyBindingError(
+                        "SCOPE_MISMATCH",
+                        "Persisted Artifact belongs to another Dataset.",
+                    )
+                metadata = artifact.get("metadata") or {}
+                provenance = metadata.get("provenance") or {}
+                contract_version = str(provenance.get("schemaVersion") or "")
+                if (
+                    str(artifact.get("type") or "") not in {
+                        item.value for item in port.acceptedArtifactKinds
+                    }
+                    or contract_version not in port.acceptedContractVersions
+                    or str(artifact.get("contentType") or "") not in port.mediaTypes
+                ):
+                    raise DependencyBindingError(
+                        "CONTRACT_MISMATCH",
+                        "Persisted Artifact does not match the declared Tool input port.",
+                    )
+                size = int(artifact.get("sizeBytes") or 0)
+                if size <= 0 or size > min(port.maxBytes, 268_435_456):
+                    raise DependencyBindingError(
+                        "SIZE_REJECTED",
+                        "Persisted Artifact size violates the declared Tool input cap.",
+                    )
+                content = self.artifact_storage.get_bytes(
+                    str(artifact.get("storageKey") or "")
+                )
+                checksum = hashlib.sha256(content).hexdigest()
+                if (
+                    len(content) != size
+                    or checksum
+                    != str(
+                        artifact.get("sha256")
+                        or artifact.get("contentHash")
+                        or ""
+                    )
+                ):
+                    raise DependencyBindingError(
+                        "CHECKSUM_MISMATCH",
+                        "Persisted Artifact bytes failed exact size/checksum verification.",
+                    )
+                try:
+                    materialized = json.loads(content.decode("utf-8"))
+                except Exception as exc:
+                    raise DependencyBindingError(
+                        "CONTRACT_MISMATCH",
+                        "Persisted Artifact is not strict inert JSON.",
+                    ) from exc
+                hydrated[input_ref.ref] = materialized
+                artifact_bindings[input_ref.ref] = {
+                    "artifactId": str(artifact["id"]),
+                    "checksum": checksum,
+                    "sourceJobId": str(artifact.get("jobId") or ""),
+                    "artifactContractVersion": contract_version,
+                    "consumerStepId": step.stepId,
+                    "consumerInputPort": port.portId,
+                }
+        hydrated["__mdi_artifact_bindings__"] = artifact_bindings
+        return hydrated
 
     def _resolve_artifact_binding(
         self,

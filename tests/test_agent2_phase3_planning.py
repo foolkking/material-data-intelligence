@@ -251,6 +251,83 @@ def test_p3_c13_current_result_reuses_exact_output_object_without_recomputation(
     assert {item.ref for item in analysis.steps[0].inputRefs} == {str(experimental.version_id), str(theoretical.version_id)}
 
 
+def test_p3_autonomy_reuses_exact_persisted_msd_artifact_for_diffusion():
+    artifact_id = str(uuid4())
+    request = decision(
+        [
+            (
+                "trajectory.estimate_diffusion",
+                [],
+                {"fit_start_time_ps": 1.0, "fit_end_time_ps": 6.0},
+            )
+        ],
+        "Estimate diffusion from the existing MSD evidence.",
+    ).model_copy(
+        update={
+            "action": ResearchAction.CONTINUE_ANALYSIS,
+            "reusable_result_ref_keys": ["result_1"],
+        }
+    )
+    reusable = {
+        "result_1": {
+            "usable": True,
+            "output_object_refs": [],
+            "result_types": ["trajectory.msd"],
+            "artifact_ids_by_result_type": {"trajectory.msd": [artifact_id]},
+        }
+    }
+    snapshot = {"selection_refs_json": [], "active_scope_refs_json": []}
+    resolution = CapabilityResolutionService(
+        DEFAULT_AGENT2_REGISTRIES.capabilities,
+        DEFAULT_AGENT2_REGISTRIES.requirements,
+        TOOLS,
+        build_default_precondition_registry(),
+    ).resolve(
+        turn={"id": uuid4(), "project_id": "project"},
+        decision=request,
+        context_snapshot=snapshot,
+        reusable_results=reusable,
+    )
+
+    candidate = next(
+        item
+        for item in resolution.candidates
+        if item.capability_id == "trajectory.diffusion"
+    )
+    assert candidate.eligibility.value == "ELIGIBLE"
+    assert candidate.reusable_result_bindings == {"msd": ["result_1"]}
+    plan = build_deterministic_capability_plan(
+        decision=request,
+        resolution=resolution,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+    assert len(plan.steps) == 1
+    assert plan.steps[0].input_bindings["msd"][0].kind == (
+        CapabilityBindingKind.PREVIOUS_RESULT
+    )
+
+    analysis, _ = CapabilityBinder(TOOLS).bind(
+        capability_plan=plan,
+        resolution=resolution,
+        context={
+            "dataset_id": "dataset",
+            "profile_id": "profile",
+            "object_refs": {},
+            "result_object_refs": {},
+            "result_artifact_refs": {
+                "result_1": {"trajectory.msd": [artifact_id]}
+            },
+        },
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+
+    assert [step.toolId for step in analysis.steps] == ["trajectory.diffusion"]
+    assert [
+        (item.refType, item.ref, item.fieldRole)
+        for item in analysis.steps[0].inputRefs
+    ] == [("artifact", artifact_id, "msd_artifact")]
+
+
 def test_p3_c09_c12_unknown_capability_and_required_omission_fail_closed():
     structure = ref("structure.crystal", "Si")
     request = decision([("structure.compute_rdf", ["obj_1"], {})])

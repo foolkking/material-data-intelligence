@@ -26,6 +26,11 @@ class ResearchAction(str, Enum):
     EXPORT = "EXPORT"
 
 
+class AutonomyMode(str, Enum):
+    STANDARD = "STANDARD"
+    BOUNDED_AUTONOMOUS = "BOUNDED_AUTONOMOUS"
+
+
 class ResearchTurnStatus(str, Enum):
     RECEIVED = "RECEIVED"
     RESOLVING_CONTEXT = "RESOLVING_CONTEXT"
@@ -109,6 +114,12 @@ class ResearchTurnEventType(str, Enum):
     TURN_FAILED = "TURN_FAILED"
     TURN_CANCELED = "TURN_CANCELED"
     TURN_UNSUPPORTED = "TURN_UNSUPPORTED"
+    AUTONOMY_CYCLE_CREATED = "AUTONOMY_CYCLE_CREATED"
+    AUTONOMY_ASSESSMENT_RECORDED = "AUTONOMY_ASSESSMENT_RECORDED"
+    AUTONOMY_CHILD_TURN_CREATED = "AUTONOMY_CHILD_TURN_CREATED"
+    AUTONOMY_QUEUE_PUBLISHED = "AUTONOMY_QUEUE_PUBLISHED"
+    AUTONOMY_QUEUE_PUBLISH_FAILED = "AUTONOMY_QUEUE_PUBLISH_FAILED"
+    AUTONOMY_STOPPED = "AUTONOMY_STOPPED"
 
 
 class ContextResolutionStatus(str, Enum):
@@ -516,6 +527,7 @@ class CreateResearchTurnRequest(BaseModel):
     message: str = Field(min_length=1, max_length=16_000)
     ui_context: ResearchTurnUIContext | None = None
     reply_to_turn_id: UUID | None = None
+    autonomy_mode: AutonomyMode = AutonomyMode.STANDARD
 
     @field_validator("message")
     @classmethod

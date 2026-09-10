@@ -58,7 +58,14 @@ class CapabilityResolutionService:
                         if not result.get("usable"):
                             continue
                         output_refs = result.get("output_object_refs") or []
-                        if any(ref.object_type in slot.accepted_object_types for ref in output_refs):
+                        result_types = set(result.get("result_types") or [])
+                        if (
+                            any(
+                                ref.object_type in slot.accepted_object_types
+                                for ref in output_refs
+                            )
+                            or bool(result_types.intersection(slot.accepted_object_types))
+                        ):
                             reusable_keys.append(result_key)
                 if reusable_keys:
                     result_bindings[slot.name] = reusable_keys

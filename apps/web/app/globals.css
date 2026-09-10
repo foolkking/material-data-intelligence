@@ -6493,6 +6493,8 @@ body:has(.research-workbench) {
 .timeline-past-run:hover strong, .timeline-past-run:focus-visible strong { color: var(--product-accent); }
 .research-composer-footer { display: flex; align-items: center; gap: 10px; }
 .research-composer-footer > span { color: var(--product-tertiary); font-size: 12px; margin-right: auto; }
+.research-autonomy-control { display: inline-flex; align-items: center; gap: 7px; margin-right: auto; color: var(--product-secondary); font-size: 12px; }
+.research-autonomy-control input { accent-color: var(--product-accent); }
 .research-composer-stop { white-space: nowrap; }
 .research-model-menu { position: relative; color: var(--product-secondary); font-size: 12px; }
 .research-model-menu summary { cursor: pointer; list-style: none; padding: 7px 8px; border: 1px solid var(--product-border); border-radius: 5px; }
