@@ -139,7 +139,8 @@ def test_research_turn_correlation_is_bounded_authorized_and_secret_free(api):
 
     empty = client.get(f"/api/research/turns/{turn_id}/correlation")
     assert empty.status_code == 200
-    assert empty.json() == {
+    payload = empty.json()
+    assert {key: value for key, value in payload.items() if key != "lifecycle"} == {
         "contract_version": "1.0",
         "project_id": "project",
         "research_session_id": "session",
@@ -151,6 +152,8 @@ def test_research_turn_correlation_is_bounded_authorized_and_secret_free(api):
         "report": None,
         "integrity_warnings": [],
     }
+    assert payload["lifecycle"]["stage"]["name"] == "RECEIVED"
+    assert payload["lifecycle"]["stage"]["owner"] == "orchestration"
 
     active["value"] = stranger
     assert client.get(f"/api/research/turns/{turn_id}/correlation").status_code == 403

@@ -12,8 +12,58 @@ from datetime import datetime, timezone
 from typing import Any, Iterable
 from uuid import UUID, uuid4
 
+from .provenance import deduplicate_provenance_items
 from .policy import ContextOperation, context_budget_policy
 from .schemas import ContextManifest, ContextManifestItem
+
+
+def _default_provenance(kind: str) -> tuple[str, str, str, str]:
+    """Return source/authority/freshness defaults for existing manifest kinds."""
+
+    return {
+        "SCIENTIFIC_OBJECT": (
+            "EXACT_SCIENTIFIC_OBJECT_VERSION",
+            "SCIENTIFIC_INPUT",
+            "CURRENT",
+            "OBSERVED",
+        ),
+        "SCIENTIFIC_SELECTION": (
+            "EXPLICIT_UI_SELECTION",
+            "SCIENTIFIC_INPUT",
+            "CURRENT",
+            "OBSERVED",
+        ),
+        "SCIENTIFIC_RESULT": (
+            "SCIENTIFIC_RESULT",
+            "SCIENTIFIC_KNOWLEDGE",
+            "HISTORICAL_VALID",
+            "COMPUTED",
+        ),
+        "SCIENTIFIC_EVIDENCE": (
+            "SCIENTIFIC_EVIDENCE",
+            "SCIENTIFIC_EVIDENCE",
+            "CURRENT",
+            "COMPUTED",
+        ),
+        "USER_CONSTRAINT": (
+            "CURRENT_USER_REQUEST",
+            "USER_INTENT",
+            "CURRENT",
+            "CONSTRAINT",
+        ),
+        "RESEARCH_GOAL": (
+            "CURRENT_USER_REQUEST",
+            "USER_INTENT",
+            "CURRENT",
+            "CONSTRAINT",
+        ),
+        "CAPABILITY_CANDIDATE": (
+            "CURRENT_USER_REQUEST",
+            "HISTORICAL_CONTEXT",
+            "CURRENT",
+            "OBSERVED",
+        ),
+    }.get(kind, ("UNKNOWN", "HISTORICAL_CONTEXT", "UNKNOWN", "OBSERVED"))
 
 
 def build_operation_manifest(
@@ -29,13 +79,18 @@ def build_operation_manifest(
     """Build a bounded, immutable manifest for one provider operation."""
     policy = context_budget_policy(operation)
     normalized: list[ContextManifestItem] = []
-    for index, raw in enumerate(items, start=1):
+    unique_items, duplicate_item_ids = deduplicate_provenance_items(list(items))
+    for index, raw in enumerate(unique_items, start=1):
+        kind = str(raw["kind"])
+        default_source, default_authority, default_freshness, default_epistemic = _default_provenance(kind)
+        if raw.get("authorization_checked", True) is not True:
+            raise ValueError(f"unauthorized context item: {raw.get('item_id') or index}")
         content = raw.get("content", {})
         encoded = json.dumps(content, sort_keys=True, separators=(",", ":"), default=str)
         normalized.append(
             ContextManifestItem(
                 item_id=str(raw.get("item_id") or f"{operation.value.lower()}_{index}"),
-                kind=str(raw["kind"]),
+                kind=kind,
                 authority_class=str(raw["authority_class"]),
                 server_side_source_identity=str(raw.get("source_identity") or raw["item_id"]),
                 provider_opaque_ref=str(raw.get("opaque_ref") or raw["item_id"]),
@@ -47,6 +102,9 @@ def build_operation_manifest(
                 authorization_checked=bool(raw.get("authorization_checked", True)),
                 content_fingerprint=hashlib.sha256(encoded.encode("utf-8")).hexdigest(),
                 estimated_tokens=max(1, len(encoded.encode("utf-8")) // 4),
+                source_class=str(raw.get("source_class") or default_source),
+                freshness=str(raw.get("freshness") or default_freshness),
+                epistemic_status=str(raw.get("epistemic_status") or default_epistemic),
                 was_compacted=bool(raw.get("was_compacted", False)),
                 was_truncated=bool(raw.get("was_truncated", False)),
                 superseded_state=str(raw.get("superseded_state") or "NONE"),
@@ -54,7 +112,7 @@ def build_operation_manifest(
         )
     critical_kinds = {"SCIENTIFIC_OBJECT", "SCIENTIFIC_SELECTION", "SCIENTIFIC_RESULT", "SCIENTIFIC_EVIDENCE"}
     included: list[ContextManifestItem] = []
-    excluded = list(excluded_items)
+    excluded = [*excluded_items, *duplicate_item_ids]
     estimated = 0
     for item in normalized:
         if estimated + item.estimated_tokens <= policy.effective_input_budget:

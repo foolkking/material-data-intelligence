@@ -31,7 +31,15 @@ class ResearchContextCompiler:
             display_name=item.display_label,
             availability_status="STALE" if item.stale else "AVAILABLE",
             version_label="exact_version",
-            summary={"semantic_summary": item.semantic_summary, "source": item.source.value},
+            summary={
+                "semantic_summary": item.semantic_summary,
+                "source": item.source.value,
+                "source_class": item.source_class.value if item.source_class else None,
+                "authority_class": item.authority_class.value if item.authority_class else None,
+                "freshness": item.freshness.value if item.freshness else "UNKNOWN",
+                "epistemic_status": item.epistemic_status.value if item.epistemic_status else "OBSERVED",
+                "source_ref": item.source_ref,
+            },
         ) for item in candidates.active_object_candidates]
         result_summaries = [CompactResultSummary(
             ref_key=item.candidate_key,
@@ -39,13 +47,17 @@ class ResearchContextCompiler:
             research_question=item.display_label,
             execution_status="HISTORICAL",
             relevance_status="STALE" if item.stale else "CURRENT",
-            summary=item.semantic_summary or "Persisted scientific result snapshot",
+            summary=(
+                f"{item.semantic_summary or 'Persisted scientific result snapshot'} "
+                f"[source={item.source_ref or item.result_id}; "
+                f"freshness={item.freshness.value if item.freshness else 'UNKNOWN'}]"
+            ),
         ) for item in candidates.result_candidates]
         finding_summaries = [CompactFindingSummary(
             ref_key=item.candidate_key,
             display_label=item.display_label,
             summary=item.semantic_summary or "Persisted finding reference",
-            relevance_status="STALE" if item.stale else "CURRENT",
+            relevance_status=item.freshness.value if item.freshness else ("STALE" if item.stale else "CURRENT"),
         ) for item in candidates.finding_candidates]
         fingerprint_payload = {
             "project_id": candidates.project_id,

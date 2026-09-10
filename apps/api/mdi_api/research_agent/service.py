@@ -339,6 +339,9 @@ class ResearchTurnService:
             version_id: str | None = None,
             result_ref: str | None = None,
             superseded_state: str = "NONE",
+            source_class: str = "UNKNOWN",
+            freshness: str = "CURRENT",
+            epistemic_status: str = "OBSERVED",
         ) -> None:
             encoded = json.dumps(content, sort_keys=True, separators=(",", ":"), default=str)
             items.append(
@@ -356,6 +359,9 @@ class ResearchTurnService:
                     authorization_checked=True,
                     content_fingerprint=hashlib.sha256(encoded.encode("utf-8")).hexdigest(),
                     estimated_tokens=max(1, len(encoded.encode("utf-8")) // 4),
+                    source_class=source_class,
+                    freshness=freshness,
+                    epistemic_status=epistemic_status,
                     superseded_state=superseded_state,
                 )
             )
@@ -372,6 +378,9 @@ class ResearchTurnService:
                 selection_mode="CURRENT",
                 object_id=str(ref.object_id),
                 version_id=str(ref.version_id),
+                source_class="EXACT_SCIENTIFIC_OBJECT_VERSION",
+                freshness="CURRENT",
+                epistemic_status="OBSERVED",
             )
         for index, ref in enumerate(context.selection_refs, start=1):
             add_item(
@@ -385,6 +394,9 @@ class ResearchTurnService:
                 selection_mode="UI_SELECTION",
                 object_id=str(ref.object_id),
                 version_id=str(ref.version_id),
+                source_class="EXPLICIT_UI_SELECTION",
+                freshness="CURRENT",
+                epistemic_status="OBSERVED",
             )
         for index, selection in enumerate(context.scientific_selections, start=1):
             ref = selection.object_ref
@@ -399,6 +411,9 @@ class ResearchTurnService:
                 selection_mode="EXPLICIT",
                 object_id=str(ref.object_id),
                 version_id=str(ref.version_id),
+                source_class="EXPLICIT_UI_SELECTION",
+                freshness="CURRENT",
+                epistemic_status="OBSERVED",
             )
         for index, result_id in enumerate(context.referenced_result_ids, start=1):
             add_item(
@@ -411,6 +426,9 @@ class ResearchTurnService:
                 inclusion_reason="explicit referenced prior Result",
                 selection_mode="CONTINUATION",
                 result_ref=str(result_id),
+                source_class="SCIENTIFIC_RESULT",
+                freshness="HISTORICAL_VALID",
+                epistemic_status="COMPUTED",
             )
         for index, constraint in enumerate(context.user_constraints, start=1):
             add_item(
@@ -422,6 +440,9 @@ class ResearchTurnService:
                 content=constraint,
                 inclusion_reason="session/user constraint",
                 selection_mode="EXPLICIT",
+                source_class="CURRENT_USER_REQUEST",
+                freshness="CURRENT",
+                epistemic_status="CONSTRAINT",
             )
         if context.research_goal:
             add_item(
@@ -433,6 +454,9 @@ class ResearchTurnService:
                 content=context.research_goal,
                 inclusion_reason="active research goal",
                 selection_mode="CURRENT",
+                source_class="CURRENT_USER_REQUEST",
+                freshness="CURRENT",
+                epistemic_status="CONSTRAINT",
             )
 
         budget_policy = context_budget_policy(ContextOperation.ORCHESTRATOR)

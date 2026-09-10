@@ -87,6 +87,17 @@ def test_pinned_result_survives_repository_reload_and_unpin() -> None:
         memory = ResearchSessionMemoryService()
         pinned = memory.pin_result(unit, session_id="session", project_id="project", result_id=result_id)
         assert pinned.pinned_result_refs == [result_id]
+        item = next(
+            row
+            for row in unit.agent2.research_session_memory.list_items("session")
+            if row["item_type"] == "PINNED_RESULT"
+        )
+        assert item["ref_json"]["epistemic_status"] == "COMPUTED"
+        assert item["ref_json"]["authority_class"] == "MEMORY"
+        assert item["ref_json"]["provenance_refs"] == [
+            f"turn:{turn_id}",
+            f"result:{result_id}",
+        ]
 
     with factory.session() as session:
         reloaded = ResearchSessionMemoryService().get_state(

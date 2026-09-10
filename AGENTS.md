@@ -1,5 +1,11 @@
 # AGENTS.md
 
+当前 active engineering repository：
+`E:\1project\mdi-b0-5a1`
+
+`E:\1project\Material Data Intelligence` 仅作为 historical source tree 与
+recovery-source 使用，不得继续在那里进行新开发、测试或服务启动。
+
 开始前优先读取 `PROJECT_STATE.md`（存在时仅作为当前快照和导航），再读取
 `persistent/PROJECT_BRIEF.md`、`persistent/DESIGN_PROGRESS.md`、
 `persistent/TASK_BOARD.md`、`persistent/ARCHITECTURE_DECISIONS.md`、

@@ -23,6 +23,11 @@ from mdi_api.research_agent.schemas import (
     ResearchTurnEventType,
     ResearchTurnStatus,
 )
+from mdi_api.research_agent.lifecycle import (
+    LifecycleFailureCategory,
+    classify_failure,
+    recovery_action,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -73,6 +78,25 @@ class RecoveryOutcome:
     action: str
     accepted: bool
     detail: str
+
+    @property
+    def failure_category(self) -> str:
+        if self.action == "QUEUE_UNAVAILABLE":
+            return LifecycleFailureCategory.RETRYABLE.value
+        if self.action == "LEGACY_QUERY_DATA_TERMINALIZED":
+            return LifecycleFailureCategory.NONE.value
+        if self.accepted:
+            return LifecycleFailureCategory.RECOVERABLE.value
+        return classify_failure(self.previous_status).value
+
+    @property
+    def recommended_action(self) -> str:
+        if self.action == "QUEUE_UNAVAILABLE":
+            return "retry_same_stage_with_existing_identity"
+        return recovery_action(
+            self.previous_status,
+            LifecycleFailureCategory(self.failure_category),
+        )
 
 
 class StaleResearchRecoveryService:
@@ -169,6 +193,8 @@ class StaleResearchRecoveryService:
                     "action": item.action,
                     "accepted": item.accepted,
                     "detail": item.detail,
+                    "failureCategory": item.failure_category,
+                    "recommendedAction": item.recommended_action,
                 }
                 for item in outcomes
             ],

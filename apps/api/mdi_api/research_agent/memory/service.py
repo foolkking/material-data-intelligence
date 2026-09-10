@@ -6,6 +6,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from mdi_api.agent2_errors import ResearchSessionProjectMismatch
+from mdi_api.research_agent.context.provenance import freshness_for_source
 from mdi_api.research_agent.memory.schemas import ContextScope, ResearchContextItemType, ResearchSessionState, SessionConstraint
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 
@@ -51,7 +52,13 @@ class ResearchSessionMemoryService:
             unit.agent2.research_session_memory.add_item({
                 "id": uuid4(), "session_id": session_id, "project_id": project_id,
                 "item_type": ResearchContextItemType.SESSION_CONSTRAINT.value,
-                "scope": ContextScope.SESSION.value, "ref_json": None,
+                "scope": ContextScope.SESSION.value,
+                "ref_json": {
+                    "authority_class": "MEMORY",
+                    "epistemic_status": "CONSTRAINT",
+                    "freshness": "CURRENT",
+                    "provenance_refs": [f"message:{message_id}"],
+                },
                 "statement": text, "structured_constraint_json": {"name": "cutoff", "value": value, "unit": "Å"},
                 "source_message_id": message_id, "explicitly_requested": True, "active": True,
                 "version": 1, "created_at": datetime.now(timezone.utc), "updated_at": datetime.now(timezone.utc),
@@ -63,7 +70,13 @@ class ResearchSessionMemoryService:
             unit.agent2.research_session_memory.add_item({
                 "id": uuid4(), "session_id": session_id, "project_id": project_id,
                 "item_type": ResearchContextItemType.RESEARCH_GOAL.value, "scope": ContextScope.SESSION.value,
-                "ref_json": None, "statement": goal, "structured_constraint_json": None,
+                "ref_json": {
+                    "authority_class": "MEMORY",
+                    "epistemic_status": "DECISION",
+                    "freshness": "CURRENT",
+                    "provenance_refs": [f"message:{message_id}"],
+                },
+                "statement": goal, "structured_constraint_json": None,
                 "source_message_id": message_id, "explicitly_requested": True, "active": True,
                 "version": 1, "created_at": datetime.now(timezone.utc), "updated_at": datetime.now(timezone.utc),
             })
@@ -109,7 +122,19 @@ class ResearchSessionMemoryService:
             unit.agent2.research_session_memory.add_item({
                 "id": uuid4(), "session_id": session_id, "project_id": project_id,
                 "item_type": ResearchContextItemType.PINNED_RESULT.value, "scope": ContextScope.SESSION.value,
-                "ref_json": {"result_id": str(result_id)}, "statement": "Pinned result", "structured_constraint_json": None,
+                "ref_json": {
+                    "result_id": str(result_id),
+                    "authority_class": "MEMORY",
+                    "epistemic_status": "COMPUTED",
+                    "freshness": freshness_for_source(
+                        relevance_status=str(snapshot.get("relevance_status") or "CURRENT")
+                    ).value,
+                    "provenance_refs": [
+                        f"turn:{snapshot['research_turn_id']}",
+                        f"result:{result_id}",
+                    ],
+                },
+                "statement": "Pinned result", "structured_constraint_json": None,
                 "source_message_id": None, "explicitly_requested": True, "active": True, "version": 1,
                 "created_at": datetime.now(timezone.utc), "updated_at": datetime.now(timezone.utc),
             })
@@ -129,7 +154,22 @@ class ResearchSessionMemoryService:
             unit.agent2.research_session_memory.add_item({
                 "id": uuid4(), "session_id": session_id, "project_id": project_id,
                 "item_type": ResearchContextItemType.PINNED_OBJECT.value, "scope": ContextScope.SESSION.value,
-                "ref_json": object_ref.model_dump(mode="json"), "statement": "Pinned object", "structured_constraint_json": None,
+                "ref_json": {
+                    **object_ref.model_dump(mode="json"),
+                    "authority_class": "MEMORY",
+                    "epistemic_status": "OBSERVED",
+                    "freshness": (
+                        "HISTORICAL_VALID"
+                        if str(logical.get("current_version_id") or "")
+                        != str(object_ref.version_id)
+                        else "CURRENT"
+                    ),
+                    "provenance_refs": [
+                        f"object:{object_ref.object_id}",
+                        f"version:{object_ref.version_id}",
+                    ],
+                },
+                "statement": "Pinned object", "structured_constraint_json": None,
                 "source_message_id": None, "explicitly_requested": True, "active": True, "version": 1,
                 "created_at": datetime.now(timezone.utc), "updated_at": datetime.now(timezone.utc),
             })

@@ -3,6 +3,11 @@ from __future__ import annotations
 from typing import Any
 from uuid import UUID
 
+from mdi_api.research_agent.context.provenance import (
+    ContextFreshness,
+    MemoryEpistemicStatus,
+    freshness_for_source,
+)
 from mdi_api.research_agent.context.schemas import (
     CompactMessage,
     ReferenceCandidate,
@@ -147,8 +152,20 @@ class ResearchContextCandidateAssembler:
                 dedup_results[key] = (source, recency, row)
         ordered_results = sorted(dedup_results.values(), key=lambda item: (priority[item[0]], item[1], str(item[2]["id"])))[:16]
         results = []
+        omitted_supporting_items: list[str] = []
         finding_rows: list[ReferenceCandidate] = []
         for index, (source, recency, row) in enumerate(ordered_results, start=1):
+            freshness = freshness_for_source(
+                relevance_status=str(row.get("relevance_status") or "CURRENT"),
+            )
+            if freshness in {
+                ContextFreshness.INVALIDATED,
+                ContextFreshness.SOURCE_MISSING,
+            }:
+                omitted_supporting_items.append(
+                    f"result {row['id']} omitted because source status is {freshness.value}"
+                )
+                continue
             bundle = dict(row.get("bundle_json") or {})
             results.append(ReferenceCandidate(
                 candidate_key=f"result_{index}",
@@ -159,6 +176,8 @@ class ResearchContextCandidateAssembler:
                 semantic_summary=self._bounded_summary(bundle),
                 recency_rank=recency,
                 stale=str(row["relevance_status"]) != "CURRENT",
+                freshness=freshness,
+                epistemic_status=MemoryEpistemicStatus.COMPUTED,
             ))
             for fact in (bundle.get("facts") or [])[:4]:
                 if not isinstance(fact, dict) or not fact.get("fact_id"):
@@ -169,6 +188,8 @@ class ResearchContextCandidateAssembler:
                     source=source, display_label=str(fact.get("predicate") or fact["fact_id"])[:512],
                     semantic_summary=str(fact.get("value") or "")[:2000], recency_rank=recency,
                     stale=str(row["relevance_status"]) != "CURRENT",
+                    freshness=freshness,
+                    epistemic_status=MemoryEpistemicStatus.COMPUTED,
                 ))
 
         messages: list[CompactMessage] = []
@@ -201,7 +222,14 @@ class ResearchContextCandidateAssembler:
             recent_messages=messages[-12:],
             recent_turn_ids=[item["id"] for item in reversed(previous_turns)],
             pinned_result_ids=[UUID(str(x)) for x in pinned_ids[:64]],
-            omitted_supporting_items=[] if len(ordered_results) <= 16 else ["additional historical results omitted by candidate budget"],
+            omitted_supporting_items=[
+                *omitted_supporting_items,
+                *(
+                    []
+                    if len(ordered_results) <= 16
+                    else ["additional historical results omitted by candidate budget"]
+                ),
+            ][:16],
             current_user_message=current_user_message,
         )
 
@@ -233,6 +261,16 @@ class ResearchContextCandidateAssembler:
                 or str(version["object_type"]) != ref.object_type
             ):
                 raise ValueError("Unauthorized scientific context reference")
+            availability = str(version.get("availability_status") or "AVAILABLE")
+            invalidated = str(logical.get("lifecycle_status") or "ACTIVE") == "INVALIDATED"
+            if invalidated or availability in {"INVALID", "SOURCE_MISSING"}:
+                if source in {
+                    ReferenceCandidateSource.EXPLICIT_REFERENCE,
+                    ReferenceCandidateSource.UI_SELECTION,
+                    ReferenceCandidateSource.CURRENT_SCOPE,
+                }:
+                    raise ValueError("Selected scientific context source is unavailable")
+                continue
             identity = (str(ref.object_id), str(ref.version_id))
             current = deduplicated.get(identity)
             if current is None or (priority[source], recency) < (priority[current[0]], current[1]):
@@ -250,16 +288,31 @@ class ResearchContextCandidateAssembler:
         if ordered:
             best_priority = priority[ordered[0][0]]
             ordered = [item for item in ordered if priority[item[0]] == best_priority]
-        return [ReferenceCandidate(
-            candidate_key=f"obj_{index}",
-            ref_type="SCIENTIFIC_OBJECT",
-            object_ref=ref,
-            source=source,
-            display_label=str(ref.display_name or logical["display_name"]),
-            semantic_summary=str((version.get("canonical_metadata_json") or {}).get("summary") or ref.object_type)[:2000],
-            recency_rank=recency,
-            stale=str(version.get("availability_status")) != "AVAILABLE",
-        ) for index, (source, recency, ref, logical, version) in enumerate(ordered, start=1)]
+        candidates: list[ReferenceCandidate] = []
+        for index, (source, recency, ref, logical, version) in enumerate(ordered, start=1):
+            historical = str(logical.get("current_version_id") or "") != str(ref.version_id)
+            availability = str(version.get("availability_status") or "AVAILABLE")
+            freshness = (
+                ContextFreshness.HISTORICAL_VALID
+                if historical
+                else freshness_for_source(availability_status=availability)
+            )
+            candidates.append(ReferenceCandidate(
+                candidate_key=f"obj_{index}",
+                ref_type="SCIENTIFIC_OBJECT",
+                object_ref=ref,
+                source=source,
+                display_label=str(ref.display_name or logical["display_name"]),
+                semantic_summary=str(
+                    (version.get("canonical_metadata_json") or {}).get("summary")
+                    or ref.object_type
+                )[:2000],
+                recency_rank=recency,
+                stale=freshness != ContextFreshness.CURRENT,
+                freshness=freshness,
+                epistemic_status=MemoryEpistemicStatus.OBSERVED,
+            ))
+        return candidates
 
     @staticmethod
     def _truncate(content: str) -> str:

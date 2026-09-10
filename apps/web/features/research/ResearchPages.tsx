@@ -213,6 +213,16 @@ const contextAuthorityLabel = (authorityClass: string) =>
     DERIVED_SUMMARY: "派生摘要",
   })[authorityClass] || "上下文信息";
 
+const contextFreshnessLabel = (freshness?: string) =>
+  ({
+    CURRENT: "当前",
+    HISTORICAL_VALID: "历史有效",
+    STALE: "已过期",
+    INVALIDATED: "已失效",
+    SOURCE_MISSING: "来源不可用",
+    UNKNOWN: "状态未知",
+  })[freshness || "UNKNOWN"] || freshness || "状态未知";
+
 const contextInclusionReasonLabel = (reason: string) =>
   ({
     "active scientific scope": "当前科学范围",
@@ -3764,7 +3774,8 @@ export function ResearchPage({
                             </span>
                             <small>
                               {contextSelectionLabel(item.selection_mode)} ·{" "}
-                              {contextAuthorityLabel(item.authority_class)}
+                              {contextAuthorityLabel(item.authority_class)} ·{" "}
+                              {contextFreshnessLabel(item.freshness)}
                             </small>
                           </div>
                           {item.exact_object_version_id ? (

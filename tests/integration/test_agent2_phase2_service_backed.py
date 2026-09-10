@@ -22,6 +22,7 @@ from mdi_api.db import (
     projects,
     research_context_snapshots,
     research_turn_decisions,
+    research_turn_events,
     sessions,
     tool_calls,
     users,
@@ -172,6 +173,31 @@ def test_agent2_phase2_postgresql_orchestration_and_redis_wakeup_boundary(
         assert connection.execute(select(func.count()).select_from(research_context_snapshots).where(
             research_context_snapshots.c.research_turn_id == received.turn_id
         )).scalar_one() == 1
+        snapshot = connection.execute(
+            select(research_context_snapshots).where(
+                research_context_snapshots.c.research_turn_id == received.turn_id
+            )
+        ).mappings().one()
+        context_event = connection.execute(
+            select(research_turn_events)
+            .where(
+                research_turn_events.c.turn_id == received.turn_id,
+                research_turn_events.c.event_type == "CONTEXT_RESOLVED",
+            )
+            .order_by(research_turn_events.c.sequence_no.desc())
+        ).mappings().first()
+        assert context_event is not None
+        manifest = dict(context_event["payload_json"])["context_manifest"]
+        object_item = next(
+            item
+            for item in manifest["included_items"]
+            if item["kind"] == "SCIENTIFIC_OBJECT"
+        )
+        assert object_item["exact_object_id"] == str(ref.object_id)
+        assert object_item["exact_object_version_id"] == str(ref.version_id)
+        assert object_item["source_class"] == "EXACT_SCIENTIFIC_OBJECT_VERSION"
+        assert object_item["freshness"] == "CURRENT"
+        assert snapshot["context_fingerprint"] == manifest["context_fingerprint"]
         assert connection.execute(select(func.count()).select_from(research_turn_decisions).where(
             research_turn_decisions.c.research_turn_id == received.turn_id
         )).scalar_one() == 1

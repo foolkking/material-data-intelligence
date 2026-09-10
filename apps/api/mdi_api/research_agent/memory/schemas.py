@@ -7,6 +7,11 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from mdi_api.research_agent.context.provenance import (
+    ContextAuthorityClass,
+    ContextFreshness,
+    MemoryEpistemicStatus,
+)
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 
 
@@ -69,6 +74,10 @@ class MemoryReference(BaseModel):
     stale: bool = False
     authorized: bool = True
     recency_rank: int = Field(default=0, ge=0)
+    authority_class: ContextAuthorityClass = ContextAuthorityClass.MEMORY
+    freshness: ContextFreshness = ContextFreshness.CURRENT
+    epistemic_status: MemoryEpistemicStatus = MemoryEpistemicStatus.OBSERVED
+    provenance_refs: list[str] = Field(default_factory=list, max_length=16)
 
 
 class PinObjectRequest(BaseModel):

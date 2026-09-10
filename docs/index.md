@@ -121,7 +121,13 @@ qualification authorities.
 ## Agent 2.0 Phase 7 Research Memory
 
 - [`agent2/research-memory.md`](agent2/research-memory.md)
+- [`agent2/context/CONTEXT_AND_SCIENTIFIC_MEMORY.md`](agent2/context/CONTEXT_AND_SCIENTIFIC_MEMORY.md)
 - [`../AGENT2_PHASE7_RESULTS.md`](../AGENT2_PHASE7_RESULTS.md)
+
+## Agent 2.0 Reliability and Worktree Recovery
+
+- [`agent2/reliability/RESEARCH_LIFECYCLE_RELIABILITY.md`](agent2/reliability/RESEARCH_LIFECYCLE_RELIABILITY.md)
+- [`agent2/worktree_recovery/CANONICAL_WORKTREE_RECOVERY_AND_B_CONTINUATION.md`](agent2/worktree_recovery/CANONICAL_WORKTREE_RECOVERY_AND_B_CONTINUATION.md)
 
 ## Agent 2.0 Phase 8 Grounded Scientific Reports
 

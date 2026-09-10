@@ -7,6 +7,15 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from mdi_api.research_agent.context.provenance import (
+    ContextAuthorityClass,
+    ContextFreshness,
+    ContextSourceClass,
+    MemoryEpistemicStatus,
+    authority_for_candidate,
+    candidate_source_ref,
+    source_class_for_candidate,
+)
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 
 
@@ -37,6 +46,35 @@ class ReferenceCandidate(BaseModel):
     semantic_summary: str | None = Field(default=None, max_length=2000)
     recency_rank: int = Field(ge=0)
     stale: bool = False
+    source_class: ContextSourceClass | None = None
+    authority_class: ContextAuthorityClass | None = None
+    freshness: ContextFreshness | None = None
+    epistemic_status: MemoryEpistemicStatus | None = None
+    source_ref: str | None = Field(default=None, max_length=256)
+
+    @model_validator(mode="before")
+    @classmethod
+    def add_provenance_metadata(cls, value: Any) -> Any:
+        if not isinstance(value, dict):
+            return value
+        payload = dict(value)
+        source = payload.get("source")
+        ref_type = str(payload.get("ref_type") or "")
+        payload.setdefault("source_class", source_class_for_candidate(source, ref_type))
+        payload.setdefault("authority_class", authority_for_candidate(ref_type, source))
+        payload.setdefault(
+            "freshness",
+            ContextFreshness.STALE if payload.get("stale") else ContextFreshness.CURRENT,
+        )
+        payload.setdefault(
+            "epistemic_status",
+            MemoryEpistemicStatus.COMPUTED
+            if ref_type in {"SCIENTIFIC_RESULT", "SCIENTIFIC_FINDING"}
+            else MemoryEpistemicStatus.OBSERVED,
+        )
+        if payload.get("source_ref") is None:
+            payload["source_ref"] = candidate_source_ref(payload)
+        return payload
 
     @model_validator(mode="after")
     def validate_identity(self) -> "ReferenceCandidate":
@@ -192,6 +230,9 @@ class ContextManifestItem(BaseModel):
     authorization_checked: bool
     content_fingerprint: str = Field(pattern=r"^[0-9a-f]{64}$")
     estimated_tokens: int = Field(ge=1, le=20000)
+    source_class: str = "UNKNOWN"
+    freshness: str = "UNKNOWN"
+    epistemic_status: str = "OBSERVED"
     was_compacted: bool = False
     was_truncated: bool = False
     superseded_state: Literal["CURRENT", "STALE", "NONE"] = "NONE"

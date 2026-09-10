@@ -1432,6 +1432,7 @@ it("presents used context as researcher-facing provenance with technical identit
           item_id: "selection-1",
           kind: "SCIENTIFIC_SELECTION",
           authority_class: "SCIENTIFIC_DATA",
+          freshness: "CURRENT",
           server_side_source_identity: "object-1:version-1",
           provider_opaque_ref: "source-1",
           exact_object_id: "object-1",
@@ -1450,6 +1451,7 @@ it("presents used context as researcher-facing provenance with technical identit
           item_id: `result-${index + 2}`,
           kind: "SCIENTIFIC_RESULT",
           authority_class: "SCIENTIFIC_RESULT",
+          freshness: "HISTORICAL_VALID",
           server_side_source_identity: `result-extra-${index + 2}`,
           provider_opaque_ref: `result_${index + 2}`,
           exact_object_id: null,
@@ -1575,7 +1577,9 @@ it("presents used context as researcher-facing provenance with technical identit
   expect(screen.getByText("当前选择")).toBeInTheDocument();
   expect(screen.getByText("当前科学范围")).toBeInTheDocument();
   expect(screen.queryByText("active scientific scope")).not.toBeInTheDocument();
-  expect(screen.getByText("从界面选择 · 科学数据权威")).toBeInTheDocument();
+  expect(
+    screen.getByText("从界面选择 · 科学数据权威 · 当前"),
+  ).toBeInTheDocument();
   expect(screen.getByText("精确版本")).toHaveTextContent("version-1");
   expect(screen.queryByText("result-extra-9")).not.toBeInTheDocument();
   const expandContext = screen.getByRole("button", {
@@ -1587,6 +1591,7 @@ it("presents used context as researcher-facing provenance with technical identit
     screen.getByRole("button", { name: "收起上下文列表" }),
   ).toHaveAttribute("aria-expanded", "true");
   expect(screen.getByText("result-extra-9")).toBeInTheDocument();
+  expect(screen.getAllByText(/科学结果权威 · 历史有效/).length).toBeGreaterThan(0);
   expect(screen.getByText(/有 1 项较低优先级内容未纳入/)).toBeInTheDocument();
   const operations = screen.getByRole("group", { name: "已记录的操作上下文" });
   expect(operations).toHaveTextContent("理解问题");

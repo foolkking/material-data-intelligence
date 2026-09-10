@@ -42,6 +42,10 @@ from mdi_api.research_agent.orchestration.queue import (
 )
 from mdi_api.research_agent.registry_validation import DEFAULT_AGENT2_REGISTRIES
 from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchAction, ResearchTurnStatus, TERMINAL_TURN_STATUSES
+from mdi_api.research_agent.lifecycle import (
+    build_lifecycle_projection,
+    is_stale_active_turn,
+)
 from mdi_api.research_agent.execution.dispatcher import (
     DisabledExecutionQueue,
     ExecutionQueue,
@@ -725,6 +729,87 @@ def research_turn_correlation_payload(
                 ),
             }
 
+    # The correlation response remains a bounded read model. Lifecycle
+    # details are derived from existing authoritative records; this does not
+    # create a second state machine or expose raw tool payloads.
+    event_repo = getattr(session.agent2, "research_turn_events", None)
+    events = (
+        event_repo.list_for_turn(turn_id)
+        if event_repo is not None and hasattr(event_repo, "list_for_turn")
+        else []
+    )
+    context_repo = getattr(session.agent2, "research_context_snapshots", None)
+    context_snapshot = (
+        context_repo.get_for_turn(turn_id)
+        if context_repo is not None and hasattr(context_repo, "get_for_turn")
+        else None
+    )
+    decisions = getattr(session.agent2, "research_turn_decisions", None)
+    decision = (
+        decisions.get_for_turn(turn_id)
+        if decisions is not None and hasattr(decisions, "get_for_turn")
+        else None
+    )
+    resolutions = getattr(session.agent2, "research_capability_resolutions", None)
+    resolution = (
+        resolutions.get_for_turn(turn_id)
+        if resolutions is not None and hasattr(resolutions, "get_for_turn")
+        else None
+    )
+    capability_plans = getattr(session.agent2, "research_capability_plans", None)
+    capability_plan = (
+        capability_plans.get_for_turn(turn_id)
+        if capability_plans is not None and hasattr(capability_plans, "get_for_turn")
+        else None
+    )
+    summaries = getattr(session.agent2, "research_execution_summaries", None)
+    execution_summary = (
+        summaries.get_for_turn(turn_id)
+        if summaries is not None and hasattr(summaries, "get_for_turn")
+        else None
+    )
+    interpretations = getattr(session.agent2, "interpretations", None)
+    interpretation = (
+        interpretations.get_for_turn(turn_id)
+        if interpretations is not None and hasattr(interpretations, "get_for_turn")
+        else None
+    )
+    report_generations = getattr(session.agent2, "scientific_report_generations", None)
+    report_generation = (
+        report_generations.get_for_turn(turn_id)
+        if report_generations is not None and hasattr(report_generations, "get_for_turn")
+        else None
+    )
+    job_row = None
+    if job_id and hasattr(session.repositories.jobs, "get"):
+        try:
+            job_row = session.repositories.jobs.get(job_id)
+        except (LookupError, KeyError):
+            job_row = None
+    lifecycle = build_lifecycle_projection(
+        turn,
+        events=events,
+        context_snapshot=context_snapshot,
+        decision=decision,
+        resolution=resolution,
+        capability_plan=capability_plan,
+        execution_summary=execution_summary,
+        job=job_row,
+        tool_calls=tool_call_rows,
+        interpretation=interpretation,
+        report=report_row,
+        report_generation=report_generation,
+        result_snapshot=result_row,
+        stale=is_stale_active_turn(
+            turn,
+            stale_after_seconds=max(
+                1,
+                int(getattr(load_settings(), "agent2_startup_recovery_stale_minutes", 15))
+                * 60,
+            ),
+        ),
+    )
+
     return {
         "contract_version": "1.0",
         "project_id": project_id,
@@ -735,6 +820,7 @@ def research_turn_correlation_payload(
         "tool_calls_truncated": len(tool_call_rows) > 64,
         "scientific_result": scientific_result,
         "report": report,
+        "lifecycle": lifecycle,
         "integrity_warnings": sorted(set(warnings)),
     }
 

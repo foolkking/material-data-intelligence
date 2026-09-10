@@ -42,6 +42,9 @@ export type Agent2ContextManifestItem = {
   authorization_checked: boolean;
   content_fingerprint: string;
   estimated_tokens: number;
+  source_class?: string;
+  freshness?: string;
+  epistemic_status?: string;
   was_compacted: boolean;
   was_truncated: boolean;
   superseded_state: string;
