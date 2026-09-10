@@ -231,6 +231,16 @@ def test_planner_catalog_is_bounded_scientific_and_traceable():
     assert len(catalog) == 17
     assert all(len(item["contract_fingerprint"]) == 64 for item in catalog)
     assert all("surface_support" in item for item in catalog)
+    assert all("scientific_quality" in item for item in catalog)
+    assert all(
+        item["scientific_quality"]["level"] != "STRUCTURAL_ONLY"
+        for item in catalog
+    )
+    assert all(
+        "evidence_refs" not in item["scientific_quality"]
+        and "test_node" not in item["scientific_quality"]
+        for item in catalog
+    )
     assert all("tool_bindings" not in item and "adapter" not in item for item in catalog)
 
 

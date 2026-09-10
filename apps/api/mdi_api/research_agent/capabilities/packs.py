@@ -238,6 +238,13 @@ class CapabilityExtensionRegistry:
                     "report": item.report_support.value,
                 },
                 "resource_profile": item.resource_profile.model_dump(mode="json"),
+                "scientific_quality": {
+                    "level": item.qualification.level,
+                    "validated_domains": list(item.qualification.validated_domains),
+                    "known_limitations": list(item.qualification.known_limitations[:3]),
+                    "reproducibility": item.qualification.reproducibility,
+                    "evidence_version": item.qualification.evidence_version,
+                },
                 "contract_fingerprint": capability_contract_fingerprint(item),
             }
             for item in source

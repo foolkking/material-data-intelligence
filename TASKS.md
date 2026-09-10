@@ -1,4 +1,17 @@
 ---TASK---
+状态：处理中
+任务名称：Workstream D — Scientific Quality, Qualification & Evaluation
+开始时间：2026-09-10T13:30:00+08:00
+
+执行规范：
+`docs/agent2/scientific_quality/WORKSTREAM_D_SCIENTIFIC_QUALITY_QUALIFICATION_EVALUATION.md`
+
+在 canonical capability platform 上建立 evidence-backed、version-aware 的科学
+质量合同、reference/invariant/domain/interpretation/report 评价与生成 inventory；
+诚实分类全部 17 个 Capability，不重开 A/B/C、migration 或 release gate。
+---END---
+
+---TASK---
 状态：已完成
 任务名称：Materials Intelligence Platform — Continuous Autonomous Optimization
 开始时间：2026-09-05T00:00:00+08:00

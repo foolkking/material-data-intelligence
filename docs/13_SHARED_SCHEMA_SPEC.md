@@ -2756,3 +2756,35 @@ presentation surfaces must declare their binding; `NONE` forbids one.
 Capability Pack contract fingerprints include these semantic fields. Planner
 catalog projections expose the scientific support summary and contract
 fingerprint but never Tool bindings or Adapter implementation names.
+
+### Scientific quality evidence 1.0
+
+`CapabilityQualification` remains an additive summary on
+`CapabilityManifest 1.2`; its current evidence authority is
+`mdi_api.research_agent.capabilities.quality_evidence`.
+
+The summary distinguishes:
+
+```text
+STRUCTURAL_ONLY
+REFERENCE_VALIDATED
+DOMAIN_VALIDATED
+CROSS_IMPLEMENTATION_VALIDATED
+EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED
+NOT_YET_SCIENTIFICALLY_QUALIFIED
+```
+
+and retains older qualification values for backward reading. It carries only
+bounded evidence references/counts, applicability, limitations,
+reproducibility, evidence version and fingerprint. Reference records retain
+evidence kind, independent/reference authority, test node, origin,
+method/version, expected semantics, units/conventions, applicability,
+limitations and an explicit numeric tolerance when required.
+
+Scientific quality evidence binds to a fingerprint of the complete scientific
+Capability contract while excluding the qualification summary itself. Tool,
+Adapter, Artifact-port, projector and Viewer binding changes therefore make
+qualification stale without creating a self-referential hash. The planner sees
+only level, applicability, bounded critical limitations, reproducibility and
+evidence version; test paths and quality machinery remain non-prompt
+implementation evidence.

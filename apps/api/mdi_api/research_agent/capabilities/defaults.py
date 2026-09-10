@@ -10,6 +10,9 @@ from mdi_api.research_agent.schemas import (
 )
 from mdi_api.research_agent.capabilities.registry import InMemoryCapabilityRegistry
 from mdi_api.research_agent.capabilities.packs import CapabilityExtensionRegistry, build_phase11_packs
+from mdi_api.research_agent.capabilities.quality_evidence import (
+    qualification_for_capability,
+)
 
 
 _DISPLAY_NAMES = {
@@ -68,6 +71,7 @@ def _manifest(
             if viewer_bindings
             else CapabilitySurfaceSupport.GENERIC
         ),
+        qualification=qualification_for_capability(capability_id),
         status=CapabilityStatus.ACTIVE,
         planning_priority=priority,
     )

@@ -71,6 +71,11 @@ Initial Release records remain immutable historical evidence at migration 0007.
   non-queued extensions.
 - [`NOT_PLANNED_SCOPE.md`](NOT_PLANNED_SCOPE.md): capabilities outside the
   current product definition.
+- [`scientific-quality/SCIENTIFIC_QUALITY_AND_QUALIFICATION.md`](scientific-quality/SCIENTIFIC_QUALITY_AND_QUALIFICATION.md):
+  evidence-backed scientific qualification levels, applicability, tolerance,
+  interpretation and Report quality policy.
+- [`scientific-quality/generated/scientific_quality_inventory.md`](scientific-quality/generated/scientific_quality_inventory.md):
+  generated current Capability quality inventory.
 
 ## Agent 2.0 Phase 1 Foundation
 

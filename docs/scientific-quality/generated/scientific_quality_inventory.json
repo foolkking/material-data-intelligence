@@ -1,0 +1,956 @@
+{
+  "schema_version": "1.0",
+  "evidence_version": "1.0",
+  "capability_count": 17,
+  "qualification_counts": {
+    "DOMAIN_VALIDATED": 6,
+    "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED": 8,
+    "REFERENCE_VALIDATED": 3
+  },
+  "reference_case_count": 9,
+  "invariant_case_count": 8,
+  "domain_negative_case_count": 17,
+  "adapter_semantics_case_count": 8,
+  "artifact_semantics_case_count": 1,
+  "result_projection_case_count": 2,
+  "interpretation_evaluation_case_count": 7,
+  "report_evaluation_case_count": 2,
+  "integration_case_count": 0,
+  "scientific_defects_discovered": 0,
+  "scientific_defects_fixed": 0,
+  "issues": [],
+  "capabilities": [
+    {
+      "capability_id": "data.composition_space",
+      "capability_version": "1.0",
+      "display_name": "探索材料组成空间",
+      "pack_id": "core.data",
+      "tool_ids": [
+        "dataset.composition_space"
+      ],
+      "adapter_names": [
+        "CompositionSpaceAdapter"
+      ],
+      "result_projector": "agent2.data.composition_space",
+      "qualification_level": "DOMAIN_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "profiled materials datasets with parseable formulas"
+      ],
+      "known_limitations": [
+        "PCA is center-only under the declared convention.",
+        "K-means remains an exploratory clustering projection, not scientific class truth."
+      ],
+      "qualified_contract_fingerprint": "d45f072b0b92bad31107b21d8ff59d678126132398db8b612a566331f6677853",
+      "current_contract_fingerprint": "d45f072b0b92bad31107b21d8ff59d678126132398db8b612a566331f6677853",
+      "evidence_fingerprint": "7a2cdc05352a24ba322d93ee5e72590c2dccf4ab2f5d8053186f679353ace8e3",
+      "evidence_counts": {
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "INVARIANT": 1,
+        "REFERENCE": 1,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "ANALYTICAL",
+        "CURATED_KNOWN_RESULT",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "dimensionless",
+        "fraction"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10k4_composition_space.py::test_center_only_pca_sign_explained_variance_and_replay_are_deterministic",
+        "tests/test_phase10k4_composition_space.py::test_pca_rejects_insufficient_sample_count_and_rank",
+        "tests/test_phase10k4_composition_space.py::test_profile_bound_atomic_number_basis_and_normalized_fractions",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "data.materials_explorer",
+      "capability_version": "1.0",
+      "display_name": "浏览材料数据集",
+      "pack_id": "core.data",
+      "tool_ids": [
+        "dataset.materials_explorer"
+      ],
+      "adapter_names": [
+        "DatasetMaterialsExplorerAdapter"
+      ],
+      "result_projector": "agent2.data.materials_explorer",
+      "qualification_level": "DOMAIN_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "authorized profiled tabular materials datasets"
+      ],
+      "known_limitations": [
+        "This capability summarizes/query-projects data; it does not infer scientific causality.",
+        "Mixed units are rejected."
+      ],
+      "qualified_contract_fingerprint": "c09a528193fc16ff07c1cba3fcc0d794398954f25f33a51939d91fb6a19af2d6",
+      "current_contract_fingerprint": "c09a528193fc16ff07c1cba3fcc0d794398954f25f33a51939d91fb6a19af2d6",
+      "evidence_fingerprint": "ff99a9a4916214a8cb79f9062e5f39b25ef53c383c5db143f9efe81fd3deebf2",
+      "evidence_counts": {
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "INVARIANT": 1,
+        "REFERENCE": 1,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "ANALYTICAL",
+        "CURATED_KNOWN_RESULT",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "dimensionless"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10k2_dataset_materials_explorer.py::test_group_comparison_is_explicit_and_never_uses_row_order",
+        "tests/test_phase10k2_dataset_materials_explorer.py::test_invalid_comparison_bindings_and_mixed_units_are_typed",
+        "tests/test_phase10k2_dataset_materials_explorer.py::test_materials_explorer_builds_coherent_profile_bound_product",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "diffraction.experimental_theoretical_comparison",
+      "capability_version": "1.0",
+      "display_name": "比较实验与理论 XRD 峰",
+      "pack_id": "core.other",
+      "tool_ids": [
+        "structure.experimental_xrd_comparison"
+      ],
+      "adapter_names": [
+        "ExperimentalXrdComparisonAdapter"
+      ],
+      "result_projector": "agent2.diffraction.experimental_theoretical_comparison",
+      "qualification_level": "REFERENCE_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "monotonic experimental and theoretical XRD peak resources with compatible wavelength"
+      ],
+      "known_limitations": [
+        "Peak matching is bounded by the declared 2theta tolerance.",
+        "A match does not establish phase identity."
+      ],
+      "qualified_contract_fingerprint": "bf6ed324c7d9fd5af7dd1849bedd20bd286337269d03ae56b4b161c085661447",
+      "current_contract_fingerprint": "bf6ed324c7d9fd5af7dd1849bedd20bd286337269d03ae56b4b161c085661447",
+      "evidence_fingerprint": "1836b2e8b8271beb9c9585458210dfb05685760dcd593f1b2cede124dd417dbc",
+      "evidence_counts": {
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "INVARIANT": 1,
+        "REFERENCE": 1,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "ANALYTICAL",
+        "CURATED_KNOWN_RESULT",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "degree"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n3_experimental_xrd.py::test_match_preserves_both_unmatched_sets_and_residuals",
+        "tests/test_phase10n3_experimental_xrd.py::test_wavelength_mismatch_and_nonmonotonic_resource_are_rejected",
+        "tests/test_phase10n3_experimental_xrd.py::test_zero_match_is_valid_and_deterministic",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "diffraction.theoretical_xrd",
+      "capability_version": "1.0",
+      "display_name": "生成理论 XRD 图谱",
+      "pack_id": "core.other",
+      "tool_ids": [
+        "structure.xrd"
+      ],
+      "adapter_names": [
+        "XrdPatternAdapter"
+      ],
+      "result_projector": "agent2.diffraction.theoretical_xrd",
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "periodic crystal structures accepted by pymatgen XRDCalculator"
+      ],
+      "known_limitations": [
+        "Peak intensities follow pymatgen broadening and normalization conventions.",
+        "The platform does not independently validate the diffraction solver."
+      ],
+      "qualified_contract_fingerprint": "6e20914cfa9174cf1e50fa92e635431a5e59ee44f13fb4d8f483c9a6dea3647f",
+      "current_contract_fingerprint": "6e20914cfa9174cf1e50fa92e635431a5e59ee44f13fb4d8f483c9a6dea3647f",
+      "evidence_fingerprint": "b2b606feec9eb0ed08d783d57358d2ccc9e3a9228c521da32cd366e6cea739cc",
+      "evidence_counts": {
+        "ADAPTER_SEMANTICS": 1,
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "CURATED_KNOWN_RESULT",
+        "OFFICIAL_LIBRARY_SEMANTICS",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "degree",
+        "relative_intensity"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10e4_xrd.py::test_xrd_generates_numeric_json_plot_summary_and_recipe",
+        "tests/test_phase10e4_xrd.py::test_xrd_rejects_invalid_params_and_malformed_input",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "electronic.band_structure",
+      "capability_version": "1.0",
+      "display_name": "检查电子能带",
+      "pack_id": "core.electronic",
+      "tool_ids": [
+        "electronic.band_structure"
+      ],
+      "adapter_names": [
+        "ElectronicBandStructureAdapter"
+      ],
+      "result_projector": "agent2.electronic.band_structure",
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "supplied electronic band resources with explicit energy reference metadata"
+      ],
+      "known_limitations": [
+        "The platform validates parsing and band semantics, not the upstream electronic solver.",
+        "Metal-like classification is policy-qualified rather than material truth."
+      ],
+      "qualified_contract_fingerprint": "29ac10aa8d76d36f3756ca77d2a43dd42aa385b9088c7b2dd5eeab01009f4425",
+      "current_contract_fingerprint": "29ac10aa8d76d36f3756ca77d2a43dd42aa385b9088c7b2dd5eeab01009f4425",
+      "evidence_fingerprint": "9b38838cdf6378b46f471628e9cbf38e9c8d7d72f3a4d1878fc6b1347bfa9284",
+      "evidence_counts": {
+        "ADAPTER_SEMANTICS": 1,
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "CURATED_KNOWN_RESULT",
+        "EXTERNAL_SOLVER_SEMANTICS",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "eV"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n5_electronic_band_dos.py::test_indirect_gap_vbm_cbm_and_source_qualified_classification",
+        "tests/test_phase10n5_electronic_band_dos.py::test_missing_fermi_preserves_raw_band_but_rejects_fermi_view",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "electronic.dos",
+      "capability_version": "1.0",
+      "display_name": "检查电子态密度",
+      "pack_id": "core.electronic",
+      "tool_ids": [
+        "electronic.dos"
+      ],
+      "adapter_names": [
+        "ElectronicDosAdapter"
+      ],
+      "result_projector": "agent2.electronic.dos",
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "supplied electronic DOS resources with explicit energy and density semantics"
+      ],
+      "known_limitations": [
+        "The platform validates parsing/projection, not the upstream electronic solver.",
+        "Partial DOS is preserved without recomputation."
+      ],
+      "qualified_contract_fingerprint": "ac2f4e905235fd90031e1cada92fa7cec8397ffe3e3bfc9281f6b9561eb25956",
+      "current_contract_fingerprint": "ac2f4e905235fd90031e1cada92fa7cec8397ffe3e3bfc9281f6b9561eb25956",
+      "evidence_fingerprint": "bdd0ed6da6eebeb01e0580fb0709f4231aafbe62cc589a0dc947df1e171ed022",
+      "evidence_counts": {
+        "ADAPTER_SEMANTICS": 1,
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "CURATED_KNOWN_RESULT",
+        "EXTERNAL_SOLVER_SEMANTICS",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "eV",
+        "states/eV"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n5_electronic_band_dos.py::test_checked_resource_and_artifact_schemas_are_strict",
+        "tests/test_phase10n5_electronic_band_dos.py::test_dos_preserves_total_partial_projection_and_no_recomputation",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "ml.regression_evaluation",
+      "capability_version": "1.0",
+      "display_name": "评估回归模型",
+      "pack_id": "core.other",
+      "tool_ids": [
+        "ml.regression_evaluation"
+      ],
+      "adapter_names": [
+        "RegressionEvaluationAdapter"
+      ],
+      "result_projector": "agent2.ml.regression_evaluation",
+      "qualification_level": "DOMAIN_VALIDATED",
+      "reproducibility": "SEEDED_STOCHASTIC",
+      "applicability_domains": [
+        "profile-bound supervised prediction/evaluation tables with paired truth and prediction"
+      ],
+      "known_limitations": [
+        "Metrics describe predictive association, not causality.",
+        "Model training correctness is outside this evaluation capability."
+      ],
+      "qualified_contract_fingerprint": "db223247e6eab434616b86fba27bd1abadb854099f7c598520634006a41893f7",
+      "current_contract_fingerprint": "db223247e6eab434616b86fba27bd1abadb854099f7c598520634006a41893f7",
+      "evidence_fingerprint": "3f1d3e91a7bc55a1572f8cada80059474930eb875bbd68db553a6fd05902cbf1",
+      "evidence_counts": {
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "INVARIANT": 1,
+        "REFERENCE": 1,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "ANALYTICAL",
+        "CURATED_KNOWN_RESULT",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "dimensionless",
+        "target_unit"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10k3_materials_ml_evaluation.py::test_metric_definitions_handle_constant_target_and_curve_bounding",
+        "tests/test_phase10k3_materials_ml_evaluation.py::test_payload_replay_is_deterministic_and_plot_sampling_does_not_change_metrics",
+        "tests/test_phase10k3_materials_ml_evaluation.py::test_typed_semantic_unit_uncertainty_and_cap_failures",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "phonon.band",
+      "capability_version": "1.0",
+      "display_name": "检查声子能带",
+      "pack_id": "core.other",
+      "tool_ids": [
+        "phonon.band"
+      ],
+      "adapter_names": [
+        "PhononBandAdapter"
+      ],
+      "result_projector": "agent2.phonon.band",
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "supplied phonopy band resources with explicit frequency units"
+      ],
+      "known_limitations": [
+        "The platform validates parser/semantic mapping, not force-constant generation.",
+        "Negative frequencies are retained as supplied and not reinterpreted as stability proof."
+      ],
+      "qualified_contract_fingerprint": "6a738cde1f40a6a4988117cee8b09723a61e5c71e7dd37091523889474670cf4",
+      "current_contract_fingerprint": "6a738cde1f40a6a4988117cee8b09723a61e5c71e7dd37091523889474670cf4",
+      "evidence_fingerprint": "ac7f34fc8b6c8c4e9aa26fee88ee6a841e4d7777dfc453a2845356b969ae07c6",
+      "evidence_counts": {
+        "ADAPTER_SEMANTICS": 1,
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "CURATED_KNOWN_RESULT",
+        "EXTERNAL_SOLVER_SEMANTICS",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "THz"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10h1_phonon_bands.py::test_invalid_canonical_input_is_rejected_before_artifact_export",
+        "tests/test_phase10h1_phonon_bands.py::test_phonopy_yaml_maps_qpoints_segments_branches_and_negative_frequency",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "phonon.band_dos",
+      "capability_version": "1.0",
+      "display_name": "组合声子能带与态密度",
+      "pack_id": "core.other",
+      "tool_ids": [
+        "phonon.band_dos"
+      ],
+      "adapter_names": [
+        "PhononBandDosAdapter"
+      ],
+      "result_projector": "agent2.phonon.band_dos",
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "compatible supplied phonon band and DOS resources"
+      ],
+      "known_limitations": [
+        "Composition is reference-only and does not recompute either source.",
+        "Structure/hash incompatibility is terminal."
+      ],
+      "qualified_contract_fingerprint": "15b40ffb2e8692903240e779a6c06077e3248c85d57d5fdbf1d04440fbb8cf8e",
+      "current_contract_fingerprint": "15b40ffb2e8692903240e779a6c06077e3248c85d57d5fdbf1d04440fbb8cf8e",
+      "evidence_fingerprint": "cf0ce9ad6c92bfe5862494e235bfef8fb6016c0c7e79d2785371f1e96e3e13c4",
+      "evidence_counts": {
+        "ADAPTER_SEMANTICS": 1,
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "CURATED_KNOWN_RESULT",
+        "EXTERNAL_SOLVER_SEMANTICS",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "THz",
+        "dimensionless",
+        "states/THz"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10h3_phonon_band_dos.py::test_density_conversion_preserves_integral_and_scales_broadening",
+        "tests/test_phase10h3_phonon_band_dos.py::test_structure_mismatch_and_hash_mismatch_fail_before_success_products",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "phonon.dos",
+      "capability_version": "1.0",
+      "display_name": "检查声子态密度",
+      "pack_id": "core.other",
+      "tool_ids": [
+        "phonon.dos"
+      ],
+      "adapter_names": [
+        "PhononDosAdapter"
+      ],
+      "result_projector": "agent2.phonon.dos",
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "supplied total/projected phonon DOS with declared frequency unit"
+      ],
+      "known_limitations": [
+        "The platform validates DOS conversion/projection, not force-constant generation.",
+        "Partial projections do not imply a complete modal sum."
+      ],
+      "qualified_contract_fingerprint": "3752ed3bd332f3baa1fdfacfd3cb87df28181b4beb5224d5183ff9d0b72ff259",
+      "current_contract_fingerprint": "3752ed3bd332f3baa1fdfacfd3cb87df28181b4beb5224d5183ff9d0b72ff259",
+      "evidence_fingerprint": "b10d7a6cd822914c6468c3b4814bf1f8a862cd20400d6b0d3829c9ea21d3838e",
+      "evidence_counts": {
+        "ADAPTER_SEMANTICS": 1,
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "CURATED_KNOWN_RESULT",
+        "EXTERNAL_SOLVER_SEMANTICS",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "THz",
+        "dimensionless",
+        "states/THz"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10h2_phonon_dos.py::test_malformed_sources_fail_before_artifact_export",
+        "tests/test_phase10h2_phonon_dos.py::test_phonopy_total_dos_converts_frequency_density_and_preserves_integral",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "structure.coordination_crystalnn",
+      "capability_version": "1.0",
+      "display_name": "检查 CrystalNN 局域配位",
+      "pack_id": "core.structure",
+      "tool_ids": [
+        "structure.coordination_crystalnn"
+      ],
+      "adapter_names": [
+        "CrystalNNCoordinationAdapter"
+      ],
+      "result_projector": "agent2.structure.coordination_crystalnn",
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "ordered periodic structures supported by pymatgen CrystalNN"
+      ],
+      "known_limitations": [
+        "Scientific neighbor assignment is delegated to pymatgen CrystalNN.",
+        "This evidence validates platform semantics, not CrystalNN independently."
+      ],
+      "qualified_contract_fingerprint": "e9dcae845348ead7327eecb5d62db752dce98475b52a1e3f5c0e715dc62b961c",
+      "current_contract_fingerprint": "e9dcae845348ead7327eecb5d62db752dce98475b52a1e3f5c0e715dc62b961c",
+      "evidence_fingerprint": "de84fae5fe5c15e0ced1bcfaa916a13773a57d41d49a1a5c069f9d692ec829e8",
+      "evidence_counts": {
+        "ADAPTER_SEMANTICS": 1,
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "CURATED_KNOWN_RESULT",
+        "OFFICIAL_LIBRARY_SEMANTICS",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "angstrom",
+        "count"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n1_coordination.py::test_algorithm_produces_inert_algorithm_specific_artifact",
+        "tests/test_phase10n1_coordination.py::test_disorder_is_typed_and_never_coerced",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "structure.coordination_hist",
+      "capability_version": "1.0",
+      "display_name": "分析配位数分布",
+      "pack_id": "core.structure",
+      "tool_ids": [
+        "structure.coordination_hist"
+      ],
+      "adapter_names": [
+        "CoordinationHistAdapter"
+      ],
+      "result_projector": "agent2.structure.coordination_hist",
+      "qualification_level": "REFERENCE_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "ordered periodic crystal structures under a declared cutoff"
+      ],
+      "known_limitations": [
+        "Coordination depends on the selected cutoff.",
+        "Disordered structures are rejected rather than coerced."
+      ],
+      "qualified_contract_fingerprint": "b86d5a9d829f235a3f2da9e80c22a705bc9ff6f9d8a9fffeb6f6ed1340fb0a6d",
+      "current_contract_fingerprint": "b86d5a9d829f235a3f2da9e80c22a705bc9ff6f9d8a9fffeb6f6ed1340fb0a6d",
+      "evidence_fingerprint": "6c6c90b5fab7344c0c359e19a908023b2cbadfd5705157facb400d084c204066",
+      "evidence_counts": {
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "INVARIANT": 1,
+        "REFERENCE": 1,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "CURATED_KNOWN_RESULT",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "angstrom",
+        "count"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n1_coordination.py::test_algorithm_produces_inert_algorithm_specific_artifact",
+        "tests/test_phase10n1_coordination.py::test_disorder_is_typed_and_never_coerced",
+        "tests/test_phase10n1_coordination.py::test_periodic_image_and_checksum_order_are_deterministic",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "structure.coordination_voronoinn",
+      "capability_version": "1.0",
+      "display_name": "检查 VoronoiNN 局域配位",
+      "pack_id": "core.structure",
+      "tool_ids": [
+        "structure.coordination_voronoinn"
+      ],
+      "adapter_names": [
+        "VoronoiNNCoordinationAdapter"
+      ],
+      "result_projector": "agent2.structure.coordination_voronoinn",
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "ordered periodic structures supported by pymatgen VoronoiNN"
+      ],
+      "known_limitations": [
+        "Scientific neighbor assignment is delegated to pymatgen VoronoiNN.",
+        "This evidence validates platform semantics, not VoronoiNN independently."
+      ],
+      "qualified_contract_fingerprint": "d770462bd141183bee69e949d35890070c95dc6936e13746623edccddc898b7f",
+      "current_contract_fingerprint": "d770462bd141183bee69e949d35890070c95dc6936e13746623edccddc898b7f",
+      "evidence_fingerprint": "637f423a65f86578054befcacc9dfec4077df2a06806aa6ba2fd9ebef972f07e",
+      "evidence_counts": {
+        "ADAPTER_SEMANTICS": 1,
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "CURATED_KNOWN_RESULT",
+        "OFFICIAL_LIBRARY_SEMANTICS",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "angstrom",
+        "count"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n1_coordination.py::test_algorithm_parameters_are_strict_and_bounded",
+        "tests/test_phase10n1_coordination.py::test_algorithm_produces_inert_algorithm_specific_artifact",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "structure.rdf",
+      "capability_version": "1.0",
+      "display_name": "计算径向分布函数",
+      "pack_id": "core.structure",
+      "tool_ids": [
+        "structure.rdf"
+      ],
+      "adapter_names": [
+        "RdfAdapter"
+      ],
+      "result_projector": "agent2.structure.rdf",
+      "qualification_level": "REFERENCE_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "periodic crystal structures with a valid lattice"
+      ],
+      "known_limitations": [
+        "Finite-cell histogram and normalization conventions remain method-specific.",
+        "Non-periodic structures are rejected."
+      ],
+      "qualified_contract_fingerprint": "e668b60e6091810da7971ac0a344fbf3ab460455a476f09e4e251d45cebd94b3",
+      "current_contract_fingerprint": "e668b60e6091810da7971ac0a344fbf3ab460455a476f09e4e251d45cebd94b3",
+      "evidence_fingerprint": "6b848fd9842051de056de6353b090f0220c978dc137cf4f25b4ffe74486d3541",
+      "evidence_counts": {
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "REFERENCE": 1,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 2
+      },
+      "reference_authorities": [
+        "CURATED_KNOWN_RESULT",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "angstrom",
+        "dimensionless"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_agent2_phase5_results.py::test_rdf_projects_authoritative_range_and_bin_width_with_units",
+        "tests/test_phase10e7_rdf.py::test_rdf_generates_numeric_json_plot_summary_and_recipe",
+        "tests/test_phase10e7_rdf.py::test_rdf_rejects_non_periodic_and_resource_limit_excesses",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "trajectory.diffusion",
+      "capability_version": "1.0",
+      "display_name": "估算扩散性质",
+      "pack_id": "core.trajectory",
+      "tool_ids": [
+        "trajectory.diffusion"
+      ],
+      "adapter_names": [
+        "TrajectoryDiffusionAdapter"
+      ],
+      "result_projector": "agent2.trajectory.diffusion",
+      "qualification_level": "DOMAIN_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "linear diffusive MSD windows with explicit timestep and fit range"
+      ],
+      "known_limitations": [
+        "Ballistic/non-diffusive windows are rejected.",
+        "Reported diffusion is conditional on the selected fit regime."
+      ],
+      "qualified_contract_fingerprint": "e23a262dc9ec5095d7c12e50a5077653774dbc893101b1016a10ae38706ac367",
+      "current_contract_fingerprint": "e23a262dc9ec5095d7c12e50a5077653774dbc893101b1016a10ae38706ac367",
+      "evidence_fingerprint": "cd519c8649c1045c34ddd3e881d6be2909ab3ea57a45dc8e322ad11b046b48dc",
+      "evidence_counts": {
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "INVARIANT": 1,
+        "REFERENCE": 1,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "ANALYTICAL",
+        "CURATED_KNOWN_RESULT"
+      ],
+      "units": [
+        "angstrom^2/ps",
+        "dimensionless"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n4_trajectory_analytics.py::test_diffusion_accepts_linear_msd_and_rejects_ballistic",
+        "tests/test_phase10n4_trajectory_analytics.py::test_diffusion_requires_explicit_window_and_persisted_checksum",
+        "tests/test_phase10n4_trajectory_analytics.py::test_real_unwrapped_extxyz_closes_msd_to_diffusion_dependency",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "trajectory.msd",
+      "capability_version": "1.0",
+      "display_name": "计算均方位移",
+      "pack_id": "core.trajectory",
+      "tool_ids": [
+        "trajectory.msd"
+      ],
+      "adapter_names": [
+        "TrajectoryMsdAdapter"
+      ],
+      "result_projector": "agent2.trajectory.msd",
+      "qualification_level": "DOMAIN_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "atomic trajectories with explicit timestep and unambiguous periodic unwrap"
+      ],
+      "known_limitations": [
+        "MSD semantics depend on the declared origin/reference policy.",
+        "Ambiguous image steps are rejected rather than guessed."
+      ],
+      "qualified_contract_fingerprint": "a8bbab194f7e669e3890a19df01b49467a070591a1df57d3efa14d20e11dfbbc",
+      "current_contract_fingerprint": "a8bbab194f7e669e3890a19df01b49467a070591a1df57d3efa14d20e11dfbbc",
+      "evidence_fingerprint": "a48d86fe385ef242b20c4d7d472e57044e92ce4a85c875e015dbd846a2298f95",
+      "evidence_counts": {
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "INVARIANT": 1,
+        "REFERENCE": 1,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "ANALYTICAL",
+        "CURATED_KNOWN_RESULT",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "angstrom^2",
+        "ps"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10g_trajectory_contract.py::test_wrapped_and_unwrapped_coordinates_preserve_semantics",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n4_trajectory_analytics.py::test_boundary_crossing_msd_uses_unwrapped_positions",
+        "tests/test_phase10n4_trajectory_analytics.py::test_msd_triclinic_partial_pbc_and_ambiguous_steps",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    },
+    {
+      "capability_id": "trajectory.rdf",
+      "capability_version": "1.0",
+      "display_name": "计算轨迹径向分布函数",
+      "pack_id": "core.trajectory",
+      "tool_ids": [
+        "trajectory.rdf"
+      ],
+      "adapter_names": [
+        "TrajectoryRdfAdapter"
+      ],
+      "result_projector": "agent2.trajectory.rdf",
+      "qualification_level": "DOMAIN_VALIDATED",
+      "reproducibility": "DETERMINISTIC",
+      "applicability_domains": [
+        "periodic atomic trajectories with valid cells and species"
+      ],
+      "known_limitations": [
+        "Finite-size normalization and binning remain explicit method conventions.",
+        "Ambiguous periodic geometry is rejected."
+      ],
+      "qualified_contract_fingerprint": "4a3a573ce47813348b54c1f9d690492c01891665b8f5100a7015b705b30d5903",
+      "current_contract_fingerprint": "4a3a573ce47813348b54c1f9d690492c01891665b8f5100a7015b705b30d5903",
+      "evidence_fingerprint": "7949eb0c8f2287c0643622bd0eacc7c9acbc871eec5cf885e568e33e10c89fae",
+      "evidence_counts": {
+        "ARTIFACT_SEMANTICS": 1,
+        "DOMAIN_NEGATIVE": 1,
+        "INTERPRETATION": 3,
+        "INVARIANT": 1,
+        "REFERENCE": 1,
+        "REPORT": 2,
+        "RESULT_PROJECTION": 1
+      },
+      "reference_authorities": [
+        "CURATED_KNOWN_RESULT",
+        "INDEPENDENT_IMPLEMENTATION",
+        "SYNTHETIC_EXACT"
+      ],
+      "units": [
+        "angstrom"
+      ],
+      "conventions": [],
+      "evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n4_trajectory_analytics.py::test_msd_triclinic_partial_pbc_and_ambiguous_steps",
+        "tests/test_phase10n4_trajectory_analytics.py::test_rdf_batch_pair_distances_match_scalar_minimum_image",
+        "tests/test_phase10n4_trajectory_analytics.py::test_triclinic_rdf_uses_ase_geometric_minimum_image",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "status": "VALID"
+    }
+  ],
+  "inventory_fingerprint": "09e7dc50e6a5bac59ad23b2c221b08caad9629477f49ad68e06f35bee191a3a0",
+  "accepted": true,
+  "error_count": 0
+}

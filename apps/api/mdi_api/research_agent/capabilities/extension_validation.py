@@ -69,6 +69,17 @@ class CapabilityInventoryEntry(BaseModel):
     expected_cost_classes: list[str]
     qualification_level: str
     qualification_evidence_refs: list[str]
+    qualification_evidence_version: str | None
+    qualification_evidence_fingerprint: str | None
+    qualification_reference_case_count: int
+    qualification_invariant_case_count: int
+    qualification_domain_negative_case_count: int
+    qualification_result_projection_case_count: int
+    qualification_interpretation_evaluation_count: int
+    qualification_report_evaluation_count: int
+    qualification_reproducibility: str
+    qualification_validated_domains: list[str]
+    qualification_known_limitations: list[str]
     limitations: list[str]
     contract_fingerprint: str
 
@@ -498,7 +509,13 @@ def validate_capability_extension_platform(
             )
         if (
             capability.status == CapabilityStatus.EXPERIMENTAL
-            and capability.qualification.level == "SCIENTIFICALLY_QUALIFIED"
+            and capability.qualification.level
+            in {
+                "REFERENCE_VALIDATED",
+                "DOMAIN_VALIDATED",
+                "CROSS_IMPLEMENTATION_VALIDATED",
+                "SCIENTIFICALLY_QUALIFIED",
+            }
         ):
             _issue(
                 issues,
@@ -569,6 +586,17 @@ def validate_capability_extension_platform(
                 expected_cost_classes=expected_cost_classes,
                 qualification_level=capability.qualification.level,
                 qualification_evidence_refs=sorted(capability.qualification.evidence_refs),
+                qualification_evidence_version=capability.qualification.evidence_version,
+                qualification_evidence_fingerprint=capability.qualification.evidence_fingerprint,
+                qualification_reference_case_count=capability.qualification.reference_case_count,
+                qualification_invariant_case_count=capability.qualification.invariant_case_count,
+                qualification_domain_negative_case_count=capability.qualification.domain_negative_case_count,
+                qualification_result_projection_case_count=capability.qualification.result_projection_case_count,
+                qualification_interpretation_evaluation_count=capability.qualification.interpretation_evaluation_count,
+                qualification_report_evaluation_count=capability.qualification.report_evaluation_count,
+                qualification_reproducibility=capability.qualification.reproducibility,
+                qualification_validated_domains=sorted(capability.qualification.validated_domains),
+                qualification_known_limitations=list(capability.qualification.known_limitations),
                 limitations=list(capability.limitations),
                 contract_fingerprint=capability_contract_fingerprint(capability),
             )

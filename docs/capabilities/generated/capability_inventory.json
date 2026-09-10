@@ -59,10 +59,36 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "DOMAIN_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10k4_composition_space.py::test_center_only_pca_sign_explained_variance_and_replay_are_deterministic",
+        "tests/test_phase10k4_composition_space.py::test_pca_rejects_insufficient_sample_count_and_rank",
+        "tests/test_phase10k4_composition_space.py::test_profile_bound_atomic_number_basis_and_normalized_fractions",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "7a2cdc05352a24ba322d93ee5e72590c2dccf4ab2f5d8053186f679353ace8e3",
+      "qualification_reference_case_count": 1,
+      "qualification_invariant_case_count": 1,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "profiled materials datasets with parseable formulas"
+      ],
+      "qualification_known_limitations": [
+        "PCA is center-only under the declared convention.",
+        "K-means remains an exploratory clustering projection, not scientific class truth."
+      ],
       "limitations": [],
-      "contract_fingerprint": "583a289bc8415bc6cd735554b8e64970bbdbeb0b20bea0165f3df5d6ddbae923"
+      "contract_fingerprint": "ba7083247ec1c2c0ce59a86e78bf35b074459c764d3dfd616594acc4dc332e99"
     },
     {
       "capability_id": "data.materials_explorer",
@@ -107,10 +133,36 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "DOMAIN_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10k2_dataset_materials_explorer.py::test_group_comparison_is_explicit_and_never_uses_row_order",
+        "tests/test_phase10k2_dataset_materials_explorer.py::test_invalid_comparison_bindings_and_mixed_units_are_typed",
+        "tests/test_phase10k2_dataset_materials_explorer.py::test_materials_explorer_builds_coherent_profile_bound_product",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "ff99a9a4916214a8cb79f9062e5f39b25ef53c383c5db143f9efe81fd3deebf2",
+      "qualification_reference_case_count": 1,
+      "qualification_invariant_case_count": 1,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "authorized profiled tabular materials datasets"
+      ],
+      "qualification_known_limitations": [
+        "This capability summarizes/query-projects data; it does not infer scientific causality.",
+        "Mixed units are rejected."
+      ],
       "limitations": [],
-      "contract_fingerprint": "28e36058a379a18cef4235fcd00ce7c4f51d1e13df6a841b3f4a21bb1c9eb61c"
+      "contract_fingerprint": "61dda109ace2291ccabf84efc204f376f70a7957271cf4c03ba90637e7d1fd44"
     },
     {
       "capability_id": "diffraction.experimental_theoretical_comparison",
@@ -155,10 +207,36 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "REFERENCE_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n3_experimental_xrd.py::test_match_preserves_both_unmatched_sets_and_residuals",
+        "tests/test_phase10n3_experimental_xrd.py::test_wavelength_mismatch_and_nonmonotonic_resource_are_rejected",
+        "tests/test_phase10n3_experimental_xrd.py::test_zero_match_is_valid_and_deterministic",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "1836b2e8b8271beb9c9585458210dfb05685760dcd593f1b2cede124dd417dbc",
+      "qualification_reference_case_count": 1,
+      "qualification_invariant_case_count": 1,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "monotonic experimental and theoretical XRD peak resources with compatible wavelength"
+      ],
+      "qualification_known_limitations": [
+        "Peak matching is bounded by the declared 2theta tolerance.",
+        "A match does not establish phase identity."
+      ],
       "limitations": [],
-      "contract_fingerprint": "c4d955f415a2d6b12d453386facaf033e31eacce6300cf879dfd4ec5fb9bfea3"
+      "contract_fingerprint": "358f8fcf34f172aa5ca5cf2e14b54a00fa266e2768bd66f48ebddd4fbabdaf79"
     },
     {
       "capability_id": "diffraction.theoretical_xrd",
@@ -204,10 +282,35 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10e4_xrd.py::test_xrd_generates_numeric_json_plot_summary_and_recipe",
+        "tests/test_phase10e4_xrd.py::test_xrd_rejects_invalid_params_and_malformed_input",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "b2b606feec9eb0ed08d783d57358d2ccc9e3a9228c521da32cd366e6cea739cc",
+      "qualification_reference_case_count": 0,
+      "qualification_invariant_case_count": 0,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "periodic crystal structures accepted by pymatgen XRDCalculator"
+      ],
+      "qualification_known_limitations": [
+        "Peak intensities follow pymatgen broadening and normalization conventions.",
+        "The platform does not independently validate the diffraction solver."
+      ],
       "limitations": [],
-      "contract_fingerprint": "6b8516c5b2dddc46a717ba503cb1f3110ea19cbc36f358ab29cba1754cf45d3d"
+      "contract_fingerprint": "4542c940577342bf2038d73c6f680032b055b8b5bf7c445b3b696bfecf9dc85b"
     },
     {
       "capability_id": "electronic.band_structure",
@@ -253,10 +356,35 @@
       "expected_cost_classes": [
         "LOW"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n5_electronic_band_dos.py::test_indirect_gap_vbm_cbm_and_source_qualified_classification",
+        "tests/test_phase10n5_electronic_band_dos.py::test_missing_fermi_preserves_raw_band_but_rejects_fermi_view",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "9b38838cdf6378b46f471628e9cbf38e9c8d7d72f3a4d1878fc6b1347bfa9284",
+      "qualification_reference_case_count": 0,
+      "qualification_invariant_case_count": 0,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "supplied electronic band resources with explicit energy reference metadata"
+      ],
+      "qualification_known_limitations": [
+        "The platform validates parsing and band semantics, not the upstream electronic solver.",
+        "Metal-like classification is policy-qualified rather than material truth."
+      ],
       "limitations": [],
-      "contract_fingerprint": "9dd1997ae8c2c1ccc21a9584593698b785ff991842d4dc468492a59a8ad7d7b5"
+      "contract_fingerprint": "c00b4fc302362d1d8447d601a51781d8fe2806bfb45b105875d376bdd5ac91e1"
     },
     {
       "capability_id": "electronic.dos",
@@ -302,10 +430,35 @@
       "expected_cost_classes": [
         "LOW"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n5_electronic_band_dos.py::test_checked_resource_and_artifact_schemas_are_strict",
+        "tests/test_phase10n5_electronic_band_dos.py::test_dos_preserves_total_partial_projection_and_no_recomputation",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "bdd0ed6da6eebeb01e0580fb0709f4231aafbe62cc589a0dc947df1e171ed022",
+      "qualification_reference_case_count": 0,
+      "qualification_invariant_case_count": 0,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "supplied electronic DOS resources with explicit energy and density semantics"
+      ],
+      "qualification_known_limitations": [
+        "The platform validates parsing/projection, not the upstream electronic solver.",
+        "Partial DOS is preserved without recomputation."
+      ],
       "limitations": [],
-      "contract_fingerprint": "3a5af37b3df9929cc0d4b669fed4b1db9136e4841bf426565539495458f61c6e"
+      "contract_fingerprint": "7a2356c95c5aced6c16511b0e609e8312c329bacffa34abbeed7339036952959"
     },
     {
       "capability_id": "ml.regression_evaluation",
@@ -349,10 +502,36 @@
       "expected_cost_classes": [
         "LOW"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "DOMAIN_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10k3_materials_ml_evaluation.py::test_metric_definitions_handle_constant_target_and_curve_bounding",
+        "tests/test_phase10k3_materials_ml_evaluation.py::test_payload_replay_is_deterministic_and_plot_sampling_does_not_change_metrics",
+        "tests/test_phase10k3_materials_ml_evaluation.py::test_typed_semantic_unit_uncertainty_and_cap_failures",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "3f1d3e91a7bc55a1572f8cada80059474930eb875bbd68db553a6fd05902cbf1",
+      "qualification_reference_case_count": 1,
+      "qualification_invariant_case_count": 1,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "SEEDED_STOCHASTIC",
+      "qualification_validated_domains": [
+        "profile-bound supervised prediction/evaluation tables with paired truth and prediction"
+      ],
+      "qualification_known_limitations": [
+        "Metrics describe predictive association, not causality.",
+        "Model training correctness is outside this evaluation capability."
+      ],
       "limitations": [],
-      "contract_fingerprint": "08b348f768de25e02a3981a7ee8de2f35b87e0b9bcbde07c353789dba55bc415"
+      "contract_fingerprint": "ce6a4c3524da3704ec6896d4431445429bfaf6f68dbb877b3c21b1061b52caf5"
     },
     {
       "capability_id": "phonon.band",
@@ -401,10 +580,35 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10h1_phonon_bands.py::test_invalid_canonical_input_is_rejected_before_artifact_export",
+        "tests/test_phase10h1_phonon_bands.py::test_phonopy_yaml_maps_qpoints_segments_branches_and_negative_frequency",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "ac7f34fc8b6c8c4e9aa26fee88ee6a841e4d7777dfc453a2845356b969ae07c6",
+      "qualification_reference_case_count": 0,
+      "qualification_invariant_case_count": 0,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "supplied phonopy band resources with explicit frequency units"
+      ],
+      "qualification_known_limitations": [
+        "The platform validates parser/semantic mapping, not force-constant generation.",
+        "Negative frequencies are retained as supplied and not reinterpreted as stability proof."
+      ],
       "limitations": [],
-      "contract_fingerprint": "fb7b013c459c4a7f21a68e3495354dfdcacd505aa6e6ad367cafa3f43be48181"
+      "contract_fingerprint": "746d7c913a6f6465f189055d1af10e1e874eb3feffb8a903e958aeeeea641d7d"
     },
     {
       "capability_id": "phonon.band_dos",
@@ -453,10 +657,35 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10h3_phonon_band_dos.py::test_density_conversion_preserves_integral_and_scales_broadening",
+        "tests/test_phase10h3_phonon_band_dos.py::test_structure_mismatch_and_hash_mismatch_fail_before_success_products",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "cf0ce9ad6c92bfe5862494e235bfef8fb6016c0c7e79d2785371f1e96e3e13c4",
+      "qualification_reference_case_count": 0,
+      "qualification_invariant_case_count": 0,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "compatible supplied phonon band and DOS resources"
+      ],
+      "qualification_known_limitations": [
+        "Composition is reference-only and does not recompute either source.",
+        "Structure/hash incompatibility is terminal."
+      ],
       "limitations": [],
-      "contract_fingerprint": "f350a1054273e5e0582054c5c15b5f856ac5bedd80176b839640cdb2603b8465"
+      "contract_fingerprint": "7d27769bec6687cc644d632f0181042f27319d827f4ad00506e6188178086ed6"
     },
     {
       "capability_id": "phonon.dos",
@@ -505,10 +734,35 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10h2_phonon_dos.py::test_malformed_sources_fail_before_artifact_export",
+        "tests/test_phase10h2_phonon_dos.py::test_phonopy_total_dos_converts_frequency_density_and_preserves_integral",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "b10d7a6cd822914c6468c3b4814bf1f8a862cd20400d6b0d3829c9ea21d3838e",
+      "qualification_reference_case_count": 0,
+      "qualification_invariant_case_count": 0,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "supplied total/projected phonon DOS with declared frequency unit"
+      ],
+      "qualification_known_limitations": [
+        "The platform validates DOS conversion/projection, not force-constant generation.",
+        "Partial projections do not imply a complete modal sum."
+      ],
       "limitations": [],
-      "contract_fingerprint": "0648ab7ec603d3fca6450e938b618d71bd082d7348917f66a4b704bb9d2818ce"
+      "contract_fingerprint": "cfe22e2be1ef0fbb1b86be997bdd266180ab63be0925f9a8c71b2f4b2a550126"
     },
     {
       "capability_id": "structure.coordination_crystalnn",
@@ -552,10 +806,35 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n1_coordination.py::test_algorithm_produces_inert_algorithm_specific_artifact",
+        "tests/test_phase10n1_coordination.py::test_disorder_is_typed_and_never_coerced",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "de84fae5fe5c15e0ced1bcfaa916a13773a57d41d49a1a5c069f9d692ec829e8",
+      "qualification_reference_case_count": 0,
+      "qualification_invariant_case_count": 0,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "ordered periodic structures supported by pymatgen CrystalNN"
+      ],
+      "qualification_known_limitations": [
+        "Scientific neighbor assignment is delegated to pymatgen CrystalNN.",
+        "This evidence validates platform semantics, not CrystalNN independently."
+      ],
       "limitations": [],
-      "contract_fingerprint": "e3e8fd0e7d88d6cebd4ecd25dabee87d4a145cc7a6f81d78c2c94fc1ea3551d5"
+      "contract_fingerprint": "8f2ea878234868e790fe732f1c784386c40ff1124f2b9e7425615366ac5b853e"
     },
     {
       "capability_id": "structure.coordination_hist",
@@ -599,10 +878,36 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "REFERENCE_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n1_coordination.py::test_algorithm_produces_inert_algorithm_specific_artifact",
+        "tests/test_phase10n1_coordination.py::test_disorder_is_typed_and_never_coerced",
+        "tests/test_phase10n1_coordination.py::test_periodic_image_and_checksum_order_are_deterministic",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "6c6c90b5fab7344c0c359e19a908023b2cbadfd5705157facb400d084c204066",
+      "qualification_reference_case_count": 1,
+      "qualification_invariant_case_count": 1,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "ordered periodic crystal structures under a declared cutoff"
+      ],
+      "qualification_known_limitations": [
+        "Coordination depends on the selected cutoff.",
+        "Disordered structures are rejected rather than coerced."
+      ],
       "limitations": [],
-      "contract_fingerprint": "7ce9a81bb4246e7416b2045b79ea6cfcdcddd6b55f867635594f6d833b24998f"
+      "contract_fingerprint": "3e0a77fdc24f0f040f70390fe906ecf44fd53731e622027da3bc4916d86875a0"
     },
     {
       "capability_id": "structure.coordination_voronoinn",
@@ -646,10 +951,35 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n1_coordination.py::test_algorithm_parameters_are_strict_and_bounded",
+        "tests/test_phase10n1_coordination.py::test_algorithm_produces_inert_algorithm_specific_artifact",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "637f423a65f86578054befcacc9dfec4077df2a06806aa6ba2fd9ebef972f07e",
+      "qualification_reference_case_count": 0,
+      "qualification_invariant_case_count": 0,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "ordered periodic structures supported by pymatgen VoronoiNN"
+      ],
+      "qualification_known_limitations": [
+        "Scientific neighbor assignment is delegated to pymatgen VoronoiNN.",
+        "This evidence validates platform semantics, not VoronoiNN independently."
+      ],
       "limitations": [],
-      "contract_fingerprint": "2c07a96a4cc3baa3c328f6411c0dc85691b3fc7473e1998b298306da21946489"
+      "contract_fingerprint": "8638875bd86a1e63ae3a28d2430a20cabef64636dfaf58fb470f9bcb6ab543ef"
     },
     {
       "capability_id": "structure.rdf",
@@ -693,10 +1023,36 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "REFERENCE_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_agent2_phase5_results.py::test_rdf_projects_authoritative_range_and_bin_width_with_units",
+        "tests/test_phase10e7_rdf.py::test_rdf_generates_numeric_json_plot_summary_and_recipe",
+        "tests/test_phase10e7_rdf.py::test_rdf_rejects_non_periodic_and_resource_limit_excesses",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "6b848fd9842051de056de6353b090f0220c978dc137cf4f25b4ffe74486d3541",
+      "qualification_reference_case_count": 1,
+      "qualification_invariant_case_count": 0,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 2,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "periodic crystal structures with a valid lattice"
+      ],
+      "qualification_known_limitations": [
+        "Finite-cell histogram and normalization conventions remain method-specific.",
+        "Non-periodic structures are rejected."
+      ],
       "limitations": [],
-      "contract_fingerprint": "df1a156d4611a676d8bfd037d63ca60d170f30ae8c73998ba9358149dd63c0ec"
+      "contract_fingerprint": "5461d30d9774d80b8dd6bca4b645d49d64928a1465952c0ca96b45efe3ac84f4"
     },
     {
       "capability_id": "trajectory.diffusion",
@@ -740,10 +1096,36 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "DOMAIN_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n4_trajectory_analytics.py::test_diffusion_accepts_linear_msd_and_rejects_ballistic",
+        "tests/test_phase10n4_trajectory_analytics.py::test_diffusion_requires_explicit_window_and_persisted_checksum",
+        "tests/test_phase10n4_trajectory_analytics.py::test_real_unwrapped_extxyz_closes_msd_to_diffusion_dependency",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "cd519c8649c1045c34ddd3e881d6be2909ab3ea57a45dc8e322ad11b046b48dc",
+      "qualification_reference_case_count": 1,
+      "qualification_invariant_case_count": 1,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "linear diffusive MSD windows with explicit timestep and fit range"
+      ],
+      "qualification_known_limitations": [
+        "Ballistic/non-diffusive windows are rejected.",
+        "Reported diffusion is conditional on the selected fit regime."
+      ],
       "limitations": [],
-      "contract_fingerprint": "ed5a9daec2e1525f8f1a2ac0c1d9d2719469a8dca2a886370ca127ff2c2776ba"
+      "contract_fingerprint": "5edbb64c39bf0df0d2cda51d8d35339d2de42a2257bdb78ffc8a0b1fb6d30fdd"
     },
     {
       "capability_id": "trajectory.msd",
@@ -787,10 +1169,36 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "DOMAIN_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10g_trajectory_contract.py::test_wrapped_and_unwrapped_coordinates_preserve_semantics",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n4_trajectory_analytics.py::test_boundary_crossing_msd_uses_unwrapped_positions",
+        "tests/test_phase10n4_trajectory_analytics.py::test_msd_triclinic_partial_pbc_and_ambiguous_steps",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "a48d86fe385ef242b20c4d7d472e57044e92ce4a85c875e015dbd846a2298f95",
+      "qualification_reference_case_count": 1,
+      "qualification_invariant_case_count": 1,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "atomic trajectories with explicit timestep and unambiguous periodic unwrap"
+      ],
+      "qualification_known_limitations": [
+        "MSD semantics depend on the declared origin/reference policy.",
+        "Ambiguous image steps are rejected rather than guessed."
+      ],
       "limitations": [],
-      "contract_fingerprint": "d13c5c8f2bd40fa7f39b77e210d402c543d712c1a23612e241fca3e8a3b7c27f"
+      "contract_fingerprint": "f6c3551a175949b352fe43319248c2f545f876850f892d105a152abe801aafab"
     },
     {
       "capability_id": "trajectory.rdf",
@@ -834,10 +1242,36 @@
       "expected_cost_classes": [
         "MEDIUM"
       ],
-      "qualification_level": "STRUCTURAL_ONLY",
-      "qualification_evidence_refs": [],
+      "qualification_level": "DOMAIN_VALIDATED",
+      "qualification_evidence_refs": [
+        "tests/test_agent2_phase5_results.py::test_canonical_projector_uses_verified_production_contract_and_grounded_facts",
+        "tests/test_phase10l4_grounded_interpretation.py::test_five_real_contract_families_project_and_interpret_deterministically",
+        "tests/test_phase10l4_grounded_interpretation.py::test_partial_result_is_ready_with_limits_and_never_claims_failed_artifact",
+        "tests/test_phase10l4_grounded_interpretation.py::test_strict_provider_rejects_forbidden_qualifier_after_one_repair",
+        "tests/test_phase10n4_trajectory_analytics.py::test_msd_triclinic_partial_pbc_and_ambiguous_steps",
+        "tests/test_phase10n4_trajectory_analytics.py::test_rdf_batch_pair_distances_match_scalar_minimum_image",
+        "tests/test_phase10n4_trajectory_analytics.py::test_triclinic_rdf_uses_ase_geometric_minimum_image",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_fails_missing_authority_and_limits",
+        "tests/test_phase14r_quality_evaluation.py::test_phase14r_report_quality_evaluator_passes_grounded_complete_report"
+      ],
+      "qualification_evidence_version": "1.0",
+      "qualification_evidence_fingerprint": "7949eb0c8f2287c0643622bd0eacc7c9acbc871eec5cf885e568e33e10c89fae",
+      "qualification_reference_case_count": 1,
+      "qualification_invariant_case_count": 1,
+      "qualification_domain_negative_case_count": 1,
+      "qualification_result_projection_case_count": 1,
+      "qualification_interpretation_evaluation_count": 3,
+      "qualification_report_evaluation_count": 2,
+      "qualification_reproducibility": "DETERMINISTIC",
+      "qualification_validated_domains": [
+        "periodic atomic trajectories with valid cells and species"
+      ],
+      "qualification_known_limitations": [
+        "Finite-size normalization and binning remain explicit method conventions.",
+        "Ambiguous periodic geometry is rejected."
+      ],
       "limitations": [],
-      "contract_fingerprint": "861b7ef4d5489babc3a127d62644fd147a7e3cfdda7aa653372a37ac2baa4ddd"
+      "contract_fingerprint": "49d8445d4e214278dbca57cc1744d552b026bebb0f832d2008dd401c1c91cba9"
     }
   ],
   "orphans": [
@@ -1142,7 +1576,7 @@
       "reason": "Viewer descriptor is not currently reached by Capability input/output types."
     }
   ],
-  "inventory_fingerprint": "af76e991a47f0e937d79b58a42312423374ca092f051929cc88347a7e4bffeae",
+  "inventory_fingerprint": "035cfe4801fd885414f8eccf99d7b89b358212b220e2bc048ee7a76581a9a794",
   "accepted": true,
   "error_count": 0
 }

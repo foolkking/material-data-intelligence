@@ -326,12 +326,35 @@ class CapabilityQualification(BaseModel):
 
     level: Literal[
         "STRUCTURAL_ONLY",
+        "REFERENCE_VALIDATED",
+        "DOMAIN_VALIDATED",
+        "CROSS_IMPLEMENTATION_VALIDATED",
+        "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED",
+        "NOT_YET_SCIENTIFICALLY_QUALIFIED",
         "SCIENTIFICALLY_QUALIFIED",
         "EXPERIMENTAL",
         "UNKNOWN",
     ] = "STRUCTURAL_ONLY"
     evidence_refs: list[str] = Field(default_factory=list, max_length=32)
     validated_domains: list[str] = Field(default_factory=list, max_length=32)
+    known_limitations: list[str] = Field(default_factory=list, max_length=32)
+    evidence_version: str | None = Field(default=None, min_length=1, max_length=32)
+    evidence_fingerprint: str | None = Field(
+        default=None,
+        pattern=r"^[0-9a-f]{64}$",
+    )
+    reference_case_count: int = Field(default=0, ge=0)
+    invariant_case_count: int = Field(default=0, ge=0)
+    domain_negative_case_count: int = Field(default=0, ge=0)
+    result_projection_case_count: int = Field(default=0, ge=0)
+    interpretation_evaluation_count: int = Field(default=0, ge=0)
+    report_evaluation_count: int = Field(default=0, ge=0)
+    reproducibility: Literal[
+        "DETERMINISTIC",
+        "SEEDED_STOCHASTIC",
+        "NONDETERMINISTIC_EXTERNAL",
+        "UNKNOWN",
+    ] = "UNKNOWN"
 
 
 class CapabilityInputSlot(BaseModel):
