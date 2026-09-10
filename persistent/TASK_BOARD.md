@@ -4312,3 +4312,21 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
       typecheck, production build, architecture and diff checks.
 - [x] Pass canonical PostgreSQL/Redis/MinIO Phase 2/3/4/7 service flows and
       discover all six canonical worker queues.
+## 2026-09-10 Workstream C — Scientific Capability Extension Platform
+
+- [x] Make optional Result/Artifact-port/interpretation/Viewer/Report support
+      explicit in CapabilityManifest 1.2.
+- [x] Validate Requirement → Capability Pack → Tool → Adapter → Artifact port
+      → Result projector → Viewer completeness from canonical registries.
+- [x] Generate machine-readable and human-readable capability inventory.
+- [x] Classify all non-Capability-reachable Tools/projectors/Viewers without
+      deleting or deprecating them.
+- [x] Preserve bounded planner metadata, deterministic eligibility,
+      project/source authorization, queue/worker identities and Tool/Adapter
+      identities.
+- [x] Prove the reference `trajectory.msd → trajectory.diffusion` port contract
+      and canonical real-service RDF/XRD Agent execution paths.
+- [x] Publish the implementation contract and developer extension guide.
+- Next recommended workstream: scientific quality and evaluation metadata/
+  benchmark execution before materially increasing autonomous multi-step
+  selection.

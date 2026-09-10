@@ -8,14 +8,15 @@
 ## 1. Current Status
 
 - `PROJECT_PHASE`: Source/physical migration and capability parity are closed;
-  Workstream A lifecycle reliability and Workstream B context/scientific-memory
-  foundations are active in the canonical migrated repository. Remote
-  exact-SHA CI remains a separately authorized release gate.
+  Workstreams A-C now provide lifecycle reliability, context/scientific-memory,
+  and a validated scientific-capability extension foundation in the canonical
+  migrated repository. Remote exact-SHA CI remains a separately authorized
+  release gate.
 - `CURRENT_ACCEPTED_COMMIT`: `aac8ef4`
 - `SNAPSHOT_BASE_COMMIT`: `aac8ef4`
 - `WORKTREE_EXPECTATION`: existing migration worktree, detached HEAD, clean
-- `LAST_ACCEPTED_REVIEW`: Canonical Worktree Recovery and Workstream B
-  Continuation, `PASS`, 2026-09-10
+- `LAST_ACCEPTED_REVIEW`: Workstream C — Scientific Capability Extension
+  Platform, `PASS`, 2026-09-10
 - `LAST_UPDATED_AT`: `2026-09-10`
 - `STATE_STATUS`: `CURRENT`
 - `PROJECT_STATE_ACTIVE`: `YES`
@@ -63,15 +64,17 @@ specialized authority requires explicit reconciliation and may set
 
 ## 5. Active Work
 
-- `CURRENT_WORKSTREAM`: Workstream B context provenance and scientific-memory
-  foundation is complete in the canonical migrated repository.
+- `CURRENT_WORKSTREAM`: Workstream C scientific capability extension platform
+  is complete in the canonical migrated repository.
 - `CURRENT_TASK`: no active queued task after canonical recovery closeout;
   `TASKS.md` remains the task queue authority.
-- `NEXT_ACTION`: when explicitly authorized, begin Workstream C — Scientific
-  Capability Extension Platform. Remote release qualification remains a
-  separate exact-SHA/push-authorized operation.
-- `BLOCKED_ITEMS`: no unresolved Workstream A/B blocker. Broad context quality
-  and scale stress remain future evaluation rather than authority defects.
+- `NEXT_ACTION`: prioritize Workstream D — Scientific Quality & Evaluation;
+  multi-step Agent autonomy should build on capability-specific quality
+  evidence rather than structural completeness alone. Remote release
+  qualification remains a separate exact-SHA/push-authorized operation.
+- `BLOCKED_ITEMS`: no unresolved Workstream A/B/C blocker. Broader scientific
+  benchmark coverage, context quality and scale stress remain future
+  evaluation rather than authority defects.
 
 ## 6. Verification State
 
@@ -107,6 +110,17 @@ specialized authority requires explicit reconciliation and may set
   exact historical version pass against PostgreSQL, Redis/RQ and MinIO.
   Canonical runtime check reports API/frontend/storage/database healthy and all
   six worker queues discovered.
+- Capability extension health: `17/17` Capability manifests valid across five
+  trusted Packs; Tool Registry `62`, Adapter Registry `50`, duplicate
+  capability authorities `0`, missing Tool/Adapter/projector/typed-port
+  contracts `0`. Generated machine/human inventories classify 45
+  non-Capability-reachable Tools without granting cleanup authority.
+- Workstream C focused verification: capability/Pack/registry/planner,
+  cross-domain Adapter/Result suites `221 passed` with one pre-existing
+  optional skip; canonical isolated PostgreSQL/Redis/MinIO fresh-worker
+  Agent paths passed `2/2` for RDF and two-step XRD projection. A canonical
+  API process on port 8006 reported PostgreSQL/Redis/MinIO/worker backends
+  healthy.
 - Remote CI: workflow and authenticated CLI are available, but the final SHA is
   not on the remote because push was not authorized. Exact-SHA CI is not run.
   Local/service readiness is PASS; overall release readiness is CONDITIONAL.
@@ -122,6 +136,13 @@ specialized authority requires explicit reconciliation and may set
 - **Context quality/scale debt:** provider token estimates vary and broader
   near-budget, very-large-Dataset and edited-branch stress evaluation remains
   future work; source authority and bounded behavior are established.
+- **Capability quality debt:** structural completeness is now machine-checked,
+  but scientific quality levels remain capability-specific and most manifests
+  conservatively declare `STRUCTURAL_ONLY`.
+- **Extension coupling debt:** built-in Requirement, Capability, Tool, Adapter,
+  Artifact-port, projector and Viewer authorities remain explicit centralized
+  registration points. The path is bounded and documented, but not a
+  zero-central-edit plugin system.
 
 ## 8. State Authorities
 
@@ -172,6 +193,11 @@ specialized authority requires explicit reconciliation and may set
   memory/context visibility work, and reverified the canonical API, frontend,
   six workers and service-backed Agent paths. The old repository is now
   comparison/recovery source only.
+- 2026-09-10: completed Workstream C with CapabilityManifest 1.2 extension
+  metadata, deterministic cross-registry completeness validation, generated
+  inventory/orphan classification, explicit optional presentation semantics,
+  project-scope fail-closed resolution, developer guidance and canonical
+  real-service RDF/XRD verification.
 
 ## 11. Source Pointers
 
@@ -189,6 +215,9 @@ specialized authority requires explicit reconciliation and may set
 - Transition design: [`docs/PROJECT_STATE_TRANSITION_PLAN.md`](docs/PROJECT_STATE_TRANSITION_PLAN.md)
 - Tool Registry notes: [`persistent/TOOL_REGISTRY_NOTES.md`](persistent/TOOL_REGISTRY_NOTES.md)
 - Qualification: [`docs/qualification/`](docs/qualification/), [`_qualification/`](_qualification/)
+- Capability extension:
+  [`docs/capabilities/SCIENTIFIC_CAPABILITY_EXTENSION_PLATFORM.md`](docs/capabilities/SCIENTIFIC_CAPABILITY_EXTENSION_PLATFORM.md),
+  [`docs/capabilities/generated/capability_inventory.md`](docs/capabilities/generated/capability_inventory.md)
 
 ## 12. Controlled Update and Freshness Rules
 

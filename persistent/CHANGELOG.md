@@ -2920,3 +2920,14 @@ was created.
 - Verified focused and service-backed Agent paths on the canonical
   PostgreSQL/Redis/MinIO/API/frontend/worker stack. No schema, queue, handler,
   Tool, Adapter, public API or scientific identity changed.
+## 2026-09-10 — Scientific capability extension platform
+
+- Added explicit CapabilityManifest 1.2 completeness, optional presentation,
+  resource, recovery and qualification metadata without changing Tool,
+  Adapter, queue, worker or scientific identities.
+- Added canonical cross-registry capability validation plus generated
+  JSON/Markdown inventory and orphan classification.
+- Hardened capability resolution to reject cross-project scientific sources
+  before planning.
+- Added focused extension-contract tests, developer guidance and canonical
+  PostgreSQL/Redis/MinIO fresh-worker verification.

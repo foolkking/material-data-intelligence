@@ -30,7 +30,12 @@ class CapabilityResolutionService:
         candidate_refs: dict[str, ScientificObjectRef] | None = None,
         reusable_results: dict[str, dict[str, Any]] | None = None,
     ) -> CapabilityResolution:
-        requirements = self._requirements(decision, candidate_refs or self._snapshot_refs(context_snapshot), turn["id"])
+        requirements = self._requirements(
+            decision,
+            candidate_refs or self._snapshot_refs(context_snapshot),
+            turn["id"],
+            turn["project_id"],
+        )
         all_refs = candidate_refs or self._snapshot_refs(context_snapshot)
         key_by_version = {str(ref.version_id): key for key, ref in all_refs.items()}
         registry_fp = capability_registry_fingerprint(self.capability_registry, self.tool_registry)
@@ -121,7 +126,13 @@ class CapabilityResolutionService:
             unsatisfied_required_requirement_ids=sorted(set(required_ids) - covered), optional_requirement_ids_not_covered=sorted(set(optional_ids) - covered), registry_fingerprint=registry_fp, resolver_version=RESOLVER_VERSION,
         )
 
-    def _requirements(self, decision: ResearchTurnDecision, refs: dict[str, ScientificObjectRef], turn_id: Any) -> list[dict[str, Any]]:
+    def _requirements(
+        self,
+        decision: ResearchTurnDecision,
+        refs: dict[str, ScientificObjectRef],
+        turn_id: Any,
+        project_id: str,
+    ) -> list[dict[str, Any]]:
         result = []
         for proposed in decision.scientific_requirements:
             missing = [key for key in proposed.subject_ref_keys if key not in refs]
@@ -129,6 +140,10 @@ class CapabilityResolutionService:
                 raise CapabilityResolutionFailed(f"Unknown subject reference(s): {', '.join(missing)}")
             manifest = self.requirement_registry.require(proposed.requirement_id)
             selected = [refs[key] for key in proposed.subject_ref_keys]
+            if any(ref.project_id != project_id for ref in selected):
+                raise CapabilityResolutionFailed(
+                    f"Requirement source exceeds ResearchTurn project scope: {turn_id}"
+                )
             if manifest.accepted_object_types and any(ref.object_type not in manifest.accepted_object_types for ref in selected):
                 continue
             result.append({"requirement_id": proposed.requirement_id, "criticality": proposed.criticality.value, "refs": selected, "constraints": proposed.constraints})

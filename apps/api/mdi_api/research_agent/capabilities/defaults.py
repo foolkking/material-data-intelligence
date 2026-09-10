@@ -4,6 +4,7 @@ from mdi_api.research_agent.schemas import (
     CapabilityInputSlot,
     CapabilityManifest,
     CapabilityOutputSlot,
+    CapabilitySurfaceSupport,
     CapabilityStatus,
     ToolBinding,
 )
@@ -41,6 +42,8 @@ def _manifest(
     tool_id: str,
     *,
     priority: int = 100,
+    viewer_bindings: list[str] | None = None,
+    artifact_port_support: CapabilitySurfaceSupport = CapabilitySurfaceSupport.GENERIC,
 ) -> CapabilityManifest:
     return CapabilityManifest(
         capability_id=capability_id,
@@ -54,11 +57,17 @@ def _manifest(
         preconditions=[],
         limitations=[],
         tool_bindings=[ToolBinding(tool_id=tool_id, version_constraint=">=0.1,<1.0")],
-        viewer_bindings=[],
+        viewer_bindings=viewer_bindings or [],
         evidence_projector=None,
         result_projector=f"agent2.{capability_id}",
         report_projector=None,
         progress_projector="agent2.fixture.progress",
+        artifact_port_support=artifact_port_support,
+        viewer_support=(
+            CapabilitySurfaceSupport.SUPPORTED
+            if viewer_bindings
+            else CapabilitySurfaceSupport.GENERIC
+        ),
         status=CapabilityStatus.ACTIVE,
         planning_priority=priority,
     )
@@ -70,8 +79,8 @@ def build_default_capability_registry() -> InMemoryCapabilityRegistry:
     registry = InMemoryCapabilityRegistry()
     manifests = [
         _manifest("structure.rdf", "Compute a radial distribution function.", ["structure.compute_rdf"], [structure], [CapabilityOutputSlot(name="rdf", result_type="structure.rdf")], "structure.rdf"),
-        _manifest("diffraction.theoretical_xrd", "Generate a theoretical XRD pattern.", ["diffraction.generate_theoretical_pattern"], [structure], [CapabilityOutputSlot(name="theoretical_xrd", result_type="diffraction.xrd.theoretical", scientific_object_type="diffraction.xrd.theoretical")], "structure.xrd"),
-        _manifest("diffraction.experimental_theoretical_comparison", "Compare experimental and theoretical XRD patterns.", ["diffraction.compare_experimental_theoretical"], [CapabilityInputSlot(name="experimental", accepted_object_types=["diffraction.xrd.experimental"]), CapabilityInputSlot(name="theoretical", accepted_object_types=["diffraction.xrd.theoretical"])], [CapabilityOutputSlot(name="comparison", result_type="diffraction.xrd.comparison")], "structure.experimental_xrd_comparison"),
+        _manifest("diffraction.theoretical_xrd", "Generate a theoretical XRD pattern.", ["diffraction.generate_theoretical_pattern"], [structure], [CapabilityOutputSlot(name="theoretical_xrd", result_type="diffraction.xrd.theoretical", scientific_object_type="diffraction.xrd.theoretical")], "structure.xrd", viewer_bindings=["scientific.xrd"], artifact_port_support=CapabilitySurfaceSupport.SUPPORTED),
+        _manifest("diffraction.experimental_theoretical_comparison", "Compare experimental and theoretical XRD patterns.", ["diffraction.compare_experimental_theoretical"], [CapabilityInputSlot(name="experimental", accepted_object_types=["diffraction.xrd.experimental"]), CapabilityInputSlot(name="theoretical", accepted_object_types=["diffraction.xrd.theoretical"])], [CapabilityOutputSlot(name="comparison", result_type="diffraction.xrd.comparison")], "structure.experimental_xrd_comparison", artifact_port_support=CapabilitySurfaceSupport.REQUIRED),
         _manifest(
             "ml.regression_evaluation",
             "Evaluate a materials regression result.",
@@ -80,27 +89,27 @@ def build_default_capability_registry() -> InMemoryCapabilityRegistry:
             [CapabilityOutputSlot(name="evaluation", result_type="ml.regression.evaluation")],
             "ml.regression_evaluation",
         ),
-        _manifest("trajectory.msd", "Compute mean-squared displacement.", ["trajectory.compute_msd"], [trajectory], [CapabilityOutputSlot(name="msd", result_type="trajectory.msd")], "trajectory.msd"),
+        _manifest("trajectory.msd", "Compute mean-squared displacement.", ["trajectory.compute_msd"], [trajectory], [CapabilityOutputSlot(name="msd", result_type="trajectory.msd")], "trajectory.msd", artifact_port_support=CapabilitySurfaceSupport.SUPPORTED),
         # Diffusion is a strict derived-result capability.  Its executable
         # Adapter consumes one exact persisted MSD Artifact, not the original
         # trajectory alongside that Artifact.  The trajectory identity is
         # retained transitively by the MSD Artifact lineage and remains the
         # requirement subject used to derive the explicit fit window.
-        _manifest("trajectory.diffusion", "Estimate diffusion from MSD evidence.", ["trajectory.estimate_diffusion"], [CapabilityInputSlot(name="msd", accepted_object_types=["trajectory.msd"])], [CapabilityOutputSlot(name="diffusion", result_type="trajectory.diffusion")], "trajectory.diffusion"),
-        _manifest("phonon.band", "Normalize and inspect a phonon band.", ["phonon.inspect_band"], [CapabilityInputSlot(name="band", accepted_object_types=["phonon.band_structure"])], [CapabilityOutputSlot(name="band", result_type="phonon.band", scientific_object_type="phonon.band_structure")], "phonon.band"),
-        _manifest("phonon.dos", "Normalize and inspect a phonon DOS.", ["phonon.inspect_dos"], [CapabilityInputSlot(name="dos", accepted_object_types=["phonon.dos"])], [CapabilityOutputSlot(name="dos", result_type="phonon.dos", scientific_object_type="phonon.dos")], "phonon.dos"),
-        _manifest("phonon.band_dos", "Compose compatible phonon band and DOS views.", ["phonon.inspect_band", "phonon.inspect_dos"], [CapabilityInputSlot(name="band", accepted_object_types=["phonon.band_structure"]), CapabilityInputSlot(name="dos", accepted_object_types=["phonon.dos"])], [CapabilityOutputSlot(name="combined", result_type="phonon.band_dos")], "phonon.band_dos"),
+        _manifest("trajectory.diffusion", "Estimate diffusion from MSD evidence.", ["trajectory.estimate_diffusion"], [CapabilityInputSlot(name="msd", accepted_object_types=["trajectory.msd"])], [CapabilityOutputSlot(name="diffusion", result_type="trajectory.diffusion")], "trajectory.diffusion", artifact_port_support=CapabilitySurfaceSupport.REQUIRED),
+        _manifest("phonon.band", "Normalize and inspect a phonon band.", ["phonon.inspect_band"], [CapabilityInputSlot(name="band", accepted_object_types=["phonon.band_structure"])], [CapabilityOutputSlot(name="band", result_type="phonon.band", scientific_object_type="phonon.band_structure")], "phonon.band", viewer_bindings=["scientific.phonon-band"], artifact_port_support=CapabilitySurfaceSupport.SUPPORTED),
+        _manifest("phonon.dos", "Normalize and inspect a phonon DOS.", ["phonon.inspect_dos"], [CapabilityInputSlot(name="dos", accepted_object_types=["phonon.dos"])], [CapabilityOutputSlot(name="dos", result_type="phonon.dos", scientific_object_type="phonon.dos")], "phonon.dos", viewer_bindings=["scientific.phonon-dos"], artifact_port_support=CapabilitySurfaceSupport.SUPPORTED),
+        _manifest("phonon.band_dos", "Compose compatible phonon band and DOS views.", ["phonon.inspect_band", "phonon.inspect_dos"], [CapabilityInputSlot(name="band", accepted_object_types=["phonon.band_structure"]), CapabilityInputSlot(name="dos", accepted_object_types=["phonon.dos"])], [CapabilityOutputSlot(name="combined", result_type="phonon.band_dos")], "phonon.band_dos", artifact_port_support=CapabilitySurfaceSupport.REQUIRED),
         _manifest("structure.coordination_hist", "Summarize distance-cutoff coordination distributions.", ["structure.inspect_coordination_hist"], [structure], [CapabilityOutputSlot(name="coordination", result_type="structure.coordination.hist")], "structure.coordination_hist"),
         # The generic coordination requirement is the canonical router
         # contract.  Keep the algorithm-specific requirements as stricter
         # aliases so either trusted implementation can satisfy a request that
         # has not selected an algorithm yet; the planner still chooses the
         # concrete CrystalNN/VoronoiNN tool from the user's goal.
-        _manifest("structure.coordination_crystalnn", "Inspect CrystalNN coordination results.", ["structure.inspect_coordination", "structure.inspect_coordination_crystalnn"], [structure], [CapabilityOutputSlot(name="coordination", result_type="structure.coordination.crystalnn")], "structure.coordination_crystalnn"),
-        _manifest("structure.coordination_voronoinn", "Inspect VoronoiNN coordination results.", ["structure.inspect_coordination", "structure.inspect_coordination_voronoi"], [structure], [CapabilityOutputSlot(name="coordination", result_type="structure.coordination.voronoi")], "structure.coordination_voronoinn"),
-        _manifest("trajectory.rdf", "Compute a bounded RDF from an atomic trajectory.", ["trajectory.compute_rdf"], [trajectory], [CapabilityOutputSlot(name="rdf", result_type="trajectory.rdf")], "trajectory.rdf"),
-        _manifest("electronic.band_structure", "Inspect supplied electronic band data.", ["electronic.inspect_band"], [CapabilityInputSlot(name="band", accepted_object_types=["electronic.band_structure"])], [CapabilityOutputSlot(name="band", result_type="electronic.band_structure", scientific_object_type="electronic.band_structure")], "electronic.band_structure"),
-        _manifest("electronic.dos", "Inspect supplied electronic DOS data.", ["electronic.inspect_dos"], [CapabilityInputSlot(name="dos", accepted_object_types=["electronic.dos"])], [CapabilityOutputSlot(name="dos", result_type="electronic.dos", scientific_object_type="electronic.dos")], "electronic.dos"),
+        _manifest("structure.coordination_crystalnn", "Inspect CrystalNN coordination results.", ["structure.inspect_coordination", "structure.inspect_coordination_crystalnn"], [structure], [CapabilityOutputSlot(name="coordination", result_type="structure.coordination.crystalnn")], "structure.coordination_crystalnn", artifact_port_support=CapabilitySurfaceSupport.SUPPORTED),
+        _manifest("structure.coordination_voronoinn", "Inspect VoronoiNN coordination results.", ["structure.inspect_coordination", "structure.inspect_coordination_voronoi"], [structure], [CapabilityOutputSlot(name="coordination", result_type="structure.coordination.voronoi")], "structure.coordination_voronoinn", artifact_port_support=CapabilitySurfaceSupport.SUPPORTED),
+        _manifest("trajectory.rdf", "Compute a bounded RDF from an atomic trajectory.", ["trajectory.compute_rdf"], [trajectory], [CapabilityOutputSlot(name="rdf", result_type="trajectory.rdf")], "trajectory.rdf", artifact_port_support=CapabilitySurfaceSupport.SUPPORTED),
+        _manifest("electronic.band_structure", "Inspect supplied electronic band data.", ["electronic.inspect_band"], [CapabilityInputSlot(name="band", accepted_object_types=["electronic.band_structure"])], [CapabilityOutputSlot(name="band", result_type="electronic.band_structure", scientific_object_type="electronic.band_structure")], "electronic.band_structure", viewer_bindings=["scientific.band-structure"], artifact_port_support=CapabilitySurfaceSupport.SUPPORTED),
+        _manifest("electronic.dos", "Inspect supplied electronic DOS data.", ["electronic.inspect_dos"], [CapabilityInputSlot(name="dos", accepted_object_types=["electronic.dos"])], [CapabilityOutputSlot(name="dos", result_type="electronic.dos", scientific_object_type="electronic.dos")], "electronic.dos", viewer_bindings=["scientific.density-of-states"], artifact_port_support=CapabilitySurfaceSupport.SUPPORTED),
         _manifest("data.composition_space", "Explore an authorized composition-space projection.", ["data.explore_composition_space"], [CapabilityInputSlot(name="dataset", accepted_object_types=["materials.dataset", "materials.table"])], [CapabilityOutputSlot(name="space", result_type="data.composition_space")], "dataset.composition_space"),
         _manifest("data.materials_explorer", "Summarize an authorized materials dataset.", ["data.explore_materials"], [CapabilityInputSlot(name="dataset", accepted_object_types=["materials.dataset", "materials.table"])], [CapabilityOutputSlot(name="explorer", result_type="data.materials_explorer")], "dataset.materials_explorer"),
     ]

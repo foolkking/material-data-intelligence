@@ -1,0 +1,1148 @@
+{
+  "schema_version": "1.0",
+  "registry_version": "0.1.0",
+  "registry_snapshot_id": "registry_371aa3f8106e863af9c7c648",
+  "capability_count": 17,
+  "valid_capability_count": 17,
+  "incomplete_capability_count": 0,
+  "active_capability_count": 17,
+  "experimental_capability_count": 0,
+  "deprecated_capability_count": 0,
+  "pack_count": 5,
+  "tool_count": 62,
+  "adapter_count": 50,
+  "result_projector_count": 17,
+  "viewer_descriptor_count": 11,
+  "duplicate_capability_authority_count": 0,
+  "issues": [],
+  "capabilities": [
+    {
+      "capability_id": "data.composition_space",
+      "capability_version": "1.0",
+      "pack_id": "core.data",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "data",
+      "display_name": "探索材料组成空间",
+      "requirements": [
+        "data.explore_composition_space"
+      ],
+      "input_types": [
+        "materials.dataset",
+        "materials.table"
+      ],
+      "result_types": [
+        "data.composition_space"
+      ],
+      "tool_ids": [
+        "dataset.composition_space"
+      ],
+      "adapter_names": [
+        "CompositionSpaceAdapter"
+      ],
+      "artifact_types": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "GENERIC",
+      "result_projector": "agent2.data.composition_space",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "GENERIC",
+      "viewer_ids": [],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "583a289bc8415bc6cd735554b8e64970bbdbeb0b20bea0165f3df5d6ddbae923"
+    },
+    {
+      "capability_id": "data.materials_explorer",
+      "capability_version": "1.0",
+      "pack_id": "core.data",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "data",
+      "display_name": "浏览材料数据集",
+      "requirements": [
+        "data.explore_materials"
+      ],
+      "input_types": [
+        "materials.dataset",
+        "materials.table"
+      ],
+      "result_types": [
+        "data.materials_explorer"
+      ],
+      "tool_ids": [
+        "dataset.materials_explorer"
+      ],
+      "adapter_names": [
+        "DatasetMaterialsExplorerAdapter"
+      ],
+      "artifact_types": [
+        "quality_issues_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "GENERIC",
+      "result_projector": "agent2.data.materials_explorer",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "GENERIC",
+      "viewer_ids": [],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "28e36058a379a18cef4235fcd00ce7c4f51d1e13df6a841b3f4a21bb1c9eb61c"
+    },
+    {
+      "capability_id": "diffraction.experimental_theoretical_comparison",
+      "capability_version": "1.0",
+      "pack_id": "core.other",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "diffraction",
+      "display_name": "比较实验与理论 XRD 峰",
+      "requirements": [
+        "diffraction.compare_experimental_theoretical"
+      ],
+      "input_types": [
+        "diffraction.xrd.experimental",
+        "diffraction.xrd.theoretical"
+      ],
+      "result_types": [
+        "diffraction.xrd.comparison"
+      ],
+      "tool_ids": [
+        "structure.experimental_xrd_comparison"
+      ],
+      "adapter_names": [
+        "ExperimentalXrdComparisonAdapter"
+      ],
+      "artifact_types": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "REQUIRED",
+      "result_projector": "agent2.diffraction.experimental_theoretical_comparison",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "GENERIC",
+      "viewer_ids": [],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "c4d955f415a2d6b12d453386facaf033e31eacce6300cf879dfd4ec5fb9bfea3"
+    },
+    {
+      "capability_id": "diffraction.theoretical_xrd",
+      "capability_version": "1.0",
+      "pack_id": "core.other",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "diffraction",
+      "display_name": "生成理论 XRD 图谱",
+      "requirements": [
+        "diffraction.generate_theoretical_pattern"
+      ],
+      "input_types": [
+        "structure.crystal"
+      ],
+      "result_types": [
+        "diffraction.xrd.theoretical"
+      ],
+      "tool_ids": [
+        "structure.xrd"
+      ],
+      "adapter_names": [
+        "XrdPatternAdapter"
+      ],
+      "artifact_types": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "SUPPORTED",
+      "result_projector": "agent2.diffraction.theoretical_xrd",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "SUPPORTED",
+      "viewer_ids": [
+        "scientific.xrd"
+      ],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "6b8516c5b2dddc46a717ba503cb1f3110ea19cbc36f358ab29cba1754cf45d3d"
+    },
+    {
+      "capability_id": "electronic.band_structure",
+      "capability_version": "1.0",
+      "pack_id": "core.electronic",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "electronic",
+      "display_name": "检查电子能带",
+      "requirements": [
+        "electronic.inspect_band"
+      ],
+      "input_types": [
+        "electronic.band_structure"
+      ],
+      "result_types": [
+        "electronic.band_structure"
+      ],
+      "tool_ids": [
+        "electronic.band_structure"
+      ],
+      "adapter_names": [
+        "ElectronicBandStructureAdapter"
+      ],
+      "artifact_types": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "SUPPORTED",
+      "result_projector": "agent2.electronic.band_structure",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "SUPPORTED",
+      "viewer_ids": [
+        "scientific.band-structure"
+      ],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "LOW"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "9dd1997ae8c2c1ccc21a9584593698b785ff991842d4dc468492a59a8ad7d7b5"
+    },
+    {
+      "capability_id": "electronic.dos",
+      "capability_version": "1.0",
+      "pack_id": "core.electronic",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "electronic",
+      "display_name": "检查电子态密度",
+      "requirements": [
+        "electronic.inspect_dos"
+      ],
+      "input_types": [
+        "electronic.dos"
+      ],
+      "result_types": [
+        "electronic.dos"
+      ],
+      "tool_ids": [
+        "electronic.dos"
+      ],
+      "adapter_names": [
+        "ElectronicDosAdapter"
+      ],
+      "artifact_types": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "SUPPORTED",
+      "result_projector": "agent2.electronic.dos",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "SUPPORTED",
+      "viewer_ids": [
+        "scientific.density-of-states"
+      ],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "LOW"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "3a5af37b3df9929cc0d4b669fed4b1db9136e4841bf426565539495458f61c6e"
+    },
+    {
+      "capability_id": "ml.regression_evaluation",
+      "capability_version": "1.0",
+      "pack_id": "core.other",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "ml",
+      "display_name": "评估回归模型",
+      "requirements": [
+        "ml.evaluate_regression"
+      ],
+      "input_types": [
+        "materials.dataset",
+        "materials.table"
+      ],
+      "result_types": [
+        "ml.regression.evaluation"
+      ],
+      "tool_ids": [
+        "ml.regression_evaluation"
+      ],
+      "adapter_names": [
+        "RegressionEvaluationAdapter"
+      ],
+      "artifact_types": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "GENERIC",
+      "result_projector": "agent2.ml.regression_evaluation",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "GENERIC",
+      "viewer_ids": [],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "LOW"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "08b348f768de25e02a3981a7ee8de2f35b87e0b9bcbde07c353789dba55bc415"
+    },
+    {
+      "capability_id": "phonon.band",
+      "capability_version": "1.0",
+      "pack_id": "core.other",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "phonon",
+      "display_name": "检查声子能带",
+      "requirements": [
+        "phonon.inspect_band"
+      ],
+      "input_types": [
+        "phonon.band_structure"
+      ],
+      "result_types": [
+        "phonon.band"
+      ],
+      "tool_ids": [
+        "phonon.band"
+      ],
+      "adapter_names": [
+        "PhononBandAdapter"
+      ],
+      "artifact_types": [
+        "phonon_band_json",
+        "phonon_manifest_json",
+        "phonon_report_json",
+        "phonon_summary_json",
+        "plotly_json",
+        "recipe_json",
+        "table_json"
+      ],
+      "artifact_port_support": "SUPPORTED",
+      "result_projector": "agent2.phonon.band",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "SUPPORTED",
+      "viewer_ids": [
+        "scientific.phonon-band"
+      ],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "fb7b013c459c4a7f21a68e3495354dfdcacd505aa6e6ad367cafa3f43be48181"
+    },
+    {
+      "capability_id": "phonon.band_dos",
+      "capability_version": "1.0",
+      "pack_id": "core.other",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "phonon",
+      "display_name": "组合声子能带与态密度",
+      "requirements": [
+        "phonon.inspect_band",
+        "phonon.inspect_dos"
+      ],
+      "input_types": [
+        "phonon.band_structure",
+        "phonon.dos"
+      ],
+      "result_types": [
+        "phonon.band_dos"
+      ],
+      "tool_ids": [
+        "phonon.band_dos"
+      ],
+      "adapter_names": [
+        "PhononBandDosAdapter"
+      ],
+      "artifact_types": [
+        "phonon_band_dos_json",
+        "phonon_compatibility_json",
+        "phonon_manifest_json",
+        "phonon_summary_json",
+        "plotly_json",
+        "recipe_json",
+        "table_json"
+      ],
+      "artifact_port_support": "REQUIRED",
+      "result_projector": "agent2.phonon.band_dos",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "GENERIC",
+      "viewer_ids": [],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "f350a1054273e5e0582054c5c15b5f856ac5bedd80176b839640cdb2603b8465"
+    },
+    {
+      "capability_id": "phonon.dos",
+      "capability_version": "1.0",
+      "pack_id": "core.other",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "phonon",
+      "display_name": "检查声子态密度",
+      "requirements": [
+        "phonon.inspect_dos"
+      ],
+      "input_types": [
+        "phonon.dos"
+      ],
+      "result_types": [
+        "phonon.dos"
+      ],
+      "tool_ids": [
+        "phonon.dos"
+      ],
+      "adapter_names": [
+        "PhononDosAdapter"
+      ],
+      "artifact_types": [
+        "phonon_dos_json",
+        "phonon_manifest_json",
+        "phonon_report_json",
+        "phonon_summary_json",
+        "plotly_json",
+        "recipe_json",
+        "table_json"
+      ],
+      "artifact_port_support": "SUPPORTED",
+      "result_projector": "agent2.phonon.dos",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "SUPPORTED",
+      "viewer_ids": [
+        "scientific.phonon-dos"
+      ],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "0648ab7ec603d3fca6450e938b618d71bd082d7348917f66a4b704bb9d2818ce"
+    },
+    {
+      "capability_id": "structure.coordination_crystalnn",
+      "capability_version": "1.0",
+      "pack_id": "core.structure",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "structure",
+      "display_name": "检查 CrystalNN 局域配位",
+      "requirements": [
+        "structure.inspect_coordination",
+        "structure.inspect_coordination_crystalnn"
+      ],
+      "input_types": [
+        "structure.crystal"
+      ],
+      "result_types": [
+        "structure.coordination.crystalnn"
+      ],
+      "tool_ids": [
+        "structure.coordination_crystalnn"
+      ],
+      "adapter_names": [
+        "CrystalNNCoordinationAdapter"
+      ],
+      "artifact_types": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "SUPPORTED",
+      "result_projector": "agent2.structure.coordination_crystalnn",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "GENERIC",
+      "viewer_ids": [],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "e3e8fd0e7d88d6cebd4ecd25dabee87d4a145cc7a6f81d78c2c94fc1ea3551d5"
+    },
+    {
+      "capability_id": "structure.coordination_hist",
+      "capability_version": "1.0",
+      "pack_id": "core.structure",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "structure",
+      "display_name": "分析配位数分布",
+      "requirements": [
+        "structure.inspect_coordination_hist"
+      ],
+      "input_types": [
+        "structure.crystal"
+      ],
+      "result_types": [
+        "structure.coordination.hist"
+      ],
+      "tool_ids": [
+        "structure.coordination_hist"
+      ],
+      "adapter_names": [
+        "CoordinationHistAdapter"
+      ],
+      "artifact_types": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "GENERIC",
+      "result_projector": "agent2.structure.coordination_hist",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "GENERIC",
+      "viewer_ids": [],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "7ce9a81bb4246e7416b2045b79ea6cfcdcddd6b55f867635594f6d833b24998f"
+    },
+    {
+      "capability_id": "structure.coordination_voronoinn",
+      "capability_version": "1.0",
+      "pack_id": "core.structure",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "structure",
+      "display_name": "检查 VoronoiNN 局域配位",
+      "requirements": [
+        "structure.inspect_coordination",
+        "structure.inspect_coordination_voronoi"
+      ],
+      "input_types": [
+        "structure.crystal"
+      ],
+      "result_types": [
+        "structure.coordination.voronoi"
+      ],
+      "tool_ids": [
+        "structure.coordination_voronoinn"
+      ],
+      "adapter_names": [
+        "VoronoiNNCoordinationAdapter"
+      ],
+      "artifact_types": [
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "SUPPORTED",
+      "result_projector": "agent2.structure.coordination_voronoinn",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "GENERIC",
+      "viewer_ids": [],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "2c07a96a4cc3baa3c328f6411c0dc85691b3fc7473e1998b298306da21946489"
+    },
+    {
+      "capability_id": "structure.rdf",
+      "capability_version": "1.0",
+      "pack_id": "core.structure",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "structure",
+      "display_name": "计算径向分布函数",
+      "requirements": [
+        "structure.compute_rdf"
+      ],
+      "input_types": [
+        "structure.crystal"
+      ],
+      "result_types": [
+        "structure.rdf"
+      ],
+      "tool_ids": [
+        "structure.rdf"
+      ],
+      "adapter_names": [
+        "RdfAdapter"
+      ],
+      "artifact_types": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "GENERIC",
+      "result_projector": "agent2.structure.rdf",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "GENERIC",
+      "viewer_ids": [],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "df1a156d4611a676d8bfd037d63ca60d170f30ae8c73998ba9358149dd63c0ec"
+    },
+    {
+      "capability_id": "trajectory.diffusion",
+      "capability_version": "1.0",
+      "pack_id": "core.trajectory",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "trajectory",
+      "display_name": "估算扩散性质",
+      "requirements": [
+        "trajectory.estimate_diffusion"
+      ],
+      "input_types": [
+        "trajectory.msd"
+      ],
+      "result_types": [
+        "trajectory.diffusion"
+      ],
+      "tool_ids": [
+        "trajectory.diffusion"
+      ],
+      "adapter_names": [
+        "TrajectoryDiffusionAdapter"
+      ],
+      "artifact_types": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "REQUIRED",
+      "result_projector": "agent2.trajectory.diffusion",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "GENERIC",
+      "viewer_ids": [],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "ed5a9daec2e1525f8f1a2ac0c1d9d2719469a8dca2a886370ca127ff2c2776ba"
+    },
+    {
+      "capability_id": "trajectory.msd",
+      "capability_version": "1.0",
+      "pack_id": "core.trajectory",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "trajectory",
+      "display_name": "计算均方位移",
+      "requirements": [
+        "trajectory.compute_msd"
+      ],
+      "input_types": [
+        "trajectory.atomic"
+      ],
+      "result_types": [
+        "trajectory.msd"
+      ],
+      "tool_ids": [
+        "trajectory.msd"
+      ],
+      "adapter_names": [
+        "TrajectoryMsdAdapter"
+      ],
+      "artifact_types": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "SUPPORTED",
+      "result_projector": "agent2.trajectory.msd",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "GENERIC",
+      "viewer_ids": [],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "d13c5c8f2bd40fa7f39b77e210d402c543d712c1a23612e241fca3e8a3b7c27f"
+    },
+    {
+      "capability_id": "trajectory.rdf",
+      "capability_version": "1.0",
+      "pack_id": "core.trajectory",
+      "status": "ACTIVE",
+      "completeness": "VALID",
+      "domain": "trajectory",
+      "display_name": "计算轨迹径向分布函数",
+      "requirements": [
+        "trajectory.compute_rdf"
+      ],
+      "input_types": [
+        "trajectory.atomic"
+      ],
+      "result_types": [
+        "trajectory.rdf"
+      ],
+      "tool_ids": [
+        "trajectory.rdf"
+      ],
+      "adapter_names": [
+        "TrajectoryRdfAdapter"
+      ],
+      "artifact_types": [
+        "plotly_json",
+        "recipe_json",
+        "summary_md",
+        "table_json"
+      ],
+      "artifact_port_support": "SUPPORTED",
+      "result_projector": "agent2.trajectory.rdf",
+      "interpretation_support": "GENERIC",
+      "viewer_support": "GENERIC",
+      "viewer_ids": [],
+      "report_support": "GENERIC",
+      "planner_visibility": "VISIBLE",
+      "resource_classes": [
+        "CPU"
+      ],
+      "expected_cost_classes": [
+        "MEDIUM"
+      ],
+      "qualification_level": "STRUCTURAL_ONLY",
+      "qualification_evidence_refs": [],
+      "limitations": [],
+      "contract_fingerprint": "861b7ef4d5489babc3a127d62644fd147a7e3cfdda7aa653372a37ac2baa4ddd"
+    }
+  ],
+  "orphans": [
+    {
+      "component_kind": "TOOL",
+      "component_id": "composition.chem_sys_sunburst",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "composition.chem_sys_treemap",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "composition.cluster_2d",
+      "classification": "FUTURE_OR_EXPERIMENTAL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "composition.cluster_3d",
+      "classification": "FUTURE_OR_EXPERIMENTAL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "composition.elements_hist",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "composition.formula_statistics",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "composition.ptable_heatmap",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "composition.ptable_heatmap_splits",
+      "classification": "FUTURE_OR_EXPERIMENTAL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "composition.ptable_hists",
+      "classification": "FUTURE_OR_EXPERIMENTAL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "composition.ptable_scatter",
+      "classification": "FUTURE_OR_EXPERIMENTAL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "composition.summary",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "ml.basic_metrics",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "ml.classification_evaluation",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "ml.density_scatter",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "ml.error_by_chem_sys",
+      "classification": "FUTURE_OR_EXPERIMENTAL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "ml.error_by_element",
+      "classification": "FUTURE_OR_EXPERIMENTAL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "ml.error_distribution",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "ml.outlier_table",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "ml.parity_plot",
+      "classification": "FUTURE_OR_EXPERIMENTAL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "ml.uncertainty_calibration",
+      "classification": "FUTURE_OR_EXPERIMENTAL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "ml.uncertainty_evaluation",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "phonon.animation",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.brillouin_zone",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.chem_env_sunburst",
+      "classification": "FUTURE_OR_EXPERIMENTAL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.composition_from_structure",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.lattice_summary",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.local_environment_polyhedra",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.preview_metadata",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.spacegroup_summary",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.structure_2d",
+      "classification": "FUTURE_OR_EXPERIMENTAL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.structure_3d",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.summary",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.trajectory_import",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.trajectory_viewer",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.viewer_3d",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.viewer_export_package",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.viewer_scene",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.viewer_scene_metadata",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "structure.volumetric_data",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "table.distribution_summary",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "table.numeric_summary",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "trajectory.viewer",
+      "classification": "FUTURE_OR_EXPERIMENTAL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "viz.correlation",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "viz.histogram",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "TOOL",
+      "component_id": "viz.scatter",
+      "classification": "PUBLIC_LOW_LEVEL_TOOL",
+      "reason": "Registered executable Tool is not currently Agent Capability-reachable."
+    },
+    {
+      "component_kind": "VIEWER",
+      "component_id": "scientific.scientific-table",
+      "classification": "SOURCE_VIEWER",
+      "reason": "Viewer is reached from a scientific source type rather than a Capability output binding."
+    },
+    {
+      "component_kind": "VIEWER",
+      "component_id": "scientific.scientific-table",
+      "classification": "SOURCE_VIEWER",
+      "reason": "Viewer is reached from a scientific source type rather than a Capability output binding."
+    },
+    {
+      "component_kind": "VIEWER",
+      "component_id": "scientific.structure-3d",
+      "classification": "SOURCE_VIEWER",
+      "reason": "Viewer is reached from a scientific source type rather than a Capability output binding."
+    },
+    {
+      "component_kind": "VIEWER",
+      "component_id": "scientific.trajectory",
+      "classification": "SOURCE_VIEWER",
+      "reason": "Viewer is reached from a scientific source type rather than a Capability output binding."
+    },
+    {
+      "component_kind": "VIEWER",
+      "component_id": "scientific.volumetric",
+      "classification": "PRESENTATION_EXTENSION",
+      "reason": "Viewer descriptor is not currently reached by Capability input/output types."
+    }
+  ],
+  "inventory_fingerprint": "af76e991a47f0e937d79b58a42312423374ca092f051929cc88347a7e4bffeae",
+  "accepted": true,
+  "error_count": 0
+}

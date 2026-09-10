@@ -8203,3 +8203,27 @@ PostgreSQL, Redis/RQ, MinIO, API, frontend and all six workers, including exact
 ContextSnapshot persistence, planning, execution, continuation and historical
 version preservation. No schema, public identity, queue, Tool/Adapter or
 scientific-authority contract changed.
+## 2026-09-10 Workstream C — Scientific Capability Extension Platform
+
+- Extended the existing `CapabilityManifest` contract additively to version
+  1.2 with explicit Result, Artifact-port, interpretation, Viewer and Report
+  support, planner visibility, Tool-authoritative resource hints,
+  lifecycle/recovery policy, and structural-versus-scientific qualification.
+- Added one deterministic completeness projection over the canonical
+  Requirement, Capability Pack, Tool, Adapter, Artifact-port, Result-projector
+  and Viewer registries. It creates no shadow execution registry.
+- Generated canonical JSON/Markdown inventory: 17/17 capabilities valid,
+  5 Packs, 62 Tools, 50 Adapters, 17 Result projectors, 11 Viewer descriptors,
+  zero duplicate capability authority and zero incomplete capability.
+- Classified 33 public low-level and 12 future/experimental Tools that are not
+  Agent Capability-reachable; these are diagnostic classifications, not
+  cleanup candidates.
+- Kept eligibility deterministic and added a direct cross-project
+  ResearchTurn source rejection before planning. Planner catalog metadata is
+  bounded, scientific, fingerprinted and omits Tool/Adapter implementation
+  details.
+- Verified 52 capability-platform contract tests, 169 cross-domain scientific
+  regressions (one optional pre-existing skip), and 2 canonical isolated
+  PostgreSQL/Redis/MinIO fresh-worker Agent paths for RDF and two-step XRD.
+  Canonical API health also passed with PostgreSQL, Redis, MinIO and Redis
+  worker backends.

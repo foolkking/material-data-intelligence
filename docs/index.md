@@ -98,8 +98,21 @@ qualification authorities.
 - [`agent2/capability-resolution-v1.md`](agent2/capability-resolution-v1.md)
 - [`agent2/capability-plan-v1.md`](agent2/capability-plan-v1.md)
 - [`agent2/capability-binder-v1.md`](agent2/capability-binder-v1.md)
+
 - [`agent2/agent2-phase3-state-flow.md`](agent2/agent2-phase3-state-flow.md)
 - [`agent2/agent2-phase3-evaluation-contract.md`](agent2/agent2-phase3-evaluation-contract.md)
+
+## Scientific Capability Extension Platform
+
+- [`capabilities/SCIENTIFIC_CAPABILITY_EXTENSION_PLATFORM.md`](capabilities/SCIENTIFIC_CAPABILITY_EXTENSION_PLATFORM.md):
+  canonical Requirement → Capability Pack → Tool/Adapter → Artifact →
+  ScientificResult → presentation extension contract and validator.
+- [`capabilities/ADDING_A_SCIENTIFIC_CAPABILITY.md`](capabilities/ADDING_A_SCIENTIFIC_CAPABILITY.md):
+  bounded developer workflow using real canonical authorities.
+- [`capabilities/generated/capability_inventory.md`](capabilities/generated/capability_inventory.md):
+  generated human-readable health and orphan classification.
+- [`capabilities/generated/capability_inventory.json`](capabilities/generated/capability_inventory.json):
+  machine-readable canonical registry inventory.
 
 ## Agent 2.0 Phase 4 Execution Integration
 

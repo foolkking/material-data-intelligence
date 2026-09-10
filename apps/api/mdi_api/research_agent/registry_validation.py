@@ -92,8 +92,9 @@ def validate_agent2_registries(registries: Agent2Registries, tool_registry: Any)
         for precondition in capability.preconditions:
             if not preconditions.contains(precondition.predicate_id):
                 raise RegistryValidationError(f"Unknown precondition predicate: {precondition.predicate_id}")
-        if not registries.result_projectors.contains(capability.result_projector):
-            raise RegistryValidationError(f"Unknown result projector: {capability.result_projector}")
+        if capability.result_support.value != "NONE":
+            if not capability.result_projector or not registries.result_projectors.contains(capability.result_projector):
+                raise RegistryValidationError(f"Unknown result projector: {capability.result_projector}")
         if not registries.progress_projectors.contains(capability.progress_projector):
             raise RegistryValidationError(f"Unknown progress projector: {capability.progress_projector}")
 
@@ -113,3 +114,19 @@ def validate_agent2_registries(registries: Agent2Registries, tool_registry: Any)
             )
             if not result.accepted:
                 raise RegistryValidationError("; ".join(result.errors))
+
+    # Workstream C completeness is a projection over the same authorities, not
+    # a second registry.  Startup keeps Viewer/Adapter composition optional;
+    # the full report command supplies those concrete authorities.
+    from mdi_api.research_agent.capabilities.extension_validation import (
+        validate_capability_extension_platform,
+    )
+
+    extension_report = validate_capability_extension_platform(registries, tool_registry)
+    extension_errors = [
+        f"{item.code}:{item.capability_id or item.component_ref or 'platform'}"
+        for item in extension_report.issues
+        if item.severity == "ERROR"
+    ]
+    if extension_errors:
+        raise RegistryValidationError("; ".join(extension_errors))

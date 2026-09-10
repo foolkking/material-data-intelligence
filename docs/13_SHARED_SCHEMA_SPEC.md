@@ -2744,3 +2744,15 @@ The revision may widen `alembic_version.version_num` to `VARCHAR(64)` so a
 descriptive current marker can be stored; this does not change scientific
 data. It introduces no new ScientificObject, ScientificObjectVersion,
 ScientificResult, Presentation or Report authority.
+# CapabilityManifest 1.2 extension completeness
+
+`CapabilityManifest` 1.2 is backward-readable with 1.1 and adds explicit
+extension-platform metadata: Result/Artifact-port/interpretation/Viewer/report
+support (`REQUIRED | SUPPORTED | GENERIC | NONE`), planner visibility,
+Tool-authoritative resource hints, conservative execution/recovery semantics,
+and structural-versus-scientific qualification metadata. Required/supported
+presentation surfaces must declare their binding; `NONE` forbids one.
+
+Capability Pack contract fingerprints include these semantic fields. Planner
+catalog projections expose the scientific support summary and contract
+fingerprint but never Tool bindings or Adapter implementation names.

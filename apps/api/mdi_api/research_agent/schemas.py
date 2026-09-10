@@ -256,6 +256,84 @@ class CapabilityStatus(str, Enum):
     DEPRECATED = "DEPRECATED"
 
 
+class CapabilitySurfaceSupport(str, Enum):
+    """Explicit completeness state for optional capability surfaces."""
+
+    REQUIRED = "REQUIRED"
+    SUPPORTED = "SUPPORTED"
+    GENERIC = "GENERIC"
+    NONE = "NONE"
+
+
+class CapabilityPlannerVisibility(str, Enum):
+    VISIBLE = "VISIBLE"
+    HIDDEN = "HIDDEN"
+
+
+class CapabilityResourceProfile(BaseModel):
+    """Planning hint; the Tool Registry remains the execution authority."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    authority: Literal["TOOL_BINDING"] = "TOOL_BINDING"
+    resource_class: Literal[
+        "DERIVED_FROM_TOOL",
+        "CPU",
+        "MEMORY",
+        "GPU",
+        "IO",
+        "EXTERNAL",
+        "MIXED",
+    ] = "DERIVED_FROM_TOOL"
+    expected_cost_class: Literal[
+        "DERIVED_FROM_TOOL",
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+    ] = "DERIVED_FROM_TOOL"
+
+
+class CapabilityExecutionPolicy(BaseModel):
+    """Conservative recovery metadata consumed by lifecycle tooling."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    retryability: Literal["SAFE", "CONDITIONAL", "UNSAFE", "UNKNOWN"] = "CONDITIONAL"
+    idempotency: Literal[
+        "IDEMPOTENT",
+        "IDENTITY_GUARDED",
+        "NON_IDEMPOTENT",
+        "UNKNOWN",
+    ] = "IDENTITY_GUARDED"
+    partial_output_policy: Literal[
+        "PRESERVE_VALIDATED",
+        "DISCARD",
+        "NONE",
+        "UNKNOWN",
+    ] = "PRESERVE_VALIDATED"
+    resumability: Literal[
+        "RESUMABLE",
+        "RESTART_FROM_DURABLE_BOUNDARY",
+        "NON_RESUMABLE",
+        "UNKNOWN",
+    ] = "RESTART_FROM_DURABLE_BOUNDARY"
+
+
+class CapabilityQualification(BaseModel):
+    """Structural/scientific qualification are deliberately distinct."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    level: Literal[
+        "STRUCTURAL_ONLY",
+        "SCIENTIFICALLY_QUALIFIED",
+        "EXPERIMENTAL",
+        "UNKNOWN",
+    ] = "STRUCTURAL_ONLY"
+    evidence_refs: list[str] = Field(default_factory=list, max_length=32)
+    validated_domains: list[str] = Field(default_factory=list, max_length=32)
+
+
 class CapabilityInputSlot(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -349,12 +427,53 @@ class CapabilityManifest(BaseModel):
     tool_bindings: list[ToolBinding]
     viewer_bindings: list[str]
     evidence_projector: str | None
-    result_projector: str = Field(min_length=1, max_length=128)
+    result_projector: str | None = Field(default=None, min_length=1, max_length=128)
+    interpretation_profile: str | None = Field(default=None, min_length=1, max_length=128)
     report_projector: str | None
     progress_projector: str = Field(min_length=1, max_length=128)
+    result_support: CapabilitySurfaceSupport = CapabilitySurfaceSupport.REQUIRED
+    artifact_port_support: CapabilitySurfaceSupport = CapabilitySurfaceSupport.GENERIC
+    interpretation_support: CapabilitySurfaceSupport = CapabilitySurfaceSupport.GENERIC
+    viewer_support: CapabilitySurfaceSupport = CapabilitySurfaceSupport.GENERIC
+    report_support: CapabilitySurfaceSupport = CapabilitySurfaceSupport.GENERIC
+    planner_visibility: CapabilityPlannerVisibility = CapabilityPlannerVisibility.VISIBLE
+    resource_profile: CapabilityResourceProfile = Field(default_factory=CapabilityResourceProfile)
+    execution_policy: CapabilityExecutionPolicy = Field(default_factory=CapabilityExecutionPolicy)
+    qualification: CapabilityQualification = Field(default_factory=CapabilityQualification)
     status: CapabilityStatus
     planning_priority: int = Field(default=100, ge=0, le=10_000)
-    manifest_schema_version: Literal["1.1"] = "1.1"
+    manifest_schema_version: Literal["1.1", "1.2"] = "1.2"
+
+    @model_validator(mode="after")
+    def validate_extension_surfaces(self) -> "CapabilityManifest":
+        if self.result_support == CapabilitySurfaceSupport.NONE and self.result_projector:
+            raise ValueError("result_support NONE cannot declare a result_projector")
+        if self.result_support != CapabilitySurfaceSupport.NONE and not self.result_projector:
+            raise ValueError("result-producing capability requires a result_projector")
+        if self.viewer_support == CapabilitySurfaceSupport.REQUIRED and not self.viewer_bindings:
+            raise ValueError("viewer_support REQUIRED requires viewer_bindings")
+        if self.viewer_support == CapabilitySurfaceSupport.NONE and self.viewer_bindings:
+            raise ValueError("viewer_support NONE cannot declare viewer_bindings")
+        if (
+            self.interpretation_support
+            in {CapabilitySurfaceSupport.REQUIRED, CapabilitySurfaceSupport.SUPPORTED}
+            and not self.interpretation_profile
+        ):
+            raise ValueError(
+                "explicit interpretation support requires interpretation_profile"
+            )
+        if (
+            self.interpretation_support == CapabilitySurfaceSupport.NONE
+            and self.interpretation_profile
+        ):
+            raise ValueError(
+                "interpretation_support NONE cannot declare interpretation_profile"
+            )
+        if self.report_support == CapabilitySurfaceSupport.REQUIRED and not self.report_projector:
+            raise ValueError("report_support REQUIRED requires report_projector")
+        if self.report_support == CapabilitySurfaceSupport.NONE and self.report_projector:
+            raise ValueError("report_support NONE cannot declare report_projector")
+        return self
 
 
 class ResearchTurnUIContext(BaseModel):

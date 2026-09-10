@@ -160,7 +160,14 @@ class CapabilityExtensionRegistry:
                         errors.append(f"EXECUTABLE_CONDITION_FORBIDDEN:{manifest.capability_id}")
                     elif not version_satisfies(tool.version, binding.version_constraint):
                         errors.append(f"TOOL_VERSION_UNAVAILABLE:{binding.tool_id}")
-            if result_projectors is not None and not result_projectors.contains(manifest.result_projector):
+            if (
+                result_projectors is not None
+                and manifest.result_support.value != "NONE"
+                and (
+                    not manifest.result_projector
+                    or not result_projectors.contains(manifest.result_projector)
+                )
+            ):
                 errors.append(f"UNKNOWN_RESULT_PROJECTOR:{manifest.result_projector}")
             if progress_projectors is not None and not progress_projectors.contains(manifest.progress_projector):
                 errors.append(f"UNKNOWN_PROGRESS_PROJECTOR:{manifest.progress_projector}")
@@ -222,9 +229,19 @@ class CapabilityExtensionRegistry:
                 "input_slots": [slot.model_dump(mode="json") for slot in item.input_slots],
                 "output_slots": [slot.model_dump(mode="json") for slot in item.output_slots],
                 "limitations": list(item.limitations),
+                "planner_visibility": item.planner_visibility.value,
+                "surface_support": {
+                    "result": item.result_support.value,
+                    "artifact_ports": item.artifact_port_support.value,
+                    "interpretation": item.interpretation_support.value,
+                    "viewer": item.viewer_support.value,
+                    "report": item.report_support.value,
+                },
+                "resource_profile": item.resource_profile.model_dump(mode="json"),
+                "contract_fingerprint": capability_contract_fingerprint(item),
             }
             for item in source
-            if item.status == CapabilityStatus.ACTIVE
+            if item.status == CapabilityStatus.ACTIVE and item.planner_visibility.value == "VISIBLE"
         ]
 
 
