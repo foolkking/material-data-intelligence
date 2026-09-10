@@ -8,14 +8,15 @@
 ## 1. Current Status
 
 - `PROJECT_PHASE`: Source/physical migration and capability parity are closed;
-  local and real-service release qualification passed; remote exact-SHA CI is
-  conditionally pending separate push authorization.
-- `CURRENT_ACCEPTED_COMMIT`: `0b8167b`
-- `SNAPSHOT_BASE_COMMIT`: `0b8167b`
+  Workstream A lifecycle reliability and Workstream B context/scientific-memory
+  foundations are active in the canonical migrated repository. Remote
+  exact-SHA CI remains a separately authorized release gate.
+- `CURRENT_ACCEPTED_COMMIT`: `aac8ef4`
+- `SNAPSHOT_BASE_COMMIT`: `aac8ef4`
 - `WORKTREE_EXPECTATION`: existing migration worktree, detached HEAD, clean
-- `LAST_ACCEPTED_REVIEW`: Remote Qualification and Release Gate Review,
-  `CONDITIONAL`, 2026-09-09
-- `LAST_UPDATED_AT`: `2026-09-09`
+- `LAST_ACCEPTED_REVIEW`: Canonical Worktree Recovery and Workstream B
+  Continuation, `PASS`, 2026-09-10
+- `LAST_UPDATED_AT`: `2026-09-10`
 - `STATE_STATUS`: `CURRENT`
 - `PROJECT_STATE_ACTIVE`: `YES`
 - `HIGH_LEVEL_DUAL_READ_ACTIVE`: `YES`
@@ -62,14 +63,15 @@ specialized authority requires explicit reconciliation and may set
 
 ## 5. Active Work
 
-- `CURRENT_WORKSTREAM`: release candidate awaits separately authorized remote
-  publication and exact-SHA GitHub Actions qualification.
-- `CURRENT_TASK`: no local product or migration repair is pending; `TASKS.md`
-  remains the task queue authority.
-- `NEXT_ACTION`: obtain explicit push authorization, publish the exact final
-  release-candidate SHA, and run the existing CI workflow on that same SHA.
-- `BLOCKED_ITEMS`: remote exact-SHA CI cannot run until the local final SHA is
-  authorized for push. There are no unresolved local runtime blockers.
+- `CURRENT_WORKSTREAM`: Workstream B context provenance and scientific-memory
+  foundation is complete in the canonical migrated repository.
+- `CURRENT_TASK`: no active queued task after canonical recovery closeout;
+  `TASKS.md` remains the task queue authority.
+- `NEXT_ACTION`: when explicitly authorized, begin Workstream C — Scientific
+  Capability Extension Platform. Remote release qualification remains a
+  separate exact-SHA/push-authorized operation.
+- `BLOCKED_ITEMS`: no unresolved Workstream A/B blocker. Broad context quality
+  and scale stress remain future evaluation rather than authority defects.
 
 ## 6. Verification State
 
@@ -97,6 +99,14 @@ specialized authority requires explicit reconciliation and may set
 - Authenticated browser runtime: representative project/data/research/reports/
   tasks/notifications routes, real API proxy, and persisted-ID reopen pass with
   zero fatal page, server, chunk, or import errors.
+- Canonical worktree recovery: lifecycle/context focused backend suites
+  `83 passed`; Research provenance UI `93 passed`; Ruff, compileall, typecheck,
+  production build, architecture guard/report and diff checks pass.
+- Canonical A/B service verification: Phase 2 exact ContextSnapshot provenance,
+  Phase 3 planning, Phase 4 worker execution and Phase 7 continuation with an
+  exact historical version pass against PostgreSQL, Redis/RQ and MinIO.
+  Canonical runtime check reports API/frontend/storage/database healthy and all
+  six worker queues discovered.
 - Remote CI: workflow and authenticated CLI are available, but the final SHA is
   not on the remote because push was not authorized. Exact-SHA CI is not run.
   Local/service readiness is PASS; overall release readiness is CONDITIONAL.
@@ -109,6 +119,9 @@ specialized authority requires explicit reconciliation and may set
   has no exact-SHA remote CI result.
 - **Environmental/historical debt:** 76 accepted backend baseline failures
   remain historical/environmental; no current runtime observation is unresolved.
+- **Context quality/scale debt:** provider token estimates vary and broader
+  near-budget, very-large-Dataset and edited-branch stress evaluation remains
+  future work; source authority and bounded behavior are established.
 
 ## 8. State Authorities
 
@@ -153,6 +166,12 @@ specialized authority requires explicit reconciliation and may set
   `950/950`, typecheck/build, migration head, worker registration, architecture,
   supply-chain, and provenance gates pass. Remote exact-SHA CI remains pending
   separately authorized push.
+- 2026-09-10: corrected the active engineering lineage to
+  `E:\1project\mdi-b0-5a1`, semantically recovered Workstream A and partial
+  Workstream B into migrated canonical owners, completed provenance/freshness/
+  memory/context visibility work, and reverified the canonical API, frontend,
+  six workers and service-backed Agent paths. The old repository is now
+  comparison/recovery source only.
 
 ## 11. Source Pointers
 

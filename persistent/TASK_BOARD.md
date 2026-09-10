@@ -4299,3 +4299,16 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
       supply-chain pin, runtime configuration, and release-SHA provenance gates.
 - [ ] Publish the exact final SHA and run exact-SHA remote CI; blocked only on
       separate push authorization.
+
+## 2026-09-10 Canonical worktree recovery and Workstream B continuation
+
+- [x] Mark `E:\1project\mdi-b0-5a1` as the only active engineering repository
+      and retain the old tree as historical/comparison/recovery source.
+- [x] Recover Workstream A lifecycle projection, failure/recovery
+      classification and correlation behavior into migrated canonical owners.
+- [x] Recover and complete Workstream B provenance, authority, freshness,
+      exact-version, bounded context, memory grounding and visibility behavior.
+- [x] Pass canonical focused backend `83`, Research UI `93`, Ruff, compileall,
+      typecheck, production build, architecture and diff checks.
+- [x] Pass canonical PostgreSQL/Redis/MinIO Phase 2/3/4/7 service flows and
+      discover all six canonical worker queues.

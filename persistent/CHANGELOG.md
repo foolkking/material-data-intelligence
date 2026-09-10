@@ -2905,3 +2905,18 @@ was created.
   architecture, lock, supply-chain pin, and provenance checks.
 - Kept release status conditional because the final exact SHA is not on the
   remote and no push or remote CI was authorized.
+
+## 2026-09-10 — Canonical Agent reliability and context lineage recovery
+
+- Corrected active development to the migrated canonical repository
+  `E:\1project\mdi-b0-5a1`; the old pre-migration tree is now recovery and
+  comparison source only.
+- Semantically recovered the completed Research lifecycle projection and
+  partial context/memory implementation into canonical backend and frontend
+  owners without restoring legacy physical ownership.
+- Added source authority, freshness, epistemic status, exact-version
+  provenance, deterministic deduplication, project-scoped memory retrieval and
+  bounded user/operator context visibility.
+- Verified focused and service-backed Agent paths on the canonical
+  PostgreSQL/Redis/MinIO/API/frontend/worker stack. No schema, queue, handler,
+  Tool, Adapter, public API or scientific identity changed.

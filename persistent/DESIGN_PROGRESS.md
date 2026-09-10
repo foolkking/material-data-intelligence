@@ -8178,3 +8178,28 @@ Release readiness is `CONDITIONAL`: the exact final local SHA is not present on
 real-service qualification is complete; the next gate is separately authorized
 publication of the exact final SHA followed by the existing workflow on that
 same SHA.
+
+## Canonical worktree recovery and Workstream B continuation (2026-09-10)
+
+Active engineering was corrected from the old pre-migration tree to
+`E:\1project\mdi-b0-5a1`. Valid Workstream A lifecycle/recovery behavior and
+partial Workstream B context/memory work were recovered semantically into the
+migrated canonical owners; the old tree was not copied wholesale and remains
+historical/comparison source only.
+
+The canonical backend now exposes a read-only ResearchTurn lifecycle
+projection with stage ownership, latency, failure/recovery classification,
+durable correlation and bounded ContextSnapshot observability. Context
+candidates, manifests and memory references now preserve source class,
+authority, freshness, epistemic status and exact durable references; selection
+is project-authorized, provenance-deduplicated and bounded by the existing
+purpose-specific policy. The Research provenance disclosure renders freshness
+without exposing hidden reasoning or internal payloads.
+
+Canonical verification passed 83 focused backend tests and 93 Research UI
+tests, Ruff, compileall, typecheck, production build, architecture checks and
+diff validation. Phase 2/3/4/7 service-backed flows passed against canonical
+PostgreSQL, Redis/RQ, MinIO, API, frontend and all six workers, including exact
+ContextSnapshot persistence, planning, execution, continuation and historical
+version preservation. No schema, public identity, queue, Tool/Adapter or
+scientific-authority contract changed.

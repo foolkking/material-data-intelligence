@@ -20757,3 +20757,29 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
   下一步仅是在单独授权后 push exact SHA，并对同一 SHA 运行现有 workflow。
 - 安全：未重开 migration/capability parity；未 flush queue、删除用户对象、
   修改 forensic PostgreSQL、创建 branch/worktree 或 push。
+
+## Material Data Intelligence — Canonical Worktree Recovery & Workstream B Continuation
+
+- 状态：已完成；canonical active root 为
+  `E:\1project\mdi-b0-5a1`，旧 `E:\1project\Material Data Intelligence`
+  仅保留为 historical/comparison/recovery source，未继续开发或整体复制。
+- 完成时间：2026-09-10T12:03:18+08:00。
+- Workstream A：将已完成的 ResearchTurn lifecycle projection、stage owner/
+  latency、ContextSnapshot summary、durable correlation、failure category 与
+  minimum safe recovery action 语义恢复到 migrated canonical owner。
+- Workstream B：恢复并完成 typed provenance、source authority、freshness、
+  epistemic status、exact object/version/Result refs、project authorization、
+  provenance deduplication、purpose budget/degradation、memory grounding/
+  ranking、continuation reuse 与 Research context disclosure。
+- 修改摘要：实现提交 `aac8ef4`；未创建第三套实现、未恢复旧 ownership、
+  未改 schema/Alembic、queue/handler、Tool/Adapter、public API 或 scientific
+  identity。
+- 测试结果：focused backend `83 passed, 15 warnings`；Research UI
+  `93 passed`；Ruff、compileall、typecheck、production build、
+  architecture guard/report、`git diff --check` PASS。Phase 2 exact manifest、
+  Phase 3 planning、Phase 4 worker execution、Phase 7 continuation/exact
+  historical version service flows PASS。
+- Runtime：canonical stack check PASS；PostgreSQL、Redis、MinIO、API 和
+  frontend healthy；canonical worker discovery `6/6` queues。
+- 提交/CI 状态：实现提交 `aac8ef4`，本记录由随后本地 docs/state 提交固化；
+  未 push，未运行 remote CI。
