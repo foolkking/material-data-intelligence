@@ -147,6 +147,15 @@ qualification authorities.
 - [`agent2/reliability/RESEARCH_LIFECYCLE_RELIABILITY.md`](agent2/reliability/RESEARCH_LIFECYCLE_RELIABILITY.md)
 - [`agent2/worktree_recovery/CANONICAL_WORKTREE_RECOVERY_AND_B_CONTINUATION.md`](agent2/worktree_recovery/CANONICAL_WORKTREE_RECOVERY_AND_B_CONTINUATION.md)
 
+## Agent 2.0 Bounded Scientific Autonomy
+
+- [`agent2/autonomy/BOUNDED_SCIENTIFIC_AUTONOMY.md`](agent2/autonomy/BOUNDED_SCIENTIFIC_AUTONOMY.md):
+  explicitly activated, durable, finite Result-driven research cycles.
+- [`agent2/autonomy/AUTONOMY_POLICY_AND_QUALITY_RULES.md`](agent2/autonomy/AUTONOMY_POLICY_AND_QUALITY_RULES.md):
+  qualification, budget, reuse, stop, recovery and safety rules.
+- [`agent2/autonomy/generated/autonomy_evaluation.json`](agent2/autonomy/generated/autonomy_evaluation.json):
+  generated bounded golden-scenario evaluation.
+
 ## Agent 2.0 Phase 8 Grounded Scientific Reports
 
 - [`agent2/scientific-report.md`](agent2/scientific-report.md)

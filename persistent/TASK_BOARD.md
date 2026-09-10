@@ -4348,3 +4348,26 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
       qualification-owned PostgreSQL, Redis/RQ and MinIO state.
 - Next recommended workstream: Agent autonomy may proceed conditionally with
   policy constrained by qualification level, applicability and limitations.
+
+## 2026-09-10 Workstream E — Bounded Agent Autonomy & Multi-Step Research
+
+- [x] Keep ordinary Research in `STANDARD` mode and require explicit
+      `BOUNDED_AUTONOMOUS` activation.
+- [x] Enforce finite cycle, execution, dependency, LLM, context and cost caps
+      through one versioned policy fingerprint.
+- [x] Gate autonomous Capability selection on deterministic eligibility,
+      current qualification evidence, applicability/limitations and cost.
+- [x] Persist structured post-Interpretation assessments and typed stop reasons
+      without prompts, scratchpads or hidden reasoning.
+- [x] Reuse exact persisted Results/Artifacts through declared Tool ports and
+      prevent duplicate semantic steps and non-progress loops.
+- [x] Recover queue publication using the same durable child Turn and preserve
+      completed Artifacts/Results/Interpretations on cancellation.
+- [x] Expose bounded autonomy cycle, evidence, qualification, selected
+      Capability/parameters, queue state and stop reason in lifecycle
+      observability and the Research opt-in UI.
+- [x] Pass `7/7` golden evaluation, focused backend/frontend verification,
+      one sanitized real-provider ingress case and one canonical
+      PostgreSQL/Redis/MinIO fresh-worker MSD→diffusion recovery/reuse flow.
+- Next recommended workstream: Scientific Research Strategy & Advanced
+  Reasoning, while retaining the finite policy and current quality gates.

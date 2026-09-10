@@ -8249,3 +8249,29 @@ scientific-authority contract changed.
 - No scientific defect was discovered in the bounded corpus. The historical
   Phase 11 byte-manifest CRLF mismatch remains protected evidence-integrity
   debt and is not a product/scientific regression.
+
+## 2026-09-10 Workstream E — Bounded Agent Autonomy & Multi-Step Research
+
+- Added explicitly activated `STANDARD` and `BOUNDED_AUTONOMOUS` modes without
+  changing the existing Research lifecycle or making every request autonomous.
+- Added a versioned finite policy (`4` cycles, `8` Capability executions,
+  `4` dependency steps per cycle, `8` LLM decisions, bounded context/cost) and
+  current Workstream D qualification-fingerprint enforcement.
+- Added durable post-Interpretation progress assessment, typed scientific stop
+  outcomes, semantic duplicate/non-progress detection, idempotent child-Turn
+  creation and same-child queue publication recovery through existing
+  ResearchTurn events.
+- Added exact persisted Artifact reuse only through declared
+  `EXACT_PROJECT_DATASET_ARTIFACT` Tool ports. Runtime validates project,
+  Dataset, Artifact contract, media type, size and checksum before inert JSON
+  hydration; same-plan dependency bindings remain unchanged.
+- Fixed a scientific parameter-authority defect: autonomous diffusion now
+  derives its fit interval from exact persisted MSD Result facts and fails
+  closed when they are absent or invalid instead of guessing `0–1 ps`.
+- Added bounded autonomy lifecycle visibility, a minimal frontend opt-in,
+  generated `7/7` golden evaluation, one sanitized real-DeepSeek ingress case
+  and one canonical PostgreSQL/Redis/MinIO fresh-worker MSD→diffusion recovery/
+  reuse path.
+- Verified focused backend `218 passed, 7 skipped`, frontend `101 passed`,
+  service-backed `1 passed`, live provider `1 passed`, Ruff, compileall,
+  typecheck, production build, architecture and diff checks.

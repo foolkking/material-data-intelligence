@@ -2788,3 +2788,72 @@ qualification stale without creating a self-referential hash. The planner sees
 only level, applicability, bounded critical limitations, reproducibility and
 evidence version; test paths and quality machinery remain non-prompt
 implementation evidence.
+
+### Bounded scientific autonomy 1.0
+
+`CreateResearchTurnRequest` adds an optional `autonomy_mode`:
+
+```text
+STANDARD
+BOUNDED_AUTONOMOUS
+```
+
+`STANDARD` remains the default. A bounded autonomous branch carries
+`agent2.autonomy-policy/1.0` plus its fingerprint, finite cycle/execution/
+decision/context/cost caps, original research objective, root Turn, cycle
+index and exact source identities.
+
+`AutonomyAssessment 1.0` is a structured post-Interpretation decision record:
+
+```text
+research Turn / root Turn / cycle
+research objective
+outcome
+evidence Result IDs
+completed and selected Capability IDs
+unresolved requirement
+selected parameters
+qualification snapshot
+exact ScientificObjectVersion IDs
+semantic step signature
+reason codes and limitations
+policy version/fingerprint
+```
+
+Outcomes are `GOAL_SATISFIED`, `CONTINUE_WITH_ANALYSIS`,
+`REUSE_EXISTING_RESULT`, `NEEDS_CLARIFICATION`,
+`NO_QUALIFIED_CAPABILITY`, `CONFLICTING_EVIDENCE`, `BUDGET_EXHAUSTED`,
+`NON_PROGRESS`, `STOP_WITH_LIMITATIONS` and `CANCELLED`.
+
+The durable audit uses additive ResearchTurn events:
+
+```text
+AUTONOMY_CYCLE_CREATED
+AUTONOMY_ASSESSMENT_RECORDED
+AUTONOMY_CHILD_TURN_CREATED
+AUTONOMY_QUEUE_PUBLISHED
+AUTONOMY_QUEUE_PUBLISH_FAILED
+AUTONOMY_STOPPED
+```
+
+These events contain bounded scientific decision provenance and never hidden
+chain-of-thought, prompts, scratchpads or secrets.
+
+`IdentityCompatibility` adds `EXACT_PROJECT_DATASET_ARTIFACT` for an explicitly
+declared Tool input port. This narrowly permits exact persisted Artifact reuse
+across Runs after project, Dataset, Artifact kind, contract version, media type,
+size and checksum validation. Same-plan Artifact dependencies remain owned by
+`dependencyBindings`; arbitrary cross-run Artifact references remain invalid.
+
+The canonical first consumer is `trajectory.diffusion`, whose `msd` port may
+reuse an exact persisted MSD Artifact. `trajectory.msd` ScientificResult
+projection adds the bounded facts:
+
+```text
+trajectory.msd_first_lag_time
+trajectory.msd_last_lag_time
+trajectory.msd_lag_count
+```
+
+They are the downstream diffusion fit-window authority. Missing or invalid
+facts fail closed; no fit interval is guessed.

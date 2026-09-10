@@ -2946,3 +2946,16 @@ was created.
 - Verified canonical PostgreSQL/Redis/RQ/MinIO scientific paths across
   structure/XRD, trajectory, electronic and phonon families; no bounded-corpus
   scientific defect was found.
+
+## 2026-09-10 — Bounded multi-step scientific autonomy
+
+- Added explicit opt-in bounded autonomy with finite policy caps, durable
+  Result-driven child ResearchTurns, current scientific qualification gates,
+  duplicate/non-progress prevention and typed scientific stop reasons.
+- Added narrow exact persisted Artifact reuse through declared Tool ports and
+  full project/Dataset/contract/media/size/checksum validation.
+- Corrected trajectory diffusion planning so fit bounds come from durable MSD
+  ScientificResult facts rather than a guessed time interval.
+- Added lifecycle observability, Research UI activation, golden autonomy
+  evaluation, sanitized real-provider ingress validation and canonical
+  PostgreSQL/Redis/MinIO fresh-worker recovery/reuse verification.

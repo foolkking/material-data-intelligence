@@ -8,15 +8,16 @@
 ## 1. Current Status
 
 - `PROJECT_PHASE`: Source/physical migration and capability parity are closed;
-  Workstreams A-D now provide lifecycle reliability, context/scientific-memory,
-  a validated scientific-capability extension foundation, and evidence-backed
-  scientific qualification in the canonical migrated repository. Remote
-  exact-SHA CI remains a separately authorized release gate.
-- `CURRENT_ACCEPTED_COMMIT`: `a8cc0c0`
-- `SNAPSHOT_BASE_COMMIT`: `a8cc0c0`
+  Workstreams A-E now provide lifecycle reliability, context/scientific-memory,
+  a validated scientific-capability extension foundation, evidence-backed
+  scientific qualification, and bounded Result-driven multi-step autonomy in
+  the canonical migrated repository. Remote exact-SHA CI remains a separately
+  authorized release gate.
+- `CURRENT_ACCEPTED_COMMIT`: `1eec2bba7629f7666aaf68281e2fce6f0e802aa0`
+- `SNAPSHOT_BASE_COMMIT`: `1eec2bba7629f7666aaf68281e2fce6f0e802aa0`
 - `WORKTREE_EXPECTATION`: existing migration worktree, detached HEAD, clean
-- `LAST_ACCEPTED_REVIEW`: Workstream D — Scientific Quality, Qualification &
-  Evaluation, `PASS`, 2026-09-10
+- `LAST_ACCEPTED_REVIEW`: Workstream E — Bounded Agent Autonomy & Multi-Step
+  Scientific Research, `PASS`, 2026-09-10
 - `LAST_UPDATED_AT`: `2026-09-10`
 - `STATE_STATUS`: `CURRENT`
 - `PROJECT_STATE_ACTIVE`: `YES`
@@ -64,20 +65,20 @@ specialized authority requires explicit reconciliation and may set
 
 ## 5. Active Work
 
-- `CURRENT_WORKSTREAM`: Workstream D scientific quality, qualification and
-  evaluation is complete in the canonical migrated repository.
-- `CURRENT_TASK`: no active queued task after canonical recovery closeout;
+- `CURRENT_WORKSTREAM`: Workstream E bounded scientific autonomy is complete
+  in the canonical migrated repository.
+- `CURRENT_TASK`: no active queued task after Workstream E closeout;
   `TASKS.md` remains the task queue authority.
-- `NEXT_ACTION`: Workstream E — Agent Autonomy & Multi-Step Scientific Research
-  may proceed conditionally: autonomous policy must respect qualification
-  level, declared applicability and limitations, and must not treat external
-  solver/library semantic validation as independent scientific validation.
-  Remote release qualification remains a separate exact-SHA/push-authorized
-  operation.
-- `BLOCKED_ITEMS`: no unresolved Workstream A/B/C/D blocker. Broader
+- `NEXT_ACTION`: Workstream F should focus on Scientific Research Strategy &
+  Advanced Reasoning. The bounded mechanics, durability, quality gates and stop
+  model are ready; broader cross-family strategy is now the dominant Agent
+  limitation. Remote release qualification remains a separate exact-SHA/
+  push-authorized operation.
+- `BLOCKED_ITEMS`: no unresolved Workstream A/B/C/D/E blocker. Broader
   independent solver/library benchmarks, expert interpretation evaluation,
-  context quality and scale stress remain explicit future evaluation rather
-  than authority defects.
+  cross-family research strategy, long-running Tool checkpointing, context
+  quality and scale stress remain explicit future evaluation rather than
+  authority defects.
 
 ## 6. Verification State
 
@@ -139,6 +140,25 @@ specialized authority requires explicit reconciliation and may set
   qualification-owned PostgreSQL, Redis/RQ and MinIO, covering RDF/XRD
   Research execution and coordination, trajectory, electronic and phonon
   semantics through fresh subprocess workers.
+- Workstream E bounded autonomy: explicit `STANDARD` versus
+  `BOUNDED_AUTONOMOUS`, policy caps `4` cycles / `8` executions / `4`
+  dependency steps / `8` LLM decisions, current qualification-fingerprint
+  enforcement, semantic duplicate prevention, typed stop outcomes, one
+  ContextSnapshot per child Turn and read-only lifecycle projection.
+- Workstream E focused verification: backend autonomy/lifecycle/context/
+  planning/worker/capability/quality suites `218 passed, 7 skipped`; Research
+  frontend `101 passed`; Ruff, compileall, typecheck, production build,
+  architecture report/guard and diff checks pass. The generated autonomy
+  evaluation passes `7/7` cases with qualified-selection violations `0`,
+  redundant executions `0`, loop-prevention events `1`, correct scientific
+  stops `4/4` and unsupported-claim violations `0`.
+- Workstream E canonical real-service verification: qualification-owned
+  PostgreSQL, Redis/RQ and MinIO path passed through fresh canonical workers.
+  It reused the exact persisted MSD Artifact, derived diffusion parameters from
+  durable MSD Result facts, recovered the same child Turn after publication
+  failure, executed diffusion without recomputing MSD and stopped with
+  `GOAL_SATISFIED`. A sanitized live DeepSeek ingress case passed and selected
+  the bounded trajectory entry; downstream autonomy remained deterministic.
 - Remote CI: workflow and authenticated CLI are available, but the final SHA is
   not on the remote because push was not authorized. Exact-SHA CI is not run.
   Local/service readiness is PASS; overall release readiness is CONDITIONAL.
@@ -167,6 +187,11 @@ specialized authority requires explicit reconciliation and may set
   Artifact-port, projector and Viewer authorities remain explicit centralized
   registration points. The path is bounded and documented, but not a
   zero-central-edit plugin system.
+- **Autonomy strategy debt:** the durable finite control model is ready, but
+  current Result-driven continuation is intentionally conservative and
+  hand-coded for golden trajectory, dataset/materials and structure families.
+  Arbitrary DAGs, broad cross-family scientific strategy and multi-hour
+  checkpoint/resume are not claimed.
 
 ## 8. State Authorities
 
@@ -227,6 +252,11 @@ specialized authority requires explicit reconciliation and may set
   negative evidence, version-aware scientific fingerprints, bounded
   interpretation/report rubrics, generated quality inventory and canonical
   cross-domain real-service verification.
+- 2026-09-10: completed Workstream E with explicitly activated finite autonomy,
+  quality-aware Result-driven continuation, exact persisted Artifact reuse,
+  Result-grounded downstream parameters, duplicate/loop prevention, typed stop
+  reasons, durable child-Turn recovery, cancellation preservation, lifecycle
+  observability and bounded golden/real-provider/service-backed evidence.
 
 ## 11. Source Pointers
 
@@ -251,6 +281,10 @@ specialized authority requires explicit reconciliation and may set
   [`docs/scientific-quality/SCIENTIFIC_QUALITY_AND_QUALIFICATION.md`](docs/scientific-quality/SCIENTIFIC_QUALITY_AND_QUALIFICATION.md),
   [`docs/scientific-quality/ADDING_REFERENCE_EVIDENCE.md`](docs/scientific-quality/ADDING_REFERENCE_EVIDENCE.md),
   [`docs/scientific-quality/generated/scientific_quality_inventory.md`](docs/scientific-quality/generated/scientific_quality_inventory.md)
+- Bounded scientific autonomy:
+  [`docs/agent2/autonomy/BOUNDED_SCIENTIFIC_AUTONOMY.md`](docs/agent2/autonomy/BOUNDED_SCIENTIFIC_AUTONOMY.md),
+  [`docs/agent2/autonomy/AUTONOMY_POLICY_AND_QUALITY_RULES.md`](docs/agent2/autonomy/AUTONOMY_POLICY_AND_QUALITY_RULES.md),
+  [`docs/agent2/autonomy/generated/autonomy_evaluation.json`](docs/agent2/autonomy/generated/autonomy_evaluation.json)
 
 ## 12. Controlled Update and Freshness Rules
 

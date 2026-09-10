@@ -20866,3 +20866,64 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
   applicability、limitations 与 external-semantics 限制下开始；不得把
   structurally available 或外部 solver 语义验证等同于自主科学选择的高置信
   authority。
+
+## Material Data Intelligence — Workstream E: Bounded Agent Autonomy & Multi-Step Scientific Research
+
+- 状态：已完成；`AUTONOMY_CONTROL_MODEL=COHERENT`，
+  `AUTONOMOUS_RESEARCH_FOUNDATION=READY`，
+  `AUTONOMY_MATURITY=BOUNDED_READY`，
+  `UNRESOLVED_AUTONOMY_BLOCKERS=0`。
+- 完成时间：2026-09-10T18:03:53+08:00。
+- 实现摘要：新增显式 `STANDARD | BOUNDED_AUTONOMOUS` 模式、版本化有限
+  autonomy policy、Result/Interpretation 后持久化进展评估、质量感知 Capability
+  gate、语义重复/非进展检测、typed stop、idempotent child ResearchTurn 与同
+  child queue publication recovery。每个新 cycle 重新进入既有 ContextSnapshot、
+  planning、Job、ToolCall、Artifact、ScientificResult 和 Interpretation
+  authorities；未创建新 Agent、workflow engine、Job、memory store 或 Tool
+  registry。
+- 科学 authority 修复：自主 diffusion 不再猜测 `0–1 ps` fit window。
+  `trajectory.msd` Result projector 现在提供 first/last lag time 与 lag count
+  的 bounded facts；下游参数必须从这些 durable facts 派生，缺失/非法时
+  `NEEDS_CLARIFICATION` 或 `STOP_WITH_LIMITATIONS`。
+- Reuse：新增仅限 Tool port 显式声明的
+  `EXACT_PROJECT_DATASET_ARTIFACT` identity policy。worker 在复用 committed
+  Artifact 前验证 project、Dataset、Artifact kind、schema、media type、size、
+  checksum，并只 hydrate inert JSON；same-plan dependencies 仍由
+  `dependencyBindings` 管理。
+- Observability/UI：现有 lifecycle projection 增加 autonomy mode/cycle/policy、
+  objective/subgoal、Result/source-version refs、qualification/limitations、
+  selected Capability/parameters、child queue state 与 stop reason；不暴露 prompt、
+  scratchpad 或 hidden reasoning。Research UI 仅增加明确 opt-in 控件。
+- 评估：generated golden corpus `7/7`；qualified selection violations `0`，
+  redundant executions `0`，loop prevention events `1`，correct scientific
+  stops `4/4`，unsupported claim violations `0`。
+- 测试结果：focused backend `218 passed, 7 skipped, 16 warnings`；Research
+  frontend `101 passed`；sanitized real DeepSeek ingress `1 passed`；canonical
+  PostgreSQL/Redis/RQ/MinIO fresh-worker service path `1 passed, 15 warnings`，
+  验证 MSD committed Artifact reuse、publish-failure recovery、diffusion-only
+  child execution、exact source version、Result-grounded fit bounds 与
+  `GOAL_SATISFIED` stop。Ruff（本实现实际变更 Python 文件）、compileall、
+  typecheck、production build、autonomy/scientific-quality reports、
+  architecture guard/report、`git diff --check` PASS。
+- Runtime：canonical API `http://127.0.0.1:8006/health/runtime` 已验证
+  PostgreSQL/Redis/MinIO 与六队列配置；canonical frontend production runtime
+  在端口 `3024` 启动，`/` 与 `/projects` HTTP 200。所有进程均从
+  `E:\1project\mdi-b0-5a1` 加载。
+- 已知边界：当前 Result-driven strategy 对 trajectory、dataset/materials 与
+  structure golden families 保守实现；不声称 arbitrary DAG、广泛跨 family
+  strategy、无限 autonomy、multi-hour stress 或 indivisible ToolCall
+  checkpoint/resume。real-provider case 证明初始 bounded ingress；下游选择、
+  authorization、eligibility、qualification、parameters、execution 与 grounding
+  仍为 deterministic authority。
+- 修改文件：Research autonomy package、ResearchTurn schemas/service/lifecycle、
+  orchestration/planning、interpretation integration、canonical Result projector、
+  dependency Artifact-port contracts/validator/runtime、Research frontend/API/test、
+  focused/integration/evaluation tests、autonomy docs/shared schema，以及 canonical
+  state/progress/ADR/board/changelog/index/result authorities。
+- 提交/CI 状态：实现提交
+  `1eec2bba7629f7666aaf68281e2fce6f0e802aa0`；本结果与状态归档由随后
+  docs-only closeout commit 固化。未 push，未运行 remote CI。
+- 后续建议：`Workstream F — Scientific Research Strategy & Advanced
+  Reasoning`。有限、持久、可恢复、质量感知的 autonomy mechanics 已建立；
+  当前主要瓶颈是更丰富且可评估的跨 family 科学策略，而不是再造 workflow
+  infrastructure。

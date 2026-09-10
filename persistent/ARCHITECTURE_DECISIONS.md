@@ -6251,3 +6251,31 @@ repository owns only parsing, units, projection, limitations, or presentation.
 Eligibility remains a deterministic input/precondition question; qualification
 describes demonstrated quality within a declared applicability domain; planning
 selects among eligible capabilities. These authorities must not be collapsed.
+
+## ADR — Bounded autonomy is durable ResearchTurn continuation (2026-09-10)
+
+Autonomy is an explicitly selected mode on the existing ResearchTurn contract,
+not a new Agent or in-memory workflow. Every meaningful cycle finishes durable
+ScientificResult and Interpretation authorities, records a structured
+`AutonomyAssessment`, and either stops or creates exactly one idempotent child
+ResearchTurn that re-enters the canonical queue-owned lifecycle. Existing Turn
+events are the durable audit authority; the lifecycle `autonomy` view is only a
+projection. Hidden model reasoning is never persisted.
+
+Autonomous selection is governed by one finite versioned policy and the current
+Workstream D scientific-contract/evidence fingerprints. Eligibility,
+qualification and planning remain separate. Missing/stale qualification,
+unsupported scientific claims, unavailable authoritative parameters, duplicate
+semantic steps and policy exhaustion produce typed stops rather than weaker
+execution.
+
+Reuse before recompute is allowed through an explicit Tool-port identity
+contract, `EXACT_PROJECT_DATASET_ARTIFACT`. It is not a general Artifact escape
+hatch: runtime validates project, Dataset, kind, schema, media type, size and
+checksum and materializes only inert JSON. Same-plan dependencies continue to
+use dependency bindings.
+
+Downstream scientific parameters must be grounded in durable authority. For
+the reference trajectory chain, diffusion fit bounds come from exact MSD
+ScientificResult facts; the Agent may not invent a default interval. Completed
+Artifacts, Results and Interpretations survive cancellation and recovery.
