@@ -147,4 +147,3 @@ No Agent state-machine, worker queue identity, generic Result service,
 Research page dispatcher, or Report engine change should be necessary for a
 conventional capability. If one is, document why the existing contract cannot
 represent the new science before adding central special cases.
-

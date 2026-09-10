@@ -20783,3 +20783,37 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
   frontend healthy；canonical worker discovery `6/6` queues。
 - 提交/CI 状态：实现提交 `aac8ef4`，本记录由随后本地 docs/state 提交固化；
   未 push，未运行 remote CI。
+
+## Material Data Intelligence — Workstream C: Scientific Capability Extension Platform
+
+- 状态：已完成；`SCIENTIFIC_CAPABILITY_EXTENSION_FOUNDATION=READY`，
+  `UNRESOLVED_CAPABILITY_PLATFORM_BLOCKERS=0`。
+- 完成时间：2026-09-10T13:20:59+08:00。
+- 实现摘要：将现有 Requirement → Capability → Capability Pack → Tool →
+  Adapter → Artifact → ScientificResult → Presentation 集成规则固化为
+  `CapabilityManifest 1.2` 的显式扩展合同；新增 deterministic cross-registry
+  completeness validator、canonical JSON/Markdown inventory、orphan
+  classification、bounded planner projection 和 fail-closed project-scope
+  resolution。未改变 Tool/Adapter ID、queue/handler identity、public API、
+  schema/Alembic 或 scientific identity。
+- Inventory：17/17 Capabilities valid，5 Packs，62 Tools，50 Adapters，
+  17 Result projectors，11 Viewer descriptors，duplicate capability authority=0，
+  incomplete capability=0。45 个未被 Agent Capability 直接到达的 Tools 已分类为
+  33 个 public low-level 和 12 个 future/experimental surface；不授予清理权限。
+- 验证：capability/registry focused `52 passed`；Structure/XRD/Trajectory/
+  Electronic/Dataset/ML/Phonon cross-domain regression `169 passed, 1 skipped`；
+  isolated canonical PostgreSQL/Redis/MinIO fresh-worker RDF/XRD paths
+  `2 passed`；Ruff、compileall、architecture scan/report、queue/worker 和
+  Tool/Adapter identity、`git diff --check` PASS。
+- 开发者体验：新增 capability platform contract、添加科学能力指南及
+  `trajectory.msd → trajectory.diffusion` typed Artifact-port reference path。
+  常规 producing capability 仍需在约 5–7 个明确 authority 中做有界注册，
+  但不再要求修改 Agent state machine、worker queue、generic Result service、
+  Research dispatcher 或 Report engine。
+- 提交/CI 状态：实现提交
+  `7890644fbdf705534efbe68b65035763263da9ec`；本结果与任务归档由随后本地
+  closeout commit 固化；未 push，未运行 remote CI。
+- 后续建议：`Workstream D — Scientific Quality & Evaluation`。结构完整性已经
+  可自动证明，但大多数 capability qualification metadata 仍保守标记为
+  `STRUCTURAL_ONLY`；应先建立 capability-specific reference fixtures、
+  limitations 和 scientific benchmark evidence，再扩大自主多步选择。

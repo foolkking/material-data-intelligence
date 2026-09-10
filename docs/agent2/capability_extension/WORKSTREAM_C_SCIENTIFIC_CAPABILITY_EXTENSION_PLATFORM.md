@@ -1,8 +1,8 @@
 # Workstream C — Scientific Capability Extension Platform
 
-状态：已完成  
-授权日期：2026-09-10  
-完成日期：2026-09-10  
+状态：已完成
+授权日期：2026-09-10
+完成日期：2026-09-10
 Canonical repository：`E:\1project\mdi-b0-5a1`
 
 ## Mission
