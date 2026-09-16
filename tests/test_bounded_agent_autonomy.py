@@ -871,6 +871,26 @@ def test_lifecycle_projection_exposes_strategy_without_hidden_reasoning() -> Non
                             "unresolved_contradiction_count": 0,
                             "result_count": 2,
                             "lineage_count": 2,
+                            "questions": [
+                                {
+                                    "question_id": "q-transport",
+                                    "question_type": "QUANTIFY",
+                                    "statement": "Is transport elevated?",
+                                    "status": "RESOLVED",
+                                    "evidence_result_ids": [],
+                                    "evidence_gap_ids": [],
+                                },
+                                {
+                                    "question_id": "q-transport-structure",
+                                    "question_type": "EXPLAIN",
+                                    "statement": "Does local evidence help?",
+                                    "status": "OPEN",
+                                    "evidence_result_ids": [],
+                                    "evidence_gap_ids": [
+                                        "gap-local-transport-structure"
+                                    ],
+                                },
+                            ],
                             "current_question": {
                                 "question_id": "q-transport-structure",
                                 "statement": "Does local evidence help?",
@@ -892,6 +912,7 @@ def test_lifecycle_projection_exposes_strategy_without_hidden_reasoning() -> Non
     strategy = projection["autonomy"]["decision"]["strategy"]
     assert strategy["action"] == "TEST_HYPOTHESIS"
     assert strategy["current_question"]["question_id"] == "q-transport-structure"
+    assert strategy["questions"][0]["status"] == "RESOLVED"
     assert strategy["active_hypothesis"]["status"] == "PROPOSED"
     assert "reasoning" not in str(strategy)
 

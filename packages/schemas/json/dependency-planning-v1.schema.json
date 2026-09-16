@@ -31,6 +31,13 @@
             "title": "Params",
             "type": "object"
           },
+          "parameterProvenance": {
+            "items": {
+              "$ref": "#/$defs/ParameterProvenance"
+            },
+            "title": "Parameterprovenance",
+            "type": "array"
+          },
           "output": {
             "additionalProperties": true,
             "title": "Output",
@@ -285,6 +292,97 @@
         ],
         "title": "MaterialObjectType",
         "type": "string"
+      },
+      "ParameterProvenance": {
+        "description": "Inspectable provenance for one already validated Plan parameter.",
+        "properties": {
+          "parameter": {
+            "title": "Parameter",
+            "type": "string"
+          },
+          "resolvedValue": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ],
+            "title": "Resolvedvalue"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Unit"
+          },
+          "origin": {
+            "enum": [
+              "SOURCE_FACT",
+              "DETERMINISTIC_DERIVATION",
+              "TOOL_DEFAULT",
+              "USER_SPECIFIED",
+              "SCIENTIFIC_PRESET",
+              "SYSTEM_POLICY"
+            ],
+            "title": "Origin",
+            "type": "string"
+          },
+          "authority": {
+            "enum": [
+              "SOURCE_LOCKED",
+              "AUTO_DERIVED",
+              "USER_EDITABLE",
+              "ADVANCED_EDITABLE",
+              "SYSTEM_ONLY"
+            ],
+            "title": "Authority",
+            "type": "string"
+          },
+          "changeEffect": {
+            "enum": [
+              "PRESENTATION_ONLY",
+              "REINTERPRETATION_OR_REPORT",
+              "RECOMPUTE",
+              "SOURCE_VERSION"
+            ],
+            "title": "Changeeffect",
+            "type": "string"
+          },
+          "sourceIdentity": {
+            "title": "Sourceidentity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "parameter",
+          "resolvedValue",
+          "origin",
+          "authority",
+          "changeEffect",
+          "sourceIdentity"
+        ],
+        "title": "ParameterProvenance",
+        "type": "object"
       }
     },
     "additionalProperties": false,

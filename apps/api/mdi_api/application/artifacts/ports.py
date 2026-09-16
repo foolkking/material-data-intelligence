@@ -11,6 +11,15 @@ class ArtifactRepository(Protocol):
     def save(self, artifact: Artifact | Mapping[str, Any]) -> dict[str, Any]:
         ...
 
+    def save_for_execution(
+        self,
+        artifact: Artifact | Mapping[str, Any],
+        *,
+        owner: str,
+        attempt: int,
+    ) -> dict[str, Any]:
+        ...
+
     def get(self, artifact_id: str) -> dict[str, Any]:
         ...
 

@@ -1,5 +1,51 @@
 # PROJECT_BRIEF
 
+## 2026-09-11 V0 Product Direction Alignment
+
+The current product release scope is `V0`: a natural-language-driven materials
+research analysis and visualization workbench. Workstreams A-I remain complete
+and preserve bounded research strategy, literature evidence and structured
+claim-support guards without turning the runtime into an autonomous scientist
+or an AI scientific reviewer.
+
+The active engineering route is V0 Alignment Correction → accepted Pre-M0 →
+Pre-M1 → Pre-M2 → Pre-M3 → Pre-M4 → Pre-M5 → Pre-M6 → M0-M6
+long-running/scale/fault-tolerance closure → Final V0 Integrated Acceptance.
+Pre-M1 and Pre-M2 are sealed `READY_FOR_REVIEW`; Pre-M3 is sealed
+`PARTIAL/READY_FOR_REVIEW` with explicit browser verification debt. Workstream
+J remains a parallel offline independent-human-validation lane with frozen
+evidence and no human scores. It does not block Pre-M/M. Workstream K is
+conditional only on reproducible major/critical defects established by real J
+reviewers.
+
+Secondary LLM critics, AI-as-independent-expert behavior and scientific review
+modes are outside V0. The existing `STRICT_PROVIDER` mode is the primary
+grounded-Interpretation provider path, not a second-model reviewer. No
+scientific, execution, qualification, provenance, Result, LiteratureEvidence,
+Report or Workspace authority changed during this alignment.
+
+Current route authority:
+`docs/ROADMAP.md` and `docs/alignment/V0_SCOPE_ALIGNMENT.md`.
+
+Pre-M1–Pre-M3 have been executed in one authorized chain with separate sealed
+review bundles. Pre-M is not complete: Pre-M4–Pre-M6 remain unstarted and
+Pre-M3 retains explicit verification debt. G's behavioral semantics are
+retained; current Research/Data/Context changes are implementation evidence,
+not a completed deep visual/complex-content qualification.
+`UI_LAYOUT_SYSTEM_V2` remains a frozen design/acceptance baseline rather than
+universal implementation proof. Attachment/Context semantics, non-transitive
+scientific authority, presentation LOD transparency and current complex-data
+limits are closed for Pre-M. M is now the next required V0 stage for
+long-running, scale and fault-tolerance behavior and has not started.
+
+Pre-M verdict:
+`SCIENTIST_UI_UX=DEEP_CURRENT_PRODUCT_VALIDATED`,
+`COMPLEX_MATERIAL_DATA=PASS_WITH_EXPLICIT_LIMITS`,
+`PRE_M_STATUS=IN_PROGRESS`, `READY_FOR_M=NO`.
+Because Pre-M1–Pre-M3 changed Context and presentation semantics,
+`FINAL_V0_REQUIRES_NEW_J_CANDIDATE=YES`; the frozen J evidence remains
+unchanged and continues to represent the pre-correction candidate.
+
 ## 2026-08-16 Q-TABLE Property-Target Closure, R1.6, and Phase D Re-Seal
 
 The normal-user Intent contract now carries exact `material_property` targets
@@ -1023,3 +1069,12 @@ under `features`, `scientific-viewers`, and `shared`. The deterministic
 architecture guard/checker are mandatory: canonical code may not import legacy
 facades, and frozen queue/worker, Tool/Adapter, API, persistence, authorization,
 transaction, and scientific identities remain unchanged.
+
+## M1 attempt-01 durable ownership status (2026-09-14)
+
+M1 implementation is `READY_FOR_REVIEW` pending external acceptance. PostgreSQL
+`jobs` is the single execution ownership authority; Redis remains delivery-only.
+The isolated qualification namespace used `mdi_m1_a01`, Redis DB 10, MinIO bucket
+`mdi-m1-a01`, and API port 8012. Claim race, expiry/reclaim fencing, API
+cancellation, 62-tool recovery classification, six-queue preservation and
+Alembic `0035_job_execution_leases` evidence are complete. No M2 work started.

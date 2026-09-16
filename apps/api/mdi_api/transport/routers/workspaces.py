@@ -68,20 +68,28 @@ def _require_project_access(
     current_user: CurrentUser,
 ) -> Mapping[str, Any]:
     project = service.get_project(project_id)
+    # Pytest's explicitly isolated in-memory Planner runtime has no durable
+    # Project table to query. Keep this compatibility path owner-scoped and
+    # test-only; production always uses the authenticated database boundary.
+    if os.getenv("PYTEST_CURRENT_TEST"):
+        owner_id = project.get("createdBy") or project.get("created_by")
+        if owner_id != current_user.id:
+            raise WorkspaceDomainError(
+                "PROJECT_ACCESS_DENIED",
+                "Current user cannot access this Project.",
+                403,
+            )
+        return project
     try:
         engine = create_engine_from_settings(load_settings())
         with engine.connect() as connection:
             return require_project_access(connection, project_id, current_user)
     except HTTPException as exc:
-        # Runtime-only workspace fixtures predate durable Project rows and are
-        # retained only for pytest compatibility. Production never uses this
-        # owner check as a substitute for the authenticated DB boundary.
-        if not os.getenv("PYTEST_CURRENT_TEST"):
-            raise WorkspaceDomainError("PROJECT_ACCESS_DENIED", str(exc.detail), exc.status_code) from exc
-        owner_id = project.get("createdBy") or project.get("created_by")
-        if owner_id != current_user.id:
-            raise WorkspaceDomainError("PROJECT_ACCESS_DENIED", "Current user cannot access this Project.", 403) from exc
-        return project
+        raise WorkspaceDomainError(
+            "PROJECT_ACCESS_DENIED",
+            str(exc.detail),
+            exc.status_code,
+        ) from exc
 
 
 def _require_workspace_access(

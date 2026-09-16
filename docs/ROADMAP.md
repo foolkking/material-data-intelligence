@@ -2,8 +2,135 @@
 
 Status: CURRENT
 
-This is the only authoritative roadmap for work after Phase 10J-6. Historical
-phase plans remain useful records, but they do not authorize future work.
+## V0 Current Roadmap Authority — 2026-09-11
+
+`CURRENT_PRODUCT_RELEASE_SCOPE = V0`
+
+Material Data Intelligence is a natural-language-driven materials research
+analysis and visualization workbench. Its product path remains:
+
+```text
+Material Data
+→ Research Question
+→ Context / Intent
+→ Capability / Tool / Adapter
+→ Artifact
+→ ScientificResult
+→ Grounded Interpretation
+→ Viewer / Workspace
+→ Report
+```
+
+Bounded research strategy may use a Result to identify an evidence gap and
+perform the minimum necessary qualified next analysis. It is not an unlimited
+autonomous scientist.
+
+The current engineering route is:
+
+```text
+A-I
+COMPLETE
+  ↓
+V0 Alignment Correction
+COMPLETE
+  ↓
+Pre-M0  Reality Audit                         ACCEPTED
+Pre-M1  Context Integrity & Epistemic Purity  READY_FOR_REVIEW
+Pre-M2  User Control & Scientific Lifecycle   READY_FOR_REVIEW
+Pre-M3  Core UI/UX & Context Experience       PARTIAL / READY_FOR_REVIEW
+Pre-M4  Scientific Presentation System        NOT_STARTED
+Pre-M5  Complex Material Data Qualification   NOT_STARTED
+Pre-M6  Pre-M Integrated Acceptance           NOT_STARTED
+  ↓
+M0-M6  Long-running Research, Scale & Fault Tolerance
+NEXT_REQUIRED_V0_STAGE
+  ↓
+Final V0 Integrated Acceptance
+```
+
+Workstream J is a parallel offline independent-human-validation lane:
+
+```text
+J_STATUS = REVIEW_READY
+J_FORMAL_RESPONSES = FROZEN
+INDEPENDENT_HUMAN_EXPERT_VALIDATION = PENDING
+SCIENTIST_VALIDATION_MATURITY = NOT_YET_ASSESSED
+```
+
+J does not block Pre-M or M. Workstream K is `CONDITIONAL_ONLY` and may be
+authorized only if real J reviewers establish reproducible major or critical
+scientific defects. It is not a standing scientific-reasoning optimization
+phase.
+
+Secondary LLM critics, AI-as-independent-expert behavior, scientific review
+modes, unlimited autonomy, arbitrary workflow/code execution, full DFT/GW
+execution, large collaboration/enterprise/billing/marketplace programs,
+multi-region infrastructure, full multi-provider orchestration, autonomous
+literature-driven discovery and active-learning closed loops are
+`OUT_OF_V0` or `DEFERRED`.
+
+Workstream I remains a deterministic/structured scientific reasoning guard.
+It does not make the runtime an expert scientist, replace human validation or
+certify scientific truth.
+
+This section is the only current V0 route authority. The phase chronology
+below is retained as historical execution evidence. Where an older route,
+release name or next-stage statement conflicts with this section, it is
+superseded by the V0 alignment correction rather than rewritten.
+
+See [alignment/V0_SCOPE_ALIGNMENT.md](alignment/V0_SCOPE_ALIGNMENT.md).
+
+## Current maturity boundaries
+
+```text
+G_BEHAVIORAL_SEMANTIC_READINESS = COMPLETE
+DEEP_VISUAL_COMPLEX_CONTENT_QUALIFICATION = COMPLETE_WITH_EXPLICIT_LIMITS
+UI_LAYOUT_SYSTEM_V2 = FROZEN_DESIGN_ACCEPTANCE_BASELINE
+CURRENT_UI_LAYOUT_CONFORMANCE = PENDING_PRE_M3_PRE_M4_BROWSER_QUALIFICATION
+ATTACHMENT_CONTEXT_EXPERIENCE = IMPLEMENTED_WITH_TARGETED_EVIDENCE
+COMPLEX_MATERIAL_DATA_QUALIFICATION = PENDING_PRE_M5
+PRE_M_BLOCKERS = NOT_YET_ASSESSED_FOR_PRE_M1_PRE_M3_CHAIN
+READY_FOR_M = NO_PRE_M_NOT_COMPLETE
+```
+
+G proves behavioral product semantics such as Research controls, clarification,
+historical reopen, Result-first presentation, source/version visibility and
+basic mobile behavior. It does not prove visual readability for all complex
+scientific content, all responsive layouts, or human-quality UX. Browser
+automation is interaction/presentation evidence, not human-quality UX proof.
+In particular:
+
+```text
+NO_HORIZONTAL_OVERFLOW != GOOD_READABILITY != GOOD_RESEARCH_UX
+```
+
+Pre-M owns scientific/product correctness under complex content:
+
+```text
+Pre-M0  Current reality and delta ledger
+Pre-M1  Context integrity and epistemic purity
+Pre-M2  User scientific control and lifecycle
+Pre-M3  Research/Data/Context product UX
+Pre-M4  Scientific presentation, LOD, Viewer, linked selection, Report
+Pre-M5  Complex material data qualification
+Pre-M6  Integrated Pre-M acceptance
+```
+
+Pre-M1–Pre-M3 have been executed as a chained implementation run and their
+independent review bundles are sealed, with Pre-M3 retaining explicit
+verification debt for authenticated route depth and real browser zoom. Pre-M4,
+Pre-M5 and Pre-M6 have not started. Pre-M is therefore not complete and no
+`READY_FOR_M` declaration is valid yet.
+
+M owns duration/load/failure reliability only: leases, checkpoints, worker
+crash recovery, queue/resource behavior, backpressure, large-payload
+long-running stability and scale qualification. M is the next required V0
+engineering stage and has not been started by the Pre-M task.
+
+## Historical Roadmap Record
+
+This was the authoritative roadmap after Phase 10J-6. Historical phase plans
+remain useful records, but they do not authorize current V0 work.
 
 ## Completed Foundation
 

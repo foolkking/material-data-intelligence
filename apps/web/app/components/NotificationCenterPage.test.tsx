@@ -237,6 +237,18 @@ describe("NotificationCenterPage", () => {
     );
   });
 
+  it("settles to an actionable error when the visible browser is offline", async () => {
+    const online = vi.spyOn(navigator, "onLine", "get").mockReturnValue(false);
+
+    render(<NotificationCenterPage />);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "通知暂时无法读取",
+    );
+    expect(mocks.getProductTaskFeed).not.toHaveBeenCalled();
+    online.mockRestore();
+  });
+
   it("discloses the bounded recent-notification window", async () => {
     mocks.getProductTaskFeed.mockReset();
     mocks.getProductTaskFeed.mockResolvedValue({

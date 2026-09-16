@@ -24,9 +24,54 @@ export type Agent2AutonomyProgress = {
     strategy?: {
       action?: string | null;
       evidence_strength?: string | null;
-      current_question?: { statement?: string | null } | null;
-      active_evidence_gap?: { statement?: string | null; gap_type?: string | null } | null;
-      active_hypothesis?: { statement?: string | null; status?: string | null } | null;
+      questions?: Array<{
+        question_id?: string | null;
+        question_type?: string | null;
+        statement?: string | null;
+        status?: "OPEN" | "RESOLVED" | "LIMITED" | "CONFLICTING" | string | null;
+        evidence_result_ids?: string[];
+        evidence_gap_ids?: string[];
+      }>;
+      evidence_gaps?: Array<{
+        gap_id?: string | null;
+        question_id?: string | null;
+        statement?: string | null;
+        gap_type?: string | null;
+        satisfied_by_result_ids?: string[];
+      }>;
+      hypotheses?: Array<{
+        hypothesis_id?: string | null;
+        question_id?: string | null;
+        statement?: string | null;
+        status?: string | null;
+        supporting_result_ids?: string[];
+        contradicting_result_ids?: string[];
+        known_assumptions?: string[];
+      }>;
+      contradictions?: Array<{
+        contradiction_id?: string | null;
+        predicate?: string | null;
+        kind?: string | null;
+        resolution?: string | null;
+        unresolved?: boolean;
+      }>;
+      current_question?: {
+        question_id?: string | null;
+        statement?: string | null;
+        status?: string | null;
+        evidence_result_ids?: string[];
+        evidence_gap_ids?: string[];
+      } | null;
+      active_evidence_gap?: { gap_id?: string | null; question_id?: string | null; statement?: string | null; gap_type?: string | null } | null;
+      active_hypothesis?: {
+        hypothesis_id?: string | null;
+        question_id?: string | null;
+        statement?: string | null;
+        status?: string | null;
+        supporting_result_ids?: string[];
+        contradicting_result_ids?: string[];
+        known_assumptions?: string[];
+      } | null;
       evidence_value?: string | null;
       comparison_status?: string | null;
     } | null;

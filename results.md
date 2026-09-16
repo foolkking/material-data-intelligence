@@ -14067,6 +14067,95 @@ current-HEAD GitHub Actions run `32592517424` 的 Unit、service-backed integrat
 Frontend Typecheck & Build、Linux/Windows scientific replay 五个 job 全部成功。
 ---END---
 
+## Material Data Intelligence — V0 Route & Maturity Reconciliation → Pre-M0–6
+
+- 状态：已完成；`ROUTE_RECONCILIATION=PASS`，
+  `PRE_M_BLOCKERS=0`，`READY_FOR_M=YES`。M 未在本任务中启动。
+- 完成时间：2026-09-11T21:15:00+08:00。
+- Route/Maturity：A–I 保持 complete；I =
+  `SCIENTIFIC_REASONING_GUARD`；J =
+  `PARALLEL_HUMAN_VALIDATION` 且 human validation 仍 pending；K =
+  `CONDITIONAL_ONLY`；M0–M6 是下一必做 V0 工程阶段。
+- Pre-M0：完成当前产品 reality/delta ledger。确认真实缺陷为 asking/history
+  状态下 conversation 过窄而空 Workbench 过大；浏览器无横向溢出并不等于
+  良好可读性。
+- Pre-M1：Context 新增/复用 `EVIDENCE/CONTINUITY/SUBJECT/CONSTRAINT/
+  PREFERENCE` 角色和 deterministic `support_eligible`。ScientificResult、
+  Result-derived deterministic finding 和 LiteratureEvidence 可在各自
+  scope 内支持 claim；Interpretation、Report、Memory、Hypothesis 和
+  assistant prose 不会因重复获得 scientific authority。
+- Pre-M1 缺陷修复：首次 fail-closed 实现误将自动投影的
+  `SCIENTIFIC_FINDING` 默认为不可支持，导致历史 Result 复用失败；现已按
+  exact Result fact lineage 修复并增加回归。
+- Pre-M2：确认现有 AnalysisPlan/Tool schema/effective origin 已满足
+  parameter authority；科学参数变化生成新 Plan/Result，不覆盖历史。
+  Preference、historical exact version、partial ingestion 和
+  `Found != Added != Used` search/context 边界保持。
+- Pre-M3：Research 默认布局改为 state-aware：asking/history
+  conversation-first，科学内容出现时切换 Workbench-oriented split，用户
+  手动 resize 优先；Context 用科研角色/支持资格展示，raw IDs 留在 advanced。
+- Pre-M4：为 electronic Band/DOS、XRD correspondence、coordination、
+  local environment 和 generic Artifact preview 增加 visible/total
+  denominator，明确 presentation-only LOD；Viewer selection 不自动成为
+  Research Context 或 Analysis input；Report 仍是 communication，不是
+  scientific evidence。
+- Pre-M5：记录当前 supported envelope：upload 8 files/64 MiB each/
+  128 MiB total；Artifact 256 MiB absolute cap；Dataset explorer
+  100k rows/512 columns/256 structures/5k atoms each；trajectory canonical
+  4096 atoms/10k frames，analysis 200 frames/5k atoms；phonon 512 atoms/
+  1536 branches/4096 q-points；electronic 65536 k-points/4096 bands；
+  volumetric canonical 16,777,216 voxels、public parser 2,097,152 voxels；
+  Workspace 32 panels。超 cap 必须 typed reject/fallback，不静默截断。
+- M handoff：leases/checkpoints、worker crash recovery、queue fairness/
+  backpressure、multi-hour execution、large-payload long-running transport 和
+  systematic high-load fault behavior 均明确归 M。
+- 修改文件：`apps/api/mdi_api/research_agent/context/provenance.py`、
+  `apps/api/mdi_api/research_agent/context/schemas.py`、Context compiler/
+  manifest、`apps/api/mdi_api/transport/routers/workspaces.py`、
+  `apps/web/features/research/ResearchPages.tsx`、Research/Context API 与
+  presentation components、electronic/XRD/coordination/local-environment/
+  Artifact viewer components、相关 tests、`docs/agent2/pre-m/**`、
+  `docs/alignment/**`、`docs/ROADMAP.md`、`PROJECT_STATE.md`、
+  `persistent/PROJECT_BRIEF.md`、`persistent/DESIGN_PROGRESS.md`、
+  `persistent/TASK_BOARD.md`、`docs/index.md`。
+- 测试结果：
+  - Context/Result-reuse focused：`17 passed`。
+  - Context/knowledge/reasoning/report/product core：`101 passed, 1 skipped`。
+  - complex scientific family production regression（排除 immutable
+    historical raw-byte evidence manifest assertions）：
+    `380 passed, 1 skipped`。
+  - frontend：`119 files / 961 tests passed`；typecheck PASS；production
+    build PASS。
+  - current Chromium desktop + 390×844 replay PASS：无 global horizontal
+    overflow、console/page error、外部请求或 frontend scientific
+    recomputation。
+  - compileall、generated JSON validation、J artifact verify、git diff check
+    PASS。
+- 历史证据限制：旧 Phase10K/M/N evidence manifest 的 raw byte-length
+  assertions 在 Windows checkout 下受 LF→CRLF 影响。未修改历史 evidence
+  或 manifest 来制造 PASS；科学/运行时回归套件为绿色。
+- J：`docs/scientist-evaluation/generated/` 保持 35 files；verify PASS，
+  24 formal responses、0 human records。`CURRENT_J_CANDIDATE =
+  PRE-CORRECTION_SCIENTIFIC_CANDIDATE`；由于 Pre-M 改变 Context/
+  presentation semantics，`FINAL_V0_REQUIRES_NEW_J_CANDIDATE=YES`，但本轮
+  未覆盖或重新生成 J。
+- 最终状态：
+  `SCIENTIFIC_AUTHORITY=PASS`，
+  `NO_TRANSITIVE_SCIENTIFIC_AUTHORITY=PASS`，
+  `CONTEXT_INTEGRITY=PASS`，
+  `CONTEXT_TRANSPARENCY=PASS`，
+  `PARAMETER_AUTHORITY=PASS`，
+  `HISTORICAL_INTEGRITY=PASS`，
+  `PARTIAL_INGESTION=PASS`，
+  `SCIENTIST_UI_UX=DEEP_CURRENT_PRODUCT_VALIDATED`，
+  `SCIENTIFIC_VIEWERS=PASS`，
+  `LINKED_SELECTION=PASS`，
+  `REPORT_QUALITY=PASS`，
+  `COMPLEX_MATERIAL_DATA=PASS_WITH_EXPLICIT_LIMITS`，
+  `INDEPENDENT_HUMAN_EXPERT_VALIDATION=PENDING`。
+- 提交/CI 状态：未 reset/clean/checkout，未 commit/push，未运行 remote
+  CI 或 release qualification。
+
 ---RESULT---
 任务名称：Agent-2.0 Phase 9 Provenance-First Redesign & Final Closure
 状态：部分完成
@@ -20983,3 +21072,594 @@ Product/Data/Project/Task/Notification/Report/Admin 为 `101 passed`；
 - 后续建议：`Workstream G — Scientist UX & Product Maturity`。科学策略和
   runtime foundation 已达到 bounded-ready；当前更明显的瓶颈是让科研用户
   控制、理解、比较和复核多轮研究，而不是继续扩大内部 orchestration。
+
+## Material Data Intelligence — Workstream G: Scientist UX & Product Maturity
+
+- 状态：已完成；`SCIENTIST_RESEARCH_MENTAL_MODEL=COHERENT`，
+  `REAL_BROWSER_SCIENTIST_JOURNEYS=PASS`，
+  `SCIENTIST_PRODUCT_MATURITY=READY_FOR_BOUNDED_SCIENTIST_USE`，
+  `UNRESOLVED_PRODUCT_MATURITY_BLOCKERS=0`。
+- 完成时间：2026-09-10T23:30:00+08:00。
+- 产品行为：Research Timeline 现在以科学问题和证据为中心，显示当前问题、
+  bounded Research Map、resolved/partially addressed/unresolved 状态、
+  evidence gap、tentative hypothesis、下一分析理由、停止理由、qualification
+  boundary 与重要 limitation；不显示 provider prompt、scratchpad、raw
+  strategy JSON 或 hidden chain-of-thought。
+- 控制语义：Stop autonomous research、Cancel active execution、Continue、
+  Retry failed stage、Run again、Reinterpret 和 edit/branch 的产品语义已区分，
+  并继续复用 A/E 的 durable boundary、completed Result preservation 与
+  immutable branch authority。
+- 结果与来源：Research/Result/Report 采用 result-first 层级；重要 limitation
+  靠近 finding，source/version 与 method/qualification 可逐层展开。normal
+  surfaces 使用 scientist-facing project/dataset labels；raw UUID/identity
+  仅保留在高级技术 provenance。
+- 状态与恢复：selected Dataset 缺少 parsed profile 时在 Planner 前以 typed
+  `UNSUPPORTED` 结束，不创建 run，也不泄漏 Pydantic/internal error。新提交会
+  清除旧 job/scope，历史 reopen、partial/completed evidence、Report 和 Task
+  return-to-Research 保持连续。
+- 验收指标：`SCIENTIST_UX_JOURNEYS=15`，`REAL_BROWSER_JOURNEYS=5`，
+  `MOBILE_JOURNEYS=2`，`CLARIFICATION_JOURNEYS=2`，
+  `COMPARISON_JOURNEYS=2`，`RECOVERY_JOURNEYS=3`，
+  `HISTORICAL_REOPEN_JOURNEYS=2`，`RAW_INTERNAL_ID_DEFAULT_EXPOSURES=0`，
+  `MOBILE_BLOCKING_OVERFLOW=0`，`FATAL_BROWSER_ERRORS=0`，
+  `SCIENTIFIC_AUTHORITY_UI_VIOLATIONS=0`。
+- 真实浏览器：canonical authenticated persisted state 验证了 historical
+  Research reopen、390x844 conversation/workbench switching、unsupported
+  no-run、Report reopen 和 Task Center exact Research return；UI 显示
+  `材料研究项目` / `当前项目材料数据` 等可读标签，不在默认正文暴露内部
+  identity。
+- 测试结果：focused backend `59 passed, 1 skipped`；focused frontend
+  `177/177`；Ruff、compileall、typecheck、production build、generated
+  acceptance JSON 与 `git diff --check` PASS。Canonical API、frontend、
+  PostgreSQL、Redis/RQ、MinIO runtime 均从
+  `E:\1project\mdi-b0-5a1` 加载。
+- 修改文件：Research strategy/lifecycle read projection、Research router
+  scope handling、Research Timeline/Map/controls/presentation、Result/
+  Viewer/composition/report/task/notification/shell surfaces、shared product
+  labels、focused backend/frontend tests、`docs/product-maturity/**` 及
+  canonical state/progress/board/index/result authorities。
+- 已知非 blocker：通用 cross-domain comparison 仍依赖各科学 contract；
+  pre-ResearchTurn 历史若原本没有 question/branch authority 无法逆向重建；
+  少量 specialist viewer 文案仍为英文。这些不改变科学权威或 bounded
+  scientist-use verdict。
+- 提交/CI 状态：本地 canonical 工作树完成；未 push，未运行 remote CI。
+- 后续建议：`Workstream H — Scientific Knowledge & Literature Integration`。
+  当前科学研究产品已可理解、可控制、可追溯且可恢复；更显著的限制是缺少
+  授权、可溯源的外部科学知识，而不是新的 workflow、Workspace 或 UI 重构。
+
+## Material Data Intelligence — Workstream H: Scientific Knowledge & Literature Integration
+
+- 状态：已完成；`SCIENTIFIC_KNOWLEDGE_MODEL=COHERENT`，
+  `SCIENTIFIC_KNOWLEDGE_MATURITY=READY_FOR_BOUNDED_LITERATURE_AUGMENTED_RESEARCH`，
+  `UNRESOLVED_SCIENTIFIC_KNOWLEDGE_BLOCKERS=0`。
+- 完成时间：2026-09-11T09:52:00+08:00。
+- Authority：新增独立于 ScientificResult、Interpretation、Hypothesis 与
+  Capability qualification 的 Literature authority。`LiteratureWork` 管理 DOI/
+  arXiv/provider identity，`LiteratureSnapshot` 保存不可变 provider metadata、
+  retrieval/access/publication status 与 field lineage，`LiteratureEvidence`
+  仅表示被当前 Project/ResearchTurn 实际采用的 bounded external evidence。
+- Identity/version：DOI 精确归一化并作为首选 canonical identity；arXiv
+  ID/version 保持精确；preprint/published/correction/retraction 关系显式保存；
+  多 provider 相同 DOI 合并为同一 Work 的多个 Snapshot；仅标题相似时只标记
+  possible duplicate，不静默合并。
+- Provider/network：实现 OpenAlex discovery/identity/OA metadata 与 Crossref
+  DOI/registration/relations/license metadata。仅允许固定 HTTPS host，不跟随
+  redirect，JSON-only，12 秒 timeout，4 MiB response cap，最多 20 candidates，
+  429/502/503/504 最多一次、最长五秒退避；持续失败返回 typed unavailable。
+  未加入 generic web、crawler、arbitrary URL fetch、browser authority 或
+  vector database。
+- Privacy/rights：外部知识必须显式 opt-in；`LiteratureQueryProjector` 拒绝
+  UUID、内部 Project/Dataset/sample identity、email、URL、本地路径与私有
+  labels。Abstract evidence 必须是已取回 abstract 的 exact passage；
+  OA/user/repository full text 必须是 immutable Snapshot 中实际取回的 passage；
+  user upload 额外保留 exact content hash 与 Project authorization。未绕过
+  paywall，也未把整篇上传文件自动发送给 provider/DeepSeek。
+- Strategy/Context：现有 evidence-first 策略新增 `SEARCH_LITERATURE`，但必须
+  由真实 Evidence Gap 与 purpose 驱动；文献不是 Capability、不能执行 Tool、
+  不能补齐缺失执行参数。Context 将其标记为
+  `LITERATURE_EVIDENCE / SCIENTIFIC_EVIDENCE / REPORTED`，并保留 exact lineage。
+- Grounding/synthesis：DeepSeek 只接收 bounded passage、deterministic citation
+  与 opaque `literature_n`/`result_n` refs；最多一次 guided repair。验证拒绝
+  invented source/Result ref、无 evidence claim，以及 summary/claim/
+  contradiction/limitation 中任何未在授权 evidence 出现的数值。真实验收发现
+  模型曾自行计算 `0.2` 差值；修复后 provider 明确禁止派生 difference/ratio/
+  percentage/conversion/range/average，validator 继续 fail-closed。
+- Report/UX：Report 持久化 exact evidence/work/snapshot identity、scope、
+  support type、publication status、claim refs，并从 Snapshot deterministic
+  生成 bibliography。Research Workbench 文献面板区分 Candidate、Used external
+  evidence 与 calculated Result，展示 evidence scope、status、why relevant、
+  supporting passage 和 source link，不默认暴露 provider JSON/内部 ID。
+- Persistence/service：migration `0033_scientific_knowledge` 增加 Work、Snapshot、
+  Search、Evidence authority。真实 PostgreSQL/API 路径完成 live search →
+  explicit selection → evidence reopen → ResearchTurn literature list →
+  exact historical snapshot/Report citation；ScientificResult authority 与
+  qualification authority flags 均为 false。Provider failure不重启已完成科学。
+- 评估指标：`LITERATURE_EVALUATION_CASES=15`，
+  `LIVE_OPENALEX_CASES=1`，`LIVE_CROSSREF_CASES=1`，
+  `REAL_LLM_KNOWLEDGE_CASES=2`，`EXACT_IDENTITY_RESOLUTION=2/2`，
+  `CROSS_PROVIDER_RECONCILIATIONS=1/1`，
+  `PREPRINT_PUBLISHED_RELATIONS=1`，`ABSTRACT_ONLY_CASES=2`，
+  `OPEN_FULL_TEXT_CASES=1`，`RETRACTION_CORRECTION_CASES=1`，
+  `CONTRADICTORY_LITERATURE_CASES=1`。
+- 违规指标：`IRRELEVANT_SOURCE_USES=0`，
+  `UNSUPPORTED_LITERATURE_CLAIMS=0`，`CITATION_SUPPORT_VIOLATIONS=0`，
+  `ABSTRACT_SCOPE_VIOLATIONS=0`，
+  `RETRACTED_SOURCE_SUPPORT_VIOLATIONS=0`，
+  `UNAUTHORIZED_EXTERNAL_QUERY_VIOLATIONS=0`，
+  `SCIENTIFIC_RESULT_AUTHORITY_VIOLATIONS=0`，
+  `CAPABILITY_QUALIFICATION_MUTATIONS=0`。
+- 测试结果：H/report/Context/strategy focused backend
+  `89 passed, 5 skipped`；A/E/G product/autonomy regression
+  `28 passed, 1 skipped`；Research literature frontend `111/111`；
+  typecheck、production build、Ruff、compileall、Alembic head
+  `0033_scientific_knowledge`、`git diff --check` PASS。真实 OpenAlex、
+  Crossref 与 DeepSeek final evaluation PASS。
+- 浏览器说明：canonical frontend 与 API 健康；H 的 scientist-facing UI 通过
+  真实 API authority path 和 111 个 focused frontend tests 验证。由于当前没有
+  可复用 authenticated browser session，未为验收改写用户本地凭据，也未重复
+  创建认证浏览器 journey；Workstream G 已有五个 canonical persisted browser
+  journeys，本限制不改变 H 的 authority/result verdict。
+- 科学/实现缺陷：发现并修复 `4` 个 bounded 缺口：Crossref `select` 参数兼容性、
+  diffusion unit bridge、OA metadata 不足以授权任意 full-text passage、LLM
+  自行生成派生数值；另补齐 used-source UI citation/title specificity 与一次
+  bounded provider rate-limit retry。未弱化科学 criterion。
+- 修改文件：scientific knowledge domain/application/provider/persistence/API
+  packages、migration 0033、Context/strategy/LLM/report integration、Research
+  literature UI/API/tests、evaluation script/generated evidence、shared schema、
+  knowledge docs 与 canonical state/progress/board/results authorities。
+- 提交/CI 状态：canonical detached worktree 在
+  `2727e94ba6adaaf0c6ff9914f8137d130b34c777` 上完成本地验证；本轮未 commit、
+  未 push、未运行 remote CI，且不构成 release qualification。
+- 后续建议：`Workstream I — Expert Scientific Reasoning Evaluation`。H 已解决
+  identity、scope、rights、retrieval、persistence、citation 与 deterministic
+  numeric grounding；当前主要风险转为跨论文的 nuanced qualitative claim
+  support、方法差异权衡、证据强度与专家级 synthesis，而不是继续扩张网络/
+  retrieval infrastructure。
+
+## Material Data Intelligence — Workstream I: Expert Scientific Reasoning Evaluation
+
+- 状态：已完成；`SCIENTIFIC_REASONING_MODEL=COHERENT`，
+  `SCIENTIFIC_REASONING_MATURITY=BOUNDED_EXPERT_REVIEW_READY`，
+  `UNRESOLVED_SCIENTIFIC_REASONING_BLOCKERS=0`，
+  `INDEPENDENT_HUMAN_EXPERT_VALIDATION=NO`。
+- 完成时间：2026-09-11T11:17:10+08:00。
+- 评估优先：创建 27 个 repository-owned、跨 trajectory/structure/XRD/ML/
+  composition/electronic/phonon/literature 的 reasoning cases，并保留不可覆盖的
+  pre-fix baseline。H baseline 对其中 22 个无效或约束不足 claim 缺少足够约束；
+  缺陷按 qualitative support、causal/mechanistic overclaim、scope expansion、
+  method/comparison、lineage double count、contradiction、limitation、hypothesis、
+  derived number、source scope 和 authority 分类，22 个已由可复用 policy/regression
+  覆盖而非 case-specific wording patch。
+- 实现：新增 derived `scientific-reasoning/1.0` ClaimSupportAssessment，包含
+  claim type/support、exact opaque evidence/counterevidence refs、scope、method
+  context、comparison、qualifier、limitation、lineage independence、reason code、
+  defect/severity 和 fingerprint。它不创建 ScientificResult/LiteratureEvidence/
+  Interpretation/Hypothesis/Capability qualification truth authority，也不保存
+  hidden reasoning。Interpretation 1.1 与 Report 2.0 只传播 accepted assessment；
+  rejected assessment 不能成为 Report finding。
+- 科学约束：因果 inference 默认 fail-closed；mechanism 维持 hypothesis/
+  suggestive；单一 system/dataset/abstract 不授权 universal generalization；
+  method difference、temperature/condition difference、abstract-only、retracted
+  work、preprint/publication/review common lineage、XRD phase purity、ML group
+  correlation、external solver semantics 与 citation popularity 皆被显式限制。
+  LLM 不可推导 numeric difference/ratio/conversion；需要时必须使用带输入、单位、
+  formula/version 和 rounding provenance 的 deterministic derived-fact authority。
+- 结果：`REASONING_EVALUATION_CASES=27`，
+  `BASELINE_REASONING_FAILURES=22`，
+  `SCIENTIFIC_REASONING_DEFECTS_DISCOVERED=22`，
+  `SCIENTIFIC_REASONING_DEFECTS_FIXED=22`，
+  `CROSS_DOMAIN_REASONING_CASES=8`；所有 tracked final violation counters 为 `0`；
+  `CORRECT_INSUFFICIENT_EVIDENCE_OUTCOMES=17/17`，
+  `CORRECT_METHOD_DEPENDENCE_OUTCOMES=1/1`，
+  `CORRECT_CONTRADICTION_OUTCOMES=2/2`。
+- DeepSeek：final sanitized live reasoning cases `5/5` PASS（trajectory/structure、
+  ML/composition、XRD、literature contradiction、phonon）。受限 one-repair 在
+  `2/5` final cases 使用；开发中观察到 provider scope/limitation drift 与一次
+  multi-JSON response，bounded retry、one repair 和 deterministic assessment 阻止
+  unsupported content 成为 accepted synthesis。这是 bounded regression evidence，
+  不作为 population reliability 或 independent expert validation 的主张。
+- 测试结果：`python scripts/scientific_reasoning_report.py --check` PASS；
+  `--live-llm` PASS；reasoning/knowledge/interpretation/report focused suites
+  `108 passed, 5 skipped`；autonomy/strategy/product regression
+  `36 passed, 2 skipped`；Ruff、compileall 与 `git diff --check` PASS。Canonical
+  PostgreSQL rollback-only service smoke 通过：ScientificResult snapshot、
+  Interpretation 1.1、Report 2.0 均 reopen，assessment fingerprint preserved，
+  `hidden_reasoning_persisted=false`，transaction rolled back。
+- 文档/证据：新增 `docs/scientific-reasoning/` claim/support、method/inference、
+  evaluation 文档，generated final evaluation 与 optional human-review pack；更新
+  shared schema、index、PROJECT_STATE、DESIGN_PROGRESS 与 TASK_BOARD。
+- 提交/CI 状态：在 canonical `E:\1project\mdi-b0-5a1` 当前未提交 H baseline
+  之上完成；未 reset/clean/checkout、未 push、未运行 remote CI 或 release
+  qualification。
+- 后续建议：`Workstream J — Independent Scientist Evaluation`。当前最主要不确定性
+  已不是已测软件 authority，而是实际材料领域专家对 edge-case gold semantics、
+  claim calibration 与 scientist-facing usefulness 的独立审阅。
+
+## Material Data Intelligence — Workstream J Independent Scientist Evaluation Preparation
+
+- 状态：准备完成；Workstream J overall remains `REVIEW_READY` and human validation is pending.
+- 完成时间：2026-09-11T12:30:00+08:00。
+- 修改文件：`scripts/scientist_evaluation.py`、`tests/test_scientist_evaluation.py`、`docs/agent2/workstream-j/INDEPENDENT_SCIENTIST_EVALUATION_TASK.md`、`docs/scientist-evaluation/**`、`docs/13_SHARED_SCHEMA_SPEC.md`、`docs/index.md`、`PROJECT_STATE.md`、`persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`、generated J evaluation artifacts and reviewer packets.
+- 修改摘要：冻结当前未提交 H/I candidate baseline；建立 held-out 24-case scored corpus、4 calibration cases、6 optional shadow slots、8 anchors and 56 balanced assignments. Generated 24 immutable formal response records through the canonical bounded provider path: 18 validated provider responses and 6 explicitly frozen no-validated-synthesis outcomes after the documented pre-review retry. Added reviewer-blinded Pass 1/Pass 2 packets, calibration guidance, response/evidence hashes, strict import/duplicate/pass-order validation, disagreement detection and a report that remains pending until human records exist. No reviewer identity, score, comment or human validation result was invented.
+- 测试结果：`pytest -q tests/test_scientific_reasoning.py tests/test_scientific_knowledge.py tests/test_scientist_evaluation.py` → `52 passed`; `pytest -q tests/test_scientist_evaluation.py` → `5 passed`; Ruff, compile checks and `python scripts/scientist_evaluation.py verify` → PASS. Formal human review records: `0`.
+- 提交/CI 状态：未 commit、未 push、未运行 remote CI；当前工作树保留既有 H/I 未提交状态。
+- 当前真实边界：`J_REVIEW_INFRASTRUCTURE=READY`、`J_FORMAL_RESPONSES=FROZEN`、`INDEPENDENT_HUMAN_EXPERT_VALIDATION=PENDING`、`SCIENTIST_VALIDATION_MATURITY=NOT_YET_ASSESSED`。至少 3 名独立合格材料科学家完成锁定审阅前，不得宣称 J 完成或独立验证。
+
+## Material Data Intelligence — V0 方向纠偏：Scope Drift Correction
+
+- 状态：已完成；`V0_PRODUCT_SCOPE=RECONCILED`，
+  `ACTIVE_RUNTIME_SCOPE_DRIFT=0`，`UNRESOLVED_DIRECTION_BLOCKERS=0`，
+  `READY_FOR_PRE_M=YES`。
+- 完成时间：2026-09-11T17:07:36+08:00。
+- 实际偏移：当前 roadmap/state 将 J 独立人类评审描述为主线下一动作/
+  blocker，同时未建立 A-I → Pre-M → M → Final V0 Acceptance 的当前路线；
+  K 的 conditional-only 边界与 M 的 V0 必做地位也未在当前权威中明确。
+  这些均为 `DOC_ONLY` 方向偏移。
+- Runtime 盘点：未发现 Secondary LLM critic、scientific reviewer、reviewer
+  provider、scientific review mode、`RISK_AWARE`、review-result persistence
+  或 AI Expert Review 前端控制。现有 `STRICT_PROVIDER` 是一次主
+  Grounded Interpretation 生成路径，使用授权 evidence projection、
+  deterministic validation 和最多一次 bounded repair，不审查另一个模型
+  回答，因此分类为 `ACTIVE_VALID_PRIMARY_PATH` 并保留。
+- 路线纠正：当前产品重新定义为“自然语言驱动的材料科研分析与可视化工作台”；
+  I = `SCIENTIFIC_REASONING_GUARD`；J =
+  `PARALLEL_EXTERNAL_HUMAN_VALIDATION` 且
+  `INDEPENDENT_HUMAN_EXPERT_VALIDATION=PENDING`；K =
+  `CONDITIONAL_ONLY`；Pre-M0 为下一工程阶段；M0-M6 为 V0 必做的
+  long-running/scale/fault-tolerance 阶段。
+- 修改文件：`docs/alignment/V0_SCOPE_DRIFT_CORRECTION_TASK.md`、
+  `docs/alignment/V0_SCOPE_ALIGNMENT.md`、
+  `docs/alignment/generated/v0_scope_drift_inventory.json`、
+  `docs/ROADMAP.md`、`docs/FUTURE_SCOPE.md`、
+  `docs/NOT_PLANNED_SCOPE.md`、`docs/index.md`、`PROJECT_STATE.md`、
+  `persistent/PROJECT_BRIEF.md`、`persistent/DESIGN_PROGRESS.md`、
+  `persistent/TASK_BOARD.md`、`TASKS.md`、`results.md`。
+- 保留证明：`docs/scientist-evaluation/generated/` 共 35 个文件，纠偏前后
+  tree SHA-256 均为
+  `765138117d6ae80eafb7015d6247ed932c33f9accc2eaf3da9913fd083006d00`；
+  24 formal cases、4 calibration、6 shadow、8 anchors、56 assignments、
+  frozen responses、packets 与 integrity hashes 未重新生成或修改。
+- 测试结果：`python scripts/scientist_evaluation.py verify` PASS
+  （24 formal responses、0 human records）；scientific knowledge/reasoning/J/
+  grounded interpretation focused suites `80 passed`；alignment contract
+  check PASS；active runtime forbidden-scope scan PASS；J frozen-evidence
+  preservation PASS；`git diff --check` PASS（仅既有 Windows LF/CRLF
+  warning）。
+- Authority 影响：未修改任何 backend/frontend/runtime scientific code；
+  ScientificObject/Version、Dataset/Profile、AnalysisPlan、Job、ToolCall、
+  Artifact、ScientificResult、LiteratureEvidence、Capability/Tool/Adapter、
+  qualification、ContextSnapshot、Memory、Interpretation、Report、Workspace、
+  queue 与 scientific fingerprint authority 均保持不变。
+- 提交/CI 状态：未 reset/clean/checkout、未 commit、未 push、未运行 remote
+  CI 或 release qualification。当前未提交 H/I/J working tree 完整保留。
+
+---
+
+## V0 Production Semantic Code-Diff Audit
+
+- 任务名称：V0 Production Semantic Code-Diff Audit
+- 状态：已完成
+- 完成时间：2026-09-11T18:20:00+08:00
+- 修改文件：
+  - `apps/api/mdi_api/research_agent/context/schemas.py`
+  - `apps/api/mdi_api/research_agent/context/manifest.py`
+  - `apps/api/mdi_api/infrastructure/scientific_reports/service.py`
+  - `apps/api/mdi_api/application/scientific_reasoning/__init__.py`
+  - `tests/test_v0_scope_boundaries.py`
+  - `docs/alignment/V0_PRODUCTION_SEMANTIC_AUDIT.md`
+  - `docs/alignment/generated/v0_production_semantic_audit.json`
+  - `docs/alignment/V0_SCOPE_ALIGNMENT.md`
+  - `PROJECT_STATE.md`
+  - `persistent/DESIGN_PROGRESS.md`
+  - `persistent/TASK_BOARD.md`
+- 修改摘要：逐文件审查 56 个 H/I/J dirty working-tree production files，核对所有 production LLM call sites、Context/Report authority wiring 与 J runtime imports。确认没有 Secondary LLM Critic、AI-as-human-expert 或 J evaluation production dependency。修复一个真实权威边界错误：Report ContextManifest 不再把 Interpretation prose 标记为 `SCIENTIFIC_RESULT`，新增 `INTERPRETATION` / `DERIVED_SUMMARY` 投影和 kind/authority fail-closed 兼容校验。I guard、H literature authority、STRICT_PROVIDER 主解释路径和 J frozen evidence 均保留。
+- 测试结果：
+  - `74 passed` — Context/manifest/reasoning/knowledge/scope-boundary focused suite。
+  - `87 passed, 1 skipped` — grounded interpretation, Agent2 API, bounded autonomy, product research scope。
+  - `python scripts/scientist_evaluation.py verify` PASS：24 formal responses、0 human records。
+  - J generated artifacts 未修改；formal response/hash integrity PASS。
+  - `git diff --check` PASS（保留既有 Windows LF/CRLF warning）。
+- 结果：`CONFIRMED_SCOPE_DRIFT_CODE = 0`（发现并修复 1 个 authority-boundary defect 后）；`SECONDARY_LLM_REVIEW_RUNTIME = 0`；`J_EVALUATION_PRODUCTION_DEPENDENCIES = 0`；`READY_FOR_PRE_M = YES`。
+- 提交/CI 状态：未提交、未推送；未运行 remote CI。
+---TASK---
+状态：已完成
+任务名称：V0 Production Semantic Code-Diff Audit
+开始时间：2026-09-11T17:15:00+08:00
+完成时间：2026-09-11T18:20:00+08:00
+执行规范：
+`docs/alignment/V0_PRODUCTION_SEMANTIC_AUDIT_TASK.md`
+
+结果摘要：已完成 56 个 production files 的 semantic code-diff audit，修复
+Report Interpretation 被错误标记为 ScientificResult 的 authority defect；
+未发现 secondary reviewer/critic、AI-as-human-expert 或 J runtime dependency。
+J frozen evidence 保留，当前 J candidate 标记为 PRE-CORRECTION。
+
+---END---
+
+
+## Pre-M0 attempt-02 — Current reality reconciliation repair
+
+- 状态：已完成（READY_FOR_REVIEW；外部评审待定）
+- 完成时间：2026-09-12T20:36:37+08:00
+- 修改文件：`docs/agent2/pre_m0/PRE_M0_ATTEMPT_02_TASK.md`、`TASKS.md`、`results.md`，以及外部证据目录 `E:\mdi-v0-review\Pre-M0\attempt-02`；未修改生产行为。
+- 修改摘要：按权威 PM0/requirements 重建 10 条 PM0 映射、180 条 requirement delta、26 条 EDR 分层支持矩阵、PUB-15/PUB-18 mapping receipts、完整服务/路由/Research split 审计、8 条 evidence questions、76+11 历史债务台账；保留旧 J 35/35 文件。
+- 测试结果：生成证据一致性检查 13/13 PASS；Scientific Reasoning/Context 27 PASS；复用 attempt-01 backend 41 PASS、frontend 107 PASS、fixture 12 PASS + 1 optional skip；历史 raw-byte 测试如实复现 11 FAIL；`validate_return.py --seal` 最终执行见外部 evidence bundle。
+- 提交/CI 状态：未 commit、未 push、未运行 remote CI/release；服务保持运行；未开始 Pre-M1。
+
+## MDI V0 Pre-M1 → Pre-M2 → Pre-M3 Chained Execution
+
+- 状态：已完成（阶段证据 `READY_FOR_REVIEW`；Pre-M3 保留明确验证债务；外部评审待定）
+- 完成时间：2026-09-12T23:59:00+08:00
+- 修改摘要：完成授权的 Pre-M1、Pre-M2、Pre-M3 连续执行。Pre-M1 完成
+  Context role/authority、dereference、stage context 与 no-evidence inflation
+  回归；Pre-M2 完成 parameter provenance、preferences、history/partial
+  ingestion、Found/Added/Used 与 Search/Ask-with 语义；Pre-M3 修复 Research
+  内容感知 split、空 Data Dataset Overview 与 Notifications 不再无限 loading
+  的 typed settlement。
+- 阶段封包：
+  - Pre-M1 attempt-01：`E:\mdi-v0-review\Pre-M1_attempt-01.zip`，SHA256
+    `a0b0f598f58c2f7544b1dd1d1fda75308553ec875559ed0d18535afe38582126`
+  - Pre-M2 attempt-01：`E:\mdi-v0-review\Pre-M2_attempt-01.zip`，SHA256
+    `3c30b6948390733df61f9c0c4b13a8b6759882cc69cb10fd6c24693dccc2e163`
+  - Pre-M3 attempt-02：`E:\mdi-v0-review\Pre-M3_attempt-02.zip`，SHA256
+    `eacf93bd21de51774d81c41a8368f2328fb30b8fbd3b0333550fabfef5f8b1cb`
+- 测试结果：Pre-M1 backend `188 passed, 5 skipped`、ResearchPages `96 passed`、
+  typecheck PASS；Pre-M2 backend `61 passed, 2 skipped`、frontend `123 passed`、
+  typecheck PASS；Pre-M3 frontend `155 passed`、typecheck PASS、Chromium desktop
+  与 `390x844` replay PASS；三阶段 `validate_return.py --seal` 与 review bundle
+  构建均 PASS。
+- 限制：Pre-M3 attempt-02 当前 bundle 状态为 `PARTIAL`；认证后的完整 route-depth 与真实
+  125/150/200% browser zoom 尚未完成，已明确交给后续 Pre-M3/Pre-M4 browser
+  qualification，不宣称完整 Pre-M 或 READY_FOR_M。
+- 保护：未 reset/clean/checkout、未 commit/push/release/remote CI；服务保持运行；
+  J frozen evidence 未重新生成或修改；Pre-M4、Pre-M5、Pre-M6、M 均未启动。
+
+- 说明：Pre-M3 attempt-01 的 sealed bundle 保持原样；attempt-02 仅修正浏览器证据一致性并重新封包，未改变生产语义或 J evidence。
+
+
+---
+任务名称：Pre-M5 attempt-04 — Research/Trajectory/Phonon 根因闭环与资格重跑
+状态：失败（PARTIAL review handoff）
+完成时间：2026-09-13T16:10:00+08:00
+修改摘要：完成 Research 孤儿生命周期根因修复并以真实队列链验证到 Result、有效 Interpretation、Report 与 Reports 路由重开；修复有效 canonical trajectory viewer 的嵌套保护误报；通过真实产品上传入口验证 typed phonon band/DOS bundle。
+测试结果：99 passed, 5 skipped；phase_return 格式/证据完整性验证通过；review ZIP 完整性通过。
+未闭合：PM5-001、PM5-003 的 public/local qualification 余项、PM5-004、PM5-005、PM5-006、PM5-008、PM5-009；完整七族 public R/S/H/X 与 full accounting 尚未完成。
+提交/CI 状态：未提交；未推送；未运行 remote CI。
+
+
+## Pre-M5 attempt-05 — Final qualification evidence reconciliation
+
+- 状态：失败（真实资格仍为 PARTIAL）
+- 完成时间：2026-09-13T16:45:00+08:00
+- 修改文件：`docs/agent2/pre-m/PRE_M5_ATTEMPT_05_FINAL_CLOSURE.md`、`TASKS.md`；证据目录 `E:\mdi-v0-review\Pre-M5\attempt-05`。
+- 修改摘要：基于当前 canonical state 重建非矛盾的 PM5 evidence bundle，加入 semantic coherence checker；保留已接受的 Research/trajectory/phonon 根因证据与 golden E2E。未修改生产代码。
+- 测试结果：semantic coherence PASS；`validate_return.py --seal` PASS；review ZIP integrity PASS；99 passed、5 skipped focused regression。
+- Review bundle：`E:\mdi-v0-review\Pre-M5_attempt-05-r2.zip`，SHA256 `d372a23c2f8a3ac7c034e0931b01a2a7997fef719076c42fcb1f46c912e92751`。
+- phase_return SHA256：`3f8094b66347ab30300529aed79bf480670782f572d07b4c3361fb9b39b36b18`。
+- 提交/CI 状态：未提交、未推送、未运行 remote CI；Pre-M6/M0 未启动。
+## Pre-M5 attempt-06 — Final qualification closure
+
+- 状态：失败（阶段真实状态 `PARTIAL`；外部评审待定）
+- 完成时间：2026-09-13
+- 修改文件：`docs/agent2/pre-m/PRE_M5_ATTEMPT_06_FINAL_CLOSURE.md`、
+  `TASKS.md`、`results.md`；外部证据目录
+  `E:\mdi-v0-review\Pre-M5\attempt-06`。
+- 修改摘要：按 PM5 权威要求原子化重整公共来源/本地资格权益记录、当前
+  trajectory/electronic/phonon mapping receipts、七科学族矩阵、effective
+  envelope、useful science、near-cap 与 accounting 状态；加入并运行
+  semantic coherence checker。未修改生产行为，未重做已接受的 Research/
+  trajectory/phonon 根因修复或 golden E2E。
+- 已闭合：PM5-001、PM5-002、PM5-003、PM5-007、PM5-010；
+  FMT-001...FMT-026 保持闭合。仍未闭合：PM5-004、PM5-005、PM5-006、
+  PM5-008、PM5-009。
+- 测试结果：mapping/constructor focused regression `37 passed, 15 warnings`；
+  semantic coherence `PASS`；`validate_return.py --seal` `PASS`、errors=0；
+  review ZIP integrity `PASS`，36 members，manifest SHA 与 phase_return
+  SHA 一致；canonical service health check PASS。
+- Review bundle：`E:\mdi-v0-review\Pre-M5_attempt-06.zip`，
+  SHA256 `ffbdb0accbea96876d75d9c748e760044ff8509f2f79de6ef6b6b238f3f888a2`。
+- phase_return SHA256：
+  `3e522e67fa14dc45de79c4d12ccdfe85ac2e59f6c7297b5984a598541232f91c`。
+- 提交/CI 状态：未提交、未推送、未运行 remote CI/release；服务保持运行；
+  Pre-M6/M0 未启动；J frozen evidence 未修改。
+
+
+---
+任务名称：Pre-M5 attempt-07 — Final five qualification requirements
+状态：失败（PARTIAL）
+完成时间：2026-09-13T20:05:00+08:00
+修改文件：packages/material-parsers/mdi_material_parsers/trajectory.py；tests/test_phase10g1_trajectory_parser_adapter.py；Pre-M5 attempt-07 evidence artifacts；TASKS.md
+修改摘要：修复轨迹导入对 position/coordinate unit、wrapping 别名及 fs/ps、angstrom/nm 单位别名的正确解析；真实产品 5000 帧×128 原子导入达到 profile_ready；完成 8/9 multipart 与 32/33 workspace 边界证据；执行真实 Research turns 并保留 grounded refusal，未伪造 useful science。
+测试结果：trajectory parser focused suite 21 passed；service CheckOnly PASS；semantic coherence PASS；validate_return --seal FORMAT_AND_EVIDENCE_INTEGRITY_PASS；review ZIP integrity valid。
+提交/CI 状态：未提交、未推送、未运行 remote CI。Pre-M6/M0：未启动。服务：保持运行。
+
+
+## MDI V0 — M0 attempt-01 measured workload envelope and safe qualification environment
+- 状态：已完成（READY_FOR_REVIEW，等待外部审核）
+- 完成时间：2026-09-14T20:44:29+08:00
+- 修改摘要：建立资格专属 PostgreSQL 数据库、Redis DB12/11、MinIO bucket、API/worker 进程清单和清理边界；完成真实 fresh-worker RDF 链、4096 原子导入基线、精确 effect accounting、隔离 backup→restore→reopen→export；冻结 M1-M5 工作负载、并发、成功标准和 M5 120 分钟目标。生产行为与公开限制未修改，M1 未启动。
+- 证据：E:\mdi-v0-review\M0\attempt-01；review ZIP E:\mdi-v0-review\M0_attempt-01.zip；ZIP SHA256 eadd8e8117fc2161889169503c3aae3754d6494ab4578d43ded0cbe792039279；phase_return SHA256 997ebfdd66c673c145605e320f80ce4aff51102bc23008e08ee6427a3e446e2d。
+- 测试结果：validate_return.py --seal = FORMAT_AND_EVIDENCE_INTEGRITY_PASS，errors=[]；ZIP CRC PASS（35 members）；canonical/source/restore APIs 与 frontend 均 HTTP 200；fresh-worker、fault-ownership dry run、backup/restore/export 均 PASS。
+- 提交/CI：未提交、未推送、未运行 remote CI。
+
+
+## MDI V0 — M0 attempt-02 evidence-only pointer fix
+- 状态：已完成（READY_FOR_REVIEW，等待外部审核）
+- 完成时间：2026-09-14T21:04:54+08:00
+- 修改文件：`docs/agent2/m/M0_ATTEMPT_02_EVIDENCE_POINTER_FIX.md`、`TASKS.md`、`results.md`、`persistent/DESIGN_PROGRESS.md`、`persistent/TASK_BOARD.md`；证据目录 `E:\mdi-v0-review\M0\attempt-02`。
+- 修改摘要：仅修正 accepted Pre-M provenance 指针。failure/recovery 指针经 sealed Pre-M5 attempt-04-r1 ZIP 验证为 `research_state_trace_46095_final.json`，SHA256 `9933d5b5f7fc3490339c5f9eb56515c3551f480d847b9e176a0541cb593d25ba`；`/tasks` 的 sealed artifact 经 Pre-M3 attempt-03 ZIP 验证为 `authenticated_route_evidence.json`，SHA256 `3c8893707fd84d1702a59a4719e70b38193829d850e158789c07583a8e2a22e8`，其中嵌入 screenshot reference `after_tasks_1440x900.png`，不把 PNG 声称为独立密封 artifact。
+- M0 实质结果：M0-001...M0-008 保持 `IMPLEMENTED_AND_VERIFIED`；attempt-01 的 67 个复用文件逐字节核验无差异。未重跑 baseline、fresh-worker、4096-atom import、backup/restore/export、fault ownership、cleanup 或 service qualification；未修改生产行为；未启动 M1。
+- 测试结果：sealed-pointer ZIP member/hash/CRC 验证 PASS；provenance scan PASS（错误 failure pointer 0 次、错误 tasks sealed-artifact 声明 0 次）；`validate_return.py --seal` = `FORMAT_AND_EVIDENCE_INTEGRITY_PASS`，errors=[]；review ZIP CRC PASS（38 members）。
+- Review bundle：`E:\mdi-v0-review\M0_attempt-02.zip`，SHA256 `3979c42b3c70c09e8ef5a7de4019892a931286d43cd4a843e75c4822d88d330d`。
+- phase_return SHA256：`66203564d376792ff44f4664045de51a9e554756d02ccb52ded3309beaf55db6`。
+- 提交/CI 状态：未提交、未推送、未运行 remote CI；服务未重启，沿用 attempt-01 已验证健康状态。
+
+
+---
+任务名称：MDI V0 — M1 attempt-01 durable ownership, leases, fencing and truthful recovery
+状态：已完成（READY_FOR_REVIEW，等待外部审核）
+完成时间：2026-09-14T22:30:00+08:00
+修改摘要：以 PostgreSQL jobs 行作为唯一 ownership authority，加入 server-time
+lease claim/renew/reclaim、attempt fencing、ToolCall/Artifact/Result 当前
+attempt 写入保护、取消终态优先级与只读 lifecycle projection；完成真实双 worker
+claim race、F03 stale-worker recovery、F10 API cancellation、62 Tool recovery
+inventory、六队列保持及隔离迁移验证。修复了取消控制流误报 stale 与 attempt-scoped
+Artifact 本地暂存读取问题。
+测试结果：25 passed；py_compile PASS；validate_return.py --seal
+FORMAT_AND_EVIDENCE_INTEGRITY_PASS/errors=[]；ZIP CRC PASS（35 members）。
+Review ZIP：E:\mdi-v0-review\M1_attempt-01.zip
+ZIP SHA256：fa719e8ff85db3e86bd1c84d7c5dfa0801f4c59a9abdf9d223ad9597bba22c5d
+phase_return SHA256：9e9c98b5131687ca894753b9903cbaf0677cc6c59f9e18b9b80df61f4207bd79
+提交/CI 状态：未提交、未推送、未运行 remote CI；服务保持健康；M2 未启动。
+
+
+---
+任务名称：MDI V0 — M2 attempt-01 crash recovery and idempotent scientific publication
+状态：已完成（READY_FOR_REVIEW，等待外部审核）
+完成时间：2026-09-14T16:35:00+08:00
+修改摘要：在隔离 M2 命名空间完成真实 F01/F02/F04/F05/F06/F07/F08 故障恢复、API 重启、客户端中断、重复投递、Result 后 Interpretation-only 恢复及只读 recovery scan。修复 Interpretation 失败后无法在已有 ScientificResult 上恢复的窄 owner-layer 缺陷；没有重算已完成 Tool/Result。
+测试结果：31 passed, 1 skipped；py_compile PASS；semantic coherence PASS；validate_return --seal FORMAT_AND_EVIDENCE_INTEGRITY_PASS/errors=[]；ZIP CRC PASS（36 members）。
+Review ZIP：E:\mdi-v0-review\M2_attempt-01.zip
+ZIP SHA256：f476da7fd9e18c42934ceeeba5530557888589600531dc0f897f40da22ae123b
+phase_return SHA256：a5dc5f15c85b595a7615c40bb2ac11f75cc62a24d91d1c0aa8d3f818c464c603
+提交/CI 状态：未提交、未推送、未运行 remote CI；共享 PostgreSQL/Redis/MinIO 未被停止或清空；M3 未启动。
+
+
+## MDI V0 — M2 attempt-02 final closeout
+- 状态：失败（外部审查前 PARTIAL）
+- 完成时间：2026-09-15T00:30:00+08:00
+- 修改摘要：仅新增/更新 `E:/mdi-v0-review/M2/attempt-02` 资格证据；完成真实 F01/F02/F04、Result-before-next-stage、DB failure、Redis outage、client disconnect、delayed delivery 和 reopen identity；浏览器重连因隔离前端 native OOM 未完成；未改生产代码，未启动 M3。
+- 测试结果：semantic checker PASS（PARTIAL gate）；official seal validator PASS，errors=[]；ZIP CRC PASS，37 members。
+- 产物：`E:/mdi-v0-review/M2_attempt-02.zip`; ZIP SHA256 `33d24eb727302d6eac1efb69524f22dcf52eba4d9d0547514aff0454478c57af`; phase_return SHA256 `7dba2fe36f015a9064ee836a6c4d88828ef68899e48c5126ec58a799ebde2b35`。
+- 提交/CI：未提交、未推送、未运行 remote CI。
+
+
+## MDI V0 — M2 attempt-03 final closeout
+
+- 状态：失败（PARTIAL，外部审核前停止）
+- 完成时间：2026-09-15T11:40:00+08:00
+- 修改文件：`E:\mdi-v0-review\M2\attempt-03\*`、`E:\mdi-v0-review\M2_attempt-03.zip`、`TASKS.md`
+- 修改摘要：完成真实 normal product browser reconnect；通过资格专用 loopback proxy 使用现有 production build，未使用 canonical API 数据替代 M2 状态。生成 browser before/after screenshots 和 API identity snapshots。对 sealed M2 fault evidence 计算 7/12 个适用 recovery intervals；5 个缺失权威端点被明确保留为未完成，未编造时间、未重跑完整 fault campaign。无生产代码、migration、public limit 变更；M3 未启动。
+- 测试结果：`validate_m2_semantic_coherence.py` = `SEMANTIC_COHERENCE_PASS`（partial phase，明确拒绝虚假 READY）；`validate_return.py --seal` = `FORMAT_AND_EVIDENCE_INTEGRITY_PASS`，`errors=[]`；ZIP CRC = `PASS`，41 members；ZIP SHA256 = `66dd91ec7bef6e430e438d032fdc81c6be7fb98bbf02596a6c1bfbdf2ba29e6d`；phase_return SHA256 = `440fd4102c56148aa6103efc4f6f67b0416b04a742291ad0ab8c458044516952`。
+- 提交/CI 状态：未提交、未推送、未运行 remote CI；canonical/shared services 未停止或清空；M3 未启动。
+
+## MDI V0 — M2 attempt-04 final final closeout
+- 状态：已完成（READY_FOR_REVIEW，等待外部审核）
+- 完成时间：2026-09-15T05:54:18Z
+- 修改文件：`E:\mdi-v0-review\M2\attempt-04\*`、`E:\mdi-v0-review\M2_attempt-04.zip`、`TASKS.md`、`results.md`
+- 修改摘要：仅补齐 M2-007 的五个 timing-only replay：F05、F07、F08、Interpretation failure recovery、API restart。所有适用恢复时序完成 12/12，UTC 算术独立复核通过；复用已接受 M2 技术证据与 attempt-03 浏览器重连证据。无生产代码、migration、public limit 或已接受故障语义变更；M3 未启动。
+- 测试结果：`validate_m2_semantic_coherence.py` = `SEMANTIC_COHERENCE_PASS`；`validate_return.py --seal` = `FORMAT_AND_EVIDENCE_INTEGRITY_PASS`，`errors=[]`；ZIP CRC = `PASS`，42 members，manifest present；ZIP SHA256=`66defb4ca20e185783e6e84a1f0231037f8cf836b9e815b0e540d8efd9029862`；phase_return SHA256=`825be2bb2455cc6c1d6ca9be3ace4058609e70e27e45d5236a5dae6cfabab0e8`。
+- 服务/安全：attempt-04 qualification API、proxies、workers 已按 PID/start/cmd/cwd/PPID/namespace 核验后关闭，OS exit confirmed，15536/16382/19003/8017 已释放；canonical/shared PostgreSQL/Redis/MinIO/API/frontend 保持健康且未停止、flush 或 fault-target；M3 未启动。
+- 提交/CI：未提交、未推送、未运行 remote CI。
+
+
+## MDI V0 M3 attempt-01 — bounded queues, fairness and resource backpressure (2026-09-15)
+
+- 状态：失败 / PARTIAL，外部评审前停止，M4 未启动。
+- 修改摘要：仅新增 `E:\mdi-v0-review\M3\attempt-01` 资格证据；无生产代码、迁移或公共限制变更。创建 DB `mdi_m3_a01`、Redis logical DB 6、MinIO bucket `mdi-m3-a01`、API 8018 与六个 M3-owned workers；实测六队列保持不变。
+- 实测：真实 mixed-load 中 interactive 小任务完成，4096-atom heavy 任务 FAILED，故 F12 未通过；真实五提交准入 probe 为 4×202 + 第五次 429 `PROJECT_ACTIVE_RESEARCH_LIMIT`；314572800-byte upload declaration 对 67108864-byte limit 返回 typed 422。F09、取消/超时 capacity release、当前 M3 browser waiting/retrying evidence 未执行。
+- 测试：focused pytest 83 passed；M3 semantic checker `SEMANTIC_COHERENCE_PASS`；`validate_return.py --seal` 为 `FORMAT_AND_EVIDENCE_INTEGRITY_PASS`、errors=[]；ZIP CRC PASS、24 members。
+- Review ZIP：`E:\mdi-v0-review\M3_attempt-01.zip`；ZIP SHA256 `5c8db34102fc164cf9cff589ca69b95fb50f041347224ad8196e9cb67ccd95a6`；phase_return SHA256 `3164282338ba8d1e547f90c89500dd2037f695fb02ebe5f695d648799d867604`。
+- 服务：M3-owned API/workers identity-checked, stopped and port 8018 released; canonical services untouched/healthy.
+
+## MDI V0 M3 attempt-02 — targeted closeout (2026-09-15)
+
+- 状态：失败 / PARTIAL，外部评审前停止，M4 未启动。
+- 修改文件：`E:\mdi-v0-review\M3\attempt-02\*`、`E:\mdi-v0-review\M3_attempt-02.zip`、`TASKS.md`、`results.md`；canonical production code 未修改。
+- 修改摘要：完成 attempt-01 heavy failure root-cause，确认 4096-atom `structure.rdf` 为无效 F12 workload selection；以 accepted 4096-atom import/coordination execution 作为有效重型资源路径；修正 fairness bounds（queued RDF `34.9059s`，local `0.25s`）；执行真实 qualification mixed/heavy resource probes、DeepSeek adapter loopback F09 429/timeout/exhaustion、5 次 cancellation cycles。保留 attempt-01 immutable，未启动 M4。
+- 未闭合：M3-001 provider class 仍缺 shared concurrency ceiling；M3-002 fine-grained queue/resource/running and blocked/starved projection 未暴露；M3-003 jitter/shared provider gate 缺失；M3-005 heavy outer Interpretation grounding 失败，完整 F12 未通过；M3-006 release-to-baseline counters 未暴露且 waiting/running/timeout coverage 不完整；M3-007 browser/user-state evidence 未运行。
+- 测试结果：truthful semantic checker 输出 `SEMANTIC_COHERENCE_BLOCKED`；`validate_return.py --seal` = `FORMAT_AND_EVIDENCE_INTEGRITY_PASS`、errors=[]；ZIP CRC PASS、30 members。
+- Review ZIP：`E:\mdi-v0-review\M3_attempt-02.zip`；ZIP SHA256 `082362d4145df37b8a2b06351305f3b3db120c4586b1bc0861d2f7359d6c7210`；phase_return SHA256 `e6431c5bf915cb9a9149e6151d2fa62a69ce0e86a2dd1c10a3c0cabf862fe1f1`。
+- 服务/安全：M3 attempt-02 API/workers 全部 identity-checked and OS-exit-confirmed，8019 已释放；canonical API/frontend/PostgreSQL/Redis/MinIO listeners 保持，未停止、未 flush、未作为 fault target。
+- 提交/CI 状态：未提交、未推送、未运行 remote CI。
+
+
+## MDI V0 M3 attempt-03 — final targeted closeout (2026-09-15)
+
+- 状态：失败 / PARTIAL，外部评审前停止，M4 未启动。
+- 修改文件：`E:\mdi-v0-review\M3\attempt-03\*`、`E:\mdi-v0-review\M3_attempt-03.zip`、`services/llm/mdi_llm/providers.py`、`tests/test_phase10l5_deepseek_provider.py`、`TASKS.md`、`results.md`。
+- 修改摘要：完成真正 Job/Tool/Result 边界的 F12 normal+heavy 与 heavy+heavy；真实 Interpretation worker 完成 429→success 与 exhaustion，ScientificResult 保持且 Tool 重算 0；加入 bounded provider jitter 与 Retry-After 处理。未启动 M4。
+- 未闭合：shared provider concurrency、完整 queued/running/timeout capacity release、blocked/starved health、真实 browser user-state。
+- 测试结果：focused provider regression 69 passed；semantic checker truthful PARTIAL；`validate_return.py --seal` = `FORMAT_AND_EVIDENCE_INTEGRITY_PASS`，errors=[]；ZIP CRC PASS、27 members。
+- 产物：ZIP SHA256 `2ce475aae60996f4656dc01058357c2526aa5c5fa7db891d5aae021065b32dd3`；phase_return SHA256 `6686575a93490795e673c358781a87bdb890925cfa4109a4b8e1a8fe0b322e0c`。
+- 提交/CI 状态：未提交、未推送、未运行 remote CI；qualification 8021/18089 与 M3 workers 已安全关闭；canonical/shared services 未停止或清空。
+
+## MDI V0 M3 attempt-04 — final closeout
+
+- 状态：已完成（READY_FOR_REVIEW，等待外部审核）
+- 完成时间：2026-09-16T08:39:13+08:00
+- 修改文件：`E:\mdi-v0-review\M3\attempt-04\*`、`E:\mdi-v0-review\M3_attempt-04.zip`、`TASKS.md`、`results.md`；本轮生产变更沿用并记录为 provider jitter/Retry-After、retry projection、task health projection 与 qualification-only provider seam。
+- 修改摘要：恢复并复核 M3 资格服务；不重跑已接受 F12。补齐并验证 M3-001/002/003/006/007：六类资源边界完整闭合；provider topology ceiling=3、实测并发=2，集成 timeout/429/exhaustion、Retry-After 与运行时 jitter；项目限额、queued cancel、running cancel、timeout release、6 次重复释放和 double-release；只读 queued/running/retrying/starved/expired-recovering health projection；真实产品 UI queued/running/retrying/preserved-result/admission evidence。M3-004/005/008 与 F12 通过 attempt-03 精确 provenance 复用。M4 未启动。
+- 测试结果：`validate_m3_semantic_coherence.py` = `SEMANTIC_COHERENCE_PASS`；`validate_return.py --seal` = `FORMAT_AND_EVIDENCE_INTEGRITY_PASS`、`errors=[]`；ZIP CRC = `PASS`；manifest=84/84、0 missing、0 hash mismatch；focused provider regression 69 passed，API/UI retry projection 133 passed、1 skipped，前端 retry projection 14 passed。
+- 产物：ZIP `E:\mdi-v0-review\M3_attempt-04.zip`；ZIP SHA256 `4d50495a61ff9f386d2d1b45b6a01cbf04d44e1692df9143675bcdcb9522a0a3`；phase_return SHA256 `e66aef76934033c2fc9b60f27ff66c5cd1abc30cede135ab7478360fe1ebf53e`。
+- 服务/安全：M3 qualification API/proxy/UI proxy/workers 已恢复并保持运行；canonical/shared PostgreSQL/Redis/MinIO/API/frontend 未停止、未 flush、未作为 fault target；没有未知 PID 操作；未提交、未推送、未运行 remote CI。
+
+
+## MDI V0 M3 attempt-05 — final sealed-evidence closeout (2026-09-16)
+
+- 状态：已完成（READY_FOR_REVIEW，等待外部审核）；M4 未启动。
+- 完成时间：2026-09-16T09:45:00+08:00。
+- 修改文件：`E:\mdi-v0-review\M3\attempt-05\*`、`E:\mdi-v0-review\M3_attempt-05.zip`、`TASKS.md`、`results.md`；attempt-05 未修改生产行为。
+- 修改摘要：修正 semantic checker 对 `metrics/provider_cross_process_concurrency.json` 的 sealed-path 读取；补入 `browser_state_inventory.json`、provider retrying UI 原始证据、queued/running/timeout capacity-release 原始证据；完成一次真实 report+interpretation 跨进程 transient 429 retry wave，验证 Retry-After、运行时 jitter、最大 inflight 2 <= topology ceiling 3、Tool recomputation 0、Result loss 0；补全 M3 production provenance；修正 phase_return 的 VERIFIED/incomplete 矛盾文本。
+- 验证结果：staging checker = `SEMANTIC_COHERENCE_PASS`；从新 ZIP 解压目录运行 checker = `SEMANTIC_COHERENCE_PASS`；`validate_return.py --seal` = `FORMAT_AND_EVIDENCE_INTEGRITY_PASS`、errors=[]；ZIP CRC = `PASS`；review manifest 202/202，0 missing、0 hash/size mismatch；evidence 201 条，0 missing、0 hash/size mismatch。
+- 保留结果：F12 PASS、six queues 6/6、M3-004/005/008 accepted；不重跑 F12、M1/M2 faults 或已接受资源/公平性证据。
+- 产物：ZIP `E:\mdi-v0-review\M3_attempt-05.zip`；ZIP SHA256 `209baf3c0c428d670a4acde05962791fc74eb3d408d4a787b7f08b99ee7724b3`；phase_return SHA256 `2ca37fb5e0cc268c1d8716364578b992132146d96be82dad7a030bce0126352b`。
+- 服务/安全：attempt-05 qualification API 8023、provider proxy 18091、UI proxy 3025 和 6 个 qualification workers 保持运行；health/runtime PASS；canonical/shared PostgreSQL、Redis、MinIO、API/frontend 未停止、未 flush、未作为 fault target；无未知 PID 操作。
+- 提交/CI 状态：未提交、未推送、未运行 remote CI。
+
+
+## MDI V0 Phase E final canonical live-agent browser qualification attempt-01 — blocked (2026-09-16)
+
+- 状态：失败 / HARD_QUALIFICATION_BLOCKER；Phase E 未开始，16 个 canonical Case 均未执行。
+- 完成时间：2026-09-16T10:59:28.149471+08:00。
+- 修改文件：`E:\1project\mdi-b0-5a1\docs\agent2\phase-e\PHASE_E_FINAL_ATTEMPT_01.md`、`E:\1project\mdi-b0-5a1\TASKS.md`、`E:\1project\mdi-b0-5a1\_qualification\evidence\phase_e_final_attempt_01_blocked_entry_gate_20260916\*`、`results.md`；未修改生产代码、冻结 qualification package 或科学 fixture。
+- 阻塞原因：请求的 R1.2 package SHA-256 `3fa4038b3c5a33bec70d5577a3dd93411c6347d55cb99fd721d6948036a70952` 仅在历史 recovery source 存在，当前 canonical authority path 缺失；可用的历史 Phase D PASS 绑定 candidate `54c66abc499c646dc27b612dbf28747b176177c8`，当前 active HEAD 为 `2727e94ba6adaaf0c6ff9914f8137d130b34c777`；当前存在 132 个 production-runtime-affecting uncommitted paths。
+- 入口结论：Phase D entry gate 不满足，不能进行真实 Browser/DeepSeek/Planner/Queue/Worker/Artifact/Report/Recipe qualification，也不能把历史 R1.7 `16/16` 结果替代本次请求的 R1.2 exact-SHA campaign。
+- 验证：历史 package SHA 读取匹配；新 blocker evidence manifest 15 files，0 missing，0 hash mismatch；canonical API/runtime 与 frontend runtime read-only health 查询成功；上一轮 M3 qualification 9 个进程已 identity-check、OS-exit-confirmed，8023/18091/3025 释放；canonical 8005/3023、PostgreSQL/Redis/MinIO 保持运行；secret scan PASS。
+- 最小后续动作：明确当前 authority/package 版本，提交一个 final candidate，清零 production-runtime-affecting uncommitted diffs，对同一 candidate + package 完成 Phase D re-seal 后再启动 Phase E。
+- 提交/CI：未提交、未推送、未运行 remote CI。
+
+
+## FINAL CANDIDATE FREEZE PREFLIGHT before Phase E
+
+- 状态：失败（BLOCKED）
+- 完成时间：2026-09-16T11:29:47+08:00
+- 修改摘要：恢复冻结资格包到 active authority path，source/destination 均为 19,073,044 bytes，SHA256=`3fa4038b3c5a33bec70d5577a3dd93411c6347d55cb99fd721d6948036a70952`；对当前工作树 301 条路径完成单一分类，unknown=0；建立迁移盘点、候选 diff fingerprint、排除清单、生产文件 provenance、提交提案和只读服务证据。未修改生产代码。
+- 测试结果：离线 pre-freeze focused regression = 212 passed, 5 skipped, 0 failed；canonical API/DB/Redis/MinIO/queue health 只读 PASS；未启动 Phase E，canonical cases=0/16，real LLM calls=0。
+- 阻断原因：M3-007 retrying UI truthfulness 尚无外部接受的 M3 attempt-06；本轮明确禁止 commit，需先修复/接受 M3 依赖，再对最终候选执行一次 fresh Phase D re-seal。
+- 提交/CI 状态：COMMIT_EXECUTED=NO；Phase D re-seal=NO；Phase E campaign=NOT AUTHORIZED。
+- 证据目录：`_qualification/evidence/final_candidate_freeze_preflight_20260916/`
+
+
+## MDI V0 — M3 attempt-06 retrying UI truthfulness
+
+- 状态：已完成（等待外部 M3 review）
+- 完成时间：2026-09-16T05:18:12.775693+00:00
+- 修改文件：`E:\mdi-v0-review\M3\attempt-06\bundle_staging\*`、`E:\mdi-v0-review\M3_attempt-06.zip`、`_qualification/evidence/final_candidate_freeze_preflight_20260916/M3_ATTEMPT_06_PREFLIGHT_IMPACT.json`、`TASKS.md`、`results.md`；未修改生产代码。
+- 修改摘要：执行一次真实 qualification retry-UI case；从实际 API/read-model 捕获 `INTERPRETATION_RETRYING`，从真实产品浏览器 DOM/accessibility snapshot 捕获用户可见的重试提示，并保存同一时间窗口截图；重建 browser state inventory 和语义 checker；保留 attempt-05 历史 UI 证据为 superseded，不作为 PASS。
+- 测试结果：staging semantic checker = `SEMANTIC_COHERENCE_PASS`；fresh extracted ZIP checker = `SEMANTIC_COHERENCE_PASS`；official `validate_return.py --seal` = `FORMAT_AND_EVIDENCE_INTEGRITY_PASS`、errors=[]；ZIP CRC PASS；manifest 207/207，0 missing、0 hash/size mismatch。
+- 结果：`M3-007 = IMPLEMENTED_AND_VERIFIED`（`PASS_EXISTING_UI`）；实际浏览器文本为“解释服务暂时繁忙，正在按有界策略重试；已完成的科学结果仍然保留。”；生产行为改变=NO；COMMIT_EXECUTED=NO；Phase D/E 未启动；Phase E canonical cases=0/16；real external LLM calls=0。
+- 产物：ZIP `E:\mdi-v0-review\M3_attempt-06.zip`；ZIP SHA256 `e5882a77f8a827afca3892d2cbc5aa014d7a34f52c301bc97a17c6d90fba8bc0`；phase_return SHA256 `cfbb87ae541666687ef4e3f3f3da120000ece6e609df4edcd8421c823175a240`。
+- 服务/安全：attempt-06 qualification API 8024、provider proxy 18092、UI proxy 3026 与 6 个 qualification workers 已按 PID/启动时间/完整命令/cwd/PPID/namespace 复核后停止；OS exit confirmed；端口已释放；canonical/shared PostgreSQL、Redis、MinIO、API/frontend 未停止、未 flush、未作为 fault target。
+- 提交/CI 状态：未提交、未推送、未运行 Phase D/Phase E 或 remote CI。
+
+
+## FINAL CANDIDATE FREEZE one-time commit authorization and Phase D re-seal
+
+- 状态：失败（BLOCKED）
+- 完成时间：2026-09-16T05:34:34.069006+00:00
+- 修改文件：`docs/agent2/phase-e/FINAL_CANDIDATE_FREEZE_AND_PHASE_D_RESEAL.md`、`TASKS.md`、`results.md`、`_qualification/evidence/final_candidate_freeze_preflight_20260916/COMMIT_AUTHORIZATION_REVALIDATION_BLOCKED.json`；未 staging、未 commit。
+- 阻断原因：强制 exact-SHA 复核发现 approved preflight 之后 `results.md` 已变化；approved SHA `cbd1253faf3a1024aa1424d53b3ad61a0ae3d83dafb54fc1e0083fa8ed5f450c`，current SHA `dfd31efb6cd7091d59c76c1f9d64cc72ef98dbe22d7f4befccbf83e48c908e06`。按授权规则停止。
+- 复核结果：authority package 存在且 SHA=`3fa4038b3c5a33bec70d5577a3dd93411c6347d55cb99fd721d6948036a70952`；unknown classifications=0；staged paths=0；commit=NO；Phase D/E=NOT STARTED；canonical=0/16；real LLM calls=0。
+- 提交/CI：未提交、未推送、未打 tag、未发布、未运行 remote CI。
+
+
+## FINAL CANDIDATE HASH-DRIFT RESOLUTION
+
+- 状态：已完成（READY_FOR_REAUTHORIZATION）；本轮未提交、未启动 Phase D/E。
+- 完成时间：2026-09-16T08:13:21.585Z。
+- 修改文件：`TASKS.md`、`results.md`；授权预检证据与提案位于 `_qualification/evidence/final_candidate_freeze_preflight_20260916/`。
+- 结论：`TASKS.md` 与 `results.md` 均判定为 `INTENTIONAL_FINAL_CANDIDATE_CONTENT`，属于治理队列/追加式结果账本；两者均不影响 API 启动、前端构建/运行、worker 启动、迁移、Scientific Tool Registry、provider 配置或 qualification runtime。
+- 证据：分别捕获 HEAD/base、index、working-tree、previous-approved SHA256 及 unstaged/cached diff；检索现有 writer/reader 证据，未发现产品运行时写入；排除目标文件后 approved intended-file hash drift = 0，unknown classifications = 0。
+- 预冻结回归：复用已验证的 `212 passed, 5 skipped, 0 failed`，理由是本次仅治理文档漂移且无 runtime/build 影响；authority package SHA256 保持 `3fa4038b3c5a33bec70d5577a3dd93411c6347d55cb99fd721d6948036a70952`。
+- 提交/CI 状态：`COMMIT_EXECUTED=NO`；未 staging 新内容、未 commit、未 push、未运行 Phase D/Phase E；Phase E canonical cases=`0/16`；real LLM calls=`0`。

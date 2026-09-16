@@ -12,6 +12,7 @@ export type PresentationSource = {
   toolCallId?: string | null;
   objectId?: string | null;
   versionId?: string | null;
+  versionNo?: number | null;
 };
 
 export type AuthoritativePresentationFact = {
@@ -61,7 +62,7 @@ export type ScientificPresentationBlock =
 export type ScientificPresentation = {
   schemaVersion: "1.0";
   blocks: ScientificPresentationBlock[];
-  exactSourceRefs: Array<{ objectId: string; versionId: string; objectType?: string; displayName?: string }>;
+  exactSourceRefs: Array<{ objectId: string; versionId: string; versionNo?: number | null; objectType?: string; displayName?: string }>;
   historicalNotice?: string;
 };
 
@@ -84,8 +85,8 @@ export type PresentationInput = {
   facts?: AuthoritativePresentationFact[];
   validatedNarrative?: string | null;
   resultId?: string | null;
-  sourceObjectRefs?: Array<{ objectId: string; versionId: string; objectType?: string; displayName?: string }>;
-  artifactSourceRefs?: Record<string, Array<{ objectId: string; versionId: string; objectType?: string; displayName?: string }>>;
+  sourceObjectRefs?: Array<{ objectId: string; versionId: string; versionNo?: number | null; objectType?: string; displayName?: string }>;
+  artifactSourceRefs?: Record<string, Array<{ objectId: string; versionId: string; versionNo?: number | null; objectType?: string; displayName?: string }>>;
   scientificSelections?: Array<{
     selectionType: string;
     semanticLocator: Record<string, string | number | boolean>;
@@ -104,7 +105,7 @@ function artifactId(artifact: Artifact): string {
 
 function exactSource(sourceObjectRefs: PresentationInput["sourceObjectRefs"]): PresentationSource {
   const source = sourceObjectRefs?.[0];
-  return source ? { objectId: source.objectId, versionId: source.versionId } : {};
+  return source ? { objectId: source.objectId, versionId: source.versionId, versionNo: source.versionNo } : {};
 }
 
 function evidenceSource(item: ScientificEvidenceItem, resultId: string | null | undefined, interpretationId: string | null | undefined, sourceObjectRefs: PresentationInput["sourceObjectRefs"]): PresentationSource {
@@ -422,10 +423,12 @@ export function compileScientificPresentation(input: PresentationInput): Scienti
       ),
       type: "viewer_reference",
       title: "精确科学视图",
-      label: viewerSource.displayName || `${viewerSource.objectType || "ScientificObject"} · ${viewerSource.versionId}`,
+      label: viewerSource.displayName
+        || `${viewerSource.objectType || "ScientificObject"} · ${viewerSource.versionNo ? `版本 ${viewerSource.versionNo}` : "精确版本"}`,
       source: {
         objectId: viewerSource.objectId,
         versionId: viewerSource.versionId,
+        versionNo: viewerSource.versionNo,
         resultId: input.resultId,
       },
     });
@@ -546,7 +549,7 @@ export function compileReportPresentation(view: ScientificReportView): Scientifi
       id: stableId("report-viewer", sourceRef.versionId, index),
       type: "viewer_reference",
       title: "历史 Viewer",
-      label: sourceRef.displayName || `${sourceRef.objectType || "ScientificObject"} · ${sourceRef.versionId}`,
+      label: sourceRef.displayName || `${sourceRef.objectType || "ScientificObject"} · 精确版本`,
       source: { objectId: sourceRef.objectId, versionId: sourceRef.versionId, resultId: view.scientific_result_snapshot_id, interpretationId },
     });
   });
@@ -590,6 +593,7 @@ const PRESENTATION_SOURCE_KEYS = new Set([
   "toolCallId",
   "objectId",
   "versionId",
+  "versionNo",
 ]);
 
 const PRESENTATION_BLOCK_KEYS: Readonly<Record<string, ReadonlySet<string>>> = {
@@ -634,7 +638,13 @@ function isSafeReference(value: unknown, optional = false): value is string | nu
 
 function isSafePresentationSource(value: unknown): value is PresentationSource {
   if (!isPlainRecord(value) || !hasOnlyKeys(value, PRESENTATION_SOURCE_KEYS)) return false;
-  return Object.values(value).every((item) => isSafeReference(item, true));
+  return Object.entries(value).every(([key, item]) =>
+    key === "versionNo"
+      ? item === undefined
+        || item === null
+        || (Number.isSafeInteger(item) && Number(item) > 0)
+      : isSafeReference(item, true),
+  );
 }
 
 export function isSafePresentationBlock(block: unknown): block is ScientificPresentationBlock {

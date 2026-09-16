@@ -53,6 +53,7 @@ import {
   type ScopeResolution,
 } from "../../app/lib/product-api";
 import { ProductShell, RequireProductAuth } from "../../shared/layout/ProductShell";
+import { scientistDatasetLabel } from "../../shared/product-labels";
 import { ManagedObjectRow, ProductModal } from "../../shared/ui/ObjectManagement";
 import { LazyScientificResultViewer } from "../../scientific-viewers/LazyScientificViewers";
 import {
@@ -400,9 +401,12 @@ export function ReportReaderPage({
           <h1>{reportTitle}</h1>
           <p className="report-meta">
             {report?.archived ? "已归档 · " : ""}
-            {history?.datasets.find(
-              (item) => item.datasetId === report?.datasetId,
-            )?.name || "项目数据"}{" "}
+            {scientistDatasetLabel(
+              history?.datasets.find(
+                (item) => item.datasetId === report?.datasetId,
+              )?.name,
+              report?.datasetId,
+            )}{" "}
             · {reportArtifacts.length || report?.artifactCount || 0} 个输出 ·{" "}
             {report?.stepCount || runDetail?.analysisPlan?.steps?.length || 0}{" "}
             个步骤

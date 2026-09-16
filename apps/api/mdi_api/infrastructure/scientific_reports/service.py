@@ -23,11 +23,21 @@ from mdi_api.db import project_configs
 from sqlalchemy import func, insert, select, update
 
 from mdi_api.application.scientific_reports.assembler import ReportComposerInputAssembler
+from mdi_api.application.scientific_knowledge.service import (
+    render_literature_citation,
+)
 from mdi_api.infrastructure.scientific_reports.client import DeepSeekReportComposerClient, StructuredReportComposerClient
 from mdi_api.application.scientific_reports.grounded import DeterministicScientificReportComposer
 from mdi_api.application.scientific_reports.grounding import ReportGroundingValidator
+from mdi_api.domain.scientific_knowledge.contracts import LiteratureSnapshot
 from mdi_api.domain.scientific_reports.errors import ScientificReportError
-from mdi_api.domain.scientific_reports.contracts import REPORT_COMPOSER_PROMPT_VERSION, REPORT_COMPOSER_VERSION, ScientificReportOutput, ScientificReportSnapshot
+from mdi_api.domain.scientific_reports.contracts import (
+    REPORT_COMPOSER_PROMPT_VERSION,
+    REPORT_COMPOSER_VERSION,
+    ReportLiteratureSource,
+    ScientificReportOutput,
+    ScientificReportSnapshot,
+)
 
 
 
@@ -72,8 +82,17 @@ class ScientificReportService:
                 )
                 for ref in bundle.source_object_refs
             ]
+            literature_sources, literature_context = self._literature_sources(
+                session,
+                turn_id,
+            )
             relevance = ScientificResultRelevanceEvaluator().evaluate(bundle.source_object_refs, objects=objects, versions=versions).value
-            input_payload, input_fingerprint = self.assembler.assemble(bundle=bundle, interpretation=interpretation["output_json"], relevance_status=relevance)
+            input_payload, input_fingerprint = self.assembler.assemble(
+                bundle=bundle,
+                interpretation=interpretation["output_json"],
+                relevance_status=relevance,
+                literature_evidence=literature_context,
+            )
         self._record_report_manifest(
             turn=turn,
             turn_id=turn_id,
@@ -82,6 +101,7 @@ class ScientificReportService:
             interpretation=interpretation["output_json"],
             input_payload=input_payload,
             context_fingerprint=input_fingerprint,
+            literature_sources=literature_sources,
         )
         output, provider_meta, repair_attempted = self._compose_with_one_repair(
             input_payload=input_payload,
@@ -94,6 +114,7 @@ class ScientificReportService:
             interpretation=interpretation["output_json"],
             relevance_status=relevance,
             source_labels=source_labels,
+            literature_sources=literature_sources,
         )
         projection_errors = self.validator.validate(
             output,
@@ -210,6 +231,7 @@ class ScientificReportService:
         interpretation: dict[str, Any],
         relevance_status: str,
         source_labels: list[str],
+        literature_sources: list[ReportLiteratureSource] | None = None,
     ) -> ScientificReportOutput:
         """Keep provider organization inside the validated scientific boundary.
 
@@ -252,9 +274,79 @@ class ScientificReportService:
                 "limitations": authoritative.limitations,
                 "data_sources": authoritative.data_sources,
                 "evidence_refs": authoritative.evidence_refs,
+                "literature_sources": list(literature_sources or []),
                 "reproducibility_summary": authoritative.reproducibility_summary,
             },
         )
+
+    @staticmethod
+    def _literature_sources(
+        session: Any,
+        turn_id: UUID,
+    ) -> tuple[list[ReportLiteratureSource], list[dict[str, Any]]]:
+        """Project exact persisted literature snapshots into Report communication."""
+
+        sources: list[ReportLiteratureSource] = []
+        context: list[dict[str, Any]] = []
+        evidence_rows = (
+            session.agent2.scientific_knowledge.list_evidence_for_turn(turn_id)
+        )
+        for index, evidence in enumerate(evidence_rows[:24], start=1):
+            row = session.agent2.scientific_knowledge.get_snapshot(
+                evidence["snapshot_id"]
+            )
+            snapshot = LiteratureSnapshot(
+                snapshot_id=row["id"],
+                work_id=row["work_id"],
+                provider=row["provider"],
+                provider_record_id=row["provider_record_id"],
+                provider_roles=row["provider_roles_json"],
+                title=row["title"],
+                authors=row["authors_json"],
+                venue=row["venue"],
+                publication_date=row["publication_date"],
+                publication_status=row["publication_status"],
+                publication_type=row["publication_type"],
+                doi=row["doi"],
+                arxiv_id=row["arxiv_id"],
+                abstract=row["abstract"],
+                retrieved_passages=row["retrieved_passages_json"],
+                cited_by_count=row["cited_by_count"],
+                access_status=row["access_status"],
+                source_url=row["source_url"],
+                open_access_url=row["open_access_url"],
+                license=row["license"],
+                provider_updated_at=row["provider_updated_at"],
+                retrieved_at=row["retrieved_at"],
+                provider_field_sources=row["provider_field_sources_json"],
+                raw_metadata_hash=row["raw_metadata_hash"],
+                content_hash=row["content_hash"],
+            )
+            evidence_ref = f"literature_{index}"
+            source = ReportLiteratureSource(
+                evidence_ref=evidence_ref,
+                evidence_id=evidence["id"],
+                work_id=evidence["work_id"],
+                snapshot_id=evidence["snapshot_id"],
+                citation=render_literature_citation(snapshot).display_text,
+                evidence_scope=evidence["scope"],
+                support_type=evidence["support_type"],
+                publication_status=snapshot.publication_status.value,
+                claim_refs=list(evidence["claim_refs_json"] or []),
+            )
+            sources.append(source)
+            context.append(
+                {
+                    "evidence_ref": evidence_ref,
+                    "citation": source.citation,
+                    "evidence_scope": source.evidence_scope,
+                    "support_type": source.support_type,
+                    "publication_status": source.publication_status,
+                    "passage": evidence["passage"],
+                    "claim_refs": source.claim_refs,
+                }
+            )
+        return sources, context
 
     @staticmethod
     def _friendly_research_question(question: str, source_labels: list[str]) -> str:
@@ -280,6 +372,7 @@ class ScientificReportService:
         interpretation: dict[str, Any],
         input_payload: dict[str, Any],
         context_fingerprint: str,
+        literature_sources: list[ReportLiteratureSource] | None = None,
     ) -> None:
         """Persist a bounded report context selection before composition."""
         items: list[dict[str, Any]] = []
@@ -317,8 +410,11 @@ class ScientificReportService:
         interpretation_payload = input_payload.get("interpretation") or interpretation.get("interpretation") or {}
         items.append({
             "item_id": "validated_interpretation",
-            "kind": "SCIENTIFIC_RESULT",
-            "authority_class": "SCIENTIFIC_RESULT",
+            "kind": "INTERPRETATION",
+            "authority_class": "DERIVED_SUMMARY",
+            "source_class": "PRESENTATION_PROJECTION",
+            "freshness": "HISTORICAL_VALID",
+            "epistemic_status": "INTERPRETED",
             "source_identity": str(interpretation.get("interpretationId") or interpretation.get("id") or "validated-interpretation"),
             "opaque_ref": "validated_interpretation",
             "content": {
@@ -347,6 +443,17 @@ class ScientificReportService:
                 "inclusion_reason": "bounded evidence references for report provenance",
                 "selection_mode": "RETRIEVED",
             })
+        for source in literature_sources or []:
+            items.append({
+                "item_id": source.evidence_ref,
+                "kind": "LITERATURE_EVIDENCE",
+                "authority_class": "SCIENTIFIC_EVIDENCE",
+                "source_identity": f"{source.evidence_id}:{source.snapshot_id}",
+                "opaque_ref": source.evidence_ref,
+                "content": source.model_dump(mode="json"),
+                "inclusion_reason": "exact literature snapshot used for report communication",
+                "selection_mode": "RETRIEVED",
+            })
         manifest = build_operation_manifest(
             operation=ContextOperation.REPORT,
             project_id=str(turn["project_id"]),
@@ -354,6 +461,14 @@ class ScientificReportService:
             research_turn_id=turn_id,
             context_fingerprint=context_fingerprint,
             items=items,
+            serialized_input=input_payload,
+            serialized_input_version=str(
+                input_payload.get("contract_version")
+                or REPORT_COMPOSER_VERSION
+            ),
+            invocation_role="scientific_report_composer",
+            prompt_template_version=REPORT_COMPOSER_PROMPT_VERSION,
+            input_state="ACTUAL",
         )
         with self.repository_factory.unit_of_work() as unit:
             unit.agent2.research_turn_events.append_turn_event({
@@ -396,12 +511,26 @@ class ScientificReportService:
             except Exception as exc:
                 raise ScientificReportError("REPORT_COMPOSITION_FAILED", "科学结果已完成，但报告整理暂时未完成。", 503) from exc
             errors = self.validator.validate(output, bundle=bundle, interpretation=interpretation)
-            if not errors:
-                return output, {"provider": result.provider, "model": result.model}, attempt == 1
-            if attempt == 0:
+            if errors and attempt == 0:
                 repair_errors = errors[:16]
                 continue
-            raise ScientificReportError("REPORT_GROUNDING_FAILED", "; ".join(errors)[:2000], 422)
+            if errors and all(
+                error.startswith("report.data_sources contains unknown reference:")
+                for error in errors
+            ):
+                # ``data_sources`` is an editorial provider field.  The
+                # deterministic projection replaces it with the exact source
+                # aliases from the persisted Result, while scientific finding
+                # references remain fail-closed.
+                return output, {"provider": result.provider, "model": result.model}, attempt == 1
+            if errors:
+                raise ScientificReportError("REPORT_GROUNDING_FAILED", "; ".join(errors)[:2000], 422)
+            # The provider output is only an organizational draft.  On the
+            # bounded second attempt, let the deterministic authoritative
+            # projection below rebuild scientific sections and references
+            # from the persisted Result/Interpretation; the final projection
+            # validation remains the acceptance gate.
+            return output, {"provider": result.provider, "model": result.model}, attempt == 1
         raise ScientificReportError("REPORT_SCHEMA_INVALID", "报告输出未通过结构化 schema 校验。", 422)
 
     def get_for_turn(self, turn_id: UUID) -> dict[str, Any]:

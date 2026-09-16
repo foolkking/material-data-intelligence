@@ -41,7 +41,13 @@ from mdi_api.research_agent.orchestration.queue import (
     RedisRQAgentTurnQueue,
 )
 from mdi_api.research_agent.registry_validation import DEFAULT_AGENT2_REGISTRIES
-from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchAction, ResearchTurnStatus, TERMINAL_TURN_STATUSES
+from mdi_api.research_agent.schemas import (
+    CreateResearchTurnRequest,
+    ResearchAction,
+    ResearchTurnEventType,
+    ResearchTurnStatus,
+    TERMINAL_TURN_STATUSES,
+)
 from mdi_api.research_agent.lifecycle import (
     build_autonomy_projection,
     build_lifecycle_projection,
@@ -616,8 +622,11 @@ def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depend
             require_project_access(session.connection, str(turn["project_id"]), current_user)
             job_id = str(turn.get("job_id") or "")
             decision = session.agent2.research_turn_decisions.get_for_turn(turn_id)
-            autonomy = build_autonomy_projection(
-                session.agent2.research_turn_events.list_for_turn(turn_id)
+            turn_events = session.agent2.research_turn_events.list_for_turn(turn_id)
+            autonomy = build_autonomy_projection(turn_events)
+            interpretation_retry_warning = _interpretation_retry_warning(
+                turn,
+                turn_events,
             )
         if not job_id:
             payload = {
@@ -627,6 +636,8 @@ def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depend
                 "total_step_count": 0, "incremental_outputs": [], "warnings": [],
                 "execution_outcome": None, "result_projection_pending": False,
             }
+            if interpretation_retry_warning is not None:
+                payload["warnings"].append(interpretation_retry_warning)
             if autonomy["enabled"]:
                 payload["autonomy"] = autonomy
             return payload
@@ -648,6 +659,8 @@ def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depend
         payload = jsonable_encoder(
             view.model_dump(mode="json") if hasattr(view, "model_dump") else view
         )
+        if interpretation_retry_warning is not None:
+            payload.setdefault("warnings", []).append(interpretation_retry_warning)
         if autonomy["enabled"]:
             payload["autonomy"] = autonomy
         return payload
@@ -966,6 +979,20 @@ def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(
                 except Exception:
                     pass
             relevance = ScientificResultRelevanceEvaluator().evaluate(bundle.source_object_refs, objects=objects, versions=versions)
+            source_object_refs = []
+            for item in bundle.source_object_refs:
+                source = item.model_dump(mode="json")
+                display_name = item.display_name or (
+                    objects.get(str(item.object_id)) or {}
+                ).get("display_name")
+                version_no = (
+                    versions.get(str(item.version_id)) or {}
+                ).get("version_no")
+                if display_name:
+                    source["display_name"] = display_name
+                if version_no is not None:
+                    source["version_no"] = int(version_no)
+                source_object_refs.append(source)
             return {
                 # `result_id` is the immutable logical result identity carried
                 # by the bundle.  Context/memory APIs address the persisted
@@ -977,7 +1004,7 @@ def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(
                 "research_turn_id": str(bundle.research_turn_id),
                 "research_question": bundle.research_question, "execution_status": bundle.execution_status.value,
                 "relevance_status": relevance.value, "result_items": [item.model_dump(mode="json") for item in bundle.result_items],
-                "source_object_refs": [item.model_dump(mode="json") for item in bundle.source_object_refs],
+                "source_object_refs": source_object_refs,
                 "facts": [item.model_dump(mode="json") for item in bundle.facts],
                 "figures": [item.model_dump(mode="json") for item in bundle.figures],
                 "tables": [item.model_dump(mode="json") for item in bundle.tables],
@@ -1367,9 +1394,44 @@ def _sse_event_name(event_type: str) -> str:
         "RESULT_PROJECTED": "result.projecting",
         "RESULT_READY": "result.ready",
         "INTERPRETATION_STARTED": "assistant.interpreting",
+        "INTERPRETATION_RETRY_SCHEDULED": "assistant.retrying",
         "INTERPRETATION_READY": "assistant.message",
         "TURN_PARTIAL": "turn.partial",
     }.get(event_type, "turn.status.changed")
+
+
+def _interpretation_retry_warning(
+    turn: dict[str, Any],
+    events: list[dict[str, Any]],
+) -> dict[str, str] | None:
+    """Project a simple user-facing retry state from durable turn events."""
+
+    if str(turn.get("status")) != ResearchTurnStatus.INTERPRETING.value:
+        return None
+    latest_start = -1
+    latest_retry: dict[str, Any] | None = None
+    latest_retry_sequence = -1
+    for event in events:
+        sequence = int(event.get("sequence_no") or 0)
+        event_type = str(event.get("event_type") or "")
+        if event_type == ResearchTurnEventType.INTERPRETATION_STARTED.value:
+            latest_start = max(latest_start, sequence)
+        elif (
+            event_type
+            == ResearchTurnEventType.INTERPRETATION_RETRY_SCHEDULED.value
+            and sequence > latest_retry_sequence
+        ):
+            latest_retry_sequence = sequence
+            latest_retry = event
+    if latest_retry is None or latest_retry_sequence < latest_start:
+        return None
+    return {
+        "code": "INTERPRETATION_RETRYING",
+        "message": (
+            "解释服务暂时繁忙，正在按有界策略重试；"
+            "已完成的科学结果仍然保留。"
+        ),
+    }
 
 
 def _http_error(exc: Exception) -> HTTPException:

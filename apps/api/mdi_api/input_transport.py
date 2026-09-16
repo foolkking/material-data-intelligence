@@ -67,7 +67,7 @@ def input_transport_capability_contract() -> dict[str, object]:
         "sameDatasetCompanionPolicy": "ATOMIC_SINGLE_UPLOAD_SESSION",
         "roleBindingPolicy": "PARSER_CONTRACT_OR_EXPLICIT_TYPED_IMPORT_ONLY",
         "fileOrderIsSemanticAuthority": False,
-        "partialFailurePolicy": "NO_DATASET_PUBLICATION_UNTIL_COMPLETE_BUNDLE_VALIDATES",
+        "partialFailurePolicy": "ADMIT_INDEPENDENT_VALID_MEMBERS_AND_DISCLOSE_PARTIAL_ERRORS",
         "supportedImportModes": ["generic_parser", "typed_phonon_band", "typed_phonon_dos"],
         "transport": {
             "declaration": "application/json",

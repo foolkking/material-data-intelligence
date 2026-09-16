@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from uuid import uuid4
 from datetime import datetime, timezone
@@ -18,6 +19,7 @@ from mdi_api.research_agent.context.schemas import (
     ReferenceCandidateSource,
     ResearchContextCandidateBundle,
 )
+from mdi_api.research_agent.context.assembler import ResearchContextCandidateAssembler
 from mdi_api.research_agent.context.policy import ContextOperation, context_budget_policy
 from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.routers.agent2 import _compat_context_manifest_from_snapshot
@@ -77,6 +79,65 @@ def test_context_manifest_is_bounded_and_preserves_exact_scientific_identity() -
     assert all(item.exact_object_version_id == str(version_id) for item in scientific_items)
     assert all(len(item.content_fingerprint) == 64 for item in manifest.included_items)
     assert manifest.estimated_input_tokens == sum(item.estimated_tokens for item in manifest.included_items)
+
+
+def test_context_manifest_persists_actual_recoverable_serialized_input() -> None:
+    payload = {
+        "contract_version": "agent2.test-input/1.0",
+        "research_question": "Why is diffusion elevated?",
+        "results": [{"ref": "result_1", "summary": "D = 1.2e-9 m2/s"}],
+    }
+    manifest = build_operation_manifest(
+        operation=ContextOperation.INTERPRETER,
+        project_id="project",
+        research_session_id="session",
+        research_turn_id=uuid4(),
+        context_fingerprint="9" * 64,
+        items=[{
+            "item_id": "result_1",
+            "kind": "SCIENTIFIC_RESULT",
+            "authority_class": "SCIENTIFIC_RESULT",
+            "source_identity": "result-snapshot-1",
+            "content": payload["results"][0],
+        }],
+        serialized_input=payload,
+        serialized_input_version=payload["contract_version"],
+        invocation_role="scientific_interpreter",
+        prompt_template_version="scientific-interpreter/1.0",
+        input_state="ACTUAL",
+    )
+
+    encoded = json.dumps(
+        payload, sort_keys=True, separators=(",", ":"), default=str
+    ).encode("utf-8")
+    assert manifest.input_state == "ACTUAL"
+    assert manifest.serialized_input == payload
+    assert manifest.serialized_input_version == payload["contract_version"]
+    assert manifest.invocation_role == "scientific_interpreter"
+    assert manifest.serialized_input_fingerprint == hashlib.sha256(encoded).hexdigest()
+    assert manifest.estimated_input_tokens == max(1, len(encoded) // 4)
+    assert manifest.included_items[0].serialized_representation == payload["results"][0]
+    assert manifest.included_items[0].lineage_refs == ["result-snapshot-1"]
+
+
+def test_actual_serialized_input_fails_closed_over_operation_budget() -> None:
+    policy = context_budget_policy(ContextOperation.REPORT)
+    with pytest.raises(
+        ValueError,
+        match="actual REPORT serialized input exceeds the operation budget",
+    ):
+        build_operation_manifest(
+            operation=ContextOperation.REPORT,
+            project_id="project",
+            research_session_id="session",
+            research_turn_id=uuid4(),
+            context_fingerprint="8" * 64,
+            items=[],
+            serialized_input={
+                "text": "x" * ((policy.effective_input_budget + 1) * 4)
+            },
+            input_state="ACTUAL",
+        )
 
 
 def test_context_budget_policy_is_operation_specific_and_reserves_output_space() -> None:
@@ -329,6 +390,34 @@ def test_context_compiler_compacts_conversation_before_exact_scientific_identity
     assert compact.objects[0].ref_key == "obj_1"
     assert compact.current_user_message == candidates.current_user_message
     assert len(compact.recent_conversation) < len(candidates.recent_messages)
+
+
+def test_scientific_object_summary_projects_bounded_metadata_without_raw_payload() -> None:
+    summary = ResearchContextCandidateAssembler._scientific_object_summary(
+        {
+            "trajectorySummary": {
+                "frameCount": 1000,
+                "atomCount": 50,
+                "properties": ["positions", "temperature"],
+            },
+            "timeStartPs": 0.0,
+            "timeEndPs": 19.98,
+            "timeAvailable": True,
+            "positionWrapping": "unwrapped",
+            "raw_payload": "do not expose this payload",
+            "storage_key": "private/object.json",
+            "very_large": "x" * 5000,
+        },
+        "trajectory.atomic",
+    )
+
+    assert len(summary) <= 2000
+    assert '"frameCount":1000' in summary
+    assert '"atomCount":50' in summary
+    assert '"timeEndPs":19.98' in summary
+    assert '"positionWrapping":"unwrapped"' in summary
+    assert "do not expose this payload" not in summary
+    assert "private/object.json" not in summary
 
 
 def test_legacy_context_manifest_projection_compacts_noncritical_overflow() -> None:

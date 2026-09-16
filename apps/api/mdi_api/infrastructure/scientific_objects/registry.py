@@ -48,6 +48,7 @@ def build_default_object_type_registry() -> InMemoryObjectTypeRegistry:
         ("electronic.dos", ScientificObjectKind.ELECTRONIC, "Electronic density of states"),
         ("phonon.band_structure", ScientificObjectKind.PHONON, "Phonon band structure"),
         ("phonon.dos", ScientificObjectKind.PHONON, "Phonon density of states"),
+        ("volumetric.field", ScientificObjectKind.VOLUMETRIC, "Volumetric scientific field"),
         ("volumetric.charge_density", ScientificObjectKind.VOLUMETRIC, "Charge density"),
     ):
         registry.register(ObjectTypeManifest(object_type=object_type, kind=kind, display_name=display_name, schema_versions=["1.0"]))

@@ -13,7 +13,14 @@ class ReportComposerInputAssembler:
 
     version = REPORT_COMPOSER_VERSION
 
-    def assemble(self, *, bundle: ScientificResultBundle, interpretation: dict[str, Any], relevance_status: str) -> tuple[dict[str, Any], str]:
+    def assemble(
+        self,
+        *,
+        bundle: ScientificResultBundle,
+        interpretation: dict[str, Any],
+        relevance_status: str,
+        literature_evidence: list[dict[str, Any]] | None = None,
+    ) -> tuple[dict[str, Any], str]:
         result = bundle.model_dump(mode="json")
         result["relevance_status"] = relevance_status
         payload = {
@@ -48,11 +55,16 @@ class ReportComposerInputAssembler:
                 "follow_up_suggestions": (interpretation.get("interpretation") or {}).get("follow_up_suggestions", [])[:8],
             },
             "evidence": [self._evidence(item.model_dump(mode="json")) for item in bundle.evidence[:64]],
+            "literature_evidence": list(literature_evidence or [])[:24],
             "opaque_refs": {
                 "result_items": [item.id for item in bundle.result_items[:24]],
                 "figures": [item.figure_id for item in bundle.figures[:16]],
                 "facts": [item.fact_id for item in bundle.facts[:64]],
                 "evidence": [item.evidence_id for item in bundle.evidence[:64]],
+                "literature_evidence": [
+                    str(item.get("evidence_ref"))
+                    for item in (literature_evidence or [])[:24]
+                ],
                 "limitations": [item.limitation_id for item in bundle.limitations[:32]],
                 "findings": [str(item.get("finding_id")) for item in [*((interpretation.get("interpretation") or {}).get("primary_findings") or []), *((interpretation.get("interpretation") or {}).get("supporting_findings") or [])] if item.get("finding_id")],
             },

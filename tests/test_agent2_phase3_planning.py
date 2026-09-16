@@ -151,7 +151,13 @@ def test_p3_c04_trajectory_msd_diffusion_uses_real_planned_output():
     ])
     _resolution, _plan, analysis = plan_and_bind(request, [trajectory])
     assert [step.toolId for step in analysis.steps] == ["trajectory.msd", "trajectory.diffusion"]
-    assert analysis.steps[0].params == {"species": "Li"}
+    assert analysis.steps[0].params == {
+        "drift_correction": "none",
+        "max_lag_count": 512,
+        "max_origins_per_lag": 4096,
+        "origin_stride": 1,
+        "species": "Li",
+    }
     assert analysis.steps[1].params["fit_start_time_ps"] == 1.0
     assert analysis.steps[1].params["fit_end_time_ps"] == 6.0
     assert [item.refType for item in analysis.steps[0].inputRefs] == [
@@ -249,6 +255,79 @@ def test_p3_c13_current_result_reuses_exact_output_object_without_recomputation(
     )
     assert len(analysis.steps) == 1
     assert {item.ref for item in analysis.steps[0].inputRefs} == {str(experimental.version_id), str(theoretical.version_id)}
+
+
+def test_p3_c13_filters_display_artifact_when_consumer_requires_table(monkeypatch):
+    monkeypatch.setattr(
+        "mdi_api.research_agent.planning.binder.validate_dependency_plan",
+        lambda *_args, **_kwargs: SimpleNamespace(ok=True, errors=[]),
+    )
+    monkeypatch.setattr(
+        "mdi_api.research_agent.planning.binder.validate_plan",
+        lambda *_args, **_kwargs: SimpleNamespace(ok=True, errors=[]),
+    )
+    experimental = ref("diffraction.xrd.experimental", "Measured XRD")
+    theoretical = ref("diffraction.xrd.theoretical", "Persisted theoretical XRD")
+    request = decision(
+        [("diffraction.compare_experimental_theoretical", ["obj_1"], {})],
+        "Compare XRD",
+    ).model_copy(update={"reusable_result_ref_keys": ["result_1"]})
+    snapshot = {
+        "selection_refs_json": [experimental.model_dump(mode="json")],
+        "active_scope_refs_json": [],
+    }
+    resolution = CapabilityResolutionService(
+        DEFAULT_AGENT2_REGISTRIES.capabilities,
+        DEFAULT_AGENT2_REGISTRIES.requirements,
+        TOOLS,
+        build_default_precondition_registry(),
+    ).resolve(
+        turn={"id": uuid4(), "project_id": "project"},
+        decision=request,
+        context_snapshot=snapshot,
+        reusable_results={
+            "result_1": {
+                "usable": True,
+                "output_object_refs": [],
+                "result_types": ["diffraction.xrd.theoretical"],
+                "artifact_ids_by_result_type": {
+                    "diffraction.xrd.theoretical": ["plot", "table"],
+                },
+            },
+        },
+    )
+    plan = build_deterministic_capability_plan(
+        decision=request,
+        resolution=resolution,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+    analysis, _ = CapabilityBinder(TOOLS).bind(
+        capability_plan=plan,
+        resolution=resolution,
+        context={
+            "dataset_id": "dataset",
+            "profile_id": "profile",
+            "object_refs": {"obj_1": experimental},
+            "result_object_refs": {},
+            "result_artifact_refs": {
+                "result_1": {
+                    "diffraction.xrd.theoretical": ["plot", "table"],
+                },
+            },
+            "result_artifact_metadata_refs": {
+                "result_1": {
+                    "plot": {"type": "plotly_json"},
+                    "table": {"type": "table_json"},
+                },
+            },
+        },
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+    assert [
+        (item.refType, item.ref, item.fieldRole)
+        for item in analysis.steps[0].inputRefs
+        if item.refType == "artifact"
+    ] == [("artifact", "table", "theoretical_xrd_artifact")]
 
 
 def test_p3_autonomy_reuses_exact_persisted_msd_artifact_for_diffusion():

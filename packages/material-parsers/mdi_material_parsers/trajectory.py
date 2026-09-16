@@ -294,9 +294,12 @@ def _parse_extxyz(
                 "Optional property availability changes across frames.",
             )
 
-        position_factor = _unit_factor(
-            metadata.get("position_unit", "angstrom"), "position"
+        position_unit = (
+            metadata.get("position_unit")
+            or metadata.get("coordinate_unit")
+            or "angstrom"
         )
+        position_factor = _unit_factor(position_unit, "position")
         velocity_factor = (
             _unit_factor(metadata.get("velocity_unit"), "velocity")
             if presence["velocities"]
@@ -308,7 +311,7 @@ def _parse_extxyz(
             else 1.0
         )
         if position_factor != 1.0:
-            conversions.add(f"positions:{metadata.get('position_unit')}->angstrom")
+            conversions.add(f"positions:{position_unit}->angstrom")
         if velocity_factor != 1.0:
             conversions.add(
                 f"velocities:{metadata.get('velocity_unit')}->angstrom_per_femtosecond"
@@ -664,7 +667,11 @@ def _metadata_pbc(metadata: dict[str, str]) -> list[bool]:
 def _metadata_position_wrapping(metadata: dict[str, str]) -> str | None:
     """Read explicit EXTXYZ coordinate semantics without guessing."""
 
-    raw = metadata.get("position_wrapping") or metadata.get("PositionWrapping")
+    raw = (
+        metadata.get("position_wrapping")
+        or metadata.get("PositionWrapping")
+        or metadata.get("position_convention")
+    )
     if raw is None:
         return None
     value = raw.strip().lower()
@@ -773,6 +780,11 @@ def _trajectory_kind(
 
 
 def _unit_factor(value: Any, quantity: str) -> float:
+    aliases = {
+        "time": {"fs": "femtosecond", "ps": "picosecond"},
+        "position": {"angstroms": "angstrom", "nm": "nanometer"},
+    }
+    value = aliases.get(quantity, {}).get(value, value)
     tables = {
         "position": {"angstrom": 1.0, "nanometer": 10.0, "bohr": BOHR_TO_ANGSTROM},
         "time": {"femtosecond": 1.0, "picosecond": 1000.0},

@@ -156,8 +156,22 @@ class ScientificResultProjectionService:
             if str(logical["project_id"]) != str(turn["project_id"]) or str(version["scientific_object_id"]) != str(ref.object_id) or str(version["availability_status"]) in {"SOURCE_MISSING", "INVALID"}:
                 raise ScientificResultSourceUnavailable(f"exact source version is unavailable: {ref.version_id}")
         job_id = str(summary["job_id"])
-        tool_calls = tuple(self._as_dict(item) for item in session.repositories.tool_calls.list_for_job(job_id))
-        artifacts = tuple(self._as_dict(item) for item in session.repositories.artifacts.list_for_job(job_id))
+        job = session.repositories.jobs.get(job_id)
+        current_attempt = int(job.get("executionAttempt") or 0)
+        tool_calls = tuple(
+            self._as_dict(item)
+            for item in session.repositories.tool_calls.list_for_job(job_id)
+            if not current_attempt
+            or int(self._as_dict(item).get("attempt") or 0) == current_attempt
+        )
+        current_call_ids = {str(item.get("id")) for item in tool_calls}
+        artifacts = tuple(
+            self._as_dict(item)
+            for item in session.repositories.artifacts.list_for_job(job_id)
+            if not current_attempt
+            or str(self._as_dict(item).get("toolCallId") or "")
+            in current_call_ids
+        )
         plan_json = plan.get("analysisPlan") or plan.get("analysis_plan") or plan
         capability_plan = dict(cap.get("plan_json") or {})
         if resolution:

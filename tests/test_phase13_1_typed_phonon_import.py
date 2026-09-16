@@ -142,6 +142,10 @@ def test_resource_ids_are_content_stable_and_project_scoped_storage_isolated(tmp
     ]
     first = runtime.upload_dataset({"projectId": "project_a", "datasetName": "first", "files": request_files})
     second = runtime.upload_dataset({"projectId": "project_b", "datasetName": "second", "files": request_files})
-    assert first["profile"]["phononSummary"]["resourceIds"] == second["profile"]["phononSummary"]["resourceIds"]
+    first_ids = first["profile"]["phononSummary"]["resourceIds"]
+    second_ids = second["profile"]["phononSummary"]["resourceIds"]
+    assert [item.split(":", 1)[1] for item in first_ids] == [item.split(":", 1)[1] for item in second_ids]
+    assert all(item.startswith("dataset_0001_") for item in first_ids)
+    assert all(item.startswith("dataset_0002_") for item in second_ids)
     assert all("projects/project_a/" in item["storageKey"] for item in first["normalizedExports"])
     assert all("projects/project_b/" in item["storageKey"] for item in second["normalizedExports"])

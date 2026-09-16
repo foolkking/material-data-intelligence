@@ -15,6 +15,7 @@ from mdi_api.application.research import (
     process_queued_planning,
     process_queued_turn,
 )
+from mdi_api.research_agent.planning.worker import _process_and_dispatch
 from mdi_api.application.scientific_reports import generate_queued_report
 from mdi_api.application.scientific_results import project_queued_result
 from mdi_api.scientific_reports.service import ScientificReportError
@@ -120,6 +121,29 @@ class _PlanningProcessor:
         return {"status": "planned"}
 
 
+class _PlanReadyProcessor:
+    def __init__(self) -> None:
+        self.turn_id: UUID | None = None
+
+    def process(self, turn_id: UUID) -> dict[str, str]:
+        self.turn_id = turn_id
+        return {"status": "PLAN_READY", "turn_id": str(turn_id)}
+
+
+class _ExecutionDispatcher:
+    def __init__(self) -> None:
+        self.turn_id: UUID | None = None
+
+    def dispatch_turn(self, turn_id: UUID):
+        self.turn_id = turn_id
+        return SimpleNamespace(
+            job_id=f"job_agent2_{turn_id.hex}",
+            queued=True,
+            queue_backend="rq",
+            message="job queued",
+        )
+
+
 def test_research_worker_entrypoints_adapt_string_identity_once() -> None:
     turn_id = uuid4()
     turn_processor = _AsyncTurnProcessor()
@@ -135,6 +159,28 @@ def test_research_worker_entrypoints_adapt_string_identity_once() -> None:
     ) == {"status": "planned"}
     assert turn_processor.turn_id == turn_id
     assert planning_processor.turn_id == turn_id
+
+
+def test_planning_worker_dispatches_plan_ready_without_browser_participation() -> None:
+    turn_id = uuid4()
+    processor = _PlanReadyProcessor()
+    dispatcher = _ExecutionDispatcher()
+
+    result = _process_and_dispatch(
+        str(turn_id),
+        processor=processor,
+        dispatcher=dispatcher,
+    )
+
+    assert processor.turn_id == turn_id
+    assert dispatcher.turn_id == turn_id
+    assert result["status"] == "PLAN_READY"
+    assert result["execution_dispatch"] == {
+        "job_id": f"job_agent2_{turn_id.hex}",
+        "queued": True,
+        "queue_backend": "rq",
+        "message": "job queued",
+    }
 
 
 class _JobRuntime:
@@ -423,3 +469,39 @@ def test_execute_queued_job_propagates_handle_failure_without_notification() -> 
     with pytest.raises(RuntimeError, match="job failed"):
         execute_queued_job("job-2", runtime=runtime)
     assert runtime.calls == [("handle", "job-2")]
+
+
+def test_research_worker_boundary_persists_failure_before_rq_rethrows(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A fresh RQ process failure must not leave a received Turn orphaned."""
+
+    from mdi_api import research_agent_worker
+    from mdi_api.research_agent.orchestration import worker as orchestration_worker
+
+    turn_id = str(uuid4())
+    persisted: list[tuple[str, str, str]] = []
+
+    monkeypatch.setattr(
+        research_agent_worker,
+        "_persist_worker_boundary_failure",
+        lambda failed_turn_id, error: persisted.append(
+            (str(failed_turn_id), type(error).__name__, str(error))
+        ),
+    )
+
+    def fail_before_handler(_turn_id: str):
+        raise ImportError("simulated missing worker dependency")
+
+    monkeypatch.setattr(
+        orchestration_worker,
+        "run_queued_turn",
+        fail_before_handler,
+    )
+
+    with pytest.raises(ImportError, match="simulated missing worker dependency"):
+        research_agent_worker.run_queued_turn(turn_id)
+
+    assert persisted == [
+        (turn_id, "ImportError", "simulated missing worker dependency")
+    ]

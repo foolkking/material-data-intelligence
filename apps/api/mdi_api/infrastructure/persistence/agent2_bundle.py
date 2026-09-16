@@ -18,6 +18,7 @@ from mdi_api.infrastructure.persistence.agent2_research import (
 )
 from mdi_api.infrastructure.persistence.agent2_results import ScientificResultSnapshotRepository
 from mdi_api.infrastructure.persistence.agent2_scientific_objects import ScientificObjectRepository
+from mdi_api.infrastructure.persistence.scientific_knowledge import ScientificKnowledgeRepository
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,7 @@ class Agent2RepositoryBundle:
     interpretations: Agent2ScientificInterpretationRepository
     scientific_report_generations: Agent2ScientificReportGenerationRepository
     scientific_reports: Agent2ScientificReportRepository
+    scientific_knowledge: ScientificKnowledgeRepository
 
     @classmethod
     def create(cls, bind: Engine | Connection) -> "Agent2RepositoryBundle":
@@ -52,6 +54,7 @@ class Agent2RepositoryBundle:
             interpretations=Agent2ScientificInterpretationRepository(bind),
             scientific_report_generations=Agent2ScientificReportGenerationRepository(bind),
             scientific_reports=Agent2ScientificReportRepository(bind),
+            scientific_knowledge=ScientificKnowledgeRepository(bind),
         )
 
 

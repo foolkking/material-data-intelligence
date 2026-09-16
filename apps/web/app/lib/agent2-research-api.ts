@@ -3,7 +3,7 @@ import type { PersistedScientificInterpretation } from "./scientific-presentatio
 
 const API_BASE = (process.env.NEXT_PUBLIC_MDI_API_BASE_URL || (typeof window === "undefined" ? "http://127.0.0.1:8000" : "/api")).replace(/\/$/, "");
 
-export type Agent2ScientificObjectRef = { object_id: string; version_id: string; project_id: string; object_type: string; display_name?: string };
+export type Agent2ScientificObjectRef = { object_id: string; version_id: string; project_id: string; object_type: string; display_name?: string; version_no?: number | null };
 export type Agent2ScientificSelection = { contract_version: "1.0"; object_ref: Agent2ScientificObjectRef; viewer_id: string; selection_type: string; semantic_locator: Record<string, string | number>; display_label: string; evidence_locator?: Record<string, string | number> | null };
 export type Agent2TurnResponse = { turn_id: string; id?: string; research_session_id: string; project_id: string; sequence_no: number; parent_turn_id?: string | null; status: string; user_message: { id: string; role: string; content: string }; created_at: string };
 export type Agent2TurnListItem = {
@@ -32,6 +32,8 @@ export type Agent2ContextManifestItem = {
   item_id: string;
   kind: string;
   authority_class: string;
+  context_role?: "EVIDENCE" | "CONTINUITY" | "SUBJECT" | "CONSTRAINT" | "PREFERENCE";
+  support_eligible?: boolean;
   server_side_source_identity: string;
   provider_opaque_ref: string;
   exact_object_id?: string | null;
@@ -41,6 +43,10 @@ export type Agent2ContextManifestItem = {
   selection_mode: string;
   authorization_checked: boolean;
   content_fingerprint: string;
+  representation_type?: string;
+  representation_version?: string;
+  serialized_representation?: unknown;
+  lineage_refs?: string[];
   estimated_tokens: number;
   source_class?: string;
   freshness?: string;
@@ -56,8 +62,19 @@ export type Agent2ContextManifest = {
   research_session_id: string;
   research_turn_id: string;
   policy_version: string;
+  input_state?: "PROSPECTIVE" | "ACTUAL";
+  invocation_role?: string | null;
+  prompt_template_version?: string | null;
+  serialized_input_version?: string | null;
+  serialized_input?: Record<string, unknown> | null;
+  serialized_input_fingerprint?: string | null;
   included_items: Agent2ContextManifestItem[];
   excluded_items: string[];
+  excluded_item_details?: Array<{
+    item_id: string;
+    reason: string;
+    detail: string;
+  }>;
   estimated_input_tokens: number;
   input_budget: number;
   reserved_output_tokens: number;

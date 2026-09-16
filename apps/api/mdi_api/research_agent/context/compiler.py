@@ -40,6 +40,8 @@ class ResearchContextCompiler:
                 "epistemic_status": item.epistemic_status.value if item.epistemic_status else "OBSERVED",
                 "source_ref": item.source_ref,
             },
+            context_role="SUBJECT",
+            support_eligible=False,
         ) for item in candidates.active_object_candidates]
         result_summaries = [CompactResultSummary(
             ref_key=item.candidate_key,
@@ -52,12 +54,16 @@ class ResearchContextCompiler:
                 f"[source={item.source_ref or item.result_id}; "
                 f"freshness={item.freshness.value if item.freshness else 'UNKNOWN'}]"
             ),
+            context_role="EVIDENCE",
+            support_eligible=item.support_eligible,
         ) for item in candidates.result_candidates]
         finding_summaries = [CompactFindingSummary(
             ref_key=item.candidate_key,
             display_label=item.display_label,
             summary=item.semantic_summary or "Persisted finding reference",
             relevance_status=item.freshness.value if item.freshness else ("STALE" if item.stale else "CURRENT"),
+            context_role="EVIDENCE",
+            support_eligible=item.support_eligible,
         ) for item in candidates.finding_candidates]
         fingerprint_payload = {
             "project_id": candidates.project_id,

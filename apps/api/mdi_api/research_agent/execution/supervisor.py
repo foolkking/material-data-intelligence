@@ -100,7 +100,21 @@ class ResearchExecutionSupervisor:
                 return None
             job = unit.repositories.jobs.get(job_id)
             tool_calls = unit.repositories.tool_calls.list_for_job(job_id)
+            current_attempt = int(job.get("executionAttempt") or 0)
+            if current_attempt:
+                tool_calls = [
+                    item
+                    for item in tool_calls
+                    if int(item.get("attempt") or 0) == current_attempt
+                ]
             artifacts = unit.repositories.artifacts.list_for_job(job_id)
+            if current_attempt:
+                current_call_ids = {str(item.get("id")) for item in tool_calls}
+                artifacts = [
+                    item
+                    for item in artifacts
+                    if str(item.get("toolCallId") or "") in current_call_ids
+                ]
             events = unit.repositories.job_events.list_for_job(job_id)
             plan_record = (
                 unit.repositories.analysis_plans.get_plan(str(turn["analysis_plan_id"]))
@@ -246,7 +260,7 @@ class ResearchExecutionSupervisor:
         if job_id:
             try:
                 with self.repository_factory.unit_of_work() as unit:
-                    unit.repositories.jobs.set_status(job_id, "cancel_requested")
+                    unit.repositories.jobs.request_cancel(job_id)
             except Exception as exc:
                 from mdi_api.research_agent.execution.errors import ExecutionCancelRequestFailed
 

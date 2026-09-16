@@ -224,6 +224,15 @@ export type AnalysisStep = {
   reason: string;
   inputRefs: InputRef[];
   params: Record<string, unknown>;
+  parameterProvenance?: Array<{
+    parameter: string;
+    resolvedValue: string | number | boolean | string[];
+    unit?: string | null;
+    origin: "SOURCE_FACT" | "DETERMINISTIC_DERIVATION" | "TOOL_DEFAULT" | "USER_SPECIFIED" | "SCIENTIFIC_PRESET" | "SYSTEM_POLICY";
+    authority: "SOURCE_LOCKED" | "AUTO_DERIVED" | "USER_EDITABLE" | "ADVANCED_EDITABLE" | "SYSTEM_ONLY";
+    changeEffect: "PRESENTATION_ONLY" | "REINTERPRETATION_OR_REPORT" | "RECOMPUTE" | "SOURCE_VERSION";
+    sourceIdentity: string;
+  }>;
   output: {
     artifactTypes: ArtifactType[];
     displayTarget: DisplayTarget;

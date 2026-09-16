@@ -21,6 +21,7 @@ const EMPTY_SNAPSHOT: ProductTaskFeedSnapshot = {
   refreshError: false,
 };
 const POLL_INTERVAL_MS = 30_000;
+const INITIAL_REQUEST_TIMEOUT_MS = 10_000;
 
 let snapshot = EMPTY_SNAPSHOT;
 let request: Promise<void> | null = null;
@@ -49,13 +50,30 @@ function pauseSharedProductTaskFeed() {
 export function refreshSharedProductTaskFeed(
   options: Readonly<{ forceRefresh?: boolean }> = {},
 ): Promise<void> {
-  if (!pollingAllowed()) return Promise.resolve();
+  if (!pollingAllowed()) {
+    // A visible offline page must settle to a typed failure instead of
+    // leaving the notification surface in an indefinite loading state.
+    if (document.visibilityState === "visible" && !snapshot.feed) {
+      publish({
+        state: "error",
+        feed: null,
+        isRefreshing: false,
+        refreshError: false,
+      });
+    }
+    return Promise.resolve();
+  }
   if (request && requestController && !requestController.signal.aborted) {
     return request;
   }
 
   const controller = new AbortController();
   requestController = controller;
+  let timedOut = false;
+  const timeout = window.setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, INITIAL_REQUEST_TIMEOUT_MS);
   publish(
     snapshot.feed
       ? { ...snapshot, isRefreshing: true, refreshError: false }
@@ -76,8 +94,10 @@ export function refreshSharedProductTaskFeed(
     })
     .catch((error) => {
       if (
-        controller.signal.aborted ||
-        (error instanceof DOMException && error.name === "AbortError")
+        (controller.signal.aborted && !timedOut) ||
+        (!timedOut &&
+          error instanceof DOMException &&
+          error.name === "AbortError")
       )
         return;
       publish(
@@ -89,9 +109,10 @@ export function refreshSharedProductTaskFeed(
               isRefreshing: false,
               refreshError: false,
             },
-      );
+        );
     })
     .finally(() => {
+      window.clearTimeout(timeout);
       if (request === current) request = null;
       if (requestController === controller) requestController = null;
     });

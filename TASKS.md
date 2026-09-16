@@ -1,4 +1,190 @@
 ---TASK---
+状态：失败
+任务名称：FINAL CANDIDATE FREEZE one-time commit authorization and Phase D re-seal
+开始时间：2026-09-16T05:34:34.069006+00:00
+执行规范：
+`docs/agent2/phase-e/FINAL_CANDIDATE_FREEZE_AND_PHASE_D_RESEAL.md`
+
+先重验 approved preflight；仅在全部 exact-SHA gate 保持不变时 stage/commit 一次并执行 Phase D re-seal；禁止 Phase E。
+完成时间：2026-09-16T05:34:34.069006+00:00
+结果：mandatory pre-commit revalidation blocked the operation because results.md changed after the approved preflight fingerprint. No paths were staged, no commit was created, and Phase D/E were not started.
+---END---
+
+---TASK---
+状态：失败
+任务名称：FINAL CANDIDATE FREEZE PREFLIGHT before Phase E
+开始时间：2026-09-16T00:00:00Z
+执行规范：
+`docs/agent2/phase-e/FINAL_CANDIDATE_FREEZE_PREFLIGHT.md`
+
+仅执行 Phase E entry-gate preflight：恢复并校验冻结资格包、检查 M3 外部依赖、分类当前工作树、盘点迁移、执行安全回归和只读服务检查、生成提交提案；不得启动 Phase E、不得执行 canonical case、不得提交或重置工作树。
+---END---
+完成时间：2026-09-16T11:29:47+08:00
+结果：已完成冻结预检但按门禁真实阻断。冻结资格包已从历史恢复源逐字节复制到 active authority path，SHA256 与大小完全一致；M3-007 retrying UI truthfulness 仍无外部接受的 attempt-06，因此不得冻结/提交最终候选，也未启动 Phase E。完整工作树分类 unknown=0，安全离线回归 212 passed / 5 skipped，canonical 服务仅只读检查。
+证据：`_qualification/evidence/final_candidate_freeze_preflight_20260916/`
+
+
+---TASK---
+状态：失败
+任务名称：MDI V0 — Phase E final canonical live-agent browser qualification attempt-01
+开始时间：2026-09-16T02:51:36.1276626Z
+执行规范：
+docs/agent2/phase-e/PHASE_E_FINAL_ATTEMPT_01.md
+
+按用户授权执行 16-case exact-SHA Phase E；先完成 Phase D entry gate，失败则仅记录 truthful HARD_QUALIFICATION_BLOCKER；不修改冻结 authority，不混用历史 SHA，不启动后续阶段。
+---END---
+
+完成时间：2026-09-16T10:59:28.149471+08:00
+结果：Phase E stopped truthfully before Case 1 at the mandatory entry gate. The requested R1.2 frozen package is absent from the active repository authority path; the historical Phase D PASS is for candidate 54c66abc499c646dc27b612dbf28747b176177c8, while active HEAD is 2727e94ba6adaaf0c6ff9914f8137d130b34c777; 132 production-runtime-affecting uncommitted paths are present. No fixture, Plan, Job, ToolCall, Artifact, Report, Recipe, or provider call was created.
+证据：`_qualification/evidence/phase_e_final_attempt_01_blocked_entry_gate_20260916/`
+
+---TASK---
+状态：失败
+任务名称：MDI V0 — M3 attempt-02 targeted closeout
+开始时间：2026-09-15T18:45:00+08:00
+执行规范：
+`docs/agent2/m/M3_ATTEMPT_02_TARGETED_CLOSEOUT.md`
+
+只补齐 M3-001/M3-002/M3-003/M3-004/M3-005/M3-006/M3-007；先诊断 attempt-01 heavy failure，再进行有效 F12、F09、resource release 和 user-state 证据。保留 attempt-01 immutable，不启动 M4。
+
+完成时间：2026-09-15T19:20:00+08:00
+结果：完成 M3 attempt-02 targeted qualification。确认 attempt-01 的 4096-atom structure.rdf 是 INVALID_F12_WORKLOAD_SELECTION；使用 accepted 4096-atom import/coordination execution 完成重型资源与混合探针，修正 RDF 公平性界限为 34.9059 秒、local bound 为 0.25 秒；通过资格 loopback HTTP seam 执行 F09 429/timeout/exhaustion，并执行 5 次取消循环。Provider jitter/shared concurrency、完整 release-to-baseline、细粒度 health/user-state 与 browser evidence 仍未闭合，因此 M3 保持 PARTIAL，NEXT_PHASE_PROPOSED=NONE，M4 未启动。
+生成物：`E:\mdi-v0-review\M3_attempt-02.zip`
+ZIP SHA256：`082362d4145df37b8a2b06351305f3b3db120c4586b1bc0861d2f7359d6c7210`
+phase_return SHA256：`e6431c5bf915cb9a9149e6151d2fa62a69ce0e86a2dd1c10a3c0cabf862fe1f1`
+测试：semantic checker truthful blocked（F12、jitter/shared provider gate、capacity baseline、health/UI open）；`validate_return.py --seal` = `FORMAT_AND_EVIDENCE_INTEGRITY_PASS`，errors=[]；ZIP CRC PASS，30 members；M3 API/workers 已按 PID/start/cmd/cwd/PPID/role/namespace 复核后退出，8019 释放，canonical ports 保持监听。
+---END---
+---TASK---
+状态：失败
+任务名称：MDI V0 — M3 attempt-01 bounded queues, fairness and resource backpressure
+开始时间：2026-09-15T14:00:00+08:00
+执行规范：
+`docs/agent2/m/M3_ATTEMPT_01_BOUNDED_QUEUES.md`
+
+完成时间：2026-09-15T15:42:00+08:00
+结果：完成 M3 attempt-01 qualification-only campaign。新建 M3 隔离命名空间，保留六队列；真实 mixed-load probe 中小型任务完成但 4096-atom 重任务 FAILED，因此 F12 不通过；真实项目并发准入 probe 命中现有 4 项目活动研究限制，第五项返回 429 PROJECT_ACTIVE_RESEARCH_LIMIT；上传超限返回 typed 422。F09 provider 429/timeout、capacity release、M3 当前浏览器状态未执行，未修改生产代码，未启动 M4。
+生成物：`E:\mdi-v0-review\M3_attempt-01.zip`
+ZIP SHA256：`5c8db34102fc164cf9cff589ca69b95fb50f041347224ad8196e9cb67ccd95a6`
+phase_return SHA256：`3164282338ba8d1e547f90c89500dd2037f695fb02ebe5f695d648799d867604`
+测试：semantic checker PASS；validate_return --seal FORMAT_AND_EVIDENCE_INTEGRITY_PASS；ZIP CRC PASS；focused tests 83 passed。
+共享服务未停止，M3 API/workers 已按身份复核后退出且 8018 释放。
+---END---
+---TASK---
+状态：失败
+任务名称：MDI V0 — M2 attempt-03 final closeout
+开始时间：2026-09-15T09:25:00+08:00
+
+执行规范：
+`docs/agent2/m/M2_ATTEMPT_03_FINAL_CLOSEOUT.md`
+
+仅补齐 M2-006 浏览器重连和 M2-007 已有证据的恢复耗时计算；复用 attempt-02 已接受证据，不重复完整故障活动，不修改生产代码，不启动 M3。
+
+完成时间：2026-09-15T11:40:00+08:00
+结果：M2-006 浏览器重连已用资格专用 loopback reverse proxy + 现有 production build 完成；同一 Project/Turn/Result/source ObjectVersion 重连前后保持一致，ToolCall/Result 新增为 0。M2-007 对 12 个适用故障行中的 7 行完成 UTC 时序计算并通过算术校验；F05/F07/F08/Interpretation/API restart 的密封证据缺少至少一个可防伪的权威端点时间，未伪造数值、未重跑完整 campaign，因此 attempt-03 真实状态为 PARTIAL。未修改生产代码、未重跑已接受故障、未启动 M3。
+生成物：`E:\mdi-v0-review\M2_attempt-03.zip`
+---END---
+---TASK---
+状态：失败
+任务名称：MDI V0 — M2 attempt-02 final closeout
+开始时间：2026-09-14T16:45:00+08:00
+
+执行规范：
+`docs/agent2/m/M2_ATTEMPT_02_FINAL_CLOSEOUT.md`
+
+仅执行外部审核指出的 M2 因果故障时序、缺失接受案例、浏览器重连、身份重开与精确恢复计时；复用已有效 attempt-01 证据，不修改已密封 attempt-01，不启动 M3。
+
+完成时间：2026-09-15T00:30:00+08:00
+修改文件：E:/mdi-v0-review/M2/attempt-02 evidence only; TASKS.md; results.md
+修改摘要：补齐并执行 F01/F02/F04 因果进程退出、Result-before-next-stage、upload-success/DB-failure、真实 Redis unavailable、真实 client disconnect、delayed delivery 与 API reopen identity。浏览器重连未完成：M2 专用前端 3024 在编译根页面时发生 native OOM，未伪造截图；elapsed recovery accounting 仍有 instrumentation 缺口。未修改生产代码，未启动 M3。
+测试结果：M2 semantic checker = PASS（针对 PARTIAL 状态）；validate_return.py --seal = FORMAT_AND_EVIDENCE_INTEGRITY_PASS，errors=[]；ZIP CRC = PASS，37 members；ZIP SHA256=33d24eb727302d6eac1efb69524f22dcf52eba4d9d0547514aff0454478c57af；phase_return SHA256=7dba2fe36f015a9064ee836a6c4d88828ef68899e48c5126ec58a799ebde2b35。
+---END---
+---TASK---
+状态：已完成
+任务名称：MDI V0 — M2 attempt-01 crash recovery and idempotent scientific publication
+开始时间：2026-09-14T23:08:42+08:00
+
+执行规范：
+`docs/agent2/m/M2_ATTEMPT_01_CRASH_RECOVERY.md`
+
+在全新 M2 资格命名空间中完成 durable boundary map、F01/F02/F04/F05/F06/F07/F08
+真实隔离故障恢复、幂等权威发布、Result 后 Interpretation 恢复、API/client 中断、
+orphan/reconciliation 扫描与浏览器恢复证据。保留 accepted Pre-M/M0/M1 和 frozen J；
+不得启动 M3。
+
+完成时间：2026-09-14T16:35:00+08:00
+修改文件：apps/api/mdi_api/infrastructure/interpretation/service.py；apps/api/mdi_api/infrastructure/interpretation/reconciler.py；apps/api/mdi_api/infrastructure/persistence/agent2_research.py；apps/api/mdi-v0-review/M2/attempt-01 资格证据。
+修改摘要：完成隔离 M2 attempt-01；真实 F01/F02/F04/F05/F06/F07/F08 故障恢复、API 重启、客户端中断、重复投递、Interpretation-only 恢复与 recovery scan；仅在 Interpretation 边界增加窄修复，保持 Tool/Result 不重算。
+测试结果：31 passed, 1 skipped；py_compile PASS；M2 semantic coherence PASS；validate_return --seal FORMAT_AND_EVIDENCE_INTEGRITY_PASS，errors=[]；ZIP CRC PASS，36 members。
+Review ZIP：E:\mdi-v0-review\M2_attempt-01.zip；SHA256：f476da7fd9e18c42934ceeeba5530557888589600531dc0f897f40da22ae123b。phase_return SHA256：a5dc5f15c85b595a7615c40bb2ac11f75cc62a24d91d1c0aa8d3f818c464c603。
+提交/CI 状态：未提交、未推送、未运行 remote CI；共享服务未停止/未清空；M3 未启动。
+---END---
+---TASK---
+状态：失败
+任务名称：Pre-M5 attempt-07 — Final five qualification requirements
+开始时间：2026-09-13T00:00:00+08:00
+
+执行规范：
+`docs/agent2/pre-m/PRE_M5_ATTEMPT_07_FINAL_FIVE_REQUIREMENTS.md`
+
+仅关闭 PM5-004、PM5-005、PM5-006、PM5-008、PM5-009；保留已经接受的
+PM5-001/002/003/007/010、FMT-001...026、根因修复与 golden E2E。
+只有 Pre-M5 10/10 与 FMT 26/26 全部闭合并封包后才执行 fresh Pre-M6；
+始终停止在 M0 之前。
+
+完成时间：2026-09-13T20:05:00+08:00
+结果：生成并封存 Pre-M5 attempt-07，语义一致性与格式证据校验通过；真实轨迹 5000×128 导入压力、8/9 multipart、32/33 workspace 边界已测量。五项仍因表格/轨迹/XRD/电子/体数据 useful R 输出及下游 envelope/accounting 证据不足而 PARTIAL，未启动 Pre-M6/M0。
+review ZIP：E:\mdi-v0-review\Pre-M5_attempt-07.zip
+
+---END---
+
+---TASK---
+状态：失败
+任务名称：Pre-M5 attempt-06 — Final qualification closure
+开始时间：2026-09-13T00:00:00+08:00
+完成时间：2026-09-13T00:00:00+08:00
+
+执行规范：
+`docs/agent2/pre-m/PRE_M5_ATTEMPT_06_FINAL_CLOSURE.md`
+
+结果：按 PM5 权威要求完成 attempt-06 原子化证据重整、语义一致性校验和
+封包。PM5-001、PM5-003、PM5-002、PM5-007、PM5-010 及 FMT-001...026
+保持闭合；PM5-004、PM5-005、PM5-006、PM5-008、PM5-009 的当前证据仍不足，
+因此真实状态为 PARTIAL，未启动 Pre-M6/M0。
+---END---
+
+---TASK---
+状态：失败
+任务名称：Pre-M5 attempt-05 — Final qualification evidence reconciliation
+开始时间：2026-09-13T16:30:00+08:00
+完成时间：2026-09-13T16:45:00+08:00
+
+执行规范：
+`docs/agent2/pre-m/PRE_M5_ATTEMPT_05_FINAL_CLOSURE.md`
+
+结果：attempt-05 生成并通过语义一致性/格式证据校验，但七科学族完整公共权益、S/R/H/X、有效 envelope、useful science 与 accounting 仍未闭合，返回 PARTIAL；Pre-M6/M0 未启动。
+---END---
+
+---TASK---
+状态：失败
+任务名称：Pre-M5 attempt-04 — Research/Trajectory/Phonon 根因闭环与资格重跑
+开始时间：2026-09-13T13:20:00+08:00
+
+执行规范：
+`docs/agent2/pre-m/PRE_M5_ATTEMPT_04_ROOT_CAUSE_CLOSURE.md`
+
+严格按 Completion Pack `PM5.md` 和用户授权的 attempt-04 根因闭环任务执行。
+先修 Research 202 孤儿生命周期、Context manifest 终态、Trajectory viewer
+有效载荷表示和 typed phonon 入口，再尝试真实 queued E2E；只有 Pre-M5
+10/10 与 FMT 26/26 全部闭合才运行新 Pre-M6。不得启动 M0。
+---END---
+
+完成时间：2026-09-13T16:10:00+08:00
+修改文件：apps/api/mdi_api/infrastructure/interpretation/service.py；apps/api/mdi_api/application/interpretation/grounding.py；apps/api/mdi_api/application/scientific_reasoning/assessment.py；apps/api/mdi_api/application/scientific_reports/grounding.py；apps/api/mdi_api/infrastructure/scientific_reports/service.py；tests/ 相关解释/报告/推理回归；Pre-M5 attempt-04 证据文件。
+修改摘要：修复解释投影顺序、内部 provenance 元数据污染用户科学陈述、RDF limitation 相关性判断及报告草稿 stale data-source 引用；真实 Research queued chain 已完成 Result→Interpretation→Report→历史报告列表重开；轨迹 viewer 与 typed phonon 入口证据保留。完整七科学族 S/R/H/X、全族 public admission、有效 envelope 与完整 accounting 仍未闭合，因此本阶段返回 PARTIAL，未启动 Pre-M6/M0。
+测试结果：99 passed, 5 skipped；phase_return validator FORMAT_AND_EVIDENCE_INTEGRITY_PASS；review ZIP integrity valid。
+提交/CI 状态：未提交、未推送、未运行 remote CI。
+
+---TASK---
 状态：已完成
 任务名称：Materials Intelligence Platform — Continuous Autonomous Optimization
 开始时间：2026-09-05T00:00:00+08:00
@@ -6880,3 +7066,35 @@ proceed to comprehensive final qualification archive
 
 
 ---END---
+---TASK---
+状态：已完成
+任务名称：MDI V0 Pre-M1 → Pre-M2 → Pre-M3 Chained Execution
+开始时间：2026-09-12T00:00:00+08:00
+
+执行规范：
+`docs/agent2/pre-m/PRE_M1_TO_PRE_M3_CHAINED_EXECUTION_TASK.md`
+
+依次完成 Completion Pack 的 Pre-M1、Pre-M2、Pre-M3；每阶段使用独立
+attempt/evidence/review ZIP，自主修复当前阶段缺陷并连续进入下一授权阶段。
+严格保留 dirty H/I/J/Pre-M baseline 与 J frozen evidence；不 commit/push/
+release/remote CI；Pre-M3 封包后停止，不开始 Pre-M4 或 M。
+
+完成时间：2026-09-12T23:59:00+08:00
+修改文件：Pre-M1/Pre-M2/Pre-M3 生产实现、测试、阶段证据目录及当前项目状态文档。
+修改摘要：完成授权的 Pre-M1→Pre-M2→Pre-M3 chained execution。Pre-M1/2
+分别完成 Context authority、参数/生命周期/搜索语义；Pre-M3 修复 Research
+内容感知 split、空 Data Dataset Overview 和 Notifications 超时/离线 typed
+settlement。每阶段生成独立 phase_return 与 review bundle；Pre-M3 保留
+authenticated route depth/real browser zoom verification debt，未启动 Pre-M4。
+测试结果：Pre-M1 backend 188 passed/5 skipped、ResearchPages 96 passed、
+typecheck PASS；Pre-M2 backend 61 passed/2 skipped、frontend 123 passed、
+typecheck PASS；Pre-M3 frontend 155 passed、typecheck PASS、Chromium desktop
+与 390x844 replay PASS；三阶段返回格式/证据封包验证 PASS。
+提交/CI 状态：未 commit、未 push、未运行 remote CI 或 release；服务保持运行；
+J frozen evidence 未修改。
+---END---
+
+
+
+
+

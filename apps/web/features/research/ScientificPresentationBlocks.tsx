@@ -114,7 +114,7 @@ export function ScientificPresentationBlocks({
       return <div key={block.id}>
         <span>{block.type === "figure" ? "图形" : block.type === "table" ? "表格" : "查看器"}</span>
         <strong>{label}</strong>
-        <small>{block.source.versionId ? `精确版本 ${block.source.versionId}` : "来自 ScientificResult"}</small>
+        <small>{block.source.versionId ? (block.source.versionNo ? `来源版本 ${block.source.versionNo}` : "已锁定精确来源版本") : "来自 ScientificResult"}</small>
         <div className="scientific-presentation-link-actions">
           {canPreview ? <button
             type="button"
@@ -233,7 +233,7 @@ function EvidenceReference({
   );
   return <li id={evidenceItemId} className="scientific-presentation-evidence-item">
     <strong>{block.label}</strong>
-    <small>Result {block.source.resultId || "—"} · Evidence {evidenceId || "—"}</small>
+    <small>已绑定科学结果与证据</small>
     <div className="scientific-presentation-evidence-actions">
       <button
         ref={triggerRef}
@@ -274,7 +274,7 @@ function EvidenceReference({
         </> : null}
       </> : <p>此呈现块没有可用的 interpretation evidence identity。</p>}
     </div> : null}
-    {block.source.versionId ? <small>精确版本 {block.source.versionId}</small> : null}
+    {block.source.versionId ? <small>{block.source.versionNo ? `来源版本 ${block.source.versionNo}` : "已锁定精确来源版本"}</small> : null}
   </li>;
 }
 

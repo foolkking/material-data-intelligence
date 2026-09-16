@@ -6,6 +6,7 @@ import json
 import os
 import shutil
 import uuid
+from dataclasses import replace
 from pathlib import Path
 from typing import Any, AsyncIterable
 
@@ -253,7 +254,6 @@ class Phase2ProductRuntime:
                 dataset_id=dataset_id,
                 dataset_name=session.dataset_name,
                 uploads=uploads,
-                require_complete_bundle=True,
             )
         except Exception:
             shutil.rmtree(dataset_root, ignore_errors=True)
@@ -621,13 +621,9 @@ class Phase2ProductRuntime:
         dataset_id: str,
         dataset_name: str,
         uploads: list[MaterializedUpload],
-        require_complete_bundle: bool = False,
     ) -> dict[str, Any]:
         parse_results = self._parse_materialized_uploads(uploads, dataset_id)
-        if require_complete_bundle and any(result.parse_status == "failed" or not result.objects for result in parse_results):
-            raise ValueError("UPLOAD_BUNDLE_PARSE_FAILED")
-        if require_complete_bundle and len(uploads) > 1 and any(result.parse_status != "success" for result in parse_results):
-            raise ValueError("MULTI_RESOURCE_UPLOAD_PARTIAL_NOT_EXECUTION_READY")
+        parse_results = _namespace_parse_results(parse_results, dataset_id)
         objects = [obj for result in parse_results for obj in result.objects]
         self._validate_companion_resources(objects)
         profile = build_data_profile(
@@ -637,7 +633,14 @@ class Phase2ProductRuntime:
         )
         object_store, object_refs = build_object_store(objects, profile=profile)
         normalized_exports = self._export_normalized_objects(project_id, dataset_id, objects)
-        input_transport = self._input_transport_summary(uploads, objects)
+        input_transport = self._input_transport_summary(
+            uploads,
+            objects,
+            parse_results,
+        )
+        partial_admission = any(
+            result.parse_status != "success" for result in parse_results
+        )
         record = DatasetRecord(
             id=dataset_id,
             project_id=project_id,
@@ -650,6 +653,7 @@ class Phase2ProductRuntime:
             object_refs=object_refs,
             normalized_exports=normalized_exports,
             input_transport=input_transport,
+            status="partially_ready" if partial_admission else "profile_ready",
         )
         self.datasets[dataset_id] = record
         return {
@@ -739,6 +743,7 @@ class Phase2ProductRuntime:
         self,
         uploads: list[MaterializedUpload],
         objects: list[NormalizedObjectDraft],
+        parse_results: list[ParseResult],
     ) -> dict[str, Any]:
         object_kinds = sorted({item.object_type.value for item in objects})
         groups = sorted({item.companion_group_id for item in uploads if item.companion_group_id})
@@ -746,6 +751,16 @@ class Phase2ProductRuntime:
             "schemaVersion": UPLOAD_SESSION_SCHEMA_VERSION,
             "bytePreservation": "EXACT_SHA256_AND_BYTE_SIZE",
             "atomicPublication": True,
+            "scientificAdmissionStatus": (
+                "PARTIALLY_READY"
+                if any(result.parse_status != "success" for result in parse_results)
+                else "READY"
+            ),
+            "uploadedFileCount": len(uploads),
+            "admittedFileCount": sum(bool(result.objects) for result in parse_results),
+            "failedOrUnsupportedFileCount": sum(
+                result.parse_status != "success" for result in parse_results
+            ),
             "fileOrderIsSemanticAuthority": False,
             "sameDatasetBinding": len(uploads) > 1,
             "companionGroupIds": groups,
@@ -760,8 +775,13 @@ class Phase2ProductRuntime:
                     "importKind": item.import_kind,
                     "contractVersion": item.contract_version,
                     "companionGroupId": item.companion_group_id,
+                    "parseStatus": result.parse_status,
+                    "objectCount": len(result.objects),
+                    "errorCode": result.error_code,
+                    "errorMessage": result.error_message,
+                    "parseDetails": result.details,
                 }
-                for item in uploads
+                for item, result in zip(uploads, parse_results, strict=True)
             ],
         }
 
@@ -1220,6 +1240,9 @@ async def put_phase2_upload_session_file(
 def complete_phase2_upload_session(session_id: str) -> dict[str, Any]:
     def complete_and_persist() -> dict[str, Any]:
         runtime = get_phase2_runtime()
+        session = runtime.upload_sessions.get(session_id)
+        if session is not None and session.status == "completed" and session.dataset_id:
+            return runtime.get_dataset(session.dataset_id)
         result = runtime.complete_upload_session(session_id)
         try:
             from mdi_api.durable_uploads import persist_phase2_upload
@@ -1516,6 +1539,32 @@ def _report_html(markdown: str) -> str:
     )
 
 
+def _namespace_parse_results(
+    parse_results: list[ParseResult],
+    dataset_id: str,
+) -> list[ParseResult]:
+    """Keep parsed source identity unique to its owning dataset.
+
+    Parser content hashes remain useful for integrity and deduplication
+    diagnostics, but they are not business identity. Two user upload sessions
+    containing equal bytes must not collide in the durable object namespace.
+    Replay of one session keeps the same dataset-scoped IDs.
+    """
+
+    namespaced: list[ParseResult] = []
+    for result in parse_results:
+        objects = [
+            replace(
+                obj,
+                id=f"{dataset_id}:{obj.id}",
+                storage_key=f"normalized/{dataset_id}/{obj.storage_key.removeprefix('normalized/')}",
+            )
+            for obj in result.objects
+        ]
+        namespaced.append(replace(result, objects=objects))
+    return namespaced
+
+
 def _uploaded_file_summary(result: ParseResult, upload: MaterializedUpload | None = None) -> dict[str, Any]:
     summary = {
         "fileId": result.file_id,
@@ -1524,6 +1573,8 @@ def _uploaded_file_summary(result: ParseResult, upload: MaterializedUpload | Non
         "status": result.parse_status,
         "objectCount": len(result.objects),
         "errorCode": result.error_code,
+        "errorMessage": result.error_message,
+        "details": result.details,
     }
     if upload is not None:
         summary.update(

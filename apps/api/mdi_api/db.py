@@ -4,6 +4,7 @@ from sqlalchemy import (
     Boolean,
     CheckConstraint,
     Column,
+    Date,
     DateTime,
     ForeignKey,
     Float,
@@ -93,7 +94,7 @@ datasets = Table(
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     UniqueConstraint("project_id", "name", name="uq_datasets_project_name"),
-    CheckConstraint("status in ('created', 'uploading', 'profile_ready', 'failed', 'archived')", name="dataset_status"),
+    CheckConstraint("status in ('created', 'uploading', 'profile_ready', 'partially_ready', 'failed', 'archived')", name="dataset_status"),
 )
 
 files = Table(
@@ -249,6 +250,14 @@ jobs = Table(
     Column("plan_id", String(96), ForeignKey("analysis_plans.id"), nullable=True),
     Column("kind", String(64), nullable=False),
     Column("status", String(32), nullable=False, server_default="created"),
+    Column("execution_owner", String(160), nullable=True),
+    Column("execution_attempt", Integer, nullable=False, server_default="0"),
+    Column("lease_claimed_at", DateTime(timezone=True), nullable=True),
+    Column("lease_renewed_at", DateTime(timezone=True), nullable=True),
+    Column("lease_expires_at", DateTime(timezone=True), nullable=True),
+    Column("cancel_requested_at", DateTime(timezone=True), nullable=True),
+    Column("cancel_acknowledged_at", DateTime(timezone=True), nullable=True),
+    Column("terminal_at", DateTime(timezone=True), nullable=True),
     Column("created_by", String(64), ForeignKey("users.id"), nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
@@ -256,7 +265,10 @@ jobs = Table(
         "status in ('created', 'queued', 'running', 'partial_success', 'completed', 'failed', 'cancel_requested', 'cancelled')",
         name="job_status",
     ),
+    CheckConstraint("execution_attempt >= 0", name="job_execution_attempt_non_negative"),
 )
+
+Index("idx_jobs_execution_lease", jobs.c.status, jobs.c.lease_expires_at)
 
 research_session_runs = Table(
     "research_session_runs",
@@ -736,6 +748,91 @@ provider_connections = Table(
     Column("encrypted_api_key", Text, nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+literature_works = Table(
+    "literature_works",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("candidate_id", String(128), nullable=False, unique=True),
+    Column("canonical_key", String(512), nullable=False, unique=True),
+    Column("doi", String(512), nullable=True),
+    Column("arxiv_id", String(128), nullable=True),
+    Column("arxiv_version", String(16), nullable=True),
+    Column("relations_json", JSON, nullable=False, server_default="[]"),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+literature_snapshots = Table(
+    "literature_snapshots",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("work_id", Uuid, ForeignKey("literature_works.id", ondelete="RESTRICT"), nullable=False),
+    Column("provider", String(32), nullable=False),
+    Column("provider_record_id", String(512), nullable=False),
+    Column("provider_roles_json", JSON, nullable=False),
+    Column("title", String(2000), nullable=False),
+    Column("authors_json", JSON, nullable=False, server_default="[]"),
+    Column("venue", String(1000), nullable=True),
+    Column("publication_date", Date, nullable=True),
+    Column("publication_status", String(64), nullable=False),
+    Column("publication_type", String(128), nullable=True),
+    Column("doi", String(512), nullable=True),
+    Column("arxiv_id", String(128), nullable=True),
+    Column("abstract", Text, nullable=True),
+    Column("retrieved_passages_json", JSON, nullable=False, server_default="[]"),
+    Column("cited_by_count", Integer, nullable=True),
+    Column("access_status", String(64), nullable=False),
+    Column("source_url", String(2000), nullable=True),
+    Column("open_access_url", String(2000), nullable=True),
+    Column("license", String(512), nullable=True),
+    Column("provider_updated_at", DateTime(timezone=True), nullable=True),
+    Column("retrieved_at", DateTime(timezone=True), nullable=False),
+    Column("provider_field_sources_json", JSON, nullable=False, server_default="{}"),
+    Column("raw_metadata_hash", String(64), nullable=False),
+    Column("content_hash", String(64), nullable=True),
+    UniqueConstraint(
+        "provider",
+        "provider_record_id",
+        "raw_metadata_hash",
+        name="uq_literature_snapshot_provider_record_hash",
+    ),
+)
+
+literature_searches = Table(
+    "literature_searches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("project_id", String(64), ForeignKey("projects.id", ondelete="RESTRICT"), nullable=False),
+    Column("research_turn_id", Uuid, ForeignKey("research_turns.id", ondelete="RESTRICT"), nullable=True),
+    Column("requested_by", String(64), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False),
+    Column("query_json", JSON, nullable=False),
+    Column("query_fingerprint", String(64), nullable=False),
+    Column("status", String(64), nullable=False),
+    Column("candidate_ids_json", JSON, nullable=False, server_default="[]"),
+    Column("provider_errors_json", JSON, nullable=False, server_default="{}"),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("completed_at", DateTime(timezone=True), nullable=True),
+)
+
+literature_evidence = Table(
+    "literature_evidence",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("project_id", String(64), ForeignKey("projects.id", ondelete="RESTRICT"), nullable=False),
+    Column("research_turn_id", Uuid, ForeignKey("research_turns.id", ondelete="RESTRICT"), nullable=True),
+    Column("work_id", Uuid, ForeignKey("literature_works.id", ondelete="RESTRICT"), nullable=False),
+    Column("snapshot_id", Uuid, ForeignKey("literature_snapshots.id", ondelete="RESTRICT"), nullable=False),
+    Column("scope", String(64), nullable=False),
+    Column("support_type", String(64), nullable=False),
+    Column("purpose", String(64), nullable=False),
+    Column("passage", Text, nullable=True),
+    Column("anchor_json", JSON, nullable=True),
+    Column("numeric_claims_json", JSON, nullable=False, server_default="[]"),
+    Column("claim_refs_json", JSON, nullable=False, server_default="[]"),
+    Column("source_content_hash", String(64), nullable=False),
+    Column("selected_by", String(64), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False),
+    Column("selected_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
 
 audit_logs = Table(
@@ -1231,6 +1328,10 @@ Index("idx_agent2_report_snapshots_turn", agent2_scientific_report_snapshots.c.r
 Index("idx_agent2_report_snapshots_result", agent2_scientific_report_snapshots.c.scientific_result_snapshot_id)
 Index("idx_agent2_report_generations_project_created", agent2_scientific_report_generations.c.project_id, agent2_scientific_report_generations.c.created_at)
 Index("idx_agent2_report_generations_status_updated", agent2_scientific_report_generations.c.status, agent2_scientific_report_generations.c.updated_at)
+Index("idx_literature_snapshots_work_retrieved", literature_snapshots.c.work_id, literature_snapshots.c.retrieved_at)
+Index("idx_literature_searches_project_created", literature_searches.c.project_id, literature_searches.c.created_at)
+Index("idx_literature_evidence_project_selected", literature_evidence.c.project_id, literature_evidence.c.selected_at)
+Index("idx_literature_evidence_turn", literature_evidence.c.research_turn_id)
 
 
 PHASE1_TABLES = (
@@ -1270,4 +1371,11 @@ PHASE4_TABLES = PHASE3_TABLES + (
     "research_execution_summaries",
     "agent2_scientific_report_generations",
     "agent2_scientific_report_snapshots",
+)
+
+SCIENTIFIC_KNOWLEDGE_TABLES = (
+    "literature_works",
+    "literature_snapshots",
+    "literature_searches",
+    "literature_evidence",
 )

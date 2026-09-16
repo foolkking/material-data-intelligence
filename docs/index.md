@@ -57,14 +57,34 @@ Initial Release records remain immutable historical evidence at migration 0007.
 
 ## Current Product Authority
 
+- [`agent2/pre-m/V0_PRE_M_EXECUTION_TASK.md`](agent2/pre-m/V0_PRE_M_EXECUTION_TASK.md):
+  frozen Pre-M execution boundary and phase ownership.
+- [`agent2/pre-m/PRE_M0_REALITY_AND_DELTA_LEDGER.md`](agent2/pre-m/PRE_M0_REALITY_AND_DELTA_LEDGER.md):
+  current-product reality audit and bounded browser evidence.
+- [`agent2/pre-m/PRE_M1_CONTEXT_INTEGRITY.md`](agent2/pre-m/PRE_M1_CONTEXT_INTEGRITY.md):
+  non-transitive scientific authority and Context support eligibility.
+- [`agent2/pre-m/PRE_M2_USER_CONTROL_AND_LIFECYCLE.md`](agent2/pre-m/PRE_M2_USER_CONTROL_AND_LIFECYCLE.md):
+  parameter, preference, history, partial-ingestion and search boundaries.
+- [`agent2/pre-m/PRE_M3_RESEARCH_DATA_CONTEXT_UX.md`](agent2/pre-m/PRE_M3_RESEARCH_DATA_CONTEXT_UX.md):
+  Research/Data/Context product correction and browser qualification.
+- [`agent2/pre-m/PRE_M4_SCIENTIFIC_PRESENTATION.md`](agent2/pre-m/PRE_M4_SCIENTIFIC_PRESENTATION.md):
+  presentation LOD, viewer, linked-selection and Report policy.
+- [`agent2/pre-m/PRE_M5_COMPLEX_DATA_QUALIFICATION.md`](agent2/pre-m/PRE_M5_COMPLEX_DATA_QUALIFICATION.md):
+  current complex-material supported envelope and M handoff.
+- [`agent2/pre-m/PRE_M6_INTEGRATED_ACCEPTANCE.md`](agent2/pre-m/PRE_M6_INTEGRATED_ACCEPTANCE.md):
+  integrated Pre-M gates and `READY_FOR_M` verdict.
+
+- [`alignment/V0_SCOPE_ALIGNMENT.md`](alignment/V0_SCOPE_ALIGNMENT.md):
+  current V0 product definition, scope-drift classification, corrected
+  A-I → Pre-M → M route, parallel J boundary and conditional-only K rule.
 - [`CI.md`](CI.md): current push/PR gates, manual historical evidence replay,
   action runtime policy, and local equivalents.
 - [`00_PROJECT_GOAL.md`](00_PROJECT_GOAL.md): platform identity, user journey,
   stack responsibilities, and initial-complete-product definition.
 - [`01_PRODUCT_REQUIREMENTS.md`](01_PRODUCT_REQUIREMENTS.md): current initial
   release requirements and professional completion boundary.
-- [`ROADMAP.md`](ROADMAP.md): the only authoritative post-J6 roadmap, from
-  Phase 10K Material Intelligence through Phase 13 final closure.
+- [`ROADMAP.md`](ROADMAP.md): the current V0 route authority; historical phase
+  chronology remains below the V0 alignment section as preserved evidence.
 - [`CAPABILITY_STATUS_MATRIX.md`](CAPABILITY_STATUS_MATRIX.md): current
   READY/PARTIAL_READY/PLANNED/FUTURE/NOT_PLANNED truth.
 - [`FUTURE_SCOPE.md`](FUTURE_SCOPE.md): domain-relevant, non-blocking,
@@ -118,6 +138,43 @@ qualification authorities.
   generated human-readable health and orphan classification.
 - [`capabilities/generated/capability_inventory.json`](capabilities/generated/capability_inventory.json):
   machine-readable canonical registry inventory.
+
+## Scientific Knowledge & Literature Integration
+
+- [`scientific-knowledge/SCIENTIFIC_KNOWLEDGE_AUTHORITY.md`](scientific-knowledge/SCIENTIFIC_KNOWLEDGE_AUTHORITY.md):
+  external literature authority, evidence classes and provenance boundaries.
+- [`scientific-knowledge/LITERATURE_PROVIDER_AND_ACCESS_POLICY.md`](scientific-knowledge/LITERATURE_PROVIDER_AND_ACCESS_POLICY.md):
+  allowlisted providers, privacy, access and bounded retrieval policy.
+- [`scientific-knowledge/LITERATURE_EVIDENCE_AND_CITATION.md`](scientific-knowledge/LITERATURE_EVIDENCE_AND_CITATION.md):
+  evidence scopes, claim linkage, publication status and report citation rules.
+- [`scientific-knowledge/WORKSTREAM_H_SCIENTIFIC_KNOWLEDGE_AND_LITERATURE_INTEGRATION.md`](scientific-knowledge/WORKSTREAM_H_SCIENTIFIC_KNOWLEDGE_AND_LITERATURE_INTEGRATION.md):
+  current execution contract and non-goals.
+
+## Expert Scientific Reasoning Evaluation
+
+- [`scientific-reasoning/SCIENTIFIC_CLAIM_AND_SUPPORT_MODEL.md`](scientific-reasoning/SCIENTIFIC_CLAIM_AND_SUPPORT_MODEL.md):
+  bounded claim/support assessment, scope, evidence lineage and authority boundaries.
+- [`scientific-reasoning/METHOD_COMPARISON_AND_INFERENCE_POLICY.md`](scientific-reasoning/METHOD_COMPARISON_AND_INFERENCE_POLICY.md):
+  method comparison, causal/mechanistic restraint, generalization and derived-value policy.
+- [`scientific-reasoning/EXPERT_REASONING_EVALUATION.md`](scientific-reasoning/EXPERT_REASONING_EVALUATION.md):
+  evaluation-first corpus, baseline, live-provider boundary and human-review readiness.
+- [`scientific-reasoning/generated/expert_reasoning_evaluation.json`](scientific-reasoning/generated/expert_reasoning_evaluation.json):
+    machine-readable deterministic and bounded live-provider evaluation evidence.
+
+## Independent Scientist Evaluation
+
+- [`scientist-evaluation/INDEPENDENT_SCIENTIST_EVALUATION_PROTOCOL.md`](scientist-evaluation/INDEPENDENT_SCIENTIST_EVALUATION_PROTOCOL.md):
+  frozen reviewer-blinded protocol and current `REVIEW_READY` boundary.
+- [`scientist-evaluation/SCIENTIST_REVIEW_RUBRIC.md`](scientist-evaluation/SCIENTIST_REVIEW_RUBRIC.md):
+  claim-level rubric, critical failures and categorical verdicts.
+- [`scientist-evaluation/HUMAN_REVIEW_CASE_MANIFEST.md`](scientist-evaluation/HUMAN_REVIEW_CASE_MANIFEST.md):
+  held-out 24-case corpus and contamination controls.
+- [`scientist-evaluation/REVIEWER_INSTRUCTIONS.md`](scientist-evaluation/REVIEWER_INSTRUCTIONS.md):
+  reviewer-blinded Pass 1/Pass 2 instructions.
+- [`scientist-evaluation/ADJUDICATION_PROTOCOL.md`](scientist-evaluation/ADJUDICATION_PROTOCOL.md):
+  disagreement, third-review and maturity gates.
+- [`scientist-evaluation/generated/scientist_validation_summary.json`](scientist-evaluation/generated/scientist_validation_summary.json):
+  current machine-readable status; no human scores are present.
 
 ## Agent 2.0 Phase 4 Execution Integration
 
@@ -982,6 +1039,17 @@ and
 | Document / surface                                                          | Purpose                                                                 |
 | --------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | [`13_SHARED_SCHEMA_SPEC.md`](13_SHARED_SCHEMA_SPEC.md#projecthistoryview10) | Durable project-history projection and privacy boundary                 |
+| [`product-maturity/SCIENTIST_RESEARCH_EXPERIENCE.md`](product-maturity/SCIENTIST_RESEARCH_EXPERIENCE.md) | Scientist-facing Research timeline, map, evidence, limitation and provenance model |
+| [`product-maturity/RESEARCH_CONTROL_SEMANTICS.md`](product-maturity/RESEARCH_CONTROL_SEMANTICS.md) | Stop, cancel, retry, rerun, continue, reinterpret and branch semantics |
+| [`product-maturity/SCIENTIST_PRODUCT_ACCEPTANCE.md`](product-maturity/SCIENTIST_PRODUCT_ACCEPTANCE.md) | Workstream G journey and browser acceptance authority |
+| [`product-maturity/generated/scientist_ux_acceptance.json`](product-maturity/generated/scientist_ux_acceptance.json) | Machine-readable scientist-product acceptance evidence |
+| [`scientific-knowledge/SCIENTIFIC_KNOWLEDGE_AUTHORITY.md`](scientific-knowledge/SCIENTIFIC_KNOWLEDGE_AUTHORITY.md) | Workstream H scholarly identity, snapshot, evidence and authority model |
+| [`scientific-knowledge/LITERATURE_PROVIDER_AND_ACCESS_POLICY.md`](scientific-knowledge/LITERATURE_PROVIDER_AND_ACCESS_POLICY.md) | Allowlisted providers, privacy, rights, cache and failure policy |
+| [`scientific-knowledge/LITERATURE_EVIDENCE_AND_CITATION.md`](scientific-knowledge/LITERATURE_EVIDENCE_AND_CITATION.md) | Claim grounding, publication status, citations, synthesis and validation |
+| [`scientific-knowledge/generated/literature_integration_evaluation.json`](scientific-knowledge/generated/literature_integration_evaluation.json) | Machine-readable deterministic/live H evaluation evidence |
+| [`scientific-reasoning/SCIENTIFIC_CLAIM_AND_SUPPORT_MODEL.md`](scientific-reasoning/SCIENTIFIC_CLAIM_AND_SUPPORT_MODEL.md) | Workstream I claim support, scope, lineage and authority policy |
+| [`scientific-reasoning/METHOD_COMPARISON_AND_INFERENCE_POLICY.md`](scientific-reasoning/METHOD_COMPARISON_AND_INFERENCE_POLICY.md) | Method comparison and bounded scientific-inference rules |
+| [`scientific-reasoning/generated/expert_reasoning_evaluation.json`](scientific-reasoning/generated/expert_reasoning_evaluation.json) | Machine-readable baseline/final deterministic and live I evidence |
 | `apps/web/app/components/ProjectHome.tsx`                                   | Project-level history, data records, activity, and resumable links      |
 | `apps/web/app/components/DatasetWorkbenchPage.tsx`                          | Selected-dataset process view with import/Profile/analysis/result state |
 

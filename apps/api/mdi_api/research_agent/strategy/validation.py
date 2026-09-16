@@ -48,6 +48,15 @@ class StrategyProposalValidator:
         }
         if continuing and not proposal.capability_need:
             errors.append("CONTINUATION_REQUIRES_EVIDENCE_NEED")
+        if proposal.action == ResearchStrategyAction.SEARCH_LITERATURE:
+            if not proposal.evidence_gap_id:
+                errors.append("LITERATURE_SEARCH_REQUIRES_EVIDENCE_GAP")
+            if not proposal.literature_purpose:
+                errors.append("LITERATURE_SEARCH_REQUIRES_PURPOSE")
+            if proposal.capability_need:
+                errors.append("LITERATURE_SEARCH_IS_NOT_CAPABILITY_EXECUTION")
+        elif proposal.literature_purpose:
+            errors.append("LITERATURE_PURPOSE_NOT_ALLOWED_FOR_ACTION")
         if (
             proposal.capability_need
             and proposal.capability_need not in legal_requirement_ids

@@ -38,6 +38,14 @@ class EvidenceGapType(StrEnum):
     METHOD_LIMITATION = "METHOD_LIMITATION"
     REFERENCE_BASELINE_MISSING = "REFERENCE_BASELINE_MISSING"
     SUPPLIED_RESULT_MISSING = "SUPPLIED_RESULT_MISSING"
+    LITERATURE_CONTEXT_MISSING = "LITERATURE_CONTEXT_MISSING"
+    PUBLISHED_COMPARISON_MISSING = "PUBLISHED_COMPARISON_MISSING"
+
+
+class EvidenceOrigin(StrEnum):
+    COMPUTED_EVIDENCE = "COMPUTED_EVIDENCE"
+    LITERATURE_EVIDENCE = "LITERATURE_EVIDENCE"
+    USER_PROVIDED_EVIDENCE = "USER_PROVIDED_EVIDENCE"
 
 
 class EvidenceValue(StrEnum):
@@ -91,6 +99,7 @@ class ResearchStrategyAction(StrEnum):
     NEEDS_CLARIFICATION = "NEEDS_CLARIFICATION"
     CONFLICTING_EVIDENCE = "CONFLICTING_EVIDENCE"
     STOP_WITH_LIMITATIONS = "STOP_WITH_LIMITATIONS"
+    SEARCH_LITERATURE = "SEARCH_LITERATURE"
 
 
 class EvidenceObservation(BaseModel):
@@ -106,6 +115,7 @@ class EvidenceObservation(BaseModel):
     capability_ids: list[str] = Field(default_factory=list, max_length=8)
     source_version_ids: list[UUID] = Field(default_factory=list, max_length=64)
     lineage_signature: str = Field(pattern=r"^[0-9a-f]{64}$")
+    origin: EvidenceOrigin = EvidenceOrigin.COMPUTED_EVIDENCE
 
 
 class EvidenceLineage(BaseModel):
@@ -117,6 +127,23 @@ class EvidenceLineage(BaseModel):
     source_version_ids: list[UUID] = Field(default_factory=list, max_length=64)
     artifact_ids: list[str] = Field(default_factory=list, max_length=64)
     parent_result_ids: list[UUID] = Field(default_factory=list, max_length=16)
+    lineage_signature: str = Field(pattern=r"^[0-9a-f]{64}$")
+    origin: EvidenceOrigin = EvidenceOrigin.COMPUTED_EVIDENCE
+
+
+class LiteratureEvidenceReference(BaseModel):
+    """Bounded strategy reference; full passages remain in Context authority."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    evidence_id: UUID
+    project_id: str = Field(min_length=1, max_length=64)
+    work_id: UUID
+    snapshot_id: UUID
+    evidence_scope: str = Field(min_length=1, max_length=64)
+    support_type: str = Field(min_length=1, max_length=64)
+    publication_status: str = Field(min_length=1, max_length=64)
+    claim_refs: list[str] = Field(default_factory=list, max_length=32)
     lineage_signature: str = Field(pattern=r"^[0-9a-f]{64}$")
 
 
@@ -196,6 +223,10 @@ class ResearchEvidenceState(BaseModel):
     exact_source_version_ids: list[UUID] = Field(default_factory=list, max_length=128)
     result_types: list[str] = Field(default_factory=list, max_length=64)
     capability_ids: list[str] = Field(default_factory=list, max_length=64)
+    literature_evidence_ids: list[UUID] = Field(default_factory=list, max_length=24)
+    literature_evidence: list[LiteratureEvidenceReference] = Field(
+        default_factory=list, max_length=24
+    )
     observations: list[EvidenceObservation] = Field(default_factory=list, max_length=256)
     lineages: list[EvidenceLineage] = Field(default_factory=list, max_length=32)
     questions: list[ScientificQuestion] = Field(default_factory=list, max_length=8)
@@ -238,6 +269,7 @@ class ResearchStrategyDecision(BaseModel):
     limitations: list[str] = Field(default_factory=list, max_length=16)
     contradiction_ids: list[str] = Field(default_factory=list, max_length=8)
     comparison_status: ComparisonCompatibilityStatus | None = None
+    literature_purpose: str | None = Field(default=None, max_length=64)
     evidence_state_fingerprint: str = Field(pattern=r"^[0-9a-f]{64}$")
 
     @model_validator(mode="after")
@@ -253,6 +285,15 @@ class ResearchStrategyDecision(BaseModel):
             )
         if self.action == ResearchStrategyAction.TEST_HYPOTHESIS and self.hypothesis is None:
             raise ValueError("hypothesis test decision requires hypothesis")
+        if self.action == ResearchStrategyAction.SEARCH_LITERATURE:
+            if not self.evidence_gap or not self.literature_purpose:
+                raise ValueError(
+                    "literature strategy decision requires evidence gap and purpose"
+                )
+            if self.selected_capability_id or self.capability_need:
+                raise ValueError(
+                    "literature retrieval is not a scientific Capability selection"
+                )
         return self
 
 
@@ -271,6 +312,12 @@ class ResearchStrategySummary(BaseModel):
     unresolved_contradiction_count: int = Field(ge=0, le=16)
     result_count: int = Field(ge=0, le=32)
     lineage_count: int = Field(ge=0, le=32)
+    questions: list[ScientificQuestion] = Field(default_factory=list, max_length=8)
+    evidence_gaps: list[EvidenceGap] = Field(default_factory=list, max_length=16)
+    hypotheses: list[ScientificHypothesis] = Field(default_factory=list, max_length=8)
+    contradictions: list[EvidenceContradiction] = Field(
+        default_factory=list, max_length=16
+    )
     current_question: ScientificQuestion | None = None
     active_evidence_gap: EvidenceGap | None = None
     active_hypothesis: ScientificHypothesis | None = None
@@ -308,6 +355,10 @@ class ResearchStrategySummary(BaseModel):
             ),
             result_count=len(state.result_ids),
             lineage_count=len(state.lineages),
+            questions=state.questions,
+            evidence_gaps=state.evidence_gaps,
+            hypotheses=state.hypotheses,
+            contradictions=state.contradictions,
             current_question=question,
             active_evidence_gap=decision.evidence_gap,
             active_hypothesis=decision.hypothesis,
@@ -328,6 +379,7 @@ class ProviderStrategyProposal(BaseModel):
     hypothesis_id: str | None = Field(default=None, max_length=96)
     reason_codes: list[str] = Field(min_length=1, max_length=8)
     limitation_refs: list[str] = Field(default_factory=list, max_length=8)
+    literature_purpose: str | None = Field(default=None, max_length=64)
 
 
 __all__ = [
@@ -339,9 +391,11 @@ __all__ = [
     "EvidenceGapType",
     "EvidenceLineage",
     "EvidenceObservation",
+    "EvidenceOrigin",
     "EvidenceStrength",
     "EvidenceValue",
     "ProviderStrategyProposal",
+    "LiteratureEvidenceReference",
     "ResearchEvidenceState",
     "ResearchStrategyAction",
     "ResearchStrategyDecision",

@@ -257,7 +257,7 @@ it("keeps the project frame visible and marks the requested surface while App Ro
   );
 
   const navigation = await screen.findByRole("navigation", {
-    name: "当前项目导航",
+    name: "材料研究项目导航",
   });
   const research = screen.getByRole("link", { name: "研究" });
   const reports = screen.getByRole("link", { name: "报告" });
@@ -420,6 +420,55 @@ it("searches across authorized scientific work after the query changes", async (
   expect(screen.getByText(/科学结果与结果中的已验证发现/)).toBeInTheDocument();
   expect(document.querySelector(".product-search-status")).toHaveTextContent("当前");
   expect(screen.getByRole("link", { name: "打开" })).toHaveClass("product-primary-action");
+});
+
+it("keeps Open as navigation and offers an explicit removable research candidate", async () => {
+  const user = userEvent.setup();
+  mocks.searchProduct.mockResolvedValue({
+    query: "silicon",
+    count: 2,
+    items: [
+      {
+        kind: "scientific_object",
+        id: "object_1",
+        projectId: "project_1",
+        title: "Si 结构",
+        subtitle: "structure.crystal",
+        href: "/projects/project_1/data?object=object_1",
+        objectVersionId: "version_2",
+        objectType: "structure.crystal",
+        status: "active",
+      },
+      {
+        kind: "result",
+        id: "snapshot_1",
+        projectId: "project_1",
+        title: "扩散结果",
+        subtitle: "结果 snapshot_1",
+        href: "/projects/project_1/research/session_1?result=snapshot_1",
+        researchSessionId: "session_1",
+        status: "CURRENT",
+      },
+    ],
+  });
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+  await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
+  await user.type(screen.getByLabelText("项目、数据、研究或报告"), "silicon");
+
+  await waitFor(() => expect(screen.getAllByRole("link", { name: "带入研究" })).toHaveLength(2));
+  expect(
+    screen
+      .getAllByRole("link", { name: "打开" })
+      .find((link) => link.getAttribute("href") === "/projects/project_1/data?object=object_1"),
+  ).toBeTruthy();
+  expect(screen.getAllByRole("link", { name: "带入研究" })[0]).toHaveAttribute(
+    "href",
+    expect.stringContaining("version=version_2"),
+  );
+  expect(screen.getAllByRole("link", { name: "带入研究" })[1]).toHaveAttribute(
+    "href",
+    "/projects/project_1/research/session_1?resultContext=snapshot_1&fromSearch=1",
+  );
 });
 
 it("continues an authorized search without duplicates or a hard refresh", async () => {

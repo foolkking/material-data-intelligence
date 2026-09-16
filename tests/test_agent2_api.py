@@ -1149,6 +1149,59 @@ def test_phase4_progress_and_dispatch_are_project_authorized(api):
     active["value"] = owner
 
 
+def test_progress_projects_interpretation_retry_without_hiding_preserved_result(api):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    created = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json={"message": "Interpret the completed scientific result"},
+    ).json()
+    turn_id = UUID(created["turn_id"])
+    with objects.repository_factory.unit_of_work() as unit:
+        current = unit.agent2.research_turns.get(turn_id)
+        unit.agent2.research_turns.compare_and_set_status(
+            turn_id,
+            expected_status=str(current["status"]),
+            expected_version=int(current["row_version"]),
+            target_status="INTERPRETING",
+        )
+        for event_type, payload in (
+            ("INTERPRETATION_STARTED", {"status": "INTERPRETING"}),
+            (
+                "INTERPRETATION_RETRY_SCHEDULED",
+                {
+                    "error_code": "DEEPSEEK_RATE_LIMITED",
+                    "retry_delay_seconds": 0.31,
+                    "preserved_result": True,
+                },
+            ),
+        ):
+            unit.agent2.research_turn_events.append_turn_event(
+                {
+                    "id": uuid4(),
+                    "turn_id": turn_id,
+                    "sequence_no": unit.agent2.research_turn_events.next_sequence_no(
+                        turn_id
+                    ),
+                    "event_type": event_type,
+                    "payload_json": payload,
+                }
+            )
+
+    response = client.get(f"/api/research/turns/{turn_id}/progress")
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "INTERPRETING"
+    assert response.json()["warnings"] == [
+        {
+            "code": "INTERPRETATION_RETRYING",
+            "message": (
+                "解释服务暂时繁忙，正在按有界策略重试；"
+                "已完成的科学结果仍然保留。"
+            ),
+        }
+    ]
+
+
 def test_research_progress_exposes_bounded_strategy_without_hidden_reasoning(api):
     client, _active, _owner, _viewer, _stranger, objects = api
     turn = client.post(
@@ -1185,6 +1238,47 @@ def test_research_progress_exposes_bounded_strategy_without_hidden_reasoning(api
                             "evidence_gap_count": 1,
                             "hypothesis_count": 1,
                             "unresolved_contradiction_count": 0,
+                            "questions": [
+                                {
+                                    "question_id": "q-transport",
+                                    "question_type": "QUANTIFY",
+                                    "statement": "Is diffusion elevated?",
+                                    "status": "RESOLVED",
+                                    "evidence_result_ids": [],
+                                    "evidence_gap_ids": [],
+                                },
+                                {
+                                    "question_id": "q-structure",
+                                    "question_type": "EXPLAIN",
+                                    "statement": "Does local structure explain transport?",
+                                    "status": "OPEN",
+                                    "evidence_result_ids": [],
+                                    "evidence_gap_ids": ["gap-structure"],
+                                },
+                            ],
+                            "evidence_gaps": [
+                                {
+                                    "gap_id": "gap-structure",
+                                    "question_id": "q-structure",
+                                    "gap_type": "STRUCTURAL_CONTEXT_MISSING",
+                                    "statement": "Local structural evidence is missing.",
+                                    "evidence_value": "HIGH",
+                                    "required_result_types": [],
+                                    "satisfied_by_result_ids": [],
+                                }
+                            ],
+                            "hypotheses": [
+                                {
+                                    "hypothesis_id": "hypothesis-constraint",
+                                    "question_id": "q-structure",
+                                    "statement": "Weaker local constraint may accompany diffusion.",
+                                    "status": "PROPOSED",
+                                    "supporting_result_ids": [],
+                                    "contradicting_result_ids": [],
+                                    "testable_predictions": [],
+                                    "known_assumptions": [],
+                                }
+                            ],
                             "current_question": {
                                 "question_id": "q-structure",
                                 "statement": "Does local structure explain transport?",
@@ -1220,6 +1314,15 @@ def test_research_progress_exposes_bounded_strategy_without_hidden_reasoning(api
     assert (
         autonomy["decision"]["strategy"]["current_question"]["statement"]
         == "Does local structure explain transport?"
+    )
+    assert autonomy["decision"]["strategy"]["questions"][0]["status"] == "RESOLVED"
+    assert (
+        autonomy["decision"]["strategy"]["evidence_gaps"][0]["gap_type"]
+        == "STRUCTURAL_CONTEXT_MISSING"
+    )
+    assert (
+        autonomy["decision"]["strategy"]["hypotheses"][0]["status"]
+        == "PROPOSED"
     )
     assert "reasoning" not in str(autonomy)
 
@@ -1357,7 +1460,10 @@ def test_agent2_result_projection_exposes_bounded_facts_and_exact_sources(api):
     assert payload["result_id"] == str(bundle.result_id)
     assert payload["result_snapshot_id"]
     assert payload["result_snapshot_id"] != str(bundle.result_id)
-    assert payload["source_object_refs"] == [ref.model_dump(mode="json")]
+    assert payload["source_object_refs"][0] == {
+        **ref.model_dump(mode="json"),
+        "version_no": 1,
+    }
     assert payload["facts"] == [bundle.facts[0].model_dump(mode="json")]
     assert payload["evidence"] == []
     assert payload["artifacts"] == []

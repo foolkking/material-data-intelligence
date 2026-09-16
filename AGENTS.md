@@ -34,6 +34,169 @@ Active Work、verification、architecture、runtime identity 和 roadmap/scope
 9. 每次有意义的设计或实现变更后更新 persistent 文件。
 10. 前端改版不得把执行权移入浏览器；Planner job 仍通过 validated/persisted AnalysisPlan、QueueWorkerRuntime、Tool Registry 和 Adapter。
 
+## 本地服务运行规则
+
+- 除非用户明确要求停止、切换或重启，执行任务期间以及任务结束时都必须保持
+  MDI 本地服务运行；不得把“当前任务完成”当作停止服务的理由。
+- 优先使用幂等启动器，只补启动缺失进程，不停止或替换健康进程：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass `
+  -File scripts\phase14r_start_stack.ps1 `
+  -FrontendPort 3023
+```
+
+- 标准本地栈及地址：
+  - PostgreSQL：`127.0.0.1:55434`
+  - Redis/RQ：`127.0.0.1:6379`
+  - MinIO API / Console：`127.0.0.1:9000` / `127.0.0.1:9001`
+  - FastAPI：`http://127.0.0.1:8005`
+  - Next.js frontend：`http://127.0.0.1:3023`
+  - RQ workers：`mdi-agent-turns`、`mdi-agent-plans`、`mdi-jobs`、
+    `mdi-agent-results`、`mdi-agent-interpretations`、`mdi-agent-reports`
+- `phase14r_start_stack.ps1` 会执行磁盘预检、只启动缺失的 API/frontend/queue
+  worker，并验证 PostgreSQL、Redis、MinIO、API、frontend proxy 与全部 queue
+  manifest。不要因为端口 `8000` 或 `5432` 未监听就误判服务缺失；当前受控栈
+  使用 `8005` 和 `55434`。
+- “服务健康”与“历史科学对象的精确源字节仍在当前 MinIO bucket 中”是两件事。
+  如果 Data 页面显示“原始来源当前不可访问”，先运行 `-CheckOnly`；若栈健康，
+  不要反复重启 MinIO/API，也不得改绑到最新版本。应核对 PostgreSQL 中已记录的
+  exact storage key、byte size 和 SHA-256，并仅通过已有的精确恢复工具补回同一
+  key：
+
+```powershell
+python scripts\restore_exact_minio_references.py `
+  --source-endpoint http://127.0.0.1:<RECOVERY_MINIO_PORT> `
+  --evidence .runtime_services\managed\recovery\exact-reference-recovery.json
+```
+
+  恢复源必须是保留存储的工作副本或受控 recovery endpoint；工具只允许在
+  size/SHA-256 完全匹配时写入当前 `mdi-artifacts`，不得修改 PostgreSQL 科学
+  authority、静默替换版本或直接改写运行中 MinIO 的磁盘目录。该工具必须同时
+  核对并恢复已记录的 ScientificObjectVersion/Artifact 引用，以及 Dataset
+  normalized export 的 payload 与 `metadata.json`；只恢复 payload 而遗漏
+  metadata 会使 `/datasets/{id}/object-store` 继续返回 `409`。
+  recovery endpoint（例如本地 `9010/9011`）不是正常产品依赖；正常 API 始终
+  使用 `9000`。不要为了显示历史数据把 API 永久切换到 recovery store。
+- 只检查、不补启动时使用：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass `
+  -File scripts\phase14r_start_stack.ps1 `
+  -FrontendPort 3023 `
+  -CheckOnly
+```
+
+- 数据页面无法显示时，先按以下顺序排查，不要先重写前端或猜测存在
+  “MIMO”进程：
+  1. 运行上面的 `-CheckOnly`，确认 `55434/6379/9000/8005/3023`；
+  2. `MinIO` 是对象存储服务，正常进程名为 `minio.exe`，不是 `mimo`；
+  3. 端口健康不代表接入了正确的数据目录。登录成功但历史项目/数据集消失时，
+     先只读核对 `users.id = user_local`、项目 owner、Dataset/Object 数量和
+     `alembic_version`；不得通过新建空项目、改 owner 或直接写数据库掩盖错误
+     数据目录。当前包含完整 Phase 13/14R 历史项目的 canonical 恢复副本是：
+
+```text
+E:\1project\mdi-b0-5a1\.runtime_services\managed\recovered-phase13-postgres-data-20260913
+```
+
+     该目录来自历史仓库
+     `E:\1project\Material Data Intelligence\.phase13-postgres-data2` 的逐文件
+     工作副本；历史目录只作为 recovery source，不得被 API/worker 直接长期
+     使用。旧的
+     `.runtime_services\managed\workstream-c\postgres-data` 不包含当前完整
+     用户项目，不能再作为 `55434` 的默认数据源。
+  4. 如果 PostgreSQL `55434` 被手动关闭，使用上述 canonical 恢复副本启动，
+     不要使用 Docker 的 `5432` 数据库或空的 workstream-c 数据目录替代：
+
+```powershell
+$repo = "E:\1project\mdi-b0-5a1"
+$data = "$repo\.runtime_services\managed\recovered-phase13-postgres-data-20260913"
+$log = "$repo\.runtime_services\managed\recovered-phase13-postgres-55434.log"
+pg_ctl.exe -D $data -o "-p 55434 -h 127.0.0.1" -l $log -w start
+```
+
+  5. 如果 MinIO `9000` 被关闭，使用当前 canonical target store 和标准
+     credentials 启动；不要清空 bucket、换 bucket 或切换 recovery store：
+
+```powershell
+$repo = "E:\1project\mdi-b0-5a1"
+$env:MINIO_ROOT_USER = "mdi-local"
+$env:MINIO_ROOT_PASSWORD = "mdi-local-dev"
+minio.exe server "$repo\.runtime_services\managed\workstream-c\minio-data" `
+  --address "127.0.0.1:9000" --console-address "127.0.0.1:9001"
+```
+
+  6. PostgreSQL/MinIO 恢复后，重新运行标准幂等启动器补齐 API、frontend
+     和缺失 workers：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass `
+  -File scripts\phase14r_start_stack.ps1 -FrontendPort 3023
+```
+
+  7. 如果 API 日志明确报告
+     `DATABASE_MIGRATION_HEAD_MISMATCH`，不得关闭 migration-head guard，
+     也不得改用 SQLite。先加载 canonical runtime environment，再在同一
+     `55434/mdi` 数据库执行受控迁移：
+
+```powershell
+$envJson = python scripts\phase14r_runtime_environment.py --compact | ConvertFrom-Json
+foreach ($property in $envJson.PSObject.Properties) {
+  Set-Item -Path "Env:$($property.Name)" -Value ([string]$property.Value)
+}
+$env:PYTHONPATH = @(
+  "apps/api", "packages/schemas", "packages/tool-registry",
+  "packages/adapters", "packages/artifact-core",
+  "packages/material-parsers", "services/workers", "services/llm"
+) -join [IO.Path]::PathSeparator
+python -m alembic -c apps/api/alembic.ini upgrade head
+powershell.exe -NoProfile -ExecutionPolicy Bypass `
+  -File scripts\phase14r_start_stack.ps1 -FrontendPort 3023
+```
+
+  8. 数据库恢复后如果页面仍报告“原始来源当前不可访问”，说明 PostgreSQL
+     identity 已恢复但当前 MinIO target 缺少精确 payload。启动 canonical
+     recovery copy 的临时 MinIO（例如 `9010`），然后按项目执行 exact-byte
+     恢复；恢复工具只在 key、byte size、SHA-256 全部匹配时写入 `9000`：
+
+```powershell
+$repo = "E:\1project\mdi-b0-5a1"
+$env:MINIO_ROOT_USER = "mdi-local"
+$env:MINIO_ROOT_PASSWORD = "mdi-local-dev"
+minio.exe server `
+  "$repo\.runtime_services\managed\recovery-phase13\minio-data" `
+  --address "127.0.0.1:9010" --console-address "127.0.0.1:9011"
+
+python scripts\restore_exact_minio_references.py `
+  --db-url "postgresql://mdi@127.0.0.1:55434/mdi" `
+  --source-endpoint "http://127.0.0.1:9010" `
+  --target-endpoint "http://127.0.0.1:9000" `
+  --project-id "project_0002_1a0af866391f412d" `
+  --evidence ".runtime_services\managed\recovery-phase13\exact-reference-recovery.json"
+```
+
+     不带 `--project-id` 的全账户恢复可能被其他 qualification project 中没有
+     对应历史 source 的对象阻断；已知项目恢复应显式限定 project，避免把一个
+     无关项目的缺失误判成目标项目恢复失败。
+  9. 本地验收登录应保持稳定的数据库身份 `user_local`。调整邮箱/密码时必须
+     使用受支持的 `MDI_LOCAL_USER_EMAIL` / `MDI_LOCAL_USER_PASSWORD`
+     bootstrap + `/auth/login` 路径，不得直接改 owner、伪造 session 或迁移
+     用户数据。邮箱可变，但 `user_local` id 和原项目 ownership 必须保留。
+     密码不得写入 `AGENTS.md`、日志或 review bundle。
+  10. 恢复完成后必须再次确认：
+     `http://127.0.0.1:8005/health/runtime` 和
+     `http://127.0.0.1:3023/api/health/runtime` 均报告 PostgreSQL、
+     Redis、MinIO、Redis worker backend；还要在真实登录浏览器中打开至少
+     一个 Table/Trajectory/Electronic/Phonon 等精确 ObjectVersion，确认没有
+     source-unavailable 或 viewer nesting 错误。不要把端口监听误判为数据
+     已恢复。
+  11. 除非用户明确要求停止、切换或重启，恢复后继续保持整套服务运行。
+     任务完成不是停止服务的理由。
+
+- 只有在生产代码变更确实要求重载时，才使用对应的受控 rotate/start 脚本；
+  不得停止无关服务、清空共享 Redis、删除 PostgreSQL/MinIO 数据或修改用户凭据。
+
 ## 文档规则
 
 - `docs/` 与 `persistent/` 必须纳入 Git。
@@ -91,3 +254,8 @@ Active Work、verification、architecture、runtime identity 和 roadmap/scope
 - 未经明确任务要求，不执行部署、发布或推送操作。
 - 不使用 git reset --hard。
 - 不强制覆盖远程分支。
+- 进程切换、重启或更换资格环境前，必须先枚举上一轮任务创建的进程树、监听端口和临时资源；不得让旧进程与新进程并存而造成内存或端口资源累积。
+- 任何停止、暂停或重启前，必须立即核对 PID、进程启动时间、完整命令行、cwd、PPID、角色以及资格 namespace/端口；PID 单独不能作为所有权证明。
+- 只允许停止当前任务明确创建且已验证归属的旧进程及其子进程。共享服务、canonical 服务、未知 PID 和其他任务资源必须排除。
+- 终止后必须等待操作系统确认退出，并复核进程树、监听端口和相关资源已释放；未释放时不得启动替代进程。清理前后状态和结果必须记录到对应的 service/process evidence。
+- 若身份不匹配、归属不明确或存在共享资源风险，必须中止切换，不得按 PID 猜测、强制 kill 或清空共享队列。

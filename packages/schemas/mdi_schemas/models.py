@@ -201,6 +201,36 @@ class InputRef(BaseModel):
     objectType: MaterialObjectType | None = None
 
 
+class ParameterProvenance(BaseModel):
+    """Inspectable provenance for one already validated Plan parameter."""
+
+    parameter: str
+    resolvedValue: str | int | float | bool | list[str]
+    unit: str | None = None
+    origin: Literal[
+        "SOURCE_FACT",
+        "DETERMINISTIC_DERIVATION",
+        "TOOL_DEFAULT",
+        "USER_SPECIFIED",
+        "SCIENTIFIC_PRESET",
+        "SYSTEM_POLICY",
+    ]
+    authority: Literal[
+        "SOURCE_LOCKED",
+        "AUTO_DERIVED",
+        "USER_EDITABLE",
+        "ADVANCED_EDITABLE",
+        "SYSTEM_ONLY",
+    ]
+    changeEffect: Literal[
+        "PRESENTATION_ONLY",
+        "REINTERPRETATION_OR_REPORT",
+        "RECOMPUTE",
+        "SOURCE_VERSION",
+    ]
+    sourceIdentity: str
+
+
 class ToolExecutionRequest(BaseModel):
     jobId: str
     stepId: str
@@ -264,6 +294,7 @@ class AnalysisStep(BaseModel):
     reason: str
     inputRefs: list[InputRef]
     params: dict[str, Any] = Field(default_factory=dict)
+    parameterProvenance: list[ParameterProvenance] = Field(default_factory=list)
     output: dict[str, Any]
     constraints: dict[str, Any] | None = None
 

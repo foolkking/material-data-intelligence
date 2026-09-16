@@ -135,6 +135,7 @@ class ResearchTurnRepository(_Repository):
         completed_at: datetime | None = None,
         error_code: str | None = None,
         error_summary: str | None = None,
+        clear_error: bool = False,
     ) -> dict[str, Any]:
         now = datetime.now(timezone.utc)
         values: dict[str, Any] = {
@@ -150,6 +151,9 @@ class ResearchTurnRepository(_Repository):
             values["error_code"] = error_code
         if error_summary is not None:
             values["error_summary"] = error_summary
+        if clear_error:
+            values["error_code"] = None
+            values["error_summary"] = None
 
         def run(connection: Connection) -> dict[str, Any]:
             result = connection.execute(

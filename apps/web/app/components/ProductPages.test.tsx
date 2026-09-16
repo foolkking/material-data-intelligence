@@ -693,8 +693,8 @@ it("presents a never-populated Dataset as an import empty state instead of a sto
 
   render(<ProjectDataPage projectId="project_1" />);
 
-  expect(await screen.findByText("尚未导入科学对象")).toBeInTheDocument();
-  expect(screen.getByText(/尚未接收源文件/)).toBeInTheDocument();
+  expect(await screen.findByText("这个数据集还没有科学对象")).toBeInTheDocument();
+  expect(screen.getByText(/可继续接收材料数据/)).toBeInTheDocument();
   expect(screen.queryByText(/解析资源暂时无法读取/)).toBeNull();
   expect(screen.queryByRole("button", { name: "重新检查存储" })).toBeNull();
   expect(screen.queryByRole("link", { name: "研究此数据" })).toBeNull();

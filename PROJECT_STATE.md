@@ -8,17 +8,23 @@
 ## 1. Current Status
 
 - `PROJECT_PHASE`: Source/physical migration and capability parity are closed;
-  Workstreams A-F now provide lifecycle reliability, context/scientific-memory,
-  a validated scientific-capability extension foundation, evidence-backed
-  scientific qualification, bounded Result-driven multi-step autonomy, and a
-  typed evidence-driven scientific strategy layer in the canonical migrated
-  repository. Remote exact-SHA CI remains a separately authorized release gate.
-- `CURRENT_ACCEPTED_COMMIT`: `1eec2bba7629f7666aaf68281e2fce6f0e802aa0`
-- `SNAPSHOT_BASE_COMMIT`: `1eec2bba7629f7666aaf68281e2fce6f0e802aa0`
-- `WORKTREE_EXPECTATION`: existing migration worktree, detached HEAD, clean
-- `LAST_ACCEPTED_REVIEW`: Workstream F — Scientific Research Strategy &
-  Advanced Reasoning, `PASS`, 2026-09-10
-- `LAST_UPDATED_AT`: `2026-09-10`
+  Workstreams A-I now provide lifecycle reliability, provenance-aware Context
+  and Memory, explicit and qualified scientific capabilities, bounded
+  evidence-driven autonomy/strategy, a scientist-facing Research product, an
+  authorized provenance-preserving scholarly knowledge layer, and bounded
+  claim-level scientific reasoning assessment. Remote
+  exact-SHA CI remains a separately authorized release gate.
+- `CURRENT_PRODUCT_RELEASE_SCOPE`: `V0`
+- `CURRENT_PRODUCT_DEFINITION`: natural-language-driven materials research
+  analysis and visualization workbench
+- `CURRENT_ACCEPTED_COMMIT`: `2727e94ba6adaaf0c6ff9914f8137d130b34c777`
+- `SNAPSHOT_BASE_COMMIT`: `2727e94ba6adaaf0c6ff9914f8137d130b34c777`
+- `WORKTREE_EXPECTATION`: existing migration worktree, detached HEAD, with
+  locally verified Workstream H/I/J preparation changes not yet committed or
+  pushed
+- `LAST_ACCEPTED_REVIEW`: Pre-M0 attempt-02,
+  `ACCEPTED`, 2026-09-12
+- `LAST_UPDATED_AT`: `2026-09-12`
 - `STATE_STATUS`: `CURRENT`
 - `PROJECT_STATE_ACTIVE`: `YES`
 - `HIGH_LEVEL_DUAL_READ_ACTIVE`: `YES`
@@ -32,8 +38,16 @@ specialized authority requires explicit reconciliation and may set
 
 ## 2. Current Product State
 
-- The current roadmap records Phase 13 as
-  `COMPLETE / INITIAL_RELEASE_COMPLETE`.
+- The current roadmap defines the first complete product release scope as
+  `V0`. Historical documents may call earlier milestones `V1` or
+  `Initial Release`; those names are retained as history and do not override
+  the current V0 route.
+- Workstreams A-I are complete. Workstream I is a bounded structured
+  scientific reasoning guard, not a runtime expert reviewer or scientific
+  certification authority.
+- Workstream J is `REVIEW_READY` with frozen responses and pending independent
+  human review. It is an offline parallel validation lane, not a runtime
+  feature or an engineering blocker.
 - Implemented product areas include project/data workflows, planning and
   execution, artifacts, research, scientific viewers, reports/recipes, and
   unified workspace surfaces, subject to the explicit limits in the roadmap
@@ -65,22 +79,55 @@ specialized authority requires explicit reconciliation and may set
 
 ## 5. Active Work
 
-- `CURRENT_WORKSTREAM`: Workstream F bounded scientific research strategy is
-  complete in the canonical migrated repository.
-- `CURRENT_TASK`: no active queued task after Workstream F closeout;
-  `TASKS.md` remains the task queue authority.
-- `NEXT_ACTION`: the next workstream should focus on Scientist UX & Product
-  Maturity. The bounded strategy core now chooses and stops coherently, while
-  scientist-facing control, comparison review, research-map disclosure and
-  clarification UX are the dominant product gap. Broader capability expansion
-  remains the next scientific-breadth dependency.
-- `BLOCKED_ITEMS`: no unresolved Workstream A/B/C/D/E/F blocker. Broader
-  independent solver/library benchmarks, expert interpretation evaluation,
-  broad-domain strategy beyond the typed families, long-running Tool
-  checkpointing, context quality and scale stress remain explicit future
-  evaluation rather than authority defects.
+- `CURRENT_WORKSTREAM`: Pre-M1 through Pre-M3 executed in chained attempts;
+  external review remains pending and Pre-M4 has not started.
+- `CURRENT_TASK`: Pre-M1 → Pre-M2 → Pre-M3 chained execution,
+  `READY_FOR_REVIEW` / `PARTIAL` evidence sealed.
+- `NEXT_ENGINEERING_STAGE`: external review of Pre-M1/2/3, then Pre-M4;
+  M0-M6 remains the required later V0 long-running/scale/fault-tolerance
+  stage after Pre-M completion.
+- `PARALLEL_VALIDATION`: Workstream J remains `REVIEW_READY`; its frozen
+  independent-scientist packets may be distributed and imported independently
+  of the engineering route.
+- `WORKSTREAM_K`: `CONDITIONAL_ONLY` on reproducible major/critical defects
+  established by actual J reviewers.
+- `BLOCKED_ITEMS`: no unresolved product-direction blocker. Independent human
+  review remains pending but does not block Pre-M or M. Do not claim
+  `INDEPENDENT_HUMAN_EXPERT_VALIDATION=YES` or a scientist maturity verdict
+  while the ledger is empty.
+- `G_BEHAVIORAL_SEMANTIC_READINESS`: `COMPLETE`.
+- `DEEP_VISUAL_COMPLEX_CONTENT_QUALIFICATION`:
+  `PENDING_PRE_M4_PRE_M5`.
+- `UI_LAYOUT_SYSTEM_V2`: `FROZEN_DESIGN_ACCEPTANCE_BASELINE`.
+- `CURRENT_UI_LAYOUT_CONFORMANCE`:
+  `PENDING_PRE_M3_PRE_M4_BROWSER_QUALIFICATION`.
+- `ATTACHMENT_CONTEXT_EXPERIENCE`: `IMPLEMENTED_WITH_TARGETED_EVIDENCE`;
+  full Pre-M qualification remains pending.
+- `COMPLEX_MATERIAL_DATA_QUALIFICATION`: `PENDING_PRE_M5`.
+- `SCIENTIST_UI_UX`: `PARTIAL_PRE_M3_EVIDENCE`; current replay does not
+  constitute a human usability certification.
+- `PRE_M_BLOCKERS`: `NOT_YET_ASSESSED_FOR_PRE_M1_PRE_M3_CHAIN`.
+- `READY_FOR_M`: `NO_PRE_M_NOT_COMPLETE`.
+- `FINAL_V0_REQUIRES_NEW_J_CANDIDATE`: `YES`; the existing frozen J candidate
+  remains preserved as `PRE-CORRECTION_SCIENTIFIC_CANDIDATE`.
+- `M_ROUTE`: `REQUIRED_V0_STAGE`, after Pre-M and before Final V0
+  Integrated Acceptance.
 
 ## 6. Verification State
+
+- Pre-M Context/Result-reuse correction: `17 passed`.
+- Pre-M complex-family production regression excluding immutable historical
+  raw-byte manifest checks: `380 passed, 1 skipped`.
+- Current frontend: `119 files / 961 tests PASS`; typecheck and production
+  build PASS.
+- Current Chromium layout replay: desktop and `390x844` PASS with no global
+  horizontal overflow, browser errors or frontend scientific recomputation.
+- Pre-M integrated verdict:
+  `COMPLEX_MATERIAL_DATA=PASS_WITH_EXPLICIT_LIMITS`,
+  `PRE_M_BLOCKERS=0`, `READY_FOR_M=YES`.
+- Historical evidence-manifest raw byte assertions remain sensitive to
+  Windows LF/CRLF checkout conversion; their historical content was not
+  rewritten to manufacture a green result.
 
 - Backend current rerun: `2212 passed, 76 failed, 75 skipped`.
 - New backend regressions: `0`; the 76 failures remain historical or
@@ -99,7 +146,7 @@ specialized authority requires explicit reconciliation and may set
   six handlers/queues, 62 Tools, 50 Adapters, lock/provenance checks, and
   `git diff --check` pass. The bounded allowlist remains four.
 - Mandatory same-stack services: PostgreSQL connection/pool/repository/rollback
-  pass; Alembic head is `0032_provider_connections`; Redis and live worker
+  pass; Alembic head is `0033_scientific_knowledge`; Redis and live worker
   registration are `6/6`; MinIO qualification-owned put/get/delete passes.
 - Service-backed critical path: `74 passed, 0 failed, 0 errors, 0 skipped`
   across real PostgreSQL/Redis/MinIO/subprocess workers.
@@ -178,6 +225,68 @@ specialized authority requires explicit reconciliation and may set
   planning path and the real composition-space capability path pass against
   qualification-owned PostgreSQL, Redis/RQ and MinIO. Canonical API port 8007
   reports all backends and six queues healthy.
+- Workstream G scientist product maturity: `15` acceptance journeys, including
+  five canonical persisted browser journeys and two mobile journeys; default
+  raw-ID exposure, blocking mobile overflow, fatal browser errors and frontend
+  scientific-authority violations are all `0`. Focused backend `59 passed,
+  1 skipped`; focused frontend `177/177`; production build/typecheck PASS.
+- Workstream H scientific knowledge authority: canonical `LiteratureWork`,
+  immutable `LiteratureSnapshot`, selected `LiteratureEvidence`, bounded
+  `LiteratureQuery`, explicit scope/publication/access/support semantics,
+  deterministic DOI/arXiv identity and cross-provider reconciliation are
+  integrated with existing Context, strategy, Research, Report and Workbench
+  projections without creating ScientificResult or qualification authority.
+- Workstream H evaluation: deterministic corpus `15/15`; live OpenAlex `1`,
+  live Crossref `1`, live DeepSeek literature synthesis `2`; exact identity
+  `2/2`, cross-provider reconciliation `1/1`, and all irrelevant-source,
+  unsupported-claim, citation-support, abstract-scope, retraction-support,
+  unauthorized-query, Result-authority and qualification-mutation violations
+  are `0`.
+- Workstream H focused verification: backend scientific-knowledge/report/
+  Context/strategy suites `89 passed, 5 skipped`; bounded autonomy/product
+  regression `28 passed, 1 skipped`; Research literature UI `111 passed`;
+  Ruff, compileall, typecheck, production build and diff check PASS. Real
+  PostgreSQL/API persistence verified search → evidence selection → exact
+  historical snapshot reopen and deterministic Report citation; canonical
+  API runtimes on ports 8005/8009 and frontend on 3014 were healthy. An
+  authenticated H browser interaction was not recreated because no reusable
+  local browser session was available; UI authority is covered by focused
+  component/integration tests and the real authorized API path.
+- Workstream I expert scientific reasoning: `scientific-reasoning/1.0` adds
+  claim type/support/scope/method/comparison assessment over existing Results
+  and LiteratureEvidence without a new truth authority. It fails closed for
+  unsupported causal or universal claims, abstract overreach, evidence double
+  count, authority escalation and LLM numeric derivation; Interpretation 1.1
+  and Report 2.0 carry only accepted assessments.
+- Workstream I evaluation: 27 repository-owned cases preserved a pre-fix
+  baseline of 22 invalid acceptances; final deterministic violations are all
+  zero, with insufficient-evidence `17/17`, method-dependence `1/1` and
+  contradiction `2/2` outcomes correct. Five sanitized live DeepSeek cases
+  passed under one bounded repair and deterministic validation. Independent
+  human expert validation is explicitly `NO`.
+- Workstream I focused verification: reasoning/knowledge/interpretation/report
+  suites `108 passed, 5 skipped`; autonomy/strategy/product regressions
+  `36 passed, 2 skipped`; Ruff, compileall and diff checks PASS. A real
+  rollback-only PostgreSQL smoke persisted/reopened a Result, Interpretation
+  1.1 and Report 2.0 with an unchanged assessment fingerprint and no hidden
+  reasoning persisted.
+- Workstream J preparation: one frozen baseline, `24` formal responses, `4`
+  calibration cases, `6` optional shadow slots, `8` anchors and `56` balanced
+  assignments are present under `docs/scientist-evaluation/`. The human ledger
+  has `0` records; `J_STATUS=REVIEW_READY`,
+  `J_FORMAL_RESPONSES=FROZEN`,
+  `INDEPENDENT_HUMAN_EXPERT_VALIDATION=PENDING` and
+  `SCIENTIST_VALIDATION_MATURITY=NOT_YET_ASSESSED`. Preparation/focused
+  regression verification passed `52` tests plus Ruff, compile and generated
+  integrity checks.
+- V0 production semantic audit: reviewed `56` modified production files and
+  all production LLM call sites. No secondary reviewer/critic runtime,
+  AI-as-human-expert runtime, or J-evaluation production dependency was found.
+  One real authority-boundary defect was fixed: Report ContextManifest
+  previously labeled validated Interpretation prose as `SCIENTIFIC_RESULT`;
+  it now uses `INTERPRETATION` / `DERIVED_SUMMARY`, with fail-closed manifest
+  compatibility checks. Frozen J artifacts remain unchanged, so the current
+  J candidate is `PRE-CORRECTION_SCIENTIFIC_CANDIDATE`.
 - Remote CI: workflow and authenticated CLI are available, but the final SHA is
   not on the remote because push was not authorized. Exact-SHA CI is not run.
   Local/service readiness is PASS; overall release readiness is CONDITIONAL.
@@ -198,10 +307,11 @@ specialized authority requires explicit reconciliation and may set
   capabilities remain deliberately scoped to platform-owned parsing, units,
   projection and limitation semantics; independent validation of the upstream
   scientific implementation is not claimed.
-- **Scientific communication debt:** deterministic interpretation/report
-  fidelity and restraint pass the bounded corpus, but expert-level insight,
-  broad domain generalization and LLM scientific reasoning quality remain
-  future evaluation.
+- **Scientific reasoning debt:** bounded deterministic claim assessment now
+  constrains the evaluated corpus and live-provider projection, but it is not
+  independent materials-scientist validation. Broad-domain semantic edge cases,
+  richer causal designs and human review remain future/parallel work; they do
+  not turn I into a runtime expert reviewer.
 - **Extension coupling debt:** built-in Requirement, Capability, Tool, Adapter,
   Artifact-port, projector and Viewer authorities remain explicit centralized
   registration points. The path is bounded and documented, but not a
@@ -210,8 +320,19 @@ specialized authority requires explicit reconciliation and may set
   ready, including selected cross-family transitions, hypotheses,
   contradiction handling and minimum-sufficient stopping. It remains
   intentionally typed for current capability families; arbitrary scientific
-  strategy, literature authority, causal inference and universal method
-  comparison are not claimed.
+  strategy, causal inference and universal method comparison are not claimed.
+- **Scientific knowledge debt:** the scholarly layer is deliberately
+  query-driven and limited to OpenAlex/Crossref metadata plus exact
+  user-provided or authorized retrieved passages. It does not claim OCR,
+  unrestricted publisher full text, broad offline indexing, generic web
+  authority or a vector database. Deterministic identity/numeric grounding and
+ bounded qualitative claim assessment are in place; independent human expert
+ review remains an explicitly parallel validation uncertainty.
+- **Independent scientist evaluation debt:** the reviewer-blinded J corpus,
+  frozen responses and import/report infrastructure are ready, but no real
+  independent scientist submissions have been imported. Scientist validation
+  maturity is therefore intentionally not assessed. This does not block the
+  Pre-M/M engineering route.
 
 ## 8. State Authorities
 
@@ -282,11 +403,40 @@ specialized authority requires explicit reconciliation and may set
   strategy, comparison/contradiction safeguards, minimum-sufficient stopping,
   one-repair structured provider validation, concise Research strategy
   visibility and canonical real-provider/service-backed evidence.
+- 2026-09-10: completed Workstream G with a scientist-facing Research
+  timeline/map, visible current question and evidence gaps, non-authoritative
+  hypothesis treatment, explicit continuation/stop/control semantics,
+  result-first source/version/limitation disclosure, safer comparison and
+  recovery states, identity-safe project/dataset labels, mobile continuity and
+  five canonical persisted browser journeys. Product maturity is
+  `READY_FOR_BOUNDED_SCIENTIST_USE`; no scientific or execution authority
+  moved into the frontend.
+- 2026-09-11: completed Workstream H with deterministic scholarly identity,
+  immutable retrieval snapshots, explicit evidence scope/access/publication
+  status, allowlisted OpenAlex/Crossref clients, privacy-safe bounded queries,
+  selected LiteratureEvidence, claim/citation lineage, Report bibliography,
+  literature Workbench UX, exact historical reopen, provider-failure recovery
+  and live provider/DeepSeek verification. Literature remains non-Result,
+  non-qualification authority.
+- 2026-09-11: completed Workstream I with a repository-owned 27-case
+  evaluation corpus, immutable 22-failure baseline, bounded claim-support and
+  method/scope/lineage/contradiction assessment, Interpretation/Report
+  propagation, deterministic final zero-violation evidence, five sanitized
+  live-provider cases and real PostgreSQL rollback persistence verification.
+  Maturity is `BOUNDED_EXPERT_REVIEW_READY`; independent human expert
+  validation remains `NO`.
+- 2026-09-11: reconciled V0 product direction without changing runtime
+  scientific behavior. Secondary LLM reviewer/critic behavior is absent from
+  the active runtime; I remains a structured reasoning guard, J is parallel
+  external human validation, K is conditional only, Pre-M0 is next and M0-M6
+  remains required for V0.
 
 ## 11. Source Pointers
 
 - Queue: [`TASKS.md`](TASKS.md)
 - Results: [`results.md`](results.md)
+- V0 scope alignment:
+  [`docs/alignment/V0_SCOPE_ALIGNMENT.md`](docs/alignment/V0_SCOPE_ALIGNMENT.md)
 - Project rules: [`AGENTS.md`](AGENTS.md)
 - ADR: [`persistent/ARCHITECTURE_DECISIONS.md`](persistent/ARCHITECTURE_DECISIONS.md)
 - Progress/board: [`persistent/DESIGN_PROGRESS.md`](persistent/DESIGN_PROGRESS.md),
@@ -314,6 +464,21 @@ specialized authority requires explicit reconciliation and may set
   [`docs/agent2/strategy/SCIENTIFIC_RESEARCH_STRATEGY.md`](docs/agent2/strategy/SCIENTIFIC_RESEARCH_STRATEGY.md),
   [`docs/agent2/strategy/HYPOTHESIS_AND_EVIDENCE_POLICY.md`](docs/agent2/strategy/HYPOTHESIS_AND_EVIDENCE_POLICY.md),
   [`docs/agent2/strategy/generated/strategy_evaluation.json`](docs/agent2/strategy/generated/strategy_evaluation.json)
+- Scientist product maturity:
+  [`docs/product-maturity/SCIENTIST_RESEARCH_EXPERIENCE.md`](docs/product-maturity/SCIENTIST_RESEARCH_EXPERIENCE.md),
+  [`docs/product-maturity/RESEARCH_CONTROL_SEMANTICS.md`](docs/product-maturity/RESEARCH_CONTROL_SEMANTICS.md),
+  [`docs/product-maturity/SCIENTIST_PRODUCT_ACCEPTANCE.md`](docs/product-maturity/SCIENTIST_PRODUCT_ACCEPTANCE.md),
+  [`docs/product-maturity/generated/scientist_ux_acceptance.json`](docs/product-maturity/generated/scientist_ux_acceptance.json)
+- Scientific knowledge and literature:
+  [`docs/scientific-knowledge/SCIENTIFIC_KNOWLEDGE_AUTHORITY.md`](docs/scientific-knowledge/SCIENTIFIC_KNOWLEDGE_AUTHORITY.md),
+  [`docs/scientific-knowledge/LITERATURE_PROVIDER_AND_ACCESS_POLICY.md`](docs/scientific-knowledge/LITERATURE_PROVIDER_AND_ACCESS_POLICY.md),
+  [`docs/scientific-knowledge/LITERATURE_EVIDENCE_AND_CITATION.md`](docs/scientific-knowledge/LITERATURE_EVIDENCE_AND_CITATION.md),
+  [`docs/scientific-knowledge/generated/literature_integration_evaluation.json`](docs/scientific-knowledge/generated/literature_integration_evaluation.json)
+- Expert scientific reasoning:
+  [`docs/scientific-reasoning/SCIENTIFIC_CLAIM_AND_SUPPORT_MODEL.md`](docs/scientific-reasoning/SCIENTIFIC_CLAIM_AND_SUPPORT_MODEL.md),
+  [`docs/scientific-reasoning/METHOD_COMPARISON_AND_INFERENCE_POLICY.md`](docs/scientific-reasoning/METHOD_COMPARISON_AND_INFERENCE_POLICY.md),
+  [`docs/scientific-reasoning/EXPERT_REASONING_EVALUATION.md`](docs/scientific-reasoning/EXPERT_REASONING_EVALUATION.md),
+  [`docs/scientific-reasoning/generated/expert_reasoning_evaluation.json`](docs/scientific-reasoning/generated/expert_reasoning_evaluation.json)
 
 ## 12. Controlled Update and Freshness Rules
 

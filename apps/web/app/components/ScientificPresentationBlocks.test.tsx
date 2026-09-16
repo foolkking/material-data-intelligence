@@ -21,7 +21,7 @@ vi.mock("../../scientific-viewers/ScientificViewerAdapter", () => ({
 
 const presentation = {
   schemaVersion: "1.0" as const,
-  exactSourceRefs: [{ objectId: "object-1", versionId: "version-2", objectType: "structure.crystal", displayName: "Silicon" }],
+  exactSourceRefs: [{ objectId: "object-1", versionId: "version-2", versionNo: 2, objectType: "structure.crystal", displayName: "Silicon" }],
   blocks: [{
     id: "evidence-1",
     type: "evidence_reference" as const,
@@ -36,11 +36,19 @@ const presentation = {
       toolCallId: "call-1",
       objectId: "object-1",
       versionId: "version-2",
+      versionNo: 2,
     },
   }],
 };
 
 describe("ScientificPresentationBlocks evidence inspector", () => {
+  it("shows scientist-facing version context without exposing raw identities by default", () => {
+    render(<ScientificPresentationBlocks presentation={presentation} projectId="project-1" />);
+    expect(screen.getByText("来源版本 2")).toBeInTheDocument();
+    expect(screen.getByText("已绑定科学结果与证据")).toBeInTheDocument();
+    expect(screen.queryByText(/result-1|evidence-1|version-2/)).toBeNull();
+  });
+
   it("renders bounded metric precision while retaining the exact source value", () => {
     render(<ScientificPresentationBlocks presentation={{
       schemaVersion: "1.0",

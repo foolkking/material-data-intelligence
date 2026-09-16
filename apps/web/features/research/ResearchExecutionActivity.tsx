@@ -33,6 +33,7 @@ const strategyActionLabel: Record<string, string> = {
   NEEDS_CLARIFICATION: "继续研究前需要补充明确条件",
   CONFLICTING_EVIDENCE: "现有证据存在尚未解决的冲突",
   STOP_WITH_LIMITATIONS: "当前证据不足以支持进一步结论",
+  SEARCH_LITERATURE: "当前证据缺口需要受限的外部科学文献",
 };
 
 const stopReasonLabel: Record<string, string> = {
@@ -43,6 +44,37 @@ const stopReasonLabel: Record<string, string> = {
   NON_PROGRESS: "继续执行只会重复已有分析",
   CONFLICTING_EVIDENCE: "证据冲突尚不能可靠消解",
   STOP_WITH_LIMITATIONS: "现有数据或方法不足以支持更强结论",
+  CANCELLED: "用户已取消当前分析，已完成的科学结果仍然保留",
+};
+
+const questionStatus = {
+  RESOLVED: { icon: "✓", label: "已由证据回答", className: "resolved" },
+  LIMITED: { icon: "◐", label: "部分回答，证据有限", className: "limited" },
+  CONFLICTING: { icon: "!", label: "证据存在冲突", className: "conflicting" },
+  OPEN: { icon: "○", label: "尚未解决", className: "open" },
+} as const;
+
+const hypothesisStatusLabel: Record<string, string> = {
+  PROPOSED: "尚未检验",
+  PARTIALLY_SUPPORTED: "部分证据支持",
+  SUPPORTED_WITHIN_SCOPE: "在当前证据范围内获得支持",
+  CONTRADICTED: "当前证据不支持",
+  UNRESOLVED: "尚未解决",
+  NOT_TESTABLE_WITH_AVAILABLE_CAPABILITIES: "现有能力无法检验",
+};
+
+const qualificationLabel: Record<string, string> = {
+  DOMAIN_VALIDATED: "已在声明适用范围内验证",
+  REFERENCE_VALIDATED: "已通过科学参考案例验证",
+  EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED: "平台集成与结果语义已验证",
+  STRUCTURAL_ONLY: "仅完成结构集成验证",
+};
+
+const comparisonStatusLabel: Record<string, string> = {
+  COMPATIBLE: "当前结果在数量语义、单位与分析条件上可直接比较。",
+  CONDITIONALLY_COMPATIBLE: "当前结果只能在所列方法或条件限制下比较。",
+  NOT_COMPATIBLE: "当前结果不能直接比较；系统不会生成误导性的比较结论。",
+  INSUFFICIENT_METADATA: "现有元数据不足以确认这些结果是否可比较。",
 };
 
 export function ResearchExecutionActivity({ progress, onCancel, cancelPending = false, onContinue, onRetry, retryPending = false, onEdit }: { progress: Agent2ProgressView; onCancel?: () => void; cancelPending?: boolean; onContinue?: () => void; onRetry?: () => void; retryPending?: boolean; onEdit?: () => void }) {
@@ -63,6 +95,14 @@ export function ResearchExecutionActivity({ progress, onCancel, cancelPending = 
   const strategySummary = autonomy?.stop?.stopped
     ? stopReasonLabel[autonomy.stop.reason || ""] || "自主研究已在当前科学边界停止"
     : strategyActionLabel[strategy?.action || ""] || null;
+  const researchQuestions = strategy?.questions?.length
+    ? strategy.questions
+    : strategy?.current_question?.statement
+      ? [strategy.current_question]
+      : [];
+  const activeHypothesis = strategy?.active_hypothesis
+    || strategy?.hypotheses?.find((item) => item.status !== "CONTRADICTED")
+    || strategy?.hypotheses?.[0];
   return (
     <section className="research-execution-activity" aria-label="分析进度">
       <div className="research-execution-heading">
@@ -73,18 +113,59 @@ export function ResearchExecutionActivity({ progress, onCancel, cancelPending = 
               ? "已基于现有科学结果继续回答"
               : "回答已完成"
           : statusLabel[progress.status]}</strong>
-        <div>{progress.total_step_count > 0 ? <span>{progress.completed_step_count}/{progress.total_step_count}</span> : null}{cancelable && onCancel ? <button type="button" className="product-link-button research-execution-cancel" onClick={onCancel} disabled={cancelPending}>{cancelPending ? "正在提交停止…" : "停止研究"}</button> : cancellationPending ? <span className="research-execution-cancel-state" role="status">{RESEARCH_CANCELLING_LABEL}，等待服务端确认</span> : null}</div>
+        <div>{progress.total_step_count > 0 ? <span>{progress.completed_step_count}/{progress.total_step_count}</span> : null}{cancelable && onCancel ? <button type="button" className="product-link-button research-execution-cancel" onClick={onCancel} disabled={cancelPending}>{cancelPending ? "正在提交取消…" : "取消当前分析"}</button> : cancellationPending ? <span className="research-execution-cancel-state" role="status">{RESEARCH_CANCELLING_LABEL}，等待服务端确认</span> : null}</div>
       </div>
       {autonomy ? (
         <aside className="research-strategy-progress" aria-label="研究策略">
           <div>
-            <strong>研究策略</strong>
-            <span>第 {autonomy.cycle_index} 轮</span>
+            <strong>研究进展</strong>
+            <span>有界研究 · 第 {autonomy.cycle_index} 轮</span>
           </div>
-          {strategy?.current_question?.statement ? <p><b>当前问题</b>{strategy.current_question.statement}</p> : null}
-          {strategy?.active_evidence_gap?.statement ? <p><b>待补证据</b>{strategy.active_evidence_gap.statement}</p> : null}
-          {strategy?.active_hypothesis?.statement ? <p><b>待检验假设</b>{strategy.active_hypothesis.statement}</p> : null}
+          {autonomy.objective ? <p className="research-strategy-objective"><b>主要问题</b>{autonomy.objective}</p> : null}
+          {strategy?.current_question?.statement && !strategy.questions?.length && strategy.current_question.statement !== autonomy.objective ? <p><b>当前问题</b>{strategy.current_question.statement}</p> : null}
+          {researchQuestions.length ? (
+            <section className="research-map" aria-labelledby={`research-map-${progress.turn_id}`}>
+              <h4 id={`research-map-${progress.turn_id}`}>研究地图</h4>
+              <ul>
+                {researchQuestions.map((question, index) => {
+                  const status = questionStatus[(question.status || "OPEN") as keyof typeof questionStatus] || questionStatus.OPEN;
+                  const evidenceCount = question.evidence_result_ids?.length || 0;
+                  return (
+                    <li key={question.question_id || `${question.statement}-${index}`} className={`research-map-${status.className}`}>
+                      <span aria-hidden="true">{status.icon}</span>
+                      <div>
+                        <strong>{question.statement || "未命名科学问题"}</strong>
+                        <small>{status.label}{evidenceCount ? ` · ${evidenceCount} 项科学结果` : ""}</small>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          ) : null}
+          {strategy?.active_evidence_gap?.statement ? <p className="research-evidence-gap"><b>仍缺少</b>{strategy.active_evidence_gap.statement}</p> : null}
+          {strategy?.comparison_status ? <p className={`research-comparison-status status-${strategy.comparison_status.toLowerCase()}`}><b>比较条件</b>{comparisonStatusLabel[strategy.comparison_status] || strategy.comparison_status}</p> : null}
+          {strategy?.contradictions?.some((item) => item.unresolved) ? (
+            <section className="research-contradiction" role="note" aria-label="证据冲突">
+              <strong>证据冲突尚未解决</strong>
+              {strategy.contradictions.filter((item) => item.unresolved).slice(0, 2).map((item) => (
+                <p key={item.contradiction_id || item.predicate}>{item.resolution || "现有证据不能可靠确定同一结论。"}</p>
+              ))}
+            </section>
+          ) : null}
+          {activeHypothesis?.statement ? (
+            <section className="research-hypothesis" aria-label="科学假设">
+              <div>
+                <strong>科学假设</strong>
+                <span>{hypothesisStatusLabel[activeHypothesis.status || ""] || "状态待确认"}</span>
+              </div>
+              <p>{activeHypothesis.statement}</p>
+              {activeHypothesis.supporting_result_ids?.length ? <small>已有 {activeHypothesis.supporting_result_ids.length} 项结果提供支持，但假设仍不等同于计算事实。</small> : <small>这是待检验的研究假设，不是已计算的科学事实。</small>}
+              {activeHypothesis.known_assumptions?.[0] ? <small>前提：{activeHypothesis.known_assumptions[0]}</small> : null}
+            </section>
+          ) : null}
           {strategySummary ? <p><b>{autonomy.stop?.stopped ? "停止原因" : "下一步依据"}</b>{strategySummary}</p> : null}
+          {autonomy.decision?.qualification_level ? <p><b>方法验证</b>{qualificationLabel[autonomy.decision.qualification_level] || autonomy.decision.qualification_level}</p> : null}
           {autonomy.decision?.limitations?.length ? <p><b>科学限制</b>{autonomy.decision.limitations[0]}</p> : null}
         </aside>
       ) : null}
@@ -101,11 +182,11 @@ export function ResearchExecutionActivity({ progress, onCancel, cancelPending = 
       {importantStatus && warnings.length > 0 ? <ul className="research-execution-warnings" role="status">{warnings.map((warning) => <li key={`${warning.code}-${warning.message}`}>{warning.message}</li>)}</ul> : null}
       {retryable && (onContinue || onEdit || onRetry) ? (
         <div className="research-execution-recovery" role="group" aria-label="研究恢复操作">
-          <p>{progress.status === "CANCELED" ? "研究已停止。已经提交的有效输出仍会保留；继续研究不会自动重算。" : "本次研究未完成，历史失败记录会保留。"}</p>
+          <p>{progress.status === "CANCELED" ? "当前分析已取消。已经提交的有效输出仍会保留；继续当前研究不会自动重算。" : "本次研究未完成。已完成的科学结果会保留；重新运行会创建一次新的执行。"}</p>
           <div>
-            {onContinue ? <button type="button" className="product-primary-action" onClick={onContinue}>继续研究</button> : null}
-            {onEdit ? <button type="button" className="product-secondary-action" onClick={onEdit}>修改问题</button> : null}
-            {onRetry ? <button type="button" className="product-secondary-action" onClick={onRetry} disabled={retryPending}>{retryPending ? "正在创建新运行…" : "重新研究（新运行）"}</button> : null}
+            {onContinue ? <button type="button" className="product-primary-action" onClick={onContinue}>继续当前研究</button> : null}
+            {onEdit ? <button type="button" className="product-secondary-action" onClick={onEdit}>修改问题并创建分支</button> : null}
+            {onRetry ? <button type="button" className="product-secondary-action" onClick={onRetry} disabled={retryPending}>{retryPending ? "正在创建新运行…" : "重新运行分析"}</button> : null}
           </div>
         </div>
       ) : null}

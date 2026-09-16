@@ -281,6 +281,7 @@ from .report_composition import (
 from .models import (
     AnalysisPlan,
     AnalysisStep,
+    ParameterProvenance,
     Artifact,
     ArtifactMetadata,
     ArtifactType,
@@ -476,6 +477,7 @@ __all__ = [
     "AnalysisPlan",
     "AnalysisPlanV02",
     "AnalysisStep",
+    "ParameterProvenance",
     "Artifact",
     "ArtifactCardinality",
     "ArtifactCompatibilityMatrix",

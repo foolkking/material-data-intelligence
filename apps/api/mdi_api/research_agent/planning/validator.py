@@ -39,6 +39,23 @@ class CapabilityPlanValidator:
                     f"expected={sorted(expected_outputs, key=str)!r}; actual={sorted(actual_outputs, key=str)!r}",
                     code="CAPABILITY_PLAN_PORT_MISMATCH",
                 )
+            authorized_parameters: dict[str, Any] = {}
+            parameter_mapping = (
+                manifest.tool_bindings[0].parameter_mapping
+                if manifest.tool_bindings
+                else {}
+            )
+            for requirement in decision.scientific_requirements:
+                if requirement.requirement_id not in candidate.satisfies_requirement_ids:
+                    continue
+                for key, value in requirement.constraints.items():
+                    authorized_parameters[str(parameter_mapping.get(key) or key)] = value
+            if step.parameters != authorized_parameters:
+                raise CapabilityPlanInvalid(
+                    "capability parameters must exactly match authorized scientific constraints; "
+                    "Tool defaults are resolved deterministically after validation",
+                    code="CAPABILITY_PLAN_PARAMETER_AUTHORITY_INVALID",
+                )
             for slot_name, bindings in step.input_bindings.items():
                 slot = next((item for item in manifest.input_slots if item.name == slot_name), None)
                 if slot is None or not bindings:

@@ -1,5 +1,87 @@
 # TASK_BOARD
 
+## V0 Route Reconciliation and Pre-M1–3 Chained Execution (2026-09-12)
+
+- [x] Inventory roadmap, current state, task board, runtime configuration,
+      frontend controls, backend orchestration and LLM call sites for
+      critic/reviewer/expert-review drift.
+- [x] Confirm no Secondary LLM critic, reviewer provider, review-result
+      persistence, `RISK_AWARE` review mode or AI expert-review UI exists in
+      active runtime.
+- [x] Classify `STRICT_PROVIDER` as the existing primary bounded grounded-
+      interpretation path, not a second-model reviewer.
+- [x] Restore `V0` as the current release scope and the natural-language
+      materials research analysis/visualization workbench as product authority.
+- [x] Restore the main route: A-I complete → Pre-M0-Pre-M6 → M0-M6 → Final V0
+      Integrated Acceptance.
+- [x] Move J to a parallel offline external-human-validation lane while
+      preserving all frozen cases, responses, assignments, hashes and packets.
+- [x] Mark K `CONDITIONAL_ONLY` on reproducible real J defects.
+- [x] Preserve all A-I scientific/execution authorities and make no runtime
+      scientific behavior change.
+
+- [x] Pre-M0 current reality/delta ledger and current browser replay
+      (`ACCEPTED`, attempt-02).
+- [x] Pre-M1 deterministic Context roles, support eligibility and
+      non-transitive scientific authority (`READY_FOR_REVIEW`).
+- [x] Pre-M2 parameter/preference/history/partial-ingestion/search authority
+      reconciliation (`READY_FOR_REVIEW`).
+- [x] Pre-M3 Research conversation-first default layout, empty Data Overview
+      and bounded Notifications settlement (`PARTIAL/READY_FOR_REVIEW`).
+- [ ] Pre-M4 presentation-only LOD denominators, viewer/selection/Report
+      qualification.
+- [ ] Pre-M5 current complex-material envelope qualification.
+- [ ] Pre-M6 integrated acceptance.
+
+Pre-M1–3 execution is sealed for external review; Pre-M4 has not started.
+M0-M6 — Long-running Research, Scale & Fault Tolerance remains the required
+V0 stage after Pre-M completion and has not started.
+Parallel lane: J remains `REVIEW_READY`,
+`INDEPENDENT_HUMAN_EXPERT_VALIDATION=PENDING`.
+
+Current maturity boundary:
+`G_BEHAVIORAL_SEMANTIC_READINESS=COMPLETE`;
+`DEEP_VISUAL_COMPLEX_CONTENT_QUALIFICATION=PENDING_PRE_M4_PRE_M5`;
+`UI_LAYOUT_SYSTEM_V2=FROZEN_DESIGN_ACCEPTANCE_BASELINE`;
+`CURRENT_UI_LAYOUT_CONFORMANCE=PENDING_PRE_M3_PRE_M4_BROWSER_QUALIFICATION`;
+`ATTACHMENT_CONTEXT_EXPERIENCE=IMPLEMENTED_WITH_TARGETED_EVIDENCE`;
+`COMPLEX_MATERIAL_DATA_QUALIFICATION=PENDING_PRE_M5`.
+
+## Workstream I — Expert Scientific Reasoning Evaluation (2026-09-11)
+
+- [x] Confirmed and preserved the canonical uncommitted H baseline without
+      reset/clean/checkout.
+- [x] Completed bounded claim, interpretation, evidence-state, literature,
+      strategy and Report reasoning reconnaissance.
+- [x] Built and preserved a 27-case repository-owned pre-fix corpus; baseline
+      accepted 22 invalid/underconstrained claims.
+- [x] Classified actual claim-support, scope, method, comparison, independence,
+      contradiction, hypothesis, limitation and numeric defects.
+- [x] Added reusable `scientific-reasoning/1.0` contracts and fail-closed
+      deterministic validation with at most one bounded provider repair.
+- [x] Integrated accepted assessments with Interpretation 1.1 and Report 2.0
+      without creating a scientific authority.
+- [x] Passed deterministic, focused regression, five real DeepSeek and
+      representative PostgreSQL persisted-service verification.
+- [x] Generated final evaluation and optional human-review pack, reconciled
+      authorities and issued `BOUNDED_EXPERT_REVIEW_READY` with independent
+      human validation explicitly `NO`.
+
+## Workstream H — Scientific Knowledge & Literature Integration (2026-09-11)
+
+- [x] Define the canonical LiteratureWork/Snapshot/Evidence/query contracts.
+- [x] Add bounded OpenAlex/Crossref provider adapters with deterministic
+      identity reconciliation and privacy-safe query projection.
+- [x] Integrate evidence lineage with Context/strategy/report projections
+      without creating a second scientific authority.
+- [x] Add focused fake-provider evaluation and canonical runtime evidence.
+- [x] Verify live OpenAlex/Crossref identity paths, bounded DeepSeek synthesis,
+      exact historical reopen, Report citation identity and scientist-facing
+      literature UX.
+- [x] Close with zero authority/privacy/citation/scope/retraction violations and
+      select Expert Scientific Reasoning Evaluation as the evidence-based next
+      direction.
+
 ## Autonomous architecture migration milestone (2026-09-07)
 
 - [x] Complete remaining Batch 0 ownership preparation in the active
@@ -4394,3 +4476,95 @@ The Phase 7 task is archived in `TASKS.md`; Phase 8 is not started.
       and canonical cross-family/recovery/reuse service-backed paths.
 - Next recommended workstream: Scientist UX & Product Maturity, with broader
   capability expansion retained as the next scientific-breadth dependency.
+
+## 2026-09-10 Workstream G — Scientist UX & Product Maturity
+
+- [x] Walk the canonical persisted Research product before implementation and
+      classify only concrete scientist-facing product defects.
+- [x] Expose the current research question, compact Research Map,
+      resolved/unresolved state, evidence gaps and non-authoritative
+      hypotheses in the Research timeline.
+- [x] Expose concise continuation and stop reasons without prompts, raw
+      strategy payloads or hidden chain-of-thought.
+- [x] Clarify Stop, Cancel, Continue, Retry, Run again, Reinterpret and
+      edit/branch semantics while preserving durable lifecycle behavior.
+- [x] Keep Results first, place important limitations next to findings, and
+      make source/version and advanced provenance progressively inspectable.
+- [x] Preserve completed science in unsupported, partial, failed, cancelled and
+      reopened Research states.
+- [x] Remove default identity-shaped project/dataset labels from Research,
+      Reports, Tasks, Notifications, Shell and composition-space presentation.
+- [x] Verify canonical historical reopen, unsupported/no-run, Report reopen,
+      Task return path and 390x844 mobile workbench journeys with zero blocking
+      overflow or fatal browser errors.
+- [x] Pass backend `59 passed, 1 skipped`, frontend `177/177`, Ruff,
+      compileall, typecheck, production build, generated-evidence and diff
+      validation.
+- Next recommended workstream: Scientific Knowledge & Literature Integration.
+  The bounded scientist product is understandable and controllable; the larger
+  remaining research limitation is authorized external scientific knowledge,
+  not lifecycle mechanics or a blocking UX defect.
+
+## 2026-09-11 Workstream J — Independent Scientist Evaluation (Preparation)
+
+- [x] Freeze one evaluation-baseline manifest over the current uncommitted H/I
+      candidate without reset, cleanup, checkout, commit or push.
+- [x] Create 24 held-out scored cases, 4 calibration cases, 6 optional shadow
+      slots and 8 anchor cases; keep all cases separate from the 27-case I
+      internal regression corpus.
+- [x] Generate and hash 24 formal response records through the canonical
+      bounded provider path; preserve six documented validation-failure
+      responses after the permitted pre-review retry.
+- [x] Generate 56 balanced reviewer assignments and blinded Pass 1/Pass 2
+      packets without provider identity, expected semantics, hidden reasoning
+      or developer scoring.
+- [x] Add strict human-record import, pass ordering, hash, duplicate,
+      disagreement and maturity-report tooling. Empty human ledger is valid.
+- [x] Verify the preparation artifacts and focused scientific regression tests.
+- [ ] Obtain at least 3 independent qualified scientist submissions; only then
+      perform formal disagreement/adjudication and maturity-gate analysis.
+
+Current J boundary: `REVIEW_READY`; no independent human validation claim may
+be made before real locked review records are imported. This is a parallel
+external-validation lane and does not block Pre-M or M.
+
+## V0 Alignment Correction — Production Semantic Audit
+
+- Status: COMPLETE
+- Reviewed: 56 modified production files and production LLM call sites.
+- Confirmed scope-drift runtime code: 0.
+- Corrected authority defect: Report Interpretation manifest item was
+  mislabeled as `SCIENTIFIC_RESULT`; now `INTERPRETATION` /
+  `DERIVED_SUMMARY`, guarded by manifest compatibility validation.
+- J runtime dependency: 0.
+- J frozen evidence: preserved and not regenerated.
+- Next engineering stage: Pre-M.
+
+
+## M0 attempt-01 status — 2026-09-14T20:44:29+08:00
+- M0-001...M0-008：实现并验证，当前为 READY_FOR_REVIEW；外部接受前不得启动 M1。
+- 已建立隔离资格边界：DB `mdi_m0_a01` / restore `mdi_m0_a01_restore`，Redis DB12/11，MinIO `mdi-m0-a01` / restore bucket，API 8010/8011，资格 worker 注册表。
+- 已测：fresh-worker RDF 全链、4096 原子导入、backup→restore→reopen→export；M0 未执行故障或 120 分钟 soak。
+- M5 目标冻结为 >=120 分钟、计划最大两个在途 workflow、heavy 操作串行；这不是已资格化并发能力。
+- Review ZIP：`E:\mdi-v0-review\M0_attempt-01.zip`。
+
+## M0 attempt-02 status — 2026-09-14T21:04:54+08:00
+- [x] 仅修正 failure/recovery 与 `/tasks` 的 accepted sealed provenance 指针；M0-001...M0-008 保持 `IMPLEMENTED_AND_VERIFIED`。
+- [x] 直接验证 sealed ZIP member、SHA256 与 CRC；复用 attempt-01 的 67 个实质证据文件且 byte-for-byte 一致。
+- [x] `validate_return.py --seal` 与 `M0_attempt-02.zip` CRC 通过。
+- [ ] 等待 attempt-02 外部审核；M1 未启动。
+
+## M1 attempt-01 — Durable ownership, leases, fencing and truthful recovery
+
+- Status: READY_FOR_REVIEW; external review pending.
+- Evidence: `E:\mdi-v0-review\M1_attempt-01.zip`.
+- All M1-001...M1-008 are locally implemented and verified in the isolated
+  M1 namespace. No shared service was fault-targeted and no accepted evidence
+  or frozen J file was modified.
+- Next action: wait for external review; do not start M2 before acceptance.
+
+
+## M2 attempt-01
+- 状态：READY_FOR_REVIEW，等待外部审核。
+- 证据：真实隔离 F01/F02/F04/F05/F06/F07/F08、API/client recovery、Interpretation-only retry、orphan scan。
+- 保护：共享服务未停止/未清空，M0/M1/Pre-M 证据不变，M3 未启动。

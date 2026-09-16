@@ -3,8 +3,27 @@
 Status: CURRENT, NON-BLOCKING, NOT QUEUED
 
 These capabilities are relevant to the domain but are not required for the
-Initial Complete Product. They may enter `TASKS.md` only after explicit
+current V0 product. They may enter `TASKS.md` only after explicit
 reviewer/user approval.
+
+## V0 Alignment Boundary
+
+The following are explicitly deferred or outside V0 and are not active
+roadmap items:
+
+- unlimited autonomous research;
+- arbitrary DAG/workflow builders;
+- arbitrary Python/notebook/shell execution;
+- full DFT/GW or general external simulation execution;
+- large collaboration and enterprise governance programs;
+- billing, marketplace and multi-region infrastructure;
+- full multi-provider orchestration;
+- autonomous literature-guided discovery;
+- active-learning closed-loop discovery.
+
+Secondary LLM critics, AI-as-independent-expert behavior and scientific review
+modes are not future V0 options. Any later consideration would require a new
+product decision and may not be introduced as a renamed reviewer.
 
 ## Advanced Scientific Visualization
 
@@ -46,8 +65,11 @@ The initial platform analyzes existing data; it does not run large simulations.
 
 ## Optional AI Extensions
 
-* Retrieval over scientific documents, project knowledge retrieval, richer plan
-  repair, long-term conversational context, and advanced agent memory.
+* Deeper literature-guided hypothesis and research selection may be considered
+  only after separate evidence and authorization. The current bounded
+  literature authority remains query-driven and provenance-preserving.
+* Richer plan repair, longer bounded context and advanced memory may be
+  considered without creating unrestricted execution or truth authority.
 
 ## Optional Safe Code Execution
 

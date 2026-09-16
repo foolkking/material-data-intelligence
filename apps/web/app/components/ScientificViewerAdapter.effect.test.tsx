@@ -47,7 +47,10 @@ it("keeps an in-flight artifact load across equivalent polling prop identities",
   );
 
   expect(screen.getByRole("status")).toHaveTextContent("正在加载科学结果");
-  expect(screen.getByRole("status")).toHaveTextContent("Artifact metadata ready");
+  expect(screen.getByRole("status")).toHaveTextContent("科学结果已定位");
+  expect(screen.getByText("artifact_1").closest("details")).not.toHaveAttribute("open");
+  expect(screen.getByText("tool_call_1").closest("details")).not.toHaveAttribute("open");
+  await userEvent.click(screen.getByText("技术来源与精确身份"));
   expect(screen.getByText("artifact_1")).toBeInTheDocument();
   expect(screen.getByText("tool_call_1")).toBeInTheDocument();
   expect(screen.getByRole("link", { name: "返回数据源" })).toHaveAttribute(

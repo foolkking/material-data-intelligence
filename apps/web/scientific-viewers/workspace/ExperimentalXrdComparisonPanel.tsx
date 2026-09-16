@@ -8,6 +8,7 @@ import { artifactChecksum, artifactIdentity } from "../../shared/workspace/works
 
 type Peak = Readonly<{ peakId: string; twoTheta: number; normalizedIntensity?: number; relativeIntensity?: number; hkls?: readonly unknown[] }>;
 type Match = Readonly<{ matchId: string; experimentalPeakId: string; theoreticalPeakId: string; experimentalTwoTheta: number; theoreticalTwoTheta: number; signedDeltaTwoTheta: number; absoluteDeltaTwoTheta: number; theoreticalHkls: readonly unknown[] }>;
+const MAX_PEAK_TABLE_ROWS = 10_000;
 type Payload = Readonly<{
   schema_version: "phase10n3.experimental_xrd_comparison.v1";
   artifactType: "structure.experimental_xrd_comparison";
@@ -73,7 +74,8 @@ function XrdOverlay({ payload }: { payload: Payload }) {
 function ResidualTable({ values }: { values: Payload["residualSummary"] }) { return <section><h6>峰位偏差摘要</h6><div className="workspace-table-scroll"><table><tbody>{Object.entries(values).map(([key, value]) => <tr key={key}><th scope="row">{residualLabel(key)}</th><td>{value === null ? "不可用" : String(value)}{key !== "matchedCount" && key !== "unit" ? "°" : ""}</td></tr>)}</tbody></table></div></section>; }
 
 function PeakTable<T>({ title, empty, rows, identity, selected, onSelect, columns, headings }: Readonly<{ title: string; empty: string; rows: readonly T[]; identity: (row: T) => string; selected: string | null; onSelect: (row: T) => void; columns: (row: T) => readonly unknown[]; headings: readonly string[] }>) {
-  return <section><h6>{title}</h6>{rows.length === 0 ? <p role="status">{empty}</p> : <div className="workspace-table-scroll"><table><thead><tr><th scope="col">选择</th>{headings.map((heading) => <th scope="col" key={heading}>{heading}</th>)}</tr></thead><tbody>{rows.slice(0, 10_000).map((row, rowIndex) => { const id = identity(row); return <tr key={id} className={selected === id ? "active" : undefined} aria-selected={selected === id}><td><button type="button" aria-pressed={selected === id} aria-label={`选择第 ${rowIndex + 1} 行`} onClick={() => onSelect(row)}>选择</button></td>{columns(row).map((value, index) => <td key={`${id}:${index}`}>{value === null ? "不可用" : String(value)}</td>)}</tr>; })}</tbody></table></div>}</section>;
+  const visibleRows = rows.slice(0, MAX_PEAK_TABLE_ROWS);
+  return <section><h6>{title}</h6>{rows.length === 0 ? <p role="status">{empty}</p> : <><p role="status">显示 {visibleRows.length.toLocaleString("zh-CN")} / {rows.length.toLocaleString("zh-CN")} 行；完整峰位数据保留在权威结果中。</p><div className="workspace-table-scroll"><table><thead><tr><th scope="col">选择</th>{headings.map((heading) => <th scope="col" key={heading}>{heading}</th>)}</tr></thead><tbody>{visibleRows.map((row, rowIndex) => { const id = identity(row); return <tr key={id} className={selected === id ? "active" : undefined} aria-selected={selected === id}><td><button type="button" aria-pressed={selected === id} aria-label={`选择第 ${rowIndex + 1} 行`} onClick={() => onSelect(row)}>选择</button></td>{columns(row).map((value, index) => <td key={`${id}:${index}`}>{value === null ? "不可用" : String(value)}</td>)}</tr>; })}</tbody></table></div></>}</section>;
 }
 
 function xrdSelection(workspace: ScientificWorkspace, artifact: Artifact, payload: Payload, kind: WorkspaceSelectionKind, exactId: string): WorkspaceSelectionContext | null {

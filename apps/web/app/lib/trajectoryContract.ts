@@ -46,6 +46,8 @@ export function fractionalToCartesian(fractional: readonly number[], lattice: re
 
 function scanInert(root: unknown, errors: Set<string>): void {
   const queue: Array<{value: unknown; depth: number; key: string}> = [{value: root, depth: 0, key: ""}];
+  const frameFields = new Set(["schema_version", "frame_index", "atom_ids", "step", "time", "lattice", "positions", "velocities", "forces", "energy", "temperature", "metadata"]);
+  const atomFields = new Set(["atom_id", "label", "species", "occupancy"]);
   let visited = 0;
   while (queue.length > 0) {
     const current = queue.shift()!;
@@ -57,6 +59,26 @@ function scanInert(root: unknown, errors: Set<string>): void {
       if (forbidden.some((marker) => lowered.includes(marker))) errors.add("TRAJECTORY_EXTERNAL_REFERENCE_FORBIDDEN");
     }
     if (Array.isArray(current.value)) {
+      if (current.key === "frames") {
+        current.value.forEach((frame) => {
+          if (!record(frame)) return;
+          const metadata = frame.metadata;
+          if (metadata !== undefined) queue.push({value: metadata, depth: current.depth + 1, key: "metadata"});
+          Object.entries(frame).forEach(([frameKey, frameValue]) => {
+            if (!frameFields.has(frameKey)) queue.push({value: frameValue, depth: current.depth + 1, key: frameKey});
+          });
+        });
+        continue;
+      }
+      if (current.key === "records") {
+        current.value.forEach((atom) => {
+          if (!record(atom)) return;
+          Object.entries(atom).forEach(([atomKey, atomValue]) => {
+            if (!atomFields.has(atomKey)) queue.push({value: atomValue, depth: current.depth + 1, key: atomKey});
+          });
+        });
+        continue;
+      }
       // Coordinate matrices can legitimately contain millions of numeric
       // leaves. They are already bounded by the contract checks above; walk
       // only non-numeric members here so the inert/security scan remains
@@ -66,7 +88,12 @@ function scanInert(root: unknown, errors: Set<string>): void {
         if (typeof value === "number" || typeof value === "boolean" || value === null) return;
         queue.push({value, depth: current.depth + 1, key: current.key});
       });
-    } else if (record(current.value)) Object.entries(current.value).forEach(([key, value]) => queue.push({value, depth: current.depth + 1, key}));
+    } else if (record(current.value)) {
+      const recordValue = current.value;
+      Object.entries(recordValue).forEach(([key, value]) => {
+        queue.push({value, depth: current.depth + 1, key});
+      });
+    }
   }
 }
 

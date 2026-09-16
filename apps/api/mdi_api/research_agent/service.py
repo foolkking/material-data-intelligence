@@ -438,6 +438,60 @@ class ResearchTurnService:
             self._log_lifecycle(updated, event_type, previous_status=expected_status)
         return updated
 
+    def fail_if_active(
+        self,
+        turn_id: UUID,
+        code: str,
+        summary: str,
+    ) -> dict[str, Any] | None:
+        """Terminalize an active turn after a worker-boundary failure.
+
+        Queue workers resolve the dotted callable lazily.  Therefore an
+        import/configuration failure can happen before ``AgentTurnProcessor``
+        exists and before its normal exception handling is available.  This
+        small lifecycle operation reuses the authoritative turn state machine
+        and compare-and-set write so those failures cannot leave a durable
+        RECEIVED/active turn behind a failed RQ job.
+        """
+
+        with _keyed_lock(_turn_locks, str(turn_id)):
+            with self.repository_factory.unit_of_work() as unit:
+                turn = unit.agent2.research_turns.get_for_update(turn_id)
+                status = ResearchTurnStatus(str(turn["status"]))
+                if status in TERMINAL_TURN_STATUSES:
+                    return None
+                if status not in {
+                    ResearchTurnStatus.RECEIVED,
+                    ResearchTurnStatus.RESOLVING_CONTEXT,
+                    ResearchTurnStatus.ORCHESTRATING,
+                    ResearchTurnStatus.READY_TO_PLAN,
+                    ResearchTurnStatus.PLANNING,
+                    ResearchTurnStatus.PLAN_READY,
+                    ResearchTurnStatus.QUEUED,
+                    ResearchTurnStatus.RUNNING,
+                    ResearchTurnStatus.CANCELING,
+                    ResearchTurnStatus.RESULT_PENDING,
+                    ResearchTurnStatus.RESULT_READY,
+                    ResearchTurnStatus.INTERPRETING,
+                }:
+                    return None
+                ensure_transition(status, ResearchTurnStatus.FAILED)
+                updated = unit.agent2.research_turns.compare_and_set_status(
+                    turn_id,
+                    expected_status=status.value,
+                    expected_version=int(turn["row_version"]),
+                    target_status=ResearchTurnStatus.FAILED.value,
+                    completed_at=datetime.now(timezone.utc),
+                    error_code=code,
+                    error_summary=str(summary)[:1000],
+                )
+                self._append_event(unit, turn_id, ResearchTurnEventType.TURN_FAILED, {
+                    "status": updated["status"],
+                    "error_code": code,
+                })
+        self._log_lifecycle(updated, ResearchTurnEventType.TURN_FAILED, previous_status=status)
+        return updated
+
     def create_context_snapshot(self, turn_id: UUID, context: ResolvedResearchContext) -> dict[str, Any]:
         with _keyed_lock(_turn_locks, str(turn_id)):
             with self.repository_factory.unit_of_work() as unit:
@@ -513,6 +567,11 @@ class ResearchTurnService:
         turn_id: UUID,
         context: ResolvedResearchContext,
         context_fingerprint: str,
+        serialized_input: dict[str, Any] | None = None,
+        input_state: str = "PROSPECTIVE",
+        invocation_role: str | None = None,
+        prompt_template_version: str | None = None,
+        serialized_input_version: str | None = None,
     ) -> ContextManifest:
         """Create a bounded immutable manifest for the resolved turn context."""
 
@@ -551,6 +610,10 @@ class ResearchTurnService:
                     selection_mode=selection_mode,
                     authorization_checked=True,
                     content_fingerprint=hashlib.sha256(encoded.encode("utf-8")).hexdigest(),
+                    representation_type="BOUNDED_JSON",
+                    representation_version="1.0",
+                    serialized_representation=content,
+                    lineage_refs=[source_identity],
                     estimated_tokens=max(1, len(encoded.encode("utf-8")) // 4),
                     source_class=source_class,
                     freshness=freshness,
@@ -675,6 +738,25 @@ class ResearchTurnService:
             else:
                 excluded.append(item.item_id)
         over_budget = bool(excluded)
+        serialized_input_fingerprint = None
+        serialized_input_tokens = None
+        if serialized_input is not None:
+            serialized = json.dumps(
+                serialized_input,
+                sort_keys=True,
+                separators=(",", ":"),
+                default=str,
+            )
+            serialized_input_fingerprint = hashlib.sha256(
+                serialized.encode("utf-8")
+            ).hexdigest()
+            serialized_input_tokens = max(
+                1, len(serialized.encode("utf-8")) // 4
+            )
+            if serialized_input_tokens > budget:
+                raise ValueError(
+                    "actual ORCHESTRATOR serialized input exceeds the operation budget"
+                )
         return ContextManifest(
             context_manifest_id=uuid4(),
             operation="ORCHESTRATOR",
@@ -682,9 +764,30 @@ class ResearchTurnService:
             research_session_id=context.research_session_id,
             research_turn_id=turn_id,
             policy_version="agent2.context-policy/2.0",
+            input_state=input_state,
+            invocation_role=invocation_role,
+            prompt_template_version=prompt_template_version,
+            serialized_input_version=serialized_input_version,
+            serialized_input=serialized_input,
+            serialized_input_fingerprint=serialized_input_fingerprint,
             included_items=included,
             excluded_items=excluded,
-            estimated_input_tokens=estimated,
+            excluded_item_details=[
+                {
+                    "item_id": item_id,
+                    "reason": "BUDGET",
+                    "detail": (
+                        "The bounded operation budget could not include this "
+                        "non-critical item."
+                    ),
+                }
+                for item_id in excluded
+            ],
+            estimated_input_tokens=(
+                serialized_input_tokens
+                if serialized_input_tokens is not None
+                else estimated
+            ),
             input_budget=budget_policy.effective_input_budget,
             reserved_output_tokens=budget_policy.reserved_output_tokens,
             repair_margin=budget_policy.repair_margin,

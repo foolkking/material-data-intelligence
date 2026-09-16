@@ -1063,6 +1063,30 @@ type AnalysisStep = {
   reason: string;
   inputRefs: InputRef[];
   params: Record<string, unknown>;
+  parameterProvenance?: Array<{
+    parameter: string;
+    resolvedValue: unknown;
+    unit?: string | null;
+    origin:
+      | "SOURCE_FACT"
+      | "DETERMINISTIC_DERIVATION"
+      | "TOOL_DEFAULT"
+      | "USER_SPECIFIED"
+      | "SCIENTIFIC_PRESET"
+      | "SYSTEM_POLICY";
+    authority:
+      | "SOURCE_LOCKED"
+      | "AUTO_DERIVED"
+      | "USER_EDITABLE"
+      | "ADVANCED_EDITABLE"
+      | "SYSTEM_ONLY";
+    changeEffect:
+      | "PRESENTATION_ONLY"
+      | "REINTERPRETATION_OR_REPORT"
+      | "RECOMPUTE"
+      | "SOURCE_VERSION";
+    sourceIdentity: string;
+  }>;
   output: {
     artifactTypes: ArtifactType[];
     displayTarget: DisplayTarget;
@@ -2791,6 +2815,25 @@ implementation evidence.
 
 ### Bounded scientific autonomy 1.0
 
+### Context role and support-eligibility projection 1.0
+
+`ContextManifestItem` carries two deterministic, read-only projections:
+
+```text
+context_role =
+  EVIDENCE | CONTINUITY | SUBJECT | CONSTRAINT | PREFERENCE
+
+support_eligible =
+  true only for an authorized ScientificResult or validated
+  Scientific/LiteratureEvidence item
+```
+
+The projection does not create scientific authority. `Interpretation`,
+`Report`, `Memory`, `Hypothesis`, assistant prose, user constraints and
+object-selection context remain non-supporting context even when they mention
+scientific values. Historical snapshots remain readable because the fields are
+additive and are derived fail-closed when absent.
+
 `CreateResearchTurnRequest` adds an optional `autonomy_mode`:
 
 ```text
@@ -2888,3 +2931,110 @@ references and never become ScientificResult facts.
 and a compact strategy summary/fingerprint. Existing ResearchTurn events and
 lifecycle projections expose only observable question/gap/hypothesis and
 evidence metadata; prompts and hidden reasoning are forbidden.
+
+### Scientific knowledge authority 1.0
+
+Workstream H adds a scholarly source class without modifying ScientificResult
+or Capability qualification:
+
+```text
+LiteratureWork
+→ immutable LiteratureSnapshot
+→ Project/ResearchTurn-scoped LiteratureEvidence
+```
+
+`LiteratureWork` uses normalized DOI identity when available, otherwise exact
+arXiv identity/version or a provider record identity. Exact provider records
+with one DOI reconcile to one Work while retaining separate snapshots; fuzzy
+title matches remain possible duplicates only. Publication/preprint,
+correction and retraction relations are explicit.
+
+`LiteratureSnapshot` retains provider roles, bibliographic fields, publication
+and access status, retrieval/provider update timestamps, provider field
+lineage, metadata hash, optional exact uploaded-content hash and bounded exact
+retrieved passages. Evidence scopes are `METADATA_ONLY`, `ABSTRACT_ONLY`,
+`OPEN_FULL_TEXT`, `USER_PROVIDED_FULL_TEXT`,
+`STRUCTURED_REPOSITORY_FULL_TEXT` and `REFERENCE_ONLY`.
+
+`LiteratureQuery 1.0` is the only external scholarly-search projection. It
+requires explicit opt-in, a typed purpose, bounded scientific terms, at most
+20 candidates and at most two allowlisted providers. Deterministic validation
+rejects private/runtime identities and arbitrary URLs.
+
+`LiteratureEvidence` records the exact Work/Snapshot, scope, passage/anchor,
+support type, numeric claims, claim refs, content hash, Project/Turn and
+selection identity. Context manifests classify it as reported
+`SCIENTIFIC_EVIDENCE`, never a `SCIENTIFIC_RESULT`.
+
+`ScientificReportOutput 2.0` additively supports bounded
+`ReportLiteratureSource` entries with exact evidence/work/snapshot identity,
+deterministic citation, scope, support/publication status and claim refs.
+Historical Report reopen uses the persisted snapshot rather than refreshing
+or asking the LLM to regenerate bibliographic metadata.
+
+### Expert scientific reasoning 1.0
+
+Workstream I adds a derived, read-only scientific reasoning projection. It does
+not create ScientificResult, LiteratureEvidence, Interpretation, Hypothesis or
+Capability-qualification authority:
+
+```text
+ReasoningEvidence + ProposedScientificClaim
+→ ClaimSupportAssessment
+→ accepted Interpretation / Report finding
+```
+
+`ClaimSupportAssessment` has contract `scientific-reasoning/1.0` and policy
+`scientific-reasoning-policy/1.0`. It retains claim type and support status,
+opaque supporting/contradicting refs, asserted scope, method context, typed
+comparison status, required qualifiers, limitations, reason codes, bounded
+defect/severity classification, common-lineage independence count and a stable
+fingerprint. It never stores prompts, chain-of-thought or private identifiers.
+
+Claim types cover direct observation, synthesis/comparison/trend/association,
+mechanistic and causal interpretation, generalization, method interpretation,
+limitation and recommendation. Support statuses are direct, scoped,
+consistent/suggestive, conflicted, insufficient or unsupported. Method
+comparison is explicitly `DIRECTLY_COMPARABLE`,
+`COMPARABLE_WITH_QUALIFIERS`, `COMPLEMENTARY`,
+`METHOD_DEPENDENT_DIFFERENCE`, `NOT_COMPARABLE` or
+`INSUFFICIENT_METHOD_METADATA`; no global method-quality score exists.
+
+Interpretation `1.1` may carry an accepted server-generated assessment with a
+finding. Report `2.0` may propagate that assessment in `ReportFinding`; report
+grounding rejects an unaccepted assessment. Causal, unsupported universal,
+abstract-overreach, retracted-source, evidence-double-count, unauthorized
+numeric derivation and literature-to-qualification claims fail closed. Any
+future derived number must come from an explicit deterministic projection with
+input evidence, operation/formula/version, unit and rounding provenance; it
+does not mutate its upstream ScientificResult.
+
+### Independent scientist evaluation 1.0
+
+Workstream J adds evaluation-only schemas. They are not Research, Result,
+Interpretation, LiteratureEvidence, Report or Capability-qualification
+authority:
+
+```text
+scientist-evaluation-baseline/1.0
+scientist-evaluation-case/1.0
+scientist-evaluation-formal-responses/1.0
+scientist-review-assignments/1.0
+scientist-review-record/1.0
+scientist-review-ledger/1.0
+scientist-disagreement-ledger/1.0
+```
+
+The baseline records the candidate HEAD, expected dirty H/I fingerprint,
+schema head, registry/qualification fingerprints, contract and prompt
+versions, provider identity/configuration without secrets, and bounded policy.
+Formal responses retain response and evidence hashes and are immutable once
+reviewer reveal begins.
+
+Reviewer packets split scientist-facing Pass 1 from evidence-audit Pass 2. A
+locked human record must match one assignment, baseline, response hash and
+evidence-packet hash; Pass 2 is rejected until that reviewer's Pass 1 is
+locked. Corrections are versioned records, not silent mutation. An empty
+`review_records` array is a valid preparation state and means no human
+validation has occurred. Model output, calibration guidance, expected
+semantics and hidden reasoning may not populate the human ledger.

@@ -150,6 +150,7 @@ export function Agent2ScientificPresentation({
     const sources = (item.scientific_object_refs || []).map((source) => ({
       objectId: source.object_id,
       versionId: source.version_id,
+      versionNo: source.version_no,
       objectType: source.object_type,
       displayName: source.display_name,
     }));

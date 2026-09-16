@@ -81,6 +81,17 @@ vi.mock("../lib/product-api", () => ({
 }));
 
 vi.mock("../lib/planner-api", () => ({
+  PlannerApiError: class PlannerApiError extends Error {
+    readonly status: number;
+    readonly details: unknown;
+
+    constructor(message: string, status: number, details: unknown) {
+      super(message);
+      this.name = "PlannerApiError";
+      this.status = status;
+      this.details = details;
+    }
+  },
   createPlannerJob: mocks.createPlannerJob,
   createPlannerJobInterpretation: mocks.createPlannerJobInterpretation,
   getDataset: mocks.getDataset,
@@ -151,6 +162,7 @@ import {
   agent2ProgressNeedsRefresh,
   agent2RetryInput,
   contextOperationSequenceLabel,
+  defaultResearchConversationWidth,
   contextManifestVisibleItems,
   dedupeResearchTimelineMessages,
   displayResearchMessage,
@@ -164,6 +176,7 @@ import {
   researchBranchNavigation,
   researchMessageVisibleInTimeline,
   researchMessageWindow,
+  researchWorkbenchContentAvailable,
   researchStateForAgent2Progress,
   researchStarterPrompts,
   researchTechnicalSummary,
@@ -171,9 +184,12 @@ import {
   requestWasAborted,
   resolveAgent2TurnForRecovery,
   runProcessStepState,
+  scientistDatasetLabel,
+  scientistFacingResearchRequestError,
   shouldSuppressAgent2DispatchError,
   userFacingPlanStep,
 } from "./ResearchPages";
+import { PlannerApiError } from "../lib/planner-api";
 
 it("recognizes only typed abort failures as canceled requests", () => {
   const abort = new Error("aborted");
@@ -243,6 +259,21 @@ it("keeps context disclosures bounded by default but lets researchers inspect ev
   expect(contextManifestVisibleItems(manifest, false)).toHaveLength(8);
   expect(contextManifestVisibleItems(manifest, true)).toHaveLength(9);
   expect(contextManifestVisibleItems(null, true)).toEqual([]);
+});
+
+it("gives the research question more space until scientific workbench content exists", () => {
+  expect(defaultResearchConversationWidth(false)).toBe(720);
+  expect(defaultResearchConversationWidth(true)).toBe(420);
+  expect(
+    researchWorkbenchContentAvailable({
+      job: { ok: true, job_id: "job-only", plan: null },
+      artifacts: [],
+      interpretation: null,
+      evidence: null,
+      events: [],
+      agent2Progress: null,
+    }),
+  ).toBe(false);
 });
 
 it("keeps huge context disclosures bounded while preserving ordered provenance", () => {
@@ -1019,7 +1050,7 @@ beforeEach(() => {
   mocks.createPlannerJobInterpretation.mockResolvedValue({ ok: true });
   mocks.getAgent2ExecutionProgress.mockResolvedValue(null);
   mocks.cancelAgent2Execution.mockResolvedValue({ turn_id: "turn-1", status: "CANCELED" });
-  mocks.getAgent2ContextManifest.mockResolvedValue(null);
+  mocks.getAgent2ContextManifest.mockReset().mockResolvedValue(null);
   mocks.listAgent2ResearchTurns.mockResolvedValue([]);
   mocks.dispatchAgent2ResearchTurn.mockResolvedValue({ turn_id: "turn-1" });
   mocks.createAgent2ResearchTurn.mockResolvedValue({ turn_id: "turn-new" });
@@ -1106,7 +1137,7 @@ it("creates Retry as a new ResearchTurn lineage and carries the preserved failed
   );
 
   await user.click(
-    await screen.findByRole("button", { name: "重新研究（新运行）" }),
+    await screen.findByRole("button", { name: "重新运行分析" }),
   );
 
   await waitFor(() =>
@@ -1432,6 +1463,8 @@ it("presents used context as researcher-facing provenance with technical identit
           item_id: "selection-1",
           kind: "SCIENTIFIC_SELECTION",
           authority_class: "SCIENTIFIC_DATA",
+          context_role: "SUBJECT",
+          support_eligible: false,
           freshness: "CURRENT",
           server_side_source_identity: "object-1:version-1",
           provider_opaque_ref: "source-1",
@@ -1451,6 +1484,8 @@ it("presents used context as researcher-facing provenance with technical identit
           item_id: `result-${index + 2}`,
           kind: "SCIENTIFIC_RESULT",
           authority_class: "SCIENTIFIC_RESULT",
+          context_role: "EVIDENCE",
+          support_eligible: true,
           freshness: "HISTORICAL_VALID",
           server_side_source_identity: `result-extra-${index + 2}`,
           provider_opaque_ref: `result_${index + 2}`,
@@ -1578,9 +1613,13 @@ it("presents used context as researcher-facing provenance with technical identit
   expect(screen.getByText("当前科学范围")).toBeInTheDocument();
   expect(screen.queryByText("active scientific scope")).not.toBeInTheDocument();
   expect(
-    screen.getByText("从界面选择 · 科学数据权威 · 当前"),
+    screen.getByText(
+      "从界面选择 · 研究对象 · 不作为独立科学依据 · 科学数据权威 · 当前",
+    ),
   ).toBeInTheDocument();
-  expect(screen.getByText("精确版本")).toHaveTextContent("version-1");
+  const exactSource = screen.getByText("来源版本已锁定").closest("details");
+  expect(exactSource).not.toHaveAttribute("open");
+  expect(exactSource).toHaveTextContent("version-1");
   expect(screen.queryByText("result-extra-9")).not.toBeInTheDocument();
   const expandContext = screen.getByRole("button", {
     name: "查看全部上下文（9 项）",
@@ -1591,7 +1630,10 @@ it("presents used context as researcher-facing provenance with technical identit
     screen.getByRole("button", { name: "收起上下文列表" }),
   ).toHaveAttribute("aria-expanded", "true");
   expect(screen.getByText("result-extra-9")).toBeInTheDocument();
-  expect(screen.getAllByText(/科学结果权威 · 历史有效/).length).toBeGreaterThan(0);
+  expect(
+    screen.getAllByText(/科学依据 · 可支持科学主张 · 科学结果权威 · 历史有效/)
+      .length,
+  ).toBeGreaterThan(0);
   expect(screen.getByText(/有 1 项较低优先级内容未纳入/)).toBeInTheDocument();
   const operations = screen.getByRole("group", { name: "已记录的操作上下文" });
   expect(operations).toHaveTextContent("理解问题");
@@ -1624,6 +1666,7 @@ it("offers an in-place retry when the persisted context manifest is temporarily 
   } as Agent2ContextManifest;
   mocks.getAgent2ContextManifest
     .mockRejectedValueOnce(new Error("temporarily unavailable"))
+    .mockRejectedValueOnce(new Error("still temporarily unavailable"))
     .mockResolvedValueOnce({ manifest });
   mocks.getAgent2ExecutionProgress.mockResolvedValue({
     turn_id: "turn-context-retry",
@@ -1650,7 +1693,7 @@ it("offers an in-place retry when the persisted context manifest is temporarily 
   expect(
     await screen.findByText("本次研究使用的上下文"),
   ).toBeInTheDocument();
-  expect(mocks.getAgent2ContextManifest).toHaveBeenCalledTimes(2);
+  expect(mocks.getAgent2ContextManifest).toHaveBeenCalledTimes(3);
 });
 
 it("reconciles a Stop race when the scientific run finishes before cancellation", async () => {
@@ -1701,10 +1744,10 @@ it("reconciles a Stop race when the scientific run finishes before cancellation"
     />,
   );
 
-  fireEvent.click(await screen.findByRole("button", { name: "停止研究" }));
+  fireEvent.click(await screen.findByRole("button", { name: "取消当前分析" }));
 
   expect(
-    await screen.findByText("研究在停止请求生效前已进入终态；现有科学结果未被覆盖。"),
+    await screen.findByText("分析在取消请求生效前已进入终态；现有科学结果未被覆盖。"),
   ).toBeInTheDocument();
   expect(screen.getByText("科学解释已准备")).toBeInTheDocument();
   expect(screen.queryByText("取消请求未能提交 (409)")).toBeNull();
@@ -1749,7 +1792,7 @@ it("turns the primary composer action into Stop while scientific work is active"
   );
 
   const primaryStop = await screen.findByRole("button", {
-    name: "从输入区停止研究",
+    name: "从输入区取消当前分析",
   });
   expect(screen.queryByRole("button", { name: "开始分析" })).toBeNull();
   fireEvent.click(primaryStop);
@@ -1760,7 +1803,7 @@ it("turns the primary composer action into Stop while scientific work is active"
     ),
   );
   expect(
-    await screen.findByText("研究已停止。已经提交的有效输出仍会保留；继续研究不会自动重算。"),
+    await screen.findByText("当前分析已取消。已经提交的有效输出仍会保留；继续当前研究不会自动重算。"),
   ).toBeInTheDocument();
 });
 
@@ -1814,15 +1857,15 @@ it("reconciles a queued Stop notice when durable progress reaches CANCELED", asy
     />,
   );
 
-  fireEvent.click(await screen.findByRole("button", { name: "停止研究" }));
+  fireEvent.click(await screen.findByRole("button", { name: "取消当前分析" }));
   expect(
-    await screen.findByText("停止请求已记录，正在等待运行中的科学步骤安全结束。"),
+    await screen.findByText("取消请求已记录，正在等待运行中的科学步骤安全结束。"),
   ).toBeInTheDocument();
   expect(
-    await screen.findByText("研究已停止。已经提交的有效输出仍会保留；继续研究不会自动重算。", {}, { timeout: 3000 }),
+    await screen.findByText("当前分析已取消。已经提交的有效输出仍会保留；继续当前研究不会自动重算。", {}, { timeout: 3000 }),
   ).toBeInTheDocument();
-  expect(screen.queryByText("停止请求已记录，正在等待运行中的科学步骤安全结束。")).toBeNull();
-  fireEvent.click(screen.getByRole("button", { name: "继续研究" }));
+  expect(screen.queryByText("取消请求已记录，正在等待运行中的科学步骤安全结束。")).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "继续当前研究" }));
   await waitFor(() => {
     expect(screen.getByLabelText("询问此项目中的数据")).toHaveFocus();
   });
@@ -1977,7 +2020,7 @@ it("carries an exact persisted Result as an explicit Continue reuse candidate", 
     />,
   );
 
-  fireEvent.click(await screen.findByRole("button", { name: "继续研究" }));
+  fireEvent.click(await screen.findByRole("button", { name: "继续当前研究" }));
   fireEvent.change(screen.getByLabelText("询问此项目中的数据"), {
     target: { value: "基于现有结果说明局限性" },
   });
@@ -2043,7 +2086,7 @@ it("fails closed when Continue cannot determine whether an exact Result exists",
     />,
   );
 
-  fireEvent.click(await screen.findByRole("button", { name: "继续研究" }));
+  fireEvent.click(await screen.findByRole("button", { name: "继续当前研究" }));
   fireEvent.change(screen.getByLabelText("询问此项目中的数据"), {
     target: { value: "继续完成尚未执行的分析" },
   });
@@ -2555,6 +2598,9 @@ it("admits one exact trajectory resource and uses the modern ResearchTurn path",
     "在 1 ps 到 6 ps 的拟合窗口内计算 MSD 并评估扩散性质",
   );
   await user.click(screen.getByLabelText("有界多步研究"));
+  expect(screen.getByRole("note")).toHaveTextContent(
+    "问题得到回答、证据不足或达到研究上限时会停止",
+  );
   await user.click(screen.getByRole("button", { name: "开始分析" }));
 
   await waitFor(() =>
@@ -2682,14 +2728,14 @@ it("adjusts the conversation splitter with keyboard arrows", async () => {
   const splitter = await screen.findByRole("separator", {
     name: "调整研究对话宽度",
   });
-  expect(splitter).toHaveAttribute("aria-valuenow", "420");
+  expect(splitter).toHaveAttribute("aria-valuenow", "720");
   splitter.focus();
   await user.keyboard("{ArrowRight}");
-  expect(splitter).toHaveAttribute("aria-valuenow", "436");
+  expect(splitter).toHaveAttribute("aria-valuenow", "736");
   await user.keyboard("{ArrowLeft}");
-  expect(splitter).toHaveAttribute("aria-valuenow", "420");
+  expect(splitter).toHaveAttribute("aria-valuenow", "720");
   await user.keyboard("{End}");
-  expect(splitter).toHaveAttribute("aria-valuenow", "640");
+  expect(splitter).toHaveAttribute("aria-valuenow", "760");
   await user.keyboard("{Home}");
   expect(splitter).toHaveAttribute("aria-valuenow", "320");
 });
@@ -4095,6 +4141,91 @@ it("hides legacy machine-plan and interpretation leakage from the conversation t
   );
 });
 
+it("keeps a global-search object as a removable candidate until turn submission", async () => {
+  const user = userEvent.setup();
+  render(
+    <ResearchPage
+      projectId="project_1"
+      contextCandidateFromSearch
+      viewerContext={{
+        objectId: "object_search",
+        versionId: "version_search_v2",
+        objectType: "structure.crystal",
+        displayName: "检索到的 Si 结构",
+      }}
+    />,
+  );
+
+  expect(
+    await screen.findByRole("status", { name: "待加入本次研究的检索上下文" }),
+  ).toHaveTextContent("检索到的 Si 结构");
+  await user.click(screen.getByRole("button", { name: "移除" }));
+  expect(
+    screen.queryByRole("status", { name: "待加入本次研究的检索上下文" }),
+  ).not.toBeInTheDocument();
+
+  await user.type(
+    screen.getByLabelText("询问此项目中的数据"),
+    "仅使用当前项目中的可用数据",
+  );
+  await user.click(screen.getByRole("button", { name: "开始分析" }));
+  await waitFor(() =>
+    expect(mocks.createAgent2ResearchTurn).not.toHaveBeenCalled(),
+  );
+  expect(mocks.resolveResearchScope).toHaveBeenCalled();
+});
+
+it("submits a global-search object candidate only through explicit Context refs", async () => {
+  const user = userEvent.setup();
+  mocks.createAgent2ResearchTurn.mockResolvedValue({ turn_id: "turn-search" });
+  render(
+    <ResearchPage
+      projectId="project_1"
+      contextCandidateFromSearch
+      viewerContext={{
+        objectId: "object_search",
+        versionId: "version_search_v2",
+        objectType: "structure.crystal",
+        displayName: "检索到的 Si 结构",
+      }}
+    />,
+  );
+  const composer = await screen.findByLabelText("询问此项目中的数据");
+  await user.type(composer, "解释这个精确结构");
+  await user.click(screen.getByRole("button", { name: "开始分析" }));
+  await waitFor(() =>
+    expect(mocks.createAgent2ResearchTurn).toHaveBeenCalledWith(
+      "project_1",
+      "session_1",
+      expect.objectContaining({
+        ui_context: expect.objectContaining({
+          explicit_object_refs: [
+            expect.objectContaining({
+              object_id: "object_search",
+              version_id: "version_search_v2",
+            }),
+          ],
+        }),
+      }),
+    ),
+  );
+});
+
+it("normalizes a historical unsupported projection without duplicating the source prefix", () => {
+  expect(
+    displayResearchMessage({
+      id: "unsupported",
+      session_id: "session",
+      role: "assistant",
+      created_at: "2026-09-10T00:00:00Z",
+      content:
+        "当前 当前项目材料数据 缺少完成这项分析所需的科学属性，因此没有创建分析运行。",
+    }),
+  ).toBe(
+    "当前项目材料数据 缺少完成这项分析所需的科学属性，因此没有创建分析运行。",
+  );
+});
+
 it("keeps a persisted scientific final readable without rendering the raw machine contract", () => {
   const rendered = displayResearchMessage({
     id: "agent2-final",
@@ -4174,7 +4305,7 @@ it("does not expose machine plan language in the research timeline", () => {
     ),
   ).toEqual({
     purpose: "整理当前数据中的科学信息",
-    reason: "已根据当前数据和科学能力确定本次步骤。",
+    reason: "已根据当前研究问题、数据范围和可用科学方法确定这一步。",
   });
   expect(
     userFacingPlanStep(
@@ -4194,6 +4325,7 @@ it("does not expose machine plan language in the research timeline", () => {
     ),
   ).toEqual({
     purpose: "比较实验峰与理论峰的位置和强度",
+    reason: "用于比较实验与理论衍射证据，同时保留峰匹配和物相判断的限制。",
   });
   expect(userFacingPlanStep("", "", 0, "phonon.band_dos")).toEqual({
     purpose: "组合声子色散与态密度",
@@ -4201,6 +4333,46 @@ it("does not expose machine plan language in the research timeline", () => {
   expect(userFacingPlanStep("", "", 0, "future.scientific_tool")).toEqual({
     purpose: "科学分析步骤 1",
   });
+  expect(
+    userFacingPlanStep(
+      "Build deterministic Profile-bound PCA composition space.",
+      "The request explicitly asks for composition-space exploration on a Profile 2.0 formula-bearing table.",
+      0,
+      "dataset.composition_space",
+    ),
+  ).toEqual({
+    purpose: "分析材料组成空间",
+    reason: "用于观察材料组成分布，并判断是否存在值得继续研究的材料分组。",
+  });
+});
+
+it("keeps identity-shaped dataset names and validation internals out of scientist copy", () => {
+  expect(
+    scientistDatasetLabel({
+      status: "READY",
+      dataset_id: "dataset_phase10k4_fixture",
+      dataset_name: "dataset_phase10k4_fixture",
+    }),
+  ).toBe("当前项目材料数据");
+  expect(
+    scientistDatasetLabel({
+      status: "READY",
+      dataset_id: "dataset-1",
+      dataset_name: "锂扩散轨迹",
+    }),
+  ).toBe("锂扩散轨迹");
+
+  const validation = new PlannerApiError(
+    "Input should be a valid string",
+    422,
+    { detail: [{ msg: "Input should be a valid string" }] },
+  );
+  expect(scientistFacingResearchRequestError(validation)).toContain(
+    "缺少可验证的科学数据描述或参数",
+  );
+  expect(scientistFacingResearchRequestError(validation)).not.toContain(
+    "Input should",
+  );
 });
 
 it("projects user-facing findings only from persisted scientific evidence", () => {

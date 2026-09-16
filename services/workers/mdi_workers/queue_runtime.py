@@ -3,6 +3,10 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import os
+import socket
+import threading
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -10,6 +14,7 @@ from typing import Any, Callable, Mapping, Protocol
 
 from mdi_adapters import ToolExecutionContext, execute_tool_request
 from mdi_api.application.jobs import execute_queued_job
+from mdi_api.application.jobs.leases import ExecutionLease, ExecutionLeaseLost
 from mdi_api.application.research import synchronize_queued_execution_progress
 from mdi_api.artifact_storage import ArtifactStorage, ArtifactStorageMetadata, LocalFileArtifactStorage, create_artifact_storage_from_settings
 from mdi_api.config import load_settings
@@ -57,6 +62,10 @@ class DependencyBindingError(ValueError):
         self.code = code
 
 
+class ExecutionCancellationAcknowledged(RuntimeError):
+    """The current owner durably acknowledged cancellation before publish."""
+
+
 class QueueBackend(Protocol):
     def enqueue_job(self, job_id: str) -> "QueueSubmitResult":
         ...
@@ -98,6 +107,68 @@ class QueueWorkerResult:
     message: str
     plan_id: str | None = None
     plan_hash: str | None = None
+    authoritative: bool = True
+    execution_attempt: int | None = None
+
+
+class _LeaseRenewalGuard:
+    """Renew one durable Job lease; loss is sticky for the execution attempt."""
+
+    def __init__(
+        self,
+        jobs: Any,
+        *,
+        lease: ExecutionLease,
+        lease_seconds: int,
+        renewal_seconds: int,
+        enabled: bool,
+    ) -> None:
+        self.jobs = jobs
+        self.lease = lease
+        self.lease_seconds = lease_seconds
+        self.renewal_seconds = renewal_seconds
+        self.enabled = enabled
+        self._stop = threading.Event()
+        self._lost: BaseException | None = None
+        self._thread: threading.Thread | None = None
+
+    def start(self) -> None:
+        if not self.enabled:
+            return
+        self._thread = threading.Thread(
+            target=self._run,
+            name=f"mdi-lease-renew-{self.lease.job_id}-{self.lease.attempt}",
+            daemon=True,
+        )
+        self._thread.start()
+
+    def stop(self) -> None:
+        self._stop.set()
+        if self._thread is not None:
+            self._thread.join(timeout=max(1.0, self.renewal_seconds + 1.0))
+
+    def assert_current(self) -> None:
+        if self._lost is not None:
+            raise ExecutionLeaseLost(str(self._lost))
+        self.jobs.assert_current_execution(
+            self.lease.job_id,
+            owner=self.lease.owner,
+            attempt=self.lease.attempt,
+        )
+
+    def _run(self) -> None:
+        while not self._stop.wait(self.renewal_seconds):
+            try:
+                renewed = self.jobs.renew_execution(
+                    self.lease.job_id,
+                    owner=self.lease.owner,
+                    attempt=self.lease.attempt,
+                    lease_seconds=self.lease_seconds,
+                )
+                self.lease = renewed
+            except BaseException as exc:  # sticky loss; worker must fence publish
+                self._lost = exc
+                return
 
 
 class InMemoryQueueBackend:
@@ -169,6 +240,11 @@ class QueueWorkerRuntime:
         object_store_resolver: ObjectStoreResolver | None = None,
         registry: ToolRegistry | None = None,
         artifact_root: str | Path = ".artifacts/phase5",
+        worker_identity: str | None = None,
+        lease_seconds: int | None = None,
+        renewal_seconds: int | None = None,
+        renewal_enabled: bool = True,
+        before_authoritative_publish: Callable[[ExecutionLease], None] | None = None,
     ) -> None:
         if repositories is None and repository_factory is None:
             repositories = InMemoryRepositoryBundle.create()
@@ -180,6 +256,19 @@ class QueueWorkerRuntime:
         self.tool_executor = tool_executor
         self.object_store_resolver = object_store_resolver
         self.registry = registry or load_manifests()
+        settings = load_settings()
+        self.worker_identity = worker_identity or (
+            f"{socket.gethostname()}:{os.getpid()}:{uuid.uuid4().hex[:12]}"
+        )
+        self.lease_seconds = int(
+            lease_seconds or settings.job_execution_lease_seconds
+        )
+        self.renewal_seconds = int(
+            renewal_seconds or settings.job_execution_renewal_seconds
+        )
+        self.renewal_enabled = renewal_enabled
+        self.before_authoritative_publish = before_authoritative_publish
+        self._active_lease: ExecutionLease | None = None
 
     def submit_job(self, job_id: str) -> QueueSubmitResult:
         repos = self._repositories()
@@ -193,7 +282,7 @@ class QueueWorkerRuntime:
         job = repos.jobs.get(job_id)
         status = str(job.get("status") or JobStatus.created.value)
         if status == JobStatus.cancel_requested.value:
-            repos.jobs.set_status(job_id, JobStatus.cancelled)
+            repos.jobs.acknowledge_cancel(job_id)
             repos.job_events.append_event(job_id, event_type="job.cancelled", status="success", message="Job cancellation confirmed before execution.", progress=1.0)
             return self._result(repos, job_id, message="job canceled")
         if status in {JobStatus.completed.value, JobStatus.partial_success.value}:
@@ -209,14 +298,107 @@ class QueueWorkerRuntime:
                     message="dependency execution already finalized",
                     plan_record=repos.analysis_plans.get_plan_for_job(job_id),
                 )
+        lease = repos.jobs.claim_execution(
+            job_id,
+            owner=self.worker_identity,
+            lease_seconds=self.lease_seconds,
+        )
+        if lease is None:
+            return self._result(
+                repos,
+                job_id,
+                message="job not claimed; another durable owner is active",
+                authoritative=False,
+            )
+        self._active_lease = lease
+        repos.job_events.append_event(
+            job_id,
+            event_type="job.reclaimed" if lease.reclaimed else "job.claimed",
+            status="running",
+            message="Queue worker acquired durable Job ownership.",
+            payload={
+                "executionAttempt": lease.attempt,
+                "leaseExpiresAt": lease.expires_at,
+                "timeAuthority": "POSTGRESQL_SERVER_TIME",
+            },
+            progress=0.0,
+        )
+        guard = _LeaseRenewalGuard(
+            repos.jobs,
+            lease=lease,
+            lease_seconds=self.lease_seconds,
+            renewal_seconds=self.renewal_seconds,
+            enabled=self.renewal_enabled,
+        )
+        guard.start()
+        try:
+            return self._handle_claimed_job(
+                repos,
+                job_id,
+                plan=plan,
+                object_store=object_store,
+                guard=guard,
+            )
+        except ExecutionCancellationAcknowledged:
+            return self._result(
+                repos,
+                job_id,
+                message="job canceled; completed prior science preserved",
+                authoritative=True,
+            )
+        except ExecutionLeaseLost as exc:
+            # Cancellation has terminal precedence.  A worker may observe
+            # the lease predicate after the cancellation acknowledgement has
+            # already cleared ownership; that is not a stale completion and
+            # must not downgrade the authoritative cancellation outcome.
+            cancelled_job = repos.jobs.get(job_id)
+            if (
+                str(cancelled_job.get("status") or "") == JobStatus.cancelled.value
+                and cancelled_job.get("cancelAcknowledgedAt")
+            ):
+                return self._result(
+                    repos,
+                    job_id,
+                    message="job canceled; completed prior science preserved",
+                    authoritative=True,
+                )
+            repos.job_events.append_event(
+                job_id,
+                event_type="job.stale_attempt_rejected",
+                status="warning",
+                message="A stale execution attempt was fenced from authoritative publication.",
+                payload={
+                    "executionAttempt": lease.attempt,
+                    "error": redact_sensitive_text(str(exc)),
+                },
+                progress=1.0,
+            )
+            return self._result(
+                repos,
+                job_id,
+                message=f"stale attempt rejected: {exc}",
+                authoritative=False,
+            )
+        finally:
+            guard.stop()
+            self._active_lease = None
 
-        job = self._start_job(repos, job)
+    def _handle_claimed_job(
+        self,
+        repos: Any,
+        job_id: str,
+        *,
+        plan: Mapping[str, Any] | None,
+        object_store: Mapping[str, Any] | None,
+        guard: "_LeaseRenewalGuard",
+    ) -> QueueWorkerResult:
+        job = repos.jobs.get(job_id)
         self._notify_agent2_progress(job_id)
         plan_payload, plan_record = self._load_execution_plan(repos, job, explicit_plan=plan)
         steps = list((plan_payload or {}).get("steps") or [])
         if not steps:
             repos.job_events.append_event(job_id, event_type="job.completed", status="success", message="Job completed with no tool steps.", progress=1.0)
-            repos.jobs.set_status(job_id, JobStatus.completed)
+            self._set_job_status(repos, job_id, JobStatus.completed)
             return self._result(repos, job_id, message="job completed", plan_record=plan_record)
 
         try:
@@ -267,12 +449,19 @@ class QueueWorkerRuntime:
                 )
             for index, step in enumerate(steps, start=1):
                 if self._cancel_requested(repos, str(job.get("jobId") or job["id"])):
-                    repos.jobs.set_status(job_id, JobStatus.cancelled)
+                    self._acknowledge_cancel(repos, job_id)
                     repos.job_events.append_event(job_id, event_type="job.cancelled", status="success", message="Job cancellation confirmed.", progress=1.0)
                     self._notify_agent2_progress(job_id)
                     return self._result(repos, job_id, message="job canceled", plan_record=plan_record)
                 self._run_step(repos, job, step, index=index, object_store=effective_object_store, plan_record=plan_record)
                 self._notify_agent2_progress(str(job.get("jobId") or job["id"]))
+        except ExecutionCancellationAcknowledged:
+            # _run_step has already persisted the cancellation terminal state.
+            # Preserve that authoritative outcome instead of routing the
+            # control-flow sentinel through the generic job-failure handler.
+            raise
+        except ExecutionLeaseLost:
+            raise
         except Exception as exc:
             repos.job_events.append_event(
                 job_id,
@@ -282,11 +471,11 @@ class QueueWorkerRuntime:
                 payload={"errorType": type(exc).__name__},
                 progress=1.0,
             )
-            repos.jobs.set_status(job_id, JobStatus.failed)
+            self._set_job_status(repos, job_id, JobStatus.failed)
             return self._result(repos, job_id, message=f"job failed: {exc}", plan_record=plan_record)
 
         if self._cancel_requested(repos, job_id):
-            repos.jobs.set_status(job_id, JobStatus.cancelled)
+            self._acknowledge_cancel(repos, job_id)
             repos.job_events.append_event(job_id, event_type="job.cancelled", status="success", message="Job cancellation confirmed.", progress=1.0)
             self._notify_agent2_progress(job_id)
             return self._result(repos, job_id, message="job canceled", plan_record=plan_record)
@@ -298,7 +487,8 @@ class QueueWorkerRuntime:
             payload=_plan_provenance(plan_record),
             progress=1.0,
         )
-        repos.jobs.set_status(job_id, JobStatus.completed)
+        guard.assert_current()
+        self._set_job_status(repos, job_id, JobStatus.completed)
         return self._result(repos, job_id, message="job completed", plan_record=plan_record)
 
     def _handle_dependency_plan(
@@ -365,7 +555,7 @@ class QueueWorkerRuntime:
 
         for index, step_id in enumerate(dependency_validation.topological_order, start=1):
             if self._cancel_requested(repos, job_id):
-                repos.jobs.set_status(job_id, JobStatus.cancelled)
+                self._acknowledge_cancel(repos, job_id)
                 repos.job_events.append_event(job_id, event_type="job.cancelled", status="success", message="Job cancellation confirmed.", progress=1.0)
                 self._notify_agent2_progress(job_id)
                 return self._result(repos, job_id, message="job canceled", plan_record=plan_record)
@@ -436,6 +626,7 @@ class QueueWorkerRuntime:
                         artifactId=resolved.artifactId,
                         artifactChecksum=resolved.checksum,
                     )
+                    self._assert_current(repos)
                     repos.dependency_execution.save_binding_resolution(
                         {
                             "resolvedArtifactInputRef": resolved.model_dump(mode="json"),
@@ -449,6 +640,7 @@ class QueueWorkerRuntime:
                         state=state,
                         errorCode=code,
                     )
+                    self._assert_current(repos)
                     repos.dependency_execution.save_binding_resolution(
                         {
                             "planId": plan_id,
@@ -505,6 +697,7 @@ class QueueWorkerRuntime:
                     current = binding_states[binding.bindingId]
                     binding_states[binding.bindingId] = current.model_copy(update={"consumerToolCallId": tool_call_id})
                 for artifact in produced:
+                    self._assert_current(repos)
                     lineage = self._artifact_lineage(
                         repos,
                         job=job,
@@ -557,8 +750,9 @@ class QueueWorkerRuntime:
             artifacts=all_artifacts,
             outcome=outcome,
         )
+        self._assert_current(repos)
         repos.dependency_execution.save_execution(record.model_dump(mode="json"))
-        repos.jobs.set_status(job_id, job_status)
+        self._set_job_status(repos, job_id, job_status)
         repos.job_events.append_event(
             job_id,
             event_type="dependency.execution_completed",
@@ -599,8 +793,9 @@ class QueueWorkerRuntime:
             succeeded=0, failed=0, blocked=0, not_started=len(steps), artifacts=[],
             outcome=DependencyExecutionOutcome.validation_aborted,
         )
+        self._assert_current(repos)
         repos.dependency_execution.save_execution(record.model_dump(mode="json"))
-        repos.jobs.set_status(job_id, JobStatus.failed)
+        self._set_job_status(repos, job_id, JobStatus.failed)
         repos.job_events.append_event(
             job_id, event_type="dependency.validation_aborted", status="error", message=message,
             payload={"errorCode": code, "executionId": record.executionId}, progress=1.0,
@@ -913,6 +1108,47 @@ class QueueWorkerRuntime:
 
         self._notify_agent2_progress(job_id)
 
+    def _assert_current(self, repos: Any) -> dict[str, Any]:
+        lease = self._require_active_lease()
+        return repos.jobs.assert_current_execution(
+            lease.job_id, owner=lease.owner, attempt=lease.attempt
+        )
+
+    def _set_job_status(
+        self, repos: Any, job_id: str, status: JobStatus | str
+    ) -> dict[str, Any]:
+        lease = self._require_active_lease()
+        return repos.jobs.set_status_for_execution(
+            job_id, status, owner=lease.owner, attempt=lease.attempt
+        )
+
+    def _acknowledge_cancel(self, repos: Any, job_id: str) -> dict[str, Any]:
+        lease = self._require_active_lease()
+        return repos.jobs.acknowledge_cancel(
+            job_id, owner=lease.owner, attempt=lease.attempt
+        )
+
+    def _save_tool_call(
+        self, repos: Any, record: Mapping[str, Any]
+    ) -> dict[str, Any]:
+        lease = self._require_active_lease()
+        return repos.tool_calls.save_for_execution(
+            record, owner=lease.owner, attempt=lease.attempt
+        )
+
+    def _save_artifact(
+        self, repos: Any, record: Mapping[str, Any]
+    ) -> dict[str, Any]:
+        lease = self._require_active_lease()
+        return repos.artifacts.save_for_execution(
+            record, owner=lease.owner, attempt=lease.attempt
+        )
+
+    def _require_active_lease(self) -> ExecutionLease:
+        if self._active_lease is None:
+            raise ExecutionLeaseLost("worker has no active durable execution lease")
+        return self._active_lease
+
     def _start_job(self, repos: Any, job: Mapping[str, Any]) -> dict[str, Any]:
         job_id = str(job.get("jobId") or job["id"])
         status = str(job.get("status") or JobStatus.created.value)
@@ -1039,7 +1275,8 @@ class QueueWorkerRuntime:
             artifactTypes=list((step.get("output") or {}).get("artifactTypes") or step.get("artifactTypes") or []),
         )
         if existing is None:
-            repos.tool_calls.save(
+            self._save_tool_call(
+                repos,
                 {
                     "id": tool_call_id,
                     "jobId": job_id,
@@ -1048,9 +1285,10 @@ class QueueWorkerRuntime:
                     "status": "planned",
                     "idempotencyKey": f"{job_id}:{step_id}",
                     "params": request.params,
-                }
+                },
             )
-        repos.tool_calls.save(
+        self._save_tool_call(
+            repos,
             {
                 "id": tool_call_id,
                 "jobId": job_id,
@@ -1059,7 +1297,7 @@ class QueueWorkerRuntime:
                 "status": "running",
                 "idempotencyKey": f"{job_id}:{step_id}",
                 "params": request.params,
-            }
+            },
         )
         repos.job_events.append_event(
             job_id,
@@ -1085,8 +1323,46 @@ class QueueWorkerRuntime:
                 ),
                 object_store=object_store,
             )
+            if self.before_authoritative_publish is not None:
+                self.before_authoritative_publish(self._require_active_lease())
+            if self._cancel_requested(repos, job_id):
+                self._save_tool_call(
+                    repos,
+                    {
+                        "id": tool_call_id,
+                        "jobId": job_id,
+                        "stepId": step_id,
+                        "toolId": tool_id,
+                        "status": "skipped",
+                        "idempotencyKey": f"{job_id}:{step_id}",
+                        "params": request.params,
+                        "error": {
+                            "message": "Cancellation acknowledged before authoritative publication.",
+                            "type": "CancellationRequested",
+                        },
+                    },
+                )
+                self._acknowledge_cancel(repos, job_id)
+                repos.job_events.append_event(
+                    job_id,
+                    event_type="job.cancelled",
+                    status="success",
+                    message="Job cancellation acknowledged before Tool output publication.",
+                    payload={
+                        "executionAttempt": self._require_active_lease().attempt,
+                        "childProcess": "NOT_APPLICABLE",
+                    },
+                    progress=1.0,
+                )
+                raise ExecutionCancellationAcknowledged()
+            self._assert_current(repos)
         except Exception as exc:
-            repos.tool_calls.save(
+            if isinstance(exc, ExecutionCancellationAcknowledged):
+                raise
+            if isinstance(exc, ExecutionLeaseLost):
+                raise
+            self._save_tool_call(
+                repos,
                 {
                     "id": tool_call_id,
                     "jobId": job_id,
@@ -1096,7 +1372,7 @@ class QueueWorkerRuntime:
                     "idempotencyKey": f"{job_id}:{step_id}",
                     "params": request.params,
                     "error": {"message": redact_sensitive_text(str(exc)), "type": type(exc).__name__},
-                }
+                },
             )
             repos.job_events.append_event(
                 job_id,
@@ -1119,8 +1395,14 @@ class QueueWorkerRuntime:
                 tool_call_id=tool_call_id,
                 tool_id=tool_id,
                 plan_record=plan_record,
+                execution_attempt=self._require_active_lease().attempt,
             )
-            repos.artifacts.save(record)
+            lease = self._require_active_lease()
+            metadata = dict(record.get("metadata") or {})
+            metadata["executionAttempt"] = lease.attempt
+            record["metadata"] = metadata
+            self._assert_current(repos)
+            self._save_artifact(repos, record)
             artifact_ids.append(str(record["id"]))
             persisted_artifacts.append(record)
             repos.job_events.append_event(
@@ -1131,7 +1413,8 @@ class QueueWorkerRuntime:
                 payload={"toolCallId": tool_call_id, "artifactId": record["id"], "storageKey": record["storageKey"], **_plan_provenance(plan_record)},
             )
 
-        repos.tool_calls.save(
+        self._save_tool_call(
+            repos,
             {
                 "id": tool_call_id,
                 "jobId": job_id,
@@ -1141,7 +1424,7 @@ class QueueWorkerRuntime:
                 "idempotencyKey": f"{job_id}:{step_id}",
                 "params": request.params,
                 "artifactIds": artifact_ids,
-            }
+            },
         )
         repos.job_events.append_event(
             job_id,
@@ -1185,19 +1468,30 @@ class QueueWorkerRuntime:
         tool_call_id: str,
         tool_id: str,
         plan_record: Mapping[str, Any] | None,
+        execution_attempt: int,
     ) -> dict[str, Any]:
         record = _artifact_record(artifact)
         artifact_id = str(record.get("id") or record.get("artifactId") or _safe_id(f"artifact_{tool_call_id}_{record.get('name') or 'output'}"))
         content = record.get("content")
         content_type = str(record.get("contentType") or record.get("content_type") or "application/json")
-        storage_key = str(record.get("storageKey") or f"projects/{project_id}/jobs/{job_id}/tool_calls/{tool_call_id}/{artifact_id}.json")
+        raw_storage_key = str(
+            record.get("storageKey")
+            or f"projects/{project_id}/jobs/{job_id}/tool_calls/{tool_call_id}/{artifact_id}.json"
+        )
+        storage_key = (
+            f"attempts/{execution_attempt}/{raw_storage_key.lstrip('/')}"
+        )
         if content is not None:
             encoded = _encode_content(content)
             metadata = self.artifact_storage.put_bytes(storage_key, encoded, content_type=content_type, preview_key=record.get("previewKey"))
-        elif (self.artifact_root / storage_key).exists():
+        elif (self.artifact_root / raw_storage_key).exists():
+            # Adapters materialize their temporary output at the historical
+            # raw key.  Publication copies those bytes into the attempt-scoped
+            # key so an expired attempt can never collide with a reclaimed
+            # attempt's authoritative Artifact.
             metadata = self.artifact_storage.put_bytes(
                 storage_key,
-                (self.artifact_root / storage_key).read_bytes(),
+                (self.artifact_root / raw_storage_key).read_bytes(),
                 content_type=content_type,
                 preview_key=record.get("previewKey"),
             )
@@ -1238,8 +1532,21 @@ class QueueWorkerRuntime:
             },
         }
 
-    def _result(self, repos: Any, job_id: str, *, message: str, plan_record: Mapping[str, Any] | None = None) -> QueueWorkerResult:
+    def _result(
+        self,
+        repos: Any,
+        job_id: str,
+        *,
+        message: str,
+        plan_record: Mapping[str, Any] | None = None,
+        authoritative: bool = True,
+    ) -> QueueWorkerResult:
         job = repos.jobs.get(job_id)
+        attempt = (
+            self._active_lease.attempt
+            if self._active_lease is not None
+            else int(job.get("executionAttempt") or 0) or None
+        )
         return QueueWorkerResult(
             job_id=job_id,
             status=str(job.get("status")),
@@ -1249,6 +1556,8 @@ class QueueWorkerRuntime:
             message=message,
             plan_id=str(plan_record.get("id") or plan_record.get("planId")) if plan_record else None,
             plan_hash=str(plan_record.get("planHash") or plan_record.get("plan_hash")) if plan_record else None,
+            authoritative=authoritative,
+            execution_attempt=attempt,
         )
 
 

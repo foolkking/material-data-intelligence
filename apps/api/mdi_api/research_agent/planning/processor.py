@@ -21,7 +21,10 @@ from mdi_api.research_agent.capabilities.schemas import (
 )
 from mdi_api.research_agent.orchestration.schemas import ResearchTurnDecision
 from mdi_api.research_agent.planning.binder import CapabilityBinder
-from mdi_api.research_agent.planning.planner import ScientificCapabilityPlanner
+from mdi_api.research_agent.planning.planner import (
+    PROMPT_VERSION as PLANNER_PROMPT_VERSION,
+    ScientificCapabilityPlanner,
+)
 from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus
 from mdi_api.research_agent.context.manifest import build_operation_manifest
 from mdi_api.research_agent.context.policy import ContextOperation
@@ -69,6 +72,11 @@ class CapabilityPlanningProcessor:
                 research_turn_id=turn_id,
                 context_fingerprint=str(prepared["snapshot"].get("context_fingerprint") or ""),
                 items=self._planner_manifest_items(planner_input, prepared["snapshot"]),
+                serialized_input=planner_input.model_dump(mode="json"),
+                serialized_input_version=planner_input.contract_version,
+                invocation_role="scientific_capability_planner",
+                prompt_template_version=PLANNER_PROMPT_VERSION,
+                input_state="ACTUAL",
             )
             with self.repository_factory.unit_of_work() as unit:
                 self._event(unit, turn_id, ResearchTurnEventType.CONTEXT_MANIFEST_RECORDED, {
@@ -100,11 +108,23 @@ class CapabilityPlanningProcessor:
                     for key, value in reusable_results.items()
                     if value.get("usable") and value.get("artifact_ids_by_result_type")
                 }
+                result_artifact_metadata_refs = {
+                    key: value.get("artifact_metadata_by_id") or {}
+                    for key, value in reusable_results.items()
+                    if value.get("usable") and value.get("artifact_metadata_by_id")
+                }
                 context = self._plan_context(unit, str(turn["project_id"]), [*object_refs.values(), *result_object_refs.values()])
                 context["object_refs"] = object_refs
                 context["result_object_refs"] = result_object_refs
                 context["result_artifact_refs"] = result_artifact_refs
-                analysis_plan, plan_hash = CapabilityBinder(self.tool_registry).bind(capability_plan=plan, resolution=prepared["resolution"], context=context, registry=registries.capabilities)
+                context["result_artifact_metadata_refs"] = result_artifact_metadata_refs
+                analysis_plan, plan_hash = CapabilityBinder(self.tool_registry).bind(
+                    capability_plan=plan,
+                    resolution=prepared["resolution"],
+                    context=context,
+                    registry=registries.capabilities,
+                    decision=prepared["decision"],
+                )
                 plan_fp = capability_plan_fingerprint(plan, registry_fingerprint=prepared["resolution"].registry_fingerprint)
                 capability_plan_id = uuid4()
                 unit.agent2.research_capability_plans.add({"id": capability_plan_id, "research_turn_id": turn_id, "capability_resolution_id": prepared["resolution_id"], "contract_version": plan.contract_version, "plan_json": plan.model_dump(mode="json"), "input_fingerprint": plan_fp, "planner_mode": planner_mode, "prompt_version": None if provider_result is None else provider_result.prompt_version, "provider": None if provider_result is None else provider_result.provider, "model": None if provider_result is None else provider_result.model, "provider_request_id": None if provider_result is None else provider_result.provider_request_id, "repair_attempted": False if provider_result is None else provider_result.repair_attempted, "validation_status": "VALIDATED"})
@@ -413,6 +433,7 @@ class CapabilityPlanningProcessor:
             bundle = ScientificResultBundle.model_validate(row["bundle_json"])
             output_refs = list(bundle.output_object_refs)
             artifact_ids_by_result_type: dict[str, list[str]] = {}
+            artifact_metadata_by_id: dict[str, dict[str, Any]] = {}
             for result_item in bundle.result_items:
                 if result_item.artifact_ids:
                     artifact_ids_by_result_type.setdefault(
@@ -422,6 +443,14 @@ class CapabilityPlanningProcessor:
                 artifact_ids_by_result_type[result_type] = sorted(set(artifact_ids))
                 for artifact_id in artifact_ids_by_result_type[result_type]:
                     artifact = unit.repositories.artifacts.get(artifact_id)
+                    artifact_metadata_by_id[str(artifact_id)] = {
+                        "type": artifact.get("type"),
+                        "content_type": artifact.get("contentType")
+                        or artifact.get("content_type"),
+                        "metadata": artifact.get("metadata_json")
+                        or artifact.get("metadataJson")
+                        or {},
+                    }
                     if (
                         str(artifact.get("projectId") or "") != project_id
                         or (
@@ -451,6 +480,7 @@ class CapabilityPlanningProcessor:
                 "output_object_refs": output_refs,
                 "result_types": sorted(artifact_ids_by_result_type),
                 "artifact_ids_by_result_type": artifact_ids_by_result_type,
+                "artifact_metadata_by_id": artifact_metadata_by_id,
                 "usable": (
                     relevance == "CURRENT"
                     and bool(output_refs or artifact_ids_by_result_type)

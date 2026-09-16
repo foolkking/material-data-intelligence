@@ -17,7 +17,12 @@ from mdi_api.research_agent.strategy.schemas import (
     EvidenceLineage,
     EvidenceObservation,
     EvidenceStrength,
+    LiteratureEvidenceReference,
     ResearchEvidenceState,
+)
+from mdi_api.domain.scientific_knowledge.contracts import (
+    LiteratureEvidence,
+    LiteratureSnapshot,
 )
 
 
@@ -155,11 +160,18 @@ class ResearchEvidenceStateProjector:
         *,
         objective: str,
         results: Iterable[ResultEvidenceInput],
+        literature_evidence: Iterable[LiteratureEvidenceReference] = (),
+        project_id: str | None = None,
     ) -> ResearchEvidenceState:
         rows = list(results)
-        if not rows:
-            raise ValueError("strategy evidence projection requires at least one Result")
-        projects = {item.bundle.project_id for item in rows}
+        literature_rows = list(literature_evidence)
+        if not rows and not literature_rows:
+            raise ValueError("strategy evidence projection requires authoritative evidence")
+        projects = {item.bundle.project_id for item in rows} | {
+            item.project_id for item in literature_rows
+        }
+        if project_id is not None:
+            projects.add(project_id)
         if len(projects) != 1:
             raise ValueError("strategy evidence may not cross project boundaries")
         lineages: list[EvidenceLineage] = []
@@ -274,6 +286,8 @@ class ResearchEvidenceStateProjector:
             strength = EvidenceStrength.LIMITED
         elif observations:
             strength = EvidenceStrength.WELL_SUPPORTED
+        elif literature_rows:
+            strength = EvidenceStrength.QUALIFIED_METHOD_DEPENDENT
         else:
             strength = EvidenceStrength.QUALIFIED_METHOD_DEPENDENT
         return ResearchEvidenceState(
@@ -283,6 +297,10 @@ class ResearchEvidenceStateProjector:
             exact_source_version_ids=sorted(source_version_ids, key=str),
             result_types=sorted(result_types),
             capability_ids=sorted(capability_ids),
+            literature_evidence_ids=[
+                item.evidence_id for item in literature_rows
+            ][:24],
+            literature_evidence=literature_rows[:24],
             observations=observations[:256],
             lineages=lineages[-32:],
             contradictions=contradictions[:16],
@@ -292,8 +310,37 @@ class ResearchEvidenceStateProjector:
         )
 
 
+def literature_reference(
+    evidence: LiteratureEvidence,
+    snapshot: LiteratureSnapshot,
+) -> LiteratureEvidenceReference:
+    if evidence.snapshot_id != snapshot.snapshot_id:
+        raise ValueError("literature evidence must reference the exact snapshot")
+    payload = {
+        "evidence_id": str(evidence.evidence_id),
+        "work_id": str(evidence.work_id),
+        "snapshot_id": str(evidence.snapshot_id),
+        "claim_refs": sorted(evidence.claim_refs),
+        "source_content_hash": evidence.source_content_hash,
+    }
+    return LiteratureEvidenceReference(
+        evidence_id=evidence.evidence_id,
+        project_id=evidence.project_id,
+        work_id=evidence.work_id,
+        snapshot_id=evidence.snapshot_id,
+        evidence_scope=evidence.scope.value,
+        support_type=evidence.support_type.value,
+        publication_status=snapshot.publication_status.value,
+        claim_refs=evidence.claim_refs,
+        lineage_signature=hashlib.sha256(
+            json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest(),
+    )
+
+
 __all__ = [
     "ResearchEvidenceStateProjector",
     "ResultEvidenceInput",
     "compare_observations",
+    "literature_reference",
 ]

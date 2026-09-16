@@ -108,7 +108,7 @@ from mdi_api.transport.routers.secured_planner import (
     planner_preview_secured,
     planner_validate_secured,
 )
-from mdi_api.transport.routers.health import health, runtime_health
+from mdi_api.transport.routers.health import health, runtime_health, task_health_projection
 from mdi_api.transport.routers.observability import capture_client_exception
 from mdi_api.transport.routers.planner_providers import (
     configure_planner_provider,
@@ -185,6 +185,12 @@ from mdi_api.transport.routers.scientific_reports import (
     update_scientific_report_lifecycle,
     update_scientific_report_organization,
 )
+from mdi_api.transport.routers.scientific_knowledge import (
+    get_scientific_literature_evidence,
+    list_turn_scientific_literature,
+    search_scientific_literature,
+    select_scientific_literature_evidence,
+)
 from mdi_api.transport.routers.workspaces import (
     create_workspace,
     get_workspace,
@@ -221,6 +227,7 @@ class AppSpec:
 ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/health", health, ("GET",), ("health",)),
     RouteSpec("/health/runtime", runtime_health, ("GET",), ("health",)),
+    RouteSpec("/health/tasks", task_health_projection, ("GET",), ("health",)),
     RouteSpec(
         "/api/observability/client-exceptions",
         capture_client_exception,
@@ -274,6 +281,10 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/api/research/turns/{turn_id}/report", generate_scientific_report, ("POST",), ("agent2", "reports")),
     RouteSpec("/api/research/turns/{turn_id}/report", get_scientific_report, ("GET",), ("agent2", "reports")),
     RouteSpec("/api/research/turns/{turn_id}/report-status", get_scientific_report_status, ("GET",), ("agent2", "reports")),
+    RouteSpec("/api/projects/{project_id}/scientific-literature/search", search_scientific_literature, ("POST",), ("agent2", "literature")),
+    RouteSpec("/api/projects/{project_id}/scientific-literature/evidence", select_scientific_literature_evidence, ("POST",), ("agent2", "literature")),
+    RouteSpec("/api/scientific-literature/evidence/{evidence_id}", get_scientific_literature_evidence, ("GET",), ("agent2", "literature")),
+    RouteSpec("/api/research/turns/{turn_id}/scientific-literature", list_turn_scientific_literature, ("GET",), ("agent2", "literature")),
     RouteSpec("/api/scientific-reports/{report_id}", get_scientific_report_by_id, ("GET",), ("agent2", "reports")),
     RouteSpec("/api/scientific-reports/{report_id}/lifecycle", update_scientific_report_lifecycle, ("PATCH",), ("agent2", "reports")),
     RouteSpec("/api/scientific-reports/{report_id}/organization", update_scientific_report_organization, ("PATCH",), ("agent2", "reports")),

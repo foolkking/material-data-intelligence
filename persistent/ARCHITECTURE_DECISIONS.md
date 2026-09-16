@@ -6301,3 +6301,13 @@ decision and compact evidence-state fingerprint. Provider strategy is optional,
 structured, source-reference validated and limited to one repair. Capability
 eligibility, current scientific qualification, duplicate prevention and
 Workstream E budgets remain deterministic authorities.
+
+## ADR — Job-row execution ownership is the sole M1 authority (2026-09-14)
+
+Execution ownership, attempt identity and lease timing live on the durable
+PostgreSQL `jobs` row. `claim_execution`, `renew_execution`, expiry/reclaim and
+terminal writes use server time plus row locking/predicates. Redis queues and
+heartbeats are transport/liveness mechanisms only. ToolCall, Artifact and
+Result projection paths must bind to the current Job owner/attempt; stale attempts
+may finish local computation but cannot publish authoritative science or schedule
+dependent work. No parallel Redis lease state machine is permitted.

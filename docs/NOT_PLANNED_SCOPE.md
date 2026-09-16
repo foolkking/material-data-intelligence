@@ -5,6 +5,25 @@ Status: CURRENT, NOT QUEUED
 These capabilities do not fit the current Material Data Intelligence product.
 They have no implementation plan unless the project definition changes.
 
+## V0 Agent and Validation Exclusions
+
+The V0 product does not include:
+
+- a Secondary LLM critic, scientific reviewer or reviewer provider;
+- an AI substitute for independent human expert validation;
+- `STANDARD / RISK_AWARE / STRICT` scientific review modes;
+- an Expert Mode in which a second model pretends to be a scientist;
+- unlimited autonomous research or arbitrary workflow/code execution.
+
+Workstream I is a deterministic/structured scientific reasoning guard.
+Workstream J is offline independent-human-validation infrastructure.
+Workstream K is conditional only on demonstrated real J defects. None of these
+creates a runtime scientific reviewer.
+
+If a later professional/expert control is authorized, it may only expose more
+direct user control over method, parameters, scientific presets, viewers and
+analysis scope. It must not mean a second LLM reviewer.
+
 ## Enterprise SaaS
 
 No multi-tenancy, organization hierarchy, billing, subscriptions, enterprise

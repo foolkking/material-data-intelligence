@@ -91,6 +91,80 @@ def structure(objects: ScientificObjectService, name: str = "Si", project_id: st
     )
 
 
+def projected_table(objects: ScientificObjectService) -> ScientificObjectRef:
+    logical = objects.create_object(
+        project_id="project",
+        kind=ScientificObjectKind.TABLE,
+        object_type="materials.table",
+        display_name="Qualification table",
+        created_by_user_id="owner",
+    )
+    version = objects.create_version(
+        logical["id"],
+        object_type="materials.table",
+        object_schema_version="1.0",
+        source_resource_refs=[{"scope": "system_fixture", "resource_id": "table"}],
+        parent_object_version_refs=[],
+        normalized_payload_ref=StorageRef(
+            storage_backend="minio",
+            object_key="table.json",
+            checksum="sha-table",
+        ),
+        content_hash="content-table",
+        semantic_hash="semantic-table",
+        canonical_metadata={
+            "row_count": 4,
+            "nColumns": 2,
+            "columns": [
+                {"name": "formula", "dtype": "string", "unit": None},
+                {"name": "gap", "dtype": "number", "unit": "eV"},
+            ],
+            "payload": "must not be serialized",
+        },
+        created_by_user_id="owner",
+    )
+    return ScientificObjectRef(
+        object_id=logical["id"],
+        version_id=version["id"],
+        project_id="project",
+        object_type="materials.table",
+        display_name="Qualification table",
+    )
+
+
+def experimental_xrd(objects: ScientificObjectService) -> ScientificObjectRef:
+    logical = objects.create_object(
+        project_id="project",
+        kind=ScientificObjectKind.DIFFRACTION,
+        object_type="diffraction.xrd.experimental",
+        display_name="Measured XRD",
+        created_by_user_id="owner",
+    )
+    version = objects.create_version(
+        logical["id"],
+        object_type="diffraction.xrd.experimental",
+        object_schema_version="1.0",
+        source_resource_refs=[{"scope": "system_fixture", "resource_id": "xrd"}],
+        parent_object_version_refs=[],
+        normalized_payload_ref=StorageRef(
+            storage_backend="minio",
+            object_key="xrd.json",
+            checksum="sha-xrd",
+        ),
+        content_hash="content-xrd",
+        semantic_hash="semantic-xrd",
+        canonical_metadata={"point_count": 3},
+        created_by_user_id="owner",
+    )
+    return ScientificObjectRef(
+        object_id=logical["id"],
+        version_id=version["id"],
+        project_id="project",
+        object_type="diffraction.xrd.experimental",
+        display_name="Measured XRD",
+    )
+
+
 def receive(
     turns: ResearchTurnService,
     owner: CurrentUser,
@@ -98,6 +172,7 @@ def receive(
     refs: list[ScientificObjectRef] | None = None,
     selected: list[ScientificObjectRef] | None = None,
     explicit: list[ScientificObjectRef] | None = None,
+    explicit_results: list[UUID] | None = None,
     reply_to: UUID | None = None,
     scientific_selections: list[ScientificSelectionContext] | None = None,
 ):
@@ -109,6 +184,7 @@ def receive(
                 "active_object_refs": refs or [],
                 "selection_refs": selected or [],
                 "explicit_object_refs": explicit or [],
+                "explicit_result_ids": explicit_results or [],
                 "scientific_selections": scientific_selections or [],
             },
             reply_to_turn_id=reply_to,
@@ -166,6 +242,77 @@ def add_previous_result(factory: RepositoryFactory, *, stale: bool = False) -> t
             "created_at": now,
         })
     return turn_id, snapshot_id
+
+
+def add_previous_typed_result(
+    factory: RepositoryFactory,
+    objects: ScientificObjectService,
+) -> tuple[UUID, UUID]:
+    previous_turn, _ = add_previous_result(factory)
+    logical = objects.create_object(
+        project_id="project",
+        kind=ScientificObjectKind.DIFFRACTION,
+        object_type="diffraction.xrd.theoretical",
+        display_name="Persisted theoretical XRD",
+        created_by_user_id="owner",
+    )
+    version = objects.create_version(
+        logical["id"],
+        object_type="diffraction.xrd.theoretical",
+        object_schema_version="1.0",
+        source_resource_refs=[{"scope": "system_fixture", "resource_id": "theory"}],
+        parent_object_version_refs=[],
+        normalized_payload_ref=StorageRef(
+            storage_backend="minio",
+            object_key="theory.json",
+            checksum="sha-theory",
+        ),
+        content_hash="content-theory",
+        semantic_hash="semantic-theory",
+        canonical_metadata={"wavelength_angstrom": 1.54184},
+        created_by_user_id="owner",
+    )
+    result_id = uuid4()
+    snapshot_id = uuid4()
+    now = datetime.now(timezone.utc)
+    with factory.unit_of_work() as unit:
+        unit.agent2.scientific_result_snapshots.add({
+            "id": snapshot_id,
+            "project_id": "project",
+            "research_turn_id": previous_turn,
+            "job_id": None,
+            "schema_version": "1.0",
+            "projection_version": "fixture/1.0",
+            "execution_status": "SUCCESS",
+            "relevance_status": "CURRENT",
+            "source_fingerprint": f"source-{snapshot_id}",
+            "bundle_json": {
+                "result_id": str(result_id),
+                "research_question": "Previous theoretical XRD",
+                "result_items": [{
+                    "id": f"result-item.{result_id.hex}",
+                    "result_type": "diffraction.xrd.theoretical",
+                    "role": "PRIMARY",
+                    "artifact_ids": [],
+                    "scientific_object_refs": [{
+                        "object_id": str(logical["id"]),
+                        "version_id": str(version["id"]),
+                        "project_id": "project",
+                        "object_type": "diffraction.xrd.theoretical",
+                        "display_name": "Persisted theoretical XRD",
+                    }],
+                }],
+                "output_object_refs": [{
+                    "object_id": str(logical["id"]),
+                    "version_id": str(version["id"]),
+                    "project_id": "project",
+                    "object_type": "diffraction.xrd.theoretical",
+                    "display_name": "Persisted theoretical XRD",
+                }],
+            },
+            "created_at": now,
+        })
+    return previous_turn, snapshot_id
 
 
 def test_answer_persists_one_final_message_and_never_executes():
@@ -230,6 +377,71 @@ def test_analyze_reaches_ready_to_plan_with_requirement_and_zero_execution():
     view = turns.get_turn(turn.turn_id, owner)
     assert view["messages"][-1]["content"] == "我会根据当前结构准备 RDF 分析。"
     assert view["orchestration"]["action_dispatch_status"] == "READY_FOR_DOWNSTREAM"
+
+
+def test_analyze_drops_stray_historical_result_binding_before_priority_validation():
+    _engine, owner, factory, objects, turns = foundation()
+    _previous, _snapshot = add_previous_result(factory)
+    ref = structure(objects)
+    turn = receive(turns, owner, "重新计算这个结构的 RDF。", refs=[ref])
+    fake = FakeStructuredClient([decision(
+        "ANALYZE",
+        assistant_message="我会基于当前结构准备新的 RDF 分析。",
+        research_objective="重新计算当前结构的径向分布函数。",
+        selected_scope_ref_keys=["obj_1"],
+        # A provider can echo a recent result from the bounded context even
+        # though ANALYZE is a new computation.  This must not make a valid
+        # selected-source analysis fail because of an unrelated lower-priority
+        # result candidate.
+        reusable_result_ref_keys=["result_1"],
+        scientific_requirements=[{
+            "requirement_id": "structure.compute_rdf",
+            "criticality": "REQUIRED",
+            "subject_ref_keys": ["obj_1"],
+            "constraints": {},
+        }],
+    )])
+
+    result = asyncio.run(processor(factory, fake).process(turn.turn_id))
+
+    assert result.status == "READY_TO_PLAN"
+    with factory.session() as session:
+        stored = session.agent2.research_turn_decisions.get_for_turn(turn.turn_id)
+    assert stored["decision_json"]["action"] == "ANALYZE"
+    assert stored["decision_json"]["reusable_result_ref_keys"] == []
+
+
+def test_analyze_preserves_explicit_result_binding_for_comparison():
+    _engine, owner, factory, objects, turns = foundation()
+    _previous, snapshot_id = add_previous_typed_result(factory, objects)
+    experimental = experimental_xrd(objects)
+    turn = receive(
+        turns,
+        owner,
+        "将选中的实验 XRD 与明确指定的理论 XRD 结果比较。",
+        refs=[experimental],
+        explicit_results=[snapshot_id],
+    )
+    fake = FakeStructuredClient([decision(
+        "ANALYZE",
+        assistant_message="我会按已明确指定的两个 XRD 来源准备比较。",
+        research_objective="比较当前实验 XRD 与明确指定的理论 XRD。",
+        selected_scope_ref_keys=["obj_1"],
+        reusable_result_ref_keys=["result_1"],
+        scientific_requirements=[{
+            "requirement_id": "diffraction.compare_experimental_theoretical",
+            "criticality": "REQUIRED",
+            "subject_ref_keys": ["obj_1"],
+            "constraints": {},
+        }],
+    )])
+
+    result = asyncio.run(processor(factory, fake).process(turn.turn_id))
+
+    assert result.status == "READY_TO_PLAN"
+    with factory.session() as session:
+        stored = session.agent2.research_turn_decisions.get_for_turn(turn.turn_id)
+    assert stored["decision_json"]["reusable_result_ref_keys"] == ["result_1"]
 
 
 def test_equal_priority_objects_clarify_without_provider_and_reply_creates_child():
@@ -420,6 +632,22 @@ def test_query_data_completes_as_non_scientific_handoff_without_execution():
     )
 
 
+def test_query_data_returns_bounded_selected_object_projection_without_execution():
+    engine, owner, factory, objects, turns = foundation()
+    ref = projected_table(objects)
+    turn = receive(turns, owner, "查看这个表的实际行数和列。", refs=[ref])
+    fake = FakeStructuredClient([decision("QUERY_DATA", selected_scope_ref_keys=["obj_1"])])
+
+    result = asyncio.run(processor(factory, fake).process(turn.turn_id))
+
+    assert result.status == "ANSWERED"
+    assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+    content = turns.get_turn(turn.turn_id, owner)["messages"][-1]["content"]
+    assert "行数：4" in content
+    assert "formula" in content and "gap" in content and "unit=eV" in content
+    assert "must not be serialized" not in content
+
+
 def test_invalid_reference_repairs_once_then_persists_only_validated_decision():
     _engine, owner, factory, objects, turns = foundation()
     ref = structure(objects)
@@ -491,6 +719,28 @@ def test_timeout_marks_failed_without_open_transaction_or_execution():
     view = turns.get_turn(turn.turn_id, owner)
     assert view["status"] == "FAILED"
     assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+
+
+def test_worker_boundary_failure_terminalizes_received_turn_without_orphaning():
+    engine, owner, factory, _objects, turns = foundation()
+    turn = receive(turns, owner, "分析当前数据。")
+
+    updated = turns.fail_if_active(
+        turn.turn_id,
+        "WORKER_BOUNDARY_FAILURE",
+        "ImportError: worker dependency unavailable",
+    )
+
+    assert updated is not None
+    assert updated["status"] == "FAILED"
+    assert updated["error_code"] == "WORKER_BOUNDARY_FAILURE"
+    with factory.session() as session:
+        stored = session.agent2.research_turns.get(turn.turn_id)
+        events = session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+    assert stored["status"] == "FAILED"
+    assert events[-1]["event_type"] == "TURN_FAILED"
+    assert stored["completed_at"] is not None
+    assert engine is not None
 
 
 def test_duplicate_and_concurrent_delivery_call_provider_once(tmp_path):

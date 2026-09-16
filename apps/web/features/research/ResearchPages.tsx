@@ -32,6 +32,7 @@ import {
   type ScientificEvidenceItem,
   type InterpretationEvidenceResponse,
   type JobEvent,
+  PlannerApiError,
   type PlannerJobCreateResult,
   type PlannerJobDetail,
   type ProjectHistory,
@@ -53,6 +54,7 @@ import {
   type ScopeResolution,
 } from "../../app/lib/product-api";
 import { ProductShell, RequireProductAuth } from "../../shared/layout/ProductShell";
+import { scientistProjectLabel } from "../../shared/product-labels";
 import { ManagedObjectRow, ProductModal } from "../../shared/ui/ObjectManagement";
 import { LazyScientificResultViewer } from "../../scientific-viewers/LazyScientificViewers";
 import {
@@ -74,6 +76,7 @@ import {
   type Agent2ProgressView,
 } from "../../app/lib/agent2-execution-api";
 import { ResearchExecutionActivity } from "./ResearchExecutionActivity";
+import { LiteratureEvidencePanel } from "./LiteratureEvidencePanel";
 import {
   getAgent2SessionMemory,
   unpinAgent2Object,
@@ -189,6 +192,7 @@ const contextKindLabel = (kind: string) =>
     RESEARCH_GOAL: "研究目标",
     CAPABILITY_CANDIDATE: "分析能力",
     SCIENTIFIC_EVIDENCE: "科学证据",
+    LITERATURE_EVIDENCE: "文献证据",
   })[kind] || "上下文";
 
 const contextSelectionLabel = (selectionMode: string) =>
@@ -212,6 +216,26 @@ const contextAuthorityLabel = (authorityClass: string) =>
     SYSTEM_RUNTIME_STATE: "系统运行状态",
     DERIVED_SUMMARY: "派生摘要",
   })[authorityClass] || "上下文信息";
+
+const contextRoleLabel = (role?: string) =>
+  ({
+    EVIDENCE: "科学依据",
+    CONTINUITY: "研究连续性",
+    SUBJECT: "研究对象",
+    CONSTRAINT: "科学约束",
+    PREFERENCE: "呈现偏好",
+  })[role || ""] || "研究上下文";
+
+function contextItemSupportEligible(item: Agent2ContextManifestItem): boolean {
+  if (item.support_eligible === true) return true;
+  if (item.support_eligible === false) return false;
+  return (
+    (item.kind === "SCIENTIFIC_RESULT" &&
+      item.authority_class === "SCIENTIFIC_RESULT") ||
+    (["SCIENTIFIC_EVIDENCE", "LITERATURE_EVIDENCE"].includes(item.kind) &&
+      item.authority_class === "SCIENTIFIC_EVIDENCE")
+  );
+}
 
 const contextFreshnessLabel = (freshness?: string) =>
   ({
@@ -503,6 +527,36 @@ export function agent2ContextManifestForTurn(
 }
 
 export const CONTEXT_MANIFEST_RENDER_WINDOW = 32;
+
+export function defaultResearchConversationWidth(
+  hasScientificWorkbenchContent: boolean,
+): number {
+  return hasScientificWorkbenchContent ? 420 : 720;
+}
+
+export function researchWorkbenchContentAvailable(input: {
+  job: PlannerJobCreateResult | null;
+  artifacts: readonly Artifact[];
+  interpretation: GroundedScientificInterpretation | null;
+  evidence: InterpretationEvidenceResponse | null;
+  events: readonly JobEvent[];
+  agent2Progress: Agent2ProgressView | null;
+}): boolean {
+  // Route identity is not scientific content. A run/turn can exist before any
+  // result, evidence or truthful progress is available, so keep the question
+  // readable until the workbench has something useful to inspect.
+  return Boolean(
+    input.artifacts.length ||
+      input.interpretation ||
+      input.evidence?.evidenceItems?.length ||
+      input.events.length ||
+      input.job?.plan ||
+      (input.agent2Progress &&
+        !["RECEIVED", "QUEUED"].includes(
+          String(input.agent2Progress.status || "").toUpperCase(),
+        )),
+  );
+}
 
 /** Keep the disclosure bounded by default while allowing a researcher to inspect
  * every included item when the manifest is larger than the compact preview. */
@@ -1012,6 +1066,8 @@ export function ResearchPage({
   retryOfTurnId,
   retryRequested = false,
   fresh = false,
+  resultContextId,
+  contextCandidateFromSearch = false,
   viewerContext,
 }: {
   projectId: string;
@@ -1024,6 +1080,8 @@ export function ResearchPage({
   retryOfTurnId?: string;
   retryRequested?: boolean;
   fresh?: boolean;
+  resultContextId?: string;
+  contextCandidateFromSearch?: boolean;
   viewerContext?: ViewerResearchContext;
 }) {
   const router = useProductRouter();
@@ -1031,6 +1089,8 @@ export function ResearchPage({
   const [sessions, setSessions] = useState<ResearchSession[]>([]);
   const [history, setHistory] = useState<ProjectHistory | null>(null);
   const [question, setQuestion] = useState("");
+  const [searchContextCandidateActive, setSearchContextCandidateActive] =
+    useState(contextCandidateFromSearch);
   const [autonomyMode, setAutonomyMode] = useState<
     "STANDARD" | "BOUNDED_AUTONOMOUS"
   >("STANDARD");
@@ -1084,7 +1144,9 @@ export function ResearchPage({
   const [sessionMemoryMutation, setSessionMemoryMutation] = useState(false);
   const [sessionMemoryError, setSessionMemoryError] = useState("");
   const [agent2Turns, setAgent2Turns] = useState<Agent2TurnResponse[]>([]);
-  const [conversationWidth, setConversationWidth] = useState(420);
+  const [conversationWidth, setConversationWidth] = useState(() =>
+    defaultResearchConversationWidth(Boolean(runId || agent2TurnId)),
+  );
   const [sessionHistoryOpen, setSessionHistoryOpen] = useState(false);
   const [sessionHistoryQuery, setSessionHistoryQuery] = useState("");
   const [sessionHistoryStatus, setSessionHistoryStatus] = useState<
@@ -1140,6 +1202,7 @@ export function ResearchPage({
     skipPersistence: boolean;
   } | null>(null);
   const workbenchRef = useRef<HTMLElement | null>(null);
+  const conversationWidthCustomizedRef = useRef(false);
   const sessionHistoryTriggerRef = useRef<HTMLButtonElement | null>(null);
   const sessionHistoryRef = useRef<HTMLDivElement | null>(null);
   const sessionHistorySearchRef = useRef<HTMLInputElement | null>(null);
@@ -1181,7 +1244,18 @@ export function ResearchPage({
       return { sourceRef, selection: null };
     }
   }, [projectId, viewerContext]);
-  const hasExplicitScientificHandoff = Boolean(datasetId || exactViewerContext);
+  const activeSearchResultContextId =
+    contextCandidateFromSearch && searchContextCandidateActive
+      ? resultContextId
+      : undefined;
+  const activeViewerContext =
+    exactViewerContext &&
+    (!contextCandidateFromSearch || searchContextCandidateActive)
+      ? exactViewerContext
+      : null;
+  const hasExplicitScientificHandoff = Boolean(
+    datasetId || activeViewerContext || activeSearchResultContextId,
+  );
   const startFreshResearchHref = freshResearchHref(
     projectId,
     datasetId,
@@ -1248,7 +1322,7 @@ export function ResearchPage({
               return "";
             }
             if (["COMPLETED", "PARTIAL", "FAILED"].includes(next.status)) {
-              return "研究在停止请求生效前已进入终态；现有科学结果未被覆盖。";
+              return "分析在取消请求生效前已进入终态；现有科学结果未被覆盖。";
             }
             return current;
           });
@@ -1553,7 +1627,7 @@ export function ResearchPage({
       setAgent2CancelNotice(
         result.status === "CANCELED"
           ? ""
-          : "停止请求已记录，正在等待运行中的科学步骤安全结束。",
+          : "取消请求已记录，正在等待运行中的科学步骤安全结束。",
       );
     } catch (reason) {
       // A fast scientific execution may finish between the last progress poll
@@ -1567,7 +1641,7 @@ export function ResearchPage({
           setAgent2CancelNotice(
             latest.status === "CANCELED"
               ? ""
-              : "研究在停止请求生效前已进入终态；现有科学结果未被覆盖。",
+              : "分析在取消请求生效前已进入终态；现有科学结果未被覆盖。",
           );
           return;
         }
@@ -1633,7 +1707,7 @@ export function ResearchPage({
     if (!Number.isFinite(value)) return conversationWidth;
     const workbenchWidth =
       workbenchRef.current?.getBoundingClientRect().width || 1280;
-    const maximum = Math.min(640, Math.max(320, workbenchWidth - 480));
+    const maximum = Math.min(760, Math.max(320, workbenchWidth - 480));
     return Math.round(Math.min(maximum, Math.max(320, value)));
   }
 
@@ -2196,6 +2270,8 @@ export function ResearchPage({
     setInterpretation(null);
     setEvidence(null);
     setInterpretationStatus("idle");
+    setJob(null);
+    setScope(null);
     setError("");
     setState("planning");
     let activeSession: ResearchSession | null = null;
@@ -2279,31 +2355,58 @@ export function ResearchPage({
         );
         return;
       }
-      if (exactViewerContext) {
-        const objectRef = exactViewerContext.selection
-          ? selectionToResearchObjectRef(exactViewerContext.selection)
+      if (activeSearchResultContextId) {
+        const created = await createAgent2ResearchTurn(
+          projectId,
+          activeSession.id,
+          {
+            message: question.trim(),
+            autonomy_mode: autonomyMode,
+            ui_context: {
+              active_object_refs: [],
+              selection_refs: [],
+              scientific_selections: [],
+              explicit_object_refs: [],
+              explicit_result_ids: [activeSearchResultContextId],
+              explicit_finding_refs: [],
+            },
+          },
+        );
+        bindResearchPerformanceTurn(performanceAttemptId, created.turn_id);
+        setSearchContextCandidateActive(false);
+        setQuestion("");
+        setState("planning");
+        setMobilePanel("workbench");
+        router.push(
+          `/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(activeSession.id)}?turn=${encodeURIComponent(created.turn_id)}`,
+        );
+        return;
+      }
+      if (activeViewerContext) {
+        const objectRef = activeViewerContext.selection
+          ? selectionToResearchObjectRef(activeViewerContext.selection)
           : {
-              object_id: exactViewerContext.sourceRef.objectId,
-              version_id: exactViewerContext.sourceRef.versionId,
-              project_id: exactViewerContext.sourceRef.projectId,
-              object_type: exactViewerContext.sourceRef.objectType,
-              display_name: exactViewerContext.sourceRef.displayName,
+              object_id: activeViewerContext.sourceRef.objectId,
+              version_id: activeViewerContext.sourceRef.versionId,
+              project_id: activeViewerContext.sourceRef.projectId,
+              object_type: activeViewerContext.sourceRef.objectType,
+              display_name: activeViewerContext.sourceRef.displayName,
             };
-        const scientificSelections = exactViewerContext.selection
+        const scientificSelections = activeViewerContext.selection
           ? [
               {
                 contract_version: "1.0" as const,
                 object_ref: objectRef,
-                viewer_id: exactViewerContext.selection.viewerId,
-                selection_type: exactViewerContext.selection.selectionType,
+                viewer_id: activeViewerContext.selection.viewerId,
+                selection_type: activeViewerContext.selection.selectionType,
                 semantic_locator: apiSemanticLocator(
-                  exactViewerContext.selection,
+                  activeViewerContext.selection,
                 ),
-                display_label: exactViewerContext.selection.displayLabel,
-                evidence_locator: exactViewerContext.selection.evidenceLocator
+                display_label: activeViewerContext.selection.displayLabel,
+                evidence_locator: activeViewerContext.selection.evidenceLocator
                   ? {
                       field_locator:
-                        exactViewerContext.selection.evidenceLocator,
+                        activeViewerContext.selection.evidenceLocator,
                     }
                   : null,
               },
@@ -2321,7 +2424,7 @@ export function ResearchPage({
             // downgrade a targeted research request to clarification.
             ui_context: {
               active_object_refs: [objectRef],
-              selection_refs: exactViewerContext.selection ? [objectRef] : [],
+              selection_refs: activeViewerContext.selection ? [objectRef] : [],
               scientific_selections: scientificSelections,
               explicit_object_refs: [objectRef],
               explicit_result_ids: [],
@@ -2330,6 +2433,7 @@ export function ResearchPage({
           },
         );
         bindResearchPerformanceTurn(performanceAttemptId, created.turn_id);
+        if (contextCandidateFromSearch) setSearchContextCandidateActive(false);
         setQuestion("");
         setState("planning");
         setMobilePanel("workbench");
@@ -2467,7 +2571,7 @@ export function ResearchPage({
       setMobilePanel("workbench");
     } catch (reason) {
       setState("failed");
-      setError(reason instanceof Error ? reason.message : "研究请求失败");
+      setError(scientistFacingResearchRequestError(reason));
       if (activeSession && !(reason instanceof Agent2ReadError)) {
         void createResearchAssistantProjection(activeSession.id, {
           phase: "failed",
@@ -2594,7 +2698,7 @@ export function ResearchPage({
       setMobilePanel("workbench");
     } catch (reason) {
       setState("failed");
-      setError(reason instanceof Error ? reason.message : "研究请求失败");
+      setError(scientistFacingResearchRequestError(reason));
     }
   }
 
@@ -3005,6 +3109,27 @@ export function ResearchPage({
     !runId &&
     !job &&
     messages.length === 0;
+  const hasScientificWorkbenchContent = researchWorkbenchContentAvailable({
+    job,
+    artifacts,
+    interpretation,
+    evidence,
+    events,
+    agent2Progress,
+  });
+  const researchLayoutMode = hasScientificWorkbenchContent
+    ? "scientific-workbench"
+    : "asking";
+  useEffect(() => {
+    if (conversationWidthCustomizedRef.current) return;
+    const target = defaultResearchConversationWidth(
+      hasScientificWorkbenchContent,
+    );
+    const workbenchWidth =
+      workbenchRef.current?.getBoundingClientRect().width || 1280;
+    const maximum = Math.min(760, Math.max(320, workbenchWidth - 480));
+    setConversationWidth(Math.round(Math.min(maximum, Math.max(320, target))));
+  }, [hasScientificWorkbenchContent]);
   const normalizedSessionQuery = sessionHistoryQuery
     .trim()
     .toLocaleLowerCase("zh-CN");
@@ -3088,6 +3213,7 @@ export function ResearchPage({
           id="research-primary-content"
           tabIndex={-1}
           className="research-workbench"
+          data-layout-mode={researchLayoutMode}
           aria-label="项目研究工作台"
           style={
             {
@@ -3149,7 +3275,7 @@ export function ResearchPage({
               <div className="research-timeline-heading">
                 <p className="product-kicker">
                   {history?.project.name
-                    ? `${history.project.name} · 研究时间线`
+                    ? `${scientistProjectLabel(history.project.name, projectId)} · 研究时间线`
                     : "项目研究 · 研究时间线"}
                 </p>
                 <h1>研究时间线</h1>
@@ -3724,8 +3850,11 @@ export function ResearchPage({
                     </small>
                   </summary>
                   <div className="research-context-manifest-summary">
+                    <span>精确来源与版本已保留</span>
                     <span>
-                      精确来源与版本已保留
+                      {activeAgent2ContextManifest.input_state === "ACTUAL"
+                        ? "这是调用时实际使用的上下文"
+                        : "这是发送前的上下文预览"}
                     </span>
                     <span data-state={activeAgent2ContextManifest.compaction_state}>
                       {activeAgent2ContextManifest.compaction_state === "COMPACTED"
@@ -3780,18 +3909,24 @@ export function ResearchPage({
                             </span>
                             <small>
                               {contextSelectionLabel(item.selection_mode)} ·{" "}
-                              {contextAuthorityLabel(item.authority_class)} ·{" "}
+                              {contextRoleLabel(item.context_role)} ·{" "}
+                              {contextItemSupportEligible(item)
+                                ? "可支持科学主张"
+                                : "不作为独立科学依据"}{" "}
+                              · {contextAuthorityLabel(item.authority_class)} ·{" "}
                               {contextFreshnessLabel(item.freshness)}
                             </small>
                           </div>
                           {item.exact_object_version_id ? (
-                            <span className="research-context-source">
-                              精确版本 <code>{item.exact_object_version_id}</code>
-                            </span>
+                            <details className="research-context-source">
+                              <summary>来源版本已锁定</summary>
+                              <code>{item.exact_object_version_id}</code>
+                            </details>
                           ) : item.result_ref ? (
-                            <span className="research-context-source">
-                              结果 <code>{item.result_ref}</code>
-                            </span>
+                            <details className="research-context-source">
+                              <summary>结果身份已锁定</summary>
+                              <code>{item.result_ref}</code>
+                            </details>
                           ) : null}
                           {item.was_compacted || item.was_truncated ? (
                             <small className="research-context-transform">
@@ -3867,6 +4002,24 @@ export function ResearchPage({
                         <dt>策略版本</dt>
                         <dd>{activeAgent2ContextManifest.policy_version}</dd>
                       </div>
+                      {activeAgent2ContextManifest.invocation_role ? (
+                        <div>
+                          <dt>模型职责</dt>
+                          <dd>{contextOperationLabel(activeAgent2ContextManifest.operation)}</dd>
+                        </div>
+                      ) : null}
+                      {activeAgent2ContextManifest.prompt_template_version ? (
+                        <div>
+                          <dt>提示模板版本</dt>
+                          <dd>{activeAgent2ContextManifest.prompt_template_version}</dd>
+                        </div>
+                      ) : null}
+                      {activeAgent2ContextManifest.serialized_input_version ? (
+                        <div>
+                          <dt>输入表示版本</dt>
+                          <dd>{activeAgent2ContextManifest.serialized_input_version}</dd>
+                        </div>
+                      ) : null}
                       <div>
                         <dt>输入预算</dt>
                         <dd>{activeAgent2ContextManifest.input_budget} tokens</dd>
@@ -3881,9 +4034,21 @@ export function ResearchPage({
                       </div>
                     </dl>
                     {activeAgent2ContextManifest.excluded_items.length ? (
-                      <p>
-                        未纳入项：{activeAgent2ContextManifest.excluded_items.join("、")}
-                      </p>
+                      <ul className="research-context-manifest-exclusion-list">
+                        {(activeAgent2ContextManifest.excluded_item_details || []).map((item) => (
+                          <li key={`${item.item_id}-${item.reason}`}>
+                            <strong>{item.item_id}</strong>：{item.detail}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                    {activeAgent2ContextManifest.serialized_input ? (
+                      <details className="research-context-serialized-input">
+                        <summary>模型实际收到的有界表示</summary>
+                        <pre>
+                          {JSON.stringify(activeAgent2ContextManifest.serialized_input, null, 2)}
+                        </pre>
+                      </details>
                     ) : null}
                   </details>
                 </details>
@@ -4172,6 +4337,29 @@ export function ResearchPage({
                 <label htmlFor="research-question">
                   {editTurnId ? "编辑问题" : "询问此项目中的数据"}
                 </label>
+                {contextCandidateFromSearch && searchContextCandidateActive ? (
+                  <div
+                    className="research-composer-context-candidate"
+                    role="status"
+                    aria-label="待加入本次研究的检索上下文"
+                  >
+                    <span>
+                      <strong>待使用来源</strong>
+                      <small>
+                        {activeSearchResultContextId
+                          ? "检索中选择的科学结果，提交问题后才会进入实际 Context Used。"
+                          : `${activeViewerContext?.sourceRef.displayName || "检索中选择的科学数据"}，提交问题后才会进入实际 Context Used。`}
+                      </small>
+                    </span>
+                    <button
+                      type="button"
+                      className="product-secondary-action"
+                      onClick={() => setSearchContextCandidateActive(false)}
+                    >
+                      移除
+                    </button>
+                  </div>
+                ) : null}
                 <textarea
                   ref={questionInputRef}
                   id="research-question"
@@ -4278,11 +4466,11 @@ export function ResearchPage({
                     <button
                       type="button"
                       className="product-danger-action research-composer-stop"
-                      aria-label="从输入区停止研究"
+                      aria-label="从输入区取消当前分析"
                       onClick={() => void cancelAgent2Turn()}
                       disabled={agent2CancelPending}
                     >
-                      {agent2CancelPending ? "正在停止…" : "停止研究"}
+                      {agent2CancelPending ? "正在取消…" : "取消当前分析"}
                     </button>
                   ) : (
                     <button
@@ -4307,6 +4495,11 @@ export function ResearchPage({
                     </button>
                   )}
                 </div>
+                {autonomyMode === "BOUNDED_AUTONOMOUS" ? (
+                  <p className="research-autonomy-preview" role="note">
+                    Agent 可在固定边界内追加有科学依据的分析；问题得到回答、证据不足或达到研究上限时会停止。你仍可随时取消当前分析。
+                  </p>
+                ) : null}
                 {providerLoadState === "error" ? (
                   <div className="research-provider-notice" role="alert">
                     <span>
@@ -4377,10 +4570,11 @@ export function ResearchPage({
             aria-label="调整研究对话宽度"
             aria-orientation="vertical"
             aria-valuemin={320}
-            aria-valuemax={640}
+            aria-valuemax={760}
             aria-valuenow={conversationWidth}
             aria-valuetext={`${conversationWidth} 像素对话宽度`}
             onPointerDown={(event) => {
+              conversationWidthCustomizedRef.current = true;
               event.currentTarget.setPointerCapture(event.pointerId);
               setConversationWidth(
                 clampConversationWidth(
@@ -4405,23 +4599,27 @@ export function ResearchPage({
             onKeyDown={(event) => {
               if (event.key === "ArrowLeft") {
                 event.preventDefault();
+                conversationWidthCustomizedRef.current = true;
                 setConversationWidth((value) =>
                   clampConversationWidth(value - 16),
                 );
               }
               if (event.key === "ArrowRight") {
                 event.preventDefault();
+                conversationWidthCustomizedRef.current = true;
                 setConversationWidth((value) =>
                   clampConversationWidth(value + 16),
                 );
               }
               if (event.key === "Home") {
                 event.preventDefault();
+                conversationWidthCustomizedRef.current = true;
                 setConversationWidth(clampConversationWidth(320));
               }
               if (event.key === "End") {
                 event.preventDefault();
-                setConversationWidth(clampConversationWidth(640));
+                conversationWidthCustomizedRef.current = true;
+                setConversationWidth(clampConversationWidth(760));
               }
             }}
           />
@@ -4432,13 +4630,19 @@ export function ResearchPage({
             className={`research-workbench-pane ${mobilePanel === "workbench" ? "mobile-panel-active" : "mobile-panel-inactive"}`}
           >
             {hasAuthoritativeTurnPresentation ? (
-              <Agent2ScientificPresentation
-                turnId={agent2TurnId as string}
-                projectId={projectId}
-                sessionId={session?.id}
-                sessionMemory={sessionMemory}
-                onSessionMemoryChange={setSessionMemory}
-              />
+              <>
+                <Agent2ScientificPresentation
+                  turnId={agent2TurnId as string}
+                  projectId={projectId}
+                  sessionId={session?.id}
+                  sessionMemory={sessionMemory}
+                  onSessionMemoryChange={setSessionMemory}
+                />
+                <LiteratureEvidencePanel
+                  projectId={projectId}
+                  turnId={agent2TurnId as string}
+                />
+              </>
             ) : null}
             {!hasAuthoritativeTurnPresentation ? (
               <ResearchWorkbenchContent
@@ -4962,8 +5166,13 @@ function ResearchWorkbenchContent({
                           source.objectType ||
                           "ScientificObject"}
                       </strong>
-                      <span>对象 {source.objectId}</span>
-                      <small>exact version {source.versionId}</small>
+                      <span>
+                        {source.versionNo
+                          ? `版本 ${source.versionNo}`
+                          : "已锁定精确版本"}
+                        {source.isCurrentVersion === false ? " · 历史版本" : ""}
+                      </span>
+                      <small>本次结果不会自动切换到更新版本。</small>
                     </li>
                   ))}
                 </ul>
@@ -5000,6 +5209,18 @@ function ResearchWorkbenchContent({
                       : "暂无可查看结果"}
                   </dd>
                 </div>
+                {evidence?.sourceObjectRefs?.length ? (
+                  <div>
+                    <dt>精确来源版本</dt>
+                    <dd>
+                      {evidence.sourceObjectRefs.map((source) => (
+                        <code key={`${source.objectId}:${source.versionId}`}>
+                          {compactTechnicalId(source.objectId)} / {compactTechnicalId(source.versionId)}
+                        </code>
+                      ))}
+                    </dd>
+                  </div>
+                ) : null}
                 <div>
                   <dt>结构化数据</dt>
                   <dd>
@@ -5100,6 +5321,7 @@ function InlineRunProcess({
   error: string;
 }) {
   const steps = job?.plan?.steps || [];
+  const datasetLabel = scientistDatasetLabel(scope);
   const complete = state === "complete";
   const completedSteps = new Set(
     events
@@ -5118,6 +5340,8 @@ function InlineRunProcess({
       <summary>
         {complete
           ? `✓ 分析完成 · ${steps.length || events.length} 个步骤`
+          : state === "unsupported"
+            ? "未创建分析运行"
           : state === "capability-clarification"
             ? "需要确认分析方法"
             : state === "failed"
@@ -5129,11 +5353,11 @@ function InlineRunProcess({
                   : "分析中 · 查看过程"}
       </summary>
       <div className="timeline-process-body" role="status">
-        {scope?.dataset_name && (
+        {datasetLabel && (
           <p>
             ✓ 已确定分析数据
             <br />
-            <small>{scope.dataset_name}</small>
+            <small>{datasetLabel}</small>
           </p>
         )}
         {steps.length > 0 && <p>✓ 分析方案已准备</p>}
@@ -5243,6 +5467,19 @@ const USER_FACING_TOOL_STEPS: Record<string, string> = {
   "viz.correlation": "计算材料属性之间的相关关系",
 };
 
+const USER_FACING_TOOL_REASONS: Record<string, string> = {
+  "dataset.composition_space":
+    "用于观察材料组成分布，并判断是否存在值得继续研究的材料分组。",
+  "dataset.materials_explorer":
+    "用于先建立当前材料数据的有界概览，再判断是否需要更具体的分析。",
+  "trajectory.msd":
+    "用于量化原子位移随时间的变化，并为后续输运分析提供依据。",
+  "trajectory.diffusion":
+    "用于在已验证的时间范围内估算扩散行为。",
+  "structure.experimental_xrd_comparison":
+    "用于比较实验与理论衍射证据，同时保留峰匹配和物相判断的限制。",
+};
+
 export function userFacingPlanStep(
   purpose: string | null | undefined,
   reason: string | null | undefined,
@@ -5259,13 +5496,48 @@ export function userFacingPlanStep(
     (machinePlan.test(rawPurpose)
       ? "整理当前数据中的科学信息"
       : rawPurpose || `科学分析步骤 ${index + 1}`);
-  const projectedReason = machinePlan.test(rawReason)
-    ? "已根据当前数据和科学能力确定本次步骤。"
-    : rawReason || undefined;
+  const projectedReason =
+    (toolId ? USER_FACING_TOOL_REASONS[toolId] : undefined) ||
+    (machinePlan.test(rawReason) || /^[A-Z][\s\S]*[.]$/u.test(rawReason)
+      ? "已根据当前研究问题、数据范围和可用科学方法确定这一步。"
+      : rawReason || undefined);
   return {
     purpose: projectedPurpose,
     ...(projectedReason ? { reason: projectedReason } : {}),
   };
+}
+
+export function scientistDatasetLabel(scope: ScopeResolution | null): string {
+  if (!scope) return "";
+  const name = String(
+    scope.scientific_object_ref?.display_name || scope.dataset_name || "",
+  ).trim();
+  const datasetId = String(scope.dataset_id || "").trim();
+  if (!name || (datasetId && name === datasetId)) return "当前项目材料数据";
+  return name;
+}
+
+export function scientistFacingResearchRequestError(reason: unknown): string {
+  if (reason instanceof PlannerApiError) {
+    if (reason.status === 422) {
+      return "当前分析请求缺少可验证的科学数据描述或参数。请确认所选数据已完成解析，并更具体地说明要分析的问题；没有创建运行。";
+    }
+    if (reason.status === 409) {
+      return "当前研究状态已发生变化。已完成的科学结果仍然保留，请重新打开研究后继续。";
+    }
+    if (reason.status >= 500) {
+      return "研究服务暂时无法完成请求。已完成的科学工作仍然保留，请稍后重试。";
+    }
+  }
+  if (reason instanceof Error) {
+    const message = reason.message.trim();
+    const exposesImplementation =
+      /Input should|Request failed|ValidationError|Pydantic|Traceback|status \d{3}|^[A-Z0-9_]{4,}$/iu;
+    if (message && /[\u3400-\u9fff]/u.test(message) && !exposesImplementation.test(message)) {
+      return message;
+    }
+  }
+  return "研究请求暂时无法完成。没有创建新的分析运行；已完成的科学结果仍然保留。";
 }
 
 function plannerFailureMessage(result: PlannerJobCreateResult) {
@@ -5531,6 +5803,7 @@ export function displayResearchMessage(message: ResearchMessage): string {
     /^我会使用\s*(.+?)\s*完成(?:本次)?分析。/u,
     "本次分析将以数据集“$1”为范围。",
   );
+  text = text.replace(/^当前\s+当前项目材料数据/u, "当前项目材料数据");
   text = text.replace(
     /Satisfy the validated structured AnalysisIntent with an eligible registered capability\.?/gi,
     "执行已验证的科学分析步骤。",

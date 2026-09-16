@@ -6,17 +6,22 @@ from decimal import Decimal, InvalidOperation
 from typing import Any
 
 from mdi_api.domain.interpretation.contracts import GroundingValidationResult, ScientificInterpretationOutput, numeric_tokens
+from mdi_api.application.scientific_reasoning.assessment import ClaimSupportAssessor
+from mdi_api.domain.scientific_reasoning.contracts import (
+    ProposedScientificClaim,
+    ReasoningEvidence,
+)
 
 
 # Keep temperature ``K`` case-sensitive: a lowercase ``k`` in labels such as
 # ``k-point`` is not a Kelvin unit and must not trigger unit grounding.
 _UNIT = re.compile(
-    r"(?<![A-Za-z])(?:(?i:"
+    r"(?<![A-Za-z0-9])(?:(?i:"
     r"(?:Å|angstrom)(?:\^\{?2\}?|²)/(?:ps|picosecond)|"
     r"(?:Å|angstrom)(?:\^\{?2\}?|²)|"
     r"(?:Å|angstrom)(?:\^\{?-?3\}?|⁻³|-3)?|"
     r"picosecond|nm|pm|eV|meV|fs|ps|%|THz|cm-?1|1/s|m\^?2/s"
-    r")|K)(?![A-Za-z])"
+    r")|K)(?![A-Za-z0-9])"
 )
 
 
@@ -241,7 +246,105 @@ def validate_interpretation(interpretation: ScientificInterpretationOutput, resu
     all_text = " ".join([interpretation.answer_lead, *(item.statement for item in [*interpretation.primary_findings, *interpretation.supporting_findings])]).lower()
     if execution == "PARTIAL" and any(term in all_text for term in ("complete analysis", "all steps succeeded", "全部分析均成功", "完整分析已完成")):
         errors.append("partial result cannot be described as complete")
+    if interpretation.contract_version == "1.1":
+        for finding in [
+            *interpretation.primary_findings,
+            *interpretation.supporting_findings,
+        ]:
+            if finding.reasoning_assessment is None:
+                errors.append(
+                    f"{finding.finding_id}: claim support assessment is required"
+                )
+            elif not finding.reasoning_assessment.accepted:
+                errors.append(
+                    f"{finding.finding_id}: scientific claim support was rejected"
+                )
     return GroundingValidationResult(valid=not errors, errors=errors)
+
+
+def project_claim_support_assessments(
+    interpretation: ScientificInterpretationOutput,
+    result_bundle: Any,
+) -> ScientificInterpretationOutput:
+    """Attach deterministic claim support without changing scientific facts."""
+
+    if interpretation.contract_version != "1.1":
+        return interpretation
+    bundle = (
+        result_bundle.model_dump(mode="json")
+        if hasattr(result_bundle, "model_dump")
+        else dict(result_bundle)
+    )
+    methods = [
+        str(item.get("capability_id") or item.get("tool_id") or "")
+        for item in bundle.get("methods") or []
+        if str(item.get("capability_id") or item.get("tool_id") or "")
+    ]
+    method = "; ".join(sorted(set(methods))) or None
+    source_scope = "; ".join(
+        str(item.get("display_name") or item.get("object_type") or "")
+        for item in bundle.get("source_object_refs") or []
+        if str(item.get("display_name") or item.get("object_type") or "")
+    ) or "current ScientificResult scope"
+    limitations = [
+        str(item.get("message") or "")
+        for item in bundle.get("limitations") or []
+        if str(item.get("message") or "")
+    ]
+    semantic_tags: list[str] = []
+    if any(value.startswith(("electronic.", "phonon.")) for value in methods):
+        semantic_tags.append("EXTERNAL_IMPLEMENTATION_SEMANTICS")
+    if any(value == "data.composition_space" for value in methods):
+        semantic_tags.append("EXPLORATORY_OUTLIER")
+    evidence = [
+        ReasoningEvidence(
+            ref="result_1",
+            origin="COMPUTED",
+            text=" ".join(
+                str(item.get("title") or item.get("result_type") or "")
+                for item in bundle.get("result_items") or []
+            )
+            or "Authorized ScientificResult.",
+            scope=source_scope,
+            method=method,
+            lineage=str(
+                (bundle.get("provenance") or {}).get("source_fingerprint")
+                or (bundle.get("provenance") or {}).get("job_id")
+                or bundle.get("result_id")
+                or "current-result"
+            ),
+            limitations=limitations,
+            semantic_tags=semantic_tags,
+        )
+    ]
+    assessor = ClaimSupportAssessor()
+
+    def assess(item: Any) -> Any:
+        assessment = assessor.assess(
+            ProposedScientificClaim(
+                claim_id=item.finding_id,
+                text=item.statement,
+                claim_type=item.claim_type,
+                support_status=item.support_status,
+                evidence_refs=["result_1"],
+                scope=item.scope or source_scope,
+                qualifiers=item.qualifiers,
+                limitations=interpretation.limitations,
+                comparison_status=item.comparison_status,
+                hypothesis_status=item.hypothesis_status,
+            ),
+            evidence,
+        )
+        return item.model_copy(update={"reasoning_assessment": assessment})
+
+    return interpretation.model_copy(
+        update={
+            "primary_findings": [assess(item) for item in interpretation.primary_findings],
+            "supporting_findings": [
+                assess(item) for item in interpretation.supporting_findings
+            ],
+        }
+    )
 
 
 def project_grounded_answer_lead(
@@ -296,9 +399,11 @@ def project_grounded_communication(
     primary_findings = [
         item.model_copy(
             update={
-                "statement": _without_reference_echo(
-                    item.statement,
-                    [*item.fact_refs, *item.evidence_refs, *item.result_item_refs],
+                "statement": _sanitize_grounded_statement(
+                    _without_reference_echo(
+                        item.statement,
+                        [*item.fact_refs, *item.evidence_refs, *item.result_item_refs],
+                    )
                 )
             }
         )
@@ -307,9 +412,11 @@ def project_grounded_communication(
     supporting_findings = [
         item.model_copy(
             update={
-                "statement": _without_reference_echo(
-                    item.statement,
-                    [*item.fact_refs, *item.evidence_refs, *item.result_item_refs],
+                "statement": _sanitize_grounded_statement(
+                    _without_reference_echo(
+                        item.statement,
+                        [*item.fact_refs, *item.evidence_refs, *item.result_item_refs],
+                    )
                 )
             }
         )
@@ -380,6 +487,47 @@ def _without_reference_echo(statement: str, refs: list[str]) -> str:
     return " ".join(rendered.split()).strip()
 
 
+_VERSION_IDENTIFIER = re.compile(
+    r"\bversion\s+(?:[0-9a-f]{8}-[0-9a-f-]{27,}|[0-9a-f]{16,})\b",
+    re.IGNORECASE,
+)
+_UUID_IDENTIFIER = re.compile(
+    r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b",
+    re.IGNORECASE,
+)
+_METHOD_IDENTIFIER = re.compile(
+    r"\b(?:method|capability)\.[0-9a-f-]{16,}\b",
+    re.IGNORECASE,
+)
+_OPAQUE_REFERENCE = re.compile(
+    r"\b(?:fact|evidence|result[-_.]item|object|version|job|call|artifact|figure|limitation)"
+    r"[-_.][A-Za-z0-9-]{16,}\b",
+    re.IGNORECASE,
+)
+_METHOD_VERSION = re.compile(
+    r"\b(?:capability|method)\s+version\s+\d+(?:\.\d+)*\b",
+    re.IGNORECASE,
+)
+
+
+def _sanitize_grounded_statement(statement: str) -> str:
+    """Remove opaque execution metadata from scientific presentation prose.
+
+    Provider text may echo source-version UUIDs or internal method identifiers.
+    These are provenance metadata, not scientific quantities.  Keeping them in
+    a finding makes the quantitative grounding validator interpret UUID digits
+    as measurements.  The canonical Result/manifest still retains the exact
+    identifiers; only the user-facing statement is normalized.
+    """
+
+    rendered = _VERSION_IDENTIFIER.sub("the recorded source version", statement)
+    rendered = _UUID_IDENTIFIER.sub("the recorded source version", rendered)
+    rendered = _OPAQUE_REFERENCE.sub("", rendered)
+    rendered = _METHOD_IDENTIFIER.sub("the recorded method", rendered)
+    rendered = _METHOD_VERSION.sub("the recorded method version", rendered)
+    return " ".join(rendered.split()).strip()
+
+
 def _join_finding_statements(statements: Any) -> str:
     parts = [
         str(statement).strip().rstrip("。；; ")
@@ -393,6 +541,7 @@ __all__ = [
     "EvidenceReferenceValidator",
     "QuantitativeClaimValidator",
     "project_grounded_answer_lead",
+    "project_claim_support_assessments",
     "project_grounded_communication",
     "validate_interpretation",
 ]

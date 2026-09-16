@@ -8,10 +8,13 @@ variables or injected configuration.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from hashlib import sha256
 import ipaddress
 import json
 import os
+import random
 import re
 import socket
 from time import perf_counter, sleep
@@ -36,6 +39,7 @@ DEEPSEEK_ALLOWED_PURPOSES = frozenset(
         "CAPABILITY_PLAN_SELECTION",
         "MULTI_TOOL_COMPOSITION",
         "GROUNDED_INTERPRETATION",
+        "LITERATURE_SYNTHESIS",
         "REPORT_COMPOSITION",
         "PROVIDER_CONNECTION_TEST",
     }
@@ -45,6 +49,11 @@ DEEPSEEK_MAX_TIMEOUT_SECONDS = 120.0
 DEEPSEEK_MAX_PROMPT_BYTES = 524_288
 DEEPSEEK_MAX_TRANSIENT_RETRIES = 1
 DEEPSEEK_RETRY_BACKOFF_SECONDS = 0.25
+DEEPSEEK_RETRY_JITTER_MAX_SECONDS = 0.10
+DEEPSEEK_RETRY_BASE_MAX_SECONDS = 5.0
+DEEPSEEK_RETRY_DELAY_MAX_SECONDS = (
+    DEEPSEEK_RETRY_BASE_MAX_SECONDS + DEEPSEEK_RETRY_JITTER_MAX_SECONDS
+)
 
 
 @dataclass(frozen=True)
@@ -92,12 +101,20 @@ class LLMPlannerProvider(Protocol):
 class LLMProviderError(RuntimeError):
     """Safe provider error whose text is suitable for API responses."""
 
-    def __init__(self, message: str, *, code: str = "LLM_PROVIDER_ERROR", status_code: int | None = None) -> None:
+    def __init__(
+        self,
+        message: str,
+        *,
+        code: str = "LLM_PROVIDER_ERROR",
+        status_code: int | None = None,
+        retry_after_seconds: float | None = None,
+    ) -> None:
         safe_message = redact_sensitive_text(message)
         super().__init__(safe_message)
         self.code = code
         self.safe_message = safe_message
         self.status_code = status_code
+        self.retry_after_seconds = retry_after_seconds
 
 
 @dataclass
@@ -571,9 +588,16 @@ class DeepSeekProvider:
     never reads a key.
     """
 
-    def __init__(self, *, transport: Any = None, urlopen: Any = None) -> None:
+    def __init__(
+        self,
+        *,
+        transport: Any = None,
+        urlopen: Any = None,
+        random_source: Any = None,
+    ) -> None:
         self._transport = transport
         self._urlopen = urlopen
+        self._random_source = random_source or _deepseek_random_source()
         self._call_audit: list[dict[str, Any]] = []
 
     def generate_plan(
@@ -602,6 +626,7 @@ class DeepSeekProvider:
         messages: list[dict[str, str]],
         user_config: PlannerUserConfig | None = None,
         purpose: str,
+        retry_observer: Any = None,
     ) -> PlannerRawResponse:
         resolved = _resolve_deepseek_config(user_config, fake=self._transport is not None, purpose=purpose)
         safe_messages = [
@@ -638,6 +663,7 @@ class DeepSeekProvider:
                     )
                 else:
                     response = _post_deepseek_completion(
+                        base_url=resolved["base_url"],
                         api_key=resolved["api_key"],
                         model=resolved["model"],
                         messages=safe_messages,
@@ -659,8 +685,42 @@ class DeepSeekProvider:
                     attempt < DEEPSEEK_MAX_TRANSIENT_RETRIES
                     and _deepseek_error_is_retryable(deepseek_error)
                 ):
+                    retry_delay = _deepseek_retry_delay(
+                        deepseek_error,
+                        random_source=self._random_source,
+                    )
+                    if self._call_audit:
+                        self._call_audit[-1]["retryScheduled"] = True
+                        self._call_audit[-1]["retryAfterSeconds"] = (
+                            deepseek_error.retry_after_seconds
+                        )
+                        self._call_audit[-1]["retryBaseSeconds"] = retry_delay[
+                            "base_seconds"
+                        ]
+                        self._call_audit[-1]["retryJitterSeconds"] = retry_delay[
+                            "jitter_seconds"
+                        ]
+                        self._call_audit[-1]["retryDelaySeconds"] = retry_delay[
+                            "delay_seconds"
+                        ]
+                    _notify_deepseek_retry_observer(
+                        retry_observer,
+                        {
+                            "purpose": purpose,
+                            "failed_attempt": attempt + 1,
+                            "next_attempt": attempt + 2,
+                            "error_code": deepseek_error.code,
+                            "status_code": deepseek_error.status_code,
+                            "retry_after_seconds": deepseek_error.retry_after_seconds,
+                            "base_backoff_seconds": retry_delay["base_seconds"],
+                            "jitter_seconds": retry_delay["jitter_seconds"],
+                            "retry_delay_seconds": retry_delay["delay_seconds"],
+                            "scheduled_at": datetime.now(timezone.utc).isoformat(),
+                        },
+                        audit=self._call_audit[-1] if self._call_audit else None,
+                    )
                     attempt += 1
-                    sleep(DEEPSEEK_RETRY_BACKOFF_SECONDS)
+                    sleep(retry_delay["delay_seconds"])
                     continue
                 raise deepseek_error from None
             break
@@ -811,9 +871,10 @@ def _resolve_deepseek_config(
             "DeepSeek is not configured.",
             code="DEEPSEEK_NOT_CONFIGURED",
         )
+    base_url = DEEPSEEK_BASE_URL if fake else _deepseek_live_base_url()
     return {
         "api_key": api_key,
-        "base_url": DEEPSEEK_BASE_URL,
+        "base_url": base_url,
         "model": model,
         "max_tokens": max_tokens,
         "timeout_seconds": timeout_seconds,
@@ -951,6 +1012,7 @@ def _post_chat_completion(
 
 def _post_deepseek_completion(
     *,
+    base_url: str,
     api_key: str,
     model: str,
     messages: list[dict[str, str]],
@@ -958,8 +1020,8 @@ def _post_deepseek_completion(
     timeout_seconds: float,
     urlopen: Any = urllib.request.urlopen,
 ) -> dict[str, Any]:
-    """Send one bounded strict-JSON request to the fixed DeepSeek endpoint."""
-    url = f"{DEEPSEEK_BASE_URL}/chat/completions"
+    """Send one bounded strict-JSON request to the resolved server endpoint."""
+    url = f"{base_url.rstrip('/')}/chat/completions"
     body = json.dumps(
         {
             "model": model,
@@ -1041,9 +1103,19 @@ def _as_deepseek_error(error: LLMProviderError) -> LLMProviderError:
     if error.status_code == 401:
         return LLMProviderError("DeepSeek authentication failed.", code="DEEPSEEK_AUTH_FAILED", status_code=401)
     if error.status_code == 429:
-        return LLMProviderError("DeepSeek rate limit was reached.", code="DEEPSEEK_RATE_LIMITED", status_code=429)
+        return LLMProviderError(
+            "DeepSeek rate limit was reached.",
+            code="DEEPSEEK_RATE_LIMITED",
+            status_code=429,
+            retry_after_seconds=error.retry_after_seconds,
+        )
     if error.status_code and error.status_code >= 500:
-        return LLMProviderError("DeepSeek provider failed.", code="DEEPSEEK_PROVIDER_FAILED", status_code=error.status_code)
+        return LLMProviderError(
+            "DeepSeek provider failed.",
+            code="DEEPSEEK_PROVIDER_FAILED",
+            status_code=error.status_code,
+            retry_after_seconds=error.retry_after_seconds,
+        )
     if error.code == "LLM_TIMEOUT":
         return LLMProviderError("DeepSeek request timed out.", code="DEEPSEEK_TIMEOUT")
     return LLMProviderError("DeepSeek provider failed.", code="DEEPSEEK_PROVIDER_FAILED", status_code=error.status_code)
@@ -1055,6 +1127,109 @@ def _deepseek_error_is_retryable(error: LLMProviderError) -> bool:
         "DEEPSEEK_PROVIDER_FAILED",
         "DEEPSEEK_TIMEOUT",
     }
+
+
+def _deepseek_retry_delay(
+    error: LLMProviderError,
+    *,
+    random_source: Any,
+) -> dict[str, float]:
+    retry_after = error.retry_after_seconds
+    requested_base = max(
+        DEEPSEEK_RETRY_BACKOFF_SECONDS,
+        float(retry_after) if retry_after is not None else 0.0,
+    )
+    base_seconds = min(DEEPSEEK_RETRY_BASE_MAX_SECONDS, requested_base)
+    sample = min(1.0, max(0.0, float(random_source())))
+    jitter_seconds = sample * DEEPSEEK_RETRY_JITTER_MAX_SECONDS
+    delay_seconds = min(
+        DEEPSEEK_RETRY_DELAY_MAX_SECONDS,
+        base_seconds + jitter_seconds,
+    )
+    return {
+        "base_seconds": round(base_seconds, 6),
+        "jitter_seconds": round(jitter_seconds, 6),
+        "delay_seconds": round(delay_seconds, 6),
+    }
+
+
+def _deepseek_random_source() -> Any:
+    seed = os.environ.get("MDI_QUALIFICATION_JITTER_SEED")
+    if seed is not None and _qualification_mode_enabled():
+        return random.Random(seed).random
+    return random.SystemRandom().random
+
+
+def _notify_deepseek_retry_observer(
+    observer: Any,
+    payload: dict[str, Any],
+    *,
+    audit: dict[str, Any] | None,
+) -> None:
+    """Publish a bounded retry lifecycle fact without making it authoritative.
+
+    The observer is optional and must never be able to turn an operational
+    projection failure into a provider/scientific failure. Its payload omits
+    prompts, credentials, response bodies, and worker internals.
+    """
+
+    if not callable(observer):
+        return
+    try:
+        observer(dict(payload))
+    except Exception:
+        if audit is not None:
+            audit["retryObserverFailed"] = True
+
+
+def _qualification_mode_enabled() -> bool:
+    return os.environ.get("MDI_QUALIFICATION_MODE", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+
+
+def _deepseek_live_base_url() -> str:
+    override = os.environ.get("MDI_QUALIFICATION_DEEPSEEK_BASE_URL")
+    if not override:
+        return DEEPSEEK_BASE_URL
+    if not _qualification_mode_enabled():
+        raise LLMProviderError(
+            "The qualification DeepSeek endpoint requires explicit qualification mode.",
+            code="DEEPSEEK_CONFIGURATION_NOT_ALLOWED",
+        )
+    parsed = urllib.parse.urlsplit(override.strip())
+    if (
+        parsed.scheme != "http"
+        or not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise LLMProviderError(
+            "The qualification DeepSeek endpoint must be a loopback HTTP URL.",
+            code="DEEPSEEK_CONFIGURATION_NOT_ALLOWED",
+        )
+    host = parsed.hostname.lower()
+    loopback = host == "localhost"
+    if not loopback:
+        try:
+            loopback = ipaddress.ip_address(host).is_loopback
+        except ValueError:
+            loopback = False
+    try:
+        port = parsed.port
+    except ValueError:
+        port = None
+    if not loopback or port is None:
+        raise LLMProviderError(
+            "The qualification DeepSeek endpoint must include a loopback port.",
+            code="DEEPSEEK_CONFIGURATION_NOT_ALLOWED",
+        )
+    path = parsed.path.rstrip("/")
+    return f"http://{parsed.netloc}{path}"
 
 
 _DEFAULT_ALLOWED_LLM_BASE_URLS = frozenset(
@@ -1134,7 +1309,33 @@ def _http_error(exc: urllib.error.HTTPError) -> LLMProviderError:
         message = f"OpenAI-compatible LLM provider returned status {code}."
     else:
         message = f"OpenAI-compatible LLM request failed with status {code}."
-    return LLMProviderError(message, code="LLM_HTTP_ERROR", status_code=code or None)
+    return LLMProviderError(
+        message,
+        code="LLM_HTTP_ERROR",
+        status_code=code or None,
+        retry_after_seconds=_retry_after_seconds(exc),
+    )
+
+
+def _retry_after_seconds(exc: urllib.error.HTTPError) -> float | None:
+    headers = getattr(exc, "headers", None)
+    raw = headers.get("Retry-After") if headers is not None else None
+    if raw is None:
+        return None
+    value = str(raw).strip()
+    try:
+        seconds = float(value)
+    except ValueError:
+        try:
+            retry_at = parsedate_to_datetime(value)
+        except (TypeError, ValueError, OverflowError):
+            return None
+        if retry_at.tzinfo is None:
+            retry_at = retry_at.replace(tzinfo=timezone.utc)
+        seconds = (retry_at - datetime.now(timezone.utc)).total_seconds()
+    if seconds < 0:
+        return 0.0
+    return min(DEEPSEEK_RETRY_BASE_MAX_SECONDS, seconds)
 
 
 def _first_choice(response: dict[str, Any]) -> dict[str, Any]:

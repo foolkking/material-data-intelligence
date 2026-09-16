@@ -168,5 +168,5 @@ function projectionResource(projection: ScientificViewerProjection): DatasetSour
 }
 
 function legacyObjectType(objectType: string) {
-  return ({ "materials.dataset": "DataFrame", "materials.table": "DataFrame", "structure.crystal": "Structure", "trajectory.atomic": "Trajectory", "diffraction.xrd.experimental": "DataFrame", "diffraction.xrd.theoretical": "DataFrame", "electronic.band_structure": "ElectronicBand", "electronic.dos": "ElectronicDos", "phonon.band_structure": "PhononBand", "phonon.dos": "PhononDos", "volumetric.charge_density": "VolumetricData" } as Record<string, string>)[objectType] || objectType;
+  return ({ "materials.dataset": "DataFrame", "materials.table": "DataFrame", "structure.crystal": "Structure", "trajectory.atomic": "Trajectory", "diffraction.xrd.experimental": "DataFrame", "diffraction.xrd.theoretical": "DataFrame", "electronic.band_structure": "ElectronicBand", "electronic.dos": "ElectronicDos", "phonon.band_structure": "PhononBand", "phonon.dos": "PhononDos", "volumetric.field": "VolumetricData", "volumetric.charge_density": "VolumetricData" } as Record<string, string>)[objectType] || objectType;
 }

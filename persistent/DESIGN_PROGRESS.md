@@ -1,5 +1,61 @@
 # DESIGN_PROGRESS
 
+## 2026-09-12 — V0 Route Reconciliation and Pre-M1–3 Chained Execution
+
+- Reconciled the active route as A–I complete, J parallel/pending, K
+  conditional-only, Pre-M1–3 executed and sealed for review, Pre-M4–6 not
+  started, then M required before Final V0 Integrated Acceptance.
+- Pre-M1 added deterministic Context roles and fail-closed support eligibility.
+  ScientificResult, Result-derived deterministic findings and
+  LiteratureEvidence may support claims; Interpretation, Report, Memory,
+  Hypothesis and assistant prose cannot gain authority by repetition.
+- Fixed the discovered Result-reuse regression so exact Result-derived
+  `SCIENTIFIC_FINDING` facts remain evidence while derived prose stays
+  continuity-only.
+- Pre-M2 confirmed current immutable Plan/Result parameter provenance,
+  preference boundaries, exact historical versions, partial-ingestion
+  readiness and `Found != Added != Used` search semantics.
+- Pre-M3 made the Research default state-aware: asking/history is
+  conversation-first, scientific work opens the Workbench-oriented split, and
+  manual resize wins; the empty Data route now exposes a Dataset Overview and
+  Notifications settle through a typed error/empty state rather than hanging.
+- Pre-M1 and Pre-M2 review bundles are `READY_FOR_REVIEW`; Pre-M3 is
+  `PARTIAL/READY_FOR_REVIEW` because authenticated route depth and real browser
+  zoom qualification remain explicit verification debt. Focused frontend
+  tests (`155 passed`) and typecheck pass; Chromium replay covers desktop and
+  390×844 without horizontal overflow.
+- Pre-M4–Pre-M6 remain unstarted. M owns leases, checkpoints, crash recovery,
+  backpressure and multi-hour load behavior only after Pre-M completion.
+- J remains frozen and pending with zero human records. Because Pre-M1–3
+  changed scientific Context/presentation semantics,
+  `FINAL_V0_REQUIRES_NEW_J_CANDIDATE=YES`; the existing J candidate is retained
+  unchanged as the pre-correction candidate.
+
+## 2026-09-11 — V0 Scope Drift Correction
+
+- Re-established `V0` as the current release scope and the natural-language-
+  driven materials research analysis and visualization workbench as the
+  product definition.
+- Bounded reconnaissance found no active Secondary LLM critic, scientific
+  review mode, reviewer provider, reviewer-result persistence or AI expert-
+  review control. No runtime removal was required.
+- Confirmed `STRICT_PROVIDER` is one primary grounded-Interpretation generation
+  path constrained by exact evidence, deterministic validation and one bounded
+  repair. It does not review another model answer and remains valid.
+- Reframed Workstream I as the existing deterministic/structured scientific
+  reasoning guard. Its `BOUNDED_EXPERT_REVIEW_READY` maturity is preserved and
+  is not upgraded to human validation.
+- Moved Workstream J to a parallel offline independent-scientist-validation
+  lane. Its 24 formal cases, 4 calibration cases, 6 shadows, 8 anchors, 56
+  assignments, frozen responses and integrity artifacts remain unchanged.
+- Marked Workstream K conditional only on reproducible major/critical real J
+  feedback. Restored Pre-M0-Pre-M6 as the next engineering stage and M0-M6 as
+  required V0 long-running/scale/fault-tolerance closure.
+- Changed current planning/state authorities only. No ScientificObject,
+  Dataset/Profile, Plan, Job, ToolCall, Artifact, Result, LiteratureEvidence,
+  qualification, Context, Memory, Interpretation, Report, Workspace, queue or
+  fingerprint authority changed.
+
 ## 2026-09-07 — Autonomous architecture migration milestone
 
 Batch 0 canonical ownership preparation reached the pre-physical-migration
@@ -8303,3 +8359,194 @@ scientific-authority contract changed.
   dataset/composition service paths.
 - Maturity is `BOUNDED_READY`: broad arbitrary-domain strategy, literature
   authority and causal inference are deliberately not claimed.
+
+## 2026-09-10 Workstream G — Scientist UX & Product Maturity
+
+- Completed a bounded canonical browser walkthrough before implementation and
+  recorded concrete scientist-facing friction rather than reopening the Phase
+  12/13 product architecture.
+- Made the Research timeline the readable multi-cycle surface: current
+  question, Research Map, resolved/unresolved questions, evidence gaps,
+  tentative hypotheses, continuation rationale, stop reason, qualification
+  boundary and scientific limitations are visible without raw strategy JSON or
+  hidden reasoning.
+- Clarified Stop, Cancel, Continue, Retry, Run again, Reinterpret and
+  edit/branch semantics while retaining the existing lifecycle, Result reuse
+  and durable recovery authorities.
+- Improved result-first presentation, source/version disclosure, partial and
+  unsupported states, report continuity, Task/Notification return paths and
+  identity-safe project/dataset labels. Technical IDs remain behind
+  progressive disclosure.
+- Verified five real persisted canonical browser journeys, including
+  historical reopen, mobile 390x844 workbench switching, unsupported/no-run,
+  report reopen and Task Center return-to-Research. Default raw identity
+  exposures, blocking mobile overflow and fatal browser errors were all zero.
+- Final verification: backend `59 passed, 1 skipped`; frontend focused
+  `177/177`; Ruff, compileall, typecheck, production build, JSON validation and
+  diff check passed.
+- Verdict: `SCIENTIST_PRODUCT_MATURITY=READY_FOR_BOUNDED_SCIENTIST_USE`.
+  Remaining limitations are bounded cross-domain comparison coverage,
+  pre-ResearchTurn history that cannot reconstruct absent question/branch
+  semantics, and partial specialist-viewer localization.
+
+## 2026-09-11 Workstream H — Scientific Knowledge & Literature Integration
+
+- H is complete in the canonical repository. State reconciliation corrected
+  the stale F/G transition without reopening G.
+- Added canonical `LiteratureWork`, immutable `LiteratureSnapshot`, selected
+  `LiteratureEvidence`, bounded `LiteratureQuery`, evidence anchors/numeric
+  claims, publication/access/support states and explicit preprint/publication/
+  correction/retraction relations. DOI is canonical when present; exact arXiv
+  identity is retained; fuzzy title similarity never silently merges works.
+- Added allowlisted OpenAlex and Crossref clients with HTTPS-only hosts,
+  redirects disabled, JSON/content-size/time bounds, result caps, one bounded
+  rate-limit/transient retry, deterministic provider-field lineage and typed
+  provider-unavailable behavior. External activation is explicit and outbound
+  query projection rejects private IDs, paths, URLs, email and internal labels.
+- Full text is rights-aware: abstract evidence must occur in the retrieved
+  abstract; OA/user/repository full-text evidence requires the exact passage in
+  the immutable snapshot, and user uploads retain exact content hash and
+  Project authorization. No paywall bypass, generic URL fetch, browser
+  authority, crawler, vector DB or generic RAG was added.
+- Integrated literature as `REPORTED` scientific evidence in existing Context
+  and strategy projections. `SEARCH_LITERATURE` requires a real evidence gap
+  and is not Capability execution. Existing ScientificResults remain first and
+  literature cannot supply missing execution parameters or mutate Capability
+  qualification.
+- Added bounded DeepSeek literature synthesis with opaque evidence/Result refs,
+  one guided repair and deterministic rejection of invented identities,
+  unsupported evidence links and any new numeric value—including derived
+  differences, ratios, percentages, conversions, ranges or averages.
+- Added exact Report literature sources and deterministic bibliography from
+  immutable metadata, plus a scientist-facing Literature Workbench panel that
+  distinguishes candidates, selected external evidence and computed Results.
+  Historical Research/Reports reopen the exact persisted snapshot.
+- Generated evaluation: `15/15` deterministic cases; live OpenAlex `1`,
+  Crossref `1`, DeepSeek `2`; exact identity `2/2`, reconciliation `1/1`; all
+  authority, privacy, citation, scope, retraction and unsupported-claim
+  violations `0`.
+- Verification: focused backend `89 passed, 5 skipped`; autonomy/product
+  regression `28 passed, 1 skipped`; frontend Research literature `111 passed`;
+  typecheck, production build, Ruff, compileall and diff check PASS. Real
+  PostgreSQL/API search → selection → reopen/Report-citation path passed;
+  Alembic head is `0033_scientific_knowledge`.
+- Verdict:
+  `SCIENTIFIC_KNOWLEDGE_MATURITY=READY_FOR_BOUNDED_LITERATURE_AUGMENTED_RESEARCH`.
+  Recommended next direction is Expert Scientific Reasoning Evaluation:
+  nuanced qualitative claim support and cross-paper synthesis now limit trust
+  more than identity, retrieval, persistence or product integration.
+## 2026-09-11 Workstream I — Expert Scientific Reasoning Evaluation
+
+- Completed directly on the uncommitted validated H baseline without cleanup,
+  reset, checkout or reconstruction. Existing scientific authorities remain
+  authoritative; `ClaimSupportAssessment` is a derived projection only.
+- Preserved an immutable repository-owned 27-case pre-fix baseline. The H
+  synthesis path accepted 22 invalid/underconstrained claims before I; all 22
+  defect patterns are now covered by reusable deterministic policy/regression
+  cases rather than fixture-specific wording patches.
+- Added bounded `scientific-reasoning/1.0` contracts for claim type/support,
+  scope, method comparison, evidence lineage/independence, contradictions,
+  limitations and severity. The assessor fails closed for unsupported causal
+  claims, broad generalization, source-scope overreach, evidence double count,
+  retracted ordinary support, qualification escalation and LLM numeric
+  invention; it preserves condition/method-dependent and unresolved outcomes.
+- Interpretation 1.1 and Report 2.0 carry server-generated accepted claim
+  assessments. One bounded provider repair may correct/reject claim material;
+  it cannot add evidence, change Result/literature scope, derive numeric facts,
+  expand scope or expose hidden reasoning.
+- Final corpus: `27/27` cases pass; all tracked final violation counts are 0;
+  correct insufficient-evidence `17/17`, method-dependence `1/1` and
+  contradiction `2/2`. Five sanitized DeepSeek reasoning cases pass through
+  the same validator, with repair used in 2/5 cases. This is bounded regression
+  evidence, not a population reliability or expert-validation claim.
+- Verification: reasoning/knowledge/interpretation/report `108 passed,
+  5 skipped`; autonomy/strategy/product regressions `36 passed, 2 skipped`;
+  Ruff, compileall and diff checks PASS. PostgreSQL rollback-only persistence
+  smoke reopened Result, Interpretation 1.1 and Report 2.0 preserving the
+  assessment fingerprint and storing no hidden reasoning.
+- Verdict: `SCIENTIFIC_REASONING_MATURITY=BOUNDED_EXPERT_REVIEW_READY`;
+  `INDEPENDENT_HUMAN_EXPERT_VALIDATION=NO`; unresolved implementation blockers
+  `0`. The evidence-based next direction is Independent Scientist Evaluation.
+
+## 2026-09-11 Workstream J — Independent Scientist Evaluation (Preparation)
+
+- The current canonical A–I candidate was frozen once for evaluation. The
+  baseline records HEAD `2727e94ba6adaaf0c6ff9914f8137d130b34c777`, the
+  captured uncommitted H/I fingerprint, Alembic head
+  `0033_scientific_knowledge`, capability inventory/qualification fingerprints,
+  scientific contracts, prompt versions, provider metadata and bounded policy.
+  J preparation files are excluded from the candidate fingerprint.
+- Created a held-out corpus of `24` scored cases, `4` calibration cases and
+  `6` optional shadow slots. The scored corpus contains `12` single-domain,
+  `8` cross-evidence and `4` insufficient-evidence cases, with `8` anchors.
+  Workstream I's `27` cases remain internal regression evidence and are not
+  reused as the formal J corpus.
+- Generated `24/24` frozen formal response records through the current bounded
+  synthesis path. `18` provider responses passed validation; `6` remained typed
+  `VALIDATION_FAILURE_AFTER_DOCUMENTED_RETRY` after the allowed pre-review
+  retry and were frozen as explicit no-validated-synthesis responses. No
+  response was replaced by a model or human.
+- Generated `56` balanced assignments (`14` per reviewer slot), separate
+  reviewer-blinded Pass 1/Pass 2 packet files, calibration guidance,
+  immutable response/evidence hashes and strict import/integrity/reporting
+  tooling in `scripts/scientist_evaluation.py`.
+- Human boundary remains open: the human ledger contains `0` records. The
+  truthful state is `J_STATUS=REVIEW_READY`,
+  `J_REVIEW_INFRASTRUCTURE=READY`, `J_FORMAL_RESPONSES=FROZEN`,
+  `INDEPENDENT_HUMAN_EXPERT_VALIDATION=PENDING` and
+  `SCIENTIST_VALIDATION_MATURITY=NOT_YET_ASSESSED`.
+- Verification: J preparation tests `5 passed`; H/I scientific regression
+  tests plus J tests `52 passed`; Ruff and compile checks passed; generated
+  artifact integrity check passed. No scientific behavior, prompt, validator,
+  provider authority or A–I runtime path was modified by J preparation.
+
+## 2026-09-11 V0 Production Semantic Code-Diff Audit
+
+- [x] Reviewed all `56` modified production files in the dirty H/I/J
+      candidate, including backend, frontend, shared contracts, literature,
+      reasoning, report, context, strategy and LLM wiring.
+- [x] Confirmed the production LLM roles are limited to research
+      orchestration, grounded interpretation, report composition and bounded
+      literature synthesis; no critic/reviewer/judge runtime call exists.
+- [x] Corrected one authority-boundary defect: Report manifests now classify
+      Interpretation prose as `INTERPRETATION` / `DERIVED_SUMMARY`, never as a
+      `ScientificResult`. Added fail-closed kind/authority compatibility checks.
+- [x] Added negative regression coverage for interpretation-as-evidence and
+      J evaluation runtime isolation.
+- [x] Preserved all frozen J evidence unchanged. Because production semantics
+      changed after J preparation, `CURRENT_J_CANDIDATE` is
+      `PRE-CORRECTION_SCIENTIFIC_CANDIDATE`; J must not be re-generated here.
+
+
+## M0 attempt-01 qualification closeout — 2026-09-14T20:44:29+08:00
+- M0-001...M0-008：实现并验证，当前为 READY_FOR_REVIEW；外部接受前不得启动 M1。
+- 已建立隔离资格边界：DB `mdi_m0_a01` / restore `mdi_m0_a01_restore`，Redis DB12/11，MinIO `mdi-m0-a01` / restore bucket，API 8010/8011，资格 worker 注册表。
+- 已测：fresh-worker RDF 全链、4096 原子导入、backup→restore→reopen→export；M0 未执行故障或 120 分钟 soak。
+- M5 目标冻结为 >=120 分钟、计划最大两个在途 workflow、heavy 操作串行；这不是已资格化并发能力。
+- Review ZIP：`E:\mdi-v0-review\M0_attempt-01.zip`。
+
+## M0 attempt-02 evidence-only pointer correction — 2026-09-14T21:04:54+08:00
+- attempt-01 的 M0-001...M0-008 实质证据保持不变；本 attempt 未重跑任何 M0 workload、恢复、fault/cleanup dry run 或服务资格检查，也未修改生产代码。
+- 经 sealed ZIP 直接核验，failure/recovery 来源为 `research_state_trace_46095_final.json`（SHA256 `9933d5b5f7fc3490339c5f9eb56515c3551f480d847b9e176a0541cb593d25ba`）。
+- `/tasks` 的 sealed provenance 是 `authenticated_route_evidence.json`（SHA256 `3c8893707fd84d1702a59a4719e70b38193829d850e158789c07583a8e2a22e8`）；`after_tasks_1440x900.png` 仅为其中的嵌入引用，不是独立密封 artifact。
+- `validate_return.py --seal` 与 ZIP CRC 通过；review ZIP 为 `E:\mdi-v0-review\M0_attempt-02.zip`。M1 未启动。
+
+## M1 attempt-01 — durable ownership and fencing (2026-09-14)
+
+- Added the minimal Job-row lease fields and PostgreSQL server-time
+  claim/renew/reclaim semantics with row locking and attempt fencing.
+- Guarded ToolCall, Artifact and terminal publication by the current owner and
+  attempt; attempt-scoped Artifact storage prevents stale publication collisions.
+- Cancellation preserves terminal precedence and reports request, acknowledgement
+  and durable terminal state separately.
+- Real isolated evidence: two-worker claim race PASS; F03 expiry/reclaim with
+  late renewal and stale publication rejected PASS; F10 API cancellation PASS.
+- Current Tool registry: 62 restartable/idempotent-attempt classifications,
+  zero checkpointable Tools; no fake checkpoint/resume semantics.
+- M1 attempt-01 is READY_FOR_REVIEW; M2 has not started.
+
+
+## M2 attempt-01（2026-09-14）
+- M2 真实隔离故障证据完成：F01/F02/F04/F05/F06/F07/F08、API 重启、客户端中断、重复投递与 Interpretation-only 恢复。
+- 已完成 ScientificResult 后 Interpretation 失败的窄恢复路径；不重算 Tool/Result，沿用 PostgreSQL durable authority 与 M1 fencing。
+- Review bundle：`E:\mdi-v0-review\M2_attempt-01.zip`，当前状态 READY_FOR_REVIEW，等待外部审核；M3 未启动。

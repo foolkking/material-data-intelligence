@@ -420,6 +420,10 @@ def build_autonomy_projection(
                 "unresolved_contradiction_count": strategy.get(
                     "unresolved_contradiction_count"
                 ),
+                "questions": list(strategy.get("questions") or [])[:8],
+                "evidence_gaps": list(strategy.get("evidence_gaps") or [])[:16],
+                "hypotheses": list(strategy.get("hypotheses") or [])[:8],
+                "contradictions": list(strategy.get("contradictions") or [])[:16],
                 "current_question": strategy.get("current_question"),
                 "active_evidence_gap": strategy.get("active_evidence_gap"),
                 "active_hypothesis": strategy.get("active_hypothesis"),
@@ -602,6 +606,25 @@ def build_lifecycle_projection(
             "tool_call_attempt_max": max(attempts or [0]),
             "artifact_count": len((execution_summary or {}).get("artifact_refs") or []),
             "result_snapshot_id": str(result_id) if result_id else None,
+            "ownership": (
+                {
+                    "authority": "POSTGRESQL_JOB_ROW",
+                    "attempt": int(job.get("executionAttempt") or 0),
+                    "owner_present": bool(job.get("executionOwner")),
+                    "lease_status": (
+                        "ACTIVE_OR_EXPIRED_SERVER_EVALUATED"
+                        if str(job.get("status")) == "running"
+                        and job.get("leaseExpiresAt")
+                        else "NOT_APPLICABLE"
+                    ),
+                    "lease_expires_at": job.get("leaseExpiresAt"),
+                    "cancel_requested_at": job.get("cancelRequestedAt"),
+                    "cancel_acknowledged_at": job.get("cancelAcknowledgedAt"),
+                    "read_only": True,
+                }
+                if job is not None
+                else None
+            ),
         },
         "interpretation": {
             "available": interpretation is not None,

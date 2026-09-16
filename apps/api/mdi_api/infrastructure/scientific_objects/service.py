@@ -43,6 +43,7 @@ _RESOURCE_OBJECT_TYPES: dict[str, tuple[ScientificObjectKind, str]] = {
     "Structure": (ScientificObjectKind.STRUCTURE, "structure.crystal"),
     "DataFrame": (ScientificObjectKind.TABLE, "materials.table"),
     "Trajectory": (ScientificObjectKind.TRAJECTORY, "trajectory.atomic"),
+    "VolumetricData": (ScientificObjectKind.VOLUMETRIC, "volumetric.field"),
     "ElectronicBand": (ScientificObjectKind.ELECTRONIC, "electronic.band_structure"),
     "ElectronicDos": (ScientificObjectKind.ELECTRONIC, "electronic.dos"),
     "PhononBand": (ScientificObjectKind.PHONON, "phonon.band_structure"),
@@ -468,7 +469,11 @@ class ScientificObjectService:
         metadata_key = str(export.get("metadataKey") or "")
         content_hash = str(export.get("contentHash") or "")
         semantic_hash = str(export.get("objectHash") or "")
-        required_scope = f"projects/{project_id}/datasets/{dataset_id}/normalized/{resource_id}/"
+        # Normalized exports are stored below the dataset-scoped prefix and
+        # then use the resource id as the next path component.  `resource_id`
+        # itself is a durable composite id (`<dataset>:<object>`), so using it
+        # as the prefix incorrectly rejects every upload-backed admission.
+        required_scope = f"projects/{project_id}/datasets/{dataset_id}/normalized/"
         if (
             not storage_key.startswith(required_scope)
             or not metadata_key.startswith(required_scope)
@@ -488,7 +493,22 @@ class ScientificObjectService:
         ):
             raise InvalidScientificObjectVersion("persisted scientific resource metadata mismatch")
         resource_type = str((source_metadata.get("provenance") or {}).get("objectType") or "")
+        source_metadata_fields = source_metadata.get("metadata") or {}
+        if (
+            resource_type == "DataFrame"
+            and isinstance(source_metadata_fields, dict)
+            and isinstance(source_metadata_fields.get("experimentalXrd"), dict)
+        ):
+            # XRD JSON_LIMITED remains a file-upload contract at ingestion,
+            # but its durable Agent2 projection must use the registered
+            # diffraction object type so comparison and exact source/version
+            # checks cannot silently treat it as an ordinary table.
+            resource_type = "ExperimentalXrd"
+        elif resource_type == "VolumetricData":
+            resource_type = "VolumetricData"
         mapped = _RESOURCE_OBJECT_TYPES.get(resource_type)
+        if mapped is None and resource_type == "ExperimentalXrd":
+            mapped = (ScientificObjectKind.DIFFRACTION, "diffraction.xrd.experimental")
         if mapped is None:
             raise InvalidScientificObjectVersion(
                 "persisted scientific resource type is not admitted to ScientificObject authority"

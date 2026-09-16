@@ -11,6 +11,11 @@ from mdi_api.agent2_errors import CapabilityBindingFailed
 from mdi_api.repositories import compute_plan_hash
 from mdi_api.research_agent.capabilities.versions import version_satisfies
 from mdi_api.research_agent.capabilities.schemas import CapabilityBindingKind, CapabilityPlan, CapabilityResolution
+from mdi_api.research_agent.orchestration.schemas import ResearchTurnDecision
+from mdi_api.research_agent.planning.parameter_authority import (
+    resolved_parameter_provenance,
+    tool_defaults,
+)
 
 
 _OBJECT_TYPE_TO_EXEC = {
@@ -46,7 +51,15 @@ class CapabilityBinder:
     def __init__(self, tool_registry: Any) -> None:
         self.tool_registry = tool_registry
 
-    def bind(self, *, capability_plan: CapabilityPlan, resolution: CapabilityResolution, context: dict[str, Any], registry: Any) -> tuple[AnalysisPlanV02, str]:
+    def bind(
+        self,
+        *,
+        capability_plan: CapabilityPlan,
+        resolution: CapabilityResolution,
+        context: dict[str, Any],
+        registry: Any,
+        decision: ResearchTurnDecision | None = None,
+    ) -> tuple[AnalysisPlanV02, str]:
         candidates = {f"cap_{index}": item for index, item in enumerate(sorted(resolution.candidates, key=lambda item: (item.planning_priority, item.capability_id, item.capability_version)), 1)}
         steps: list[AnalysisStep] = []
         expected: list[ExpectedArtifact] = []
@@ -90,6 +103,9 @@ class CapabilityBinder:
                         result_artifacts = (
                             context.get("result_artifact_refs") or {}
                         ).get(item.result_ref_key or "", {})
+                        result_artifact_metadata = (
+                            context.get("result_artifact_metadata_refs") or {}
+                        ).get(item.result_ref_key or "", {})
                         artifact_ids = sorted({
                             artifact_id
                             for result_type, values in result_artifacts.items()
@@ -106,6 +122,31 @@ class CapabilityBinder:
                             ),
                             None,
                         )
+                        if port is None and len(ports.inputPorts) == 1:
+                            # Some capability slots use a domain-specific
+                            # artifact port name (for example
+                            # ``theoretical_xrd_artifact`` for the
+                            # ``theoretical`` slot). When the Tool exposes
+                            # exactly one artifact input, that cardinality
+                            # is an unambiguous registered binding.
+                            port = ports.inputPorts[0]
+                        if port is not None and result_artifact_metadata:
+                            accepted_kinds = {
+                                kind.value for kind in port.acceptedArtifactKinds
+                            }
+                            filtered_artifact_ids = [
+                                artifact_id
+                                for artifact_id in artifact_ids
+                                if result_artifact_metadata.get(str(artifact_id), {}).get("type")
+                                in accepted_kinds
+                            ]
+                            # A persisted scientific Result can contain both
+                            # a display-only Plotly artifact and a typed
+                            # scientific payload. The consumer port, not
+                            # artifact insertion order, selects the exact
+                            # reusable input.
+                            if filtered_artifact_ids:
+                                artifact_ids = sorted(filtered_artifact_ids)
                         if len(artifact_ids) != 1 or port is None:
                             raise CapabilityBindingFailed(
                                 "previous Result has no exact reusable output",
@@ -125,7 +166,38 @@ class CapabilityBinder:
             # materials_explorer/composition_space executable schema.  Keep
             # them in the authoritative requirement/context records and
             # remove only this explicit, bounded set before plan validation.
-            executable_params = dict(step.parameters)
+            executable_params = {
+                **tool_defaults(tool),
+                **dict(step.parameters),
+            }
+            parameter_sources: dict[str, tuple[str, str]] = {
+                key: (
+                    "TOOL_DEFAULT",
+                    f"tool:{tool.toolId}@{tool.version}:default:{key}",
+                )
+                for key in tool_defaults(tool)
+            }
+            if decision is not None:
+                for requirement in decision.scientific_requirements:
+                    if requirement.requirement_id not in candidate.satisfies_requirement_ids:
+                        continue
+                    mapping = (
+                        manifest.tool_bindings[0].parameter_mapping
+                        if manifest.tool_bindings
+                        else {}
+                    )
+                    for key in requirement.constraints:
+                        parameter = str(mapping.get(key) or key)
+                        parameter_sources[parameter] = (
+                            requirement.origin.value,
+                            f"requirement:{requirement.requirement_id}:{requirement.origin.value}",
+                        )
+            else:
+                for key in step.parameters:
+                    parameter_sources[key] = (
+                        "USER_EXPLICIT",
+                        f"capability-plan:{step.step_id}:parameter:{key}",
+                    )
             if tool.toolId in {"dataset.materials_explorer", "dataset.composition_space"}:
                 allowed_params = set((tool.paramsSchema or {}).get("properties") or {})
                 executable_params = {
@@ -134,6 +206,29 @@ class CapabilityBinder:
                     if key in allowed_params
                     or key not in _DATASET_SEMANTIC_ONLY_CONSTRAINTS
                 }
+            parameter_provenance = [
+                resolved_parameter_provenance(
+                    tool_id=tool.toolId,
+                    tool_version=tool.version,
+                    parameter=key,
+                    value=value,
+                    source_origin=parameter_sources.get(
+                        key,
+                        (
+                            "SYSTEM_POLICY",
+                            f"tool:{tool.toolId}@{tool.version}:policy:{key}",
+                        ),
+                    )[0],
+                    source_identity=parameter_sources.get(
+                        key,
+                        (
+                            "SYSTEM_POLICY",
+                            f"tool:{tool.toolId}@{tool.version}:policy:{key}",
+                        ),
+                    )[1],
+                )
+                for key, value in sorted(executable_params.items())
+            ]
             steps.append(AnalysisStep(
                 stepId=step.step_id,
                 toolId=tool.toolId,
@@ -141,6 +236,7 @@ class CapabilityBinder:
                 reason=manifest.scientific_purpose,
                 inputRefs=input_refs,
                 params=executable_params,
+                parameterProvenance=parameter_provenance,
                 output={"resultTypes": artifact_outputs},
                 constraints={},
             ))

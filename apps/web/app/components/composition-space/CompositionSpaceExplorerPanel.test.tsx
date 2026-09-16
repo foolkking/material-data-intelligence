@@ -24,11 +24,20 @@ describe("CompositionSpaceExplorerPanel", () => {
     fireEvent.keyDown(point, { key: "Enter" });
     const inspector = screen.getByTestId("composition-space-sample-inspector");
     expect(inspector).toHaveTextContent("s2");
-    expect(inspector).toHaveTextContent("obj_table");
+    expect(within(inspector).getByText("Technical sample identity")).toBeTruthy();
     expect(inspector).toHaveTextContent("NaCl");
     expect(inspector).toHaveTextContent("band_gap");
     expect(inspector).toHaveTextContent("regression:model:absolute_error");
     expect(point).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("keeps raw dataset, profile and object identities behind technical disclosure", () => {
+    render(<CompositionSpaceExplorerPanel artifacts={[compositionSpaceArtifact()]} />);
+    const panel = screen.getByTestId("composition-space-explorer");
+    expect(panel).toHaveTextContent("Current project dataset");
+    expect(panel).toHaveTextContent("Parsed and validated");
+    expect(screen.getByText("Technical source identity").closest("details")).not.toHaveAttribute("open");
+    expect(screen.queryByRole("columnheader", { name: "Object" })).toBeNull();
   });
 
   it("uses displayPointKeys for identity and order while treating sample references as informational", () => {

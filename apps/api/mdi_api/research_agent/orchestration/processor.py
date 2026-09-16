@@ -62,6 +62,7 @@ class PreparedTurn:
     resolution: ReferenceResolution
     user_message: str
     autonomy: dict[str, Any]
+    explicit_result_candidate_keys: frozenset[str]
 
 
 @dataclass(frozen=True)
@@ -279,11 +280,6 @@ class AgentTurnProcessor:
                 unresolved_questions=list(resolution.ambiguous_object_keys),
                 requires_clarification=resolution.requires_clarification,
             )
-            context_manifest = ResearchTurnService._build_context_manifest(
-                turn_id=turn_id,
-                context=manifest_context,
-                context_fingerprint=compact.context_fingerprint,
-            )
             unit.agent2.research_context_snapshots.add({
                 "id": snapshot_id,
                 "project_id": bundle.project_id,
@@ -310,6 +306,44 @@ class AgentTurnProcessor:
                 expected_version=int(attached["row_version"]),
                 target_status=ResearchTurnStatus.ORCHESTRATING.value,
             )
+            prepared = PreparedTurn(
+                turn=orchestrating,
+                bundle=bundle,
+                compact_context=compact,
+                resolution=resolution,
+                user_message=str(
+                    unit.agent2.research_turns.get_message(
+                        str(turn["user_message_id"])
+                    )["content_summary"]
+                ),
+                autonomy=dict(received_payload.get("autonomy") or {}),
+                explicit_result_candidate_keys=frozenset(
+                    item.candidate_key
+                    for item in bundle.result_candidates
+                    if item.result_id is not None
+                    and str(item.result_id)
+                    in {
+                        str(result_id)
+                        for result_id in (
+                            (received_payload.get("ui_context") or {}).get(
+                                "explicit_result_ids"
+                            )
+                            or []
+                        )
+                    }
+                ),
+            )
+            orchestrator_input = self._orchestrator_input(prepared)
+            context_manifest = ResearchTurnService._build_context_manifest(
+                turn_id=turn_id,
+                context=manifest_context,
+                context_fingerprint=compact.context_fingerprint,
+                serialized_input=orchestrator_input.model_dump(mode="json"),
+                serialized_input_version=orchestrator_input.contract_version,
+                invocation_role="research_turn_orchestrator",
+                prompt_template_version=PROMPT_VERSION,
+                input_state="ACTUAL",
+            )
             self._append_event(unit, turn_id, ResearchTurnEventType.CONTEXT_RESOLVED, {
                 "status": ResearchTurnStatus.ORCHESTRATING.value,
                 "context_snapshot_id": str(snapshot_id),
@@ -323,15 +357,7 @@ class AgentTurnProcessor:
                 self._append_event(unit, turn_id, ResearchTurnEventType.ORCHESTRATION_STARTED, {
                     "status": ResearchTurnStatus.ORCHESTRATING.value,
                 })
-            message = unit.agent2.research_turns.get_message(str(turn["user_message_id"]))
-            return PreparedTurn(
-                turn=orchestrating,
-                bundle=bundle,
-                compact_context=compact,
-                resolution=resolution,
-                user_message=str(message["content_summary"]),
-                autonomy=dict(received_payload.get("autonomy") or {}),
-            )
+            return prepared
 
     def _autonomy_decision(self, prepared: PreparedTurn) -> ResearchTurnDecision | None:
         autonomy = prepared.autonomy
@@ -474,6 +500,25 @@ class AgentTurnProcessor:
                     timeout=self.timeout_seconds,
                 )
                 decision = ResearchTurnDecision.model_validate(result.parsed)
+                # ANALYZE is normally a new computation over the selected
+                # source.  A provider may echo a historical result key from
+                # bounded context, so unrelated recency-derived keys remain
+                # invalid for ANALYZE.  An explicitly selected persisted
+                # result is different: it is an authoritative UI binding and
+                # is required for capabilities that consume a prior result
+                # (for example experimental/theoretical XRD comparison).
+                # Preserve only those explicit bindings; discard provider
+                # echoes from non-explicit history before validation.
+                if (
+                    decision.action == ResearchAction.ANALYZE
+                    and decision.reusable_result_ref_keys
+                ):
+                    if not set(decision.reusable_result_ref_keys).issubset(
+                        prepared.explicit_result_candidate_keys
+                    ):
+                        decision = decision.model_copy(
+                            update={"reusable_result_ref_keys": []}
+                        )
                 decision = self.validator.validate(
                     decision=decision,
                     input_context=orchestrator_input,
@@ -501,28 +546,11 @@ class AgentTurnProcessor:
         raise AssertionError("unreachable")
 
     def _fail_if_active(self, turn_id: UUID, code: str, summary: str) -> None:
-        with self.repository_factory.unit_of_work() as unit:
-            turn = unit.agent2.research_turns.get_for_update(turn_id)
-            status = ResearchTurnStatus(str(turn["status"]))
-            if status in TERMINAL_TURN_STATUSES or status not in {
-                ResearchTurnStatus.RECEIVED,
-                ResearchTurnStatus.RESOLVING_CONTEXT,
-                ResearchTurnStatus.ORCHESTRATING,
-            }:
-                return
-            updated = unit.agent2.research_turns.compare_and_set_status(
-                turn_id,
-                expected_status=status.value,
-                expected_version=int(turn["row_version"]),
-                target_status=ResearchTurnStatus.FAILED.value,
-                completed_at=datetime.now(timezone.utc),
-                error_code=code,
-                error_summary=summary[:1000],
-            )
-            self._append_event(unit, turn_id, ResearchTurnEventType.TURN_FAILED, {
-                "status": updated["status"],
-                "error_code": code,
-            })
+        ResearchTurnService(self.repository_factory).fail_if_active(
+            turn_id,
+            code,
+            summary,
+        )
 
     @staticmethod
     def _append_event(unit: Any, turn_id: UUID, event_type: ResearchTurnEventType, payload: dict[str, Any]) -> None:

@@ -20,7 +20,8 @@ def execute_queued_job(
     """Execute one persisted Job and then publish committed progress."""
 
     result = runtime.handle_job(job_id)
-    runtime.notify_job_progress(job_id)
+    if bool(getattr(result, "authoritative", True)):
+        runtime.notify_job_progress(job_id)
     return result
 
 

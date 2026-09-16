@@ -1,3 +1,5 @@
+from types import SimpleNamespace
+
 import pytest
 from fastapi import HTTPException
 from fastapi.params import Depends
@@ -9,6 +11,7 @@ from mdi_api.routers.research import (
     ResearchSessionBulkActionRequest,
     _assistant_projection_text,
     _ground_projection_from_run,
+    _merge_runtime_catalog,
     _provider_research_turn_text,
     _semantic_names,
     _user_facing_step_label,
@@ -33,6 +36,52 @@ def test_scope_catalog_reads_current_profile_semantic_contract() -> None:
 
     assert {"y_true", "y_pred", "regression_target", "regression_prediction", "table", "regression_evaluation"} <= set(semantics)
     assert "structure_summary" not in semantics
+
+
+def test_runtime_profile_enriches_same_durable_dataset_without_duplicate_choice(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Profile:
+        profileId = "profile-runtime"
+
+        @staticmethod
+        def model_dump(*, mode: str):
+            assert mode == "json"
+            return {
+                "semanticColumns": [
+                    {"column": "formula", "roles": [{"role": "composition"}]},
+                ],
+            }
+
+    runtime_dataset = SimpleNamespace(
+        id="dataset-1",
+        project_id="project-1",
+        name="Readable materials table",
+        status="ready",
+        profile=Profile(),
+        files=[{"name": "materials.csv"}],
+    )
+    monkeypatch.setattr(
+        "mdi_api.infrastructure.phase2.runtime.get_phase2_runtime",
+        lambda: SimpleNamespace(datasets={"dataset-1": runtime_dataset}),
+    )
+    catalog = [{
+        "datasetId": "dataset-1",
+        "name": "dataset-1",
+        "status": "created",
+        "profileId": None,
+        "profileReady": False,
+        "semantics": [],
+        "files": [],
+    }]
+
+    merged = _merge_runtime_catalog("project-1", catalog)
+
+    assert len(merged) == 1
+    assert merged[0]["profileId"] == "profile-runtime"
+    assert merged[0]["profileReady"] is True
+    assert merged[0]["name"] == "Readable materials table"
+    assert "composition" in merged[0]["semantics"]
 
 
 def test_research_session_bulk_contract_deduplicates_and_rejects_unknown_actions() -> None:
@@ -96,6 +145,17 @@ def test_research_assistant_projection_is_bounded_and_user_facing() -> None:
     assert "拟合时间窗" in diffusion_clarification
     assert "完整时间范围" in diffusion_clarification
     assert "CrystalNN" not in diffusion_clarification
+
+
+def test_unsupported_projection_does_not_repeat_current_dataset_prefix() -> None:
+    text = _assistant_projection_text(
+        ResearchAssistantProjectionCreate(
+            phase="unsupported",
+            datasetName="当前项目材料数据",
+        )
+    )
+    assert text.startswith("当前项目材料数据缺少")
+    assert "当前 当前" not in text
 
 
 def test_pre_run_projection_uses_persisted_plan_instead_of_client_copy() -> None:

@@ -258,6 +258,7 @@ def test_operation_manifest_infers_provenance_and_rejects_unauthorized_items() -
         "object_primary"
     ]
     assert duplicate_manifest.excluded_items == ["object_duplicate"]
+    assert duplicate_manifest.excluded_item_details[0].reason == "DUPLICATE"
 
     try:
         build_operation_manifest(

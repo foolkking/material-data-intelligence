@@ -610,6 +610,8 @@ export type InterpretationEvidenceResponse = {
     versionId: string;
     objectType?: string;
     displayName?: string;
+    versionNo?: number | null;
+    isCurrentVersion?: boolean;
   }>;
   artifacts?: Artifact[];
   toolCalls?: Array<{
@@ -689,6 +691,9 @@ export type ProductSearchItem = {
   subtitle: string;
   href: string;
   researchTurnId?: string | null;
+  researchSessionId?: string | null;
+  objectVersionId?: string | null;
+  objectType?: string | null;
   status?: string | null;
   updatedAt?: string | null;
 };

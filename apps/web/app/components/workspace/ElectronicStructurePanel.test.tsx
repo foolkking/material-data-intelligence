@@ -47,6 +47,29 @@ describe("ElectronicStructurePanel", () => {
     expect(screen.getByText(/有界预览/u)).toBeTruthy();
   });
 
+  it("discloses presentation denominators without changing the persisted electronic result", () => {
+    const band = bandArtifact();
+    const content = band.content as Record<string, any>;
+    content.bands = Array.from({ length: 49 }, (_, index) => ({
+      bandIdentity: `band-${index}`,
+      bandId: `b-${index}`,
+      spinChannel: "none",
+      energiesEv: [-index, index],
+    }));
+    content.states = Array.from({ length: 501 }, (_, index) => ({
+      stateId: `state-${index}`,
+      bandId: "b-0",
+      spinChannel: "none",
+      kpointId: "kp_g",
+      energyEv: index,
+    }));
+    render(<ElectronicStructurePanel artifacts={[band]} selected={band} workspace={workspaceSnapshotFixture().workspace} onSelection={vi.fn()} />);
+    expect(screen.getByText(/显示 48 \/ 49 条能带/u)).toBeTruthy();
+    expect(screen.getByText(/状态表显示 500 \/ 501 行/u)).toBeTruthy();
+    expect(content.bands).toHaveLength(49);
+    expect(content.states).toHaveLength(501);
+  });
+
   it("shows a truthful empty state when a valid contract has no finite curve values", () => {
     const band = bandArtifact();
     const content = band.content as Record<string, any>;

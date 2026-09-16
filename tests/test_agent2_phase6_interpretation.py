@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 import importlib.util
 from pathlib import Path
@@ -13,14 +14,19 @@ from mdi_api.interpretation.assembler import InterpreterInputAssembler
 from mdi_api.interpretation.client import DeepSeekInterpreterClient, FakeStructuredInterpreterClient
 from mdi_api.interpretation.grounding import (
     project_grounded_answer_lead,
+    project_claim_support_assessments,
     project_grounded_communication,
     validate_interpretation,
 )
-from mdi_api.interpretation.schemas import ScientificInterpretationOutput
+from mdi_api.interpretation.schemas import ScientificFinding, ScientificInterpretationOutput
 from mdi_api.interpretation.service import ScientificInterpretationService
 from mdi_api.interpretation.queue import InMemoryInterpretationQueue
 from mdi_api.research_agent.orchestration.processor import AgentTurnProcessor
 from mdi_api.research_agent.registry_validation import build_default_agent2_registries
+from mdi_api.research_agent.context.policy import (
+    ContextOperation,
+    context_budget_policy,
+)
 from mdi_api.routers.research import _scientific_message_projections
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 from mdi_api.scientific_results.schemas import ScientificResultBundle
@@ -380,6 +386,48 @@ def test_grounded_communication_hides_exact_reference_echo_from_visible_prose() 
     assert validate_interpretation(projected, bundle).valid
 
 
+def test_grounded_communication_removes_opaque_method_and_version_metadata() -> None:
+    bundle = _bundle()
+    raw = ScientificInterpretationOutput.model_validate(
+            _output(
+                statement=(
+                    "RDF records 2.5 angstrom; source version "
+                    "052a21f6-0e2d-4d43-85c6-6033e17a149d."
+                )
+            )
+    )
+    raw = raw.model_copy(
+        update={
+            "supporting_findings": [
+                ScientificFinding.model_validate({
+                    "finding_id": "finding.method",
+                    "statement": (
+                        "The result was produced by capability structure.rdf "
+                        "(capability version 1.0, method "
+                        "method.20fec3cce73b5336a4d98fad0f504f99)."
+                    ),
+                    "importance": "MEDIUM",
+                    "confidence": "HIGH",
+                    "evidence_refs": ["evidence.rdf"],
+                    "result_item_refs": ["rdf.item"],
+                    "claim_type": "METHOD_INTERPRETATION",
+                    "support_status": "DIRECTLY_SUPPORTED",
+                })
+            ],
+        }
+    )
+
+    projected = project_grounded_communication(
+        project_claim_support_assessments(raw, bundle),
+        bundle,
+    )
+
+    assert "052a21f6-0e2d-4d43-85c6-6033e17a149d" not in projected.primary_findings[0].statement
+    assert "method.20fec3cce73b5336a4d98fad0f504f99" not in projected.supporting_findings[0].statement
+    assert "capability version 1.0" not in projected.supporting_findings[0].statement
+    assert validate_interpretation(projected, bundle).valid
+
+
 def test_grounded_communication_removes_redundant_success_wording() -> None:
     bundle_payload = _bundle().model_dump(mode="json")
     bundle_payload["facts"][0].update({
@@ -611,14 +659,114 @@ def test_interpreter_input_records_every_truncated_supporting_item():
     evidence = bundle.evidence[0]
     expanded = bundle.model_copy(update={"facts": [fact] * 66, "evidence": [evidence] * 66})
     envelope, _fingerprint = InterpreterInputAssembler().assemble(bundle=expanded, question="Explain the RDF", relevance_status="CURRENT")
-    assert len(envelope.result["facts"]) == 64
+    assert len(envelope.result["facts"]) == 16
     assert len(envelope.evidence) == 64
     assert envelope.omitted_supporting_items == [
-        "fact:rdf.first_peak",
-        "fact:rdf.first_peak",
+        *(["fact:rdf.first_peak"] * 50),
         "evidence:evidence.rdf",
         "evidence:evidence.rdf",
     ]
+
+
+def test_interpreter_input_compacts_support_edges_to_fit_actual_budget():
+    payload = _bundle().model_dump(mode="json")
+    template = payload["facts"][0]
+    facts = []
+    for index in range(220):
+        facts.append({
+            **template,
+            "fact_id": f"fact.{index:032x}",
+            "value": f"bounded scientific fact {index:04d} " + ("x" * 96),
+        })
+    fact_ids = [item["fact_id"] for item in facts]
+    payload["facts"] = facts
+    payload["result_items"][0]["fact_refs"] = fact_ids
+    payload["evidence"][0]["supports_fact_refs"] = fact_ids
+    expanded = ScientificResultBundle.model_validate(payload)
+
+    envelope, _fingerprint = InterpreterInputAssembler().assemble(
+        bundle=expanded,
+        question="Explain the bounded result.",
+        relevance_status="CURRENT",
+    )
+
+    encoded = json.dumps(
+        envelope.model_dump(mode="json"),
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    assert len(encoded) // 4 <= context_budget_policy(
+        ContextOperation.INTERPRETER
+    ).effective_input_budget
+    represented_fact_ids = {
+        item["fact_id"] for item in envelope.result["facts"]
+    }
+    assert set(envelope.result["result_items"][0]["fact_refs"]).issubset(
+        represented_fact_ids
+    )
+    assert set(envelope.evidence[0]["supports_fact_refs"]).issubset(
+        represented_fact_ids
+    )
+    assert len(envelope.omitted_supporting_items) == 220 - len(
+        represented_fact_ids
+    )
+
+
+def test_interpreter_input_prefers_summary_predicates_over_repetitive_rows():
+    payload = _bundle().model_dump(mode="json")
+    template = payload["facts"][0]
+    summary = [
+        {
+            **template,
+            "fact_id": f"summary.{index}",
+            "predicate": f"dataset.summary_{index}",
+            "value": index + 1,
+            "unit": "count",
+        }
+        for index in range(8)
+    ]
+    details = []
+    for index in range(100):
+        details.extend(
+            [
+                {
+                    **template,
+                    "fact_id": f"sample.{index}",
+                    "predicate": "dataset.sample_id",
+                    "value": f"sample-{index}",
+                    "unit": None,
+                },
+                {
+                    **template,
+                    "fact_id": f"formula.{index}",
+                    "predicate": "dataset.formula",
+                    "value": f"A{index}B",
+                    "unit": None,
+                },
+            ]
+        )
+    payload["facts"] = [*summary, *details]
+    payload["result_items"][0]["fact_refs"] = [
+        item["fact_id"] for item in payload["facts"]
+    ]
+    payload["evidence"][0]["supports_fact_refs"] = [
+        item["fact_id"] for item in payload["facts"]
+    ]
+
+    envelope, _fingerprint = InterpreterInputAssembler().assemble(
+        bundle=ScientificResultBundle.model_validate(payload),
+        question="Summarize this dataset.",
+        relevance_status="CURRENT",
+    )
+
+    represented = envelope.result["facts"]
+    assert [item["fact_id"] for item in represented] == [
+        item["fact_id"] for item in summary
+    ]
+    assert len(envelope.omitted_supporting_items) == len(details)
+    represented_ids = {item["fact_id"] for item in represented}
+    assert set(envelope.result["result_items"][0]["fact_refs"]) == represented_ids
+    assert set(envelope.evidence[0]["supports_fact_refs"]) == represented_ids
 
 
 def test_schema_invalid_response_gets_one_bounded_repair():
@@ -637,6 +785,60 @@ def test_schema_invalid_after_repair_is_not_accepted():
         service._generate_with_one_repair(InterpreterInputAssembler().assemble(bundle=_bundle(), question="Explain the RDF", relevance_status="CURRENT")[0], _bundle())
     assert getattr(exc.value, "code", "") == "INTERPRETATION_SCHEMA_INVALID"
     assert client.calls == 2
+
+
+def test_retired_provider_finding_fields_are_contract_repaired_without_authority():
+    legacy = _output()
+    for finding in [*legacy["primary_findings"], *legacy["supporting_findings"]]:
+        finding["outcome"] = "SUPPORTED"
+        finding["accepted"] = True
+    client = FakeStructuredInterpreterClient(legacy)
+    service = ScientificInterpretationService(repository_factory=None, client=client)  # type: ignore[arg-type]
+
+    result, repaired, _meta = service._generate_with_one_repair(
+        InterpreterInputAssembler().assemble(
+            bundle=_bundle(),
+            question="Explain the RDF",
+            relevance_status="CURRENT",
+        )[0],
+        _bundle(),
+    )
+
+    assert result.primary_findings
+    assert all(item.reasoning_assessment is None for item in result.primary_findings)
+    assert repaired is False
+    assert client.calls == 1
+
+
+def test_provider_invalid_json_gets_one_bounded_structured_output_repair():
+    class InvalidProviderOutput(RuntimeError):
+        code = "DEEPSEEK_RESPONSE_INVALID"
+
+    class InvalidThenValidClient(FakeStructuredInterpreterClient):
+        async def generate_structured(self, **kwargs):
+            self.calls += 1
+            if self.calls == 1:
+                raise InvalidProviderOutput("Provider output was not strict JSON.")
+            return await super().generate_structured(**kwargs)
+
+    client = InvalidThenValidClient([_output()])
+    service = ScientificInterpretationService(
+        repository_factory=None,  # type: ignore[arg-type]
+        client=client,
+    )
+
+    result, repaired, _meta = service._generate_with_one_repair(
+        InterpreterInputAssembler().assemble(
+            bundle=_bundle(),
+            question="Explain the RDF",
+            relevance_status="CURRENT",
+        )[0],
+        _bundle(),
+    )
+
+    assert result.title == "RDF 解释"
+    assert repaired is True
+    assert client.calls == 3
 
 
 def test_interpretation_service_projects_only_an_unsupported_answer_lead_without_retry():
@@ -724,6 +926,10 @@ def test_previous_result_interpretation_reuses_one_snapshot_across_new_turns_wit
             ]
             assert len(manifests) == 1
             assert manifests[0]["operation"] == "INTERPRETER"
+            assert manifests[0]["input_state"] == "ACTUAL"
+            assert manifests[0]["invocation_role"] == "scientific_interpreter"
+            assert manifests[0]["serialized_input"]
+            assert manifests[0]["serialized_input_fingerprint"]
             assert manifests[0]["included_items"]
             assert any(
                 item["kind"] == "SCIENTIFIC_RESULT"

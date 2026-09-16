@@ -338,12 +338,18 @@ const DATASET_ROW_IDENTITY_FIELDS = new Set([
 
 function PlotFallback({ content, descriptor, workspace, onSelection }: Readonly<{ content: unknown; descriptor: WorkspaceRendererDescriptor; workspace: ScientificWorkspace; onSelection: (selection: WorkspaceSelectionContext) => void }>) {
   const figure = normalizedPlotFigure(content);
-  const traces = Array.isArray(figure?.data) ? figure.data.slice(0, 128) : [];
-  const rows = traces.flatMap((trace, traceIndex) => plotRows(trace, traceIndex, descriptor.maximumPoints)).slice(0, descriptor.maximumRows);
-  return <section className="workspace-generic-renderer" aria-label="科学图表"><header className="scientific-figure-header"><h5>科学图表</h5><p>{traces.length} 个已验证数据系列</p></header><LazyBoundary><WorkspaceGenericPlot content={content} maximumPoints={descriptor.maximumPoints} /></LazyBoundary>{rows.length ? <details><summary>查看数值数据 · {rows.length} 行</summary><TableFallback content={{ rows }} descriptor={descriptor} workspace={workspace} onSelection={onSelection} /></details> : null}<details><summary>技术详情</summary><JsonFallback content={content} /></details></section>;
+  const allTraces = Array.isArray(figure?.data) ? figure.data : [];
+  const traces = allTraces.slice(0, 128);
+  const allRows = traces.flatMap((trace, traceIndex) => plotRows(trace, traceIndex, descriptor.maximumPoints));
+  const rows = allRows.slice(0, descriptor.maximumRows);
+  return <section className="workspace-generic-renderer" aria-label="科学图表"><header className="scientific-figure-header"><h5>科学图表</h5><p>{traces.length} / {allTraces.length} 个已验证数据系列用于当前交互预览</p></header><LazyBoundary><WorkspaceGenericPlot content={content} maximumPoints={descriptor.maximumPoints} /></LazyBoundary>{rows.length ? <details><summary>查看数值数据 · {rows.length} / {allRows.length} 行</summary><TableFallback content={{ rows }} descriptor={descriptor} workspace={workspace} onSelection={onSelection} /></details> : null}<p className="workspace-table-preview-note" role="note">图表和数值表是有界展示投影；完整数据仍保留在权威 Artifact 中。</p><details><summary>技术详情</summary><JsonFallback content={content} /></details></section>;
 }
 
-function TextFallback({ content }: { content: unknown }) { return <section className="workspace-generic-renderer"><h5>文本结果</h5><pre>{typeof content === "string" ? content.slice(0, MAX_JSON_PREVIEW_CHARS) : "文本内容暂时无法读取。"}</pre></section>; }
+function TextFallback({ content }: { content: unknown }) {
+  const text = typeof content === "string" ? content : "";
+  const truncated = text.length > MAX_JSON_PREVIEW_CHARS;
+  return <section className="workspace-generic-renderer"><h5>文本结果</h5><pre>{text ? text.slice(0, MAX_JSON_PREVIEW_CHARS) : "文本内容暂时无法读取。"}</pre>{truncated ? <p className="workspace-table-preview-note" role="note">当前文本预览显示前 {MAX_JSON_PREVIEW_CHARS.toLocaleString("zh-CN")} / {text.length.toLocaleString("zh-CN")} 个字符；完整内容仍保留在权威 Artifact 中。</p> : null}</section>;
+}
 function StaticMetadataFallback({ artifact }: { artifact: Artifact }) {
   return <section className="workspace-generic-renderer workspace-metadata-fallback" role="status" aria-label="科学资源元数据">
     <p className="product-kicker">安全元数据预览</p>

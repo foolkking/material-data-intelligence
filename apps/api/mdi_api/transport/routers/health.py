@@ -80,6 +80,102 @@ def runtime_health() -> dict[str, Any]:
     }
 
 
+def task_health_projection() -> dict[str, Any]:
+    """Return a small durable, read-only task health projection.
+
+    This is deliberately aggregate-only: it exposes queue/running/retry
+    facts and a bounded operational starvation warning, never Redis keys,
+    worker identities, fencing tokens, or scientific progress percentages.
+    """
+
+    settings = load_settings()
+    if not settings.database_url:
+        return {
+            "status": "unknown",
+            "reason": "database not configured",
+            "contract": "mdi.m3.task-health-projection/1.0",
+        }
+    engine = None
+    try:
+        engine = create_engine_from_settings(settings)
+        with engine.connect() as connection:
+            rows = connection.execute(
+                text(
+                    "SELECT lower(COALESCE(status, 'unknown')) AS status, "
+                    "created_at, lease_expires_at "
+                    "FROM jobs "
+                    "WHERE terminal_at IS NULL "
+                    "   OR lower(COALESCE(status, 'unknown')) IN "
+                    "      ('queued', 'running', 'retrying', 'recovering', "
+                    "       'lease_expired', 'retryable')"
+                )
+            ).mappings().all()
+            now = connection.execute(
+                text("SELECT CURRENT_TIMESTAMP")
+            ).scalar_one()
+    except Exception as exc:
+        return {
+            "status": "unknown",
+            "reason": "task health durable query unavailable",
+            "error_code": classify_service_failure("database", exc).code,
+            "contract": "mdi.m3.task-health-projection/1.0",
+        }
+    finally:
+        if engine is not None:
+            engine.dispose()
+
+    counts = {
+        "queued": 0,
+        "running": 0,
+        "retrying": 0,
+        "recovering": 0,
+        "expired": 0,
+    }
+    waiting_ages: list[float] = []
+    for row in rows:
+        state = str(row["status"] or "unknown")
+        if state in {"queued", "received"}:
+            counts["queued"] += 1
+            if row["created_at"] is not None:
+                waiting_ages.append(
+                    max(0.0, (now - row["created_at"]).total_seconds())
+                )
+        elif state == "running":
+            counts["running"] += 1
+        elif state in {"retrying", "retryable"}:
+            counts["retrying"] += 1
+        elif state in {"recovering", "lease_expired"}:
+            counts["recovering"] += 1
+            counts["expired"] += 1
+
+    oldest_wait = max(waiting_ages) if waiting_ages else 0.0
+    qualification_bound = 34.9059
+    return {
+        "status": "ok",
+        "contract": "mdi.m3.task-health-projection/1.0",
+        "states": {
+            "queued": counts["queued"] > 0,
+            "running": counts["running"] > 0,
+            "retrying": counts["retrying"] > 0,
+            "recovering": counts["recovering"] > 0,
+        },
+        "counts": {
+            "queued_count": counts["queued"],
+            "running_count": counts["running"],
+            "retrying_count": counts["retrying"],
+            "expired_or_recovering_count": counts["expired"],
+        },
+        "oldest_queue_wait_seconds": round(oldest_wait, 6),
+        "starved_candidate_count": sum(
+            1 for age in waiting_ages if age > qualification_bound
+        ),
+        "starvation_warning_bound_seconds": qualification_bound,
+        "bound_semantics": "qualification operational warning, not public SLA",
+        "read_only": True,
+        "no_fake_progress_percentage": True,
+    }
+
+
 def _check_database(settings: Any) -> dict[str, Any]:
     if not settings.database_url:
         return _component("unknown", backend="unknown", reason="not configured")

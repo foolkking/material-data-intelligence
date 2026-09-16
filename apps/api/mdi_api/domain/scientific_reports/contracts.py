@@ -9,6 +9,7 @@ from typing import Any, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+from mdi_api.domain.scientific_reasoning.contracts import ClaimSupportAssessment
 
 
 REPORT_COMPOSER_CONTRACT_VERSION = "2.0"
@@ -43,6 +44,9 @@ class ReportContextBundle(BaseModel):
     result: dict[str, Any]
     interpretation: dict[str, Any]
     evidence: list[dict[str, Any]] = Field(default_factory=list, max_length=64)
+    literature_evidence: list[dict[str, Any]] = Field(
+        default_factory=list, max_length=24
+    )
     opaque_refs: dict[str, list[str]] = Field(default_factory=dict)
     omitted_supporting_items: list[str] = Field(default_factory=list, max_length=64)
 
@@ -54,6 +58,7 @@ class ReportFinding(BaseModel):
     finding_refs: list[str] = Field(default_factory=list, max_length=32)
     fact_refs: list[str] = Field(default_factory=list, max_length=32)
     evidence_refs: list[str] = Field(default_factory=list, max_length=32)
+    reasoning_assessment: ClaimSupportAssessment | None = None
 
 
 class ReportFigure(BaseModel):
@@ -77,6 +82,22 @@ class ReportLimitation(BaseModel):
 
     statement: str = Field(min_length=1, max_length=2000)
     source_refs: list[str] = Field(default_factory=list, max_length=32)
+
+
+class ReportLiteratureSource(BaseModel):
+    """Exact scholarly snapshot used by this immutable Report."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    evidence_ref: str = Field(pattern=r"^literature_[1-9][0-9]*$")
+    evidence_id: UUID
+    work_id: UUID
+    snapshot_id: UUID
+    citation: str = Field(min_length=1, max_length=4000)
+    evidence_scope: str = Field(min_length=1, max_length=64)
+    support_type: str = Field(min_length=1, max_length=64)
+    publication_status: str = Field(min_length=1, max_length=64)
+    claim_refs: list[str] = Field(default_factory=list, max_length=64)
 
 
 class ReportNarrativeSection(BaseModel):
@@ -112,6 +133,9 @@ class ScientificReportOutput(BaseModel):
     limitations: list[ReportLimitation] = Field(default_factory=list, max_length=32)
     data_sources: list[str] = Field(default_factory=list, max_length=64)
     evidence_refs: list[str] = Field(default_factory=list, max_length=128)
+    literature_sources: list[ReportLiteratureSource] = Field(
+        default_factory=list, max_length=24
+    )
     reproducibility_summary: str = Field(min_length=1, max_length=6000)
     omitted_supporting_items: list[str] = Field(default_factory=list, max_length=64)
 
@@ -158,6 +182,6 @@ __all__ = [
     "REPORT_COMPOSER_CONTRACT_VERSION", "REPORT_COMPOSER_PROMPT_VERSION", "REPORT_COMPOSER_VERSION",
     "ReportContextBundle",
     "ReportFigure", "ReportFinding", "ReportGenerationStatus", "ReportGroundingStatus",
-    "ReportLimitation", "ReportNarrativeSection", "ReportSupportingResult",
+    "ReportLimitation", "ReportLiteratureSource", "ReportNarrativeSection", "ReportSupportingResult",
     "ScientificReportOutput", "ScientificReportSnapshot",
 ]

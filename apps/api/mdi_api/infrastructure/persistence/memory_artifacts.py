@@ -12,6 +12,7 @@ from mdi_api.infrastructure.persistence.base import (
     _model_to_record,
     _required_id,
 )
+from mdi_api.application.jobs.leases import ExecutionLeaseLost
 
 class InMemoryArtifactRepository(_InMemoryRecordRepository):
     def save(self, artifact: Artifact | Mapping[str, Any]) -> dict[str, Any]:
@@ -25,6 +26,22 @@ class InMemoryArtifactRepository(_InMemoryRecordRepository):
             self.records[existing_id] = {**_json_copy(current), **_json_copy(record)}
             return _json_copy(self.records[existing_id])
         return self._save(record, record_id=artifact_id)
+
+    def save_for_execution(
+        self,
+        artifact: Artifact | Mapping[str, Any],
+        *,
+        owner: str,
+        attempt: int,
+    ) -> dict[str, Any]:
+        record = _model_to_record(artifact)
+        metadata = dict(record.get("metadata") or {})
+        recorded = int(metadata.get("executionAttempt") or attempt)
+        if recorded != attempt:
+            raise ExecutionLeaseLost("stale Artifact attempt rejected")
+        metadata["executionAttempt"] = attempt
+        record["metadata"] = metadata
+        return self.save(record)
 
     def get(self, artifact_id: str) -> dict[str, Any]:
         return self._get(artifact_id)

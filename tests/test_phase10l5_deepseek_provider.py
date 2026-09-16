@@ -94,7 +94,7 @@ def test_deepseek_retries_one_transient_failure_and_audits_each_attempt(
         return _completion()
 
     monkeypatch.setattr("mdi_llm.providers.sleep", backoffs.append)
-    provider = DeepSeekProvider(transport=transport)
+    provider = DeepSeekProvider(transport=transport, random_source=lambda: 0.5)
     response = provider.complete_json(
         messages=[{"role": "user", "content": "Return strict JSON."}],
         purpose="PROVIDER_CONNECTION_TEST",
@@ -102,11 +102,123 @@ def test_deepseek_retries_one_transient_failure_and_audits_each_attempt(
 
     assert response.raw_json == {"status": "ok"}
     assert attempts == 2
-    assert backoffs == [0.25]
+    assert backoffs == [0.3]
     assert [item["outcome"] for item in provider.call_audit] == [
         "DEEPSEEK_RATE_LIMITED",
         "SUCCESS",
     ]
+    assert provider.call_audit[0]["retryBaseSeconds"] == 0.25
+    assert provider.call_audit[0]["retryJitterSeconds"] == 0.05
+    assert provider.call_audit[0]["retryDelaySeconds"] == 0.3
+
+
+def test_deepseek_honors_bounded_retry_after_and_adds_jitter(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    attempts = 0
+    backoffs: list[float] = []
+
+    def transport(**_kwargs):
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            raise LLMProviderError(
+                "rate limited",
+                code="LLM_HTTP_ERROR",
+                status_code=429,
+                retry_after_seconds=0.75,
+            )
+        return _completion()
+
+    monkeypatch.setattr("mdi_llm.providers.sleep", backoffs.append)
+    provider = DeepSeekProvider(transport=transport, random_source=lambda: 0.25)
+    provider.complete_json(messages=[], purpose="PROVIDER_CONNECTION_TEST")
+
+    assert backoffs == [0.775]
+    assert provider.call_audit[0]["retryAfterSeconds"] == 0.75
+    assert provider.call_audit[0]["retryBaseSeconds"] == 0.75
+    assert provider.call_audit[0]["retryJitterSeconds"] == 0.025
+
+
+def test_deepseek_notifies_retry_observer_without_sensitive_payload(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    attempts = 0
+    observed: list[dict] = []
+
+    def transport(**_kwargs):
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            raise LLMProviderError(
+                "rate limited",
+                code="LLM_HTTP_ERROR",
+                status_code=429,
+                retry_after_seconds=0.5,
+            )
+        return _completion()
+
+    monkeypatch.setattr("mdi_llm.providers.sleep", lambda _delay: None)
+    DeepSeekProvider(
+        transport=transport,
+        random_source=lambda: 0.5,
+    ).complete_json(
+        messages=[{"role": "user", "content": "secret prompt body"}],
+        purpose="PROVIDER_CONNECTION_TEST",
+        retry_observer=observed.append,
+    )
+
+    assert len(observed) == 1
+    assert observed[0]["failed_attempt"] == 1
+    assert observed[0]["next_attempt"] == 2
+    assert observed[0]["error_code"] == "DEEPSEEK_RATE_LIMITED"
+    assert observed[0]["retry_after_seconds"] == 0.5
+    assert observed[0]["retry_delay_seconds"] == 0.55
+    assert "secret prompt body" not in json.dumps(observed)
+
+
+def test_qualification_deepseek_endpoint_is_loopback_only(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("DEEPSEEK_KEY", "qualification-only-key")
+    monkeypatch.setenv("MDI_QUALIFICATION_MODE", "true")
+    monkeypatch.setenv(
+        "MDI_QUALIFICATION_DEEPSEEK_BASE_URL",
+        "http://127.0.0.1:18089",
+    )
+    captured: dict = {}
+
+    class Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return None
+
+        def read(self, _limit):
+            return json.dumps(_completion()).encode()
+
+    def urlopen(request, timeout):
+        captured["url"] = request.full_url
+        captured["timeout"] = timeout
+        return Response()
+
+    DeepSeekProvider(urlopen=urlopen).complete_json(
+        messages=[],
+        purpose="PROVIDER_CONNECTION_TEST",
+    )
+    assert captured["url"] == "http://127.0.0.1:18089/chat/completions"
+
+    monkeypatch.setenv(
+        "MDI_QUALIFICATION_DEEPSEEK_BASE_URL",
+        "http://example.com:18089",
+    )
+    with pytest.raises(LLMProviderError) as exc:
+        DeepSeekProvider(urlopen=urlopen).complete_json(
+            messages=[],
+            purpose="PROVIDER_CONNECTION_TEST",
+        )
+    assert exc.value.code == "DEEPSEEK_CONFIGURATION_NOT_ALLOWED"
 
 
 def test_deepseek_does_not_retry_authentication_failure(

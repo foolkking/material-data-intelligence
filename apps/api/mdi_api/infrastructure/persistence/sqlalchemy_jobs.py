@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+from datetime import timedelta
 from threading import Lock
 from typing import Any, Mapping, Sequence
 
-from sqlalchemy import and_, delete, func, insert, or_, select, text
+from sqlalchemy import and_, delete, func, insert, or_, select, text, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.engine import Connection, Engine
 
@@ -45,6 +46,10 @@ from mdi_api.state_machine import (
     validate_tool_call_status,
     validate_tool_call_transition,
 )
+from mdi_api.application.jobs.leases import ExecutionLease, ExecutionLeaseLost
+
+
+_JOB_TERMINAL = {"completed", "partial_success", "cancelled"}
 
 class SqlAlchemyJobRepository(_SqlAlchemyRepository):
     def create(self, job: Mapping[str, Any]) -> dict[str, Any]:
@@ -106,6 +111,290 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
 
         self._with_connection(run)
         return self.get(job_id)
+
+    def claim_execution(
+        self,
+        job_id: str,
+        *,
+        owner: str,
+        lease_seconds: int,
+    ) -> ExecutionLease | None:
+        if not owner.strip():
+            raise ValueError("execution owner is required")
+        if lease_seconds < 1:
+            raise ValueError("lease_seconds must be positive")
+
+        def run(connection: Connection) -> ExecutionLease | None:
+            row = connection.execute(
+                select(jobs).where(jobs.c.id == job_id).with_for_update()
+            ).mappings().first()
+            if row is None:
+                raise LookupError(f"Unknown job id: {job_id}")
+            current = _row_to_json_dict(row)
+            status = str(current["status"])
+            server_now = connection.execute(select(func.now())).scalar_one()
+            expires_at = current.get("lease_expires_at")
+            if status in _JOB_TERMINAL or status == "cancel_requested":
+                return None
+            if (
+                status == "running"
+                and expires_at is not None
+                and expires_at > server_now
+            ):
+                return None
+            reclaimed = status == "running"
+            attempt = int(current.get("execution_attempt") or 0) + 1
+            new_expiry = server_now + timedelta(seconds=lease_seconds)
+            connection.execute(
+                update(jobs)
+                .where(jobs.c.id == job_id)
+                .values(
+                    status="running",
+                    execution_owner=owner,
+                    execution_attempt=attempt,
+                    lease_claimed_at=server_now,
+                    lease_renewed_at=server_now,
+                    lease_expires_at=new_expiry,
+                    updated_at=server_now,
+                )
+            )
+            return ExecutionLease(
+                job_id=job_id,
+                owner=owner,
+                attempt=attempt,
+                claimed_at=_iso(server_now),
+                renewed_at=_iso(server_now),
+                expires_at=_iso(new_expiry),
+                reclaimed=reclaimed,
+            )
+
+        return self._with_connection(run)
+
+    def renew_execution(
+        self,
+        job_id: str,
+        *,
+        owner: str,
+        attempt: int,
+        lease_seconds: int,
+    ) -> ExecutionLease:
+        if lease_seconds < 1:
+            raise ValueError("lease_seconds must be positive")
+
+        def run(connection: Connection) -> ExecutionLease:
+            server_now = connection.execute(select(func.now())).scalar_one()
+            new_expiry = server_now + timedelta(seconds=lease_seconds)
+            result = connection.execute(
+                update(jobs)
+                .where(
+                    jobs.c.id == job_id,
+                    jobs.c.status.in_(("running", "cancel_requested")),
+                    jobs.c.execution_owner == owner,
+                    jobs.c.execution_attempt == attempt,
+                    jobs.c.lease_expires_at > server_now,
+                )
+                .values(
+                    lease_renewed_at=server_now,
+                    lease_expires_at=new_expiry,
+                    updated_at=server_now,
+                )
+            )
+            if result.rowcount != 1:
+                raise ExecutionLeaseLost(
+                    f"execution lease is no longer current for {job_id} attempt {attempt}"
+                )
+            row = connection.execute(
+                select(jobs).where(jobs.c.id == job_id)
+            ).mappings().one()
+            return _execution_lease_from_row(row, reclaimed=False)
+
+        return self._with_connection(run)
+
+    def assert_current_execution(
+        self,
+        job_id: str,
+        *,
+        owner: str,
+        attempt: int,
+    ) -> dict[str, Any]:
+        def run(connection: Connection) -> dict[str, Any]:
+            server_now = connection.execute(select(func.now())).scalar_one()
+            row = connection.execute(
+                select(jobs).where(
+                    jobs.c.id == job_id,
+                    jobs.c.status.in_(("running", "cancel_requested")),
+                    jobs.c.execution_owner == owner,
+                    jobs.c.execution_attempt == attempt,
+                    jobs.c.lease_expires_at > server_now,
+                )
+            ).mappings().first()
+            if row is None:
+                raise ExecutionLeaseLost(
+                    f"execution lease is no longer current for {job_id} attempt {attempt}"
+                )
+            return _job_from_row(row)
+
+        return self._with_connection(run)
+
+    def set_status_for_execution(
+        self,
+        job_id: str,
+        status: JobStatus | str,
+        *,
+        owner: str,
+        attempt: int,
+    ) -> dict[str, Any]:
+        requested = validate_job_status(status)
+
+        def run(connection: Connection) -> None:
+            row = connection.execute(
+                select(jobs).where(jobs.c.id == job_id).with_for_update()
+            ).mappings().first()
+            if row is None:
+                raise LookupError(f"Unknown job id: {job_id}")
+            current = _row_to_json_dict(row)
+            server_now = connection.execute(select(func.now())).scalar_one()
+            if (
+                str(current.get("execution_owner") or "") != owner
+                or int(current.get("execution_attempt") or 0) != attempt
+                or current.get("lease_expires_at") is None
+                or current["lease_expires_at"] <= server_now
+            ):
+                raise ExecutionLeaseLost(
+                    f"stale authoritative write rejected for {job_id} attempt {attempt}"
+                )
+            current_status = str(current["status"])
+            if current_status == "cancel_requested" and requested != "cancelled":
+                raise ExecutionLeaseLost(
+                    f"cancellation has precedence for {job_id} attempt {attempt}"
+                )
+            next_status = validate_job_transition(current_status, requested)
+            terminal = next_status in _JOB_TERMINAL or next_status == "failed"
+            values: dict[str, Any] = {
+                "status": next_status,
+                "updated_at": server_now,
+            }
+            if terminal:
+                values.update(
+                    terminal_at=server_now,
+                    lease_expires_at=None,
+                    execution_owner=None,
+                )
+            if next_status == "cancelled":
+                values["cancel_acknowledged_at"] = server_now
+            connection.execute(
+                update(jobs).where(jobs.c.id == job_id).values(**values)
+            )
+
+        self._with_connection(run)
+        return self.get(job_id)
+
+    def request_cancel(self, job_id: str) -> dict[str, Any]:
+        def run(connection: Connection) -> None:
+            row = connection.execute(
+                select(jobs).where(jobs.c.id == job_id).with_for_update()
+            ).mappings().first()
+            if row is None:
+                raise LookupError(f"Unknown job id: {job_id}")
+            current = _row_to_json_dict(row)
+            status = str(current["status"])
+            if status in _JOB_TERMINAL or status == "failed":
+                return
+            next_status = validate_job_transition(status, "cancel_requested")
+            server_now = connection.execute(select(func.now())).scalar_one()
+            connection.execute(
+                update(jobs)
+                .where(jobs.c.id == job_id)
+                .values(
+                    status=next_status,
+                    cancel_requested_at=current.get("cancel_requested_at")
+                    or server_now,
+                    updated_at=server_now,
+                )
+            )
+
+        self._with_connection(run)
+        return self.get(job_id)
+
+    def acknowledge_cancel(
+        self,
+        job_id: str,
+        *,
+        owner: str | None = None,
+        attempt: int | None = None,
+    ) -> dict[str, Any]:
+        if owner is not None and attempt is not None:
+            return self.set_status_for_execution(
+                job_id, "cancelled", owner=owner, attempt=attempt
+            )
+
+        def run(connection: Connection) -> None:
+            row = connection.execute(
+                select(jobs).where(jobs.c.id == job_id).with_for_update()
+            ).mappings().first()
+            if row is None:
+                raise LookupError(f"Unknown job id: {job_id}")
+            current = _row_to_json_dict(row)
+            if str(current["status"]) != "cancel_requested":
+                return
+            if current.get("execution_owner"):
+                raise ExecutionLeaseLost(
+                    "an active owner must acknowledge its own cancellation"
+                )
+            server_now = connection.execute(select(func.now())).scalar_one()
+            connection.execute(
+                update(jobs)
+                .where(jobs.c.id == job_id)
+                .values(
+                    status="cancelled",
+                    cancel_acknowledged_at=server_now,
+                    terminal_at=server_now,
+                    updated_at=server_now,
+                )
+            )
+
+        self._with_connection(run)
+        return self.get(job_id)
+
+    def lifecycle_projection(self, job_id: str) -> dict[str, Any]:
+        def run(connection: Connection) -> dict[str, Any]:
+            row = connection.execute(
+                select(jobs).where(jobs.c.id == job_id)
+            ).mappings().first()
+            if row is None:
+                raise LookupError(f"Unknown job id: {job_id}")
+            current = _row_to_json_dict(row)
+            server_now = connection.execute(select(func.now())).scalar_one()
+            expiry = current.get("lease_expires_at")
+            status = str(current["status"])
+            return {
+                "executionState": status,
+                "attempt": int(current.get("execution_attempt") or 0),
+                "ownerPresent": bool(current.get("execution_owner")),
+                "leaseStatus": (
+                    "EXPIRED"
+                    if status == "running" and expiry is not None and expiry <= server_now
+                    else "ACTIVE"
+                    if status == "running" and expiry is not None
+                    else "NOT_APPLICABLE"
+                ),
+                "leaseExpiresAt": _iso(expiry) if expiry is not None else None,
+                "cancelRequested": status == "cancel_requested"
+                or current.get("cancel_requested_at") is not None,
+                "cancelRequestedAt": _iso(current["cancel_requested_at"])
+                if current.get("cancel_requested_at")
+                else None,
+                "cancelAcknowledgedAt": _iso(current["cancel_acknowledged_at"])
+                if current.get("cancel_acknowledged_at")
+                else None,
+                "terminalAt": _iso(current["terminal_at"])
+                if current.get("terminal_at")
+                else None,
+                "authority": "POSTGRESQL_JOB_ROW",
+                "readOnly": True,
+            }
+
+        return self._with_connection(run)
 
     def update_status(self, job_id: str, status: JobStatus | str) -> dict[str, Any]:
         return self.set_status(job_id, status)
@@ -344,6 +633,114 @@ class SqlAlchemyToolCallRepository(_SqlAlchemyRepository):
             stored_id = str(existing_row["id"])
         return self.get(stored_id)
 
+    def save_for_execution(
+        self,
+        tool_call: ToolCall | Mapping[str, Any],
+        *,
+        owner: str,
+        attempt: int,
+    ) -> dict[str, Any]:
+        record = _model_to_record(tool_call)
+        record["attempt"] = attempt
+        job_id = str(record["jobId"])
+
+        def run(connection: Connection) -> str:
+            server_now = connection.execute(select(func.now())).scalar_one()
+            job = connection.execute(
+                select(jobs).where(
+                    jobs.c.id == job_id,
+                    jobs.c.status.in_(("running", "cancel_requested")),
+                    jobs.c.execution_owner == owner,
+                    jobs.c.execution_attempt == attempt,
+                    jobs.c.lease_expires_at > server_now,
+                )
+            ).mappings().first()
+            if job is None:
+                raise ExecutionLeaseLost(
+                    f"stale ToolCall write rejected for {job_id} attempt {attempt}"
+                )
+            return self._save_on_connection(connection, record, attempt=attempt)
+
+        stored_id = self._with_connection(run)
+        return self.get(stored_id)
+
+    def _save_on_connection(
+        self,
+        connection: Connection,
+        record: Mapping[str, Any],
+        *,
+        attempt: int,
+    ) -> str:
+        tool_call_id = _required_id(record)
+        job_id = str(record["jobId"])
+        step_id = str(record["stepId"])
+        idempotency_key = str(
+            record.get("idempotencyKey")
+            or record.get("idempotency_key")
+            or f"{job_id}:{step_id}"
+        )
+        status = validate_tool_call_status(record.get("status") or "planned")
+        values = {
+            "id": tool_call_id,
+            "job_id": job_id,
+            "step_id": step_id,
+            "tool_id": str(record["toolId"]),
+            "idempotency_key": idempotency_key,
+            "attempt": attempt,
+            "status": status,
+            "params_json": _json_copy(record.get("params") or {}),
+            "error_json": _json_copy(record.get("error"))
+            if record.get("error")
+            else None,
+        }
+        existing = connection.execute(
+            select(tool_calls)
+            .where(
+                or_(
+                    tool_calls.c.id == tool_call_id,
+                    and_(
+                        tool_calls.c.job_id == job_id,
+                        tool_calls.c.step_id == step_id,
+                    ),
+                    and_(
+                        tool_calls.c.job_id == job_id,
+                        tool_calls.c.idempotency_key == idempotency_key,
+                    ),
+                )
+            )
+            .with_for_update()
+        ).mappings().first()
+        if existing is None:
+            connection.execute(insert(tool_calls).values(**values))
+            return tool_call_id
+        existing_row = _row_to_json_dict(existing)
+        existing_attempt = int(existing_row.get("attempt") or 1)
+        if existing_attempt > attempt:
+            raise ExecutionLeaseLost(
+                f"stale ToolCall attempt {attempt} rejected; current is {existing_attempt}"
+            )
+        existing_id = str(existing_row["id"])
+        if existing_attempt < attempt:
+            next_status = status
+        else:
+            next_status = validate_tool_call_transition(
+                existing_row.get("status") or "planned", status
+            )
+        connection.execute(
+            update(tool_calls)
+            .where(tool_calls.c.id == existing_id)
+            .values(
+                **{
+                    **values,
+                    "id": existing_id,
+                    "status": next_status,
+                    "attempt": attempt,
+                },
+                updated_at=func.now(),
+            )
+        )
+        return existing_id
+
     def get(self, tool_call_id: str) -> dict[str, Any]:
         return _tool_call_from_row(self._fetch_one_dict(select(tool_calls).where(tool_calls.c.id == tool_call_id)))
 
@@ -389,10 +786,42 @@ def _job_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
         "planId": row.get("plan_id"),
         "kind": row["kind"],
         "status": row["status"],
+        "executionOwner": row.get("execution_owner"),
+        "executionAttempt": int(row.get("execution_attempt") or 0),
+        "leaseClaimedAt": _iso(row["lease_claimed_at"])
+        if row.get("lease_claimed_at")
+        else None,
+        "leaseRenewedAt": _iso(row["lease_renewed_at"])
+        if row.get("lease_renewed_at")
+        else None,
+        "leaseExpiresAt": _iso(row["lease_expires_at"])
+        if row.get("lease_expires_at")
+        else None,
+        "cancelRequestedAt": _iso(row["cancel_requested_at"])
+        if row.get("cancel_requested_at")
+        else None,
+        "cancelAcknowledgedAt": _iso(row["cancel_acknowledged_at"])
+        if row.get("cancel_acknowledged_at")
+        else None,
+        "terminalAt": _iso(row["terminal_at"]) if row.get("terminal_at") else None,
         "createdBy": row["created_by"],
         "createdAt": _iso(row["created_at"]),
         "updatedAt": _iso(row["updated_at"]),
     }
+
+
+def _execution_lease_from_row(
+    row: Mapping[str, Any], *, reclaimed: bool
+) -> ExecutionLease:
+    return ExecutionLease(
+        job_id=str(row["id"]),
+        owner=str(row["execution_owner"]),
+        attempt=int(row["execution_attempt"]),
+        claimed_at=_iso(row["lease_claimed_at"]),
+        renewed_at=_iso(row["lease_renewed_at"]),
+        expires_at=_iso(row["lease_expires_at"]),
+        reclaimed=reclaimed,
+    )
 
 def _tool_call_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
     return {

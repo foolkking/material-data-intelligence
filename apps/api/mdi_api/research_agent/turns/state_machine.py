@@ -28,6 +28,10 @@ ALLOWED_TRANSITIONS: dict[ResearchTurnStatus, frozenset[ResearchTurnStatus]] = {
     ResearchTurnStatus.RESULT_PENDING: frozenset({ResearchTurnStatus.RESULT_READY, _FAILED}),
     ResearchTurnStatus.RESULT_READY: frozenset({ResearchTurnStatus.INTERPRETING, _FAILED}),
     ResearchTurnStatus.INTERPRETING: frozenset({ResearchTurnStatus.COMPLETED, ResearchTurnStatus.PARTIAL, _FAILED, _CANCELED}),
+    # M2 narrow recovery: a failed Interpretation may reclaim only the
+    # Interpretation boundary when an immutable ScientificResult already
+    # exists.  The service enforces that predicate before this transition.
+    ResearchTurnStatus.FAILED: frozenset({ResearchTurnStatus.INTERPRETING}),
 }
 
 

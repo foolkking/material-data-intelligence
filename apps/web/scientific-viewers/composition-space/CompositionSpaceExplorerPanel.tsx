@@ -87,8 +87,8 @@ function CompositionSpaceContent({ artifact, standalone, integrationReason, exte
     </header> : <div className="composition-space-subheading"><div><h3>Composition Space</h3><p>Backend-computed atomic-fraction PCA with stable sample linkage.</p></div><span className="badge">PCA 2D</span></div>}
 
     <dl className="mini-grid composition-space-identity">
-      <Field label="Dataset" value={text(dataset.datasetId)} />
-      <Field label="Profile" value={text(dataset.profileId)} />
+      <Field label="Source" value="Current project dataset" />
+      <Field label="Scientific profile" value="Parsed and validated" />
       <Field label="Valid samples" value={integer(coverage.validCompositionSamples)} />
       <Field label="Invalid samples" value={integer(coverage.invalidCompositionSamples)} />
       <Field label="Element dimensions" value={integer(feature.featureDimensions)} />
@@ -159,8 +159,8 @@ function CompositionSpaceContent({ artifact, standalone, integrationReason, exte
       <section data-testid="composition-space-outliers">
         <h3>Composition-space candidates</h3>
         <DataTable
-          columns={["Rank", "Sample", "Object", "Row", "Feature-centroid distance"]}
-          rows={records(data.outlierCandidates).map((item) => [integer(item.rank), text(item.sampleRef), text(item.objectId), integer(item.rowIndex), format(item.distance)])}
+          columns={["Rank", "Sample", "Row", "Feature-centroid distance"]}
+          rows={records(data.outlierCandidates).map((item) => [integer(item.rank), text(item.sampleRef), integer(item.rowIndex), format(item.distance)])}
           empty="No bounded distance candidates."
         />
         <p className="dataset-method-note">Distance ranking identifies composition-space candidates only; it does not label a material invalid or anomalous.</p>
@@ -170,10 +170,18 @@ function CompositionSpaceContent({ artifact, standalone, integrationReason, exte
     <details className="composition-space-table-fallback">
       <summary>Accessible sample table ({Math.min(displayed.length, MAX_TABLE_ROWS)} of {displayed.length})</summary>
       <DataTable
-        columns={["Sample", "Object", "Row", "Formula", "System", "PC1", "PC2", "Cluster"]}
-        rows={displayed.slice(0, MAX_TABLE_ROWS).map((point) => [text(point.sampleRef), text(point.objectId), integer(point.rowIndex), text(point.formula), text(point.chemicalSystem), format(numberList(point.coordinates)[0]), format(numberList(point.coordinates)[1]), nullableInteger(point.cluster)])}
+        columns={["Sample", "Row", "Formula", "System", "PC1", "PC2", "Cluster"]}
+        rows={displayed.slice(0, MAX_TABLE_ROWS).map((point) => [text(point.sampleRef), integer(point.rowIndex), text(point.formula), text(point.chemicalSystem), format(numberList(point.coordinates)[0]), format(numberList(point.coordinates)[1]), nullableInteger(point.cluster)])}
         empty="No display samples."
       />
+    </details>
+
+    <details className="composition-space-technical-identity">
+      <summary>Technical source identity</summary>
+      <dl className="mini-grid">
+        <Field label="Dataset" value={text(dataset.datasetId)} />
+        <Field label="Profile" value={text(dataset.profileId)} />
+      </dl>
     </details>
 
     <Warnings values={warnings} />
@@ -253,13 +261,16 @@ function SampleInspector({ sample }: { sample?: JsonRecord }) {
     <dl className="mini-grid">
       <Field label="Sample reference" value={text(sample.sampleRef)} />
       <Field label="Identity source" value={text(sample.identitySource)} />
-      <Field label="Object" value={text(sample.objectId)} />
       <Field label="Row" value={integer(sample.rowIndex)} />
       <Field label="Formula" value={text(sample.formula)} />
       <Field label="Reduced formula" value={text(sample.reducedFormula)} />
       <Field label="Chemical system" value={text(sample.chemicalSystem)} />
       <Field label="Dataset / group" value={text(sample.group)} />
     </dl>
+    <details>
+      <summary>Technical sample identity</summary>
+      <Field label="Object" value={text(sample.objectId)} />
+    </details>
     <ValueTable title="Atomic fractions" values={record(sample.elementFractions)} />
     <ValueTable title="Profile properties" values={record(sample.propertyValues)} />
     <ValueTable title="Linked ML values" values={record(sample.mlValues)} />

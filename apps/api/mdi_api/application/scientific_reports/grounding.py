@@ -11,12 +11,12 @@ _NUMBER = re.compile(r"(?<![A-Za-z0-9_.])[-+]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][-+]
 # ``k-point``/``k 点`` labels; treating the lowercase ``k`` as Kelvin makes
 # an otherwise grounded report fail closed for the wrong reason.
 _UNIT = re.compile(
-    r"(?<![A-Za-z])(?:(?i:"
+    r"(?<![A-Za-z0-9])(?:(?i:"
     r"(?:Å|angstrom)(?:\^\{?2\}?|²)/(?:ps|picosecond)|"
     r"(?:Å|angstrom)(?:\^\{?2\}?|²)|"
     r"(?:Å|angstrom)(?:\^\{?-?3\}?|⁻³|-3)?|"
     r"picosecond|nm|pm|eV|meV|fs|ps|%|THz|terahertz|cm-?1|1/s|m\^?2/s"
-    r")|K)(?![A-Za-z])"
+    r")|K)(?![A-Za-z0-9])"
 )
 
 
@@ -124,6 +124,11 @@ class ReportGroundingValidator:
             errors.extend(self._unknown("finding.fact_refs", finding.fact_refs, facts))
             errors.extend(self._unknown("finding.evidence_refs", finding.evidence_refs, evidence))
             errors.extend(self._unknown("finding.finding_refs", finding.finding_refs, interpretation_findings))
+            if (
+                finding.reasoning_assessment is not None
+                and not finding.reasoning_assessment.accepted
+            ):
+                errors.append("report finding contains rejected scientific reasoning")
             inherited_findings = [
                 interpretation_findings[ref]
                 for ref in finding.finding_refs

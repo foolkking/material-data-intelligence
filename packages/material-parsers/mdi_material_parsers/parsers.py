@@ -4,7 +4,7 @@ import json
 import math
 import tempfile
 import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
 
 import pandas as pd
@@ -180,6 +180,14 @@ def _parse_zip_archive(
                 parse_status="failed",
                 error_code="ARCHIVE_TOO_MANY_FILES",
                 error_message=f"ZIP contains {len(members)} files; max_files={max_files}.",
+                details={
+                    "archiveMemberCount": len(members),
+                    "expandedByteCount": sum(member.file_size for member in members),
+                    "maximumPathDepth": max(
+                        (len(PurePosixPath(member.filename).parts) for member in members),
+                        default=0,
+                    ),
+                },
             )
         total_size = sum(member.file_size for member in members)
         if total_size > max_uncompressed_bytes:
@@ -190,6 +198,14 @@ def _parse_zip_archive(
                 parse_status="failed",
                 error_code="ARCHIVE_TOO_LARGE",
                 error_message=f"ZIP uncompressed size exceeds {max_uncompressed_bytes} bytes.",
+                details={
+                    "archiveMemberCount": len(members),
+                    "expandedByteCount": total_size,
+                    "maximumPathDepth": max(
+                        (len(PurePosixPath(member.filename).parts) for member in members),
+                        default=0,
+                    ),
+                },
             )
         with tempfile.TemporaryDirectory(prefix="mdi_zip_") as tmp_dir:
             root = Path(tmp_dir).resolve()
@@ -239,6 +255,26 @@ def _parse_zip_archive(
         objects=objects,
         error_code=None if status == "success" else "ARCHIVE_PARTIAL_OR_UNSUPPORTED",
         error_message=None if status == "success" else "One or more ZIP members could not be parsed.",
+        details={
+            "archiveMemberCount": len(members),
+            "expandedByteCount": total_size,
+            "maximumPathDepth": max(
+                (len(PurePosixPath(member.filename).parts) for member in members),
+                default=0,
+            ),
+            "memberResults": [
+                {
+                    "memberId": result.file_id,
+                    "fileName": result.file_path.name,
+                    "detectedFormat": result.detected_format.value,
+                    "parseStatus": result.parse_status,
+                    "objectCount": len(result.objects),
+                    "errorCode": result.error_code,
+                    "errorMessage": result.error_message,
+                }
+                for result in inner_results
+            ],
+        },
     )
 
 

@@ -27,7 +27,16 @@ class ScientificInterpretationReconciler:
                 if updated_at.tzinfo is None:
                     updated_at = updated_at.replace(tzinfo=timezone.utc)
                 stale_interpreting = (datetime.now(timezone.utc) - updated_at).total_seconds() > 900
-            if status != "RESULT_READY" and not stale_interpreting:
+            retryable_failed = (
+                status == "FAILED"
+                and str(turn.get("error_code") or "").startswith("INTERPRETATION_")
+                and bool(
+                    session.agent2.scientific_result_snapshots.list_for_turn(
+                        turn_id
+                    )
+                )
+            )
+            if status != "RESULT_READY" and not stale_interpreting and not retryable_failed:
                 return {"turn_id": str(turn_id), "republished": False, "reason": "not_result_ready"}
         if settings.queue_backend != "redis" or not settings.agent2_interpretation_enabled:
             return {"turn_id": str(turn_id), "republished": False, "reason": "queue_disabled"}

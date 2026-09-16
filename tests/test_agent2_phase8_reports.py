@@ -860,6 +860,10 @@ def test_persisted_report_is_idempotent_reopens_without_provider_or_scientific_c
         ]
     assert len(manifests) == 1
     assert manifests[0]["operation"] == "REPORT"
+    assert manifests[0]["input_state"] == "ACTUAL"
+    assert manifests[0]["invocation_role"] == "scientific_report_composer"
+    assert manifests[0]["serialized_input"]
+    assert manifests[0]["serialized_input_fingerprint"]
     assert any(
         item["kind"] == "SCIENTIFIC_RESULT"
         and item["result_ref"] == str(snapshot_id)

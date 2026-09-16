@@ -700,7 +700,9 @@ def resolve_scope(project_id: str, request: ScopeResolveRequest, current_user: C
             profile = connection.execute(select(data_profiles).where(data_profiles.c.dataset_id == dataset["id"]).order_by(data_profiles.c.created_at.desc())).mappings().first()
             profile_json = dict(profile["profile_json"] or {}) if profile else {}
             catalog.append({
-                "datasetId": dataset["id"], "name": dataset["name"], "status": dataset["status"],
+                "datasetId": dataset["id"],
+                "name": _dataset_display_name(str(dataset["id"]), str(dataset["name"])),
+                "status": dataset["status"],
                 "profileId": profile["id"] if profile else None, "profileReady": bool(profile),
                 "semantics": _semantic_names(profile_json), "files": _file_names(dataset),
             })
@@ -713,10 +715,34 @@ def resolve_scope(project_id: str, request: ScopeResolveRequest, current_user: C
     scored = sorted(((sum(1 for token in _tokens(question) if token in json.dumps(item, ensure_ascii=False).lower()), item) for item in catalog), key=lambda value: value[0], reverse=True)
     if len(scored) == 1 or (scored[0][0] > 0 and (len(scored) == 1 or scored[0][0] > scored[1][0])):
         item = scored[0][1]
+        if not item.get("profileId"):
+            return {
+                "outcome": "UNSUPPORTED",
+                "status": "UNSUPPORTED",
+                "message": "所选数据已导入，但科学解析资料尚未就绪。",
+                "reason": "完成数据解析后，平台才能验证分析方法和参数。",
+                "datasetId": item["datasetId"],
+                "dataset_id": item["datasetId"],
+                "dataset_name": item["name"],
+                "available_semantics": item["semantics"],
+                "catalog": catalog,
+            }
         return {"outcome": "READY", "status": "READY", "datasetId": item["datasetId"], "dataset_id": item["datasetId"], "profileId": item["profileId"], "profile_id": item["profileId"], "dataset": item, "dataset_name": item["name"], "available_semantics": item["semantics"], "catalog": catalog}
     if len(catalog) > 1:
         return {"outcome": "NEEDS_CLARIFICATION", "status": "NEEDS_CLARIFICATION", "message": "这个问题可能涉及多个数据集，请先选择本次分析使用的数据。", "reason": "这个问题可能涉及多个数据集，请先选择本次分析使用的数据。", "candidates": catalog, "catalog": catalog}
     item = catalog[0]
+    if not item.get("profileId"):
+        return {
+            "outcome": "UNSUPPORTED",
+            "status": "UNSUPPORTED",
+            "message": "所选数据已导入，但科学解析资料尚未就绪。",
+            "reason": "完成数据解析后，平台才能验证分析方法和参数。",
+            "datasetId": item["datasetId"],
+            "dataset_id": item["datasetId"],
+            "dataset_name": item["name"],
+            "available_semantics": item["semantics"],
+            "catalog": catalog,
+        }
     return {"outcome": "READY", "status": "READY", "datasetId": item["datasetId"], "dataset_id": item["datasetId"], "profileId": item["profileId"], "profile_id": item["profileId"], "dataset": item, "dataset_name": item["name"], "available_semantics": item["semantics"], "catalog": catalog}
 
 
@@ -741,7 +767,8 @@ def _assistant_projection_text(request: ResearchAssistantProjectionCreate) -> st
         )
         return projection.assistantMessage
     if request.phase == "unsupported":
-        return f"当前 {dataset} 缺少完成这项分析所需的科学属性，因此没有创建分析运行。"
+        subject = dataset if dataset.startswith("当前") else f"当前 {dataset}"
+        return f"{subject}缺少完成这项分析所需的科学属性，因此没有创建分析运行。"
     if request.phase == "failed":
         code = str(request.failureCode or "").upper()
         if code == "COORDINATION_ALGORITHM_CLARIFICATION_REQUIRED":
@@ -983,26 +1010,49 @@ def _require_run_for_project(run_id: str, project_id: str) -> dict[str, Any]:
 
 
 def _merge_runtime_catalog(project_id: str, catalog: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Include parsed local-runtime datasets missing from the SQL catalog."""
+    """Merge parsed runtime metadata without creating duplicate Dataset choices.
+
+    A durable Dataset row may exist before its parsed Profile is persisted.
+    When the same authorized Dataset is still present in the local runtime,
+    enrich the read projection with that exact Profile instead of returning a
+    misleading READY scope with a null ``profileId``.
+    """
 
     from mdi_api.infrastructure.phase2.runtime import get_phase2_runtime
 
-    known = {str(item.get("datasetId")) for item in catalog}
+    known = {str(item.get("datasetId")): item for item in catalog}
     runtime = get_phase2_runtime()
     for dataset in runtime.datasets.values():
-        if dataset.project_id != project_id or dataset.id in known:
+        if dataset.project_id != project_id:
             continue
         profile = dataset.profile.model_dump(mode="json")
-        catalog.append({
+        projected = {
             "datasetId": dataset.id,
-            "name": dataset.name,
+            "name": _dataset_display_name(dataset.id, dataset.name),
             "status": dataset.status,
             "profileId": dataset.profile.profileId,
             "profileReady": True,
             "semantics": _semantic_names(profile),
             "files": [str(item.get("name") or item.get("fileName") or "") for item in dataset.files],
-        })
+        }
+        current = known.get(dataset.id)
+        if current is None:
+            catalog.append(projected)
+            known[dataset.id] = projected
+            continue
+        if not current.get("profileId"):
+            current.update(projected)
     return catalog
+
+
+def _dataset_display_name(dataset_id: str, name: str) -> str:
+    """Keep an identity-shaped fallback out of the normal scientist view."""
+
+    normalized_id = dataset_id.strip()
+    normalized_name = name.strip()
+    if not normalized_name or normalized_name == normalized_id:
+        return "当前项目材料数据"
+    return normalized_name
 
 
 def _session_view(row, connection) -> dict[str, Any]:

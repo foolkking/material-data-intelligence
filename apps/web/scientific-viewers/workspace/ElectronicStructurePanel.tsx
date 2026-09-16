@@ -6,6 +6,9 @@ import { artifactChecksum, artifactIdentity } from "../../shared/workspace/works
 
 type Payload = Record<string, unknown> & { artifactType: "electronic.band_structure" | "electronic.dos"; schemaVersion: string; sourceResource: Record<string, unknown>; warnings: string[]; limitations: string[] };
 const MAX_PLOT_POINTS = 2_400;
+const MAX_BAND_PLOT_SERIES = 48;
+const MAX_DOS_PLOT_CHANNELS = 24;
+const MAX_TABLE_ROWS = 500;
 
 export function ElectronicStructurePanel({ artifacts, selected, workspace, onSelection }: Readonly<{ artifacts: Artifact[]; selected: Artifact; workspace: ScientificWorkspace; onSelection: (selection: WorkspaceSelectionContext) => void }>) {
   const current = parse(selected);
@@ -31,26 +34,31 @@ export function ElectronicStructurePanel({ artifacts, selected, workspace, onSel
 
 function BandView({ artifact, payload, workspace, onSelection }: PanelItemProps) {
   const gap = record(payload.gap), bands = records(payload.bands), kpoints = records(payload.kpoints), states = records(payload.states);
-  const plotBands = bands.slice(0, 48).map((band) => boundedNumbers(band.energiesEv));
+  const plotBands = bands.slice(0, MAX_BAND_PLOT_SERIES).map((band) => boundedNumbers(band.energiesEv));
   const plotDomain = numericDomain(plotBands);
   const hasPlotData = plotBands.some((values) => values.length > 0);
+  const visibleStates = states.slice(0, MAX_TABLE_ROWS);
   return <section aria-label="电子能带结构" data-testid="electronic-band-view"><h6>电子能带</h6>
     <p><strong>采样带隙：</strong> {gap?.valueEv === null || gap?.valueEv === undefined ? "不可用" : `${String(gap.valueEv)} eV`} · {String(gap?.directness)} · {String(gap?.classification)} <button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_GAP", {}, onSelection)}>选择带隙</button></p>
     {hasPlotData ? <svg viewBox="0 0 640 220" role="img" aria-label="供应方能带曲线；数值可在表格中查看" data-testid="electronic-band-plot"><title>供应方能带曲线（有界显示）</title>{plotBands.map((values, index) => <polyline key={String(bands[index].bandIdentity)} fill="none" stroke={String(bands[index].spinChannel) === "down" ? "#b42318" : "#176b87"} strokeDasharray={String(bands[index].spinChannel) === "down" ? "6 4" : undefined} strokeWidth="2" points={polyline(values, plotDomain)} />)}</svg> : <p role="status">当前能带结果没有可绘制的有限数值；完整原始表仍可供检查。</p>}
-    {plotBands.some((values, index) => numbers(bands[index].energiesEv).length > values.length) ? <p className="notice" role="status">能带图为有界预览；完整数值仍保留在下方表格与原始结果中。</p> : null}
-    <div className="workspace-table-scroll"><table><caption>能带状态数值表</caption><thead><tr><th scope="col">选择</th><th scope="col">自旋</th><th scope="col">能带</th><th scope="col">k 点</th><th scope="col">坐标</th><th scope="col">能量（eV）</th></tr></thead><tbody>{states.slice(0, 500).map((state) => { const point = kpoints.find((item) => item.kpointId === state.kpointId); return <tr key={String(state.stateId)}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_STATE", { spinChannelId: state.spinChannel, bandId: state.bandId, kpointId: state.kpointId, bandStateId: state.stateId }, onSelection)}>选择</button></td><td>{String(state.spinChannel)}</td><td>{String(state.bandId)}</td><td>{String(state.kpointId)}</td><td>{Array.isArray(point?.fractionalCoordinates) ? point.fractionalCoordinates.join(", ") : ""}</td><td>{String(state.energyEv)}</td></tr>; })}</tbody></table></div>
+    {bands.length > plotBands.length || plotBands.some((values, index) => numbers(bands[index].energiesEv).length > values.length) ? <p className="notice" role="status">能带图为有界预览：显示 {plotBands.length} / {bands.length} 条能带，每条最多 {MAX_PLOT_POINTS.toLocaleString("zh-CN")} 个显示采样点；完整供应方结果未被修改。</p> : null}
+    <p className="notice" role="status">能带状态表显示 {visibleStates.length} / {states.length} 行；完整状态仍保留在权威结果中。</p>
+    <div className="workspace-table-scroll"><table><caption>能带状态数值表</caption><thead><tr><th scope="col">选择</th><th scope="col">自旋</th><th scope="col">能带</th><th scope="col">k 点</th><th scope="col">坐标</th><th scope="col">能量（eV）</th></tr></thead><tbody>{visibleStates.map((state) => { const point = kpoints.find((item) => item.kpointId === state.kpointId); return <tr key={String(state.stateId)}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_STATE", { spinChannelId: state.spinChannel, bandId: state.bandId, kpointId: state.kpointId, bandStateId: state.stateId }, onSelection)}>选择</button></td><td>{String(state.spinChannel)}</td><td>{String(state.bandId)}</td><td>{String(state.kpointId)}</td><td>{Array.isArray(point?.fractionalCoordinates) ? point.fractionalCoordinates.join(", ") : ""}</td><td>{String(state.energyEv)}</td></tr>; })}</tbody></table></div>
   </section>;
 }
 
 function DosView({ artifact, payload, workspace, onSelection }: PanelItemProps) {
   const energies = numbers(payload.energiesEv), points = strings(payload.energyPointIds), total = records(payload.totalDos), projections = records(payload.projections), channels = [...total, ...projections];
-  const plotChannels = channels.slice(0, 24).map((channel) => boundedNumbers(channel.values));
+  const plotChannels = channels.slice(0, MAX_DOS_PLOT_CHANNELS).map((channel) => boundedNumbers(channel.values));
   const plotDomain = numericDomain(plotChannels);
   const hasPlotData = plotChannels.some((values) => values.length > 0);
+  const allRows = channels.flatMap((channel) => energies.map((energy, index) => ({ channel, energy, index })));
+  const visibleRows = allRows.slice(0, MAX_TABLE_ROWS);
   return <section aria-label="电子态密度" data-testid="electronic-dos-view"><h6>电子态密度（DOS）</h6><p><strong>投影覆盖：</strong> {String(payload.projectionCompleteness)} · <strong>单位：</strong> {String(payload.dosUnitSemantic)}</p>
     {hasPlotData ? <svg viewBox="0 0 640 220" role="img" aria-label="供应方态密度通道；数值可在表格中查看" data-testid="electronic-dos-plot"><title>供应方电子态密度（有界显示）</title>{plotChannels.map((values, index) => <polyline key={String(channels[index].channelIdentity)} fill="none" stroke={String(channels[index].spinChannel) === "down" ? "#b42318" : index === 0 ? "#176b87" : "#627d32"} strokeDasharray={String(channels[index].spinChannel) === "down" ? "6 4" : undefined} strokeWidth="2" points={polyline(values, plotDomain)} />)}</svg> : <p role="status">当前 DOS 结果没有可绘制的有限数值；完整原始表仍可供检查。</p>}
-    {plotChannels.some((values, index) => numbers(channels[index].values).length > values.length) ? <p className="notice" role="status">DOS 图为有界预览；完整数值仍保留在下方表格与原始结果中。</p> : null}
-    <div className="workspace-table-scroll"><table><caption>态密度数值表</caption><thead><tr><th scope="col">选择</th><th scope="col">通道</th><th scope="col">自旋</th><th scope="col">能量（eV）</th><th scope="col">DOS</th></tr></thead><tbody>{channels.flatMap((channel) => energies.slice(0, 500).map((energy, index) => <tr key={`${String(channel.channelIdentity)}:${points[index]}`}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_DOS_POINT", { spinChannelId: channel.spinChannel, dosChannelId: channel.channelId, projectionId: channel.projectionKind ? channel.channelIdentity : undefined, energyPointId: points[index] }, onSelection)}>选择</button></td><td>{String(channel.label ?? channel.channelId)}</td><td>{String(channel.spinChannel)}</td><td>{energy}</td><td>{numbers(channel.values)[index]}</td></tr>))}</tbody></table></div>
+    {channels.length > plotChannels.length || plotChannels.some((values, index) => numbers(channels[index].values).length > values.length) ? <p className="notice" role="status">DOS 图为有界预览：显示 {plotChannels.length} / {channels.length} 个通道，每个通道最多 {MAX_PLOT_POINTS.toLocaleString("zh-CN")} 个显示采样点；完整供应方结果未被修改。</p> : null}
+    <p className="notice" role="status">态密度表显示 {visibleRows.length} / {allRows.length} 个通道-能量数值；完整数值仍保留在权威结果中。</p>
+    <div className="workspace-table-scroll"><table><caption>态密度数值表</caption><thead><tr><th scope="col">选择</th><th scope="col">通道</th><th scope="col">自旋</th><th scope="col">能量（eV）</th><th scope="col">DOS</th></tr></thead><tbody>{visibleRows.map(({ channel, energy, index }) => <tr key={`${String(channel.channelIdentity)}:${points[index]}`}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_DOS_POINT", { spinChannelId: channel.spinChannel, dosChannelId: channel.channelId, projectionId: channel.projectionKind ? channel.channelIdentity : undefined, energyPointId: points[index] }, onSelection)}>选择</button></td><td>{String(channel.label ?? channel.channelId)}</td><td>{String(channel.spinChannel)}</td><td>{energy}</td><td>{numbers(channel.values)[index]}</td></tr>)}</tbody></table></div>
   </section>;
 }
 

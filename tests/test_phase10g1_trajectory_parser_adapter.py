@@ -117,6 +117,35 @@ def test_unit_conversion_table_is_applied_and_recorded(tmp_path: Path) -> None:
     assert len(parsed.report["unit_conversions"]) == 4
 
 
+def test_extxyz_pack_unit_and_coordinate_aliases_are_preserved(tmp_path: Path) -> None:
+    source = tmp_path / "pack_aliases.extxyz"
+    source.write_text(
+        "1\n"
+        'Lattice="5 0 0 0 5 0 0 0 5" '
+        "Properties=species:S:1:pos:R:3 "
+        'pbc="T T T" coordinate_unit=angstrom '
+        "position_convention=unwrapped "
+        "Time=0.000 time_unit=ps timestep_ps=0.002\n"
+        "Li 0 0 0\n"
+        "1\n"
+        'Lattice="5 0 0 0 5 0 0 0 5" '
+        "Properties=species:S:1:pos:R:3 "
+        'pbc="T T T" coordinate_unit=angstrom '
+        "position_convention=unwrapped "
+        "Time=0.002 time_unit=ps timestep_ps=0.002\n"
+        "Li 0.1 0 0\n",
+        encoding="utf-8",
+    )
+
+    parsed = parse_trajectory_file(source)
+
+    assert parsed.trajectory["kind"] == "molecular_dynamics"
+    assert parsed.trajectory["position_wrapping"] == "unwrapped"
+    assert parsed.trajectory["frames"][1]["time"] == 2.0
+    assert parsed.trajectory["time"]["unit"] == "femtosecond"
+    assert "time:ps->femtosecond" in parsed.report["unit_conversions"]
+
+
 @pytest.mark.parametrize(
     ("body", "code"),
     (

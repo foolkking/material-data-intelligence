@@ -77,6 +77,10 @@ class ApiSettings:
     # process-local semaphore and therefore remains authoritative across API
     # and worker restarts.
     agent2_max_active_turns_per_project: int = 4
+    # M1 durable Job lease. PostgreSQL time is authoritative; workers renew
+    # every 30 seconds and lose publication authority after 90 seconds.
+    job_execution_lease_seconds: int = 90
+    job_execution_renewal_seconds: int = 30
     artifact_backend: ArtifactBackend = "local"
     artifact_root: str = str(Path(__file__).resolve().parents[3] / ".artifacts" / "phase2")
     # -- Test database for integration tests --
@@ -202,6 +206,24 @@ def load_settings() -> ApiSettings:
                 os.getenv(
                     "MDI_AGENT2_MAX_ACTIVE_TURNS_PER_PROJECT",
                     str(ApiSettings.agent2_max_active_turns_per_project),
+                )
+            ),
+        ),
+        job_execution_lease_seconds=max(
+            3,
+            int(
+                os.getenv(
+                    "MDI_JOB_EXECUTION_LEASE_SECONDS",
+                    str(ApiSettings.job_execution_lease_seconds),
+                )
+            ),
+        ),
+        job_execution_renewal_seconds=max(
+            1,
+            int(
+                os.getenv(
+                    "MDI_JOB_EXECUTION_RENEWAL_SECONDS",
+                    str(ApiSettings.job_execution_renewal_seconds),
                 )
             ),
         ),

@@ -2289,6 +2289,8 @@ function ScientificDataView({
   const isEmptyDataset =
     Number(dataset.import.fileCount || 0) === 0 &&
     Number(dataset.profile?.objectCount || 0) === 0;
+  if (!resources.length && isEmptyDataset)
+    return <DatasetOverview dataset={dataset} onInspect={onInspect} />;
   return (
       <div
       className="science-canvas science-canvas-fallback"
@@ -2325,6 +2327,46 @@ function ScientificDataView({
         查看来源与属性
       </button>
     </div>
+  );
+}
+
+function DatasetOverview({
+  dataset,
+  onInspect,
+}: {
+  dataset: ProjectHistory["datasets"][number];
+  onInspect: () => void;
+}) {
+  return (
+    <section className="dataset-overview" aria-labelledby="dataset-overview-title">
+      <p className="product-kicker">数据集概览</p>
+      <h2 id="dataset-overview-title">这个数据集还没有科学对象</h2>
+      <p>
+        这是一个可继续接收材料数据的来源范围。导入文件后，系统会在这里按科学类型整理
+        Scientific Data，再提供对应的查看器和研究入口。
+      </p>
+      <dl className="dataset-overview-stats">
+        <div>
+          <dt>源文件</dt>
+          <dd>{dataset.import.fileCount || 0}</dd>
+        </div>
+        <div>
+          <dt>已识别对象</dt>
+          <dd>{dataset.profile?.objectCount || 0}</dd>
+        </div>
+        <div>
+          <dt>当前状态</dt>
+          <dd>{dataStatusLabel(dataset.status)}</dd>
+        </div>
+      </dl>
+      <div className="dataset-overview-next">
+        <strong>下一步</strong>
+        <span>导入受支持的 CIF、表格、轨迹或其他材料数据。</span>
+      </div>
+      <button type="button" className="product-secondary-action" onClick={onInspect}>
+        查看数据集来源与属性
+      </button>
+    </section>
   );
 }
 

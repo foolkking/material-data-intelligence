@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID, uuid4
@@ -39,7 +40,7 @@ class ResearchActionRouter:
             self._reauthorize(unit, str(turn["project_id"]), decision, candidate_bundle)
 
             target_status, dispatch_status, message_slot, message_kind = self._routing_shape(decision.action)
-            assistant_content = self._assistant_content(decision)
+            assistant_content = self._assistant_content(decision, candidate_bundle)
             message_id = None
             if assistant_content:
                 message_id = f"message_{uuid4().hex}"
@@ -137,10 +138,21 @@ class ResearchActionRouter:
         return ResearchTurnStatus.ORCHESTRATING, DownstreamDispatchStatus.READY_FOR_DOWNSTREAM, "pre", "DOWNSTREAM_ACKNOWLEDGEMENT"
 
     @staticmethod
-    def _assistant_content(decision: ResearchTurnDecision) -> str | None:
+    def _assistant_content(
+        decision: ResearchTurnDecision,
+        candidate_bundle: ResearchContextCandidateBundle,
+    ) -> str | None:
         if decision.action == ResearchAction.CLARIFY:
             return decision.clarification.question
-        if decision.action == ResearchAction.QUERY_DATA and not decision.assistant_message:
+        if decision.action == ResearchAction.QUERY_DATA:
+            projection = ResearchActionRouter._query_data_projection(
+                decision,
+                candidate_bundle,
+            )
+            if projection:
+                return projection
+            if decision.assistant_message:
+                return decision.assistant_message
             return "已识别为数据查询请求。请在数据平台查看或调整筛选条件；本次未创建科学分析运行。"
         if decision.action == ResearchAction.INTERPRET_RESULT:
             # The orchestrator only selects the exact reusable Result. It is
@@ -149,6 +161,108 @@ class ResearchActionRouter:
             # grounded interpreter runs.
             return "已找到可复用的精确科学结果，正在基于其权威事实重新组织解释；不会重新计算科学结果。"
         return decision.assistant_message
+
+    @staticmethod
+    def _query_data_projection(
+        decision: ResearchTurnDecision,
+        candidate_bundle: ResearchContextCandidateBundle,
+    ) -> str | None:
+        """Answer a read-only data query from the bounded object projection.
+
+        QUERY_DATA remains non-executing: it must not create a plan, job, or
+        result.  When the selected object already carries a bounded semantic
+        projection, however, returning only a generic hand-off is misleading
+        and leaves the user without the facts they explicitly requested.
+        This formatter is deliberately deterministic and only exposes the
+        metadata projection assembled for the exact selected object/version.
+        """
+        selected = set(decision.selected_scope_ref_keys)
+        candidates = [
+            item for item in candidate_bundle.active_object_candidates
+            if item.candidate_key in selected and item.semantic_summary
+        ]
+        if not candidates:
+            return None
+
+        rendered: list[str] = []
+        for candidate in candidates[:4]:
+            try:
+                summary = json.loads(candidate.semantic_summary or "")
+            except (TypeError, ValueError):
+                continue
+            metadata = summary.get("canonical_metadata")
+            if not isinstance(metadata, dict) or not metadata:
+                continue
+            known_keys = (
+                "row_count", "nRows", "nColumns", "columns", "frameCount",
+                "atomCount", "timeStartPs", "timeEndPs", "timeUnit", "pbc",
+                "positionWrapping", "qPointCount", "branchCount", "bandCount",
+                "kpointCount", "spinMode", "energyUnit", "energyReference",
+                "fermiAvailable", "gridShape", "fieldKind", "unit",
+                "experimentalXrd",
+            )
+            if not any(key in metadata for key in known_keys):
+                continue
+            lines = [f"只基于已选择对象 {candidate.display_label} 的有界元数据："]
+            if "row_count" in metadata or "nRows" in metadata:
+                lines.append(f"- 行数：{metadata.get('row_count', metadata.get('nRows'))}")
+            if "nColumns" in metadata:
+                lines.append(f"- 列数：{metadata['nColumns']}")
+            columns = metadata.get("columns")
+            if isinstance(columns, list) and columns:
+                descriptions = []
+                for column in columns[:16]:
+                    if not isinstance(column, dict):
+                        continue
+                    name = column.get("name")
+                    if not name:
+                        continue
+                    details = [str(name)]
+                    if column.get("dtype") is not None:
+                        details.append(f"type={column['dtype']}")
+                    if column.get("unit") is not None:
+                        details.append(f"unit={column['unit']}")
+                    if column.get("missingCount") is not None:
+                        details.append(f"missing={column['missingCount']}")
+                    if column.get("uniqueCount") is not None:
+                        details.append(f"unique={column['uniqueCount']}")
+                    descriptions.append(" ".join(details))
+                if descriptions:
+                    lines.append("- 暴露列：" + "；".join(descriptions))
+            for key in known_keys:
+                if key in metadata and not isinstance(metadata[key], (dict, list)):
+                    lines.append(f"- {key}：{metadata[key]}")
+            experimental_xrd = metadata.get("experimentalXrd")
+            if isinstance(experimental_xrd, dict):
+                xrd_fields = (
+                    ("resourceId", "资源 ID"),
+                    ("resourceVersion", "资源版本"),
+                    ("resourceHash", "资源哈希"),
+                    ("pointCount", "测量点数"),
+                    ("axisMonotonicity", "横轴单调性"),
+                    ("intensitySemantic", "强度语义"),
+                )
+                for key, label in xrd_fields:
+                    if experimental_xrd.get(key) is not None:
+                        lines.append(f"- XRD {label}：{experimental_xrd[key]}")
+                axis = experimental_xrd.get("xAxis")
+                if isinstance(axis, dict):
+                    lines.append(
+                        f"- XRD 横轴：{axis.get('kind', 'unknown')} "
+                        f"（{axis.get('unit', 'unknown')}）"
+                    )
+                wavelength = experimental_xrd.get("wavelength")
+                if isinstance(wavelength, dict):
+                    lines.append(
+                        f"- XRD 波长：{wavelength.get('value', 'unknown')} "
+                        f"{wavelength.get('unit', '')}".rstrip()
+                    )
+            if len(lines) == 1:
+                compact = json.dumps(metadata, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+                lines.append(f"- 有界元数据：{compact[:1200]}")
+            lines.append("- 当前投影未暴露逐行身份或更多字段；不据此推断物理因果。")
+            rendered.append("\n".join(lines))
+        return "\n\n".join(rendered) if rendered else None
 
     @staticmethod
     def _context_fingerprint(unit: Any, turn_id: UUID) -> str:

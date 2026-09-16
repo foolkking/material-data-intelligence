@@ -5,6 +5,12 @@ from enum import Enum
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+from mdi_api.domain.scientific_reasoning.contracts import (
+    ClaimSupportAssessment,
+    ClaimSupportStatus,
+    MethodComparisonStatus,
+    ScientificClaimType,
+)
 
 
 class FindingImportance(str, Enum):
@@ -29,6 +35,13 @@ class ScientificFinding(BaseModel):
     fact_refs: list[str] = Field(default_factory=list, max_length=32)
     evidence_refs: list[str] = Field(default_factory=list, max_length=32)
     result_item_refs: list[str] = Field(default_factory=list, max_length=32)
+    claim_type: ScientificClaimType = ScientificClaimType.DIRECT_OBSERVATION
+    support_status: ClaimSupportStatus = ClaimSupportStatus.DIRECTLY_SUPPORTED
+    scope: str = Field(default="current ScientificResult scope", max_length=1000)
+    qualifiers: list[str] = Field(default_factory=list, max_length=16)
+    comparison_status: MethodComparisonStatus | None = None
+    hypothesis_status: str | None = Field(default=None, max_length=64)
+    reasoning_assessment: ClaimSupportAssessment | None = None
 
 
 class ScientificInterpretationOutput(BaseModel):
@@ -36,7 +49,7 @@ class ScientificInterpretationOutput(BaseModel):
 
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
-    contract_version: Literal["1.0"]
+    contract_version: Literal["1.0", "1.1"]
     title: str = Field(min_length=1, max_length=256)
     answer_lead: str = Field(min_length=1, max_length=4000)
     primary_findings: list[ScientificFinding] = Field(default_factory=list, max_length=8)

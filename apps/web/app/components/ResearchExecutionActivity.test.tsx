@@ -54,7 +54,7 @@ describe("ResearchExecutionActivity", () => {
 
     expect(screen.getByText("正在取消研究")).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("等待服务端确认");
-    expect(screen.queryByRole("button", { name: "停止研究" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "取消当前分析" })).toBeNull();
   });
 
   it("distinguishes interpretation progress and partial final interpretation", () => {
@@ -65,10 +65,33 @@ describe("ResearchExecutionActivity", () => {
     expect(screen.getByText("部分科学解释已准备")).toBeInTheDocument();
   });
 
+  it("shows bounded provider retry while keeping completed science preserved", () => {
+    render(<ResearchExecutionActivity progress={{
+      contract_version: "1.0",
+      turn_id: "turn-retrying",
+      status: "INTERPRETING",
+      steps: [],
+      active_step_ids: [],
+      completed_step_count: 0,
+      total_step_count: 0,
+      incremental_outputs: [],
+      warnings: [{
+        code: "INTERPRETATION_RETRYING",
+        message: "解释服务暂时繁忙，正在按有界策略重试；已完成的科学结果仍然保留。",
+      }],
+      execution_outcome: "SUCCESS",
+      result_projection_pending: false,
+    }} />);
+
+    expect(screen.getByText("正在生成科学解释")).toBeInTheDocument();
+    expect(screen.getByText(/正在按有界策略重试/)).toBeInTheDocument();
+    expect(screen.getByText(/已完成的科学结果仍然保留/)).toBeInTheDocument();
+  });
+
   it("offers one keyboard-accessible cancel command only while execution is active", () => {
     const onCancel = vi.fn();
     render(<ResearchExecutionActivity onCancel={onCancel} progress={{ contract_version: "1.0", turn_id: "turn-3", status: "RUNNING", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: null, result_projection_pending: false }} />);
-    const button = screen.getByRole("button", { name: "停止研究" });
+    const button = screen.getByRole("button", { name: "取消当前分析" });
     fireEvent.click(button);
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
@@ -77,7 +100,7 @@ describe("ResearchExecutionActivity", () => {
     const onCancel = vi.fn();
     render(<ResearchExecutionActivity onCancel={onCancel} progress={{ contract_version: "1.0", turn_id: "turn-plan", status: "PLANNING", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: null, result_projection_pending: false }} />);
     expect(screen.getByText("正在准备分析方案")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "停止研究" }));
+    fireEvent.click(screen.getByRole("button", { name: "取消当前分析" }));
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
 
@@ -86,9 +109,9 @@ describe("ResearchExecutionActivity", () => {
     const onEdit = vi.fn();
     const onRetry = vi.fn();
     render(<ResearchExecutionActivity onContinue={onContinue} onEdit={onEdit} onRetry={onRetry} progress={{ contract_version: "1.0", turn_id: "turn-5", status: "FAILED", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: "FAILED", result_projection_pending: false }} />);
-    fireEvent.click(screen.getByRole("button", { name: "继续研究" }));
-    fireEvent.click(screen.getByRole("button", { name: "修改问题" }));
-    fireEvent.click(screen.getByRole("button", { name: "重新研究（新运行）" }));
+    fireEvent.click(screen.getByRole("button", { name: "继续当前研究" }));
+    fireEvent.click(screen.getByRole("button", { name: "修改问题并创建分支" }));
+    fireEvent.click(screen.getByRole("button", { name: "重新运行分析" }));
     expect(onContinue).toHaveBeenCalledTimes(1);
     expect(onEdit).toHaveBeenCalledTimes(1);
     expect(onRetry).toHaveBeenCalledTimes(1);
@@ -97,7 +120,7 @@ describe("ResearchExecutionActivity", () => {
   it("explains that committed outputs survive cancellation", () => {
     render(<ResearchExecutionActivity onContinue={() => undefined} onEdit={() => undefined} progress={{ contract_version: "1.0", turn_id: "turn-canceled", status: "CANCELED", steps: [], active_step_ids: [], completed_step_count: 1, total_step_count: 2, incremental_outputs: [{ output_key: "output-1", step_id: "step-1", display_label: "结构输出", artifact_id: "artifact-1", preview_available: true, available_at: "2026-08-30T00:00:00Z" }], warnings: [], execution_outcome: "CANCELED", result_projection_pending: false }} />);
     expect(screen.getByText(/已经提交的有效输出仍会保留/)).toBeInTheDocument();
-    expect(screen.getByText("继续研究不会自动重算。", { exact: false })).toBeInTheDocument();
+    expect(screen.getByText("继续当前研究不会自动重算。", { exact: false })).toBeInTheDocument();
     expect(screen.getByText("已有 1 项真实执行输出可查看。")).toBeInTheDocument();
   });
 
@@ -105,7 +128,7 @@ describe("ResearchExecutionActivity", () => {
     const onCancel = vi.fn();
     render(<ResearchExecutionActivity onCancel={onCancel} progress={{ contract_version: "1.0", turn_id: "turn-query", status: "ANSWERED", response_kind: "DATA_QUERY", steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [], execution_outcome: null, result_projection_pending: false }} />);
     expect(screen.getByText("数据查询已完成")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "停止研究" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "取消当前分析" })).toBeNull();
   });
 
   it("labels a zero-recompute continuation as Result reuse rather than a data query", () => {
@@ -134,11 +157,28 @@ describe("ResearchExecutionActivity", () => {
         decision: {
           outcome: "CONTINUE_WITH_ANALYSIS",
           limitations: ["该关系目前仍是方法依赖的解释。"],
+          qualification_level: "DOMAIN_VALIDATED",
           strategy: {
             action: "TEST_HYPOTHESIS",
-            current_question: { statement: "局部结构是否能解释输运异常？" },
+            current_question: { question_id: "q-structure", statement: "局部结构是否能解释输运异常？", status: "OPEN" },
+            questions: [
+              { question_id: "q-transport", statement: "扩散是否升高？", status: "RESOLVED", evidence_result_ids: ["result-1"] },
+              { question_id: "q-structure", statement: "局部结构是否能解释输运异常？", status: "OPEN", evidence_result_ids: [] },
+            ],
             active_evidence_gap: { statement: "缺少局部结构证据。" },
-            active_hypothesis: { statement: "较弱的局部约束可能与较高扩散相关。", status: "PROPOSED" },
+            active_hypothesis: {
+              statement: "较弱的局部约束可能与较高扩散相关。",
+              status: "PROPOSED",
+              supporting_result_ids: [],
+              known_assumptions: ["当前结构与轨迹代表相同材料状态。"],
+            },
+            comparison_status: "CONDITIONALLY_COMPATIBLE",
+            contradictions: [{
+              contradiction_id: "contradiction-1",
+              predicate: "transport.regime",
+              unresolved: true,
+              resolution: "两项结果使用了不同的拟合区间，当前不能静默合并。",
+            }],
           },
         },
         stop: { stopped: false, reason: null },
@@ -146,9 +186,18 @@ describe("ResearchExecutionActivity", () => {
     }} />);
 
     expect(screen.getByRole("complementary", { name: "研究策略" })).toHaveTextContent("第 2 轮");
+    expect(screen.getByRole("heading", { name: "研究地图" })).toBeInTheDocument();
+    expect(screen.getByText("扩散是否升高？")).toBeInTheDocument();
+    expect(screen.getByText(/已由证据回答 · 1 项科学结果/)).toBeInTheDocument();
+    expect(screen.getByText("尚未解决")).toBeInTheDocument();
     expect(screen.getByText("局部结构是否能解释输运异常？")).toBeInTheDocument();
     expect(screen.getByText("较弱的局部约束可能与较高扩散相关。")).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "科学假设" })).toHaveTextContent("尚未检验");
+    expect(screen.getByRole("region", { name: "科学假设" })).toHaveTextContent("不是已计算的科学事实");
+    expect(screen.getByText("当前结果只能在所列方法或条件限制下比较。")).toBeInTheDocument();
+    expect(screen.getByRole("note", { name: "证据冲突" })).toHaveTextContent("不同的拟合区间");
     expect(screen.getByText("将用下一项分析检验当前假设")).toBeInTheDocument();
+    expect(screen.getByText("已在声明适用范围内验证")).toBeInTheDocument();
     expect(screen.queryByText(/hidden_reasoning|tool\\.|adapter\\.|job_/i)).toBeNull();
   });
 

@@ -48,6 +48,7 @@ class DeepSeekInterpreterClient:
             ],
             user_config=PlannerUserConfig(provider="deepseek", model=self.provider.meta.model, timeout_seconds=min(timeout_seconds, 120.0), max_tokens=4096, temperature=0.0),
             purpose="GROUNDED_INTERPRETATION",
+            retry_observer=context.get("retry_observer"),
         )
         if response.raw_json is None:
             raise ValueError("provider returned no structured interpretation")

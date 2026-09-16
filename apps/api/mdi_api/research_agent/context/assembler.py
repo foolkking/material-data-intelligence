@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from typing import Any
 from uuid import UUID
 
@@ -234,6 +235,68 @@ class ResearchContextCandidateAssembler:
         )
 
     @staticmethod
+    def _scientific_object_summary(
+        canonical_metadata: Any,
+        object_type: str,
+    ) -> str:
+        """Return a bounded, deterministic scientific projection.
+
+        Object references are authorized by exact object/version identity, but
+        the provider also needs a small amount of semantic metadata for
+        read-only questions.  Never serialize the canonical payload here:
+        this projection is deliberately limited to scalar metadata and small
+        lists/dicts, with storage/provenance internals excluded.
+        """
+        excluded_key_fragments = (
+            "payload",
+            "storage",
+            "blob",
+            "secret",
+            "token",
+            "password",
+            "content_hash",
+            "semantic_hash",
+            "file_path",
+            "source_key",
+        )
+
+        def project(value: Any, *, depth: int, key: str = "") -> Any:
+            lowered = key.lower()
+            if any(fragment in lowered for fragment in excluded_key_fragments):
+                return None
+            if value is None or isinstance(value, (bool, int, float)):
+                return value
+            if isinstance(value, str):
+                return value[:256]
+            if depth <= 0:
+                return "[bounded]"
+            if isinstance(value, dict):
+                result: dict[str, Any] = {}
+                for child_key in sorted(value, key=lambda item: str(item))[:32]:
+                    child = project(value[child_key], depth=depth - 1, key=str(child_key))
+                    if child is not None:
+                        result[str(child_key)] = child
+                return result
+            if isinstance(value, (list, tuple)):
+                result = []
+                for child in value[:16]:
+                    projected = project(child, depth=depth - 1, key=key)
+                    if projected is not None:
+                        result.append(projected)
+                return result
+            return str(value)[:256]
+
+        metadata = project(canonical_metadata if isinstance(canonical_metadata, dict) else {}, depth=3)
+        summary = {
+            "object_type": object_type,
+            "canonical_metadata": metadata,
+        }
+        encoded = json.dumps(summary, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        if len(encoded) <= 2000:
+            return encoded
+        return encoded[: 2000 - len(_TRUNCATION_MARKER)] + _TRUNCATION_MARKER
+
+    @staticmethod
     def _object_candidates(
         unit: Any,
         project_id: str,
@@ -303,10 +366,10 @@ class ResearchContextCandidateAssembler:
                 object_ref=ref,
                 source=source,
                 display_label=str(ref.display_name or logical["display_name"]),
-                semantic_summary=str(
-                    (version.get("canonical_metadata_json") or {}).get("summary")
-                    or ref.object_type
-                )[:2000],
+                semantic_summary=ResearchContextCandidateAssembler._scientific_object_summary(
+                    version.get("canonical_metadata_json") or {},
+                    ref.object_type,
+                ),
                 recency_rank=recency,
                 stale=freshness != ContextFreshness.CURRENT,
                 freshness=freshness,

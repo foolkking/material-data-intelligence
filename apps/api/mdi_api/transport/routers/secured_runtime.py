@@ -788,6 +788,9 @@ def search_product_secured(
             subtitle: str,
             href: str,
             research_turn_id: str | None = None,
+            research_session_id: str | None = None,
+            object_version_id: str | None = None,
+            object_type: str | None = None,
             status: str | None = None,
             updated_at: Any = None,
         ) -> None:
@@ -816,6 +819,9 @@ def search_product_secured(
                 "subtitle": subtitle,
                 "href": href,
                 "researchTurnId": research_turn_id,
+                "researchSessionId": research_session_id,
+                "objectVersionId": object_version_id,
+                "objectType": object_type,
                 "status": status,
                 "updatedAt": (
                     normalized_updated_at.isoformat()
@@ -1008,6 +1014,12 @@ def search_product_secured(
                     title=str(row["display_name"]),
                     subtitle=str(row["object_type"]),
                     href=f"/projects/{row['project_id']}/data?object={row['id']}",
+                    object_version_id=(
+                        str(row["current_version_id"])
+                        if row.get("current_version_id")
+                        else None
+                    ),
+                    object_type=str(row["object_type"]),
                     status=object_status,
                     updated_at=row.get("created_at"),
                 )
@@ -1266,6 +1278,9 @@ def search_product_secured(
                         row.get("job_id"),
                     ),
                     research_turn_id=str(research_turn_id) if research_turn_id else None,
+                    research_session_id=(
+                        str(research_session_id) if research_session_id else None
+                    ),
                     status=result_status,
                     updated_at=row.get("created_at"),
                 )

@@ -41,6 +41,7 @@ class DeterministicScientificReportComposer:
                 finding_refs=[str(item.get("finding_id") or item.get("claim_id"))] if item.get("finding_id") or item.get("claim_id") else [],
                 fact_refs=[str(value) for value in item.get("fact_refs", item.get("factRefs", []))],
                 evidence_refs=[str(value) for value in item.get("evidence_refs", item.get("evidenceRefs", []))],
+                reasoning_assessment=item.get("reasoning_assessment"),
             ))
         findings = [item for item in findings if item.statement]
         if not findings:

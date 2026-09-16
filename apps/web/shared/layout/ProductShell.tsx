@@ -25,6 +25,7 @@ import {
 } from "../../app/lib/saved-search-sync";
 import { getProductTaskFeed } from "../../app/lib/task-center-data";
 import { ModelSettingsDialog } from "../../features/account/ModelSettingsPage";
+import { scientistProjectLabel } from "../product-labels";
 import { ProductLink as Link, useProductNavigation, useProductRouter } from "./ProductNavigation";
 
 const ProductShellFrameContext = createContext(false);
@@ -669,6 +670,26 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
       source_missing: "来源不可用",
       invalidated: "已失效",
     })[String(status || "active").toLowerCase()] || "当前";
+  const askWithHref = (item: ProductSearchItem): string | null => {
+    if (item.kind === "scientific_object" && item.objectVersionId && item.objectType) {
+      const query = new URLSearchParams({
+        object: item.id,
+        version: item.objectVersionId,
+        type: item.objectType,
+        name: item.title,
+        fromSearch: "1",
+      });
+      return `/projects/${encodeURIComponent(item.projectId)}/research?${query.toString()}`;
+    }
+    if (item.kind === "result" && item.researchSessionId) {
+      const query = new URLSearchParams({
+        resultContext: item.id,
+        fromSearch: "1",
+      });
+      return `/projects/${encodeURIComponent(item.projectId)}/research/${encodeURIComponent(item.researchSessionId)}?${query.toString()}`;
+    }
+    return null;
+  };
 
   const isProject = Boolean(projectId);
   const pendingProjectPath =
@@ -709,6 +730,7 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
       taskFeedPrefetchRef.current = false;
     });
   };
+  const displayedProjectName = scientistProjectLabel(projectName, projectId);
   return (
     <ProductShellFrameContext.Provider value>
     <div className="product-shell">
@@ -717,9 +739,9 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
           <span className="product-brand-mark" aria-hidden="true">M</span>
           <span>材料智能平台</span>
         </Link>
-        <div className="product-context" title={projectName || undefined}>
+        <div className="product-context" title={displayedProjectName || undefined}>
           {isProject
-            ? <span>{projectName ? `项目 · ${projectName}` : "项目研究"}</span>
+            ? <span>{`项目 · ${displayedProjectName}`}</span>
             : <span>材料数据与科学分析</span>}
         </div>
         <div className="product-global-actions">
@@ -750,17 +772,17 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
       </header>
       {isProject && <nav
         className="product-project-nav"
-        aria-label={`${projectName || "当前项目"}导航`}
+        aria-label={`${displayedProjectName}导航`}
         aria-busy={Boolean(pendingProjectPath)}
         data-navigation-pending={pendingProjectPath || undefined}
       >
         <Link
           className="product-project-mobile-identity"
           href={`/projects/${projectId}`}
-          title={projectName || "当前项目"}
+          title={displayedProjectName}
         >
           <span aria-hidden="true">项目</span>
-          <strong>{projectName || "当前项目"}</strong>
+          <strong>{displayedProjectName}</strong>
         </Link>
         <Link className={projectNavClass(`/projects/${projectId}`, Boolean(pathname?.endsWith(`/projects/${projectId}`)))} aria-current={pathname?.endsWith(`/projects/${projectId}`) ? "page" : undefined} href={`/projects/${projectId}`} prefetch onMouseEnter={() => prefetchRoute(`/projects/${projectId}`, "overview")} onFocus={() => prefetchRoute(`/projects/${projectId}`, "overview")}>概览</Link>
         <Link className={projectNavClass(`/projects/${projectId}/data`, Boolean(pathname?.includes("/data")))} aria-current={pathname?.includes("/data") ? "page" : undefined} href={`/projects/${projectId}/data`} prefetch onMouseEnter={() => prefetchRoute(`/projects/${projectId}/data`, "data")} onFocus={() => prefetchRoute(`/projects/${projectId}/data`, "data")}>数据</Link>
@@ -936,7 +958,10 @@ function ProductShellFrame({ children, projectId }: { children: ReactNode; proje
           <div className="product-search-results" aria-live="polite">
             {searchState === "idle" ? <p className="product-form-hint">输入关键词，或选择项目、类型与状态后开始搜索。不会在空白条件下加载全部历史记录。</p> : searchState === "loading" ? <p className="product-form-hint" role="status">正在搜索…</p> : searchState === "error" ? <div className="product-search-recovery"><p className="product-form-error" role="alert">搜索暂时无法读取，当前条件已保留。</p><button type="button" className="product-secondary-action" onClick={() => setSearchRetryToken((current) => current + 1)}>重试搜索</button></div> : matchingItems.length ? <>
               <p className="product-search-count" role="status" aria-label={`${searchTruncated ? "至少 " : ""}找到 ${searchCount} 项，显示前 ${matchingItems.length} 项`}>{searchTruncated ? "至少 " : ""}找到 {searchCount} 项，显示前 {matchingItems.length} 项</p>
-              {matchingItems.map((item) => <div className="product-search-result" key={`${item.kind}-${item.id}`}><div><strong>{item.title}</strong><span><em className={`product-search-status status-${String(item.status || "active").toLowerCase()}`}>{searchStatusLabel(item.status)}</em>{kindLabels[item.kind]}{item.subtitle && item.subtitle !== kindLabels[item.kind] ? ` · ${item.subtitle}` : ""}</span></div><div className="product-row-actions"><Link className="product-primary-action" href={item.href} onClick={closeSearch}>打开</Link>{item.kind === "project" ? <><Link className="product-secondary-action" href={`/projects/${item.projectId}/data`} onClick={closeSearch}>查看数据</Link><Link className="product-secondary-action" href={`/projects/${item.projectId}/research`} onClick={closeSearch}>进入研究</Link></> : null}</div></div>)}
+              {matchingItems.map((item) => {
+                const contextHref = askWithHref(item);
+                return <div className="product-search-result" key={`${item.kind}-${item.id}`}><div><strong>{item.title}</strong><span><em className={`product-search-status status-${String(item.status || "active").toLowerCase()}`}>{searchStatusLabel(item.status)}</em>{kindLabels[item.kind]}{item.subtitle && item.subtitle !== kindLabels[item.kind] ? ` · ${item.subtitle}` : ""}</span></div><div className="product-row-actions"><Link className="product-primary-action" href={item.href} onClick={closeSearch}>打开</Link>{contextHref ? <Link className="product-secondary-action" href={contextHref} onClick={closeSearch}>带入研究</Link> : null}{item.kind === "project" ? <><Link className="product-secondary-action" href={`/projects/${item.projectId}/data`} onClick={closeSearch}>查看数据</Link><Link className="product-secondary-action" href={`/projects/${item.projectId}/research`} onClick={closeSearch}>进入研究</Link></> : null}</div></div>;
+              })}
               {searchNextCursor ? (
                 <>
                   {searchLoadMoreError ? (

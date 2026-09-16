@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 from types import SimpleNamespace
 import zipfile
@@ -17,6 +18,9 @@ from mdi_api.input_transport import (
     input_transport_capability_contract,
 )
 from mdi_api.durable_projects import hydrate_runtime_project
+from mdi_api.database import create_engine_from_settings, dispose_cached_engines
+from mdi_api.db import metadata
+from mdi_api.config import load_settings
 from mdi_api.main import create_app
 from mdi_api.phase2_runtime import Phase2ProductRuntime, get_phase2_runtime, reset_phase2_runtime
 from mdi_artifact_core.electronic_contract import electronic_resource_hash
@@ -26,11 +30,18 @@ def _sha(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def _session(client: TestClient, project_id: str, files: list[tuple[str, bytes]], *, group: str | None = None) -> dict:
+def _session(
+    client: TestClient,
+    project_id: str,
+    files: list[tuple[str, bytes]],
+    *,
+    group: str | None = None,
+    dataset_name: str = "transport regression",
+) -> dict:
     response = client.post(
         f"/projects/{project_id}/upload-sessions",
         json={
-            "datasetName": "transport regression",
+            "datasetName": dataset_name,
             "files": [
                 {
                     "clientFileId": f"client_{index}",
@@ -65,6 +76,11 @@ def _upload(client: TestClient, session: dict, client_id: str, data: bytes) -> d
 
 
 def _client(tmp_path: Path) -> TestClient:
+    os.environ["MDI_DATABASE_URL"] = (
+        f"sqlite:///{(tmp_path / 'input-transport.sqlite3').as_posix()}"
+    )
+    dispose_cached_engines()
+    metadata.create_all(create_engine_from_settings(load_settings()))
     reset_phase2_runtime(tmp_path / "artifacts")
     return TestClient(create_app())
 
@@ -192,7 +208,7 @@ def test_cuka_xrd_and_structure_can_publish_in_one_dataset(tmp_path: Path, repo_
     assert payload["profile"]["experimentalXrdReadiness"]["resources"][0]["wavelengthUnit"] == "angstrom"
 
 
-def test_partial_multi_resource_failure_does_not_publish_dataset(tmp_path: Path, repo_root: Path) -> None:
+def test_partial_multi_resource_failure_admits_independent_valid_member(tmp_path: Path, repo_root: Path) -> None:
     structure = (repo_root / "tests" / "fixtures" / "structures" / "simple_cubic.cif").read_bytes()
     invalid = b'{"schemaVersion":"phase10n5.electronic_dos_resource.v1"}'
     client = _client(tmp_path)
@@ -201,8 +217,22 @@ def test_partial_multi_resource_failure_does_not_publish_dataset(tmp_path: Path,
     _upload(client, session, "client_1", structure)
     _upload(client, session, "client_2", invalid)
     response = client.post(f"/upload-sessions/{session['uploadSessionId']}/complete")
-    assert response.status_code == 400
-    assert get_phase2_runtime().list_datasets() == []
+    assert response.status_code == 200, response.text
+    dataset = response.json()
+    assert dataset["status"] == "partially_ready"
+    assert dataset["objectCount"] == 1
+    assert dataset["inputTransport"]["scientificAdmissionStatus"] == "PARTIALLY_READY"
+    assert dataset["inputTransport"]["uploadedFileCount"] == 2
+    assert dataset["inputTransport"]["admittedFileCount"] == 1
+    assert dataset["inputTransport"]["failedOrUnsupportedFileCount"] == 1
+    failed = next(
+        item
+        for item in dataset["inputTransport"]["files"]
+        if item["fileName"] == "invalid.json"
+    )
+    assert failed["parseStatus"] != "success"
+    assert failed["errorCode"]
+    assert get_phase2_runtime().list_datasets()[0]["id"] == dataset["datasetId"]
 
 
 def test_input_transport_contract_is_bounded_and_order_independent() -> None:
@@ -214,8 +244,58 @@ def test_input_transport_contract_is_bounded_and_order_independent() -> None:
     assert contract["supportsBinaryBytes"] is True
     assert contract["supportsMultipleResources"] is True
     assert contract["fileOrderIsSemanticAuthority"] is False
-    assert contract["partialFailurePolicy"] == "NO_DATASET_PUBLICATION_UNTIL_COMPLETE_BUNDLE_VALIDATES"
+    assert contract["partialFailurePolicy"] == "ADMIT_INDEPENDENT_VALID_MEMBERS_AND_DISCLOSE_PARTIAL_ERRORS"
     assert len(str(contract["semanticHash"])) == 64
+
+
+def test_upload_completion_replay_reuses_admitted_business_identity(tmp_path: Path) -> None:
+    payload = b"formula,value\nSi,1\n"
+    client = _client(tmp_path)
+    project_id = _project(client)
+    session = _session(client, project_id, [("replay.csv", payload)])
+    _upload(client, session, "client_1", payload)
+
+    first = client.post(f"/upload-sessions/{session['uploadSessionId']}/complete")
+    second = client.post(f"/upload-sessions/{session['uploadSessionId']}/complete")
+
+    assert first.status_code == 200, first.text
+    assert second.status_code == 200, second.text
+    assert second.json()["datasetId"] == first.json()["datasetId"]
+    assert second.json()["normalizedExports"] == first.json()["normalizedExports"]
+
+
+def test_equal_hashes_in_distinct_upload_sessions_keep_distinct_business_identity(
+    tmp_path: Path,
+) -> None:
+    payload = b"formula,value\nSi,1\n"
+    client = _client(tmp_path)
+    project_id = _project(client)
+    first_session = _session(
+        client,
+        project_id,
+        [("same.csv", payload)],
+        dataset_name="transport regression one",
+    )
+    second_session = _session(
+        client,
+        project_id,
+        [("same.csv", payload)],
+        dataset_name="transport regression two",
+    )
+    _upload(client, first_session, "client_1", payload)
+    _upload(client, second_session, "client_1", payload)
+
+    first = client.post(
+        f"/upload-sessions/{first_session['uploadSessionId']}/complete"
+    )
+    second = client.post(
+        f"/upload-sessions/{second_session['uploadSessionId']}/complete"
+    )
+
+    assert first.status_code == 200, first.text
+    assert second.status_code == 200, second.text
+    assert second.json()["datasetId"] != first.json()["datasetId"]
+    assert second.json()["normalizedExports"] != first.json()["normalizedExports"]
 
 
 def test_durable_project_is_rehydrated_before_upload_session_after_process_restart(tmp_path: Path) -> None:

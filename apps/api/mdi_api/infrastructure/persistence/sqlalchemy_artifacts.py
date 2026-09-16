@@ -4,13 +4,14 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
-from sqlalchemy import and_, insert, or_, select
+from sqlalchemy import and_, func, insert, or_, select
 from sqlalchemy.engine import Connection
 from sqlalchemy.exc import IntegrityError
 
 from mdi_schemas import Artifact
 
-from mdi_api.db import artifacts
+from mdi_api.db import artifacts, jobs, tool_calls
+from mdi_api.application.jobs.leases import ExecutionLeaseLost
 from mdi_api.infrastructure.persistence.base import (
     _SqlAlchemyRepository,
     _enum_value,
@@ -24,6 +25,14 @@ from mdi_api.infrastructure.persistence.base import (
 class SqlAlchemyArtifactRepository(_SqlAlchemyRepository):
     def save(self, artifact: Artifact | Mapping[str, Any]) -> dict[str, Any]:
         record = _model_to_record(artifact)
+        stored_id = self._with_connection(
+            lambda connection: self._save_on_connection(connection, record)
+        )
+        return self.get(stored_id)
+
+    def _save_on_connection(
+        self, connection: Connection, record: Mapping[str, Any]
+    ) -> str:
         artifact_id = _required_id(record, "artifactId")
         _validate_artifact_storage_record(record)
         metadata = _json_copy(record.get("metadata") or {})
@@ -51,57 +60,65 @@ class SqlAlchemyArtifactRepository(_SqlAlchemyRepository):
             "metadata_json": metadata,
         }
 
-        def run(connection: Connection) -> str:
-            existing = connection.execute(
-                select(artifacts).where(
-                    or_(
-                        artifacts.c.id == artifact_id,
-                        and_(
-                            artifacts.c.job_id == values["job_id"],
-                            artifacts.c.storage_key == values["storage_key"],
-                            artifacts.c.sha256 == values["sha256"],
-                        ),
-                    )
-                )
-            ).mappings().first()
-            if existing is None:
-                connection.execute(insert(artifacts).values(**values))
-                return artifact_id
-            existing_row = _row_to_json_dict(existing)
-            existing_id = str(existing_row["id"])
-            connection.execute(artifacts.update().where(artifacts.c.id == existing_id).values(**{**values, "id": existing_id}))
-            return existing_id
-
-        try:
-            stored_id = self._with_connection(run)
-        except IntegrityError as exc:
-            # A duplicate worker can race on the job/storage/checksum
-            # uniqueness boundary.  Reuse the committed Artifact after the
-            # losing transaction rolls back; never mint a second provenance
-            # row for the same persisted bytes.
-            existing = self._fetch_one_dict(
-                select(artifacts).where(
-                    or_(
-                        artifacts.c.id == artifact_id,
-                        and_(
-                            artifacts.c.job_id == values["job_id"],
-                            artifacts.c.storage_key == values["storage_key"],
-                            artifacts.c.sha256 == values["sha256"],
-                        ),
-                    )
+        existing = connection.execute(
+            select(artifacts).where(
+                or_(
+                    artifacts.c.id == artifact_id,
+                    and_(
+                        artifacts.c.job_id == values["job_id"],
+                        artifacts.c.storage_key == values["storage_key"],
+                        artifacts.c.sha256 == values["sha256"],
+                    ),
                 )
             )
-            if existing is None:
-                raise
-            existing_row = _row_to_json_dict(existing)
-            if (
-                str(existing_row.get("project_id") or "") != values["project_id"]
-                or str(existing_row.get("job_id") or "") != values["job_id"]
-                or str(existing_row.get("storage_key") or "") != values["storage_key"]
-                or str(existing_row.get("sha256") or "") != values["sha256"]
-            ):
-                raise ValueError("Artifact idempotency key is already bound to a different persisted object.") from exc
-            stored_id = str(existing_row["id"])
+        ).mappings().first()
+        if existing is None:
+            connection.execute(insert(artifacts).values(**values))
+            return artifact_id
+        existing_row = _row_to_json_dict(existing)
+        existing_id = str(existing_row["id"])
+        connection.execute(
+            artifacts.update()
+            .where(artifacts.c.id == existing_id)
+            .values(**{**values, "id": existing_id})
+        )
+        return existing_id
+
+    def save_for_execution(
+        self,
+        artifact: Artifact | Mapping[str, Any],
+        *,
+        owner: str,
+        attempt: int,
+    ) -> dict[str, Any]:
+        record = _model_to_record(artifact)
+        job_id = str(record["jobId"])
+        tool_call_id = str(record.get("toolCallId") or "")
+
+        def run(connection: Connection) -> str:
+            current = connection.execute(
+                select(jobs.c.id)
+                .select_from(
+                    jobs.outerjoin(
+                        tool_calls, tool_calls.c.id == tool_call_id
+                    )
+                )
+                .where(
+                    jobs.c.id == job_id,
+                    jobs.c.status == "running",
+                    jobs.c.execution_owner == owner,
+                    jobs.c.execution_attempt == attempt,
+                    jobs.c.lease_expires_at > func.now(),
+                    tool_calls.c.attempt == attempt,
+                )
+            ).scalar_one_or_none()
+            if current is None:
+                raise ExecutionLeaseLost(
+                    f"stale Artifact publication rejected for {job_id} attempt {attempt}"
+                )
+            return self._save_on_connection(connection, record)
+
+        stored_id = self._with_connection(run)
         return self.get(stored_id)
 
     def get(self, artifact_id: str) -> dict[str, Any]:

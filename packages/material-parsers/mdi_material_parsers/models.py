@@ -42,6 +42,7 @@ class ParseResult:
     objects: list[NormalizedObjectDraft] = field(default_factory=list)
     error_code: str | None = None
     error_message: str | None = None
+    details: dict[str, Any] = field(default_factory=dict)
 
     def file_profile(self) -> dict[str, Any]:
         profile = {
@@ -54,5 +55,7 @@ class ParseResult:
             profile["errorCode"] = self.error_code
         if self.error_message:
             profile["errorMessage"] = self.error_message
+        if self.details:
+            profile["details"] = self.details
         return profile
 

@@ -20,6 +20,7 @@ class ContextSourceClass(StrEnum):
     EXACT_SCIENTIFIC_OBJECT_VERSION = "EXACT_SCIENTIFIC_OBJECT_VERSION"
     SCIENTIFIC_RESULT = "SCIENTIFIC_RESULT"
     SCIENTIFIC_EVIDENCE = "SCIENTIFIC_EVIDENCE"
+    LITERATURE_EVIDENCE = "LITERATURE_EVIDENCE"
     PREVIOUS_RESEARCH_TURN = "PREVIOUS_RESEARCH_TURN"
     RESEARCH_MEMORY = "RESEARCH_MEMORY"
     PROJECT_HISTORY = "PROJECT_HISTORY"
@@ -54,6 +55,55 @@ class MemoryEpistemicStatus(StrEnum):
     INTERPRETED = "INTERPRETED"
     HYPOTHESIS = "HYPOTHESIS"
     USER_ASSERTED = "USER_ASSERTED"
+    REPORTED = "REPORTED"
+
+
+class ContextRole(StrEnum):
+    """How one item may participate in an operation's context."""
+
+    EVIDENCE = "EVIDENCE"
+    CONTINUITY = "CONTINUITY"
+    SUBJECT = "SUBJECT"
+    CONSTRAINT = "CONSTRAINT"
+    PREFERENCE = "PREFERENCE"
+
+
+def context_role_for_item(kind: str, authority_class: str | None = None) -> ContextRole:
+    """Project a bounded role without changing scientific authority."""
+
+    normalized_kind = str(kind or "").upper()
+    if normalized_kind in {
+        "SCIENTIFIC_RESULT",
+        "SCIENTIFIC_FINDING",
+        "SCIENTIFIC_EVIDENCE",
+        "LITERATURE_EVIDENCE",
+    }:
+        return ContextRole.EVIDENCE
+    if normalized_kind in {"SCIENTIFIC_OBJECT", "SCIENTIFIC_SELECTION"}:
+        return ContextRole.SUBJECT
+    if normalized_kind in {"USER_CONSTRAINT", "RESEARCH_GOAL"}:
+        return ContextRole.CONSTRAINT
+    if normalized_kind == "CAPABILITY_CANDIDATE":
+        return ContextRole.CONTINUITY
+    if normalized_kind == "INTERPRETATION":
+        return ContextRole.CONTINUITY
+    if str(authority_class or "").upper() == "USER_PREFERENCE":
+        return ContextRole.PREFERENCE
+    return ContextRole.CONTINUITY
+
+
+def support_eligibility_for_item(kind: str, authority_class: str | None = None) -> bool:
+    """Return whether the item may directly support a scientific claim."""
+
+    normalized_kind = str(kind or "").upper()
+    normalized_authority = str(authority_class or "").upper()
+    if normalized_kind == "SCIENTIFIC_RESULT":
+        return normalized_authority in {"SCIENTIFIC_KNOWLEDGE", "SCIENTIFIC_RESULT"}
+    if normalized_kind == "SCIENTIFIC_FINDING":
+        return normalized_authority == "SCIENTIFIC_EVIDENCE"
+    if normalized_kind in {"SCIENTIFIC_EVIDENCE", "LITERATURE_EVIDENCE"}:
+        return normalized_authority == "SCIENTIFIC_EVIDENCE"
+    return False
 
 
 _SOURCE_CLASS_BY_LEGACY_SOURCE = {
@@ -86,6 +136,8 @@ def source_class_for_candidate(source: Any, ref_type: str | None = None) -> Cont
         return ContextSourceClass.SCIENTIFIC_RESULT
     if ref_type == "SCIENTIFIC_FINDING":
         return ContextSourceClass.SCIENTIFIC_EVIDENCE
+    if ref_type == "LITERATURE_EVIDENCE":
+        return ContextSourceClass.LITERATURE_EVIDENCE
     mapped = _SOURCE_CLASS_BY_LEGACY_SOURCE.get(str(value))
     if mapped is not None:
         return mapped
@@ -98,6 +150,8 @@ def authority_for_candidate(ref_type: str, source: Any) -> ContextAuthorityClass
     if ref_type == "SCIENTIFIC_RESULT":
         return ContextAuthorityClass.SCIENTIFIC_KNOWLEDGE
     if ref_type == "SCIENTIFIC_FINDING":
+        return ContextAuthorityClass.SCIENTIFIC_EVIDENCE
+    if ref_type == "LITERATURE_EVIDENCE":
         return ContextAuthorityClass.SCIENTIFIC_EVIDENCE
     return (
         ContextAuthorityClass.MEMORY
@@ -155,6 +209,7 @@ def candidate_source_ref(candidate: Mapping[str, Any]) -> str | None:
         "result_id",
         "result_ref",
         "finding_ref",
+        "literature_evidence_id",
         "turn_id",
         "candidate_id",
     ):
@@ -300,6 +355,7 @@ def context_provenance_summary(
 __all__ = [
     "ContextAuthorityClass",
     "ContextFreshness",
+    "ContextRole",
     "ContextSourceClass",
     "MemoryEpistemicStatus",
     "SourceConflict",
@@ -311,4 +367,6 @@ __all__ = [
     "resolve_source_conflict",
     "source_class_for_candidate",
     "authority_for_candidate",
+    "context_role_for_item",
+    "support_eligibility_for_item",
 ]

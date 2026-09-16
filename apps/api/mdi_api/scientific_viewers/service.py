@@ -134,7 +134,7 @@ class ScientificViewerProjectionService:
             return self._bounded_rows(payload)
         if object_type == "trajectory.atomic":
             return self._bounded_frames(payload)
-        if object_type == "volumetric.charge_density":
+        if object_type in {"volumetric.field", "volumetric.charge_density"}:
             return self._bounded_volume(payload)
         return payload, 0, []
 

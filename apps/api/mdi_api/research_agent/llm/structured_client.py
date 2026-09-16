@@ -60,7 +60,10 @@ class DeepSeekStructuredLLMClient:
             "repair": request_context.get("repair"),
         }
         started = perf_counter()
-        purpose = "REPORT_COMPOSITION" if role == "scientific_report_composer" else "INTENT_EXTRACTION"
+        purpose = {
+            "scientific_report_composer": "REPORT_COMPOSITION",
+            "scientific_literature_synthesizer": "LITERATURE_SYNTHESIS",
+        }.get(role, "INTENT_EXTRACTION")
         response = await asyncio.to_thread(
             self.provider.complete_json,
             messages=[

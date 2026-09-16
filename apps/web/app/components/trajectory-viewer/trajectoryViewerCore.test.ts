@@ -11,6 +11,42 @@ import type { ValidatedTrajectory } from "./trajectoryViewerTypes";
 const validated=(payload:unknown)=>{const result=validateTrajectoryForViewer(payload);expect(result.ok).toBe(true);return (result as {ok:true;trajectory:ValidatedTrajectory}).trajectory;};
 
 describe("trajectory viewer core",()=>{
+  it("accepts large valid canonical trajectories without counting scientific leaves as nesting",()=>{
+    const firstFrame = (fixed as {frames: Array<Record<string, unknown>>}).frames[0];
+    const expanded = {
+      ...(fixed as Record<string, unknown>),
+      frames: Array.from({length:1000},(_,frameIndex)=>({
+        ...firstFrame,
+        frame_index: frameIndex,
+        step: frameIndex,
+        time: frameIndex,
+      })),
+    };
+    const result = validateTrajectoryForViewer(expanded);
+    expect(result.ok).toBe(true);
+  });
+  it("still rejects arbitrary deeply nested or executable payload fields",()=>{
+    const deep = {value: "ok"} as Record<string, unknown>;
+    let cursor = deep;
+    for(let index=0; index<9; index += 1){
+      const child: Record<string, unknown> = {};
+      cursor.child = child;
+      cursor = child;
+    }
+    const deepResult = validateTrajectoryForViewer({
+      ...(fixed as Record<string, unknown>),
+      metadata: deep,
+    });
+    expect(deepResult.ok).toBe(false);
+    expect((deepResult as {ok:false;errors:readonly string[]}).errors).toContain("TRAJECTORY_VIEWER_NESTING_LIMIT_EXCEEDED");
+
+    const executableResult = validateTrajectoryForViewer({
+      ...(fixed as Record<string, unknown>),
+      metadata: {module: "unexpected"},
+    });
+    expect(executableResult.ok).toBe(false);
+    expect((executableResult as {ok:false;errors:readonly string[]}).errors).toContain("TRAJECTORY_VIEWER_EXECUTABLE_FIELD_FORBIDDEN");
+  });
   it("maps fixed fractional frames and preserves stable atom identity",()=>{const trajectory=validated(fixed);const first=mapTrajectoryFrame(trajectory,0);const second=mapTrajectoryFrame(trajectory,1);expect(first.scene.atoms.map((atom)=>atom.siteIndex)).toEqual([0,1,2,3]);expect(second.scene.atoms.map((atom)=>atom.siteIndex)).toEqual([0,1,2,3]);expect(first.scene.atoms[1].position).toEqual([1.25,1.25,1.25]);expect(second.scene.atoms[0].position).toEqual([0.05,0,0]);expect(second.lattice).toEqual(first.lattice);});
   it("uses each variable triclinic lattice without changing coordinates",()=>{const trajectory=validated(variable);const first=mapTrajectoryFrame(trajectory,0);const second=mapTrajectoryFrame(trajectory,1);expect(first.lattice[0][0]).toBe(5.8);expect(second.lattice[0][0]).toBe(5.75);expect(second.scene.atoms[1].position).toEqual([2.875,2.875,2.875]);});
   it("does not wrap unwrapped positions and derives deterministic supercell refs",()=>{const trajectory=validated(unwrapped);const frame=mapTrajectoryFrame(trajectory,2,[2,1,1]);expect(frame.scene.warnings).not.toContain("TRAJECTORY_VIEWER_WRAPPING_UNKNOWN");expect(frame.scene.atoms.some((atom)=>atom.position[0]>frame.lattice[0][0])).toBe(true);expect(frame.scene.atoms.map((atom)=>atom.id)).toEqual([...frame.scene.atoms.map((atom)=>atom.id)]);});

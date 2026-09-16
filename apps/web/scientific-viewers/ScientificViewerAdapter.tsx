@@ -180,9 +180,9 @@ export function ScientificResultViewer({
 
 function ResultViewerLoadingState({ artifact, projectId, datasetId }: { artifact: Artifact; projectId: string; datasetId?: string | null }) {
   return <div className="product-loading" role="status" aria-label="科学结果载荷正在加载">
-    <p className="product-kicker">Artifact metadata ready</p>
+    <p className="product-kicker">科学结果已定位</p>
     <h3>正在加载科学结果载荷…</h3>
-    <p>精确身份、来源与恢复入口已可用；仅专业查看器等待已验证 payload。</p>
+    <p>结果来源与恢复入口已可用；专业查看器正在读取已验证载荷。</p>
     <ViewerArtifactMetadata artifact={artifact} />
     {datasetId ? <div className="product-row-actions"><Link className="product-secondary-action" href={`/projects/${encodeURIComponent(projectId)}/data?dataset=${encodeURIComponent(datasetId)}`}>返回数据源</Link></div> : null}
   </div>;
@@ -191,8 +191,8 @@ function ResultViewerLoadingState({ artifact, projectId, datasetId }: { artifact
 function ViewerArtifactMetadata({ artifact }: { artifact: Artifact }) {
   const identity = artifactIdentity(artifact);
   const projectId = typeof artifact.metadata?.projectId === "string" ? artifact.metadata.projectId : null;
-  return <details open>
-    <summary>精确 Artifact 身份与来源</summary>
+  return <details>
+    <summary>技术来源与精确身份</summary>
     <p>Artifact：<code>{identity || "未提供"}</code></p>
     <p>类型：<code>{artifact.type || "未提供"}@{artifact.version || "1"}</code></p>
     {artifact.name ? <p>名称：{artifact.name}</p> : null}
