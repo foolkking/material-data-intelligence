@@ -730,7 +730,12 @@ def _validated_probabilities(table: pd.DataFrame, mapping: Mapping[str, str], to
     finite_rows = frame.notna().all(axis=1)
     if bool(((frame < 0) | (frame > 1)).where(frame.notna(), False).any().any()):
         raise _input_error(tool_id, "Class probabilities must be within [0, 1].", "invalid_probability_range")
-    if bool((frame.loc[finite_rows].sum(axis=1) - 1.0).abs().gt(1e-6).any()):
+    # Profile 2.0 permits a single positive-class probability column for
+    # binary classification.  In that representation the complementary
+    # class is implicit, so the supplied column is only required to be a
+    # probability in [0, 1].  Row-sum normalization is meaningful only when
+    # the input explicitly supplies two or more class probabilities.
+    if len(mapping) > 1 and bool((frame.loc[finite_rows].sum(axis=1) - 1.0).abs().gt(1e-6).any()):
         raise _input_error(tool_id, "Normalized class probabilities must sum to one.", "invalid_probability_normalization")
     return frame
 

@@ -41,6 +41,7 @@ def build_default_object_type_registry() -> InMemoryObjectTypeRegistry:
         ("materials.dataset", ScientificObjectKind.DATASET, "Materials dataset"),
         ("materials.table", ScientificObjectKind.TABLE, "Scientific materials table"),
         ("structure.crystal", ScientificObjectKind.STRUCTURE, "Crystal structure"),
+        ("structure.atomic", ScientificObjectKind.STRUCTURE, "Non-periodic atomic structure"),
         ("trajectory.atomic", ScientificObjectKind.TRAJECTORY, "Atomic trajectory"),
         ("diffraction.xrd.experimental", ScientificObjectKind.DIFFRACTION, "Experimental XRD"),
         ("diffraction.xrd.theoretical", ScientificObjectKind.DIFFRACTION, "Theoretical XRD"),

@@ -27,6 +27,7 @@ def map_normalized_phonon_resource(
     file_id: str,
     declared_kind: str | None = None,
     declared_contract_version: str | None = None,
+    canonical_species_order: list[str] | None = None,
 ) -> ParseResult:
     """Map an explicitly declared canonical phonon resource."""
 
@@ -37,6 +38,12 @@ def map_normalized_phonon_resource(
     payload = json.loads(raw.decode("utf-8"), object_pairs_hook=_reject_duplicate_keys)
     if not isinstance(payload, dict):
         raise ValueError("Normalized phonon resource must be one JSON object.")
+    source_atom_ordering = payload.get("atom_ordering")
+    if canonical_species_order is not None:
+        if payload.get("species") != canonical_species_order:
+            raise ValueError("PHONON_COMPANION_SPECIES_ORDER_MISMATCH")
+        if source_atom_ordering == "source_order":
+            payload["atom_ordering"] = "canonical_structure_order"
 
     schema_version = payload.get("schema_version")
     if schema_version == PHONON_BAND_SCHEMA_VERSION:
@@ -86,6 +93,11 @@ def map_normalized_phonon_resource(
             "detectedFormat": "typed_phonon_import" if declared_kind else "normalized_mapping",
             "declaredImportKind": declared_kind,
             "schemaVersion": schema_version,
+            "sourceAtomOrdering": source_atom_ordering,
+            "atomOrderingNormalized": (
+                source_atom_ordering == "source_order"
+                and payload.get("atom_ordering") == "canonical_structure_order"
+            ),
             **metadata,
         },
         hash=digest,

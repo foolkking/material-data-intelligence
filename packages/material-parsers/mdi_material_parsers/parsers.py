@@ -548,18 +548,41 @@ def _electronic_resource_object(data: dict[str, Any], dataset_id: str, file_id: 
 
 
 def _experimental_xrd_object(data: dict[str, Any], dataset_id: str, file_id: str) -> NormalizedObjectDraft:
-    required = {"schemaVersion", "resourceId", "resourceVersion", "resourceHash", "xAxis", "twoTheta", "intensity", "intensitySemantic", "wavelength"}
-    if set(data) - (required | {"metadata"}) or not required.issubset(data):
+    common_required = {"schemaVersion", "resourceId", "resourceVersion", "resourceHash", "xAxis", "intensity", "wavelength"}
+    legacy_fields = {"twoTheta", "intensitySemantic"}
+    nested_fields = set()
+    if isinstance(data.get("xAxis"), dict) and "values" in data["xAxis"]:
+        nested_fields.add("xAxis.values")
+    if isinstance(data.get("intensity"), dict) and "values" in data["intensity"]:
+        nested_fields.add("intensity.values")
+    legacy_shape = "twoTheta" in data or "intensitySemantic" in data
+    nested_shape = bool(nested_fields)
+    allowed = common_required | {"metadata"} | (legacy_fields if legacy_shape else set())
+    if set(data) - allowed or not common_required.issubset(data) or (not legacy_shape and not nested_shape):
         raise ValueError("Experimental XRD Resource fields are strict.")
-    if data["xAxis"] != {"kind": "two_theta", "unit": "degree"}:
+    axis = data["xAxis"]
+    if not isinstance(axis, dict) or axis.get("kind") != "two_theta" or axis.get("unit") != "degree":
         raise ValueError("Experimental XRD requires explicit degree two_theta.")
-    if data["wavelength"].get("unit") != "angstrom":
+    if set(axis) - {"kind", "unit", "values"}:
+        raise ValueError("Experimental XRD xAxis fields are strict.")
+    wavelength = data["wavelength"]
+    if not isinstance(wavelength, dict) or wavelength.get("unit") != "angstrom":
         raise ValueError("Experimental XRD requires explicit Angstrom wavelength.")
-    x = data["twoTheta"]
-    y = data["intensity"]
+    x = axis.get("values") if nested_shape else data.get("twoTheta")
+    intensity = data["intensity"]
+    if nested_shape:
+        if not isinstance(intensity, dict) or set(intensity) - {"semantic", "values"}:
+            raise ValueError("Experimental XRD intensity fields are strict.")
+        y = intensity.get("values")
+        intensity_semantic = intensity.get("semantic")
+    else:
+        y = intensity
+        intensity_semantic = data.get("intensitySemantic")
+    if nested_shape and ("twoTheta" in data or "intensitySemantic" in data):
+        raise ValueError("Experimental XRD must use one resource representation.")
     if not isinstance(x, list) or not isinstance(y, list) or len(x) != len(y) or not 3 <= len(x) <= 200_000:
         raise ValueError("Experimental XRD arrays are invalid or outside the point cap.")
-    numeric = [*x, *y, data["wavelength"].get("value")]
+    numeric = [*x, *y, wavelength.get("value")]
     if any(isinstance(item, bool) or not isinstance(item, (int, float)) or not math.isfinite(float(item)) for item in numeric):
         raise ValueError("Experimental XRD numeric values must be finite.")
     if any(float(left) >= float(right) for left, right in zip(x, x[1:])):
@@ -568,11 +591,16 @@ def _experimental_xrd_object(data: dict[str, Any], dataset_id: str, file_id: str
         raise ValueError("Experimental XRD twoTheta is outside 0 to 180 degree.")
     if any(float(item) < 0 for item in y) or max(float(item) for item in y) <= 0:
         raise ValueError("Experimental XRD intensity must be non-negative and not zero-only.")
-    if data["intensitySemantic"] not in {"counts", "relative_intensity", "normalized_relative_intensity", "arbitrary_relative_unit"}:
+    if intensity_semantic not in {"counts", "relative_intensity", "normalized_relative_intensity", "arbitrary_relative_unit"}:
         raise ValueError("Experimental XRD intensity semantic is unsupported.")
-    if float(data["wavelength"]["value"]) <= 0:
+    if float(wavelength["value"]) <= 0:
         raise ValueError("Experimental XRD wavelength must be positive.")
-    material = {key: data[key] for key in ("schemaVersion", "resourceId", "resourceVersion", "xAxis", "twoTheta", "intensity", "intensitySemantic", "wavelength")}
+    material = {key: data[key] for key in ("schemaVersion", "resourceId", "resourceVersion", "xAxis", "intensity", "wavelength")}
+    if legacy_shape:
+        material.update({
+            "twoTheta": data["twoTheta"],
+            "intensitySemantic": data["intensitySemantic"],
+        })
     digest = content_hash(stable_json_dumps(material))
     if data["resourceHash"] != digest:
         raise ValueError("Experimental XRD resourceHash does not match exact scientific content.")
@@ -581,8 +609,9 @@ def _experimental_xrd_object(data: dict[str, Any], dataset_id: str, file_id: str
         dataframe, dataset_id, file_id, "json_limited",
         extra_metadata={"experimentalXrd": {
             "schemaVersion": data["schemaVersion"], "resourceId": data["resourceId"], "resourceVersion": data["resourceVersion"],
-            "resourceHash": digest, "xAxis": data["xAxis"], "intensitySemantic": data["intensitySemantic"],
-            "wavelength": data["wavelength"], "pointCount": len(x), "axisMonotonicity": "STRICTLY_INCREASING",
+            "resourceHash": digest, "xAxis": {"kind": "two_theta", "unit": "degree"},
+            "intensitySemantic": intensity_semantic, "wavelength": wavelength,
+            "pointCount": len(x), "axisMonotonicity": "STRICTLY_INCREASING",
         }},
     )
 

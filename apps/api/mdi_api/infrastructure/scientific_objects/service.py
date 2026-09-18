@@ -11,6 +11,7 @@ from uuid import UUID, uuid4
 
 from sqlalchemy import func, select
 
+from mdi_artifact_core import DEFAULT_TRAJECTORY_CAPS
 from mdi_api.agent2_errors import (
     InvalidScientificObjectRelationship,
     InvalidScientificObjectVersion,
@@ -35,12 +36,16 @@ from mdi_api.domain.scientific_objects.contracts import (
 from mdi_api.unit_of_work import RepositoryFactory
 
 
+MAX_NORMALIZED_SCIENTIFIC_RESOURCE_BYTES = 16 * 1024 * 1024
+
+
 CANONICAL_RELATIONS = frozenset({
     "derived_from", "contains", "member_of", "has_structure", "associated_with",
     "prediction_for", "measurement_of", "comparison_of", "aligned_with", "companion_of",
 })
 _RESOURCE_OBJECT_TYPES: dict[str, tuple[ScientificObjectKind, str]] = {
     "Structure": (ScientificObjectKind.STRUCTURE, "structure.crystal"),
+    "Atoms": (ScientificObjectKind.STRUCTURE, "structure.atomic"),
     "DataFrame": (ScientificObjectKind.TABLE, "materials.table"),
     "Trajectory": (ScientificObjectKind.TRAJECTORY, "trajectory.atomic"),
     "VolumetricData": (ScientificObjectKind.VOLUMETRIC, "volumetric.field"),
@@ -240,7 +245,10 @@ class ScientificObjectService:
         expected_scope = f"projects/{project_id}/datasets/{dataset_id}/normalized/"
         if not storage_key.startswith(expected_scope) or not metadata_key.startswith(expected_scope):
             raise UnauthorizedScientificObjectReference("normalized table source is outside the dataset scope")
-        payload_bytes = storage.get_bytes_bounded(storage_key, max_bytes=8 * 1024 * 1024)
+        payload_bytes = storage.get_bytes_bounded(
+            storage_key,
+            max_bytes=MAX_NORMALIZED_SCIENTIFIC_RESOURCE_BYTES,
+        )
         if hashlib.sha256(payload_bytes).hexdigest() != content_hash:
             raise InvalidScientificObjectVersion("normalized table source checksum mismatch")
         payload = json.loads(payload_bytes.decode("utf-8"))
@@ -455,7 +463,12 @@ class ScientificObjectService:
             profiles = list(session.repositories.data_profiles.list_for_dataset(dataset_id))
         if str(dataset.get("projectId")) != project_id:
             raise UnauthorizedScientificObjectReference("source dataset is outside the project")
-        if str(dataset.get("status") or "") != "profile_ready" or not profiles:
+        # Partial upload completion is an allowed ingestion outcome: an
+        # independently valid normalized member remains admissible even when
+        # another uploaded companion was rejected or unsupported.  Exact
+        # profile/export/checksum validation below remains the admission
+        # authority, so this does not admit an unprofiled or failed dataset.
+        if str(dataset.get("status") or "") not in {"profile_ready", "partially_ready"} or not profiles:
             raise InvalidScientificObjectVersion("source dataset is not scientifically profiled")
         profiles.sort(key=lambda item: str(item.get("createdAt") or item.get("profileId") or ""))
         profile = dict(profiles[-1])
@@ -481,9 +494,6 @@ class ScientificObjectService:
             or len(semantic_hash) != 64
         ):
             raise InvalidScientificObjectVersion("persisted scientific resource manifest is incomplete")
-        payload_bytes = storage.get_bytes_bounded(storage_key, max_bytes=8 * 1024 * 1024)
-        if hashlib.sha256(payload_bytes).hexdigest() != content_hash:
-            raise InvalidScientificObjectVersion("persisted scientific resource checksum mismatch")
         source_metadata = json.loads(
             storage.get_bytes_bounded(metadata_key, max_bytes=256 * 1024).decode("utf-8")
         )
@@ -493,6 +503,22 @@ class ScientificObjectService:
         ):
             raise InvalidScientificObjectVersion("persisted scientific resource metadata mismatch")
         resource_type = str((source_metadata.get("provenance") or {}).get("objectType") or "")
+        payload_limit = (
+            int(DEFAULT_TRAJECTORY_CAPS["max_json_bytes"])
+            if resource_type == "Trajectory"
+            else MAX_NORMALIZED_SCIENTIFIC_RESOURCE_BYTES
+        )
+        try:
+            payload_bytes = storage.get_bytes_bounded(
+                storage_key,
+                max_bytes=payload_limit,
+            )
+        except ValueError as exc:
+            raise InvalidScientificObjectVersion(
+                "persisted scientific resource exceeds its registered bounded size"
+            ) from exc
+        if hashlib.sha256(payload_bytes).hexdigest() != content_hash:
+            raise InvalidScientificObjectVersion("persisted scientific resource checksum mismatch")
         source_metadata_fields = source_metadata.get("metadata") or {}
         if (
             resource_type == "DataFrame"
@@ -554,6 +580,12 @@ class ScientificObjectService:
         source_metadata: dict[str, Any],
     ) -> dict[str, Any]:
         result = dict(source_metadata)
+        # Agent2 execution binds the immutable ScientificObjectVersion UUID.
+        # Keep the parser-owned Profile resource identity in the version
+        # metadata so the worker can establish the exact alias relationship
+        # without guessing by filename, order, or display name.
+        result["source_resource_id"] = resource_id
+        result["dataset_id"] = profile.get("datasetId") or result.get("dataset_id")
         result["profileContractVersion"] = profile.get("profileContractVersion")
         for record in profile.get("resourceSemantics") or []:
             if isinstance(record, dict) and str(record.get("objectId") or "") == resource_id:
@@ -850,7 +882,10 @@ class ScientificObjectService:
         if logical["kind"] not in {ScientificObjectKind.DATASET.value, ScientificObjectKind.TABLE.value}:
             raise InvalidScientificObjectVersion("typed dataset query requires a DATASET or TABLE object")
         ref = StorageRef.model_validate(version["normalized_payload_ref_json"])
-        payload_bytes = storage.get_bytes_bounded(ref.object_key, max_bytes=8 * 1024 * 1024)
+        payload_bytes = storage.get_bytes_bounded(
+            ref.object_key,
+            max_bytes=MAX_NORMALIZED_SCIENTIFIC_RESOURCE_BYTES,
+        )
         if hashlib.sha256(payload_bytes).hexdigest() != ref.checksum:
             raise InvalidScientificObjectVersion("dataset payload checksum mismatch")
         payload = json.loads(payload_bytes.decode("utf-8"))

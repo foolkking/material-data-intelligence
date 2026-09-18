@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from uuid import uuid4
+import json
+from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
@@ -13,23 +15,83 @@ from mdi_api.scientific_results.projectors.base import ScientificResultProjectio
 from mdi_api.scientific_results.projectors.canonical import build_canonical_result_projectors, resolve_json_pointer
 from mdi_api.scientific_results.schemas import FactSourceLocator, ScientificResultBundle
 from mdi_api.scientific_results.service import ScientificResultProjectionService
+from mdi_artifact_core import (
+    BRILLOUIN_ZONE_SCHEMA_VERSION,
+    KPATH_SCHEMA_VERSION,
+    RECIPROCAL_LATTICE_SCHEMA_VERSION,
+)
 
 
-def _context(payloads, *, projector_id: str, content_types: list[str] | None = None):
+ROOT = Path(__file__).resolve().parents[1]
+
+
+ML_REGRESSION_COMPANION_TOOLS = (
+    "ml.basic_metrics",
+    "ml.density_scatter",
+    "ml.error_distribution",
+    "ml.outlier_table",
+)
+
+
+def _context(
+    payloads,
+    *,
+    projector_id: str,
+    content_types: list[str] | None = None,
+    companion_tool_ids: tuple[str, ...] = (),
+):
     turn_id = uuid4()
     ref = ScientificObjectRef(object_id=uuid4(), version_id=uuid4(), project_id="project", object_type="structure.crystal")
     content_types = content_types or ["application/json"] * len(payloads)
-    artifacts = tuple(
+    primary_artifacts = tuple(
         {"id": f"artifact-{index}", "contentType": content_type, "filename": "rmse_0.2.json"}
         for index, content_type in enumerate(content_types, start=1)
+    )
+    tool_calls = tuple(
+        {
+            "id": f"tool-call-{index}",
+            "toolId": tool_id,
+            "state": "COMPLETED",
+        }
+        for index, tool_id in enumerate(companion_tool_ids, start=1)
+    )
+    companion_artifacts = tuple(
+        {
+            "id": f"companion-artifact-{index}",
+            "contentType": "application/json",
+            "filename": f"{tool_id.replace('.', '_')}.json",
+            "toolCallId": f"tool-call-{index}",
+        }
+        for index, tool_id in enumerate(companion_tool_ids, start=1)
+    )
+    artifacts = primary_artifacts + companion_artifacts
+    artifact_payloads = {
+        artifact["id"]: payload
+        for artifact, payload in zip(primary_artifacts, payloads, strict=True)
+    }
+    artifact_payloads.update(
+        {
+            artifact["id"]: {
+                "toolId": tool_id,
+                "status": "COMPLETED",
+                "payload": {"bounded": True},
+            }
+            for artifact, tool_id in zip(
+                companion_artifacts,
+                companion_tool_ids,
+                strict=True,
+            )
+        }
     )
     return ScientificResultProjectionContext(
         project_id="project", research_session_id="session", research_turn_id=str(turn_id),
         research_question="Canonical scientific projection",
         execution_summary={"outcome": "SUCCESS", "job_id": "job-1", "analysis_plan_id": "plan-1"},
         capability_plan={"steps": [{"step_id": "step_1", "capability_id": projector_id.removeprefix("agent2."), "capability_version": "1.0", "parameters": {}}]},
-        analysis_plan={"schemaVersion": "0.2"}, tool_calls=(), artifacts=artifacts,
-        artifact_payloads={artifact["id"]: payload for artifact, payload in zip(artifacts, payloads, strict=True)},
+        analysis_plan={"schemaVersion": "0.2"},
+        tool_calls=tool_calls,
+        artifacts=artifacts,
+        artifact_payloads=artifact_payloads,
         source_object_refs=(ref,),
     )
 
@@ -127,13 +189,120 @@ CASES = (
 @pytest.mark.parametrize(("projector_id", "payload", "expected_predicates"), CASES)
 def test_canonical_projector_uses_verified_production_contract_and_grounded_facts(projector_id, payload, expected_predicates):
     projector = next(item for item in build_canonical_result_projectors() if item.projector_id == projector_id)
-    bundle = projector.project(_context([payload], projector_id=projector_id)).bundle
+    companion_tool_ids = (
+        ML_REGRESSION_COMPANION_TOOLS
+        if projector_id == "agent2.ml.regression_evaluation"
+        else ()
+    )
+    bundle = projector.project(
+        _context(
+            [payload],
+            projector_id=projector_id,
+            companion_tool_ids=companion_tool_ids,
+        )
+    ).bundle
     assert {fact.predicate for fact in bundle.facts} == expected_predicates
     assert bundle.result_items and bundle.tables
     for fact in bundle.facts:
         assert fact.source.artifact_id == "artifact-1"
         assert fact.source.artifact_locator
         assert resolve_json_pointer(payload, fact.source.artifact_locator) == fact.value
+
+
+def test_mandatory_tool_coverage_projection_rejects_missing_tool_output() -> None:
+    projector_id, payload, _expected_predicates = next(
+        item for item in CASES if item[0] == "agent2.ml.regression_evaluation"
+    )
+    projector = next(
+        item
+        for item in build_canonical_result_projectors()
+        if item.projector_id == projector_id
+    )
+
+    with pytest.raises(
+        ScientificResultProjectionFailed,
+        match="missing required committed Tool outputs: ml.outlier_table",
+    ):
+        projector.project(
+            _context(
+                [payload],
+                projector_id=projector_id,
+                companion_tool_ids=ML_REGRESSION_COMPANION_TOOLS[:-1],
+            )
+        )
+
+    bundle = projector.project(
+        _context(
+            [payload],
+            projector_id=projector_id,
+            companion_tool_ids=ML_REGRESSION_COMPANION_TOOLS,
+        )
+    ).bundle
+    assert {
+        evidence.artifact_id for evidence in bundle.evidence
+    } >= {
+        "companion-artifact-1",
+        "companion-artifact-2",
+        "companion-artifact-3",
+        "companion-artifact-4",
+    }
+
+
+def test_brillouin_zone_projector_requires_complete_verified_triad_and_projects_kpath_count() -> None:
+    fixture_root = (
+        ROOT
+        / "docs"
+        / "phase10i"
+        / "fixtures"
+        / "brillouin_zone_v1"
+        / "simple_cubic"
+    )
+    payloads = [
+        json.loads((fixture_root / name).read_text(encoding="utf-8"))
+        for name in (
+            "reciprocal_lattice.json",
+            "brillouin_zone.json",
+            "kpath.json",
+        )
+    ]
+    projector_id = "agent2.structure.brillouin_zone"
+    projector = next(
+        item
+        for item in build_canonical_result_projectors()
+        if item.projector_id == projector_id
+    )
+
+    bundle = projector.project(
+        _context(payloads, projector_id=projector_id)
+    ).bundle
+    facts = {fact.predicate: fact for fact in bundle.facts}
+
+    assert bundle.result_items[0].result_type == "reciprocal.brillouin_zone"
+    assert facts["reciprocal.high_symmetry_point_count"].value == len(
+        payloads[2]["points"]
+    )
+    assert (
+        facts["reciprocal.high_symmetry_point_count"].source.artifact_locator
+        == "/points"
+    )
+
+    schemas = {
+        RECIPROCAL_LATTICE_SCHEMA_VERSION,
+        BRILLOUIN_ZONE_SCHEMA_VERSION,
+        KPATH_SCHEMA_VERSION,
+    }
+    for missing_schema in schemas:
+        incomplete = [
+            payload
+            for payload in payloads
+            if (payload.get("schema_version") or payload.get("schemaVersion"))
+            != missing_schema
+        ]
+        with pytest.raises(
+            ScientificResultProjectionFailed,
+            match="missing required verified Artifact schemas",
+        ):
+            projector.project(_context(incomplete, projector_id=projector_id))
 
 
 def test_materials_explorer_projects_bounded_sample_and_property_facts() -> None:

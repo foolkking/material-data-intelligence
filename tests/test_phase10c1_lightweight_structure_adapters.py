@@ -12,8 +12,11 @@ from mdi_adapters import (
     LatticeSummaryAdapter,
     SpacegroupSummaryAdapter,
     StructureCompositionAdapter,
+    Structure3DAdapter,
     StructurePreviewMetadataAdapter,
     StructureSummaryAdapter,
+    StructureViewer3DAdapter,
+    StructureViewerSceneAdapter,
 )
 from mdi_adapters.context import ToolExecutionContext
 from mdi_adapters.errors import ToolExecutionError
@@ -71,6 +74,11 @@ def test_structure_summary_generates_json_summary_and_recipe() -> None:
     assert payload["structureCount"] == 1
     assert payload["structures"][0]["numSites"] == 2
     assert payload["structures"][0]["lattice"]["a"] == 5.64
+    assert payload["schemaVersion"] == "phase10c1.structure_summary.v2"
+    assert payload["structures"][0]["symmetry"]["engine"] == "pymatgen/spglib"
+    assert payload["structures"][0]["symmetry"]["spacegroupNumber"] > 0
+    assert payload["structures"][0]["symmetry"]["spacegroupSymbol"]
+    assert payload["structures"][0]["symmetry"]["crystalSystem"]
     assert len(payload["structures"][0]["sitesPreview"]) == 1
 
 
@@ -128,6 +136,79 @@ def test_structure_composition_from_structure_recommends_composition_tools() -> 
     assert payload["formulaCount"] == 1
     assert payload["elementCounts"] == {"Cl": 1.0, "Na": 1.0}
     assert "composition.elements_hist" in payload["recommendedNextTools"]
+
+
+def test_structure_composition_from_profiled_formula_table_does_not_invent_structure() -> None:
+    pandas = pytest.importorskip("pandas")
+    artifacts = _execute_adapter(
+        StructureCompositionAdapter(),
+        "structure.composition_from_structure",
+        object_store={
+            "structures": pandas.DataFrame(
+                [
+                    {"sample_id": "a", "formula": "NaCl"},
+                    {"sample_id": "b", "formula": "Li2O"},
+                ]
+            )
+        },
+        params={"formulaColumn": "formula", "maxRows": 100},
+        artifact_types=[
+            ArtifactType.table_json,
+            ArtifactType.summary_md,
+            ArtifactType.recipe_json,
+        ],
+    )
+
+    payload = _artifact_payload(artifacts, "structure_composition.json")
+    assert payload["sourceMode"] == "formula_table"
+    assert payload["structureCount"] == 0
+    assert payload["formulaCount"] == 2
+    assert {item["reducedFormula"] for item in payload["formulas"]} == {
+        "NaCl",
+        "Li2O",
+    }
+    assert all(item["sourceKind"] == "formula_table" for item in payload["formulas"])
+    assert all("numSites" not in item for item in payload["formulas"])
+
+
+def test_nonperiodic_atoms_use_viewer_tools_without_inferred_lattice_or_symmetry() -> None:
+    atoms = {
+        "symbols": ["C", "H", "H"],
+        "positions": [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [-1.0, 0.0, 0.0]],
+        "cell": [[0.0, 0.0, 0.0]] * 3,
+        "pbc": [False, False, False],
+    }
+    plot = _execute_adapter(
+        Structure3DAdapter(),
+        "structure.structure_3d",
+        object_store={"structures": atoms},
+        params={"showCell": False, "showBonds": False},
+        artifact_types=[ArtifactType.plotly_json, ArtifactType.summary_md, ArtifactType.recipe_json],
+    )
+    assert any(item.type == ArtifactType.plotly_json for item in plot["artifacts"])
+
+    for adapter, tool_id in (
+        (StructureViewer3DAdapter(), "structure.viewer_3d"),
+        (StructureViewerSceneAdapter(), "structure.viewer_scene"),
+    ):
+        result = _execute_adapter(
+            adapter,
+            tool_id,
+            object_store={"structures": atoms},
+            artifact_types=[
+                ArtifactType.structure_json,
+                ArtifactType.table_json,
+                ArtifactType.summary_md,
+                ArtifactType.recipe_json,
+            ],
+        )
+        payload = _artifact_payload(result, "viewer_scene.json")
+        assert payload["version"] == "viewer_scene.v1"
+        assert payload["metadata"]["periodicity"] == "non_periodic"
+        assert payload["metadata"]["lattice_inferred"] is False
+        assert payload["metadata"]["symmetry_inferred"] is False
+        assert payload["scene"]["lattice"]["pbc"] == [False, False, False]
+        assert all("frac" not in site for site in payload["scene"]["sites"])
 
 
 def test_structure_preview_metadata_truncates_sites() -> None:

@@ -71,6 +71,33 @@ def test_regression_multiple_models_uncertainty_and_formula_parseability(tmp_pat
     assert _readiness(profile, "uncertainty_evaluation").platformStatus == "NOT_EVALUATED"
 
 
+def test_regression_role_suffixes_preserve_bounded_units(tmp_path):
+    profile = _csv_profile(
+        tmp_path,
+        "sample_id,formula,y_true_eV,y_pred_eV,y_std_eV\n"
+        "s1,Si,1.0,1.1,0.1\n"
+        "s2,NaCl,2.0,2.1,0.2\n",
+        dataset_id="dataset_regression_units",
+    )
+
+    columns = {column.column: column for column in profile.semanticColumns}
+    assert [role.role for role in columns["y_true_eV"].roles] == ["regression_target"]
+    assert [role.role for role in columns["y_pred_eV"].roles] == ["regression_prediction"]
+    assert [role.role for role in columns["y_std_eV"].roles] == ["regression_uncertainty"]
+    assert columns["y_true_eV"].unit == "eV"
+    assert columns["y_pred_eV"].unit == "eV"
+    assert columns["y_std_eV"].unit == "eV"
+    group = next(
+        item
+        for item in profile.semanticGroups
+        if item.groupId.endswith(":regression:y")
+    )
+    assert group.status == "COMPLETE"
+    assert group.targetColumns == ["y_true_eV"]
+    assert group.predictionColumns == ["y_pred_eV"]
+    assert _readiness(profile, "regression_evaluation").dataStatus == "READY"
+
+
 def test_multi_target_groups_remain_distinct(tmp_path):
     profile = _csv_profile(
         tmp_path,
@@ -118,6 +145,26 @@ def test_classification_probability_group_and_normalization(tmp_path):
         dataset_id="dataset_probability_output",
     )
     assert _readiness(probabilities_only, "classification_evaluation").dataStatus == "READY"
+
+    binary_positive_probability = _csv_profile(
+        tmp_path,
+        "class_true,class_pred,prob_perovskite\n"
+        "-1,-1,0.05\n"
+        "1,1,0.64\n"
+        "-1,1,0.55\n",
+        dataset_id="dataset_binary_positive_probability",
+    )
+    binary_group = next(
+        item
+        for item in binary_positive_probability.semanticGroups
+        if item.kind == "classification"
+    )
+    assert binary_group.status == "COMPLETE"
+    assert "PROBABILITY_ROWS_NOT_NORMALIZED" not in binary_group.reasons
+    assert (
+        _readiness(binary_positive_probability, "classification_evaluation").dataStatus
+        == "READY"
+    )
 
 
 def test_false_positive_guards_and_finite_numeric_requirement(tmp_path):

@@ -33,6 +33,7 @@ UNWRAP_FRACTIONAL_STEP_LIMIT = 0.49
 MAX_ARTIFACT_BYTES = 32 * 1024 * 1024
 MAX_TRAJECTORY_FRAMES = 200
 MAX_TRAJECTORY_ATOMS = 5000
+MAX_RDF_PAIR_EVALUATIONS = 30_000_000
 NUMPY_VERSION = "2.4.6"
 SCIPY_VERSION = "1.17.1"
 ASE_VERSION = "3.29.0"
@@ -50,7 +51,7 @@ class _TrajectoryAdapter(BaseToolAdapter):
     schema_version: str
 
     def prepare(self, context: ToolExecutionContext, input_refs: list[Any], params: dict[str, Any]) -> dict[str, Any]:
-        self.normalize_params(params)
+        normalized = self.normalize_params(params)
         if len(input_refs) != 1:
             raise _error("TOOL_INPUT_INVALID", "TRAJECTORY_MISSING", "Exactly one immutable trajectory is required.")
         ref = _input_ref(input_refs[0])
@@ -65,9 +66,14 @@ class _TrajectoryAdapter(BaseToolAdapter):
             raise _error("TOOL_INPUT_INVALID", _trajectory_error(validation.errors), "The trajectory contract is invalid.", errors=list(validation.errors))
         if trajectory.get("schema_version") != TRAJECTORY_SCHEMA:
             raise _error("TOOL_INPUT_INVALID", "TRAJECTORY_MISSING", "The trajectory contract version is unsupported.")
-        if len(trajectory["frames"]) > MAX_TRAJECTORY_FRAMES or int(trajectory["atoms"]["count"]) > MAX_TRAJECTORY_ATOMS:
-            raise _error("TOOL_RESOURCE_LIMIT", "TRAJECTORY_TOO_LARGE", "The trajectory exceeds the N4 frame or atom cap.")
-        return trajectory
+        if int(trajectory["atoms"]["count"]) > MAX_TRAJECTORY_ATOMS:
+            raise _error("TOOL_RESOURCE_LIMIT", "TRAJECTORY_TOO_LARGE", "The trajectory exceeds the N4 atom cap.")
+        selected, analysis_window = _select_analysis_window(trajectory, normalized)
+        return {
+            "source_trajectory": trajectory,
+            "selected_trajectory": selected,
+            "analysis_window": analysis_window,
+        }
 
     def export(self, result: AnalyticsResult, artifact_types: list[ArtifactType]) -> list[Artifact]:
         requested = set(artifact_types) or {ArtifactType.table_json, ArtifactType.plotly_json, ArtifactType.summary_md, ArtifactType.recipe_json}
@@ -86,14 +92,21 @@ class _TrajectoryAdapter(BaseToolAdapter):
             "trajectoryHash": result.payload["trajectory"]["trajectoryHash"],
             "parameterHash": result.payload["parameterHash"],
             "scientificAuthority": "registered_backend_adapter",
+            "analysisWindow": dict(result.payload.get("analysisWindow") or {}),
         }
         if self.tool_id == DIFFUSION_TOOL:
             provenance["sourceMsdArtifactChecksum"] = result.payload["sourceMsd"]["artifactChecksum"]
         return self.export_payloads(payloads, provenance=provenance)
 
-    def _base(self, trajectory: Mapping[str, Any], params: Mapping[str, Any]) -> dict[str, Any]:
+    def _base(
+        self,
+        trajectory: Mapping[str, Any],
+        params: Mapping[str, Any],
+        *,
+        analysis_window: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
         parameter_hash = content_hash(stable_json_dumps(params))
-        return {
+        payload = {
             "artifactType": self.tool_id,
             "schema_version": self.schema_version,
             "tool": {"toolId": self.tool_id, "toolVersion": self.context.tool_version, "adapterVersion": self.adapter_version},
@@ -106,6 +119,9 @@ class _TrajectoryAdapter(BaseToolAdapter):
             "limitations": [],
             "security": {"containsHtml": False, "containsJavascript": False, "externalUrls": [], "arbitraryCodeExecution": False},
         }
+        if analysis_window:
+            payload["analysisWindow"] = dict(analysis_window)
+        return payload
 
     def _finish(self, payload: dict[str, Any], plot: dict[str, Any], summary: str) -> AnalyticsResult:
         encoded = stable_json_dumps(payload).encode("utf-8")
@@ -141,7 +157,13 @@ class TrajectoryRdfAdapter(_TrajectoryAdapter):
             "frame_end": _integer(params, "frame_end", 10000, 1, 10000),
             "time_start_ps": _number(params, "time_start_ps", 0.0, 0.0, 1e12),
             "time_end_ps": _number(params, "time_end_ps", 1e12, 0.0, 1e12),
-            "max_pair_evaluations": _integer(params, "max_pair_evaluations", 2_000_000, 1, 2_000_000),
+            "max_pair_evaluations": _integer(
+                params,
+                "max_pair_evaluations",
+                MAX_RDF_PAIR_EVALUATIONS,
+                1,
+                MAX_RDF_PAIR_EVALUATIONS,
+            ),
         }
         if result["r_min_angstrom"] >= result["r_max_angstrom"] or result["frame_start"] >= result["frame_end"] or result["time_start_ps"] >= result["time_end_ps"]:
             raise _error("TOOL_PARAM_INVALID", "RDF_PARAMETER_INVALID", "RDF ranges must be strictly increasing.")
@@ -149,9 +171,16 @@ class TrajectoryRdfAdapter(_TrajectoryAdapter):
             raise _error("TOOL_PARAM_INVALID", "RDF_PARAMETER_INVALID", "Both species must be supplied together.")
         return result
 
-    def run(self, trajectory: dict[str, Any], params: dict[str, Any]) -> AnalyticsResult:
+    def run(self, prepared: dict[str, Any], params: dict[str, Any]) -> AnalyticsResult:
         p = self.normalize_params(params)
-        frames, frame_ids = _window_frames(trajectory, p)
+        trajectory = prepared["selected_trajectory"]
+        source_trajectory = prepared["source_trajectory"]
+        analysis_window = prepared["analysis_window"]
+        frames = trajectory["frames"]
+        frame_ids = [
+            f"{source_trajectory['trajectory_id']}:frame:{frame['frame_index']}"
+            for frame in frames
+        ]
         atoms = trajectory["atoms"]["records"]
         species = [str(item["species"]) for item in atoms]
         pair = _species_pair(species, p["species_a"], p["species_b"])
@@ -198,13 +227,22 @@ class TrajectoryRdfAdapter(_TrajectoryAdapter):
             denominators += expected_pairs * shell / volume
         g = np.divide(counts, denominators, out=np.zeros_like(counts), where=denominators > 0)
         centers = (edges[:-1] + edges[1:]) / 2.0
-        payload = self._base(trajectory, p)
+        payload = self._base(
+            source_trajectory,
+            p,
+            analysis_window=analysis_window,
+        )
         pair_id = _identity("rdf-pair", {"trajectory": trajectory["trajectory_id"], "pair": pair, "parameters": payload["parameterHash"]})
         payload.update({
             "algorithm": {"algorithmId": RDF_ALGORITHM, "version": "1.0.0", "library": "ase.geometry.find_mic", "libraryVersion": ASE_VERSION, "histogramLibrary": "numpy", "histogramLibraryVersion": NUMPY_VERSION, "pairSemantics": "unordered", "normalization": "per_frame_number_density_shell_volume"},
             "units": {"r": "angstrom", "gR": "dimensionless"},
             "speciesPair": {"pairId": pair_id, "speciesA": pair[0], "speciesB": pair[1], "ordered": False},
-            "window": {"mode": p["window_mode"], "includedFrameIds": frame_ids, "startInclusive": True, "endExclusive": True},
+            "window": {
+                "mode": analysis_window["mode"],
+                "includedFrameIds": frame_ids,
+                "startInclusive": True,
+                "endExclusive": True,
+            },
             "binIds": [_identity("rdf-bin", {"pairId": pair_id, "index": index}) for index in range(len(centers))], "binEdgesAngstrom": _list(edges), "binCentersAngstrom": _list(centers), "gR": _list(g), "pairCounts": [int(x) for x in counts],
             "coverage": {"requestedFrames": len(frames), "includedFrames": len(frames), "excludedFrames": [], "pairSamples": int(pair_evaluations)},
             "cellPolicy": {"latticeMode": trajectory["lattice_mode"], "pbcAxes": trajectory["periodic_boundary"], "minimumSafeRadiusAngstrom": _round(min(safe_radii))},
@@ -222,15 +260,46 @@ class TrajectoryMsdAdapter(_TrajectoryAdapter):
 
     @staticmethod
     def normalize_params(params: Mapping[str, Any]) -> dict[str, Any]:
-        allowed = {"species", "max_lag_count", "origin_stride", "max_origins_per_lag", "drift_correction"}
+        allowed = {
+            "species",
+            "max_lag_count",
+            "origin_stride",
+            "max_origins_per_lag",
+            "drift_correction",
+            "window_mode",
+            "frame_start",
+            "frame_end",
+            "time_start_ps",
+            "time_end_ps",
+        }
         _unknown(params, allowed, "MSD_PARAMETER_INVALID")
         correction = str(params.get("drift_correction", "none"))
         if correction != "none":
             raise _error("TOOL_PARAM_INVALID", "MSD_PARAMETER_INVALID", "Only explicit no-drift-correction is supported.")
-        return {"species": _optional_species(params.get("species")), "max_lag_count": _integer(params, "max_lag_count", 512, 1, 2048), "origin_stride": _integer(params, "origin_stride", 1, 1, 1000), "max_origins_per_lag": _integer(params, "max_origins_per_lag", 4096, 1, 4096), "drift_correction": correction}
+        mode = str(params.get("window_mode", "whole"))
+        if mode not in {"whole", "frame", "time"}:
+            raise _error("TOOL_PARAM_INVALID", "MSD_PARAMETER_INVALID", "Unsupported MSD window mode.")
+        result = {
+            "species": _optional_species(params.get("species")),
+            "max_lag_count": _integer(params, "max_lag_count", 512, 1, 2048),
+            "origin_stride": _integer(params, "origin_stride", 1, 1, 1000),
+            "max_origins_per_lag": _integer(params, "max_origins_per_lag", 4096, 1, 4096),
+            "drift_correction": correction,
+            "window_mode": mode,
+            "frame_start": _integer(params, "frame_start", 0, 0, 9999),
+            "frame_end": _integer(params, "frame_end", 10000, 1, 10000),
+            "time_start_ps": _number(params, "time_start_ps", 0.0, 0.0, 1e12),
+            "time_end_ps": _number(params, "time_end_ps", 1e12, 0.0, 1e12),
+        }
+        if result["frame_start"] >= result["frame_end"] or result["time_start_ps"] >= result["time_end_ps"]:
+            raise _error("TOOL_PARAM_INVALID", "MSD_PARAMETER_INVALID", "MSD ranges must be strictly increasing.")
+        return result
 
-    def run(self, trajectory: dict[str, Any], params: dict[str, Any]) -> AnalyticsResult:
+    def run(self, prepared: dict[str, Any], params: dict[str, Any]) -> AnalyticsResult:
         p = self.normalize_params(params)
+        trajectory = prepared["selected_trajectory"]
+        source_trajectory = prepared["source_trajectory"]
+        analysis_window = prepared["analysis_window"]
         times = _physical_times_ps(trajectory, require_constant=True)
         if len(times) < 3:
             raise _error("TOOL_INPUT_INVALID", "MSD_INSUFFICIENT_FRAMES", "MSD requires at least three timed frames.")
@@ -238,8 +307,6 @@ class TrajectoryMsdAdapter(_TrajectoryAdapter):
             raise _error("TOOL_INPUT_INVALID", "TRAJECTORY_VARIABLE_CELL_UNSUPPORTED", "Variable-cell MSD is unavailable in N4.")
         cell = _cell(trajectory, trajectory["frames"][0])
         pbc = tuple(bool(x) for x in trajectory["periodic_boundary"])
-        if trajectory["position_wrapping"] == "unknown":
-            raise _error("TOOL_INPUT_INVALID", "TRAJECTORY_COORDINATE_SEMANTICS_AMBIGUOUS", "MSD requires explicit wrapped or unwrapped coordinates.")
         species_all = [str(item["species"]) for item in trajectory["atoms"]["records"]]
         selected = [i for i, value in enumerate(species_all) if p["species"] is None or value == p["species"]]
         if not selected:
@@ -260,14 +327,24 @@ class TrajectoryMsdAdapter(_TrajectoryAdapter):
             for axis in range(3):
                 directional[axis].append(_round(float(directional_values[axis])))
             origins.append(len(available))
-        payload = self._base(trajectory, p)
+        payload = self._base(
+            source_trajectory,
+            p,
+            analysis_window=analysis_window,
+        )
         series_id = _identity("msd-series", {"trajectory": trajectory["trajectory_id"], "species": p["species"] or "all", "parameters": payload["parameterHash"]})
         payload.update({
             "algorithm": {"algorithmId": MSD_ALGORITHM, "version": "1.0.0", "library": "numpy", "libraryVersion": NUMPY_VERSION, "estimator": "multiple_time_origin", "atomAveraging": True},
             "unwrapping": {"algorithmId": UNWRAP_ALGORITHM, "version": "1.0.0", "library": "numpy", "libraryVersion": NUMPY_VERSION, "serverSide": True, "wrappedCoordinateDirectUse": False, **diagnostics},
             "units": {"lagTime": "picosecond", "msd": "angstrom^2"}, "species": p["species"] or "all", "seriesId": series_id, "atomIds": [trajectory["atoms"]["records"][i]["atom_id"] for i in selected],
             "lagIds": [_identity("msd-lag", {"seriesId": series_id, "index": index}) for index in range(len(lag_times))], "lagTimesPs": lag_times, "totalMsdAngstrom2": total, "directionalMsdAngstrom2": {"x": directional[0], "y": directional[1], "z": directional[2]}, "originCounts": origins,
-            "coverage": {"frames": len(times), "atoms": len(selected), "validLags": len(lag_times), "minimumOriginCount": min(origins)},
+            "coverage": {
+                "frames": len(times),
+                "sourceFrames": len(source_trajectory["frames"]),
+                "atoms": len(selected),
+                "validLags": len(lag_times),
+                "minimumOriginCount": min(origins),
+            },
             "time": {"source": "trajectory_frame_time", "sourceUnit": trajectory["time"]["unit"], "canonicalUnit": "picosecond", "constantTimestep": True},
             "cellPolicy": {"mode": "fixed", "pbcAxes": trajectory["periodic_boundary"], "variableCellSupported": False},
             "limitations": ["MSD uses Cartesian x/y/z axes and is not automatically crystallographic a/b/c diffusion.", "No center-of-mass drift correction is applied."],
@@ -351,7 +428,11 @@ class TrajectoryDiffusionAdapter(_TrajectoryAdapter):
         divisor = 6.0 if p["direction"] == "total" else 2.0
         estimate = _round(float(slope) / divisor) if status == "DIFFUSIVE_WINDOW_ACCEPTED" and slope is not None else None
         trajectory = {"trajectory_id": msd["trajectory"]["trajectoryHash"], "frames": [None] * int(msd["trajectory"]["frameCount"]), "atoms": {"count": int(msd["trajectory"]["atomCount"])} }
-        payload = self._base(trajectory, p)
+        payload = self._base(
+            trajectory,
+            p,
+            analysis_window=msd.get("analysisWindow"),
+        )
         window_id = _identity("diffusion-window", {"msdChecksum": prepared["binding"]["checksum"], "start": p["fit_start_time_ps"], "end": p["fit_end_time_ps"], "direction": p["direction"]})
         payload.update({
             "sourceMsd": {"artifactId": prepared["binding"]["artifactId"], "artifactChecksum": prepared["binding"]["checksum"], "contractVersion": MSD_SCHEMA, "toolId": MSD_TOOL, "toolVersion": TOOL_VERSION, "parameterHash": msd["parameterHash"]},
@@ -371,18 +452,88 @@ class TrajectoryDiffusionAdapter(_TrajectoryAdapter):
         return self._finish(payload, plot, f"# Diffusion diagnostic\n\nStatus: {status}. Estimate: {estimate if estimate is not None else 'unavailable'} angstrom^2/ps.")
 
 
-def _window_frames(trajectory: Mapping[str, Any], p: Mapping[str, Any]) -> tuple[list[dict[str, Any]], list[str]]:
-    frames = trajectory["frames"]
-    if p["window_mode"] == "frame":
-        selected = [frame for frame in frames if p["frame_start"] <= frame["frame_index"] < p["frame_end"]]
-    elif p["window_mode"] == "time":
-        times = _physical_times_ps(trajectory, require_constant=False)
-        selected = [frame for frame, time in zip(frames, times, strict=True) if p["time_start_ps"] <= time < p["time_end_ps"]]
+def _select_analysis_window(
+    trajectory: Mapping[str, Any],
+    params: Mapping[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    frames = list(trajectory["frames"])
+    mode = str(params.get("window_mode", "whole"))
+    times = _physical_times_ps(trajectory, require_constant=False)
+    if mode == "frame":
+        start = int(params["frame_start"])
+        end = int(params["frame_end"])
+        if start < 0 or end > len(frames) or start >= end:
+            raise _error(
+                "TOOL_PARAM_INVALID",
+                "TRAJECTORY_ANALYSIS_WINDOW_INVALID",
+                "The explicit trajectory frame window is outside the full source.",
+                sourceFrameCount=len(frames),
+                frameStart=start,
+                frameEnd=end,
+            )
+        selected = frames[start:end]
+    elif mode == "time":
+        start_time = float(params["time_start_ps"])
+        end_time = float(params["time_end_ps"])
+        selected = [
+            frame
+            for frame, time in zip(frames, times, strict=True)
+            if start_time <= time < end_time
+        ]
     else:
-        selected = list(frames)
+        selected = frames
+        if len(frames) > MAX_TRAJECTORY_FRAMES:
+            raise _error(
+                "TOOL_PARAM_INVALID",
+                "TRAJECTORY_ANALYSIS_WINDOW_REQUIRED",
+                "An explicit trajectory analysis window is required when the full source exceeds 200 frames.",
+                sourceFrameCount=len(frames),
+                maximumAnalysisFrames=MAX_TRAJECTORY_FRAMES,
+            )
     if not selected:
-        raise _error("TOOL_PARAM_INVALID", "RDF_WINDOW_INVALID", "The RDF window contains no frames.")
-    return selected, [f"{trajectory['trajectory_id']}:frame:{frame['frame_index']}" for frame in selected]
+        raise _error(
+            "TOOL_PARAM_INVALID",
+            "TRAJECTORY_ANALYSIS_WINDOW_INVALID",
+            "The explicit trajectory analysis window contains no frames.",
+        )
+    if len(selected) > MAX_TRAJECTORY_FRAMES:
+        raise _error(
+            "TOOL_RESOURCE_LIMIT",
+            "TRAJECTORY_ANALYSIS_WINDOW_TOO_LARGE",
+            "The explicit trajectory analysis window exceeds the released 200-frame cap.",
+            selectedFrameCount=len(selected),
+            maximumAnalysisFrames=MAX_TRAJECTORY_FRAMES,
+        )
+    first_index = int(selected[0]["frame_index"])
+    last_index = int(selected[-1]["frame_index"])
+    time_by_index = {
+        int(frame["frame_index"]): float(time)
+        for frame, time in zip(frames, times, strict=True)
+    }
+    analysis_window = {
+        "mode": mode,
+        "explicit": mode != "whole",
+        "sourceFrameCount": len(frames),
+        "selectedFrameCount": len(selected),
+        "backendRange": {
+            "startFrameInclusive": first_index,
+            "endFrameExclusive": last_index + 1,
+        },
+        "userFacingRange": {
+            "firstFrameInclusive": first_index + 1,
+            "lastFrameInclusive": last_index + 1,
+        },
+        "timeRange": {
+            "start": _round(time_by_index[first_index]),
+            "end": _round(time_by_index[last_index]),
+            "unit": "picosecond",
+        },
+        "sourceTrajectoryId": trajectory["trajectory_id"],
+        "silentTruncation": False,
+    }
+    selected_trajectory = dict(trajectory)
+    selected_trajectory["frames"] = selected
+    return selected_trajectory, analysis_window
 
 
 def _physical_times_ps(trajectory: Mapping[str, Any], *, require_constant: bool) -> np.ndarray:
@@ -420,7 +571,17 @@ def _unwrapped_cartesian(trajectory: Mapping[str, Any], cell: np.ndarray, pbc: t
         unwrapped[frame_index] = unwrapped[frame_index - 1] + fractional_delta @ cell
     if ambiguous:
         raise _error("TOOL_INPUT_INVALID", "UNWRAPPING_AMBIGUOUS", "A frame-to-frame periodic displacement is not uniquely bounded.", cases=ambiguous[:32])
-    return unwrapped, {"inputRepresentation": "wrapped", "ambiguousSteps": 0, "pbcAxes": list(pbc), "fractionalStepLimit": UNWRAP_FRACTIONAL_STEP_LIMIT}
+    input_representation = trajectory["position_wrapping"]
+    if input_representation == "unknown":
+        input_representation = "source_unspecified_minimum_image_continuity"
+    return unwrapped, {
+        "inputRepresentation": input_representation,
+        "sourcePositionWrapping": trajectory["position_wrapping"],
+        "continuityAssumption": "bounded_fractional_minimum_image",
+        "ambiguousSteps": 0,
+        "pbcAxes": list(pbc),
+        "fractionalStepLimit": UNWRAP_FRACTIONAL_STEP_LIMIT,
+    }
 
 
 def _cartesian_positions(trajectory: Mapping[str, Any], frame: Mapping[str, Any], cell: np.ndarray) -> np.ndarray:

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import asyncio
 import copy
+import hashlib
 import json
 from pathlib import Path
 
@@ -149,3 +151,116 @@ def test_resource_ids_are_content_stable_and_project_scoped_storage_isolated(tmp
     assert all(item.startswith("dataset_0002_") for item in second_ids)
     assert all("projects/project_a/" in item["storageKey"] for item in first["normalizedExports"])
     assert all("projects/project_b/" in item["storageKey"] for item in second["normalizedExports"])
+
+
+def test_typed_bundle_normalizes_source_order_only_after_matching_structure_proof(
+    tmp_path: Path,
+) -> None:
+    runtime = _runtime(tmp_path)
+    band = json.loads(BAND_PATH.read_text(encoding="utf-8"))
+    dos = json.loads(DOS_PATH.read_text(encoding="utf-8"))
+    band["atom_ordering"] = "source_order"
+    dos["atom_ordering"] = "source_order"
+    payloads = [
+        (
+            "structure.vasp",
+            b"""Si typed phonon companion
+1.0
+3.0 0.0 0.0
+0.0 3.0 0.0
+0.0 0.0 3.0
+Si
+2
+Direct
+0.0 0.0 0.0
+0.25 0.25 0.25
+""",
+            None,
+            None,
+        ),
+        (
+            "band.json",
+            json.dumps(band, separators=(",", ":")).encode(),
+            "phonon_band",
+            PHONON_BAND_SCHEMA_VERSION,
+        ),
+        (
+            "dos.json",
+            json.dumps(dos, separators=(",", ":")).encode(),
+            "phonon_dos",
+            PHONON_DOS_SCHEMA_VERSION,
+        ),
+    ]
+    session = runtime.create_upload_session(
+        "project_a",
+        {
+            "datasetName": "source-order typed phonon",
+            "files": [
+                {
+                    "clientFileId": f"client-{index}",
+                    "fileName": name,
+                    "byteSize": len(payload),
+                    "sha256": hashlib.sha256(payload).hexdigest(),
+                    "importKind": kind,
+                    "contractVersion": version,
+                    "companionGroupId": "phonon_bundle",
+                }
+                for index, (name, payload, kind, version) in enumerate(payloads, start=1)
+            ],
+        },
+    )
+
+    async def upload() -> None:
+        for file_record, (_, payload, _, _) in zip(
+            session["files"], payloads, strict=True
+        ):
+            async def chunks(value: bytes = payload):
+                yield value
+
+            await runtime.put_upload_session_file(
+                session["uploadSessionId"],
+                file_record["fileId"],
+                content_type="application/octet-stream",
+                chunks=chunks(),
+            )
+
+    asyncio.run(upload())
+    result = runtime.complete_upload_session(session["uploadSessionId"])
+    assert result["inputTransport"]["scientificAdmissionStatus"] == "READY"
+    assert result["inputTransport"]["objectKinds"] == [
+        "PhononBand",
+        "PhononDos",
+        "Structure",
+    ]
+    phonon_exports = [
+        item
+        for item in result["normalizedExports"]
+        if "obj_phonon_" in item["objectId"]
+    ]
+    assert len(phonon_exports) == 2
+    normalized = [
+        json.loads(runtime.artifact_storage.get_bytes(item["storageKey"]))
+        for item in phonon_exports
+    ]
+    assert all(
+        item["atom_ordering"] == "canonical_structure_order"
+        for item in normalized
+    )
+
+
+def test_source_order_normalization_rejects_companion_species_mismatch(
+    tmp_path: Path,
+) -> None:
+    payload = json.loads(BAND_PATH.read_text(encoding="utf-8"))
+    payload["atom_ordering"] = "source_order"
+    path = tmp_path / "source_order_band.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="PHONON_COMPANION_SPECIES_ORDER_MISMATCH"):
+        map_normalized_phonon_resource(
+            path,
+            dataset_id="dataset_a",
+            file_id="file_001",
+            declared_kind="phonon_band",
+            declared_contract_version=PHONON_BAND_SCHEMA_VERSION,
+            canonical_species_order=["Na", "Na"],
+        )

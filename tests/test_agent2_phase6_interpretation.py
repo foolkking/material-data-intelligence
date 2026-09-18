@@ -13,6 +13,7 @@ from mdi_api.db import analysis_plans, artifacts, jobs, scientific_result_snapsh
 from mdi_api.interpretation.assembler import InterpreterInputAssembler
 from mdi_api.interpretation.client import DeepSeekInterpreterClient, FakeStructuredInterpreterClient
 from mdi_api.interpretation.grounding import (
+    build_grounding_repair_context,
     project_grounded_answer_lead,
     project_claim_support_assessments,
     project_grounded_communication,
@@ -63,6 +64,19 @@ def test_grounding_rejects_unknown_refs_numeric_hallucination_and_unit_conversio
     assert not validate_interpretation(answer_lead, bundle).valid
     angstrom_symbol = ScientificInterpretationOutput.model_validate(_output("A peak is recorded at 2.5 Å."))
     assert validate_interpretation(angstrom_symbol, bundle).valid
+
+
+def test_grounding_ignores_list_prefixes_and_viewer_dimension_labels() -> None:
+    payload = _output(
+        statement="1. 该 3D 结构 viewer 场景已生成。",
+        fact="rdf.first_peak",
+    )
+    payload["primary_findings"][0]["fact_refs"] = []
+    payload["primary_findings"][0]["evidence_refs"] = []
+    payload["primary_findings"][0]["result_item_refs"] = ["rdf.item"]
+    result = ScientificInterpretationOutput.model_validate(payload)
+
+    assert validate_interpretation(result, _bundle()).valid
 
 
 def test_grounding_normalizes_inverse_cubic_angstrom_notation_without_converting_units() -> None:
@@ -259,6 +273,16 @@ def test_grounding_accepts_bounded_display_rounding_but_rejects_unrelated_values
     ]
     assert validate_interpretation(rounded, bundle).valid
 
+    ascii_r_squared_payload = rounded.model_dump(mode="json")
+    ascii_r_squared_payload["primary_findings"][0]["statement"] = (
+        "扩散系数为 0.0386 angstrom^2/picosecond，"
+        "拟合 R^2 为 0.9703。"
+    )
+    ascii_r_squared = ScientificInterpretationOutput.model_validate(
+        ascii_r_squared_payload
+    )
+    assert validate_interpretation(ascii_r_squared, bundle).valid
+
     unsupported_payload = rounded.model_dump(mode="json")
     unsupported_payload["primary_findings"][0]["statement"] = (
         "扩散系数为 0.038 angstrom^2/picosecond，拟合 R² 为 0.9703。"
@@ -307,6 +331,184 @@ def test_quantitative_grounding_follows_bounded_result_and_evidence_fact_edges()
     assert any("(23)" in error for error in validation.errors)
 
 
+def test_quantitative_grounding_follows_result_item_to_evidence_to_fact_edges() -> None:
+    payload = _bundle().model_dump(mode="json")
+    payload["result_items"][0]["fact_refs"] = []
+    payload["result_items"][0]["evidence_refs"] = ["evidence.rdf"]
+    payload["evidence"][0]["supports_fact_refs"] = ["rdf.first_peak"]
+    payload["evidence"][0]["supports_result_item_refs"] = ["rdf.item"]
+    bundle = ScientificResultBundle.model_validate(payload)
+
+    output = _output()
+    output["primary_findings"][0]["fact_refs"] = []
+    output["primary_findings"][0]["evidence_refs"] = []
+    grounded = ScientificInterpretationOutput.model_validate(output)
+
+    assert validate_interpretation(grounded, bundle).valid
+
+
+def test_result_item_reference_is_a_valid_grounding_root_for_qualitative_finding() -> None:
+    output = _output(statement="The supplied RDF result is available.")
+    output["primary_findings"][0]["fact_refs"] = []
+    output["primary_findings"][0]["evidence_refs"] = []
+    grounded = ScientificInterpretationOutput.model_validate(output)
+
+    assert validate_interpretation(grounded, _bundle()).valid
+
+
+def test_factless_structure_viewer_allows_only_qualitative_scene_language() -> None:
+    payload = _bundle().model_dump(mode="json")
+    payload["result_items"][0].update(
+        {
+            "id": "structure.viewer",
+            "result_type": "structure.viewer_scene",
+            "title": "Structure viewer scene",
+            "fact_refs": [],
+            "evidence_refs": [],
+        }
+    )
+    payload["facts"] = []
+    payload["evidence"] = []
+    bundle = ScientificResultBundle.model_validate(payload)
+
+    qualitative = _output(
+        statement="结构查看器场景已生成，可在 viewer 中打开。",
+    )
+    qualitative["primary_findings"][0].update(
+        {
+            "fact_refs": [],
+            "evidence_refs": [],
+            "result_item_refs": ["structure.viewer"],
+        }
+    )
+    qualitative["primary_result_refs"] = ["structure.viewer"]
+    assert validate_interpretation(
+        ScientificInterpretationOutput.model_validate(qualitative),
+        bundle,
+    ).valid
+
+    quantitative = dict(qualitative)
+    quantitative["primary_findings"] = [
+        dict(
+            qualitative["primary_findings"][0],
+            statement="晶格参数为 5.4 angstrom。",
+        )
+    ]
+    assert not validate_interpretation(
+        ScientificInterpretationOutput.model_validate(quantitative),
+        bundle,
+    ).valid
+
+    unrelated = dict(qualitative)
+    unrelated["primary_findings"] = [
+        dict(
+            qualitative["primary_findings"][0],
+            statement="该结构具有高稳定性。",
+        )
+    ]
+    assert not validate_interpretation(
+        ScientificInterpretationOutput.model_validate(unrelated),
+        bundle,
+    ).valid
+
+
+def test_unknown_result_item_reference_remains_fail_closed() -> None:
+    output = _output()
+    output["primary_findings"][0]["fact_refs"] = []
+    output["primary_findings"][0]["evidence_refs"] = []
+    output["primary_findings"][0]["result_item_refs"] = ["result_2"]
+    grounded = ScientificInterpretationOutput.model_validate(output)
+
+    validation = validate_interpretation(grounded, _bundle())
+
+    assert not validation.valid
+    assert any("unknown result-item reference" in error for error in validation.errors)
+
+
+def test_unknown_top_level_supporting_result_reference_remains_fail_closed() -> None:
+    output = _output()
+    output["supporting_result_refs"] = ["result_2"]
+    grounded = ScientificInterpretationOutput.model_validate(output)
+
+    validation = validate_interpretation(grounded, _bundle())
+
+    assert not validation.valid
+    assert "unknown supporting result reference" in validation.errors
+
+
+def test_volume_bounds_are_grounded_only_when_the_result_persists_them() -> None:
+    payload = _bundle().model_dump(mode="json")
+    payload["result_items"][0].update(
+        {
+            "id": "volume.item",
+            "result_type": "volumetric.field",
+            "fact_refs": ["volume.minimum", "volume.maximum"],
+            "evidence_refs": ["evidence.volume"],
+        }
+    )
+    payload["facts"] = [
+        {
+            **payload["facts"][0],
+            "fact_id": "volume.minimum",
+            "predicate": "volumetric.minimum",
+            "value": -0.74387,
+            "unit": "dimensionless",
+        },
+        {
+            **payload["facts"][0],
+            "fact_id": "volume.maximum",
+            "predicate": "volumetric.maximum",
+            "value": 0.7448,
+            "unit": "dimensionless",
+        },
+    ]
+    payload["evidence"][0].update(
+        {
+            "evidence_id": "evidence.volume",
+            "supports_fact_refs": ["volume.minimum", "volume.maximum"],
+            "supports_result_item_refs": ["volume.item"],
+        }
+    )
+    bundle = ScientificResultBundle.model_validate(payload)
+
+    grounded_payload = _output(
+        statement=(
+            "The stored field minimum is -0.74387 dimensionless and "
+            "the maximum is 0.7448 dimensionless."
+        ),
+        fact="volume.minimum",
+    )
+    grounded_payload["primary_findings"][0].update(
+        {
+            "fact_refs": ["volume.minimum", "volume.maximum"],
+            "evidence_refs": ["evidence.volume"],
+            "result_item_refs": ["volume.item"],
+        }
+    )
+    grounded_payload["primary_result_refs"] = ["volume.item"]
+    grounded = ScientificInterpretationOutput.model_validate(grounded_payload)
+
+    assert validate_interpretation(grounded, bundle).valid
+
+    unsupported = grounded.model_copy(
+        update={
+            "answer_lead": "The volumetric field spans a range from 0 to 1.",
+            "primary_findings": [
+                grounded.primary_findings[0].model_copy(
+                    update={
+                        "statement": (
+                            "The volumetric field spans a range from 0 to 1."
+                        )
+                    }
+                )
+            ],
+        }
+    )
+    validation = validate_interpretation(unsupported, bundle)
+    assert not validation.valid
+    assert any("(0, 1)" in error for error in validation.errors)
+
+
 def test_grounding_ignores_opaque_provenance_identifiers_in_answer_lead():
     bundle = _bundle()
     lead = (
@@ -325,6 +527,28 @@ def test_grounding_ignores_stable_dataset_sample_identifiers():
     assert validate_interpretation(result, bundle).valid
 
 
+def test_grounding_accepts_numerals_inside_exact_cited_categorical_value():
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"][0].update(
+        {
+            "fact_id": "structure.spacegroup_symbol",
+            "predicate": "structure.spacegroup_symbol",
+            "value": "Fd-3m",
+            "unit": None,
+        }
+    )
+    payload["result_items"][0]["fact_refs"] = ["structure.spacegroup_symbol"]
+    bundle = ScientificResultBundle.model_validate(payload)
+    result = ScientificInterpretationOutput.model_validate(
+        _output(
+            statement="The cited space-group symbol is Fd-3m.",
+            fact="structure.spacegroup_symbol",
+        )
+    )
+
+    assert validate_interpretation(result, bundle).valid
+
+
 def test_only_unsupported_answer_lead_is_projected_from_grounded_finding():
     bundle = _bundle()
     raw = ScientificInterpretationOutput.model_validate(
@@ -336,6 +560,24 @@ def test_only_unsupported_answer_lead_is_projected_from_grounded_finding():
 
     assert projected.answer_lead == raw.primary_findings[0].statement
     assert validate_interpretation(projected, bundle).valid
+
+
+def test_answer_lead_projection_defers_contract_11_assessment_errors():
+    bundle = _bundle()
+    payload = _output(lead="结果还包含 42 个未被权威事实支持的峰。")
+    payload["contract_version"] = "1.1"
+    raw = ScientificInterpretationOutput.model_validate(payload)
+
+    projected = project_grounded_answer_lead(raw, bundle)
+
+    assert projected.answer_lead == raw.primary_findings[0].statement
+    assert "answer_lead introduces an unsupported quantitative claim" not in (
+        validate_interpretation(projected, bundle).errors
+    )
+    assert any(
+        error == "finding-1: claim support assessment is required"
+        for error in validate_interpretation(projected, bundle).errors
+    )
 
 
 def test_answer_lead_projection_never_repairs_an_unsupported_finding():
@@ -425,6 +667,191 @@ def test_grounded_communication_removes_opaque_method_and_version_metadata() -> 
     assert "052a21f6-0e2d-4d43-85c6-6033e17a149d" not in projected.primary_findings[0].statement
     assert "method.20fec3cce73b5336a4d98fad0f504f99" not in projected.supporting_findings[0].statement
     assert "capability version 1.0" not in projected.supporting_findings[0].statement
+    assert validate_interpretation(projected, bundle).valid
+
+
+def test_claim_support_uses_the_finding_referenced_result_item() -> None:
+    payload = _bundle().model_dump(mode="json")
+    payload["result_items"][0].update(
+        {
+            "id": "composition.item",
+            "result_type": "data.composition_space",
+            "title": "Composition space",
+            "fact_refs": [],
+            "evidence_refs": ["evidence.composition"],
+        }
+    )
+    payload["evidence"][0].update(
+        {
+            "evidence_id": "evidence.composition",
+            "supports_fact_refs": [],
+            "supports_result_item_refs": ["composition.item"],
+        }
+    )
+    payload["result_items"].append(
+        {
+            "id": "materials.item",
+            "result_type": "data.materials_explorer",
+            "role": "PRIMARY",
+            "title": "Materials explorer",
+            "artifact_ids": ["artifact-2"],
+            "scientific_object_refs": payload["source_object_refs"],
+            "fact_refs": ["materials.sample_count"],
+            "evidence_refs": ["evidence.materials"],
+        }
+    )
+    payload["facts"].append(
+        {
+            "fact_id": "materials.sample_count",
+            "predicate": "dataset.sample_count",
+            "subject_ref": "dataset",
+            "value": 42,
+            "unit": "count",
+            "source": {
+                "artifact_id": "artifact-2",
+                "artifact_locator": "/overview/sampleCount",
+            },
+        }
+    )
+    payload["evidence"].append(
+        {
+            "evidence_id": "evidence.materials",
+            "evidence_type": "structured_summary",
+            "artifact_id": "artifact-2",
+            "artifact_locator": "/overview",
+            "supports_fact_refs": ["materials.sample_count"],
+            "supports_result_item_refs": ["materials.item"],
+        }
+    )
+    payload["provenance"]["artifact_ids"].append("artifact-2")
+    payload["methods"] = [
+        {
+            "method_id": "method-composition",
+            "capability_id": "data.composition_space",
+            "capability_version": "1.0",
+            "tool_id": "dataset.composition_space",
+            "parameters": {},
+            "source_object_refs": payload["source_object_refs"],
+        }
+    ]
+    bundle = ScientificResultBundle.model_validate(payload)
+    raw = ScientificInterpretationOutput.model_validate(
+        {
+            "contract_version": "1.1",
+            "title": "Dataset interpretation",
+            "answer_lead": "The materials explorer reports 42 samples.",
+            "primary_findings": [
+                {
+                    "finding_id": "finding-materials",
+                    "statement": "No invalid samples were reported among the 42 samples.",
+                    "importance": "HIGH",
+                    "confidence": "HIGH",
+                    "fact_refs": ["materials.sample_count"],
+                    "evidence_refs": ["evidence.materials"],
+                    "result_item_refs": ["materials.item"],
+                    "claim_type": "DIRECT_OBSERVATION",
+                    "support_status": "DIRECTLY_SUPPORTED",
+                }
+            ],
+            "supporting_findings": [],
+            "limitations": [],
+            "primary_result_refs": ["materials.item"],
+            "supporting_result_refs": [],
+            "follow_up_suggestions": [],
+        }
+    )
+
+    projected = project_claim_support_assessments(raw, bundle)
+
+    assessment = projected.primary_findings[0].reasoning_assessment
+    assert assessment is not None
+    assert assessment.accepted is True
+    assert "EXPLORATORY_OUTLIER_DOES_NOT_ESTABLISH_INVALIDITY" not in assessment.reason_codes
+    assert validate_interpretation(projected, bundle).valid
+
+
+def test_composition_fact_support_does_not_inherit_result_level_exploratory_tag():
+    payload = _bundle().model_dump(mode="json")
+    composition_fact = {
+        **payload["facts"][0],
+        "fact_id": "composition.invalid_sample_count",
+        "predicate": "composition.invalid_sample_count",
+        "value": 0,
+        "unit": "count",
+    }
+    payload["facts"] = [composition_fact]
+    payload["result_items"][0].update(
+        {
+            "id": "composition.item",
+            "result_type": "data.composition_space",
+            "fact_refs": [composition_fact["fact_id"]],
+            "evidence_refs": ["evidence.composition"],
+        }
+    )
+    payload["evidence"][0].update(
+        {
+            "evidence_id": "evidence.composition",
+            "supports_fact_refs": [composition_fact["fact_id"]],
+            "supports_result_item_refs": ["composition.item"],
+        }
+    )
+    payload["methods"] = [
+        {
+            "method_id": "method-composition",
+            "capability_id": "data.composition_space",
+            "capability_version": "1.0",
+            "tool_id": "dataset.composition_space",
+            "parameters": {},
+            "source_object_refs": payload["source_object_refs"],
+        }
+    ]
+    payload["limitations"] = [
+        {
+            "limitation_id": "limitation.composition",
+            "code": "COMPOSITION_SPACE_DESCRIPTIVE",
+            "message": (
+                "Composition-space projection is descriptive and does not "
+                "establish material identity or causality."
+            ),
+            "source_ref": "agent2.data.composition_space",
+        }
+    ]
+    bundle = ScientificResultBundle.model_validate(payload)
+    raw = ScientificInterpretationOutput.model_validate(
+        {
+            "contract_version": "1.1",
+            "title": "Dataset interpretation",
+            "answer_lead": "No invalid composition samples were reported.",
+            "primary_findings": [
+                {
+                    "finding_id": "finding.invalid_composition_samples",
+                    "statement": "No invalid composition samples were reported.",
+                    "importance": "HIGH",
+                    "confidence": "HIGH",
+                    "fact_refs": [composition_fact["fact_id"]],
+                    "evidence_refs": ["evidence.composition"],
+                    "result_item_refs": ["composition.item"],
+                    "claim_type": "DIRECT_OBSERVATION",
+                    "support_status": "DIRECTLY_SUPPORTED",
+                }
+            ],
+            "supporting_findings": [],
+            "limitations": [],
+            "primary_result_refs": ["composition.item"],
+            "supporting_result_refs": [],
+            "follow_up_suggestions": [],
+        }
+    )
+
+    projected = project_claim_support_assessments(raw, bundle)
+    assessment = projected.primary_findings[0].reasoning_assessment
+
+    assert assessment is not None
+    assert assessment.accepted is True
+    assert "EXPLORATORY_OUTLIER_DOES_NOT_ESTABLISH_INVALIDITY" not in (
+        assessment.reason_codes
+    )
+    assert "MATERIAL_EVIDENCE_LIMITATION_OMITTED" not in assessment.reason_codes
     assert validate_interpretation(projected, bundle).valid
 
 
@@ -704,9 +1131,16 @@ def test_interpreter_input_compacts_support_edges_to_fit_actual_budget():
     assert set(envelope.result["result_items"][0]["fact_refs"]).issubset(
         represented_fact_ids
     )
+    assert len(envelope.result["result_items"][0]["fact_refs"]) <= 32
     assert set(envelope.evidence[0]["supports_fact_refs"]).issubset(
         represented_fact_ids
     )
+    assert len(envelope.evidence[0]["supports_fact_refs"]) <= 32
+    assert {
+        value
+        for key, value in envelope.result["reference_aliases"].items()
+        if key.startswith("fact_")
+    } == represented_fact_ids
     assert len(envelope.omitted_supporting_items) == 220 - len(
         represented_fact_ids
     )
@@ -769,6 +1203,418 @@ def test_interpreter_input_prefers_summary_predicates_over_repetitive_rows():
     assert set(envelope.evidence[0]["supports_fact_refs"]) == represented_ids
 
 
+def test_interpreter_input_omits_identifier_only_subject_groups():
+    payload = _bundle().model_dump(mode="json")
+    template = payload["facts"][0]
+    summary = [
+        {
+            **template,
+            "fact_id": f"summary.{index}",
+            "predicate": f"dataset.summary_{index}",
+            "value": index + 1,
+            "unit": "count",
+        }
+        for index in range(8)
+    ]
+    details = []
+    for index in range(100):
+        details.extend(
+            [
+                {
+                    **template,
+                    "fact_id": f"sample.{index}",
+                    "predicate": "dataset.sample_id",
+                    "subject_ref": f"row:{index}",
+                    "value": index,
+                    "unit": None,
+                },
+                {
+                    **template,
+                    "fact_id": f"formula.{index}",
+                    "predicate": "dataset.formula",
+                    "subject_ref": f"row:{index}",
+                    "value": f"A{index}B",
+                    "unit": None,
+                },
+            ]
+        )
+    payload["facts"] = [*summary, *details]
+    payload["result_items"][0]["fact_refs"] = [
+        item["fact_id"] for item in payload["facts"]
+    ]
+    payload["evidence"][0]["supports_fact_refs"] = [
+        item["fact_id"] for item in payload["facts"]
+    ]
+
+    envelope, _ = InterpreterInputAssembler().assemble(
+        bundle=ScientificResultBundle.model_validate(payload),
+        question="Summarize this dataset.",
+        relevance_status="CURRENT",
+    )
+
+    represented = envelope.result["facts"]
+    assert [item["fact_id"] for item in represented] == [
+        item["fact_id"] for item in summary
+    ]
+    assert len(envelope.omitted_supporting_items) == len(details)
+
+
+def test_interpreter_input_preserves_complete_repetitive_fact_groups() -> None:
+    payload = _bundle().model_dump(mode="json")
+    template = payload["facts"][0]
+    summary = [
+        {
+            **template,
+            "fact_id": f"summary.{index}",
+            "predicate": f"ml.summary_{index}",
+            "subject_ref": "job:summary",
+            "value": index,
+        }
+        for index in range(6)
+    ]
+    details = []
+    for sample in range(10):
+        subject = f"sample:{sample}"
+        for field in (
+            "sample_id",
+            "formula",
+            "target",
+            "prediction",
+            "residual",
+            "absolute_error",
+        ):
+            details.append(
+                {
+                    **template,
+                    "fact_id": f"fact.{sample}.{field}",
+                    "predicate": f"ml.high_error_{field}",
+                    "subject_ref": subject,
+                    "value": sample + 1,
+                }
+            )
+    payload["facts"] = [*summary, *details]
+    payload["result_items"][0]["fact_refs"] = [
+        item["fact_id"] for item in payload["facts"]
+    ]
+    payload["evidence"][0]["supports_fact_refs"] = [
+        item["fact_id"] for item in payload["facts"]
+    ]
+
+    envelope, _ = InterpreterInputAssembler().assemble(
+        bundle=ScientificResultBundle.model_validate(payload),
+        question="Explain the largest errors.",
+        relevance_status="CURRENT",
+    )
+    result_refs = envelope.result["result_items"][0]["fact_refs"]
+    evidence_refs = envelope.evidence[0]["supports_fact_refs"]
+
+    assert result_refs == evidence_refs
+    assert len(result_refs) <= 32
+    assert result_refs
+    for sample in range(10):
+        complete_group = {
+            f"fact.{sample}.{field}"
+            for field in (
+                "sample_id",
+                "formula",
+                "target",
+                "prediction",
+                "residual",
+                "absolute_error",
+            )
+        }
+        selected = complete_group.intersection(result_refs)
+        assert selected in (set(), complete_group)
+
+
+def test_interpreter_input_removes_presentation_ordinals_and_runtime_locators() -> None:
+    payload = _bundle().model_dump(mode="json")
+    payload["result_items"][0].update(
+        {
+            "id": "volumetric.result",
+            "result_type": "volumetric.field",
+            "title": "resource 1 / volumetric_field_01",
+            "artifact_ids": ["call_step_1-volumetric_field_json"],
+            "viewer_binding": "step_1",
+        }
+    )
+    payload["facts"][0].update(
+        {
+            "fact_id": "volumetric.field_name",
+            "predicate": "volumetric.field_name",
+            "subject_ref": "resource 1 / volumetric_field_01",
+            "value": "scalar",
+            "unit": None,
+            "source": {
+                "artifact_id": "call_step_1-volumetric_field_json",
+                "artifact_locator": "/resources/1/volumetric_field_01",
+            },
+        }
+    )
+    payload["result_items"][0]["fact_refs"] = ["volumetric.field_name"]
+    payload["evidence"][0].update(
+        {
+            "evidence_id": "volumetric.evidence",
+            "evidence_type": "structured_summary",
+            "artifact_id": "call_step_1-volumetric_field_json",
+            "tool_call_id": "call_step_1",
+            "artifact_locator": "/resources/1/volumetric_field_01",
+            "supports_fact_refs": ["volumetric.field_name"],
+            "supports_result_item_refs": ["volumetric.result"],
+        }
+    )
+    payload["result_items"][0]["evidence_refs"] = ["volumetric.evidence"]
+    payload["methods"] = [
+        {
+            "method_id": "method_step_1",
+            "capability_id": "volumetric.inspect",
+            "capability_version": "1.0",
+            "tool_id": "structure.volumetric_data",
+            "tool_version": "0.1.0",
+            "parameters": {"quantity": "generic_scalar"},
+            "source_object_refs": payload["source_object_refs"],
+        }
+    ]
+    payload["provenance"].update(
+        {
+            "job_id": "job_resource_1",
+            "tool_call_ids": ["call_step_1"],
+            "artifact_ids": ["call_step_1-volumetric_field_json"],
+        }
+    )
+    bundle = ScientificResultBundle.model_validate(payload)
+
+    envelope, _ = InterpreterInputAssembler().assemble(
+        bundle=bundle,
+        question="Inspect this supplied volumetric grid.",
+        relevance_status="CURRENT",
+    )
+
+    encoded = json.dumps(envelope.model_dump(mode="json"), ensure_ascii=False)
+    assert "resource 1" not in encoded
+    assert "step_1" not in encoded
+    assert "volumetric_field_01" not in encoded
+    assert set(envelope.result) == {
+        "schema_version",
+        "research_question",
+        "execution_status",
+        "relevance_status",
+        "result_items",
+        "facts",
+        "figures",
+        "tables",
+        "methods",
+        "limitations",
+        "warnings",
+        "reference_aliases",
+    }
+    assert set(envelope.result["result_items"][0]) == {
+        "id",
+        "result_type",
+        "role",
+        "fact_refs",
+        "evidence_refs",
+    }
+    assert set(envelope.evidence[0]) == {
+        "evidence_id",
+        "evidence_type",
+        "supports_fact_refs",
+        "supports_result_item_refs",
+    }
+    assert "source" not in envelope.result["facts"][0]
+    assert envelope.result["facts"][0]["subject_ref"] == "subject_a"
+    assert set(envelope.result["methods"][0]) == {
+        "capability_id",
+        "capability_version",
+        "parameters",
+    }
+    persisted = bundle.model_dump(mode="json")
+    assert persisted["result_items"][0]["title"] == (
+        "resource 1 / volumetric_field_01"
+    )
+    assert persisted["evidence"][0]["tool_call_id"] == "call_step_1"
+
+
+def test_provider_aliases_follow_the_bounded_envelope_after_fact_selection():
+    payload = _bundle().model_dump(mode="json")
+    template = payload["facts"][0]
+    details = [
+        {
+            **template,
+            "fact_id": f"detail.{index}",
+            "predicate": "dataset.row_detail",
+            "value": index,
+        }
+        for index in range(69)
+    ]
+    summary = {
+        **template,
+        "fact_id": "summary.sample_count",
+        "predicate": "dataset.sample_count",
+        "value": 42,
+        "unit": "count",
+    }
+    payload["facts"] = [*details, summary]
+    payload["result_items"][0]["fact_refs"] = [
+        item["fact_id"] for item in payload["facts"]
+    ]
+    payload["evidence"][0]["supports_fact_refs"] = [
+        item["fact_id"] for item in payload["facts"]
+    ]
+    bundle = ScientificResultBundle.model_validate(payload)
+    envelope, _fingerprint = InterpreterInputAssembler().assemble(
+        bundle=bundle,
+        question="Summarize this dataset.",
+        relevance_status="CURRENT",
+    )
+
+    assert envelope.result["reference_aliases"]["fact_a"] == "summary.sample_count"
+    assert all(
+        not any(character.isdigit() for character in alias)
+        for alias in envelope.result["reference_aliases"]
+    )
+    assert set(envelope.result["reference_aliases"].values()).issubset(
+        {item["fact_id"] for item in envelope.result["facts"]}
+        | {item["id"] for item in envelope.result["result_items"]}
+        | {item["evidence_id"] for item in envelope.evidence}
+    )
+    provider_output = _output(
+        statement="The dataset sample count is 42 count.",
+        fact="fact_a",
+    )
+    provider_output["primary_findings"][0]["evidence_refs"] = []
+    provider_output["primary_findings"][0]["result_item_refs"] = []
+    client = FakeStructuredInterpreterClient([provider_output])
+    service = ScientificInterpretationService(
+        repository_factory=None,  # type: ignore[arg-type]
+        client=client,
+    )
+
+    result, repaired, _meta = service._generate_with_one_repair(
+        envelope,
+        bundle,
+    )
+
+    assert result.primary_findings[0].fact_refs == ["summary.sample_count"]
+    assert result.primary_result_refs == ["rdf.item"]
+    assert repaired is False
+    assert client.calls == 1
+
+
+def test_grounding_repair_context_contains_source_facts_and_viewer_boundary() -> None:
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"] = []
+    payload["result_items"][0].update(
+        {
+            "id": "structure.viewer",
+            "result_type": "structure.viewer_scene",
+            "fact_refs": [],
+            "evidence_refs": [],
+        }
+    )
+    payload["evidence"] = []
+    bundle = ScientificResultBundle.model_validate(payload)
+    raw = _output(statement="晶格参数为 5.4 angstrom。")
+    raw["primary_findings"][0].update(
+        {
+            "fact_refs": [],
+            "evidence_refs": [],
+            "result_item_refs": ["structure.viewer"],
+        }
+    )
+    raw["primary_result_refs"] = ["structure.viewer"]
+    interpretation = ScientificInterpretationOutput.model_validate(raw)
+
+    errors = validate_interpretation(interpretation, bundle).errors
+    context = build_grounding_repair_context(interpretation, bundle, errors)
+
+    assert any("structure.viewer" in item for item in context)
+    assert any("fact-less structure viewer" in item for item in context)
+    assert any("5.4" in item for item in context)
+
+
+def test_grounding_repair_context_preserves_supported_ml_group_values() -> None:
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"] = [
+        {
+            **payload["facts"][0],
+            "fact_id": "ml.high_error_target",
+            "predicate": "ml.high_error_target",
+            "subject_ref": "sample:1",
+            "value": 6.38,
+            "unit": "eV",
+        },
+        {
+            **payload["facts"][0],
+            "fact_id": "ml.high_error_prediction",
+            "predicate": "ml.high_error_prediction",
+            "subject_ref": "sample:1",
+            "value": 1.1464,
+            "unit": "eV",
+        },
+    ]
+    payload["result_items"][0]["fact_refs"] = [
+        "ml.high_error_target",
+        "ml.high_error_prediction",
+    ]
+    bundle = ScientificResultBundle.model_validate(payload)
+    raw = _output(
+        statement="目标值为 6.38 eV，预测值为 2.0 eV。",
+        fact="ml.high_error_target",
+    )
+    raw["primary_findings"][0]["fact_refs"] = [
+        "ml.high_error_target",
+        "ml.high_error_prediction",
+    ]
+    interpretation = ScientificInterpretationOutput.model_validate(raw)
+
+    context = build_grounding_repair_context(
+        interpretation,
+        bundle,
+        validate_interpretation(interpretation, bundle).errors,
+    )
+
+    assert any("6.38 eV" in item and "1.1464 eV" in item for item in context)
+    assert any("unsupported_numeric_tokens=['2.0']" in item for item in context)
+
+
+class _RepairContextCapturingClient(FakeStructuredInterpreterClient):
+    def __init__(self, responses):
+        super().__init__(responses)
+        self.request_contexts = []
+
+    async def generate_structured(self, **kwargs):
+        self.request_contexts.append(kwargs.get("request_context") or {})
+        return await super().generate_structured(**kwargs)
+
+
+def test_interpretation_repair_sends_source_derived_grounding_context() -> None:
+    first = _output(statement="目标值为 6.38 eV，预测值为 2.0 eV。", fact="rdf.first_peak")
+    second = _output(statement="第一峰位于 2.5 angstrom。")
+    client = _RepairContextCapturingClient([first, second])
+    service = ScientificInterpretationService(
+        repository_factory=None,  # type: ignore[arg-type]
+        client=client,
+    )
+    envelope, _ = InterpreterInputAssembler().assemble(
+        bundle=_bundle(),
+        question="Explain the RDF",
+        relevance_status="CURRENT",
+    )
+
+    result, repaired, _meta = service._generate_with_one_repair(
+        envelope,
+        _bundle(),
+    )
+
+    assert result.primary_findings[0].statement == "第一峰位于 2.5 angstrom。"
+    assert repaired is True
+    assert len(client.request_contexts) == 2
+    repair = client.request_contexts[1]["repair"]
+    assert any("finding-1" in item for item in repair["validation_errors"])
+    assert any("supported_facts" in item for item in repair["validation_errors"])
+
+
 def test_schema_invalid_response_gets_one_bounded_repair():
     client = FakeStructuredInterpreterClient([{"bad": True}, _output()])
     service = ScientificInterpretationService(repository_factory=None, client=client)  # type: ignore[arg-type]
@@ -792,6 +1638,14 @@ def test_retired_provider_finding_fields_are_contract_repaired_without_authority
     for finding in [*legacy["primary_findings"], *legacy["supporting_findings"]]:
         finding["outcome"] = "SUPPORTED"
         finding["accepted"] = True
+        finding["limitations"] = ["provider-authored limitation"]
+        finding["reason_codes"] = ["FACT_GROUNDED"]
+        finding["supporting_refs"] = ["fact_a"]
+        finding["contradicting_refs"] = []
+        finding["defects"] = []
+        finding["independent_evidence_groups"] = 1
+        finding["severity"] = None
+        finding["method_context"] = None
     client = FakeStructuredInterpreterClient(legacy)
     service = ScientificInterpretationService(repository_factory=None, client=client)  # type: ignore[arg-type]
 
@@ -808,6 +1662,31 @@ def test_retired_provider_finding_fields_are_contract_repaired_without_authority
     assert all(item.reasoning_assessment is None for item in result.primary_findings)
     assert repaired is False
     assert client.calls == 1
+
+
+def test_unknown_provider_finding_field_still_fails_closed_after_bounded_repair():
+    first = _output()
+    second = _output()
+    first["primary_findings"][0]["unknown_provider_field"] = "not authorized"
+    second["primary_findings"][0]["unknown_provider_field"] = "not authorized"
+    client = FakeStructuredInterpreterClient([first, second])
+    service = ScientificInterpretationService(
+        repository_factory=None,  # type: ignore[arg-type]
+        client=client,
+    )
+
+    with pytest.raises(Exception) as exc:
+        service._generate_with_one_repair(
+            InterpreterInputAssembler().assemble(
+                bundle=_bundle(),
+                question="Explain the RDF",
+                relevance_status="CURRENT",
+            )[0],
+            _bundle(),
+        )
+
+    assert getattr(exc.value, "code", "") == "INTERPRETATION_SCHEMA_INVALID"
+    assert client.calls == 2
 
 
 def test_provider_invalid_json_gets_one_bounded_structured_output_repair():

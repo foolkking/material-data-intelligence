@@ -3,7 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timezone
 import asyncio
+import json
 import logging
+import re
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -157,21 +159,26 @@ class AgentTurnProcessor:
             return ProcessTurnResult("CLARIFICATION", routed.turn_status, 0)
 
         orchestrator_input = self._orchestrator_input(prepared)
-        autonomy_decision = self._autonomy_decision(prepared)
-        if autonomy_decision is not None:
+        policy_decision = (
+            self._trajectory_window_decision(prepared)
+            or self._autonomy_decision(prepared)
+        )
+        if policy_decision is not None:
             decision = self.validator.validate(
-                decision=autonomy_decision,
+                decision=policy_decision,
                 input_context=orchestrator_input,
                 candidate_bundle=prepared.bundle,
-                continuation_turn_available=True,
+                continuation_turn_available=(
+                    prepared.turn.get("parent_turn_id") is not None
+                ),
             )
             provider_result = StructuredLLMResult(
-                provider="deterministic_bounded_autonomy",
+                provider="deterministic_bounded_policy",
                 model="none",
                 parsed=decision.model_dump(mode="json"),
                 latency_ms=0,
                 repair_attempted=False,
-                prompt_version="agent2.autonomy-decision/1.0",
+                prompt_version="agent2.bounded-policy/1.0",
             )
             calls = 0
         else:
@@ -201,6 +208,145 @@ class AgentTurnProcessor:
             "validation_outcome": "VALIDATED",
         })
         return ProcessTurnResult("APPLIED", routed.turn_status, calls)
+
+    def _trajectory_window_decision(
+        self,
+        prepared: PreparedTurn,
+    ) -> ResearchTurnDecision | None:
+        """Enforce an explicit bounded analytics window for large trajectories.
+
+        This is a finite scientific-selection policy, not an intent shortcut:
+        it applies only when the user asks for registered trajectory analytics
+        over an exact trajectory whose durable metadata exceeds the released
+        200-frame analysis cap.
+        """
+
+        message = prepared.user_message.strip()
+        lowered = message.lower()
+        analytics_requested = any(
+            token in lowered
+            for token in ("rdf", "msd", "diffusion", "扩散", "均方位移", "径向分布")
+        )
+        if not analytics_requested:
+            return None
+        candidates: list[tuple[Any, dict[str, Any]]] = []
+        for item in prepared.bundle.active_object_candidates:
+            if item.object_ref is None or item.object_ref.object_type != "trajectory.atomic":
+                continue
+            try:
+                summary = json.loads(item.semantic_summary or "{}")
+            except (TypeError, ValueError):
+                continue
+            metadata = dict(summary.get("canonical_metadata") or {})
+            if int(metadata.get("frameCount") or 0) > 0:
+                candidates.append((item, metadata))
+        if len(candidates) != 1:
+            return None
+        candidate, metadata = candidates[0]
+        frame_count = int(metadata["frameCount"])
+        if frame_count <= 200:
+            return None
+
+        selected_count: int | None = None
+        frame_start: int | None = None
+        frame_end: int | None = None
+        final_match = re.search(
+            r"\b(?:final|last)\s+(\d{1,4})\s+frames?\b",
+            lowered,
+        )
+        range_match = re.search(
+            r"\bframes?\s+(\d{1,5})\s*(?:-|–|—|to)\s*(\d{1,5})\b",
+            lowered,
+        )
+        if final_match:
+            selected_count = int(final_match.group(1))
+            frame_end = frame_count
+            frame_start = frame_count - selected_count
+        elif range_match:
+            first_user = int(range_match.group(1))
+            last_user = int(range_match.group(2))
+            frame_start = first_user - 1
+            frame_end = last_user
+            selected_count = frame_end - frame_start
+
+        if (
+            selected_count is None
+            or frame_start is None
+            or frame_end is None
+            or selected_count < 1
+            or selected_count > 200
+            or frame_start < 0
+            or frame_end > frame_count
+        ):
+            question = (
+                f"完整轨迹包含 {frame_count} 帧；科学轨迹分析一次最多使用 200 帧。"
+                "请选择一个明确的连续分析帧范围（例如“最后 200 帧”）；"
+                "完整轨迹仍会保留用于查看。"
+            )
+            return ResearchTurnDecision(
+                contract_version="1.0",
+                action=ResearchAction.CLARIFY,
+                assistant_message=question,
+                research_objective=None,
+                selected_scope_ref_keys=[],
+                scientific_requirements=[],
+                reusable_result_ref_keys=[],
+                clarification=ClarificationRequest(
+                    question=question,
+                    candidate_keys=[candidate.candidate_key],
+                ),
+                confidence=OrchestratorConfidence.HIGH,
+            )
+
+        time_start = float(metadata.get("timeStartPs") or 0.0)
+        time_end = float(metadata.get("timeEndPs") or 0.0)
+        timestep = (
+            (time_end - time_start) / float(frame_count - 1)
+            if frame_count > 1 and time_end > time_start
+            else 0.0
+        )
+        selected_duration = timestep * float(selected_count - 1)
+        if timestep <= 0 or selected_duration <= timestep:
+            return None
+        window = {
+            "window_mode": "frame",
+            "frame_start": frame_start,
+            "frame_end": frame_end,
+        }
+        requirements = [
+            ("trajectory.inspect_view", {}),
+            ("trajectory.compute_rdf", window),
+            ("trajectory.compute_msd", window),
+            (
+                "trajectory.estimate_diffusion",
+                {
+                    "fit_start_time_ps": round(timestep, 12),
+                    "fit_end_time_ps": round(selected_duration, 12),
+                },
+            ),
+        ]
+        return ResearchTurnDecision(
+            contract_version="1.0",
+            action=ResearchAction.CONTINUE_ANALYSIS,
+            assistant_message=(
+                f"将保留完整 {frame_count} 帧轨迹用于查看，并仅使用用户明确选择的"
+                f"第 {frame_start + 1}–{frame_end} 帧执行有界 RDF、MSD 与扩散分析。"
+            ),
+            research_objective=message[:2048],
+            selected_scope_ref_keys=[candidate.candidate_key],
+            scientific_requirements=[
+                ProposedRequirement(
+                    requirement_id=requirement_id,
+                    criticality=RequirementCriticality.REQUIRED,
+                    subject_ref_keys=[candidate.candidate_key],
+                    constraints=dict(constraints),
+                )
+                for requirement_id, constraints in requirements
+            ],
+            reusable_result_ref_keys=[],
+            clarification=None,
+            confidence=OrchestratorConfidence.HIGH,
+        )
 
     def _noop_result(
         self,
@@ -500,6 +646,10 @@ class AgentTurnProcessor:
                     timeout=self.timeout_seconds,
                 )
                 decision = ResearchTurnDecision.model_validate(result.parsed)
+                decision = self._normalize_materials_exploration_decision(
+                    prepared,
+                    decision,
+                )
                 # ANALYZE is normally a new computation over the selected
                 # source.  A provider may echo a historical result key from
                 # bounded context, so unrelated recency-derived keys remain
@@ -544,6 +694,105 @@ class AgentTurnProcessor:
                     raise OrchestratorTimeout(exc.safe_message) from exc
                 raise OrchestratorProviderUnavailable(exc.safe_message) from exc
         raise AssertionError("unreachable")
+
+    @staticmethod
+    def _normalize_materials_exploration_decision(
+        prepared: PreparedTurn,
+        decision: ResearchTurnDecision,
+    ) -> ResearchTurnDecision:
+        """Keep generic materials exploration requests on their full path.
+
+        A materials dataset/table request that asks to explore, inspect, map,
+        or browse the supplied data needs both registered dataset projections:
+        composition space and materials explorer.  The provider may otherwise
+        choose the unrelated numeric-table suite merely because the source
+        happens to contain numeric columns.  This guard is semantic (object
+        type plus request class), not qualification-case or exact-question
+        matching, and leaves explicit numeric/formula/ML requests untouched.
+        """
+        if decision.action != ResearchAction.ANALYZE:
+            return decision
+        message = prepared.user_message.casefold()
+        exploration_markers = (
+            "explore",
+            "inspect",
+            "browse",
+            "overview",
+            "map",
+            "supported materials table",
+            "materials dataset",
+            "materials table",
+            "archive",
+            "探索",
+            "浏览",
+            "查看",
+            "概览",
+            "材料表",
+            "数据集",
+        )
+        specific_analysis_markers = (
+            "numeric",
+            "correlation",
+            "histogram",
+            "scatter",
+            "regression",
+            "classification",
+            "uncertainty",
+            "formula statistics",
+            "chemical-system",
+            "化学体系",
+            "回归",
+            "分类",
+            "不确定性",
+            "相关性",
+            "直方图",
+            "散点",
+        )
+        if not any(marker in message for marker in exploration_markers):
+            return decision
+        if any(marker in message for marker in specific_analysis_markers):
+            return decision
+
+        eligible = [
+            item
+            for item in prepared.bundle.active_object_candidates
+            if item.object_ref is not None
+            and item.object_ref.object_type in {"materials.dataset", "materials.table"}
+        ]
+        if not eligible:
+            return decision
+        eligible_keys = {item.candidate_key for item in eligible}
+        selected = [key for key in decision.selected_scope_ref_keys if key in eligible_keys]
+        if not selected and len(eligible) == 1:
+            selected = [eligible[0].candidate_key]
+        if not selected:
+            return decision
+
+        preserved_constraints: dict[str, Any] = {}
+        for requirement in decision.scientific_requirements:
+            for key in ("property", "sample"):
+                if key in requirement.constraints:
+                    preserved_constraints[key] = requirement.constraints[key]
+        requirements = [
+            ProposedRequirement(
+                requirement_id="data.explore_composition_space",
+                criticality=RequirementCriticality.REQUIRED,
+                subject_ref_keys=selected,
+                constraints=dict(preserved_constraints),
+            ),
+            ProposedRequirement(
+                requirement_id="data.explore_materials",
+                criticality=RequirementCriticality.REQUIRED,
+                subject_ref_keys=selected,
+                constraints=dict(preserved_constraints),
+            ),
+        ]
+        return decision.model_copy(
+            update={
+                "selected_scope_ref_keys": selected,
+                "scientific_requirements": requirements,
+            }
+        )
 
     def _fail_if_active(self, turn_id: UUID, code: str, summary: str) -> None:
         ResearchTurnService(self.repository_factory).fail_if_active(

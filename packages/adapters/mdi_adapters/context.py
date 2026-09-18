@@ -51,12 +51,18 @@ def hashable_material(value: Any) -> Any:
 
 def _is_dataframe(value: Any) -> bool:
     value_type = type(value)
-    return value_type.__name__ == "DataFrame" and value_type.__module__.startswith("pandas.")
+    return value_type.__name__ == "DataFrame" and (
+        value_type.__module__ == "pandas"
+        or value_type.__module__.startswith("pandas.")
+    )
 
 
 def _is_series(value: Any) -> bool:
     value_type = type(value)
-    return value_type.__name__ == "Series" and value_type.__module__.startswith("pandas.")
+    return value_type.__name__ == "Series" and (
+        value_type.__module__ == "pandas"
+        or value_type.__module__.startswith("pandas.")
+    )
 
 
 @dataclass

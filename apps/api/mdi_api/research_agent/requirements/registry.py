@@ -46,6 +46,25 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
         "properties": {"cutoff_angstrom": {"type": "number", "exclusiveMinimum": 0}},
         "additionalProperties": False,
     }
+    trajectory_window_properties = {
+        "window_mode": {"enum": ["whole", "frame", "time"]},
+        "frame_start": {"type": "integer", "minimum": 0, "maximum": 9999},
+        "frame_end": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "time_start_ps": {"type": "number", "minimum": 0, "maximum": 1e12},
+        "time_end_ps": {"type": "number", "minimum": 0, "maximum": 1e12},
+    }
+    trajectory_rdf_constraints = {
+        "type": "object",
+        "properties": {
+            "r_min_angstrom": {"type": "number", "minimum": 0, "maximum": 30},
+            "r_max_angstrom": {"type": "number", "exclusiveMinimum": 0, "maximum": 30},
+            "bin_count": {"type": "integer", "minimum": 1, "maximum": 2048},
+            "species_a": {"type": "string", "minLength": 1, "maxLength": 32},
+            "species_b": {"type": "string", "minLength": 1, "maxLength": 32},
+            **trajectory_window_properties,
+        },
+        "additionalProperties": False,
+    }
     # Trajectory constraints mirror the already-registered adapter contract at
     # the scientific-requirement boundary.  They stay bounded and fail closed:
     # the orchestrator may preserve an explicit species or fit window from the
@@ -67,6 +86,7 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
                 "maximum": 4096,
             },
             "drift_correction": {"const": "none"},
+            **trajectory_window_properties,
         },
         "additionalProperties": False,
     }
@@ -130,7 +150,9 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
         "additionalProperties": False,
     }
     manifests = (
-        ("structure.inspect", "Inspect structure", "Inspect an authorized crystal structure.", "structure", ["structure.crystal"], object_constraints),
+        ("structure.inspect", "Summarize structure", "Publish authoritative composition, lattice, and symmetry facts for an authorized crystal structure.", "structure", ["structure.crystal"], object_constraints),
+        ("structure.inspect_view", "Open structure viewer", "Build an authorized, inert structure viewer scene without inventing periodicity.", "structure", ["structure.crystal", "structure.atomic"], object_constraints),
+        ("trajectory.inspect_view", "Open trajectory viewer", "Build an authorized, inert trajectory viewer product from an atomic trajectory.", "trajectory", ["trajectory.atomic"], object_constraints),
         ("structure.compute_rdf", "Compute RDF", "Compute a radial distribution function for a crystal structure.", "structure", ["structure.crystal"], rdf_constraints),
         ("structure.inspect_coordination", "Inspect coordination", "Characterize local atomic coordination.", "structure", ["structure.crystal"], object_constraints),
         ("diffraction.generate_theoretical_pattern", "Generate theoretical XRD", "Generate a theoretical diffraction pattern.", "diffraction", ["structure.crystal"], object_constraints),
@@ -145,18 +167,67 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
             ["materials.dataset", "materials.table"],
             object_constraints,
         ),
+        (
+            "ml.evaluate_uncertainty",
+            "Evaluate uncertainty",
+            "Evaluate uncertainty diagnostics for a materials prediction table.",
+            "machine_learning",
+            ["materials.dataset", "materials.table"],
+            object_constraints,
+        ),
+        (
+            "ml.evaluate_classification",
+            "Evaluate classification",
+            "Evaluate a materials classification result.",
+            "machine_learning",
+            ["materials.dataset", "materials.table"],
+            object_constraints,
+        ),
         ("phonon.inspect_band", "Inspect phonon band", "Inspect an authorized phonon band structure.", "phonon", ["phonon.band_structure"], object_constraints),
         ("phonon.inspect_dos", "Inspect phonon DOS", "Inspect an authorized phonon density of states.", "phonon", ["phonon.dos"], object_constraints),
+        (
+            "phonon.compose_band_dos",
+            "Compose phonon band and DOS",
+            "Compose authorized phonon band and density-of-states results into one compatible combined view.",
+            "phonon",
+            ["phonon.band_structure", "phonon.dos"],
+            object_constraints,
+        ),
+        (
+            "structure.inspect_brillouin_zone",
+            "Inspect Brillouin-zone context",
+            "Generate bounded reciprocal-lattice, Brillouin-zone, and high-symmetry-path context for an authorized periodic crystal structure.",
+            "structure",
+            ["structure.crystal"],
+            object_constraints,
+        ),
         ("data.query", "Query data", "Query authorized project scientific data without mutation.", "data", ["materials.dataset", "materials.table"], dataset_constraints),
         ("report.compose", "Compose report", "Prepare authorized result references for report composition.", "report", [], object_constraints),
         ("structure.inspect_coordination_hist", "Inspect coordination histogram", "Summarize validated distance-cutoff coordination distributions for a crystal structure.", "structure", ["structure.crystal"], object_constraints),
         ("structure.inspect_coordination_crystalnn", "Inspect CrystalNN coordination", "Inspect validated CrystalNN local coordination results.", "structure", ["structure.crystal"], object_constraints),
         ("structure.inspect_coordination_voronoi", "Inspect Voronoi coordination", "Inspect validated VoronoiNN local coordination results.", "structure", ["structure.crystal"], object_constraints),
-        ("trajectory.compute_rdf", "Compute trajectory RDF", "Compute a bounded radial distribution function from an authorized atomic trajectory.", "trajectory", ["trajectory.atomic"], rdf_constraints),
+        ("trajectory.compute_rdf", "Compute trajectory RDF", "Compute a bounded radial distribution function from an authorized atomic trajectory.", "trajectory", ["trajectory.atomic"], trajectory_rdf_constraints),
         ("electronic.inspect_band", "Inspect electronic band", "Inspect supplied electronic band-structure data without running a new electronic calculation.", "electronic", ["electronic.band_structure"], object_constraints),
         ("electronic.inspect_dos", "Inspect electronic DOS", "Inspect supplied electronic density-of-states data without running a new electronic calculation.", "electronic", ["electronic.dos"], object_constraints),
+        ("volumetric.inspect", "Inspect volumetric field", "Parse and expose one bounded volumetric field through the registered scientific Tool.", "volumetric", ["volumetric.field", "volumetric.charge_density"], object_constraints),
         ("data.explore_composition_space", "Explore composition space", "Explore an authorized materials table using the existing bounded composition-space projection.", "data", ["materials.dataset", "materials.table"], dataset_constraints),
         ("data.explore_materials", "Explore materials", "Summarize and compare an authorized materials dataset using the existing bounded explorer.", "data", ["materials.dataset", "materials.table"], dataset_constraints),
+        (
+            "data.analyze_composition",
+            "Analyze formulas and chemical systems",
+            "Summarize formulas and publish the supported element, periodic-table, and chemical-system distributions for an authorized materials table.",
+            "data",
+            ["materials.dataset", "materials.table"],
+            object_constraints,
+        ),
+        (
+            "data.analyze_table",
+            "Analyze numeric table properties",
+            "Publish the supported numeric summaries, distributions, correlations, histogram, and selected scatter products for an authorized table.",
+            "data",
+            ["materials.dataset", "materials.table"],
+            object_constraints,
+        ),
     )
     for requirement_id, display_name, description, domain, accepted, constraints in manifests:
         registry.register(RequirementManifest(

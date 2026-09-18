@@ -257,9 +257,16 @@ def _experimental_xrd_resource(dataframe: pd.DataFrame, metadata: Mapping[str, A
     return {
         "schemaVersion": metadata["schemaVersion"], "resourceId": metadata["resourceId"],
         "resourceVersion": metadata["resourceVersion"], "resourceHash": metadata["resourceHash"],
-        "xAxis": metadata["xAxis"], "twoTheta": [float(item) for item in dataframe["two_theta"].tolist()],
-        "intensity": [float(item) for item in dataframe["intensity"].tolist()],
-        "intensitySemantic": metadata["intensitySemantic"], "wavelength": metadata["wavelength"],
+        "xAxis": {
+            "kind": metadata["xAxis"]["kind"],
+            "unit": metadata["xAxis"]["unit"],
+            "values": [float(item) for item in dataframe["two_theta"].tolist()],
+        },
+        "intensity": {
+            "semantic": metadata["intensitySemantic"],
+            "values": [float(item) for item in dataframe["intensity"].tolist()],
+        },
+        "wavelength": metadata["wavelength"],
     }
 
 

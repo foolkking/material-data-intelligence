@@ -3,6 +3,12 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
+from mdi_artifact_core import (
+    TRAJECTORY_MANIFEST_SCHEMA_VERSION,
+    TRAJECTORY_SCHEMA_VERSION,
+    TRAJECTORY_SUMMARY_SCHEMA_VERSION,
+)
+from mdi_material_parsers.trajectory import TRAJECTORY_PARSE_REPORT_SCHEMA_VERSION
 
 
 class _Payload(BaseModel):
@@ -34,6 +40,49 @@ class RdfArtifactPayload(_Payload):
     structureCount: int = Field(ge=1)
     rdf: _RdfCurve
     limits: _RdfLimits
+
+
+class _StructureSummaryLattice(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    a: float = Field(gt=0)
+    b: float = Field(gt=0)
+    c: float = Field(gt=0)
+    alpha: float = Field(gt=0, le=180)
+    beta: float = Field(gt=0, le=180)
+    gamma: float = Field(gt=0, le=180)
+    volume: float = Field(gt=0)
+
+
+class _StructureSummarySymmetry(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    engine: Literal["pymatgen/spglib"]
+    symprecAngstrom: float = Field(gt=0)
+    angleToleranceDegrees: float
+    spacegroupNumber: int = Field(ge=1, le=230)
+    spacegroupSymbol: str = Field(min_length=1, max_length=32)
+    crystalSystem: str = Field(min_length=1, max_length=32)
+
+
+class _StructureSummaryRecord(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    structureId: str = Field(min_length=1, max_length=512)
+    formula: str = Field(min_length=1, max_length=512)
+    reducedFormula: str = Field(min_length=1, max_length=512)
+    numSites: int = Field(ge=1)
+    lattice: _StructureSummaryLattice
+    symmetry: _StructureSummarySymmetry
+
+
+class StructureSummaryArtifactPayload(_Payload):
+    schema_version: Literal["phase10c1.structure_summary.v2"] = Field(
+        validation_alias=AliasChoices("schema_version", "schemaVersion")
+    )
+    artifact_type: Literal["structure.summary"] = Field(validation_alias="artifactType")
+    structureCount: int = Field(ge=1)
+    structures: list[_StructureSummaryRecord] = Field(min_length=1)
 
 
 class _XrdPattern(BaseModel):
@@ -236,6 +285,22 @@ class TrajectoryRdfArtifactPayload(Phase10GenericArtifactPayload):
     artifact_type: Literal["trajectory.rdf"] = Field(validation_alias="artifactType")
 
 
+class TrajectoryViewerPayload(_Payload):
+    schema_version: Literal[TRAJECTORY_SCHEMA_VERSION] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+
+
+class TrajectoryViewerSummaryPayload(_Payload):
+    schema_version: Literal[TRAJECTORY_SUMMARY_SCHEMA_VERSION] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+
+
+class TrajectoryViewerReportPayload(_Payload):
+    schema_version: Literal[TRAJECTORY_PARSE_REPORT_SCHEMA_VERSION] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+
+
+class TrajectoryViewerManifestPayload(_Payload):
+    schema_version: Literal[TRAJECTORY_MANIFEST_SCHEMA_VERSION] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+
+
 class CompositionSpaceArtifactPayload(Phase10GenericArtifactPayload):
     schema_version: Literal["phase10k4.composition_space.v1"] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
     artifact_type: Literal["dataset.composition_space"] = Field(validation_alias="artifactType")
@@ -246,7 +311,22 @@ class MaterialsExplorerArtifactPayload(Phase10GenericArtifactPayload):
     artifact_type: Literal["dataset.materials_explorer"] = Field(validation_alias="artifactType")
 
 
+class VolumetricFieldArtifactPayload(_Payload):
+    schema_version: Literal["phase10j.volumetric_field.v1"] = Field(validation_alias=AliasChoices("schema_version", "schemaVersion"))
+
+    # The canonical volumetric adapter's field payload is deliberately
+    # self-describing by schema version and is stored under the authoritative
+    # `volumetric_field_json` Artifact type.  Unlike the compact Phase 10
+    # envelopes above, the source-native payload does not duplicate an
+    # `artifactType` member.  Requiring that presentation-only duplicate here
+    # rejects a valid committed adapter payload before ScientificResult
+    # projection.  The persisted Artifact type remains the authoritative
+    # storage contract.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
 PRODUCTION_PAYLOAD_ADAPTERS: dict[str, type[_Payload]] = {
+    "phase10c1.structure_summary.v2": StructureSummaryArtifactPayload,
     "phase10e7.rdf.v1": RdfArtifactPayload,
     "phase10e4.xrd_pattern.v1": TheoreticalXrdArtifactPayload,
     "phase10n3.experimental_xrd_comparison.v1": XrdComparisonArtifactPayload,
@@ -262,8 +342,13 @@ PRODUCTION_PAYLOAD_ADAPTERS: dict[str, type[_Payload]] = {
     "phase10n1.crystalnn_coordination.v1": CoordinationCrystalNNArtifactPayload,
     "phase10n1.voronoinn_coordination.v1": CoordinationVoronoiNNArtifactPayload,
     "phase10n4.trajectory_rdf.v1": TrajectoryRdfArtifactPayload,
+    TRAJECTORY_SCHEMA_VERSION: TrajectoryViewerPayload,
+    TRAJECTORY_SUMMARY_SCHEMA_VERSION: TrajectoryViewerSummaryPayload,
+    TRAJECTORY_PARSE_REPORT_SCHEMA_VERSION: TrajectoryViewerReportPayload,
+    TRAJECTORY_MANIFEST_SCHEMA_VERSION: TrajectoryViewerManifestPayload,
     "phase10k4.composition_space.v1": CompositionSpaceArtifactPayload,
     "phase10k2.dataset_materials_explorer.v1": MaterialsExplorerArtifactPayload,
+    "phase10j.volumetric_field.v1": VolumetricFieldArtifactPayload,
 }
 
 

@@ -3,10 +3,12 @@ from __future__ import annotations
 from datetime import datetime, timezone
 import asyncio
 import logging
+import math
 from typing import Any
 from uuid import UUID, uuid4
 
 from mdi_llm.providers import LLMProviderError
+from mdi_schemas import PlannerBindingSource
 
 from mdi_api.agent2_errors import CapabilityBindingFailed, CapabilityPlanInvalid
 from mdi_api.application.research.ports import ResearchRepositoryFactoryPort
@@ -30,7 +32,7 @@ from mdi_api.research_agent.context.manifest import build_operation_manifest
 from mdi_api.research_agent.context.policy import ContextOperation
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 from mdi_api.domain.scientific_results.contracts import ScientificResultBundle
-from mdi_tool_registry import load_manifests
+from mdi_tool_registry import build_tool_planner_metadata, load_manifests
 
 logger = logging.getLogger(__name__)
 
@@ -113,7 +115,11 @@ class CapabilityPlanningProcessor:
                     for key, value in reusable_results.items()
                     if value.get("usable") and value.get("artifact_metadata_by_id")
                 }
-                context = self._plan_context(unit, str(turn["project_id"]), [*object_refs.values(), *result_object_refs.values()])
+                context = self._plan_context(
+                    unit,
+                    str(turn["project_id"]),
+                    {**object_refs, **result_object_refs},
+                )
                 context["object_refs"] = object_refs
                 context["result_object_refs"] = result_object_refs
                 context["result_artifact_refs"] = result_artifact_refs
@@ -344,16 +350,53 @@ class CapabilityPlanningProcessor:
             })
         return items
 
-    @staticmethod
-    def _plan_context(unit: Any, project_id: str, refs: list[ScientificObjectRef]) -> dict[str, Any]:
+    def _plan_context(
+        self,
+        unit: Any,
+        project_id: str,
+        refs: dict[str, ScientificObjectRef],
+    ) -> dict[str, Any]:
         source_dataset_ids: set[str] = set()
-        for ref in refs:
+        registered_fact_keys = {
+            fact_key
+            for tool in self.tool_registry.list_planner_visible_tools()
+            for binding in build_tool_planner_metadata(tool).parameterBindings
+            if binding.source is PlannerBindingSource.resource_fact
+            for fact_key in binding.factKeys
+        }
+        resource_facts: dict[str, dict[str, Any]] = {}
+        for ref_key, ref in refs.items():
             version = unit.agent2.scientific_objects.get_version(ref.version_id)
             for source in version.get("source_resource_refs_json") or []:
                 if source.get("project_id") not in {None, project_id}:
                     raise CapabilityBindingFailed("source resource belongs to another project")
                 if source.get("dataset_id"):
                     source_dataset_ids.add(str(source["dataset_id"]))
+            canonical_metadata = dict(version.get("canonical_metadata_json") or {})
+            source_resource_id = str(
+                canonical_metadata.get("source_resource_id")
+                or next(
+                    (
+                        source.get("resource_id")
+                        for source in version.get("source_resource_refs_json") or []
+                        if source.get("resource_id")
+                    ),
+                    "",
+                )
+            )
+            bounded_facts = {
+                key: canonical_metadata[key]
+                for key in sorted(registered_fact_keys)
+                if key in canonical_metadata
+                and self._is_bounded_resource_fact(canonical_metadata[key])
+            }
+            resource_facts[ref_key] = {
+                "object_id": str(ref.object_id),
+                "version_id": str(ref.version_id),
+                "object_type": ref.object_type,
+                "resource_id": source_resource_id or None,
+                "facts": bounded_facts,
+            }
         datasets = unit.repositories.datasets.list_for_project(project_id)
         allowed = {str(item.get("id") or item.get("datasetId")) for item in datasets}
         if source_dataset_ids and not source_dataset_ids.issubset(allowed):
@@ -369,8 +412,29 @@ class CapabilityPlanningProcessor:
         profiles = unit.repositories.data_profiles.list_for_dataset(dataset_id)
         if not profiles:
             raise CapabilityBindingFailed("an executable AnalysisPlan requires a persisted DataProfile")
-        profile_id = str(profiles[0]["id"])
-        return {"dataset_id": dataset_id, "profile_id": profile_id}
+        profile_record = profiles[0]
+        profile_id = str(
+            profile_record.get("profileId")
+            or profile_record.get("id")
+        )
+        return {
+            "dataset_id": dataset_id,
+            "profile_id": profile_id,
+            "profile": profile_record,
+            "resource_facts": resource_facts,
+        }
+
+    @staticmethod
+    def _is_bounded_resource_fact(value: Any) -> bool:
+        if value is None or isinstance(value, bool):
+            return value is not None
+        if isinstance(value, int):
+            return True
+        if isinstance(value, float):
+            return math.isfinite(value)
+        if isinstance(value, str):
+            return len(value) <= 256
+        return False
 
     @staticmethod
     def _snapshot_refs(snapshot: dict[str, Any]) -> dict[str, Any]:

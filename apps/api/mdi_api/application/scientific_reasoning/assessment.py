@@ -84,11 +84,120 @@ _TENTATIVE_MECHANISM = re.compile(
     r"\b(?:may|might|could|possible|possibly|suggest|consistent with|hypothes)\w*\b",
     re.I,
 )
+_BOUNDED_COLLECTION = re.compile(
+    r"\b(?:dataset|data\s+set|sample(?:s)?|row(?:s)?|record(?:s)?|"
+    r"entry|entries|composition(?:s)?)\b",
+    re.I,
+)
+_FINITE_COLLECTION_EVIDENCE = re.compile(
+    r"(?:\b(?:count|valid|invalid)\b|"
+    r"(?:row|sample|total_rows?|valid|invalid)[_. ]count|"
+    r"composition\.(?:valid|invalid)(?:_count)?)",
+    re.I,
+)
 
 
 def _contains(texts: Iterable[str], token: str) -> bool:
     needle = token.casefold()
     return any(needle in text.casefold() for text in texts)
+
+
+def _is_bounded_collection_generalization(
+    claim: ProposedScientificClaim,
+    selected: Iterable[ReasoningEvidence],
+) -> bool:
+    """Allow finite ``all`` statements about the supplied collection only.
+
+    ``all materials`` is an unauthorized extrapolation, but statements such
+    as ``all compositions in this dataset are valid`` or ``there are no
+    invalid samples in this dataset`` are bounded observations when the
+    selected computed evidence contains finite validity or count facts. Keep
+    this exception lexical and evidence-backed so it cannot weaken the
+    generalization guard for a broader population.
+    """
+
+    claim_text = " ".join([claim.text, claim.scope, *claim.qualifiers])
+    if not _BOUNDED_COLLECTION.search(claim_text):
+        return False
+    evidence_text = " ".join(item.text for item in selected)
+    return bool(_FINITE_COLLECTION_EVIDENCE.search(evidence_text))
+
+
+def _is_bounded_result_synthesis(
+    claim: ProposedScientificClaim,
+    selected: Iterable[ReasoningEvidence],
+) -> bool:
+    """Recognize an explicit finite synthesis over the cited result set.
+
+    Universal-language protection must still reject claims about an
+    unrestricted population.  A descriptive statement such as “the RDF, MSD,
+    and diffusion results all use the same selected interval”, however, is
+    bounded to the named computed outputs and their exact cited evidence.  It
+    does not generalize beyond the supplied ScientificResult.
+    """
+
+    selected_items = list(selected)
+    if (
+        claim.claim_type != ScientificClaimType.DESCRIPTIVE_SYNTHESIS
+        or not selected_items
+        or any(item.origin.value != "COMPUTED" for item in selected_items)
+    ):
+        return False
+    text = " ".join([claim.text, claim.scope, *claim.qualifiers]).casefold()
+    bounded_subjects = {
+        token
+        for token in (
+            "result",
+            "results",
+            "rdf",
+            "msd",
+            "diffusion",
+            "tool",
+            "tools",
+            "output",
+            "outputs",
+        )
+        if re.search(rf"\b{re.escape(token)}\b", text)
+    }
+    return bool(
+        bounded_subjects
+        and re.search(
+            r"\b(?:same|selected|supplied|cited|these|those|corresponding)\b",
+            text,
+        )
+    )
+
+
+def _is_bounded_invalidity_observation(
+    claim: ProposedScientificClaim,
+    selected: Iterable[ReasoningEvidence],
+) -> bool:
+    """Distinguish a counted invalid-entry observation from invalidity claims.
+
+    The composition-space evidence is exploratory, so it must not support a
+    claim that a material is scientifically invalid.  It can still report the
+    authoritative finite ``invalid samples/formulas = 0`` fields produced by
+    the dataset-quality projector.
+    """
+
+    if claim.claim_type != ScientificClaimType.DIRECT_OBSERVATION:
+        return False
+    claim_text = " ".join([claim.text, claim.scope, *claim.qualifiers]).casefold()
+    if not re.search(
+        r"\b(?:sample|samples|formula|formulas|entry|entries|row|rows|"
+        r"coverage|count)\b",
+        claim_text,
+    ):
+        return False
+    evidence_text = " ".join(item.text for item in selected)
+    return bool(
+        re.search(
+            r"(?:\b(?:invalid|valid|count)\b|"
+            r"(?:invalid|valid)[_. ]count)",
+            evidence_text,
+            re.I,
+        )
+    )
 
 
 def _normalized_words(text: str) -> set[str]:
@@ -359,6 +468,7 @@ class ClaimSupportAssessor:
         if (
             claim.claim_type == ScientificClaimType.GENERALIZATION
             and not restrained_generalization
+            and not _is_bounded_collection_generalization(claim, selected)
             and not all(item.generalization_authority for item in selected)
         ):
             reasons.append("GENERALIZATION_EXCEEDS_EVIDENCE_SCOPE")
@@ -376,6 +486,8 @@ class ClaimSupportAssessor:
                 _UNIVERSAL_SCOPE.search(claim.scope)
                 or _UNIVERSAL_SCOPE.search(claim.text)
             )
+            and not _is_bounded_collection_generalization(claim, selected)
+            and not _is_bounded_result_synthesis(claim, selected)
             and not restrained_generalization
             and not all(item.generalization_authority for item in selected)
         ):
@@ -436,7 +548,10 @@ class ClaimSupportAssessor:
             outcome = ScientificReasoningOutcome.INSUFFICIENT_EVIDENCE
 
         if any("EXPLORATORY_OUTLIER" in item.semantic_tags for item in selected):
-            if _EXPLORATORY_INVALIDITY.search(claim.text):
+            if (
+                _EXPLORATORY_INVALIDITY.search(claim.text)
+                and not _is_bounded_invalidity_observation(claim, selected)
+            ):
                 reasons.append("EXPLORATORY_OUTLIER_DOES_NOT_ESTABLISH_INVALIDITY")
                 limitations.append(
                     "An exploratory statistical outlier is not evidence of scientific invalidity."

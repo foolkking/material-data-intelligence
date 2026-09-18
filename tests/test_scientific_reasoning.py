@@ -204,6 +204,75 @@ def test_generalization_preserves_studied_system_scope() -> None:
     assert "SCOPE_EXPANSION" in {item.value for item in assessment.defects}
 
 
+def test_finite_dataset_collection_generalization_is_bounded() -> None:
+    assessment = ClaimSupportAssessor().assess(
+        _claim(
+            text="All compositions in the supplied dataset are valid.",
+            claim_type=ScientificClaimType.GENERALIZATION,
+            support_status=ClaimSupportStatus.SUPPORTED_WITHIN_SCOPE,
+            scope="the supplied dataset",
+        ),
+        [
+            _evidence(
+                text=(
+                    "composition.valid_count=576; "
+                    "composition.invalid_count=0"
+                ),
+                scope="the supplied dataset",
+            )
+        ],
+    )
+    assert assessment.accepted is True
+    assert "SCOPE_EXPANSION" not in {item.value for item in assessment.defects}
+
+
+def test_finite_dataset_negative_collection_generalization_is_bounded() -> None:
+    assessment = ClaimSupportAssessor().assess(
+        _claim(
+            text="There are no invalid composition samples in this dataset.",
+            claim_type=ScientificClaimType.GENERALIZATION,
+            support_status=ClaimSupportStatus.SUPPORTED_WITHIN_SCOPE,
+            scope="this dataset",
+        ),
+        [
+            _evidence(
+                text=(
+                    "composition.valid_count=576; "
+                    "composition.invalid_count=0"
+                ),
+                scope="this dataset",
+            )
+        ],
+    )
+    assert assessment.accepted is True
+    assert "SCOPE_EXPANSION" not in {item.value for item in assessment.defects}
+
+
+def test_exploratory_result_can_report_counted_invalid_entries() -> None:
+    assessment = ClaimSupportAssessor().assess(
+        _claim(
+            text=(
+                "Composition coverage reports 576 valid composition samples "
+                "and 0 invalid composition samples."
+            ),
+            claim_type=ScientificClaimType.DIRECT_OBSERVATION,
+            scope="the supplied dataset",
+        ),
+        [
+            _evidence(
+                text=(
+                    "composition.valid_count=576; "
+                    "composition.invalid_count=0"
+                ),
+                semantic_tags=["EXPLORATORY_OUTLIER"],
+                scope="the supplied dataset",
+            )
+        ],
+    )
+    assert assessment.accepted is True
+    assert "EXPLORATORY_OUTLIER_DOES_NOT_ESTABLISH_INVALIDITY" not in assessment.reason_codes
+
+
 def test_negative_generalization_boundary_does_not_become_overclaim() -> None:
     assessment = ClaimSupportAssessor().assess(
         _claim(
@@ -386,6 +455,43 @@ def test_twenty_turn_repetition_does_not_inflate_support_but_new_result_can() ->
     )
     assert updated.independent_evidence_groups == 2
     assert updated.support_status == ClaimSupportStatus.SUPPORTED_WITHIN_SCOPE
+
+
+def test_bounded_computed_result_synthesis_may_use_all_without_scope_expansion() -> None:
+    assessment = ClaimSupportAssessor().assess(
+        _claim(
+            text=(
+                "The RDF, MSD, and diffusion results all reference the same "
+                "selected trajectory interval."
+            ),
+            claim_type=ScientificClaimType.DESCRIPTIVE_SYNTHESIS,
+            evidence_refs=["result_1", "result_2", "result_3"],
+            scope="Cross-result consistency within the supplied trajectory result",
+        ),
+        [
+            _evidence(lineage="trajectory_v3"),
+            _evidence(ref="result_2", lineage="trajectory_v3"),
+            _evidence(ref="result_3", lineage="trajectory_v3"),
+        ],
+    )
+
+    assert assessment.accepted is True
+    assert "UNIVERSAL_SCOPE_NOT_AUTHORIZED" not in assessment.reason_codes
+
+
+def test_unbounded_all_results_claim_remains_rejected() -> None:
+    assessment = ClaimSupportAssessor().assess(
+        _claim(
+            text="All results are universally valid.",
+            claim_type=ScientificClaimType.DESCRIPTIVE_SYNTHESIS,
+            evidence_refs=["result_1"],
+            scope="all results",
+        ),
+        [_evidence(lineage="trajectory_v3")],
+    )
+
+    assert assessment.accepted is False
+    assert "UNIVERSAL_SCOPE_NOT_AUTHORIZED" in assessment.reason_codes
 
 
 def test_unresolved_contradiction_is_not_collapsed_to_a_winner() -> None:

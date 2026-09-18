@@ -114,6 +114,8 @@ def _intents(tool_id: str) -> list[ScientificIntent]:
 
 
 def _needs(tool_id: str) -> list[CapabilityNeed]:
+    if tool_id == "structure.composition_from_structure":
+        return [CapabilityNeed.composition_data]
     if tool_id == "dataset.composition_space" or tool_id.startswith("composition.cluster_"):
         return [CapabilityNeed.tabular_data, CapabilityNeed.composition_data]
     if tool_id == "dataset.materials_explorer":
@@ -201,6 +203,15 @@ def _desired_outputs(tool: Any) -> list[DesiredOutput]:
 
 
 def _bindings(tool_id: str) -> list[PlannerParameterBinding]:
+    if tool_id == "structure.composition_from_structure":
+        return [
+            PlannerParameterBinding(
+                parameter="formulaColumn",
+                source=PlannerBindingSource.semantic_columns,
+                targetRoles=["material_formula"],
+                required=False,
+            )
+        ]
     if tool_id in {"dataset.materials_explorer", "dataset.composition_space"}:
         return [PlannerParameterBinding(parameter="tableObjectId", source=PlannerBindingSource.resource_id)]
     if tool_id in {"ml.regression_evaluation", "ml.uncertainty_evaluation", "ml.classification_evaluation"}:
@@ -222,10 +233,10 @@ def _bindings(tool_id: str) -> list[PlannerParameterBinding]:
     if tool_id == "phonon.animation":
         return [PlannerParameterBinding(parameter="mode_id", source=PlannerBindingSource.resource_fact, objectTypes=["PhononEigenvector"], factKeys=["modeId"])]
     if tool_id == "trajectory.diffusion":
-        return [
-            PlannerParameterBinding(parameter="fit_start_time_ps", source=PlannerBindingSource.resource_fact, objectTypes=["Trajectory"], factKeys=["timeStartPs"]),
-            PlannerParameterBinding(parameter="fit_end_time_ps", source=PlannerBindingSource.resource_fact, objectTypes=["Trajectory"], factKeys=["timeEndPs"]),
-        ]
+        # Diffusion fit bounds are scientific choices over the persisted MSD
+        # lag axis.  Full-source trajectory timestamps are not a safe default
+        # for a bounded selected analysis window.
+        return []
     if tool_id in {
         "composition.formula_statistics",
         "composition.ptable_heatmap",

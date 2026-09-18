@@ -124,12 +124,19 @@ def _timeouts_for(entry: dict[str, Any]) -> tuple[int, int]:
 
 def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
     tool_id = entry["tool_id"]
+    if tool_id == "structure.composition_from_structure":
+        return {
+            "maxRows": 100000,
+            "maxStructures": 256,
+            "maxAtomsPerStructure": 5000,
+            "maxArtifactBytes": 33554432,
+        }
     if tool_id in {"trajectory.rdf", "trajectory.msd", "trajectory.diffusion"}:
         return {
             "maxFrames": 200,
             "maxAtoms": 5000,
             "maxSpecies": 64,
-            "maxRdfPairs": 2_000_000,
+            "maxRdfPairs": 30_000_000,
             "maxRdfBins": 2048,
             "maxMsdLags": 2048,
             "maxTimeOrigins": 4096,
@@ -542,25 +549,45 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
                 )
             ]
         )
-    if tool_id == "structure.structure_3d":
+    if tool_id == "structure.composition_from_structure":
         return ToolInputSchema(
-            periodicity="periodic_required",
+            periodicity="any",
             inputOptions=[
                 ToolInputOption(
                     name="periodic_structures",
                     requiredObjectTypes=[MaterialObjectType.Structure],
-                    description="Use one or more periodic pymatgen Structure objects.",
-                )
+                    description="Use one or more validated periodic structures.",
+                ),
+                ToolInputOption(
+                    name="formula_table",
+                    requiredObjectTypes=[MaterialObjectType.DataFrame],
+                    requiredFields=[{"role": "formula", "dtype": "string"}],
+                    description=(
+                        "Use an explicitly profiled formula column without "
+                        "inventing lattice, coordinates, or symmetry."
+                    ),
+                ),
             ],
         )
-    if tool_id == "structure.viewer_3d":
+    if tool_id in {
+        "structure.structure_3d",
+        "structure.viewer_3d",
+        "structure.viewer_scene",
+    }:
         return ToolInputSchema(
-            periodicity="periodic_required",
+            periodicity="any",
             inputOptions=[
                 ToolInputOption(
-                    name="single_periodic_structure",
-                    requiredObjectTypes=[MaterialObjectType.Structure],
-                    description="Use exactly one periodic structure to generate a canonical inert viewer scene.",
+                    name="periodic_or_nonperiodic_atoms",
+                    requiredObjectTypes=[
+                        MaterialObjectType.Structure,
+                        MaterialObjectType.Atoms,
+                        MaterialObjectType.Molecule,
+                    ],
+                    description=(
+                        "Use validated periodic structures or non-periodic atomic "
+                        "coordinates; non-periodic inputs must not infer lattice or symmetry."
+                    ),
                 )
             ],
         )
@@ -632,10 +659,10 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
         }}
     if tool_id == "trajectory.rdf":
         return {"type": "object", "additionalProperties": False, "properties": {
-            "r_min_angstrom": {"type": "number", "minimum": 0, "maximum": 30, "default": 0}, "r_max_angstrom": {"type": "number", "minimum": 0.01, "maximum": 30, "default": 2}, "bin_count": {"type": "integer", "minimum": 1, "maximum": 2048, "default": 200}, "species_a": {"type": "string", "maxLength": 32}, "species_b": {"type": "string", "maxLength": 32}, "window_mode": {"enum": ["whole", "frame", "time"], "default": "whole"}, "frame_start": {"type": "integer", "minimum": 0, "maximum": 9999, "default": 0}, "frame_end": {"type": "integer", "minimum": 1, "maximum": 10000, "default": 10000}, "time_start_ps": {"type": "number", "minimum": 0, "maximum": 1e12, "default": 0}, "time_end_ps": {"type": "number", "minimum": 0, "maximum": 1e12, "default": 1e12}, "max_pair_evaluations": {"type": "integer", "minimum": 1, "maximum": 2000000, "default": 2000000}
+            "r_min_angstrom": {"type": "number", "minimum": 0, "maximum": 30, "default": 0}, "r_max_angstrom": {"type": "number", "minimum": 0.01, "maximum": 30, "default": 2}, "bin_count": {"type": "integer", "minimum": 1, "maximum": 2048, "default": 200}, "species_a": {"type": "string", "maxLength": 32}, "species_b": {"type": "string", "maxLength": 32}, "window_mode": {"enum": ["whole", "frame", "time"], "default": "whole"}, "frame_start": {"type": "integer", "minimum": 0, "maximum": 9999, "default": 0}, "frame_end": {"type": "integer", "minimum": 1, "maximum": 10000, "default": 10000}, "time_start_ps": {"type": "number", "minimum": 0, "maximum": 1e12, "default": 0}, "time_end_ps": {"type": "number", "minimum": 0, "maximum": 1e12, "default": 1e12}, "max_pair_evaluations": {"type": "integer", "minimum": 1, "maximum": 30000000, "default": 30000000}
         }}
     if tool_id == "trajectory.msd":
-        return {"type": "object", "additionalProperties": False, "properties": {"species": {"type": "string", "maxLength": 32}, "max_lag_count": {"type": "integer", "minimum": 1, "maximum": 2048, "default": 512}, "origin_stride": {"type": "integer", "minimum": 1, "maximum": 1000, "default": 1}, "max_origins_per_lag": {"type": "integer", "minimum": 1, "maximum": 4096, "default": 4096}, "drift_correction": {"enum": ["none"], "default": "none"}}}
+        return {"type": "object", "additionalProperties": False, "properties": {"species": {"type": "string", "maxLength": 32}, "max_lag_count": {"type": "integer", "minimum": 1, "maximum": 2048, "default": 512}, "origin_stride": {"type": "integer", "minimum": 1, "maximum": 1000, "default": 1}, "max_origins_per_lag": {"type": "integer", "minimum": 1, "maximum": 4096, "default": 4096}, "drift_correction": {"enum": ["none"], "default": "none"}, "window_mode": {"enum": ["whole", "frame", "time"]}, "frame_start": {"type": "integer", "minimum": 0, "maximum": 9999}, "frame_end": {"type": "integer", "minimum": 1, "maximum": 10000}, "time_start_ps": {"type": "number", "minimum": 0, "maximum": 1e12}, "time_end_ps": {"type": "number", "minimum": 0, "maximum": 1e12}}}
     if tool_id == "trajectory.diffusion":
         return {"type": "object", "additionalProperties": False, "required": ["fit_start_time_ps", "fit_end_time_ps"], "properties": {"fit_start_time_ps": {"type": "number", "minimum": 0, "maximum": 1e12}, "fit_end_time_ps": {"type": "number", "minimum": 0, "maximum": 1e12}, "direction": {"enum": ["total", "x", "y", "z"], "default": "total"}, "minimum_fit_points": {"type": "integer", "minimum": 3, "maximum": 10000, "default": 5}, "minimum_fit_duration_ps": {"type": "number", "minimum": 0, "maximum": 1e9, "default": 1}, "minimum_origin_coverage": {"type": "number", "minimum": 0, "maximum": 1, "default": 0.2}, "minimum_r_squared": {"type": "number", "minimum": 0, "maximum": 1, "default": 0.9}, "alpha_min": {"type": "number", "minimum": 0.1, "maximum": 2, "default": 0.8}, "alpha_max": {"type": "number", "minimum": 0.1, "maximum": 3, "default": 1.2}}}
     common_coordination_limits = {
@@ -1127,6 +1154,8 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
             "properties": {
                 "structureColumn": {"anyOf": [{"type": "string"}, {"type": "null"}]},
                 "maxStructures": {"type": "integer", "minimum": 1},
+                "maxRows": {"type": "integer", "minimum": 1, "maximum": 100000},
+                "formulaColumn": {"anyOf": [{"type": "string"}, {"type": "null"}]},
                 "includeRecommendedTools": {"type": "boolean"},
             },
         }

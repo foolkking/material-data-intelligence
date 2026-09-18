@@ -272,6 +272,13 @@ export type ScopeResolution = {
     object_type: string;
     display_name?: string;
   };
+  scientific_object_refs?: Array<{
+    object_id: string;
+    version_id: string;
+    project_id: string;
+    object_type: string;
+    display_name?: string;
+  }>;
   dataset_resource_id?: string;
   reason?: string;
   question?: string;

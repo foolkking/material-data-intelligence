@@ -17,6 +17,7 @@ from mdi_api.db import (
     users,
 )
 from mdi_api.research_agent.llm.schemas import StructuredLLMResult
+from mdi_api.research_agent.llm.structured_client import load_research_orchestrator_prompt
 from mdi_api.research_agent.orchestration.processor import (
     AgentTurnProcessor,
     ProcessTurnResult,
@@ -88,6 +89,71 @@ def structure(objects: ScientificObjectService, name: str = "Si", project_id: st
     return ScientificObjectRef(
         object_id=logical["id"], version_id=version["id"], project_id=project_id,
         object_type="structure.crystal", display_name=name,
+    )
+
+
+def volumetric(objects: ScientificObjectService, name: str = "Q-VOLUME-001", project_id: str = "project") -> ScientificObjectRef:
+    logical = objects.create_object(
+        project_id=project_id, kind=ScientificObjectKind.VOLUMETRIC,
+        object_type="volumetric.field", display_name=name, created_by_user_id="owner",
+    )
+    version = objects.create_version(
+        logical["id"], object_type="volumetric.field", object_schema_version="1.0",
+        source_resource_refs=[{"scope": "system_fixture", "resource_id": name}],
+        parent_object_version_refs=[],
+        normalized_payload_ref=StorageRef(
+            storage_backend="minio", object_key=f"{name}.json", checksum=f"sha-{name}"
+        ),
+        content_hash=f"content-{name}", semantic_hash=f"semantic-{name}",
+        canonical_metadata={
+            "detectedFormat": "gaussian_cube",
+            "gridShape": [2, 2, 2],
+            "quantities": ["generic_scalar"],
+        },
+        created_by_user_id="owner",
+    )
+    return ScientificObjectRef(
+        object_id=logical["id"], version_id=version["id"], project_id=project_id,
+        object_type="volumetric.field", display_name=name,
+    )
+
+
+def trajectory(objects: ScientificObjectService) -> ScientificObjectRef:
+    logical = objects.create_object(
+        project_id="project",
+        kind=ScientificObjectKind.TRAJECTORY,
+        object_type="trajectory.atomic",
+        display_name="650-frame trajectory",
+        created_by_user_id="owner",
+    )
+    version = objects.create_version(
+        logical["id"],
+        object_type="trajectory.atomic",
+        object_schema_version="1.0",
+        source_resource_refs=[{"scope": "system_fixture", "resource_id": "trajectory"}],
+        parent_object_version_refs=[],
+        normalized_payload_ref=StorageRef(
+            storage_backend="minio",
+            object_key="trajectory.json",
+            checksum="sha-trajectory",
+        ),
+        content_hash="content-trajectory",
+        semantic_hash="semantic-trajectory",
+        canonical_metadata={
+            "frameCount": 650,
+            "atomCount": 516,
+            "timeAvailable": True,
+            "timeStartPs": 0.0,
+            "timeEndPs": 48.675,
+        },
+        created_by_user_id="owner",
+    )
+    return ScientificObjectRef(
+        object_id=logical["id"],
+        version_id=version["id"],
+        project_id="project",
+        object_type="trajectory.atomic",
+        display_name="650-frame trajectory",
     )
 
 
@@ -379,6 +445,84 @@ def test_analyze_reaches_ready_to_plan_with_requirement_and_zero_execution():
     assert view["orchestration"]["action_dispatch_status"] == "READY_FOR_DOWNSTREAM"
 
 
+def test_materials_exploration_normalizes_numeric_provider_choice_to_both_dataset_projections():
+    _engine, owner, factory, objects, turns = foundation()
+    ref = projected_table(objects)
+    turn = receive(
+        turns,
+        owner,
+        "Import this bounded archive and inspect the supported materials table it contains.",
+        refs=[ref],
+    )
+    fake = FakeStructuredClient([decision(
+        "ANALYZE",
+        assistant_message="我会准备材料数据集探索。",
+        research_objective="检查授权材料表并展示其材料数据探索视图。",
+        selected_scope_ref_keys=["obj_1"],
+        scientific_requirements=[{
+            "requirement_id": "data.analyze_table",
+            "criticality": "REQUIRED",
+            "subject_ref_keys": ["obj_1"],
+            "constraints": {},
+        }],
+    )])
+
+    result = asyncio.run(processor(factory, fake).process(turn.turn_id))
+
+    assert result.status == "READY_TO_PLAN"
+    with factory.session() as session:
+        stored = session.agent2.research_turn_decisions.get_for_turn(turn.turn_id)
+    requirements = stored["decision_json"]["scientific_requirements"]
+    assert [item["requirement_id"] for item in requirements] == [
+        "data.explore_composition_space",
+        "data.explore_materials",
+    ]
+    assert all(item["subject_ref_keys"] == ["obj_1"] for item in requirements)
+
+
+def test_prompt_routes_supported_scientific_views_to_analyze_not_open_object():
+    prompt = load_research_orchestrator_prompt()
+
+    assert "Distinguish opening an object from inspecting it scientifically." in prompt
+    assert "supported volumetric slices or volume views" in prompt
+    assert "`OPEN_OBJECT` is only for navigation or read-only opening/preview" in prompt
+    assert "not `OPEN_OBJECT`" in prompt
+
+
+def test_volumetric_inspection_decision_reaches_ready_to_plan():
+    engine, owner, factory, objects, turns = foundation()
+    ref = volumetric(objects)
+    turn = receive(
+        turns,
+        owner,
+        "Inspect this supplied volumetric grid and show its supported slice and volume views.",
+        refs=[ref],
+    )
+    fake = FakeStructuredClient([decision(
+        "ANALYZE",
+        assistant_message="我会准备当前体数据的科学 inspection。",
+        research_objective="检查当前体数据并提供其受支持的切片和体视图。",
+        selected_scope_ref_keys=["obj_1"],
+        scientific_requirements=[{
+            "requirement_id": "volumetric.inspect",
+            "criticality": "REQUIRED",
+            "subject_ref_keys": ["obj_1"],
+            "constraints": {},
+        }],
+    )])
+
+    result = asyncio.run(processor(factory, fake).process(turn.turn_id))
+
+    assert result.status == "READY_TO_PLAN"
+    assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+    available_ids = {
+        item["requirement_id"]
+        for item in fake.calls[0]["input_payload"]["available_requirement_ids"]
+    }
+    assert "volumetric.inspect" in available_ids
+    assert fake.calls[0]["system_prompt"] == load_research_orchestrator_prompt()
+
+
 def test_analyze_drops_stray_historical_result_binding_before_priority_validation():
     _engine, owner, factory, objects, turns = foundation()
     _previous, _snapshot = add_previous_result(factory)
@@ -473,6 +617,58 @@ def test_ui_selection_resolves_equal_scope_before_llm():
     assert asyncio.run(processor(factory, fake).process(turn.turn_id)).status == "READY_TO_PLAN"
     selected = fake.calls[0]["input_payload"]["research_context"]["objects"][0]
     assert selected["display_name"] == "B" and selected["summary"]["source"] == "UI_SELECTION"
+
+
+def test_large_trajectory_requires_and_preserves_explicit_final_window():
+    _engine, owner, factory, objects, turns = foundation()
+    source = trajectory(objects)
+    fake = FakeStructuredClient([decision("ANSWER", assistant_message="must not run")])
+    first = receive(
+        turns,
+        owner,
+        "Show this trajectory, its RDF and MSD, and estimate diffusion over a selected fit window.",
+        refs=[source],
+    )
+    first_result = asyncio.run(processor(factory, fake).process(first.turn_id))
+    assert first_result.status == "NEEDS_CLARIFICATION"
+    assert fake.calls == []
+    assert "650" in turns.get_turn(first.turn_id, owner)["messages"][-1]["content"]
+
+    continuation = receive(
+        turns,
+        owner,
+        (
+            "Use the final 200 frames of the trajectory for the bounded RDF and MSD "
+            "analysis, and use that same selected interval as the diffusion fit window. "
+            "Keep the complete 650-frame trajectory available for viewing and do not "
+            "treat the selected window as the whole trajectory."
+        ),
+        selected=[source],
+        reply_to=first.turn_id,
+    )
+    continued = asyncio.run(processor(factory, fake).process(continuation.turn_id))
+    assert continued.status == "READY_TO_PLAN"
+    assert fake.calls == []
+    with factory.session() as session:
+        stored = session.agent2.research_turn_decisions.get_for_turn(
+            continuation.turn_id
+        )
+    requirements = {
+        item["requirement_id"]: item["constraints"]
+        for item in stored["decision_json"]["scientific_requirements"]
+    }
+    expected_window = {
+        "window_mode": "frame",
+        "frame_start": 450,
+        "frame_end": 650,
+    }
+    assert requirements["trajectory.compute_rdf"] == expected_window
+    assert requirements["trajectory.compute_msd"] == expected_window
+    assert requirements["trajectory.estimate_diffusion"] == {
+        "fit_start_time_ps": 0.075,
+        "fit_end_time_ps": 14.925,
+    }
+    assert requirements["trajectory.inspect_view"] == {}
 
 
 def test_multiple_explicit_objects_reach_orchestrator_as_one_exact_scope():

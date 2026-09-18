@@ -70,7 +70,7 @@ class ExperimentalXrdComparisonAdapter(BaseToolAdapter):
         if theoretical is None:
             raise _error("TOOL_INPUT_INVALID", "THEORETICAL_XRD_MISSING", "The persisted theoretical XRD Artifact is missing.")
         binding = dict(context.artifact_bindings.get(theoretical_ref) or {})
-        _validate_resource(resource, normalized)
+        resource = _normalize_resource(resource, normalized)
         _validate_theoretical(theoretical, binding, context)
         experimental_wavelength = float(resource["wavelength"]["value"])
         theoretical_wavelength = float(theoretical["radiation"]["wavelength_angstrom"])
@@ -264,22 +264,45 @@ def _input_ref(value: Any) -> str:
     return str(getattr(value, "ref", value.get("ref") if isinstance(value, Mapping) else ""))
 
 
-def _validate_resource(resource: Mapping[str, Any], params: Mapping[str, Any]) -> None:
-    required = {"schemaVersion", "resourceId", "resourceVersion", "resourceHash", "xAxis", "twoTheta", "intensity", "intensitySemantic", "wavelength"}
-    if set(resource) - (required | {"metadata"}) or not required.issubset(resource):
+def _normalize_resource(resource: Mapping[str, Any], params: Mapping[str, Any]) -> dict[str, Any]:
+    required = {"schemaVersion", "resourceId", "resourceVersion", "resourceHash", "xAxis", "wavelength"}
+    allowed = required | {"twoTheta", "intensity", "intensitySemantic", "metadata"}
+    if set(resource) - allowed or not required.issubset(resource):
         raise _error("TOOL_INPUT_INVALID", "EXPERIMENTAL_XRD_INVALID_AXIS", "Experimental XRD Resource fields are strict.")
     axis = resource.get("xAxis")
     wavelength = resource.get("wavelength")
-    if axis != {"kind": "two_theta", "unit": "degree"}:
+    nested = (
+        isinstance(axis, Mapping)
+        and set(axis) == {"kind", "unit", "values"}
+        and isinstance(resource.get("intensity"), Mapping)
+        and set(resource["intensity"]) == {"semantic", "values"}
+        and "twoTheta" not in resource
+        and "intensitySemantic" not in resource
+    )
+    if nested:
+        if axis.get("kind") != "two_theta" or axis.get("unit") != "degree":
+            raise _error("TOOL_INPUT_INVALID", "EXPERIMENTAL_XRD_INVALID_AXIS", "Only explicit degree two_theta is supported.")
+        x = axis.get("values")
+        intensity = resource["intensity"]
+        y = intensity.get("values")
+        intensity_semantic = intensity.get("semantic")
+    else:
+        legacy_required = {"twoTheta", "intensity", "intensitySemantic"}
+        if not legacy_required.issubset(resource) or not isinstance(axis, Mapping) or set(axis) != {"kind", "unit"}:
+            raise _error("TOOL_INPUT_INVALID", "EXPERIMENTAL_XRD_INVALID_AXIS", "Experimental XRD Resource fields are strict.")
+        if axis != {"kind": "two_theta", "unit": "degree"}:
+            raise _error("TOOL_INPUT_INVALID", "EXPERIMENTAL_XRD_INVALID_AXIS", "Only explicit degree two_theta is supported.")
+        x = resource.get("twoTheta")
+        y = resource.get("intensity")
+        intensity_semantic = resource.get("intensitySemantic")
+    if not isinstance(axis, Mapping) or axis.get("kind") != "two_theta" or axis.get("unit") != "degree":
         raise _error("TOOL_INPUT_INVALID", "EXPERIMENTAL_XRD_INVALID_AXIS", "Only explicit degree two_theta is supported.")
     if not isinstance(wavelength, Mapping) or set(wavelength) != {"value", "unit"}:
         raise _error("TOOL_INPUT_INVALID", "XRD_WAVELENGTH_MISSING", "Explicit wavelength metadata is required.")
     if wavelength.get("unit") != "angstrom" or not _finite_positive(wavelength.get("value")):
         raise _error("TOOL_INPUT_INVALID", "XRD_WAVELENGTH_INVALID", "Wavelength must be finite positive Angstrom.")
-    if resource.get("intensitySemantic") not in {"counts", "relative_intensity", "normalized_relative_intensity", "arbitrary_relative_unit"}:
+    if intensity_semantic not in {"counts", "relative_intensity", "normalized_relative_intensity", "arbitrary_relative_unit"}:
         raise _error("TOOL_INPUT_INVALID", "EXPERIMENTAL_XRD_INVALID_INTENSITY", "Intensity semantics are unsupported.")
-    x = resource.get("twoTheta")
-    y = resource.get("intensity")
     if not isinstance(x, list) or not isinstance(y, list) or len(x) != len(y) or len(x) < 3:
         raise _error("TOOL_INPUT_INVALID", "EXPERIMENTAL_XRD_INVALID_AXIS", "Experimental arrays must have equal length and at least three points.")
     if len(x) > 200_000:
@@ -292,13 +315,36 @@ def _validate_resource(resource: Mapping[str, Any], params: Mapping[str, Any]) -
         raise _error("TOOL_INPUT_INVALID", "EXPERIMENTAL_XRD_INVALID_AXIS", "twoTheta must be within 0 to 180 degree.")
     if any(float(item) < 0.0 for item in y) or max(float(item) for item in y) <= 0.0:
         raise _error("TOOL_INPUT_INVALID", "EXPERIMENTAL_XRD_INVALID_INTENSITY", "Intensity must be non-negative and not zero-only.")
-    expected_hash = content_hash(stable_json_dumps(_resource_hash_material(resource)))
+    expected_hash = content_hash(stable_json_dumps(_resource_hash_material(resource, nested=nested)))
     if str(resource.get("resourceHash")) != expected_hash:
         raise _error("TOOL_INPUT_INVALID", "STALE_EXPERIMENTAL_RESOURCE", "Experimental Resource hash does not match its exact scientific content.")
+    return {
+        "schemaVersion": resource["schemaVersion"],
+        "resourceId": resource["resourceId"],
+        "resourceVersion": resource["resourceVersion"],
+        "resourceHash": resource["resourceHash"],
+        "xAxis": {"kind": "two_theta", "unit": "degree"},
+        "twoTheta": list(x),
+        "intensity": list(y),
+        "intensitySemantic": intensity_semantic,
+        "wavelength": dict(wavelength),
+    }
 
 
-def _resource_hash_material(resource: Mapping[str, Any]) -> dict[str, Any]:
-    return {key: resource[key] for key in ("schemaVersion", "resourceId", "resourceVersion", "xAxis", "twoTheta", "intensity", "intensitySemantic", "wavelength")}
+def _resource_hash_material(resource: Mapping[str, Any], *, nested: bool | None = None) -> dict[str, Any]:
+    if nested is None:
+        nested = "twoTheta" not in resource and isinstance(resource.get("xAxis"), Mapping) and "values" in resource["xAxis"]
+    common = {key: resource[key] for key in ("schemaVersion", "resourceId", "resourceVersion", "xAxis")}
+    if nested:
+        common["intensity"] = resource["intensity"]
+    else:
+        common.update({
+            "twoTheta": resource["twoTheta"],
+            "intensity": resource["intensity"],
+            "intensitySemantic": resource["intensitySemantic"],
+        })
+    common["wavelength"] = resource["wavelength"]
+    return common
 
 
 def _validate_theoretical(payload: Mapping[str, Any], binding: Mapping[str, Any], context: ToolExecutionContext) -> None:

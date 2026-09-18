@@ -1,6 +1,9 @@
 "use client";
 
-import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
+import {
+  ProductLink as Link,
+  useProductRouter,
+} from "../../shared/layout/ProductNavigation";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
@@ -1865,6 +1868,7 @@ export function ProjectDataPage({
 }
 
 export function DatasetUploadPage({ projectId }: { projectId: string }) {
+  const router = useProductRouter();
   const {
     history,
     state: projectState,
@@ -1876,6 +1880,16 @@ export function DatasetUploadPage({ projectId }: { projectId: string }) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [phononStructureFile, setPhononStructureFile] =
+    useState<File | null>(null);
+  const [phononBandFile, setPhononBandFile] = useState<File | null>(null);
+  const [phononDosFile, setPhononDosFile] = useState<File | null>(null);
+  const typedPhononReady = Boolean(
+    name.trim() &&
+      phononStructureFile &&
+      phononBandFile &&
+      phononDosFile,
+  );
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     if (!name.trim() || !files.length) return;
@@ -1923,6 +1937,52 @@ export function DatasetUploadPage({ projectId }: { projectId: string }) {
         reason instanceof Error
           ? reason.message
           : "上传失败，请检查文件后重试。",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function submitTypedPhononBundle() {
+    if (
+      !name.trim() ||
+      !phononStructureFile ||
+      !phononBandFile ||
+      !phononDosFile
+    )
+      return;
+    setBusy(true);
+    setError("");
+    setMessage("");
+    try {
+      const uploaded = await uploadDatasetFiles(projectId, name.trim(), [
+        {
+          file: phononStructureFile,
+          companionGroupId: "phonon_bundle",
+        },
+        {
+          file: phononBandFile,
+          importKind: "phonon_band",
+          contractVersion: PHONON_BAND_SCHEMA_VERSION,
+          companionGroupId: "phonon_bundle",
+        },
+        {
+          file: phononDosFile,
+          importKind: "phonon_dos",
+          contractVersion: PHONON_DOS_SCHEMA_VERSION,
+          companionGroupId: "phonon_bundle",
+        },
+      ]);
+      const datasetId = uploaded.datasetId || uploaded.id;
+      if (!datasetId) throw new Error("上传完成但未返回数据集标识。");
+      setMessage("声子三文件数据集已上传，正在进入研究工作区。");
+      router.push(
+        `/projects/${encodeURIComponent(projectId)}/research?dataset=${encodeURIComponent(datasetId)}`,
+      );
+    } catch (reason) {
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : "声子数据上传失败，请检查三个文件的角色后重试。",
       );
     } finally {
       setBusy(false);
@@ -1988,6 +2048,50 @@ export function DatasetUploadPage({ projectId }: { projectId: string }) {
                   支持的格式以当前导入能力为准；不支持的文件会保留为可解释的失败状态。
                 </p>
               )}
+              <fieldset className="typed-import-fieldset">
+                <legend>声子三文件数据集</legend>
+                <p className="upload-hint">
+                  明确选择结构、声子能带和声子态密度文件。系统会把三个角色绑定到同一个
+                  phonon_bundle，不依赖文件名或选择顺序。
+                </p>
+                <label htmlFor="phonon-structure-file">结构文件</label>
+                <input
+                  id="phonon-structure-file"
+                  type="file"
+                  onChange={(event) =>
+                    setPhononStructureFile(event.currentTarget.files?.[0] || null)
+                  }
+                />
+                <small>{phononStructureFile?.name || "尚未选择结构文件"}</small>
+                <label htmlFor="phonon-band-file">声子能带文件</label>
+                <input
+                  id="phonon-band-file"
+                  type="file"
+                  accept="application/json,.json"
+                  onChange={(event) =>
+                    setPhononBandFile(event.currentTarget.files?.[0] || null)
+                  }
+                />
+                <small>{phononBandFile?.name || "尚未选择声子能带文件"}</small>
+                <label htmlFor="phonon-dos-file">声子态密度文件</label>
+                <input
+                  id="phonon-dos-file"
+                  type="file"
+                  accept="application/json,.json"
+                  onChange={(event) =>
+                    setPhononDosFile(event.currentTarget.files?.[0] || null)
+                  }
+                />
+                <small>{phononDosFile?.name || "尚未选择声子态密度文件"}</small>
+                <button
+                  type="button"
+                  className="product-secondary-action"
+                  disabled={busy || !typedPhononReady}
+                  onClick={() => void submitTypedPhononBundle()}
+                >
+                  {busy ? "正在上传…" : "上传声子数据并开始研究"}
+                </button>
+              </fieldset>
               {error && (
                 <p className="product-form-error" role="alert">
                   {error}

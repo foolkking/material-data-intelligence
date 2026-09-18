@@ -267,8 +267,18 @@ class ScientificResultProjectionService:
         analysis_steps = [
             step
             for step in context.analysis_plan.get("steps") or []
-            if str(step.get("stepId") or step.get("step_id")) in step_ids
+            if (
+                str(step.get("stepId") or step.get("step_id")) in step_ids
+                or str(
+                    (step.get("output") or {}).get("capabilityPlanStepId") or ""
+                )
+                in step_ids
+            )
         ]
+        analysis_step_ids = {
+            str(step.get("stepId") or step.get("step_id"))
+            for step in analysis_steps
+        }
         bound_version_ids = {
             str(input_ref.get("ref"))
             for step in analysis_steps
@@ -285,7 +295,12 @@ class ScientificResultProjectionService:
         # plans without that binding retain the complete source set rather
         # than guessing a single source and manufacturing false provenance.
         projector_source_refs = exact_source_refs or context.source_object_refs
-        calls = tuple(call for call in context.tool_calls if str(call.get("stepId") or call.get("step_id")) in step_ids)
+        calls = tuple(
+            call
+            for call in context.tool_calls
+            if str(call.get("stepId") or call.get("step_id"))
+            in analysis_step_ids
+        )
         call_ids = {str(call.get("id")) for call in calls}
         artifacts = tuple(artifact for artifact in context.artifacts if str(artifact.get("toolCallId") or artifact.get("tool_call_id")) in call_ids or str(artifact.get("stepId") or artifact.get("step_id")) in step_ids)
         if not artifacts and len(context.projector_ids) <= 1:

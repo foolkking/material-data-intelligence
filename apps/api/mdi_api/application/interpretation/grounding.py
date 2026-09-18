@@ -95,9 +95,30 @@ def _numeric_claim_matches_fact(token: str, fact_value: int | float) -> bool:
 
 
 def _claim_numeric_tokens(text: str) -> list[str]:
-    """Return scientific quantities while excluding numeric unit exponents."""
+    """Return scientific quantities while excluding presentation numerals.
 
-    return numeric_tokens(_UNIT.sub(" ", text or ""))
+    Ordered-list prefixes and dimension labels such as ``3D`` are presentation
+    metadata rather than scientific measurements. Measured values still go
+    through the existing strict fact/value/unit checks below.
+    """
+
+    normalized = _UNIT.sub(" ", text or "")
+    # ``R^2`` is the ASCII spelling of the already-supported display label
+    # ``R²``.  Its exponent is notation, not an independently asserted
+    # measured value.  The fitted R-squared value that follows remains subject
+    # to the normal exact-fact / bounded-rounding checks.
+    normalized = re.sub(
+        r"(?i)(?<![A-Za-z0-9])R\s*\^\s*2(?![A-Za-z0-9])",
+        "R-squared",
+        normalized,
+    )
+    normalized = re.sub(r"(?m)^\s*\d+[.)、]\s+(?=\S)", " ", normalized)
+    normalized = re.sub(
+        r"(?i)(?<![A-Za-z0-9])(?:2|3)D(?![A-Za-z0-9])",
+        " ",
+        normalized,
+    )
+    return numeric_tokens(normalized)
 
 
 def _fact_values(bundle: dict[str, Any]) -> tuple[dict[str, dict[str, Any]], set[str], set[str]]:
@@ -121,11 +142,6 @@ def _finding_fact_support(
     without quantitative authority.
     """
 
-    supported_ids = {
-        str(ref)
-        for ref in finding.fact_refs
-        if str(ref) in facts
-    }
     result_items = {
         str(item.get("id")): item
         for item in bundle.get("result_items") or []
@@ -136,23 +152,85 @@ def _finding_fact_support(
         for item in bundle.get("evidence") or []
         if isinstance(item, dict)
     }
-    for ref in finding.result_item_refs:
-        item = result_items.get(str(ref))
-        if item:
-            supported_ids.update(
-                str(fact_ref)
-                for fact_ref in item.get("fact_refs") or []
-                if str(fact_ref) in facts
-            )
-    for ref in finding.evidence_refs:
-        item = evidence_items.get(str(ref))
-        if item:
-            supported_ids.update(
-                str(fact_ref)
-                for fact_ref in item.get("supports_fact_refs") or []
-                if str(fact_ref) in facts
-            )
+    supported_ids = _support_fact_ids(
+        fact_refs=finding.fact_refs,
+        evidence_refs=finding.evidence_refs,
+        result_item_refs=finding.result_item_refs,
+        facts=facts,
+        evidence_items=evidence_items,
+        result_items=result_items,
+    )
     return [facts[fact_id] for fact_id in sorted(supported_ids)]
+
+
+def _support_fact_ids(
+    *,
+    fact_refs: list[str],
+    evidence_refs: list[str],
+    result_item_refs: list[str],
+    facts: dict[str, dict[str, Any]],
+    evidence_items: dict[str, dict[str, Any]],
+    result_items: dict[str, dict[str, Any]],
+) -> set[str]:
+    """Follow only the bounded persisted support graph for cited roots.
+
+    ScientificResult projections can store a fact edge directly on a Result
+    item or behind its Evidence edge.  The provider is allowed to cite either
+    form; grounding must therefore follow the existing edges transitively, but
+    must never widen from one cited root to unrelated Result items.
+    """
+
+    supported_ids = {
+        str(ref)
+        for ref in fact_refs
+        if str(ref) in facts
+    }
+    pending_results = [
+        str(ref)
+        for ref in result_item_refs
+        if str(ref) in result_items
+    ]
+    pending_evidence = [
+        str(ref)
+        for ref in evidence_refs
+        if str(ref) in evidence_items
+    ]
+    seen_results: set[str] = set()
+    seen_evidence: set[str] = set()
+    while pending_results or pending_evidence:
+        while pending_results:
+            result_ref = pending_results.pop()
+            if result_ref in seen_results:
+                continue
+            seen_results.add(result_ref)
+            item = result_items[result_ref]
+            supported_ids.update(
+                str(ref)
+                for ref in item.get("fact_refs") or []
+                if str(ref) in facts
+            )
+            pending_evidence.extend(
+                str(ref)
+                for ref in item.get("evidence_refs") or []
+                if str(ref) in evidence_items
+            )
+        while pending_evidence:
+            evidence_ref = pending_evidence.pop()
+            if evidence_ref in seen_evidence:
+                continue
+            seen_evidence.add(evidence_ref)
+            item = evidence_items[evidence_ref]
+            supported_ids.update(
+                str(ref)
+                for ref in item.get("supports_fact_refs") or []
+                if str(ref) in facts
+            )
+            pending_results.extend(
+                str(ref)
+                for ref in item.get("supports_result_item_refs") or []
+                if str(ref) in result_items
+            )
+    return supported_ids
 
 
 class EvidenceReferenceValidator:
@@ -162,8 +240,15 @@ class EvidenceReferenceValidator:
         errors: list[str] = []
         for finding in [*interpretation.primary_findings, *interpretation.supporting_findings]:
             refs = [*finding.fact_refs, *finding.evidence_refs, *finding.result_item_refs]
-            if not finding.fact_refs and not finding.evidence_refs:
-                errors.append(f"{finding.finding_id}: positive finding has no fact/evidence reference")
+            if (
+                not finding.fact_refs
+                and not finding.evidence_refs
+                and not finding.result_item_refs
+            ):
+                errors.append(
+                    f"{finding.finding_id}: positive finding has no "
+                    "fact/evidence/result-item reference"
+                )
             if any(ref not in facts for ref in finding.fact_refs):
                 errors.append(f"{finding.finding_id}: unknown fact reference")
             if any(ref not in evidence for ref in finding.evidence_refs):
@@ -195,6 +280,22 @@ class QuantitativeClaimValidator:
                 and not isinstance(fact.get("value"), bool)
             ]
             supported_numbers = {_number_key(str(value)) for value in supported_values}
+            # Some authoritative categorical scientific values legitimately
+            # contain numerals (for example the space-group symbol ``Fd-3m``).
+            # Accept only numerals from an exact cited string value that is
+            # actually present in the finding; arbitrary nearby numbers remain
+            # fail-closed.
+            for fact in referenced:
+                value = fact.get("value")
+                if (
+                    isinstance(value, str)
+                    and value
+                    and value.casefold() in finding.statement.casefold()
+                ):
+                    supported_numbers.update(
+                        _number_key(token)
+                        for token in _claim_numeric_tokens(value)
+                    )
             claim_tokens = _claim_numeric_tokens(finding.statement)
             unsupported_tokens = [
                 token
@@ -235,12 +336,177 @@ class QuantitativeClaimValidator:
         return GroundingValidationResult(valid=not errors, errors=errors)
 
 
+_VIEWER_SCENE_TYPES = {
+    "structure.viewer_scene",
+    "structure.viewer_scene_metadata",
+    "structure.viewer_3d",
+}
+_VIEWER_SCENE_LANGUAGE = re.compile(
+    r"(?i)(?:viewer|scene|visual|render|display|"
+    r"查看器|场景|可视化|可视|展示|渲染|打开|呈现|生成)"
+)
+
+
+def _viewer_scene_without_facts_errors(
+    interpretation: ScientificInterpretationOutput,
+    result_bundle: Any,
+) -> list[str]:
+    """Limit fact-less structure viewer Results to qualitative scene claims."""
+
+    bundle = (
+        result_bundle.model_dump(mode="json")
+        if hasattr(result_bundle, "model_dump")
+        else dict(result_bundle)
+    )
+    facts, _, _ = _fact_values(bundle)
+    result_items = {
+        str(item.get("id")): item
+        for item in bundle.get("result_items") or []
+        if isinstance(item, dict)
+    }
+    evidence_items = {
+        str(item.get("evidence_id")): item
+        for item in bundle.get("evidence") or []
+        if isinstance(item, dict)
+    }
+
+    def cited_result_ids(finding: Any) -> set[str]:
+        result_ids = {
+            str(ref)
+            for ref in finding.result_item_refs
+            if str(ref) in result_items
+        }
+        pending_results = list(result_ids)
+        pending_evidence = [
+            str(ref)
+            for ref in finding.evidence_refs
+            if str(ref) in evidence_items
+        ]
+        seen_results: set[str] = set()
+        seen_evidence: set[str] = set()
+        while pending_results or pending_evidence:
+            while pending_results:
+                result_id = pending_results.pop()
+                if result_id in seen_results:
+                    continue
+                seen_results.add(result_id)
+                pending_evidence.extend(
+                    str(ref)
+                    for ref in result_items[result_id].get("evidence_refs") or []
+                    if str(ref) in evidence_items
+                )
+            while pending_evidence:
+                evidence_id = pending_evidence.pop()
+                if evidence_id in seen_evidence:
+                    continue
+                seen_evidence.add(evidence_id)
+                for ref in evidence_items[evidence_id].get(
+                    "supports_result_item_refs"
+                ) or []:
+                    result_id = str(ref)
+                    if result_id in result_items:
+                        if result_id not in result_ids:
+                            result_ids.add(result_id)
+                            pending_results.append(result_id)
+        return result_ids
+
+    errors: list[str] = []
+    for finding in [*interpretation.primary_findings, *interpretation.supporting_findings]:
+        supported_ids = _support_fact_ids(
+            fact_refs=finding.fact_refs,
+            evidence_refs=finding.evidence_refs,
+            result_item_refs=finding.result_item_refs,
+            facts=facts,
+            evidence_items=evidence_items,
+            result_items=result_items,
+        )
+        cited_viewer_items = [
+            result_items[ref]
+            for ref in cited_result_ids(finding)
+            if str(result_items[ref].get("result_type") or "") in _VIEWER_SCENE_TYPES
+        ]
+        if (
+            cited_viewer_items
+            and not supported_ids
+            and not _VIEWER_SCENE_LANGUAGE.search(finding.statement)
+        ):
+            errors.append(
+                f"{finding.finding_id}: fact-less structure viewer Results support "
+                "only qualitative scene/display statements"
+            )
+    return errors
+
+
+def build_grounding_repair_context(
+    interpretation: ScientificInterpretationOutput,
+    result_bundle: Any,
+    errors: list[str],
+) -> list[str]:
+    """Build bounded, source-derived repair guidance for one provider retry."""
+
+    bundle = (
+        result_bundle.model_dump(mode="json")
+        if hasattr(result_bundle, "model_dump")
+        else dict(result_bundle)
+    )
+    facts, _, _ = _fact_values(bundle)
+    context: list[str] = []
+    for finding in [*interpretation.primary_findings, *interpretation.supporting_findings]:
+        referenced = _finding_fact_support(finding, bundle, facts)
+        supported_values = [
+            fact.get("value")
+            for fact in referenced
+            if isinstance(fact.get("value"), (int, float))
+            and not isinstance(fact.get("value"), bool)
+        ]
+        supported_numbers = {_number_key(str(value)) for value in supported_values}
+        unsupported = [
+            token
+            for token in _claim_numeric_tokens(finding.statement)
+            if _number_key(token) not in supported_numbers
+            and not any(
+                _numeric_claim_matches_fact(token, value)
+                for value in supported_values
+            )
+        ]
+        viewer_without_facts = (
+            finding.result_item_refs
+            and not referenced
+            and any(
+                isinstance(item, dict)
+                and str(item.get("id") or "") in finding.result_item_refs
+                and str(item.get("result_type") or "") in _VIEWER_SCENE_TYPES
+                for item in bundle.get("result_items") or []
+            )
+        )
+        if unsupported or viewer_without_facts:
+            fact_lines = [
+                f"{fact.get('fact_id')}={fact.get('value')}"
+                + (f" {fact.get('unit')}" if fact.get("unit") else "")
+                for fact in referenced[:16]
+            ]
+            context.append(
+                f"{finding.finding_id}: statement={finding.statement!r}; "
+                f"fact_refs={list(finding.fact_refs)}; "
+                f"evidence_refs={list(finding.evidence_refs)}; "
+                f"result_item_refs={list(finding.result_item_refs)}; "
+                f"supported_facts={fact_lines or ['none']}; "
+                f"unsupported_numeric_tokens={unsupported or ['none']}. "
+                "Rewrite using only the listed facts/refs; for a structure "
+                "viewer Result with no facts, keep the finding qualitative "
+                "and limited to scene/display availability."
+            )
+    context.extend(errors[:16])
+    return list(dict.fromkeys(context))[:16]
+
+
 def validate_interpretation(interpretation: ScientificInterpretationOutput, result_bundle: Any) -> GroundingValidationResult:
     errors: list[str] = []
     refs = EvidenceReferenceValidator().validate(interpretation, result_bundle)
     errors.extend(refs.errors)
     quantities = QuantitativeClaimValidator().validate(interpretation, result_bundle)
     errors.extend(quantities.errors)
+    errors.extend(_viewer_scene_without_facts_errors(interpretation, result_bundle))
     bundle = result_bundle.model_dump(mode="json") if hasattr(result_bundle, "model_dump") else dict(result_bundle)
     execution = str(bundle.get("execution_status", ""))
     all_text = " ".join([interpretation.answer_lead, *(item.statement for item in [*interpretation.primary_findings, *interpretation.supporting_findings])]).lower()
@@ -266,7 +532,15 @@ def project_claim_support_assessments(
     interpretation: ScientificInterpretationOutput,
     result_bundle: Any,
 ) -> ScientificInterpretationOutput:
-    """Attach deterministic claim support without changing scientific facts."""
+    """Attach deterministic claim support without changing scientific facts.
+
+    The provider references the bounded Result graph, but the previous
+    projection assessed every claim against a single synthetic ``result_1``.
+    That silently changed the grounding contract: a claim citing the
+    materials-explorer item was assessed with the composition-space item's
+    exploratory limitation and method context.  Build a bounded evidence view
+    from the exact references on each finding instead.
+    """
 
     if interpretation.contract_version != "1.1":
         return interpretation
@@ -291,42 +565,177 @@ def project_claim_support_assessments(
         for item in bundle.get("limitations") or []
         if str(item.get("message") or "")
     ]
-    semantic_tags: list[str] = []
-    if any(value.startswith(("electronic.", "phonon.")) for value in methods):
-        semantic_tags.append("EXTERNAL_IMPLEMENTATION_SEMANTICS")
-    if any(value == "data.composition_space" for value in methods):
-        semantic_tags.append("EXPLORATORY_OUTLIER")
-    evidence = [
-        ReasoningEvidence(
-            ref="result_1",
-            origin="COMPUTED",
-            text=" ".join(
-                str(item.get("title") or item.get("result_type") or "")
-                for item in bundle.get("result_items") or []
-            )
-            or "Authorized ScientificResult.",
-            scope=source_scope,
-            method=method,
-            lineage=str(
-                (bundle.get("provenance") or {}).get("source_fingerprint")
-                or (bundle.get("provenance") or {}).get("job_id")
-                or bundle.get("result_id")
-                or "current-result"
-            ),
-            limitations=limitations,
-            semantic_tags=semantic_tags,
-        )
+    lineage = str(
+        (bundle.get("provenance") or {}).get("source_fingerprint")
+        or (bundle.get("provenance") or {}).get("job_id")
+        or bundle.get("result_id")
+        or "current-result"
+    )
+    facts_by_id = {
+        str(item.get("fact_id")): item
+        for item in bundle.get("facts") or []
+        if isinstance(item, dict) and str(item.get("fact_id") or "")
+    }
+    result_items = [
+        item
+        for item in bundle.get("result_items") or []
+        if isinstance(item, dict) and str(item.get("id") or "")
     ]
+    evidence_items = [
+        item
+        for item in bundle.get("evidence") or []
+        if isinstance(item, dict) and str(item.get("evidence_id") or "")
+    ]
+    result_aliases = {
+        str(item["id"]): f"result_{index}"
+        for index, item in enumerate(result_items, start=1)
+    }
+    result_items_by_id = {str(item["id"]): item for item in result_items}
+    evidence_aliases = {
+        str(item["evidence_id"]): f"evidence_{index}"
+        for index, item in enumerate(evidence_items, start=1)
+    }
+    evidence_items_by_id = {
+        str(item["evidence_id"]): item for item in evidence_items
+    }
+    fact_aliases = {
+        str(item["fact_id"]): f"result_fact_{index}"
+        for index, item in enumerate(facts_by_id.values(), start=1)
+    }
+
+    def item_capability(item: dict[str, Any]) -> str:
+        result_type = str(item.get("result_type") or "")
+        return result_type
+
+    def item_methods(item: dict[str, Any]) -> list[str]:
+        capability = item_capability(item)
+        return sorted(
+            {
+                value
+                for value in methods
+                if value == capability or value.removeprefix("agent2.") == capability
+            }
+        )
+
+    def item_limitations(item: dict[str, Any]) -> list[str]:
+        capability = item_capability(item)
+        projector_id = f"agent2.{capability}" if capability else ""
+        return [
+            str(entry.get("message") or "")
+            for entry in bundle.get("limitations") or []
+            if isinstance(entry, dict)
+            and str(entry.get("message") or "")
+            and (
+                not str(entry.get("source_ref") or "")
+                or str(entry.get("source_ref")) in {capability, projector_id}
+            )
+        ]
+
+    def fact_text(fact: dict[str, Any]) -> str:
+        predicate = str(fact.get("predicate") or "fact")
+        value = fact.get("value")
+        unit = str(fact.get("unit") or "").strip()
+        rendered = f"{predicate}={value}"
+        return f"{rendered} {unit}".strip()
+
+    evidence: list[ReasoningEvidence] = []
+    for item in result_items:
+        fact_texts = [
+            fact_text(facts_by_id[fact_id])
+            for fact_id in item.get("fact_refs") or []
+            if str(fact_id) in facts_by_id
+        ]
+        title = str(item.get("title") or item.get("result_type") or "ScientificResult item")
+        evidence.append(
+            ReasoningEvidence(
+                ref=result_aliases[str(item["id"])],
+                origin="COMPUTED",
+                text="; ".join([title, *fact_texts])[:12000],
+                scope=source_scope,
+                method="; ".join(item_methods(item)) or None,
+                lineage=lineage,
+                limitations=item_limitations(item),
+                semantic_tags=(
+                    ["EXPLORATORY_OUTLIER"]
+                    if item_capability(item) == "data.composition_space"
+                    else []
+                ),
+            )
+        )
+    for item in evidence_items:
+        fact_texts = [
+            fact_text(facts_by_id[fact_id])
+            for fact_id in item.get("supports_fact_refs") or []
+            if str(fact_id) in facts_by_id
+        ]
+        text = " ".join(
+            [
+                str(item.get("evidence_type") or "Computed evidence"),
+                str(item.get("artifact_locator") or "").strip(),
+                *fact_texts,
+            ]
+        ).strip()
+        evidence.append(
+            ReasoningEvidence(
+                ref=evidence_aliases[str(item["evidence_id"])],
+                origin="COMPUTED",
+                text=text[:12000] or "Authorized computed evidence.",
+                scope=source_scope,
+                method=method,
+                lineage=lineage,
+                limitations=limitations,
+            )
+        )
+    for fact_id, fact in facts_by_id.items():
+        evidence.append(
+            ReasoningEvidence(
+                ref=fact_aliases[fact_id],
+                origin="COMPUTED",
+                text=fact_text(fact),
+                scope=source_scope,
+                lineage=lineage,
+            )
+        )
     assessor = ClaimSupportAssessor()
 
     def assess(item: Any) -> Any:
+        result_refs = [
+            result_aliases[str(ref)]
+            for ref in item.result_item_refs
+            if str(ref) in result_aliases
+        ]
+        fact_ids = _support_fact_ids(
+            fact_refs=[str(ref) for ref in item.fact_refs],
+            evidence_refs=[str(ref) for ref in item.evidence_refs],
+            result_item_refs=[str(ref) for ref in item.result_item_refs],
+            facts=facts_by_id,
+            evidence_items=evidence_items_by_id,
+            result_items=result_items_by_id,
+        )
+        fact_refs = [fact_aliases[ref] for ref in sorted(fact_ids)]
+        evidence_refs = [
+            evidence_aliases[str(ref)]
+            for ref in item.evidence_refs
+            if str(ref) in evidence_aliases
+        ]
+        # A result/evidence projection is only a fallback when it cannot be
+        # narrowed to an authoritative fact. This prevents result-level
+        # exploratory tags and broad limitations from rejecting a claim about
+        # an explicitly persisted fact such as composition.invalid_sample_count
+        # while retaining fail-closed behavior for genuinely unsupported
+        # result-only claims.
+        refs = fact_refs or evidence_refs or result_refs
+        # ProposedScientificClaim accepts a bounded evidence list. Prefer
+        # direct fact references, then evidence/result-item references, while
+        # preserving provider order and never widening the authority graph.
+        refs = list(dict.fromkeys(refs))[:16]
         assessment = assessor.assess(
             ProposedScientificClaim(
                 claim_id=item.finding_id,
                 text=item.statement,
                 claim_type=item.claim_type,
                 support_status=item.support_status,
-                evidence_refs=["result_1"],
+                evidence_refs=list(dict.fromkeys(refs)) or ["evidence_missing"],
                 scope=item.scope or source_scope,
                 qualifiers=item.qualifiers,
                 limitations=interpretation.limitations,
@@ -361,21 +770,36 @@ def project_grounded_answer_lead(
     projection available.
 
     This helper never repairs a finding, reference, unit, or Result claim. It
-    only selects the first referenced finding statement as the lead, and only
-    accepts the projection if the complete interpretation then passes the
-    unchanged fail-closed validator.
+    only selects the first referenced finding statement as the lead. Contract
+    1.1 assessment requirements are intentionally deferred to the following
+    claim-assessment projection in the service pipeline.
     """
 
     validation = validate_interpretation(interpretation, result_bundle)
-    if validation.valid or validation.errors != [
-        "answer_lead introduces an unsupported quantitative claim"
-    ]:
-        return interpretation
+    answer_lead_error = "answer_lead introduces an unsupported quantitative claim"
     findings = [*interpretation.primary_findings, *interpretation.supporting_findings]
+    deferred_assessment_errors = {
+        f"{item.finding_id}: claim support assessment is required"
+        for item in findings
+        if item.reasoning_assessment is None
+    }
+    actionable_errors = [
+        error
+        for error in validation.errors
+        if error not in deferred_assessment_errors
+    ]
+    if validation.valid or actionable_errors != [answer_lead_error]:
+        return interpretation
     if not findings:
         return interpretation
     projected = interpretation.model_copy(update={"answer_lead": findings[0].statement})
-    return projected if validate_interpretation(projected, result_bundle).valid else interpretation
+    projected_errors = validate_interpretation(projected, result_bundle).errors
+    projected_actionable_errors = [
+        error
+        for error in projected_errors
+        if error not in deferred_assessment_errors
+    ]
+    return projected if not projected_actionable_errors else interpretation
 
 
 def project_grounded_communication(
@@ -544,4 +968,5 @@ __all__ = [
     "project_claim_support_assessments",
     "project_grounded_communication",
     "validate_interpretation",
+    "build_grounding_repair_context",
 ]

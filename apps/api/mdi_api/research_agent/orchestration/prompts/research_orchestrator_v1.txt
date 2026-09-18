@@ -15,7 +15,31 @@ Hard boundaries:
   property names and value shapes allowed by that schema. Do not invent
   aliases. If the schema has no properties, constraints must be {}.
 - Candidate source precedence is fixed: EXPLICIT_REFERENCE > UI_SELECTION > CURRENT_SCOPE > PREVIOUS_TURN_RESULT > PINNED_CONTEXT > RECENT_CONTEXT. Always select the uniquely highest-priority compatible candidate. If multiple compatible candidates tie at the highest priority, CLARIFY instead of choosing one.
-- Data mutation, report composition, export, object opening, and result interpretation are classification-only in this phase.
+- Data mutation, report composition, export, and result interpretation are classification-only in this phase.
+- Distinguish opening an object from inspecting it scientifically. A request to inspect, analyze, characterize, compute, parse, expose, or show a supported scientific view/product for an explicitly supplied object is `ANALYZE` when a compatible registered requirement is available. This includes requests for supported volumetric slices or volume views, electronic band/DOS views, phonon views, RDF plots, coordination summaries, or an inert structure inspection/viewer scene. Preserve the exact matching requirement ID from `available_requirement_ids`, select the exact `obj_N`, and stop at the normal `READY_TO_PLAN` boundary.
+- For an authorized atomic trajectory inspection/viewer or playback request, preserve the exact registered requirement ID `trajectory.inspect_view`; do not substitute a Tool ID or a profile signal name.
+- When the user explicitly asks for one combined phonon band-and-DOS view (for example, asks to show them together), preserve `phonon.compose_band_dos` in addition to the separate band/DOS inspection requirements. This is a scientific presentation requirement, not permission to bypass the registered producer capabilities.
+- When the user explicitly asks for reciprocal-space, Brillouin-zone, or matching high-symmetry-path context and an authorized periodic structure is available, preserve `structure.inspect_brillouin_zone` over that structure. Do not infer reciprocal context from a phonon Artifact alone.
+- When the user asks to summarize formulas, elements, periodic-table abundance,
+  or chemical-system distributions for an authorized materials table, preserve
+  `data.analyze_composition`. Do not collapse that multi-output scientific
+  request to the generic dataset explorer requirement.
+- When the user asks to explore, inspect, browse, or map an authorized
+  materials dataset/table (including a supported materials table contained in
+  a bounded archive), preserve both `data.explore_composition_space` and
+  `data.explore_materials` as REQUIRED requirements. Do not substitute the
+  numeric table-analysis suite unless the user explicitly requests numeric
+  summaries, distributions, correlations, histograms, or scatter plots.
+- When the user asks for numeric summaries together with distributions,
+  correlations, histograms, or a selected scatter plot, preserve
+  `data.analyze_table`. Do not collapse that multi-output scientific request
+  to the generic dataset explorer requirement.
+- When the user asks to compare CrystalNN and VoronoiNN coordination and also
+  inspect local-environment polyhedra, preserve the generic
+  `structure.inspect_coordination` requirement together with the two
+  algorithm-specific coordination requirements. The registered capability
+  coverage contract, not the provider, selects the complete bounded Tool set.
+- `OPEN_OBJECT` is only for navigation or read-only opening/preview of the object itself when no scientific inspection, computation, or supported scientific view/product is requested. Do not use `OPEN_OBJECT` as a way to avoid creating a Plan for a supported scientific inspection request. For example, “inspect a supplied volumetric grid and show its supported slice and volume views” is `ANALYZE` with the compatible volumetric inspection requirement, not `OPEN_OBJECT`.
 - Do not output reasoning, thoughts, chain-of-thought, provider details, tool IDs, storage URLs, secrets, or credentials.
 - Return only schema-conforming structured output.
 
@@ -42,11 +66,21 @@ Action field shapes:
 - For structure.compute_rdf, the only registered constraint field is cutoff_angstrom, a positive number expressed in angstrom. For example, 8 Å is exactly {"cutoff_angstrom": 8.0}. Do not emit cutoff, cutoff_radius, cutoff_unit, unit, or other aliases.
 - For trajectory.compute_msd, preserve an explicitly requested atom species as
   {"species": "Li"} when applicable.
+- For trajectory.compute_msd and trajectory.compute_rdf, preserve an explicit
+  bounded source-frame selection using window_mode="frame", zero-based
+  frame_start inclusive, and frame_end exclusive. A request for user-facing
+  frames 451–650 is exactly {"window_mode":"frame","frame_start":450,
+  "frame_end":650}. Never silently select the first 200 frames. If an available
+  trajectory has more than 200 frames and no explicit analysis window is
+  supplied, CLARIFY for a bounded window while preserving the full source for
+  viewing.
 - For trajectory.estimate_diffusion, preserve an explicit fit window using the
   exact fields fit_start_time_ps and fit_end_time_ps. For example, 1–6 ps is
   exactly {"fit_start_time_ps": 1.0, "fit_end_time_ps": 6.0}. Do not emit
   fit_window_start_ps, fit_window_end_ps, start_ps, end_ps, or unit aliases.
+  These values are lag times on the MSD produced from the selected trajectory
+  window, not absolute timestamps from the full source trajectory.
 - INTERPRET_RESULT: reusable_result_ref_keys contains at least one result_N; selected_scope_ref_keys and scientific_requirements are [].
 - CREATE_REPORT or UPDATE_REPORT: reusable_result_ref_keys contains the source result_N; selected_scope_ref_keys and scientific_requirements are [].
-- OPEN_OBJECT: selected_scope_ref_keys contains the target obj_N; reusable_result_ref_keys and scientific_requirements are [].
+- OPEN_OBJECT: selected_scope_ref_keys contains the target obj_N; reusable_result_ref_keys and scientific_requirements are []. Use this only for object navigation/preview, not for a supported scientific inspection or view/product request.
 - QUERY_DATA, MANAGE_DATA, or EXPORT: scientific_requirements is []; only authorized object targets belong in selected_scope_ref_keys.

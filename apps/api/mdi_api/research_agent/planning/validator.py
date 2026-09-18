@@ -63,8 +63,18 @@ class CapabilityPlanValidator:
                 for binding in bindings:
                     if binding.kind == CapabilityBindingKind.SOURCE_OBJECT:
                         raw_ref = source_refs.get(binding.source_ref_key or "")
-                        if raw_ref is None or raw_ref.get("object_type") not in slot.accepted_object_types:
-                            raise CapabilityPlanInvalid("unknown or incompatible source reference", code="CAPABILITY_PLAN_UNKNOWN_REFERENCE")
+                        authorized_source_keys = set(
+                            candidate.bound_source_ref_keys.get(slot_name, [])
+                        )
+                        if (
+                            raw_ref is None
+                            or raw_ref.get("object_type") not in slot.accepted_object_types
+                            or binding.source_ref_key not in authorized_source_keys
+                        ):
+                            raise CapabilityPlanInvalid(
+                                "source reference is not authorized for the capability input slot",
+                                code="CAPABILITY_PLAN_PORT_MISMATCH",
+                            )
                     if binding.kind == CapabilityBindingKind.PLANNED_OUTPUT:
                         edges += 1
                         if binding.producer_step_id not in step_ids or binding.producer_step_id == step.step_id:
@@ -73,6 +83,18 @@ class CapabilityPlanValidator:
                         if plan.steps.index(producer) >= plan.steps.index(step):
                             raise CapabilityPlanInvalid("producer must precede consumer", code="CAPABILITY_PLAN_CYCLE")
                         producer_candidate = candidate_by_key[producer.capability_ref_key]
+                        authorized_producers = set(
+                            candidate.possible_producers.get(slot_name, [])
+                        )
+                        producer_ref = (
+                            f"{producer_candidate.capability_id}@"
+                            f"{producer_candidate.capability_version}"
+                        )
+                        if producer_ref not in authorized_producers:
+                            raise CapabilityPlanInvalid(
+                                "planned producer is not authorized for the capability input slot",
+                                code="CAPABILITY_PLAN_PORT_MISMATCH",
+                            )
                         output = next((item for item in registry.require(producer_candidate.capability_id, producer_candidate.capability_version).output_slots if item.name == binding.producer_output_slot), None)
                         if output is None or not ((output.scientific_object_type in slot.accepted_object_types) or (output.result_type in slot.accepted_object_types)):
                             raise CapabilityPlanInvalid("producer/consumer port mismatch", code="CAPABILITY_PLAN_PORT_MISMATCH")

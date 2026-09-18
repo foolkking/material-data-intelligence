@@ -969,25 +969,22 @@ async function resolveExplicitDatasetScope(
     getDatasetProfile(datasetId),
     getDatasetSourceResources(datasetId),
   ]);
-  const table = resources.find((item) => item.objectType === "DataFrame");
   const supportedScientificResources = resources.filter((item) =>
     [
+      "DataFrame",
       "Structure",
       "Trajectory",
       "ElectronicBand",
       "ElectronicDos",
       "PhononBand",
       "PhononDos",
+      "VolumetricData",
     ].includes(item.objectType),
   );
-  const selectedResource =
-    table || (supportedScientificResources.length === 1
-      ? supportedScientificResources[0]
-      : undefined);
-  if (!selectedResource) {
-    // Preserve the bounded legacy planner path when no exact normalized
-    // scientific resource exists, or when a Dataset contains multiple
-    // candidates and the user has not selected one. Never choose silently.
+  if (!supportedScientificResources.length) {
+    // A dataset without an admitted normalized resource cannot enter the
+    // durable Agent2 path. Keep the existing bounded product response rather
+    // than inventing a source reference.
     return {
       status: "READY",
       dataset_id: dataset.datasetId || dataset.id || datasetId,
@@ -995,35 +992,58 @@ async function resolveExplicitDatasetScope(
       dataset_name: dataset.name,
     };
   }
-  const promoted = table
-    ? await promoteDatasetTable(projectId, datasetId, selectedResource.objectId)
-    : await admitDatasetResource(
-        projectId,
-        datasetId,
-        selectedResource.objectId,
-        dataset.name,
+  // Materialize every normalized resource into the existing ScientificObject
+  // authority.  The previous single-resource selection silently downgraded
+  // multi-resource datasets (XRD, phonon, electronic, multi-tool tables) to
+  // the legacy planner.  Agent2 needs the complete exact source set so its
+  // capability resolver can bind all required slots without question-string
+  // special cases.
+  const admitted = await Promise.all(
+    supportedScientificResources.map(async (resource) => {
+      const promoted = resource.objectType === "DataFrame"
+        ? await promoteDatasetTable(projectId, datasetId, resource.objectId)
+        : await admitDatasetResource(
+            projectId,
+            datasetId,
+            resource.objectId,
+            dataset.name,
+          );
+      const objectId = String(promoted.object?.id || "");
+      const versionId = String(
+        promoted.version?.id || promoted.object?.current_version_id || "",
       );
-  const objectId = String(promoted.object?.id || "");
-  const versionId = String(
-    promoted.version?.id || promoted.object?.current_version_id || "",
+      if (!objectId || !versionId) {
+        throw new Error(`数据科学对象版本暂时无法解析: ${resource.objectType}`);
+      }
+      return {
+        resource,
+        ref: {
+          object_id: objectId,
+          version_id: versionId,
+          project_id: projectId,
+          object_type:
+            promoted.object?.object_type || resource.objectType,
+          display_name:
+            promoted.object?.display_name || dataset.name || "Scientific data",
+        },
+      };
+    }),
   );
-  if (!objectId || !versionId) throw new Error("数据科学对象版本暂时无法解析");
+  const scientificObjectRefs = admitted.map((item) => item.ref);
+  const preferredTable = scientificObjectRefs.find(
+    (item) => item.object_type === "materials.table",
+  );
+  const selectedResource = admitted.find(
+    (item) => item.ref.object_type === "materials.table",
+  ) || admitted[0];
   return {
     status: "READY",
     dataset_id: dataset.datasetId || dataset.id || datasetId,
     profile_id: profile.profileId || profile.id,
     dataset_name: dataset.name,
-    dataset_resource_id: selectedResource.objectId,
-    scientific_object_ref: {
-      object_id: objectId,
-      version_id: versionId,
-      project_id: projectId,
-      object_type:
-        promoted.object?.object_type ||
-        (table ? "materials.table" : selectedResource.objectType),
-      display_name:
-        promoted.object?.display_name || dataset.name || "Scientific data",
-    },
+    dataset_resource_id: selectedResource.resource.objectId,
+    scientific_object_ref: preferredTable || selectedResource.ref,
+    scientific_object_refs: scientificObjectRefs,
   };
 }
 
@@ -1031,16 +1051,22 @@ function datasetResearchRefs(
   scope: ScopeResolution,
   sampleRef?: string,
 ): {
-  objectRef: Agent2ScientificObjectRef;
+  objectRefs: Agent2ScientificObjectRef[];
   selections: Agent2ScientificSelection[];
 } | null {
-  const source = scope.scientific_object_ref;
-  if (!source) return null;
-  const objectRef: Agent2ScientificObjectRef = source;
-  if (!sampleRef?.trim()) return { objectRef, selections: [] };
+  const objectRefs = (
+    scope.scientific_object_refs?.length
+      ? scope.scientific_object_refs
+      : scope.scientific_object_ref
+        ? [scope.scientific_object_ref]
+        : []
+  ) as Agent2ScientificObjectRef[];
+  if (!objectRefs.length) return null;
+  if (!sampleRef?.trim()) return { objectRefs, selections: [] };
   const locator = { sample_ref: sampleRef.trim() };
+  const objectRef = objectRefs.find((item) => item.object_type === "materials.table") || objectRefs[0];
   return {
-    objectRef,
+    objectRefs,
     selections: [
       {
         contract_version: "1.0",
@@ -2500,12 +2526,12 @@ export function ResearchPage({
             message: question.trim(),
             autonomy_mode: autonomyMode,
             ui_context: {
-              active_object_refs: [explicitDataset.objectRef],
+              active_object_refs: explicitDataset.objectRefs,
               selection_refs: explicitDataset.selections.length
-                ? [explicitDataset.objectRef]
+                ? [explicitDataset.selections[0].object_ref]
                 : [],
               scientific_selections: explicitDataset.selections,
-              explicit_object_refs: [explicitDataset.objectRef],
+              explicit_object_refs: explicitDataset.objectRefs,
               explicit_result_ids: [],
               explicit_finding_refs: [],
             },
@@ -2629,12 +2655,12 @@ export function ResearchPage({
             message: question.trim(),
             autonomy_mode: autonomyMode,
             ui_context: {
-              active_object_refs: [explicitDataset.objectRef],
+              active_object_refs: explicitDataset.objectRefs,
               selection_refs: explicitDataset.selections.length
-                ? [explicitDataset.objectRef]
+                ? [explicitDataset.selections[0].object_ref]
                 : [],
               scientific_selections: explicitDataset.selections,
-              explicit_object_refs: [explicitDataset.objectRef],
+              explicit_object_refs: explicitDataset.objectRefs,
               explicit_result_ids: [],
               explicit_finding_refs: [],
             },
@@ -5970,6 +5996,15 @@ export function groundedEvidenceNarrative(
     const rSquared = value("trajectory.diffusion.r_squared");
     const alpha = value("trajectory.diffusion.alpha");
     const rdfFrames = value("trajectory.rdf.included_frames");
+    const sourceFrames =
+      value("trajectory.source_frame_count") || value("trajectory.frame_count");
+    const analysisFrames = value("trajectory.analysis_frame_count");
+    const analysisFirst = value("trajectory.analysis_first_frame");
+    const analysisLast = value("trajectory.analysis_last_frame");
+    const boundedWindowClause =
+      sourceFrames && analysisFrames && analysisFirst && analysisLast
+        ? `完整轨迹共 ${displayEvidenceValue(sourceFrames)} 帧；科学分析显式使用第 ${displayEvidenceValue(analysisFirst)}–${displayEvidenceValue(analysisLast)} 帧（${displayEvidenceValue(analysisFrames)} 帧）`
+        : "";
     const rdfClause = rdfFrames
       ? `；RDF 统计使用 ${displayEvidenceValue(rdfFrames)} 帧`
       : "";
@@ -5984,13 +6019,13 @@ export function groundedEvidenceNarrative(
         alpha ? `α = ${displayEvidenceValue(alpha)}` : "",
       ].filter(Boolean);
       return {
-        finding: `在 ${fitWindow} 内，限定扩散系数为 ${displayEvidenceValue(diffusionEstimate)}${diagnostics.length ? `（${diagnostics.join("，")}）` : ""}；轨迹末端 ${displayEvidenceValue(value("trajectory.msd.last_lag"))} 的总 MSD 为 ${displayEvidenceValue(value("trajectory.msd.last_total"))}${rdfClause}。`,
+        finding: `${boundedWindowClause ? `${boundedWindowClause}。` : ""}在 ${fitWindow} 内，限定扩散系数为 ${displayEvidenceValue(diffusionEstimate)}${diagnostics.length ? `（${diagnostics.join("，")}）` : ""}；轨迹末端 ${displayEvidenceValue(value("trajectory.msd.last_lag"))} 的总 MSD 为 ${displayEvidenceValue(value("trajectory.msd.last_total"))}${rdfClause}。`,
         limitation:
           "该扩散系数只对用户显式选择的拟合窗口、当前轨迹与采样条件有效，不是无条件的长时间体扩散系数。",
       };
     }
     return {
-      finding: `在 ${displayEvidenceValue(value("trajectory.msd.last_lag"))} 的末端时滞处，总 MSD 为 ${displayEvidenceValue(value("trajectory.msd.last_total"))}${rdfClause}。`,
+      finding: `${boundedWindowClause ? `${boundedWindowClause}。` : ""}在 ${displayEvidenceValue(value("trajectory.msd.last_lag"))} 的末端时滞处，总 MSD 为 ${displayEvidenceValue(value("trajectory.msd.last_total"))}${rdfClause}。`,
       limitation:
         status === "INSUFFICIENT_DURATION"
           ? "当前轨迹时长不足以形成稳健扩散系数结论；应延长采样并检查线性扩散区间。"
@@ -6066,6 +6101,12 @@ function evidenceLabel(role: string) {
         "trajectory.msd.last_total": "末端总 MSD",
         "trajectory.msd.last_lag": "末端时滞",
         "trajectory.rdf.included_frames": "RDF 帧数",
+        "trajectory.source_frame_count": "完整轨迹帧数",
+        "trajectory.analysis_frame_count": "分析窗口帧数",
+        "trajectory.analysis_first_frame": "分析起始帧",
+        "trajectory.analysis_last_frame": "分析结束帧",
+        "trajectory.analysis_start_time": "分析起始时间",
+        "trajectory.analysis_end_time": "分析结束时间",
         "electronic.band.sampled_gap": "采样带隙",
         "electronic.band.band_count": "能带数",
         "electronic.band.kpoint_count": "k 点数",

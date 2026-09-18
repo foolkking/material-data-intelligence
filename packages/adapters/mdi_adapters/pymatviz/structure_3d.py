@@ -4,7 +4,8 @@ from dataclasses import dataclass
 from typing import Any
 
 import pymatviz as pmv
-from pymatgen.core import Structure
+import plotly.graph_objects as go
+from pymatgen.core import Molecule, Structure
 
 from mdi_artifact_core import ArtifactPayload
 from mdi_schemas import Artifact, ArtifactType
@@ -17,7 +18,7 @@ from ..plotly_export import plotly_payloads
 
 @dataclass
 class PreparedStructure3D:
-    structures: dict[str, Structure]
+    structures: dict[str, Structure | Molecule]
 
 
 class Structure3DAdapter(BaseToolAdapter):
@@ -30,16 +31,40 @@ class Structure3DAdapter(BaseToolAdapter):
         limited = dict(list(structures.items())[:max_structures])
         max_atoms = context.resource_limits.get("maxAtomsPerStructure", 5000)
         for label, structure in limited.items():
-            self._validate_periodic_structure(label, structure, max_atoms=max_atoms)
+            self._validate_structure(label, structure, max_atoms=max_atoms)
         return PreparedStructure3D(structures=limited)
 
     def run(self, prepared: PreparedStructure3D, params: dict[str, Any]) -> dict[str, Any]:
         show_cell = bool(params.get("showCell", True))
         raw_show_bonds = params.get("showBonds", False)
         show_bonds = False if raw_show_bonds == "auto" else bool(raw_show_bonds)
-        figure_input: Structure | dict[str, Structure]
-        figure_input = next(iter(prepared.structures.values())) if len(prepared.structures) == 1 else prepared.structures
-        fig = pmv.structure_3d(figure_input, show_cell=show_cell, show_bonds=show_bonds)
+        nonperiodic = any(isinstance(item, Molecule) for item in prepared.structures.values())
+        if nonperiodic:
+            fig = go.Figure()
+            for label, molecule in prepared.structures.items():
+                fig.add_trace(
+                    go.Scatter3d(
+                        x=[float(site.coords[0]) for site in molecule],
+                        y=[float(site.coords[1]) for site in molecule],
+                        z=[float(site.coords[2]) for site in molecule],
+                        mode="markers+text",
+                        text=[site.species_string for site in molecule],
+                        name=label,
+                        marker={"size": 9},
+                    )
+                )
+            fig.update_layout(
+                scene={
+                    "aspectmode": "data",
+                    "xaxis_title": "x (Å)",
+                    "yaxis_title": "y (Å)",
+                    "zaxis_title": "z (Å)",
+                }
+            )
+        else:
+            figure_input: Structure | dict[str, Structure]
+            figure_input = next(iter(prepared.structures.values())) if len(prepared.structures) == 1 else prepared.structures
+            fig = pmv.structure_3d(figure_input, show_cell=show_cell, show_bonds=show_bonds)
         fig.update_layout(title_text="3D Structure")
         return {"figure": fig, "prepared": prepared, "params": params}
 
@@ -74,14 +99,23 @@ class Structure3DAdapter(BaseToolAdapter):
             payloads,
             provenance={
                 "sourceFunction": "pymatviz.structure_3d",
-                "periodicity": "periodic_required",
+                "periodicity": (
+                    "non_periodic"
+                    if any(isinstance(item, Molecule) for item in prepared.structures.values())
+                    else "periodic"
+                ),
                 "renderedStructureCount": len(prepared.structures),
             },
         )
 
-    def _coerce_structures(self, raw: Any) -> dict[str, Structure]:
+    def _coerce_structures(self, raw: Any) -> dict[str, Structure | Molecule]:
         if isinstance(raw, Structure):
             return {raw.composition.reduced_formula: raw}
+        if isinstance(raw, Molecule):
+            return {raw.composition.reduced_formula: raw}
+        if _looks_like_atoms_payload(raw):
+            molecule = _molecule_from_atoms_payload(raw)
+            return {molecule.composition.reduced_formula: molecule}
         if isinstance(raw, dict) and "@module" in raw and "@class" in raw:
             structure = Structure.from_dict(raw)
             return {structure.composition.reduced_formula: structure}
@@ -94,9 +128,11 @@ class Structure3DAdapter(BaseToolAdapter):
             return {f"structure_{idx + 1}": self._coerce_single_structure(value) for idx, value in enumerate(raw)}
         return {"structure_1": self._coerce_single_structure(raw)}
 
-    def _coerce_single_structure(self, value: Any) -> Structure:
-        if isinstance(value, Structure):
+    def _coerce_single_structure(self, value: Any) -> Structure | Molecule:
+        if isinstance(value, (Structure, Molecule)):
             return value
+        if _looks_like_atoms_payload(value):
+            return _molecule_from_atoms_payload(value)
         if isinstance(value, dict):
             return Structure.from_dict(value)
         raise ToolExecutionError(
@@ -106,8 +142,10 @@ class Structure3DAdapter(BaseToolAdapter):
             details={"inputType": type(value).__name__},
         )
 
-    def _validate_periodic_structure(self, label: str, structure: Structure, *, max_atoms: int) -> None:
-        if structure.lattice is None or structure.lattice.volume <= 0:
+    def _validate_structure(self, label: str, structure: Structure | Molecule, *, max_atoms: int) -> None:
+        if isinstance(structure, Structure) and (
+            structure.lattice is None or structure.lattice.volume <= 0
+        ):
             raise ToolExecutionError(
                 "TOOL_INPUT_INVALID",
                 "structure_3d requires periodic structures with a valid lattice.",
@@ -121,4 +159,21 @@ class Structure3DAdapter(BaseToolAdapter):
                 self.tool_id,
                 details={"structure": label, "atoms": len(structure), "maxAtomsPerStructure": max_atoms},
             )
+
+
+def _looks_like_atoms_payload(value: Any) -> bool:
+    return isinstance(value, dict) and isinstance(value.get("symbols"), list) and isinstance(value.get("positions"), list)
+
+
+def _molecule_from_atoms_payload(value: dict[str, Any]) -> Molecule:
+    symbols = value.get("symbols") or []
+    positions = value.get("positions") or []
+    if not symbols or len(symbols) != len(positions):
+        raise ToolExecutionError(
+            "TOOL_INPUT_INVALID",
+            "Atomic viewer input requires matching symbols and Cartesian positions.",
+            "structure.structure_3d",
+            details={"inputType": "Atoms"},
+        )
+    return Molecule(symbols, positions)
 

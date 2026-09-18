@@ -326,23 +326,33 @@ def _evidence(
 # Viewer and projector implementation bindings, which have their own registry
 # validation and provenance.
 _QUALIFIED_CONTRACT_FINGERPRINTS = {
+    "data.composition_analysis": "17de88fff16f32573f57933070be4521a23f51645d1e485436b0357cd0ff89e7",
     "data.composition_space": "d45f072b0b92bad31107b21d8ff59d678126132398db8b612a566331f6677853",
     "data.materials_explorer": "c09a528193fc16ff07c1cba3fcc0d794398954f25f33a51939d91fb6a19af2d6",
+    "data.table_analysis": "2651390865f7e16854c1fd1466817625282dd375546f041d98d475687c35188a",
     "diffraction.experimental_theoretical_comparison": "bf6ed324c7d9fd5af7dd1849bedd20bd286337269d03ae56b4b161c085661447",
     "diffraction.theoretical_xrd": "6e20914cfa9174cf1e50fa92e635431a5e59ee44f13fb4d8f483c9a6dea3647f",
     "electronic.band_structure": "29ac10aa8d76d36f3756ca77d2a43dd42aa385b9088c7b2dd5eeab01009f4425",
     "electronic.dos": "ac2f4e905235fd90031e1cada92fa7cec8397ffe3e3bfc9281f6b9561eb25956",
-    "ml.regression_evaluation": "db223247e6eab434616b86fba27bd1abadb854099f7c598520634006a41893f7",
+    "ml.regression_evaluation": "79a3113f065aac6e9da6f8cc9e86dbfa35358ea20e193fa245957cd80e426864",
+    "ml.uncertainty_evaluation": "60faffa1fee3fc7b3b50d97787c8a899a312873798b0d83727ca3c00fcd31aab",
+    "ml.classification_evaluation": "f7533e16f895e6e59e91565af0a5aa4fdeef241d4f9456fd1c7d2130b2028bce",
     "phonon.band": "6a738cde1f40a6a4988117cee8b09723a61e5c71e7dd37091523889474670cf4",
-    "phonon.band_dos": "15b40ffb2e8692903240e779a6c06077e3248c85d57d5fdbf1d04440fbb8cf8e",
+    "phonon.band_dos": "8df6523520f2ca12a180dd8814d7498184addab98810abd1eeac939eb38708c1",
     "phonon.dos": "3752ed3bd332f3baa1fdfacfd3cb87df28181b4beb5224d5183ff9d0b72ff259",
     "structure.coordination_crystalnn": "e9dcae845348ead7327eecb5d62db752dce98475b52a1e3f5c0e715dc62b961c",
+    "structure.coordination_analysis": "7ff2ab685817d774e05c3be652332ea276987338ba1634f5d8151b560cd859ed",
     "structure.coordination_hist": "b86d5a9d829f235a3f2da9e80c22a705bc9ff6f9d8a9fffeb6f6ed1340fb0a6d",
     "structure.coordination_voronoinn": "d770462bd141183bee69e949d35890070c95dc6936e13746623edccddc898b7f",
     "structure.rdf": "e668b60e6091810da7971ac0a344fbf3ab460455a476f09e4e251d45cebd94b3",
+    "structure.brillouin_zone": "22b82f9f47d5acc5e692699fda0c1ab870171f93655c6a847f1d570e166fff0d",
+    "structure.summary": "5f9078398f9a9033f1292df62e8f6b35ef72e0ecbe9868856468a0ab338e3739",
+    "structure.viewer_scene": "79bd47ac991fc6af839ef4f750ac0734f05357d588b37a2e17da9ab786c4e63f",
     "trajectory.diffusion": "e23a262dc9ec5095d7c12e50a5077653774dbc893101b1016a10ae38706ac367",
     "trajectory.msd": "a8bbab194f7e669e3890a19df01b49467a070591a1df57d3efa14d20e11dfbbc",
     "trajectory.rdf": "4a3a573ce47813348b54c1f9d690492c01891665b8f5100a7015b705b30d5903",
+    "trajectory.viewer_scene": "9bcbbf265f188c24e4d22f6b6ef77fde8e45eb0ec86eed16b2f5247b45af081e",
+    "volumetric.data": "eb4ba242f1473625c2a3081751060b26bfed9070253e4f21314b829689bea45e",
 }
 
 
@@ -365,6 +375,46 @@ def _records() -> list[CapabilityQualityEvidence]:
         units=["angstrom"],
     )
     return [
+        _evidence(
+            "volumetric.data",
+            ScientificQualificationLevel.EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED,
+            _qualified_fingerprint("volumetric.data"),
+            ["bounded parser-validated VASP volumetric or single-dataset Gaussian CUBE fields"],
+            [
+                "The Tool parses and normalizes supplied volumetric data; it does not run an external solver.",
+                "Renderer, arbitrary slicing, and direct-volume computation remain application-owned presentation concerns.",
+            ],
+            "DETERMINISTIC",
+            [
+                _link(
+                    "volumetric.contract.v1",
+                    ScientificEvidenceKind.ARTIFACT_SEMANTICS,
+                    ReferenceAuthority.CURATED_KNOWN_RESULT,
+                    "tests/test_phase10j_volumetric_contract.py::test_schema_family_and_security_snapshot_are_exact",
+                    "Canonical Phase 10J volumetric contract fixtures.",
+                    "Volumetric grid, payload, field, dataset, and manifest validation",
+                    ["typed volumetric artifacts preserve bounded source identity, schema versions, checksums, and security policy"],
+                ),
+                _link(
+                    "volumetric.adapter.v1",
+                    ScientificEvidenceKind.ADAPTER_SEMANTICS,
+                    ReferenceAuthority.EXTERNAL_SOLVER_SEMANTICS,
+                    "tests/test_phase10j5_elf_orbital_product.py::test_runtime_artifact_semantics_are_source_native_and_canonical",
+                    "Repository-owned VASP/CUBE parser and adapter fixtures.",
+                    "Bounded source parsing and canonical artifact export",
+                    ["supported volumetric sources produce validated canonical field and dataset artifacts"],
+                ),
+                _link(
+                    "volumetric.integration.v1",
+                    ScientificEvidenceKind.INTEGRATION,
+                    ReferenceAuthority.CURATED_KNOWN_RESULT,
+                    "tests/integration/test_phase10_product_closure.py::test_phase10j1_service_backed_volumetric_parser_adapter_closure",
+                    "Service-backed volumetric parser/tool integration fixture.",
+                    "Registered Tool execution and artifact publication",
+                    ["the registered volumetric Tool executes with the typed source and publishes bounded artifacts"],
+                ),
+            ],
+        ),
         _evidence(
             "structure.rdf",
             ScientificQualificationLevel.REFERENCE_VALIDATED,
@@ -909,6 +959,248 @@ def _records() -> list[CapabilityQualityEvidence]:
                 ),
             ],
         ),
+        _evidence(
+            "ml.uncertainty_evaluation",
+            ScientificQualificationLevel.DOMAIN_VALIDATED,
+            _qualified_fingerprint("ml.uncertainty_evaluation"),
+            ["profile-bound supervised prediction tables with paired truth, prediction, and uncertainty"],
+            [
+                "Uncertainty diagnostics are association and retention diagnostics, not calibration proof.",
+                "Model training and uncertainty-generation correctness are outside this evaluation capability.",
+            ],
+            "DETERMINISTIC",
+            [
+                _link(
+                    "ml.uncertainty.reference.v1",
+                    ScientificEvidenceKind.REFERENCE,
+                    ReferenceAuthority.ANALYTICAL,
+                    "tests/test_phase10k3_materials_ml_evaluation.py::test_uncertainty_product_has_explicit_association_and_retention_policy",
+                    "Small prediction table with explicit uncertainty values.",
+                    "Uncertainty association and error-decay semantics",
+                    ["uncertainty association, reliability bins, and bounded error decay are emitted"],
+                ),
+                _link(
+                    "ml.uncertainty.invariant.v1",
+                    ScientificEvidenceKind.INVARIANT,
+                    ReferenceAuthority.ANALYTICAL,
+                    "tests/test_phase10k3_materials_ml_evaluation.py::test_uncertainty_product_has_explicit_association_and_retention_policy",
+                    "Equivalent uncertainty-bearing prediction rows.",
+                    "Uncertainty replay and association invariance",
+                    ["uncertainty diagnostics remain tied to the same profile bindings and bounded rows"],
+                ),
+                _link(
+                    "ml.uncertainty.domain.v1",
+                    ScientificEvidenceKind.DOMAIN_NEGATIVE,
+                    ReferenceAuthority.SYNTHETIC_EXACT,
+                    "tests/test_phase10k3_materials_ml_evaluation.py::test_typed_semantic_unit_uncertainty_and_cap_failures",
+                    "Negative uncertainty and missing-binding fixtures.",
+                    "Uncertainty applicability boundary",
+                    ["negative, missing, or ambiguous uncertainty bindings fail explicitly"],
+                ),
+            ],
+        ),
+        _evidence(
+            "ml.classification_evaluation",
+            ScientificQualificationLevel.DOMAIN_VALIDATED,
+            _qualified_fingerprint("ml.classification_evaluation"),
+            ["profile-bound supervised classification tables with labels or bounded class probabilities"],
+            [
+                "Classification metrics describe the supplied labels and predictions, not model-training quality.",
+                "ROC/PR curves are unavailable for single-class inputs.",
+            ],
+            "DETERMINISTIC",
+            [
+                _link(
+                    "ml.classification.reference.v1",
+                    ScientificEvidenceKind.REFERENCE,
+                    ReferenceAuthority.ANALYTICAL,
+                    "tests/test_phase10k3_materials_ml_evaluation.py::test_classification_product_preserves_class_labels_and_binary_curves",
+                    "Small binary classification table with known class labels.",
+                    "Classification metrics and curve semantics",
+                    ["class labels, confusion matrix, accuracy, and bounded binary curves are preserved"],
+                ),
+                _link(
+                    "ml.classification.invariant.v1",
+                    ScientificEvidenceKind.INVARIANT,
+                    ReferenceAuthority.ANALYTICAL,
+                    "tests/test_phase10k3_materials_ml_evaluation.py::test_classification_product_preserves_class_labels_and_binary_curves",
+                    "Equivalent classification rows with stable labels.",
+                    "Classification replay invariance",
+                    ["class labels and bounded metrics remain stable under equivalent row presentation"],
+                ),
+                _link(
+                    "ml.classification.domain.v1",
+                    ScientificEvidenceKind.DOMAIN_NEGATIVE,
+                    ReferenceAuthority.SYNTHETIC_EXACT,
+                    "tests/test_phase10k3_materials_ml_evaluation.py::test_classification_missing_probability_multiclass_and_unknown_positive_policy",
+                    "Missing probability, multiclass, and positive-class policy fixtures.",
+                    "Classification applicability boundary",
+                    ["missing predictions, ambiguous classes, and unsupported probability bindings fail explicitly"],
+                ),
+            ],
+        ),
+        _evidence(
+            "structure.brillouin_zone",
+            ScientificQualificationLevel.EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED,
+            _qualified_fingerprint("structure.brillouin_zone"),
+            [
+                "one ordered periodic crystal structure within the bounded Brillouin-zone contract"
+            ],
+            [
+                "Primitive-cell standardization and high-symmetry paths use the locked pymatgen implementation.",
+                "The result describes reciprocal geometry for the exact supplied structure and does not infer phonon eigenvectors.",
+            ],
+            "DETERMINISTIC",
+            [
+                _link(
+                    "structure.brillouin-zone.external.v1",
+                    ScientificEvidenceKind.ADAPTER_SEMANTICS,
+                    ReferenceAuthority.OFFICIAL_LIBRARY_SEMANTICS,
+                    "tests/test_phase10i1_brillouin_zone_adapter.py::test_valid_simple_cubic_emits_six_valid_inert_artifacts",
+                    "Curated periodic structures executed through the registered Brillouin-zone Adapter.",
+                    "Reciprocal lattice, Wigner-Seitz zone, and high-symmetry path mapping",
+                    [
+                        "the complete six-artifact package validates and remains source-bound"
+                    ],
+                    units=["angstrom^-1", "angstrom^-3"],
+                    version="locked pymatgen dependency",
+                ),
+                _link(
+                    "structure.brillouin-zone.reference.v1",
+                    ScientificEvidenceKind.REFERENCE,
+                    ReferenceAuthority.ANALYTICAL,
+                    "tests/test_phase10i_brillouin_zone_contract.py::test_reciprocal_duality_volume_and_coordinate_round_trip",
+                    "Analytical reciprocal-duality fixtures for bounded lattices.",
+                    "Reciprocal basis and coordinate round-trip",
+                    [
+                        "B=2*pi*A^-T and reciprocal coordinate round trips match the analytical reference"
+                    ],
+                    units=["angstrom^-1", "angstrom^-3"],
+                    tolerance=_tolerance(
+                        "angstrom^-1",
+                        "Reciprocal basis and coordinate comparisons use the sealed numerical contract.",
+                        absolute=1e-11,
+                        relative=1e-11,
+                    ),
+                    numeric=True,
+                ),
+                _link(
+                    "structure.brillouin-zone.domain.v1",
+                    ScientificEvidenceKind.DOMAIN_NEGATIVE,
+                    ReferenceAuthority.SYNTHETIC_EXACT,
+                    "tests/test_phase10i1_brillouin_zone_adapter.py::test_dimensionality_singular_and_ill_conditioned_inputs_are_typed",
+                    "Synthetic non-periodic, singular, and ill-conditioned structure fixtures.",
+                    "Brillouin-zone applicability boundary",
+                    [
+                        "invalid lattice geometry fails before scientific Artifact publication"
+                    ],
+                ),
+                _link(
+                    "structure.brillouin-zone.result-projection.v1",
+                    ScientificEvidenceKind.RESULT_PROJECTION,
+                    ReferenceAuthority.ANALYTICAL,
+                    "tests/test_agent2_phase5_results.py::test_brillouin_zone_projector_requires_complete_verified_triad_and_projects_kpath_count",
+                    "Verified reciprocal-lattice, Brillouin-zone, and k-path production fixtures.",
+                    "Complete reciprocal-space ScientificResult projection",
+                    [
+                        "all three primary schemas are required before publication",
+                        "the high-symmetry point count is derived from the verified k-path points",
+                    ],
+                    units=["count"],
+                ),
+            ],
+        ),
+        _evidence(
+            "structure.summary",
+            ScientificQualificationLevel.EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED,
+            _qualified_fingerprint("structure.summary"),
+            ["authorized periodic crystal structures with bounded site counts and valid lattices"],
+            [
+                "Space-group labels use the declared pymatgen/spglib tolerances and describe only the supplied structure.",
+                "The summary does not infer physical properties, stability, or causal mechanisms.",
+            ],
+            "DETERMINISTIC",
+            [
+                _link(
+                    "structure.summary.adapter.v2",
+                    ScientificEvidenceKind.ADAPTER_SEMANTICS,
+                    ReferenceAuthority.EXTERNAL_SOLVER_SEMANTICS,
+                    "tests/test_phase10c1_lightweight_structure_adapters.py::test_structure_summary_generates_json_summary_and_recipe",
+                    "Curated periodic crystal structures evaluated by the registered structure.summary Tool.",
+                    "Composition, lattice, and pymatgen/spglib symmetry summary",
+                    ["formula, site count, lattice parameters, space group, and crystal system remain source-bound"],
+                    units=["angstrom", "degree", "angstrom^3"],
+                    tolerance=_tolerance(
+                        "angstrom",
+                        "The adapter preserves rounded source lattice values; symmetry uses explicit fixed tolerances.",
+                        absolute=1e-8,
+                    ),
+                    numeric=True,
+                ),
+                _link(
+                    "structure.summary.result.v2",
+                    ScientificEvidenceKind.RESULT_PROJECTION,
+                    ReferenceAuthority.CURATED_KNOWN_RESULT,
+                    "tests/test_agent2_phase10_capabilities.py::test_structure_summary_projects_authoritative_lattice_and_symmetry_facts",
+                    "Canonical structure.summary Artifact with known lattice and symmetry fields.",
+                    "Typed ScientificResult fact projection",
+                    ["lattice and symmetry facts retain exact Artifact locators and never derive from viewer output"],
+                ),
+            ],
+        ),
+        _evidence(
+            "structure.viewer_scene",
+            ScientificQualificationLevel.EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED,
+            _qualified_fingerprint("structure.viewer_scene"),
+            ["authorized crystal structures with bounded viewer-scene resource limits"],
+            [
+                "The viewer scene is an inert presentation artifact and is not scientific computation.",
+                "Scene output does not establish material identity or physical causality.",
+            ],
+            "DETERMINISTIC",
+            [
+                _link(
+                    "structure.viewer.reference.v1",
+                    ScientificEvidenceKind.ADAPTER_SEMANTICS,
+                    ReferenceAuthority.EXTERNAL_SOLVER_SEMANTICS,
+                    "tests/test_phase10f12_viewer_scene_adapter.py::test_viewer_scene_adapter_generates_canonical_scene_manifest_summary_and_recipe",
+                    "Curated crystal structure viewer fixture.",
+                    "Viewer scene and manifest contract",
+                    ["scene, manifest, summary, and recipe remain schema-valid and bounded"],
+                ),
+                _link(
+                    "structure.viewer.domain.v1",
+                    ScientificEvidenceKind.DOMAIN_NEGATIVE,
+                    ReferenceAuthority.SYNTHETIC_EXACT,
+                    "tests/test_phase10f12_viewer_scene_adapter.py::test_viewer_scene_adapter_rejects_invalid_params_and_numeric_values",
+                    "Invalid viewer parameters and non-finite structure fixtures.",
+                    "Viewer resource and numeric boundary",
+                    ["invalid parameters and non-finite structure values fail before publication"],
+                ),
+            ],
+        ),
+        _evidence(
+            "trajectory.viewer_scene",
+            ScientificQualificationLevel.NOT_YET_SCIENTIFICALLY_QUALIFIED,
+            _qualified_fingerprint("trajectory.viewer_scene"),
+            ["validated atomic trajectories within the formal bounded trajectory viewer contract"],
+            [
+                "The viewer product is an inert presentation output and is not a trajectory analytics capability.",
+                "MSD, diffusion, RDF, dynamic bonds, editing, and video export remain separate capabilities or unsupported surfaces.",
+            ],
+            "DETERMINISTIC",
+            [
+                _link(
+                    "trajectory.viewer.contract.v1",
+                    ScientificEvidenceKind.ADAPTER_SEMANTICS,
+                    ReferenceAuthority.CURATED_KNOWN_RESULT,
+                    "tests/test_agent2_phase10_capabilities.py::test_p10_c04_trajectory_viewer_is_agent2_reachable_without_question_matching",
+                    "Formal bounded trajectory viewer adapter contract.",
+                    "Agent2 capability binding to the canonical trajectory viewer Tool",
+                    ["the semantic trajectory-view requirement resolves to the registered viewer Tool and complete inert artifact family"],
+                ),
+            ],
+        ),
         *[
             _evidence(
                 capability_id,
@@ -1103,8 +1395,81 @@ def _records() -> list[CapabilityQualityEvidence]:
     ]
 
 
+def _contract_coverage_records() -> list[CapabilityQualityEvidence]:
+    shared_links = [
+        _link(
+            "agent2.contract-coverage.reference.v1",
+            ScientificEvidenceKind.REFERENCE,
+            ReferenceAuthority.CURATED_KNOWN_RESULT,
+            "tests/test_agent2_phase3_planning.py::test_mandatory_capability_tool_suites_bind_complete_stable_coverage",
+            "Registered multi-requirement capability suites with exact Tool coverage.",
+            "Mandatory capability-to-Tool coverage",
+            [
+                "every registered mandatory Tool is bound exactly once",
+                "repeated binding preserves the same mandatory Tool family",
+            ],
+        ),
+        _link(
+            "agent2.contract-coverage.invariant.v1",
+            ScientificEvidenceKind.INVARIANT,
+            ReferenceAuthority.CURATED_KNOWN_RESULT,
+            "tests/test_agent2_phase3_planning.py::test_mandatory_capability_tool_suites_bind_complete_stable_coverage",
+            "Repeated immutable CapabilityPlan binding.",
+            "Deterministic coverage stability",
+            ["mandatory capability coverage is independent of Tool insertion order"],
+        ),
+        _link(
+            "agent2.contract-coverage.negative.v1",
+            ScientificEvidenceKind.DOMAIN_NEGATIVE,
+            ReferenceAuthority.SYNTHETIC_EXACT,
+            "tests/test_agent2_phase5_results.py::test_mandatory_tool_coverage_projection_rejects_missing_tool_output",
+            "Synthetic incomplete execution with one mandatory Tool output omitted.",
+            "Incomplete contract projection rejection",
+            ["missing mandatory Tool output prevents authoritative Result publication"],
+        ),
+    ]
+    return [
+        _evidence(
+            "data.composition_analysis",
+            ScientificQualificationLevel.DOMAIN_VALIDATED,
+            _qualified_fingerprint("data.composition_analysis"),
+            ["profiled materials tables with parseable formula/composition columns"],
+            [
+                "Composition distributions are descriptive.",
+                "Unparseable formulas remain explicit bounded warnings or typed failures.",
+            ],
+            "DETERMINISTIC",
+            shared_links,
+        ),
+        _evidence(
+            "data.table_analysis",
+            ScientificQualificationLevel.DOMAIN_VALIDATED,
+            _qualified_fingerprint("data.table_analysis"),
+            ["profiled tabular datasets with at least two numeric columns"],
+            [
+                "Correlation and scatter products are descriptive and do not establish causality.",
+                "Selected columns remain bounded by the registered Tool schemas.",
+            ],
+            "DETERMINISTIC",
+            shared_links,
+        ),
+        _evidence(
+            "structure.coordination_analysis",
+            ScientificQualificationLevel.DOMAIN_VALIDATED,
+            _qualified_fingerprint("structure.coordination_analysis"),
+            ["validated periodic crystal structures within coordination resource limits"],
+            [
+                "CrystalNN and VoronoiNN retain their distinct method assumptions.",
+                "Local-environment polyhedra consume an exact committed coordination Artifact.",
+            ],
+            "DETERMINISTIC",
+            shared_links,
+        ),
+    ]
+
+
 QUALITY_EVIDENCE_BY_CAPABILITY: dict[str, CapabilityQualityEvidence] = {
-    item.capability_id: item for item in _records()
+    item.capability_id: item for item in [*_records(), *_contract_coverage_records()]
 }
 
 

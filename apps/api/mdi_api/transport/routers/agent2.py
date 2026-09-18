@@ -924,6 +924,11 @@ def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(
                 ResearchTurnStatus.INTERPRETING.value,
                 ResearchTurnStatus.COMPLETED.value,
                 ResearchTurnStatus.PARTIAL.value,
+                # Interpretation/provider failure must not hide an already
+                # authoritative ScientificResult.  The result endpoint still
+                # requires a persisted snapshot below, so this does not turn
+                # a failed scientific execution into a false result.
+                ResearchTurnStatus.FAILED.value,
             }:
                 raise ScientificResultNotReady(str(turn_id))
             try:

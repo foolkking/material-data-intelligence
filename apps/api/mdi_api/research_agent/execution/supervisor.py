@@ -306,6 +306,40 @@ class ResearchExecutionSupervisor:
                         "running_label": f"正在{manifest.display_name}",
                         "completed_label": f"{manifest.display_name}已完成",
                     }
+                analysis_plan = (
+                    unit.repositories.analysis_plans.get_plan(
+                        str(turn["analysis_plan_id"])
+                    )
+                    if turn.get("analysis_plan_id")
+                    else None
+                )
+                analysis_steps = (
+                    (analysis_plan or {}).get("analysisPlan", {}).get("steps")
+                    or []
+                )
+                for analysis_step in analysis_steps:
+                    execution_step_id = str(
+                        analysis_step.get("stepId")
+                        or analysis_step.get("step_id")
+                        or ""
+                    )
+                    capability_step_id = str(
+                        (analysis_step.get("output") or {}).get(
+                            "capabilityPlanStepId"
+                        )
+                        or execution_step_id
+                    )
+                    parent = context["step_metadata"].get(capability_step_id)
+                    if parent is None or not execution_step_id:
+                        continue
+                    context["step_metadata"][execution_step_id] = {
+                        **parent,
+                        "tool_id": str(
+                            analysis_step.get("toolId")
+                            or analysis_step.get("tool_id")
+                            or ""
+                        ),
+                    }
         projector = self.projector_override or GenericScientificProgressProjector()
         if self.projector_override is None and len(projector_ids) == 1:
             projector = self.registries.progress_projectors.require(next(iter(projector_ids)))

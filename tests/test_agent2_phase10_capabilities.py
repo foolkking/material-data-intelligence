@@ -1,14 +1,17 @@
 from __future__ import annotations
 
+from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
 
+from mdi_api.agent2_errors import CapabilityBindingFailed
 from mdi_api.research_agent.capabilities.preconditions import build_default_precondition_registry
 from mdi_api.research_agent.capabilities.resolver import CapabilityResolutionService
 from mdi_api.research_agent.orchestration.schemas import OrchestratorConfidence, ProposedRequirement, ResearchTurnDecision
 from mdi_api.research_agent.planning.binder import CapabilityBinder
 from mdi_api.research_agent.planning.deterministic import build_deterministic_capability_plan
+from mdi_api.research_agent.planning.processor import CapabilityPlanningProcessor
 from mdi_api.research_agent.planning.validator import CapabilityPlanValidator
 from mdi_api.research_agent.registry_validation import DEFAULT_AGENT2_REGISTRIES, validate_agent2_registries
 from mdi_api.research_agent.schemas import RequirementCriticality, ResearchAction
@@ -26,8 +29,15 @@ NEW_CAPABILITIES = {
     "trajectory.rdf",
     "electronic.band_structure",
     "electronic.dos",
+    "ml.uncertainty_evaluation",
+    "ml.classification_evaluation",
+    "structure.summary",
+    "structure.viewer_scene",
+    "trajectory.viewer_scene",
     "data.composition_space",
     "data.materials_explorer",
+    "volumetric.data",
+    "structure.brillouin_zone",
 }
 
 
@@ -57,21 +67,73 @@ def resolve(decision: ResearchTurnDecision, refs: list[ScientificObjectRef]):
 def _context(payload: dict, projector_id: str) -> ScientificResultProjectionContext:
     source = ref("electronic.band_structure")
     artifact_id = "phase10-artifact-1"
+    companion_tool_ids = {
+        "agent2.structure.summary": (
+            "structure.lattice_summary",
+            "structure.preview_metadata",
+            "structure.spacegroup_summary",
+        ),
+        "agent2.structure.viewer_scene": (
+            "structure.structure_3d",
+            "structure.viewer_3d",
+        ),
+    }.get(projector_id, ())
+    tool_calls = tuple(
+        {
+            "id": f"phase10-tool-call-{index}",
+            "toolId": tool_id,
+            "state": "COMPLETED",
+        }
+        for index, tool_id in enumerate(companion_tool_ids, start=1)
+    )
+    companion_artifacts = tuple(
+        {
+            "id": f"phase10-companion-{index}",
+            "contentType": "application/json",
+            "filename": f"{tool_id.replace('.', '_')}.json",
+            "toolCallId": f"phase10-tool-call-{index}",
+        }
+        for index, tool_id in enumerate(companion_tool_ids, start=1)
+    )
+    artifacts = (
+        {
+            "id": artifact_id,
+            "contentType": "application/json",
+            "filename": "phase10.json",
+        },
+    ) + companion_artifacts
+    artifact_payloads = {artifact_id: payload}
+    artifact_payloads.update(
+        {
+            artifact["id"]: {
+                "toolId": tool_id,
+                "status": "COMPLETED",
+                "payload": {"bounded": True},
+            }
+            for artifact, tool_id in zip(
+                companion_artifacts,
+                companion_tool_ids,
+                strict=True,
+            )
+        }
+    )
     return ScientificResultProjectionContext(
         project_id="project", research_session_id="session", research_turn_id=str(uuid4()), research_question="Inspect this data",
         execution_summary={"outcome": "SUCCESS", "job_id": "job-1", "analysis_plan_id": "plan-1"},
         capability_plan={"steps": [{"step_id": "step_1", "capability_id": projector_id.removeprefix("agent2."), "capability_version": "1.0", "parameters": {}}]},
-        analysis_plan={"schemaVersion": "0.2"}, tool_calls=(),
-        artifacts=({"id": artifact_id, "contentType": "application/json", "filename": "phase10.json"},),
-        artifact_payloads={artifact_id: payload}, source_object_refs=(source,),
+        analysis_plan={"schemaVersion": "0.2"},
+        tool_calls=tool_calls,
+        artifacts=artifacts,
+        artifact_payloads=artifact_payloads,
+        source_object_refs=(source,),
     )
 
 
 def test_p10_c01_batch_is_frozen_and_spans_families():
     manifests = DEFAULT_AGENT2_REGISTRIES.capabilities.list_all()
     assert NEW_CAPABILITIES.issubset({item.capability_id for item in manifests})
-    assert len(NEW_CAPABILITIES) == 8
-    assert {item.domain for item in manifests if item.capability_id in NEW_CAPABILITIES} >= {"structure", "trajectory", "electronic", "data"}
+    assert len(NEW_CAPABILITIES) == 15
+    assert {item.domain for item in manifests if item.capability_id in NEW_CAPABILITIES} >= {"structure", "trajectory", "electronic", "data", "ml", "volumetric"}
 
 
 def test_p10_c02_registry_and_tool_bindings_validate():
@@ -91,8 +153,19 @@ def test_p10_c02_registry_and_tool_bindings_validate():
         ("trajectory.compute_rdf", "trajectory.atomic", "trajectory.rdf"),
         ("electronic.inspect_band", "electronic.band_structure", "electronic.band_structure"),
         ("electronic.inspect_dos", "electronic.dos", "electronic.dos"),
+        ("ml.evaluate_uncertainty", "materials.table", "ml.uncertainty_evaluation"),
+        ("ml.evaluate_classification", "materials.table", "ml.classification_evaluation"),
+        ("structure.inspect", "structure.crystal", "structure.summary"),
+        ("structure.inspect_view", "structure.crystal", "structure.viewer_scene"),
+        ("trajectory.inspect_view", "trajectory.atomic", "trajectory.viewer_scene"),
         ("data.explore_composition_space", "materials.dataset", "data.composition_space"),
         ("data.explore_materials", "materials.dataset", "data.materials_explorer"),
+        ("volumetric.inspect", "volumetric.field", "volumetric.data"),
+        (
+            "structure.inspect_brillouin_zone",
+            "structure.crystal",
+            "structure.brillouin_zone",
+        ),
     ],
 )
 def test_p10_c03_natural_requirement_resolves_to_deterministic_capability(requirement, object_type, capability):
@@ -102,9 +175,78 @@ def test_p10_c03_natural_requirement_resolves_to_deterministic_capability(requir
     assert len(eligible) == 1 and eligible[0].eligibility.value == "ELIGIBLE"
     plan = build_deterministic_capability_plan(decision=decision, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
     CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=decision, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
-    analysis, _ = CapabilityBinder(TOOLS).bind(capability_plan=plan, resolution=resolution, context={"dataset_id": "d", "profile_id": "p", "object_refs": {"obj_1": ref(object_type)}}, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    context = {
+        "dataset_id": "d",
+        "profile_id": "p",
+        "object_refs": {"obj_1": ref(object_type)},
+        "resource_facts": {
+            "obj_1": {
+                "object_id": "table-object",
+                "object_type": "DataFrame",
+            }
+        },
+        "profile": {
+            "semanticColumns": [
+                {
+                    "objectId": "table-object",
+                    "column": "y_true",
+                    "dtype": "float64",
+                    "roles": [{"role": "regression_target"}],
+                },
+                {
+                    "objectId": "table-object",
+                    "column": "y_pred",
+                    "dtype": "float64",
+                    "roles": [{"role": "regression_prediction"}],
+                },
+                {
+                    "objectId": "table-object",
+                    "column": "uncertainty",
+                    "dtype": "float64",
+                    "roles": [{"role": "prediction_uncertainty"}],
+                },
+                {
+                    "objectId": "table-object",
+                    "column": "class_true",
+                    "dtype": "string",
+                    "roles": [{"role": "classification_target"}],
+                },
+                {
+                    "objectId": "table-object",
+                    "column": "class_pred",
+                    "dtype": "string",
+                    "roles": [{"role": "classification_prediction"}],
+                },
+                {
+                    "objectId": "table-object",
+                    "column": "probability",
+                    "dtype": "float64",
+                    "roles": [{"role": "class_probability"}],
+                },
+            ],
+            "semanticGroups": [
+                {
+                    "groupId": "regression-group",
+                    "kind": "regression",
+                    "status": "COMPLETE",
+                },
+                {
+                    "groupId": "classification-group",
+                    "kind": "classification",
+                    "status": "COMPLETE",
+                },
+            ],
+        },
+    }
+    analysis, _ = CapabilityBinder(TOOLS).bind(
+        capability_plan=plan,
+        resolution=resolution,
+        context=context,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
     assert analysis.schemaVersion == "0.2"
     assert analysis.steps[0].toolId == DEFAULT_AGENT2_REGISTRIES.capabilities.require(capability).tool_bindings[0].tool_id
+    assert all(item.objectType != "RawUnsupported" for item in analysis.steps[0].inputRefs)
 
 
 @pytest.mark.parametrize("wrong_type", ["electronic.dos", "materials.dataset", "trajectory.atomic"])
@@ -135,6 +277,318 @@ def test_p10_c16_unknown_tool_is_not_agent_authority():
     assert "composition.formula_statistics" in {item.toolId for item in TOOLS.tools}
 
 
+def test_p10_c04_trajectory_viewer_is_agent2_reachable_without_question_matching():
+    decision = request([("trajectory.inspect_view", "trajectory.atomic")])
+    resolution, snapshot = resolve(decision, [ref("trajectory.atomic")])
+    candidate = next(
+        item
+        for item in resolution.candidates
+        if item.capability_id == "trajectory.viewer_scene"
+    )
+    assert candidate.eligibility.value == "ELIGIBLE"
+    plan = build_deterministic_capability_plan(
+        decision=decision,
+        resolution=resolution,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+    CapabilityPlanValidator().validate(
+        plan=plan,
+        resolution=resolution,
+        decision=decision,
+        context=snapshot,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+    analysis, _ = CapabilityBinder(TOOLS).bind(
+        capability_plan=plan,
+        resolution=resolution,
+        context={
+            "dataset_id": "d",
+            "profile_id": "p",
+            "object_refs": {"obj_1": ref("trajectory.atomic")},
+        },
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+    assert analysis.steps[0].toolId == "structure.trajectory_viewer"
+    assert set(analysis.steps[0].output["artifactTypes"]) == {
+        "trajectory_json",
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json",
+    }
+    assert {item.type.value for item in analysis.expectedArtifacts} == {
+        "trajectory_json",
+        "trajectory_summary_json",
+        "trajectory_report_json",
+        "trajectory_manifest_json",
+    }
+
+
+def _trajectory_diffusion_plan(
+    *,
+    constraints: dict | None = None,
+) -> tuple[ResearchTurnDecision, object, object, ScientificObjectRef]:
+    trajectory = ref("trajectory.atomic", "canonical trajectory")
+    decision = ResearchTurnDecision(
+        contract_version="1.0",
+        action=ResearchAction.ANALYZE,
+        assistant_message="Prepare trajectory analysis.",
+        research_objective="Calculate MSD and estimate diffusion over the supplied trajectory.",
+        selected_scope_ref_keys=["obj_1"],
+        scientific_requirements=[
+            ProposedRequirement(
+                requirement_id="trajectory.compute_msd",
+                criticality=RequirementCriticality.REQUIRED,
+                subject_ref_keys=["obj_1"],
+                constraints={},
+            ),
+            ProposedRequirement(
+                requirement_id="trajectory.estimate_diffusion",
+                criticality=RequirementCriticality.REQUIRED,
+                subject_ref_keys=["obj_1"],
+                constraints=constraints or {},
+            ),
+        ],
+        reusable_result_ref_keys=[],
+        clarification=None,
+        confidence=OrchestratorConfidence.HIGH,
+    )
+    resolution, snapshot = resolve(decision, [trajectory])
+    plan = build_deterministic_capability_plan(
+        decision=decision,
+        resolution=resolution,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+    CapabilityPlanValidator().validate(
+        plan=plan,
+        resolution=resolution,
+        decision=decision,
+        context=snapshot,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+    return decision, resolution, plan, trajectory
+
+
+def test_plan_context_projects_only_registered_exact_version_resource_facts():
+    trajectory = ref("trajectory.atomic", "canonical trajectory")
+    version = {
+        "source_resource_refs_json": [
+            {"project_id": "project", "dataset_id": "dataset"}
+        ],
+        "canonical_metadata_json": {
+            "timeStartPs": 0.0,
+            "timeEndPs": 48.675,
+            "frameCount": 650,
+            "payload": {"must": "not escape"},
+        },
+    }
+    unit = SimpleNamespace(
+        agent2=SimpleNamespace(
+            scientific_objects=SimpleNamespace(
+                get_version=lambda version_id: version
+            )
+        ),
+        repositories=SimpleNamespace(
+            datasets=SimpleNamespace(
+                list_for_project=lambda project_id: [{"id": "dataset"}]
+            ),
+            data_profiles=SimpleNamespace(
+                list_for_dataset=lambda dataset_id: [{"id": "profile"}]
+            ),
+        ),
+    )
+
+    context = CapabilityPlanningProcessor(
+        repository_factory=object(),
+        tool_registry=TOOLS,
+    )._plan_context(unit, "project", {"obj_1": trajectory})
+
+    assert context["dataset_id"] == "dataset"
+    assert context["profile_id"] == "profile"
+    assert context["resource_facts"]["obj_1"] == {
+        "object_id": str(trajectory.object_id),
+        "version_id": str(trajectory.version_id),
+        "object_type": "trajectory.atomic",
+        "resource_id": None,
+        "facts": {},
+    }
+
+
+def test_full_source_times_do_not_silently_bind_diffusion_fit_window():
+    decision, resolution, plan, trajectory = _trajectory_diffusion_plan()
+    with pytest.raises(CapabilityBindingFailed) as exc:
+        CapabilityBinder(TOOLS).bind(
+            capability_plan=plan,
+            resolution=resolution,
+            context={
+                "dataset_id": "dataset",
+                "profile_id": "profile",
+                "object_refs": {"obj_1": trajectory},
+                "resource_facts": {
+                    "obj_1": {
+                        "object_id": str(trajectory.object_id),
+                        "version_id": str(trajectory.version_id),
+                        "object_type": trajectory.object_type,
+                        "facts": {"timeStartPs": 0.0, "timeEndPs": 48.675},
+                    }
+                },
+            },
+            registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+            decision=decision,
+        )
+    assert exc.value.code == "ANALYSIS_PLAN_VALIDATION_FAILED"
+
+
+def test_explicit_diffusion_constraints_override_registered_resource_facts():
+    decision, resolution, plan, trajectory = _trajectory_diffusion_plan(
+        constraints={
+            "fit_start_time_ps": 5.0,
+            "fit_end_time_ps": 20.0,
+        }
+    )
+    analysis, _ = CapabilityBinder(TOOLS).bind(
+        capability_plan=plan,
+        resolution=resolution,
+        context={
+            "dataset_id": "dataset",
+            "profile_id": "profile",
+            "object_refs": {"obj_1": trajectory},
+            "resource_facts": {
+                "obj_1": {
+                    "object_id": str(trajectory.object_id),
+                    "version_id": str(trajectory.version_id),
+                    "object_type": trajectory.object_type,
+                    "facts": {
+                        "timeStartPs": 0.0,
+                        "timeEndPs": 48.675,
+                    },
+                }
+            },
+        },
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+        decision=decision,
+    )
+
+    diffusion = next(
+        step for step in analysis.steps if step.toolId == "trajectory.diffusion"
+    )
+    assert diffusion.params["fit_start_time_ps"] == 5.0
+    assert diffusion.params["fit_end_time_ps"] == 20.0
+    provenance = {item.parameter: item for item in diffusion.parameterProvenance}
+    assert provenance["fit_start_time_ps"].origin == "USER_SPECIFIED"
+    assert provenance["fit_end_time_ps"].origin == "USER_SPECIFIED"
+
+
+def test_diffusion_without_explicit_fit_window_remains_fail_closed():
+    decision, resolution, plan, trajectory = _trajectory_diffusion_plan()
+    with pytest.raises(
+        CapabilityBindingFailed,
+    ) as exc:
+        CapabilityBinder(TOOLS).bind(
+            capability_plan=plan,
+            resolution=resolution,
+            context={
+                "dataset_id": "dataset",
+                "profile_id": "profile",
+                "object_refs": {"obj_1": trajectory},
+                "resource_facts": {
+                    "obj_1": {
+                        "object_id": str(trajectory.object_id),
+                        "version_id": str(trajectory.version_id),
+                        "object_type": trajectory.object_type,
+                        "facts": {"timeStartPs": 0.0},
+                    }
+                },
+            },
+            registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+            decision=decision,
+        )
+    assert exc.value.code == "ANALYSIS_PLAN_VALIDATION_FAILED"
+
+
+def test_structure_summary_and_view_request_plans_distinct_authoritative_steps() -> None:
+    structure = ref("structure.crystal")
+    decision = ResearchTurnDecision(
+        contract_version="1.0",
+        action=ResearchAction.ANALYZE,
+        assistant_message="Prepare structure summary and viewer.",
+        research_objective="Summarize the lattice and symmetry, then show the supported 3D viewer.",
+        selected_scope_ref_keys=["obj_1"],
+        scientific_requirements=[
+            ProposedRequirement(
+                requirement_id="structure.inspect",
+                criticality=RequirementCriticality.REQUIRED,
+                subject_ref_keys=["obj_1"],
+                constraints={},
+            ),
+            ProposedRequirement(
+                requirement_id="structure.inspect_view",
+                criticality=RequirementCriticality.REQUIRED,
+                subject_ref_keys=["obj_1"],
+                constraints={},
+            ),
+        ],
+        reusable_result_ref_keys=[],
+        clarification=None,
+        confidence=OrchestratorConfidence.HIGH,
+    )
+    resolution, snapshot = resolve(decision, [structure])
+
+    summary = next(
+        item
+        for item in resolution.candidates
+        if item.capability_id == "structure.summary"
+    )
+    viewer = next(
+        item
+        for item in resolution.candidates
+        if item.capability_id == "structure.viewer_scene"
+    )
+    assert summary.satisfies_requirement_ids == ["structure.inspect"]
+    assert viewer.satisfies_requirement_ids == ["structure.inspect_view"]
+
+    plan = build_deterministic_capability_plan(
+        decision=decision,
+        resolution=resolution,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+    CapabilityPlanValidator().validate(
+        plan=plan,
+        resolution=resolution,
+        decision=decision,
+        context=snapshot,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+    analysis, _ = CapabilityBinder(TOOLS).bind(
+        capability_plan=plan,
+        resolution=resolution,
+        context={
+            "dataset_id": "d",
+            "profile_id": "p",
+            "object_refs": {"obj_1": structure},
+        },
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+
+    assert [step.toolId for step in analysis.steps] == [
+        "structure.lattice_summary",
+        "structure.preview_metadata",
+        "structure.spacegroup_summary",
+        "structure.summary",
+        "structure.structure_3d",
+        "structure.viewer_3d",
+        "structure.viewer_scene",
+    ]
+    assert {item.type.value for item in analysis.expectedArtifacts} == {
+        "plotly_html",
+        "plotly_json",
+        "preview_png",
+        "recipe_json",
+        "structure_json",
+        "summary_md",
+        "table_json",
+    }
+
+
 @pytest.mark.parametrize(
     ("projector_id", "payload"),
     [
@@ -144,8 +598,42 @@ def test_p10_c16_unknown_tool_is_not_agent_authority():
         ("agent2.trajectory.rdf", {"artifactType": "trajectory.rdf", "schema_version": "phase10n4.trajectory_rdf.v1"}),
         ("agent2.electronic.band_structure", {"artifactType": "electronic.band_structure", "schemaVersion": "phase10n5.electronic_band_structure.v1", "gap": {"valueEv": 1.2}, "coverage": {"kpointCount": 4}}),
         ("agent2.electronic.dos", {"artifactType": "electronic.dos", "schemaVersion": "phase10n5.electronic_dos.v1", "coverage": {"energyPointCount": 8}}),
+        (
+            "agent2.structure.summary",
+            {
+                "schemaVersion": "phase10c1.structure_summary.v2",
+                "artifactType": "structure.summary",
+                "structureCount": 1,
+                "structures": [
+                    {
+                        "structureId": "NaCl",
+                        "formula": "Na1 Cl1",
+                        "reducedFormula": "NaCl",
+                        "numSites": 2,
+                        "lattice": {
+                            "a": 5.64,
+                            "b": 5.64,
+                            "c": 5.64,
+                            "alpha": 90,
+                            "beta": 90,
+                            "gamma": 90,
+                            "volume": 179.4,
+                        },
+                        "symmetry": {
+                            "engine": "pymatgen/spglib",
+                            "symprecAngstrom": 0.01,
+                            "angleToleranceDegrees": 5.0,
+                            "spacegroupNumber": 225,
+                            "spacegroupSymbol": "Fm-3m",
+                            "crystalSystem": "cubic",
+                        },
+                    }
+                ],
+            },
+        ),
         ("agent2.data.composition_space", {"artifactType": "dataset.composition_space", "schemaVersion": "phase10k4.composition_space.v1"}),
         ("agent2.data.materials_explorer", {"artifactType": "dataset.materials_explorer", "schemaVersion": "phase10k2.dataset_materials_explorer.v1"}),
+        ("agent2.volumetric.data", {"schema_version": "phase10j.volumetric_field.v1", "field_name": "scalar"}),
     ],
 )
 def test_p10_c17_new_projectors_require_verified_schema_and_preserve_exact_source(projector_id, payload):
@@ -153,6 +641,97 @@ def test_p10_c17_new_projectors_require_verified_schema_and_preserve_exact_sourc
     bundle = projector.project(_context(payload, projector_id)).bundle
     assert bundle.source_object_refs[0].version_id
     assert bundle.result_items and bundle.evidence
+
+
+def test_p10_composition_space_projects_bounded_scalar_facts() -> None:
+    projector = next(
+        item
+        for item in build_canonical_result_projectors()
+        if item.projector_id == "agent2.data.composition_space"
+    )
+    payload = {
+        "artifactType": "dataset.composition_space",
+        "schemaVersion": "phase10k4.composition_space.v1",
+        "coverage": {
+            "selectedRows": 576,
+            "validCompositionSamples": 576,
+            "invalidCompositionSamples": 0,
+        },
+        "featureRepresentation": {"featureDimensions": 3},
+        "projection": {
+            "dimensions": 2,
+            "rank": 2,
+            "cumulativeExplainedVarianceRatio": 0.91,
+        },
+    }
+
+    bundle = projector.project(_context(payload, projector.projector_id)).bundle
+
+    facts = {item.predicate: item for item in bundle.facts}
+    assert facts["composition.selected_row_count"].value == 576
+    assert facts["composition.valid_sample_count"].value == 576
+    assert facts["composition.invalid_sample_count"].value == 0
+    assert facts["composition.feature_dimension_count"].value == 3
+    assert facts["composition.projection_dimension_count"].value == 2
+    assert facts["composition.projection_rank"].value == 2
+    assert facts["composition.cumulative_explained_variance_ratio"].value == 0.91
+    assert set(bundle.result_items[0].fact_refs) == {item.fact_id for item in bundle.facts}
+    assert set(bundle.evidence[0].supports_fact_refs) == {item.fact_id for item in bundle.facts}
+
+
+def test_structure_summary_projects_authoritative_lattice_and_symmetry_facts() -> None:
+    projector = next(
+        item
+        for item in build_canonical_result_projectors()
+        if item.projector_id == "agent2.structure.summary"
+    )
+    payload = {
+        "schemaVersion": "phase10c1.structure_summary.v2",
+        "artifactType": "structure.summary",
+        "structureCount": 1,
+        "structures": [
+            {
+                "structureId": "magnetite",
+                "formula": "Fe24 O32",
+                "reducedFormula": "Fe3O4",
+                "numSites": 56,
+                "lattice": {
+                    "a": 8.394,
+                    "b": 8.394,
+                    "c": 8.394,
+                    "alpha": 90.0,
+                    "beta": 90.0,
+                    "gamma": 90.0,
+                    "volume": 591.456,
+                },
+                "symmetry": {
+                    "engine": "pymatgen/spglib",
+                    "symprecAngstrom": 0.01,
+                    "angleToleranceDegrees": 5.0,
+                    "spacegroupNumber": 227,
+                    "spacegroupSymbol": "Fd-3m",
+                    "crystalSystem": "cubic",
+                },
+            }
+        ],
+    }
+
+    bundle = projector.project(_context(payload, projector.projector_id)).bundle
+    facts = {item.predicate: item for item in bundle.facts}
+
+    assert facts["structure.reduced_formula"].value == "Fe3O4"
+    assert facts["structure.site_count"].value == 56
+    assert facts["structure.lattice_a"].value == 8.394
+    assert facts["structure.lattice_volume"].unit == "angstrom^3"
+    assert facts["structure.spacegroup_number"].value == 227
+    assert facts["structure.spacegroup_symbol"].value == "Fd-3m"
+    assert facts["structure.crystal_system"].value == "cubic"
+    assert set(bundle.result_items[0].fact_refs) == {
+        item.fact_id for item in bundle.facts
+    }
+    assert set(bundle.evidence[0].supports_fact_refs) == {
+        item.fact_id for item in bundle.facts
+    }
 
 
 def test_p10_c25_malformed_new_schema_fails_closed():

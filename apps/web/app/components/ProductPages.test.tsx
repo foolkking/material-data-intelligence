@@ -22,9 +22,23 @@ const mocks = vi.hoisted(() => ({
   bulkUpdateScientificObjects: vi.fn(),
   getScientificObjectDependencyImpact: vi.fn(),
   updateScientificObject: vi.fn(),
+  routerPush: vi.fn(),
+  routerReplace: vi.fn(),
+  routerPrefetch: vi.fn(),
 }));
 
 vi.mock("next/link", () => ({ default: ({ children, href, prefetch: _prefetch, ...props }: { children: React.ReactNode; href: string; prefetch?: boolean | null }) => <a href={href} {...props}>{children}</a> }));
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => new URLSearchParams(),
+  useRouter: () => ({
+    back: vi.fn(),
+    forward: vi.fn(),
+    prefetch: mocks.routerPrefetch,
+    push: mocks.routerPush,
+    refresh: vi.fn(),
+    replace: mocks.routerReplace,
+  }),
+}));
 vi.mock("../lib/planner-api", () => ({
   listProjects: mocks.listProjects,
   createProject: mocks.createProject,
@@ -187,22 +201,78 @@ it("restores focus after closing quick preview", async () => {
   await waitFor(() => expect(document.activeElement).toBe(trigger));
 });
 
-it("declares phonon band and DOS files as a typed companion upload", async () => {
+it("binds the three phonon roles on the canonical upload page and enters durable Research", async () => {
   const user = userEvent.setup();
   render(<DatasetUploadPage projectId="project_1" />);
   await user.type(await screen.findByLabelText("数据集名称"), "phonon bundle");
-  await user.upload(await screen.findByLabelText("源文件"), [
-    new File(["band"], "UPLOAD_phonon_band.json", { type: "application/json" }),
-    new File(["dos"], "UPLOAD_phonon_dos.json", { type: "application/json" }),
-    new File(["structure"], "UPLOAD_structure.vasp", { type: "application/octet-stream" }),
-  ]);
-  fireEvent.submit(screen.getByRole("button", { name: "上传并解析" }).closest("form")!);
+  await user.upload(
+    await screen.findByLabelText("结构文件"),
+    new File(["structure"], "UPLOAD_structure.vasp", {
+      type: "application/octet-stream",
+    }),
+  );
+  await user.upload(
+    await screen.findByLabelText("声子能带文件"),
+    new File(["band"], "UPLOAD_phonon_band.json", {
+      type: "application/json",
+    }),
+  );
+  await user.upload(
+    await screen.findByLabelText("声子态密度文件"),
+    new File(["dos"], "UPLOAD_phonon_dos.json", {
+      type: "application/json",
+    }),
+  );
+  await user.click(
+    screen.getByRole("button", { name: "上传声子数据并开始研究" }),
+  );
   await waitFor(() => expect(mocks.uploadDatasetFiles).toHaveBeenCalled());
   const files = mocks.uploadDatasetFiles.mock.calls[0][2];
-  expect(files).toEqual(expect.arrayContaining([
-    expect.objectContaining({ file: expect.objectContaining({ name: "UPLOAD_phonon_band.json" }), importKind: "phonon_band", contractVersion: "phase10h.phonon_band.v1", companionGroupId: "phonon_bundle" }),
-    expect.objectContaining({ file: expect.objectContaining({ name: "UPLOAD_phonon_dos.json" }), importKind: "phonon_dos", contractVersion: "phase10h.phonon_dos.v1", companionGroupId: "phonon_bundle" }),
-  ]));
+  expect(files).toEqual([
+    expect.objectContaining({
+      file: expect.objectContaining({ name: "UPLOAD_structure.vasp" }),
+      companionGroupId: "phonon_bundle",
+    }),
+    expect.objectContaining({
+      file: expect.objectContaining({ name: "UPLOAD_phonon_band.json" }),
+      importKind: "phonon_band",
+      contractVersion: "phase10h.phonon_band.v1",
+      companionGroupId: "phonon_bundle",
+    }),
+    expect.objectContaining({
+      file: expect.objectContaining({ name: "UPLOAD_phonon_dos.json" }),
+      importKind: "phonon_dos",
+      contractVersion: "phase10h.phonon_dos.v1",
+      companionGroupId: "phonon_bundle",
+    }),
+  ]);
+  expect(mocks.routerPush).toHaveBeenCalledWith(
+    "/projects/project_1/research?dataset=dataset_2",
+  );
+});
+
+it("keeps the typed phonon action disabled until all three roles are selected", async () => {
+  const user = userEvent.setup();
+  render(<DatasetUploadPage projectId="project_1" />);
+  await user.type(await screen.findByLabelText("数据集名称"), "phonon bundle");
+  const action = screen.getByRole("button", {
+    name: "上传声子数据并开始研究",
+  });
+  expect(action).toBeDisabled();
+  await user.upload(
+    screen.getByLabelText("结构文件"),
+    new File(["structure"], "UPLOAD_structure.vasp"),
+  );
+  await user.upload(
+    screen.getByLabelText("声子能带文件"),
+    new File(["band"], "UPLOAD_phonon_band.json"),
+  );
+  expect(action).toBeDisabled();
+  await user.upload(
+    screen.getByLabelText("声子态密度文件"),
+    new File(["dos"], "UPLOAD_phonon_dos.json"),
+  );
+  expect(action).toBeEnabled();
 });
 
 it("keeps the direct upload route read-only for viewer members", async () => {

@@ -96,6 +96,58 @@ def test_resource_parser_builds_additive_profile_22(tmp_path: Path) -> None:
     assert profile.experimentalXrdReadiness.resources[0].resourceHash == _resource()["resourceHash"]
 
 
+def test_resource_parser_accepts_frozen_nested_axis_and_intensity_shape(tmp_path: Path) -> None:
+    legacy = _resource()
+    nested = {
+        "schemaVersion": legacy["schemaVersion"],
+        "resourceId": "epa-industrial-tio2-fe-ka",
+        "resourceVersion": "1",
+        "xAxis": {
+            "kind": "two_theta",
+            "unit": "degree",
+            "values": legacy["twoTheta"],
+        },
+        "intensity": {
+            "semantic": "counts",
+            "values": legacy["intensity"],
+        },
+        "wavelength": legacy["wavelength"],
+    }
+    nested["resourceHash"] = content_hash(stable_json_dumps(nested))
+    path = tmp_path / "frozen-nested-experimental-xrd.json"
+    path.write_text(json.dumps(nested), encoding="utf-8")
+
+    parsed = parse_file(path, dataset_id="dataset_frozen_nested_xrd")
+
+    assert parsed.parse_status == "success"
+    assert parsed.objects[0].metadata["experimentalXrd"]["resourceHash"] == nested["resourceHash"]
+    assert parsed.objects[0].metadata["experimentalXrd"]["pointCount"] == len(legacy["twoTheta"])
+
+
+def test_adapter_accepts_frozen_nested_axis_and_intensity_shape(tmp_path: Path) -> None:
+    legacy = _resource()
+    nested = {
+        "schemaVersion": legacy["schemaVersion"],
+        "resourceId": "epa-industrial-tio2-fe-ka",
+        "resourceVersion": "1",
+        "xAxis": {
+            "kind": "two_theta",
+            "unit": "degree",
+            "values": legacy["twoTheta"],
+        },
+        "intensity": {
+            "semantic": "counts",
+            "values": legacy["intensity"],
+        },
+        "wavelength": legacy["wavelength"],
+    }
+    nested["resourceHash"] = content_hash(stable_json_dumps(nested))
+    result, payload = _run(tmp_path, resource=nested)
+    assert result.artifacts
+    assert payload["experimentalResource"]["resourceHash"] == nested["resourceHash"]
+    assert payload["coverage"]["experimentalPoints"] == len(legacy["twoTheta"])
+
+
 def test_match_preserves_both_unmatched_sets_and_residuals(tmp_path: Path) -> None:
     _, payload = _run(tmp_path)
     assert payload["coverage"] == {

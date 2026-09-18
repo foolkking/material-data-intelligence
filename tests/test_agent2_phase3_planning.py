@@ -71,7 +71,49 @@ def plan_and_bind(decision_value: ResearchTurnDecision, refs: list[ScientificObj
     resolution, snapshot = resolve(decision_value, refs)
     plan = build_deterministic_capability_plan(decision=decision_value, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
     CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=decision_value, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
-    analysis_plan, _hash = CapabilityBinder(TOOLS).bind(capability_plan=plan, resolution=resolution, context={"dataset_id": "dataset", "profile_id": "profile", "object_refs": {f"obj_{index}": value for index, value in enumerate(refs, 1)}}, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    profile = {"semanticColumns": [], "semanticGroups": []}
+    if any(
+        item.requirement_id == "ml.evaluate_regression"
+        for item in decision_value.scientific_requirements
+    ):
+        profile = {
+            "semanticColumns": [
+                {
+                    "objectId": "table_1",
+                    "column": "y_true",
+                    "dtype": "float64",
+                    "roles": [
+                        {
+                            "role": "regression_target",
+                            "authority": "canonical_name",
+                            "groupId": "regression_1",
+                        }
+                    ],
+                },
+                {
+                    "objectId": "table_1",
+                    "column": "y_pred",
+                    "dtype": "float64",
+                    "roles": [
+                        {
+                            "role": "regression_prediction",
+                            "authority": "canonical_name",
+                            "groupId": "regression_1",
+                        }
+                    ],
+                },
+            ],
+            "semanticGroups": [
+                {
+                    "groupId": "regression_1",
+                    "kind": "regression",
+                    "targetColumns": ["y_true"],
+                    "predictionColumns": ["y_pred"],
+                    "status": "COMPLETE",
+                }
+            ],
+        }
+    analysis_plan, _hash = CapabilityBinder(TOOLS).bind(capability_plan=plan, resolution=resolution, context={"dataset_id": "dataset", "profile_id": "profile", "profile": profile, "object_refs": {f"obj_{index}": value for index, value in enumerate(refs, 1)}}, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
     return resolution, plan, analysis_plan
 
 
@@ -116,11 +158,29 @@ def test_p3_c03_ml_regression_evaluation_binds_exact_dataset_version():
     )
     assert resolution.candidates[0].capability_id == "ml.regression_evaluation"
     assert plan.steps[0].input_bindings["dataset"][0].source_ref_key == "obj_1"
-    assert [item.refType for item in analysis.steps[0].inputRefs] == [
+    assert [item.toolId for item in analysis.steps] == [
+        "ml.basic_metrics",
+        "ml.density_scatter",
+        "ml.error_distribution",
+        "ml.outlier_table",
+        "ml.regression_evaluation",
+    ]
+    for step in analysis.steps:
+        normalized = [
+            item for item in step.inputRefs if item.refType == "normalized_object"
+        ]
+        assert normalized and normalized[0].ref == str(dataset.version_id)
+    evaluation = next(
+        item for item in analysis.steps if item.toolId == "ml.regression_evaluation"
+    )
+    assert [item.refType for item in evaluation.inputRefs] == [
         "profile",
         "normalized_object",
     ]
-    assert analysis.steps[0].inputRefs[1].ref == str(dataset.version_id)
+    assert evaluation.params["groupIds"] == ["regression_1"]
+    for step in analysis.steps[:-1]:
+        assert step.params["targetColumn"] == "y_true"
+        assert step.params["predictionColumn"] == "y_pred"
 
 
 def test_p3_c03_ml_regression_evaluation_accepts_promoted_materials_table():
@@ -132,13 +192,103 @@ def test_p3_c03_ml_regression_evaluation_accepts_promoted_materials_table():
     assert resolution.candidates[0].capability_id == "ml.regression_evaluation"
     assert resolution.candidates[0].eligibility.value == "ELIGIBLE"
     assert plan.steps[0].input_bindings["dataset"][0].source_ref_key == "obj_1"
-    assert [item.refType for item in analysis.steps[0].inputRefs] == [
+    evaluation = next(
+        item for item in analysis.steps if item.toolId == "ml.regression_evaluation"
+    )
+    assert [item.refType for item in evaluation.inputRefs] == [
         "profile",
         "normalized_object",
     ]
-    assert analysis.steps[0].inputRefs[1].ref == str(table.version_id)
+    assert evaluation.inputRefs[1].ref == str(table.version_id)
 
 
+def test_mandatory_capability_tool_suites_bind_complete_stable_coverage():
+    dataset = ref("materials.table", "profiled materials table")
+    profile = {
+        "semanticColumns": [
+            {
+                "objectId": "table_1",
+                "column": "formula",
+                "dtype": "string",
+                "roles": [
+                    {
+                        "role": "material_formula",
+                        "authority": "canonical_name",
+                    }
+                ],
+            },
+            {
+                "objectId": "table_1",
+                "column": "property_a",
+                "dtype": "float64",
+                "roles": [],
+            },
+            {
+                "objectId": "table_1",
+                "column": "property_b",
+                "dtype": "float64",
+                "roles": [],
+            },
+        ],
+        "semanticGroups": [],
+    }
+    expected_by_requirement = {
+        "data.analyze_composition": {
+            "composition.chem_sys_sunburst",
+            "composition.chem_sys_treemap",
+            "composition.elements_hist",
+            "composition.formula_statistics",
+            "composition.ptable_heatmap",
+            "composition.summary",
+            "structure.composition_from_structure",
+        },
+        "data.analyze_table": {
+            "table.distribution_summary",
+            "table.numeric_summary",
+            "viz.correlation",
+            "viz.histogram",
+            "viz.scatter",
+        },
+    }
+    for requirement_id, expected_tools in expected_by_requirement.items():
+        request = decision([(requirement_id, ["obj_1"], {})])
+        resolution, snapshot = resolve(request, [dataset])
+        first = build_deterministic_capability_plan(
+            decision=request,
+            resolution=resolution,
+            registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+        )
+        second = build_deterministic_capability_plan(
+            decision=request,
+            resolution=resolution,
+            registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+        )
+        assert first.model_dump(mode="json") == second.model_dump(mode="json")
+        analyses = []
+        for capability_plan in (first, second):
+            analysis, _ = CapabilityBinder(TOOLS).bind(
+                capability_plan=capability_plan,
+                resolution=resolution,
+                context={
+                    "dataset_id": "dataset",
+                    "profile_id": "profile",
+                    "profile": profile,
+                    "object_refs": {"obj_1": dataset},
+                },
+                registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+                decision=request,
+            )
+            analyses.append(analysis)
+        tool_sets = [
+            [step.toolId for step in analysis.steps] for analysis in analyses
+        ]
+        assert tool_sets[0] == tool_sets[1]
+        assert set(tool_sets[0]) == expected_tools
+        assert len(tool_sets[0]) == len(expected_tools)
+        assert all(
+            step.output["mandatoryCoverage"] is True
+            for step in analyses[0].steps
+        )
 def test_p3_c04_trajectory_msd_diffusion_uses_real_planned_output():
     trajectory = ref("trajectory.atomic", "MD")
     request = decision([
@@ -168,12 +318,154 @@ def test_p3_c04_trajectory_msd_diffusion_uses_real_planned_output():
     assert analysis.dependencyBindings[0].consumerInputPort == "msd"
 
 
+def test_p3_trajectory_diffusion_continuation_retains_transitive_msd_producer():
+    trajectory = ref("trajectory.atomic", "MD")
+    request = decision(
+        [
+            (
+                "trajectory.estimate_diffusion",
+                ["obj_1"],
+                {"fit_start_time_ps": 1.0, "fit_end_time_ps": 6.0},
+            ),
+        ],
+        "Continue the clarified trajectory analysis with the selected fit window.",
+    ).model_copy(update={"action": ResearchAction.CONTINUE_ANALYSIS})
+
+    resolution, plan, analysis = plan_and_bind(request, [trajectory])
+
+    candidates = {
+        item.capability_id: item
+        for item in resolution.candidates
+    }
+    assert candidates["trajectory.diffusion"].eligibility.value == "CONDITIONAL"
+    assert candidates["trajectory.diffusion"].missing_input_slots == ["msd"]
+    assert candidates["trajectory.diffusion"].possible_producers == {
+        "msd": ["trajectory.msd@1.0"],
+    }
+    assert candidates["trajectory.msd"].eligibility.value == "ELIGIBLE"
+    assert candidates["trajectory.msd"].bound_source_ref_keys == {
+        "trajectory": ["obj_1"],
+    }
+    assert [step.toolId for step in analysis.steps] == [
+        "trajectory.msd",
+        "trajectory.diffusion",
+    ]
+    assert plan.steps[1].input_bindings["msd"][0].kind == (
+        CapabilityBindingKind.PLANNED_OUTPUT
+    )
+    assert analysis.dependencyBindings[0].producerOutputPort == "trajectory-msd"
+    assert analysis.dependencyBindings[0].consumerInputPort == "msd"
+
+
 def test_p3_c05_phonon_band_and_dos_bind_real_combined_ports():
-    band, dos = ref("phonon.band_structure", "Band"), ref("phonon.dos", "DOS")
-    request = decision([("phonon.inspect_band", ["obj_1"], {}), ("phonon.inspect_dos", ["obj_2"], {})])
-    resolution, _snapshot = resolve(request, [band, dos])
-    assert {item.capability_id for item in resolution.candidates} >= {"phonon.band", "phonon.dos", "phonon.band_dos"}
-    assert requires_llm_planning(resolution, request) is True
+    band = ref("phonon.band_structure", "Band")
+    dos = ref("phonon.dos", "DOS")
+    structure = ref("structure.crystal", "Structure")
+    request = decision(
+        [
+            ("phonon.compose_band_dos", ["obj_1", "obj_2"], {}),
+            ("structure.inspect_brillouin_zone", ["obj_3"], {}),
+        ]
+    )
+    resolution, plan, analysis = plan_and_bind(
+        request,
+        [band, dos, structure],
+    )
+    candidates = {item.capability_id: item for item in resolution.candidates}
+    assert set(candidates) >= {
+        "phonon.band",
+        "phonon.dos",
+        "phonon.band_dos",
+        "structure.brillouin_zone",
+    }
+    assert candidates["phonon.band_dos"].eligibility.value == "CONDITIONAL"
+    assert candidates["phonon.band_dos"].missing_input_slots == ["band", "dos"]
+    assert candidates["phonon.band_dos"].possible_producers == {
+        "band": ["phonon.band@1.0"],
+        "dos": ["phonon.dos@1.0"],
+    }
+    assert requires_llm_planning(resolution, request) is False
+    assert [step.toolId for step in analysis.steps] == [
+        "phonon.band",
+        "phonon.dos",
+        "phonon.band_dos",
+        "structure.brillouin_zone",
+    ]
+    assert plan.steps[2].input_bindings["band"][0].kind == (
+        CapabilityBindingKind.PLANNED_OUTPUT
+    )
+    assert plan.steps[2].input_bindings["dos"][0].kind == (
+        CapabilityBindingKind.PLANNED_OUTPUT
+    )
+    assert {
+        (
+            item.producerOutputPort,
+            item.consumerInputPort,
+            item.artifactKind.value,
+        )
+        for item in analysis.dependencyBindings
+    } == {
+        ("canonical-band", "band", "phonon_band_json"),
+        ("canonical-dos", "dos", "phonon_dos_json"),
+    }
+    assert analysis.steps[3].inputRefs[0].ref == str(structure.version_id)
+
+
+def test_phonon_composite_rejects_raw_source_bindings_for_artifact_ports():
+    band = ref("phonon.band_structure", "Band")
+    dos = ref("phonon.dos", "DOS")
+    request = decision(
+        [("phonon.compose_band_dos", ["obj_1", "obj_2"], {})]
+    )
+    resolution, snapshot = resolve(request, [band, dos])
+    deterministic = build_deterministic_capability_plan(
+        decision=request,
+        resolution=resolution,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+    combo = next(
+        step
+        for step in deterministic.steps
+        if resolution.candidates[
+            int(step.capability_ref_key.removeprefix("cap_")) - 1
+        ].capability_id
+        == "phonon.band_dos"
+    )
+    invalid_combo = combo.model_copy(
+        update={
+            "input_bindings": {
+                "band": [
+                    CapabilityInputBinding(
+                        kind=CapabilityBindingKind.SOURCE_OBJECT,
+                        source_ref_key="obj_1",
+                    )
+                ],
+                "dos": [
+                    CapabilityInputBinding(
+                        kind=CapabilityBindingKind.SOURCE_OBJECT,
+                        source_ref_key="obj_2",
+                    )
+                ],
+            }
+        }
+    )
+    invalid = deterministic.model_copy(
+        update={
+            "steps": [
+                invalid_combo if step.step_id == combo.step_id else step
+                for step in deterministic.steps
+            ]
+        }
+    )
+    with pytest.raises(CapabilityPlanInvalid) as caught:
+        CapabilityPlanValidator().validate(
+            plan=invalid,
+            resolution=resolution,
+            decision=request,
+            context=snapshot,
+            registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+        )
+    assert caught.value.code == "CAPABILITY_PLAN_PORT_MISMATCH"
 
 
 def test_p3_c06_c08_wrong_object_type_is_unsupported_before_planner():
@@ -199,7 +491,39 @@ def test_p3_dataset_semantic_constraints_do_not_become_tool_params():
     resolution, plan, analysis = plan_and_bind(request, [dataset])
     assert plan.steps[0].parameters == {"property": "band_gap", "sample": "mat-2"}
     assert analysis.steps[0].toolId == "dataset.materials_explorer"
-    assert analysis.steps[0].params == {}
+    assert analysis.steps[0].params == {
+        "tableObjectId": str(dataset.object_id),
+    }
+
+
+def test_p3_dataset_resource_id_binding_prefers_exact_normalized_resource():
+    dataset = ref("materials.dataset", "Materials")
+    request = decision(
+        [("data.explore_materials", ["obj_1"], {})],
+        "Explore the selected materials dataset.",
+    )
+    resolution, plan, _analysis = plan_and_bind(request, [dataset])
+    analysis, _ = CapabilityBinder(TOOLS).bind(
+        capability_plan=plan,
+        resolution=resolution,
+        context={
+            "dataset_id": "dataset",
+            "profile_id": "profile",
+            "object_refs": {"obj_1": dataset},
+            "resource_facts": {
+                "obj_1": {
+                    "object_id": str(dataset.object_id),
+                    "resource_id": "dataset:obj_dataframe_exact",
+                    "object_type": "materials.dataset",
+                }
+            },
+        },
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+        decision=request,
+    )
+    assert analysis.steps[0].params == {
+        "tableObjectId": "dataset:obj_dataframe_exact",
+    }
 
 
 def test_p3_dataset_unknown_executable_constraint_still_fails_closed():
@@ -512,7 +836,7 @@ def test_default_phase3_registry_startup_validation_passes():
     validate_agent2_registries(DEFAULT_AGENT2_REGISTRIES, TOOLS)
 
 
-def test_bounded_llm_planner_repairs_once_outside_transaction():
+def test_bounded_llm_planner_repairs_once_outside_transaction(monkeypatch):
     band, dos = ref("phonon.band_structure", "Band"), ref("phonon.dos", "DOS")
     request = decision([("phonon.inspect_band", ["obj_1"], {}), ("phonon.inspect_dos", ["obj_2"], {})])
     resolution, snapshot = resolve(request, [band, dos])
@@ -520,7 +844,7 @@ def test_bounded_llm_planner_repairs_once_outside_transaction():
         "contract_version": "1.0", "objective": request.research_objective,
         "steps": [
             {"step_id": "step_1", "capability_ref_key": "cap_1", "satisfies_requirement_ids": ["phonon.inspect_band"], "input_bindings": {"band": [{"kind": "SOURCE_OBJECT", "source_ref_key": "obj_1"}]}, "parameters": {}, "expected_outputs": [{"slot_name": "band", "result_type": "phonon.band", "scientific_object_type": "phonon.band_structure"}]},
-            {"step_id": "step_2", "capability_ref_key": "cap_3", "satisfies_requirement_ids": ["phonon.inspect_dos"], "input_bindings": {"dos": [{"kind": "SOURCE_OBJECT", "source_ref_key": "obj_2"}]}, "parameters": {}, "expected_outputs": [{"slot_name": "dos", "result_type": "phonon.dos", "scientific_object_type": "phonon.dos"}]},
+                {"step_id": "step_2", "capability_ref_key": "cap_2", "satisfies_requirement_ids": ["phonon.inspect_dos"], "input_bindings": {"dos": [{"kind": "SOURCE_OBJECT", "source_ref_key": "obj_2"}]}, "parameters": {}, "expected_outputs": [{"slot_name": "dos", "result_type": "phonon.dos", "scientific_object_type": "phonon.dos"}]},
         ],
         "omitted_optional_requirement_ids": [], "planner_summary": "Normalize band and DOS inputs.",
     }
@@ -536,9 +860,13 @@ def test_bounded_llm_planner_repairs_once_outside_transaction():
     candidates = [PlannerCapabilityView(ref_key=f"cap_{index}", capability_id=item.capability_id, version=item.capability_version, eligibility=item.eligibility, satisfies_requirement_ids=item.satisfies_requirement_ids, input_slots=[], output_slots=[]) for index, item in enumerate(resolution.candidates, 1)]
     planner_input = CapabilityPlannerInput(research_objective=request.research_objective, requirements=[PlannerRequirementView(requirement_id=item.requirement_id, criticality=item.criticality.value, subject_ref_keys=item.subject_ref_keys, constraints=item.constraints) for item in request.scientific_requirements], candidates=candidates, source_bindings=[PlannerSourceRef(ref_key="obj_1", object_type=band.object_type, display_name="Band"), PlannerSourceRef(ref_key="obj_2", object_type=dos.object_type, display_name="DOS")], reusable_results=[], explicit_constraints=[])
     fake = Fake()
+    monkeypatch.setattr(
+        "mdi_api.research_agent.planning.planner.requires_llm_planning",
+        lambda *_args, **_kwargs: True,
+    )
     plan, mode, result = asyncio.run(ScientificCapabilityPlanner(registry=DEFAULT_AGENT2_REGISTRIES.capabilities, llm_client=fake).plan(decision=request, resolution=resolution, planner_input=planner_input, context=snapshot))
     assert mode == "LLM" and len(fake.calls) == 2 and result.repair_attempted is True
-    assert [step.capability_ref_key for step in plan.steps] == ["cap_1", "cap_3"]
+    assert [step.capability_ref_key for step in plan.steps] == ["cap_1", "cap_2"]
     repair_context = fake.calls[1]["request_context"]["repair"]
     assert repair_context["binding_contracts"]["PREVIOUS_RESULT"] == {
         "required_fields": ["kind", "result_ref_key"],
@@ -550,7 +878,9 @@ def test_bounded_llm_planner_repairs_once_outside_transaction():
     }
 
 
-def test_bounded_llm_planner_repairs_mixed_binding_shape_and_stays_fail_closed():
+def test_bounded_llm_planner_repairs_mixed_binding_shape_and_stays_fail_closed(
+    monkeypatch,
+):
     band, dos = ref("phonon.band_structure", "Band"), ref("phonon.dos", "DOS")
     request = decision(
         [
@@ -581,7 +911,7 @@ def test_bounded_llm_planner_repairs_mixed_binding_shape_and_stays_fail_closed()
             },
             {
                 "step_id": "step_2",
-                "capability_ref_key": "cap_3",
+                "capability_ref_key": "cap_2",
                 "satisfies_requirement_ids": ["phonon.inspect_dos"],
                 "input_bindings": {
                     "dos": [{"kind": "SOURCE_OBJECT", "source_ref_key": "obj_2"}]
@@ -675,6 +1005,10 @@ def test_bounded_llm_planner_repairs_mixed_binding_shape_and_stays_fail_closed()
             )
 
     repairing = RepairingFake()
+    monkeypatch.setattr(
+        "mdi_api.research_agent.planning.planner.requires_llm_planning",
+        lambda *_args, **_kwargs: True,
+    )
     plan, mode, result = asyncio.run(
         ScientificCapabilityPlanner(
             registry=DEFAULT_AGENT2_REGISTRIES.capabilities,

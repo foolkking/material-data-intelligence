@@ -19,6 +19,7 @@ from mdi_api.unit_of_work import RepositoryFactory
 from mdi_api.application.interpretation.assembler import InterpreterInputAssembler, effective_relevance
 from mdi_api.infrastructure.interpretation.client import DeepSeekInterpreterClient, PROMPT_VERSION, StructuredInterpreterClient
 from mdi_api.application.interpretation.grounding import (
+    build_grounding_repair_context,
     project_grounded_answer_lead,
     project_claim_support_assessments,
     project_grounded_communication,
@@ -93,6 +94,7 @@ class ScientificInterpretationService:
             try:
                 result, _, provider_meta = self._generate(
                     envelope,
+                    bundle=bundle,
                     repair_errors=repair_errors,
                     repair_attempted=attempt == 1,
                     turn_id=turn_id,
@@ -116,7 +118,11 @@ class ScientificInterpretationService:
             if validation.valid:
                 return result, attempt == 1, provider_meta
             if attempt == 0:
-                repair_errors = validation.errors[:16]
+                repair_errors = build_grounding_repair_context(
+                    result,
+                    bundle,
+                    validation.errors,
+                )
                 continue
             raise InterpretationFailure("INTERPRETATION_GROUNDING_FAILED", "; ".join(validation.errors)[:1000])
         raise InterpretationFailure("INTERPRETATION_SCHEMA_INVALID", "解释输出未通过结构化 schema 校验。")
@@ -345,6 +351,7 @@ class ScientificInterpretationService:
         self,
         envelope: Any,
         *,
+        bundle: ScientificResultBundle,
         repair_errors: list[str] | None = None,
         repair_attempted: bool = False,
         turn_id: UUID | None = None,
@@ -361,15 +368,70 @@ class ScientificInterpretationService:
             ),
         }
         result = asyncio.run(self.client.generate_structured(input_payload=envelope.model_dump(mode="json"), output_schema=ScientificInterpretationOutput.model_json_schema(), timeout_seconds=self.timeout_seconds, request_context=context))
-        # Some server-side provider deployments still return the retired
-        # finding presentation fields ``outcome`` and ``accepted``.  They are
-        # not part of the current scientific contract and never carry
-        # authority: support is recomputed below by the deterministic
-        # grounding projection.  Strip only these two known legacy fields;
+        # Some server-side provider deployments still return retired finding
+        # presentation / assessment fields.  They are not part of the current
+        # provider contract and never carry authority: support, limitations,
+        # defects, and method context are recomputed below by deterministic
+        # grounding projections.  Strip only this explicit compatibility set;
         # every other unexpected field remains fail-closed under the strict
         # Pydantic contract.
         parsed = self._strip_legacy_finding_fields(result.parsed)
+        parsed = self._resolve_provider_reference_aliases(parsed, envelope)
         return ScientificInterpretationOutput.model_validate(parsed), repair_attempted, {"provider": result.provider, "model": result.model, "provider_request_id": result.provider_request_id}
+
+    @staticmethod
+    def _resolve_provider_reference_aliases(
+        parsed: Any,
+        envelope: Any,
+    ) -> Any:
+        """Resolve only explicit ordinal provider aliases to exact Result IDs.
+
+        The model may cite ``result_1``/``fact_1``/``evidence_1`` from the
+        bounded interpreter envelope.  Grounding remains fail-closed: aliases
+        are read from the exact provider-visible envelope, not re-numbered from
+        the unbounded persisted bundle. Unknown references remain unchanged and
+        are rejected by the normal validators.
+        """
+
+        if not isinstance(parsed, dict):
+            return parsed
+        serialized = (
+            envelope.model_dump(mode="json")
+            if hasattr(envelope, "model_dump")
+            else envelope
+            if isinstance(envelope, dict)
+            else {}
+        )
+        result = serialized.get("result") if isinstance(serialized, dict) else {}
+        aliases = (
+            dict(result.get("reference_aliases") or {})
+            if isinstance(result, dict)
+            else {}
+        )
+        aliases = {str(key): str(value) for key, value in aliases.items() if value}
+
+        cleaned = dict(parsed)
+        for collection_name in ("primary_findings", "supporting_findings"):
+            findings = cleaned.get(collection_name)
+            if not isinstance(findings, list):
+                continue
+            normalized_findings = []
+            for finding in findings:
+                if not isinstance(finding, dict):
+                    normalized_findings.append(finding)
+                    continue
+                item = dict(finding)
+                for field in ("fact_refs", "evidence_refs", "result_item_refs"):
+                    refs = item.get(field)
+                    if isinstance(refs, list):
+                        item[field] = [aliases.get(str(ref), ref) for ref in refs]
+                normalized_findings.append(item)
+            cleaned[collection_name] = normalized_findings
+        for field in ("primary_result_refs", "supporting_result_refs"):
+            refs = cleaned.get(field)
+            if isinstance(refs, list):
+                cleaned[field] = [aliases.get(str(ref), ref) for ref in refs]
+        return cleaned
 
     def _record_provider_retry(
         self,
@@ -403,6 +465,18 @@ class ScientificInterpretationService:
 
     @staticmethod
     def _strip_legacy_finding_fields(parsed: Any) -> Any:
+        retired_fields = {
+            "outcome",
+            "accepted",
+            "limitations",
+            "reason_codes",
+            "supporting_refs",
+            "contradicting_refs",
+            "defects",
+            "independent_evidence_groups",
+            "severity",
+            "method_context",
+        }
         if not isinstance(parsed, dict):
             return parsed
         cleaned = dict(parsed)
@@ -413,7 +487,7 @@ class ScientificInterpretationService:
             cleaned[collection_name] = [
                 (
                     {key: value for key, value in finding.items()
-                     if key not in {"outcome", "accepted"}}
+                     if key not in retired_fields}
                     if isinstance(finding, dict)
                     else finding
                 )

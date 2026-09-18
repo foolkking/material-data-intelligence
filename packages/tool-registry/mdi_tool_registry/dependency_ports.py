@@ -8,6 +8,7 @@ from mdi_artifact_core import (
     PHONON_BAND_DOS_SCHEMA_VERSION,
     PHONON_BAND_SCHEMA_VERSION,
     PHONON_DOS_SCHEMA_VERSION,
+    VOLUMETRIC_FIELD_SCHEMA_VERSION,
 )
 from mdi_schemas import (
     ArtifactCompatibilityMatrix,
@@ -15,6 +16,7 @@ from mdi_schemas import (
     ArtifactOutputPort,
     ArtifactPortCompatibility,
     ArtifactType,
+    DEPENDENCY_MAX_STEPS,
     DependencyDiagnostic,
     DependencyDiagnosticCode,
     IdentityCompatibility,
@@ -192,6 +194,18 @@ def build_tool_artifact_port_metadata(tool: Any) -> ToolArtifactPortMetadata:
         output_ports = [ArtifactOutputPort(portId="electronic-band-structure", artifactKind=ArtifactType.table_json, contractFamily="phase10n5.electronic_band_structure", contractVersions=[_N5_BAND_CONTRACT], mediaTypes=_JSON_MEDIA, maxBytes=_N5_MAX_BYTES, requiredProvenanceFields=["calculationIdentity", "electronicResourceHash", "schemaVersion", "toolCallId", "toolId"])]
     elif tool.toolId == "electronic.dos":
         output_ports = [ArtifactOutputPort(portId="electronic-dos", artifactKind=ArtifactType.table_json, contractFamily="phase10n5.electronic_dos", contractVersions=[_N5_DOS_CONTRACT], mediaTypes=_JSON_MEDIA, maxBytes=_N5_MAX_BYTES, requiredProvenanceFields=["calculationIdentity", "electronicResourceHash", "schemaVersion", "toolCallId", "toolId"])]
+    elif tool.toolId == "structure.volumetric_data":
+        output_ports = [
+            ArtifactOutputPort(
+                portId="volumetric-field",
+                artifactKind=ArtifactType.volumetric_field_json,
+                contractFamily="phase10j.volumetric_field",
+                contractVersions=[VOLUMETRIC_FIELD_SCHEMA_VERSION],
+                mediaTypes=_JSON_MEDIA,
+                maxBytes=268_435_456,
+                requiredProvenanceFields=["schemaVersion", "toolCallId", "toolId"],
+            )
+        ]
     return ToolArtifactPortMetadata(
         toolId=tool.toolId,
         toolVersion=tool.version,
@@ -235,8 +249,14 @@ def build_artifact_compatibility_matrix(
     *,
     selected_tool_ids: list[str],
 ) -> ArtifactCompatibilityMatrix:
-    if selected_tool_ids != sorted(set(selected_tool_ids)) or not 1 <= len(selected_tool_ids) <= 4:
-        raise ValueError("Selected dependency tool identities must be unique, sorted, and bounded to four.")
+    if (
+        selected_tool_ids != sorted(set(selected_tool_ids))
+        or not 1 <= len(selected_tool_ids) <= DEPENDENCY_MAX_STEPS
+    ):
+        raise ValueError(
+            "Selected dependency tool identities must be unique, sorted, and "
+            f"bounded to {DEPENDENCY_MAX_STEPS}."
+        )
     snapshot, _metadata = build_registry_snapshot(registry)
     ports = build_artifact_port_inventory(registry)
     tool_by_id = {item.toolId: item for item in registry.tools}

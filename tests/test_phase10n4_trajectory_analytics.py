@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from copy import deepcopy
 from pathlib import Path
 
 import numpy as np
@@ -31,6 +32,23 @@ def _trajectory() -> dict:
     return json.loads(FIXTURE.read_text(encoding="utf-8"))
 
 
+def _trajectory_with_frame_count(frame_count: int) -> dict:
+    source = _trajectory()
+    template = source["frames"]
+    step = float(template[1]["time"]) - float(template[0]["time"])
+    step_index = int(template[1]["step"]) - int(template[0]["step"])
+    frames = []
+    for index in range(frame_count):
+        frame = deepcopy(template[index % len(template)])
+        frame["frame_index"] = index
+        frame["time"] = float(template[0]["time"]) + step * index
+        frame["step"] = int(template[0]["step"]) + step_index * index
+        frames.append(frame)
+    source["frames"] = frames
+    source["trajectory_id"] = canonical_trajectory_id(source)
+    return source
+
+
 def _context(tmp_path: Path, tool_id: str, store: dict, bindings: dict | None = None) -> ToolExecutionContext:
     return ToolExecutionContext(job_id="job_n4", project_id="project_n4", dataset_id="dataset_n4", tool_id=tool_id, tool_version="0.1.0", adapter_version="0.1.0", registry_version="0.1.0", artifact_root=tmp_path, tool_call_id=f"call_{tool_id.replace('.', '_')}", plan_id="plan_n4", plan_version="0.2", object_store=store, artifact_bindings=bindings or {})
 
@@ -52,7 +70,7 @@ def test_registry_and_exact_msd_dependency() -> None:
         assert tool.version == "0.1.0"
         assert tool.resourceLimits["maxFrames"] == 200
         assert tool.resourceLimits["maxAtoms"] == 5000
-        assert tool.resourceLimits["maxRdfPairs"] == 2_000_000
+        assert tool.resourceLimits["maxRdfPairs"] == 30_000_000
     matrix = build_artifact_compatibility_matrix(registry, selected_tool_ids=["trajectory.diffusion", "trajectory.msd"])
     pair = next(item for item in matrix.pairs if item.producerToolId == "trajectory.msd")
     assert pair.compatible and pair.artifactContractVersion == "phase10n4.trajectory_msd.v1"
@@ -99,6 +117,72 @@ def test_boundary_crossing_msd_uses_unwrapped_positions(tmp_path: Path) -> None:
     assert result["originCounts"] == [3, 2, 1]
 
 
+def test_large_trajectory_requires_an_explicit_analysis_window(tmp_path: Path) -> None:
+    trajectory = _trajectory_with_frame_count(650)
+    with pytest.raises(Exception, match="explicit trajectory analysis window"):
+        _execute(tmp_path / "rdf", "trajectory.rdf", trajectory, {"r_max_angstrom": 2.0})
+    with pytest.raises(Exception, match="explicit trajectory analysis window"):
+        _execute(tmp_path / "msd", "trajectory.msd", trajectory, {})
+
+
+def test_non_prefix_final_200_window_preserves_full_source_provenance(tmp_path: Path) -> None:
+    trajectory = _trajectory_with_frame_count(650)
+    params = {"window_mode": "frame", "frame_start": 450, "frame_end": 650}
+    msd_root = tmp_path / "msd"
+    msd_artifact = _execute(msd_root, "trajectory.msd", trajectory, params)[0]
+    msd = _payload(msd_root, msd_artifact)
+    assert msd["trajectory"]["frameCount"] == 650
+    assert msd["coverage"]["frames"] == 200
+    assert msd["analysisWindow"] == {
+        "mode": "frame",
+        "explicit": True,
+        "sourceFrameCount": 650,
+        "selectedFrameCount": 200,
+        "backendRange": {
+            "startFrameInclusive": 450,
+            "endFrameExclusive": 650,
+        },
+        "userFacingRange": {
+            "firstFrameInclusive": 451,
+            "lastFrameInclusive": 650,
+        },
+        "timeRange": {
+            "start": pytest.approx(0.9),
+            "end": pytest.approx(1.298),
+            "unit": "picosecond",
+        },
+        "sourceTrajectoryId": trajectory["trajectory_id"],
+        "silentTruncation": False,
+    }
+    rdf_root = tmp_path / "rdf"
+    rdf = _payload(
+        rdf_root,
+        _execute(
+            rdf_root,
+            "trajectory.rdf",
+            trajectory,
+            {**params, "r_max_angstrom": 2.0, "bin_count": 20},
+        )[0],
+    )
+    assert rdf["trajectory"]["frameCount"] == 650
+    assert rdf["coverage"]["includedFrames"] == 200
+    assert rdf["analysisWindow"]["backendRange"] == {
+        "startFrameInclusive": 450,
+        "endFrameExclusive": 650,
+    }
+
+
+def test_explicit_201_frame_window_is_rejected(tmp_path: Path) -> None:
+    trajectory = _trajectory_with_frame_count(650)
+    with pytest.raises(Exception, match="exceeds the released 200-frame cap"):
+        _execute(
+            tmp_path,
+            "trajectory.msd",
+            trajectory,
+            {"window_mode": "frame", "frame_start": 449, "frame_end": 650},
+        )
+
+
 def test_triclinic_rdf_uses_ase_geometric_minimum_image() -> None:
     cell = [[4.0, 0.0, 0.0], [3.2, 4.0, 0.0], [0.0, 0.0, 5.0]]
     delta = [-5.04, -2.8, 0.0]  # fractional delta [-0.7, -0.7, 0]
@@ -131,6 +215,28 @@ def test_msd_triclinic_partial_pbc_and_ambiguous_steps(tmp_path: Path) -> None:
         _execute(tmp_path / "ambiguous", "trajectory.msd", trajectory, {"max_lag_count": 1})
 
 
+def test_msd_accepts_source_unspecified_wrapping_only_when_continuity_is_bounded(
+    tmp_path: Path,
+) -> None:
+    trajectory = _trajectory()
+    trajectory["position_wrapping"] = "unknown"
+    trajectory["trajectory_id"] = canonical_trajectory_id(trajectory)
+
+    result = _payload(
+        tmp_path,
+        _execute(tmp_path, "trajectory.msd", trajectory, {"max_lag_count": 1})[0],
+    )
+
+    assert result["unwrapping"]["inputRepresentation"] == (
+        "source_unspecified_minimum_image_continuity"
+    )
+    assert result["unwrapping"]["sourcePositionWrapping"] == "unknown"
+    assert result["unwrapping"]["continuityAssumption"] == (
+        "bounded_fractional_minimum_image"
+    )
+    assert result["unwrapping"]["ambiguousSteps"] == 0
+
+
 def _msd_payload(values: list[float]) -> dict:
     return {
         "artifactType": "trajectory.msd", "schema_version": "phase10n4.trajectory_msd.v1",
@@ -139,6 +245,34 @@ def _msd_payload(values: list[float]) -> dict:
         "totalMsdAngstrom2": values, "directionalMsdAngstrom2": {"x": [value / 3 for value in values], "y": [value / 3 for value in values], "z": [value / 3 for value in values]},
         "originCounts": list(range(20, 20 - len(values), -1)),
     }
+
+
+def test_diffusion_inherits_selected_source_window_provenance(tmp_path: Path) -> None:
+    msd = _msd_payload([0.6 * i for i in range(1, 9)])
+    msd["trajectory"]["frameCount"] = 650
+    msd["analysisWindow"] = {
+        "mode": "frame",
+        "explicit": True,
+        "sourceFrameCount": 650,
+        "selectedFrameCount": 200,
+        "backendRange": {"startFrameInclusive": 450, "endFrameExclusive": 650},
+        "userFacingRange": {"firstFrameInclusive": 451, "lastFrameInclusive": 650},
+        "timeRange": {"start": 33.75, "end": 48.675, "unit": "picosecond"},
+        "sourceTrajectoryId": msd["trajectory"]["trajectoryHash"],
+        "silentTruncation": False,
+    }
+    result = _payload(
+        tmp_path,
+        _execute(
+            tmp_path,
+            "trajectory.diffusion",
+            msd,
+            {"fit_start_time_ps": 1.0, "fit_end_time_ps": 8.0},
+            {"input": {"artifactId": "artifact_msd", "checksum": "3" * 64}},
+        )[0],
+    )
+    assert result["trajectory"]["frameCount"] == 650
+    assert result["analysisWindow"] == msd["analysisWindow"]
 
 
 def test_diffusion_accepts_linear_msd_and_rejects_ballistic(tmp_path: Path) -> None:

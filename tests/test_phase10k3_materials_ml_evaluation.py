@@ -203,6 +203,28 @@ def test_classification_product_preserves_class_labels_and_binary_curves(tmp_pat
     assert {item.name for item in artifacts} == {"materials_ml_classification.json", "summary.md", "recipe.json"}
 
 
+def test_classification_accepts_profile_2_single_positive_probability_column(tmp_path: Path) -> None:
+    profile, objects = _profiled_csv(
+        tmp_path,
+        "material_id,class_true,prob_perovskite\n"
+        "s1,-1,0.05\n"
+        "s2,1,0.64\n"
+        "s3,-1,0.55\n",
+        dataset_id="classification_single_positive_probability",
+    )
+    payload, _ = _execute(
+        tmp_path / "single_probability_out",
+        ClassificationEvaluationAdapter(),
+        profile,
+        objects,
+        params={"positiveClass": "1"},
+    )
+    evaluation = payload["evaluations"][0]
+    assert evaluation["predictionSource"] == "deterministic_probability_argmax"
+    assert evaluation["coverage"]["evaluatedSamples"] == 3
+    assert evaluation["sampleRows"][0]["probabilities"] == {"perovskite": 0.05}
+
+
 def test_registry_contracts_are_strict_profile_bound_and_bounded() -> None:
     registry = load_manifests()
     for tool_id in (

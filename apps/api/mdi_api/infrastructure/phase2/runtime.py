@@ -69,6 +69,34 @@ PHASE2_TOOL_ORDER = (
 DEFAULT_ARTIFACT_ROOT = Path("artifacts") / "phase2_runtime"
 
 
+def _canonical_structure_species_order(payload: Any) -> list[str] | None:
+    if not isinstance(payload, dict):
+        return None
+    sites = payload.get("sites")
+    if not isinstance(sites, list) or not sites:
+        return None
+    ordered: list[str] = []
+    for site in sites:
+        species = site.get("species") if isinstance(site, dict) else None
+        if not isinstance(species, list) or len(species) != 1:
+            return None
+        member = species[0]
+        if not isinstance(member, dict):
+            return None
+        element = member.get("element")
+        occupancy = member.get("occu")
+        if (
+            not isinstance(element, str)
+            or not element
+            or not isinstance(occupancy, (int, float))
+            or isinstance(occupancy, bool)
+            or float(occupancy) != 1.0
+        ):
+            return None
+        ordered.append(element)
+    return ordered
+
+
 
 
 
@@ -711,21 +739,43 @@ class Phase2ProductRuntime:
         return uploads
 
     def _parse_materialized_uploads(self, uploads: list[MaterializedUpload], dataset_id: str) -> list[ParseResult]:
-        parse_results: list[ParseResult] = []
-        for upload in uploads:
+        parse_results: list[ParseResult | None] = [None] * len(uploads)
+        canonical_species_by_group: dict[str, list[str]] = {}
+
+        for index, upload in enumerate(uploads):
             if upload.import_kind is not None:
-                parse_results.append(
-                    map_normalized_phonon_resource(
-                        upload.path,
-                        dataset_id=dataset_id,
-                        file_id=upload.file_id,
-                        declared_kind=upload.import_kind,
-                        declared_contract_version=upload.contract_version,
-                    )
-                )
-            else:
-                parse_results.append(parse_file(upload.path, dataset_id=dataset_id, file_id=upload.file_id))
-        return parse_results
+                continue
+            result = parse_file(upload.path, dataset_id=dataset_id, file_id=upload.file_id)
+            parse_results[index] = result
+            if not upload.companion_group_id:
+                continue
+            structures = [
+                item
+                for item in result.objects
+                if item.object_type == MaterialObjectType.Structure
+            ]
+            if len(structures) != 1:
+                continue
+            species_order = _canonical_structure_species_order(structures[0].payload)
+            if species_order is not None:
+                canonical_species_by_group[upload.companion_group_id] = species_order
+
+        for index, upload in enumerate(uploads):
+            if upload.import_kind is None:
+                continue
+            parse_results[index] = map_normalized_phonon_resource(
+                upload.path,
+                dataset_id=dataset_id,
+                file_id=upload.file_id,
+                declared_kind=upload.import_kind,
+                declared_contract_version=upload.contract_version,
+                canonical_species_order=(
+                    canonical_species_by_group.get(upload.companion_group_id)
+                    if upload.companion_group_id
+                    else None
+                ),
+            )
+        return [item for item in parse_results if item is not None]
 
     def _validate_companion_resources(self, objects: list[NormalizedObjectDraft]) -> None:
         from mdi_artifact_core.electronic_contract import electronic_band_dos_compatibility
@@ -1116,10 +1166,15 @@ def _experimental_xrd_resource(dataframe: pd.DataFrame, metadata: dict[str, Any]
         "resourceId": metadata["resourceId"],
         "resourceVersion": metadata["resourceVersion"],
         "resourceHash": metadata["resourceHash"],
-        "xAxis": metadata["xAxis"],
-        "twoTheta": [float(item) for item in dataframe["two_theta"].tolist()],
-        "intensity": [float(item) for item in dataframe["intensity"].tolist()],
-        "intensitySemantic": metadata["intensitySemantic"],
+        "xAxis": {
+            "kind": metadata["xAxis"]["kind"],
+            "unit": metadata["xAxis"]["unit"],
+            "values": [float(item) for item in dataframe["two_theta"].tolist()],
+        },
+        "intensity": {
+            "semantic": metadata["intensitySemantic"],
+            "values": [float(item) for item in dataframe["intensity"].tolist()],
+        },
         "wavelength": metadata["wavelength"],
     }
 

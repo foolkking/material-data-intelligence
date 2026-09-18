@@ -729,11 +729,16 @@ def _persist_profiled_resource(
     resource_id: str,
     resource_type: str,
     semantic_hash: str,
+    payload: dict | None = None,
 ):
     prefix = f"projects/project/datasets/{dataset_id}/normalized/{resource_id}"
     stored = storage.put_json(
         f"{prefix}/scientific.json",
-        {"schemaVersion": "test.scientific_resource.v1", "resourceId": resource_id},
+        payload
+        or {
+            "schemaVersion": "test.scientific_resource.v1",
+            "resourceId": resource_id,
+        },
     )
     metadata_ref = storage.put_json(
         f"{prefix}/metadata.json",
@@ -874,6 +879,101 @@ def test_scientific_object_admission_reuses_the_exact_profiled_resource(
     )
     assert [str(item["id"]) for item in admitted] == [first.json()["object"]["id"]]
     assert len(objects.list_versions(UUID(first.json()["object"]["id"]))) == 1
+
+
+def test_scientific_object_admission_uses_registered_trajectory_size_bound(
+    api,
+    monkeypatch,
+    tmp_path,
+):
+    from mdi_artifact_core import DEFAULT_TRAJECTORY_CAPS
+
+    client, _active, _owner, _viewer, _stranger, objects = api
+    storage = LocalFileArtifactStorage(tmp_path)
+    monkeypatch.setattr(
+        "mdi_api.routers.agent2.create_artifact_storage_from_settings",
+        lambda _settings: storage,
+    )
+    dataset_id = "dataset-large-trajectory"
+    resource_id = "resource-large-trajectory"
+    semantic_hash = hashlib.sha256(resource_id.encode("utf-8")).hexdigest()
+    _persist_profiled_resource(
+        objects,
+        storage,
+        dataset_id=dataset_id,
+        resource_id=resource_id,
+        resource_type="Trajectory",
+        semantic_hash=semantic_hash,
+        payload={
+            "schemaVersion": "test.large_trajectory.v1",
+            "resourceId": resource_id,
+            "padding": "x" * (17 * 1024 * 1024),
+        },
+    )
+
+    response = client.post(
+        "/api/projects/project/scientific-objects",
+        json={"dataset_id": dataset_id, "resource_id": resource_id},
+    )
+
+    assert response.status_code == 200, response.text
+    assert response.json()["object"]["object_type"] == "trajectory.atomic"
+    version = response.json()["version"]
+    assert (
+        version["normalized_payload_ref_json"]["byte_size"]
+        > 16 * 1024 * 1024
+    )
+    assert (
+        version["normalized_payload_ref_json"]["byte_size"]
+        < DEFAULT_TRAJECTORY_CAPS["max_json_bytes"]
+    )
+
+
+def test_scientific_object_admission_returns_typed_error_for_bounded_read(
+    api,
+    monkeypatch,
+    tmp_path,
+):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    storage = LocalFileArtifactStorage(tmp_path)
+    monkeypatch.setattr(
+        "mdi_api.routers.agent2.create_artifact_storage_from_settings",
+        lambda _settings: storage,
+    )
+    dataset_id = "dataset-over-limit-trajectory"
+    resource_id = "resource-over-limit-trajectory"
+    semantic_hash = hashlib.sha256(resource_id.encode("utf-8")).hexdigest()
+    _persist_profiled_resource(
+        objects,
+        storage,
+        dataset_id=dataset_id,
+        resource_id=resource_id,
+        resource_type="Trajectory",
+        semantic_hash=semantic_hash,
+    )
+    original = storage.get_bytes_bounded
+
+    def reject_payload(key: str, *, max_bytes: int) -> bytes:
+        if key.endswith("/scientific.json"):
+            raise ValueError("Artifact exceeds the bounded read limit")
+        return original(key, max_bytes=max_bytes)
+
+    monkeypatch.setattr(storage, "get_bytes_bounded", reject_payload)
+
+    response = client.post(
+        "/api/projects/project/scientific-objects",
+        json={"dataset_id": dataset_id, "resource_id": resource_id},
+    )
+
+    assert response.status_code == 422
+    assert response.json()["detail"] == (
+        "persisted scientific resource exceeds its registered bounded size"
+    )
+    assert objects.list_project_objects(
+        "project",
+        object_type="trajectory.atomic",
+        limit=50,
+    ) == []
 
 
 def test_scientific_object_admission_keeps_unregistered_resource_types_fail_closed(

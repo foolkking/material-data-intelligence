@@ -70,8 +70,25 @@ _PROPERTY_NAMES = {
 }
 
 _REGRESSION_PATTERN = re.compile(
-    r"^(?P<group>[a-z][a-z0-9_]{0,47})_(?P<kind>true|target|pred|prediction|std|sigma|uncertainty)$"
+    r"^(?P<group>[a-z][a-z0-9_]{0,47})_"
+    r"(?P<kind>true|target|pred|prediction|std|sigma|uncertainty)"
+    r"(?:_(?P<unit>[a-z][a-z0-9]*(?:_[a-z0-9]+)*))?$"
 )
+_UNIT_SUFFIXES = {
+    "a": "Å",
+    "angstrom": "Å",
+    "ev": "eV",
+    "kev": "keV",
+    "mev": "meV",
+    "j": "J",
+    "kj": "kJ",
+    "k": "K",
+    "pa": "Pa",
+    "kpa": "kPa",
+    "mpa": "MPa",
+    "gpa": "GPa",
+    "t": "T",
+}
 _PROBABILITY_PATTERN = re.compile(r"^(?:prob|probability)[_:.\-](?P<class>[a-z0-9][a-z0-9_.\-]{0,47})$")
 _LEGACY_ROLE_NAMES = {
     "formula": "formula",
@@ -147,6 +164,7 @@ def resolve_column_name(column_name: str, *, dtype: str | None) -> tuple[str, st
     if regression_match:
         group = regression_match.group("group")
         kind = regression_match.group("kind")
+        unit_suffix = regression_match.group("unit")
         role = {
             "true": "regression_target",
             "target": "regression_target",
@@ -161,6 +179,10 @@ def resolve_column_name(column_name: str, *, dtype: str | None) -> tuple[str, st
             details = {"property": group}
         else:
             details = {"series": group}
+        if unit_suffix is not None:
+            canonical_unit = _UNIT_SUFFIXES.get(unit_suffix)
+            if canonical_unit is not None:
+                details["unit"] = canonical_unit
         return _dtype_guard(role, dtype, "bounded_pattern", group_id, details)
     if key in _PROPERTY_NAMES:
         return _dtype_guard("material_property", dtype, "canonical_name", None, {"property": key})
@@ -245,7 +267,16 @@ def table_semantics(obj: NormalizedObjectDraft) -> tuple[list[dict[str, Any]], l
         if len(name) > MAX_COLUMN_NAME_LENGTH:
             ambiguities.append("COLUMN_NAME_EXCEEDS_PROFILE_LIMIT")
             roles = []
-        unit = column.get("unit") if isinstance(column.get("unit"), str) else None
+        inferred_units = [
+            role["details"].get("unit")
+            for role in roles
+            if isinstance(role.get("details"), dict) and role["details"].get("unit")
+        ]
+        unit = (
+            column.get("unit")
+            if isinstance(column.get("unit"), str)
+            else (inferred_units[0] if inferred_units else None)
+        )
         if unit is not None and len(unit) > MAX_UNIT_LENGTH:
             unit = None
             ambiguities.append("UNIT_METADATA_EXCEEDS_PROFILE_LIMIT")
@@ -403,6 +434,12 @@ def _validate_probability_groups(groups: list[dict[str, Any]], sampled_rows: lis
         probability_columns = group["probabilityColumns"]
         if not probability_columns or len(probability_columns) > MAX_PROBABILITY_COLUMNS:
             continue
+        # One probability column is a valid binary-classification contract:
+        # it represents the probability of the named positive class and its
+        # complement is implicit.  Requiring a one-column row to sum to 1.0
+        # incorrectly rejects ordinary binary classifier exports.  Multi-class
+        # probability vectors must still be explicitly normalized.
+        require_row_normalization = len(probability_columns) > 1
         checked = 0
         invalid = 0
         for row in sampled_rows:
@@ -424,7 +461,9 @@ def _validate_probability_groups(groups: list[dict[str, Any]], sampled_rows: lis
             if not values:
                 continue
             checked += 1
-            if any(value < 0 or value > 1 for value in values) or abs(sum(values) - 1.0) > 1e-6:
+            if any(value < 0 or value > 1 for value in values) or (
+                require_row_normalization and abs(sum(values) - 1.0) > 1e-6
+            ):
                 invalid += 1
         if checked and invalid:
             group["reasons"].append("PROBABILITY_ROWS_NOT_NORMALIZED")

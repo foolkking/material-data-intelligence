@@ -11,7 +11,10 @@ from mdi_api.application.research.transactions import transaction_active
 from mdi_api.research_agent.capabilities.schemas import CapabilityPlan, CapabilityPlannerInput, CapabilityResolution
 from mdi_api.research_agent.llm.structured_client import StructuredLLMClient
 from mdi_api.research_agent.orchestration.schemas import ResearchTurnDecision
-from mdi_api.research_agent.planning.deterministic import build_deterministic_capability_plan
+from mdi_api.research_agent.planning.deterministic import (
+    build_deterministic_capability_plan,
+    deterministic_candidate_key,
+)
 from mdi_api.research_agent.planning.validator import CapabilityPlanValidator
 
 
@@ -39,10 +42,49 @@ def load_capability_planner_prompt() -> str:
     return (Path(__file__).parent / "prompts" / "scientific_capability_planner_v1.txt").read_text(encoding="utf-8")
 
 
-def requires_llm_planning(resolution: CapabilityResolution, decision: ResearchTurnDecision) -> bool:
+def requires_llm_planning(
+    resolution: CapabilityResolution,
+    decision: ResearchTurnDecision,
+    *,
+    registry: Any | None = None,
+) -> bool:
+    decision_requirement_ids = {
+        item.requirement_id for item in decision.scientific_requirements
+    }
     for requirement in decision.scientific_requirements:
         options = [candidate for candidate in resolution.candidates if requirement.requirement_id in candidate.satisfies_requirement_ids and candidate.eligibility.value in {"ELIGIBLE", "CONDITIONAL"}]
-        if len(options) > 1:
+        if not options:
+            continue
+        if registry is None:
+            best_priority = min(item.planning_priority for item in options)
+            equally_ranked = [
+                item for item in options if item.planning_priority == best_priority
+            ]
+        else:
+            ranked = sorted(
+                options,
+                key=lambda item: deterministic_candidate_key(
+                    item,
+                    decision_requirement_ids=decision_requirement_ids,
+                    registry=registry,
+                ),
+            )
+            best_key = deterministic_candidate_key(
+                ranked[0],
+                decision_requirement_ids=decision_requirement_ids,
+                registry=registry,
+            )[:3]
+            equally_ranked = [
+                item
+                for item in ranked
+                if deterministic_candidate_key(
+                    item,
+                    decision_requirement_ids=decision_requirement_ids,
+                    registry=registry,
+                )[:3]
+                == best_key
+            ]
+        if len(equally_ranked) > 1:
             return True
     for candidate in resolution.candidates:
         if any(len(values) > 1 for values in candidate.possible_producers.values()):
@@ -59,7 +101,11 @@ class ScientificCapabilityPlanner:
         self.timeout_seconds = timeout_seconds
 
     async def plan(self, *, decision: ResearchTurnDecision, resolution: CapabilityResolution, planner_input: CapabilityPlannerInput, context: dict[str, Any]) -> tuple[CapabilityPlan, str, Any | None]:
-        if not requires_llm_planning(resolution, decision):
+        if not requires_llm_planning(
+            resolution,
+            decision,
+            registry=self.registry,
+        ):
             plan = build_deterministic_capability_plan(decision=decision, resolution=resolution, registry=self.registry)
             return CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=decision, context=context, registry=self.registry), "DETERMINISTIC", None
         if self.llm_client is None:

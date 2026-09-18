@@ -33,7 +33,10 @@ _REFERENCE_AUTHORITIES = {
 _KNOWN_UNITS = {
     "1/angstrom",
     "angstrom",
+    "angstrom^-1",
+    "angstrom^-3",
     "angstrom^2",
+    "angstrom^3",
     "angstrom^2/ps",
     "cm^-1",
     "count",

@@ -5,7 +5,7 @@ import json
 import math
 from typing import Any
 
-from pymatgen.core import Lattice, Structure
+from pymatgen.core import Composition, Lattice, Molecule, Structure
 from pymatgen.core.periodic_table import Element
 
 from mdi_artifact_core import (
@@ -39,7 +39,15 @@ except Exception:  # pragma: no cover
 
 @dataclass(frozen=True)
 class PreparedStructures:
+    structures: dict[str, Structure | Molecule]
+    truncated: bool
+    warnings: list[str]
+
+
+@dataclass(frozen=True)
+class PreparedCompositionSources:
     structures: dict[str, Structure]
+    formula_records: tuple[dict[str, Any], ...]
     truncated: bool
     warnings: list[str]
 
@@ -205,9 +213,17 @@ class StructureSummaryAdapter(_BaseStructureAdapter):
     adapter_version = "0.1.0"
 
     def run(self, prepared: PreparedStructures, params: dict[str, Any]) -> StructureAdapterResult:
+        if SpacegroupAnalyzer is None:
+            raise ToolExecutionError(
+                code="TOOL_DEPENDENCY_MISSING",
+                message="structure.summary requires pymatgen symmetry support / spglib.",
+                tool_id=self.tool_id,
+                details={"errorType": "symmetry_dependency_missing"},
+            )
         include_sites = bool(params.get("includeSitesPreview", True))
         max_preview_sites = int(params.get("maxPreviewSites") or 20)
         payload = {
+            "schemaVersion": "phase10c1.structure_summary.v2",
             "artifactType": self.tool_id,
             "structureCount": len(prepared.structures),
             "structures": [
@@ -328,20 +344,138 @@ class StructureCompositionAdapter(_BaseStructureAdapter):
     tool_id = "structure.composition_from_structure"
     adapter_version = "0.1.0"
 
-    def run(self, prepared: PreparedStructures, params: dict[str, Any]) -> StructureAdapterResult:
+    def prepare(
+        self,
+        context: ToolExecutionContext,
+        input_refs: list[Any],
+        params: dict[str, Any],
+    ) -> PreparedCompositionSources:
+        if not self._resolved_inputs:
+            raise self._input_error(
+                "No structure or formula-table input was provided.",
+                "empty_composition_source",
+            )
+        raw = (
+            self._resolved_inputs[0]
+            if len(self._resolved_inputs) == 1
+            else self._resolved_inputs
+        )
+        rows = _coerce_formula_rows(raw)
+        if rows is None:
+            prepared = super().prepare(context, input_refs, params)
+            return PreparedCompositionSources(
+                structures=prepared.structures,
+                formula_records=(),
+                truncated=prepared.truncated,
+                warnings=prepared.warnings,
+            )
+
+        formula_column = str(params.get("formulaColumn") or "").strip()
+        if not formula_column:
+            formula_column = next(
+                (
+                    candidate
+                    for candidate in (
+                        "formula",
+                        "material_formula",
+                        "chemical_formula",
+                        "pretty_formula",
+                        "composition",
+                    )
+                    if any(candidate in row for row in rows)
+                ),
+                "",
+            )
+        if not formula_column:
+            raise self._input_error(
+                "Formula-table input requires an explicit semantic formula column.",
+                "missing_formula_column",
+            )
+
+        max_rows = int(
+            params.get("maxRows")
+            or context.resource_limits.get("maxRows")
+            or 100_000
+        )
+        limited_rows = rows[:max_rows]
+        records: list[dict[str, Any]] = []
+        invalid_rows: list[int] = []
+        for index, row in enumerate(limited_rows):
+            raw_formula = row.get(formula_column)
+            if raw_formula is None or not str(raw_formula).strip():
+                invalid_rows.append(index)
+                continue
+            try:
+                composition = Composition(str(raw_formula).strip())
+            except Exception:
+                invalid_rows.append(index)
+                continue
+            elements = sorted(element.symbol for element in composition.elements)
+            records.append(
+                {
+                    "sourceRowIndex": index,
+                    "formula": str(raw_formula).strip(),
+                    "reducedFormula": composition.reduced_formula,
+                    "elements": elements,
+                    "elementCounts": _stable_float_map(
+                        {
+                            element.symbol: float(amount)
+                            for element, amount in composition.element_composition.items()
+                        }
+                    ),
+                    "chemicalSystem": "-".join(elements),
+                    "sourceKind": "formula_table",
+                }
+            )
+        if not records:
+            raise self._input_error(
+                "Formula-table input contains no valid formulas.",
+                "invalid_formula_column",
+                formulaColumn=formula_column,
+                invalidRows=invalid_rows[:32],
+            )
+        warnings = []
+        if len(rows) > len(limited_rows):
+            warnings.append(
+                f"Input contained {len(rows)} rows; bounded composition extraction to {len(limited_rows)}."
+            )
+        if invalid_rows:
+            warnings.append(
+                f"Skipped {len(invalid_rows)} rows without a valid formula in {formula_column}."
+            )
+        return PreparedCompositionSources(
+            structures={},
+            formula_records=tuple(records),
+            truncated=len(rows) > len(limited_rows),
+            warnings=warnings,
+        )
+
+    def run(
+        self,
+        prepared: PreparedCompositionSources,
+        params: dict[str, Any],
+    ) -> StructureAdapterResult:
         element_counts: dict[str, float] = {}
         chemical_systems: dict[str, int] = {}
-        formulas: list[dict[str, Any]] = []
+        formulas: list[dict[str, Any]] = list(prepared.formula_records)
         for label, structure in sorted(prepared.structures.items()):
             record = _composition_record(label, structure)
             formulas.append(record)
-            chemical_systems[record["chemicalSystem"]] = chemical_systems.get(record["chemicalSystem"], 0) + 1
+        for record in formulas:
+            chemical_systems[record["chemicalSystem"]] = (
+                chemical_systems.get(record["chemicalSystem"], 0) + 1
+            )
             for element, amount in record["elementCounts"].items():
                 element_counts[element] = element_counts.get(element, 0.0) + float(amount)
         payload = {
             "artifactType": self.tool_id,
             "structureCount": len(prepared.structures),
             "formulaCount": len(formulas),
+            "sourceMode": (
+                "formula_table"
+                if prepared.formula_records and not prepared.structures
+                else "periodic_structure"
+            ),
             "formulas": formulas,
             "elementCounts": _stable_float_map(element_counts),
             "chemicalSystems": dict(sorted(chemical_systems.items())),
@@ -361,6 +495,103 @@ class StructureCompositionAdapter(_BaseStructureAdapter):
             artifact_name="structure_composition.json",
             title="Structure Composition",
             primary_artifact_type=ArtifactType.table_json,
+        )
+
+
+def _coerce_formula_rows(raw: Any) -> list[dict[str, Any]] | None:
+    value_type = type(raw)
+    if (
+        value_type.__name__ == "DataFrame"
+        and (
+            value_type.__module__ == "pandas"
+            or value_type.__module__.startswith("pandas.")
+        )
+    ):
+        return [
+            {str(key): value for key, value in row.items()}
+            for row in raw.to_dict(orient="records")
+        ]
+    if isinstance(raw, dict):
+        for key in ("records", "rows", "data"):
+            candidate = raw.get(key)
+            if isinstance(candidate, list) and all(
+                isinstance(item, dict) for item in candidate
+            ):
+                return [
+                    {str(name): value for name, value in item.items()}
+                    for item in candidate
+                ]
+    if isinstance(raw, (list, tuple)) and raw and all(
+        isinstance(item, dict) for item in raw
+    ):
+        return [
+            {str(name): value for name, value in item.items()}
+            for item in raw
+        ]
+    return None
+
+
+def _looks_like_atoms_payload(value: Any) -> bool:
+    return (
+        isinstance(value, dict)
+        and isinstance(value.get("symbols"), list)
+        and isinstance(value.get("positions"), list)
+        and value.get("pbc") in ([False, False, False], (False, False, False), None)
+    )
+
+
+def _molecule_from_atoms_payload(value: dict[str, Any], *, tool_id: str) -> Molecule:
+    symbols = value.get("symbols") or []
+    positions = value.get("positions") or []
+    if not symbols or len(symbols) != len(positions):
+        raise ToolExecutionError(
+            code="TOOL_INPUT_INVALID",
+            message="Atomic viewer input requires matching symbols and Cartesian positions.",
+            tool_id=tool_id,
+            details={"errorType": "invalid_nonperiodic_atoms"},
+        )
+    try:
+        return Molecule(symbols, positions)
+    except Exception as exc:
+        raise ToolExecutionError(
+            code="TOOL_INPUT_INVALID",
+            message="Atomic viewer coordinates are invalid.",
+            tool_id=tool_id,
+            details={"errorType": "invalid_nonperiodic_atoms"},
+        ) from exc
+
+
+def _validate_nonperiodic_molecule(
+    label: str,
+    molecule: Molecule,
+    *,
+    max_atoms: int,
+    tool_id: str,
+) -> None:
+    if not molecule:
+        raise ToolExecutionError(
+            code="TOOL_INPUT_INVALID",
+            message="Atomic structure has no sites.",
+            tool_id=tool_id,
+            details={"structure": label},
+        )
+    if len(molecule) > max_atoms:
+        raise ToolExecutionError(
+            code="TOOL_RESOURCE_LIMIT",
+            message="Atomic structure exceeds maxAtomsPerStructure.",
+            tool_id=tool_id,
+            details={"structure": label, "atoms": len(molecule), "maxAtomsPerStructure": max_atoms},
+        )
+    if not all(
+        math.isfinite(float(value))
+        for site in molecule
+        for value in site.coords.tolist()
+    ):
+        raise ToolExecutionError(
+            code="TOOL_INPUT_INVALID",
+            message="Atomic structure contains non-finite coordinates.",
+            tool_id=tool_id,
+            details={"structure": label},
         )
 
 
@@ -437,7 +668,11 @@ class StructureViewerSceneAdapter(_BaseStructureAdapter):
             raise self._input_error("No structure input was provided.", "empty_structure")
 
         raw = self._resolved_inputs[0] if len(self._resolved_inputs) == 1 else self._resolved_inputs
-        structures = self._coerce_structures(raw)
+        if _looks_like_atoms_payload(raw):
+            molecule = _molecule_from_atoms_payload(raw, tool_id=self.tool_id)
+            structures = {molecule.composition.reduced_formula: molecule}
+        else:
+            structures = self._coerce_structures(raw)
         if not structures:
             raise self._input_error("Structure collection is empty.", "empty_structure")
         if len(structures) != 1:
@@ -448,20 +683,32 @@ class StructureViewerSceneAdapter(_BaseStructureAdapter):
             )
         max_atoms = int(context.resource_limits.get("maxAtomsPerStructure") or DEFAULT_VIEWER_SCENE_CAPS["max_sites"])
         for label, structure in structures.items():
-            self._validate_structure(label, structure, max_atoms=max_atoms)
-            _validate_viewer_scene_structure_numbers(structure, tool_id=self.tool_id)
+            if isinstance(structure, Structure):
+                self._validate_structure(label, structure, max_atoms=max_atoms)
+                _validate_viewer_scene_structure_numbers(structure, tool_id=self.tool_id)
+            else:
+                _validate_nonperiodic_molecule(label, structure, max_atoms=max_atoms, tool_id=self.tool_id)
         return PreparedStructures(structures=structures, truncated=False, warnings=[])
 
     def run(self, prepared: PreparedStructures, params: dict[str, Any]) -> StructureAdapterResult:
         normalized_params = _viewer_scene_v1_params(params, self.context.resource_limits, tool_id=self.tool_id)
         label, structure = next(iter(sorted(prepared.structures.items())))
-        payload, manifest = _viewer_scene_v1_payload(
-            label,
-            structure,
-            params=normalized_params,
-            tool_id=self.tool_id,
-            context=self.context,
-        )
+        if isinstance(structure, Molecule):
+            payload, manifest = _viewer_scene_nonperiodic_payload(
+                label,
+                structure,
+                params=normalized_params,
+                tool_id=self.tool_id,
+                context=self.context,
+            )
+        else:
+            payload, manifest = _viewer_scene_v1_payload(
+                label,
+                structure,
+                params=normalized_params,
+                tool_id=self.tool_id,
+                context=self.context,
+            )
         scene_json = stable_json_dumps(payload)
         scene_result = validate_viewer_scene(payload, raw_size_bytes=len(scene_json.encode("utf-8")))
         if not scene_result.valid:
@@ -585,6 +832,11 @@ def _structure_label(structure: Structure, fallback: str) -> str:
 
 
 def _structure_record(label: str, structure: Structure, *, include_sites: bool, max_preview_sites: int) -> dict[str, Any]:
+    analyzer = SpacegroupAnalyzer(
+        structure,
+        symprec=0.01,
+        angle_tolerance=5,
+    )
     return {
         "structureId": label,
         "sourceFormat": "pymatgen.Structure",
@@ -596,6 +848,14 @@ def _structure_record(label: str, structure: Structure, *, include_sites: bool, 
         "numElements": len(_elements(structure)),
         "isPeriodic": bool(structure.lattice and structure.lattice.volume > 0),
         "lattice": _lattice_payload(structure),
+        "symmetry": {
+            "engine": "pymatgen/spglib",
+            "symprecAngstrom": 0.01,
+            "angleToleranceDegrees": 5.0,
+            "spacegroupNumber": int(analyzer.get_space_group_number()),
+            "spacegroupSymbol": str(analyzer.get_space_group_symbol()),
+            "crystalSystem": str(analyzer.get_crystal_system()),
+        },
         "siteProperties": sorted(structure.site_properties.keys()),
         "sitesPreview": _sites_preview(structure, max_sites=max_preview_sites) if include_sites else [],
         "warnings": [],
@@ -1268,6 +1528,124 @@ def _viewer_scene_v1_payload(
     return payload, manifest
 
 
+def _viewer_scene_nonperiodic_payload(
+    label: str,
+    molecule: Molecule,
+    *,
+    params: dict[str, Any],
+    tool_id: str,
+    context: ToolExecutionContext,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    if len(molecule) > int(params["max_sites"]):
+        raise ToolExecutionError(
+            code="TOOL_RESOURCE_LIMIT",
+            message="Atomic structure exceeds viewer scene max_sites.",
+            tool_id=tool_id,
+            details={"siteCount": len(molecule), "maxSites": int(params["max_sites"])},
+        )
+    counts: dict[str, int] = {}
+    sites: list[dict[str, Any]] = []
+    species: set[str] = set()
+    for index, site in enumerate(molecule):
+        element = site.specie.symbol
+        species.add(element)
+        counts[element] = counts.get(element, 0) + 1
+        style = _element_style(element)
+        sites.append(
+            {
+                "index": index,
+                "element": element,
+                "label": f"{element}{counts[element]}",
+                "xyz": _round_list(site.coords.tolist()),
+                "occupancy": 1.0,
+                "style": {"radius": style["radius"], "color": style["color"]},
+            }
+        )
+    warnings = [
+        {
+            "code": "VIEWER_SCENE_NONPERIODIC",
+            "message": "Cartesian atomic coordinates are shown without inferred lattice, symmetry, or periodic bonds.",
+        }
+    ]
+    payload = {
+        "kind": VIEWER_SCENE_KIND,
+        "version": VIEWER_SCENE_VERSION,
+        "schema_version": VIEWER_SCENE_SCHEMA_VERSION,
+        "source": {
+            "resource_id": context.dataset_id,
+            "resource_type": "normalized_object",
+            "filename": "atoms",
+            "parser": "ASE.Atoms",
+            "parser_version": BaseToolAdapter.dependency_versions().get("aseVersion", "unknown"),
+            "tool_id": tool_id,
+        },
+        "metadata": {
+            "title": "Non-periodic Atomic Viewer Scene",
+            "structure_id": label,
+            "formula": molecule.composition.reduced_formula,
+            "site_count": len(molecule),
+            "species_count": len(species),
+            "species": sorted(species),
+            "periodicity": "non_periodic",
+            "lattice_inferred": False,
+            "symmetry_inferred": False,
+            "preview_mode": "json_only",
+            "renderer_required": False,
+        },
+        "scene": {
+            "coordinate_basis": "cartesian_angstrom",
+            "sites": sites,
+            "lattice": {
+                "pbc": [False, False, False],
+                "vectors": [[0.0, 0.0, 0.0]] * 3,
+                "role": "absent_nonperiodic_coordinate_frame",
+            },
+            "bonds": [],
+            "cell_expansion": [1, 1, 1],
+            "style": {
+                "representation": "ball_and_stick",
+                "background": "transparent",
+                "style_preset": params["style_preset"],
+                "camera_preset": params["camera_preset"],
+            },
+        },
+        "validation": {
+            "status": "passed_with_warnings",
+            "validated_in_phase": "post-phase-e-repair",
+            "finite_numbers": True,
+            "caps_enforced": True,
+            "external_resources_detected": False,
+            "scriptable_fields_detected": False,
+            "truncated": False,
+            "errors": [],
+        },
+        "caps": {
+            **DEFAULT_VIEWER_SCENE_CAPS,
+            "max_sites": int(params["max_sites"]),
+            "max_bonds": int(params["max_bonds"]),
+        },
+        "warnings": warnings,
+        "provenance": {
+            "phase": "post-phase-e-repair",
+            "fixture": False,
+            "provenance_label": "adapter_generated",
+            "official_pass_claim": False,
+            "deterministic": True,
+            "tool_id": tool_id,
+        },
+        "security": {
+            "contains_javascript": False,
+            "external_urls": [],
+            "external_urls_allowed": False,
+            "artifact_supplied_js_allowed": False,
+            "renderer_required": False,
+            "remote_assets_allowed": False,
+            "html_allowed": False,
+        },
+    }
+    return payload, _viewer_scene_v1_manifest(payload, tool_id=tool_id)
+
+
 def _viewer_scene_v1_sites(structure: Structure, *, include_fractional: bool) -> list[dict[str, Any]]:
     counts: dict[str, int] = {}
     sites: list[dict[str, Any]] = []
@@ -1375,11 +1753,19 @@ def _viewer_scene_v1_manifest(payload: dict[str, Any], *, tool_id: str) -> dict[
     scene_json = stable_json_dumps(payload)
     warning_codes = [item["code"] for item in payload.get("warnings", []) if isinstance(item, dict) and isinstance(item.get("code"), str)]
     return {
-        "schema_version": VIEWER_SCENE_MANIFEST_V2_SCHEMA_VERSION,
+        "schema_version": (
+            VIEWER_SCENE_MANIFEST_V2_SCHEMA_VERSION
+            if payload["version"] == VIEWER_SCENE_PERIODIC_VERSION
+            else VIEWER_SCENE_MANIFEST_SCHEMA_VERSION
+        ),
         "artifact_id": "viewer_scene",
         "artifact_kind": VIEWER_SCENE_KIND,
         "artifact_version": payload["version"],
-        "capabilities": dict(VIEWER_SCENE_MANIFEST_V2_CAPABILITIES),
+        **(
+            {"capabilities": dict(VIEWER_SCENE_MANIFEST_V2_CAPABILITIES)}
+            if payload["version"] == VIEWER_SCENE_PERIODIC_VERSION
+            else {}
+        ),
         "fixture_source": "adapter_generated",
         "expected_validation_state": "valid_with_warnings" if warning_codes else "valid",
         "expected_errors": [],
