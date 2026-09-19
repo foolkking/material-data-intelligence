@@ -11,7 +11,7 @@ from mdi_api.unit_of_work import transaction_active
 from mdi_llm.providers import DeepSeekProvider, PlannerUserConfig
 
 
-PROMPT_VERSION = "scientific-interpreter/1.1"
+PROMPT_VERSION = "scientific-interpreter/1.2"
 
 
 class StructuredInterpreterClient(Protocol):

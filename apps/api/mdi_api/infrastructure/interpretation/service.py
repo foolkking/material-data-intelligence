@@ -474,6 +474,7 @@ class ScientificInterpretationService:
             "contradicting_refs",
             "defects",
             "independent_evidence_groups",
+            "required_qualifiers",
             "severity",
             "method_context",
         }

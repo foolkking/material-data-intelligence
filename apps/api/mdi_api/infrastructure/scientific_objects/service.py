@@ -256,6 +256,21 @@ class ScientificObjectService:
         object_type = str((source_metadata.get("provenance") or {}).get("objectType") or (source_metadata.get("metadata") or {}).get("objectType") or "")
         if object_type != "DataFrame":
             raise InvalidScientificObjectVersion("the selected normalized resource is not a scientific table")
+        # A DataFrame-shaped upload can carry a registered semantic resource
+        # contract (for example the experimental XRD resource).  Do not
+        # downgrade such a source to ``materials.table``: the durable
+        # ScientificObject type is the authority consumed by orchestration and
+        # capability binding.  Re-enter the generic admission bridge so the
+        # exact semantic mapping and source/version checks stay centralized.
+        if isinstance((source_metadata.get("metadata") or {}).get("experimentalXrd"), dict):
+            return self.admit_dataset_resource(
+                project_id=project_id,
+                dataset_id=dataset_id,
+                resource_id=object_id,
+                storage=storage,
+                display_name=display_name,
+                created_by_user_id=created_by_user_id,
+            )
         if not isinstance(payload, list):
             raise InvalidScientificObjectVersion("scientific table payload must be a bounded row list")
         # Promotion is a projection bridge, not a version factory that should

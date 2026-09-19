@@ -1644,6 +1644,9 @@ def test_retired_provider_finding_fields_are_contract_repaired_without_authority
         finding["contradicting_refs"] = []
         finding["defects"] = []
         finding["independent_evidence_groups"] = 1
+        finding["required_qualifiers"] = [
+            "provider-authored assessment qualifier"
+        ]
         finding["severity"] = None
         finding["method_context"] = None
     client = FakeStructuredInterpreterClient(legacy)
@@ -1662,6 +1665,20 @@ def test_retired_provider_finding_fields_are_contract_repaired_without_authority
     assert all(item.reasoning_assessment is None for item in result.primary_findings)
     assert repaired is False
     assert client.calls == 1
+
+
+def test_interpreter_prompt_keeps_factless_results_qualitative() -> None:
+    from mdi_api.infrastructure.interpretation.client import (
+        PROMPT_VERSION,
+        load_interpreter_prompt,
+    )
+
+    prompt = load_interpreter_prompt()
+
+    assert PROMPT_VERSION == "scientific-interpreter/1.2"
+    assert "When a Result supplies no scientific facts" in prompt
+    assert "do not create separate findings" in prompt
+    assert "limit findings to qualitative availability/status" in prompt
 
 
 def test_unknown_provider_finding_field_still_fails_closed_after_bounded_repair():
