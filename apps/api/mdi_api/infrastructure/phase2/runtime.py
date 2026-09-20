@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, AsyncIterable
 
 import pandas as pd
+from starlette.requests import ClientDisconnect
 
 from mdi_api.artifact_storage import LocalFileArtifactStorage
 from mdi_api.input_transport import (
@@ -205,7 +206,7 @@ class Phase2ProductRuntime:
         chunks: AsyncIterable[bytes],
     ) -> dict[str, Any]:
         session = self._require_upload_session(session_id)
-        if session.status in {"cancelled", "completed"}:
+        if session.status in {"cancelled", "completed", "failed"}:
             raise ValueError("UPLOAD_SESSION_NOT_WRITABLE")
         try:
             file_record = session.files[file_id]
@@ -219,9 +220,12 @@ class Phase2ProductRuntime:
         temporary = target.with_name(f"{target.name}.part")
         digest = hashlib.sha256()
         observed = 0
+        session.status = "receiving"
         try:
             with temporary.open("wb") as handle:
                 async for chunk in chunks:
+                    if session.status != "receiving":
+                        raise ValueError("UPLOAD_SESSION_NOT_WRITABLE")
                     if not chunk:
                         continue
                     observed += len(chunk)
@@ -233,9 +237,27 @@ class Phase2ProductRuntime:
                 raise ValueError("UPLOAD_BYTE_SIZE_MISMATCH")
             if digest.hexdigest() != file_record.declaration.sha256:
                 raise ValueError("UPLOAD_SHA256_MISMATCH")
+            if session.status != "receiving":
+                raise ValueError("UPLOAD_SESSION_NOT_WRITABLE")
             temporary.replace(target)
+        except ClientDisconnect:
+            temporary.unlink(missing_ok=True)
+            session.status = "failed"
+            for item in session.files.values():
+                item.status = "failed"
+            shutil.rmtree(
+                self.artifact_root / "upload_sessions" / session.id,
+                ignore_errors=True,
+            )
+            raise
         except Exception:
             temporary.unlink(missing_ok=True)
+            file_record.status = "pending"
+            session.status = (
+                "files_received"
+                if all(item.status == "received" for item in session.files.values())
+                else "created"
+            )
             raise
         file_record.status = "received"
         session.status = "files_received" if all(item.status == "received" for item in session.files.values()) else "receiving"
@@ -253,6 +275,8 @@ class Phase2ProductRuntime:
         session = self._require_upload_session(session_id)
         if session.status == "completed" and session.dataset_id is not None:
             return self.get_dataset(session.dataset_id)
+        if session.status in {"cancelled", "failed"}:
+            raise ValueError("UPLOAD_SESSION_NOT_WRITABLE")
         if any(item.status != "received" for item in session.files.values()):
             raise ValueError("UPLOAD_SESSION_INCOMPLETE")
 

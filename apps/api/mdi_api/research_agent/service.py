@@ -7,7 +7,7 @@ import json
 import logging
 import threading
 from typing import Any, Iterator
-from uuid import UUID, uuid4
+from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
 from mdi_api.application.research.ports import (
     ResearchActor,
@@ -18,6 +18,7 @@ from mdi_api.agent2_errors import (
     InvalidResearchTurnTransition,
     ResearchResourceLimitExceeded,
     ResearchSessionProjectMismatch,
+    ResearchTurnAdmissionConflict,
     UnauthorizedScientificObjectReference,
 )
 from mdi_api.research_agent.schemas import (
@@ -102,6 +103,34 @@ class ResearchTurnService:
                 session = unit.agent2.research_turns.lock_session(session_id)
                 if session is None or str(session["project_id"]) != project_id:
                     raise ResearchSessionProjectMismatch(session_id)
+                admission_fingerprint = self._admission_fingerprint(request)
+                turn_id, message_id = self._admission_ids(
+                    project_id=project_id,
+                    session_id=session_id,
+                    current_user_id=current_user.id,
+                    admission_key=request.admission_key,
+                )
+                if request.admission_key:
+                    existing = unit.agent2.research_turns.get_optional(turn_id)
+                    if existing is not None:
+                        existing_message = unit.agent2.research_turns.get_message(
+                            str(existing["user_message_id"])
+                        )
+                        self._verify_admission_replay(
+                            existing=existing,
+                            existing_message=existing_message,
+                            request=request,
+                            admission_fingerprint=admission_fingerprint,
+                            project_id=project_id,
+                            session_id=session_id,
+                        )
+                        return self._turn_response(
+                            turn=existing,
+                            message=existing_message,
+                            project_id=project_id,
+                            session_id=session_id,
+                            idempotent_replay=True,
+                        )
                 if str(session.get("status") or "active").lower() != "active":
                     raise InvalidResearchTurnTransition(
                         "Archived or trashed Research Sessions must be restored before new research."
@@ -129,8 +158,6 @@ class ResearchTurnService:
                         )
                 self._authorize_ui_context(unit, project_id, request)
                 now = datetime.now(timezone.utc)
-                turn_id = uuid4()
-                message_id = f"message_{uuid4().hex}"
                 ui_context = request.ui_context.model_dump(mode="json") if request.ui_context else None
                 autonomy = self._root_autonomy_payload(
                     mode=request.autonomy_mode,
@@ -146,6 +173,14 @@ class ResearchTurnService:
                         "uiContext": ui_context,
                         "replyToTurnId": str(parent_turn_id) if parent_turn_id else None,
                         "autonomy": autonomy,
+                        "_mdi_admission": {
+                            "key_hash": (
+                                hashlib.sha256(request.admission_key.encode("utf-8")).hexdigest()
+                                if request.admission_key
+                                else None
+                            ),
+                            "fingerprint": admission_fingerprint,
+                        },
                     },
                     "created_at": now,
                 })
@@ -191,14 +226,99 @@ class ResearchTurnService:
                         created_at=now,
                     )
         self._log_lifecycle(turn, ResearchTurnEventType.TURN_RECEIVED)
+        return self._turn_response(
+            turn=turn,
+            message=message,
+            project_id=project_id,
+            session_id=session_id,
+        )
+
+    @staticmethod
+    def _admission_fingerprint(request: CreateResearchTurnRequest) -> str:
+        payload = {
+            "message": request.message,
+            "ui_context": (
+                request.ui_context.model_dump(mode="json")
+                if request.ui_context is not None
+                else None
+            ),
+            "reply_to_turn_id": (
+                str(request.reply_to_turn_id) if request.reply_to_turn_id else None
+            ),
+            "autonomy_mode": request.autonomy_mode.value,
+        }
+        return hashlib.sha256(
+            json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
+        ).hexdigest()
+
+    @staticmethod
+    def _admission_ids(
+        *,
+        project_id: str,
+        session_id: str,
+        current_user_id: str,
+        admission_key: str | None,
+    ) -> tuple[UUID, str]:
+        if not admission_key:
+            turn_id = uuid4()
+            return turn_id, f"message_{uuid4().hex}"
+        scope = f"{current_user_id}:{project_id}:{session_id}:{admission_key}"
+        turn_id = uuid5(NAMESPACE_URL, f"mdi:research-turn-admission:{scope}")
+        message_digest = hashlib.sha256(
+            f"mdi:research-message-admission:{scope}".encode("utf-8")
+        ).hexdigest()
+        return turn_id, f"message_{message_digest[:56]}"
+
+    @staticmethod
+    def _verify_admission_replay(
+        *,
+        existing: dict[str, Any],
+        existing_message: dict[str, Any],
+        request: CreateResearchTurnRequest,
+        admission_fingerprint: str,
+        project_id: str,
+        session_id: str,
+    ) -> None:
+        if (
+            str(existing["project_id"]) != project_id
+            or str(existing["research_session_id"]) != session_id
+        ):
+            raise ResearchTurnAdmissionConflict(
+                "admission_key is already bound to another Research Session"
+            )
+        payload = existing_message.get("payload_json") or {}
+        stored = payload.get("_mdi_admission") if isinstance(payload, dict) else None
+        if (
+            not isinstance(stored, dict)
+            or stored.get("fingerprint") != admission_fingerprint
+            or str(existing_message.get("content_summary") or "") != request.message
+        ):
+            raise ResearchTurnAdmissionConflict(
+                "admission_key was already used for a different Research request"
+            )
+
+    @staticmethod
+    def _turn_response(
+        *,
+        turn: dict[str, Any],
+        message: dict[str, Any],
+        project_id: str,
+        session_id: str,
+        idempotent_replay: bool = False,
+    ) -> CreateResearchTurnResponse:
         return CreateResearchTurnResponse(
-            turn_id=turn_id,
+            turn_id=turn["id"],
             research_session_id=session_id,
             project_id=project_id,
             sequence_no=int(turn["sequence_no"]),
-            status=ResearchTurnStatus.RECEIVED,
-            user_message=ResearchTurnMessageDTO(id=message_id, role="USER", content=str(message["content_summary"])),
+            status=ResearchTurnStatus(str(turn["status"])),
+            user_message=ResearchTurnMessageDTO(
+                id=str(message["id"]),
+                role="USER",
+                content=str(message["content_summary"]),
+            ),
             created_at=turn["created_at"],
+            idempotent_replay=idempotent_replay,
         )
 
     def receive_autonomous_turn(

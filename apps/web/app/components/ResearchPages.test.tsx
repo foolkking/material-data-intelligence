@@ -55,6 +55,7 @@ const mocks = vi.hoisted(() => ({
   listAgent2ResearchTurns: vi.fn(),
   dispatchAgent2ResearchTurn: vi.fn(),
   createAgent2ResearchTurn: vi.fn(),
+  createAgent2AdmissionKey: vi.fn(() => "m4-01-test-admission-key"),
   getAgent2ResearchTurn: vi.fn(),
   getAgent2ResearchTurnResult: vi.fn(),
 }));
@@ -132,6 +133,7 @@ vi.mock("../lib/agent2-research-api", () => ({
   listAgent2ResearchTurns: mocks.listAgent2ResearchTurns,
   dispatchAgent2ResearchTurn: mocks.dispatchAgent2ResearchTurn,
   createAgent2ResearchTurn: mocks.createAgent2ResearchTurn,
+  createAgent2AdmissionKey: mocks.createAgent2AdmissionKey,
   getAgent2ResearchTurn: mocks.getAgent2ResearchTurn,
   getAgent2ResearchTurnResult: mocks.getAgent2ResearchTurnResult,
 }));
@@ -1446,6 +1448,51 @@ it("aborts an in-flight ResearchTurn poll and prevents duplicate online polling 
   expect(mocks.getAgent2ExecutionProgress).toHaveBeenCalledTimes(1);
 });
 
+it("shows transport interruption without marking durable work failed, then reconciles the same Turn", async () => {
+  mocks.getAgent2ExecutionProgress
+    .mockRejectedValueOnce(new TypeError("Failed to fetch"))
+    .mockResolvedValue({
+      contract_version: "1.0",
+      turn_id: "turn-restart",
+      status: "COMPLETED",
+      response_kind: "SCIENTIFIC_EXECUTION",
+      completed_step_count: 1,
+      total_step_count: 1,
+      active_step_ids: [],
+      steps: [],
+      incremental_outputs: [],
+      warnings: [],
+      execution_outcome: "SUCCESS",
+      result_projection_pending: false,
+    });
+
+  render(
+    <ResearchPage
+      projectId="project_1"
+      sessionId="session_1"
+      agent2TurnId="turn-restart"
+    />,
+  );
+
+  expect(
+    await screen.findByText(/研究服务连接暂时中断；服务器上的研究仍在继续/),
+  ).toBeInTheDocument();
+  expect(screen.queryByText("研究执行失败")).not.toBeInTheDocument();
+  window.dispatchEvent(new Event("online"));
+  await waitFor(() => {
+    expect(mocks.getAgent2ExecutionProgress).toHaveBeenCalledTimes(2);
+  });
+  await waitFor(() => {
+    expect(
+      screen.queryByText(/研究服务连接暂时中断；服务器上的研究仍在继续/),
+    ).not.toBeInTheDocument();
+  });
+  expect(mocks.createAgent2ResearchTurn).not.toHaveBeenCalled();
+  expect(mocks.getAgent2ExecutionProgress.mock.calls[1][0]).toBe(
+    "turn-restart",
+  );
+});
+
 it("presents used context as researcher-facing provenance with technical identity behind disclosure", async () => {
   mocks.listResearchSessions.mockResolvedValue([
     { id: "session_1", project_id: "project_1", title: "研究会话", status: "active" },
@@ -1911,6 +1958,7 @@ it("reconciles a queued Stop notice when durable progress reaches CANCELED", asy
       "project_1",
       "session_1",
       {
+        admission_key: "m4-01-test-admission-key",
         autonomy_mode: "STANDARD",
         message: "计算这个精确结构版本的 RDF",
         reply_to_turn_id: "turn-queued",

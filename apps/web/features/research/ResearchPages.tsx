@@ -86,6 +86,7 @@ import {
 import { ScientificReportAction } from "../reports/ScientificReportAction";
 import {
   Agent2ReadError,
+  createAgent2AdmissionKey,
   createAgent2ResearchTurn,
   dispatchAgent2ResearchTurn,
   getAgent2ContextManifest,
@@ -1135,6 +1136,9 @@ export function ResearchPage({
   const [error, setError] = useState("");
   const [agent2Progress, setAgent2Progress] =
     useState<Agent2ProgressView | null>(null);
+  const [agent2RecoveryState, setAgent2RecoveryState] = useState<
+    "connected" | "reconnecting"
+  >("connected");
   const [researchPerformanceSample, setResearchPerformanceSample] =
     useState<ResearchPerformanceSample | null>(null);
   const [agent2ContextManifest, setAgent2ContextManifest] =
@@ -1326,6 +1330,7 @@ export function ResearchPage({
     if (!agent2TurnId) {
       setAgent2Progress(null);
       setAgent2CancelNotice("");
+      setAgent2RecoveryState("connected");
       return;
     }
     setAgent2CancelNotice("");
@@ -1333,6 +1338,20 @@ export function ResearchPage({
     let active = true;
     let inFlight = false;
     let timer: number | undefined;
+    let reconnectAttempt = 0;
+    const scheduleReconnect = () => {
+      if (!active || timer) return;
+      const delay = Math.min(
+        RESEARCH_CANCELLING_POLL_INTERVAL_MS *
+          Math.max(1, 2 ** Math.min(reconnectAttempt, 3)),
+        8000,
+      );
+      reconnectAttempt += 1;
+      timer = window.setTimeout(() => {
+        timer = undefined;
+        refresh();
+      }, delay);
+    };
     const refresh = () => {
       if (!active || inFlight) return;
       inFlight = true;
@@ -1341,6 +1360,8 @@ export function ResearchPage({
       })
         .then((next) => {
           if (!active) return;
+          reconnectAttempt = 0;
+          setAgent2RecoveryState("connected");
           setAgent2Progress(next);
           setAgent2CancelNotice((current) => {
             if (!current) return current;
@@ -1390,11 +1411,23 @@ export function ResearchPage({
               );
             });
           }
-          if (agent2ProgressNeedsRefresh(next.status))
-            timer = window.setTimeout(refresh, RESEARCH_CANCELLING_POLL_INTERVAL_MS);
+          if (agent2ProgressNeedsRefresh(next.status)) {
+            timer = window.setTimeout(() => {
+              // A completed timer is no longer pending. Clearing the handle
+              // lets a transport failure schedule restart reconciliation
+              // instead of mistaking the already-fired poll for active work.
+              timer = undefined;
+              refresh();
+            }, RESEARCH_CANCELLING_POLL_INTERVAL_MS);
+          }
         })
         .catch((reason) => {
-          if (active && !requestWasAborted(reason)) setAgent2Progress(null);
+          if (active && !requestWasAborted(reason)) {
+            // A transport failure is not a durable workflow failure. Preserve
+            // the last projection and keep reconciling after an API restart.
+            setAgent2RecoveryState("reconnecting");
+            scheduleReconnect();
+          }
         })
         .finally(() => {
           inFlight = false;
@@ -1403,11 +1436,19 @@ export function ResearchPage({
     const controller = new AbortController();
     refresh();
     const onOnline = () => refresh();
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        reconnectAttempt = 0;
+        refresh();
+      }
+    };
     window.addEventListener("online", onOnline);
+    document.addEventListener("visibilitychange", onVisibilityChange);
     return () => {
       active = false;
       controller.abort();
       window.removeEventListener("online", onOnline);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       if (timer) clearTimeout(timer);
     };
   }, [agent2TurnId]);
@@ -1690,7 +1731,10 @@ export function ResearchPage({
       const next = await createAgent2ResearchTurn(
         projectId,
         session.id,
-        agent2RetryInput(exactTurn),
+        {
+          ...agent2RetryInput(exactTurn),
+          admission_key: createAgent2AdmissionKey(),
+        },
       );
       router.push(
         `/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(next.turn_id)}&retryOf=${encodeURIComponent(exactTurn.turn_id)}`,
@@ -2289,6 +2333,7 @@ export function ResearchPage({
     if (!question.trim()) return;
     if (submitInFlightRef.current) return;
     submitInFlightRef.current = true;
+    const admissionKey = createAgent2AdmissionKey();
     const performanceAttemptId = beginResearchPerformanceAttempt();
     scheduleResearchSubmitAcknowledgement(performanceAttemptId);
     setEvents([]);
@@ -2322,6 +2367,7 @@ export function ResearchPage({
           activeSession.id,
           {
             message: question.trim(),
+            admission_key: admissionKey,
             reply_to_turn_id: editTurnId,
             autonomy_mode: autonomyMode,
             ui_context: {
@@ -2363,6 +2409,7 @@ export function ResearchPage({
           {
             ...agent2ContinueInput(exactTurn, question, reusableResultId),
             autonomy_mode: autonomyMode,
+            admission_key: admissionKey,
           },
         );
         bindResearchPerformanceTurn(performanceAttemptId, created.turn_id);
@@ -2387,6 +2434,7 @@ export function ResearchPage({
           activeSession.id,
           {
             message: question.trim(),
+            admission_key: admissionKey,
             autonomy_mode: autonomyMode,
             ui_context: {
               active_object_refs: [],
@@ -2443,6 +2491,7 @@ export function ResearchPage({
           activeSession.id,
           {
             message: question.trim(),
+            admission_key: admissionKey,
             autonomy_mode: autonomyMode,
             // A deep-linked Viewer context is already an explicit, exact object/version
             // selection. Preserve it in the resolver's explicit channel as well as the
@@ -2524,6 +2573,7 @@ export function ResearchPage({
           activeSession.id,
           {
             message: question.trim(),
+            admission_key: admissionKey,
             autonomy_mode: autonomyMode,
             ui_context: {
               active_object_refs: explicitDataset.objectRefs,
@@ -2613,6 +2663,7 @@ export function ResearchPage({
 
   async function confirmScope(datasetId: string) {
     if (!question.trim() || !scope || !datasetId) return;
+    const admissionKey = createAgent2AdmissionKey();
     setEvents([]);
     setArtifacts([]);
     setInterpretation(null);
@@ -2653,6 +2704,7 @@ export function ResearchPage({
           activeSession.id,
           {
             message: question.trim(),
+            admission_key: admissionKey,
             autonomy_mode: autonomyMode,
             ui_context: {
               active_object_refs: explicitDataset.objectRefs,
@@ -4263,6 +4315,15 @@ export function ResearchPage({
                     aria-live="polite"
                   >
                     {agent2ContinuationNotice}
+                  </p>
+                ) : null}
+                {agent2TurnId && agent2RecoveryState === "reconnecting" ? (
+                  <p
+                    className="research-reconnect-notice"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    研究服务连接暂时中断；服务器上的研究仍在继续，正在重新同步已保存状态…
                   </p>
                 ) : null}
                 {error && activeAgent2Progress ? (

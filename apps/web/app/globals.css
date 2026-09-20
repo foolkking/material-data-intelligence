@@ -2814,6 +2814,15 @@ button:disabled {
   font-size: 13px;
   line-height: 1.45;
 }
+.research-reconnect-notice {
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 3px solid #d6b06b;
+  background: #fff8e7;
+  color: #6b4b13;
+  font-size: 13px;
+  line-height: 1.45;
+}
 .research-composer-draft-status {
   margin: -1px 0 2px;
   color: var(--product-tertiary);

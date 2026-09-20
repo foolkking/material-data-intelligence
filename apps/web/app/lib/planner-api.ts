@@ -1,3 +1,5 @@
+import { hashFileSha256 } from "./incremental-sha256";
+
 export type PlannerJobRequest = {
   userPrompt: string;
   projectId: string;
@@ -1550,8 +1552,7 @@ export async function uploadDatasetFiles(
 ): Promise<DatasetDetail & { profile?: DataProfileSummary }> {
   if (files.length === 0) throw new Error("UPLOAD_FILES_REQUIRED");
   const declared = await Promise.all(files.map(async (item, index) => {
-    const bytes = await item.file.arrayBuffer();
-    const sha256 = bytesToHex(await crypto.subtle.digest("SHA-256", bytes));
+    const sha256 = await hashFileSha256(item.file);
     return {
       item,
       declaration: {
@@ -1681,10 +1682,6 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
 
 function normalizeBaseUrl(value: string): string {
   return value.endsWith("/") ? value.slice(0, -1) : value;
-}
-
-function bytesToHex(value: ArrayBuffer): string {
-  return Array.from(new Uint8Array(value), (item) => item.toString(16).padStart(2, "0")).join("");
 }
 
 function safeParseJson(value: string): unknown {

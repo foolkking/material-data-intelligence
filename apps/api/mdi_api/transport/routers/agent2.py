@@ -25,6 +25,7 @@ from mdi_api.agent2_errors import (
     ResearchResourceLimitExceeded,
     ResearchSessionProjectMismatch,
     ResearchTurnNotFound,
+    ResearchTurnAdmissionConflict,
     ScientificObjectNotFound,
     ScientificObjectVersionNotFound,
     UnauthorizedScientificObjectReference,
@@ -1462,6 +1463,11 @@ def _http_error(exc: Exception) -> HTTPException:
     if isinstance(exc, (ConcurrentTurnModification, InvalidResearchTurnTransition)):
         code = "TURN_TERMINAL" if str(exc) == "TURN_TERMINAL" else "TURN_CONFLICT"
         return HTTPException(status_code=409, detail={"code": code, "summary": str(exc)})
+    if isinstance(exc, ResearchTurnAdmissionConflict):
+        return HTTPException(
+            status_code=409,
+            detail={"code": "RESEARCH_TURN_ADMISSION_CONFLICT", "summary": str(exc)},
+        )
     if isinstance(exc, ResearchResourceLimitExceeded):
         return HTTPException(
             status_code=429,

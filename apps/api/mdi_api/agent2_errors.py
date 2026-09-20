@@ -33,6 +33,10 @@ class InvalidResearchTurnTransition(Agent2DomainError):
     pass
 
 
+class ResearchTurnAdmissionConflict(Agent2DomainError):
+    """The same restart-safe admission key was reused for a different request."""
+
+
 class ConcurrentTurnModification(Agent2DomainError):
     pass
 

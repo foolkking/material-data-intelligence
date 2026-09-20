@@ -61,6 +61,14 @@ class ResearchTurnRepository(_Repository):
             return self._required(connection.execute(statement).mappings().first(), turn_id)
         return self._run(run)
 
+    def get_optional(self, turn_id: UUID, *, for_update: bool = False) -> dict[str, Any] | None:
+        def run(connection: Connection) -> dict[str, Any] | None:
+            statement = select(research_turns).where(research_turns.c.id == turn_id)
+            if for_update:
+                statement = statement.with_for_update()
+            return _optional_dict(connection.execute(statement).mappings().first())
+        return self._run(run)
+
     def get_for_update(self, turn_id: UUID) -> dict[str, Any]:
         return self.get(turn_id, for_update=True)
 

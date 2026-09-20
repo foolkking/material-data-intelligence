@@ -13,6 +13,7 @@ from mdi_api.agent2_errors import (
     ConcurrentTurnModification,
     InvalidScientificObjectRelationship,
     InvalidScientificObjectVersion,
+    ResearchTurnAdmissionConflict,
     ResearchResourceLimitExceeded,
     ScientificObjectTypeNotRegistered,
     UnauthorizedScientificObjectReference,
@@ -318,6 +319,46 @@ def test_receive_turn_is_atomic_no_llm_no_plan_no_job_no_tool_call(monkeypatch):
             "tools": connection.execute(select(func.count()).select_from(tool_calls)).scalar_one(),
         }
     assert after == before
+
+
+def test_receive_turn_replays_one_admission_key_without_duplicate_effects():
+    engine, owner, factory, _objects, turns = foundation()
+    request = CreateResearchTurnRequest(
+        message="Recover this request after the API restarts",
+        admission_key="m4-01-api-restart-a",
+    )
+
+    first = turns.receive_turn(
+        project_id="project",
+        session_id="session",
+        request=request,
+        current_user=owner,
+    )
+    replay = turns.receive_turn(
+        project_id="project",
+        session_id="session",
+        request=request,
+        current_user=owner,
+    )
+
+    assert replay.idempotent_replay is True
+    assert replay.turn_id == first.turn_id
+    assert replay.user_message.id == first.user_message.id
+    with engine.connect() as connection:
+        assert connection.execute(select(func.count()).select_from(messages)).scalar_one() == 1
+        assert connection.execute(select(func.count()).select_from(research_turns)).scalar_one() == 1
+        assert connection.execute(select(func.count()).select_from(research_turn_events)).scalar_one() == 1
+
+    with pytest.raises(ResearchTurnAdmissionConflict):
+        turns.receive_turn(
+            project_id="project",
+            session_id="session",
+            request=CreateResearchTurnRequest(
+                message="A different request must not reuse the admission key",
+                admission_key="m4-01-api-restart-a",
+            ),
+            current_user=owner,
+        )
 
 
 def test_project_active_turn_limit_fails_closed_before_persisting_a_second_turn():

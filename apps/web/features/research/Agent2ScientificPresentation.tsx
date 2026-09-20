@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import {
+  createAgent2AdmissionKey,
   createAgent2ResearchTurn,
   getAgent2ResearchTurnInterpretation,
   getAgent2ResearchTurnResult,
@@ -211,6 +212,7 @@ export function Agent2ScientificPresentation({
       const snapshotId = result.result_snapshot_id || result.result_id;
       const next = await createAgent2ResearchTurn(projectId, sessionId, {
         message: "请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。",
+        admission_key: createAgent2AdmissionKey(),
         reply_to_turn_id: turnId,
         ui_context: {
           active_object_refs: refs,
@@ -240,6 +242,7 @@ export function Agent2ScientificPresentation({
         message: isContinue
           ? "请基于这份已完成的科学结果继续研究，只补充当前证据支持的后续分析；如需新的计算，请明确说明。"
           : `请重新执行同一个科学研究问题：${result.research_question}。这是一次新的研究运行，不要覆盖之前的结果。`,
+        admission_key: createAgent2AdmissionKey(),
         reply_to_turn_id: turnId,
         ui_context: {
           active_object_refs: refs,

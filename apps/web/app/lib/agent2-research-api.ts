@@ -5,7 +5,7 @@ const API_BASE = (process.env.NEXT_PUBLIC_MDI_API_BASE_URL || (typeof window ===
 
 export type Agent2ScientificObjectRef = { object_id: string; version_id: string; project_id: string; object_type: string; display_name?: string; version_no?: number | null };
 export type Agent2ScientificSelection = { contract_version: "1.0"; object_ref: Agent2ScientificObjectRef; viewer_id: string; selection_type: string; semantic_locator: Record<string, string | number>; display_label: string; evidence_locator?: Record<string, string | number> | null };
-export type Agent2TurnResponse = { turn_id: string; id?: string; research_session_id: string; project_id: string; sequence_no: number; parent_turn_id?: string | null; status: string; user_message: { id: string; role: string; content: string }; created_at: string };
+export type Agent2TurnResponse = { turn_id: string; id?: string; research_session_id: string; project_id: string; sequence_no: number; parent_turn_id?: string | null; status: string; user_message: { id: string; role: string; content: string }; created_at: string; idempotent_replay?: boolean };
 export type Agent2TurnListItem = {
   id: string;
   research_session_id: string;
@@ -169,6 +169,15 @@ export class Agent2ReadError extends Error {
   }
 }
 
+export function createAgent2AdmissionKey(): string {
+  if (typeof globalThis.crypto?.randomUUID === "function") {
+    return globalThis.crypto.randomUUID();
+  }
+  return `mdi-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 14)}`;
+}
+
+const RESEARCH_TURN_ADMISSION_RETRY_DELAYS_MS = [250, 750] as const;
+
 async function readAgent2<T>(path: string): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, { credentials: "include" });
   notifySessionExpired(response);
@@ -181,12 +190,39 @@ export async function createAgent2ResearchTurn(projectId: string, sessionId: str
   ui_context: { active_object_refs: Agent2ScientificObjectRef[]; selection_refs: Agent2ScientificObjectRef[]; scientific_selections: Agent2ScientificSelection[]; explicit_object_refs: Agent2ScientificObjectRef[]; explicit_result_ids: string[]; explicit_finding_refs: string[] };
   reply_to_turn_id?: string;
   autonomy_mode?: "STANDARD" | "BOUNDED_AUTONOMOUS";
+  admission_key?: string;
 }): Promise<Agent2TurnResponse> {
-  const response = await fetch(`${API_BASE}/api/projects/${encodeURIComponent(projectId)}/research/sessions/${encodeURIComponent(sessionId)}/turns`, {
-    method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input),
-  });
-  notifySessionExpired(response);
-  if (!response.ok) {
+  const request = {
+    method: "POST",
+    credentials: "include" as const,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  };
+  for (let attempt = 0; ; attempt += 1) {
+    let response: Response;
+    try {
+      response = await fetch(
+        `${API_BASE}/api/projects/${encodeURIComponent(projectId)}/research/sessions/${encodeURIComponent(sessionId)}/turns`,
+        request,
+      );
+    } catch (reason) {
+      if (attempt >= RESEARCH_TURN_ADMISSION_RETRY_DELAYS_MS.length) throw reason;
+      await new Promise((resolve) =>
+        globalThis.setTimeout(resolve, RESEARCH_TURN_ADMISSION_RETRY_DELAYS_MS[attempt]),
+      );
+      continue;
+    }
+    notifySessionExpired(response);
+    if (response.ok) return response.json() as Promise<Agent2TurnResponse>;
+    if (
+      [502, 503, 504].includes(response.status) &&
+      attempt < RESEARCH_TURN_ADMISSION_RETRY_DELAYS_MS.length
+    ) {
+      await new Promise((resolve) =>
+        globalThis.setTimeout(resolve, RESEARCH_TURN_ADMISSION_RETRY_DELAYS_MS[attempt]),
+      );
+      continue;
+    }
     let detail = `研究请求失败 (${response.status})`;
     try {
       const body = await response.json() as {
@@ -197,7 +233,6 @@ export async function createAgent2ResearchTurn(projectId: string, sessionId: str
     } catch { /* bounded product error */ }
     throw new Error(detail);
   }
-  return response.json() as Promise<Agent2TurnResponse>;
 }
 
 export async function listAgent2ResearchTurns(projectId: string, sessionId: string): Promise<Agent2TurnResponse[]> {

@@ -404,6 +404,35 @@ def test_concurrent_create_turn_api_allocates_unique_ordered_sequences(api):
     assert [item["sequence_no"] for item in second_page["items"]] == [6, 7, 8, 9, 10]
 
 
+def test_create_turn_replays_same_admission_key_after_lost_response(api):
+    client, _active, _owner, _viewer, _stranger, _objects = api
+    payload = {
+        "message": "A request whose response may be lost during API restart",
+        "admission_key": "m4-01-api-restart-api",
+    }
+
+    first = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json=payload,
+    )
+    replay = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json=payload,
+    )
+
+    assert first.status_code == replay.status_code == 202
+    assert first.json()["turn_id"] == replay.json()["turn_id"]
+    assert first.json()["user_message"]["id"] == replay.json()["user_message"]["id"]
+    assert replay.json()["idempotent_replay"] is True
+
+    conflict = client.post(
+        "/api/projects/project/research/sessions/session/turns",
+        json={**payload, "message": "not the admitted request"},
+    )
+    assert conflict.status_code == 409
+    assert conflict.json()["detail"]["code"] == "RESEARCH_TURN_ADMISSION_CONFLICT"
+
+
 def test_create_turn_rejects_empty_session_mismatch_and_read_only_user(api):
     client, active, owner, viewer, _stranger, _objects = api
     assert client.post("/api/projects/project/research/sessions/session/turns", json={"message": "  "}).status_code == 422

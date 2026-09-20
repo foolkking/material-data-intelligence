@@ -529,6 +529,7 @@ class CreateResearchTurnRequest(BaseModel):
     ui_context: ResearchTurnUIContext | None = None
     reply_to_turn_id: UUID | None = None
     autonomy_mode: AutonomyMode = AutonomyMode.STANDARD
+    admission_key: str | None = Field(default=None, min_length=1, max_length=128)
 
     @field_validator("message")
     @classmethod
@@ -536,6 +537,16 @@ class CreateResearchTurnRequest(BaseModel):
         value = value.strip()
         if not value:
             raise ValueError("message must not be blank")
+        return value
+
+    @field_validator("admission_key")
+    @classmethod
+    def normalized_admission_key(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        value = value.strip()
+        if not value:
+            raise ValueError("admission_key must not be blank")
         return value
 
 
@@ -557,6 +568,7 @@ class CreateResearchTurnResponse(BaseModel):
     status: ResearchTurnStatus
     user_message: ResearchTurnMessageDTO
     created_at: datetime
+    idempotent_replay: bool = False
 
 
 class ResearchTurnEventDTO(BaseModel):

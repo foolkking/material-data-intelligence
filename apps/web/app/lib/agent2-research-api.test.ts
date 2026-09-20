@@ -11,6 +11,7 @@ import {
 } from "./agent2-research-api";
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.unstubAllGlobals();
 });
 
@@ -172,6 +173,54 @@ describe("Agent2 ResearchTurn admission errors", () => {
         },
       }),
     ).rejects.toThrow("当前项目已有 4 项进行中的研究。请等待完成或先停止一项后再试。");
+  });
+
+  it("retries a lost admission response with the same durable admission key", async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(new TypeError("Failed to fetch"))
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            turn_id: "turn-recovered",
+            research_session_id: "session-1",
+            project_id: "project-1",
+            sequence_no: 1,
+            status: "RECEIVED",
+            user_message: {
+              id: "message-1",
+              role: "USER",
+              content: "重启后恢复",
+            },
+            created_at: "2026-09-19T00:00:00Z",
+          }),
+          { status: 202, headers: { "Content-Type": "application/json" } },
+        ),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const promise = createAgent2ResearchTurn("project-1", "session-1", {
+      message: "重启后恢复",
+      admission_key: "m4-01-retry-key",
+      ui_context: {
+        active_object_refs: [],
+        selection_refs: [],
+        scientific_selections: [],
+        explicit_object_refs: [],
+        explicit_result_ids: [],
+        explicit_finding_refs: [],
+      },
+    });
+    await vi.advanceTimersByTimeAsync(250);
+    await expect(promise).resolves.toMatchObject({ turn_id: "turn-recovered" });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body as string)).toMatchObject({
+      admission_key: "m4-01-retry-key",
+    });
+    expect(fetchMock.mock.calls[1][1].body).toBe(fetchMock.mock.calls[0][1].body);
+    vi.useRealTimers();
   });
 });
 

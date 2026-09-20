@@ -5,6 +5,7 @@ import { Agent2ScientificPresentation } from "./Agent2ScientificPresentation";
 
 const mocks = vi.hoisted(() => ({
   createAgent2ResearchTurn: vi.fn(),
+  createAgent2AdmissionKey: vi.fn(() => "m4-01-test-admission-key"),
   getAgent2ResearchTurnResult: vi.fn(),
   getAgent2ResearchTurnInterpretation: vi.fn(),
   getAgent2SessionMemory: vi.fn(),
