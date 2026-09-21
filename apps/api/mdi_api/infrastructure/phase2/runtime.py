@@ -1266,10 +1266,16 @@ def upload_phase2_dataset(request: DatasetUploadRequest) -> dict[str, Any]:
         try:
             from mdi_api.durable_uploads import persist_phase2_upload
 
-            persist_phase2_upload(runtime, str(result["datasetId"]))
+            persisted = persist_phase2_upload(runtime, str(result["datasetId"]))
         except Exception:
             runtime.datasets.pop(str(result["datasetId"]), None)
             raise
+        if persisted is not None:
+            # PostgreSQL + ArtifactStorage are authoritative after the durable
+            # verification above. Keeping the full parsed DatasetRecord here
+            # retains DataFrames and normalized object payloads for the life of
+            # the API process, so sustained uploads grow RSS monotonically.
+            runtime.datasets.pop(str(result["datasetId"]), None)
         return result
 
     return _api_call(upload_and_persist)
@@ -1321,15 +1327,21 @@ def complete_phase2_upload_session(session_id: str) -> dict[str, Any]:
         runtime = get_phase2_runtime()
         session = runtime.upload_sessions.get(session_id)
         if session is not None and session.status == "completed" and session.dataset_id:
-            return runtime.get_dataset(session.dataset_id)
+            return get_phase2_dataset(session.dataset_id)
         result = runtime.complete_upload_session(session_id)
         try:
             from mdi_api.durable_uploads import persist_phase2_upload
 
-            persist_phase2_upload(runtime, str(result["datasetId"]))
+            persisted = persist_phase2_upload(runtime, str(result["datasetId"]))
         except Exception:
             runtime.rollback_completed_upload(session_id)
             raise
+        if persisted is not None:
+            # The completed response is already materialized in ``result`` and
+            # subsequent reads reconstruct from durable authority. Release the
+            # parsed in-process copy so repeated large uploads do not become an
+            # API-process memory leak.
+            runtime.datasets.pop(str(result["datasetId"]), None)
         return result
 
     return _api_call(complete_and_persist)
