@@ -57,6 +57,7 @@ def pytest_configure(config: pytest.Config) -> None:
         raise pytest.UsageError(
             "MDI_PYTEST_CACHE_OUTSIDE_REPOSITORY"
         ) from exc
+    candidate.mkdir(parents=True, exist_ok=True)
     config.option.basetemp = str(candidate)
 
 
