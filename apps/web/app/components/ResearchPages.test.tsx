@@ -2505,6 +2505,34 @@ it("persists the selected dataset in the same research session before creating a
   expect(screen.getByRole("tab", { name: "工作台" })).toHaveAttribute("aria-selected", "true");
 });
 
+it("persists a terminal failure when scoped confirmation cannot create a job", async () => {
+  const user = userEvent.setup();
+  mocks.createPlannerJob.mockRejectedValueOnce(new Error("queue unavailable"));
+  render(<ResearchPage projectId="project_1" />);
+
+  const composer = await screen.findByLabelText("询问此项目中的数据");
+  await user.type(composer, "比较两个数据集");
+  await user.click(screen.getByRole("button", { name: "开始分析" }));
+  await screen.findByRole("heading", {
+    name: "本次分析可以使用多个数据集。",
+  });
+  await user.click(screen.getByLabelText(/materials-b/));
+  await user.click(screen.getByRole("button", { name: "确认数据范围" }));
+
+  await waitFor(() =>
+    expect(mocks.createResearchAssistantProjection).toHaveBeenCalledWith(
+      "session_1",
+      expect.objectContaining({
+        phase: "failed",
+        failureCode: "RESEARCH_SERVICE_UNAVAILABLE",
+      }),
+    ),
+  );
+  expect(
+    await screen.findByText(/研究请求暂时无法完成/),
+  ).toBeInTheDocument();
+});
+
 it("starts a fresh scoped research session from an explicit dataset handoff", async () => {
   const user = userEvent.setup();
   mocks.listResearchSessions.mockResolvedValue([

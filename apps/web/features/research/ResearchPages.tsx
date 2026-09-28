@@ -2323,6 +2323,22 @@ export function ResearchPage({
     return created;
   }
 
+  async function persistResearchFailureProjection(
+    sessionId: string,
+    failureCode = "RESEARCH_SERVICE_UNAVAILABLE",
+  ) {
+    try {
+      const failure = await createResearchAssistantProjection(sessionId, {
+        phase: "failed",
+        failureCode,
+      });
+      appendSessionMessage(failure);
+    } catch {
+      // The inline error remains visible when the durable failure projection
+      // cannot be written; never mask the original request failure.
+    }
+  }
+
   async function submitQuestion() {
     if (!editBranchSubmissionAllowed(editTurnId, editingLoadState, editingTurn)) {
       setError(
@@ -2649,12 +2665,7 @@ export function ResearchPage({
       setState("failed");
       setError(scientistFacingResearchRequestError(reason));
       if (activeSession && !(reason instanceof Agent2ReadError)) {
-        void createResearchAssistantProjection(activeSession.id, {
-          phase: "failed",
-          failureCode: "RESEARCH_SERVICE_UNAVAILABLE",
-        })
-          .then(appendSessionMessage)
-          .catch(() => undefined);
+        await persistResearchFailureProjection(activeSession.id);
       }
     } finally {
       submitInFlightRef.current = false;
@@ -2663,6 +2674,8 @@ export function ResearchPage({
 
   async function confirmScope(datasetId: string) {
     if (!question.trim() || !scope || !datasetId) return;
+    if (submitInFlightRef.current) return;
+    submitInFlightRef.current = true;
     const admissionKey = createAgent2AdmissionKey();
     setEvents([]);
     setArtifacts([]);
@@ -2671,11 +2684,12 @@ export function ResearchPage({
     setInterpretationStatus("idle");
     setError("");
     setState("planning");
+    let activeSession: ResearchSession | null = null;
     try {
       const candidate = scope.candidates?.find(
         (item) => item.dataset_id === datasetId,
       );
-      const activeSession = await ensureSession();
+      activeSession = await ensureSession();
       const savedSelection = await createResearchMessage(
         activeSession.id,
         `使用 ${candidate?.name || "所选数据"} 继续分析。`,
@@ -2777,6 +2791,11 @@ export function ResearchPage({
     } catch (reason) {
       setState("failed");
       setError(scientistFacingResearchRequestError(reason));
+      if (activeSession && !(reason instanceof Agent2ReadError)) {
+        await persistResearchFailureProjection(activeSession.id);
+      }
+    } finally {
+      submitInFlightRef.current = false;
     }
   }
 
