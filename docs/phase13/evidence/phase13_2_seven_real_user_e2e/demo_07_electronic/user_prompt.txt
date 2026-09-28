@@ -1,2 +1,0 @@
-canonical: Inspect the supplied electronic band structure and DOS, including gap, spin, projection and compatibility limitations.
-alternate: What electronic states are present in these supplied Band and DOS resources?

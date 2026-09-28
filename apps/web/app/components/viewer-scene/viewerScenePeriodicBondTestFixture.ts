@@ -1,4 +1,4 @@
-import multiSpeciesScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_multi_species_crystal.viewer_scene.v1.json";
+import multiSpeciesScene from "../../../../../tests/fixtures/viewer_scene_v1/valid_multi_species_crystal.viewer_scene.v1.json";
 
 export function periodicBoundaryScene() {
   const payload = structuredClone(multiSpeciesScene) as Record<string, any>;

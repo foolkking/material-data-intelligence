@@ -1,7 +1,0 @@
-{
-  "linux": "PASS",
-  "numericCrossPlatformValidation": "NOT_APPLICABLE",
-  "source": "Phase 11 sealed invariant replay",
-  "v4Promotions": 0,
-  "windows": "PASS"
-}

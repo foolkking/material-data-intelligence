@@ -1,7 +1,0 @@
-{
-  "boundedFailureEvidence": true,
-  "deterministicReplayAllowed": true,
-  "realCalls13_1": 0,
-  "realProvider": "DeepSeek only",
-  "status": "VERIFIED"
-}

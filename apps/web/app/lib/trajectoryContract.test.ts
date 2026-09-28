@@ -3,7 +3,7 @@ import {resolve} from "node:path";
 import {describe, expect, it} from "vitest";
 import {fractionalToCartesian, validateTrajectoryReference} from "./trajectoryContract";
 
-const fixtures = resolve(process.cwd(), "../../docs/phase10g/fixtures/trajectory_v1");
+const fixtures = resolve(process.cwd(), "../../tests/fixtures/trajectory_v1");
 const load = (name: string) => JSON.parse(readFileSync(resolve(fixtures, name), "utf8"));
 
 describe("Phase 10G independent trajectory reference", () => {
@@ -53,7 +53,7 @@ describe("Phase 10G independent trajectory reference", () => {
   });
 
   it("matches the committed frontend/backend comparison evidence", () => {
-    const comparison = JSON.parse(readFileSync(resolve(process.cwd(), "../../docs/phase10g/evidence/phase10g_trajectory_contract/frontend_backend_validation_comparison.json"), "utf8"));
+    const comparison = JSON.parse(readFileSync(resolve(process.cwd(), "../../tests/fixtures/trajectory_reference/frontend_backend_validation_comparison.json"), "utf8"));
     for (const [name, expected] of Object.entries(comparison.fixtures) as Array<[string, {python_valid: boolean; typescript_expected_valid: boolean}]>) {
       const actual = validateTrajectoryReference(load(name)).valid;
       expect(actual).toBe(expected.typescript_expected_valid);

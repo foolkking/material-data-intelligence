@@ -8,7 +8,7 @@ import { describe, expect, it, vi } from "vitest";
 import { mapPhononDosPlot, PhononDosPreviewPanel } from "./PhononDosPreviewPanel";
 
 const root = resolve(__dirname, "../../../../..");
-const dos = JSON.parse(readFileSync(resolve(root, "docs/phase10h/fixtures/phonon_contract/projected_dos.json"), "utf8"));
+const dos = JSON.parse(readFileSync(resolve(root, "tests/fixtures/phonon_contract/projected_dos.json"), "utf8"));
 const summary = {
   schema_version: "phase10h2.phonon_dos_summary.v1",
   imaginary_region_integral: 0.5,

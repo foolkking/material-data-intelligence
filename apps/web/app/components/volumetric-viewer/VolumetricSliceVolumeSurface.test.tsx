@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 import { createHash } from "node:crypto";
-import fixture from "../../../../../docs/phase10j/fixtures/volumetric_contract/cubic_constant_scalar.json";
+import fixture from "../../../../../tests/fixtures/volumetric_contract/cubic_constant_scalar.json";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 

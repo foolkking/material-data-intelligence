@@ -1,1 +1,0 @@
-{"method":"GET","path":"/workspaces/{workspaceId}/layout-revisions","status":"FOCUSED_PASS","maxItems":128,"immutable":true,"monotonic":true,"exactRevisionRead":true}

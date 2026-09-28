@@ -1,6 +1,0 @@
-{
-  "authority": "existing phase10h strict parser caps",
-  "jsonDepthCap": true,
-  "payloadCap": true,
-  "unboundedArrays": false
-}

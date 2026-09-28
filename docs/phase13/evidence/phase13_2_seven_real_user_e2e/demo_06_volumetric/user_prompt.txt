@@ -1,2 +1,0 @@
-canonical: Inspect this volumetric field with its structure context, slices and supported volume presentation.
-alternate: What does this supplied volumetric grid contain, and which bounded views are available?

@@ -1,8 +1,0 @@
-{
-  "adapter_runs_equal": true,
-  "manifest_order": [
-    "phonon_dos.json",
-    "phonon_dos_summary.json"
-  ],
-  "warning_order": "sorted"
-}

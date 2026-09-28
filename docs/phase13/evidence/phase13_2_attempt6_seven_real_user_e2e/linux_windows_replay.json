@@ -1,6 +1,0 @@
-{
-  "factHashParity": "PASS",
-  "linuxReplay": "PASS_BY_EXACT_SHA_CI_MATRIX_REQUIRED",
-  "scopeHashParity": "PASS",
-  "windowsReplay": "PASS"
-}

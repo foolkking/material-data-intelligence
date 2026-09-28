@@ -44,12 +44,12 @@ def test_worker_queue_manifest_is_complete_unique_and_settings_backed() -> None:
 
 def test_worker_queue_manifest_resolves_environment_overrides() -> None:
     environment = {
-        definition.environment_variable: f"qualification-{definition.role}"
+        definition.environment_variable: f"custom-{definition.role}"
         for definition in WORKER_QUEUE_MANIFEST
     }
 
     assert configured_worker_queue_names(environ=environment) == tuple(
-        f"qualification-{definition.role}"
+        f"custom-{definition.role}"
         for definition in WORKER_QUEUE_MANIFEST
     )
 
@@ -86,59 +86,11 @@ def test_worker_queue_manifest_cli_is_launcher_readable() -> None:
     assert json.loads(completed.stdout)["schemaVersion"] == WORKER_QUEUE_MANIFEST_VERSION
 
 
-def test_worker_launcher_reads_manifest_instead_of_own_queue_literals() -> None:
-    launcher = (ROOT / "scripts" / "phase14r_start_workers.ps1").read_text(
-        encoding="utf-8"
-    )
+def test_dev_controller_runs_one_worker_for_all_current_queues() -> None:
+    launcher = (ROOT / "scripts" / "dev.ps1").read_text(encoding="utf-8")
 
-    assert "-m mdi_schemas.worker_queues" in launcher
-    assert "[string]$WorkerGeneration" in launcher
-    assert "phase14r-$safeName$generationSuffix" in launcher
-    assert "[string[]]$OnlyQueue" in launcher
-    assert "$requestedQueues" in launcher
-    assert "phase14r_discover_workers.ps1" in launcher
+    assert 'Start-OwnedProcess "worker"' in launcher
+    assert '"mdi-dev-multiqueue"' in launcher
     for definition in WORKER_QUEUE_MANIFEST:
-        assert f'"{definition.default_name}"' not in launcher
-
-
-def test_stack_launcher_recovers_only_missing_manifest_queues() -> None:
-    stack = (ROOT / "scripts" / "phase14r_start_stack.ps1").read_text(
-        encoding="utf-8"
-    )
-
-    assert "Get-ConfiguredWorkerQueues" in stack
-    assert "packages\\schemas" in stack
-    assert "PYTHONPATH" in stack
-    assert "Get-RunningWorkerQueues" in stack
-    assert "$missingWorkerQueues" in stack
-    assert "-OnlyQueue" in stack
-    assert "foreach ($queue in $missingWorkerQueues)" in stack
-    assert '"-OnlyQueue", $queue' in stack
-    assert "phase14r_discover_workers.ps1" in stack
-    assert "-TimeoutSeconds $TimeoutSeconds" in stack
-    assert "worker_entrypoint" in stack
-    assert "Test-ProcessPattern \"mdi_workers.worker_entrypoint\"" not in stack
-
-
-def test_worker_discovery_is_wired_after_queue_launch() -> None:
-    launcher = (ROOT / "scripts" / "phase14r_start_workers.ps1").read_text(
-        encoding="utf-8"
-    )
-    paths = (ROOT / "scripts" / "phase14r_runtime_paths.ps1").read_text(
-        encoding="utf-8"
-    )
-
-    assert "phase14r_discover_workers.ps1" in launcher
-    assert "-TimeoutSeconds 20" in launcher
-    assert "Get-MdiWorkerRuntimeDirectory" in paths
-
-
-def test_api_launcher_supports_a_bounded_shadow_port() -> None:
-    launcher = (ROOT / "scripts" / "phase14r_start_api.ps1").read_text(
-        encoding="utf-8"
-    )
-
-    assert "[ValidateRange(1024, 65535)]" in launcher
-    assert "[int]$Port = 8005" in launcher
-    assert '".phase14r-api-$Port.out.log"' in launcher
-    assert '"--host", "0.0.0.0", "--port", "$Port"' in launcher
+        assert f'"{definition.default_name}"' in launcher
+    assert launcher.count('Start-OwnedProcess "worker"') == 1

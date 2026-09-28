@@ -1,5 +1,0 @@
-{
-  "metadataOnlyInitialLoad": true,
-  "payloadOnExplicitOpen": true,
-  "rendererResolution": "type+version+validated payload schema"
-}

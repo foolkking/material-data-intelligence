@@ -1,3 +1,0 @@
-N2 required docs present: PASS
-N2 next scope is reviewer gate only: PASS
-N3 executable task absent: PASS

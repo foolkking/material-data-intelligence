@@ -1,87 +1,60 @@
-# Material Data Intelligence & Visualization Platform
+# Material Data Intelligence
 
-This project designs a material data intelligence and visualization platform, not a thin pymatviz web wrapper.
+Material Data Intelligence (MDI) is a controlled materials-science workspace for durable datasets, validated scientific tools, asynchronous Research workflows, grounded interpretations, and reproducible artifacts.
 
-Core capabilities:
+See [`PROJECT_STATE.md`](PROJECT_STATE.md) for current scope and architecture.
 
-- Natural-language material analysis requests.
-- Upload CIF / POSCAR / XYZ / CSV / JSON limited / ZIP material datasets.
-- Generate deterministic Data Profiles before Agent planning.
-- Use an LLM Agent to produce a structured JSON Analysis Plan.
-- Execute only Tool Registry approved pymatviz / MatterViz / Plotly / pymatgen / ASE / phonopy adapters.
-- Generate interactive charts, 3D material viewers, Artifacts, Recipes, and Reports.
-- Show Agent Timeline, tool calls, parameters, logs, reproducible code snippets, and results.
-- Provide an AI assistant style workspace with a global dataset/model bar, a collapsible data-context viewer, and a main three-tab work area for Agent process, conversation/Plan Preview, and results/export.
-- Design for asynchronous jobs, protected BYOK, auditability, reproducibility,
-  and bounded scientific capability extension.
+## Prerequisites
 
-The initial complete product joins Material Data Profile capability discovery,
-dataset/materials intelligence, materials ML evaluation, capability-aware
-planning, bounded multi-tool analysis, scientific visualization, interpretation,
-and a unified report/workspace experience. It analyzes existing data; it does
-not run DFT/HPC jobs or arbitrary user code.
+- Windows PowerShell 7
+- Python 3.11+
+- Node.js and npm
+- PostgreSQL 17 binaries
+- Redis or Memurai binaries
+- MinIO server binary
 
-## Canonical Product Documents
+The binaries may be installed system-wide. MDI owns its instance configuration and data, not copies of those installations.
 
-* [`docs/phase13/release/README.md`](docs/phase13/release/README.md) - current Initial Release documentation
-* [`docs/phase13/final/README.md`](docs/phase13/final/README.md) - final archive and presentation package
-* [`docs/phase13/reproducibility/README.md`](docs/phase13/reproducibility/README.md) - deterministic seven-demo reproduction
-* [`docs/phase13/release/quick-start.md`](docs/phase13/release/quick-start.md) - verified installation and service startup
-* [`docs/phase13/release/limitations.md`](docs/phase13/release/limitations.md) - current claim and limitation boundaries
-* [`docs/00_PROJECT_GOAL.md`](docs/00_PROJECT_GOAL.md)
-* [`docs/01_PRODUCT_REQUIREMENTS.md`](docs/01_PRODUCT_REQUIREMENTS.md)
-* [`docs/ROADMAP.md`](docs/ROADMAP.md)
-* [`docs/CAPABILITY_STATUS_MATRIX.md`](docs/CAPABILITY_STATUS_MATRIX.md)
-* [`docs/FUTURE_SCOPE.md`](docs/FUTURE_SCOPE.md)
-* [`docs/NOT_PLANNED_SCOPE.md`](docs/NOT_PLANNED_SCOPE.md)
+## Install
 
-## New Session Startup
-
-Every Coding Agent or LLM session must read these files first:
-
-1. `persistent/PROJECT_BRIEF.md`
-2. `persistent/DESIGN_PROGRESS.md`
-3. `persistent/TASK_BOARD.md`
-4. `persistent/ARCHITECTURE_DECISIONS.md`
-5. `docs/index.md`
-6. `docs/13_SHARED_SCHEMA_SPEC.md`
-7. `docs/ROADMAP.md`
-8. `docs/FUTURE_SCOPE.md`
-9. `docs/NOT_PLANNED_SCOPE.md`
-10. The docs file for the phase currently being implemented.
-
-## Persistent Update Rules
-
-After each design or implementation phase, update:
-
-- `persistent/DESIGN_PROGRESS.md`
-- `persistent/TASK_BOARD.md`
-- `persistent/ARCHITECTURE_DECISIONS.md`
-- `persistent/OPEN_QUESTIONS.md`
-- `persistent/CHANGELOG.md`
-
-## Current Status
-
-Phase 13-2 Attempt 6 passed all seven fresh canonical real-user service-backed
-workflows and P13X2 `8/8`. Phase 13-3 documentation and reproducibility is
-complete. The current Fact Model is
-`92d8295c7d78467d8ce021dc8033a58326219372a5d8fa87c93377ed1275953a` and
-the current Scope Baseline is
-`bb885aa4e020349011c39164a883107c8ffed3d5d43604594a76f7d5a18705ba`.
-
-Phase 13-5 final regression and release acceptance passed. Phase 13-6 final
-archive and presentation closure is in progress; Initial Release completion
-has not been declared before its exact-SHA CI gate, and no Phase 14 exists.
-Fermi Surface remains Future Scope;
-enterprise SaaS, deployment productization, and a plugin marketplace remain
-Not Planned.
-
-## Sharing Archive
-
-When sharing this design outside the local Git workspace, do not include `.git/`. Prefer:
-
-```bash
-git archive --format=zip HEAD -o material-data-intelligence-design.zip
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[test]"
+npm --prefix apps/web ci
 ```
 
-For manual zipping, exclude `.git/*`, `node_modules/*`, `.venv/*`, and runtime storage directories.
+## Environment
+
+Copy `.env.example` to the sibling local runtime `E:\1project\mdi-b0-5a1.local\local.env`. Set `MDI_LOCAL_ROOT` when a different external location is required. Runtime databases, object storage, logs, caches, PIDs, and secrets must remain outside Git.
+
+## Development stack
+
+```powershell
+.\scripts\dev.ps1 start
+.\scripts\dev.ps1 status
+.\scripts\dev.ps1 restart
+.\scripts\dev.ps1 stop
+```
+
+Default topology: PostgreSQL `55434`, Redis `6380`, MinIO `9000/9001`, FastAPI `8005`, Next.js `3023`, and one RQ worker listening to all active logical queues.
+
+## Common checks
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest
+npm --prefix apps/web test
+npm --prefix apps/web run typecheck
+npm --prefix apps/web run build
+```
+
+## Repository structure
+
+- `apps/` — FastAPI and Next.js applications
+- `packages/` — schemas, adapters, parsers, artifact and Tool Registry code
+- `services/` — workers and provider integration
+- `tool_registry/` — executable tool manifests
+- `tests/` — current behavior and integration tests
+- `scripts/dev.ps1` — local project-owned service controller
+- `config/` — current runtime/build configuration
+
+Historical phase reports, qualification packages, runtime databases, and service logs are intentionally not part of the active repository.

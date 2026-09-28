@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import fixed from "../../../../../docs/phase10g/fixtures/trajectory_viewer/fixed_lattice_md_12_frames.json";
-import unwrapped from "../../../../../docs/phase10g/fixtures/trajectory_viewer/unwrapped_diffusion_12_frames.json";
-import variable from "../../../../../docs/phase10g/fixtures/trajectory_viewer/variable_lattice_relaxation_6_frames.json";
+import fixed from "../../../../../tests/fixtures/trajectory_viewer/fixed_lattice_md_12_frames.json";
+import unwrapped from "../../../../../tests/fixtures/trajectory_viewer/unwrapped_diffusion_12_frames.json";
+import variable from "../../../../../tests/fixtures/trajectory_viewer/variable_lattice_relaxation_6_frames.json";
 import { TrajectoryFrameCache } from "./trajectoryFrameCache";
 import { classifyTrajectoryViewer, mapTrajectoryFrame, validateTrajectoryForViewer } from "./trajectoryFrameMapper";
 import { commitTrajectoryFrame, initialTrajectoryViewerState, nextTrajectoryFrame, requestTrajectoryFrame, setTrajectorySpeed } from "./trajectoryViewerState";

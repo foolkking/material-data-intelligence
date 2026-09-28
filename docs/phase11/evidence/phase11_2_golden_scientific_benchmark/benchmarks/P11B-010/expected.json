@@ -1,9 +1,0 @@
-{
-  "benchmarkId": "P11B-010",
-  "expectedTruth": "cross-capability golden metrics and seed/sign invariants",
-  "expectedUnits": "Inherited from sealed Phase 10N contract; no unit conversion performed.",
-  "fixtureChecksum": "682c241996360c157b5a09daf2b1435081fe8f90a07018ac522b23c1c54b9e38",
-  "fixtureId": "P11FIX-010",
-  "referenceId": "P11REF-010",
-  "toleranceId": "identity.exact.v1"
-}

@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { validatePhononBandDosBundle } from "./phononBandDosContract";
 
 const root = resolve(__dirname, "../../../..");
-const evidence = resolve(root, "docs/phase10h/evidence/phase10h3_combined_band_dos/artifacts");
+const evidence = resolve(root, "tests/fixtures/phonon_band_dos");
 
 function json(name: string) { return JSON.parse(readFileSync(resolve(evidence, name), "utf8")); }
 function bundle() {

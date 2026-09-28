@@ -1,7 +1,0 @@
-branch=master
-entry_head=0442bf8925715efe81becaae19f21c58407a5a54
-registry_baseline=60
-registry_final=62
-data_profile=2.4
-migration_head=0007_phase10m1_workspace_domain
-task_block_count=1

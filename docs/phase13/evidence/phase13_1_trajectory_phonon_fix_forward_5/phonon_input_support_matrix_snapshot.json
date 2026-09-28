@@ -1,9 +1,0 @@
-{
-  "inputFamily": "Phonon YAML/JSON",
-  "limits": [
-    "not a claimed generic upload path"
-  ],
-  "matrixChanged": false,
-  "parser": "No generic direct-upload parser; normalized Tool mapping only",
-  "supportVerdict": "MAPPING_ONLY"
-}

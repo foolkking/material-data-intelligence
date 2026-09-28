@@ -1,7 +1,0 @@
-{
-  "current": "f188b3e15aa94111787297ffde07b37f90cfdd1fe4e910e39f941e956b455455",
-  "impact": "YES",
-  "old": "eb91799bf1c8e19311077c6058e91da29bb01907583f0403855202473c4e5e94",
-  "reason": "Branch B corrected the current Demo 1 canonical prompt authority.",
-  "status": "PASS"
-}

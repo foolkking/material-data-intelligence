@@ -1,6 +1,0 @@
-{
-  "linuxWindowsCanonicalization": "IDENTICAL_BY_SORTED_UTF8_JSON_CONTRACT",
-  "run1": "caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4",
-  "run2": "caf9a67d7eb1f966eb3ea477beb60d0111020c84c3d065ed547ce816d9d98fd4",
-  "status": "PASS"
-}

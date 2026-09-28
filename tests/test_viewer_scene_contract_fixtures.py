@@ -11,7 +11,7 @@ from mdi_artifact_core import (
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-FIXTURE_DIR = REPO_ROOT / "docs" / "phase10f" / "fixtures" / "viewer_scene_v1"
+FIXTURE_DIR = REPO_ROOT / "tests" / "fixtures" / "viewer_scene_v1"
 EXPECTED_RESULTS = FIXTURE_DIR / "expected_results.json"
 FORBIDDEN_TEXT_MARKERS = (
     "http://",

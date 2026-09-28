@@ -1,8 +1,0 @@
-{
-  "minio": "PASS",
-  "phase13_3ServiceBackedTests": 50,
-  "postgresql": "PASS",
-  "redis": "PASS",
-  "requiredSkips": 0,
-  "source": "isolated local services using the documented CI-equivalent environment; exact-SHA CI repeats the canonical service gate"
-}

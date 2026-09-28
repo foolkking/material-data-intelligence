@@ -1,8 +1,0 @@
-{
-  "MinIO": "REQUIRED_ZERO_SKIP",
-  "PostgreSQL": "REQUIRED_ZERO_SKIP",
-  "RedisQueueGrowth": 0,
-  "authority": "EXACT_SHA_CI",
-  "fullE2e": false,
-  "test": "test_phase13_1_postgres_redis_minio_c2_exact_resource_resolution"
-}

@@ -1,3 +1,0 @@
-# Phase 10L-4 Grounded Interpretation Evidence
-
-API/runtime captures use strict contracts, current registered artifact families, a real persisted L3 phonon dependency runtime, and the read-only L4 API. Browser evidence is real Chromium/Firefox/WebKit rendering, interaction, DOM, accessibility, and PNG capture over Playwright route-fulfilled fixtures generated from those persisted API/runtime cases; it is not service-backed browser E2E. PostgreSQL/Redis/MinIO proof belongs to exact-SHA CI. All interpretation uses deterministic or fake-provider transport, LF-normalized evidence hashing, no real LLM, and no external science network.

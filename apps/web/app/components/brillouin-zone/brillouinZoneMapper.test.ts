@@ -1,24 +1,24 @@
 import { describe, expect, it } from "vitest";
 
-import bccManifest from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/bcc/manifest.json";
-import bccReciprocal from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/bcc/reciprocal_lattice.json";
-import bccZone from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/bcc/brillouin_zone.json";
-import bccKpath from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/bcc/kpath.json";
-import fccManifest from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/fcc/manifest.json";
-import fccReciprocal from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/fcc/reciprocal_lattice.json";
-import fccZone from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/fcc/brillouin_zone.json";
-import fccKpath from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/fcc/kpath.json";
-import hexManifest from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/hexagonal/manifest.json";
-import hexReciprocal from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/hexagonal/reciprocal_lattice.json";
-import hexZone from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/hexagonal/brillouin_zone.json";
-import hexKpath from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/hexagonal/kpath.json";
-import scManifest from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/manifest.json";
-import scReciprocal from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/reciprocal_lattice.json";
-import scZone from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/brillouin_zone.json";
-import scKpath from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/kpath.json";
-import triManifest from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/triclinic/manifest.json";
-import triReciprocal from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/triclinic/reciprocal_lattice.json";
-import triZone from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/triclinic/brillouin_zone.json";
+import bccManifest from "../../../../../tests/fixtures/brillouin_zone_v1/bcc/manifest.json";
+import bccReciprocal from "../../../../../tests/fixtures/brillouin_zone_v1/bcc/reciprocal_lattice.json";
+import bccZone from "../../../../../tests/fixtures/brillouin_zone_v1/bcc/brillouin_zone.json";
+import bccKpath from "../../../../../tests/fixtures/brillouin_zone_v1/bcc/kpath.json";
+import fccManifest from "../../../../../tests/fixtures/brillouin_zone_v1/fcc/manifest.json";
+import fccReciprocal from "../../../../../tests/fixtures/brillouin_zone_v1/fcc/reciprocal_lattice.json";
+import fccZone from "../../../../../tests/fixtures/brillouin_zone_v1/fcc/brillouin_zone.json";
+import fccKpath from "../../../../../tests/fixtures/brillouin_zone_v1/fcc/kpath.json";
+import hexManifest from "../../../../../tests/fixtures/brillouin_zone_v1/hexagonal/manifest.json";
+import hexReciprocal from "../../../../../tests/fixtures/brillouin_zone_v1/hexagonal/reciprocal_lattice.json";
+import hexZone from "../../../../../tests/fixtures/brillouin_zone_v1/hexagonal/brillouin_zone.json";
+import hexKpath from "../../../../../tests/fixtures/brillouin_zone_v1/hexagonal/kpath.json";
+import scManifest from "../../../../../tests/fixtures/brillouin_zone_v1/simple_cubic/manifest.json";
+import scReciprocal from "../../../../../tests/fixtures/brillouin_zone_v1/simple_cubic/reciprocal_lattice.json";
+import scZone from "../../../../../tests/fixtures/brillouin_zone_v1/simple_cubic/brillouin_zone.json";
+import scKpath from "../../../../../tests/fixtures/brillouin_zone_v1/simple_cubic/kpath.json";
+import triManifest from "../../../../../tests/fixtures/brillouin_zone_v1/triclinic/manifest.json";
+import triReciprocal from "../../../../../tests/fixtures/brillouin_zone_v1/triclinic/reciprocal_lattice.json";
+import triZone from "../../../../../tests/fixtures/brillouin_zone_v1/triclinic/brillouin_zone.json";
 import { mapBrillouinZoneArtifacts } from "./brillouinZoneMapper";
 
 const cases = [

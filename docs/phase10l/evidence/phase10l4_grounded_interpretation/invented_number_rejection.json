@@ -1,4 +1,0 @@
-{
-  "outcome": "VALIDATION_FAILED",
-  "policy": "provider has no free numeric field; narrative numeric grounding independently rejects unsupported literals"
-}

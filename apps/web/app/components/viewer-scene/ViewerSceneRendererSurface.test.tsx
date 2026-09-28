@@ -2,8 +2,8 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import minimalScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_minimal_crystal.viewer_scene.v1.json";
-import multiSpeciesScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_multi_species_crystal.viewer_scene.v1.json";
+import minimalScene from "../../../../../tests/fixtures/viewer_scene_v1/valid_minimal_crystal.viewer_scene.v1.json";
+import multiSpeciesScene from "../../../../../tests/fixtures/viewer_scene_v1/valid_multi_species_crystal.viewer_scene.v1.json";
 import { ViewerSceneRendererSurface } from "./ViewerSceneRendererSurface";
 import type { ViewerRendererEngine, ViewerRendererEngineFactory, ViewerRendererSnapshot } from "./viewerSceneRendererTypes";
 import { periodicBoundaryScene } from "./viewerScenePeriodicBondTestFixture";

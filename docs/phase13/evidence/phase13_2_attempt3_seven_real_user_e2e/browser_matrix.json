@@ -1,7 +1,0 @@
-{
-  "Chromium": "NOT_EXECUTED_AFTER_P0_STOP",
-  "Firefox": "NOT_EXECUTED_AFTER_P0_STOP",
-  "WebKit": "NOT_EXECUTED_AFTER_P0_STOP",
-  "mobile390x844": "NOT_EXECUTED_AFTER_P0_STOP",
-  "mockWorkspaceReleaseAuthority": false
-}

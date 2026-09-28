@@ -1,9 +1,0 @@
-{
-  "artifactJavaScript": false,
-  "externalAssets": false,
-  "externalUrls": false,
-  "marker": "NO_SECRET_PATTERN_HITS",
-  "privatePathHits": [],
-  "realLlmCalls": 0,
-  "secretPatternHits": []
-}

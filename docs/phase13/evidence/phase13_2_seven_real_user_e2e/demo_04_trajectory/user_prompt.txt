@@ -1,2 +1,0 @@
-canonical: Analyze this trajectory, show the RDF and MSD, and estimate diffusion with its fit diagnostics.
-alternate: What structural and transport behavior is visible in this trajectory, including RDF, MSD and diffusion limits?

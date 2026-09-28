@@ -1,7 +1,0 @@
-{
-  "localStorageAuthority": "NONE",
-  "oneWorkspacePerJob": true,
-  "selectionAuthority": "exact",
-  "serverAuthority": true,
-  "urlAuthority": true
-}

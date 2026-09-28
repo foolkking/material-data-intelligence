@@ -1,5 +1,0 @@
-{
-  "count": 0,
-  "handcrafted": 0,
-  "reason": "Demo 1 stopped after a fresh HTTP upload and Planner enqueue because the out-of-process QueueWorkerRuntime could not resolve the exact uploaded Profile."
-}

@@ -23,6 +23,16 @@ DATABASE_CONFIGURATION_ENV_KEYS = (
 )
 
 
+def _default_local_root() -> Path:
+    repo_root = Path(__file__).resolve().parents[3]
+    return Path(
+        os.getenv(
+            "MDI_LOCAL_ROOT",
+            str(repo_root.parent / f"{repo_root.name}.local"),
+        )
+    )
+
+
 class RuntimeConfigurationError(ValueError):
     """Raised before serving when a declared runtime topology is inconsistent."""
 
@@ -38,7 +48,7 @@ class ApiSettings:
     runtime_profile: RuntimeProfile = "local"
     # Resolve the development SQLite authority independently of process cwd.
     # Fresh API/worker processes may start from either the repo root or apps/api.
-    database_url: str = f"sqlite:///{(Path(__file__).resolve().parents[3] / 'mdi_phase5.db').as_posix()}"
+    database_url: str = f"sqlite:///{(_default_local_root() / 'data' / 'mdi-local.db').as_posix()}"
     postgres_host: str = "localhost"
     postgres_port: int = 5432
     postgres_db: str = "mdi"
@@ -82,7 +92,7 @@ class ApiSettings:
     job_execution_lease_seconds: int = 90
     job_execution_renewal_seconds: int = 30
     artifact_backend: ArtifactBackend = "local"
-    artifact_root: str = str(Path(__file__).resolve().parents[3] / ".artifacts" / "phase2")
+    artifact_root: str = str(_default_local_root() / "data" / "artifacts")
     # -- Test database for integration tests --
     test_database_url: str | None = None
     auth_required: bool = True

@@ -1,8 +1,0 @@
-{
-  "current": "93dea4a2b0bf31215ab2af1952b16ac47b20b7ed9b111bb2fb60ef70dd431627",
-  "currentStatus": "CURRENT_SEALED",
-  "impact": "YES",
-  "old": "8e8b4f659888635192d259eee90f3befdd655cacb292a78c5e13c20a5fdabdde",
-  "oldStatus": "HISTORICAL_SUPERSEDED",
-  "supersessionReason": "CLARIFICATION_ROUND_LIMIT_FACT_ALIGNMENT"
-}

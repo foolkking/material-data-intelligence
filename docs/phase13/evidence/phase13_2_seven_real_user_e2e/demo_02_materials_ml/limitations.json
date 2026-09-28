@@ -1,6 +1,0 @@
-{
-  "limitations": [
-    "Evaluation consumes supplied predictions and does not train a model."
-  ],
-  "preserved": true
-}

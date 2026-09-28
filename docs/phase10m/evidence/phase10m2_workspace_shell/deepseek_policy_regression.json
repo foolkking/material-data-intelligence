@@ -1,6 +1,0 @@
-{
-  "providerPolicy": "DEEPSEEK_ONLY",
-  "newLlmCallSites": 0,
-  "realLlmCalls": 0,
-  "result": "PASS"
-}

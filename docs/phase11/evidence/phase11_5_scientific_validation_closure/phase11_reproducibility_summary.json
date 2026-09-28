@@ -1,7 +1,0 @@
-{
-  "cases": 8,
-  "linuxPass": 8,
-  "numericCrossPlatform": "NOT_APPLICABLE",
-  "source": "docs/phase11/evidence/phase11_3_cross_platform_reproducibility/scientific_reproducibility_manifest.json",
-  "windowsPass": 8
-}

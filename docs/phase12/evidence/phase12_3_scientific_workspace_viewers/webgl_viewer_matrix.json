@@ -1,6 +1,0 @@
-{
-  "chrome": "shared presentation shell",
-  "cleanup": "existing lease",
-  "numericAuthority": "none",
-  "scene": "existing renderer"
-}

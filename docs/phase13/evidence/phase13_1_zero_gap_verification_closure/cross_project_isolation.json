@@ -1,6 +1,0 @@
-{
-  "crossProjectDenial": "REQUIRED",
-  "crossWorkspaceIsolation": "REQUIRED",
-  "evidence": "tests/integration/test_phase10m7_integration.py",
-  "status": "VERIFIED"
-}

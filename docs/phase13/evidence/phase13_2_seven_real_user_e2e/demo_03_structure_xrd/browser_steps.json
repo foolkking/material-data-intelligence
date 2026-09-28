@@ -1,5 +1,0 @@
-{
-  "demoId": "P13-DEMO-03",
-  "reason": "Product user-entry contract failed during deterministic Planner probe.",
-  "status": "NOT_EXECUTED_DUE_RELEASE_CRITICAL_INTEGRATION_DEFECT"
-}

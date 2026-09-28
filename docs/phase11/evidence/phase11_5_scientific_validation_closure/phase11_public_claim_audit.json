@@ -1,9 +1,0 @@
-{
-  "approvedClaimMatrix": "phase11-4 sealed",
-  "overclaimStatus": "PASS",
-  "prohibitedUnqualifiedClaims": [
-    "all science validated",
-    "all Tools are independently scientifically validated",
-    "final product release ready"
-  ]
-}

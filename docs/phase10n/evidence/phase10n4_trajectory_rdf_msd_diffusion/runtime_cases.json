@@ -1,7 +1,0 @@
-{
-  "diffusion": "registered adapter/exact MSD binding",
-  "msd": "registered adapter/server unwrapping",
-  "noFallback": true,
-  "noNetwork": true,
-  "rdf": "registered adapter"
-}

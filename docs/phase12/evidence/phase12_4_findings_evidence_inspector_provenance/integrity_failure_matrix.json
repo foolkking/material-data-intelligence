@@ -1,8 +1,0 @@
-{
-  "collapsedToNoFindings": false,
-  "states": [
-    "SOURCE_INTEGRITY_FAILED",
-    "VALIDATION_FAILED",
-    "PROVIDER_FAILED"
-  ]
-}

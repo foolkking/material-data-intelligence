@@ -1,2 +1,0 @@
-docs link checker scope: Phase 11-4 emitted paths exist
-PASS

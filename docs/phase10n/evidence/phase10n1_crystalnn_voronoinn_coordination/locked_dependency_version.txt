@@ -1,5 +1,0 @@
-pymatgen=2026.5.4
-pymatgen-core=2026.5.18
-license=MIT
-CrystalNN=pymatgen.core.local_env.CrystalNN.get_nn_info
-VoronoiNN=pymatgen.core.local_env.VoronoiNN.get_nn_info

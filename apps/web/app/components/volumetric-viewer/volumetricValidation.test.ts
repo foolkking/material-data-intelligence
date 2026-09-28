@@ -1,4 +1,4 @@
-import fixture from "../../../../../docs/phase10j/fixtures/volumetric_contract/cubic_constant_scalar.json";
+import fixture from "../../../../../tests/fixtures/volumetric_contract/cubic_constant_scalar.json";
 import { describe, expect, it } from "vitest";
 
 import { validateVolumetricArtifacts } from "./volumetricValidation";

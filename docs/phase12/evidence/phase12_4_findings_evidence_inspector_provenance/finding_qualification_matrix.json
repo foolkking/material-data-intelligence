@@ -1,9 +1,0 @@
-{
-  "classes": [
-    "DIRECT",
-    "QUALIFIED",
-    "LIMITED"
-  ],
-  "labelsAreQualifiers": true,
-  "probabilityFabrication": 0
-}

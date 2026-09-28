@@ -1,5 +1,0 @@
-{
-  "queue": "mdi-jobs",
-  "realRedis": true,
-  "scientificPayloadAuthority": false
-}

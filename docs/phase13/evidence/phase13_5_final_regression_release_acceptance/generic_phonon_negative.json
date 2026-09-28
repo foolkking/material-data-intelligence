@@ -1,7 +1,0 @@
-{
-  "cases": [
-    "generic phonon YAML/JSON remains MAPPING_ONLY"
-  ],
-  "executionOnTypedNonReady": 0,
-  "status": "PASS"
-}

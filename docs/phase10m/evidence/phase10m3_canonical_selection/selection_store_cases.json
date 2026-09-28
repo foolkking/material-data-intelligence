@@ -1,9 +1,0 @@
-{
-  "workspaceScope": "PASS",
-  "exactDelivery": "PASS",
-  "semanticDuplicateSuppressed": "PASS",
-  "maxSubscribers": 32,
-  "clear": "PASS",
-  "unmountCleanup": "PASS",
-  "noPersistenceUntilPin": "PASS"
-}

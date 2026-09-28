@@ -9,9 +9,9 @@ import { mapPhononBandPlot, phononAnimationHandoff, PhononBandPreviewPanel } fro
 import { phononAnimationFixture } from "../phonon-animation/phononAnimationTestFixture";
 
 const root = resolve(__dirname, "../../../../..");
-const stable = JSON.parse(readFileSync(resolve(root, "docs/phase10h/fixtures/phonon_contract/stable_band.json"), "utf8"));
-const summary = JSON.parse(readFileSync(resolve(root, "docs/phase10h/fixtures/phonon_contract/phonon_summary.json"), "utf8"));
-const manifest = JSON.parse(readFileSync(resolve(root, "docs/phase10h/fixtures/phonon_contract/phonon_manifest.json"), "utf8"));
+const stable = JSON.parse(readFileSync(resolve(root, "tests/fixtures/phonon_contract/stable_band.json"), "utf8"));
+const summary = JSON.parse(readFileSync(resolve(root, "tests/fixtures/phonon_contract/phonon_summary.json"), "utf8"));
+const manifest = JSON.parse(readFileSync(resolve(root, "tests/fixtures/phonon_contract/phonon_manifest.json"), "utf8"));
 
 function artifacts(payload: unknown = stable) {
   return [

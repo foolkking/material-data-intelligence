@@ -1,5 +1,0 @@
-{
-  "formalIdentity": "phononArtifactId + checksum + qPointId/branchId",
-  "qpoint_indexOnly": "TYPED_UNSUPPORTED",
-  "noFabricatedPass": true
-}

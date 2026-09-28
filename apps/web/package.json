@@ -3,18 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "preflight:disk": "python ../../scripts/phase14r_disk_preflight.py --check-path ../..",
-    "dev": "node ../../scripts/workspace_cache_runner.mjs next dev",
-    "build": "npm run preflight:disk && node ../../scripts/workspace_cache_runner.mjs next build",
-    "start": "node ../../scripts/workspace_cache_runner.mjs next start",
-    "lint": "node ../../scripts/workspace_cache_runner.mjs next lint",
-    "test": "npm run preflight:disk && node ../../scripts/workspace_cache_runner.mjs vitest run",
-    "test:phase10-closure": "npm run preflight:disk && node ../../scripts/workspace_cache_runner.mjs vitest run app/components/viewer-scene/phase10ProductClosure.test.ts",
-    "test:phase10-browser-evidence": "npm run preflight:disk && node ../../scripts/workspace_cache_runner.mjs node test/phase10-product-closure-browser-evidence.mjs",
-    "test:product-navigation-spa": "npm run preflight:disk && node ../../scripts/workspace_cache_runner.mjs node test/product-navigation-spa-acceptance.mjs",
-    "test:trajectory-performance-evidence": "node ../../scripts/workspace_cache_runner.mjs node test/trajectory-performance-evidence-check.mjs",
-    "typecheck": "npm run preflight:disk && node ../../scripts/workspace_cache_runner.mjs tsc --project tsconfig.typecheck.json --noEmit --incremental false",
-    "playwright:install": "node ../../scripts/workspace_cache_runner.mjs playwright install chromium firefox webkit"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "typecheck": "tsc --project tsconfig.typecheck.json --noEmit --incremental false",
+    "playwright:install": "playwright install chromium firefox webkit"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.80.0",

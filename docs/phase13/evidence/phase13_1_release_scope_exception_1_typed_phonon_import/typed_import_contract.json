@@ -1,8 +1,0 @@
-{
-  "kinds": [
-    "phonon_band",
-    "phonon_dos"
-  ],
-  "status": "CANDIDATE_IMPLEMENTED_NOT_RELEASE_VERIFIED",
-  "strictExistingSchema": true
-}

@@ -60,10 +60,4 @@ markers = [
   "integration: requires Docker-backed PostgreSQL, Redis, or MinIO services",
   "llm_integration: requires explicit MDI_RUN_LLM_INTEGRATION=1 and OpenAI-compatible LLM env",
   "live_llm: requires explicit MDI_RUN_AGENT2_LIVE=1 and DEEPSEEK_KEY",
-  "agent2_phase5_service: Phase 5 RDF/XRD fresh-process PostgreSQL Redis MinIO qualification",
-  "agent2_phase6_service: Phase 6 RDF/XRD fresh-process interpretation qualification",
-  "agent2_phase7_service: Phase 7 fresh-process ResearchSession memory qualification",
-  "agent2_phase8_service: Phase 8 fresh-process grounded scientific report qualification",
-  "agent2_phase9_service: Phase 9 fresh-process exact-version viewer and selection qualification",
-  "qualification: historical qualification-package validation, including checks that require the local _qualification workspace",
 ]

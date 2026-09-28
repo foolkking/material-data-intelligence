@@ -1,1 +1,0 @@
-Show the supplied phonon bands and density of states together with the matching Brillouin-zone context.

@@ -2,8 +2,8 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import fixed from "../../../../../docs/phase10g/fixtures/trajectory_viewer/fixed_lattice_md_12_frames.json";
-import variable from "../../../../../docs/phase10g/fixtures/trajectory_viewer/variable_lattice_relaxation_6_frames.json";
+import fixed from "../../../../../tests/fixtures/trajectory_viewer/fixed_lattice_md_12_frames.json";
+import variable from "../../../../../tests/fixtures/trajectory_viewer/variable_lattice_relaxation_6_frames.json";
 import type { ViewerRendererEngine, ViewerRendererEngineFactory, ViewerRendererSnapshot } from "../viewer-scene/viewerSceneRendererTypes";
 import { TrajectoryViewerSurface } from "./TrajectoryViewerSurface";
 

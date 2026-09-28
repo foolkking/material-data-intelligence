@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import minimalScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_minimal_crystal.viewer_scene.v1.json";
+import minimalScene from "../../../../../tests/fixtures/viewer_scene_v1/valid_minimal_crystal.viewer_scene.v1.json";
 import { mapViewerSceneForRenderer } from "./viewerSceneRendererMapper";
 import { derivePeriodicSupercell, estimatePeriodicSupercell, supercellOffsets, validSupercellRepeat } from "./viewerSceneSupercell";
 import { periodicBoundaryScene } from "./viewerScenePeriodicBondTestFixture";

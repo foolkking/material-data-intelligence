@@ -38,11 +38,10 @@ _REQUIRED_TYPED_LIMIT_ERRORS = (
 )
 
 _OPERATIONS_RUNBOOK_REFERENCE = (
-    "docs/16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md#operations-alert-response"
+    "README.md#runtime-topology"
 )
 _OPERATIONS_RECHECK_COMMAND = (
-    "python scripts/phase14r_operations_snapshot.py "
-    "--same-stack --fail-on-attention --compact"
+    "scripts/dev.ps1 status"
 )
 _MINIO_USAGE_SCAN_RETRY_ATTEMPTS = 1
 _MINIO_USAGE_SCAN_RETRY_DELAY_SECONDS = 0.05
@@ -51,9 +50,13 @@ _MINIO_OBSERVATION_MAX_FUTURE_SKEW_SECONDS = 60
 _MINIO_LAST_KNOWN_COMPLETE: dict[str, dict[str, Any]] = {}
 _MINIO_LAST_KNOWN_COMPLETE_LOCK = threading.Lock()
 _MINIO_OBSERVATION_CACHE_DIRECTORY = (
-    Path(__file__).resolve().parents[3]
-    / ".runtime_services"
-    / "managed"
+    Path(
+        os.getenv(
+            "MDI_RUNTIME_ROOT",
+            str(Path(__file__).resolve().parents[4] / ".mdi-runtime"),
+        )
+    )
+    / "cache"
     / "minio"
 )
 _RUNBOOK_ACTIONS = {

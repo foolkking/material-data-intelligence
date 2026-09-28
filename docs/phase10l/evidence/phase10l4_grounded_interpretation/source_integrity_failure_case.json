@@ -1,7 +1,0 @@
-{
-  "claims": 0,
-  "crossJobArtifact": "SOURCE_INTEGRITY_FAILED",
-  "providerCalls": 0,
-  "wrongArtifactChecksum": "SOURCE_INTEGRITY_FAILED",
-  "wrongPlanHash": "SOURCE_INTEGRITY_FAILED"
-}

@@ -1,6 +1,0 @@
-{
-  "MinIO": "REAL_ISOLATED_MINIO",
-  "PostgreSQL": "REAL_ISOLATED_POSTGRESQL_17",
-  "Redis": "REAL_REDIS_PROTOCOL_SERVICE",
-  "requiredServiceSkips": 0
-}

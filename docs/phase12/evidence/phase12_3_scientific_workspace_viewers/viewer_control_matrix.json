@@ -1,6 +1,0 @@
-{
-  "fullscreen": "presentation-only where existing renderer supports it",
-  "recomputation": 0,
-  "selection": "exact compatible identity",
-  "tableAlternative": true
-}

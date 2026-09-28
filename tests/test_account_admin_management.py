@@ -424,9 +424,9 @@ def test_platform_admin_overview_user_management_and_sanitized_audit(monkeypatch
                     "message": "Queue depth exceeded.",
                     "runbook": {
                         "id": "OPS-RUNBOOK-QUEUE-BACKLOG",
-                        "reference": "docs/16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md#operations-alert-response",
+                        "reference": "README.md#runtime-topology",
                         "operatorAction": "Inspect queue consumption.",
-                        "recheckCommand": "python scripts/phase14r_operations_snapshot.py --same-stack --compact",
+                        "recheckCommand": "scripts/dev.ps1 status",
                         "secret": "do-not-project",
                     },
                     "secret": "do-not-project",
@@ -472,9 +472,9 @@ def test_platform_admin_overview_user_management_and_sanitized_audit(monkeypatch
     }
     assert overview["operations"]["alerts"][0]["runbook"] == {
         "id": "OPS-RUNBOOK-QUEUE-BACKLOG",
-        "reference": "docs/16_RUNTIME_INFRASTRUCTURE_RUNBOOK.md#operations-alert-response",
+        "reference": "README.md#runtime-topology",
         "operatorAction": "Inspect queue consumption.",
-        "recheckCommand": "python scripts/phase14r_operations_snapshot.py --same-stack --compact",
+        "recheckCommand": "scripts/dev.ps1 status",
     }
     assert overview["operations"]["queues"]["workerHealth"]["healthyCount"] == 6
     assert "secret" not in overview["operations"]["database"]

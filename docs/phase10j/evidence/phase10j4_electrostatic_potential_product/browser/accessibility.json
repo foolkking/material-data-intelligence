@@ -1,9 +1,0 @@
-{
-  "region": "Interactive volumetric isosurface renderer",
-  "live": "polite",
-  "gaugeSelector": true,
-  "profileTable": true,
-  "profileChartTabIndex": "0",
-  "pointInspector": true,
-  "warnings": 6
-}

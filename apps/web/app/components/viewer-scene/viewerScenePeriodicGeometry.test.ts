@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { cartesianToFractional, determinant, fractionalToCartesian, inverseLattice, minimumImage, periodicAngle, periodicDihedral, periodicSiteKey, translateCartesian } from "./viewerScenePeriodicGeometry";
 import type { RenderLattice, RenderVector3 } from "./viewerSceneRendererTypes";
-import reference from "../../../../../docs/phase10f/evidence/phase10f17_periodic_crystal_inspection/math/trusted_reference_comparison.json";
+import reference from "../../../../../tests/fixtures/viewer_scene_reference/trusted_reference_comparison.json";
 
 const cubic: RenderLattice["matrix"] = [[10,0,0],[0,10,0],[0,0,10]];
 

@@ -1,6 +1,0 @@
-{
-  "algorithmChange": 0,
-  "findingId": "P13-RR-003",
-  "reason": "The Tool contract is CuKa-only and an approved matching retained experimental input path exists.",
-  "selectedBranch": "B1"
-}

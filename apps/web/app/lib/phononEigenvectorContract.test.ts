@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import { validatePhononEigenvector, validatePhononEigenvectorBundle, validatePhononModeRef } from "./phononEigenvectorContract";
 
-const fixture = JSON.parse(readFileSync(path.resolve(process.cwd(), "../../docs/phase10h/fixtures/phonon_eigenvector_v1/valid_bundle.json"), "utf8"));
+const fixture = JSON.parse(readFileSync(path.resolve(process.cwd(), "../../tests/fixtures/phonon_eigenvector_v1/valid_bundle.json"), "utf8"));
 
 describe("phonon eigenvector contract", () => {
   it("independently validates the Python-generated contract bundle", () => {

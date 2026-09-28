@@ -1,9 +1,0 @@
-{
-  "crossProjectRejection": "PASS",
-  "findingId": "P13-R5-001",
-  "freshDemo4": "PASS",
-  "hashMismatchRejection": "PASS",
-  "staleSourceRejection": "PASS",
-  "status": "CLOSED",
-  "workspaceSourceCurrentness": "PASS"
-}

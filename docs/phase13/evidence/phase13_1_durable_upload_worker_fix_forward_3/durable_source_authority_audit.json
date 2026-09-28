@@ -1,6 +1,0 @@
-{
-  "filesystemScientificAuthority": "NONE",
-  "normalizedSourceDurableAuthority": "existing PostgreSQL datasets.metadata_json + data_profiles.profile_json + configured ArtifactStorage/MinIO",
-  "redisScientificAuthority": "NONE",
-  "sourceResourceIsArtifact": false
-}

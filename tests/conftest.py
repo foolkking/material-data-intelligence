@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-import json
 import os
-import subprocess
-import sys
 from pathlib import Path
 
 import pytest
@@ -61,36 +58,6 @@ def pytest_configure(config: pytest.Config) -> None:
             "MDI_PYTEST_CACHE_OUTSIDE_REPOSITORY"
         ) from exc
     config.option.basetemp = str(candidate)
-
-
-def pytest_sessionstart(session: pytest.Session) -> None:
-    """Fail before pytest writes its test corpus when the workspace is full."""
-
-    del session
-    root = Path(__file__).resolve().parents[1]
-    completed = subprocess.run(
-        [
-            sys.executable,
-            str(root / "scripts" / "phase14r_disk_preflight.py"),
-            "--check-path",
-            str(root),
-        ],
-        cwd=root,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    if completed.returncode:
-        try:
-            payload = json.loads(completed.stdout)
-            code = payload.get("code", "MDI_DISK_PREFLIGHT_FAILED")
-            fallback = payload.get("configuredFallback")
-        except (json.JSONDecodeError, AttributeError):
-            code = "MDI_DISK_PREFLIGHT_FAILED"
-            fallback = None
-        raise pytest.UsageError(
-            f"{code}; configuredFallback={fallback!r}"
-        )
 
 
 @pytest.fixture(autouse=True)

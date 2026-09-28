@@ -1,6 +1,0 @@
-{
-  "atomicPair": true,
-  "explicitConfirmation": true,
-  "idempotencyKey": true,
-  "immutable": true
-}

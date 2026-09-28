@@ -2,10 +2,10 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import manifest from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/manifest.json";
-import reciprocal from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/reciprocal_lattice.json";
-import zone from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/brillouin_zone.json";
-import kpath from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/kpath.json";
+import manifest from "../../../../../tests/fixtures/brillouin_zone_v1/simple_cubic/manifest.json";
+import reciprocal from "../../../../../tests/fixtures/brillouin_zone_v1/simple_cubic/reciprocal_lattice.json";
+import zone from "../../../../../tests/fixtures/brillouin_zone_v1/simple_cubic/brillouin_zone.json";
+import kpath from "../../../../../tests/fixtures/brillouin_zone_v1/simple_cubic/kpath.json";
 import { BrillouinZoneSurface } from "./BrillouinZoneSurface";
 import type { BZRendererEngine, BZRendererEngineFactory, BZRendererSnapshot } from "./brillouinZoneTypes";
 

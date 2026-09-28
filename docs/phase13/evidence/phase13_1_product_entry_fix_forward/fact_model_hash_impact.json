@@ -1,7 +1,0 @@
-{
-  "current": "e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06",
-  "determinism": "PASS",
-  "impact": "NO",
-  "old": "e0248d502e4a442bb9596a8d2f6fe6d7fdefe61c41121ae08736734ce4004a06",
-  "reason": "Reachability and demo contract corrections do not change the sealed release capability fact domain."
-}

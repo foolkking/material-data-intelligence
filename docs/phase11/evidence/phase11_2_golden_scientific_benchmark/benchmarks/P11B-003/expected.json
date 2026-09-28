@@ -1,9 +1,0 @@
-{
-  "benchmarkId": "P11B-003",
-  "expectedTruth": "analytic golden matcher and detector boundary suite",
-  "expectedUnits": "Inherited from sealed Phase 10N contract; no unit conversion performed.",
-  "fixtureChecksum": "5f4f41474e9e1583b73032fffeeed0c62becc57866b353fa04d0df7d63a61b68",
-  "fixtureId": "P11FIX-003",
-  "referenceId": "P11REF-003",
-  "toleranceId": "n3.match.position.v1"
-}

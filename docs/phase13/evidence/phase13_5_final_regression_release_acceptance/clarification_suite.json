@@ -1,9 +1,0 @@
-{
-  "cases": [
-    "ambiguous",
-    "one-round success",
-    "second-round typed failure"
-  ],
-  "executionOnTypedNonReady": 0,
-  "status": "PASS"
-}

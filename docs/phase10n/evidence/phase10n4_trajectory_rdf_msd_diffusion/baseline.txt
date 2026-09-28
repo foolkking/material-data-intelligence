@@ -1,6 +1,0 @@
-branch=master
-entry_head=0a33d84ea7c97b423f825f0c9784c57f1acfac3b
-registry_baseline=57
-registry_final=60
-migration_head=0007_phase10m1_workspace_domain
-task_block_count=1

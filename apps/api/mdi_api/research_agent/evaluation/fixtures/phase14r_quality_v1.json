@@ -17,7 +17,7 @@
       "message": "分析当前结构的局部配位环境。",
       "object_candidates": [{"key": "obj_1", "object_type": "structure.crystal", "display_name": "Current structure", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["structure.inspect_coordination"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_phase10l2_capability_planner.py::test_chinese_rdf_and_local_environment_request_requires_algorithm_clarification"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_capability_planner.py::test_chinese_rdf_and_local_environment_request_requires_algorithm_clarification"],
       "evaluation_dimensions": ["intent understanding", "clarification quality", "under-analysis"]
     },
     {
@@ -62,7 +62,7 @@
       "message": "为当前晶体生成理论 XRD 图谱。",
       "object_candidates": [{"key": "obj_1", "object_type": "structure.crystal", "display_name": "Current structure", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["diffraction.generate_theoretical_pattern"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_phase10e4_xrd.py::test_persisted_xrd_plan_executes_exactly_one_tool_call"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_xrd.py::test_persisted_xrd_plan_executes_exactly_one_tool_call"],
       "evaluation_dimensions": ["capability selection", "scientific usefulness", "limitations disclosure"]
     },
     {
@@ -83,7 +83,7 @@
       "message": "计算当前原子轨迹的 RDF。",
       "object_candidates": [{"key": "obj_1", "object_type": "trajectory.atomic", "display_name": "Current trajectory", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["trajectory.compute_rdf"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_phase10e7_rdf.py::test_rdf_partial_pairs_can_be_disabled_and_are_ordered"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_rdf.py::test_rdf_partial_pairs_can_be_disabled_and_are_ordered"],
       "evaluation_dimensions": ["intent understanding", "capability selection", "latency"]
     },
     {
@@ -92,7 +92,7 @@
       "message": "计算当前轨迹中 Li 的 MSD。",
       "object_candidates": [{"key": "obj_1", "object_type": "trajectory.atomic", "display_name": "Current trajectory", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["trajectory.compute_msd"], "constraint_subset": {"species": "Li"}},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_phase10n4_trajectory_analytics.py::test_msd_triclinic_partial_pbc_and_ambiguous_steps"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_trajectory_analytics.py::test_msd_triclinic_partial_pbc_and_ambiguous_steps"],
       "evaluation_dimensions": ["parameter fidelity", "capability selection", "limitations disclosure"]
     },
     {
@@ -110,7 +110,7 @@
       "message": "检查当前声子能带数据。",
       "object_candidates": [{"key": "obj_1", "object_type": "phonon.band_structure", "display_name": "Phonon band", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["phonon.inspect_band"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_phase10h1_phonon_bands.py::test_phonopy_yaml_maps_qpoints_segments_branches_and_negative_frequency"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_phonon_bands.py::test_phonopy_yaml_maps_qpoints_segments_branches_and_negative_frequency"],
       "evaluation_dimensions": ["capability selection", "unit fidelity", "limitations disclosure"]
     },
     {
@@ -119,7 +119,7 @@
       "message": "检查当前声子态密度数据。",
       "object_candidates": [{"key": "obj_1", "object_type": "phonon.dos", "display_name": "Phonon DOS", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["phonon.inspect_dos"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_phase10h2_phonon_dos.py::test_partial_projection_does_not_claim_complete_sum"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_phonon_dos.py::test_partial_projection_does_not_claim_complete_sum"],
       "evaluation_dimensions": ["capability selection", "unit fidelity", "partial-result disclosure"]
     },
     {
@@ -128,7 +128,7 @@
       "message": "检查当前电子能带，不要推断权威结果未提供的物性。",
       "object_candidates": [{"key": "obj_1", "object_type": "electronic.band_structure", "display_name": "Electronic band", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["electronic.inspect_band"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_phase10n5_electronic_band_dos.py::test_dos_preserves_total_partial_projection_and_no_recomputation"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_electronic_band_dos.py::test_dos_preserves_total_partial_projection_and_no_recomputation"],
       "evaluation_dimensions": ["capability selection", "grounding", "over-analysis"]
     },
     {
@@ -137,7 +137,7 @@
       "message": "检查当前电子态密度并保留权威能量单位。",
       "object_candidates": [{"key": "obj_1", "object_type": "electronic.dos", "display_name": "Electronic DOS", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["electronic.inspect_dos"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_phase10n5_electronic_band_dos.py::test_dos_preserves_total_partial_projection_and_no_recomputation"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_electronic_band_dos.py::test_dos_preserves_total_partial_projection_and_no_recomputation"],
       "evaluation_dimensions": ["capability selection", "unit fidelity", "scientific usefulness"]
     },
     {
@@ -146,7 +146,7 @@
       "message": "分析当前材料数据集的样本、属性和质量。",
       "object_candidates": [{"key": "obj_1", "object_type": "materials.table", "display_name": "Materials table", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["data.explore_materials"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_phase10k2_dataset_materials_explorer.py::test_partial_empty_and_formula_only_datasets_have_typed_states"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_dataset_materials_explorer.py::test_partial_empty_and_formula_only_datasets_have_typed_states"],
       "evaluation_dimensions": ["intent understanding", "context selection", "scientific usefulness"]
     },
     {
@@ -155,7 +155,7 @@
       "message": "分析当前材料表的组成空间。",
       "object_candidates": [{"key": "obj_1", "object_type": "materials.table", "display_name": "Materials table", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["data.explore_composition_space"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_phase10k4_composition_space.py::test_planner_route_and_plan_validator_enforce_explicit_profile_binding"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_composition_space.py::test_planner_route_and_plan_validator_enforce_explicit_profile_binding"],
       "evaluation_dimensions": ["intent understanding", "capability selection", "answer relevance"]
     },
     {
@@ -213,7 +213,7 @@
       "case_id": "R10-025", "family": "cross-domain", "scenario": "wrong user assumption",
       "mode": "PRODUCT_CONTRACT", "category": "SAFETY", "message": "假设这个不兼容对象可以直接做结构分析并给出结论。",
       "invariants": ["wrong object type fails closed", "no fabricated resource"],
-      "evidence_tests": ["tests/test_phase10l1_analysis_intent.py::test_missing_structure_is_unsupported_without_fabricated_resource"],
+      "evidence_tests": ["tests/test_analysis_intent.py::test_missing_structure_is_unsupported_without_fabricated_resource"],
       "evaluation_dimensions": ["intent understanding", "clarification quality", "scientific usefulness"]
     },
     {

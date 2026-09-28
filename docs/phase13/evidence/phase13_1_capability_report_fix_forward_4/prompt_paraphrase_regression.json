@@ -1,8 +1,0 @@
-{
-  "prompt": "Summarize this materials dataset and show its composition-space embedding and bounded clusters.",
-  "requiredTools": [
-    "dataset.composition_space",
-    "dataset.materials_explorer"
-  ],
-  "status": "PASS"
-}

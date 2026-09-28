@@ -1,7 +1,0 @@
-{
-  "checksum": "REJECT",
-  "foreignScope": "REJECT",
-  "groundingInvention": "REJECT",
-  "scientificBoundary": "PASS",
-  "stale": "REJECT"
-}

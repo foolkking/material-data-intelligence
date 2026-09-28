@@ -1,5 +1,0 @@
-{
-  "e2eExecuted": 0,
-  "reason": "Seven-demo product entry gate cannot be satisfied without unauthorized production changes.",
-  "status": "NOT_EXECUTED_DUE_RELEASE_CRITICAL_INTEGRATION_DEFECT"
-}

@@ -1,6 +1,0 @@
-Phase 11-4 honest coverage baseline
-Registry=62; DataProfile=2.4; migration=0007_phase10m1_workspace_domain
-Phase 11-3 implementation=e89dfaf23e376a7ae79432f9806d7a4bd3eaecac
-Phase 11-3 implementation CI=31332350363 PASS
-Phase 11-3 completion=a5d9559; archive=70c2a46
-No scientific reference download or production change

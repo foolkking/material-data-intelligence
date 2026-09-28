@@ -1,9 +1,0 @@
-{
-  "freshQueueWorkerRuntime": true,
-  "freshRepositories": true,
-  "freshResolver": true,
-  "processAStateDisposed": true,
-  "realHttpUpload": true,
-  "sharedInMemoryStores": 0,
-  "sharedPythonObjects": 0
-}

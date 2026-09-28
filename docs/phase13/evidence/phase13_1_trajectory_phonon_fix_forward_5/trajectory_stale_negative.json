@@ -1,8 +1,0 @@
-{
-  "cases": [
-    "self-consistent immutable Workspace snapshot missing current datasetVersion",
-    "Profile version changes after projection"
-  ],
-  "status": "PASS",
-  "typedOutcome": "STALE"
-}

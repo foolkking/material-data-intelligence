@@ -1,9 +1,0 @@
-{
-  "benchmarkId": "P11B-005",
-  "expectedTruth": "cross-platform variance characterization",
-  "expectedUnits": "Inherited from sealed Phase 10N contract; no unit conversion performed.",
-  "fixtureChecksum": "e07f30b1b5036660e6ddeb56e6f9302003cf2f8dcc0280229a098258c6edbb15",
-  "fixtureId": "P11FIX-005",
-  "referenceId": "P11REF-005",
-  "toleranceId": "n4.diffusion.regime.v1"
-}

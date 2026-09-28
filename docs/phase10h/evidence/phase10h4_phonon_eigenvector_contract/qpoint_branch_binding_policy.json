@@ -1,6 +1,0 @@
-{
-  "branch": "source_stable_index",
-  "crossing_tracking": false,
-  "frequency_tolerance": 1e-08,
-  "qpoint": "index+coordinates+segment"
-}

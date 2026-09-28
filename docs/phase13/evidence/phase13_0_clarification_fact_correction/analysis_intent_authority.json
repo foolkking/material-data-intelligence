@@ -1,9 +1,0 @@
-{
-  "maxClarificationQuestions": 3,
-  "maxClarificationRounds": 1,
-  "productionMutation": 0,
-  "schemaVersion": "1.0",
-  "secondRoundBehavior": "TYPED_FAILURE",
-  "secondRoundErrorCode": "CLARIFICATION_NOT_ALLOWED",
-  "source": "packages/schemas/mdi_schemas/analysis_intent.py"
-}

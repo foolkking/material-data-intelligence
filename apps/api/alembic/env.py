@@ -22,7 +22,7 @@ runtime_database_url = load_settings().database_url
 configured_database_url = config.get_main_option("sqlalchemy.url")
 if (
     database_configuration_declared(os.environ)
-    and configured_database_url == "sqlite:///./mdi_phase5.db"
+    and configured_database_url == "sqlite://"
 ):
     config.set_main_option("sqlalchemy.url", runtime_database_url.replace("%", "%%"))
 

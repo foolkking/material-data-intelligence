@@ -1,8 +1,0 @@
-{
-  "findings": [
-    "profile, intent, eligibility and plan are distinct runtime facts",
-    "primary-flow developer detail requires progressive disclosure"
-  ],
-  "owner": "12-2",
-  "source": "PlannerWorkbench"
-}

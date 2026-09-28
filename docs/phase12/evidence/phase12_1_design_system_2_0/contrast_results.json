@@ -1,6 +1,0 @@
-{
-  "certificationClaim": false,
-  "result": "PASS",
-  "target": "WCAG-like AA engineering target",
-  "textAndControlRoles": "tokenized and manually contrast-reviewed"
-}

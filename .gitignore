@@ -2,13 +2,14 @@
 .env
 .env.*
 !.env.example
+local.env
 *.key
 *.pem
 *.p12
 
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.egg-info/
 .venv/
 venv/
@@ -16,36 +17,53 @@ venv/
 .pytest_tmp/
 .ruff_cache/
 
-# Node
+# Node / frontend
 node_modules/
 .next/
 .next-*/
+.vite/
+.turbo/
 *.tsbuildinfo
+coverage/
 dist/
 build/
 
-# Runtime data
-uploads/
-storage/
-# Generated runtime artifact stores stay ignored by default. Checked-in phase
-# evidence may opt in with `git add -f` when tests and audit docs reference it.
-artifacts/
-.artifacts/
+# Runtime state (the canonical local root is outside the repository)
+*.local/
+.runtime_services/
+.runtime/
+runtime/
+logs/
 tmp/
 .cache/
-material-data-intelligence-*.zip
-
-# Local databases
+uploads/
+storage/
+.artifacts/
+artifacts/
+*.pid
+*.log
+*.out
+*.err
 *.sqlite
 *.db
 *.db-shm
 *.db-wal
-*.log
+dump.rdb
+appendonly.aof
+memurai-log.txt
+material-data-intelligence-*.zip
 
-# Local qualification workspaces and diagnostic output are not release source.
+# Historical development-process output
 _qualification/
-._diag_volume/
 .qualification_runs/
+qualification/
+cleanup-evidence/
+attempt*/
+*attempt*/
+closure*/
+pre-freeze*/
+final-candidate*/
+._diag_volume/
 .cleanup_archive/
 
 # OS / editor
@@ -55,9 +73,4 @@ desktop.ini
 Thumbs.db
 .idea/
 .vscode/
-
-# Keep design docs and persistent planning files tracked.
-# docs/
-# persistent/
 .codex-worker/
-.runtime_services/

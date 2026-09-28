@@ -1,8 +1,0 @@
-{
-  "chromium": "PASS",
-  "chromium390x844": "PASS",
-  "firefox": "PASS",
-  "scientificAuthorityChanged": false,
-  "semanticLayoutConsistency": true,
-  "webkit": "PASS"
-}

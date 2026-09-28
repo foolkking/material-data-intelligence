@@ -1,7 +1,0 @@
-{
-  "discriminator": "explicit importKind + exact contractVersion",
-  "genericAutoDetection": false,
-  "newPublicApiRoutes": 0,
-  "persistence": "existing PostgreSQL Dataset/DataProfile metadata + MinIO canonical normalized payload",
-  "route": "POST /datasets/upload"
-}

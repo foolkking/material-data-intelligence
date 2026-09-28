@@ -1,7 +1,0 @@
-{
-  "fields": [
-    "real",
-    "imag"
-  ],
-  "schema_version": "phase10h.complex_scalar.v1"
-}

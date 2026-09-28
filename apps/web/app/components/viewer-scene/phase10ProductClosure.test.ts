@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import legacyV1 from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_optional_bonds.viewer_scene.v1.json";
+import legacyV1 from "../../../../../tests/fixtures/viewer_scene_v1/valid_optional_bonds.viewer_scene.v1.json";
 import { buildViewerExportMarkdown, buildViewerExportState, DEFAULT_VIEWER_EXPORT_REQUEST } from "./viewerSceneExport";
 import { measureDistance } from "./viewerSceneMeasurements";
 import { classifyViewerPerformance } from "./viewerScenePerformance";

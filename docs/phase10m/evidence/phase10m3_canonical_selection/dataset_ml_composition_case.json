@@ -1,6 +1,0 @@
-{
-  "identity": "objectId + sampleRef",
-  "rowIndex": "display-only",
-  "selectionPropagation": "exact sample identity only",
-  "result": "PASS"
-}

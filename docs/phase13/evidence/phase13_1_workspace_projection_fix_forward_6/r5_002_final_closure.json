@@ -1,9 +1,0 @@
-{
-  "findingId": "P13-R5-002",
-  "freshDemo5": "PASS",
-  "genericPhonon": "MAPPING_ONLY",
-  "status": "CLOSED",
-  "typedBandImport": "BOUNDED / PASS",
-  "typedDosImport": "BOUNDED / PASS",
-  "unknownInputRefs": 0
-}

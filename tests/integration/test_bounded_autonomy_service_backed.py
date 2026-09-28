@@ -60,15 +60,15 @@ from mdi_api.scientific_objects.service import ScientificObjectService
 from mdi_api.unit_of_work import RepositoryFactory
 from mdi_api.repositories import SqlAlchemyRepositoryBundle
 from mdi_workers.queue_runtime import RedisRQQueueBackend
-from tests.integration.test_agent2_phase4_service_backed import (
+from tests.integration.test_plan_execution_service_backed import (
     _minio_storage,
     _worker_environment,
 )
-from tests.integration.test_phase10m1_workspace_service_backed import (
+from tests.integration.test_workspace_service_backed import (
     _schema_database_url,
 )
-from tests.integration.test_phase10_product_closure import _materials_ml_profile
-from tests.test_phase10n4_trajectory_analytics import _execute, _trajectory
+from tests.integration.test_product_closure_service_backed import _materials_ml_profile
+from tests.test_trajectory_analytics import _execute, _trajectory
 
 
 ROOT = Path(__file__).resolve().parents[2]

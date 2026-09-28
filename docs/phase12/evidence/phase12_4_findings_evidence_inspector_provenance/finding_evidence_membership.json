@@ -1,9 +1,0 @@
-{
-  "authority": [
-    "supportingEvidenceIds",
-    "limitingEvidenceIds",
-    "contradictingEvidenceIds"
-  ],
-  "fuzzyMatching": false,
-  "textSimilarity": false
-}

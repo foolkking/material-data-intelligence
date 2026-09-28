@@ -1,5 +1,0 @@
-{
-  "classification": "SPECIALIZED_PARSED_RESOURCE_NOT_REGISTERED",
-  "findingId": "P13-RR-001",
-  "rootCause": "PhononBand and PhononDos exact parsed IDs were omitted by build_object_store and the durable normalized-export resolver."
-}

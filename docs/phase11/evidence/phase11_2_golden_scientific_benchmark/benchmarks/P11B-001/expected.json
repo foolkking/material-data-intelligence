@@ -1,9 +1,0 @@
-{
-  "benchmarkId": "P11B-001",
-  "expectedTruth": "independent provenance review and immutable source fixture",
-  "expectedUnits": "Inherited from sealed Phase 10N contract; no unit conversion performed.",
-  "fixtureChecksum": "4e16884e7f1f45ad5d306e92bd97cd9201629cf16740545e9933008843f89a07",
-  "fixtureId": "P11FIX-001",
-  "referenceId": "P11REF-001",
-  "toleranceId": "n1.coordination.numeric.v1"
-}

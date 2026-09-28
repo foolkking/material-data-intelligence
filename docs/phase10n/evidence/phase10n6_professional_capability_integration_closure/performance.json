@@ -1,7 +1,0 @@
-{
-  "developmentMeasurementNotSla": true,
-  "inactivePayloadRequests": 0,
-  "n6BoundedE2E": true,
-  "oneActiveHeavyViewer": true,
-  "smallMediumNearCapOverCapRetained": true
-}

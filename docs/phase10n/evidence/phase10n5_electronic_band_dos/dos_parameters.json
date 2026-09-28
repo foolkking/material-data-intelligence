@@ -1,7 +1,0 @@
-{
-  "energy_reference": "source",
-  "include_element_projections": true,
-  "include_orbital_projections": true,
-  "max_plot_points": 500000,
-  "max_projection_channels": 512
-}

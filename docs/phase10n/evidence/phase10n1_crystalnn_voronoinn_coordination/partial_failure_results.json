@@ -1,7 +1,0 @@
-{
-  "authority": "TEST_FIXTURE",
-  "comparisonRequiresPersistedInputs": true,
-  "failedAlgorithmTyped": true,
-  "fallback": false,
-  "successfulAlgorithmRetained": true
-}

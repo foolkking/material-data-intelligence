@@ -1,8 +1,0 @@
-{
-  "count": 1,
-  "handcrafted": 0,
-  "missingRequiredTool": "dataset.composition_space",
-  "tools": [
-    "dataset.materials_explorer"
-  ]
-}

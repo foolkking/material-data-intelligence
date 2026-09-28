@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { mapPhononBandDosPlot, PhononBandDosPreviewPanel } from "./PhononBandDosPreviewPanel";
 
 const root = resolve(__dirname, "../../../../..");
-const evidence = resolve(root, "docs/phase10h/evidence/phase10h3_combined_band_dos/artifacts");
+const evidence = resolve(root, "tests/fixtures/phonon_band_dos");
 const json = (name: string) => JSON.parse(readFileSync(resolve(evidence, name), "utf8"));
 const payloads = {
   combined: json("phonon_band_dos.json"), summary: json("phonon_band_dos_summary.json"),

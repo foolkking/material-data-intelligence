@@ -7,13 +7,13 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: navigationMocks.push }),
 }));
 
-import adapterGeneratedViewerScene from "../../../../docs/phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/generated_viewer_scene.json";
-import adapterGeneratedViewerSceneManifest from "../../../../docs/phase10f/evidence/phase10f12_viewer_scene_minimal_adapter/generated_viewer_scene_manifest.json";
-import liveAdapterPayload from "../../../../docs/phase10f/evidence/phase10f13_viewer_scene_live_adapter_browser/live_payload.json";
-import bzReciprocal from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/reciprocal_lattice.json";
-import bzZone from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/brillouin_zone.json";
-import bzKpath from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/kpath.json";
-import bzManifest from "../../../../docs/phase10i/evidence/phase10i1_brillouin_zone_adapter/artifacts/simple_cubic/brillouin_zone_manifest.json";
+import adapterGeneratedViewerScene from "../../../../tests/fixtures/viewer_scene_reference/generated_viewer_scene.json";
+import adapterGeneratedViewerSceneManifest from "../../../../tests/fixtures/viewer_scene_reference/generated_viewer_scene_manifest.json";
+import liveAdapterPayload from "../../../../tests/fixtures/viewer_scene_reference/live_payload.json";
+import bzReciprocal from "../../../../tests/fixtures/brillouin_zone_reference/simple_cubic/reciprocal_lattice.json";
+import bzZone from "../../../../tests/fixtures/brillouin_zone_reference/simple_cubic/brillouin_zone.json";
+import bzKpath from "../../../../tests/fixtures/brillouin_zone_reference/simple_cubic/kpath.json";
+import bzManifest from "../../../../tests/fixtures/brillouin_zone_reference/simple_cubic/brillouin_zone_manifest.json";
 import { PlannerWorkbench, VolumetricMetadataPreviewPanel } from "./PlannerWorkbench";
 import { isSupportedDataProfileContractVersion, isTerminalPlannerJobStatus } from "../lib/planner-api";
 import { periodicBoundaryScene } from "./viewer-scene/viewerScenePeriodicBondTestFixture";
@@ -825,7 +825,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(document.getElementById("planner-primary-content")?.getAttribute("tabindex")).toBe("-1");
     const releaseDocs = screen.getByRole("link", { name: "Initial Release 文档" });
     expect(releaseDocs.getAttribute("href")).toBe(
-      "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md",
+      "README.md#current-product-state",
     );
     expect(releaseDocs.getAttribute("target")).toBe("_blank");
     expect(releaseDocs.getAttribute("rel")).toBe("noreferrer");

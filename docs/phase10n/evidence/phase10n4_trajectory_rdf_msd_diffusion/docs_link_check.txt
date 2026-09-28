@@ -1,2 +1,0 @@
-DOCS_LINK_CHECK = PASS
-All required Phase 10N-4 contract documents exist and are indexed by docs/index.md.

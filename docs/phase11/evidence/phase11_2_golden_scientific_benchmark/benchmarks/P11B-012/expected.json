@@ -1,9 +1,0 @@
-{
-  "benchmarkId": "P11B-012",
-  "expectedTruth": "deduplicated honest Tool/Input/Example coverage verdicts",
-  "expectedUnits": "Inherited from sealed Phase 10N contract; no unit conversion performed.",
-  "fixtureChecksum": "3f5dcba56602cd1645b95a42ee268f9f12dd75887fe7095e1f61e3f41acc4882",
-  "fixtureId": "P11FIX-012",
-  "referenceId": "P11REF-012",
-  "toleranceId": "identity.exact.v1"
-}

@@ -1,6 +1,0 @@
-Phase 11 final closure baseline
-Registry=62
-DataProfile=2.4
-N2=12 records/8 invariant PASS/4 N/A/0 failures
-N3=8 cases/Linux PASS/Windows PASS/numeric cross-platform N/A/V4=0
-N4=62 Tools/14 inputs/55 examples

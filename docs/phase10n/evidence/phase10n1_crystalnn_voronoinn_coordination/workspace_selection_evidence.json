@@ -1,8 +1,0 @@
-{
-  "crossAlgorithmFuzzyMapping": false,
-  "frontendScientificRecomputation": false,
-  "periodicRelationLocalExact": true,
-  "renderer": "workspace.coordination/1.0",
-  "selection": "PERIODIC_SITE",
-  "siteIdentityExact": true
-}

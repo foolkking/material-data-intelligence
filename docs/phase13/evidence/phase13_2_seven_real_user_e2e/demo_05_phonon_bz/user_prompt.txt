@@ -1,2 +1,0 @@
-canonical: Show the supplied phonon bands and density of states together with the matching Brillouin-zone context.
-alternate: Help me inspect this supplied phonon result and its reciprocal-space path.

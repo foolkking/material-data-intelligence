@@ -1,5 +1,0 @@
-{
-  "normalization": "euclidean_unit_norm",
-  "stored_vector_representation": "mass_weighted_eigenvector",
-  "sum_abs_squared": 1.0
-}

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import fixed from "../../../../../docs/phase10g/fixtures/trajectory_viewer/fixed_lattice_md_12_frames.json";
+import fixed from "../../../../../tests/fixtures/trajectory_viewer/fixed_lattice_md_12_frames.json";
 import { TrajectoryPreviewPanel } from "../PlannerWorkbench";
 
 describe("TrajectoryPreviewPanel",()=>{

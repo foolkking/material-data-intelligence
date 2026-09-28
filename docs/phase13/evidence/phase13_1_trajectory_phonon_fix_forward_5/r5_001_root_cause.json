@@ -1,6 +1,0 @@
-{
-  "authorityWeakened": false,
-  "authorizedCorrection": "Use explicit datasetVersion, then sampleIdentity.datasetVersion, then Profile.version, and compare the immutable Workspace snapshot against the exact live execution source.",
-  "findingId": "P13-R5-001",
-  "rootCause": "Workspace _profile_dataset_version omitted the existing Profile.version fallback used by Intent and Eligibility. Trajectory Profiles legitimately have sampleIdentity=null, so the fresh execution snapshot carried datasetVersion=2 while the Workspace snapshot persisted null and Report currentness rejected it."
-}

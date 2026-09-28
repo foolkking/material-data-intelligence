@@ -30,7 +30,7 @@ const nextConfig = {
     const apiTarget = (
       process.env.MDI_API_PROXY_TARGET ||
       process.env.NEXT_PUBLIC_MDI_API_BASE_URL ||
-      "http://127.0.0.1:8000"
+      "http://127.0.0.1:8005"
     ).replace(/\/$/u, "");
     return [{ source: "/api/:path*", destination: `${apiTarget}/:path*` }];
   },

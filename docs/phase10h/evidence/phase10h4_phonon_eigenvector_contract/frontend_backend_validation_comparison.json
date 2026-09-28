@@ -1,6 +1,0 @@
-{
-  "fixture": "valid_bundle.json",
-  "python": true,
-  "typescript": "4 passed",
-  "typescript_test": "apps/web/app/lib/phononEigenvectorContract.test.ts"
-}

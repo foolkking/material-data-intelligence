@@ -1,8 +1,8 @@
-import stableBand from "../../../../../docs/phase10h/fixtures/phonon_contract/stable_band.json";
-import manifest from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/manifest.json";
-import reciprocal from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/reciprocal_lattice.json";
-import zone from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/brillouin_zone.json";
-import kpath from "../../../../../docs/phase10i/fixtures/brillouin_zone_v1/simple_cubic/kpath.json";
+import stableBand from "../../../../../tests/fixtures/phonon_contract/stable_band.json";
+import manifest from "../../../../../tests/fixtures/brillouin_zone_v1/simple_cubic/manifest.json";
+import reciprocal from "../../../../../tests/fixtures/brillouin_zone_v1/simple_cubic/reciprocal_lattice.json";
+import zone from "../../../../../tests/fixtures/brillouin_zone_v1/simple_cubic/brillouin_zone.json";
+import kpath from "../../../../../tests/fixtures/brillouin_zone_v1/simple_cubic/kpath.json";
 
 import type { Artifact } from "../../lib/planner-api";
 

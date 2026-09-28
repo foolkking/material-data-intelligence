@@ -98,7 +98,7 @@ def test_reasoning_fixture_corpus_is_cross_domain_and_repository_owned() -> None
     payload = json.loads(
         (
             ROOT
-            / "docs/scientific-reasoning/fixtures/expert_reasoning_cases_v1.json"
+            / "tests/fixtures/scientific_reasoning/expert_reasoning_cases_v1.json"
         ).read_text(encoding="utf-8")
     )
     assert payload["contract_version"] == "expert-reasoning-case/1.0"
@@ -640,7 +640,7 @@ def test_second_repair_projects_only_claims_that_pass_scientific_reasoning() -> 
 def test_interpretation_1_1_requires_server_claim_support_assessment(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    fixture = _load_test_module("test_agent2_phase6_interpretation")
+    fixture = _load_test_module("test_agent2_interpretation")
 
     payload = fixture._output()
     payload["contract_version"] = "1.1"
@@ -654,7 +654,7 @@ def test_interpretation_1_1_requires_server_claim_support_assessment(
 
 
 def test_report_rejects_a_finding_with_rejected_reasoning_assessment() -> None:
-    fixture = _load_test_module("test_agent2_phase8_reports")
+    fixture = _load_test_module("test_agent2_reports")
 
     bundle = fixture._bundle()
     interpretation = fixture._interpretation()
@@ -690,21 +690,3 @@ def test_report_rejects_a_finding_with_rejected_reasoning_assessment() -> None:
         interpretation=interpretation,
     )
     assert "report finding contains rejected scientific reasoning" in errors
-
-
-def test_generated_baseline_is_retained_separately_from_final_evaluation() -> None:
-    baseline = json.loads(
-        (
-            ROOT
-            / "docs/scientific-reasoning/generated/expert_reasoning_baseline.json"
-        ).read_text(encoding="utf-8")
-    )
-    final = json.loads(
-        (
-            ROOT
-            / "docs/scientific-reasoning/generated/expert_reasoning_evaluation.json"
-        ).read_text(encoding="utf-8")
-    )
-    assert baseline["metrics"]["BASELINE_REASONING_FAILURES"] > 0
-    assert final["metrics"]["UNRESOLVED_SCIENTIFIC_REASONING_BLOCKERS"] == 0
-    assert baseline["contract_version"] != final["contract_version"]

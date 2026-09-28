@@ -1,7 +1,0 @@
-{
-  "invariant": "UPLOAD_PARSED_RESOURCE_ID == DURABLE_MANIFEST_RESOURCE_ID == PROFILE_RESOURCE_ID == PLANNER_BOUND_RESOURCE_ID == FRESH_WORKER_RESOLVED_RESOURCE_ID",
-  "resourceIds": [
-    "obj_dataframe_2b3a36cebe19"
-  ],
-  "status": "PASS"
-}

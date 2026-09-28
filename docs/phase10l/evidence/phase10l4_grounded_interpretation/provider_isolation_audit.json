@@ -1,8 +1,0 @@
-{
-  "fullRegistry": false,
-  "pathUrlSecret": false,
-  "providerVisibleEvidenceIdsEqualSafeProjection": true,
-  "rawArtifactPayload": false,
-  "rejectedCandidates": false,
-  "unsupportedArtifact": false
-}

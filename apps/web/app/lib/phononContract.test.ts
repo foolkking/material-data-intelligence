@@ -96,14 +96,12 @@ describe("Phase 10H phonon reference contract", () => {
 
   it("accepts and rejects the committed cross-language fixtures", () => {
     const root = resolve(process.cwd(), "../..");
-    const load = (name: string) => JSON.parse(readFileSync(resolve(root, "docs/phase10h/fixtures/phonon_contract", name), "utf8"));
+    const load = (name: string) => JSON.parse(readFileSync(resolve(root, "tests/fixtures/phonon_contract", name), "utf8"));
     expect(validatePhononBandReference(load("stable_band.json")).valid).toBe(true);
     expect(validatePhononBandReference(load("imaginary_band.json")).valid).toBe(true);
     expect(validatePhononBandReference(load("discontinuous_band.json")).valid).toBe(true);
     expect(validatePhononDosReference(load("projected_dos.json")).valid).toBe(true);
     expect(validatePhononBandReference(load("invalid_branch_count.json")).valid).toBe(false);
     expect(validatePhononDosReference(load("invalid_dos_grid.json")).valid).toBe(false);
-    const comparison = load("../../evidence/phase10h_phonon_contract/frontend_backend_validation_comparison.json");
-    expect(comparison.result).toBe("PASS");
   });
 });

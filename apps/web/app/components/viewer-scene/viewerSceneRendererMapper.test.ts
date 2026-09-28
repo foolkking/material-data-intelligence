@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import minimalScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_minimal_crystal.viewer_scene.v1.json";
-import multiSpeciesScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_multi_species_crystal.viewer_scene.v1.json";
-import optionalBondsScene from "../../../../../docs/phase10f/fixtures/viewer_scene_v1/valid_optional_bonds.viewer_scene.v1.json";
+import minimalScene from "../../../../../tests/fixtures/viewer_scene_v1/valid_minimal_crystal.viewer_scene.v1.json";
+import multiSpeciesScene from "../../../../../tests/fixtures/viewer_scene_v1/valid_multi_species_crystal.viewer_scene.v1.json";
+import optionalBondsScene from "../../../../../tests/fixtures/viewer_scene_v1/valid_optional_bonds.viewer_scene.v1.json";
 import { bondMetrics, cameraFrame, latticeEdges, sceneBounds } from "./viewerSceneRendererGeometry";
 import { mapViewerSceneForRenderer } from "./viewerSceneRendererMapper";
 import { periodicBoundaryScene } from "./viewerScenePeriodicBondTestFixture";

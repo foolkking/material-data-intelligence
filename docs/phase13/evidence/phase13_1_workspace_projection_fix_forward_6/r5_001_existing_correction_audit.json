@@ -1,6 +1,0 @@
-{
-  "datasetVersionFallback": true,
-  "exactSourceSnapshotComparison": true,
-  "findingId": "P13-R5-001",
-  "freshSmokeRequired": true
-}

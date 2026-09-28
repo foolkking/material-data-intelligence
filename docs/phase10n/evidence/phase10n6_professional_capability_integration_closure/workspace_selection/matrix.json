@@ -1,7 +1,0 @@
-{
-  "crossArtifactFuzzyMapping": false,
-  "exactSelection": true,
-  "initialHeavyPayloadRequests": 0,
-  "metadataFirst": true,
-  "oneWorkspacePerJob": true
-}

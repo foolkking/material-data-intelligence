@@ -1,9 +1,0 @@
-{
-  "cap": 32,
-  "droppedArtifacts": 0,
-  "finalClass": "WORKSPACE_PANEL_PROJECTION_CARDINALITY_DEFECT",
-  "findingId": "P13-RSE1-001",
-  "freshDemo5PanelCapExceeded": 0,
-  "status": "CLOSED",
-  "unreachableArtifacts": 0
-}

@@ -1,5 +1,0 @@
-{
-  "class": "NATURAL_LANGUAGE_TO_INTENT_COVERAGE_GAP",
-  "findingId": "P13-RF-003",
-  "rootCause": "Deterministic vocabulary omitted phonon/BZ semantic expressions and misclassified the reciprocal substring as ROC classification."
-}

@@ -77,7 +77,7 @@ type MainWorkspaceTab = "agent_process" | "conversation_plan" | "results_export"
 type ProviderMode = "mock" | "deepseek";
 type ChunkKind = "user_request" | "plan_preview" | "validation_result" | "run_status" | "result_reference";
 const INITIAL_RELEASE_DOCUMENTATION_URL =
-  "https://github.com/foolkking/material-data-intelligence/blob/master/docs/phase13/release/README.md";
+  "README.md#current-product-state";
 
 type WorkspaceSnapshot = {
   job?: PlannerJobDetail;

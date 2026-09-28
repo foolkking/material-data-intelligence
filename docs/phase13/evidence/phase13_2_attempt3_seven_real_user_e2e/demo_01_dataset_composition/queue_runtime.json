@@ -1,6 +1,0 @@
-{
-  "durableResolverUsed": true,
-  "newQueueWorkerRuntimeUsed": true,
-  "redisQueueUsed": true,
-  "result": "FAILED_SOURCE_RESOURCE_RESOLUTION"
-}

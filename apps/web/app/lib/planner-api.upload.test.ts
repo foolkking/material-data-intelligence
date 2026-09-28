@@ -99,6 +99,7 @@ it("keeps the authenticated browser session on upload-session file PUT requests"
     size: payload.byteLength,
     type: "text/csv",
     arrayBuffer: async () => payload.buffer,
+    slice: (start: number, end?: number) => new Blob([payload.slice(start, end)]),
   } as File;
   await uploadDatasetFiles("project-1", "test", [{ file }]);
 
