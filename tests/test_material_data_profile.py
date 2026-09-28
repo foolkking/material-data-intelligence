@@ -332,12 +332,12 @@ def test_structure_trajectory_phonon_and_volumetric_resource_bridges(repo_root, 
         file_id="file_structure",
     )
     trajectory = parse_file(
-        repo_root / "docs" / "phase10g" / "fixtures" / "trajectory_import" / "fixed_lattice_md.extxyz",
+        repo_root / "tests" / "fixtures" / "trajectory" / "fixed_lattice_md.extxyz",
         dataset_id="resource_bridges",
         file_id="file_trajectory",
     )
     volumetric = parse_file(
-        repo_root / "docs" / "phase10j" / "fixtures" / "volumetric_parser" / "orthogonal.cube",
+        repo_root / "tests" / "fixtures" / "volumetric_source" / "orthogonal.cube",
         dataset_id="resource_bridges",
         file_id="file_volume",
     )

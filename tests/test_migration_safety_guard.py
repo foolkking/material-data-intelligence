@@ -10,7 +10,7 @@ from alembic.script import ScriptDirectory
 from sqlalchemy import create_engine, inspect, text
 
 
-EXPECTED_HEAD = "0032_provider_connections"
+EXPECTED_HEAD = "0035_job_execution_leases"
 VERSIONS = Path("apps/api/alembic/versions")
 _DANGEROUS_SQL = re.compile(
     r"\b(?:DROP\s+(?:TABLE|COLUMN)|TRUNCATE|DELETE\s+FROM)\b",

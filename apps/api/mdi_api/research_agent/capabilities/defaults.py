@@ -237,7 +237,7 @@ def build_default_capability_registry() -> InMemoryCapabilityRegistry:
                 "structure.viewer_3d",
                 "structure.viewer_scene",
             ],
-            viewer_bindings=["scientific.structure"],
+            viewer_bindings=["scientific.structure-3d"],
         ),
         _manifest(
             "trajectory.viewer_scene",

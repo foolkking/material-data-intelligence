@@ -5,12 +5,22 @@ Revises: 0033_scientific_knowledge
 """
 
 from alembic import op
+import sqlalchemy as sa
 
 
 revision = "0034_partial_dataset_status"
 down_revision = "0033_scientific_knowledge"
 branch_labels = None
 depends_on = None
+
+
+def _dataset_status_constraint_name(bind: sa.engine.Connection) -> str | None:
+    for constraint in sa.inspect(bind).get_check_constraints("datasets"):
+        expression = "".join((constraint.get("sqltext") or "").lower().split())
+        if expression.startswith("statusin("):
+            name = constraint.get("name")
+            return str(name) if name else None
+    return None
 
 
 def upgrade() -> None:
@@ -26,10 +36,12 @@ def upgrade() -> None:
             "status in ('created', 'uploading', 'profile_ready', 'partially_ready', 'failed', 'archived')",
         )
         return
+    existing_constraint = _dataset_status_constraint_name(bind)
     with op.batch_alter_table("datasets", recreate="always") as batch:
-        batch.drop_constraint("dataset_status", type_="check")
+        if existing_constraint is not None:
+            batch.drop_constraint(op.f(existing_constraint), type_="check")
         batch.create_check_constraint(
-            "dataset_status",
+            op.f("dataset_status"),
             "status in ('created', 'uploading', 'profile_ready', 'partially_ready', 'failed', 'archived')",
         )
 
@@ -44,9 +56,11 @@ def downgrade() -> None:
             "status in ('created', 'uploading', 'profile_ready', 'failed', 'archived')",
         )
         return
+    existing_constraint = _dataset_status_constraint_name(bind)
     with op.batch_alter_table("datasets", recreate="always") as batch:
-        batch.drop_constraint("dataset_status", type_="check")
+        if existing_constraint is not None:
+            batch.drop_constraint(op.f(existing_constraint), type_="check")
         batch.create_check_constraint(
-            "dataset_status",
+            op.f("dataset_status"),
             "status in ('created', 'uploading', 'profile_ready', 'failed', 'archived')",
         )

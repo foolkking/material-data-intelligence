@@ -442,7 +442,7 @@
         "items": {
           "$ref": "#/$defs/AnalysisStep"
         },
-        "maxItems": 4,
+        "maxItems": 8,
         "minItems": 1,
         "title": "Steps",
         "type": "array"
@@ -1072,7 +1072,7 @@
             "items": {
               "type": "string"
             },
-            "maxItems": 4,
+            "maxItems": 8,
             "title": "Blockedbystepids",
             "type": "array"
           },
@@ -1164,7 +1164,7 @@
         "items": {
           "type": "string"
         },
-        "maxItems": 4,
+        "maxItems": 8,
         "minItems": 1,
         "title": "Topologicalorder",
         "type": "array"
@@ -1173,7 +1173,7 @@
         "items": {
           "$ref": "#/$defs/DependencyStepExecution"
         },
-        "maxItems": 4,
+        "maxItems": 8,
         "minItems": 1,
         "title": "Steps",
         "type": "array"
@@ -1187,25 +1187,25 @@
         "type": "array"
       },
       "succeededCount": {
-        "maximum": 4,
+        "maximum": 8,
         "minimum": 0,
         "title": "Succeededcount",
         "type": "integer"
       },
       "failedCount": {
-        "maximum": 4,
+        "maximum": 8,
         "minimum": 0,
         "title": "Failedcount",
         "type": "integer"
       },
       "blockedCount": {
-        "maximum": 4,
+        "maximum": 8,
         "minimum": 0,
         "title": "Blockedcount",
         "type": "integer"
       },
       "notStartedCount": {
-        "maximum": 4,
+        "maximum": 8,
         "minimum": 0,
         "title": "Notstartedcount",
         "type": "integer"

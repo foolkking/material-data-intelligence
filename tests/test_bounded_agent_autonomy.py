@@ -729,7 +729,7 @@ def test_autonomous_child_orchestration_is_deterministic_and_result_grounded() -
             advanced.child_turn_id
         )
     decision_json = decision_row["decision_json"]
-    assert decision_row["provider"] == "deterministic_bounded_autonomy"
+    assert decision_row["provider"] == "deterministic_bounded_policy"
     assert decision_json["action"] == "CONTINUE_ANALYSIS"
     assert decision_json["reusable_result_ref_keys"]
     assert (

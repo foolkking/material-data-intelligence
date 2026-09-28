@@ -48,14 +48,27 @@ def _create_exact_parent_fixture(path: Path) -> None:
                 "CONSTRAINT uq_projects_org_name UNIQUE (organization_id, name))"
             )
         )
-        connection.execute(text("CREATE TABLE datasets (id VARCHAR(64) PRIMARY KEY, project_id VARCHAR(64))"))
+        connection.execute(
+            text(
+                "CREATE TABLE datasets ("
+                "id VARCHAR(64) PRIMARY KEY, "
+                "project_id VARCHAR(64), "
+                "status VARCHAR(32) NOT NULL DEFAULT 'created', "
+                "CONSTRAINT dataset_status CHECK ("
+                "status in ('created', 'uploading', 'profile_ready', 'failed', 'archived')))"
+            )
+        )
         connection.execute(text("CREATE TABLE data_profiles (id VARCHAR(64) PRIMARY KEY, dataset_id VARCHAR(64))"))
         connection.execute(text("CREATE TABLE analysis_plans (id VARCHAR(96) PRIMARY KEY, project_id VARCHAR(64))"))
         connection.execute(text("CREATE TABLE analysis_intents (id VARCHAR(96) PRIMARY KEY, project_id VARCHAR(64))"))
         connection.execute(
             text(
                 "CREATE TABLE jobs ("
-                "id VARCHAR(64) PRIMARY KEY, project_id VARCHAR(64), dataset_id VARCHAR(64), plan_id VARCHAR(96))"
+                "id VARCHAR(64) PRIMARY KEY, "
+                "project_id VARCHAR(64), "
+                "dataset_id VARCHAR(64), "
+                "plan_id VARCHAR(96), "
+                "status VARCHAR(32) NOT NULL DEFAULT 'created')"
             )
         )
     engine.dispose()

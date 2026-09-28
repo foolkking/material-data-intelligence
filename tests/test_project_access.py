@@ -1260,6 +1260,9 @@ def test_product_search_projects_human_research_title_instead_of_internal_sessio
         "subtitle": "研究会话",
         "href": "/projects/used/research/research_internal_123",
         "researchTurnId": None,
+        "researchSessionId": None,
+        "objectVersionId": None,
+        "objectType": None,
         "status": "active",
         "updatedAt": result["items"][0]["updatedAt"],
     }

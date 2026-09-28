@@ -236,7 +236,7 @@ def test_decision_contract_rejects_extra_invalid_enum_and_negative_shape():
 def test_default_requirement_registry_has_only_bounded_phase2_requirements():
     registry = build_default_agent2_registries().requirements
     ids = [item.requirement_id for item in registry.list_active()]
-    assert len(ids) == 27
+    assert len(ids) == 29
     assert {
         "structure.inspect_view",
         "structure.inspect_brillouin_zone",

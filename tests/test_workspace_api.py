@@ -716,7 +716,7 @@ def test_run_queued_job_rebuilds_object_store_from_persisted_normalized_exports(
     assert result.status == "completed"
     assert job["status"] == "completed"
     assert [event.eventType for event in events] == [
-        "job.running",
+        "job.claimed",
         "plan.loaded",
         "data.loaded",
         "tool.started",

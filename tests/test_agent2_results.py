@@ -251,8 +251,7 @@ def test_mandatory_tool_coverage_projection_rejects_missing_tool_output() -> Non
 def test_brillouin_zone_projector_requires_complete_verified_triad_and_projects_kpath_count() -> None:
     fixture_root = (
         ROOT
-        / "docs"
-        / "phase10i"
+        / "tests"
         / "fixtures"
         / "brillouin_zone_v1"
         / "simple_cubic"

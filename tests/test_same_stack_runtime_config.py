@@ -198,7 +198,7 @@ def test_worker_accepts_the_same_typed_topology(
         "create_worker",
         lambda **kwargs: (
             Worker()
-            if kwargs["redis_url"] == "redis://127.0.0.1:6379/13"
+            if kwargs["redis_url"] == "redis://127.0.0.1:6380/0"
             and kwargs["queue_names"] == ["mdi-jobs"]
             else (_ for _ in ()).throw(AssertionError("unexpected worker topology"))
         ),
@@ -208,7 +208,7 @@ def test_worker_accepts_the_same_typed_topology(
         [
             "mdi-jobs",
             "--url",
-            "redis://127.0.0.1:6379/13",
+            "redis://127.0.0.1:6380/0",
             "--burst",
             "--max-jobs",
             "1",

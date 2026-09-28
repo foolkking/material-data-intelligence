@@ -416,7 +416,7 @@ class Phase2ProductRuntime:
             object_store=object_store,
             object_refs=object_refs,
             normalized_exports=normalized_exports,
-            input_transport=self._input_transport_summary(uploads, objects),
+            input_transport=self._input_transport_summary(uploads, objects, parse_results),
         )
         self.datasets[dataset_id] = record
         return {**record.summary(), "demo": True, "files": record.files, "profile": profile.model_dump(mode="json")}

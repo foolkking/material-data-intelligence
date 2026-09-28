@@ -86,8 +86,8 @@ def test_canonical_extension_graph_is_complete_and_inventory_is_registry_derived
     report = _report()
     assert report.accepted
     assert report.error_count == 0
-    assert report.capability_count == 17
-    assert report.valid_capability_count == 17
+    assert report.capability_count == 27
+    assert report.valid_capability_count == 27
     assert report.incomplete_capability_count == 0
     assert report.pack_count == 5
     assert report.tool_count == 62
@@ -228,7 +228,7 @@ def test_planner_catalog_is_bounded_scientific_and_traceable():
     extension = build_default_agent2_registries().extension_registry
     assert extension is not None
     catalog = extension.eligible_catalog()
-    assert len(catalog) == 17
+    assert len(catalog) == 27
     assert all(len(item["contract_fingerprint"]) == 64 for item in catalog)
     assert all("surface_support" in item for item in catalog)
     assert all("scientific_quality" in item for item in catalog)
@@ -247,7 +247,7 @@ def test_planner_catalog_is_bounded_scientific_and_traceable():
 def test_orphans_are_classified_without_becoming_cleanup_authority():
     report = _report()
     orphan_by_id = {item.component_id: item for item in report.orphans}
-    assert orphan_by_id["composition.formula_statistics"].classification == "PUBLIC_LOW_LEVEL_TOOL"
+    assert orphan_by_id["structure.trajectory_import"].classification == "PUBLIC_LOW_LEVEL_TOOL"
     assert all(item.classification != "DEFECT" for item in report.orphans)
 
 

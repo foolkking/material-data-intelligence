@@ -1431,6 +1431,80 @@ def _binding_domains(
     domains: list[PlannerBindingDomain] = []
     reasons: list[tuple[str, str]] = []
     profile_resources = {item.objectId: item for item in profile.resourceSemantics}
+    if metadata.toolId == "trajectory.diffusion":
+        trajectory_bounds = _trajectory_profile_time_bounds(profile_resources, resources)
+        if trajectory_bounds is None:
+            return [], [
+                (
+                    "DIFFUSION_TIME_RANGE_UNAVAILABLE",
+                    "The exact trajectory time bounds are unavailable for validating the diffusion fit window.",
+                )
+            ]
+        available_start, available_end = trajectory_bounds
+        requested_window = _requested_trajectory_fit_window(intent.rawGoal.casefold())
+        if requested_window is not None:
+            requested_start, requested_end = requested_window
+            if (
+                requested_start >= requested_end
+                or requested_start < available_start
+                or requested_end > available_end
+            ):
+                return [], [
+                    (
+                        "DIFFUSION_FIT_WINDOW_OUT_OF_RANGE",
+                        "The requested diffusion fit window is outside the exact trajectory time range.",
+                    )
+                ]
+            values = (
+                ("fit_start_time_ps", requested_start),
+                ("fit_end_time_ps", requested_end),
+            )
+            domains.extend(
+                PlannerBindingDomain(
+                    parameter=parameter,
+                    required=True,
+                    values=[
+                        _binding_value(
+                            f"request:{intent.intentId}:{parameter}:{format(value, '.15g')}",
+                            value,
+                            PlannerBindingSource.user_request,
+                            f"analysis-intent:{intent.intentId}:{parameter}",
+                        )
+                    ],
+                )
+                for parameter, value in values
+            )
+            return domains, reasons
+        if _requests_full_trajectory_range(intent.rawGoal.casefold()):
+            values = (
+                ("fit_start_time_ps", available_start, "timeStartPs"),
+                ("fit_end_time_ps", available_end, "timeEndPs"),
+            )
+            resource = next(
+                item for item in resources if item.objectType == "Trajectory"
+            )
+            domains.extend(
+                PlannerBindingDomain(
+                    parameter=parameter,
+                    required=True,
+                    values=[
+                        _binding_value(
+                            f"fact:{resource.objectId}:{fact_key}",
+                            value,
+                            PlannerBindingSource.resource_fact,
+                            f"resource:{resource.objectId}:{resource.objectHash}:{fact_key}",
+                        )
+                    ],
+                )
+                for parameter, value, fact_key in values
+            )
+            return domains, reasons
+        return [], [
+            (
+                "REQUIRED_PARAMETER_UNBOUND",
+                "Diffusion planning requires an explicit fit window or the full supplied time range.",
+            )
+        ]
     for binding in metadata.parameterBindings:
         values: list[PlannerBindingValue] = []
         if binding.source is PlannerBindingSource.resource_id:

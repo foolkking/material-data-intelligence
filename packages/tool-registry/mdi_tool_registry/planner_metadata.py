@@ -114,8 +114,6 @@ def _intents(tool_id: str) -> list[ScientificIntent]:
 
 
 def _needs(tool_id: str) -> list[CapabilityNeed]:
-    if tool_id == "structure.composition_from_structure":
-        return [CapabilityNeed.composition_data]
     if tool_id == "dataset.composition_space" or tool_id.startswith("composition.cluster_"):
         return [CapabilityNeed.tabular_data, CapabilityNeed.composition_data]
     if tool_id == "dataset.materials_explorer":
@@ -233,9 +231,9 @@ def _bindings(tool_id: str) -> list[PlannerParameterBinding]:
     if tool_id == "phonon.animation":
         return [PlannerParameterBinding(parameter="mode_id", source=PlannerBindingSource.resource_fact, objectTypes=["PhononEigenvector"], factKeys=["modeId"])]
     if tool_id == "trajectory.diffusion":
-        # Diffusion fit bounds are scientific choices over the persisted MSD
-        # lag axis.  Full-source trajectory timestamps are not a safe default
-        # for a bounded selected analysis window.
+        # A diffusion fit window is a scientific choice, not a registry
+        # default. Planner-owned request parsing may bind it explicitly, while
+        # generic Agent execution remains fail-closed without constraints.
         return []
     if tool_id in {
         "composition.formula_statistics",
@@ -261,9 +259,13 @@ def _input_type_options(tool: Any) -> list[list[str]]:
         sorted({item.value for item in option.requiredObjectTypes})
         for option in tool.inputSchema.inputOptions
     ]
-    # The historical composition schema encodes alternatives in one list while
-    # phonon band/DOS and animation encode required co-inputs in one list.
-    if tool.toolId.startswith("composition."):
+    # These schemas encode alternatives in one list, while dependency tools
+    # such as phonon band/DOS and animation encode required co-inputs.
+    if tool.toolId.startswith("composition.") or tool.toolId in {
+        "structure.structure_3d",
+        "structure.viewer_3d",
+        "structure.viewer_scene",
+    }:
         return [[item] for item in raw_options[0]] if raw_options else [["RawUnsupported"]]
     return raw_options or [["RawUnsupported"]]
 

@@ -169,10 +169,12 @@ def test_phase14r_historical_viewers_remain_exact_after_new_version_and_archive(
 def test_phase9_registry_covers_every_current_scientific_object_type():
     registry = build_scientific_viewer_registry()
     expected = {
-        "materials.dataset", "materials.table", "structure.crystal", "trajectory.atomic",
+        "materials.dataset", "materials.table", "structure.atomic", "structure.crystal",
+        "trajectory.atomic",
         "diffraction.xrd.experimental", "diffraction.xrd.theoretical",
         "electronic.band_structure", "electronic.dos",
         "phonon.band_structure", "phonon.dos", "volumetric.charge_density",
+        "volumetric.field",
     }
     assert {item.object_type for item in registry.list()} == expected
     assert RESULT_ONLY_VIEWER_TYPES == {"analysis.rdf", "reciprocal.brillouin_zone"}

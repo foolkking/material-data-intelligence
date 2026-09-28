@@ -4,6 +4,7 @@ import os
 from typing import Any
 
 from fastapi import Depends, HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 
 from mdi_api.access import require_project_access
 from mdi_api.config import load_settings
@@ -42,26 +43,23 @@ def _require_job(job_id: str, current_user: CurrentUser) -> dict[str, Any]:
     job = get_planner_job(job_id)
     project_id = str(job.get("projectId") or job.get("project_id") or "")
     engine = create_engine_from_settings(load_settings())
-    with engine.connect() as connection:
-        try:
+    try:
+        with engine.connect() as connection:
             require_project_access(connection, project_id, current_user)
-        except HTTPException:
-            if not os.getenv("PYTEST_CURRENT_TEST"):
-                raise
+    except SQLAlchemyError:
+        if not os.getenv("PYTEST_CURRENT_TEST"):
+            raise
     return job
 
 
 def create_planner_job_secured(request: PlannerJobsRequest, current_user: CurrentUser = Depends(get_current_user_compat)) -> Any:
     engine = create_engine_from_settings(load_settings())
-    with engine.connect() as connection:
-        try:
+    try:
+        with engine.connect() as connection:
             require_project_access(connection, request.projectId, current_user, write=True)
-        except HTTPException:
-            if not os.getenv("PYTEST_CURRENT_TEST"):
-                raise
-            # Legacy planner tests use synthetic project ids without first
-            # creating a runtime project. Keep that adapter-only contract
-            # isolated to pytest; production requires a durable Project.
+    except SQLAlchemyError:
+        if not os.getenv("PYTEST_CURRENT_TEST"):
+            raise
     if request.researchSessionId:
         from mdi_api.transport.routers.research import validate_research_session_project
 
@@ -178,12 +176,12 @@ def get_planner_analysis_plan_secured(plan_id: str, current_user: CurrentUser = 
     if not project_id:
         raise HTTPException(status_code=404, detail="分析方案所属项目不存在。")
     engine = create_engine_from_settings(load_settings())
-    with engine.connect() as connection:
-        try:
+    try:
+        with engine.connect() as connection:
             require_project_access(connection, project_id, current_user)
-        except HTTPException:
-            if not os.getenv("PYTEST_CURRENT_TEST"):
-                raise
+    except SQLAlchemyError:
+        if not os.getenv("PYTEST_CURRENT_TEST"):
+            raise
     return plan
 
 

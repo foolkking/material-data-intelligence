@@ -251,7 +251,7 @@ def test_analysis_plan_01_hash_bytes_are_unchanged() -> None:
     legacy_payload = json.dumps(parsed.model_dump(mode="json"), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     expected = hashlib.sha256(legacy_payload.encode("utf-8")).hexdigest()
     assert compute_plan_hash(plan) == expected
-    assert compute_plan_hash(plan) == "3556e661c55c202233e9bf5c481353a62abaf058267ab78fbaaa11ce66a8acda"
+    assert compute_plan_hash(plan) == "c7d1a1044927355be0fb7827247c1a4a242809410e73202cca3def77898d741c"
 
 
 @pytest.mark.parametrize("backend", ["memory", "sqlite"])

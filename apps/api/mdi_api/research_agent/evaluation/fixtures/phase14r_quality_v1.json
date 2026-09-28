@@ -8,7 +8,7 @@
       "message": "检查当前晶体结构并总结权威几何信息。",
       "object_candidates": [{"key": "obj_1", "object_type": "structure.crystal", "display_name": "Current structure", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["structure.inspect"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_phase3_planning.py::test_p3_c06_c08_wrong_object_type_is_unsupported_before_planner"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_planning.py::test_p3_c06_c08_wrong_object_type_is_unsupported_before_planner"],
       "evaluation_dimensions": ["intent understanding", "capability selection", "grounding"]
     },
     {
@@ -26,7 +26,7 @@
       "message": "使用 CrystalNN 分析当前结构的配位。",
       "object_candidates": [{"key": "obj_1", "object_type": "structure.crystal", "display_name": "Current structure", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["structure.inspect_coordination_crystalnn"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_phase8_reports.py::test_coordination_report_uses_readable_methods_title_and_absence_limitation"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_reports.py::test_coordination_report_uses_readable_methods_title_and_absence_limitation"],
       "evaluation_dimensions": ["capability selection", "scientific usefulness", "limitations disclosure"]
     },
     {
@@ -35,7 +35,7 @@
       "message": "使用 VoronoiNN 分析当前结构的配位。",
       "object_candidates": [{"key": "obj_1", "object_type": "structure.crystal", "display_name": "Current structure", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["structure.inspect_coordination_voronoi"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_phase8_reports.py::test_coordination_report_uses_readable_methods_title_and_absence_limitation"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_reports.py::test_coordination_report_uses_readable_methods_title_and_absence_limitation"],
       "evaluation_dimensions": ["capability selection", "scientific usefulness", "limitations disclosure"]
     },
     {
@@ -44,7 +44,7 @@
       "message": "统计当前结构的配位数分布。",
       "object_candidates": [{"key": "obj_1", "object_type": "structure.crystal", "display_name": "Current structure", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["structure.inspect_coordination_hist"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_phase5_results.py::test_partial_execution_projects_only_successful_capability_outputs"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_results.py::test_partial_execution_projects_only_successful_capability_outputs"],
       "evaluation_dimensions": ["intent understanding", "capability selection", "answer relevance"]
     },
     {
@@ -53,7 +53,7 @@
       "message": "计算当前结构 8 Å 截断半径内的 RDF。",
       "object_candidates": [{"key": "obj_1", "object_type": "structure.crystal", "display_name": "Current structure", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["structure.compute_rdf"], "constraint_subset": {"cutoff_angstrom": 8.0}},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_phase8_reports.py::test_grounded_rdf_report_and_opaque_provider_boundary"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_reports.py::test_grounded_rdf_report_and_opaque_provider_boundary"],
       "evaluation_dimensions": ["intent understanding", "parameter fidelity", "grounding"]
     },
     {
@@ -74,7 +74,7 @@
         {"key": "obj_2", "object_type": "structure.crystal", "display_name": "Current structure", "source": "EXPLICIT_REFERENCE"}
       ],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1", "obj_2"], "requirement_ids": ["diffraction.compare_experimental_theoretical"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_phase8_reports.py::test_report_role_uses_report_composition_provider_purpose"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_reports.py::test_report_role_uses_report_composition_provider_purpose"],
       "evaluation_dimensions": ["context selection", "multi-result synthesis", "scientific usefulness"]
     },
     {
@@ -101,7 +101,7 @@
       "message": "在 1 ps 到 6 ps 的窗口估计 Li 扩散系数。",
       "object_candidates": [{"key": "obj_1", "object_type": "trajectory.atomic", "display_name": "Current trajectory", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["trajectory.estimate_diffusion"], "constraint_subset": {"fit_start_time_ps": 1.0, "fit_end_time_ps": 6.0}},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_phase8_reports.py::test_diffusion_report_follows_evidence_support_and_composite_units"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_reports.py::test_diffusion_report_follows_evidence_support_and_composite_units"],
       "evaluation_dimensions": ["parameter fidelity", "grounding", "scientific usefulness"]
     },
     {
@@ -164,28 +164,28 @@
       "message": "评估当前材料回归结果的误差和覆盖情况。",
       "object_candidates": [{"key": "obj_1", "object_type": "materials.table", "display_name": "Regression results", "source": "CURRENT_SCOPE"}],
       "expected": {"action": "ANALYZE", "selected_scope_ref_keys": ["obj_1"], "requirement_ids": ["ml.evaluate_regression"]},
-      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_phase8_reports.py::test_ml_table_result_uses_same_grounded_report_grammar"],
+      "tool_policy": "MUST_CALL_LATER", "evidence_tests": ["tests/test_agent2_reports.py::test_ml_table_result_uses_same_grounded_report_grammar"],
       "evaluation_dimensions": ["capability selection", "grounding", "scientific usefulness"]
     },
     {
       "case_id": "R10-019", "family": "dataset", "scenario": "query-only routing",
       "mode": "PRODUCT_CONTRACT", "category": "ROUTING", "message": "列出 band_gap 大于 2 eV 的样本。",
       "invariants": ["action=QUERY_DATA", "scientific_requirements=[]", "Job delta=0"],
-      "evidence_tests": ["tests/test_agent2_phase2_processor.py::test_query_data_completes_as_non_scientific_handoff_without_execution"],
+      "evidence_tests": ["tests/test_agent2_processor.py::test_query_data_completes_as_non_scientific_handoff_without_execution"],
       "evaluation_dimensions": ["intent understanding", "over-analysis", "latency"]
     },
     {
       "case_id": "R10-020", "family": "cross-domain", "scenario": "ambiguous source clarification",
       "mode": "PRODUCT_CONTRACT", "category": "CLARIFICATION", "message": "分析那个结构的配位。",
       "invariants": ["equal-priority sources require one bounded clarification", "Job delta=0"],
-      "evidence_tests": ["tests/test_agent2_phase2_processor.py::test_equal_priority_objects_clarify_without_provider_and_reply_creates_child"],
+      "evidence_tests": ["tests/test_agent2_processor.py::test_equal_priority_objects_clarify_without_provider_and_reply_creates_child"],
       "evaluation_dimensions": ["clarification quality", "context selection", "latency"]
     },
     {
       "case_id": "R10-021", "family": "cross-domain", "scenario": "exact Result reuse",
       "mode": "PRODUCT_CONTRACT", "category": "MULTI_TURN", "message": "解释上一份精确结果，不要重新计算。",
       "invariants": ["exact Result reused", "Job delta=0", "ToolCall delta=0", "Artifact delta=0", "ScientificResult delta=0"],
-      "evidence_tests": ["tests/test_agent2_phase6_interpretation.py::test_previous_result_interpretation_reuses_one_snapshot_across_new_turns_without_execution"],
+      "evidence_tests": ["tests/test_agent2_interpretation.py::test_previous_result_interpretation_reuses_one_snapshot_across_new_turns_without_execution"],
       "evaluation_dimensions": ["context selection", "over-analysis", "grounding"]
     },
     {
@@ -199,14 +199,14 @@
       "case_id": "R10-023", "family": "cross-domain", "scenario": "partial scientific result",
       "mode": "PRODUCT_CONTRACT", "category": "SAFETY", "message": "总结部分成功的分析并明确未完成范围。",
       "invariants": ["successful independent outputs preserved", "failed branch not presented as complete"],
-      "evidence_tests": ["tests/test_agent2_phase6_interpretation.py::test_partial_result_cannot_be_presented_as_complete"],
+      "evidence_tests": ["tests/test_agent2_interpretation.py::test_partial_result_cannot_be_presented_as_complete"],
       "evaluation_dimensions": ["partial-result disclosure", "limitations disclosure", "scientific usefulness"]
     },
     {
       "case_id": "R10-024", "family": "unsupported", "scenario": "unsupported request",
       "mode": "PRODUCT_CONTRACT", "category": "SAFETY", "message": "运行未注册的任意科学算法。",
       "invariants": ["fails before execution", "Job delta=0", "ToolCall delta=0", "Artifact delta=0", "ScientificResult delta=0"],
-      "evidence_tests": ["tests/test_agent2_phase3_planning.py::test_p3_c06_c08_wrong_object_type_is_unsupported_before_planner"],
+      "evidence_tests": ["tests/test_agent2_planning.py::test_p3_c06_c08_wrong_object_type_is_unsupported_before_planner"],
       "evaluation_dimensions": ["intent understanding", "under-analysis", "safety"]
     },
     {
@@ -220,21 +220,21 @@
       "case_id": "R10-026", "family": "cross-domain", "scenario": "multi-result synthesis",
       "mode": "PRODUCT_CONTRACT", "category": "REPORTING", "message": "综合多个权威结果，但不要添加未经支持的因果结论。",
       "invariants": ["all claims retain Result/evidence refs", "unsupported causality rejected"],
-      "evidence_tests": ["tests/test_agent2_phase8_reports.py::test_provider_report_is_projected_back_to_validated_scientific_authority"],
+      "evidence_tests": ["tests/test_agent2_reports.py::test_provider_report_is_projected_back_to_validated_scientific_authority"],
       "evaluation_dimensions": ["scientific coherence", "grounding", "limitations disclosure"]
     },
     {
       "case_id": "R10-027", "family": "control", "scenario": "stop during orchestration",
       "mode": "PRODUCT_CONTRACT", "category": "MULTI_TURN", "message": "在编排阶段停止研究。",
       "invariants": ["turn becomes CANCELED", "worker retry is idempotent", "Job not created where possible"],
-      "evidence_tests": ["tests/test_agent2_phase2_processor.py::test_cancel_during_orchestration_is_an_idempotent_worker_noop"],
+      "evidence_tests": ["tests/test_agent2_processor.py::test_cancel_during_orchestration_is_an_idempotent_worker_noop"],
       "evaluation_dimensions": ["control clarity", "recovery", "latency"]
     },
     {
       "case_id": "R10-028", "family": "control", "scenario": "stop queued execution",
       "mode": "PRODUCT_CONTRACT", "category": "MULTI_TURN", "message": "取消已排队但尚未完成的科学执行。",
       "invariants": ["CANCELING waits for authoritative Job confirmation", "committed evidence is preserved"],
-      "evidence_tests": ["tests/test_agent2_phase4_execution.py::test_queued_cancel_waits_for_authoritative_job_confirmation"],
+      "evidence_tests": ["tests/test_agent2_execution.py::test_queued_cancel_waits_for_authoritative_job_confirmation"],
       "evaluation_dimensions": ["control clarity", "recovery", "partial-result disclosure"]
     },
     {
@@ -255,14 +255,14 @@
       "case_id": "R10-031", "family": "conversation", "scenario": "re-interpret without recomputation",
       "mode": "PRODUCT_CONTRACT", "category": "MULTI_TURN", "message": "只重新解释现有结果，不要重跑科学计算。",
       "invariants": ["Job delta=0", "ToolCall delta=0", "Artifact delta=0", "ScientificResult delta=0"],
-      "evidence_tests": ["tests/test_agent2_phase6_interpretation.py::test_previous_result_interpretation_reuses_one_snapshot_across_new_turns_without_execution"],
+      "evidence_tests": ["tests/test_agent2_interpretation.py::test_previous_result_interpretation_reuses_one_snapshot_across_new_turns_without_execution"],
       "evaluation_dimensions": ["control clarity", "over-analysis", "grounding"]
     },
     {
       "case_id": "R10-032", "family": "recovery", "scenario": "retry failed report generation",
       "mode": "PRODUCT_CONTRACT", "category": "REPORTING", "message": "重试失败的报告生成，不要重新运行科学计算。",
       "invariants": ["failed evidence remains", "generation returns to REQUESTED", "scientific Result unchanged"],
-      "evidence_tests": ["tests/test_agent2_phase8_reports.py::test_failed_report_retry_returns_to_requested_before_queueing"],
+      "evidence_tests": ["tests/test_agent2_reports.py::test_failed_report_retry_returns_to_requested_before_queueing"],
       "evaluation_dimensions": ["recovery", "control clarity", "report quality"]
     }
   ]

@@ -142,7 +142,7 @@ def test_cycle_and_duplicate_consumer_port_are_rejected() -> None:
 
 def test_step_binding_and_depth_caps_are_enforced() -> None:
     with pytest.raises(ValidationError):
-        _plan(steps=[_step(f"s{i}") for i in range(5)], bindings=[])
+        _plan(steps=[_step(f"s{i}") for i in range(9)], bindings=[])
 
     depth_steps = [_step(f"s{i}") for i in range(5)]
     depth_bindings = [_binding(f"s{i}", f"s{i + 1}") for i in range(4)]
