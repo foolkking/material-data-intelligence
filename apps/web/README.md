@@ -1,17 +1,17 @@
-# Web App
+# Web application
 
-Next.js workspace shell for the three-column material analysis workbench.
+The Next.js application provides the product shell and the project workspaces:
 
-Current Phase 1 scope:
+- Data: one scientific data workspace with saved viewer outputs and precise source selection.
+- Research: one composer, branch-aware conversation, result workbench and on-demand context/provenance.
+- Reports: document reading, saved figures/tables and authenticated Markdown/ZIP downloads.
+- Projects, tasks, model settings, account and administration: durable product navigation and management.
 
-- App Router scaffold in `app/`.
-- Three-column workspace shell: data assets, visualization canvas, Agent
-  Timeline, and bottom tabs.
-- Scripts for `dev`, `build`, and `typecheck`.
+Scientific viewers read validated saved payloads. They may prepare a browser rendering, but they do not create authoritative scientific results or silently infer chemistry from a visual connection.
 
-Local run:
+Run from the repository root:
 
-```powershell
-npm install
-npm run dev
-```
+    npm --prefix apps/web ci
+    npm --prefix apps/web run dev
+
+Use the repository-root scripts/dev.ps1 for the normal full stack so the external runtime paths and proxy target are loaded consistently. Checks are npm --prefix apps/web test, npm --prefix apps/web run typecheck, and npm --prefix apps/web run build.

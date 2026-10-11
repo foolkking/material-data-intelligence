@@ -1,29 +1,11 @@
-# API App
+# API application
 
-FastAPI application boundary for the Material Data Intelligence platform.
+The FastAPI boundary owns authentication, projects and datasets, scientific object versions, Research admission/planning, result and interpretation reads, report generation requests, model settings and administrative routes.
 
-Current Phase 1 scope:
+The API does not execute arbitrary model output. Research plans are checked against the active Tool Registry and requirement schemas; long work is queued for the project Worker. PostgreSQL is authoritative for workflow state and ownership, while MinIO stores immutable payloads and report artifacts.
 
-- `mdi_api.main:create_app()` builds the API app.
-- `/health`, `/auth/me`, `/projects`, `/datasets`, `/tools`, and `/tools/mvp`
-  establish module boundaries for later persistence-backed implementations.
-- `mdi_api.db.metadata` defines the first Auth / Project / Dataset tables:
-  `users`, `organizations`, `projects`, `project_members`, `datasets`, and
-  `files`.
+Run the complete local stack from the repository root:
 
-Local run:
+    .\scripts\dev.ps1 start
 
-```powershell
-uvicorn mdi_api.main:app --reload
-```
-
-For the optional live Planner/Interpretation provider, either set the built-in
-server profile (`MDI_LLM_PROVIDER=deepseek`, `DEEPSEEK_KEY`, and an allowlisted
-`DEEPSEEK_MODEL`) or configure an OpenAI-compatible connection from the
-authenticated Model Settings dialog. The dialog writes to
-`POST /planner/providers/configure`, discovers models with
-`GET /planner/providers/{provider}/models`, and saves the selected model group
-with `PATCH /planner/providers/{provider}/models`. API keys are write-only from
-the browser and encrypted server-side; they are never returned to the browser,
-prompt, Artifact, Report, or export. Set `MDI_PROVIDER_ENCRYPTION_KEY` to a
-stable Fernet key when configured connections must survive API restarts.
+For a direct development process, load the external local.env and set the repository package paths before using uvicorn. Do not point tests or ad-hoc processes at the real service credentials. Model connections are configured through the authenticated settings API; keys are write-only to the browser and encrypted server-side.

@@ -9,7 +9,9 @@ an active source or runtime location.
 ## Read first
 
 Read `PROJECT_STATE.md`, then inspect only the code and tests relevant to the
-current task.
+current task. For product capability or goal handoff work, also consult
+`CAPABILITIES.md` and `REMAINING_WORK.md`; their numbered sections correspond.
+Use `README.md` for installation and operation.
 
 ## Product safety invariants
 
